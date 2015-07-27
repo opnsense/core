@@ -279,10 +279,12 @@ include("head.inc");
 								<td width="78%" class="vtable">
 									<input type='checkbox' id='smtpssl' name='smtpssl' <?php if (isset($pconfig['smtpssl'])) {
                                         echo "checked=\"checked\"";
-} ?> />Enable SMTP over SSL/TLS<br />
+} ?> />
+									<strong><?=gettext('Enable SMTP over SSL/TLS');?></strong><br />
 									<input type='checkbox' id='smtptls' name='smtptls' <?php if (isset($pconfig['smtptls'])) {
                                         echo "checked=\"checked\"";
-} ?> />Enable STARTTLS<br />
+} ?> />
+									<strong><?=gettext('Enable STARTTLS');?></strong><br />
 								</td>
 							</tr>
 							<tr>

@@ -310,8 +310,16 @@ include("head.inc");
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Load Balancing"); ?></th>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Load Balancing"); ?></td>
+									<td width="22%" valign="top" class="vncell"></td>
 									<td width="78%" class="vtable">
+										<input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?php if ($pconfig['gw_switch_default']) {
+                                            echo "checked=\"checked\"";
+} ?> />
+										<strong><?=gettext("Allow default gateway switching"); ?></strong><br />
+										<?=gettext("If the link where the default gateway resides fails " .
+                                        "switch the default gateway to another available one."); ?>
+										<br />
+										<br />
 										<input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?php if ($pconfig['lb_use_sticky']) {
                                             echo "checked=\"checked\"";
 } ?> onclick="sticky_checked(this)" />
@@ -325,6 +333,7 @@ include("head.inc");
                                         "will be redirected to the next web server in the round " .
                                         "robin. Changing this option will restart the Load Balancing service."); ?>
 										<br />
+										<br />
 										<input name="srctrack" id="srctrack" type="text" value="<?php if ($pconfig['srctrack'] <> "") {
                                             echo $pconfig['srctrack'];
 
@@ -333,28 +342,16 @@ include("head.inc");
 } ?>" class="formfld unknown" <?php if ($pconfig['lb_use_sticky'] == false) {
     echo "disabled=\"disabled\"";
 } ?> />
-										<br />
 										<?=gettext("Set the source tracking timeout for sticky connections. " .
                                         "By default this is 0, so source tracking is removed as soon as the state expires. " .
                                         "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
 									</td>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Load Balancing"); ?></td>
-									<td width="78%" class="vtable">
-										<input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?php if ($pconfig['gw_switch_default']) {
-                                            echo "checked=\"checked\"";
-} ?> />
-										<strong><?=gettext("Allow default gateway switching"); ?></strong><br />
-										<?=gettext("If the link where the default gateway resides fails " .
-                                        "switch the default gateway to another available one."); ?>
-									</td>
-								</tr>
-								<tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Power savings"); ?></th>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("PowerD"); ?></td>
+									<td width="22%" valign="top" class="vncell"></td>
 									<td width="78%" class="vtable">
 										<input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?php if ($pconfig['powerd_enable']) {
                                             echo "checked=\"checked\"";
@@ -420,7 +417,7 @@ include("head.inc");
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Cryptographic Hardware Acceleration"); ?></th>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Cryptographic Hardware"); ?></td>
+									<td width="22%" valign="top" class="vncell"></td>
 									<td width="78%" class="vtable">
 										<select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
 											<option value=""><?php echo gettext("None"); ?></option>
@@ -449,7 +446,7 @@ endforeach; ?>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Thermal Sensors"); ?></th>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Thermal Sensors"); ?></td>
+									<td width="22%" valign="top" class="vncell"></td>
 									<td width="78%" class="vtable">
 									<select name="thermal_hardware" id="thermal_hardware" class="selectpicker" data-style="btn-default">
 										<option value=""><?php echo gettext("None/ACPI"); ?></option>
@@ -471,23 +468,15 @@ endforeach; ?>
 									</td>
 								</tr>
 								<tr>
-									<th colspan="2" valign="top" class="listtopic"><?=gettext("IP Security"); ?></th>
-								</tr>
-								<tr>
-									<td width="22%" valign="top" class="vncell">&nbsp;</td>
-									<td width="78%" class="vtable">
-										<?=gettext("These settings have moved to <a href=\"vpn_ipsec_settings.php\">VPN &gt; IPsec on the Advanced Settings tab</a>."); ?>
-									</td>
-								</tr>
-								<tr>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Schedules"); ?></th>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Schedule States"); ?></td>
+									<td width="22%" valign="top" class="vncell"></td>
 									<td width="78%" class="vtable">
 										<input name="schedule_states" type="checkbox" id="schedule_states" value="yes" <?php if ($pconfig['schedule_states']) {
                                             echo "checked=\"checked\"";
 } ?> />
+										<strong><?=gettext("Schedule States"); ?></strong>
 										<br />
 										<?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
                                         "This option overrides that behavior by not clearing states for existing connections."); ?>
@@ -497,21 +486,20 @@ endforeach; ?>
 									<th colspan="2" valign="top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("State Killing on Gateway Failure"); ?></td>
+									<td width="22%" valign="top" class="vncell"></td>
 									<td width="78%" class="vtable">
 										<input name="kill_states" type="checkbox" id="kill_states" value="yes" <?php if ($pconfig['kill_states']) {
                                             echo "checked=\"checked\"";
 } ?> />
+										</strong><?=gettext("State Killing on Gateway Failure"); ?></strong>
 										<br />
 										<?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
-									</td>
-								</tr>
-								<tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Skip rules when gateway is down"); ?></td>
-									<td width="78%" class="vtable">
+										<br />
+										<br />
 										<input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?php if ($pconfig['skip_rules_gw_down']) {
                                             echo "checked=\"checked\"";
 } ?> />
+										<strong><?=gettext("Skip rules when gateway is down"); ?></strong>
 										<br />
 										<?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
                                         "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
@@ -535,7 +523,6 @@ endforeach; ?>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Periodic RRD Backup");?></td>
 									<td width="78%" class="vtable">
-										<?=gettext("Frequency:");?>
 										<select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup" <?php if ($pconfig['use_mfs_tmpvar'] == false) {
                                             echo "disabled=\"disabled\"";
 } ?> >
@@ -563,7 +550,6 @@ endforeach; ?>
 								<tr>
 									<td width="22%" valign="top" class="vncell"><?=gettext("Periodic DHCP Leases Backup");?></td>
 									<td width="78%" class="vtable">
-										<?=gettext("Frequency:");?>
 										<select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup" <?php if ($pconfig['use_mfs_tmpvar'] == false) {
                                             echo "disabled=\"disabled\"";
 } ?> >

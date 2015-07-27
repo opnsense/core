@@ -36,6 +36,48 @@
 			<value>default</value>
 		</item>
 		<item>
+			<descr><![CDATA[
+				Source routing is another way for an attacker to try to reach non-routable addresses behind your box.
+				It can also be used to probe for information about your internal networks. These functions come enabled
+				as part of the standard FreeBSD core system.
+			]]></descr>
+			<tunable>net.inet.ip.sourceroute</tunable>
+			<value>default</value>
+		</item>
+		<item>
+			<descr><![CDATA[
+				Source routing is another way for an attacker to try to reach non-routable addresses behind your box.
+				It can also be used to probe for information about your internal networks. These functions come enabled
+				as part of the standard FreeBSD core system.
+			]]></descr>
+			<tunable>net.inet.ip.accept_sourceroute</tunable>
+			<value>default</value>
+		</item>
+		<item>
+			<descr><![CDATA[
+				Redirect attacks are the purposeful mass issuing of ICMP type 5 packets. In a normal network, redirects
+				to the end stations should not be required. To defend against this type of attack both the sending and
+				accepting of redirect should be disabled.
+			]]></descr>
+			<tunable>net.inet.icmp.redirect</tunable>
+			<value>default</value>
+		</item>
+		<item>
+			<descr><![CDATA[
+				This option enables the NIC to drop all inbound ICMP redirect packets without returning a response.
+			]]></descr>
+			<tunable>net.inet.icmp.drop_redirect</tunable>
+			<value>default</value>
+		</item>
+		<item>
+			<descr><![CDATA[
+				This option turns off the logging of redirect packets because there is no limit and this could fill
+				up your logs consuming your whole hard drive.
+			]]></descr>
+			<tunable>net.inet.icmp.log_redirect</tunable>
+			<value>default</value>
+		</item>
+		<item>
 			<descr><![CDATA[Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)]]></descr>
 			<tunable>net.inet.tcp.drop_synfin</tunable>
 			<value>default</value>
