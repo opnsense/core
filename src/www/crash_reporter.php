@@ -100,6 +100,7 @@ $crash_report_header = sprintf(
 		}
 		file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
 		@rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
+		@copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
 		exec('/usr/bin/gzip /var/crash/*');
 		$files_to_upload = glob('/var/crash/*');
 		echo gettext('ok') . '<br/>' . gettext('Uploading...');
@@ -129,6 +130,11 @@ $crash_report_header = sprintf(
 		if (!empty($php_errors)) {
 			$crash_reports .= "\nPHP Errors:\n";
 			$crash_reports .= $php_errors;
+		}
+		$dmesg_boot = @file_get_contents('/var/run/dmesg.boot');
+		if (!empty($dmesg_boot)) {
+			$crash_reports .= "\ndmesg.boot:\n";
+			$crash_reports .= $dmesg_boot;
 		}
 		foreach ($crash_files as $cf) {
 			if (filesize($cf) < FILE_SIZE) {
