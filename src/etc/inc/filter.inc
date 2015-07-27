@@ -3117,7 +3117,7 @@ EOD;
 	 *  interface in question to avoid problems with complicated routing
 	 *  topologies
 	 */
-	if(isset($config['filter']['bypassstaticroutes']) && is_array($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
+	if(isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
 		$ipfrules .= "# Add rules to bypass firewall rules for static routes\n";
 		foreach (get_staticroutes() as $route) {
 			$friendly = $GatewaysList[$route['gateway']]['friendlyiface'];
