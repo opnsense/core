@@ -1203,16 +1203,36 @@ function is_account_disabled($username) {
 }
 
 function auth_get_authserver($name) {
-        global $config;
+	global $config;
 
-        if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
-                foreach ($config['system']['authserver'] as $authcfg) {
-                        if ($authcfg['name'] == $name)
-                                return $authcfg;
-                }
-        }
-	if ($name == "Local Database")
-		return array("name" => gettext("Local Database"), "type" => "Local Auth", "host" => $config['system']['hostname']);
+	if ($name == "Local Database") {
+		return array(
+			"name" => gettext("Local Database"),
+			"type" => "Local Auth",
+			"host" => $config['system']['hostname']
+		);
+	}
+
+
+	if (isset($config['system']['authserver']) && is_array($config['system']['authserver'])) {
+		foreach ($config['system']['authserver'] as $authcfg) {
+			if ($authcfg['name'] == $name) {
+				if ($authcfg['type'] == 'ldap') {
+					// let's try to avoid regenerating the ldap url in every function.
+					if (strstr($authcfg['ldap_urltype'], "Standard")) {
+						$authcfg['ldap_full_url'] = "ldap://";
+					} else {
+						$authcfg['ldap_full_url'] = "ldaps://";
+					}
+					$authcfg['ldap_full_url'] .= is_ipaddrv6($authcfg['host']) ? "[{$authcfg['host']}]" : $authcfg['host'];
+					if (!empty($authcfg['ldap_port'])) {
+						$authcfg['ldap_full_url'] .= ":{$authcfg['ldap_port']}";
+					}
+				}
+				return $authcfg;
+			}
+		}
+	}
 }
 
 function auth_get_authserver_list() {
