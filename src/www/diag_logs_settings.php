@@ -322,7 +322,7 @@ function check_everything() {
 											<td valign="top" class="vtable">Filter descriptions</td>
 											<td class="vtable">
 												<select name="filterdescriptions" id="filterdescriptions" class="form-control">
-												  <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>>Dont load descriptions</option>
+												  <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>>Omit descriptions</option>
 												  <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>>Display as column</option>
 												  <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>>Display as second row</option>
 												</select>
