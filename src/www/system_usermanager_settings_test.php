@@ -30,11 +30,17 @@ require_once("guiconfig.inc");
 require_once("auth.inc");
 include('head.inc');
 
+
 if (isset($config['system']['authserver'][0]['host'])) {
     $auth_server = $config['system']['authserver'][0]['host'];
     $authserver = $_GET['authserver'];
     $authcfg = auth_get_authserver($authserver);
+    
+    $ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn']);
+    ldap_setup_caenv($authcfg);
+    $ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url'], $authcfg['ldap_binddn'], $authcfg['ldap_bindpw']);
 }
+
 
 ?>
 
@@ -50,33 +56,22 @@ if (!$authcfg) {
 
     echo "<tr><th colspan='2'>".sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name'])."</th></tr>";
     echo "<tr><td>" . gettext("Attempting connection to") . " " . $authserver . "</td>";
-    if (ldap_test_connection($authcfg)) {
+    if ($ldap_is_connected) {
         echo "<td><font color='green'>OK</font></td></tr>";
-
-        echo "<tr><td>" . gettext("Attempting bind to") . " " .  $authserver . "</td>";
-        if (ldap_test_bind($authcfg)) {
-            echo "<td><font color='green'>OK</font></td></tr>";
-
             echo "<tr><td>" . gettext("Attempting to fetch Organizational Units from") . " " . $authserver . "</td>";
-            $ous = ldap_get_user_ous(true, $authcfg);
+            $ous = $ldap_auth->listOUs();
             if (count($ous)>1) {
                 echo "<td><font color=green>OK</font></td></tr>";
-                if (is_array($ous)) {
-                    echo "<tr><td colspan='2'>".gettext("Organization units found") . "</td></tr>";
-                    foreach ($ous as $ou) {
-                        echo "<tr><td colspan='2'>" . $ou . "</td></tr>";
-                    }
+                echo "<tr><td>".gettext("Organization units found") . "</td><td><font color=green>".count($ous)."</font></td></tr>";
+                foreach ($ous as $ou) {
+                    echo "<tr><td colspan='2'>" . $ou . "</td></tr>";
                 }
             } else {
                 echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
             }
-
         } else {
             echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
         }
-    } else {
-        echo "<td><font color='red'>" . gettext("failed") . "</font></td></tr>";
-    }
 }
 
 ?>
