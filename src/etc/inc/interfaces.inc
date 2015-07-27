@@ -114,21 +114,24 @@ function get_interface_arr($flush = false)
 	return $interface_arr_cache;
 }
 
-/*
- * does_interface_exist($interface): return true or false if a interface is
- * detected.
- */
-function does_interface_exist($interface, $flush = true) {
+function does_interface_exist($interface, $flush = true)
+{
 	global $config;
 
-	if(!$interface)
+	if(!$interface) {
 		return false;
+	}
 
 	$ints = get_interface_arr($flush);
-	if (in_array($interface, $ints))
-		return true;
-	else
+	if ($ints == null) {
 		return false;
+	}
+
+	if (!in_array($interface, $ints)) {
+		return false;
+	}
+
+	return true;
 }
 
 
