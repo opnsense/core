@@ -450,7 +450,7 @@ function services_dhcpdv4_configure()
 
 	$custoptions = "";
 	foreach ($dhcpdcfg as $dhcpif => $dhcpifconf) {
-		if(is_array($dhcpifconf['numberoptions']) && is_array($dhcpifconf['numberoptions']['item'])) {
+		if (isset($dhcpifconf['numberoptions']['item'])) {
 			foreach($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
 				if(!empty($item['type']))
 					$itemtype = $item['type'];

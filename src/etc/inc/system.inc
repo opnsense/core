@@ -294,32 +294,41 @@ function system_hosts_generate()
 			}
 		}
 		if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpd'])) {
-			foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf)
-				if(is_array($dhcpifconf['staticmap']) && isset($dhcpifconf['enable']))
-						foreach ($dhcpifconf['staticmap'] as $host)
-							if ($host['ipaddr'] && $host['hostname'] && $host['domain'])
-								$dhosts .= "{$host['ipaddr']}	{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-							else if ($host['ipaddr'] && $host['hostname'] && $dhcpifconf['domain'])
-								$dhosts .= "{$host['ipaddr']}	{$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
-							else if ($host['ipaddr'] && $host['hostname'])
-								$dhosts .= "{$host['ipaddr']}	{$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
+			foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+				if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
+					foreach ($dhcpifconf['staticmap'] as $host) {
+						if ($host['ipaddr'] && $host['hostname'] && $host['domain']) {
+							$dhosts .= "{$host['ipaddr']}	{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+						} elseif ($host['ipaddr'] && $host['hostname'] && $dhcpifconf['domain']) {
+							$dhosts .= "{$host['ipaddr']}	{$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
+						} elseif ($host['ipaddr'] && $host['hostname']) {
+							$dhosts .= "{$host['ipaddr']}	{$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
+						}
+					}
+				}
+			}
 		}
 		if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
-			foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf)
-				if(is_array($dhcpifconf['staticmap']) && isset($dhcpifconf['enable']))
-						foreach ($dhcpifconf['staticmap'] as $host)
-							if ($host['ipaddrv6'] && $host['hostname'] && $host['domain'])
-								$dhosts .= "{$host['ipaddrv6']}	{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-							else if ($host['ipaddrv6'] && $host['hostname'] && $dhcpifconf['domain'])
-								$dhosts .= "{$host['ipaddrv6']}	{$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
-							else if ($host['ipaddrv6'] && $host['hostname'])
-								$dhosts .= "{$host['ipaddrv6']}	{$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
+			foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
+				if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
+					foreach ($dhcpifconf['staticmap'] as $host) {
+						if ($host['ipaddrv6'] && $host['hostname'] && $host['domain']) {
+							$dhosts .= "{$host['ipaddrv6']}	{$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
+						} elseif ($host['ipaddrv6'] && $host['hostname'] && $dhcpifconf['domain']) {
+							$dhosts .= "{$host['ipaddrv6']}	{$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
+						} elseif ($host['ipaddrv6'] && $host['hostname']) {
+							$dhosts .= "{$host['ipaddrv6']}	{$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
+						}
+					}
+				}
+			}
 		}
 
-		if (isset($dnsmasqcfg['dhcpfirst']))
+		if (isset($dnsmasqcfg['dhcpfirst'])) {
 			$hosts .= $dhosts . $lhosts;
-		else
+		} else {
 			$hosts .= $lhosts . $dhosts;
+		}
 	}
 
 	/*
@@ -1800,4 +1809,3 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
 	}
 	return $sourceips;
 }
-?>
