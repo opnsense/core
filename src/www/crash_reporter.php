@@ -65,11 +65,13 @@ function upload_crash_report($files)
 $pgtitle = array(gettext("Diagnostics"),gettext("Crash Reporter"));
 include('head.inc');
 
+$last_version = '/usr/local/opnsense/version/opnsense.last';
 $crash_report_header = sprintf(
-	"System Information:\n%s\n%s %s (%s)\n%s\n",
+	"System Information:\n%s\n%s %s%s (%s)\n%s\n",
 	php_uname('v'),
 	$g['product_name'],
 	trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
+	file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
 	php_uname('m'),
 	exec('/usr/local/bin/openssl version')
 );
