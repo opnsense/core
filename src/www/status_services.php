@@ -118,7 +118,7 @@ function service_control_start($name, $extras) {
 			configd_run("ids start");
 			break;
 		default:
-			log_error(gettext("Could not start unknown service `%s'", $name));
+			log_error(sprintf(gettext("Could not start unknown service `%s'"), $name));
 			break;
 	}
 	return sprintf(gettext("%s has been started."),htmlspecialchars($name));
@@ -193,7 +193,7 @@ function service_control_stop($name, $extras) {
 			configd_run("ids stop");
 			break;
 		default:
-			log_error(gettext("Could not stop unknown service `%s'", $name));
+			log_error(sprintf(gettext("Could not stop unknown service `%s'"), $name));
 			break;
 	}
 	return sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
@@ -265,7 +265,7 @@ function service_control_restart($name, $extras) {
 			configd_run("ids restart");
 			break;
 		default:
-			log_error(gettext("Could not restart unknown service `%s'", $name));
+			log_error(sprintf(gettext("Could not restart unknown service `%s'"), $name));
 			break;
 	}
 	return sprintf(gettext("%s has been restarted."),htmlspecialchars($name));
