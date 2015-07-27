@@ -336,15 +336,14 @@ function display_login_form()
         }
     }
 
-    if (isset($config['virtualip'])) {
-        if ($config['virtualip']['vip']) {
-            foreach ($config['virtualip']['vip'] as $vip) {
-                if ($vip['subnet'] == $http_host) {
-                    $local_ip = true;
-                }
+    if (isset($config['virtualip']['vip'])) {
+        foreach ($config['virtualip']['vip'] as $vip) {
+            if ($vip['subnet'] == $http_host) {
+                $local_ip = true;
             }
         }
     }
+
     if (isset($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $ovpns) {
             if (is_ipaddrv4($http_host) && !empty($ovpns['tunnel_network']) && ip_in_subnet($http_host, $ovpns['tunnel_network'])) {
