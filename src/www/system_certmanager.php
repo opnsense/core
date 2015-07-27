@@ -1087,7 +1087,8 @@ endif;?>
                                         $caname = "";
                                         $inuse = "";
                                         $revoked = "";
-                                        if (isset($userid) && in_array($cert['refid'], $config['system']['user'][$userid]['cert'])) {
+                                        $usercert = isset($config['system']['user'][$userid]['cert']) ? $config['system']['user'][$userid]['cert'] : array();
+                                        if (isset($userid) && in_array($cert['refid'], $usercert)) {
                                             continue;
                                         }
                                         if (isset($cert['caref'])) {
