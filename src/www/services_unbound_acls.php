@@ -36,7 +36,7 @@ require_once("interfaces.inc");
 function unbound_acl_id_used($id) {
     global $config;
 
-    if (is_array($config['unbound']['acls']))
+    if (isset($config['unbound']['acls']))
         foreach($config['unbound']['acls'] as & $acls)
             if ($id == $acls['aclid'])
                 return true;
@@ -83,13 +83,12 @@ if ($act == "new") {
 	$id = unbound_get_next_id();
 }
 
+$networkacl = array();
 if ($act == "edit") {
-	if (isset($id) && $a_acls[$id]) {
+	if (isset($id) && isset($a_acls[$id])) {
 		$pconfig = $a_acls[$id];
 		$networkacl = $a_acls[$id]['row'];
 	}
-} else {
-	$networkacl = array();
 }
 
 if ($_POST) {
