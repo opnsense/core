@@ -54,10 +54,10 @@ $pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
 $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
 $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 
-$a_cert =& $config['cert'];
+$a_cert = isset($config['cert']) ? $config['cert'] : array();
 
 $certs_available = false;
-if (is_array($a_cert) && count($a_cert)) {
+if (count($a_cert)) {
     $certs_available = true;
 }
 
