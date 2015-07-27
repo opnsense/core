@@ -193,12 +193,10 @@ function isAuthLocalIP($http_host) {
 	}
     }
 
-    if (isset($config['virtualip'])) {
-        if ($config['virtualip']['vip']) {
-            foreach ($config['virtualip']['vip'] as $vip) {
-                if ($vip['subnet'] == $http_host) {
-                    $local_ip = true;
-                }
+    if (isset($config['virtualip']['vip'])) {
+        foreach ($config['virtualip']['vip'] as $vip) {
+            if ($vip['subnet'] == $http_host) {
+                $local_ip = true;
             }
         }
     }
