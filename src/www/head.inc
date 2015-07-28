@@ -41,6 +41,9 @@ $pagetitle = gentitle( $pgtitle );
 		<!-- Favicon -->
 		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
 
+		<!-- Font awesome -->
+		<link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
 
