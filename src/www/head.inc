@@ -48,6 +48,9 @@ $pagetitle = gentitle( $pgtitle );
 		<link href="/ui/themes/<?=$g['theme'];?>/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
 
 
+		<!-- Font awesome -->
+		<link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
 

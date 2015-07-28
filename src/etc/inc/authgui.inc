@@ -139,28 +139,15 @@ function getPrivPages(& $entry, & $allowed_pages) {
 function getAllowedPages($username) {
 	global $config, $_SESSION;
 
-	if (!function_exists("ldap_connect"))
-		return;
-
 	$allowed_pages = array();
 	$allowed_groups = array();
 
-	if (isset($config['system']['webgui']['authmode'])) {
-		$authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
-	} else {
-		$authcfg['type'] = 'local';
-	}
-	// obtain ldap groups if we are in ldap mode
-	if ($authcfg['type'] == "ldap")
-		$allowed_groups = @ldap_get_groups($username, $authcfg);
-	else {
-		// search for a local user by name
-		$local_user = getUserEntry($username);
-		getPrivPages($local_user, $allowed_pages);
+	// search for a local user by name
+	$local_user = getUserEntry($username);
+	getPrivPages($local_user, $allowed_pages);
 
-		// obtain local groups if we have a local user
-		$allowed_groups = local_user_get_groups($local_user);
-	}
+	// obtain local groups if we have a local user
+	$allowed_groups = local_user_get_groups($local_user);
 
 	// build a list of allowed pages
 	if (is_array($config['system']['group']) && is_array($allowed_groups)) {
@@ -205,6 +192,7 @@ function session_auth() {
 		} else {
 			$authcfg = null;
 		}
+		// authenticate using config settings, or local if failed
 		if (authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg) ||
 		    authenticate_user($_POST['usernamefld'], $_POST['passwordfld'])) {
 			// Generate a new id to avoid session fixation
