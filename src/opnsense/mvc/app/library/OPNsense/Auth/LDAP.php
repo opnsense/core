@@ -87,6 +87,7 @@ class LDAP
     {
         $result = false;
         if ($this->ldapHandle != null) {
+            // if we're looking at multple dn's, split and combine output
             foreach (explode(";", $this->baseSearchDN) as $baseDN) {
                 if ($ldap_scope == "one") {
                     $sr=@ldap_list($this->ldapHandle, $baseDN, $filter, $this->ldapSearchAttr);
@@ -161,15 +162,21 @@ class LDAP
      * search user by name or expression
      * @param $username string username(s) to search
      * @param $userNameAttribute string ldap attribute to use for the search
+     * @param $extendedQuery string|null additional search criteria (narrow down search)
      * @return array|bool
      */
-    public function searchUsers($username, $userNameAttribute)
+    public function searchUsers($username, $userNameAttribute, $extendedQuery = null)
     {
         if ($this->ldapHandle !== false) {
             // add $userNameAttribute to search results
             $this->addSearchAttribute($userNameAttribute);
             $result = array();
-            $searchResults = $this->search("({$userNameAttribute}={$username})");
+            if (empty($extendedQuery)) {
+                $searchResults = $this->search("({$userNameAttribute}={$username})");
+            } else {
+                // add additional search phrases
+                $searchResults = $this->search("(&({$userNameAttribute}={$username})({$extendedQuery}))");
+            }
             if ($searchResults !== false) {
                 for ($i = 0; $i < $searchResults["count"]; $i++) {
                     // fetch distinguished name and most likely username (try the search field first)
