@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 15:32+0200\n"
+"PO-Revision-Date: 2015-07-28 16:21+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -3397,9 +3397,11 @@ msgid ""
 "Resetting the source tracking table will remove all source/destination associations. This means that the \"sticky\" source/destination association will be cleared for "
 "all clients."
 msgstr ""
+"Durch das Zurücksetzen der Quellverfolgungstabelle gehen sämtliche Quell-/Zielverbindungen verloren. Das heißt, dass alle \"klebrigen\" Quell-/Zielverbindungen für "
+"alle Clients zurückgesetzt werden."
 
 msgid "This does not clear active connection states, only source tracking."
-msgstr ""
+msgstr "Dies setzt keine aktiven Verbindungsstatus zurück, nur Quellverfolgung."
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -3414,19 +3416,19 @@ msgid "Enable this to attempt to resolve names when displaying the tables."
 msgstr ""
 
 msgid "Number of rows"
-msgstr ""
+msgstr "Anzahl an Zeilen"
 
 msgid "all"
 msgstr "alle"
 
 msgid "Select how many rows to display."
-msgstr ""
+msgstr "Wählen Sie aus, wie viele Zeilen angezeigt werden sollen."
 
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
 msgid "Update"
-msgstr ""
+msgstr "Aktualisierung"
 
 msgid "By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser."
 msgstr ""
@@ -3435,7 +3437,7 @@ msgid "Gathering data, please wait..."
 msgstr ""
 
 msgid "S.M.A.R.T. Monitor Tools"
-msgstr ""
+msgstr "S.M.A.R.T. Überwachungswerkzeuge"
 
 msgid "PASSED"
 msgstr ""
@@ -3460,7 +3462,7 @@ msgid "Config"
 msgstr "Konfiguration"
 
 msgid "Test email"
-msgstr ""
+msgstr "Test-E-Mail"
 
 #, php-format
 msgid "Send test email to %s"
@@ -3476,10 +3478,10 @@ msgid "Info type"
 msgstr "Infotyp"
 
 msgid "Health"
-msgstr ""
+msgstr "Gesundheit"
 
 msgid "SMART Capabilities"
-msgstr ""
+msgstr "SMART-Fähigkeiten"
 
 msgid "Attributes"
 msgstr "Attribute"
@@ -3494,7 +3496,7 @@ msgid "View"
 msgstr "Ansicht"
 
 msgid "Perform Self-tests"
-msgstr ""
+msgstr "Selbsttest ausführen"
 
 msgid "Test type"
 msgstr "Testtyp"
@@ -3503,10 +3505,10 @@ msgid "Offline"
 msgstr "Offline"
 
 msgid "Short"
-msgstr ""
+msgstr "Kurz"
 
 msgid "Long"
-msgstr ""
+msgstr "Lang"
 
 msgid "Conveyance (ATA Disks Only)"
 msgstr ""
@@ -3515,7 +3517,7 @@ msgid "View Logs"
 msgstr "Protokolle anzeigen"
 
 msgid "Log type"
-msgstr ""
+msgstr "Protokolltyp"
 
 msgid "Error"
 msgstr "Fehler"
@@ -3554,7 +3556,7 @@ msgid "By Destination IP"
 msgstr "durch Ziel IP"
 
 msgid "Total per IP"
-msgstr ""
+msgstr "Gesamt per IP"
 
 msgid "By IP Pair"
 msgstr "durch IP Paar"
@@ -3569,19 +3571,19 @@ msgid "Diagnostics: pfTop"
 msgstr "Diagnose: pfTop"
 
 msgid "View type:"
-msgstr ""
+msgstr "Ansichtstyp:"
 
 msgid "Sort type:"
 msgstr "Sortiertyp:"
 
 msgid "Number of States:"
-msgstr ""
+msgstr "Anzahl an Status:"
 
 msgid "Default"
 msgstr "Standard"
 
 msgid "Label"
-msgstr ""
+msgstr "Etikett"
 
 msgid "Rules"
 msgstr "Regeln"
@@ -3608,16 +3610,16 @@ msgid "Peak"
 msgstr "Peak"
 
 msgid "Packet"
-msgstr ""
+msgstr "Paket"
 
 msgid "Source Port"
 msgstr "Quellport"
 
 msgid "Gathering pfTOP activity, please wait..."
-msgstr ""
+msgstr "Sammle pfTOP-Aktivität, bitte warten..."
 
 msgid "Tables"
-msgstr ""
+msgstr "Tabellen"
 
 msgid "The bogons database has been updated."
 msgstr ""
@@ -3626,7 +3628,7 @@ msgid " the latest bogon data."
 msgstr " die neuesten Bogon Daten"
 
 msgid "No entries exist in this table."
-msgstr ""
+msgstr "Es existieren eine Einträge in dieser Tabelle."
 
 msgid "entries in this table."
 msgstr "Einträge in dieser Tabelle."
@@ -3638,30 +3640,32 @@ msgid "Test Port"
 msgstr ""
 
 msgid "Please enter a valid IP or hostname."
-msgstr ""
+msgstr "Bitte geben Sie eine gültige IP oder einen gültigen Hostnamen ein."
 
 msgid "Please enter a valid port number."
-msgstr ""
+msgstr "Bitte geben Sie eine gültige Portnummer ein."
 
 msgid "Please enter a valid source port number, or leave the field blank."
 msgstr ""
 
 msgid "You cannot connect to an IPv4 address using IPv6."
-msgstr ""
+msgstr "Sie können sich nicht mittels einer IPv6 Adresse mit IPv4 verbinden."
 
 msgid "You cannot connect to an IPv6 address using IPv4."
-msgstr ""
+msgstr "Sie können sich nicht mittels einer IPv4 Adresse mit IPv6 verbinden."
 
 msgid ""
 "This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for "
 "UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
 msgstr ""
+"Diese Seite erlaubt die Ausführung eines simplen TCP Verbindungstests um festzustellen, ob der Host erreichbar ist und Verbindungen am angegebenen Port akzeptiert. "
+"Dieser Test funktioniert nicht mit UDP, da es keinen verlässlichen Weg zur Erkennung gibt, ob ein UDP Port Verbindungen akzeptiert."
 
 msgid "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
 msgstr ""
 
 msgid "This should typically be left blank."
-msgstr ""
+msgstr "Dies sollte üblicherweise leer gelassen werden."
 
 msgid "Show Remote Text"
 msgstr ""
@@ -3697,13 +3701,13 @@ msgid "Maximum number of hops must be between 1 and %s"
 msgstr ""
 
 msgid "Maximum number of hops"
-msgstr ""
+msgstr "Maximale Anzahl an Hops"
 
 msgid "Reverse Address Lookup"
 msgstr ""
 
 msgid "Use ICMP"
-msgstr ""
+msgstr "Benutze ICMP"
 
 msgid "Note: "
 msgstr "Hinweis: "
@@ -3715,13 +3719,13 @@ msgid "Using a source interface/IP address that does not match selected type (IP
 msgstr ""
 
 msgid "Traceroute output"
-msgstr ""
+msgstr "Traceroute Ausgabe"
 
 msgid "Firewall: EasyRule"
-msgstr "Firewall: EasyRule"
+msgstr "Firewall: Einfache Regel"
 
 msgid "Message"
-msgstr ""
+msgstr "Nachricht"
 
 msgid ""
 "This is the Easy Rule status page, mainly used to display errors when adding rules. If you are seeing this, there apparently was not an error, and you navigated to "
@@ -3732,13 +3736,13 @@ msgid "System Logs, Firewall Tab"
 msgstr ""
 
 msgid "This page is meant to be called from the block/pass buttons on the Firewall Logs page"
-msgstr ""
+msgstr "Diese Seite ist dazu gedacht, von Blockieren/Erlauben Buttons von der Firewallprotokollseite aufgerufen zu werden"
 
 msgid "Help for items on this page"
-msgstr ""
+msgstr "Hilfe für Punkte auf dieser Seite"
 
 msgid "Save Settings"
-msgstr ""
+msgstr "Einstellungen Speichern"
 
 #, php-format
 msgid "Cannot delete alias. Currently in use by %s"
@@ -3751,10 +3755,10 @@ msgid "Bulk import aliases from list"
 msgstr "Massenimport von Aliase von einer Liste"
 
 msgid "The alias list has been changed."
-msgstr ""
+msgstr "Die Aliasliste wurde geändert."
 
 msgid "You must apply the changes in order for them to take effect."
-msgstr ""
+msgstr "Sie müssen die Änderungen anwenden, damit diese in Kraft treten."
 
 msgid "Ports"
 msgstr "Ports"
@@ -3789,20 +3793,21 @@ msgid "Vertical bars (|) at start or end, or double in the middle of description
 msgstr ""
 
 msgid "Reserved word used for alias name."
-msgstr ""
+msgstr "Ein reserviertes Wort wurde für einen Aliasnamen benutzt."
 
+# see information some lines later for rules
 msgid "The alias name must be less than 32 characters long and may only consist of the characters"
-msgstr ""
+msgstr "Der Aliasname muss kürzer als 32 Zeichen sein und darf nur aus Buchstaben, Zahlen und Unterstrichen bestehen"
 
 msgid "An alias with this name already exists."
 msgstr "Ein Alias mit diesem Namen existiert bereits."
 
 #, php-format
 msgid "Cannot use a reserved keyword as alias name %s"
-msgstr ""
+msgstr "Es ist nicht möglich, ein reserviertes Wort als Aliasnamen zu benutzen %s"
 
 msgid "An interface description with this name already exists."
-msgstr ""
+msgstr "Eine Interfacebeschreibung mit diesem Namen existiert bereits."
 
 msgid "You must provide a valid URL."
 msgstr "Sie müssen eine gültige URL eingeben."
@@ -3816,7 +3821,7 @@ msgstr "Eintrag hinzugefügt %s"
 
 #, php-format
 msgid "You must provide a valid URL. Could not fetch usable data from '%s'."
-msgstr ""
+msgstr "Sie müssen eine gültige URL eingeben. Konnte keine Daten von '%s' abrufen."
 
 #, php-format
 msgid "URL '%s' is not valid."
@@ -3856,19 +3861,19 @@ msgid "Port(s)"
 msgstr "Port(s)"
 
 msgid "URL (IPs)"
-msgstr ""
+msgstr "URL (IPs)"
 
 msgid "URL (Ports)"
-msgstr ""
+msgstr "URL (Ports)"
 
 msgid "URL Table (IPs)"
-msgstr ""
+msgstr "URL Tabelle (IPs)"
 
 msgid "URL Table (Ports)"
-msgstr ""
+msgstr "URL Tabelle (Ports)"
 
 msgid "Update Freq. (days)"
-msgstr ""
+msgstr "Aktualisierungsintervall (Tage)"
 
 msgid ""
 "Networks are specified in CIDR format.  Select the CIDR mask that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 "
