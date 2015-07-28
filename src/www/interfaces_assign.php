@@ -167,6 +167,19 @@ if (isset($config['ppps']['ppp'])) {
 	}
 }
 
+/* add tun0 interface (required for sixxs-aiccu) */
+//   This is a temporary solution to allow using sixxs-aiccu without manual code change
+//   until the aiccu service is correctly included in the web interface.
+//   'mac' is used to add the description in the available network ports list
+//   (to avoid additional temporary code in the interface_assign_description function).
+$tunfound = "";
+exec("/sbin/ifconfig | /usr/bin/grep -c '^tun0'", $tunfound);
+if (intval($tunfound[0]) > 0) {
+	$portlist['tun0'] = array();
+	$portlist['tun0']['if'] = 'tun0';
+	$portlist['tun0']['mac'] = 'sixxs-aiccu';
+}
+
 $ovpn_descrs = array();
 if (isset($config['openvpn'])) {
 	if (isset($config['openvpn']['openvpn-server'])) {
