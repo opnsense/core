@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 13:35+0200\n"
+"PO-Revision-Date: 2015-07-28 13:51+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1504,7 +1504,7 @@ msgstr ""
 
 #, php-format
 msgid "Upgraded static route for %s"
-msgstr ""
+msgstr "Aktualisierte statische Route für %s"
 
 #, php-format
 msgid "Sitedown pool for VS: %s"
@@ -1616,30 +1616,30 @@ msgstr "Konnte mpd in 3 Sekunden nicht stoppen, Neuer Versuch"
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_pptpd_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_pptpd_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_pptpd_configure() nicht öffnen."
 
 msgid "Configuring PPPoE VPN service... "
 msgstr "Konfiguriere PPPoE VPN Dienst "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_pppoe_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_pppoe_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_pppoe_configure() nicht öffnen."
 
 msgid "done"
 msgstr "erledigt."
@@ -1649,15 +1649,15 @@ msgstr "Konfiguriere  L2TP VPN Dienst... "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "XML error: %1$s at line %2$d cannot occur more than once"
@@ -15432,7 +15432,7 @@ msgid "When set, if primary server fails all requests will be sent via backup se
 msgstr ""
 
 msgid "NAS IP Address"
-msgstr ""
+msgstr "NAS IP Adresse"
 
 msgid "RADIUS server NAS IP Address"
 msgstr ""
