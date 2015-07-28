@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 13:51+0200\n"
+"PO-Revision-Date: 2015-07-28 15:32+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1692,7 +1692,7 @@ msgstr ""
 # File: src/etc/rc.initial.password, line: 42
 #, php-format
 msgid "Do you want to proceed [y|n]? "
-msgstr "Möchten Sie fortfahren [y|n]? "
+msgstr "Möchten Sie fortfahren [j|n]? "
 
 #
 # File: src/etc/rc.initial.password, line: 48
@@ -1745,10 +1745,10 @@ msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr ""
 
 msgid "You cannot set network address to an interface"
-msgstr ""
+msgstr "Sie können die Netzwerkadresse einem Interface nicht zuweisen"
 
 msgid "You cannot set broadcast address to an interface"
-msgstr ""
+msgstr "Sie können die Broadcastadresse einem Interface nicht zuweisen"
 
 #, php-format
 msgid "For a WAN, enter the new %s %s upstream gateway address."
@@ -3274,13 +3274,13 @@ msgid ""
 msgstr ""
 
 msgid "If you leave this field blank, all packets on the specified interface will be captured."
-msgstr ""
+msgstr "Falls Sie das Feld leer lassen, werden alle Pakete auf dem angegebenen Interface aufgezeichnet."
 
 msgid "Port"
 msgstr "Port"
 
 msgid "Leave blank if you do not want to filter by port."
-msgstr ""
+msgstr "Lassen Sie es leer wenn Sie nicht nach den Port filtern wollen."
 
 msgid "The port can be either the source or destination port. The packet capture will look for this port in either field."
 msgstr ""
@@ -3336,13 +3336,13 @@ msgid "View Capture"
 msgstr "Aufzeichnung anzeigen"
 
 msgid "The packet capture file was last updated:"
-msgstr ""
+msgstr "Die Paketaufzeichnungsdatei wurde zuletzt aktualisiert:"
 
 msgid "Packet Capture is running."
 msgstr "Paketaufzeichnung läuft."
 
 msgid "Packet Capture stopped."
-msgstr ""
+msgstr "Paketaufzeichnung angehalten."
 
 msgid "Packets Captured:"
 msgstr "Aufgezeichnete Pakete:"
@@ -3351,29 +3351,29 @@ msgid "Diagnostics: pfInfo"
 msgstr "Diagnose: pfInfo"
 
 msgid "Gathering PF information, please wait..."
-msgstr ""
+msgstr "Sammle PF Information, bitte warten..."
 
 #, php-format
 msgid "Count must be between 1 and %s"
 msgstr "Anzahl muss zwischen 1 und %s sein"
 
 msgid "When using IPv4, the target host must be an IPv4 address or hostname."
-msgstr ""
+msgstr "Wenn Sie IPv4 verwenden, muss der Zielhost eine IPv4 Adresse oder ein Hostname sein."
 
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
-msgstr ""
+msgstr "Wenn Sie IPv6 verwenden, muss der Zielhost eine IPv6 Adresse oder ein Hostname sein."
 
 msgid "Ping output"
-msgstr ""
+msgstr "Pingausgabe"
 
 msgid "The state table has been flushed successfully."
-msgstr ""
+msgstr "Die Statustabelle wurde erfolgreich geleert."
 
 msgid "The source tracking table has been flushed successfully."
-msgstr ""
+msgstr "Die Quellverfolgungstabelle wurde erfolgreich geleert."
 
 msgid "Reset state"
-msgstr ""
+msgstr "Status Zurücksetzen"
 
 msgid "Firewall state table"
 msgstr "Firewall Statustabelle"
@@ -3391,7 +3391,7 @@ msgid "NOTE: If you reset the firewall state table, the browser session may appe
 msgstr ""
 
 msgid "Firewall Source Tracking"
-msgstr ""
+msgstr "Firewallquellverfolgung"
 
 msgid ""
 "Resetting the source tracking table will remove all source/destination associations. This means that the \"sticky\" source/destination association will be cleared for "
