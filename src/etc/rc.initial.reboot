@@ -38,7 +38,7 @@ echo "This may take a minute, depending on your hardware.\n";
 echo "\nDo you want to proceed [y|n]? ";
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
-	system_reboot(true);
+    system_reboot(true);
 }
 
 fclose($fp);

@@ -44,80 +44,82 @@ print "\n*** Welcome to {$product} {$version} ({$machine}/${flavour}) on {$hostn
 $iflist = get_configured_interface_with_descr(false, true);
 
 if (empty($iflist)) {
-	printf("\n\tNo network interfaces are assigned.\n");
-	return;
+    printf("\n\tNo network interfaces are assigned.\n");
+    return;
 }
 
-foreach($iflist as $ifname => $friendly) {
-	/* point to this interface's config */
-	$ifconf = $config['interfaces'][$ifname];
-	/* look for 'special cases' */
-	$class = "";
-	if (isset($ifconf['ipaddr'])) {
-		switch($ifconf['ipaddr']) {
-		case "dhcp":
-			$class = "/DHCP4";
-			break;
-		case "pppoe":
-			$class = "/PPPoE";
-			break;
-		case "pptp":
-			$class = "/PPTP";
-			break;
-		case "l2tp":
-			$class = "/L2TP";
-			break;
-		}
-	}
-	$class6 = null;
-	if (isset($ifconf['ipaddrv6'])) {
-		switch($ifconf['ipaddrv6']) {
-		case "dhcp6":
-			$class6 = "/DHCP6";
-			break;
-		case "slaac":
-			$class6 = "/SLAAC";
-			break;
-		case "6rd":
-			$class6 = "/6RD";
-			break;
-		case "6to4":
-			$class6 = "/6to4";
-			break;
-		case "track6":
-			$class6 = "/t6";
-			break;
-		}
-	}
-	$ipaddr = get_interface_ip($ifname);
-	$subnet = get_interface_subnet($ifname);
-	$ipaddr6 = get_interface_ipv6($ifname);
-	$subnet6 = get_interface_subnetv6($ifname);
-	$realif = get_real_interface($ifname);
-	$tobanner = "{$friendly} ({$realif})";
+foreach ($iflist as $ifname => $friendly) {
+    /* point to this interface's config */
+    $ifconf = $config['interfaces'][$ifname];
+    /* look for 'special cases' */
+    $class = "";
+    if (isset($ifconf['ipaddr'])) {
+        switch ($ifconf['ipaddr']) {
+            case "dhcp":
+                $class = "/DHCP4";
+                break;
+            case "pppoe":
+                $class = "/PPPoE";
+                break;
+            case "pptp":
+                $class = "/PPTP";
+                break;
+            case "l2tp":
+                $class = "/L2TP";
+                break;
+        }
+    }
+    $class6 = null;
+    if (isset($ifconf['ipaddrv6'])) {
+        switch ($ifconf['ipaddrv6']) {
+            case "dhcp6":
+                $class6 = "/DHCP6";
+                break;
+            case "slaac":
+                $class6 = "/SLAAC";
+                break;
+            case "6rd":
+                $class6 = "/6RD";
+                break;
+            case "6to4":
+                $class6 = "/6to4";
+                break;
+            case "track6":
+                $class6 = "/t6";
+                break;
+        }
+    }
+    $ipaddr = get_interface_ip($ifname);
+    $subnet = get_interface_subnet($ifname);
+    $ipaddr6 = get_interface_ipv6($ifname);
+    $subnet6 = get_interface_subnetv6($ifname);
+    $realif = get_real_interface($ifname);
+    $tobanner = "{$friendly} ({$realif})";
 
-	printf("\n %-15s -> ", $tobanner);
+    printf("\n %-15s -> ", $tobanner);
 
-	$v6first = false;
-	if (!empty($ipaddr) && !empty($subnet)) {
-		printf("v4%s: %s/%s",
-			$class,
-			$ipaddr,
-			$subnet
-		);
-	} else {
-		$v6first = true;
-	}
-	if (!empty($ipaddr6) && !empty($subnet6)) {
-		if (!$v6first) {
-			printf("\n%s", str_repeat(" ", 20));
-		}
-		printf("v6%s: %s/%s",
-			$class6,
-			$ipaddr6,
-			$subnet6
-		);
-	}
+    $v6first = false;
+    if (!empty($ipaddr) && !empty($subnet)) {
+        printf(
+            "v4%s: %s/%s",
+            $class,
+            $ipaddr,
+            $subnet
+        );
+    } else {
+        $v6first = true;
+    }
+    if (!empty($ipaddr6) && !empty($subnet6)) {
+        if (!$v6first) {
+            printf("\n%s", str_repeat(" ", 20));
+        }
+        printf(
+            "v6%s: %s/%s",
+            $class6,
+            $ipaddr6,
+            $subnet6
+        );
+    }
 }
 
 printf("\n");
