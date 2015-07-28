@@ -52,60 +52,63 @@ $current_user_count = 0;
 /* tmp file to use to store old data (per interface)*/
 $tmpfile = '/var/db/captiveportal_online_users';
 
-if(empty($type))
-	exit;
+if (empty($type)) {
+    exit;
+}
 
 /* echo the rrd required syntax */
 echo "N:";
 $result = "NaN";
 
 if ($type == "loggedin") {
-	$timestamp = 0;
+    $timestamp = 0;
 
-	/* Find out the previous user timestamp
+    /* Find out the previous user timestamp
 	* so we can determine the difference between the current
 	* and previous user count. If the file is empty return a 0.
 	*/
-	$fd = @fopen($tmpfile, "r");
-	if ($fd) {
-		while (!feof($fd)) {
-			$line = trim(fgets($fd));
-			if($line)
-				$previous_user_timestamp = $line;
-			else
-				$previous_user_timestamp = 0;
-		}
-	} else {
-		$previous_user_timestamp = 0;
-	}
-	@fclose($fd);
+    $fd = @fopen($tmpfile, "r");
+    if ($fd) {
+        while (!feof($fd)) {
+            $line = trim(fgets($fd));
+            if ($line) {
+                $previous_user_timestamp = $line;
+            } else {
+                $previous_user_timestamp = 0;
+            }
+        }
+    } else {
+        $previous_user_timestamp = 0;
+    }
+    @fclose($fd);
 
-	foreach($cpdb as $user) {
-		$user_ip = $user[2];
-		// Record the timestamp
-		$timestamp = $user[0];
-		if ($timestamp > $previous_user_timestamp)
-			$current_user_count = $current_user_count + 1;
-	}
+    foreach ($cpdb as $user) {
+        $user_ip = $user[2];
+        // Record the timestamp
+        $timestamp = $user[0];
+        if ($timestamp > $previous_user_timestamp) {
+            $current_user_count = $current_user_count + 1;
+        }
+    }
 
-	// Write out the latest timestamp but not if it is empty
-	if (!empty($timestamp)) {
-		$fd = @fopen($tmpfile, "w");
-		if ($fd) {
-			fwrite($fd, $timestamp);
-		}
-		@fclose($fd);
-	}
+    // Write out the latest timestamp but not if it is empty
+    if (!empty($timestamp)) {
+        $fd = @fopen($tmpfile, "w");
+        if ($fd) {
+            fwrite($fd, $timestamp);
+        }
+        @fclose($fd);
+    }
 
-	/* If $timestamp is less than or equal to previous_user_timestamp return 0,
+    /* If $timestamp is less than or equal to previous_user_timestamp return 0,
 	 * as we only want the 'X' number of users logged in since last RRD poll.
 	 */
-	if($timestamp <= $previous_user_timestamp)
-		$result = 0;
-	else {
-		$result = $current_user_count;
-	}
+    if ($timestamp <= $previous_user_timestamp) {
+        $result = 0;
+    } else {
+        $result = $current_user_count;
+    }
 } elseif ($type == "concurrent")
-	$result = $no_users;
+    $result = $no_users;
 
 echo "$result";
