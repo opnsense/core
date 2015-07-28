@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 12:02+0200\n"
+"PO-Revision-Date: 2015-07-28 12:55+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1128,7 +1128,7 @@ msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
 msgstr "RADIUS_ACCESS_ACCEPT wurde bei Accounting nicht erwartet"
 
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
-msgstr ""
+msgstr "RADIUS_ACCOUNTING_RESPONSE wurde bei Authentifizierung nicht erwartet"
 
 #, php-format
 msgid "Unexpected return value: %s"
@@ -1166,7 +1166,7 @@ msgid "Unbound DNS Forwarder"
 msgstr ""
 
 msgid "NTP clock sync"
-msgstr ""
+msgstr "NTP Zeitsynchronisation"
 
 msgid "Captive Portal"
 msgstr "Captive Portal"
@@ -1196,13 +1196,13 @@ msgid "IPsec VPN"
 msgstr "IPsec VPN"
 
 msgid "Secure Shell Daemon"
-msgstr ""
+msgstr "Secure Shell Daemon"
 
 msgid "OpenVPN"
 msgstr "OpenVPN"
 
 msgid "Server load balancing daemon"
-msgstr ""
+msgstr "Server Lastverteilungsdaemon"
 
 #
 # File: src/etc/inc/service-utils.inc, line: 180
@@ -1378,7 +1378,7 @@ msgid "Setting timezone..."
 msgstr "Setze Zeitzone..."
 
 msgid "Setting hard disk standby... "
-msgstr ""
+msgstr "Setze Festplattenstandby... "
 
 msgid "failed!"
 msgstr "fehlgeschlagen!"
@@ -1449,34 +1449,34 @@ msgid "Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)"
 msgstr "Verwerfe SYN-FIN Segmente (widerspricht RFC 1379, diese Kombination tritt jedoch nicht auf)"
 
 msgid "Sending of IPv4 ICMP redirects"
-msgstr ""
+msgstr "Senden von IPv4 ICMP Weiterleitungen"
 
 msgid "Sending of IPv6 ICMP redirects"
-msgstr ""
+msgstr "Senden von IPv6 ICMP Weiterleitungen"
 
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
 msgstr ""
 
 msgid "Maximum incoming TCP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines eingehenden TCP Segments"
 
 msgid "Maximum outgoing TCP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines ausgehenden TCP Segments"
 
 msgid "Fastforwarding (see http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
-msgstr ""
+msgstr "Fastforwarding (siehe http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
 
 msgid "Do not delay ACK to try and piggyback it onto a data packet"
 msgstr ""
 
 msgid "Maximum outgoing UDP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines ausgehenden UDP Datagramms"
 
 msgid "Handling of non-IP packets which are not passed to pfil (see if_bridge(4))"
 msgstr ""
 
 msgid "Allow unprivileged access to tap(4) device nodes"
-msgstr ""
+msgstr "Erlaube unprivilegierten Zugriff auf tap(4) Geräteknoten"
 
 msgid "Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())"
 msgstr ""
@@ -1485,6 +1485,8 @@ msgid ""
 "The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required to "
 "maintain optimum throughput. "
 msgstr ""
+"Das System wird versuchen die Bandbreite über die Verzögerung jeder Verbindung zu berechnen und die Anzahl der Daten, die an das Netzwerk gesendet werden, so "
+"limitieren, dass ein optimaler Durchsatz erreicht wird. "
 
 msgid "Set ICMP Limits"
 msgstr "Setze ICMP Limits"
@@ -1514,7 +1516,7 @@ msgstr "Phase 2 für %s"
 
 #, php-format
 msgid "Upgraded Dyndns %s"
-msgstr ""
+msgstr "Aktualisierte Dyndns %s"
 
 msgid "All Users"
 msgstr "Alle Benutzer"
@@ -1528,19 +1530,19 @@ msgstr "Automatisch hinzugefügte OpenVPN-Regel aus dem Konfigurationsupgrade."
 
 #, php-format
 msgid "WARNING: Could not mark subsystem: %s dirty"
-msgstr ""
+msgstr "WARNUNG: Konnte das Subsystem nicht markieren: %s schmut­zig"
 
 msgid "WARNING: You must give a name as parameter to lock() function."
-msgstr ""
+msgstr "WARNUNG: Sie müssen der lock() Funktion einen Parameter für den Namen übergeben."
 
 msgid "WARNING: You must give a name as parameter to try_lock() function."
-msgstr ""
+msgstr "WARNUNG: Sie müssen der try_lock() Funktion einen Parameter für den Namen übergeben."
 
 #
 # File: src/etc/inc/util.inc, line: 1014
 #, php-format
 msgid "The command '%s' returned exit code '%d', the output was '%s'"
-msgstr ""
+msgstr "Das Kommando '%s' gab den Exit-Code '%d' zurück, die Ausgabe war '%s'"
 
 #, php-format
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
@@ -1577,11 +1579,11 @@ msgstr "Konfiguriere IPsec VPN... "
 
 #, php-format
 msgid "Error: Invalid certificate info for %s"
-msgstr ""
+msgstr "Fehler: Üngültige Zertifikatsinformation für %s"
 
 #, php-format
 msgid "Error: Invalid certificate hash info for %s"
-msgstr ""
+msgstr "Fehler: Ungültiger Zertifikatshashinformation für %s"
 
 #, php-format
 msgid "Error: Cannot write IPsec CA file for %s"
@@ -1593,15 +1595,15 @@ msgstr "Fehler: Ungültige Phase 1 Zertifikatsreferenz für %s"
 
 #, php-format
 msgid "Error: Cannot write phase1 key file for %s"
-msgstr ""
+msgstr "Fehler: Konnte Phase 1 Schlüsseldatei für %s nicht schreiben"
 
 #, php-format
 msgid "Error: Cannot write phase1 certificate file for %s"
-msgstr ""
+msgstr "Fehler: Konnte Phase 1 Zertifikatsdatei für %s nicht schreiben"
 
 #, php-format
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
-msgstr ""
+msgstr "Ignoriere das erneute Laden von IPsec da es keine Tunnel auf dem Interface %s gibt."
 
 msgid "Forcefully reloading IPsec"
 msgstr ""
@@ -1729,10 +1731,10 @@ msgstr ""
 
 #, php-format
 msgid "Enter the new %s %s address.  Press <ENTER> for none:"
-msgstr ""
+msgstr "Geben Sie die neue %s %s Adresse ein.  Drücken Sie <ENTER> für keine:"
 
 msgid "This IP address conflicts with another interface or a VIP"
-msgstr ""
+msgstr "Diese IP Adresse steht im Konflikt mit einem anderen Interface oder einer VIP"
 
 #, php-format
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
@@ -1778,7 +1780,7 @@ msgstr ""
 
 #, php-format
 msgid "Disabling %s DHCPD..."
-msgstr ""
+msgstr "Deaktiviere %s DHCPD..."
 
 msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
 msgstr ""
