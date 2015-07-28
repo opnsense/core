@@ -135,7 +135,6 @@ if ($act == "edit") {
             $pconfig['ldap_scope'] = $a_server[$id]['ldap_scope'];
             $pconfig['ldap_basedn'] = $a_server[$id]['ldap_basedn'];
             $pconfig['ldap_authcn'] = $a_server[$id]['ldap_authcn'];
-            $pconfig['ldap_extended_enabled'] = $a_server[$id]['ldap_extended_enabled'];
             $pconfig['ldap_extended_query'] = $a_server[$id]['ldap_extended_query'];
             $pconfig['ldap_binddn'] = $a_server[$id]['ldap_binddn'];
             $pconfig['ldap_bindpw'] = $a_server[$id]['ldap_bindpw'];
@@ -276,7 +275,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $server['ldap_scope'] = $pconfig['ldap_scope'];
             $server['ldap_basedn'] = $pconfig['ldap_basedn'];
             $server['ldap_authcn'] = $pconfig['ldapauthcontainers'];
-            $server['ldap_extended_enabled'] = $pconfig['ldap_extended_enabled'];
             $server['ldap_extended_query'] = $pconfig['ldap_extended_query'];
             $server['ldap_attr_user'] = $pconfig['ldap_attr_user'];
             if (!$pconfig['ldap_anon']) {
@@ -693,11 +691,6 @@ endif; ?>
 												<td width="78%" class="vtable">
 													<table border="0" cellspacing="0" cellpadding="2" summary="query">
 														<tr>
-															<td>
-																<input name="ldap_extended_enabled" type="checkbox" id="ldap_extended_enabled" value="no" <?php if ($pconfig['ldap_extended_enabled']) {
-                                                                    echo "checked=\"checked\"";
-} ?> />
-															</td>
 															<td>
 
 																<input name="ldap_extended_query" type="text" class="formfld unknown" id="ldap_extended_query" size="40" value="<?=htmlspecialchars($pconfig['ldap_extended_query']);?>"/>
