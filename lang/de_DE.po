@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 16:21+0200\n"
+"PO-Revision-Date: 2015-07-28 16:55+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1982,7 +1982,7 @@ msgstr "Ziehen Sie bitte in Betracht, einen Crash Report zu senden, falls der Fe
 #
 # File: src/www/crash_reporter.php, line: 119
 msgid "Luckily we have not detected a programming bug."
-msgstr "Zm Glück haben wir keinen Programmierfehler gefunden."
+msgstr "Zum Glück haben wir keinen Programmierfehler gefunden."
 
 #
 # File: src/www/crash_reporter.php, line: 136
