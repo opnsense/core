@@ -36,7 +36,7 @@ if (isset($config['system']['authserver'][0]['host'])) {
     $authserver = $_GET['authserver'];
     $authcfg = auth_get_authserver($authserver);
     
-    $ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn']);
+    $ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn'],  $authcfg['ldap_protver']);
     ldap_setup_caenv($authcfg);
     $ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url'], $authcfg['ldap_binddn'], $authcfg['ldap_bindpw']);
 }
