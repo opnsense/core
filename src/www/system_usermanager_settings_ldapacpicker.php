@@ -33,9 +33,11 @@ include('head.inc');
 $ous = array();
 
 if (isset($_GET['basedn']) && isset($_GET['host'])) {
-    $authcfg = array();
-    $authcfg['ldap_caref'] = isset($_GET['cert']) ? $_GET['cert'] : null;
-    ldap_setup_caenv($authcfg);
+    if (isset($_GET['cert'])) {
+        $authcfg = array();
+        $authcfg['ldap_caref'] = $_GET['cert'];
+        ldap_setup_caenv($authcfg);
+    }
 
     $ldap_authcn = isset($_GET['authcn']) ? explode(";", $_GET['authcn']) : array();
     if (isset($_GET['urltype']) && strstr($_GET['urltype'], "Standard")) {
