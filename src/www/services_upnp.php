@@ -66,7 +66,7 @@ function upnp_validate_port($port) {
 }
 
 function validate_form_miniupnpd($post, &$input_errors) {
-	if(!empty($post['enable']) && (!empty($post['enable_upnp']) && !empty($post['enable_natpmp'])))
+	if(!empty($post['enable']) && (empty($post['enable_upnp']) && empty($post['enable_natpmp'])))
 		$input_errors[] = 'At least one of \'UPnP\' or \'NAT-PMP\' must be allowed';
 	if($post['iface_array'])
 		foreach($post['iface_array'] as $iface) {
