@@ -74,7 +74,7 @@ function can_delete_gateway_item($id)
         return false;
     }
 
-    if (is_array($config['gateways']['gateway_group'])) {
+    if (isset($config['gateways']['gateway_group'])) {
         foreach ($config['gateways']['gateway_group'] as $group) {
             foreach ($group['item'] as $item) {
                 $items = explode("|", $item);
@@ -86,7 +86,7 @@ function can_delete_gateway_item($id)
         }
     }
 
-    if (is_array($config['staticroutes']['route'])) {
+    if (isset($config['staticroutes']['route'])) {
         foreach ($config['staticroutes']['route'] as $route) {
             if ($route['gateway'] == $a_gateways[$id]['name']) {
                 $input_errors[] = sprintf(gettext("Gateway '%s' cannot be deleted because it is in use on Static Route '%s'"), $a_gateways[$id]['name'], $route['network']);
