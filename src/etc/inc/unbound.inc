@@ -665,4 +665,3 @@ function unbound_hosts_generate() {
     // Reload our service to read the updates
     unbound_control("reload");
 }
-
