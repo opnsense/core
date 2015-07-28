@@ -31,44 +31,53 @@
 
 require_once("guiconfig.inc");
 
-function get_user_privdesc(& $user) {
-	global $priv_list;
+function get_user_privdesc(& $user)
+{
+    global $priv_list;
 
-	$privs = array();
+    $privs = array();
 
-	$user_privs = $user['priv'];
-	if (!is_array($user_privs))
-		$user_privs = array();
+    $user_privs = $user['priv'];
+    if (!is_array($user_privs)) {
+        $user_privs = array();
+    }
 
-	$names = local_user_get_groups($user, true);
+    $names = local_user_get_groups($user, true);
 
-	foreach ($names as $name) {
-		$group = getGroupEntry($name);
-		$group_privs = $group['priv'];
-		if (!is_array($group_privs))
-			continue;
-		foreach ($group_privs as $pname) {
-			if (in_array($pname,$user_privs))
-				continue;
-			if (!$priv_list[$pname])
-				continue;
-			$priv = $priv_list[$pname];
-			$priv['group'] = $group['name'];
-			$privs[] = $priv;
-		}
-	}
+    foreach ($names as $name) {
+        $group = getGroupEntry($name);
+        $group_privs = $group['priv'];
+        if (!is_array($group_privs)) {
+            continue;
+        }
+        foreach ($group_privs as $pname) {
+            if (in_array($pname, $user_privs)) {
+                continue;
+            }
+            if (!$priv_list[$pname]) {
+                continue;
+            }
+            $priv = $priv_list[$pname];
+            $priv['group'] = $group['name'];
+            $privs[] = $priv;
+        }
+    }
 
-	foreach ($user_privs as $pname)
-		if($priv_list[$pname])
-			$privs[] = $priv_list[$pname];
+    foreach ($user_privs as $pname) {
+        if ($priv_list[$pname]) {
+            $privs[] = $priv_list[$pname];
+        }
+    }
 
-	return $privs;
+    return $privs;
 }
 
 
 
 // start admin user code
 $pgtitle = array(gettext("System"),gettext("User Manager"));
+
+$input_errors = array();
 
 if (isset($_POST['userid']) && is_numericint($_POST['userid'])) {
     $id = $_POST['userid'];
@@ -181,8 +190,7 @@ if ($_POST['act'] == "deluser") {
     $pconfig['lifetime'] = 365;
 }
 
-if ($_POST['save']) {
-    unset($input_errors);
+if (isset($_POST['save'])) {
     $pconfig = $_POST;
 
     /* input validation */
@@ -227,7 +235,7 @@ if ($_POST['save']) {
         $oldusername = "";
     }
     /* make sure this user name is unique */
-    if (!$input_errors) {
+    if (count($input_errors) == 0) {
         foreach ($a_user as $userent) {
             if ($userent['name'] == $_POST['usernamefld'] && $oldusername != $_POST['usernamefld']) {
                 $input_errors[] = gettext("Another entry with the same username already exists.");
@@ -236,7 +244,7 @@ if ($_POST['save']) {
         }
     }
     /* also make sure it is not reserved */
-    if (!$input_errors) {
+    if (count($input_errors) == 0) {
         $system_users = explode("\n", file_get_contents("/etc/passwd"));
         foreach ($system_users as $s_user) {
             $ent = explode(":", $s_user);
@@ -278,7 +286,7 @@ if ($_POST['save']) {
         exit;
     }
 
-    if (!$input_errors) {
+    if (count($input_errors)==0) {
         $userent = array();
 
         if (isset($id) && $a_user[$id]) {
@@ -482,7 +490,7 @@ function sshkeyClicked(obj) {
 						<div class="tab-content content-box col-xs-12 table-responsive">
 
 						<?php
-                        if ($_POST['act'] == "new" || $_POST['act'] == "edit" || $input_errors) :
+                        if ($_POST['act'] == "new" || $_POST['act'] == "edit" || count($input_errors) > 0 ) :
                             ?>
 
                 <form action="system_usermanager.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
