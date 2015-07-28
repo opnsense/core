@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 13:22+0200\n"
+"PO-Revision-Date: 2015-07-28 13:35+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -2767,10 +2767,10 @@ msgid "Tunnel endpoints"
 msgstr "Tunnelendpunkte"
 
 msgid "incoming (as seen by firewall)"
-msgstr ""
+msgstr "eingehend (wie von der Firewall gesehen)"
 
 msgid "outgoing (as seen by firewall)"
-msgstr ""
+msgstr "ausgehend (wie von der Firewall gesehen)"
 
 msgid "No IPsec security policies."
 msgstr "Keine IPsec Sicherheitsrichtlinien."
@@ -2812,7 +2812,7 @@ msgstr "DHCP"
 
 #, php-format
 msgid "Last %s DHCP service log entries"
-msgstr ""
+msgstr "Letzte %s Protokolleinträge des DHCP Dienstes"
 
 msgid "Cannot resolve"
 msgstr "Kann nicht aufgelöst werden"
@@ -2835,14 +2835,14 @@ msgstr ""
 
 #, php-format
 msgid "Last %s firewall log entries."
-msgstr ""
+msgstr "Letzte %s Firewallprotokolleinträge."
 
 msgid "matched log entries."
-msgstr ""
+msgstr "entsprechende Protokolleinträge."
 
 #, php-format
 msgid "Max(%s)"
-msgstr ""
+msgstr "Max(%s)"
 
 msgid "Act"
 msgstr "Reagieren"
@@ -2889,7 +2889,7 @@ msgstr "Firewall (Dynamische Ansicht)"
 
 #, php-format
 msgid "Last %s records"
-msgstr ""
+msgstr "Letzte %s Aufzeichnungen"
 
 msgid "Pause"
 msgstr "Pause"
@@ -2926,7 +2926,7 @@ msgstr ""
 
 #, php-format
 msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)."
-msgstr ""
+msgstr "Dies ist eine Zusammenfassung der letzten %1$s Zeilen des Firewallprotokolls (Max %2$s)."
 
 msgid "NOTE: IE8 users must enable compatibility view."
 msgstr ""
@@ -2936,7 +2936,7 @@ msgstr "Gateways"
 
 #, php-format
 msgid "Last %s  IPsec log entries"
-msgstr ""
+msgstr "Letzte %s IPsec Protokolleinträge"
 
 msgid "NTP"
 msgstr "NTP"
@@ -2950,31 +2950,31 @@ msgid "Last %s OpenVPN log entries"
 msgstr ""
 
 msgid "PPTP Logins"
-msgstr ""
+msgstr "PPTP Anmeldungen"
 
 msgid "PPTP Raw"
 msgstr ""
 
 msgid "PPPoE Logins"
-msgstr ""
+msgstr "PPPoE Anmeldungen"
 
 msgid "PPPoE Raw"
 msgstr ""
 
 msgid "L2TP Logins"
-msgstr ""
+msgstr "L2TP Anmeldungen"
 
 msgid "L2TP Raw"
 msgstr ""
 
 msgid "Normal View"
-msgstr ""
+msgstr "Standardansicht"
 
 msgid "Dynamic View"
 msgstr "Dynamische Ansicht"
 
 msgid "Summary View"
-msgstr ""
+msgstr "Zusammengefasste Ansicht"
 
 msgid "Routing"
 msgstr "Routing"
@@ -3002,7 +3002,7 @@ msgstr "Proxy"
 # File: src/www/diag_logs_proxy.php, line: 59
 #, php-format
 msgid "Last %s log entries"
-msgstr ""
+msgstr "Letzte %s Protokolleinträge"
 
 msgid "Load Balancer"
 msgstr ""
@@ -3015,7 +3015,7 @@ msgid "Reset Log Files"
 msgstr "Protokolldateien zurücksetzen"
 
 msgid "The log files have been reset."
-msgstr ""
+msgstr "Die Protokolldatei wurde zurückgesetzt"
 
 msgid "A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #1."
 msgstr ""
