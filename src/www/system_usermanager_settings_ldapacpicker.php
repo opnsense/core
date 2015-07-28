@@ -32,21 +32,29 @@ include('head.inc');
 
 $ous = array();
 
-if ($_GET) {
+if (isset($_GET['basedn']) && isset($_GET['host'])) {
     $authcfg = array();
-    $authcfg['ldap_port'] = isset($_GET['port']) ? $_GET['port'] : null;
-    $authcfg['ldap_basedn'] = isset($_GET['basedn']) ? $_GET['basedn'] : null;
-    $authcfg['host'] = isset($_GET['basedn']) ? $_GET['host'] : null;
-    $authcfg['ldap_scope'] = isset($_GET['scope']) ? $_GET['scope'] : null;
-    $authcfg['ldap_binddn'] = isset($_GET['binddn']) ? $_GET['binddn'] : null;
-    $authcfg['ldap_bindpw'] = isset($_GET['bindpw']) ? $_GET['bindpw'] : null;
-    $authcfg['ldap_urltype'] = isset($_GET['urltype']) ? $_GET['urltype'] : null;
-    $authcfg['ldap_protver'] = isset($_GET['proto']) ? $_GET['proto'] : null;
-    $authcfg['ldap_authcn'] = isset($_GET['authcn']) ? explode(";", $_GET['authcn']) : array();
     $authcfg['ldap_caref'] = isset($_GET['cert']) ? $_GET['cert'] : null;
-    $ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn']);
     ldap_setup_caenv($authcfg);
-    $ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url'], $authcfg['ldap_binddn'], $authcfg['ldap_bindpw']);
+
+    $ldap_authcn = isset($_GET['authcn']) ? explode(";", $_GET['authcn']) : array();
+    if (isset($_GET['urltype']) && strstr($_GET['urltype'], "Standard")) {
+        $ldap_full_url = "ldap://";
+    } else {
+        $ldap_full_url = "ldaps://";
+    }
+    $ldap_full_url .= is_ipaddrv6($_GET['host']) ? "[{$_GET['host']}]" : $_GET['host'];
+    if (!empty($_GET['port'])) {
+        $ldap_full_url .= ":{$_GET['port']}";
+    }
+
+    $ldap_auth = new OPNsense\Auth\LDAP($_GET['basedn']
+    , isset($_GET['proto']) ? $_GET['proto'] : 3
+    );
+    $ldap_is_connected = $ldap_auth->connect($ldap_full_url
+    , !empty($_GET['binddn']) ? $_GET['binddn'] : null
+    , !empty($_GET['bindpw']) ? $_GET['bindpw'] : null
+    );
     if ($ldap_is_connected) {
         $ous = $ldap_auth->listOUs();
     }
@@ -85,7 +93,7 @@ else :
 			<?php
             if (is_array($ous)) {
                 foreach ($ous as $ou) {
-                    if (in_array($ou, $authcfg['ldap_authcn'])) {
+                    if (in_array($ou, $ldap_authcn)) {
                         $CHECKED=" CHECKED";
                     } else {
                         $CHECKED="";
