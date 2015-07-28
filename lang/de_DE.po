@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 11:30+0200\n"
+"PO-Revision-Date: 2015-07-28 12:02+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -322,10 +322,10 @@ msgid "Host added successfully"
 msgstr "Host erfolgreich hinzugefügt"
 
 msgid "Failed to create block rule, alias, or add host."
-msgstr ""
+msgstr "Es konnte die Blockierregel oder der Alias nicht erstellt werden bzw. den Host konnte nicht hinzugefügt werden."
 
 msgid "Tried to block but had no host IP or interface"
-msgstr ""
+msgstr "Versuchte zu blockieren, hatte aber keine Host IP Adresse oder Interface"
 
 msgid "Unknown block error."
 msgstr "Unbekannter Blockierfehler."
@@ -337,16 +337,16 @@ msgid "Invalid protocol for pass rule:"
 msgstr "Ungültiges Protokoll für Erlaubnisregel:"
 
 msgid "Tried to pass invalid source IP:"
-msgstr ""
+msgstr "Versuchte eine ungültige Quell IP zu erlauben:"
 
 msgid "Tried to pass invalid destination IP:"
-msgstr ""
+msgstr "Versuchte eine ungültige Ziel IP zu erlauben:"
 
 msgid "Missing destination port:"
 msgstr "Zielport fehlt:"
 
 msgid "Tried to pass invalid destination port:"
-msgstr ""
+msgstr "Versuchte einen ungültigen Zielport zu erlauben:"
 
 msgid "Successfully added pass rule!"
 msgstr "Erlaubnisregel erfolgreich hinzugefügt!"
@@ -683,7 +683,7 @@ msgstr "Klone neues drahtloses Interface %s"
 
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
-msgstr ""
+msgstr "Das Klonen des Interfaces %1$s ist mit dem Fehlercode %2$s und der Ausgabe %3$s fehlgeschlagen"
 
 msgid "Generating new MAC address."
 msgstr "Generiere neue MAC Adresse."
@@ -694,7 +694,7 @@ msgstr "Die ungültige MAC Adresse (ff:ff:ff:ff:ff:ff) am Interface %1$s wurde a
 
 #, php-format
 msgid "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"
-msgstr ""
+msgstr "Fehler: konnte dhclient_%s.conf in interface_dhcp_configure() nicht zum Schreiben öffnen.%s"
 
 #, php-format
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
@@ -767,12 +767,12 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 104
 msgid "it was not possible to read line from the SMTP server"
-msgstr ""
+msgstr "es war nicht möglich die Zeile des SMTP Servers zu lesen"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 126
 msgid "it was not possible to send a line to the SMTP server"
-msgstr ""
+msgstr "Es war nicht möglich eine Zeile an den SMTP Server zu senden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 140
@@ -805,7 +805,7 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 230
 #, php-format
 msgid "Connecting to host address \"%1$s\" port %2$s..."
-msgstr ""
+msgstr "Verbinde mit Hostadresse \"%1$s\" Port %2$s..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 237
@@ -837,7 +837,7 @@ msgstr "-7 setvbuf() Aufruf fehlgeschlagen"
 # File: src/etc/inc/notices.smtp.inc, line: 247
 #, php-format
 msgid "could not connect to the host \"%1$s\": %2$s"
-msgstr ""
+msgstr "Konnte nicht mit Host \"%1$s\" verbinden: %2$s"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 256
@@ -853,7 +853,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 285
 msgid "Could not start the SASL authentication client:"
-msgstr ""
+msgstr "Der SASL Authentifizierungsclient konnte nicht gestartet werden:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 292
@@ -895,12 +895,12 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 404
 #, php-format
 msgid "Resolving POP3 authentication host \"%s\"..."
-msgstr ""
+msgstr "Löse POP3 Authentifierungshost \"%s\" auf..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 411
 msgid "POP3 authentication server greeting was not found"
-msgstr ""
+msgstr "POP3 Authentifizierungsserverbegrüßung wurde nicht gefunden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 419
@@ -1001,7 +1001,7 @@ msgid "Remote Access ( SSL/TLS + User Auth )"
 msgstr "Remotezugriff ( SSL/TLS + Benutzerauthentifizierung )"
 
 msgid "No Preference"
-msgstr ""
+msgstr "Keine Einstellung"
 
 msgid "Disabled - No Compression"
 msgstr "Deaktiviert - keine Kompression"
@@ -1041,7 +1041,7 @@ msgid "BACKUP"
 msgstr "BACKUP"
 
 msgid "INIT"
-msgstr ""
+msgstr "INIT"
 
 msgid "After synch increase advertising skew"
 msgstr ""
@@ -1053,7 +1053,7 @@ msgstr "Fehler beim Ertellen des Sockets!"
 # File: src/etc/inc/pfsense-utils.inc, line: 363
 #, php-format
 msgid "Error code is '%1$s' - %2$s"
-msgstr ""
+msgstr "Der Fehlercode ist '%1$s' - %2$s"
 
 #, php-format
 msgid "setsockopt() failed, error: %s"
@@ -1061,7 +1061,7 @@ msgstr "setsockopt() fehlgeschlagen, Fehler: %s"
 
 #, php-format
 msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
-msgstr ""
+msgstr "Magic Packet gesendet (%1$s) an {%2$s} MAC=%3$s"
 
 #, php-format
 msgid "Restored %s of config file (maybe from CARP partner)"
@@ -1086,40 +1086,40 @@ msgid "check for ethernet loops"
 msgstr "Prüfe auf Ethernet Loops"
 
 msgid "learning"
-msgstr ""
+msgstr "lernen"
 
 msgid "forwarding"
 msgstr "weiterleitung"
 
 #, php-format
 msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
-msgstr ""
+msgstr "DNSCACHE: Alte IP %1$s und neue IP %2$s gefunden"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1511
 #, php-format
 msgid "Could not process aliases from alias: %s"
-msgstr ""
+msgstr "Konnte Aliase von Alias nicht verarbeiten: %s"
 
 msgid "Alias archive is a .zip file which cannot be decompressed because utility is missing!"
-msgstr ""
+msgstr "Das Aliasarchiv ist eine .zip Datei, welche nicht entpackt werden kann, weil das entsprechende Werkzeug fehlt!"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1555
 # File: src/etc/inc/pfsense-utils.inc, line: 1587
 #, php-format
 msgid "Could not open %s/aliases for writing!"
-msgstr ""
+msgstr "Konnte %s/aliases nicht zum Schreiben öffnen!"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1561
 # File: src/etc/inc/pfsense-utils.inc, line: 1593
 #, php-format
 msgid "The following file could not be read %s from %s"
-msgstr ""
+msgstr "Die Datei %s konnte nicht aus der Datei %s gelesen werden"
 
 msgid "Alias archive is a .tar/tgz file which cannot be decompressed because utility is missing!"
-msgstr ""
+msgstr "Das Aliasarchiv ist eine .tar/tgz Datei, welche nicht entpackt werden kann, weil das entsprechende Werkzeug fehlt!"
 
 msgid "Error sending request:"
 msgstr "Fehler bei der Anfrage:"
