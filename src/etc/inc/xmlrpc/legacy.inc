@@ -261,7 +261,7 @@ function restore_config_section_xmlrpc($new_config)
     $vipbackup = array();
     $oldvips = array();
     if (isset($new_config['virtualip'])) {
-        if (is_array($config['virtualip']['vip'])) {
+        if (isset($config['virtualip']['vip'])) {
             foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
                 if ($vip['mode'] == "carp")
                     $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
