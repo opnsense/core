@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($pconfig['type'] == "ldap") {
         $reqdfields = explode(" ", "name type ldap_host ldap_port ".
                         "ldap_urltype ldap_protver ldap_scope ".
-                        "ldap_attr_user ldap_attr_group ldap_attr_member ldapauthcontainers");
+                        "ldap_attr_user ldapauthcontainers");
         $reqdfieldsn = array(
             gettext("Descriptive name"),
             gettext("Type"),
@@ -426,8 +426,7 @@ function select_clicked() {
 	if (document.getElementById("ldap_port").value == '' ||
 	    document.getElementById("ldap_host").value == '' ||
 	    document.getElementById("ldap_scope").value == '' ||
-	    document.getElementById("ldap_basedn").value == '' ||
-	    document.getElementById("ldapauthcontainers").value == '') {
+	    document.getElementById("ldap_basedn").value == '' ) {
 		alert("<?=gettext("Please fill the required values.");?>");
 		return;
 	}
@@ -925,16 +924,16 @@ endif; ?>
         if (document.getElementById("ldap_port").value == "") ldap_urlchange();
         <?php
         if ($pconfig['type'] == "ldap") {
-            echo '     ldap_bindchange();\n';
-            echo '     if (document.getElementById("ldap_port").value == "") ldap_urlchange();\n';
+            echo "     ldap_bindchange();\n";
+            echo "     if (document.getElementById(\"ldap_port\").value == \"\") ldap_urlchange();\n";
             if (!isset($id)) {
-                echo '    ldap_tmplchange();\n';
+                echo "    ldap_tmplchange();\n";
             }
         } else {
-            echo '     radius_srvcschange();\n';
+            echo "     radius_srvcschange();\n";
         }
         ?>
-    }
+    });
     //]]>
 </script>
 
