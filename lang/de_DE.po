@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-28 12:55+0200\n"
+"PO-Revision-Date: 2015-07-28 13:22+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -1776,7 +1776,7 @@ msgid "Enter the end address of the %s client address range:"
 msgstr ""
 
 msgid "The end address of the DHCP range must be >= the start address"
-msgstr ""
+msgstr "Die letzte Adresse des DHCP Bereichs muss größer gleich der Startadresse sein"
 
 #, php-format
 msgid "Disabling %s DHCPD..."
@@ -1811,7 +1811,7 @@ msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 s
 msgstr ""
 
 msgid "n/j/y H:i:s"
-msgstr ""
+msgstr "n/j/y H:i:s"
 
 msgid "Unknown"
 msgstr "Unbekannt"
@@ -2187,7 +2187,7 @@ msgid "Backup/restore"
 msgstr "Backup/Wiederherstellung"
 
 msgid "The firewall configuration has been changed."
-msgstr ""
+msgstr "Die Firewallkonfiguration wurde geändert."
 
 msgid "The firewall is now rebooting."
 msgstr "Die Firewall startet jetzt neu."
@@ -2238,12 +2238,12 @@ msgid "Note:"
 msgstr "Hinweis:"
 
 msgid "The firewall will reboot after restoring the configuration."
-msgstr ""
+msgstr "Die Firewall wird nach der Wiederherstellung der Konfiguration neu starten."
 
 #
 # File: src/www/diag_backup.php, line: 748
 msgid "Remote backup (using Google drive)"
-msgstr ""
+msgstr "Fernes Backup (verwendet Google Drive)"
 
 msgid "Enable"
 msgstr "Aktivieren"
@@ -2264,12 +2264,12 @@ msgstr "(ersetzen)"
 #
 # File: src/www/diag_backup.php, line: 761
 msgid "P12 key"
-msgstr ""
+msgstr "P12 Schlüssel"
 
 #
 # File: src/www/diag_backup.php, line: 762
 msgid "Folder ID"
-msgstr ""
+msgstr "Ordner ID"
 
 msgid "Backup Count"
 msgstr "Anzahl an Backups"
@@ -2277,7 +2277,7 @@ msgstr "Anzahl an Backups"
 #
 # File: src/www/diag_backup.php, line: 764
 msgid "Password protect your data"
-msgstr ""
+msgstr "Schütz Ihrer Daten durch ein Passwort"
 
 #
 # File: src/www/diag_backup.php, line: 766
@@ -2286,7 +2286,7 @@ msgstr "Bestätigen:"
 
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
-msgstr ""
+msgstr "Backup mit dem Zeitstempel %1$s und der Beschreibung \"%2$s\" gelöscht."
 
 msgid "Configuration History"
 msgstr ""
@@ -2301,23 +2301,23 @@ msgid "Confirm Action"
 msgstr "Aktion bestätigen"
 
 msgid "Please confirm the selected action"
-msgstr ""
+msgstr "Bitte bestätigen Sie die ausgewählte Aktion"
 
 msgid "Action"
 msgstr "Aktion"
 
 msgid "Restore from Configuration Backup"
-msgstr ""
+msgstr "Aus Konfigurationsbackup wiederherstellen"
 
 msgid "Remove Configuration Backup"
-msgstr ""
+msgstr "Konfigurationsbackup löschen"
 
 msgid "Target Configuration"
-msgstr ""
+msgstr "Zielkonfiguration"
 
 #, php-format
 msgid "Timestamp %1$s"
-msgstr ""
+msgstr "Zeitstempel %1$s"
 
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -2357,7 +2357,7 @@ msgid "Current"
 msgstr "Aktuell"
 
 msgid "Revert to this configuration"
-msgstr ""
+msgstr "Diese Konfiguration wiederherstellen"
 
 msgid "Remove this backup"
 msgstr "Dieses Backup entfernen"
@@ -2369,34 +2369,34 @@ msgid "Factory defaults"
 msgstr "Werkseinstellungen"
 
 msgid "The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware."
-msgstr ""
+msgstr "Das System wurde auf Werkseinstellungen zurückgesetzt und startet jetzt neu. Das kann je nach Hardware einige Minuten dauern."
 
 msgid "If you click"
-msgstr ""
+msgstr "Falls Sie klicken"
 
 msgid "the firewall will:"
-msgstr ""
+msgstr "die Firewall wird:"
 
 msgid "Reset to factory defaults"
 msgstr "Auf Werkseinstellungen zurücksetzen"
 
 msgid "LAN IP address will be reset to 192.168.1.1"
-msgstr ""
+msgstr "LAN IP Adresse wird auf 192.168.1.1 zurückgesetzt"
 
 msgid "System will be configured as a DHCP server on the default LAN interface"
 msgstr ""
 
 msgid "Reboot after changes are installed"
-msgstr ""
+msgstr "Neustarten nachdem die Änderungen installiert wurden"
 
 msgid "WAN interface will be set to obtain an address automatically from a DHCP server"
 msgstr ""
 
 msgid "webConfigurator admin username will be reset to 'root'"
-msgstr ""
+msgstr "Webkonfigurator administrativer Benutzername wird auf 'root' zurückgesetzt"
 
 msgid "webConfigurator admin password will be reset to"
-msgstr ""
+msgstr "Webkonfigurator Administratorpasswort wird zurückgesetzt auf"
 
 msgid "Are you sure you want to proceed?"
 msgstr "Sind Sie sicher dass Sie fortfahren möchten?"
@@ -2444,7 +2444,7 @@ msgid "Ping"
 msgstr "Ping"
 
 msgid "Traceroute"
-msgstr ""
+msgstr "Traceroute"
 
 msgid "NOTE: The following links are to external services, so their reliability cannot be guaranteed."
 msgstr ""
@@ -2459,7 +2459,7 @@ msgid "invalid input"
 msgstr "Ungültige Eingabe"
 
 msgid "Show States"
-msgstr ""
+msgstr "Status anzeigen"
 
 msgid "An error occurred."
 msgstr "Ein Fehler ist aufgetreten."
@@ -2468,10 +2468,10 @@ msgid "States"
 msgstr "Status"
 
 msgid "Reset states"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Current total state count"
-msgstr ""
+msgstr "Gesamtanzahl an Status"
 
 msgid "Filter expression:"
 msgstr "Filterausdruck:"
@@ -2486,7 +2486,7 @@ msgid "Int"
 msgstr "Int"
 
 msgid "Proto"
-msgstr ""
+msgstr "Protokoll"
 
 msgid "Source -> Router -> Destination"
 msgstr "Quelle -> Router -> Ziel"
@@ -2497,10 +2497,10 @@ msgid "State"
 msgstr "Status"
 
 msgid "Remove all state entries from"
-msgstr ""
+msgstr "Entferne alle Statuseinträge von"
 
 msgid "No states were found."
-msgstr ""
+msgstr "Keine Status wurden gefunden."
 
 msgid "States matching current filter"
 msgstr ""
@@ -2509,10 +2509,10 @@ msgid "Show Source Tracking"
 msgstr ""
 
 msgid "Source Tracking"
-msgstr ""
+msgstr "Quellenverfolgung"
 
 msgid "Reset States"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Source -> Destination"
 msgstr "Quelle -> Ziel"
@@ -2527,7 +2527,7 @@ msgid "Rate"
 msgstr "Rate"
 
 msgid "Remove all source tracking entries from"
-msgstr ""
+msgstr "Lösche alle Quellverfolgungseinträge aus"
 
 msgid "No source tracking entries were found."
 msgstr ""
@@ -2674,25 +2674,25 @@ msgid "Description"
 msgstr "Beschreibung"
 
 msgid "Local ID"
-msgstr ""
+msgstr "Lokale ID"
 
 msgid "Local IP"
-msgstr ""
+msgstr "Lokale IP"
 
 msgid "Remote ID"
-msgstr ""
+msgstr "Ferne ID"
 
 msgid "Remote IP"
-msgstr ""
+msgstr "Ferne IP"
 
 msgid "Role"
 msgstr "Rolle"
 
 msgid "Local subnets"
-msgstr ""
+msgstr "Lokale Subnetzwerke"
 
 msgid "Local SPI(s)"
-msgstr ""
+msgstr "Lokaler SPI(s)"
 
 msgid "Remote subnets"
 msgstr ""
@@ -2701,7 +2701,7 @@ msgid "You can configure IPsec"
 msgstr "Sie können IPsec konfigurieren"
 
 msgid "Leases"
-msgstr ""
+msgstr "Leases"
 
 msgid "Pool: "
 msgstr ""
@@ -2725,7 +2725,7 @@ msgid "No IPsec pools."
 msgstr "Keine IPsec Pools"
 
 msgid "You can configure your IPsec"
-msgstr ""
+msgstr "Sie können IPsec konfigurieren"
 
 msgid "here."
 msgstr "hier."
@@ -2755,7 +2755,7 @@ msgid "Data"
 msgstr "Daten"
 
 msgid "No IPsec security associations."
-msgstr ""
+msgstr "Keine IPsec Sicherheitsverbindungen."
 
 msgid "SPD"
 msgstr "SPD"
@@ -2764,7 +2764,7 @@ msgid "Direction"
 msgstr "Richtung"
 
 msgid "Tunnel endpoints"
-msgstr ""
+msgstr "Tunnelendpunkte"
 
 msgid "incoming (as seen by firewall)"
 msgstr ""
