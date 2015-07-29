@@ -122,29 +122,23 @@ POSSIBILITY OF SUCH DAMAGE.
 
         /**
          * save (general) settings and reconfigure
+         * @param  callback_funct: callback function, receives result status true/false
          */
-        function actionReconfigure() {
+        function actionReconfigure(callback_funct) {
+            var result_status = false;
             saveFormToEndpoint(url="/api/ids/settings/set",formid='frm_GeneralSettings',callback_ok=function(){
-                $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
                 ajaxCall(url="/api/ids/service/reconfigure", sendData={}, callback=function(data,status) {
-                    // when done, disable progress animation.
-                    $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                    updateStatus();
-
-                    if (status != "success" || data['status'].toLowerCase().trim() != "ok") {
-                        BootstrapDialog.show({
-                            type: BootstrapDialog.TYPE_WARNING,
-                            title: "Error reconfiguring IDS",
-                            message: data['status'],
-                            draggable: true
-                        });
+                    if (status == "success" || data['status'].toLowerCase().trim() == "ok") {
+                        result_status = true;
                     }
+                    callback_funct(result_status);
                 });
             });
         }
 
-        loadGeneralSettings();
-        updateStatus();
+        /*************************************************************************************************************
+         * UI load grids (on tab change)
+         *************************************************************************************************************/
 
         /**
          * load content on tab changes
@@ -233,14 +227,28 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
 
         /*************************************************************************************************************
-         * Commands
+         * UI button Commands
          *************************************************************************************************************/
 
         /**
          * save settings and reconfigure ids
          */
         $("#reconfigureAct").click(function(){
-            actionReconfigure();
+            $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+            actionReconfigure(function(status){
+                // when done, disable progress animation.
+                $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                updateStatus();
+
+                if (!status) {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "Error reconfiguring IDS",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+            });
         });
 
         /**
@@ -250,17 +258,25 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#updateRulesAct_progress").addClass("fa fa-spinner fa-pulse");
             ajaxCall(url="/api/ids/service/updateRules", sendData={}, callback=function(data,status) {
                 // when done, disable progress animation and reload grid.
-                $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
                 $('#grid-rule-files').bootgrid('reload');
                 updateStatus();
                 if ($('#scheduled_updates').is(':hidden') ){
                     // save and reconfigure on initial download (tries to create a cron job)
-                    actionReconfigure();
-                    loadGeneralSettings();
+                    actionReconfigure(function(status){
+                        loadGeneralSettings();
+                        $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
+                    });
+                } else {
+                    $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
                 }
             });
         });
 
+        /**
+         * Initialize
+         */
+        loadGeneralSettings();
+        updateStatus();
 
     });
 
