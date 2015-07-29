@@ -483,7 +483,7 @@ endif; ?>
                             $firstprint = true;
                         } else {
                             switch ($widget) {
-                                case "interfaces.widget.php":
+                                case "interface_list.widget.php":
                                 case "traffic_graphs.widget.php":
                                     $divdisplay = "block";
                                     $display = "block";
@@ -576,11 +576,12 @@ endif; ?>
 } ?>
 
 									<?php
-                                    if ($divdisplay == "block") {
-                                        include($directory . $widget);
-                                    }
-                                    ?>
-									<?php $widgetcounter++; ?>
+                                    if (file_exists($directory . $widget)) {
+                                        if ($divdisplay == 'block') {
+                                            include($directory . $widget);
+                                        }
+					$widgetcounter++;
+                                    } ?>
 							</div>
 				            </div>
 				        </section>
