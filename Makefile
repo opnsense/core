@@ -9,10 +9,10 @@ force:
 mount: force
 	@${.CURDIR}/scripts/version.sh > \
 	    ${.CURDIR}/src/opnsense/version/opnsense
-	/sbin/mount_unionfs ${.CURDIR}/src /usr/local
+	mount_unionfs ${.CURDIR}/src /usr/local
 
 umount: force
-	/sbin/umount -f "<above>:${.CURDIR}/src"
+	umount -f "<above>:${.CURDIR}/src"
 
 CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
 CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
@@ -144,25 +144,16 @@ scripts: force
 	    ${DESTDIR}/+POST_INSTALL
 
 install: force
-	@${MAKE} -C ${.CURDIR}/lang install DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@mkdir -p ${DESTDIR}/usr/local
-	@cp -vr ${.CURDIR}/src/* ${DESTDIR}/usr/local
-	@sed -i '' -e "s/%%CORE_PACKAGESITE%%/${CORE_PACKAGESITE}/g" \
-	    ${DESTDIR}/usr/local/etc/pkg/repos/origin.conf.sample
-	@sed -i '' -e "s/%%CORE_REPOSITORY%%/${CORE_REPOSITORY}/g" \
-	    ${DESTDIR}/usr/local/etc/pkg/repos/origin.conf.sample
+	@${MAKE} -C ${.CURDIR}/lang install DESTDIR=${DESTDIR}
+	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
+	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
+	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 plist: force
+	@${MAKE} -C ${.CURDIR}/conrtib plist
 	@${MAKE} -C ${.CURDIR}/lang plist
-	@${MAKE} -C ${.CURDIR}/contrib plist
-	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
-		if [ $${FILE%%.sample} != $${FILE} ]; then \
-			echo "@sample /usr/local/$${FILE}"; \
-		else \
-			echo "/usr/local/$${FILE}"; \
-		fi; \
-	done
+	@${MAKE} -C ${.CURDIR}/src plist
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/lang/dynamic/helpers \
