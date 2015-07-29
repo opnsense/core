@@ -47,34 +47,6 @@ function get_locale_list()
 	return $locales;
 }
 
-function get_firmware_mirrors()
-{
-	$mirrors = array();
-
-	$mirrors['default'] = '(default)';
-	$mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
-	$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
-	$mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
-	$mirrors['http://mirror.fra10.de.leaseweb.net/opnsense'] = 'LeaseWeb (Frankfurt, DE)';
-	$mirrors['http://mirror.sfo12.us.leaseweb.net/opnsense'] = 'LeaseWeb (San Francisco, US)';
-	$mirrors['http://mirror.wdc1.us.leaseweb.net/opnsense'] = 'LeaseWeb (Washington, D.C., US)';
-	$mirrors['http://mirrors.nycbug.org/pub/opnsense'] = 'NYC*BUG (New York, US)';
-	$mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
-
-	return $mirrors;
-}
-
-function get_firmware_flavours()
-{
-	$flavours = array();
-
-	$flavours['default'] = '(default)';
-	$flavours['libressl'] = 'LibreSSL';
-	$flavours['latest'] = 'OpenSSL';
-
-	return $flavours;
-}
-
 $pconfig['hostname'] = $config['system']['hostname'];
 $pconfig['domain'] = $config['system']['domain'];
 if (isset($config['system']['dnsserver'])) {
@@ -250,16 +222,12 @@ if ($_POST) {
 			/* default does not set anything for backwards compat */
 			unset($config['system']['firmware']['mirror']);
 		} else {
-			/* XXX create a proper backend call */
-			mwexecf('/usr/local/sbin/opnsense-update -sm %s', str_replace('/', '\/', $_POST['mirror']));
 			$config['system']['firmware']['mirror'] = $_POST['mirror'];
 		}
 		if ($_POST['flavour'] == 'default' && isset($config['system']['firmware']['flavour'])) {
 			/* default does not set anything for backwards compat */
 			unset($config['system']['firmware']['flavour']);
 		} else {
-			/* XXX create a proper backend call */
-			mwexecf('/usr/local/sbin/opnsense-update -sn %s', str_replace('/', '\/', $_POST['flavour']));
 			$config['system']['firmware']['flavour'] = $_POST['flavour'];
 		}
 
@@ -344,6 +312,7 @@ if ($_POST) {
 		elseif (isset($config['unbound']['enable']))
 			$retval |= services_unbound_configure();
 		$retval |= system_timezone_configure();
+		$retval |= system_firmware_configure();
 		$retval |= system_ntp_configure();
 
 		if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {

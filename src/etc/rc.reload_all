@@ -39,57 +39,25 @@ require_once("pfsense-utils.inc");
 require_once("services.inc");
 require_once("unbound.inc");
 
-/****f* legacy/reload_all_sync
- * NAME
- *   reload_all - reload all settings
- *   * INPUTS
- *   none
- * RESULT
- *   none
- ******/
-function reload_all_sync()
-{
-	global $config;
+global $config;
 
-	/* parse config.xml again */
-	$config = parse_config();
-
-	/* set up our timezone */
-	system_timezone_configure();
-
-	/* set up our hostname */
-	system_hostname_configure();
-
-	/* make hosts file */
-	system_hosts_generate();
-
-	/* generate resolv.conf */
-	system_resolvconf_generate();
-
-	/* enable routing */
-	system_routing_enable();
-
-	/* set up interfaces */
-	interfaces_configure();
-
-	/* start dyndns service */
-	services_dyndns_configure();
-
-	/* configure cron service */
-	configure_cron();
-
-	/* start the NTP client */
-	system_ntp_configure();
-
-	/* restart sshd */
-	mwexec_bg('/usr/local/etc/rc.sshd');
-
-	/* restart webConfigurator if needed */
-	mwexec_bg('/usr/local/etc/rc.restart_webgui');
-}
-
+$config = parse_config();
 
 log_error("rc.reload_all: Reloading all configuration settings.");
-reload_all_sync();
+
+system_timezone_configure();
+system_firmware_configure();
+system_hostname_configure();
+system_hosts_generate();
+system_resolvconf_generate();
+system_routing_enable();
+interfaces_configure();
+services_dyndns_configure();
+configure_cron();
+system_ntp_configure();
+mwexec_bg('/usr/local/etc/rc.sshd');
+mwexec_bg('/usr/local/etc/rc.restart_webgui');
+
 log_error("rc.reload_all: Reloading filter configuration.");
+
 filter_configure_sync();
