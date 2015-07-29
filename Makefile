@@ -151,7 +151,7 @@ install: force
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 plist: force
-	@${MAKE} -C ${.CURDIR}/conrtib plist
+	@${MAKE} -C ${.CURDIR}/contrib plist
 	@${MAKE} -C ${.CURDIR}/lang plist
 	@${MAKE} -C ${.CURDIR}/src plist
 
