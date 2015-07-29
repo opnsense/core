@@ -33,6 +33,7 @@ require_once("services.inc");
 require_once("captiveportal.inc");
 require_once("shortcuts.inc");
 require_once("openvpn.inc");
+require_once("vpn.inc");
 
 function openvpn_restart_by_vpnid($mode, $vpnid) {
 	$settings = openvpn_get_settings($mode, $vpnid);
