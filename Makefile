@@ -139,7 +139,7 @@ depends: force
 
 scripts: force
 	@mkdir -p ${DESTDIR}
-	@cp -v -- +PRE_DEINSTALL +PRE_INSTALL +POST_INSTALL ${DESTDIR}
+	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}
 	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
 	    ${DESTDIR}/+POST_INSTALL
 

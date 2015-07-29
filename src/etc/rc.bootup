@@ -196,6 +196,9 @@ load_thermal_hardware();
 /* set up our timezone */
 system_timezone_configure();
 
+/* set up firmware configuration */
+system_firmware_configure();
+
 /* set up our hostname */
 system_hostname_configure();
 
