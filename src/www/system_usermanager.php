@@ -550,7 +550,7 @@ function import_ldap_users() {
                                 <input name="user_dn" type="text" class="formfld user" id="user_dn" size="20" maxlength="16" value="<?=htmlspecialchars($pconfig['user_dn']);?>"/ readonly>
                             </td>
                         </tr>
-<?php endif;
+<?php else:
 ?>
                         <tr>
                             <td width="22%" valign="top" class="vncellreq" rowspan="2"><?=gettext("Password");?></td>
@@ -563,6 +563,8 @@ function import_ldap_users() {
                                 <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" value="" />&nbsp;<?= gettext("(confirmation)"); ?>
                             </td>
                         </tr>
+<?php endif;
+?>
                         <tr>
                             <td width="22%" valign="top" class="vncell"><?=gettext("Full name");?></td>
                             <td width="78%" class="vtable">
