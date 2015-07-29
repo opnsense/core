@@ -47,6 +47,34 @@ function get_locale_list()
 	return $locales;
 }
 
+function get_firmware_mirrors()
+{
+	$mirrors = array();
+
+	$mirrors['default'] = '(default)';
+	$mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
+	$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
+	$mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
+	$mirrors['http://mirror.fra10.de.leaseweb.net/opnsense'] = 'LeaseWeb (Frankfurt, DE)';
+	$mirrors['http://mirror.sfo12.us.leaseweb.net/opnsense'] = 'LeaseWeb (San Francisco, US)';
+	$mirrors['http://mirror.wdc1.us.leaseweb.net/opnsense'] = 'LeaseWeb (Washington, D.C., US)';
+	$mirrors['http://mirrors.nycbug.org/pub/opnsense'] = 'NYC*BUG (New York, US)';
+	$mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
+
+	return $mirrors;
+}
+
+function get_firmware_flavours()
+{
+	$flavours = array();
+
+	$flavours['default'] = '(default)';
+	$flavours['libressl'] = 'LibreSSL';
+	$flavours['latest'] = 'OpenSSL';
+
+	return $flavours;
+}
+
 $pconfig['hostname'] = $config['system']['hostname'];
 $pconfig['domain'] = $config['system']['domain'];
 if (isset($config['system']['dnsserver'])) {
@@ -101,6 +129,16 @@ if (empty($pconfig['timezone']))
 	$pconfig['timezone'] = "Etc/UTC";
 if (empty($pconfig['timeservers']))
 	$pconfig['timeservers'] = "pool.ntp.org";
+
+$pconfig['mirror'] = 'default';
+if (isset($config['system']['firmware']['mirror'])) {
+	$pconfig['mirror'] = $config['system']['firmware']['mirror'];
+}
+
+$pconfig['flavour'] = 'default';
+if (isset($config['system']['firmware']['flavour'])) {
+	$pconfig['flavour'] = $config['system']['firmware']['flavour'];
+}
 
 $changedesc = gettext("System") . ": ";
 $changecount = 0;
@@ -203,6 +241,26 @@ if ($_POST) {
 		if ($_POST['language'] && $_POST['language'] != $config['system']['language']) {
 			$config['system']['language'] = $_POST['language'];
 			set_language($config['system']['language']);
+		}
+
+		if (!isset($config['system']['firmware'])) {
+			$config['system']['firmware'] = array();
+		}
+		if ($_POST['mirror'] == 'default' && isset($config['system']['firmware']['mirror'])) {
+			/* default does not set anything for backwards compat */
+			unset($config['system']['firmware']['mirror']);
+		} else {
+			/* XXX create a proper backend call */
+			mwexecf('/usr/local/sbin/opnsense-update -sm %s', str_replace('/', '\/', $_POST['mirror']));
+			$config['system']['firmware']['mirror'] = $_POST['mirror'];
+		}
+		if ($_POST['flavour'] == 'default' && isset($config['system']['firmware']['flavour'])) {
+			/* default does not set anything for backwards compat */
+			unset($config['system']['firmware']['flavour']);
+		} else {
+			/* XXX create a proper backend call */
+			mwexecf('/usr/local/sbin/opnsense-update -sn %s', str_replace('/', '\/', $_POST['flavour']));
+			$config['system']['firmware']['flavour'] = $_POST['flavour'];
 		}
 
 		update_if_changed("System Theme", $config['theme'], $_POST['theme']);
@@ -524,6 +582,44 @@ include("head.inc");
 								<strong>
 									<?=gettext("This will change the look and feel of"); ?>
 									<?=$g['product_name'];?>.
+								</strong>
+							</td>
+						</tr>
+						<tr>
+							<td width="22%" valign="top" class="vncell"><?=gettext("Firmware Mirror"); ?></td>
+							<td width="78%" class="vtable">
+								<select name="mirror" class="selectpicker" data-style="btn-default" data-width="auto">
+									<?php
+									foreach (get_firmware_mirrors() as $mcode => $mdesc) {
+										$selected = ' selected="selected"';
+										if($mcode != $pconfig['mirror']) {
+											$selected = '';
+										}
+										echo "<option value=\"{$mcode}\"{$selected}>{$mdesc}</option>";
+									}
+									?>
+								</select>
+								<strong>
+									<?=gettext("Select an alternate firmware mirror."); ?>
+								</strong>
+							</td>
+						</tr>
+						<tr>
+							<td width="22%" valign="top" class="vncell"><?=gettext("Firmware Flavour"); ?></td>
+							<td width="78%" class="vtable">
+								<select name="flavour" class="selectpicker" data-style="btn-default" data-width="auto">
+									<?php
+									foreach (get_firmware_flavours() as $fcode => $fdesc) {
+										$selected = ' selected="selected"';
+										if($fcode != $pconfig['flavour']) {
+											$selected = '';
+										}
+										echo "<option value=\"{$fcode}\"{$selected}>{$fdesc}</option>";
+									}
+									?>
+								</select>
+								<strong>
+									<?=gettext("Select the firmware cryptography flavour."); ?>
 								</strong>
 							</td>
 						</tr>
