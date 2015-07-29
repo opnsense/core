@@ -239,8 +239,12 @@ function index_users()
 function &getUserEntry($name)
 {
 	global $config, $userindex;
-	if (isset($userindex[$name]))
+	$false = false;
+	if (isset($userindex[$name])) {
 		return $config['system']['user'][$userindex[$name]];
+	} else {
+		return $false;
+	}
 }
 
 function &getUserEntryByUID($uid)
@@ -835,36 +839,6 @@ function auth_get_authserver_list() {
 
 	$list["Local Database"] = array( "name" => gettext("Local Database"), "type" => "Local Auth", "host" => $config['system']['hostname']);
 	return $list;
-}
-
-function getUserGroups($username, $authcfg)
-{
-	global $config;
-
-	$allowed_groups = array();
-	$member_groups = array();
-
-	switch ($authcfg['type']) {
-        case 'ldap':
-		$allowed_groups = @ldap_get_groups($username, $authcfg);
-		break;
-	case 'radius':
-		break;
-	default:
-		$user = getUserEntry($username);
-		$allowed_groups = @local_user_get_groups($user, true);
-		break;
-	}
-
-        if (isset($config['system']['group'])) {
-                foreach ($config['system']['group'] as $group) {
-                        if (in_array($group['name'], $allowed_groups)) {
-				$member_groups[] = $group['name'];
-			}
-		}
-	}
-
-	return $member_groups;
 }
 
 function authenticate_user($username, $password, $authcfg = NULL, &$attributes = array()) {

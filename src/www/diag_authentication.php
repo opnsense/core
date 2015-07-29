@@ -30,18 +30,42 @@ require_once("guiconfig.inc");
 require_once("PEAR.inc");
 require_once("radius.inc");
 
-if ($_POST) {
+function getUserGroups($username, $authcfg)
+{
+	global $config;
+
+	$member_groups = array();
+
+	$user = getUserEntry($username);
+	if ($user !== false) {
+		$allowed_groups = local_user_get_groups($user, true);
+		if (isset($config['system']['group'])) {
+			foreach ($config['system']['group'] as $group) {
+				if (in_array($group['name'], $allowed_groups)) {
+					$member_groups[] = $group['name'];
+				}
+			}
+		}
+	}
+	return $member_groups;
+}
+
+
+
+$input_errors = array();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$pconfig = $_POST;
-	unset($input_errors);
 
 	$authcfg = auth_get_authserver($_POST['authmode']);
-	if (!$authcfg)
+	if (!$authcfg) {
 		$input_errors[] = $_POST['authmode'] . " " . gettext("is not a valid authentication server");
+	}
 
-	if (empty($_POST['username']) || empty($_POST['password']))
+	if (empty($_POST['username']) || empty($_POST['password'])) {
 		$input_errors[] = gettext("A username and password must be specified.");
+	}
 
-	if (!$input_errors) {
+	if (count($input_errors) == 0) {
 		if (authenticate_user($_POST['username'], $_POST['password'], $authcfg)) {
 			$savemsg = gettext("User") . ": " . $_POST['username'] . " " . gettext("authenticated successfully.");
 			$groups = getUserGroups($_POST['username'], $authcfg);
