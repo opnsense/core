@@ -29,7 +29,7 @@
 require_once("guiconfig.inc");
 require_once("auth.inc");
 
-function add_local_user($username, $userdn) {
+function add_local_user($username, $userdn, $userfullname) {
   global $config;
   foreach ($config['system']['user'] as &$user) {
       if ($user['name'] == $username && $user['name'] != 'root') {
@@ -43,6 +43,7 @@ function add_local_user($username, $userdn) {
   $new_user['scope'] = 'user';
   $new_user['name'] = $username;
   $new_user['user_dn'] = $userdn;
+  $new_user['descr'] = $userfullname;
   $new_user['uid'] = $config['system']['nextuid']++;
   $config['system']['user'][] = $new_user;
 }
@@ -89,7 +90,7 @@ if ($authcfg['type'] == 'ldap') {
         foreach ($result as $ldap_user ) {
           foreach ($_POST['user_dn'] as $userDN) {
             if ($userDN == $ldap_user['dn'] && !in_array($ldap_user['dn'], $confDNs)) {
-              add_local_user($ldap_user['name'] , $ldap_user['dn']);
+              add_local_user($ldap_user['name'] , $ldap_user['dn'], $ldap_user['fullname']);
               $update_count++;
             }
           }
