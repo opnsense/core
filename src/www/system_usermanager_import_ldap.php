@@ -121,7 +121,7 @@ include('head.inc');
 	<script type="text/javascript">
     // exit form and reload parent after save
     window.opener.location.href = window.opener.location.href;
-  	window.close();
+	window.close();
   </script>
 <?php elseif (!$ldap_is_connected) :
 ?>
