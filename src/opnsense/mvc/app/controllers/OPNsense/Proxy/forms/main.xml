@@ -31,6 +31,17 @@
                 <advanced>true</advanced>
             </field>
             <field>
+                <id>proxy.general.logging.ignoreLogACL</id>
+                <label>Ignore hosts in access.log</label>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <help>
+                    <![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <hint>Type subnet adresses (ex. 192.168.2.0/24)</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
                 <id>proxy.general.alternateDNSservers</id>
                 <label>Use alternate DNS-servers</label>
                 <type>select_multiple</type>
