@@ -1,0 +1,2 @@
+echo "Removing previous package configuration"
+rm -f /usr/local/etc/pkg/repos/origin.conf
