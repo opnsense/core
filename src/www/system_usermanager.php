@@ -464,7 +464,7 @@ function sshkeyClicked(obj) {
 
 function import_ldap_users() {
   url="system_usermanager_import_ldap.php";
-  var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150");
+  var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
   if (oWin==null || typeof(oWin)=="undefined") {
     alert("<?=gettext('Popup blocker detected.  Action aborted.');?>");
   }
