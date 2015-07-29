@@ -515,7 +515,7 @@ function import_ldap_users() {
                     <table class="table table-striped table-sort">
                     <?php
                     $ro = "";
-                    if ($pconfig['utype'] == "system") {
+                    if ($pconfig['utype'] == "system" || !empty($pconfig['user_dn'])) {
                         $ro = "readonly=\"readonly\"";
                     }
                     ?>
