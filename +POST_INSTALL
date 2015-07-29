@@ -18,7 +18,7 @@ EOF
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
 
-echo "Writing pacakge version"
+echo "Writing package version"
 mkdir -p /usr/local/opnsense/version
 if [ -f /usr/local/opnsense/version/opnsense ]; then
 	mv /usr/local/opnsense/version/opnsense /usr/local/opnsense/version/opnsense.last
