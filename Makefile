@@ -19,10 +19,11 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 .if "${FLAVOUR}" == LibreSSL
-CORE_REPOSITORY=libressl
+CORE_REPOSITORY?=	libressl
 .else
-CORE_REPOSITORY=latest
+CORE_REPOSITORY?=	latest
 .endif
+CORE_PACKAGESITE?=	http://pkg.opnsense.org
 
 CORE_NAME?=		opnsense-devel
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
@@ -138,22 +139,21 @@ depends: force
 
 scripts: force
 	@mkdir -p ${DESTDIR}
-	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}
+	@cp -v -- +PRE_DEINSTALL +PRE_INSTALL +POST_INSTALL ${DESTDIR}
 	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
 	    ${DESTDIR}/+POST_INSTALL
 
 install: force
-	@${MAKE} -C ${.CURDIR}/pkg install DESTDIR=${DESTDIR}
-	# XXX don't want to pass down, but also don't want clutter
-	sed -i '' -e "s/%%CORE_REPOSITORY%%/${CORE_REPOSITORY}/g" \
-	    ${DESTDIR}/usr/local/etc/pkg/repos/origin.conf
 	@${MAKE} -C ${.CURDIR}/lang install DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
 	@mkdir -p ${DESTDIR}/usr/local
 	@cp -vr ${.CURDIR}/src/* ${DESTDIR}/usr/local
+	@sed -i '' -e "s/%%CORE_PACKAGESITE%%/${CORE_PACKAGESITE}/g" \
+	    ${DESTDIR}/usr/local/etc/pkg/repos/origin.conf.sample
+	@sed -i '' -e "s/%%CORE_REPOSITORY%%/${CORE_REPOSITORY}/g" \
+	    ${DESTDIR}/usr/local/etc/pkg/repos/origin.conf.sample
 
 plist: force
-	@${MAKE} -C ${.CURDIR}/pkg plist
 	@${MAKE} -C ${.CURDIR}/lang plist
 	@${MAKE} -C ${.CURDIR}/contrib plist
 	@(cd ${.CURDIR}/src; find * -type f) | while read FILE; do \
@@ -175,8 +175,6 @@ lint: force
 sweep: force
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.map" -type f -print0 | \
-	    xargs -0 -n1 scripts/cleanfile
-	find ${.CURDIR}/pkg -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/lang -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
