@@ -26,6 +26,9 @@
                         <Required>Y</Required>
                     </storeLog>
                 </enable>
+                <ignoreLogACL type="CSVListField">
+                    <Required>N</Required>
+                </ignoreLogACL>
             </logging>
             <alternateDNSservers type="CSVListField">
                 <Required>N</Required>
