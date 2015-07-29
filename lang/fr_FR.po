@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 16:01+0200\n"
-"PO-Revision-Date: 2015-07-29 20:06+0100\n"
+"PO-Revision-Date: 2015-08-02 11:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.1\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 35
@@ -1691,7 +1691,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 102
 # File: src/www/interfaces_wireless.php, line: 92
 msgid "Interface Groups"
-msgstr ""
+msgstr "Groupes d'Interfaces"
 
 #
 # File: src/www/diag_logs_pills.php, line: 67
@@ -1725,7 +1725,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 104
 # File: src/www/interfaces_wireless.php, line: 94
 msgid "VLANs"
-msgstr ""
+msgstr "VLANs"
 
 #
 # File: src/www/interfaces_assign.php, line: 460
@@ -1739,7 +1739,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 105
 # File: src/www/interfaces_wireless.php, line: 95
 msgid "QinQs"
-msgstr ""
+msgstr "QinQs"
 
 #
 # File: src/www/interfaces_assign.php, line: 461
@@ -1754,7 +1754,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 106
 # File: src/www/interfaces_wireless.php, line: 96
 msgid "PPPs"
-msgstr ""
+msgstr "PPPs"
 
 #
 # File: src/www/interfaces_assign.php, line: 462
@@ -1770,7 +1770,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 107
 # File: src/www/interfaces_wireless.php, line: 97
 msgid "GRE"
-msgstr ""
+msgstr "GRE"
 
 #
 # File: src/www/interfaces_assign.php, line: 463
@@ -1786,7 +1786,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 108
 # File: src/www/interfaces_wireless.php, line: 98
 msgid "GIF"
-msgstr ""
+msgstr "GIF"
 
 #
 # File: src/www/interfaces_assign.php, line: 464
@@ -1800,7 +1800,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 109
 # File: src/www/interfaces_wireless.php, line: 99
 msgid "Bridges"
-msgstr ""
+msgstr "Bridges"
 
 #
 # File: src/www/interfaces_assign.php, line: 465
@@ -1816,7 +1816,7 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 110
 # File: src/www/interfaces_wireless.php, line: 100
 msgid "LAGG"
-msgstr ""
+msgstr "LAGG"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 69
@@ -2762,7 +2762,7 @@ msgstr ""
 # File: src/www/diag_states_summary.php, line: 144
 # File: src/www/diag_states_summary.php, line: 146
 msgid "States"
-msgstr ""
+msgstr "États"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 194
@@ -6390,19 +6390,20 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 220
 msgid "You must supply and confirm the password for encryption."
-msgstr ""
+msgstr "Vous devez soumettre et confirmer le mot de passe pour le chiffrement."
 
 #
 # File: src/www/diag_backup.php, line: 222
 # File: src/www/diag_backup.php, line: 278
 # File: src/www/diag_backup.php, line: 500
 msgid "The supplied 'Password' and 'Confirm' field values must match."
-msgstr ""
+msgstr "Les champs 'mot de passe' et 'confirmer' ne correspondent pas."
 
 #
 # File: src/www/diag_backup.php, line: 276
 msgid "You must supply and confirm the password for decryption."
 msgstr ""
+"Vous devez soumettre et confirmer le mot de passe pour le déchiffrement."
 
 #
 # File: src/www/diag_backup.php, line: 288
@@ -6416,11 +6417,13 @@ msgid ""
 "The uploaded file does not appear to contain an encrypted OPNsense "
 "configuration."
 msgstr ""
+"Le fichier téléverser ne semble pas contenir une configuration chiffrée "
+"d'OPNsense."
 
 #
 # File: src/www/diag_backup.php, line: 300
 msgid "Upgrading m0n0wall configuration to OPNsense."
-msgstr ""
+msgstr "Migration de la configuration de m0n0wall vers OPNsense."
 
 #
 # File: src/www/diag_backup.php, line: 308
@@ -6429,6 +6432,8 @@ msgid ""
 "You have selected to restore an area but we could not locate the correct xml "
 "tag."
 msgstr ""
+"Vous avez sélectionné une zone à restaurer mais nous n'avons pas trouver le "
+"tag xml correspondant."
 
 #
 # File: src/www/diag_backup.php, line: 320
@@ -6436,6 +6441,8 @@ msgid ""
 "The configuration area has been restored.  You may need to reboot the "
 "firewall."
 msgstr ""
+"La zone de configuration a été restauré. Vous pourriez avoir besoin de "
+"redémarrer le pare-feu."
 
 #
 # File: src/www/diag_backup.php, line: 434
@@ -6462,7 +6469,7 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 481
 msgid "No version selected."
-msgstr ""
+msgstr "Aucune version sélectionnée."
 
 #
 # File: src/www/diag_backup.php, line: 524
@@ -6504,17 +6511,19 @@ msgstr "Sauvegarde/Restauration"
 #
 # File: src/www/diag_backup.php, line: 625
 msgid "Backup area:"
-msgstr ""
+msgstr "Sauvegarder les zones"
 
 #
 # File: src/www/diag_backup.php, line: 625
 msgid "Click this button to download the system configuration in XML format."
 msgstr ""
+"Cliquer sur ce bouton pour télécharger la configuration système au format "
+"XML."
 
 #
 # File: src/www/diag_backup.php, line: 637
 msgid "Encrypt this configuration file."
-msgstr ""
+msgstr "Chiffrer ce fichier de configuration"
 
 #
 # File: src/www/diag_backup.php, line: 645
@@ -6522,11 +6531,13 @@ msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config."
 "xml space!)"
 msgstr ""
+"Ne pas sauvegarder les données RRD (NOTE: les Données RRD peuvent consumer "
+"plus de 4 megaoctets d'espace dans le fichier config.xml!)"
 
 #
 # File: src/www/diag_backup.php, line: 660
 msgid "confirm:"
-msgstr ""
+msgstr "confirmer:"
 
 #
 # File: src/www/diag_backup.php, line: 668
@@ -6548,7 +6559,7 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 696
 msgid "Restore area:"
-msgstr ""
+msgstr "Restaurer les zones:"
 
 #
 # File: src/www/diag_backup.php, line: 708
@@ -6559,12 +6570,12 @@ msgstr "Le fichier de configuration est chiffré."
 # File: src/www/diag_backup.php, line: 715
 # File: src/www/diag_backup.php, line: 765
 msgid "Password :"
-msgstr ""
+msgstr "Mot de passe :"
 
 #
 # File: src/www/diag_backup.php, line: 723
 msgid "confirm :"
-msgstr ""
+msgstr "confirmer :"
 
 #
 # File: src/www/diag_backup.php, line: 731
@@ -6620,7 +6631,7 @@ msgstr ""
 # File: src/www/system_routes.php, line: 395
 # File: src/www/vpn_l2tp.php, line: 496
 msgid "Note:"
-msgstr ""
+msgstr "Note:"
 
 #
 # File: src/www/diag_backup.php, line: 731
@@ -7154,7 +7165,7 @@ msgstr ""
 #
 # File: src/www/diag_dump_states.php, line: 59
 msgid "Show States"
-msgstr ""
+msgstr "Afficher les états"
 
 #
 # File: src/www/diag_dump_states.php, line: 95
@@ -7168,7 +7179,7 @@ msgstr ""
 # File: src/www/diag_dump_states.php, line: 118
 # File: src/www/diag_resetstate.php, line: 68
 msgid "Reset states"
-msgstr ""
+msgstr "Réinitialiser les états"
 
 #
 # File: src/www/diag_dump_states.php, line: 133
@@ -7222,7 +7233,7 @@ msgstr ""
 # File: src/www/diag_system_pftop.php, line: 132
 # File: src/www/status_dhcpv6_leases.php, line: 519
 msgid "State"
-msgstr ""
+msgstr "État"
 
 #
 # File: src/www/diag_dump_states.php, line: 234
@@ -7252,22 +7263,22 @@ msgstr ""
 #
 # File: src/www/diag_dump_states_sources.php, line: 101
 msgid "Reset States"
-msgstr ""
+msgstr "Réinitialiser les États"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 142
 msgid "Source -> Destination"
-msgstr ""
+msgstr "Source -> Destination"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 143
 msgid "# States"
-msgstr ""
+msgstr "# États"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 144
 msgid "# Connections"
-msgstr ""
+msgstr "# Connexions"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 145
@@ -10502,7 +10513,7 @@ msgstr "Désactivé"
 # File: src/www/firewall_nat_out_edit.php, line: 452
 # File: src/www/firewall_rules_edit.php, line: 770
 msgid "Disable this rule"
-msgstr ""
+msgstr "Désactiver cette règle"
 
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 305
@@ -15486,27 +15497,27 @@ msgstr ""
 #
 # File: src/www/interfaces_assign.php, line: 480
 msgid "Network port"
-msgstr ""
+msgstr "Port réseau"
 
 #
 # File: src/www/interfaces_assign.php, line: 512
 msgid "delete interface"
-msgstr ""
+msgstr "Supprimer l'interface"
 
 #
 # File: src/www/interfaces_assign.php, line: 516
 msgid "Do you really want to delete this interface?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer cette interface?"
 
 #
 # File: src/www/interfaces_assign.php, line: 530
 msgid "Available network ports:"
-msgstr ""
+msgstr "Ports réseaux disponibles:"
 
 #
 # File: src/www/interfaces_assign.php, line: 546
 msgid "add selected interface"
-msgstr ""
+msgstr "ajouter l'interface sélectionnée"
 
 #
 # File: src/www/interfaces_assign.php, line: 561
@@ -15519,12 +15530,13 @@ msgstr ""
 # File: src/www/interfaces_bridge.php, line: 61
 msgid "This bridge cannot be deleted because it is assigned as an interface."
 msgstr ""
+"Ce bridge ne peut pas être supprimer car il assigné en tant qu'interface."
 
 #
 # File: src/www/interfaces_bridge.php, line: 79
 # File: src/www/interfaces_bridge_edit.php, line: 233
 msgid "Bridge"
-msgstr ""
+msgstr "Bridge"
 
 #
 # File: src/www/interfaces_bridge.php, line: 127
@@ -15533,7 +15545,7 @@ msgstr ""
 # File: src/www/load_balancer_pool_edit.php, line: 286
 # File: src/www/system_groupmanager.php, line: 349
 msgid "Members"
-msgstr ""
+msgstr "Membres"
 
 #
 # File: src/www/interfaces_bridge.php, line: 159
@@ -15547,12 +15559,12 @@ msgstr ""
 # File: src/www/interfaces_wireless.php, line: 137
 # File: src/www/system_groupmanager.php, line: 527
 msgid "edit group"
-msgstr ""
+msgstr "éditer le groupe"
 
 #
 # File: src/www/interfaces_bridge.php, line: 161
 msgid "Do you really want to delete this bridge?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer ce bridge ?"
 
 #
 # File: src/www/interfaces_bridge.php, line: 161
@@ -15563,17 +15575,17 @@ msgstr ""
 # File: src/www/interfaces_vlan.php, line: 147
 # File: src/www/system_groupmanager.php, line: 538
 msgid "delete group"
-msgstr ""
+msgstr "supprimer le groupe"
 
 #
 # File: src/www/interfaces_bridge.php, line: 175
 msgid "Here you can configure bridging of interfaces."
-msgstr ""
+msgstr "Ici vous pouvez configurer les interfaces en tant que bridge."
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 116
 msgid "Member Interfaces"
-msgstr ""
+msgstr "Interfaces Membres"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 121
@@ -15655,13 +15667,13 @@ msgstr ""
 #
 # File: src/www/interfaces_bridge_edit.php, line: 273
 msgid "Bridge configuration"
-msgstr ""
+msgstr "Configuration des bridges"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 281
 # File: src/www/interfaces_lagg_edit.php, line: 79
 msgid "Member interfaces"
-msgstr ""
+msgstr "Interfaces membres"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 296
@@ -15672,17 +15684,17 @@ msgstr ""
 # File: src/www/interfaces_bridge_edit.php, line: 308
 # File: src/www/interfaces_ppps_edit.php, line: 756
 msgid "Show advanced options"
-msgstr ""
+msgstr "Montrer les options avancées"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 312
 msgid "RSTP/STP"
-msgstr ""
+msgstr "RSTP/STP"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 315
 msgid "Enable spanning tree options for this bridge."
-msgstr ""
+msgstr "Activer l'option spanning tree pour ce bridge."
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 331
@@ -15692,7 +15704,7 @@ msgstr ""
 #
 # File: src/www/interfaces_bridge_edit.php, line: 333
 msgid "STP interfaces"
-msgstr ""
+msgstr "Interfaces STP"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 347
@@ -15747,7 +15759,7 @@ msgstr ""
 # File: src/www/interfaces_bridge_edit.php, line: 400
 # File: src/www/system_gateway_groups.php, line: 142
 msgid "Priority"
-msgstr ""
+msgstr "Priorité"
 
 #
 # File: src/www/interfaces_bridge_edit.php, line: 386
@@ -27157,7 +27169,7 @@ msgstr ""
 #
 # File: src/www/system_gateways_edit.php, line: 694
 msgid "Disable this gateway"
-msgstr ""
+msgstr "Désactiver cette passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 695
@@ -30658,7 +30670,7 @@ msgstr "ajouter un serveur"
 #
 # File: src/www/vpn_openvpn_server.php, line: 848
 msgid "Disable this server"
-msgstr ""
+msgstr "Désactiver ce serveur"
 
 #
 # File: src/www/vpn_openvpn_server.php, line: 853
