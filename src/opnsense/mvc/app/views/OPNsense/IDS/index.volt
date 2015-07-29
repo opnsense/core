@@ -136,6 +136,45 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         }
 
+        /**
+         * toggle selected items
+         * @param gridId: grid id to to use
+         * @param url: ajax action to call
+         * @param state: 0/1/undefined
+         * @param combine: number of keys to combine (seperate with ,)
+         *                 try to avoid too much items per call (results in too long url's)
+         */
+        function actionToggleSelected(gridId, url, state, combine) {
+            var rows =$("#"+gridId).bootgrid('getSelectedRows');
+            if (rows != undefined){
+                var deferreds = [];
+                if (state != undefined) {
+                    var url_suffix = state;
+                } else {
+                    var url_suffix = "";
+                }
+
+                var keyset = [];
+                $.each(rows, function(key,uuid){
+                    keyset.push(uuid);
+                    if ( combine == undefined || keyset.length > combine) {
+                        deferreds.push(ajaxCall(url + keyset.join(',') +'/'+url_suffix, sendData={},null));
+                        keyset = [];
+                    }
+                });
+
+                // flush remaining items
+                if (keyset.length > 0) {
+                    deferreds.push(ajaxCall(url + keyset.join(',') +'/'+url_suffix, sendData={},null));
+                }
+
+                // refresh when all toggles are executed
+                $.when.apply(null, deferreds).done(function(){
+                    $("#"+gridId).bootgrid("reload");
+                });
+            }
+        }
+
         /*************************************************************************************************************
          * UI load grids (on tab change)
          *************************************************************************************************************/
@@ -160,8 +199,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/getRuleInfo/',
                             options:{
-                                multiSelect:false,
-                                selection:false,
                                 requestHandler:addRuleFilters,
                                 formatters:{
                                     rowtoggle: function (column, row) {
@@ -210,8 +247,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 {   search:'/api/ids/settings/listInstallableRulesets',
                     toggle:'/api/ids/settings/toggleInstalledRuleset/',
                     options:{
-                        multiSelect:false,
-                        selection:false,
                         navigation:0,
                         formatters:{
                             rowtoggle: function (column, row) {
@@ -273,6 +308,42 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /**
+         * disable selected rulesets
+         */
+        $("#disableSelectedRuleSets").click(function(){
+            var gridId = 'grid-rule-files';
+            var url = '/api/ids/settings/toggleInstalledRuleset/';
+            actionToggleSelected(gridId, url, 0, 20);
+        });
+
+        /**
+         * enable selected rulesets
+         */
+        $("#enableSelectedRuleSets").click(function(){
+            var gridId = 'grid-rule-files';
+            var url = '/api/ids/settings/toggleInstalledRuleset/';
+            actionToggleSelected(gridId, url, 1, 20);
+        });
+
+        /**
+         * disable selected rules
+         */
+        $("#disableSelectedRules").click(function(){
+            var gridId = 'grid-installedrules';
+            var url = '/api/ids/settings/toggleRule/';
+            actionToggleSelected(gridId, url, 0, 100);
+        });
+
+        /**
+         * enable selected rules
+         */
+        $("#enableSelectedRules").click(function(){
+            var gridId = 'grid-installedrules';
+            var url = '/api/ids/settings/toggleRule/';
+            actionToggleSelected(gridId, url, 1, 100);
+        });
+
+        /**
          * Initialize
          */
         loadGeneralSettings();
@@ -309,13 +380,23 @@ POSSIBILITY OF SUCH DAMAGE.
                 <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
                     <thead>
                     <tr>
-                        <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
+                        <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">filename</th>
                         <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
                         <th data-column-id="modified_local" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Last updated') }}</th>
+                        <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button title="{{ lang._('disable selected') }}" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
+                            <button title="{{ lang._('enable selected') }}" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
+                        </td>
+                    </tr>
+                    </tfoot>
                 </table>
                 </td>
             </tr>
@@ -336,7 +417,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-installedrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
             <thead>
             <tr>
-                <th data-column-id="sid" data-type="number" data-visible="true" data-identifier="true" data-width="6em">sid</th>
+                <th data-column-id="sid" data-type="numeric" data-visible="true" data-identifier="true" data-width="6em">{{ lang._('sid') }}</th>
                 <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                 <th data-column-id="classtype" data-type="string">{{ lang._('ClassType') }}</th>
                 <th data-column-id="msg" data-type="string">{{ lang._('Message') }}</th>
@@ -345,6 +426,15 @@ POSSIBILITY OF SUCH DAMAGE.
             </thead>
             <tbody>
             </tbody>
+            <tfoot>
+            <tr>
+                <td></td>
+                <td>
+                    <button title="{{ lang._('disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
+                    <button title="{{ lang._('enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
+                </td>
+            </tr>
+            </tfoot>
         </table>
     </div>
     <div id="alerts" class="tab-pane fade in">
