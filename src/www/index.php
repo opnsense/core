@@ -581,8 +581,8 @@ endif; ?>
                                         if ($divdisplay == 'block') {
                                             include($directory . $widget);
                                         }
-					$widgetcounter++;
                                     } ?>
+					<?php $widgetcounter++; ?>
 							</div>
 				            </div>
 				        </section>
