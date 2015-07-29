@@ -110,7 +110,7 @@ POSSIBILITY OF SUCH DAMAGE.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
                 title: 'Reboot required',
-                message: 'This upgrade may require a reboot, when needed the firewall will automatically reboot!',
+                message: 'The firewall will be rebooted directly after this firmware update.',
                 buttons: [{
                     label: 'Ok',
                     action: function(dialogRef){

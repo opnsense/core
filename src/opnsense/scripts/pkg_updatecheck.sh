@@ -118,7 +118,20 @@ if [ "$pkg_running" == "" ]; then
                 download_size="none"
               fi
 
-              upgrade_needs_reboot=`pkg upgrade -nq os-update | grep UPGRADED | wc -l | awk '{print $1;}'`
+              # XXX backwards compat
+              LOCAL=opnsense-update
+              if pkg query %n os-update > /dev/null; then
+                LOCAL=os-update
+              fi
+              REMOTE=opnsense-update
+              if pkg rquery %n os-update > /dev/null; then
+                REMOTE=os-update
+              fi
+
+              # only version change requires reboot
+              if [ "$(pkg query %v ${LOCAL})" != "$(pkg rquery %v ${REMOTE})" ]; then
+                upgrade_needs_reboot="1"
+              fi
 
               # First check if there are new packages that need to be installed
               for i in $(cat $tmp_pkg_output_file); do
