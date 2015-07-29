@@ -140,6 +140,10 @@ function updateServiceStatusUI(status) {
  * reformat all tokenizers on this document
  */
 function formatTokenizersUI(){
+    // remove old tokenizers (if any)
+    $('div[class="tokenize Tokenize"]').each(function(){
+        $(this).remove();
+    });
     $('select[class="tokenize"]').each(function(){
         if ($(this).prop("size")==0) {
             maxDropdownHeight=String(36*5)+"px"; // default number of items
