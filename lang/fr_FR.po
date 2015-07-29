@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-29 20:06+0100\n"
+"PO-Revision-Date: 2015-07-29 23:16+0100\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2839,7 +2839,7 @@ msgstr ""
 #
 # File: src/etc/rc.restore_config_backup, line: 71
 msgid "Y/N?"
-msgstr "O/N?"
+msgstr "O/N  ?"
 
 #
 # File: src/etc/rc.restore_config_backup, line: 73
@@ -3650,19 +3650,20 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 220
 msgid "You must supply and confirm the password for encryption."
-msgstr ""
+msgstr "Vous devez soumettre et confirmer le mot de passe pour le chiffrement."
 
 #
 # File: src/www/diag_backup.php, line: 222
 # File: src/www/diag_backup.php, line: 278
 # File: src/www/diag_backup.php, line: 500
 msgid "The supplied 'Password' and 'Confirm' field values must match."
-msgstr ""
+msgstr "Les champs 'mot de passe' et 'confirmer' ne correspondent pas."
 
 #
 # File: src/www/diag_backup.php, line: 276
 msgid "You must supply and confirm the password for decryption."
 msgstr ""
+"Vous devez soumettre et confirmer le mot de passe pour le déchiffrement."
 
 #
 # File: src/www/diag_backup.php, line: 288
@@ -3676,11 +3677,13 @@ msgid ""
 "The uploaded file does not appear to contain an encrypted OPNsense "
 "configuration."
 msgstr ""
+"Le fichier téléverser ne semble pas contenir une configuration chiffrée "
+"d'OPNsense."
 
 #
 # File: src/www/diag_backup.php, line: 300
 msgid "Upgrading m0n0wall configuration to OPNsense."
-msgstr ""
+msgstr "Migration de la configuration de m0n0wall vers OPNsense."
 
 #
 # File: src/www/diag_backup.php, line: 308
@@ -3689,6 +3692,8 @@ msgid ""
 "You have selected to restore an area but we could not locate the correct xml "
 "tag."
 msgstr ""
+"Vous avez sélectionné une zone à restaurer mais nous n'avons pas trouver le "
+"tag xml correspondant."
 
 #
 # File: src/www/diag_backup.php, line: 320
@@ -3696,6 +3701,8 @@ msgid ""
 "The configuration area has been restored.  You may need to reboot the "
 "firewall."
 msgstr ""
+"La zone de configuration a été restauré. Vous pourriez avoir besoin de "
+"redémarrer le pare-feu."
 
 #
 # File: src/www/diag_backup.php, line: 434
@@ -3722,7 +3729,7 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 481
 msgid "No version selected."
-msgstr ""
+msgstr "Aucune version sélectionnée."
 
 #
 # File: src/www/diag_backup.php, line: 524
