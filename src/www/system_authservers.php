@@ -630,6 +630,40 @@ endif; ?>
 												</td>
 											</tr>
 											<tr>
+												<td width="22%" valign="top" class="vncell"><?=gettext("Bind credentials");?></td>
+												<td width="78%" class="vtable">
+													<table border="0" cellspacing="0" cellpadding="2" summary="bind credentials">
+														<tr>
+															<td>
+																<input name="ldap_anon" type="checkbox" id="ldap_anon" value="yes" <?php if ($pconfig['ldap_anon']) {
+                                                                    echo "checked=\"checked\"";
+} ?> onclick="ldap_bindchange()" />
+															</td>
+															<td>
+																<?=gettext("Use anonymous binds to resolve distinguished names");?>
+															</td>
+														</tr>
+													</table>
+													<table border="0" cellspacing="0" cellpadding="2" id="ldap_bind" summary="bind">
+														<tr>
+															<td colspan="2"></td>
+														</tr>
+														<tr>
+															<td><?=gettext("User DN:");?> &nbsp;</td>
+															<td>
+																<input name="ldap_binddn" type="text" class="formfld unknown" id="ldap_binddn" size="40" value="<?=htmlspecialchars($pconfig['ldap_binddn']);?>"/><br />
+															</td>
+														</tr>
+														<tr>
+															<td><?=gettext("Password:");?> &nbsp;</td>
+															<td>
+																<input name="ldap_bindpw" type="password" class="formfld pwd" id="ldap_bindpw" size="20" value="<?=htmlspecialchars($pconfig['ldap_bindpw']);?>"/><br />
+															</td>
+														</tr>
+													</table>
+												</td>
+											</tr>
+											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Search scope");?></td>
 												<td width="78%" class="vtable">
 													<table border="0" cellspacing="0" cellpadding="2" summary="search scope">
@@ -695,40 +729,6 @@ endif; ?>
 
 																<input name="ldap_extended_query" type="text" class="formfld unknown" id="ldap_extended_query" size="40" value="<?=htmlspecialchars($pconfig['ldap_extended_query']);?>"/>
 																<br /><?=gettext("Example:");?> &amp;(objectClass=inetOrgPerson)(mail=*@example.com)
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-											<tr>
-												<td width="22%" valign="top" class="vncell"><?=gettext("Bind credentials");?></td>
-												<td width="78%" class="vtable">
-													<table border="0" cellspacing="0" cellpadding="2" summary="bind credentials">
-														<tr>
-															<td>
-																<input name="ldap_anon" type="checkbox" id="ldap_anon" value="yes" <?php if ($pconfig['ldap_anon']) {
-                                                                    echo "checked=\"checked\"";
-} ?> onclick="ldap_bindchange()" />
-															</td>
-															<td>
-																<?=gettext("Use anonymous binds to resolve distinguished names");?>
-															</td>
-														</tr>
-													</table>
-													<table border="0" cellspacing="0" cellpadding="2" id="ldap_bind" summary="bind">
-														<tr>
-															<td colspan="2"></td>
-														</tr>
-														<tr>
-															<td><?=gettext("User DN:");?> &nbsp;</td>
-															<td>
-																<input name="ldap_binddn" type="text" class="formfld unknown" id="ldap_binddn" size="40" value="<?=htmlspecialchars($pconfig['ldap_binddn']);?>"/><br />
-															</td>
-														</tr>
-														<tr>
-															<td><?=gettext("Password:");?> &nbsp;</td>
-															<td>
-																<input name="ldap_bindpw" type="password" class="formfld pwd" id="ldap_bindpw" size="20" value="<?=htmlspecialchars($pconfig['ldap_bindpw']);?>"/><br />
 															</td>
 														</tr>
 													</table>

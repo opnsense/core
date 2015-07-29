@@ -464,7 +464,7 @@ function sshkeyClicked(obj) {
 
 function import_ldap_users() {
   url="system_usermanager_import_ldap.php";
-  var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150");
+  var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150,scrollbars=yes");
   if (oWin==null || typeof(oWin)=="undefined") {
     alert("<?=gettext('Popup blocker detected.  Action aborted.');?>");
   }
@@ -515,7 +515,7 @@ function import_ldap_users() {
                     <table class="table table-striped table-sort">
                     <?php
                     $ro = "";
-                    if ($pconfig['utype'] == "system") {
+                    if ($pconfig['utype'] == "system" || !empty($pconfig['user_dn'])) {
                         $ro = "readonly=\"readonly\"";
                     }
                     ?>
@@ -550,7 +550,7 @@ function import_ldap_users() {
                                 <input name="user_dn" type="text" class="formfld user" id="user_dn" size="20" maxlength="16" value="<?=htmlspecialchars($pconfig['user_dn']);?>"/ readonly>
                             </td>
                         </tr>
-<?php endif;
+<?php else:
 ?>
                         <tr>
                             <td width="22%" valign="top" class="vncellreq" rowspan="2"><?=gettext("Password");?></td>
@@ -563,6 +563,8 @@ function import_ldap_users() {
                                 <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" value="" />&nbsp;<?= gettext("(confirmation)"); ?>
                             </td>
                         </tr>
+<?php endif;
+?>
                         <tr>
                             <td width="22%" valign="top" class="vncell"><?=gettext("Full name");?></td>
                             <td width="78%" class="vtable">

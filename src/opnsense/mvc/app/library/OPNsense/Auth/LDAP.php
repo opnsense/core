@@ -168,6 +168,8 @@ class LDAP
     public function searchUsers($username, $userNameAttribute, $extendedQuery = null)
     {
         if ($this->ldapHandle !== false) {
+            // on Active Directory sAMAccountName is returned as samaccountname
+            $userNameAttribute = strtolower($userNameAttribute);
             // add $userNameAttribute to search results
             $this->addSearchAttribute($userNameAttribute);
             $result = array();
@@ -183,6 +185,7 @@ class LDAP
                     foreach (array($userNameAttribute, "name") as $ldapAttr) {
                         if (isset($searchResults[$i][$ldapAttr]) && $searchResults[$i][$ldapAttr]['count'] > 0) {
                             $result[] = array("name" => $searchResults[$i][$ldapAttr][0]
+                                        , "fullname" => $searchResults[$i]['name'][0]
                                         , "dn" => $searchResults[$i]['dn']);
                             break;
                         }
