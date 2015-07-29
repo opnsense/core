@@ -106,6 +106,7 @@ if ($authcfg['type'] == 'ldap') {
           $ldap_users[$ldap_user['name']] = $ldap_user['dn'];
         }
       }
+      ksort($ldap_users);
     }
   }
 }
