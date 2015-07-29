@@ -120,6 +120,29 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         }
 
+        /**
+         * save (general) settings and reconfigure
+         */
+        function actionReconfigure() {
+            saveFormToEndpoint(url="/api/ids/settings/set",formid='frm_GeneralSettings',callback_ok=function(){
+                $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
+                ajaxCall(url="/api/ids/service/reconfigure", sendData={}, callback=function(data,status) {
+                    // when done, disable progress animation.
+                    $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
+                    updateStatus();
+
+                    if (status != "success" || data['status'].toLowerCase().trim() != "ok") {
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: "Error reconfiguring IDS",
+                            message: data['status'],
+                            draggable: true
+                        });
+                    }
+                });
+            });
+        }
+
         loadGeneralSettings();
         updateStatus();
 
@@ -217,23 +240,7 @@ POSSIBILITY OF SUCH DAMAGE.
          * save settings and reconfigure ids
          */
         $("#reconfigureAct").click(function(){
-            saveFormToEndpoint(url="/api/ids/settings/set",formid='frm_GeneralSettings',callback_ok=function(){
-                $("#reconfigureAct_progress").addClass("fa fa-spinner fa-pulse");
-                ajaxCall(url="/api/ids/service/reconfigure", sendData={}, callback=function(data,status) {
-                    // when done, disable progress animation.
-                    $("#reconfigureAct_progress").removeClass("fa fa-spinner fa-pulse");
-                    updateStatus();
-
-                    if (status != "success" || data['status'].toLowerCase().trim() != "ok") {
-                        BootstrapDialog.show({
-                            type: BootstrapDialog.TYPE_WARNING,
-                            title: "Error reconfiguring IDS",
-                            message: data['status'],
-                            draggable: true
-                        });
-                    }
-                });
-            });
+            actionReconfigure();
         });
 
         /**
@@ -246,7 +253,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
                 $('#grid-rule-files').bootgrid('reload');
                 updateStatus();
-                loadGeneralSettings();
+                if ($('#scheduled_updates').is(':hidden') ){
+                    // save and reconfigure on initial download (tries to create a cron job)
+                    actionReconfigure();
+                    loadGeneralSettings();
+                }
             });
         });
 
