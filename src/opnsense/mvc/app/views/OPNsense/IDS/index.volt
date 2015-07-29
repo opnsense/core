@@ -106,19 +106,21 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         // load initial data
-        mapDataToFormUI(data_get_map).done(function(data){
-            // set schedule updates link to cron
-            $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
-                if (value.selected == 1) {
-                    $("#scheduled_updates").attr("href","/ui/cron/item/open/"+key);
-                    $("#scheduled_updates").show();
-                }
+        function loadGeneralSettings() {
+            mapDataToFormUI(data_get_map).done(function(data){
+                // set schedule updates link to cron
+                $.each(data.frm_GeneralSettings.ids.general.UpdateCron, function(key, value) {
+                    if (value.selected == 1) {
+                        $("#scheduled_updates").attr("href","/ui/cron/item/open/"+key);
+                        $("#scheduled_updates").show();
+                    }
+                });
+                formatTokenizersUI();
+                $('.selectpicker').selectpicker('refresh');
             });
-            //alert(JSON.stringify(data.frm_GeneralSettings.ids.general.UpdateCron));
-            formatTokenizersUI();
-            $('.selectpicker').selectpicker('refresh');
-        });
+        }
 
+        loadGeneralSettings();
         updateStatus();
 
         /**
@@ -244,6 +246,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#updateRulesAct_progress").removeClass("fa fa-spinner fa-pulse");
                 $('#grid-rule-files').bootgrid('reload');
                 updateStatus();
+                loadGeneralSettings();
             });
         });
 
@@ -272,16 +275,16 @@ POSSIBILITY OF SUCH DAMAGE.
             <tr>
                 <td><div class="control-label">
                     <i class="fa fa-info-circle text-muted"></i>
-                    <b>rulesets</b>
+                    <b>{{ lang._('rulesets') }}</b>
                     </div>
                 </td>
                 <td>
                 <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
                     <thead>
                     <tr>
-                        <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">enabled</th>
-                        <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">description</th>
-                        <th data-column-id="modified_local" data-type="string" data-sortable="false"  data-visible="true">last updated</th>
+                        <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
+                        <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                        <th data-column-id="modified_local" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Last updated') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -307,10 +310,10 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="sid" data-type="number" data-visible="true" data-identifier="true" data-width="6em">sid</th>
-                <th data-column-id="source" data-type="string">Source</th>
-                <th data-column-id="classtype" data-type="string">ClassType</th>
-                <th data-column-id="msg" data-type="string">Message</th>
-                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">info / enabled</th>
+                <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
+                <th data-column-id="classtype" data-type="string">{{ lang._('ClassType') }}</th>
+                <th data-column-id="msg" data-type="string">{{ lang._('Message') }}</th>
+                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Info / enabled') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -329,11 +332,11 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlert">
             <thead>
             <tr>
-                <th data-column-id="timestamp" data-type="string" data-sortable="false">timestamp</th>
-                <th data-column-id="src_ip" data-type="string" data-sortable="false"  data-width="10em">source</th>
-                <th data-column-id="dest_ip" data-type="string"  data-sortable="false"  data-width="10em">destination</th>
-                <th data-column-id="alert" data-type="string" data-sortable="false" >Alert</th>
-                <th data-column-id="info" data-formatter="info" data-sortable="false" data-width="4em">info</th>
+                <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
+                <th data-column-id="src_ip" data-type="string" data-sortable="false"  data-width="10em">{{ lang._('Source') }}</th>
+                <th data-column-id="dest_ip" data-type="string"  data-sortable="false"  data-width="10em">{{ lang._('Destination') }}</th>
+                <th data-column-id="alert" data-type="string" data-sortable="false" >{{ lang._('Alert') }}</th>
+                <th data-column-id="info" data-formatter="info" data-sortable="false" data-width="4em">{{ lang._('Info') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -342,8 +345,10 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div class="col-md-12">
         <hr/>
-        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
-        <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>Download & Update Rules</b><i id="updateRulesAct_progress" class=""></i></button>
+        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
+        <br/>
+        <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download') }} </i>
     </div>
 </div>
 
