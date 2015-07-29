@@ -5437,5 +5437,3 @@ function get_ppp_uptime($port){
 		return $total_time;
 	}
 }
-
-

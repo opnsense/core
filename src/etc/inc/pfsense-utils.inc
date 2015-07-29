@@ -997,4 +997,3 @@ function calculate_ipv6_delegation_length($if) {
 	}
 	return($pdlen);
 }
-
