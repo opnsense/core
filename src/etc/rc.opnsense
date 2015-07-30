@@ -20,6 +20,13 @@ ls /usr/local/etc/rc.d/* | while read rc_filename; do
 
 	# start/stop service
 	if [ "$is_enabled" == "YES" ]; then
+		if [ "$1" == "start" ]; then
+			pre_run_var="`basename $rc_filename`_opnsense_bootup_run"
+			eval "pre_run=\$"$pre_run_var""
+			if [ ! -z "$pre_run" ]; then
+				eval "$pre_run"
+			fi
+		fi
 		$rc_filename $1
 	fi
 done
