@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-29 23:16+0100\n"
+"PO-Revision-Date: 2015-07-30 22:29+0100\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3771,17 +3771,19 @@ msgstr "Sauvegarde/Restauration"
 #
 # File: src/www/diag_backup.php, line: 625
 msgid "Backup area:"
-msgstr ""
+msgstr "Sauvegarder les zones"
 
 #
 # File: src/www/diag_backup.php, line: 625
 msgid "Click this button to download the system configuration in XML format."
 msgstr ""
+"Cliquer sur ce bouton pour télécharger la configuration système au format "
+"XML."
 
 #
 # File: src/www/diag_backup.php, line: 637
 msgid "Encrypt this configuration file."
-msgstr ""
+msgstr "Chiffrer ce fichier de configuration"
 
 #
 # File: src/www/diag_backup.php, line: 645
@@ -3789,11 +3791,13 @@ msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config."
 "xml space!)"
 msgstr ""
+"Ne pas sauvegarder les données RRD (NOTE: les Données RRD peuvent consumer "
+"plus de 4 megaoctets d'espace dans le fichier config.xml !)"
 
 #
 # File: src/www/diag_backup.php, line: 660
 msgid "confirm:"
-msgstr ""
+msgstr "confirmer :"
 
 #
 # File: src/www/diag_backup.php, line: 668
@@ -3815,7 +3819,7 @@ msgstr ""
 #
 # File: src/www/diag_backup.php, line: 696
 msgid "Restore area:"
-msgstr ""
+msgstr "Restaurer les zones :"
 
 #
 # File: src/www/diag_backup.php, line: 708
@@ -3826,12 +3830,12 @@ msgstr "Le fichier de configuration est chiffré."
 # File: src/www/diag_backup.php, line: 715
 # File: src/www/diag_backup.php, line: 765
 msgid "Password :"
-msgstr ""
+msgstr "Mot de passe :"
 
 #
 # File: src/www/diag_backup.php, line: 723
 msgid "confirm :"
-msgstr ""
+msgstr "confirmer :"
 
 #
 # File: src/www/diag_backup.php, line: 731
@@ -3887,7 +3891,7 @@ msgstr ""
 # File: src/www/system_routes.php, line: 395
 # File: src/www/vpn_l2tp.php, line: 496
 msgid "Note:"
-msgstr ""
+msgstr "Note :"
 
 #
 # File: src/www/diag_backup.php, line: 731
@@ -4443,7 +4447,7 @@ msgstr ""
 #
 # File: src/www/diag_dump_states.php, line: 59
 msgid "Show States"
-msgstr ""
+msgstr "Afficher les états"
 
 #
 # File: src/www/diag_dump_states.php, line: 95
@@ -4460,13 +4464,13 @@ msgstr ""
 # File: src/www/diag_states_summary.php, line: 144
 # File: src/www/diag_states_summary.php, line: 146
 msgid "States"
-msgstr ""
+msgstr "États"
 
 #
 # File: src/www/diag_dump_states.php, line: 118
 # File: src/www/diag_resetstate.php, line: 68
 msgid "Reset states"
-msgstr ""
+msgstr "Réinitialiser les états"
 
 #
 # File: src/www/diag_dump_states.php, line: 133
@@ -4520,7 +4524,7 @@ msgstr ""
 # File: src/www/diag_system_pftop.php, line: 132
 # File: src/www/status_dhcpv6_leases.php, line: 519
 msgid "State"
-msgstr ""
+msgstr "État"
 
 #
 # File: src/www/diag_dump_states.php, line: 234
@@ -4550,22 +4554,22 @@ msgstr ""
 #
 # File: src/www/diag_dump_states_sources.php, line: 101
 msgid "Reset States"
-msgstr ""
+msgstr "Réinitialiser les États"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 142
 msgid "Source -> Destination"
-msgstr ""
+msgstr "Source -> Destination"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 143
 msgid "# States"
-msgstr ""
+msgstr "# États"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 144
 msgid "# Connections"
-msgstr ""
+msgstr "# Connexions"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 145
