@@ -179,14 +179,17 @@
                 <type>text</type>
                 <help><![CDATA[The port the proxy service will listen to.]]></help>
             </field>
-            <!--
             <field>
                     <id>proxy.forward.transparentMode</id>
                     <label>Enable Transparent HTTP proxy</label>
                     <type>checkbox</type>
-                    <help><![CDATA[Enable transparent proxy mode to forward all requests for destination port 80 to the proxy server without any additional configuration.]]></help>
+                    <help><![CDATA[
+                    	Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server. 
+                    	You may leave the proxy interfaces empty, but remember to set a valid ACL in that case. 
+                    	<br/>
+                    	<a href="/firewall_nat_edit.php?template=transparant_proxy"> add a new firewall rule </a>
+                    ]]></help>
             </field>
-            -->
             <field>
                 <id>proxy.forward.addACLforInterfaceSubnets</id>
                 <label>Allow interface subnets</label>
