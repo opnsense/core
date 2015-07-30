@@ -2611,9 +2611,8 @@ function filter_rules_generate()
 
 	if (!isset($config['system']['ipv6allow'])) {
 		$ipfrules .= "\n# Block all IPv6 except loopback traffic\n";
-		$ipfrules .= "pass quick inet6 from ::1 to ::1\n";
-		$ipfrules .= "block in {$log['block']} quick inet6 all  label \"Block all IPv6\"\n";
-		$ipfrules .= "block out {$log['block']} quick inet6 all label \"Block all IPv6\"\n";
+		$ipfrules .= "pass {$log['pass']} quick on \$loopback inet6\n";
+		$ipfrules .= "block {$log['block']} quick inet6 all label \"Block all IPv6\"\n";
 	}
 
 	$ipfrules .= <<<EOD
