@@ -38,16 +38,18 @@ require_once("pfsense-utils.inc");
 require_once("openvpn.inc");
 require_once("vpn.inc");
 require_once("interfaces.inc");
+require_once("rrd.inc");
 
-function openvpn_restart_by_vpnid($mode, $vpnid) {
+function openvpn_restart_by_vpnid($mode, $vpnid)
+{
 	$settings = openvpn_get_settings($mode, $vpnid);
 	openvpn_restart($mode, $settings);
 }
 
-
 $service_name = '';
-if (isset($_GET['service']))
+if (isset($_GET['service'])) {
 	$service_name = htmlspecialchars($_GET['service']);
+}
 
 if (!empty($service_name)) {
 	switch ($_GET['mode']) {
