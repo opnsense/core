@@ -66,6 +66,7 @@
             <All url="/firewall_aliases.php?tab=all"/>
         </Aliases>
         <NAT url="/firewall_nat.php">
+            <NatEdit url="/firewall_nat_edit.php*"/>
             <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
             <OneOnOne VisibleName="1:1" url="/firewall_nat_1to1.php"/>
             <Outbound url="/firewall_nat_out.php"/>
