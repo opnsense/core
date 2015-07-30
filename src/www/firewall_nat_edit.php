@@ -66,7 +66,6 @@ function delete_id($id, &$array){
 
 }
 
-
 /****f* itemid/get_id
  * NAME
  *   get_id - Get an item id with ['associated-rule-id'] = $id from $array
@@ -92,20 +91,10 @@ function get_id($id, &$array) {
 	return false;
 }
 
-/****f* itemid/get_unique_id
- * NAME
- *   get_unique_id - get a unique identifier
- * RESULT
- *   string     - unique id
- ******/
-function get_unique_id(){
-
-	return uniqid("nat_", true);
-}
-
-
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php');
-
+/**
+ * obscured by clouds, is_specialnet uses this.. so let's hide it in here.
+ * let's kill this another day.
+ */
 $specialsrcdst = explode(" ", "any (self) pptp pppoe l2tp openvpn");
 $ifdisp = get_configured_interface_with_descr();
 foreach ($ifdisp as $kif => $kdescr) {
@@ -113,76 +102,80 @@ foreach ($ifdisp as $kif => $kdescr) {
 	$specialsrcdst[] = "{$kif}ip";
 }
 
-if (!is_array($config['nat']['rule'])) {
+
+// init config and get reference
+if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
 	$config['nat']['rule'] = array();
 }
 $a_nat = &$config['nat']['rule'];
+$input_errors = array();
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
 
-if (is_numericint($_GET['after']) || $_GET['after'] == "-1")
-	$after = $_GET['after'];
-if (isset($_POST['after']) && (is_numericint($_POST['after']) || $_POST['after'] == "-1"))
-	$after = $_POST['after'];
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+	// load form data from config
 
-if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
-        $id = $_GET['dup'];
-        $after = $_GET['dup'];
-}
+	if (isset($_GET['id']) && is_numericint($_GET['id'])) {
+		$id = $_GET['id'];
+		$configId = $id; // load form data from id
+	} else if (isset($_GET['dup']) && is_numericint($_GET['dup'])){
+		$after = $_GET['dup'];
+		$configId = $_GET['dup']; // load form data from id
+	}
+	if (isset($_GET['after']) && (is_numericint($_GET['after']) || $_GET['after'] == "-1")) {
+	 $after = $_GET['after'];
+	}
 
-if (isset($id) && $a_nat[$id]) {
-	if ( isset($a_nat[$id]['created']) && is_array($a_nat[$id]['created']) )
-		$pconfig['created'] = $a_nat[$id]['created'];
+	if (isset($configId) && isset($a_nat[$configId])) {
+		$pconfig = array();
+		if ( isset($a_nat[$configId]['created']) && is_array($a_nat[$configId]['created']) )
+			$pconfig['created'] = $a_nat[$configId]['created'];
 
-	if ( isset($a_nat[$id]['updated']) && is_array($a_nat[$id]['updated']) )
-		$pconfig['updated'] = $a_nat[$id]['updated'];
+		if ( isset($a_nat[$configId]['updated']) && is_array($a_nat[$configId]['updated']) )
+			$pconfig['updated'] = $a_nat[$configId]['updated'];
 
-	$pconfig['disabled'] = isset($a_nat[$id]['disabled']);
-	$pconfig['nordr'] = isset($a_nat[$id]['nordr']);
-	address_to_pconfig($a_nat[$id]['source'], $pconfig['src'],
-		$pconfig['srcmask'], $pconfig['srcnot'],
-		$pconfig['srcbeginport'], $pconfig['srcendport']);
+		$pconfig['disabled'] = isset($a_nat[$configId]['disabled']);
+		$pconfig['nordr'] = isset($a_nat[$configId]['nordr']);
+		address_to_pconfig($a_nat[$configId]['source'], $pconfig['src'],
+			$pconfig['srcmask'], $pconfig['srcnot'],
+			$pconfig['srcbeginport'], $pconfig['srcendport']);
 
-	address_to_pconfig($a_nat[$id]['destination'], $pconfig['dst'],
-		$pconfig['dstmask'], $pconfig['dstnot'],
-		$pconfig['dstbeginport'], $pconfig['dstendport']);
+		address_to_pconfig($a_nat[$configId]['destination'], $pconfig['dst'],
+			$pconfig['dstmask'], $pconfig['dstnot'],
+			$pconfig['dstbeginport'], $pconfig['dstendport']);
 
-	$pconfig['proto'] = $a_nat[$id]['protocol'];
-	$pconfig['localip'] = $a_nat[$id]['target'];
-	$pconfig['localbeginport'] = $a_nat[$id]['local-port'];
-	$pconfig['descr'] = $a_nat[$id]['descr'];
-	$pconfig['interface'] = $a_nat[$id]['interface'];
-	$pconfig['associated-rule-id'] = $a_nat[$id]['associated-rule-id'];
-	$pconfig['nosync'] = isset($a_nat[$id]['nosync']);
-	$pconfig['natreflection'] = $a_nat[$id]['natreflection'];
+		$pconfig['proto'] = $a_nat[$configId]['protocol'];
+		$pconfig['localip'] = $a_nat[$configId]['target'];
+		$pconfig['localbeginport'] = $a_nat[$configId]['local-port'];
+		$pconfig['descr'] = $a_nat[$configId]['descr'];
+		$pconfig['interface'] = $a_nat[$configId]['interface'];
+		$pconfig['associated-rule-id'] = $a_nat[$configId]['associated-rule-id'];
+		$pconfig['nosync'] = isset($a_nat[$configId]['nosync']);
+		$pconfig['natreflection'] = $a_nat[$configId]['natreflection'];
 
-	if (!$pconfig['interface'])
+		if (!$pconfig['interface'])
+			$pconfig['interface'] = "wan";
+	} else {
 		$pconfig['interface'] = "wan";
-} else {
-	$pconfig['interface'] = "wan";
-	$pconfig['src'] = "any";
-	$pconfig['srcbeginport'] = "any";
-	$pconfig['srcendport'] = "any";
-}
+		$pconfig['src'] = "any";
+		$pconfig['srcbeginport'] = "any";
+		$pconfig['srcendport'] = "any";
+	}
 
-if (isset($_GET['dup']) && is_numericint($_GET['dup']))
-	unset($id);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	// save form data
+	if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+		$id = $_POST['id'];
+	}
+	if (isset($_POST['after']) && (is_numericint($_POST['after']) || $_POST['after'] == "-1")) {
+		$after = $_POST['after'];
+	}
 
-/*  run through $_POST items encoding HTML entties so that the user
- *  cannot think he is slick and perform a XSS attack on the unwilling
- */
-unset($input_errors);
-foreach ($_POST as $key => $value) {
-	$temp = $value;
-	$newpost = htmlentities($temp);
-	if($newpost <> $temp)
-		$input_errors[] = sprintf(gettext("Invalid characters detected %s. Please remove invalid characters and save again."), $temp);
-}
-
-if ($_POST) {
+	/*  scrub invalid input
+	 */
+	foreach ($_POST as $key => $value) {
+		if(htmlentities($value) <> $value)
+			$input_errors[] = sprintf(gettext("Invalid characters detected %s. Please remove invalid characters and save again."), $value);
+	}
 
 	if(strtoupper($_POST['proto']) == "TCP" || strtoupper($_POST['proto']) == "UDP" || strtoupper($_POST['proto']) == "TCP/UDP") {
 		if ($_POST['srcbeginport_cust'] && !$_POST['srcbeginport'])
@@ -342,7 +335,7 @@ if ($_POST) {
 		$_POST['dstbeginport'] = $tmp;
 	}
 
-	if (!$input_errors) {
+	if (count($input_errors) == 0) {
 		if (!isset($_POST['nordr']) && ($_POST['dstendport'] - $_POST['dstbeginport'] + $_POST['localbeginport']) > 65535)
 			$input_errors[] = gettext("The target port range must be an integer between 1 and 65535.");
 	}
@@ -370,7 +363,7 @@ if ($_POST) {
 		}
 	}
 
-	if (!$input_errors) {
+	if (count($input_errors) == 0) {
 		$natent = array();
 
 		$natent['disabled'] = isset($_POST['disabled']) ? true:false;
@@ -473,7 +466,7 @@ if ($_POST) {
 
 			// If this is a new rule, create an ID and add the rule
 			if( $_POST['filter-rule-association']=='add-associated' ) {
-				$filterent['associated-rule-id'] = $natent['associated-rule-id'] = get_unique_id();
+				$filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
 				$filterent['created'] = make_config_revision_entry(null, gettext("NAT Port Forward"));
 				$config['filter']['rule'][] = $filterent;
 			}
@@ -966,7 +959,7 @@ include("head.inc");
 					                  <td width="22%" valign="top">&nbsp;</td>
 					                  <td width="78%">
 					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php';?>'" />
 					                    <?php if (isset($id) && $a_nat[$id]): ?>
 					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 					                    <?php endif; ?>
