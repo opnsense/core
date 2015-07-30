@@ -379,14 +379,10 @@ function local_sync_accounts()
 function local_user_set(&$user)
 {
 	if (empty($user['password'])) {
-		if (empty($user['user_dn'])) {
-			// log error for local users, (ldap) server authenticated users should not be created locally
-			// and therefore maybe empty
-			log_error(sprintf(
-				gettext('There is something wrong in your config because user %s password is missing!'),
-				$user['name']
-			));
-		}
+		log_error(sprintf(
+			gettext('There is something wrong in your config because user %s password is missing!'),
+			$user['name']
+		));
 		return;
 	}
 

@@ -31,10 +31,20 @@ require_once("auth.inc");
 
 function add_local_user($username, $userdn, $userfullname) {
   global $config;
+
+  // generate new random user_password
+  $bytes = openssl_random_pseudo_bytes(50);
+  $user_password = pack('H*',bin2hex($bytes));
+
   foreach ($config['system']['user'] as &$user) {
       if ($user['name'] == $username && $user['name'] != 'root') {
         // link local user to remote server by updating user_dn
         $user['user_dn'] = $userdn;
+        // trash user password when linking to ldap, avoid accidental login
+        // using fall-back local password. User could still reset it's
+        // local password, but only by choice.
+        local_user_set_password($user, $user_password);
+        local_user_set($user);
         return;
       }
   }
@@ -44,8 +54,10 @@ function add_local_user($username, $userdn, $userfullname) {
   $new_user['name'] = $username;
   $new_user['user_dn'] = $userdn;
   $new_user['descr'] = $userfullname;
+  local_user_set_password($new_user, $user_password);
   $new_user['uid'] = $config['system']['nextuid']++;
   $config['system']['user'][] = $new_user;
+  local_user_set($new_user);
 }
 
 global $config;
