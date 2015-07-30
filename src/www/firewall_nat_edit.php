@@ -155,10 +155,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		if (!$pconfig['interface'])
 			$pconfig['interface'] = "wan";
 	} else {
-		$pconfig['interface'] = "wan";
-		$pconfig['src'] = "any";
-		$pconfig['srcbeginport'] = "any";
-		$pconfig['srcendport'] = "any";
+		if (isset($_GET['template']) && $_GET['template'] == 'transparant_proxy') {
+			// new rule for transparant proxy reflection, to use as sample
+			$pconfig['interface'] = "lan";
+			$pconfig['src'] = "lan";
+			$pconfig['srcbeginport'] = 'any';
+			$pconfig['srcendport'] = 'any';
+			$pconfig['dst'] = "any";
+			$pconfig['dstbeginport'] = 80 ;
+			$pconfig['dstendport'] = 80 ;
+			$pconfig['localip'] = '127.0.0.1';
+			// try to read the proxy configuration to determine the current port
+			// this has some disadvantages in case of dependencies, but there isn't
+			// a much better solution available at the moment.
+			if (isset($config['OPNsense']['proxy']['forward']['port'])) {
+				$pconfig['localbeginport'] = $config['OPNsense']['proxy']['forward']['port'];
+			} else {
+				$pconfig['localbeginport'] = 3128;
+			}
+			$pconfig['natreflection'] = 'enable';
+			$pconfig['descr'] = "redirect traffic to proxy";
+
+		} else {
+			$pconfig['interface'] = "wan";
+			$pconfig['src'] = "any";
+			$pconfig['srcbeginport'] = "any";
+			$pconfig['srcendport'] = "any";
+		}
 	}
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
