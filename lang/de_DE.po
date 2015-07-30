@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-20 18:44+0200\n"
+"PO-Revision-Date: 2015-07-28 16:55+0200\n"
 "Last-Translator: Fabian\n"
 "Language-Team: GERMAN <http://opnsense.org/>\n"
 "Language: de\n"
@@ -29,11 +29,11 @@ msgstr "Weiterleiten..."
 # File: src/etc/inc/auth.inc, line: 394
 #, php-format
 msgid "There is something wrong in your config because user %s password is missing!"
-msgstr ""
+msgstr "Mit Ihrer Konfiguration stimmt irgendetwas nicht, da das Benutzerpasswort %s des fehlt!"
 
 #, php-format
 msgid "ERROR!  Could not connect to server %s."
-msgstr ""
+msgstr "FEHLER: Konnte nicht mit Server %s verbinden."
 
 #, php-format
 msgid "LDAP: Could not lookup CA by reference for host %s."
@@ -70,11 +70,11 @@ msgstr ""
 
 #, php-format
 msgid "ERROR! Could not bind to server %s."
-msgstr ""
+msgstr "FEHLER: Bindung an Server %s nicht möglich."
 
 #, php-format
 msgid "Search resulted in error: %s"
-msgstr ""
+msgstr "Suche resultierte in einem Fehler: %s"
 
 msgid "ERROR! Either LDAP search failed, or multiple users were found."
 msgstr ""
@@ -84,13 +84,13 @@ msgid "ERROR! Could not login to server %1$s as user %2$s: %3$s"
 msgstr ""
 
 msgid "Local Database"
-msgstr ""
+msgstr "Lokale Datenbank"
 
 #
 # File: src/etc/inc/auth.inc, line: 1333
 #, php-format
 msgid "Successful login for user '%1$s' from: %2$s"
-msgstr ""
+msgstr "Der Benutzer '%1$s' hat sich von %2$s erfolgreich angemeldet"
 
 #
 # File: src/etc/inc/auth.inc, line: 1343
@@ -101,7 +101,7 @@ msgstr "Falscher Benutzername oder falsches Passwort."
 # File: src/etc/inc/auth.inc, line: 1384
 #, php-format
 msgid "Session timed out for user '%1$s' from: %2$s"
-msgstr ""
+msgstr "Zeitüberschreitung für die Sitzung des Benutzers '%1$s' von %2$s"
 
 #
 # File: src/etc/inc/auth.inc, line: 1386
@@ -125,15 +125,17 @@ msgstr "Ungültiger Login (%s)"
 
 #, php-format
 msgid "This device is currently being maintained by: %s."
-msgstr ""
+msgstr "Dieses Gerät wird derzeit von %s gewartet."
 
 msgid "Login"
 msgstr "Login"
 
 msgid ""
-"You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this "
-"forwarding, you may be the target of a man-in-the-middle attack."
+"You are accessing this router by an IP address not configured locally, which may be forwarded by NAT or other means. <br /><br />If you did not setup this forwarding, "
+"you may be the target of a man-in-the-middle attack."
 msgstr ""
+"Sie greifen auf diesen Router mit einer IP Adresse zu, die nicht lokal konfiguriert ist, was auf eine NAT-Weiterleitung schließen lässt. <br /><br />Falls Sie diese "
+"NAT-Weiterleitung nicht eingerichtet haben, könnten Sie Ziel eines Man-in-the-Middle Angriffs sein."
 
 msgid "Username:"
 msgstr "Benutzername:"
@@ -155,7 +157,7 @@ msgid "VLAN interfaces:"
 msgstr "VLAN Interfaces:"
 
 msgid "Enter the WAN interface name or 'a' for auto-detection:"
-msgstr ""
+msgstr "Geben Sie den WAN Interfacenamen oder 'a' für automatische erkennung ein:"
 
 #, fuzzy, php-format
 msgid "%sInvalid interface name '%s'%s"
@@ -164,8 +166,8 @@ msgstr "Ungültiger Interfacename '%s'%s"
 #, php-format
 msgid "%sEnter the LAN interface name or 'a' for auto-detection %sNOTE: this enables full Firewalling/NAT mode.%s(or nothing if finished):%s"
 msgstr ""
-"%sGeben Sie die LAN-Schnittstellenbezeichnung oder 'a' für automatische Erkennung ein %sHINWEIS: Dies aktiviert den vollen Firewall/NAT Modus.%s(oder nichts wenn "
-"Sie fertig sind):%s"
+"%sGeben Sie die LAN-Schnittstellenbezeichnung oder 'a' für automatische Erkennung ein %sHINWEIS: Dies aktiviert den vollen Firewall/NAT Modus.%s(oder nichts wenn Sie "
+"fertig sind):%s"
 
 #, php-format
 msgid "%sOptional interface %s description found: %s"
@@ -228,18 +230,18 @@ msgstr ""
 #
 # File: src/etc/inc/config.lib.inc, line: 57
 msgid "No config.xml found, attempting to restore factory config."
-msgstr ""
+msgstr "config.xml wurde nicht gefunden, versuche auf Werkseinstellungen zurückzusetzen."
 
 #, php-format
 msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
-msgstr ""
+msgstr "Starte Konfigurationsaktualisierung am %s mit Ausführungszeitlimit von 15 Minuten"
 
 msgid "Updated bogon update frequency to 3am"
 msgstr ""
 
 #, php-format
 msgid "Ended Configuration upgrade at %s"
-msgstr ""
+msgstr "Konfigurationsaktualisierung am %s beendet"
 
 #, php-format
 msgid "Upgraded config version level from %1$s to %2$s"
@@ -320,10 +322,10 @@ msgid "Host added successfully"
 msgstr "Host erfolgreich hinzugefügt"
 
 msgid "Failed to create block rule, alias, or add host."
-msgstr ""
+msgstr "Es konnte die Blockierregel oder der Alias nicht erstellt werden bzw. den Host konnte nicht hinzugefügt werden."
 
 msgid "Tried to block but had no host IP or interface"
-msgstr ""
+msgstr "Versuchte zu blockieren, hatte aber keine Host IP Adresse oder Interface"
 
 msgid "Unknown block error."
 msgstr "Unbekannter Blockierfehler."
@@ -335,16 +337,16 @@ msgid "Invalid protocol for pass rule:"
 msgstr "Ungültiges Protokoll für Erlaubnisregel:"
 
 msgid "Tried to pass invalid source IP:"
-msgstr ""
+msgstr "Versuchte eine ungültige Quell IP zu erlauben:"
 
 msgid "Tried to pass invalid destination IP:"
-msgstr ""
+msgstr "Versuchte eine ungültige Ziel IP zu erlauben:"
 
 msgid "Missing destination port:"
 msgstr "Zielport fehlt:"
 
 msgid "Tried to pass invalid destination port:"
-msgstr ""
+msgstr "Versuchte einen ungültigen Zielport zu erlauben:"
 
 msgid "Successfully added pass rule!"
 msgstr "Erlaubnisregel erfolgreich hinzugefügt!"
@@ -681,7 +683,7 @@ msgstr "Klone neues drahtloses Interface %s"
 
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
-msgstr ""
+msgstr "Das Klonen des Interfaces %1$s ist mit dem Fehlercode %2$s und der Ausgabe %3$s fehlgeschlagen"
 
 msgid "Generating new MAC address."
 msgstr "Generiere neue MAC Adresse."
@@ -692,7 +694,7 @@ msgstr "Die ungültige MAC Adresse (ff:ff:ff:ff:ff:ff) am Interface %1$s wurde a
 
 #, php-format
 msgid "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"
-msgstr ""
+msgstr "Fehler: konnte dhclient_%s.conf in interface_dhcp_configure() nicht zum Schreiben öffnen.%s"
 
 #, php-format
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
@@ -765,12 +767,12 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 104
 msgid "it was not possible to read line from the SMTP server"
-msgstr ""
+msgstr "es war nicht möglich die Zeile des SMTP Servers zu lesen"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 126
 msgid "it was not possible to send a line to the SMTP server"
-msgstr ""
+msgstr "Es war nicht möglich eine Zeile an den SMTP Server zu senden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 140
@@ -803,7 +805,7 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 230
 #, php-format
 msgid "Connecting to host address \"%1$s\" port %2$s..."
-msgstr ""
+msgstr "Verbinde mit Hostadresse \"%1$s\" Port %2$s..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 237
@@ -835,7 +837,7 @@ msgstr "-7 setvbuf() Aufruf fehlgeschlagen"
 # File: src/etc/inc/notices.smtp.inc, line: 247
 #, php-format
 msgid "could not connect to the host \"%1$s\": %2$s"
-msgstr ""
+msgstr "Konnte nicht mit Host \"%1$s\" verbinden: %2$s"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 256
@@ -851,7 +853,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 285
 msgid "Could not start the SASL authentication client:"
-msgstr ""
+msgstr "Der SASL Authentifizierungsclient konnte nicht gestartet werden:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 292
@@ -893,12 +895,12 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 404
 #, php-format
 msgid "Resolving POP3 authentication host \"%s\"..."
-msgstr ""
+msgstr "Löse POP3 Authentifierungshost \"%s\" auf..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 411
 msgid "POP3 authentication server greeting was not found"
-msgstr ""
+msgstr "POP3 Authentifizierungsserverbegrüßung wurde nicht gefunden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 419
@@ -999,7 +1001,7 @@ msgid "Remote Access ( SSL/TLS + User Auth )"
 msgstr "Remotezugriff ( SSL/TLS + Benutzerauthentifizierung )"
 
 msgid "No Preference"
-msgstr ""
+msgstr "Keine Einstellung"
 
 msgid "Disabled - No Compression"
 msgstr "Deaktiviert - keine Kompression"
@@ -1039,7 +1041,7 @@ msgid "BACKUP"
 msgstr "BACKUP"
 
 msgid "INIT"
-msgstr ""
+msgstr "INIT"
 
 msgid "After synch increase advertising skew"
 msgstr ""
@@ -1051,7 +1053,7 @@ msgstr "Fehler beim Ertellen des Sockets!"
 # File: src/etc/inc/pfsense-utils.inc, line: 363
 #, php-format
 msgid "Error code is '%1$s' - %2$s"
-msgstr ""
+msgstr "Der Fehlercode ist '%1$s' - %2$s"
 
 #, php-format
 msgid "setsockopt() failed, error: %s"
@@ -1059,7 +1061,7 @@ msgstr "setsockopt() fehlgeschlagen, Fehler: %s"
 
 #, php-format
 msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
-msgstr ""
+msgstr "Magic Packet gesendet (%1$s) an {%2$s} MAC=%3$s"
 
 #, php-format
 msgid "Restored %s of config file (maybe from CARP partner)"
@@ -1084,40 +1086,40 @@ msgid "check for ethernet loops"
 msgstr "Prüfe auf Ethernet Loops"
 
 msgid "learning"
-msgstr ""
+msgstr "lernen"
 
 msgid "forwarding"
 msgstr "weiterleitung"
 
 #, php-format
 msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
-msgstr ""
+msgstr "DNSCACHE: Alte IP %1$s und neue IP %2$s gefunden"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1511
 #, php-format
 msgid "Could not process aliases from alias: %s"
-msgstr ""
+msgstr "Konnte Aliase von Alias nicht verarbeiten: %s"
 
 msgid "Alias archive is a .zip file which cannot be decompressed because utility is missing!"
-msgstr ""
+msgstr "Das Aliasarchiv ist eine .zip Datei, welche nicht entpackt werden kann, weil das entsprechende Werkzeug fehlt!"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1555
 # File: src/etc/inc/pfsense-utils.inc, line: 1587
 #, php-format
 msgid "Could not open %s/aliases for writing!"
-msgstr ""
+msgstr "Konnte %s/aliases nicht zum Schreiben öffnen!"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1561
 # File: src/etc/inc/pfsense-utils.inc, line: 1593
 #, php-format
 msgid "The following file could not be read %s from %s"
-msgstr ""
+msgstr "Die Datei %s konnte nicht aus der Datei %s gelesen werden"
 
 msgid "Alias archive is a .tar/tgz file which cannot be decompressed because utility is missing!"
-msgstr ""
+msgstr "Das Aliasarchiv ist eine .tar/tgz Datei, welche nicht entpackt werden kann, weil das entsprechende Werkzeug fehlt!"
 
 msgid "Error sending request:"
 msgstr "Fehler bei der Anfrage:"
@@ -1126,7 +1128,7 @@ msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
 msgstr "RADIUS_ACCESS_ACCEPT wurde bei Accounting nicht erwartet"
 
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
-msgstr ""
+msgstr "RADIUS_ACCOUNTING_RESPONSE wurde bei Authentifizierung nicht erwartet"
 
 #, php-format
 msgid "Unexpected return value: %s"
@@ -1164,7 +1166,7 @@ msgid "Unbound DNS Forwarder"
 msgstr ""
 
 msgid "NTP clock sync"
-msgstr ""
+msgstr "NTP Zeitsynchronisation"
 
 msgid "Captive Portal"
 msgstr "Captive Portal"
@@ -1194,13 +1196,13 @@ msgid "IPsec VPN"
 msgstr "IPsec VPN"
 
 msgid "Secure Shell Daemon"
-msgstr ""
+msgstr "Secure Shell Daemon"
 
 msgid "OpenVPN"
 msgstr "OpenVPN"
 
 msgid "Server load balancing daemon"
-msgstr ""
+msgstr "Server Lastverteilungsdaemon"
 
 #
 # File: src/etc/inc/service-utils.inc, line: 180
@@ -1376,7 +1378,7 @@ msgid "Setting timezone..."
 msgstr "Setze Zeitzone..."
 
 msgid "Setting hard disk standby... "
-msgstr ""
+msgstr "Setze Festplattenstandby... "
 
 msgid "failed!"
 msgstr "fehlgeschlagen!"
@@ -1419,8 +1421,7 @@ msgid "Indicates whether this user will lock access to the webConfigurator for o
 msgstr ""
 
 msgid ""
-"Indicates whether this user will lock individual HTML pages after having accessed a particular page (the lock will be freed if the user leaves or saves the page "
-"form)."
+"Indicates whether this user will lock individual HTML pages after having accessed a particular page (the lock will be freed if the user leaves or saves the page form)."
 msgstr ""
 
 msgid "Indicates whether this user is able to login for example via SSH."
@@ -1448,42 +1449,44 @@ msgid "Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)"
 msgstr "Verwerfe SYN-FIN Segmente (widerspricht RFC 1379, diese Kombination tritt jedoch nicht auf)"
 
 msgid "Sending of IPv4 ICMP redirects"
-msgstr ""
+msgstr "Senden von IPv4 ICMP Weiterleitungen"
 
 msgid "Sending of IPv6 ICMP redirects"
-msgstr ""
+msgstr "Senden von IPv6 ICMP Weiterleitungen"
 
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
 msgstr ""
 
 msgid "Maximum incoming TCP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines eingehenden TCP Segments"
 
 msgid "Maximum outgoing TCP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines ausgehenden TCP Segments"
 
 msgid "Fastforwarding (see http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
-msgstr ""
+msgstr "Fastforwarding (siehe http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
 
 msgid "Do not delay ACK to try and piggyback it onto a data packet"
 msgstr ""
 
 msgid "Maximum outgoing UDP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines ausgehenden UDP Datagramms"
 
 msgid "Handling of non-IP packets which are not passed to pfil (see if_bridge(4))"
 msgstr ""
 
 msgid "Allow unprivileged access to tap(4) device nodes"
-msgstr ""
+msgstr "Erlaube unprivilegierten Zugriff auf tap(4) Geräteknoten"
 
 msgid "Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())"
 msgstr ""
 
 msgid ""
-"The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required "
-"to maintain optimum throughput. "
+"The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required to "
+"maintain optimum throughput. "
 msgstr ""
+"Das System wird versuchen die Bandbreite über die Verzögerung jeder Verbindung zu berechnen und die Anzahl der Daten, die an das Netzwerk gesendet werden, so "
+"limitieren, dass ein optimaler Durchsatz erreicht wird. "
 
 msgid "Set ICMP Limits"
 msgstr "Setze ICMP Limits"
@@ -1501,7 +1504,7 @@ msgstr ""
 
 #, php-format
 msgid "Upgraded static route for %s"
-msgstr ""
+msgstr "Aktualisierte statische Route für %s"
 
 #, php-format
 msgid "Sitedown pool for VS: %s"
@@ -1513,7 +1516,7 @@ msgstr "Phase 2 für %s"
 
 #, php-format
 msgid "Upgraded Dyndns %s"
-msgstr ""
+msgstr "Aktualisierte Dyndns %s"
 
 msgid "All Users"
 msgstr "Alle Benutzer"
@@ -1527,19 +1530,19 @@ msgstr "Automatisch hinzugefügte OpenVPN-Regel aus dem Konfigurationsupgrade."
 
 #, php-format
 msgid "WARNING: Could not mark subsystem: %s dirty"
-msgstr ""
+msgstr "WARNUNG: Konnte das Subsystem nicht markieren: %s schmut­zig"
 
 msgid "WARNING: You must give a name as parameter to lock() function."
-msgstr ""
+msgstr "WARNUNG: Sie müssen der lock() Funktion einen Parameter für den Namen übergeben."
 
 msgid "WARNING: You must give a name as parameter to try_lock() function."
-msgstr ""
+msgstr "WARNUNG: Sie müssen der try_lock() Funktion einen Parameter für den Namen übergeben."
 
 #
 # File: src/etc/inc/util.inc, line: 1014
 #, php-format
 msgid "The command '%s' returned exit code '%d', the output was '%s'"
-msgstr ""
+msgstr "Das Kommando '%s' gab den Exit-Code '%d' zurück, die Ausgabe war '%s'"
 
 #, php-format
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
@@ -1576,11 +1579,11 @@ msgstr "Konfiguriere IPsec VPN... "
 
 #, php-format
 msgid "Error: Invalid certificate info for %s"
-msgstr ""
+msgstr "Fehler: Üngültige Zertifikatsinformation für %s"
 
 #, php-format
 msgid "Error: Invalid certificate hash info for %s"
-msgstr ""
+msgstr "Fehler: Ungültiger Zertifikatshashinformation für %s"
 
 #, php-format
 msgid "Error: Cannot write IPsec CA file for %s"
@@ -1592,15 +1595,15 @@ msgstr "Fehler: Ungültige Phase 1 Zertifikatsreferenz für %s"
 
 #, php-format
 msgid "Error: Cannot write phase1 key file for %s"
-msgstr ""
+msgstr "Fehler: Konnte Phase 1 Schlüsseldatei für %s nicht schreiben"
 
 #, php-format
 msgid "Error: Cannot write phase1 certificate file for %s"
-msgstr ""
+msgstr "Fehler: Konnte Phase 1 Zertifikatsdatei für %s nicht schreiben"
 
 #, php-format
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
-msgstr ""
+msgstr "Ignoriere das erneute Laden von IPsec da es keine Tunnel auf dem Interface %s gibt."
 
 msgid "Forcefully reloading IPsec"
 msgstr ""
@@ -1613,30 +1616,30 @@ msgstr "Konnte mpd in 3 Sekunden nicht stoppen, Neuer Versuch"
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_pptpd_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_pptpd_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_pptpd_configure() nicht öffnen."
 
 msgid "Configuring PPPoE VPN service... "
 msgstr "Konfiguriere PPPoE VPN Dienst "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_pppoe_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_pppoe_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_pppoe_configure() nicht öffnen."
 
 msgid "done"
 msgstr "erledigt."
@@ -1646,15 +1649,15 @@ msgstr "Konfiguriere  L2TP VPN Dienst... "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "XML error: %1$s at line %2$d cannot occur more than once"
@@ -1689,7 +1692,7 @@ msgstr ""
 # File: src/etc/rc.initial.password, line: 42
 #, php-format
 msgid "Do you want to proceed [y|n]? "
-msgstr "Möchten Sie fortfahren [y|n]? "
+msgstr "Möchten Sie fortfahren [j|n]? "
 
 #
 # File: src/etc/rc.initial.password, line: 48
@@ -1728,10 +1731,10 @@ msgstr ""
 
 #, php-format
 msgid "Enter the new %s %s address.  Press <ENTER> for none:"
-msgstr ""
+msgstr "Geben Sie die neue %s %s Adresse ein.  Drücken Sie <ENTER> für keine:"
 
 msgid "This IP address conflicts with another interface or a VIP"
-msgstr ""
+msgstr "Diese IP Adresse steht im Konflikt mit einem anderen Interface oder einer VIP"
 
 #, php-format
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
@@ -1742,10 +1745,10 @@ msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr ""
 
 msgid "You cannot set network address to an interface"
-msgstr ""
+msgstr "Sie können die Netzwerkadresse einem Interface nicht zuweisen"
 
 msgid "You cannot set broadcast address to an interface"
-msgstr ""
+msgstr "Sie können die Broadcastadresse einem Interface nicht zuweisen"
 
 #, php-format
 msgid "For a WAN, enter the new %s %s upstream gateway address."
@@ -1773,11 +1776,11 @@ msgid "Enter the end address of the %s client address range:"
 msgstr ""
 
 msgid "The end address of the DHCP range must be >= the start address"
-msgstr ""
+msgstr "Die letzte Adresse des DHCP Bereichs muss größer gleich der Startadresse sein"
 
 #, php-format
 msgid "Disabling %s DHCPD..."
-msgstr ""
+msgstr "Deaktiviere %s DHCPD..."
 
 msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
 msgstr ""
@@ -1808,7 +1811,7 @@ msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 s
 msgstr ""
 
 msgid "n/j/y H:i:s"
-msgstr ""
+msgstr "n/j/y H:i:s"
 
 msgid "Unknown"
 msgstr "Unbekannt"
@@ -1979,7 +1982,7 @@ msgstr "Ziehen Sie bitte in Betracht, einen Crash Report zu senden, falls der Fe
 #
 # File: src/www/crash_reporter.php, line: 119
 msgid "Luckily we have not detected a programming bug."
-msgstr "Zm Glück haben wir keinen Programmierfehler gefunden."
+msgstr "Zum Glück haben wir keinen Programmierfehler gefunden."
 
 #
 # File: src/www/crash_reporter.php, line: 136
@@ -2184,7 +2187,7 @@ msgid "Backup/restore"
 msgstr "Backup/Wiederherstellung"
 
 msgid "The firewall configuration has been changed."
-msgstr ""
+msgstr "Die Firewallkonfiguration wurde geändert."
 
 msgid "The firewall is now rebooting."
 msgstr "Die Firewall startet jetzt neu."
@@ -2235,12 +2238,12 @@ msgid "Note:"
 msgstr "Hinweis:"
 
 msgid "The firewall will reboot after restoring the configuration."
-msgstr ""
+msgstr "Die Firewall wird nach der Wiederherstellung der Konfiguration neu starten."
 
 #
 # File: src/www/diag_backup.php, line: 748
 msgid "Remote backup (using Google drive)"
-msgstr ""
+msgstr "Fernes Backup (verwendet Google Drive)"
 
 msgid "Enable"
 msgstr "Aktivieren"
@@ -2261,12 +2264,12 @@ msgstr "(ersetzen)"
 #
 # File: src/www/diag_backup.php, line: 761
 msgid "P12 key"
-msgstr ""
+msgstr "P12 Schlüssel"
 
 #
 # File: src/www/diag_backup.php, line: 762
 msgid "Folder ID"
-msgstr ""
+msgstr "Ordner ID"
 
 msgid "Backup Count"
 msgstr "Anzahl an Backups"
@@ -2274,7 +2277,7 @@ msgstr "Anzahl an Backups"
 #
 # File: src/www/diag_backup.php, line: 764
 msgid "Password protect your data"
-msgstr ""
+msgstr "Schütz Ihrer Daten durch ein Passwort"
 
 #
 # File: src/www/diag_backup.php, line: 766
@@ -2283,7 +2286,7 @@ msgstr "Bestätigen:"
 
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
-msgstr ""
+msgstr "Backup mit dem Zeitstempel %1$s und der Beschreibung \"%2$s\" gelöscht."
 
 msgid "Configuration History"
 msgstr ""
@@ -2298,23 +2301,23 @@ msgid "Confirm Action"
 msgstr "Aktion bestätigen"
 
 msgid "Please confirm the selected action"
-msgstr ""
+msgstr "Bitte bestätigen Sie die ausgewählte Aktion"
 
 msgid "Action"
 msgstr "Aktion"
 
 msgid "Restore from Configuration Backup"
-msgstr ""
+msgstr "Aus Konfigurationsbackup wiederherstellen"
 
 msgid "Remove Configuration Backup"
-msgstr ""
+msgstr "Konfigurationsbackup löschen"
 
 msgid "Target Configuration"
-msgstr ""
+msgstr "Zielkonfiguration"
 
 #, php-format
 msgid "Timestamp %1$s"
-msgstr ""
+msgstr "Zeitstempel %1$s"
 
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -2331,8 +2334,8 @@ msgid "NOTE: Be aware of how much space is consumed by backups before adjusting 
 msgstr ""
 
 msgid ""
-"To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select "
-"the newer configuration in the right column, then press the Diff button."
+"To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the "
+"newer configuration in the right column, then press the Diff button."
 msgstr ""
 
 msgid "Diff"
@@ -2354,7 +2357,7 @@ msgid "Current"
 msgstr "Aktuell"
 
 msgid "Revert to this configuration"
-msgstr ""
+msgstr "Diese Konfiguration wiederherstellen"
 
 msgid "Remove this backup"
 msgstr "Dieses Backup entfernen"
@@ -2366,34 +2369,34 @@ msgid "Factory defaults"
 msgstr "Werkseinstellungen"
 
 msgid "The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware."
-msgstr ""
+msgstr "Das System wurde auf Werkseinstellungen zurückgesetzt und startet jetzt neu. Das kann je nach Hardware einige Minuten dauern."
 
 msgid "If you click"
-msgstr ""
+msgstr "Falls Sie klicken"
 
 msgid "the firewall will:"
-msgstr ""
+msgstr "die Firewall wird:"
 
 msgid "Reset to factory defaults"
 msgstr "Auf Werkseinstellungen zurücksetzen"
 
 msgid "LAN IP address will be reset to 192.168.1.1"
-msgstr ""
+msgstr "LAN IP Adresse wird auf 192.168.1.1 zurückgesetzt"
 
 msgid "System will be configured as a DHCP server on the default LAN interface"
 msgstr ""
 
 msgid "Reboot after changes are installed"
-msgstr ""
+msgstr "Neustarten nachdem die Änderungen installiert wurden"
 
 msgid "WAN interface will be set to obtain an address automatically from a DHCP server"
 msgstr ""
 
 msgid "webConfigurator admin username will be reset to 'root'"
-msgstr ""
+msgstr "Webkonfigurator administrativer Benutzername wird auf 'root' zurückgesetzt"
 
 msgid "webConfigurator admin password will be reset to"
-msgstr ""
+msgstr "Webkonfigurator Administratorpasswort wird zurückgesetzt auf"
 
 msgid "Are you sure you want to proceed?"
 msgstr "Sind Sie sicher dass Sie fortfahren möchten?"
@@ -2441,7 +2444,7 @@ msgid "Ping"
 msgstr "Ping"
 
 msgid "Traceroute"
-msgstr ""
+msgstr "Traceroute"
 
 msgid "NOTE: The following links are to external services, so their reliability cannot be guaranteed."
 msgstr ""
@@ -2456,7 +2459,7 @@ msgid "invalid input"
 msgstr "Ungültige Eingabe"
 
 msgid "Show States"
-msgstr ""
+msgstr "Status anzeigen"
 
 msgid "An error occurred."
 msgstr "Ein Fehler ist aufgetreten."
@@ -2465,10 +2468,10 @@ msgid "States"
 msgstr "Status"
 
 msgid "Reset states"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Current total state count"
-msgstr ""
+msgstr "Gesamtanzahl an Status"
 
 msgid "Filter expression:"
 msgstr "Filterausdruck:"
@@ -2483,7 +2486,7 @@ msgid "Int"
 msgstr "Int"
 
 msgid "Proto"
-msgstr ""
+msgstr "Protokoll"
 
 msgid "Source -> Router -> Destination"
 msgstr "Quelle -> Router -> Ziel"
@@ -2494,10 +2497,10 @@ msgid "State"
 msgstr "Status"
 
 msgid "Remove all state entries from"
-msgstr ""
+msgstr "Entferne alle Statuseinträge von"
 
 msgid "No states were found."
-msgstr ""
+msgstr "Keine Status wurden gefunden."
 
 msgid "States matching current filter"
 msgstr ""
@@ -2506,10 +2509,10 @@ msgid "Show Source Tracking"
 msgstr ""
 
 msgid "Source Tracking"
-msgstr ""
+msgstr "Quellenverfolgung"
 
 msgid "Reset States"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Source -> Destination"
 msgstr "Quelle -> Ziel"
@@ -2524,7 +2527,7 @@ msgid "Rate"
 msgstr "Rate"
 
 msgid "Remove all source tracking entries from"
-msgstr ""
+msgstr "Lösche alle Quellverfolgungseinträge aus"
 
 msgid "No source tracking entries were found."
 msgstr ""
@@ -2671,25 +2674,25 @@ msgid "Description"
 msgstr "Beschreibung"
 
 msgid "Local ID"
-msgstr ""
+msgstr "Lokale ID"
 
 msgid "Local IP"
-msgstr ""
+msgstr "Lokale IP"
 
 msgid "Remote ID"
-msgstr ""
+msgstr "Ferne ID"
 
 msgid "Remote IP"
-msgstr ""
+msgstr "Ferne IP"
 
 msgid "Role"
 msgstr "Rolle"
 
 msgid "Local subnets"
-msgstr ""
+msgstr "Lokale Subnetzwerke"
 
 msgid "Local SPI(s)"
-msgstr ""
+msgstr "Lokaler SPI(s)"
 
 msgid "Remote subnets"
 msgstr ""
@@ -2698,7 +2701,7 @@ msgid "You can configure IPsec"
 msgstr "Sie können IPsec konfigurieren"
 
 msgid "Leases"
-msgstr ""
+msgstr "Leases"
 
 msgid "Pool: "
 msgstr ""
@@ -2722,7 +2725,7 @@ msgid "No IPsec pools."
 msgstr "Keine IPsec Pools"
 
 msgid "You can configure your IPsec"
-msgstr ""
+msgstr "Sie können IPsec konfigurieren"
 
 msgid "here."
 msgstr "hier."
@@ -2752,7 +2755,7 @@ msgid "Data"
 msgstr "Daten"
 
 msgid "No IPsec security associations."
-msgstr ""
+msgstr "Keine IPsec Sicherheitsverbindungen."
 
 msgid "SPD"
 msgstr "SPD"
@@ -2761,13 +2764,13 @@ msgid "Direction"
 msgstr "Richtung"
 
 msgid "Tunnel endpoints"
-msgstr ""
+msgstr "Tunnelendpunkte"
 
 msgid "incoming (as seen by firewall)"
-msgstr ""
+msgstr "eingehend (wie von der Firewall gesehen)"
 
 msgid "outgoing (as seen by firewall)"
-msgstr ""
+msgstr "ausgehend (wie von der Firewall gesehen)"
 
 msgid "No IPsec security policies."
 msgstr "Keine IPsec Sicherheitsrichtlinien."
@@ -2809,7 +2812,7 @@ msgstr "DHCP"
 
 #, php-format
 msgid "Last %s DHCP service log entries"
-msgstr ""
+msgstr "Letzte %s Protokolleinträge des DHCP Dienstes"
 
 msgid "Cannot resolve"
 msgstr "Kann nicht aufgelöst werden"
@@ -2832,14 +2835,14 @@ msgstr ""
 
 #, php-format
 msgid "Last %s firewall log entries."
-msgstr ""
+msgstr "Letzte %s Firewallprotokolleinträge."
 
 msgid "matched log entries."
-msgstr ""
+msgstr "entsprechende Protokolleinträge."
 
 #, php-format
 msgid "Max(%s)"
-msgstr ""
+msgstr "Max(%s)"
 
 msgid "Act"
 msgstr "Reagieren"
@@ -2886,7 +2889,7 @@ msgstr "Firewall (Dynamische Ansicht)"
 
 #, php-format
 msgid "Last %s records"
-msgstr ""
+msgstr "Letzte %s Aufzeichnungen"
 
 msgid "Pause"
 msgstr "Pause"
@@ -2923,7 +2926,7 @@ msgstr ""
 
 #, php-format
 msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)."
-msgstr ""
+msgstr "Dies ist eine Zusammenfassung der letzten %1$s Zeilen des Firewallprotokolls (Max %2$s)."
 
 msgid "NOTE: IE8 users must enable compatibility view."
 msgstr ""
@@ -2933,7 +2936,7 @@ msgstr "Gateways"
 
 #, php-format
 msgid "Last %s  IPsec log entries"
-msgstr ""
+msgstr "Letzte %s IPsec Protokolleinträge"
 
 msgid "NTP"
 msgstr "NTP"
@@ -2947,31 +2950,31 @@ msgid "Last %s OpenVPN log entries"
 msgstr ""
 
 msgid "PPTP Logins"
-msgstr ""
+msgstr "PPTP Anmeldungen"
 
 msgid "PPTP Raw"
 msgstr ""
 
 msgid "PPPoE Logins"
-msgstr ""
+msgstr "PPPoE Anmeldungen"
 
 msgid "PPPoE Raw"
 msgstr ""
 
 msgid "L2TP Logins"
-msgstr ""
+msgstr "L2TP Anmeldungen"
 
 msgid "L2TP Raw"
 msgstr ""
 
 msgid "Normal View"
-msgstr ""
+msgstr "Standardansicht"
 
 msgid "Dynamic View"
 msgstr "Dynamische Ansicht"
 
 msgid "Summary View"
-msgstr ""
+msgstr "Zusammengefasste Ansicht"
 
 msgid "Routing"
 msgstr "Routing"
@@ -2999,7 +3002,7 @@ msgstr "Proxy"
 # File: src/www/diag_logs_proxy.php, line: 59
 #, php-format
 msgid "Last %s log entries"
-msgstr ""
+msgstr "Letzte %s Protokolleinträge"
 
 msgid "Load Balancer"
 msgstr ""
@@ -3012,7 +3015,7 @@ msgid "Reset Log Files"
 msgstr "Protokolldateien zurücksetzen"
 
 msgid "The log files have been reset."
-msgstr ""
+msgstr "Die Protokolldatei wurde zurückgesetzt"
 
 msgid "A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #1."
 msgstr ""
@@ -3048,13 +3051,13 @@ msgid "Hint: This is only the number of log entries displayed in the GUI. It doe
 msgstr ""
 
 msgid ""
-"Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default "
-"this is approximately 500KB per log file, and there are nearly 20 such log files."
+"Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this "
+"is approximately 500KB per log file, and there are nearly 20 such log files."
 msgstr ""
 
 msgid ""
-"NOTE: Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to "
-"set the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "
+"NOTE: Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set "
+"the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "
 msgstr ""
 
 msgid "Be aware that increasing this value increases every log file size, so disk usage will increase significantly."
@@ -3094,8 +3097,8 @@ msgid "Show raw filter logs"
 msgstr "Zeige unverarbeitete Filterprotokolle"
 
 msgid ""
-"Hint: If this is checked, filter logs are shown as generated by the packet filter, without any formatting. This will reveal more detailed information, but it is "
-"more difficult to read."
+"Hint: If this is checked, filter logs are shown as generated by the packet filter, without any formatting. This will reveal more detailed information, but it is more "
+"difficult to read."
 msgstr ""
 
 msgid "Show the applied rule description below or in the firewall log rows."
@@ -3135,8 +3138,8 @@ msgid "IP Protocol"
 msgstr "IP Protokoll"
 
 msgid ""
-"This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type "
-"is not found on the chosen interface, the other type will be tried."
+"This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is "
+"not found on the chosen interface, the other type will be tried."
 msgstr ""
 
 msgid "Enable Remote Logging"
@@ -3182,8 +3185,8 @@ msgid "Wireless events"
 msgstr ""
 
 msgid ""
-"syslog sends UDP datagrams to port 514 on the specified remote syslog server, unless another port is specified. Be sure to set syslogd on the remote server to "
-"accept syslog messages from"
+"syslog sends UDP datagrams to port 514 on the specified remote syslog server, unless another port is specified. Be sure to set syslogd on the remote server to accept "
+"syslog messages from"
 msgstr ""
 
 msgid "VPN"
@@ -3271,13 +3274,13 @@ msgid ""
 msgstr ""
 
 msgid "If you leave this field blank, all packets on the specified interface will be captured."
-msgstr ""
+msgstr "Falls Sie das Feld leer lassen, werden alle Pakete auf dem angegebenen Interface aufgezeichnet."
 
 msgid "Port"
 msgstr "Port"
 
 msgid "Leave blank if you do not want to filter by port."
-msgstr ""
+msgstr "Lassen Sie es leer wenn Sie nicht nach den Port filtern wollen."
 
 msgid "The port can be either the source or destination port. The packet capture will look for this port in either field."
 msgstr ""
@@ -3287,8 +3290,8 @@ msgstr "Paketlänge"
 
 msgid "The Packet length is the number of bytes of each packet that will be captured. Default value is 0, which will capture the entire frame regardless of its size."
 msgstr ""
-"Die Paketlänge ist die Anzahl an Bytes eines jeden Paketes, das aufgezeichnet wird. Der Standardwert ist 0, wodurch jeder Frame unabhängig seiner Größe "
-"aufgezeichnet wird."
+"Die Paketlänge ist die Anzahl an Bytes eines jeden Paketes, das aufgezeichnet wird. Der Standardwert ist 0, wodurch jeder Frame unabhängig seiner Größe aufgezeichnet "
+"wird."
 
 msgid "Count"
 msgstr "Anzahl"
@@ -3333,13 +3336,13 @@ msgid "View Capture"
 msgstr "Aufzeichnung anzeigen"
 
 msgid "The packet capture file was last updated:"
-msgstr ""
+msgstr "Die Paketaufzeichnungsdatei wurde zuletzt aktualisiert:"
 
 msgid "Packet Capture is running."
 msgstr "Paketaufzeichnung läuft."
 
 msgid "Packet Capture stopped."
-msgstr ""
+msgstr "Paketaufzeichnung angehalten."
 
 msgid "Packets Captured:"
 msgstr "Aufgezeichnete Pakete:"
@@ -3348,37 +3351,37 @@ msgid "Diagnostics: pfInfo"
 msgstr "Diagnose: pfInfo"
 
 msgid "Gathering PF information, please wait..."
-msgstr ""
+msgstr "Sammle PF Information, bitte warten..."
 
 #, php-format
 msgid "Count must be between 1 and %s"
 msgstr "Anzahl muss zwischen 1 und %s sein"
 
 msgid "When using IPv4, the target host must be an IPv4 address or hostname."
-msgstr ""
+msgstr "Wenn Sie IPv4 verwenden, muss der Zielhost eine IPv4 Adresse oder ein Hostname sein."
 
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
-msgstr ""
+msgstr "Wenn Sie IPv6 verwenden, muss der Zielhost eine IPv6 Adresse oder ein Hostname sein."
 
 msgid "Ping output"
-msgstr ""
+msgstr "Pingausgabe"
 
 msgid "The state table has been flushed successfully."
-msgstr ""
+msgstr "Die Statustabelle wurde erfolgreich geleert."
 
 msgid "The source tracking table has been flushed successfully."
-msgstr ""
+msgstr "Die Quellverfolgungstabelle wurde erfolgreich geleert."
 
 msgid "Reset state"
-msgstr ""
+msgstr "Status Zurücksetzen"
 
 msgid "Firewall state table"
 msgstr "Firewall Statustabelle"
 
 msgid ""
 "Resetting the state tables will remove all entries from the corresponding tables. This means that all open connections will be broken and will have to be re-"
-"established. This may be necessary after making substantial changes to the firewall and/or NAT rules, especially if there are IP protocol mappings (e.g. for PPTP "
-"or IPv6) with open connections."
+"established. This may be necessary after making substantial changes to the firewall and/or NAT rules, especially if there are IP protocol mappings (e.g. for PPTP or "
+"IPv6) with open connections."
 msgstr ""
 
 msgid "The firewall will normally leave the state tables intact when changing rules."
@@ -3388,15 +3391,17 @@ msgid "NOTE: If you reset the firewall state table, the browser session may appe
 msgstr ""
 
 msgid "Firewall Source Tracking"
-msgstr ""
+msgstr "Firewallquellverfolgung"
 
 msgid ""
-"Resetting the source tracking table will remove all source/destination associations. This means that the \"sticky\" source/destination association will be cleared "
-"for all clients."
+"Resetting the source tracking table will remove all source/destination associations. This means that the \"sticky\" source/destination association will be cleared for "
+"all clients."
 msgstr ""
+"Durch das Zurücksetzen der Quellverfolgungstabelle gehen sämtliche Quell-/Zielverbindungen verloren. Das heißt, dass alle \"klebrigen\" Quell-/Zielverbindungen für "
+"alle Clients zurückgesetzt werden."
 
 msgid "This does not clear active connection states, only source tracking."
-msgstr ""
+msgstr "Dies setzt keine aktiven Verbindungsstatus zurück, nur Quellverfolgung."
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -3411,19 +3416,19 @@ msgid "Enable this to attempt to resolve names when displaying the tables."
 msgstr ""
 
 msgid "Number of rows"
-msgstr ""
+msgstr "Anzahl an Zeilen"
 
 msgid "all"
 msgstr "alle"
 
 msgid "Select how many rows to display."
-msgstr ""
+msgstr "Wählen Sie aus, wie viele Zeilen angezeigt werden sollen."
 
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
 msgid "Update"
-msgstr ""
+msgstr "Aktualisierung"
 
 msgid "By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser."
 msgstr ""
@@ -3432,7 +3437,7 @@ msgid "Gathering data, please wait..."
 msgstr ""
 
 msgid "S.M.A.R.T. Monitor Tools"
-msgstr ""
+msgstr "S.M.A.R.T. Überwachungswerkzeuge"
 
 msgid "PASSED"
 msgstr ""
@@ -3457,7 +3462,7 @@ msgid "Config"
 msgstr "Konfiguration"
 
 msgid "Test email"
-msgstr ""
+msgstr "Test-E-Mail"
 
 #, php-format
 msgid "Send test email to %s"
@@ -3473,10 +3478,10 @@ msgid "Info type"
 msgstr "Infotyp"
 
 msgid "Health"
-msgstr ""
+msgstr "Gesundheit"
 
 msgid "SMART Capabilities"
-msgstr ""
+msgstr "SMART-Fähigkeiten"
 
 msgid "Attributes"
 msgstr "Attribute"
@@ -3491,7 +3496,7 @@ msgid "View"
 msgstr "Ansicht"
 
 msgid "Perform Self-tests"
-msgstr ""
+msgstr "Selbsttest ausführen"
 
 msgid "Test type"
 msgstr "Testtyp"
@@ -3500,10 +3505,10 @@ msgid "Offline"
 msgstr "Offline"
 
 msgid "Short"
-msgstr ""
+msgstr "Kurz"
 
 msgid "Long"
-msgstr ""
+msgstr "Lang"
 
 msgid "Conveyance (ATA Disks Only)"
 msgstr ""
@@ -3512,7 +3517,7 @@ msgid "View Logs"
 msgstr "Protokolle anzeigen"
 
 msgid "Log type"
-msgstr ""
+msgstr "Protokolltyp"
 
 msgid "Error"
 msgstr "Fehler"
@@ -3551,7 +3556,7 @@ msgid "By Destination IP"
 msgstr "durch Ziel IP"
 
 msgid "Total per IP"
-msgstr ""
+msgstr "Gesamt per IP"
 
 msgid "By IP Pair"
 msgstr "durch IP Paar"
@@ -3566,19 +3571,19 @@ msgid "Diagnostics: pfTop"
 msgstr "Diagnose: pfTop"
 
 msgid "View type:"
-msgstr ""
+msgstr "Ansichtstyp:"
 
 msgid "Sort type:"
 msgstr "Sortiertyp:"
 
 msgid "Number of States:"
-msgstr ""
+msgstr "Anzahl an Status:"
 
 msgid "Default"
 msgstr "Standard"
 
 msgid "Label"
-msgstr ""
+msgstr "Etikett"
 
 msgid "Rules"
 msgstr "Regeln"
@@ -3605,16 +3610,16 @@ msgid "Peak"
 msgstr "Peak"
 
 msgid "Packet"
-msgstr ""
+msgstr "Paket"
 
 msgid "Source Port"
 msgstr "Quellport"
 
 msgid "Gathering pfTOP activity, please wait..."
-msgstr ""
+msgstr "Sammle pfTOP-Aktivität, bitte warten..."
 
 msgid "Tables"
-msgstr ""
+msgstr "Tabellen"
 
 msgid "The bogons database has been updated."
 msgstr ""
@@ -3623,7 +3628,7 @@ msgid " the latest bogon data."
 msgstr " die neuesten Bogon Daten"
 
 msgid "No entries exist in this table."
-msgstr ""
+msgstr "Es existieren eine Einträge in dieser Tabelle."
 
 msgid "entries in this table."
 msgstr "Einträge in dieser Tabelle."
@@ -3635,31 +3640,32 @@ msgid "Test Port"
 msgstr ""
 
 msgid "Please enter a valid IP or hostname."
-msgstr ""
+msgstr "Bitte geben Sie eine gültige IP oder einen gültigen Hostnamen ein."
 
 msgid "Please enter a valid port number."
-msgstr ""
+msgstr "Bitte geben Sie eine gültige Portnummer ein."
 
 msgid "Please enter a valid source port number, or leave the field blank."
 msgstr ""
 
 msgid "You cannot connect to an IPv4 address using IPv6."
-msgstr ""
+msgstr "Sie können sich nicht mittels einer IPv6 Adresse mit IPv4 verbinden."
 
 msgid "You cannot connect to an IPv6 address using IPv4."
-msgstr ""
+msgstr "Sie können sich nicht mittels einer IPv4 Adresse mit IPv6 verbinden."
 
 msgid ""
-"This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function "
-"for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
+"This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for "
+"UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
 msgstr ""
+"Diese Seite erlaubt die Ausführung eines simplen TCP Verbindungstests um festzustellen, ob der Host erreichbar ist und Verbindungen am angegebenen Port akzeptiert. "
+"Dieser Test funktioniert nicht mit UDP, da es keinen verlässlichen Weg zur Erkennung gibt, ob ein UDP Port Verbindungen akzeptiert."
 
-msgid ""
-"No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
+msgid "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
 msgstr ""
 
 msgid "This should typically be left blank."
-msgstr ""
+msgstr "Dies sollte üblicherweise leer gelassen werden."
 
 msgid "Show Remote Text"
 msgstr ""
@@ -3674,8 +3680,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 msgid ""
-"If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, <br />it will result in an error. For example if you force IPv4 "
-"and use a hostname that only returns an AAAA IPv6 IP address, it will not work."
+"If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, <br />it will result in an error. For example if you force IPv4 and "
+"use a hostname that only returns an AAAA IPv6 IP address, it will not work."
 msgstr ""
 
 msgid "Port Test Results"
@@ -3695,13 +3701,13 @@ msgid "Maximum number of hops must be between 1 and %s"
 msgstr ""
 
 msgid "Maximum number of hops"
-msgstr ""
+msgstr "Maximale Anzahl an Hops"
 
 msgid "Reverse Address Lookup"
 msgstr ""
 
 msgid "Use ICMP"
-msgstr ""
+msgstr "Benutze ICMP"
 
 msgid "Note: "
 msgstr "Hinweis: "
@@ -3713,13 +3719,13 @@ msgid "Using a source interface/IP address that does not match selected type (IP
 msgstr ""
 
 msgid "Traceroute output"
-msgstr ""
+msgstr "Traceroute Ausgabe"
 
 msgid "Firewall: EasyRule"
-msgstr "Firewall: EasyRule"
+msgstr "Firewall: Einfache Regel"
 
 msgid "Message"
-msgstr ""
+msgstr "Nachricht"
 
 msgid ""
 "This is the Easy Rule status page, mainly used to display errors when adding rules. If you are seeing this, there apparently was not an error, and you navigated to "
@@ -3730,13 +3736,13 @@ msgid "System Logs, Firewall Tab"
 msgstr ""
 
 msgid "This page is meant to be called from the block/pass buttons on the Firewall Logs page"
-msgstr ""
+msgstr "Diese Seite ist dazu gedacht, von Blockieren/Erlauben Buttons von der Firewallprotokollseite aufgerufen zu werden"
 
 msgid "Help for items on this page"
-msgstr ""
+msgstr "Hilfe für Punkte auf dieser Seite"
 
 msgid "Save Settings"
-msgstr ""
+msgstr "Einstellungen Speichern"
 
 #, php-format
 msgid "Cannot delete alias. Currently in use by %s"
@@ -3749,10 +3755,10 @@ msgid "Bulk import aliases from list"
 msgstr "Massenimport von Aliase von einer Liste"
 
 msgid "The alias list has been changed."
-msgstr ""
+msgstr "Die Aliasliste wurde geändert."
 
 msgid "You must apply the changes in order for them to take effect."
-msgstr ""
+msgstr "Sie müssen die Änderungen anwenden, damit diese in Kraft treten."
 
 msgid "Ports"
 msgstr "Ports"
@@ -3771,9 +3777,9 @@ msgstr "Wollen Sie diesen Alias wirklich löschen? Alle Elemente die ihn nutzen 
 
 msgid ""
 "Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port "
-"changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to "
-"the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid "
-"and skipped."
+"changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the "
+"list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and "
+"skipped."
 msgstr ""
 "Aliase agieren als Platzhalter für echte Hosts, Netzwerke oder Ports. Diese können dazu verwendet werden, die Anzahl der Änderungen zu minimieren, wenn ein Host, "
 "Netzwerk oder Port geändert wird. Sie können den Namen eines Alias anstatt des Hosts, Netzwerks oder Ports in allen Feldern mit einem roten Hintergrund. Falls ein "
@@ -3787,20 +3793,21 @@ msgid "Vertical bars (|) at start or end, or double in the middle of description
 msgstr ""
 
 msgid "Reserved word used for alias name."
-msgstr ""
+msgstr "Ein reserviertes Wort wurde für einen Aliasnamen benutzt."
 
+# see information some lines later for rules
 msgid "The alias name must be less than 32 characters long and may only consist of the characters"
-msgstr ""
+msgstr "Der Aliasname muss kürzer als 32 Zeichen sein und darf nur aus Buchstaben, Zahlen und Unterstrichen bestehen"
 
 msgid "An alias with this name already exists."
 msgstr "Ein Alias mit diesem Namen existiert bereits."
 
 #, php-format
 msgid "Cannot use a reserved keyword as alias name %s"
-msgstr ""
+msgstr "Es ist nicht möglich, ein reserviertes Wort als Aliasnamen zu benutzen %s"
 
 msgid "An interface description with this name already exists."
-msgstr ""
+msgstr "Eine Interfacebeschreibung mit diesem Namen existiert bereits."
 
 msgid "You must provide a valid URL."
 msgstr "Sie müssen eine gültige URL eingeben."
@@ -3814,7 +3821,7 @@ msgstr "Eintrag hinzugefügt %s"
 
 #, php-format
 msgid "You must provide a valid URL. Could not fetch usable data from '%s'."
-msgstr ""
+msgstr "Sie müssen eine gültige URL eingeben. Konnte keine Daten von '%s' abrufen."
 
 #, php-format
 msgid "URL '%s' is not valid."
@@ -3854,24 +3861,24 @@ msgid "Port(s)"
 msgstr "Port(s)"
 
 msgid "URL (IPs)"
-msgstr ""
+msgstr "URL (IPs)"
 
 msgid "URL (Ports)"
-msgstr ""
+msgstr "URL (Ports)"
 
 msgid "URL Table (IPs)"
-msgstr ""
+msgstr "URL Tabelle (IPs)"
 
 msgid "URL Table (Ports)"
-msgstr ""
+msgstr "URL Tabelle (Ports)"
 
 msgid "Update Freq. (days)"
-msgstr ""
+msgstr "Aktualisierungsintervall (Tage)"
 
 msgid ""
 "Networks are specified in CIDR format.  Select the CIDR mask that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 "
-"specifies 255.255.255.0, /64 specifies a normal IPv6 network, etc. Hostnames (FQDNs) may also be specified, using a /32 mask for IPv4 or /128 for IPv6. You may "
-"also enter an IP range such as 192.168.1.1-192.168.1.254 and a list of CIDR networks will be derived to fill the range."
+"specifies 255.255.255.0, /64 specifies a normal IPv6 network, etc. Hostnames (FQDNs) may also be specified, using a /32 mask for IPv4 or /128 for IPv6. You may also "
+"enter an IP range such as 192.168.1.1-192.168.1.254 and a list of CIDR networks will be derived to fill the range."
 msgstr ""
 "Netzwerke sind spezifiziert im CIDR Format. Wählen Sie die CIDR-Maske, welche jeden Eintrag betrifft. /32 spezifiziert einen einzelnen IPv4 Host, /128 spezifiziert "
 "einen einzelnen IPv6 Host, /24 spezifiziert 255.255.255.0, /64 spezifiziert ein normales IPv6 Netzwerk, etc. Hostnamen (voll qualifizierte Domainnamen) können auch "
@@ -3879,8 +3886,8 @@ msgstr ""
 "Netzwerken wobei die Bereiche abgeleitet werden um diese zu füllen."
 
 msgid ""
-"Enter as many hosts as you would like.  Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-"
-"resolved and updated. If multiple IPs are returned by a DNS query, all are used."
+"Enter as many hosts as you would like.  Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved "
+"and updated. If multiple IPs are returned by a DNS query, all are used."
 msgstr ""
 
 msgid "Enter as many ports as you wish.  Port ranges can be expressed by separating with a colon."
@@ -3888,8 +3895,7 @@ msgstr ""
 
 #, php-format
 msgid ""
-"Enter as many URLs as you wish. After saving %s will download the URL and import the items into the alias. Use only with small sets of IP addresses (less than "
-"3000)."
+"Enter as many URLs as you wish. After saving %s will download the URL and import the items into the alias. Use only with small sets of IP addresses (less than 3000)."
 msgstr ""
 
 #, php-format
@@ -4091,8 +4097,8 @@ msgid "Virtual IP."
 msgstr ""
 
 msgid ""
-"If you add a 1:1 NAT entry for any of the interface IPs on this system, it will make this system inaccessible on that IP address. i.e. if you use your WAN IP "
-"address, any services on this system (IPsec, OpenVPN server, etc.) using the WAN IP address will no longer function."
+"If you add a 1:1 NAT entry for any of the interface IPs on this system, it will make this system inaccessible on that IP address. i.e. if you use your WAN IP address, "
+"any services on this system (IPsec, OpenVPN server, etc.) using the WAN IP address will no longer function."
 msgstr ""
 
 #, php-format
@@ -4354,8 +4360,8 @@ msgid "Redirect target port"
 msgstr ""
 
 msgid ""
-"Specify the port on the machine with the IP address entered above. In case of a port range, specify the beginning port of the range (the end port will be "
-"calculated automatically)."
+"Specify the port on the machine with the IP address entered above. In case of a port range, specify the beginning port of the range (the end port will be calculated "
+"automatically)."
 msgstr ""
 
 msgid "Hint: this is usually identical to the 'from' port above"
@@ -4525,11 +4531,11 @@ msgstr "automatisches ausgehendes NAT"
 #
 # File: src/www/firewall_nat_out.php, line: 591
 msgid ""
-"If automatic outbound NAT selected, a mapping is automatically created for each interface's subnet (except WAN-type connections) and the rules on \"Mappings\" "
-"section of this page are ignored.<br /><br /> If manual outbound NAT is selected, outbound NAT rules will not be automatically generated and only the mappings you "
-"specify on this page will be used. <br /><br /> If hybrid outbound NAT is selected, mappings you specify on this page will be used, followed by the automatically "
-"generated ones. <br /><br />If disable outbound NAT is selected, no rules will be used. <br /><br />If a target address other than a WAN-type interface's IP "
-"address is used, then depending on the way the WAN connection is setup, a "
+"If automatic outbound NAT selected, a mapping is automatically created for each interface's subnet (except WAN-type connections) and the rules on \"Mappings\" section "
+"of this page are ignored.<br /><br /> If manual outbound NAT is selected, outbound NAT rules will not be automatically generated and only the mappings you specify on "
+"this page will be used. <br /><br /> If hybrid outbound NAT is selected, mappings you specify on this page will be used, followed by the automatically generated ones. "
+"<br /><br />If disable outbound NAT is selected, no rules will be used. <br /><br />If a target address other than a WAN-type interface's IP address is used, then "
+"depending on the way the WAN connection is setup, a "
 msgstr ""
 
 msgid " may also be required."
@@ -4635,8 +4641,7 @@ msgstr ""
 msgid "Random: Selects an address from the translation address pool at random."
 msgstr ""
 
-msgid ""
-"Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source."
+msgid "Source Hash: Uses a hash of the source address to determine the translation address, ensuring that the redirection address is always the same for a given source."
 msgstr ""
 
 msgid "Bitmask: Applies the subnet mask and keeps the last portion identical; 10.0.1.50 -&gt; x.x.x.50."
@@ -4865,14 +4870,14 @@ msgid "Hint:"
 msgstr "Hinweis:"
 
 msgid ""
-"Rules are evaluated on a first-match basis (i.e. the action of the first rule to match a packet will be executed). This means that if you use block rules, you'll "
-"have to pay attention to the rule order. Everything that isn't explicitly passed is blocked by default. "
+"Rules are evaluated on a first-match basis (i.e. the action of the first rule to match a packet will be executed). This means that if you use block rules, you'll have "
+"to pay attention to the rule order. Everything that isn't explicitly passed is blocked by default. "
 msgstr ""
 
 msgid ""
-"Floating rules are evaluated on a first-match basis (i.e. the action of the first rule to match a packet will be executed) only if the 'quick' option is checked on "
-"a rule. Otherwise they will only apply if no other rules match. Pay close attention to the rule order and options chosen. If no rule here matches, the per-"
-"interface or default rules are used. "
+"Floating rules are evaluated on a first-match basis (i.e. the action of the first rule to match a packet will be executed) only if the 'quick' option is checked on a "
+"rule. Otherwise they will only apply if no other rules match. Pay close attention to the rule order and options chosen. If no rule here matches, the per-interface or "
+"default rules are used. "
 msgstr ""
 
 msgid "You can not assign a gateway to a rule that applies to IPv4 and IPv6"
@@ -5018,8 +5023,8 @@ msgid "Choose what to do with packets that match the criteria specified below."
 msgstr ""
 
 msgid ""
-"Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with "
-"block the packet is dropped silently. In either case, the original packet is discarded."
+"Hint: the difference between block and reject is that with reject, a packet (TCP RST or ICMP port unreachable for UDP) is returned to the sender, whereas with block "
+"the packet is dropped silently. In either case, the original packet is discarded."
 msgstr ""
 
 msgid "Quick"
@@ -5091,8 +5096,7 @@ msgstr "Protokolliere Pakete die von dieser Regel behandelt werden"
 msgid "Diagnostics: System logs: Settings"
 msgstr "Diagnose: Systemprotokolle: Einstellungen"
 
-msgid ""
-"Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"
+msgid "Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"
 msgstr ""
 
 msgid "page"
@@ -5192,8 +5196,7 @@ msgid "Works with all IP protocols."
 msgstr ""
 
 msgid ""
-"Proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods. This option includes the functionality of keep state and modulate state "
-"combined."
+"Proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods. This option includes the functionality of keep state and modulate state combined."
 msgstr ""
 
 msgid "Do not use state mechanisms to keep track.  This is only useful if you're doing advanced queueing in certain situations.  Please check the documentation."
@@ -5846,8 +5849,8 @@ msgid "Speed and duplex"
 msgstr ""
 
 msgid ""
-"Here you can explicitly set speed and duplex mode for this interface. WARNING: You MUST leave this set to autoselect (automatically negotiate speed) unless the "
-"port this interface connects to has its speed and duplex forced."
+"Here you can explicitly set speed and duplex mode for this interface. WARNING: You MUST leave this set to autoselect (automatically negotiate speed) unless the port "
+"this interface connects to has its speed and duplex forced."
 msgstr ""
 
 msgid "Static IPv4 configuration"
@@ -5912,8 +5915,8 @@ msgid ""
 "Config File Override &nbsp; &nbsp; "
 msgstr ""
 " <input name=\"adv_dhcp_config_advanced\" type=\"checkbox\" id=\"adv_dhcp_config_advanced\" value=\"\" onclick=\"show_adv_dhcp_config(this)\" />  Fortgeschrittene "
-"&nbsp; &nbsp;  <input name=\"adv_dhcp_config_file_override\" type=\"checkbox\" id=\"adv_dhcp_config_file_override\" value=\"\" onclick="
-"\"show_adv_dhcp_config(this)\" />  Konfigurationsdateiüberladung &nbsp; &nbsp; "
+"&nbsp; &nbsp;  <input name=\"adv_dhcp_config_file_override\" type=\"checkbox\" id=\"adv_dhcp_config_file_override\" value=\"\" onclick=\"show_adv_dhcp_config(this)\" /"
+">  Konfigurationsdateiüberladung &nbsp; &nbsp; "
 
 msgid "Enable DHCP+"
 msgstr "Aktiviere DHCP+"
@@ -5924,8 +5927,7 @@ msgstr ""
 msgid "Status changes on this interface will trigger reconfiguration (if necessary) of the associated PPTP/L2TP link."
 msgstr ""
 
-msgid ""
-"The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification)."
+msgid "The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification)."
 msgstr ""
 
 msgid "Alias IPv4 address"
@@ -5964,9 +5966,9 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The values in this field are DHCP options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />Value Substitutions: {interface}, "
-"{hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted "
-"for none). <br />Some ISPs may require certain options be or not be sent. "
+"The values in this field are DHCP options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />Value Substitutions: {interface}, {hostname}, "
+"{mac_addr_asciiCD}, {mac_addr_hexCD} <br />Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br /"
+">Some ISPs may require certain options be or not be sent. "
 msgstr ""
 
 #
@@ -6012,9 +6014,9 @@ msgstr ""
 # File: src/www/interfaces.php, line: 2106
 # File: src/www/interfaces.php, line: 2351
 msgid ""
-"The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> Value Substitutions in Config "
-"File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or "
-"period) (omitted for none). <br />Some ISPs may require certain options be or not be sent. "
+"The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> Value Substitutions in Config File: "
+"{interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) "
+"(omitted for none). <br />Some ISPs may require certain options be or not be sent. "
 msgstr ""
 
 #
@@ -6074,24 +6076,24 @@ msgstr ""
 
 msgid ""
 "The values in this field are DHCP send options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />Value Substitutions: {interface}, "
-"{hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted "
-"for none). <br />Some DHCP services may require certain options be or not be sent. "
+"{hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for "
+"none). <br />Some DHCP services may require certain options be or not be sent. "
 msgstr ""
 
 msgid "Request Options"
 msgstr ""
 
 msgid ""
-"The values in this field are DHCP request options to be sent when requesting a DHCP lease.  [option [, ...]] <br />Some DHCP services may require certain options "
-"be or not be requested. "
+"The values in this field are DHCP request options to be sent when requesting a DHCP lease.  [option [, ...]] <br />Some DHCP services may require certain options be "
+"or not be requested. "
 msgstr ""
 
 msgid "Script"
 msgstr "Skript"
 
 msgid ""
-"The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received. <br />[/[dirname/"
-"[.../]]filename[.ext]] "
+"The value in this field is the absolute path to a script invoked on certain conditions including when a reply message is received. <br />[/[dirname/[.../]]filename[."
+"ext]] "
 msgstr ""
 
 #
@@ -6137,8 +6139,8 @@ msgstr "<i>ipv6-Prefix</i>"
 #
 # File: src/www/interfaces.php, line: 2298
 msgid ""
-"<a target=\"FreeBSD_DHCP\" href=\"http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD"
-"+Ports#Prefix_interface_statement\">Prefix Interface Statement</a>"
+"<a target=\"FreeBSD_DHCP\" href=\"http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Prefix_interface_statement"
+"\">Prefix Interface Statement</a>"
 msgstr ""
 
 msgid "Prefix Interface "
@@ -6153,8 +6155,8 @@ msgstr ""
 #
 # File: src/www/interfaces.php, line: 2311
 msgid ""
-"<a target=\"FreeBSD_DHCP\" href=\"http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD"
-"+Ports#Authentication_statement\">Authentication Statement</a>"
+"<a target=\"FreeBSD_DHCP\" href=\"http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports#Authentication_statement"
+"\">Authentication Statement</a>"
 msgstr ""
 
 msgid "<i>authname</i>"
@@ -6194,8 +6196,8 @@ msgstr "<i>ablauf</i>"
 #
 # File: src/www/interfaces.php, line: 2346
 msgid ""
-"<a target=\"FreeBSD_DHCP\" href=\"http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports\">Configuration File</"
-"a> Override"
+"<a target=\"FreeBSD_DHCP\" href=\"http://www.freebsd.org/cgi/man.cgi?query=dhcp6c.conf&amp;sektion=5&amp;apropos=0&amp;manpath=FreeBSD+Ports\">Configuration File</a> "
+"Override"
 msgstr ""
 
 msgid "6RD Rapid Deployment"
@@ -6296,8 +6298,7 @@ msgid "Idle timeout"
 msgstr ""
 
 msgid ""
-"If no qualifying outgoing packets are transmitted for the specified number of seconds, the connection is brought down. An idle timeout of zero disables this "
-"feature."
+"If no qualifying outgoing packets are transmitted for the specified number of seconds, the connection is brought down. An idle timeout of zero disables this feature."
 msgstr ""
 
 msgid "Periodic reset"
@@ -6453,8 +6454,8 @@ msgid "Regulatory domain"
 msgstr ""
 
 msgid ""
-"Note: Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings "
-"to work."
+"Note: Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to "
+"work."
 msgstr ""
 
 msgid "Country (listed with country code and regulatory domain)"
@@ -6481,8 +6482,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Note: All wireless networks on this interface will be temporarily brought down when changing regulatory settings.  Some of the regulatory domains or country codes "
-"may not be allowed by some cards.  These settings may not be able to add additional channels that are not already supported."
+"Note: All wireless networks on this interface will be temporarily brought down when changing regulatory settings.  Some of the regulatory domains or country codes may "
+"not be allowed by some cards.  These settings may not be able to add additional channels that are not already supported."
 msgstr ""
 
 msgid "Network-specific wireless configuration"
@@ -6698,8 +6699,7 @@ msgstr ""
 
 msgid "Bogons are prefixes that should never appear in the Internet routing table, and obviously should not appear as the source address in any packets you receive."
 msgstr ""
-"Bogons sind Präfixe die niemals in der Internetroutingtabelle auftauchen sollten und auch nicht als Quelladresse in Paketen verwendet werden sollte, die Sie "
-"empfangen."
+"Bogons sind Präfixe die niemals in der Internetroutingtabelle auftauchen sollten und auch nicht als Quelladresse in Paketen verwendet werden sollte, die Sie empfangen."
 
 msgid "Note: The update frequency can be changed under System->Advanced Firewall/NAT settings."
 msgstr ""
@@ -6895,8 +6895,8 @@ msgid "STP interfaces"
 msgstr ""
 
 msgid ""
-"Enable Spanning Tree Protocol on interface.  The if_bridge(4) driver has support for the IEEE 802.1D Spanning Tree Protocol (STP).  STP is used to detect and "
-"remove loops in a network topology."
+"Enable Spanning Tree Protocol on interface.  The if_bridge(4) driver has support for the IEEE 802.1D Spanning Tree Protocol (STP).  STP is used to detect and remove "
+"loops in a network topology."
 msgstr ""
 "Spanning Tree auf dem Interface aktivieren. Der if_bridge(4) Treiber unterstützt das IEEE 802.1D Spanning Tree Protokoll (STP). STP wird verwendet um Loops in der "
 "Netzwerktopologie zu erkennen und zu entfernen."
@@ -6911,8 +6911,8 @@ msgid "Forward time"
 msgstr ""
 
 msgid ""
-"Set the time that must pass before an interface begins forwarding packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and "
-"the maximum is 30 seconds."
+"Set the time that must pass before an interface begins forwarding packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and the "
+"maximum is 30 seconds."
 msgstr ""
 
 msgid "Hello time"
@@ -6944,8 +6944,8 @@ msgid "Path cost"
 msgstr "Pfadkosten"
 
 msgid ""
-"Set the Spanning Tree path cost of interface to value.  The default is calculated from the link speed.  To change a previously selected path cost back to "
-"automatic, set the cost to 0. The minimum is 1 and the maximum is 200000000."
+"Set the Spanning Tree path cost of interface to value.  The default is calculated from the link speed.  To change a previously selected path cost back to automatic, "
+"set the cost to 0. The minimum is 1 and the maximum is 200000000."
 msgstr ""
 
 msgid "Cache size"
@@ -6975,8 +6975,8 @@ msgid ""
 "Add the interface named by interface as a span port on the bridge.  Span ports transmit a copy of every frame received by the bridge.  This is most useful for "
 "snooping a bridged network passively on another host connected to one of the span ports of the bridge."
 msgstr ""
-"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span Ports senden eine Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
-"nützlichsten für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
+"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span Ports senden eine Kopie jedes Frames, die die Bridge empfängt. Dies kann am nützlichsten "
+"für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
 
 msgid "The span interface cannot be part of the bridge member interfaces."
 msgstr ""
@@ -6985,8 +6985,8 @@ msgid "Edge ports"
 msgstr ""
 
 msgid ""
-"Set interface as an edge port.  An edge port connects directly to end stations and cannot create bridging loops in the network; this allows it to transition "
-"straight to forwarding."
+"Set interface as an edge port.  An edge port connects directly to end stations and cannot create bridging loops in the network; this allows it to transition straight "
+"to forwarding."
 msgstr ""
 
 msgid "Auto Edge ports"
@@ -7161,8 +7161,8 @@ msgid "Route search type"
 msgstr ""
 
 msgid ""
-"For correct operation, the GRE device needs a route to the destination that is less specific than the one over the tunnel.  (Basically, there needs to be a route "
-"to the decapsulating host that does not run over the tunnel, as this would be a loop."
+"For correct operation, the GRE device needs a route to the destination that is less specific than the one over the tunnel.  (Basically, there needs to be a route to "
+"the decapsulating host that does not run over the tunnel, as this would be a loop."
 msgstr ""
 
 msgid "WCCP version"
@@ -7184,8 +7184,8 @@ msgid "delete ifgroupentry"
 msgstr "Interfacegruppeneintrag löschen"
 
 msgid ""
-"Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the "
-"group rules no longer apply to that interface."
+"Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group "
+"rules no longer apply to that interface."
 msgstr ""
 
 msgid "Group name already exists!"
@@ -7251,10 +7251,10 @@ msgid "fec"
 msgstr ""
 
 msgid ""
-"Supports the IEEE 802.3ad Link Aggregation Control Protocol (LACP) and the Marker Protocol.  LACP will negotiate a set of aggregable links with the peer in to one "
-"or more Link Aggregated Groups.  Each LAG is composed of ports of the same speed, set to full-duplex operation.  The traffic will be balanced across the ports in "
-"the LAG with the greatest total speed, in most cases there will only be one LAG which contains all ports.  In the event of changes in physical connectivity, Link "
-"Aggregation will quickly converge to a new configuration."
+"Supports the IEEE 802.3ad Link Aggregation Control Protocol (LACP) and the Marker Protocol.  LACP will negotiate a set of aggregable links with the peer in to one or "
+"more Link Aggregated Groups.  Each LAG is composed of ports of the same speed, set to full-duplex operation.  The traffic will be balanced across the ports in the LAG "
+"with the greatest total speed, in most cases there will only be one LAG which contains all ports.  In the event of changes in physical connectivity, Link Aggregation "
+"will quickly converge to a new configuration."
 msgstr ""
 
 msgid "lacp"
@@ -7262,8 +7262,8 @@ msgstr ""
 
 msgid ""
 "Balances outgoing traffic across the active ports based on hashed protocol header information and accepts incoming traffic from any active port.  This is a static "
-"setup and does not negotiate aggregation with the peer or exchange frames to monitor the link.  The hash includes the Ethernet source and destination address, and, "
-"if available, the VLAN tag, and the IP source and destination address"
+"setup and does not negotiate aggregation with the peer or exchange frames to monitor the link.  The hash includes the Ethernet source and destination address, and, if "
+"available, the VLAN tag, and the IP source and destination address"
 msgstr ""
 
 msgid "loadbalance"
@@ -7404,8 +7404,8 @@ msgid "Configure a NULL Service name"
 msgstr "Einen NULL Dienstnamen konfigurieren"
 
 msgid ""
-"Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the \"Configure NULL\" box to configure a blank "
-"Service name."
+"Hint: this field can usually be left empty. Service name will not be configured if this field is empty. Check the \"Configure NULL\" box to configure a blank Service "
+"name."
 msgstr ""
 
 msgid "IP Address OR Hostname"
@@ -7418,8 +7418,8 @@ msgid "Enable Dial-on-Demand mode"
 msgstr ""
 
 msgid ""
-"This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. The interface is configured, but the "
-"actual connection of the link is delayed until qualifying outgoing traffic is detected."
+"This option causes the interface to operate in dial-on-demand mode. Do NOT enable if you want your link to be always up. The interface is configured, but the actual "
+"connection of the link is delayed until qualifying outgoing traffic is detected."
 msgstr ""
 
 msgid "Idle Timeout"
@@ -7455,10 +7455,10 @@ msgstr ""
 
 msgid ""
 "This option causes mpd to adjust incoming and outgoing TCP SYN segments so that the requested maximum segment size is not greater than the amount allowed by the "
-"interface MTU. This is necessary in many setups to avoid problems caused by routers that drop ICMP Datagram Too Big messages. Without these messages, the "
-"originating machine sends data, it passes the rogue router then hits a machine that has an MTU that is not big enough for the data. Because the IP Don't Fragment "
-"option is set, this machine sends an ICMP Datagram Too Big message back to the originator and drops the packet. The rogue router drops the ICMP message and the "
-"originator never gets to discover that it must reduce the fragment size or drop the IP Don't Fragment option from its outgoing data."
+"interface MTU. This is necessary in many setups to avoid problems caused by routers that drop ICMP Datagram Too Big messages. Without these messages, the originating "
+"machine sends data, it passes the rogue router then hits a machine that has an MTU that is not big enough for the data. Because the IP Don't Fragment option is set, "
+"this machine sends an ICMP Datagram Too Big message back to the originator and drops the packet. The rogue router drops the ICMP message and the originator never gets "
+"to discover that it must reduce the fragment size or drop the IP Don't Fragment option from its outgoing data."
 msgstr ""
 
 msgid "ShortSeq"
@@ -7644,8 +7644,8 @@ msgid "Do you really want to delete this wireless clone?"
 msgstr ""
 
 msgid ""
-"Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support "
-"this, with limitations on the number that can be created in each mode."
+"Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, "
+"with limitations on the number that can be created in each mode."
 msgstr ""
 
 msgid "This wireless clone cannot be modified because it is still assigned as an interface."
@@ -8144,8 +8144,8 @@ msgstr ""
 
 msgid ""
 "This setting limits the number of concurrent connections to the captive portal HTTP(S) server. This does not set how many users can be logged in to the captive "
-"portal, but rather how many users can load the portal page or authenticate at the same time! Possible setting allowed is: minimum 4 connections per client IP "
-"address, with a total maximum of 100 connections."
+"portal, but rather how many users can load the portal page or authenticate at the same time! Possible setting allowed is: minimum 4 connections per client IP address, "
+"with a total maximum of 100 connections."
 msgstr ""
 
 msgid "minutes"
@@ -8158,8 +8158,8 @@ msgid "Hard timeout"
 msgstr ""
 
 msgid ""
-"Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard "
-"timeout (not recommended unless an idle timeout is set)."
+"Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout "
+"(not recommended unless an idle timeout is set)."
 msgstr ""
 
 msgid "Pass-through credits allowed per MAC address"
@@ -8169,9 +8169,8 @@ msgid "per client MAC address (0 or blank = none)"
 msgstr ""
 
 msgid ""
-"This setting allows passing through the captive portal without authentication a limited number of times per MAC address. Once used up, the client can only log in "
-"with valid credentials until the waiting period specified below has expired. Recommended to set a hard timeout and/or idle timeout when using this for it to be "
-"effective."
+"This setting allows passing through the captive portal without authentication a limited number of times per MAC address. Once used up, the client can only log in with "
+"valid credentials until the waiting period specified below has expired. Recommended to set a hard timeout and/or idle timeout when using this for it to be effective."
 msgstr ""
 
 msgid "Waiting period to restore pass-through credits"
@@ -8181,8 +8180,8 @@ msgid "hours"
 msgstr "Stunden"
 
 msgid ""
-"Clients will have their available pass-through credits restored to the original count after this amount of time since using the first one. This must be above 0 "
-"hours if pass-through credits are enabled."
+"Clients will have their available pass-through credits restored to the original count after this amount of time since using the first one. This must be above 0 hours "
+"if pass-through credits are enabled."
 msgstr ""
 
 msgid "Reset waiting period on attempted access"
@@ -8201,8 +8200,8 @@ msgid "Enable logout popup window"
 msgstr "Pop-up Fenster zum Abmelden aktivieren"
 
 msgid ""
-"If enabled, a popup window will appear when clients are allowed through the captive portal. This allows clients to explicitly disconnect themselves before the idle "
-"or hard timeout occurs."
+"If enabled, a popup window will appear when clients are allowed through the captive portal. This allows clients to explicitly disconnect themselves before the idle or "
+"hard timeout occurs."
 msgstr ""
 
 msgid "Pre-authentication redirect URL"
@@ -8235,8 +8234,8 @@ msgid "Disable concurrent logins"
 msgstr "Deaktiviere konkurrierende Logins"
 
 msgid ""
-"If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to "
-"be disconnected."
+"If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to be "
+"disconnected."
 msgstr ""
 
 msgid "Per-user bandwidth restriction"
@@ -8353,8 +8352,8 @@ msgid "Reauthenticate connected users every minute"
 msgstr ""
 
 msgid ""
-"If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is logged in every minute. If an Access-Reject is received for "
-"a user, that user is disconnected from the captive portal immediately."
+"If reauthentication is enabled, Access-Requests will be sent to the RADIUS server for each user that is logged in every minute. If an Access-Reject is received for a "
+"user, that user is disconnected from the captive portal immediately."
 msgstr ""
 
 msgid "RADIUS MAC authentication"
@@ -8364,8 +8363,8 @@ msgid "Enable RADIUS MAC authentication"
 msgstr "Aktiviere RADIUS MAC Authentifizierung"
 
 msgid ""
-"If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password entered below to the "
-"RADIUS server."
+"If this option is enabled, the captive portal will try to authenticate users by sending their MAC address as the username and the password entered below to the RADIUS "
+"server."
 msgstr ""
 
 msgid "MAC authentication secret"
@@ -8399,8 +8398,8 @@ msgid "Invert Acct-Input-Octets and Acct-Output-Octets"
 msgstr ""
 
 msgid ""
-"When this is enabled, data counts for RADIUS accounting packets will be taken from the client perspective, not the NAS. Acct-Input-Octets will represent download, "
-"and Acct-Output-Octets will represent upload."
+"When this is enabled, data counts for RADIUS accounting packets will be taken from the client perspective, not the NAS. Acct-Input-Octets will represent download, and "
+"Acct-Output-Octets will represent upload."
 msgstr ""
 
 msgid "NAS Identifier"
@@ -8449,9 +8448,9 @@ msgstr "HTTPS Servername"
 
 #, php-format
 msgid ""
-"This name will be used in the form action for the HTTPS POST and should match the Common Name (CN) in your certificate (otherwise, the client browser will most "
-"likely display a security warning). Make sure captive portal clients can resolve this name in DNS and verify on the client that the IP resolves to the correct "
-"interface IP on %s."
+"This name will be used in the form action for the HTTPS POST and should match the Common Name (CN) in your certificate (otherwise, the client browser will most likely "
+"display a security warning). Make sure captive portal clients can resolve this name in DNS and verify on the client that the IP resolves to the correct interface IP "
+"on %s."
 msgstr ""
 
 msgid "SSL Certificate"
@@ -8483,8 +8482,8 @@ msgstr ""
 
 #, php-format
 msgid ""
-"Upload an HTML/PHP file for the portal page here (leave blank to keep the current one). Make sure to include a form (POST to %1$s) with a submit button (%2$s) and "
-"a hidden field with %3$s and %4$s. Include the %5$s and %6$s and/or %7$s input fields if authentication is enabled, otherwise it will always fail."
+"Upload an HTML/PHP file for the portal page here (leave blank to keep the current one). Make sure to include a form (POST to %1$s) with a submit button (%2$s) and a "
+"hidden field with %3$s and %4$s. Include the %5$s and %6$s and/or %7$s input fields if authentication is enabled, otherwise it will always fail."
 msgstr ""
 
 msgid "Example code for the form:"
@@ -8545,13 +8544,13 @@ msgstr ""
 #
 # File: src/www/services_captiveportal_filemanager.php, line: 239
 msgid ""
-"Any files that you upload here with the filename prefix of captiveportal- will be made available in the root directory of the captive portal HTTP(S) server. You "
-"may reference them directly from your portal page HTML code using relative paths. Example: you've uploaded an image with the name 'captiveportal-test.jpg' using "
-"the file manager. Then you can include it in your portal page like this:"
+"Any files that you upload here with the filename prefix of captiveportal- will be made available in the root directory of the captive portal HTTP(S) server. You may "
+"reference them directly from your portal page HTML code using relative paths. Example: you've uploaded an image with the name 'captiveportal-test.jpg' using the file "
+"manager. Then you can include it in your portal page like this:"
 msgstr ""
 "Jede Datei, die Sie mit den Dateinamenspräfix captiveportal- hochladen, wird über das Rootverzeichnis des Captive Portal HTTP(S)-Server zugänglich gemacht. Sie können "
-"diese direkt aus dem HTML Code Ihrer Portalseite mit relativen Pfaden referenzieren. Beispiel: Wenn Sie eine Bilddatei mit dem Namen 'captiveportal-test.jpg' mit "
-"dem Dateimanager hochgeladen haben, dann können Sie diese folgend in Ihrer Portalseite verwenden:"
+"diese direkt aus dem HTML Code Ihrer Portalseite mit relativen Pfaden referenzieren. Beispiel: Wenn Sie eine Bilddatei mit dem Namen 'captiveportal-test.jpg' mit dem "
+"Dateimanager hochgeladen haben, dann können Sie diese folgend in Ihrer Portalseite verwenden:"
 
 msgid "In addition, you can also upload .php files for execution.  You can pass the filename to your custom page from the initial page by using text similar to:"
 msgstr ""
@@ -8567,8 +8566,8 @@ msgid "Do you really want to delete this address?"
 msgstr "Wollen sie diese Adresse wirklich löschen?"
 
 msgid ""
-"Adding allowed IP addresses will allow IP access to/from these addresses through the captive portal without being taken to the portal page. This can be used for a "
-"web server serving images for the portal page or a DNS server on another network, for example."
+"Adding allowed IP addresses will allow IP access to/from these addresses through the captive portal without being taken to the portal page. This can be used for a web "
+"server serving images for the portal page or a DNS server on another network, for example."
 msgstr ""
 "Das Hinzufügen von erlaubten IP Adressen ermöglicht den Zugriff zu/von diesen Adressen ohne zur Portalseite weitergeleitet zu werden. Dies kann zum Beispiel für einen "
 "Webserver genutzt werden, die Bilder für die Portalseite ausliefert oder auch für einen DNS Server in einem anderen Netzwerk."
@@ -8764,8 +8763,8 @@ msgstr ""
 
 msgid ""
 "Create, generate and activate Rolls with Vouchers that allow access through the captive portal for the configured time. Once a voucher is activated, its clock is "
-"started and runs uninterrupted until it expires. During that time, the voucher can be re-used from the same or a different computer. If the voucher is used again "
-"from another computer, the previous session is stopped."
+"started and runs uninterrupted until it expires. During that time, the voucher can be re-used from the same or a different computer. If the voucher is used again from "
+"another computer, the previous session is stopped."
 msgstr ""
 
 msgid "Enable Voucher support first using the checkbox above and hit Save at the bottom."
@@ -8787,24 +8786,23 @@ msgid "Voucher private key"
 msgstr "Privater Voucherschlüssel"
 
 msgid ""
-"Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is only used to generate encrypted vouchers and doesn't need to be available if the "
-"vouchers have been generated offline."
+"Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is only used to generate encrypted vouchers and doesn't need to be available if the vouchers "
+"have been generated offline."
 msgstr ""
 
 msgid "Character set"
 msgstr "Zeichensatz"
 
 msgid ""
-"Tickets are generated with the specified character set. It should contain printable characters (numbers, lower case and upper case letters) that are hard to "
-"confuse with others. Avoid e.g. 0/O and l/1."
+"Tickets are generated with the specified character set. It should contain printable characters (numbers, lower case and upper case letters) that are hard to confuse "
+"with others. Avoid e.g. 0/O and l/1."
 msgstr ""
 
 msgid "of Roll Bits"
 msgstr ""
 
 msgid ""
-"Reserves a range in each voucher to store the Roll # it belongs to. Allowed range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the RSA key "
-"size."
+"Reserves a range in each voucher to store the Roll # it belongs to. Allowed range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the RSA key size."
 msgstr ""
 
 msgid "of Ticket Bits"
@@ -9148,13 +9146,12 @@ msgstr ""
 msgid "DNS servers"
 msgstr "DNS Server"
 
-msgid ""
-"NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page."
+msgid "NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page."
 msgstr ""
 
 msgid ""
-"The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your "
-"network. Type \"none\" for no gateway assignment."
+"The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. "
+"Type \"none\" for no gateway assignment."
 msgstr ""
 
 msgid "Domain name"
@@ -9191,8 +9188,8 @@ msgid "Failover peer IP:"
 msgstr "Failover Peer IP:"
 
 msgid ""
-"Leave blank to disable.  Enter the interface IP address of the other machine.  Machines must be using CARP. Interface's advskew determines whether the DHCPd "
-"process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20)."
+"Leave blank to disable.  Enter the interface IP address of the other machine.  Machines must be using CARP. Interface's advskew determines whether the DHCPd process "
+"is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20)."
 msgstr ""
 
 msgid "Static ARP"
@@ -9416,8 +9413,7 @@ msgid "Create an ARP Table Static Entry for this MAC &amp; IP Address pair. "
 msgstr "Erstelle einen statischen ARP Tabelleneintrag für diese MAC- und IP-Adresskombination"
 
 msgid ""
-"The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your "
-"network."
+"The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network."
 msgstr ""
 
 msgid "Destination Server"
@@ -9444,8 +9440,8 @@ msgid "Destination server"
 msgstr "Zielserver"
 
 msgid ""
-"This is the IP address of the server to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests "
-"to DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface."
+"This is the IP address of the server to which DHCP requests are relayed. You can enter multiple server IP addresses, separated by commas. Select \"Proxy requests to "
+"DHCP server on WAN subnet\" to relay DHCP packets to the server that was used on the WAN interface."
 msgstr ""
 
 msgid "The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses"
@@ -9631,8 +9627,8 @@ msgstr ""
 
 #, php-format
 msgid ""
-"If this option is set, %s DNS Forwarder (dnsmasq) will query the DNS servers sequentially in the order specified (<i>System - General Setup - DNS Servers</i>), "
-"rather than all at once in parallel. "
+"If this option is set, %s DNS Forwarder (dnsmasq) will query the DNS servers sequentially in the order specified (<i>System - General Setup - DNS Servers</i>), rather "
+"than all at once in parallel. "
 msgstr ""
 
 msgid "Require domain"
@@ -9640,8 +9636,8 @@ msgstr ""
 
 #, php-format
 msgid ""
-"If this option is set, %s DNS Forwarder (dnsmasq) will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  If "
-"the name is not known from /etc/hosts or DHCP then a \"not found\" answer is returned. "
+"If this option is set, %s DNS Forwarder (dnsmasq) will not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  If the "
+"name is not known from /etc/hosts or DHCP then a \"not found\" answer is returned. "
 msgstr ""
 
 msgid "Do not forward private reverse lookups"
@@ -9649,9 +9645,9 @@ msgstr ""
 
 #, php-format
 msgid ""
-"If this option is set, %s DNS Forwarder (dnsmasq) will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers.  Any "
-"entries in the Domain Overrides section forwarding private \"n.n.n.in-addr.arpa\" names to a specific server are still forwarded. If the IP to name is not known "
-"from /etc/hosts, DHCP or a specific domain override then a \"not found\" answer is immediately returned. "
+"If this option is set, %s DNS Forwarder (dnsmasq) will not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers.  Any entries "
+"in the Domain Overrides section forwarding private \"n.n.n.in-addr.arpa\" names to a specific server are still forwarded. If the IP to name is not known from /etc/"
+"hosts, DHCP or a specific domain override then a \"not found\" answer is immediately returned. "
 msgstr ""
 
 msgid "Listen Port"
@@ -9661,8 +9657,8 @@ msgid "The port used for responding to DNS queries. It should normally be left b
 msgstr ""
 
 msgid ""
-"Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other "
-"interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address."
+"Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface "
+"IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address."
 msgstr ""
 
 msgid "Strict Interface Binding"
@@ -9684,9 +9680,9 @@ msgstr ""
 #, php-format
 msgid ""
 "If the DNS forwarder is enabled, the DHCP service (if enabled) will automatically serve the LAN IP address as a DNS server to DHCP clients so they will use the "
-"forwarder. The DNS forwarder will use the DNS servers entered in %sSystem: General setup%s or those obtained via DHCP or PPP on WAN if the &quot;Allow DNS server "
-"list to be overridden by DHCP/PPP on WAN&quot; is checked. If you don't use that option (or if you use a static IP address on WAN), you must manually specify at "
-"least one DNS server on the %sSystem: General setup%s page."
+"forwarder. The DNS forwarder will use the DNS servers entered in %sSystem: General setup%s or those obtained via DHCP or PPP on WAN if the &quot;Allow DNS server list "
+"to be overridden by DHCP/PPP on WAN&quot; is checked. If you don't use that option (or if you use a static IP address on WAN), you must manually specify at least one "
+"DNS server on the %sSystem: General setup%s page."
 msgstr ""
 
 msgid "Host Overrides"
@@ -10000,8 +9996,8 @@ msgid "Threshold"
 msgstr ""
 
 msgid ""
-"Defines the TTL threshold for  the  network  interface.  Packets with  a lower TTL than the threshold value will be ignored. This setting is optional, and by "
-"default the threshold is 1."
+"Defines the TTL threshold for  the  network  interface.  Packets with  a lower TTL than the threshold value will be ignored. This setting is optional, and by default "
+"the threshold is 1."
 msgstr ""
 
 msgid "Network (s)"
@@ -10133,8 +10129,7 @@ msgid "Services > NTP"
 msgstr "Dienste > NTP"
 
 msgid ""
-"to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to "
-"clients."
+"to minimize clock drift if the GPS data is not valid over time. Otherwise ntpd may only use values from the unsynchronized local clock when providing time to clients."
 msgstr ""
 
 msgid "GPS"
@@ -10202,8 +10197,8 @@ msgid "Obscure location in timestamp (default: unobscured)."
 msgstr ""
 
 msgid ""
-"Log the sub-second fraction of the received time stamp (default: Not logged).<br />Note: enabling this will rapidly fill the log, but is useful for tuning Fudge "
-"time 2."
+"Log the sub-second fraction of the received time stamp (default: Not logged).<br />Note: enabling this will rapidly fill the log, but is useful for tuning Fudge time "
+"2."
 msgstr ""
 
 msgid "(1 to 4 charactors)"
@@ -10237,8 +10232,8 @@ msgid "NTP PPS Configuration"
 msgstr "NTP PPS Konfiguration"
 
 msgid ""
-"Devices with a Pulse Per Second output such as radios that receive a time signal from DCF77 (DE), JJY (JP), MSF (GB) or WWVB (US) may be used as a PPS reference "
-"for NTP."
+"Devices with a Pulse Per Second output such as radios that receive a time signal from DCF77 (DE), JJY (JP), MSF (GB) or WWVB (US) may be used as a PPS reference for "
+"NTP."
 msgstr ""
 
 msgid "A serial GPS may also be used, but the serial GPS driver would usually be the better option."
@@ -10531,8 +10526,8 @@ msgid "Network Interfaces"
 msgstr "Netzwerk Interfaces"
 
 msgid ""
-"Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other "
-"interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address."
+"Interface IPs used by the DNS Resolver for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface "
+"IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address."
 msgstr ""
 
 msgid "Outgoing Network Interfaces"
@@ -10622,8 +10617,8 @@ msgid "<b>Allow:</b> This action allows queries from hosts within the netblock d
 msgstr "<b>Erlauben:</b> Diese Aktion erlaubt Anfragen von Hosts im Netzwerkblock darunter."
 
 msgid ""
-"<b>Allow Snoop:</b> This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should "
-"only be configured for your administrative host."
+"<b>Allow Snoop:</b> This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only "
+"be configured for your administrative host."
 msgstr ""
 "<b>Erlaube Snoop<b> Diese Aktion erlaubt rekursiven und nichtrekursiveen Zugang von Hosts im Netzwerkblock, der unten definiert wird. Wird für Cache Snooping "
 "verwendet und sollte idealerweise nur für Ihren administrativen Host konfiguriert werden."
@@ -10671,8 +10666,8 @@ msgstr ""
 
 #, php-format
 msgid ""
-"DNSKEY's are fetched earlier in the validation process when a %sDelegation signer%s is encountered. This helps lower the latency of requests but does utilize a "
-"little more CPU."
+"DNSKEY's are fetched earlier in the validation process when a %sDelegation signer%s is encountered. This helps lower the latency of requests but does utilize a little "
+"more CPU."
 msgstr ""
 
 msgid "Harden Glue"
@@ -10685,8 +10680,8 @@ msgid "Harden DNSSEC data"
 msgstr ""
 
 msgid ""
-"DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone "
-"is made insecure."
+"DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is "
+"made insecure."
 msgstr ""
 
 msgid "Message Cache Size"
@@ -10713,9 +10708,9 @@ msgid "EDNS Buffer Size"
 msgstr "EDNS Puffergröße"
 
 msgid ""
-"Number of bytes size to advertise as the EDNS reassembly buffer size. This is the value that is used in UDP datagrams sent to peers. RFC recommendation is 4096 "
-"(which is the default). If you have fragmentation reassemble problems, usually seen as timeouts, then a value of 1480 should help. The 512 value bypasses most MTU "
-"path problems, but it can generate an excessive amount of TCP fallback."
+"Number of bytes size to advertise as the EDNS reassembly buffer size. This is the value that is used in UDP datagrams sent to peers. RFC recommendation is 4096 (which "
+"is the default). If you have fragmentation reassemble problems, usually seen as timeouts, then a value of 1480 should help. The 512 value bypasses most MTU path "
+"problems, but it can generate an excessive amount of TCP fallback."
 msgstr ""
 
 msgid "Number of queries per thread"
@@ -10738,17 +10733,17 @@ msgid "Maximum TTL for RRsets and messages"
 msgstr ""
 
 msgid ""
-"Configure a maximum Time to live for RRsets and messages in the cache. The default is 86400 seconds (1 day). When the internal TTL expires the cache item is "
-"expired. This can be configured to force the resolver to query for data more often and not trust (very large) TTL values."
+"Configure a maximum Time to live for RRsets and messages in the cache. The default is 86400 seconds (1 day). When the internal TTL expires the cache item is expired. "
+"This can be configured to force the resolver to query for data more often and not trust (very large) TTL values."
 msgstr ""
 
 msgid "Minimum TTL for RRsets and messages"
 msgstr ""
 
 msgid ""
-"Configure a minimum Time to live for RRsets and messages in the cache. The default is 0 seconds. If the minimum value kicks in, the data is cached for longer than "
-"the domain owner intended, and thus less queries are made to look up the data. The 0 value ensures the data in the cache is as the domain owner intended. High "
-"values can lead to trouble as the data in the cache might not match up with the actual data anymore."
+"Configure a minimum Time to live for RRsets and messages in the cache. The default is 0 seconds. If the minimum value kicks in, the data is cached for longer than the "
+"domain owner intended, and thus less queries are made to look up the data. The 0 value ensures the data in the cache is as the domain owner intended. High values can "
+"lead to trouble as the data in the cache might not match up with the actual data anymore."
 msgstr ""
 
 msgid "TTL for Host cache entries"
@@ -10773,9 +10768,9 @@ msgid "Unwanted Reply Threshold"
 msgstr ""
 
 msgid ""
-"If enabled, a total number of unwanted replies is kept track of in every thread. When it reaches the threshold, a defensive action is taken and a warning is "
-"printed to the log file. This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison. The default is disabled, but if "
-"enabled a value of 10 million is suggested."
+"If enabled, a total number of unwanted replies is kept track of in every thread. When it reaches the threshold, a defensive action is taken and a warning is printed "
+"to the log file. This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison. The default is disabled, but if enabled a value "
+"of 10 million is suggested."
 msgstr ""
 
 msgid "Log level verbosity"
@@ -11449,15 +11444,14 @@ msgid "TCP port"
 msgstr "TCP Port"
 
 msgid ""
-"Enter a custom port number for the webConfigurator above if you want to override the default (80 for HTTP, 443 for HTTPS). Changes will take effect immediately "
-"after save."
+"Enter a custom port number for the webConfigurator above if you want to override the default (80 for HTTP, 443 for HTTPS). Changes will take effect immediately after "
+"save."
 msgstr ""
 
 msgid "Max Processes"
 msgstr ""
 
-msgid ""
-"Enter the number of webConfigurator processes you want to run. This defaults to 2. Increasing this will allow more users/browsers to access the GUI concurrently."
+msgid "Enter the number of webConfigurator processes you want to run. This defaults to 2. Increasing this will allow more users/browsers to access the GUI concurrently."
 msgstr ""
 
 msgid "WebGUI redirect"
@@ -11467,8 +11461,8 @@ msgid "Disable webConfigurator redirect rule"
 msgstr ""
 
 msgid ""
-"When this is unchecked, access to the webConfigurator is always permitted even on port 80, regardless of the listening port configured. Check this box to disable "
-"this automatically added redirect rule. "
+"When this is unchecked, access to the webConfigurator is always permitted even on port 80, regardless of the listening port configured. Check this box to disable this "
+"automatically added redirect rule. "
 msgstr ""
 
 msgid "WebGUI Login Autocomplete"
@@ -11536,8 +11530,8 @@ msgstr "HTTP_REFERER Prüfung deaktivieren"
 
 msgid ""
 "When this is unchecked, access to the webConfigurator is protected against HTTP_REFERER redirection attempts. Check this box to disable this protection if you find "
-"that it interferes with webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on "
-"HTTP_REFERER is available from <a target='_blank' href='http://en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."
+"that it interferes with webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER "
+"is available from <a target='_blank' href='http://en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."
 msgstr ""
 
 #
@@ -11557,8 +11551,7 @@ msgstr ""
 
 #
 # File: src/www/system_advanced_admin.php, line: 513
-msgid ""
-"For more information about XDebug profiling and how to enable it for your requests, please visit http://www.xdebug.org/docs/all_settings#profiler_enable_trigger"
+msgid "For more information about XDebug profiling and how to enable it for your requests, please visit http://www.xdebug.org/docs/all_settings#profiler_enable_trigger"
 msgstr ""
 
 msgid "Secure Shell"
@@ -11617,8 +11610,8 @@ msgid "Enables the first serial port with 115200/8/N/1 by default, or another sp
 msgstr ""
 
 msgid ""
-"Note:  This will redirect the console output and messages to the serial port. You can still access the console menu from the internal video card/keyboard. A "
-"<b>null modem</b> serial cable or adapter is required to use the serial console."
+"Note:  This will redirect the console output and messages to the serial port. You can still access the console menu from the internal video card/keyboard. A <b>null "
+"modem</b> serial cable or adapter is required to use the serial console."
 msgstr ""
 
 msgid "Serial Speed"
@@ -11771,13 +11764,13 @@ msgid "Timeouts for states can be scaled adaptively as the number of state table
 msgstr ""
 
 msgid ""
-"When the number of state entries exceeds this value, adaptive scaling begins.  All timeout values are scaled linearly with factor (adaptive.end - number of "
-"states) / (adaptive.end - adaptive.start)."
+"When the number of state entries exceeds this value, adaptive scaling begins.  All timeout values are scaled linearly with factor (adaptive.end - number of states) / "
+"(adaptive.end - adaptive.start)."
 msgstr ""
 
 msgid ""
-"When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.  This value is used to define the "
-"scale factor, it should not actually be reached (set a lower state limit, see below)."
+"When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.  This value is used to define the scale "
+"factor, it should not actually be reached (set a lower state limit, see below)."
 msgstr ""
 
 msgid "Note:  Leave this blank for the default(0)."
@@ -11833,8 +11826,8 @@ msgid "Disable Negate rule on policy routing rules"
 msgstr ""
 
 msgid ""
-"With Multi-WAN you generally want to ensure traffic reaches directly connected networks and VPN networks when using policy routing. You can disable this for "
-"special purposes but it requires manually creating rules for these networks"
+"With Multi-WAN you generally want to ensure traffic reaches directly connected networks and VPN networks when using policy routing. You can disable this for special "
+"purposes but it requires manually creating rules for these networks"
 msgstr ""
 
 msgid "Aliases Hostnames Resolve Interval"
@@ -11884,15 +11877,15 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The NAT + proxy mode uses a helper program to send packets to the target of the port forward.  It is useful in setups where the interface and/or gateway IP used "
-"for communication with the target cannot be accurately determined at the time the rules are loaded.  Reflection rules are not created for ranges larger than 500 "
-"ports and will not be used for more than 1000 ports total between all port forwards.  Only TCP and UDP protocols are supported."
+"The NAT + proxy mode uses a helper program to send packets to the target of the port forward.  It is useful in setups where the interface and/or gateway IP used for "
+"communication with the target cannot be accurately determined at the time the rules are loaded.  Reflection rules are not created for ranges larger than 500 ports and "
+"will not be used for more than 1000 ports total between all port forwards.  Only TCP and UDP protocols are supported."
 msgstr ""
 
 msgid ""
 "The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward.  It has better scalability, but it must be possible to accurately "
-"determine the interface and gateway IP used for communication with the target at the time the rules are loaded.  There are no inherent limits to the number of "
-"ports other than the limits of the protocols.  All protocols available for port forwards are supported."
+"determine the interface and gateway IP used for communication with the target at the time the rules are loaded.  There are no inherent limits to the number of ports "
+"other than the limits of the protocols.  All protocols available for port forwards are supported."
 msgstr ""
 
 msgid "Individual rules may be configured to override this system setting on a per-rule basis."
@@ -12013,14 +12006,14 @@ msgid "Use sticky connections"
 msgstr ""
 
 msgid ""
-"Successive connections will be redirected to the servers in a round-robin manner with connections from the same source being sent to the same web server. This "
-"'sticky connection' will exist as long as there are states that refer to this connection. Once the states expire, so will the sticky connection. Further "
-"connections from that host will be redirected to the next web server in the round robin. Changing this option will restart the Load Balancing service."
+"Successive connections will be redirected to the servers in a round-robin manner with connections from the same source being sent to the same web server. This 'sticky "
+"connection' will exist as long as there are states that refer to this connection. Once the states expire, so will the sticky connection. Further connections from that "
+"host will be redirected to the next web server in the round robin. Changing this option will restart the Load Balancing service."
 msgstr ""
 
 msgid ""
-"Set the source tracking timeout for sticky connections. By default this is 0, so source tracking is removed as soon as the state expires. Setting this timeout "
-"higher will cause the source/destination relationship to persist for longer periods of time."
+"Set the source tracking timeout for sticky connections. By default this is 0, so source tracking is removed as soon as the state expires. Setting this timeout higher "
+"will cause the source/destination relationship to persist for longer periods of time."
 msgstr ""
 
 msgid "Allow default gateway switching"
@@ -12058,11 +12051,11 @@ msgstr ""
 
 msgid ""
 "The powerd utility monitors the system state and sets various power control options accordingly.  It offers four modes (maximum, minimum, adaptive and hiadaptive) "
-"that can be individually selected while on AC power or batteries. The modes maximum, minimum, adaptive and hiadaptive may be abbreviated max, min, adp, hadp.  "
-"Maximum mode chooses the highest performance values.  Minimum mode selects the lowest performance values to get the most power savings. Adaptive mode attempts to "
-"strike a balance by degrading performance when the system appears idle and increasing it when the system is busy.  It offers a good balance between a small "
-"performance loss for greatly increased power savings.  Hiadaptive mode is alike adaptive mode, but tuned for systems where performance and interactivity are more "
-"important than power consumption.  It raises frequency faster, drops slower and keeps twice lower CPU load."
+"that can be individually selected while on AC power or batteries. The modes maximum, minimum, adaptive and hiadaptive may be abbreviated max, min, adp, hadp.  Maximum "
+"mode chooses the highest performance values.  Minimum mode selects the lowest performance values to get the most power savings. Adaptive mode attempts to strike a "
+"balance by degrading performance when the system appears idle and increasing it when the system is busy.  It offers a good balance between a small performance loss "
+"for greatly increased power savings.  Hiadaptive mode is alike adaptive mode, but tuned for systems where performance and interactivity are more important than power "
+"consumption.  It raises frequency faster, drops slower and keeps twice lower CPU load."
 msgstr ""
 
 msgid "Cryptographic Hardware Acceleration"
@@ -12073,9 +12066,9 @@ msgstr "Kryptografische Hardware"
 
 #, fuzzy
 msgid ""
-"A cryptographic accelerator module will use hardware support to speed up some cryptographic functions on systems which have the chip. Do not enable this option if "
-"you have a Hifn cryptographic acceleration card, as this will take precedence and the Hifn card will not be used. Acceleration should be automatic for IPsec when "
-"using a cipher supported by your chip, such as AES-128. OpenVPN should be set for AES-128-CBC and have cryptodev enabled for hardware acceleration."
+"A cryptographic accelerator module will use hardware support to speed up some cryptographic functions on systems which have the chip. Do not enable this option if you "
+"have a Hifn cryptographic acceleration card, as this will take precedence and the Hifn card will not be used. Acceleration should be automatic for IPsec when using a "
+"cipher supported by your chip, such as AES-128. OpenVPN should be set for AES-128-CBC and have cryptodev enabled for hardware acceleration."
 msgstr ""
 "Ein Kryptografiebeschleunigungsmodul wird Hardwareunterstützung verwenden um die Performance von kryptografischen Funktionen zu erhöhen welche den Chip haben. "
 "Aktivieren Sie diese Option nicht falls Sie eine Hifn Kryptografiebeschleunigungskarte haben, weil diese Option Vorrang hat und diese dann nicht verwendet wird. "
@@ -12097,8 +12090,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"If you do not have a supported thermal sensor chip in your system, this option will have no effect. To unload the selected module, set this option to 'none' and "
-"then reboot."
+"If you do not have a supported thermal sensor chip in your system, this option will have no effect. To unload the selected module, set this option to 'none' and then "
+"reboot."
 msgstr ""
 
 msgid "IP Security"
@@ -12170,8 +12163,8 @@ msgid "hour"
 msgstr "Stunde"
 
 msgid ""
-"This will periodically backup the RRD data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes "
-"will happen to your media."
+"This will periodically backup the RRD data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes will "
+"happen to your media."
 msgstr ""
 
 msgid "Periodic DHCP Leases Backup"
@@ -12229,8 +12222,8 @@ msgstr ""
 #, php-format
 msgid ""
 "Device polling is a technique that lets the system periodically poll network devices for new data instead of relying on interrupts. This prevents your "
-"webConfigurator, SSH, etc. from being inaccessible due to interrupt floods when under extreme load. Generally this is not recommended. Not all NICs support "
-"polling; see the %s homepage for a list of supported cards."
+"webConfigurator, SSH, etc. from being inaccessible due to interrupt floods when under extreme load. Generally this is not recommended. Not all NICs support polling; "
+"see the %s homepage for a list of supported cards."
 msgstr ""
 
 msgid "Hardware Checksum Offloading"
@@ -12240,8 +12233,8 @@ msgid "Disable hardware checksum offload"
 msgstr ""
 
 msgid ""
-"Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers "
-"may have problems with checksum offloading and some specific NICs."
+"Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may "
+"have problems with checksum offloading and some specific NICs."
 msgstr ""
 
 msgid "This will take effect after you reboot the machine or re-configure each interface."
@@ -12329,8 +12322,7 @@ msgid "Disable SMTP Notifications"
 msgstr "SMPT Benachrichtigungen deaktivieren"
 
 msgid ""
-"Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to "
-"function."
+"Check this option to disable SMTP notifications but preserve the settings below. Some other mechanisms, such as packages, may need these settings in place to function."
 msgstr ""
 
 msgid "E-Mail server"
@@ -12654,8 +12646,7 @@ msgstr "Private Key des Zertifikats"
 msgid "(optional)"
 msgstr "(optional)"
 
-msgid ""
-"Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL)."
+msgid "Paste the private key for the above certificate here. This is optional in most cases, but required if you need to generate a Certificate Revocation List (CRL)."
 msgstr ""
 
 msgid "Serial for next certificate"
@@ -13005,8 +12996,8 @@ msgid "Do you really want to delete this gateway group?"
 msgstr "Wollen Sie diese Gatewaygruppe wirklich löschen?"
 
 msgid ""
-"Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into "
-"the Gateway Groups, they will not be used."
+"Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the "
+"Gateway Groups, they will not be used."
 msgstr ""
 
 msgid "Member Down"
@@ -13075,8 +13066,8 @@ msgid "Link Priority"
 msgstr ""
 
 msgid ""
-"The priority selected here defines in what order failover and balancing of links will be done. Multiple links of the same priority will balance connections until "
-"all links in the priority will be exhausted. If all links in a priority level are exhausted we will use the next available link(s) in the next priority level."
+"The priority selected here defines in what order failover and balancing of links will be done. Multiple links of the same priority will balance connections until all "
+"links in the priority will be exhausted. If all links in a priority level are exhausted we will use the next available link(s) in the next priority level."
 msgstr ""
 
 msgid "The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint"
@@ -13325,9 +13316,9 @@ msgid "The probe interval must be less than the down time, otherwise the gateway
 msgstr ""
 
 msgid ""
-"The down time defines the length of time before the gateway is marked as down, but the accuracy is controlled by the probe interval. For example, if your down time "
-"is 40 seconds but on a 30 second probe interval, only one probe would have to fail before the gateway is marked down at the 40 second mark. By default, the gateway "
-"is considered down after 10 seconds, and the probe interval is 1 second, so 10 probes would have to fail before the gateway is marked down."
+"The down time defines the length of time before the gateway is marked as down, but the accuracy is controlled by the probe interval. For example, if your down time is "
+"40 seconds but on a 30 second probe interval, only one probe would have to fail before the gateway is marked down at the 40 second mark. By default, the gateway is "
+"considered down after 10 seconds, and the probe interval is 1 second, so 10 probes would have to fail before the gateway is marked down."
 msgstr ""
 
 msgid "Routes"
@@ -13373,8 +13364,7 @@ msgstr ""
 msgid "Enter IP addresses to be used by the system for DNS resolution. These are also used for the DHCP service, DNS forwarder and for PPTP VPN clients."
 msgstr ""
 
-msgid ""
-"In addition, optionally select the gateway for each DNS server. When using multiple WAN connections there should be at least one unique DNS server per gateway."
+msgid "In addition, optionally select the gateway for each DNS server. When using multiple WAN connections there should be at least one unique DNS server per gateway."
 msgstr ""
 
 msgid "Allow DNS server list to be overridden by DHCP/PPP on WAN"
@@ -13390,8 +13380,8 @@ msgid "Do not use the DNS Forwarder as a DNS server for the firewall"
 msgstr ""
 
 msgid ""
-"By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system "
-"can use the local DNS service to perform lookups. Checking this box omits localhost from the list of DNS servers."
+"By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can "
+"use the local DNS service to perform lookups. Checking this box omits localhost from the list of DNS servers."
 msgstr ""
 
 msgid "Time zone"
@@ -14267,8 +14257,7 @@ msgid "Force"
 msgstr ""
 
 msgid ""
-"Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in UDP packets) if needed, which can help with clients that are behind restrictive "
-"firewalls"
+"Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in UDP packets) if needed, which can help with clients that are behind restrictive firewalls"
 msgstr ""
 
 msgid "Dead Peer Detection"
@@ -14414,8 +14403,8 @@ msgid "Do not install LAN SPD"
 msgstr ""
 
 msgid ""
-"By default, if IPSec is enabled negating SPD are inserted to provide protection. This behaviour can be changed by enabling this setting which will prevent "
-"installing these SPDs."
+"By default, if IPSec is enabled negating SPD are inserted to provide protection. This behaviour can be changed by enabling this setting which will prevent installing "
+"these SPDs."
 msgstr ""
 
 msgid "Security Associations"
@@ -14777,8 +14766,8 @@ msgid "IPv6 Tunnel Network"
 msgstr "IPv6 Tunnelnetzwerk"
 
 msgid ""
-"This is the IPv6 virtual network used for private communications between this client and the server expressed using CIDR (eg. fe80::/64). The first network address "
-"is assumed to be the server address and the second network address will be assigned to the client virtual interface"
+"This is the IPv6 virtual network used for private communications between this client and the server expressed using CIDR (eg. fe80::/64). The first network address is "
+"assumed to be the server address and the second network address will be assigned to the client virtual interface"
 msgstr ""
 
 msgid "IPv4 Remote Network/s"
@@ -14795,16 +14784,16 @@ msgstr "Ferne IPv6 Netzwerke"
 
 msgid ""
 "These are the IPv6 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. "
-"Expressed as a comma-separated list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank to only "
-"communicate with other clients"
+"Expressed as a comma-separated list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank to only communicate "
+"with other clients"
 msgstr ""
 
 msgid "Limit outgoing bandwidth"
 msgstr ""
 
 msgid ""
-"Maximum outgoing bandwidth for this tunnel. Leave empty for no limit. The input value has to be something between 100 bytes/sec and 100 Mbytes/sec (entered as "
-"bytes per second)"
+"Maximum outgoing bandwidth for this tunnel. Leave empty for no limit. The input value has to be something between 100 bytes/sec and 100 Mbytes/sec (entered as bytes "
+"per second)"
 msgstr ""
 
 msgid ""
@@ -15058,8 +15047,8 @@ msgstr ""
 #
 # File: src/www/vpn_openvpn_export.php, line: 944
 msgid ""
-"The &quot;XP&quot; Windows installers work on Windows XP and later versions. The &quot;win6&quot; Windows installers include a new tap-windows6 driver that works "
-"only on Windows Vista and later."
+"The &quot;XP&quot; Windows installers work on Windows XP and later versions. The &quot;win6&quot; Windows installers include a new tap-windows6 driver that works only "
+"on Windows Vista and later."
 msgstr ""
 
 #
@@ -15152,8 +15141,8 @@ msgstr "Client-Typ"
 #
 # File: src/www/vpn_openvpn_export_shared.php, line: 481
 msgid ""
-"These are shared key configurations for use in site-to-site tunnels with other routers. Shared key tunnels are not normally used for remote access connections to "
-"end users."
+"These are shared key configurations for use in site-to-site tunnels with other routers. Shared key tunnels are not normally used for remote access connections to end "
+"users."
 msgstr ""
 
 msgid "Server successfully deleted"
@@ -15232,8 +15221,8 @@ msgid ""
 msgstr ""
 
 msgid ""
-"This is the IPv6 virtual network used for private communications between this server and client hosts expressed using CIDR (eg. fe80::/64). The first network "
-"address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)"
+"This is the IPv6 virtual network used for private communications between this server and client hosts expressed using CIDR (eg. fe80::/64). The first network address "
+"will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)"
 msgstr ""
 
 msgid "Bridge DHCP"
@@ -15248,41 +15237,41 @@ msgstr "Bridge Interface"
 
 msgid ""
 "The interface to which this tap instance will be bridged. This is not done automatically. You must assign this interface and create the bridge separately. This "
-"setting controls which existing IP address and subnet mask are used by OpenVPN for the bridge. Setting this to 'none' will cause the Server Bridge DHCP settings "
-"below to be ignored."
+"setting controls which existing IP address and subnet mask are used by OpenVPN for the bridge. Setting this to 'none' will cause the Server Bridge DHCP settings below "
+"to be ignored."
 msgstr ""
 
 msgid "Server Bridge DHCP Start"
 msgstr ""
 
 msgid ""
-"When using tap mode as a multi-point server, you may optionally supply a DHCP range to use on the interface to which this tap instance is bridged. If these "
-"settings are left blank, DHCP will be passed through to the LAN, and the interface setting above will be ignored."
+"When using tap mode as a multi-point server, you may optionally supply a DHCP range to use on the interface to which this tap instance is bridged. If these settings "
+"are left blank, DHCP will be passed through to the LAN, and the interface setting above will be ignored."
 msgstr ""
 
 msgid "Server Bridge DHCP End"
 msgstr ""
 
 msgid ""
-"These are the IPv4 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. You may leave this "
-"blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network"
+"These are the IPv4 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. You may leave this blank "
+"if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network"
 msgstr ""
 
 msgid ""
-"These are the IPv6 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. You may leave this "
-"blank if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network"
+"These are the IPv6 networks that will be accessible from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. You may leave this blank "
+"if you don't want to add a route to the local network through this tunnel on the remote machine. This is generally set to your LAN network"
 msgstr ""
 
 msgid ""
 "These are the IPv4 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. "
-"Expressed as a comma-separated list of one or more CIDR ranges. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't "
-"want a site-to-site VPN"
+"Expressed as a comma-separated list of one or more CIDR ranges. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't want "
+"a site-to-site VPN"
 msgstr ""
 
 msgid ""
 "These are the IPv6 networks that will be routed through the tunnel, so that a site-to-site VPN can be established without manually changing the routing tables. "
-"Expressed as a comma-separated list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't "
-"want a site-to-site VPN"
+"Expressed as a comma-separated list of one or more IP/PREFIX. If this is a site-to-site VPN, enter the remote LAN/s here. You may leave this blank if you don't want a "
+"site-to-site VPN"
 msgstr ""
 
 msgid "Concurrent connections"
@@ -15339,8 +15328,8 @@ msgid "Force DNS cache update"
 msgstr ""
 
 msgid ""
-"Run ''net stop dnscache'', ''net start dnscache'', ''ipconfig /flushdns'' and ''ipconfig /registerdns'' on connection initiation. This is known to kick Windows "
-"into recognizing pushed DNS servers."
+"Run ''net stop dnscache'', ''net start dnscache'', ''ipconfig /flushdns'' and ''ipconfig /registerdns'' on connection initiation. This is known to kick Windows into "
+"recognizing pushed DNS servers."
 msgstr ""
 
 msgid "Scope ID"
@@ -15349,8 +15338,7 @@ msgstr ""
 msgid "Client Management Port"
 msgstr ""
 
-msgid ""
-"Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."
+msgid "Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."
 msgstr ""
 
 msgid "Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon"
@@ -15449,7 +15437,7 @@ msgid "When set, if primary server fails all requests will be sent via backup se
 msgstr ""
 
 msgid "NAS IP Address"
-msgstr ""
+msgstr "NAS IP Adresse"
 
 msgid "RADIUS server NAS IP Address"
 msgstr ""
@@ -15507,8 +15495,8 @@ msgstr "VPN PPTP"
 
 msgid ""
 "PPTP is no longer considered a secure VPN technology because it relies upon MS-CHAPv2 which has been compromised. If you continue to use PPTP be aware that "
-"intercepted traffic can be decrypted by a third party, so it should be considered unencrypted. We advise migrating to another VPN type such as OpenVPN or IPsec."
-"<br /><br /><a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">Read More</a>"
+"intercepted traffic can be decrypted by a third party, so it should be considered unencrypted. We advise migrating to another VPN type such as OpenVPN or IPsec.<br /"
+"><br /><a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">Read More</a>"
 msgstr ""
 
 msgid "Redirect incoming PPTP connections to"
