@@ -74,6 +74,7 @@
             <NPtEdit url="/firewall_nat_npt_edit.php"/>
         </NAT>
         <Rules url="/firewall_rules.php">
+            <RulesEdit url="/firewall_rules_edit.php*"/>
             <Floating url="/firewall_rules.php?if=FloatingRules"/>
             <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
