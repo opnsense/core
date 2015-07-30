@@ -128,8 +128,11 @@ if [ "$pkg_running" == "" ]; then
                 REMOTE=os-update
               fi
 
+              LQUERY=$(pkg query %v ${LOCAL})
+              RQUERY=$(pkg rquery %v ${REMOTE})
+
               # only version change requires reboot
-              if [ "$(pkg query %v ${LOCAL})" != "$(pkg rquery %v ${REMOTE})" ]; then
+              if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
                 upgrade_needs_reboot="1"
               fi
 
