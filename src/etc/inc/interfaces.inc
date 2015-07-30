@@ -261,12 +261,11 @@ function interface_vlan_configure(&$vlan) {
 		return;
 	}
 
-	/* make sure the parent interface is up */
 	interfaces_bring_up($if);
 	if (!isset($config['system']['disablevlanhwfilter'])) {
-		/* Since we are going to add vlan(4) try to enable all that hardware supports. */
-		/* (but only when not disabled in system advanced network settings) */
-		legacy_interface_flags($if, 'vlanhwtag vlanmtu vlanhwfilter');
+		legacy_interface_flags($if, 'vlanmtu vlanhwtag vlanhwfilter vlanhwcsum vlanhwtso');
+	} else {
+		legacy_interface_flags($if, '-vlanmtu -vlanhwtag -vlanhwfilter -vlanhwcsum -vlanhwtso');
 	}
 
 	if (!empty($vlanif) && does_interface_exist($vlanif)) {
@@ -3005,13 +3004,12 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	/* skip vlans for checksumming and polling */
 	if (!stristr($realif, "_vlan") && is_array($options)) {
 		legacy_interface_flags($realhwif, sprintf(
-			'%stxcsum %srxcsum %stso %slro %spolling %svlanhwfilter',
+			'%stxcsum %srxcsum %stso %slro %spolling',
 			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
 			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
 			isset($config['system']['disablesegmentationoffloading']) ? '-' : '',
 			isset($config['system']['disablelargereceiveoffloading']) ? '-' : '',
-			isset($config['system']['polling']) ? '' : '-',
-			isset($config['system']['disablevlanhwfilter']) ? '-' : ''
+			isset($config['system']['polling']) ? '' : '-'
 		));
 	}
 
