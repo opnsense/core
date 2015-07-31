@@ -30,8 +30,9 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-if (!is_array($config['ifgroups']['ifgroupentry']))
+if (!isset($config['ifgroups']['ifgroupentry'])) {
 	$config['ifgroups']['ifgroupentry'] = array();
+}
 
 $a_ifgroups = &$config['ifgroups']['ifgroupentry'];
 

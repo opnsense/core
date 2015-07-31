@@ -71,11 +71,12 @@ $openvpn_compression_modes = array(
 	'adaptive' =>	gettext("Enabled with Adaptive Compression"),
 	'yes' =>	gettext("Enabled without Adaptive Compression"));
 
-function openvpn_create_key() {
-
+function openvpn_create_key()
+{
 	$fp = popen("/usr/local/sbin/openvpn --genkey --secret /dev/stdout 2>/dev/null", "r");
-	if (!$fp)
+	if (!$fp) {
 		return false;
+	}
 
 	$rslt = stream_get_contents($fp);
 	pclose($fp);
@@ -83,18 +84,25 @@ function openvpn_create_key() {
 	return $rslt;
 }
 
-function openvpn_vpnid_used($vpnid) {
+function openvpn_vpnid_used($vpnid)
+{
 	global $config;
 
-	if (is_array($config['openvpn']['openvpn-server']))
-		foreach ($config['openvpn']['openvpn-server'] as & $settings)
-			if ($vpnid == $settings['vpnid'])
+	if (isset($config['openvpn']['openvpn-server'])) {
+		foreach ($config['openvpn']['openvpn-server'] as &$settings) {
+			if ($vpnid == $settings['vpnid']) {
 				return true;
+			}
+		}
+	}
 
-	if (is_array($config['openvpn']['openvpn-client']))
-		foreach ($config['openvpn']['openvpn-client'] as & $settings)
-			if ($vpnid == $settings['vpnid'])
+	if (isset($config['openvpn']['openvpn-client'])) {
+		foreach ($config['openvpn']['openvpn-client'] as &$settings) {
+			if ($vpnid == $settings['vpnid']) {
 				return true;
+			}
+		}
+	}
 
 	return false;
 }

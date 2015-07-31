@@ -282,7 +282,7 @@ if ($_POST) {
 	}
 
 	if (($_POST['ipprotocol'] <> "") && ($_POST['gateway'] <> "")) {
-		if(is_array($config['gateways']['gateway_group'])) {
+		if (isset($config['gateways']['gateway_group'])) {
 			foreach($config['gateways']['gateway_group'] as $gw_group) {
 				if($gw_group['name'] == $_POST['gateway']) {
 					$family = $a_gatewaygroups[$_POST['gateway']]['ipprotocol'];
