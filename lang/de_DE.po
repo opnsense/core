@@ -770,7 +770,7 @@ msgstr "es war nicht möglich die Zeile des SMTP Servers zu lesen"
 #
 # File: src/etc/inc/notices.smtp.inc, line: 126
 msgid "it was not possible to send a line to the SMTP server"
-msgstr "Es war nicht möglich eine Zeile an den SMTP Server zu senden"
+msgstr "es war nicht möglich eine Zeile an den SMTP Server zu senden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 140
@@ -835,7 +835,7 @@ msgstr "-7 setvbuf() Aufruf fehlgeschlagen"
 # File: src/etc/inc/notices.smtp.inc, line: 247
 #, php-format
 msgid "could not connect to the host \"%1$s\": %2$s"
-msgstr "Konnte nicht mit Host \"%1$s\" verbinden: %2$s"
+msgstr "konnte nicht mit dem Host \"%1$s\" verbinden: %2$s"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 256
