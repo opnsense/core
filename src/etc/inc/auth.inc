@@ -182,33 +182,26 @@ $userindex = index_users();
 function isAuthLocalIP($http_host)
 {
     global $config;
-    $local_ip = false;
     $interface_list_ips = get_configured_ip_addresses();
     foreach ($interface_list_ips as $ilips) {
         if (strcasecmp($http_host, $ilips) == 0) {
-            $local_ip = true;
-            break;
+            return true;
         }
     }
-    if (!$local_ip) {
-        $interface_list_ipv6s = get_configured_ipv6_addresses();
-        foreach ($interface_list_ipv6s as $ilipv6s) {
-            if (strcasecmp($http_host, $ilipv6s) == 0) {
-                $local_ip = true;
-                break;
-            }
+    $interface_list_ipv6s = get_configured_ipv6_addresses();
+    foreach ($interface_list_ipv6s as $ilipv6s) {
+        if (strcasecmp($http_host, $ilipv6s) == 0) {
+            return true;
         }
-        if (!$local_ip) {
-            if (isset($config['virtualip']['vip'])) {
-                foreach ($config['virtualip']['vip'] as $vip) {
-                    if ($vip['subnet'] == $http_host) {
-                        $local_ip = true;
-                    }
-                }
+    }
+    if (isset($config['virtualip']['vip'])) {
+        foreach ($config['virtualip']['vip'] as $vip) {
+            if ($vip['subnet'] == $http_host) {
+                return true;
             }
         }
     }
-		return $local_ip;
+		return false;
 }
 
 function index_groups()
