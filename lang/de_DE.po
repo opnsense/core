@@ -8250,7 +8250,7 @@ msgstr ""
 "Mehrfache Versuche führen zum Verbindungsabbruch der vorherigen Anmeldung."
 
 msgid "Per-user bandwidth restriction"
-msgstr "Nutzerbasiertes Bandbreitenbeschränkung"
+msgstr "Nutzerbasierte Bandbreitenbeschränkung"
 
 msgid "Enable per-user bandwidth restriction"
 msgstr "Bandbreitenbeschränkung pro Benutzer aktiveren"
