@@ -660,8 +660,9 @@ function step12_submitphpaction() {
 		$config['filter']['rule'][] = $rule;
 	}
 
-	if (!is_array($config['openvpn']['openvpn-server']))
+	if (!isset($config['openvpn']['openvpn-server'])) {
 		$config['openvpn']['openvpn-server'] = array();
+	}
 
 	$config['openvpn']['openvpn-server'][] = $server;
 
@@ -670,5 +671,3 @@ function step12_submitphpaction() {
 	header("Location: vpn_openvpn_server.php");
 	exit;
 }
-
-?>

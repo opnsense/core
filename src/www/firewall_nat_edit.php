@@ -763,7 +763,7 @@ include("head.inc");
 													<?php endif; ?>
 					<?php							endforeach; ?>
 
-					<?php							if (is_array($config['virtualip']['vip'])):
+					<?php							if (isset($config['virtualip']['vip'])):
 														foreach ($config['virtualip']['vip'] as $sn):
 															if (isset($sn['noexpand']))
 																continue;

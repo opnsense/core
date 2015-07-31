@@ -260,15 +260,14 @@ function restore_config_section_xmlrpc($new_config)
 
     $vipbackup = array();
     $oldvips = array();
-    if (isset($new_config['virtualip'])) {
-        if (isset($config['virtualip']['vip'])) {
-            foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
-                if ($vip['mode'] == "carp")
-                    $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
-                else if ($vip['mode'] == "ipalias" && (strstr($vip['interface'], "_vip") || strstr($vip['interface'], "lo0")))
-                    $oldvips[$vip['subnet']] = "{$vip['interface']}{$vip['subnet']}{$vip['subnet_bits']}";
-                else if (($vip['mode'] == "ipalias" || $vip['mode'] == 'proxyarp') && !(strstr($vip['interface'], "_vip") || strstr($vip['interface'], "lo0")))
-                    $vipbackup[] = $vip;
+    if (isset($config['virtualip']['vip'])) {
+        foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
+            if ($vip['mode'] == "carp") {
+                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
+            } elseif ($vip['mode'] == "ipalias" && (strstr($vip['interface'], "_vip") || strstr($vip['interface'], "lo0"))) {
+                $oldvips[$vip['subnet']] = "{$vip['interface']}{$vip['subnet']}{$vip['subnet_bits']}";
+            } elseif (($vip['mode'] == "ipalias" || $vip['mode'] == 'proxyarp') && !(strstr($vip['interface'], "_vip") || strstr($vip['interface'], "lo0"))) {
+                $vipbackup[] = $vip;
             }
         }
     }
@@ -278,10 +277,10 @@ function restore_config_section_xmlrpc($new_config)
 
     /* Then add ipalias and proxyarp types already defined on the backup */
     if (is_array($vipbackup) && !empty($vipbackup)) {
-        if (!is_array($config['virtualip'])) {
+        if (!isset($config['virtualip'])) {
             $config['virtualip'] = array();
         }
-        if (!is_array($config['virtualip']['vip'])) {
+        if (!isset($config['virtualip']['vip'])) {
             $config['virtualip']['vip'] = array();
         }
         foreach ($vipbackup as $vip) {
@@ -298,7 +297,7 @@ function restore_config_section_xmlrpc($new_config)
      * The real work on handling the vips specially
      * This is a copy of intefaces_vips_configure with addition of not reloading existing/not changed carps
      */
-    if (isset($new_config['virtualip']) && is_array($config['virtualip']) && is_array($config['virtualip']['vip'])) {
+    if (isset($new_config['virtualip']['vip'])) {
         $carp_setuped = false;
         $anyproxyarp = false;
         foreach ($config['virtualip']['vip'] as $vip) {
