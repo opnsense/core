@@ -20,10 +20,10 @@ msgid "Potential DNS Rebind attack detected, see http://en.wikipedia.org/wiki/DN
 msgstr ""
 
 msgid "Redirecting to the dashboard..."
-msgstr ""
+msgstr "Leite weiter zum Dashboard..."
 
 msgid "Redirecting..."
-msgstr "Weiterleiten..."
+msgstr "Leite weiter..."
 
 #
 # File: src/etc/inc/auth.inc, line: 394
@@ -33,7 +33,7 @@ msgstr ""
 
 #, php-format
 msgid "ERROR!  Could not connect to server %s."
-msgstr ""
+msgstr "Fehler!  Keine Verbindung mit Server %s möglich."
 
 #, php-format
 msgid "LDAP: Could not lookup CA by reference for host %s."
@@ -3919,10 +3919,10 @@ msgid "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 
 msgstr ""
 
 msgid "You may enter a description here for your reference (not parsed)."
-msgstr ""
+msgstr "Erklärungen (wird nicht als Parameter verwendet)."
 
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 msgid "Item information"
 msgstr ""
@@ -3962,7 +3962,7 @@ msgid "The name of the alias may only consist of the characters \"a-z, A-Z and 0
 msgstr ""
 
 msgid "You may enter a description here for your reference (not parsed)"
-msgstr ""
+msgstr "Erklärungen (wird nicht als Parameter verwendet)"
 
 msgid "Aliases to import"
 msgstr "Aliase zum Importieren"
@@ -5102,7 +5102,7 @@ msgid "see the"
 msgstr "siehe die"
 
 msgid "You may enter a description here for your reference."
-msgstr ""
+msgstr "Erklärungen (wird nicht als Parameter verwendet)."
 
 msgid "Advanced features"
 msgstr "Erweiterte Funktionen"
@@ -7355,7 +7355,7 @@ msgid "Select at least two interfaces for Multilink (MLPPP) connections."
 msgstr ""
 
 msgid "You may enter a description here for your reference. Description will appear in the \"Interfaces Assign\" select lists."
-msgstr ""
+msgstr "Erklärungen (wird nicht als Parameter verwendet). Text erscheint in der \"Interface Anwahl\" Selektionsliste."
 
 msgid "Note: Typically *99# for GSM networks and #777 for CDMA networks"
 msgstr ""
@@ -8134,48 +8134,56 @@ msgid "Enable captive portal"
 msgstr "Aktiviere Captive Portal"
 
 msgid "Select the interface(s) to enable for captive portal."
-msgstr ""
+msgstr "Wähle das Interface(s) für das Captive Portal."
 
 msgid "Maximum concurrent connections"
-msgstr ""
+msgstr "Maximale gleichzeitige Verbindungen"
 
 msgid "per client IP address (0 = no limit)"
-msgstr ""
+msgstr "pro Client IP Adresse (0 = kein Limit)"
 
 msgid ""
 "This setting limits the number of concurrent connections to the captive portal HTTP(S) server. This does not set how many users can be logged in to the captive "
 "portal, but rather how many users can load the portal page or authenticate at the same time! Possible setting allowed is: minimum 4 connections per client IP "
 "address, with a total maximum of 100 connections."
 msgstr ""
+"Dieser Parameter limitiert die Anzahl simultaner Verbindungen zum Captive Portal Server. Der Parameter bewirkt keine Begrenzung der Anzahl CP Benutzer, "
+"er limitiert die Anzahl Benutzer die gleichzeitig im Login Status sind! Mögliche erlaubte Einstellungen sind: mindestens 4 Verbindungen pro Client IP-"
+"Adresse, mit einer maximalen Anzahl von 100 Verbindungen."
 
 msgid "minutes"
 msgstr "Minuten"
 
 msgid "Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Leave this field blank for no idle timeout."
-msgstr ""
+msgstr "Die Session wird nach der gesetzten Inaktivzeit beendet. Sie können sich danach unmittelbar wieder anmelden. Ein leeres Feld bedeutet kein Zeitlimit."
 
 msgid "Hard timeout"
-msgstr ""
+msgstr "Hard Timeout"
 
 msgid ""
 "Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard "
 "timeout (not recommended unless an idle timeout is set)."
 msgstr ""
+"Session wird nach dieser Zeitdauer getrennt, unabhängig von der Aktivität. Sie können sich unmitelbar danach wieder anmelden, "
+"Feld leer lassen falls kein Hard Timeout gewollt ist (nicht empfohlen, wenn keine Idle Zeitlimit gesetzt ist)."
 
 msgid "Pass-through credits allowed per MAC address"
-msgstr ""
+msgstr "Pass-through Credits erlaubt per MAC Adresse"
 
 msgid "per client MAC address (0 or blank = none)"
-msgstr ""
+msgstr "per-Client MAC Adresse (0 oder leer = keine)"
 
 msgid ""
 "This setting allows passing through the captive portal without authentication a limited number of times per MAC address. Once used up, the client can only log in "
 "with valid credentials until the waiting period specified below has expired. Recommended to set a hard timeout and/or idle timeout when using this for it to be "
 "effective."
 msgstr ""
+"Diese Einstellung ermöglicht eine begrenzte Anzahl Zugänge pro MAC-Adresse ohne Authentifizierung in Captive Portal. Einmal aufgebraucht, muss sich der Client "
+"normal authentifizeren bis die unten spezifizierte Wartezeit vorrüber ist. Es wird empfohlen den Hard Timeout und/oder den Idle Timeout zu nutzen, um diese Einstellung "
+"sinnvoll zu nutzen."
 
 msgid "Waiting period to restore pass-through credits"
-msgstr ""
+msgstr "Wartezeit zur Wiederherstellung des Pass-through Credits"
 
 msgid "hours"
 msgstr "Stunden"
@@ -8195,7 +8203,7 @@ msgid "If enabled, the waiting period is reset to the original duration if acces
 msgstr ""
 
 msgid "Logout popup window"
-msgstr ""
+msgstr "Logout Popup Fenster"
 
 msgid "Enable logout popup window"
 msgstr "Pop-up Fenster zum Abmelden aktivieren"
@@ -8206,7 +8214,7 @@ msgid ""
 msgstr ""
 
 msgid "Pre-authentication redirect URL"
-msgstr ""
+msgstr "URL-Umleitung vor der Umleitung"
 
 #
 # File: src/www/services_captiveportal.php, line: 589
@@ -8219,7 +8227,7 @@ msgid "After authentication Redirection URL"
 msgstr "URL zur Weiterleitung nach der Authentifizierung"
 
 msgid "If you provide a URL here, clients will be redirected to that URL instead of the one they initially tried to access after they've authenticated."
-msgstr ""
+msgstr "Wenn Sie hier einen URL angeben, werden die Clients zu diesem URL umgeleitet anstatt des eigentlich gewählten URLs."
 
 msgid "Blocked MAC address redirect URL"
 msgstr "Blockierte MAC Adresse WeiterleitungsURL"
@@ -8229,21 +8237,23 @@ msgid "If you provide a URL here, MAC addresses set to be blocked will be redire
 msgstr ""
 
 msgid "Concurrent user logins"
-msgstr "Konkurrierende Benutzerlogins"
+msgstr "Mehrfacher Benutzerlogin"
 
 msgid "Disable concurrent logins"
-msgstr "Deaktiviere konkurrierende Logins"
+msgstr "Deaktiviere mehrfachen Login"
 
 msgid ""
 "If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to "
 "be disconnected."
 msgstr ""
+"Bei Anwahl dieser Option ist nur der aktuelle Login pro Nutzername gültig. "
+"Mehrfache Loginversuche führen zum Verbindungsabbruch der vorherigen Sessions."
 
 msgid "Per-user bandwidth restriction"
-msgstr ""
+msgstr "Nutzerbasiertes Bandbreitenbeschränkung"
 
 msgid "Enable per-user bandwidth restriction"
-msgstr "Bandbreitenbeschränkung per Benutzer aktiveren"
+msgstr "Bandbreitenbeschränkung pro Benutzer aktiveren"
 
 msgid "Default download"
 msgstr "Standarddownload"
@@ -8263,13 +8273,13 @@ msgid "No Authentication"
 msgstr "Keine Authentifizierung"
 
 msgid "Local"
-msgstr ""
+msgstr "Lokal"
 
 msgid "User Manager"
-msgstr ""
+msgstr "Nutzerverwaltung"
 
 msgid "Allow only users/groups with 'Captive portal login' privilege set"
-msgstr ""
+msgstr "Erlaube das Einloggen nur Nutzern/Gruppen mit gesetztem 'Captive portal login' Recht."
 
 msgid "RADIUS Authentication"
 msgstr "RADIUS Authentifizierung"
@@ -8338,7 +8348,7 @@ msgid "no accounting updates"
 msgstr ""
 
 msgid "stop/start accounting"
-msgstr ""
+msgstr "Stop/Start Accounting"
 
 msgid "interim update"
 msgstr ""
@@ -8358,7 +8368,7 @@ msgid ""
 msgstr ""
 
 msgid "RADIUS MAC authentication"
-msgstr ""
+msgstr "RADIUS MAC Authentifizierung"
 
 msgid "Enable RADIUS MAC authentication"
 msgstr "Aktiviere RADIUS MAC Authentifizierung"
@@ -8561,7 +8571,7 @@ msgstr "Akzeptable Nutzungsrichtlinie"
 
 #, php-format
 msgid "The total size limit for all files is %s."
-msgstr ""
+msgstr "Die maximale Größe aller hochgeladener Dateien beträgt %s."
 
 msgid "Do you really want to delete this address?"
 msgstr "Wollen sie diese Adresse wirklich löschen?"
@@ -8640,7 +8650,7 @@ msgid "Adding MAC addresses as 'pass' MACs allows them access through the captiv
 msgstr ""
 
 msgid "Edit MAC address rules"
-msgstr ""
+msgstr "MAC Adressregel editierenn"
 
 #, php-format
 msgid "The MAC address %s belongs to a local interface, you cannot use it here."
@@ -8739,13 +8749,13 @@ msgid "Voucher Rolls"
 msgstr "Voucher Rollen"
 
 msgid "Roll"
-msgstr ""
+msgstr "Rolle"
 
 msgid "Minutes/Ticket"
 msgstr "Minuten/Ticket"
 
 msgid "of Tickets"
-msgstr ""
+msgstr "Anzahl Tickets"
 
 msgid "Comment"
 msgstr "Kommentar"
@@ -8830,16 +8840,16 @@ msgid ""
 msgstr ""
 
 msgid "Invalid Voucher Message"
-msgstr ""
+msgstr "Meldung bei ungültigem Voucher"
 
 msgid "Error message displayed for invalid vouchers on captive portal error page"
-msgstr ""
+msgstr "Fehlermeldung bei Eingabe eines ungültigen Vouchers"
 
 msgid "Expired Voucher Message"
-msgstr "Ungültiger Voucher Nachricht"
+msgstr "Meldung bei abgelaufenem Voucher"
 
 msgid "Error message displayed for expired vouchers on captive portal error page"
-msgstr ""
+msgstr "Fehlermeldung bei Eingabe eines abgelaufenen Vouchers"
 
 msgid ""
 "Changing any Voucher parameter (apart from managing the list of Rolls) on this page will render existing vouchers useless if they were generated with different "
@@ -8857,22 +8867,22 @@ msgstr "Nummer"
 
 #, php-format
 msgid "Roll number %s already exists."
-msgstr ""
+msgstr "Rolle %s existiert bereits."
 
 #, php-format
 msgid "Roll number must be numeric and less than %s"
-msgstr ""
+msgstr "Rollennummer muss kleiner als %s sein."
 
 #, php-format
 msgid "A roll has at least one voucher and less than %s."
-msgstr "Eine Rolle hat mindestens einen Voucher und weniger als %s."
+msgstr "Eine Rolle hat mindestens einen Voucher, aber weniger als %s."
 
 msgid "Each voucher must be good for at least 1 minute."
-msgstr ""
+msgstr "Jeder Voucher muss mindestens eine Minute gültig sein."
 
 #, php-format
 msgid "All %1$s vouchers from Roll %2$s marked unused"
-msgstr "Alle %1$s Gutscheine der Rolle %2$s wurden als ungültig markiert"
+msgstr "Alle %1$s Voucher der Rolle %2$s wurden als ungültig markiert"
 
 msgid "Enter the Roll"
 msgstr "Geben Sie die Rolle ein"
@@ -8884,10 +8894,10 @@ msgid "Minutes per Ticket"
 msgstr "Minuten pro Ticket"
 
 msgid "Defines the time in minutes that a user is allowed access. The clock starts ticking the first time a voucher is used for authentication"
-msgstr ""
+msgstr "Bestimmt die Zeit für den erlaubten Zugang in Minuten. Die Zeit läuft ab erstem Login."
 
 msgid "Enter the number of vouchers"
-msgstr "Geben Sie die Anzahl an Voucher ein"
+msgstr "Geben Sie die Anzahl der Voucher ein"
 
 msgid "found on top of the generated/printed vouchers. WARNING: Changing this number for an existing Roll will mark all vouchers as unused again"
 msgstr ""
@@ -10919,7 +10929,7 @@ msgid "Enter multiple vouchers separated by space or newline. All valid vouchers
 msgstr "Geben Sie mehrere Voucher durch Leerzeichen oder Zeilenumbruch getrennt ein. Alle gültigen Voucher werden als abgelaufen markiert"
 
 msgid "Enter multiple vouchers separated by space or newline. The remaining time, if valid, will be shown for each voucher"
-msgstr ""
+msgstr "Geben Sie mehrere Voucher durch Leerzeichen oder Zeilenumbruch getrennt ein. Das Zeitrestguthaben pro Voucher wird angezeigt"
 
 msgid "Roll#"
 msgstr "Rollennummer"
@@ -13419,22 +13429,22 @@ msgid "This will change the look and feel of"
 msgstr ""
 
 msgid "Group manager"
-msgstr "Gruppenmanager"
+msgstr "Gruppenverwaltung"
 
 msgid "Group"
 msgstr "Gruppe"
 
 msgid "successfully deleted"
-msgstr ""
+msgstr "erfolgreich gelöscht"
 
 msgid "Privilege"
-msgstr "Recht"
+msgstr "Berechtigung"
 
 msgid "The group name contains invalid characters."
-msgstr ""
+msgstr "Der Gruppenname enhält ungültige Zeichen."
 
 msgid "The group name is longer than 16 characters."
-msgstr ""
+msgstr "Der Gruppenname ist lägner als 16 Zeichen."
 
 msgid "Another entry with the same group name already exists."
 msgstr "Ein anderer Eintrag mit dem selben Gruppennamen existiert bereits."
@@ -13442,7 +13452,7 @@ msgstr "Ein anderer Eintrag mit dem selben Gruppennamen existiert bereits."
 #
 # File: src/www/system_groupmanager.php, line: 127
 msgid "That groupname is reserved by the system."
-msgstr ""
+msgstr "Dieser Gruppenname ist vom System reserviert."
 
 msgid "Defined by"
 msgstr "Definiert durch"
@@ -13454,7 +13464,7 @@ msgid "Group description, for your own information only"
 msgstr ""
 
 msgid "Group Memberships"
-msgstr ""
+msgstr "Gruppenmitgliedschaften"
 
 msgid "Not Members"
 msgstr ""
