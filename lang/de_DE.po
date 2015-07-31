@@ -2285,7 +2285,7 @@ msgstr "Bestätigen:"
 
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
-msgstr "Backup mit dem Zeitstempel %1$s und der Beschreibung \"%2$s\" gelöscht."
+msgstr "Sicherung mit dem Zeitstempel %1$s und der Beschreibung \"%2$s\" gelöscht."
 
 msgid "Configuration History"
 msgstr ""
@@ -2306,10 +2306,10 @@ msgid "Action"
 msgstr "Aktion"
 
 msgid "Restore from Configuration Backup"
-msgstr "Aus Konfigurationsbackup wiederherstellen"
+msgstr "Aus Konfigurationssicherung wiederherstellen"
 
 msgid "Remove Configuration Backup"
-msgstr "Konfigurationsbackup löschen"
+msgstr "Konfigurationssicherung löschen"
 
 msgid "Target Configuration"
 msgstr "Zielkonfiguration"
@@ -3372,7 +3372,7 @@ msgid "The source tracking table has been flushed successfully."
 msgstr "Die Quellverfolgungstabelle wurde erfolgreich geleert."
 
 msgid "Reset state"
-msgstr "Status Zurücksetzen"
+msgstr "Status zurücksetzen"
 
 msgid "Firewall state table"
 msgstr "Firewall Statustabelle"
@@ -3627,7 +3627,7 @@ msgid " the latest bogon data."
 msgstr " die neuesten Bogon Daten"
 
 msgid "No entries exist in this table."
-msgstr "Es existieren eine Einträge in dieser Tabelle."
+msgstr "Es existieren keine Einträge in dieser Tabelle."
 
 msgid "entries in this table."
 msgstr "Einträge in dieser Tabelle."
@@ -3742,7 +3742,7 @@ msgid "Help for items on this page"
 msgstr "Hilfe für Punkte auf dieser Seite"
 
 msgid "Save Settings"
-msgstr "Einstellungen Speichern"
+msgstr "Einstellungen speichern"
 
 #, php-format
 msgid "Cannot delete alias. Currently in use by %s"
