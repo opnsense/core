@@ -8246,7 +8246,7 @@ msgid ""
 "If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to "
 "be disconnected."
 msgstr ""
-"Bei Anwahl dieser Option ist nur die aktuelle Anmeldung pro Nutzername gültig. "
+"Bei Anwahl dieser Option ist nur die aktuelle Anmeldung für den jeweiligen Benutzer gültig. "
 "Mehrfache Versuche führen zum Verbindungsabbruch der vorherigen Anmeldung."
 
 msgid "Per-user bandwidth restriction"
