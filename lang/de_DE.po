@@ -8279,7 +8279,7 @@ msgid "User Manager"
 msgstr "Nutzerverwaltung"
 
 msgid "Allow only users/groups with 'Captive portal login' privilege set"
-msgstr "Erlaube das Einloggen nur Nutzern/Gruppen mit gesetztem 'Captive portal login' Recht."
+msgstr "Erlaube das Anmelden nur Nutzern/Gruppen mit gesetzter 'Captive portal login' Berechtigung."
 
 msgid "RADIUS Authentication"
 msgstr "RADIUS Authentifizierung"
