@@ -893,7 +893,7 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 404
 #, php-format
 msgid "Resolving POP3 authentication host \"%s\"..."
-msgstr "Löse POP3 Authentifierungshost \"%s\" auf..."
+msgstr "Löse POP3 Authentifizierungshost \"%s\" auf..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 411
