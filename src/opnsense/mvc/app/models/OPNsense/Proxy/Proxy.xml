@@ -219,7 +219,7 @@
                             </url>
                             <description type="TextField">
                                 <Required>Y</Required>
-                                <Mask>/^(.){1,255}$/</Mask>
+                                <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
                             </description>
                         </blacklist>
                     </blacklists>
@@ -250,6 +250,7 @@
                 </method>
                 <realm type="TextField">
                     <default>OPNsense proxy authentication</default>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$/u</mask>
                     <Required>N</Required>
                 </realm>
                 <credentialsttl type="IntegerField">
