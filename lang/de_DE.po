@@ -8214,7 +8214,7 @@ msgid ""
 msgstr ""
 
 msgid "Pre-authentication redirect URL"
-msgstr "URL-Umleitung vor der Umleitung"
+msgstr "URL-Umleitung vor der Authentifizierung"
 
 #
 # File: src/www/services_captiveportal.php, line: 589
@@ -8237,17 +8237,17 @@ msgid "If you provide a URL here, MAC addresses set to be blocked will be redire
 msgstr ""
 
 msgid "Concurrent user logins"
-msgstr "Mehrfacher Benutzerlogin"
+msgstr "Mehrfache Benutzeranmeldung"
 
 msgid "Disable concurrent logins"
-msgstr "Deaktiviere mehrfachen Login"
+msgstr "Deaktiviere mehrfache Anmeldungen"
 
 msgid ""
 "If this option is set, only the most recent login per username will be active. Subsequent logins will cause machines previously logged in with the same username to "
 "be disconnected."
 msgstr ""
-"Bei Anwahl dieser Option ist nur der aktuelle Login pro Nutzername gültig. "
-"Mehrfache Loginversuche führen zum Verbindungsabbruch der vorherigen Sessions."
+"Bei Anwahl dieser Option ist nur der aktuelle Anmeldung pro Nutzername gültig. "
+"Mehrfache Versuche führen zum Verbindungsabbruch der vorherigen Anmeldung."
 
 msgid "Per-user bandwidth restriction"
 msgstr "Nutzerbasiertes Bandbreitenbeschränkung"
@@ -8650,7 +8650,7 @@ msgid "Adding MAC addresses as 'pass' MACs allows them access through the captiv
 msgstr ""
 
 msgid "Edit MAC address rules"
-msgstr "MAC Adressregel editierenn"
+msgstr "MAC Adressregel editieren"
 
 #, php-format
 msgid "The MAC address %s belongs to a local interface, you cannot use it here."
