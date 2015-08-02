@@ -99,8 +99,8 @@
         </CaptivePortal>
         <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
         <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
-          <Interface url="/services_dhcp.php?if=*"/>
-		<DHCPServerEdit  url="/services_dhcp_edit.php?*"/>
+		<DHCPServerTab url="/services_dhcp.php?if=*"/>
+		<DHCPServerEdit url="/services_dhcp_edit.php?*"/>
         </DHCPServer>
         <DHCPv6Relay VisibleName="DHCPv6 Relay" url="/services_dhcpv6_relay.php"/>
         <DHCPv6ServerRA VisibleName="DHCPv6 Server/RA" url="/services_dhcpv6.php">
