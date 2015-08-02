@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-06-18 17:41+0200\n"
-"PO-Revision-Date: 2015-07-30 22:29+0100\n"
+"PO-Revision-Date: 2015-08-02 11:18+0100\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"X-Generator: Poedit 1.8.1\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #
 # File: src/etc/inc/auth.inc, line: 108
@@ -8116,7 +8116,7 @@ msgstr "Désactivé"
 # File: src/www/firewall_nat_out_edit.php, line: 452
 # File: src/www/firewall_rules_edit.php, line: 770
 msgid "Disable this rule"
-msgstr ""
+msgstr "Désactiver cette règle"
 
 #
 # File: src/www/firewall_nat_1to1_edit.php, line: 305
@@ -25187,7 +25187,7 @@ msgstr ""
 #
 # File: src/www/system_gateways_edit.php, line: 694
 msgid "Disable this gateway"
-msgstr ""
+msgstr "Désactiver cette passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 695
@@ -28699,7 +28699,7 @@ msgstr "ajouter un serveur"
 #
 # File: src/www/vpn_openvpn_server.php, line: 848
 msgid "Disable this server"
-msgstr ""
+msgstr "Désactiver ce serveur"
 
 #
 # File: src/www/vpn_openvpn_server.php, line: 853
