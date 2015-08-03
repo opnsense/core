@@ -16,13 +16,16 @@
 		<title>{{title|default("OPNsense") }}</title>
 
         <!-- include (theme) style -->
-		<link href="/ui/themes/opnsense/build/css/main.css" media="screen, projection" rel="stylesheet">
+		<link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/main.css" media="screen, projection" rel="stylesheet">
 
 		<!-- Favicon -->
-		<link href="/ui/themes/opnsense/build/images/favicon.png" rel="shortcut icon">
+		<link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/favicon.png" rel="shortcut icon">
 
         <!-- Stylesheet for fancy select/dropdown -->
-        <link rel="stylesheet" type="text/css" href="/ui/themes/opnsense/build/css/bootstrap-select.css">
+        <link rel="stylesheet" type="text/css" href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-select.css">
+
+		<!-- bootstrap dialog -->
+		<link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
 
         <!-- Font awesome -->
         <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
@@ -55,9 +58,6 @@
         </script>
 
 
-        <!-- bootstrap dialog -->
-        <link href="/ui/themes/opnsense/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
-
         <!-- JQuery Tokenize (http://zellerda.com/projects/tokenize) -->
         <script type="text/javascript" src="/ui/js/jquery.tokenize.js"></script>
         <link rel="stylesheet" type="text/css" href="/ui/css/jquery.tokenize.css" />
@@ -78,8 +78,8 @@
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<a class="navbar-brand" href="/">
-						<img class="brand-logo" src="/ui/themes/opnsense/build/images/default-logo.png" height="30" width="150"/>
-						<img class="brand-icon" src="/ui/themes/opnsense/build/images/icon-logo.png" height="30" width="29"/>
+						<img class="brand-logo" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/default-logo.png" height="30" width="150"/>
+						<img class="brand-icon" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/icon-logo.png" height="30" width="29"/>
 					</a>
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
 						<span class="sr-only">Toggle navigation</span>

@@ -212,6 +212,11 @@ class ControllerBase extends ControllerRoot
 
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
+        // set theme in ui_theme template var
+        if ($cnf->object()->theme != null) {
+            $this->view->ui_theme = $cnf->object()->theme;
+        }
+
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
     }
