@@ -1,6 +1,6 @@
-# Language translation for pfSense project.
-# Copyright (C) 2015, OPNsense Project.
-# This file is distributed under the same license as the pfSense package.
+# OPNsense Japanese Language Translation
+# Copyright (C) OPNsense project.
+# This file is distributed under the same BSD license as the OPNsense project.
 # Chie Taguchi, Kiyo Takami, and Isaac (.ike) Levy, 2013, 2014, 2015.
 #
 #, fuzzy
