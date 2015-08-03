@@ -320,7 +320,7 @@ msgid "Host added successfully"
 msgstr "Host erfolgreich hinzugefügt"
 
 msgid "Failed to create block rule, alias, or add host."
-msgstr "Es konnte die Blockierregel oder der Alias nicht erstellt werden bzw. den Host konnte nicht hinzugefügt werden."
+msgstr "Es konnte die Blockierregel oder der Alias nicht erstellt werden bzw. der Host konnte nicht hinzugefügt werden."
 
 msgid "Tried to block but had no host IP or interface"
 msgstr "Versuchte zu blockieren, hatte aber keine Host IP Adresse oder Interface"
