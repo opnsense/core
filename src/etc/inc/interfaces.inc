@@ -112,6 +112,20 @@ function get_interface_arr($flush = false)
 	return $interface_arr_cache;
 }
 
+function interface_override_flags()
+{
+	global $config;
+
+	return sprintf(
+		'%stxcsum %srxcsum %stso %slro %spolling',
+		isset($config['system']['disablechecksumoffloading']) ? '-' : '',
+		isset($config['system']['disablechecksumoffloading']) ? '-' : '',
+		isset($config['system']['disablesegmentationoffloading']) ? '-' : '',
+		isset($config['system']['disablelargereceiveoffloading']) ? '-' : '',
+		isset($config['system']['polling']) ? '' : '-'
+	);
+}
+
 function does_interface_exist($interface, $flush = true)
 {
 	global $config;
@@ -245,7 +259,8 @@ function interfaces_vlan_configure($realif = '')
 	}
 }
 
-function interface_vlan_configure(&$vlan) {
+function interface_vlan_configure(&$vlan)
+{
 	global $config;
 
 	if (!is_array($vlan)) {
@@ -262,10 +277,25 @@ function interface_vlan_configure(&$vlan) {
 	}
 
 	interfaces_bring_up($if);
-	if (!isset($config['system']['disablevlanhwfilter'])) {
-		legacy_interface_flags($if, 'vlanmtu vlanhwtag vlanhwfilter vlanhwcsum vlanhwtso');
-	} else {
-		legacy_interface_flags($if, '-vlanmtu -vlanhwtag -vlanhwfilter -vlanhwcsum -vlanhwtso');
+
+	$members = array($if);
+
+	/* VLAN may be on top of another type of aggregation */
+	if (isset($config['laggs']['lagg'])) {
+		foreach ($config['laggs']['lagg'] as $lagg) {
+			if ($if == $lagg['laggif']) {
+				$members = explode(',', $lagg['members']);
+				break;
+			}
+		}
+	}
+
+	foreach ($members as $member) {
+		if (!isset($config['system']['disablevlanhwfilter'])) {
+			legacy_interface_flags($member, 'vlanmtu vlanhwtag vlanhwfilter vlanhwcsum vlanhwtso');
+		} else {
+			legacy_interface_flags($member, '-vlanmtu -vlanhwtag -vlanhwfilter -vlanhwcsum -vlanhwtso');
+		}
 	}
 
 	if (!empty($vlanif) && does_interface_exist($vlanif)) {
@@ -492,9 +522,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 		return;
 
 	/* Calculate smaller mtu and enforce it */
-	$smallermtu = 0;
-	$commonrx = true;
-	$commontx = true;
+	$mtu = 1500;
 	$foundgif = false;
 	foreach ($members as $member) {
 		$realif = get_real_interface($member);
@@ -507,51 +535,16 @@ function interface_bridge_configure(&$bridge, $checkmember = 0) {
 			if ($mtu <= 1500)
 				continue;
 		}
-		if (!isset($opts['caps']['txcsum']))
-			$commontx = false;
-		if (!isset($opts['caps']['rxcsum']))
-			$commonrx = false;
-		if (!isset($opts['caps']['tso4']))
-			$commontso4 = false;
-		if (!isset($opts['caps']['tso6']))
-			$commontso6 = false;
-		if (!isset($opts['caps']['lro']))
-			$commonlro = false;
-		if ($smallermtu == 0 && !empty($mtu))
-			$smallermtu = $mtu;
-		else if (!empty($mtu) && $mtu < $smallermtu)
-			$smallermtu = $mtu;
+		if (!empty($opts['mtu']) && $opts['mtu'] < $mtu) {
+			$mtu = $mtu = $opts['mtu'];
+		}
 	}
+
 	if (!$foundgif && $checkmember == 2) {
 		return;
 	}
 
-	/* Just in case anything is not working well */
-	if ($smallermtu == 0) {
-		$smallermtu = 1500;
-	}
-
-	$flags = '';
-	if (isset($config['system']['disablechecksumoffloading']) || ($commonrx === false)) {
-		$flags .= '-';
-	}
-	$flags .= 'rxcsum ';
-	if (isset($config['system']['disablechecksumoffloading']) || ($commontx === false)) {
-		$flags .= '-';
-	}
-	$flags .= 'txcsum ';
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso4 === false)) {
-		$flags .= '-';
-	}
-	$flags .= 'tso4 ';
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso6 === false)) {
-		$flags .= '-';
-	}
-	$flags .= 'tso6 ';
-	if (isset($config['system']['disablelargereceiveoffloading']) || ($commonlro === false)) {
-		$flags .= '-';
-	}
-	$flags .= 'lro ';
+	$flags = interface_override_flags();
 
 	if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
 		legacy_interface_destroy($bridge['bridgeif']);
@@ -715,24 +708,32 @@ function interface_bridge_add_member($bridgeif, $interface)
 	legacy_bridge_member($bridgeif, $interface);
 }
 
-function interfaces_lagg_configure($realif = "") {
+function interfaces_lagg_configure($realif = '')
+{
 	global $config;
-	if(file_exists("/var/run/booting"))
+
+	if (file_exists('/var/run/booting')) {
 		echo gettext("Configuring LAGG interfaces...");
+	}
+
 	$i = 0;
-	if (isset($config['laggs']['lagg']) && is_array($config['laggs']['lagg'])) {
+
+	if (isset($config['laggs']['lagg'])) {
 		foreach ($config['laggs']['lagg'] as $lagg) {
-			if(empty($lagg['laggif']))
+			if (empty($lagg['laggif'])) {
 				$lagg['laggif'] = "lagg{$i}";
-			if (!empty($realif) && $realif != $lagg['laggif'])
+			}
+			if (!empty($realif) && $realif != $lagg['laggif']) {
 				continue;
-			/* XXX: Maybe we should report any errors?! */
+			}
 			interface_lagg_configure($lagg);
 			$i++;
 		}
 	}
-	if(file_exists("/var/run/booting"))
+
+	if (file_exists('/var/run/booting')) {
 		echo gettext("done.") . "\n";
+	}
 }
 
 function interface_lagg_configure(&$lagg)
@@ -744,8 +745,9 @@ function interface_lagg_configure(&$lagg)
 	}
 
 	$members = explode(',', $lagg['members']);
-	if (!count($members))
+	if (!count($members)) {
 		return -1;
+	}
 
 	if (file_exists("/var/run/booting") || !(empty($lagg['laggif']))) {
 		legacy_interface_destroy($lagg['laggif']);
@@ -756,52 +758,15 @@ function interface_lagg_configure(&$lagg)
 	}
 
 	/* Calculate smaller mtu and enforce it */
-	$smallermtu = 0;
+	$mtu = 1500;
 	foreach ($members as $member) {
 		$opts = pfSense_get_interface_addresses($member);
-		$mtu = $opts['mtu'];
-		if (!isset($opts['caps']['txcsum']))
-			$commontx = false;
-		if (!isset($opts['caps']['rxcsum']))
-			$commonrx = false;
-		if (!isset($opts['caps']['tso4']))
-			$commontso4 = false;
-		if (!isset($opts['caps']['tso6']))
-			$commontso6 = false;
-		if (!isset($opts['caps']['lro']))
-			$commonlro = false;
-		if ($smallermtu == 0 && !empty($mtu))
+		if (!empty($opts['mtu']) && $opts['mtu'] < $mtu) {
 			$smallermtu = $mtu;
-		else if (!empty($mtu) && $mtu < $smallermtu)
-			$smallermtu = $mtu;
+		}
 	}
 
-	/* Just in case anything is not working well */
-	if ($smallermtu == 0)
-		$smallermtu = 1500;
-
-	$flags = '';
-	if (isset($config['system']['disablechecksumoffloading']) || ($commonrx === false)) {
-		$flags .= '';
-	}
-	$flags .= 'rxcsum ';
-	if (isset($config['system']['disablechecksumoffloading']) || ($commontx === false)) {
-		$flags .= '';
-	}
-	$flags .= 'txcsum ';
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso4 === false)) {
-		$flags .= '';
-	}
-	$flags .= 'tso4 ';
-	if (isset($config['system']['disablesegmentationoffloading']) || ($commontso6 === false)) {
-		$flags .= '';
-	}
-	$flags .= 'tso6 ';
-	if (isset($config['system']['disablelargereceiveoffloading']) || ($commonlro === false)) {
-		$flags .= '';
-	}
-	$flags .= 'lro ';
-
+	$flags = interface_override_flags();
 	$checklist = get_interface_list();
 
 	foreach ($members as $member) {
@@ -809,8 +774,7 @@ function interface_lagg_configure(&$lagg)
 			continue;
 		}
 
-		/* make sure the parent interface is up */
-		legacy_interface_mtu($member, $smallermtu);
+		legacy_interface_mtu($member, $mtu);
 		legacy_interface_flags($member, $flags);
 		interfaces_bring_up($member);
 		mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
@@ -3003,14 +2967,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
 	/* skip vlans for checksumming and polling */
 	if (!stristr($realif, "_vlan") && is_array($options)) {
-		legacy_interface_flags($realhwif, sprintf(
-			'%stxcsum %srxcsum %stso %slro %spolling',
-			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
-			isset($config['system']['disablechecksumoffloading']) ? '-' : '',
-			isset($config['system']['disablesegmentationoffloading']) ? '-' : '',
-			isset($config['system']['disablelargereceiveoffloading']) ? '-' : '',
-			isset($config['system']['polling']) ? '' : '-'
-		));
+		legacy_interface_flags($realhwif, interface_override_flags());
 	}
 
 	/* invalidate interface/ip/sn cache */
