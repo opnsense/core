@@ -383,7 +383,7 @@ if (isset($config['trigger_initial_wizard'])) :
 				<div class="content-box" style="padding: 20px;">
 							<div class="table-responsive">
 								<?php
-                                echo "<img src=\"/themes/{$g['theme']}/assets/images/default-logo.png\" border=\"0\" alt=\"logo\" /><p>\n";
+                                echo "<img src=\"/ui/themes/{$g['theme']}/build/images/default-logo.png\" border=\"0\" alt=\"logo\" /><p>\n";
                                 ?>
 								<br />
 								<div class="content-box-main">

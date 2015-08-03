@@ -35,11 +35,18 @@ $pagetitle = gentitle( $pgtitle );
 
 		<title><?php echo($config['system']['hostname'] . "." . $config['system']['domain'] . " - " . $pagetitle); ?></title>
 
-		<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-		<!-- Stylesheet for fancy select/dropdown -->
-		<link rel="stylesheet" type="text/css" href="/themes/<?=$g['theme'];?>/build/css/bootstrap-select.css">
+		<!-- include (theme) style -->
+		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+
 		<!-- Favicon -->
-		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
+		<link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
+
+		<!-- Stylesheet for fancy select/dropdown -->
+		<link rel="stylesheet" type="text/css" href="/ui/themes/<?=$g['theme'];?>/build/css/bootstrap-select.css">
+
+		<!-- bootstrap dialog -->
+		<link href="/ui/themes/<?=$g['theme'];?>/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+
 
 		<!-- Font awesome -->
 		<link rel="stylesheet" href="/ui/css/font-awesome.min.css">
