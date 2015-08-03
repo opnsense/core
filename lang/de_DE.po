@@ -3350,7 +3350,7 @@ msgid "Diagnostics: pfInfo"
 msgstr "Diagnose: pfInfo"
 
 msgid "Gathering PF information, please wait..."
-msgstr "Sammle PF Information, bitte warten..."
+msgstr "Sammle PF Informationen, bitte warten..."
 
 #, php-format
 msgid "Count must be between 1 and %s"
@@ -3797,7 +3797,7 @@ msgstr "Ein reserviertes Wort wurde für einen Aliasnamen benutzt."
 
 # see information some lines later for rules
 msgid "The alias name must be less than 32 characters long and may only consist of the characters"
-msgstr "Der Aliasname muss kürzer als 32 Zeichen sein und darf nur aus Buchstaben, Zahlen und Unterstrichen bestehen"
+msgstr "Der Aliasname muss kürzer als 32 Zeichen sein und darf nur aus den folgenden Zeichen bestehen:"
 
 msgid "An alias with this name already exists."
 msgstr "Ein Alias mit diesem Namen existiert bereits."
