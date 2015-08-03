@@ -576,7 +576,7 @@ endif; ?>
                                     ?>
                                     <option value="<?=$ca['refid'];
 ?>"<?=$selected;
-?>><?=$ca['descr'];?></option>
+?>><?=htmlspecialchars($ca['descr']);?></option>
                                     <?php
                                     endforeach; ?>
                                     </select>
