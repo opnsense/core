@@ -1,23 +1,21 @@
 # Language translation for pfSense project.
-# Copyright (C) 2011 BSD Perimeter
+# Copyright (C) 2015, OPNsense Project.
 # This file is distributed under the same license as the pfSense package.
-# Kiyo Takami and Isaac (.ike) Levy, 2013.
+# Chie Taguchi, Kiyo Takami, and Isaac (.ike) Levy, 2013, 2014, 2015.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.1\n"
-"Report-Msgid-Bugs-To: foof@blackskyresearch.net\n"
-"POT-Creation-Date: 2013-12-31 18:00-0500\n"
+"Project-Id-Version: OPNsense 15.1.10.1\n"
+"Report-Msgid-Bugs-To: https://forum.opnsense.org/\n"
+"POT-Creation-Date: 2015-05-11 09:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Chie Taguchi <taguchi.ch@gmail.com>\n"
-"Language-Team: JAPANESE <foof@blackskyresearch.net>\n"
+"Language-Team: https://github.com/dotike/opnsense.core.ja_JP.UTF8\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: vim(1), awk(1), sed(1)\n, https://github.com/soimort/google-translate-cli"
-"X-Machinegen: translate.google.com"
 
 #: etc/inc/PEAR.inc:161
 #, php-format
