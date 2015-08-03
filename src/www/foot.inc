@@ -62,8 +62,10 @@
 		<?php endif; ?>
 
 	<!-- bootstrap script -->
-	<script type="text/javascript" src="/javascript/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
 	<!-- Fancy select with search options -->
-	<script type="text/javascript" src="/javascript/bootstrap-select.min.js"></script>
+	<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
+	<!-- bootstrap dialog -->
+	<script src="/ui/js/bootstrap-dialog.js"></script>
 	</body>
 </html>
