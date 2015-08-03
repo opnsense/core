@@ -2470,7 +2470,7 @@ msgid "Reset states"
 msgstr "Status zurücksetzen"
 
 msgid "Current total state count"
-msgstr "Gesamtanzahl an Status"
+msgstr "Aktuelle Gesamtstatusanzahl"
 
 msgid "Filter expression:"
 msgstr "Filterausdruck:"
