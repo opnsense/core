@@ -335,10 +335,10 @@ msgid "Invalid protocol for pass rule:"
 msgstr "Ungültiges Protokoll für Erlaubnisregel:"
 
 msgid "Tried to pass invalid source IP:"
-msgstr "Versuchte eine ungültige Quell IP zu erlauben:"
+msgstr "Versuchte eine ungültige Quell-IP zu erlauben:"
 
 msgid "Tried to pass invalid destination IP:"
-msgstr "Versuchte eine ungültige Ziel IP zu erlauben:"
+msgstr "Versuchte eine ungültige Ziel-IP zu erlauben:"
 
 msgid "Missing destination port:"
 msgstr "Zielport fehlt:"
