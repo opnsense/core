@@ -563,11 +563,11 @@ include("head.inc");
 												if(have_ruleint_access($if))
 													$interfaces[$if] = $ifdesc;
 
-											if ($config['l2tp']['mode'] == "server")
+											if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
 												if(have_ruleint_access("l2tp"))
 													$interfaces['l2tp'] = "L2TP VPN";
 
-											if ($config['pptpd']['mode'] == "server")
+											if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
 												if(have_ruleint_access("pptp"))
 													$interfaces['pptp'] = "PPTP VPN";
 
