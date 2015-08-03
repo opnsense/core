@@ -320,10 +320,10 @@ msgid "Host added successfully"
 msgstr "Host erfolgreich hinzugefügt"
 
 msgid "Failed to create block rule, alias, or add host."
-msgstr ""
+msgstr "Es konnte die Blockierregel oder der Alias nicht erstellt werden bzw. der Host konnte nicht hinzugefügt werden."
 
 msgid "Tried to block but had no host IP or interface"
-msgstr ""
+msgstr "Versuchte zu blockieren, hatte aber keine Host IP Adresse oder Interface"
 
 msgid "Unknown block error."
 msgstr "Unbekannter Blockierfehler."
@@ -335,16 +335,16 @@ msgid "Invalid protocol for pass rule:"
 msgstr "Ungültiges Protokoll für Erlaubnisregel:"
 
 msgid "Tried to pass invalid source IP:"
-msgstr ""
+msgstr "Versuchte eine ungültige Quell-IP zu erlauben:"
 
 msgid "Tried to pass invalid destination IP:"
-msgstr ""
+msgstr "Versuchte eine ungültige Ziel-IP zu erlauben:"
 
 msgid "Missing destination port:"
 msgstr "Zielport fehlt:"
 
 msgid "Tried to pass invalid destination port:"
-msgstr ""
+msgstr "Versuchte einen ungültigen Zielport zu erlauben:"
 
 msgid "Successfully added pass rule!"
 msgstr "Erlaubnisregel erfolgreich hinzugefügt!"
@@ -681,7 +681,7 @@ msgstr "Klone neues drahtloses Interface %s"
 
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
-msgstr ""
+msgstr "Das Klonen des Interfaces %1$s ist mit dem Fehlercode %2$s und der Ausgabe %3$s fehlgeschlagen"
 
 msgid "Generating new MAC address."
 msgstr "Generiere neue MAC Adresse."
@@ -692,7 +692,7 @@ msgstr "Die ungültige MAC Adresse (ff:ff:ff:ff:ff:ff) am Interface %1$s wurde a
 
 #, php-format
 msgid "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for writing.%s"
-msgstr ""
+msgstr "Fehler: konnte dhclient_%s.conf in interface_dhcp_configure() nicht zum Schreiben öffnen.%s"
 
 #, php-format
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
@@ -765,12 +765,12 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 104
 msgid "it was not possible to read line from the SMTP server"
-msgstr ""
+msgstr "es war nicht möglich die Zeile des SMTP Servers zu lesen"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 126
 msgid "it was not possible to send a line to the SMTP server"
-msgstr ""
+msgstr "es war nicht möglich eine Zeile an den SMTP Server zu senden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 140
@@ -803,7 +803,7 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 230
 #, php-format
 msgid "Connecting to host address \"%1$s\" port %2$s..."
-msgstr ""
+msgstr "Verbinde mit Hostadresse \"%1$s\" Port %2$s..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 237
@@ -835,7 +835,7 @@ msgstr "-7 setvbuf() Aufruf fehlgeschlagen"
 # File: src/etc/inc/notices.smtp.inc, line: 247
 #, php-format
 msgid "could not connect to the host \"%1$s\": %2$s"
-msgstr ""
+msgstr "konnte nicht mit dem Host \"%1$s\" verbinden: %2$s"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 256
@@ -851,7 +851,7 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 285
 msgid "Could not start the SASL authentication client:"
-msgstr ""
+msgstr "Der SASL Authentifizierungsclient konnte nicht gestartet werden:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 292
@@ -893,12 +893,12 @@ msgstr ""
 # File: src/etc/inc/notices.smtp.inc, line: 404
 #, php-format
 msgid "Resolving POP3 authentication host \"%s\"..."
-msgstr ""
+msgstr "Löse POP3 Authentifizierungshost \"%s\" auf..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 411
 msgid "POP3 authentication server greeting was not found"
-msgstr ""
+msgstr "POP3 Authentifizierungsserverbegrüßung wurde nicht gefunden"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 419
@@ -999,7 +999,7 @@ msgid "Remote Access ( SSL/TLS + User Auth )"
 msgstr "Remotezugriff ( SSL/TLS + Benutzerauthentifizierung )"
 
 msgid "No Preference"
-msgstr ""
+msgstr "Keine Einstellung"
 
 msgid "Disabled - No Compression"
 msgstr "Deaktiviert - keine Kompression"
@@ -1039,7 +1039,7 @@ msgid "BACKUP"
 msgstr "BACKUP"
 
 msgid "INIT"
-msgstr ""
+msgstr "INIT"
 
 msgid "After synch increase advertising skew"
 msgstr ""
@@ -1051,7 +1051,7 @@ msgstr "Fehler beim Ertellen des Sockets!"
 # File: src/etc/inc/pfsense-utils.inc, line: 363
 #, php-format
 msgid "Error code is '%1$s' - %2$s"
-msgstr ""
+msgstr "Der Fehlercode ist '%1$s' - %2$s"
 
 #, php-format
 msgid "setsockopt() failed, error: %s"
@@ -1059,7 +1059,7 @@ msgstr "setsockopt() fehlgeschlagen, Fehler: %s"
 
 #, php-format
 msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
-msgstr ""
+msgstr "Magic Packet gesendet (%1$s) an {%2$s} MAC=%3$s"
 
 #, php-format
 msgid "Restored %s of config file (maybe from CARP partner)"
@@ -1084,40 +1084,40 @@ msgid "check for ethernet loops"
 msgstr "Prüfe auf Ethernet Loops"
 
 msgid "learning"
-msgstr ""
+msgstr "lernen"
 
 msgid "forwarding"
 msgstr "weiterleitung"
 
 #, php-format
 msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
-msgstr ""
+msgstr "DNSCACHE: Alte IP %1$s und neue IP %2$s gefunden"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1511
 #, php-format
 msgid "Could not process aliases from alias: %s"
-msgstr ""
+msgstr "Konnte Aliase von Alias nicht verarbeiten: %s"
 
 msgid "Alias archive is a .zip file which cannot be decompressed because utility is missing!"
-msgstr ""
+msgstr "Das Aliasarchiv ist eine .zip Datei, welche nicht entpackt werden kann, weil das entsprechende Werkzeug fehlt!"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1555
 # File: src/etc/inc/pfsense-utils.inc, line: 1587
 #, php-format
 msgid "Could not open %s/aliases for writing!"
-msgstr ""
+msgstr "Konnte %s/aliases nicht zum Schreiben öffnen!"
 
 #
 # File: src/etc/inc/pfsense-utils.inc, line: 1561
 # File: src/etc/inc/pfsense-utils.inc, line: 1593
 #, php-format
 msgid "The following file could not be read %s from %s"
-msgstr ""
+msgstr "Die Datei %s konnte nicht aus der Datei %s gelesen werden"
 
 msgid "Alias archive is a .tar/tgz file which cannot be decompressed because utility is missing!"
-msgstr ""
+msgstr "Das Aliasarchiv ist eine .tar/tgz Datei, welche nicht entpackt werden kann, weil das entsprechende Werkzeug fehlt!"
 
 msgid "Error sending request:"
 msgstr "Fehler bei der Anfrage:"
@@ -1126,7 +1126,7 @@ msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
 msgstr "RADIUS_ACCESS_ACCEPT wurde bei Accounting nicht erwartet"
 
 msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
-msgstr ""
+msgstr "RADIUS_ACCOUNTING_RESPONSE wurde bei Authentifizierung nicht erwartet"
 
 #, php-format
 msgid "Unexpected return value: %s"
@@ -1164,7 +1164,7 @@ msgid "Unbound DNS Forwarder"
 msgstr ""
 
 msgid "NTP clock sync"
-msgstr ""
+msgstr "NTP Zeitsynchronisation"
 
 msgid "Captive Portal"
 msgstr "Captive Portal"
@@ -1194,13 +1194,13 @@ msgid "IPsec VPN"
 msgstr "IPsec VPN"
 
 msgid "Secure Shell Daemon"
-msgstr ""
+msgstr "Secure Shell Daemon"
 
 msgid "OpenVPN"
 msgstr "OpenVPN"
 
 msgid "Server load balancing daemon"
-msgstr ""
+msgstr "Server Lastverteilungsdaemon"
 
 #
 # File: src/etc/inc/service-utils.inc, line: 180
@@ -1376,7 +1376,7 @@ msgid "Setting timezone..."
 msgstr "Setze Zeitzone..."
 
 msgid "Setting hard disk standby... "
-msgstr ""
+msgstr "Setze Festplattenstandby... "
 
 msgid "failed!"
 msgstr "fehlgeschlagen!"
@@ -1448,34 +1448,34 @@ msgid "Drop SYN-FIN packets (breaks RFC1379, but nobody uses it anyway)"
 msgstr "Verwerfe SYN-FIN Segmente (widerspricht RFC 1379, diese Kombination tritt jedoch nicht auf)"
 
 msgid "Sending of IPv4 ICMP redirects"
-msgstr ""
+msgstr "Senden von IPv4 ICMP Weiterleitungen"
 
 msgid "Sending of IPv6 ICMP redirects"
-msgstr ""
+msgstr "Senden von IPv6 ICMP Weiterleitungen"
 
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
 msgstr ""
 
 msgid "Maximum incoming TCP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines eingehenden TCP Segments"
 
 msgid "Maximum outgoing TCP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines ausgehenden TCP Segments"
 
 msgid "Fastforwarding (see http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
-msgstr ""
+msgstr "Fastforwarding (siehe http://lists.freebsd.org/pipermail/freebsd-net/2004-January/002534.html)"
 
 msgid "Do not delay ACK to try and piggyback it onto a data packet"
 msgstr ""
 
 msgid "Maximum outgoing UDP datagram size"
-msgstr ""
+msgstr "Maximale Größe eines ausgehenden UDP Datagramms"
 
 msgid "Handling of non-IP packets which are not passed to pfil (see if_bridge(4))"
 msgstr ""
 
 msgid "Allow unprivileged access to tap(4) device nodes"
-msgstr ""
+msgstr "Erlaube unprivilegierten Zugriff auf tap(4) Geräteknoten"
 
 msgid "Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())"
 msgstr ""
@@ -1484,6 +1484,8 @@ msgid ""
 "The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required "
 "to maintain optimum throughput. "
 msgstr ""
+"Das System wird versuchen die Bandbreite über die Verzögerung jeder Verbindung zu berechnen und die Anzahl der Daten, die an das Netzwerk gesendet werden, so "
+"limitieren, dass ein optimaler Durchsatz erreicht wird. "
 
 msgid "Set ICMP Limits"
 msgstr "Setze ICMP Limits"
@@ -1501,7 +1503,7 @@ msgstr ""
 
 #, php-format
 msgid "Upgraded static route for %s"
-msgstr ""
+msgstr "Aktualisierte statische Route für %s"
 
 #, php-format
 msgid "Sitedown pool for VS: %s"
@@ -1513,7 +1515,7 @@ msgstr "Phase 2 für %s"
 
 #, php-format
 msgid "Upgraded Dyndns %s"
-msgstr ""
+msgstr "Aktualisierte Dyndns %s"
 
 msgid "All Users"
 msgstr "Alle Benutzer"
@@ -1527,19 +1529,19 @@ msgstr "Automatisch hinzugefügte OpenVPN-Regel aus dem Konfigurationsupgrade."
 
 #, php-format
 msgid "WARNING: Could not mark subsystem: %s dirty"
-msgstr ""
+msgstr "WARNUNG: Konnte das Subsystem nicht markieren: %s schmut­zig"
 
 msgid "WARNING: You must give a name as parameter to lock() function."
-msgstr ""
+msgstr "WARNUNG: Sie müssen der lock() Funktion einen Parameter für den Namen übergeben."
 
 msgid "WARNING: You must give a name as parameter to try_lock() function."
-msgstr ""
+msgstr "WARNUNG: Sie müssen der try_lock() Funktion einen Parameter für den Namen übergeben."
 
 #
 # File: src/etc/inc/util.inc, line: 1014
 #, php-format
 msgid "The command '%s' returned exit code '%d', the output was '%s'"
-msgstr ""
+msgstr "Das Kommando '%s' gab den Exit-Code '%d' zurück, die Ausgabe war '%s'"
 
 #, php-format
 msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
@@ -1576,11 +1578,11 @@ msgstr "Konfiguriere IPsec VPN... "
 
 #, php-format
 msgid "Error: Invalid certificate info for %s"
-msgstr ""
+msgstr "Fehler: Üngültige Zertifikatsinformation für %s"
 
 #, php-format
 msgid "Error: Invalid certificate hash info for %s"
-msgstr ""
+msgstr "Fehler: Ungültiger Zertifikatshashinformation für %s"
 
 #, php-format
 msgid "Error: Cannot write IPsec CA file for %s"
@@ -1592,15 +1594,15 @@ msgstr "Fehler: Ungültige Phase 1 Zertifikatsreferenz für %s"
 
 #, php-format
 msgid "Error: Cannot write phase1 key file for %s"
-msgstr ""
+msgstr "Fehler: Konnte Phase 1 Schlüsseldatei für %s nicht schreiben"
 
 #, php-format
 msgid "Error: Cannot write phase1 certificate file for %s"
-msgstr ""
+msgstr "Fehler: Konnte Phase 1 Zertifikatsdatei für %s nicht schreiben"
 
 #, php-format
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
-msgstr ""
+msgstr "Ignoriere das erneute Laden von IPsec da es keine Tunnel auf dem Interface %s gibt."
 
 msgid "Forcefully reloading IPsec"
 msgstr ""
@@ -1613,30 +1615,30 @@ msgstr "Konnte mpd in 3 Sekunden nicht stoppen, Neuer Versuch"
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_pptpd_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_pptpd_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pptpd_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_pptpd_configure() nicht öffnen."
 
 msgid "Configuring PPPoE VPN service... "
 msgstr "Konfiguriere PPPoE VPN Dienst "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_pppoe_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_pppoe_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_pppoe_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_pppoe_configure() nicht öffnen."
 
 msgid "done"
 msgstr "erledigt."
@@ -1646,15 +1648,15 @@ msgstr "Konfiguriere  L2TP VPN Dienst... "
 
 #, php-format
 msgid "Error: cannot open mpd.conf in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.conf in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.links in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.links in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "Error: cannot open mpd.secret in vpn_l2tp_configure()."
-msgstr ""
+msgstr "Fehler: Konnte mpd.secret in vpn_l2tp_configure() nicht öffnen."
 
 #, php-format
 msgid "XML error: %1$s at line %2$d cannot occur more than once"
@@ -1689,7 +1691,7 @@ msgstr ""
 # File: src/etc/rc.initial.password, line: 42
 #, php-format
 msgid "Do you want to proceed [y|n]? "
-msgstr "Möchten Sie fortfahren [y|n]? "
+msgstr "Möchten Sie fortfahren [j|n]? "
 
 #
 # File: src/etc/rc.initial.password, line: 48
@@ -1728,10 +1730,10 @@ msgstr ""
 
 #, php-format
 msgid "Enter the new %s %s address.  Press <ENTER> for none:"
-msgstr ""
+msgstr "Geben Sie die neue %s %s Adresse ein.  Drücken Sie <ENTER> für keine:"
 
 msgid "This IP address conflicts with another interface or a VIP"
-msgstr ""
+msgstr "Diese IP Adresse steht im Konflikt mit einem anderen Interface oder einer VIP"
 
 #, php-format
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
@@ -1742,10 +1744,10 @@ msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr ""
 
 msgid "You cannot set network address to an interface"
-msgstr ""
+msgstr "Sie können die Netzwerkadresse einem Interface nicht zuweisen"
 
 msgid "You cannot set broadcast address to an interface"
-msgstr ""
+msgstr "Sie können die Broadcastadresse einem Interface nicht zuweisen"
 
 #, php-format
 msgid "For a WAN, enter the new %s %s upstream gateway address."
@@ -1773,11 +1775,11 @@ msgid "Enter the end address of the %s client address range:"
 msgstr ""
 
 msgid "The end address of the DHCP range must be >= the start address"
-msgstr ""
+msgstr "Die letzte Adresse des DHCP Bereichs muss größer gleich der Startadresse sein"
 
 #, php-format
 msgid "Disabling %s DHCPD..."
-msgstr ""
+msgstr "Deaktiviere %s DHCPD..."
 
 msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
 msgstr ""
@@ -1808,7 +1810,7 @@ msgid "Could not obtain openvpn lock for executing rc.openvpn for more than 10 s
 msgstr ""
 
 msgid "n/j/y H:i:s"
-msgstr ""
+msgstr "n/j/y H:i:s"
 
 msgid "Unknown"
 msgstr "Unbekannt"
@@ -1979,7 +1981,7 @@ msgstr "Ziehen Sie bitte in Betracht, einen Crash Report zu senden, falls der Fe
 #
 # File: src/www/crash_reporter.php, line: 119
 msgid "Luckily we have not detected a programming bug."
-msgstr "Zm Glück haben wir keinen Programmierfehler gefunden."
+msgstr "Zum Glück haben wir keinen Programmierfehler gefunden."
 
 #
 # File: src/www/crash_reporter.php, line: 136
@@ -2184,7 +2186,7 @@ msgid "Backup/restore"
 msgstr "Backup/Wiederherstellung"
 
 msgid "The firewall configuration has been changed."
-msgstr ""
+msgstr "Die Firewallkonfiguration wurde geändert."
 
 msgid "The firewall is now rebooting."
 msgstr "Die Firewall startet jetzt neu."
@@ -2235,12 +2237,12 @@ msgid "Note:"
 msgstr "Hinweis:"
 
 msgid "The firewall will reboot after restoring the configuration."
-msgstr ""
+msgstr "Die Firewall wird nach der Wiederherstellung der Konfiguration neu starten."
 
 #
 # File: src/www/diag_backup.php, line: 748
 msgid "Remote backup (using Google drive)"
-msgstr ""
+msgstr "Fernes Backup (verwendet Google Drive)"
 
 msgid "Enable"
 msgstr "Aktivieren"
@@ -2261,12 +2263,12 @@ msgstr "(ersetzen)"
 #
 # File: src/www/diag_backup.php, line: 761
 msgid "P12 key"
-msgstr ""
+msgstr "P12 Schlüssel"
 
 #
 # File: src/www/diag_backup.php, line: 762
 msgid "Folder ID"
-msgstr ""
+msgstr "Ordner ID"
 
 msgid "Backup Count"
 msgstr "Anzahl an Backups"
@@ -2274,7 +2276,7 @@ msgstr "Anzahl an Backups"
 #
 # File: src/www/diag_backup.php, line: 764
 msgid "Password protect your data"
-msgstr ""
+msgstr "Schütz Ihrer Daten durch ein Passwort"
 
 #
 # File: src/www/diag_backup.php, line: 766
@@ -2283,7 +2285,7 @@ msgstr "Bestätigen:"
 
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
-msgstr ""
+msgstr "Sicherung mit dem Zeitstempel %1$s und der Beschreibung \"%2$s\" gelöscht."
 
 msgid "Configuration History"
 msgstr ""
@@ -2298,23 +2300,23 @@ msgid "Confirm Action"
 msgstr "Aktion bestätigen"
 
 msgid "Please confirm the selected action"
-msgstr ""
+msgstr "Bitte bestätigen Sie die ausgewählte Aktion"
 
 msgid "Action"
 msgstr "Aktion"
 
 msgid "Restore from Configuration Backup"
-msgstr ""
+msgstr "Aus Konfigurationssicherung wiederherstellen"
 
 msgid "Remove Configuration Backup"
-msgstr ""
+msgstr "Konfigurationssicherung löschen"
 
 msgid "Target Configuration"
-msgstr ""
+msgstr "Zielkonfiguration"
 
 #, php-format
 msgid "Timestamp %1$s"
-msgstr ""
+msgstr "Zeitstempel %1$s"
 
 msgid "Confirm"
 msgstr "Bestätigen"
@@ -2354,7 +2356,7 @@ msgid "Current"
 msgstr "Aktuell"
 
 msgid "Revert to this configuration"
-msgstr ""
+msgstr "Diese Konfiguration wiederherstellen"
 
 msgid "Remove this backup"
 msgstr "Dieses Backup entfernen"
@@ -2366,34 +2368,34 @@ msgid "Factory defaults"
 msgstr "Werkseinstellungen"
 
 msgid "The system has been reset to factory defaults and is now rebooting. This may take a few minutes, depending on your hardware."
-msgstr ""
+msgstr "Das System wurde auf Werkseinstellungen zurückgesetzt und startet jetzt neu. Das kann je nach Hardware einige Minuten dauern."
 
 msgid "If you click"
-msgstr ""
+msgstr "Falls Sie klicken"
 
 msgid "the firewall will:"
-msgstr ""
+msgstr "die Firewall wird:"
 
 msgid "Reset to factory defaults"
 msgstr "Auf Werkseinstellungen zurücksetzen"
 
 msgid "LAN IP address will be reset to 192.168.1.1"
-msgstr ""
+msgstr "LAN IP Adresse wird auf 192.168.1.1 zurückgesetzt"
 
 msgid "System will be configured as a DHCP server on the default LAN interface"
 msgstr ""
 
 msgid "Reboot after changes are installed"
-msgstr ""
+msgstr "Neustarten nachdem die Änderungen installiert wurden"
 
 msgid "WAN interface will be set to obtain an address automatically from a DHCP server"
 msgstr ""
 
 msgid "webConfigurator admin username will be reset to 'root'"
-msgstr ""
+msgstr "Webkonfigurator administrativer Benutzername wird auf 'root' zurückgesetzt"
 
 msgid "webConfigurator admin password will be reset to"
-msgstr ""
+msgstr "Webkonfigurator Administratorpasswort wird zurückgesetzt auf"
 
 msgid "Are you sure you want to proceed?"
 msgstr "Sind Sie sicher dass Sie fortfahren möchten?"
@@ -2441,7 +2443,7 @@ msgid "Ping"
 msgstr "Ping"
 
 msgid "Traceroute"
-msgstr ""
+msgstr "Traceroute"
 
 msgid "NOTE: The following links are to external services, so their reliability cannot be guaranteed."
 msgstr ""
@@ -2456,7 +2458,7 @@ msgid "invalid input"
 msgstr "Ungültige Eingabe"
 
 msgid "Show States"
-msgstr ""
+msgstr "Status anzeigen"
 
 msgid "An error occurred."
 msgstr "Ein Fehler ist aufgetreten."
@@ -2465,10 +2467,10 @@ msgid "States"
 msgstr "Status"
 
 msgid "Reset states"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Current total state count"
-msgstr ""
+msgstr "Aktuelle Gesamtstatusanzahl"
 
 msgid "Filter expression:"
 msgstr "Filterausdruck:"
@@ -2483,7 +2485,7 @@ msgid "Int"
 msgstr "Int"
 
 msgid "Proto"
-msgstr ""
+msgstr "Protokoll"
 
 msgid "Source -> Router -> Destination"
 msgstr "Quelle -> Router -> Ziel"
@@ -2494,10 +2496,10 @@ msgid "State"
 msgstr "Status"
 
 msgid "Remove all state entries from"
-msgstr ""
+msgstr "Entferne alle Statuseinträge von"
 
 msgid "No states were found."
-msgstr ""
+msgstr "Keine Status wurden gefunden."
 
 msgid "States matching current filter"
 msgstr ""
@@ -2506,10 +2508,10 @@ msgid "Show Source Tracking"
 msgstr ""
 
 msgid "Source Tracking"
-msgstr ""
+msgstr "Quellenverfolgung"
 
 msgid "Reset States"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Source -> Destination"
 msgstr "Quelle -> Ziel"
@@ -2524,7 +2526,7 @@ msgid "Rate"
 msgstr "Rate"
 
 msgid "Remove all source tracking entries from"
-msgstr ""
+msgstr "Lösche alle Quellverfolgungseinträge aus"
 
 msgid "No source tracking entries were found."
 msgstr ""
@@ -2671,25 +2673,25 @@ msgid "Description"
 msgstr "Beschreibung"
 
 msgid "Local ID"
-msgstr ""
+msgstr "Lokale ID"
 
 msgid "Local IP"
-msgstr ""
+msgstr "Lokale IP"
 
 msgid "Remote ID"
-msgstr ""
+msgstr "Ferne ID"
 
 msgid "Remote IP"
-msgstr ""
+msgstr "Ferne IP"
 
 msgid "Role"
 msgstr "Rolle"
 
 msgid "Local subnets"
-msgstr ""
+msgstr "Lokale Subnetzwerke"
 
 msgid "Local SPI(s)"
-msgstr ""
+msgstr "Lokaler SPI(s)"
 
 msgid "Remote subnets"
 msgstr ""
@@ -2698,7 +2700,7 @@ msgid "You can configure IPsec"
 msgstr "Sie können IPsec konfigurieren"
 
 msgid "Leases"
-msgstr ""
+msgstr "Leases"
 
 msgid "Pool: "
 msgstr ""
@@ -2722,7 +2724,7 @@ msgid "No IPsec pools."
 msgstr "Keine IPsec Pools"
 
 msgid "You can configure your IPsec"
-msgstr ""
+msgstr "Sie können IPsec konfigurieren"
 
 msgid "here."
 msgstr "hier."
@@ -2752,7 +2754,7 @@ msgid "Data"
 msgstr "Daten"
 
 msgid "No IPsec security associations."
-msgstr ""
+msgstr "Keine IPsec Sicherheitsverbindungen."
 
 msgid "SPD"
 msgstr "SPD"
@@ -2761,13 +2763,13 @@ msgid "Direction"
 msgstr "Richtung"
 
 msgid "Tunnel endpoints"
-msgstr ""
+msgstr "Tunnelendpunkte"
 
 msgid "incoming (as seen by firewall)"
-msgstr ""
+msgstr "eingehend (wie von der Firewall gesehen)"
 
 msgid "outgoing (as seen by firewall)"
-msgstr ""
+msgstr "ausgehend (wie von der Firewall gesehen)"
 
 msgid "No IPsec security policies."
 msgstr "Keine IPsec Sicherheitsrichtlinien."
@@ -2809,7 +2811,7 @@ msgstr "DHCP"
 
 #, php-format
 msgid "Last %s DHCP service log entries"
-msgstr ""
+msgstr "Letzte %s Protokolleinträge des DHCP Dienstes"
 
 msgid "Cannot resolve"
 msgstr "Kann nicht aufgelöst werden"
@@ -2832,14 +2834,14 @@ msgstr ""
 
 #, php-format
 msgid "Last %s firewall log entries."
-msgstr ""
+msgstr "Letzte %s Firewallprotokolleinträge."
 
 msgid "matched log entries."
-msgstr ""
+msgstr "entsprechende Protokolleinträge."
 
 #, php-format
 msgid "Max(%s)"
-msgstr ""
+msgstr "Max(%s)"
 
 msgid "Act"
 msgstr "Reagieren"
@@ -2886,7 +2888,7 @@ msgstr "Firewall (Dynamische Ansicht)"
 
 #, php-format
 msgid "Last %s records"
-msgstr ""
+msgstr "Letzte %s Aufzeichnungen"
 
 msgid "Pause"
 msgstr "Pause"
@@ -2923,7 +2925,7 @@ msgstr ""
 
 #, php-format
 msgid "This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s)."
-msgstr ""
+msgstr "Dies ist eine Zusammenfassung der letzten %1$s Zeilen des Firewallprotokolls (Max %2$s)."
 
 msgid "NOTE: IE8 users must enable compatibility view."
 msgstr ""
@@ -2933,7 +2935,7 @@ msgstr "Gateways"
 
 #, php-format
 msgid "Last %s  IPsec log entries"
-msgstr ""
+msgstr "Letzte %s IPsec Protokolleinträge"
 
 msgid "NTP"
 msgstr "NTP"
@@ -2947,31 +2949,31 @@ msgid "Last %s OpenVPN log entries"
 msgstr ""
 
 msgid "PPTP Logins"
-msgstr ""
+msgstr "PPTP Anmeldungen"
 
 msgid "PPTP Raw"
 msgstr ""
 
 msgid "PPPoE Logins"
-msgstr ""
+msgstr "PPPoE Anmeldungen"
 
 msgid "PPPoE Raw"
 msgstr ""
 
 msgid "L2TP Logins"
-msgstr ""
+msgstr "L2TP Anmeldungen"
 
 msgid "L2TP Raw"
 msgstr ""
 
 msgid "Normal View"
-msgstr ""
+msgstr "Standardansicht"
 
 msgid "Dynamic View"
 msgstr "Dynamische Ansicht"
 
 msgid "Summary View"
-msgstr ""
+msgstr "Zusammengefasste Ansicht"
 
 msgid "Routing"
 msgstr "Routing"
@@ -2999,7 +3001,7 @@ msgstr "Proxy"
 # File: src/www/diag_logs_proxy.php, line: 59
 #, php-format
 msgid "Last %s log entries"
-msgstr ""
+msgstr "Letzte %s Protokolleinträge"
 
 msgid "Load Balancer"
 msgstr ""
@@ -3012,7 +3014,7 @@ msgid "Reset Log Files"
 msgstr "Protokolldateien zurücksetzen"
 
 msgid "The log files have been reset."
-msgstr ""
+msgstr "Die Protokolldatei wurde zurückgesetzt"
 
 msgid "A valid IP address/hostname or IP/hostname:port must be specified for remote syslog server #1."
 msgstr ""
@@ -3271,13 +3273,13 @@ msgid ""
 msgstr ""
 
 msgid "If you leave this field blank, all packets on the specified interface will be captured."
-msgstr ""
+msgstr "Falls Sie das Feld leer lassen, werden alle Pakete auf dem angegebenen Interface aufgezeichnet."
 
 msgid "Port"
 msgstr "Port"
 
 msgid "Leave blank if you do not want to filter by port."
-msgstr ""
+msgstr "Lassen Sie es leer wenn Sie nicht nach den Port filtern wollen."
 
 msgid "The port can be either the source or destination port. The packet capture will look for this port in either field."
 msgstr ""
@@ -3333,13 +3335,13 @@ msgid "View Capture"
 msgstr "Aufzeichnung anzeigen"
 
 msgid "The packet capture file was last updated:"
-msgstr ""
+msgstr "Die Paketaufzeichnungsdatei wurde zuletzt aktualisiert:"
 
 msgid "Packet Capture is running."
 msgstr "Paketaufzeichnung läuft."
 
 msgid "Packet Capture stopped."
-msgstr ""
+msgstr "Paketaufzeichnung angehalten."
 
 msgid "Packets Captured:"
 msgstr "Aufgezeichnete Pakete:"
@@ -3348,29 +3350,29 @@ msgid "Diagnostics: pfInfo"
 msgstr "Diagnose: pfInfo"
 
 msgid "Gathering PF information, please wait..."
-msgstr ""
+msgstr "Sammle PF Informationen, bitte warten..."
 
 #, php-format
 msgid "Count must be between 1 and %s"
 msgstr "Anzahl muss zwischen 1 und %s sein"
 
 msgid "When using IPv4, the target host must be an IPv4 address or hostname."
-msgstr ""
+msgstr "Wenn Sie IPv4 verwenden, muss der Zielhost eine IPv4 Adresse oder ein Hostname sein."
 
 msgid "When using IPv6, the target host must be an IPv6 address or hostname."
-msgstr ""
+msgstr "Wenn Sie IPv6 verwenden, muss der Zielhost eine IPv6 Adresse oder ein Hostname sein."
 
 msgid "Ping output"
-msgstr ""
+msgstr "Pingausgabe"
 
 msgid "The state table has been flushed successfully."
-msgstr ""
+msgstr "Die Statustabelle wurde erfolgreich geleert."
 
 msgid "The source tracking table has been flushed successfully."
-msgstr ""
+msgstr "Die Quellverfolgungstabelle wurde erfolgreich geleert."
 
 msgid "Reset state"
-msgstr ""
+msgstr "Status zurücksetzen"
 
 msgid "Firewall state table"
 msgstr "Firewall Statustabelle"
@@ -3388,15 +3390,17 @@ msgid "NOTE: If you reset the firewall state table, the browser session may appe
 msgstr ""
 
 msgid "Firewall Source Tracking"
-msgstr ""
+msgstr "Firewallquellverfolgung"
 
 msgid ""
 "Resetting the source tracking table will remove all source/destination associations. This means that the \"sticky\" source/destination association will be cleared "
 "for all clients."
 msgstr ""
+"Durch das Zurücksetzen der Quellverfolgungstabelle gehen sämtliche Quell-/Zielverbindungen verloren. Das heißt, dass alle \"klebrigen\" Quell-/Zielverbindungen für "
+"alle Clients zurückgesetzt werden."
 
 msgid "This does not clear active connection states, only source tracking."
-msgstr ""
+msgstr "Dies setzt keine aktiven Verbindungsstatus zurück, nur Quellverfolgung."
 
 msgid "Reset"
 msgstr "Zurücksetzen"
@@ -3411,19 +3415,19 @@ msgid "Enable this to attempt to resolve names when displaying the tables."
 msgstr ""
 
 msgid "Number of rows"
-msgstr ""
+msgstr "Anzahl an Zeilen"
 
 msgid "all"
 msgstr "alle"
 
 msgid "Select how many rows to display."
-msgstr ""
+msgstr "Wählen Sie aus, wie viele Zeilen angezeigt werden sollen."
 
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
 
 msgid "Update"
-msgstr ""
+msgstr "Aktualisierung"
 
 msgid "By enabling name resolution, the query should take a bit longer. You can stop it at any time by clicking the Stop button in your browser."
 msgstr ""
@@ -3432,7 +3436,7 @@ msgid "Gathering data, please wait..."
 msgstr ""
 
 msgid "S.M.A.R.T. Monitor Tools"
-msgstr ""
+msgstr "S.M.A.R.T. Überwachungswerkzeuge"
 
 msgid "PASSED"
 msgstr ""
@@ -3457,7 +3461,7 @@ msgid "Config"
 msgstr "Konfiguration"
 
 msgid "Test email"
-msgstr ""
+msgstr "Test-E-Mail"
 
 #, php-format
 msgid "Send test email to %s"
@@ -3473,10 +3477,10 @@ msgid "Info type"
 msgstr "Infotyp"
 
 msgid "Health"
-msgstr ""
+msgstr "Gesundheit"
 
 msgid "SMART Capabilities"
-msgstr ""
+msgstr "SMART-Fähigkeiten"
 
 msgid "Attributes"
 msgstr "Attribute"
@@ -3491,7 +3495,7 @@ msgid "View"
 msgstr "Ansicht"
 
 msgid "Perform Self-tests"
-msgstr ""
+msgstr "Selbsttest ausführen"
 
 msgid "Test type"
 msgstr "Testtyp"
@@ -3500,10 +3504,10 @@ msgid "Offline"
 msgstr "Offline"
 
 msgid "Short"
-msgstr ""
+msgstr "Kurz"
 
 msgid "Long"
-msgstr ""
+msgstr "Lang"
 
 msgid "Conveyance (ATA Disks Only)"
 msgstr ""
@@ -3512,7 +3516,7 @@ msgid "View Logs"
 msgstr "Protokolle anzeigen"
 
 msgid "Log type"
-msgstr ""
+msgstr "Protokolltyp"
 
 msgid "Error"
 msgstr "Fehler"
@@ -3551,7 +3555,7 @@ msgid "By Destination IP"
 msgstr "durch Ziel IP"
 
 msgid "Total per IP"
-msgstr ""
+msgstr "Gesamt per IP"
 
 msgid "By IP Pair"
 msgstr "durch IP Paar"
@@ -3566,19 +3570,19 @@ msgid "Diagnostics: pfTop"
 msgstr "Diagnose: pfTop"
 
 msgid "View type:"
-msgstr ""
+msgstr "Ansichtstyp:"
 
 msgid "Sort type:"
 msgstr "Sortiertyp:"
 
 msgid "Number of States:"
-msgstr ""
+msgstr "Anzahl an Status:"
 
 msgid "Default"
 msgstr "Standard"
 
 msgid "Label"
-msgstr ""
+msgstr "Etikett"
 
 msgid "Rules"
 msgstr "Regeln"
@@ -3605,16 +3609,16 @@ msgid "Peak"
 msgstr "Peak"
 
 msgid "Packet"
-msgstr ""
+msgstr "Paket"
 
 msgid "Source Port"
 msgstr "Quellport"
 
 msgid "Gathering pfTOP activity, please wait..."
-msgstr ""
+msgstr "Sammle pfTOP-Aktivität, bitte warten..."
 
 msgid "Tables"
-msgstr ""
+msgstr "Tabellen"
 
 msgid "The bogons database has been updated."
 msgstr ""
@@ -3623,7 +3627,7 @@ msgid " the latest bogon data."
 msgstr " die neuesten Bogon Daten"
 
 msgid "No entries exist in this table."
-msgstr ""
+msgstr "Es existieren keine Einträge in dieser Tabelle."
 
 msgid "entries in this table."
 msgstr "Einträge in dieser Tabelle."
@@ -3635,31 +3639,33 @@ msgid "Test Port"
 msgstr ""
 
 msgid "Please enter a valid IP or hostname."
-msgstr ""
+msgstr "Bitte geben Sie eine gültige IP oder einen gültigen Hostnamen ein."
 
 msgid "Please enter a valid port number."
-msgstr ""
+msgstr "Bitte geben Sie eine gültige Portnummer ein."
 
 msgid "Please enter a valid source port number, or leave the field blank."
 msgstr ""
 
 msgid "You cannot connect to an IPv4 address using IPv6."
-msgstr ""
+msgstr "Sie können sich nicht mittels einer IPv6 Adresse mit IPv4 verbinden."
 
 msgid "You cannot connect to an IPv6 address using IPv4."
-msgstr ""
+msgstr "Sie können sich nicht mittels einer IPv4 Adresse mit IPv6 verbinden."
 
 msgid ""
 "This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function "
 "for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."
 msgstr ""
+"Diese Seite erlaubt die Ausführung eines simplen TCP Verbindungstests um festzustellen, ob der Host erreichbar ist und Verbindungen am angegebenen Port akzeptiert. "
+"Dieser Test funktioniert nicht mit UDP, da es keinen verlässlichen Weg zur Erkennung gibt, ob ein UDP Port Verbindungen akzeptiert."
 
 msgid ""
 "No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."
 msgstr ""
 
 msgid "This should typically be left blank."
-msgstr ""
+msgstr "Dies sollte üblicherweise leer gelassen werden."
 
 msgid "Show Remote Text"
 msgstr ""
@@ -3695,13 +3701,13 @@ msgid "Maximum number of hops must be between 1 and %s"
 msgstr ""
 
 msgid "Maximum number of hops"
-msgstr ""
+msgstr "Maximale Anzahl an Hops"
 
 msgid "Reverse Address Lookup"
 msgstr ""
 
 msgid "Use ICMP"
-msgstr ""
+msgstr "Benutze ICMP"
 
 msgid "Note: "
 msgstr "Hinweis: "
@@ -3713,13 +3719,13 @@ msgid "Using a source interface/IP address that does not match selected type (IP
 msgstr ""
 
 msgid "Traceroute output"
-msgstr ""
+msgstr "Traceroute Ausgabe"
 
 msgid "Firewall: EasyRule"
-msgstr "Firewall: EasyRule"
+msgstr "Firewall: Einfache Regel"
 
 msgid "Message"
-msgstr ""
+msgstr "Nachricht"
 
 msgid ""
 "This is the Easy Rule status page, mainly used to display errors when adding rules. If you are seeing this, there apparently was not an error, and you navigated to "
@@ -3730,13 +3736,13 @@ msgid "System Logs, Firewall Tab"
 msgstr ""
 
 msgid "This page is meant to be called from the block/pass buttons on the Firewall Logs page"
-msgstr ""
+msgstr "Diese Seite ist dazu gedacht, von Blockieren/Erlauben Buttons von der Firewallprotokollseite aufgerufen zu werden"
 
 msgid "Help for items on this page"
-msgstr ""
+msgstr "Hilfe für Punkte auf dieser Seite"
 
 msgid "Save Settings"
-msgstr ""
+msgstr "Einstellungen speichern"
 
 #, php-format
 msgid "Cannot delete alias. Currently in use by %s"
@@ -3749,10 +3755,10 @@ msgid "Bulk import aliases from list"
 msgstr "Massenimport von Aliase von einer Liste"
 
 msgid "The alias list has been changed."
-msgstr ""
+msgstr "Die Aliasliste wurde geändert."
 
 msgid "You must apply the changes in order for them to take effect."
-msgstr ""
+msgstr "Sie müssen die Änderungen anwenden, damit diese in Kraft treten."
 
 msgid "Ports"
 msgstr "Ports"
@@ -3787,20 +3793,21 @@ msgid "Vertical bars (|) at start or end, or double in the middle of description
 msgstr ""
 
 msgid "Reserved word used for alias name."
-msgstr ""
+msgstr "Ein reserviertes Wort wurde für einen Aliasnamen benutzt."
 
+# see information some lines later for rules
 msgid "The alias name must be less than 32 characters long and may only consist of the characters"
-msgstr ""
+msgstr "Der Aliasname muss kürzer als 32 Zeichen sein und darf nur aus den folgenden Zeichen bestehen:"
 
 msgid "An alias with this name already exists."
 msgstr "Ein Alias mit diesem Namen existiert bereits."
 
 #, php-format
 msgid "Cannot use a reserved keyword as alias name %s"
-msgstr ""
+msgstr "Es ist nicht möglich, ein reserviertes Wort als Aliasnamen zu benutzen %s"
 
 msgid "An interface description with this name already exists."
-msgstr ""
+msgstr "Eine Interfacebeschreibung mit diesem Namen existiert bereits."
 
 msgid "You must provide a valid URL."
 msgstr "Sie müssen eine gültige URL eingeben."
@@ -3814,7 +3821,7 @@ msgstr "Eintrag hinzugefügt %s"
 
 #, php-format
 msgid "You must provide a valid URL. Could not fetch usable data from '%s'."
-msgstr ""
+msgstr "Sie müssen eine gültige URL eingeben. Konnte keine Daten von '%s' abrufen."
 
 #, php-format
 msgid "URL '%s' is not valid."
@@ -3854,19 +3861,19 @@ msgid "Port(s)"
 msgstr "Port(s)"
 
 msgid "URL (IPs)"
-msgstr ""
+msgstr "URL (IPs)"
 
 msgid "URL (Ports)"
-msgstr ""
+msgstr "URL (Ports)"
 
 msgid "URL Table (IPs)"
-msgstr ""
+msgstr "URL Tabelle (IPs)"
 
 msgid "URL Table (Ports)"
-msgstr ""
+msgstr "URL Tabelle (Ports)"
 
 msgid "Update Freq. (days)"
-msgstr ""
+msgstr "Aktualisierungsintervall (Tage)"
 
 msgid ""
 "Networks are specified in CIDR format.  Select the CIDR mask that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 "
@@ -15459,7 +15466,7 @@ msgid "When set, if primary server fails all requests will be sent via backup se
 msgstr ""
 
 msgid "NAS IP Address"
-msgstr ""
+msgstr "NAS IP Adresse"
 
 msgid "RADIUS server NAS IP Address"
 msgstr ""
