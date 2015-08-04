@@ -2,6 +2,7 @@
     <!-- Core menu system including legacy stuff -->
     <User order="0" cssClass="glyphicon glyphicon-user">
         <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php"/>
+        <Logout VisibleName="Logout" url="/index.php?logout"/>
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <Certificates url="/system_certmanager.php">
