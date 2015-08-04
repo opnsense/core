@@ -97,6 +97,13 @@ $pagetitle = gentitle( $pgtitle );
 					$("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
 				}
 			});
+
+			// link showhelp class behavior
+			$("a[class='showhelp']").click(function (event) {
+		      $("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
+					event.preventDefault();
+		  });
+
 		});
 		//]]>
 		</script>
