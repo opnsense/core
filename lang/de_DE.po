@@ -29,7 +29,7 @@ msgstr "Leite weiter..."
 # File: src/etc/inc/auth.inc, line: 394
 #, php-format
 msgid "There is something wrong in your config because user %s password is missing!"
-msgstr "Mit Ihrer Konfiguration stimmt irgendetwas nicht, da das Passwort des Benutzers %s fehlt!"
+msgstr "Mit Ihrer Konfiguration stimmt etwas nicht, da das Passwort des Benutzers %s fehlt!"
 
 #, php-format
 msgid "ERROR!  Could not connect to server %s."
@@ -74,7 +74,7 @@ msgstr "FEHLER: Bindung an Server %s nicht möglich."
 
 #, php-format
 msgid "Search resulted in error: %s"
-msgstr "Suche resultierte in einem Fehler: %s"
+msgstr "Suche endete mit einem Fehler: %s"
 
 msgid "ERROR! Either LDAP search failed, or multiple users were found."
 msgstr ""
@@ -90,7 +90,7 @@ msgstr "Lokale Datenbank"
 # File: src/etc/inc/auth.inc, line: 1333
 #, php-format
 msgid "Successful login for user '%1$s' from: %2$s"
-msgstr "Der Benutzer '%1$s' hat sich von %2$s erfolgreich angemeldet"
+msgstr "Der Benutzer '%1$s' hat sich erfolgreich von %2$s angemeldet"
 
 #
 # File: src/etc/inc/auth.inc, line: 1343
@@ -101,7 +101,7 @@ msgstr "Falscher Benutzername oder falsches Passwort."
 # File: src/etc/inc/auth.inc, line: 1384
 #, php-format
 msgid "Session timed out for user '%1$s' from: %2$s"
-msgstr "Zeitüberschreitung für die Sitzung des Benutzers '%1$s' von %2$s"
+msgstr "Die Sitzung des Benutzers '%1$s' ist abgelaufen von: %2$s"
 
 #
 # File: src/etc/inc/auth.inc, line: 1386
@@ -230,7 +230,7 @@ msgstr ""
 #
 # File: src/etc/inc/config.lib.inc, line: 57
 msgid "No config.xml found, attempting to restore factory config."
-msgstr "config.xml wurde nicht gefunden, versuche auf Werkseinstellungen zurückzusetzen."
+msgstr "Konnte keine config.xml finden, versuche auf Werkseinstellungen zurückzusetzen."
 
 #, php-format
 msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
