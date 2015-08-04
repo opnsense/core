@@ -159,7 +159,7 @@ msgstr ""
 
 #, fuzzy, php-format
 msgid "%sInvalid interface name '%s'%s"
-msgstr "Ungültiger Interfacename '%s'%s"
+msgstr "%sUngültiger Interfacename '%s'%s"
 
 #, php-format
 msgid "%sEnter the LAN interface name or 'a' for auto-detection %sNOTE: this enables full Firewalling/NAT mode.%s(or nothing if finished):%s"
@@ -10642,7 +10642,7 @@ msgid ""
 "<b>Allow Snoop:</b> This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should "
 "only be configured for your administrative host."
 msgstr ""
-"<b>Erlaube Snoop<b> Diese Aktion erlaubt rekursiven und nichtrekursiveen Zugang von Hosts im Netzwerkblock, der unten definiert wird. Wird für Cache Snooping "
+"<b>Erlaube Snoop<b> Diese Aktion erlaubt rekursiven und nichtrekursiven Zugang von Hosts im Netzwerkblock, der unten definiert wird. Wird für Cache Snooping "
 "verwendet und sollte idealerweise nur für Ihren administrativen Host konfiguriert werden."
 
 msgid "Networks"
