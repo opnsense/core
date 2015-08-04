@@ -35,7 +35,7 @@ require_once("unbound.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_gif.php');
 
-if (!is_array($config['gifs']['gif']))
+if (!isset($config['gifs']['gif']))
 	$config['gifs']['gif'] = array();
 
 $a_gifs = &$config['gifs']['gif'];
