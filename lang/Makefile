@@ -7,7 +7,7 @@ MSGFMT=		${_MSGFMT} --strict
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 
-LANGUAGES=	de_DE zh_CN
+LANGUAGES=	de_DE ja_JP zh_CN
 TEMPLATE=	en_US
 INSTALL=
 PLIST=

@@ -43,6 +43,7 @@ function get_locale_list()
 	$locales['en_US'] = gettext('English');
 	$locales['zh_CN'] = gettext('Chinese (Simplified)');
 	$locales['de_DE'] = gettext('German');
+	$locales['ja_JP'] = gettext('Japanese');
 
 	return $locales;
 }
