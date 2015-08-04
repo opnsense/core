@@ -53,51 +53,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	$pconfig['autokey_enable'] = "yes";
 	$pconfig['autotls_enable'] = "yes";
 	$pconfig['tlsauth_enable'] = "yes";
-	if ($act == "edit") {
-	    if (isset($id) && isset($a_server[$id])) {
-					if ($a_server[$id]['mode'] != "p2p_shared_key") {
-							$pconfig['cert_depth'] = 1;
-					}
+	if ($act == "edit" && isset($id) && isset($a_server[$id])) {
+			if ($a_server[$id]['mode'] != "p2p_shared_key") {
+					$pconfig['cert_depth'] = 1;
+			}
 
-					// 1 on 1 copy of config attributes
-					$copy_fields = "mode,protocol,authmode,dev_mode,interface,local_port
-					,description,custom_options,crypto,engine,tunnel_network
-					,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
-					,local_networkv6,maxclients,compression,passtos,client2client
-					,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
-					,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
-					,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
-					,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-					,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,nbdd_server1
-					,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-					,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid";
+			// 1 on 1 copy of config attributes
+			$copy_fields = "mode,protocol,authmode,dev_mode,interface,local_port
+			,description,custom_options,crypto,engine,tunnel_network
+			,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
+			,local_networkv6,maxclients,compression,passtos,client2client
+			,dynamic_ip,pool_enable,topology_subnet,serverbridge_dhcp
+			,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
+			,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
+			,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
+			,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,nbdd_server1
+			,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
+			,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid";
 
-					foreach (explode(",",$copy_fields) as $fieldname) {
-						$fieldname = trim($fieldname);
-						if(isset($a_server[$id][$fieldname])) {
-							$pconfig[$fieldname] = $a_server[$id][$fieldname];
-						} elseif (!isset($pconfig[$fieldname])) {
-							// initialize element
-							$pconfig[$fieldname] = null;
-						}
-					}
+			foreach (explode(",",$copy_fields) as $fieldname) {
+				$fieldname = trim($fieldname);
+				if(isset($a_server[$id][$fieldname])) {
+					$pconfig[$fieldname] = $a_server[$id][$fieldname];
+				} elseif (!isset($pconfig[$fieldname])) {
+					// initialize element
+					$pconfig[$fieldname] = null;
+				}
+			}
 
-					// load / convert
-					if (!empty($a_server[$id]['ipaddr'])) {
-	            $pconfig['interface'] = $pconfig['interface'] . '|' . $a_server[$id]['ipaddr'];
-	        }
-					if (!empty($a_server[$id]['shared_key'])) {
-						$pconfig['shared_key'] = base64_decode($a_server[$id]['shared_key']);
-					} else {
-						$pconfig['shared_key'] = null;
-					}
-					if (!empty($a_server[$id]['tls'])) {
-							$pconfig['tlsauth_enable'] = "yes";
-							$pconfig['tls'] = base64_decode($a_server[$id]['tls']);
-					} else {
-						$pconfig['tls'] = null;
-					}
-	    }
+			// load / convert
+			if (!empty($a_server[$id]['ipaddr'])) {
+          $pconfig['interface'] = $pconfig['interface'] . '|' . $a_server[$id]['ipaddr'];
+      }
+			if (!empty($a_server[$id]['shared_key'])) {
+				$pconfig['shared_key'] = base64_decode($a_server[$id]['shared_key']);
+			} else {
+				$pconfig['shared_key'] = null;
+			}
+			if (!empty($a_server[$id]['tls'])) {
+					$pconfig['tlsauth_enable'] = "yes";
+					$pconfig['tls'] = base64_decode($a_server[$id]['tls']);
+			} else {
+				$pconfig['tls'] = null;
+			}
 	} elseif ($act == "new") {
 	    $pconfig['dh_length'] = 1024;
 	    $pconfig['dev_mode'] = "tun";
@@ -117,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,nbdd_server1
 			,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
 			,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls";
-			foreach (explode(",",$copy_fields) as $fieldname) {
+			foreach (explode(",",$init_fields) as $fieldname) {
 				$fieldname = trim($fieldname);
 				if (!isset($pconfig[$fieldname])) {
 					$pconfig[$fieldname] = null;
