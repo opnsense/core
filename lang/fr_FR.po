@@ -113,10 +113,9 @@ msgid "Allow access to the 'Status: Captive portal: Vouchers' page."
 msgstr ""
 
 #
-# File: src/etc/inc/filter.inc, line: 2547
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Create interface groups"
-msgstr "Création des règles par défaut"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 55
@@ -936,66 +935,14 @@ msgid "Allow access to the 'System: User Manager: settings' page."
 msgstr ""
 
 #
-# File: src/www/services_dhcpv6.php, line: 819
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 218
 msgid "Allow access to the 'Status: DHCPv6 leases' page."
-msgstr "Statut : Baux DHCPv6"
+msgstr ""
 
 #
-# File: src/www/diag_arp.php, line: 337
-# File: src/www/diag_logs_filter.php, line: 200
-# File: src/www/diag_ndp.php, line: 154
-# File: src/www/diag_packet_capture.php, line: 237
-# File: src/www/firewall_nat_1to1.php, line: 181
-# File: src/www/firewall_nat_1to1_edit.php, line: 101
-# File: src/www/firewall_nat_1to1_edit.php, line: 309
-# File: src/www/firewall_nat_edit.php, line: 181
-# File: src/www/firewall_nat_edit.php, line: 184
-# File: src/www/firewall_nat_edit.php, line: 485
-# File: src/www/firewall_nat_npt.php, line: 107
-# File: src/www/firewall_nat_npt_edit.php, line: 93
-# File: src/www/firewall_nat_npt_edit.php, line: 170
-# File: src/www/firewall_nat_out.php, line: 305
-# File: src/www/firewall_nat_out.php, line: 492
-# File: src/www/firewall_nat_out_edit.php, line: 134
-# File: src/www/firewall_nat_out_edit.php, line: 465
-# File: src/www/firewall_rules_edit.php, line: 817
-# File: src/www/firewall_virtual_ip.php, line: 226
-# File: src/www/firewall_virtual_ip_edit.php, line: 358
-# File: src/www/interfaces_assign.php, line: 479
-# File: src/www/interfaces_bridge.php, line: 126
-# File: src/www/interfaces_gif.php, line: 114
-# File: src/www/interfaces_gre.php, line: 115
-# File: src/www/interfaces_groups_edit.php, line: 276
-# File: src/www/interfaces_lagg.php, line: 121
-# File: src/www/interfaces_ppps.php, line: 116
-# File: src/www/interfaces_qinq.php, line: 125
-# File: src/www/interfaces_vlan.php, line: 123
-# File: src/www/interfaces_wireless.php, line: 114
-# File: src/www/services_captiveportal.php, line: 198
-# File: src/www/services_dhcp_relay.php, line: 61
-# File: src/www/services_dhcpv6_relay.php, line: 62
-# File: src/www/services_dyndns.php, line: 89
-# File: src/www/services_igmpproxy_edit.php, line: 161
-# File: src/www/services_wol.php, line: 136
-# File: src/www/services_wol.php, line: 171
-# File: src/www/services_wol_edit.php, line: 75
-# File: src/www/services_wol_edit.php, line: 136
-# File: src/www/status_graph.php, line: 205
-# File: src/www/system_gateways.php, line: 232
-# File: src/www/system_gateways_edit.php, line: 110
-# File: src/www/system_gateways_edit.php, line: 699
-# File: src/www/system_routes.php, line: 250
-# File: src/www/vpn_ipsec_phase1.php, line: 656
-# File: src/www/vpn_l2tp.php, line: 328
-# File: src/www/vpn_openvpn_client.php, line: 586
-# File: src/www/vpn_openvpn_server.php, line: 941
-# File: src/www/vpn_pppoe.php, line: 121
-# File: src/www/vpn_pppoe_edit.php, line: 415
-# File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 45
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Edit Interface LAGG"
-msgstr "Interface"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 220
@@ -1234,10 +1181,9 @@ msgid "Allow access to the 'Services: Igmpproxy' page."
 msgstr ""
 
 #
-# File: src/etc/inc/services.inc, line: 1367
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 35
 msgid "Enable or disable the proxy service."
-msgstr "Démarrage du service mandataire IGMP"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 36
@@ -1348,11 +1294,9 @@ msgid "Select interface(s) the ftp proxy will bind to."
 msgstr ""
 
 #
-# File: src/www/vpn_openvpn_client.php, line: 779
-# File: src/www/vpn_openvpn_server.php, line: 1004
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 61
 msgid "Select Authentication method"
-msgstr "Authentification TLS"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 62
@@ -1386,10 +1330,9 @@ msgid "Enter a description to explain what this blacklist is intended for."
 msgstr ""
 
 #
-# File: src/www/firewall_nat_1to1_edit.php, line: 554
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 68
 msgid "enable IDS"
-msgstr "activer"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 69
@@ -1423,16 +1366,9 @@ msgid "enable this queue and it's related rules"
 msgstr ""
 
 #
-# File: src/www/firewall_nat.php, line: 337
-# File: src/www/firewall_nat_out.php, line: 431
-# File: src/www/firewall_rules.php, line: 450
-# File: src/www/firewall_rules.php, line: 473
-# File: src/www/firewall_rules.php, line: 496
-# File: src/www/firewall_rules.php, line: 764
-# File: src/www/system_routes.php, line: 319
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 75
 msgid "connected pipe for this queue"
-msgstr "déplacer les règles sélectionnées avant cette règle"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 76
@@ -1527,11 +1463,9 @@ msgid "Enter a description to explain what this job is intended for."
 msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 531
-# File: src/www/interfaces.php, line: 534
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 35
 msgid "Change password"
-msgstr "Mot de passe PPPoE"
+msgstr ""
 
 #
 # File: src/www/diag_authentication.php, line: 46
@@ -1561,14 +1495,9 @@ msgid "Certificate Authority"
 msgstr ""
 
 #
-# File: src/www/system_usermanager.php, line: 138
-# File: src/www/system_usermanager.php, line: 760
-# File: src/www/system_usermanager.php, line: 770
-# File: src/www/vpn_ipsec_phase1.php, line: 191
-# File: src/www/vpn_openvpn_server.php, line: 372
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 39
 msgid "Certification Revocation"
-msgstr "Certificat"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 41
@@ -1601,29 +1530,9 @@ msgid "Admin Access"
 msgstr ""
 
 #
-# File: src/www/diag_logs_filter.php, line: 108
-# File: src/www/diag_logs_tabs.inc, line: 30
-# File: src/www/firewall_aliases.php, line: 146
-# File: src/www/firewall_aliases_edit.php, line: 37
-# File: src/www/firewall_aliases_import.php, line: 37
-# File: src/www/firewall_nat.php, line: 148
-# File: src/www/firewall_nat_1to1.php, line: 132
-# File: src/www/firewall_nat_1to1_edit.php, line: 211
-# File: src/www/firewall_nat_edit.php, line: 435
-# File: src/www/firewall_nat_npt.php, line: 64
-# File: src/www/firewall_nat_npt_edit.php, line: 133
-# File: src/www/firewall_nat_out.php, line: 198
-# File: src/www/firewall_nat_out_edit.php, line: 325
-# File: src/www/firewall_rules.php, line: 35
-# File: src/www/firewall_rules_edit.php, line: 709
-# File: src/www/firewall_schedule.php, line: 36
-# File: src/www/firewall_schedule_edit.php, line: 47
-# File: src/www/firewall_virtual_ip.php, line: 177
-# File: src/www/firewall_virtual_ip_edit.php, line: 233
-# File: src/www/services_igmpproxy_edit.php, line: 31
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 46
 msgid "Firewall/NAT"
-msgstr "Pare-feu"
+msgstr ""
 
 #
 # File: src/www/system_advanced_network.php, line: 142
@@ -1675,14 +1584,9 @@ msgid "Settings"
 msgstr "Paramètres"
 
 #
-# File: src/www/vpn_openvpn_client.php, line: 490
-# File: src/www/vpn_openvpn_csc.php, line: 356
-# File: src/www/vpn_openvpn_export.php, line: 632
-# File: src/www/vpn_openvpn_export_shared.php, line: 308
-# File: src/www/vpn_openvpn_server.php, line: 819
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 52
 msgid "Setup Wizard"
-msgstr "Assistants"
+msgstr ""
 
 #
 # File: src/www/services_captiveportal_zones.php, line: 95
@@ -1771,34 +1675,9 @@ msgid "System"
 msgstr "Système"
 
 #
-# File: src/www/diag_backup.php, line: 145
-# File: src/www/diag_logs_filter_summary.php, line: 43
-# File: src/www/interfaces.php, line: 1345
-# File: src/www/interfaces_assign.php, line: 31
-# File: src/www/interfaces_bridge.php, line: 79
-# File: src/www/interfaces_bridge_edit.php, line: 233
-# File: src/www/interfaces_gif.php, line: 67
-# File: src/www/interfaces_gif_edit.php, line: 123
-# File: src/www/interfaces_gre.php, line: 68
-# File: src/www/interfaces_gre_edit.php, line: 117
-# File: src/www/interfaces_groups.php, line: 53
-# File: src/www/interfaces_groups_edit.php, line: 33
-# File: src/www/interfaces_lagg.php, line: 73
-# File: src/www/interfaces_lagg_edit.php, line: 124
-# File: src/www/interfaces_ppps_edit.php, line: 379
-# File: src/www/interfaces_qinq.php, line: 77
-# File: src/www/interfaces_qinq_edit.php, line: 30
-# File: src/www/interfaces_vlan.php, line: 76
-# File: src/www/interfaces_vlan_edit.php, line: 143
-# File: src/www/interfaces_wireless.php, line: 66
-# File: src/www/interfaces_wireless_edit.php, line: 139
-# File: src/www/services_captiveportal.php, line: 515
-# File: src/www/services_captiveportal_zones.php, line: 94
-# File: src/www/services_dnsmasq.php, line: 275
-# File: src/www/status_interfaces.php, line: 44
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 59
 msgid "Interface Addignments"
-msgstr "Interfaces"
+msgstr ""
 
 #
 # File: src/www/interfaces_assign.php, line: 457
@@ -2222,20 +2101,14 @@ msgid "RouterAdvertisement"
 msgstr ""
 
 #
-# File: src/www/diag_backup.php, line: 143
-# File: src/www/services_dhcpv6.php, line: 498
-# File: src/www/services_dhcpv6.php, line: 518
-# File: src/www/services_router_advertisements.php, line: 227
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 97
 msgid "DHCPv6 Server/RA"
-msgstr "Serveur DHCPv6"
+msgstr ""
 
 #
-# File: src/etc/inc/service-utils.inc, line: 56
-# File: src/www/diag_backup.php, line: 141
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 98
 msgid "DNS Filter"
-msgstr "Redirecteur DNS"
+msgstr ""
 
 #
 # File: src/etc/inc/service-utils.inc, line: 56
@@ -2329,46 +2202,9 @@ msgid "IGMP Proxy"
 msgstr ""
 
 #
-# File: src/www/diag_dns.php, line: 154
-# File: src/www/diag_dns.php, line: 231
-# File: src/www/diag_logs_settings.php, line: 397
-# File: src/www/diag_logs_settings.php, line: 401
-# File: src/www/diag_logs_settings.php, line: 405
-# File: src/www/services_rfc2136.php, line: 83
-# File: src/www/services_rfc2136_edit.php, line: 199
-# File: src/www/status_ntpd.php, line: 175
-# File: src/www/vpn_ipsec_mobile.php, line: 602
-# File: src/www/vpn_ipsec_mobile.php, line: 608
-# File: src/www/vpn_ipsec_mobile.php, line: 614
-# File: src/www/vpn_ipsec_mobile.php, line: 620
-# File: src/www/vpn_ipsec_mobile.php, line: 644
-# File: src/www/vpn_ipsec_mobile.php, line: 650
-# File: src/www/vpn_openvpn_client.php, line: 487
-# File: src/www/vpn_openvpn_client.php, line: 1219
-# File: src/www/vpn_openvpn_csc.php, line: 353
-# File: src/www/vpn_openvpn_csc.php, line: 583
-# File: src/www/vpn_openvpn_csc.php, line: 591
-# File: src/www/vpn_openvpn_csc.php, line: 599
-# File: src/www/vpn_openvpn_csc.php, line: 607
-# File: src/www/vpn_openvpn_csc.php, line: 635
-# File: src/www/vpn_openvpn_csc.php, line: 643
-# File: src/www/vpn_openvpn_csc.php, line: 734
-# File: src/www/vpn_openvpn_csc.php, line: 742
-# File: src/www/vpn_openvpn_export.php, line: 629
-# File: src/www/vpn_openvpn_export_shared.php, line: 305
-# File: src/www/vpn_openvpn_server.php, line: 533
-# File: src/www/vpn_openvpn_server.php, line: 816
-# File: src/www/vpn_openvpn_server.php, line: 1699
-# File: src/www/vpn_openvpn_server.php, line: 1707
-# File: src/www/vpn_openvpn_server.php, line: 1715
-# File: src/www/vpn_openvpn_server.php, line: 1723
-# File: src/www/vpn_openvpn_server.php, line: 1771
-# File: src/www/vpn_openvpn_server.php, line: 1779
-# File: src/www/vpn_openvpn_server.php, line: 1871
-# File: src/www/vpn_openvpn_server.php, line: 1879
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 107
 msgid "VirtualServer"
-msgstr "Serveur"
+msgstr ""
 
 #
 # File: src/www/load_balancer_monitor.php, line: 106
@@ -2410,10 +2246,9 @@ msgid "PPPoE Server"
 msgstr "Serveur PPPoE"
 
 #
-# File: src/etc/inc/service-utils.inc, line: 180
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 113
 msgid "Proxy Server"
-msgstr "Serveur mandataire"
+msgstr ""
 
 #
 # File: src/www/services_snmp.php, line: 154
@@ -2504,10 +2339,9 @@ msgid "Keys"
 msgstr ""
 
 #
-# File: src/www/fbegin.inc, line: 216
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 121
 msgid "AdvancedSettings"
-msgstr "Sauvegarder les paramêtres"
+msgstr ""
 
 #
 # File: src/www/diag_ipsec.php, line: 34
@@ -2526,10 +2360,9 @@ msgid "IPsec"
 msgstr "IPsec"
 
 #
-# File: src/etc/inc/filter.inc, line: 1343
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 123
 msgid "L2TPUsers"
-msgstr "Server L2TP"
+msgstr ""
 
 #
 # File: src/www/interfaces.php, line: 1350
@@ -2565,24 +2398,14 @@ msgid "Wizards"
 msgstr "Assistants"
 
 #
-# File: src/www/vpn_openvpn_client.php, line: 491
-# File: src/www/vpn_openvpn_csc.php, line: 357
-# File: src/www/vpn_openvpn_export.php, line: 633
-# File: src/www/vpn_openvpn_export_shared.php, line: 309
-# File: src/www/vpn_openvpn_server.php, line: 820
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 128
 msgid "ClientExport"
-msgstr "Exporter le client"
+msgstr ""
 
 #
-# File: src/www/vpn_openvpn_client.php, line: 492
-# File: src/www/vpn_openvpn_csc.php, line: 358
-# File: src/www/vpn_openvpn_export.php, line: 634
-# File: src/www/vpn_openvpn_export_shared.php, line: 310
-# File: src/www/vpn_openvpn_server.php, line: 821
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 129
 msgid "SharedKeyExport"
-msgstr "Exporter la clé partagée"
+msgstr ""
 
 #
 # File: src/etc/inc/service-utils.inc, line: 165
@@ -2600,10 +2423,9 @@ msgid "OpenVPN"
 msgstr "OpenVPN"
 
 #
-# File: src/etc/inc/filter.inc, line: 1325
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 131
 msgid "PPTPUsers"
-msgstr "Serveur PPTP"
+msgstr ""
 
 #
 # File: src/www/interfaces.php, line: 1350
@@ -2643,10 +2465,9 @@ msgid "DHCP IPv4 Leases"
 msgstr ""
 
 #
-# File: src/www/services_dhcpv6.php, line: 819
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 137
 msgid "DHCP IPv6 Leases"
-msgstr "Statut : Baux DHCPv6"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 138
@@ -2654,20 +2475,9 @@ msgid "Filter Reload"
 msgstr ""
 
 #
-# File: src/www/diag_logs_gateways.php, line: 57
-# File: src/www/diag_logs_pills.php, line: 64
-# File: src/www/status_gateway_groups.php, line: 66
-# File: src/www/status_gateway_groups.php, line: 81
-# File: src/www/status_gateways.php, line: 38
-# File: src/www/status_gateways.php, line: 58
-# File: src/www/system_gateway_groups.php, line: 141
-# File: src/www/system_gateway_groups_edit.php, line: 151
-# File: src/www/system_gateways.php, line: 184
-# File: src/www/system_gateways_edit.php, line: 548
-# File: src/www/system_gateways_tabs.inc, line: 6
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 139
 msgid "GatewayGroups"
-msgstr "Passerelles"
+msgstr ""
 
 #
 # File: src/www/diag_logs_gateways.php, line: 57
@@ -2703,46 +2513,9 @@ msgid "SPD"
 msgstr ""
 
 #
-# File: src/www/diag_dns.php, line: 154
-# File: src/www/diag_dns.php, line: 231
-# File: src/www/diag_logs_settings.php, line: 397
-# File: src/www/diag_logs_settings.php, line: 401
-# File: src/www/diag_logs_settings.php, line: 405
-# File: src/www/services_rfc2136.php, line: 83
-# File: src/www/services_rfc2136_edit.php, line: 199
-# File: src/www/status_ntpd.php, line: 175
-# File: src/www/vpn_ipsec_mobile.php, line: 602
-# File: src/www/vpn_ipsec_mobile.php, line: 608
-# File: src/www/vpn_ipsec_mobile.php, line: 614
-# File: src/www/vpn_ipsec_mobile.php, line: 620
-# File: src/www/vpn_ipsec_mobile.php, line: 644
-# File: src/www/vpn_ipsec_mobile.php, line: 650
-# File: src/www/vpn_openvpn_client.php, line: 487
-# File: src/www/vpn_openvpn_client.php, line: 1219
-# File: src/www/vpn_openvpn_csc.php, line: 353
-# File: src/www/vpn_openvpn_csc.php, line: 583
-# File: src/www/vpn_openvpn_csc.php, line: 591
-# File: src/www/vpn_openvpn_csc.php, line: 599
-# File: src/www/vpn_openvpn_csc.php, line: 607
-# File: src/www/vpn_openvpn_csc.php, line: 635
-# File: src/www/vpn_openvpn_csc.php, line: 643
-# File: src/www/vpn_openvpn_csc.php, line: 734
-# File: src/www/vpn_openvpn_csc.php, line: 742
-# File: src/www/vpn_openvpn_export.php, line: 629
-# File: src/www/vpn_openvpn_export_shared.php, line: 305
-# File: src/www/vpn_openvpn_server.php, line: 533
-# File: src/www/vpn_openvpn_server.php, line: 816
-# File: src/www/vpn_openvpn_server.php, line: 1699
-# File: src/www/vpn_openvpn_server.php, line: 1707
-# File: src/www/vpn_openvpn_server.php, line: 1715
-# File: src/www/vpn_openvpn_server.php, line: 1723
-# File: src/www/vpn_openvpn_server.php, line: 1771
-# File: src/www/vpn_openvpn_server.php, line: 1779
-# File: src/www/vpn_openvpn_server.php, line: 1871
-# File: src/www/vpn_openvpn_server.php, line: 1879
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 146
 msgid "VirtualServers"
-msgstr "Serveur"
+msgstr ""
 
 #
 # File: src/www/diag_logs_ntpd.php, line: 44
@@ -2771,10 +2544,9 @@ msgid "Resolver"
 msgstr ""
 
 #
-# File: src/www/vpn_openvpn_server.php, line: 1594
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 158
 msgid "DynamicView"
-msgstr "IP dynamique"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 159
@@ -2814,39 +2586,9 @@ msgid "Proxy"
 msgstr "Mandataire"
 
 #
-# File: src/www/diag_backup.php, line: 153
-# File: src/www/diag_logs_tabs.inc, line: 29
-# File: src/www/status_rrd_graph_img.php, line: 37
-# File: src/www/status_rrd_graph_settings.php, line: 39
-# File: src/www/status_rrd_graph_tabs.inc, line: 4
-# File: src/www/system_advanced_admin.php, line: 277
-# File: src/www/system_advanced_firewall.php, line: 232
-# File: src/www/system_advanced_misc.php, line: 224
-# File: src/www/system_advanced_network.php, line: 142
-# File: src/www/system_advanced_notifications.php, line: 167
-# File: src/www/system_advanced_sysctl.php, line: 118
-# File: src/www/system_authservers.php, line: 34
-# File: src/www/system_camanager.php, line: 41
-# File: src/www/system_certmanager.php, line: 44
-# File: src/www/system_crlmanager.php, line: 35
-# File: src/www/system_gateway_groups.php, line: 97
-# File: src/www/system_gateway_groups_edit.php, line: 151
-# File: src/www/system_gateways.php, line: 184
-# File: src/www/system_gateways_edit.php, line: 548
-# File: src/www/system_general.php, line: 84
-# File: src/www/system_general.php, line: 286
-# File: src/www/system_general.php, line: 311
-# File: src/www/system_groupmanager.php, line: 33
-# File: src/www/system_groupmanager_addprivs.php, line: 47
-# File: src/www/system_hasync.php, line: 87
-# File: src/www/system_routes.php, line: 201
-# File: src/www/system_routes_edit.php, line: 223
-# File: src/www/system_usermanager.php, line: 37
-# File: src/www/system_usermanager_passwordmg.php, line: 33
-# File: src/www/system_usermanager_settings.php, line: 37
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 171
 msgid "System Logs"
-msgstr "Système"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 172
@@ -2930,18 +2672,14 @@ msgid "Authentication"
 msgstr "Authentification"
 
 #
-# File: src/www/diag_backup.php, line: 600
-# File: src/www/diag_confbak.php, line: 145
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 177
 msgid "History"
-msgstr "Historique des configurations"
+msgstr ""
 
 #
-# File: src/www/diag_backup.php, line: 601
-# File: src/www/diag_confbak.php, line: 146
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 178
 msgid "Backup & Restore"
-msgstr "Sauvegarde/Restauration"
+msgstr ""
 
 #
 # File: src/www/crash_reporter.php, line: 62
@@ -2960,10 +2698,9 @@ msgid "Factory Defaults"
 msgstr ""
 
 #
-# File: src/www/diag_halt.php, line: 35
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 182
 msgid "Halt System"
-msgstr "Arrêter le système"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 183
@@ -3033,10 +2770,9 @@ msgid "States Summary"
 msgstr ""
 
 #
-# File: src/etc/inc/upgrade_config.inc, line: 507
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 195
 msgid "System Activity"
-msgstr "Administrateurs du Système"
+msgstr ""
 
 #
 # File: src/www/diag_tables.php, line: 33
@@ -3095,13 +2831,9 @@ msgid "Developers Wiki"
 msgstr ""
 
 #
-# File: src/www/diag_authentication.php, line: 56
-# File: src/www/interfaces.php, line: 3191
-# File: src/www/services_captiveportal.php, line: 636
-# File: src/www/services_captiveportal.php, line: 1013
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 202
 msgid "Documentation"
-msgstr "Authentification"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 203
@@ -3114,15 +2846,9 @@ msgid "Paid Support"
 msgstr ""
 
 #
-# File: src/www/diag_authentication.php, line: 46
-# File: src/www/diag_logs_vpn.php, line: 135
-# File: src/www/system_usermanager.php, line: 78
-# File: src/www/vpn_l2tp_users_edit.php, line: 29
-# File: src/www/vpn_openvpn_export.php, line: 936
-# File: src/www/vpn_pptp_users_edit.php, line: 137
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 205
 msgid "UserForum"
-msgstr "Utilisateur"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 206
@@ -3341,125 +3067,9 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/diag_ipsec.php, line: 95
-# File: src/www/firewall_aliases.php, line: 193
-# File: src/www/firewall_aliases_edit.php, line: 462
-# File: src/www/firewall_aliases_edit.php, line: 655
-# File: src/www/firewall_aliases_edit.php, line: 692
-# File: src/www/firewall_aliases_import.php, line: 187
-# File: src/www/firewall_nat.php, line: 226
-# File: src/www/firewall_nat_1to1.php, line: 185
-# File: src/www/firewall_nat_1to1_edit.php, line: 537
-# File: src/www/firewall_nat_edit.php, line: 793
-# File: src/www/firewall_nat_npt.php, line: 110
-# File: src/www/firewall_nat_npt_edit.php, line: 281
-# File: src/www/firewall_nat_out.php, line: 313
-# File: src/www/firewall_nat_out.php, line: 500
-# File: src/www/firewall_nat_out_edit.php, line: 793
-# File: src/www/firewall_rules.php, line: 406
-# File: src/www/firewall_rules_edit.php, line: 1160
-# File: src/www/firewall_schedule.php, line: 106
-# File: src/www/firewall_schedule_edit.php, line: 804
-# File: src/www/firewall_schedule_edit.php, line: 1017
-# File: src/www/firewall_virtual_ip.php, line: 228
-# File: src/www/firewall_virtual_ip_edit.php, line: 459
-# File: src/www/interfaces.php, line: 1602
-# File: src/www/interfaces_bridge.php, line: 128
-# File: src/www/interfaces_bridge_edit.php, line: 300
-# File: src/www/interfaces_gif.php, line: 116
-# File: src/www/interfaces_gif_edit.php, line: 233
-# File: src/www/interfaces_gre.php, line: 117
-# File: src/www/interfaces_gre_edit.php, line: 238
-# File: src/www/interfaces_groups.php, line: 102
-# File: src/www/interfaces_groups_edit.php, line: 261
-# File: src/www/interfaces_lagg.php, line: 123
-# File: src/www/interfaces_lagg_edit.php, line: 228
-# File: src/www/interfaces_ppps.php, line: 118
-# File: src/www/interfaces_ppps_edit.php, line: 487
-# File: src/www/interfaces_qinq.php, line: 128
-# File: src/www/interfaces_qinq_edit.php, line: 334
-# File: src/www/interfaces_vlan.php, line: 125
-# File: src/www/interfaces_vlan_edit.php, line: 202
-# File: src/www/interfaces_wireless.php, line: 116
-# File: src/www/interfaces_wireless_edit.php, line: 189
-# File: src/www/load_balancer_monitor.php, line: 124
-# File: src/www/load_balancer_monitor_edit.php, line: 77
-# File: src/www/load_balancer_monitor_edit.php, line: 243
-# File: src/www/load_balancer_pool.php, line: 138
-# File: src/www/load_balancer_pool_edit.php, line: 216
-# File: src/www/load_balancer_relay_action.php, line: 140
-# File: src/www/load_balancer_relay_action_edit.php, line: 107
-# File: src/www/load_balancer_relay_action_edit.php, line: 418
-# File: src/www/load_balancer_relay_protocol.php, line: 134
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 69
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 220
-# File: src/www/load_balancer_virtual_server.php, line: 136
-# File: src/www/load_balancer_virtual_server_edit.php, line: 173
-# File: src/www/services_captiveportal_ip.php, line: 110
-# File: src/www/services_captiveportal_ip_edit.php, line: 211
-# File: src/www/services_captiveportal_mac.php, line: 174
-# File: src/www/services_captiveportal_mac_edit.php, line: 233
-# File: src/www/services_captiveportal_zones.php, line: 96
-# File: src/www/services_captiveportal_zones_edit.php, line: 112
-# File: src/www/services_dhcp.php, line: 815
-# File: src/www/services_dhcp.php, line: 1178
-# File: src/www/services_dhcp_edit.php, line: 412
-# File: src/www/services_dhcpv6.php, line: 836
-# File: src/www/services_dhcpv6_edit.php, line: 235
-# File: src/www/services_dnsmasq.php, line: 368
-# File: src/www/services_dnsmasq.php, line: 446
-# File: src/www/services_dnsmasq_domainoverride_edit.php, line: 157
-# File: src/www/services_dnsmasq_edit.php, line: 223
-# File: src/www/services_dnsmasq_edit.php, line: 244
-# File: src/www/services_dyndns.php, line: 93
-# File: src/www/services_dyndns_edit.php, line: 425
-# File: src/www/services_igmpproxy.php, line: 99
-# File: src/www/services_igmpproxy_edit.php, line: 175
-# File: src/www/services_rfc2136.php, line: 86
-# File: src/www/services_rfc2136_edit.php, line: 218
-# File: src/www/services_unbound.php, line: 387
-# File: src/www/services_unbound.php, line: 451
-# File: src/www/services_unbound_acls.php, line: 235
-# File: src/www/services_unbound_acls.php, line: 285
-# File: src/www/services_unbound_acls.php, line: 310
-# File: src/www/services_unbound_domainoverride_edit.php, line: 151
-# File: src/www/services_unbound_host_edit.php, line: 225
-# File: src/www/services_unbound_host_edit.php, line: 246
-# File: src/www/services_wol.php, line: 173
-# File: src/www/services_wol_edit.php, line: 158
-# File: src/www/status_gateway_groups.php, line: 82
-# File: src/www/status_gateways.php, line: 77
-# File: src/www/status_lb_pool.php, line: 139
-# File: src/www/status_lb_vs.php, line: 83
-# File: src/www/status_services.php, line: 78
-# File: src/www/status_upnp.php, line: 78
-# File: src/www/system_advanced_sysctl.php, line: 154
-# File: src/www/system_advanced_sysctl.php, line: 227
-# File: src/www/system_gateway_groups.php, line: 143
-# File: src/www/system_gateway_groups_edit.php, line: 354
-# File: src/www/system_gateways.php, line: 235
-# File: src/www/system_gateways_edit.php, line: 921
-# File: src/www/system_groupmanager.php, line: 297
-# File: src/www/system_groupmanager.php, line: 387
-# File: src/www/system_groupmanager.php, line: 461
-# File: src/www/system_groupmanager_addprivs.php, line: 212
-# File: src/www/system_routes.php, line: 251
-# File: src/www/system_routes_edit.php, line: 361
-# File: src/www/system_usermanager.php, line: 620
-# File: src/www/system_usermanager_addprivs.php, line: 179
-# File: src/www/vpn_ipsec_phase1.php, line: 715
-# File: src/www/vpn_ipsec_phase2.php, line: 725
-# File: src/www/vpn_openvpn_client.php, line: 734
-# File: src/www/vpn_openvpn_client.php, line: 1220
-# File: src/www/vpn_openvpn_csc.php, line: 402
-# File: src/www/vpn_openvpn_csc.php, line: 790
-# File: src/www/vpn_openvpn_server.php, line: 990
-# File: src/www/vpn_openvpn_server.php, line: 1989
-# File: src/www/vpn_pppoe.php, line: 124
-# File: src/www/vpn_pppoe_edit.php, line: 495
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 249
 msgid "Enter a description."
-msgstr "Description"
+msgstr ""
 
 #
 # File: src/etc/inc/auth.inc, line: 108
@@ -3697,13 +3307,10 @@ msgstr ""
 "configuration automatique :"
 
 #
-# File: src/etc/inc/config.console.inc, line: 183
-# File: src/etc/inc/config.console.inc, line: 207
-# File: src/etc/inc/config.console.inc, line: 239
-# File: src/etc/inc/config.console.inc, line: 484
-#, fuzzy, php-format
+# File: src/etc/inc/config.console.inc, line: 126
+#, php-format
 msgid "Invalid interface name '%s'"
-msgstr "%sNom d’interface incorect ‘%s’%s"
+msgstr ""
 
 #
 # File: src/etc/inc/config.console.inc, line: 190
@@ -28408,66 +28015,14 @@ msgid "Sorry, you cannot change the password for a non-local user."
 msgstr ""
 
 #
-# File: src/www/diag_authentication.php, line: 107
-# File: src/www/interfaces.php, line: 2578
-# File: src/www/interfaces.php, line: 2652
-# File: src/www/interfaces.php, line: 2761
-# File: src/www/interfaces_ppps_edit.php, line: 189
-# File: src/www/interfaces_ppps_edit.php, line: 192
-# File: src/www/interfaces_ppps_edit.php, line: 200
-# File: src/www/interfaces_ppps_edit.php, line: 203
-# File: src/www/interfaces_ppps_edit.php, line: 534
-# File: src/www/services_dyndns_edit.php, line: 94
-# File: src/www/services_dyndns_edit.php, line: 373
-# File: src/www/services_opendns.php, line: 161
-# File: src/www/system_advanced_notifications.php, line: 235
-# File: src/www/system_usermanager.php, line: 163
-# File: src/www/system_usermanager.php, line: 168
-# File: src/www/system_usermanager.php, line: 491
-# File: src/www/system_usermanager_passwordmg.php, line: 40
-# File: src/www/system_usermanager_passwordmg.php, line: 117
-# File: src/www/system_usermanager_passwordmg.php, line: 121
-# File: src/www/vpn_l2tp_users_edit.php, line: 80
-# File: src/www/vpn_l2tp_users_edit.php, line: 185
-# File: src/www/vpn_openvpn_client.php, line: 702
-# File: src/www/vpn_openvpn_client.php, line: 765
-# File: src/www/vpn_pppoe_edit.php, line: 600
-# File: src/www/vpn_pptp_users_edit.php, line: 76
-# File: src/www/vpn_pptp_users_edit.php, line: 178
-#, fuzzy
+# File: src/www/system_usermanager_passwordmg.php, line: 114
 msgid "Old password"
-msgstr "Mot de passe:"
+msgstr ""
 
 #
-# File: src/www/diag_authentication.php, line: 107
-# File: src/www/interfaces.php, line: 2578
-# File: src/www/interfaces.php, line: 2652
-# File: src/www/interfaces.php, line: 2761
-# File: src/www/interfaces_ppps_edit.php, line: 189
-# File: src/www/interfaces_ppps_edit.php, line: 192
-# File: src/www/interfaces_ppps_edit.php, line: 200
-# File: src/www/interfaces_ppps_edit.php, line: 203
-# File: src/www/interfaces_ppps_edit.php, line: 534
-# File: src/www/services_dyndns_edit.php, line: 94
-# File: src/www/services_dyndns_edit.php, line: 373
-# File: src/www/services_opendns.php, line: 161
-# File: src/www/system_advanced_notifications.php, line: 235
-# File: src/www/system_usermanager.php, line: 163
-# File: src/www/system_usermanager.php, line: 168
-# File: src/www/system_usermanager.php, line: 491
-# File: src/www/system_usermanager_passwordmg.php, line: 40
-# File: src/www/system_usermanager_passwordmg.php, line: 117
-# File: src/www/system_usermanager_passwordmg.php, line: 121
-# File: src/www/vpn_l2tp_users_edit.php, line: 80
-# File: src/www/vpn_l2tp_users_edit.php, line: 185
-# File: src/www/vpn_openvpn_client.php, line: 702
-# File: src/www/vpn_openvpn_client.php, line: 765
-# File: src/www/vpn_pppoe_edit.php, line: 600
-# File: src/www/vpn_pptp_users_edit.php, line: 76
-# File: src/www/vpn_pptp_users_edit.php, line: 178
-#, fuzzy
+# File: src/www/system_usermanager_passwordmg.php, line: 120
 msgid "New password"
-msgstr "Mot de passe:"
+msgstr ""
 
 #
 # File: src/www/system_usermanager_passwordmg.php, line: 127
@@ -32062,5 +31617,4 @@ msgstr "Assistant OpenVPN %s"
 #
 # File: src/www/wizards/openvpn_wizard.inc, line: 637
 # File: src/www/wizards/openvpn_wizard.inc, line: 652
-msgid "OpenVPN Wizard"
 msgstr "Assistant de configuration pour OpenVPN"

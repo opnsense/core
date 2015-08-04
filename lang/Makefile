@@ -5,7 +5,7 @@ XGETTEXT=	${_XGETTEXT} -L PHP --from-code=UTF-8 -F --strict --debug
 _MSGFMT!=	which msgfmt || echo true
 MSGFMT=		${_MSGFMT} --strict
 _MSGMERGE!=	which msgmerge || echo true
-MSGMERGE=	${_MSGMERGE} -U --backup=off
+MSGMERGE=	${_MSGMERGE} -U -N --backup=off
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 

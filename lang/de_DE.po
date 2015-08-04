@@ -111,9 +111,10 @@ msgstr ""
 msgid "Allow access to the 'Status: Captive portal: Vouchers' page."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Create interface groups"
-msgstr "Interface Gruppen"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 55
@@ -686,9 +687,10 @@ msgstr ""
 msgid "Allow access to the 'Services: Captive portal: Mac Addresses' page."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/acl.php, line: 169
 msgid "Allows access to the 'Diagnostics: Limiter Info' page"
-msgstr "Diagnose: Limitierer Info"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 170
@@ -936,9 +938,10 @@ msgstr ""
 msgid "Allow access to the 'Status: DHCPv6 leases' page."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Edit Interface LAGG"
-msgstr "Bind Interface"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 220
@@ -1130,9 +1133,10 @@ msgstr ""
 msgid "Allow access to the 'Firewall: Easy Rule' add/status page."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/acl.php, line: 258
 msgid "Allows access to the 'Diagnostics: System Activity' page"
-msgstr "Diagnose: Systemaktivität"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 259
@@ -1189,13 +1193,15 @@ msgid ""
 "                "
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 39
 msgid "Enable access logging."
-msgstr "Aktiviere Remote Logging"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 40
 msgid "Enable store logging."
-msgstr "Aktiviere Remote Logging"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 41
@@ -1262,9 +1268,10 @@ msgid ""
 "second (leave empty to disable)."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 55
 msgid "Select interface(s) the proxy will bind to."
-msgstr "Wähle das Interface(s) für das Captive Portal."
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 56
@@ -1280,13 +1287,15 @@ msgid ""
 "be added to the allow access list."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 59
 msgid "Select interface(s) the ftp proxy will bind to."
-msgstr "Wähle das Interface(s) für das Captive Portal."
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 61
 msgid "Select Authentication method"
-msgstr "Authentifizierungsmethode"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 62
@@ -1304,9 +1313,10 @@ msgstr ""
 msgid "Select if job is enabled or not"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 65
 msgid "Enter a filename for storing the blacklist."
-msgstr "Geben Sie zusätzliche Namen für den Host ein."
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 66
@@ -1318,13 +1328,15 @@ msgstr ""
 msgid "Enter a description to explain what this blacklist is intended for."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 68
 msgid "enable IDS"
-msgstr "aktivieren"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 69
 msgid "Select interface(s) to use."
-msgstr "Interface löschen"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 70
@@ -1439,17 +1451,20 @@ msgstr ""
 msgid "Select the command that needs to be executed at given time frame."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 92
 msgid "Enter parameters for this job if required."
-msgstr "Es fehlen Parameter für Erlaubnisregel."
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/controllers.php, line: 93
 msgid "Enter a description to explain what this job is intended for."
-msgstr "Geben Sie eine Beschreibung (Name) für das Interface hier ein."
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 35
 msgid "Change password"
-msgstr "PPTP Passwort"
+msgstr ""
 
 msgid "User"
 msgstr "Benutzer"
@@ -1460,9 +1475,10 @@ msgstr "Zertifikate"
 msgid "Certificate Authority"
 msgstr "Zertifizierungsstelle"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 39
 msgid "Certification Revocation"
-msgstr "Zertifikatsrückruf"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 41
@@ -1483,9 +1499,10 @@ msgstr "Allgemein"
 msgid "Admin Access"
 msgstr "Administratorzugang"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 46
 msgid "Firewall/NAT"
-msgstr "Firewall / NAT"
+msgstr ""
 
 msgid "Networking"
 msgstr ""
@@ -1524,9 +1541,10 @@ msgstr "Nutzerverwaltung"
 msgid "System"
 msgstr "System"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 59
 msgid "Interface Addignments"
-msgstr "Interface Adresse"
+msgstr ""
 
 msgid "Interface Groups"
 msgstr "Interface Gruppen"
@@ -1620,9 +1638,10 @@ msgstr ""
 msgid "Voucher"
 msgstr "Voucher"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 91
 msgid "FileManager"
-msgstr "Nutzerverwaltung"
+msgstr ""
 
 msgid "Captive Portal"
 msgstr "Captive Portal"
@@ -1636,17 +1655,20 @@ msgstr "DHCP Server"
 msgid "DHCPv6 Relay"
 msgstr "DHCPv6 Relay"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 96
 msgid "RouterAdvertisement"
-msgstr "Router Advertisement"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 97
 msgid "DHCPv6 Server/RA"
-msgstr "DHCPv6 Server"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 98
 msgid "DNS Filter"
-msgstr "Filter"
+msgstr ""
 
 msgid "DNS Forwarder"
 msgstr "DNS Forwarder"
@@ -1662,13 +1684,15 @@ msgstr ""
 msgid "DNS Resolver"
 msgstr "DNS Resolver"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 103
 msgid "DynamicDNSRFC2136Clients"
-msgstr "Clients für dynamische DNS"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 104
 msgid "DynamicDNSEdit"
-msgstr "Dynamisches DNS"
+msgstr ""
 
 msgid "Dynamic DNS"
 msgstr "Dynamisches DNS"
@@ -1676,9 +1700,10 @@ msgstr "Dynamisches DNS"
 msgid "IGMP Proxy"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 107
 msgid "VirtualServer"
-msgstr "Virtuelle Server"
+msgstr ""
 
 msgid "Monitors"
 msgstr "Monitore"
@@ -1686,18 +1711,18 @@ msgstr "Monitore"
 msgid "Load Balancer"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 111
 msgid "Network Time Protocol"
-msgstr "Internet Protokoll"
+msgstr ""
 
 msgid "PPPoE Server"
 msgstr ""
 
 #
-# File: src/etc/inc/service-utils.inc, line: 180
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 113
 msgid "Proxy Server"
-msgstr "Proxy Server"
+msgstr ""
 
 msgid "SNMP"
 msgstr "SNMP"
@@ -1721,25 +1746,28 @@ msgstr ""
 msgid "Services"
 msgstr "Dienste"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 119
 msgid "MobileClients"
-msgstr "mobiler Client"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 120
 msgid "Keys"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 121
 msgid "AdvancedSettings"
-msgstr "Erweiterte Einstellungen"
+msgstr ""
 
 msgid "IPsec"
 msgstr "IPsec"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 123
 msgid "L2TPUsers"
-msgstr "Benutzer"
+msgstr ""
 
 msgid "L2TP"
 msgstr "L2TP"
@@ -1755,9 +1783,10 @@ msgstr ""
 msgid "Wizards"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 128
 msgid "ClientExport"
-msgstr "Client"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 129
@@ -1767,9 +1796,10 @@ msgstr ""
 msgid "OpenVPN"
 msgstr "OpenVPN"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 131
 msgid "PPTPUsers"
-msgstr "Benutzer"
+msgstr ""
 
 msgid "PPTP"
 msgstr ""
@@ -1780,21 +1810,25 @@ msgstr "VPN"
 msgid "CARP"
 msgstr "CARP"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 136
 msgid "DHCP IPv4 Leases"
-msgstr "DHCPv6 Leases"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 137
 msgid "DHCP IPv6 Leases"
-msgstr "DHCPv6 Leases"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 138
 msgid "Filter Reload"
-msgstr "Filter"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 139
 msgid "GatewayGroups"
-msgstr "Gateways"
+msgstr ""
 
 msgid "Gateways"
 msgstr "Gateways"
@@ -1808,9 +1842,10 @@ msgstr "SAD"
 msgid "SPD"
 msgstr "SPD"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 146
 msgid "VirtualServers"
-msgstr "Virtuelle Server"
+msgstr ""
 
 msgid "NTP"
 msgstr "NTP"
@@ -1821,20 +1856,23 @@ msgstr ""
 msgid "Resolver"
 msgstr "Resolver"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 158
 msgid "DynamicView"
-msgstr "Dynamische Ansicht"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 159
 msgid "SummaryView"
-msgstr "Zusammengefasste Ansicht"
+msgstr ""
 
 msgid "DHCP"
 msgstr "DHCP"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 162
 msgid "PortalAuth"
-msgstr "Portalauthentifizierung"
+msgstr ""
 
 msgid "PPP"
 msgstr "PPP"
@@ -1850,13 +1888,15 @@ msgstr ""
 msgid "Proxy"
 msgstr "Proxy"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 171
 msgid "System Logs"
-msgstr "Systemprotokolle"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 172
 msgid "Traffic Graphs"
-msgstr "Traffic Shaper"
+msgstr ""
 
 msgid "Status"
 msgstr "Status"
@@ -1872,9 +1912,10 @@ msgstr "Authentifizierung"
 msgid "History"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 178
 msgid "Backup & Restore"
-msgstr "Backup/Wiederherstellung"
+msgstr ""
 
 msgid "Crash Reporter"
 msgstr "Absturzreporter"
@@ -1882,19 +1923,20 @@ msgstr "Absturzreporter"
 msgid "DNS Lookup"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 181
 msgid "Factory Defaults"
-msgstr "Werkseinstellungen"
+msgstr ""
 
 #
-# File: src/www/diag_halt.php, line: 35
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 182
 msgid "Halt System"
-msgstr "System anhalten"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 183
 msgid "Limiter Info"
-msgstr "Diagnose: Limitierer Info"
+msgstr ""
 
 msgid "NDP Table"
 msgstr "NDP Tabelle"
@@ -1902,9 +1944,10 @@ msgstr "NDP Tabelle"
 msgid "Packet Capture"
 msgstr "Paketaufzeichnung"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 186
 msgid "pfInfo"
-msgstr "Info"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 187
@@ -1914,9 +1957,10 @@ msgstr ""
 msgid "Ping"
 msgstr "Ping"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 189
 msgid "Reboot"
-msgstr "System Neustarten"
+msgstr ""
 
 msgid "Routes"
 msgstr "Routen"
@@ -1930,13 +1974,15 @@ msgstr "Sockets"
 msgid "States"
 msgstr "Status"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 194
 msgid "States Summary"
-msgstr "Statustabellenzusammenfassung"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 195
 msgid "System Activity"
-msgstr "Letzte Aktivität"
+msgstr ""
 
 msgid "Tables"
 msgstr "Tabellen"
@@ -1960,22 +2006,25 @@ msgstr ""
 msgid "Developers Wiki"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 202
 msgid "Documentation"
-msgstr "Authentifizierung"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 203
 msgid "FreeBSD Handbook"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 204
 msgid "Paid Support"
-msgstr "Proxy Unterstützung"
+msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 205
 msgid "UserForum"
-msgstr "Benutzer"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 206
@@ -1990,18 +2039,20 @@ msgstr ""
 msgid "test"
 msgstr "testen"
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 209
 msgid "you should input a valid email address"
-msgstr "%s ist keine gültige interne IP Adresse"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 210
 msgid "sid should be a number"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 211
 msgid "Related cron not found"
-msgstr "Cronjob für %s aktualisiert"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 212
@@ -2053,11 +2104,11 @@ msgstr ""
 msgid "FTP Proxy port needs to be an integer value between 1 and 65535"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 222
 msgid ""
 "The filename may only contain letters,digits and one dot (not required)."
 msgstr ""
-"Zonenname. Kann nur Buchstaben, Ziffern und Unterstriche (_) enthalten."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 223
@@ -2079,9 +2130,10 @@ msgstr ""
 msgid "Pipe number must be between 1...65535"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 227
 msgid "Bandwidth out of range"
-msgstr "Bandbreite ausgehend"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 228
@@ -2105,9 +2157,11 @@ msgstr ""
 msgid "origin should be regular text of max 30 characters"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 232
+# File: lang/dynamic/helpers/models.php, line: 236
 msgid "Description should be a string between 1 and 255 characters"
-msgstr "Beschreibungen müssen kürzer als 200 Zeichen sein."
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 233
@@ -2119,9 +2173,10 @@ msgstr ""
 msgid "Related pipe not found"
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 235
 msgid "Weight must be between 1...100"
-msgstr "Anzahl muss zwischen 1 und %s sein"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 238
@@ -2173,9 +2228,10 @@ msgid ""
 "ranges and * are supported (ex. 1,2,4 or 0-4  ) "
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 247
 msgid "Select a command from the list."
-msgstr "Wählen Sie aus, wie viele Zeilen angezeigt werden sollen."
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 248
@@ -2183,9 +2239,10 @@ msgid ""
 "Enter valid parameter(s) for the chosen command (Found illegal characters)."
 msgstr ""
 
-#, fuzzy
+#
+# File: lang/dynamic/helpers/models.php, line: 249
 msgid "Enter a description."
-msgstr "Beschreibung"
+msgstr ""
 
 msgid ""
 "Potential DNS Rebind attack detected, see http://en.wikipedia.org/wiki/"
@@ -2349,9 +2406,11 @@ msgid "Enter the WAN interface name or 'a' for auto-detection:"
 msgstr ""
 "Geben Sie den WAN Interfacenamen oder 'a' für automatische Erkennung ein:"
 
-#, fuzzy, php-format
+#
+# File: src/etc/inc/config.console.inc, line: 126
+#, php-format
 msgid "Invalid interface name '%s'"
-msgstr "%sUngültiger Interfacename '%s'%s"
+msgstr ""
 
 #, php-format
 msgid ""
@@ -14984,9 +15043,10 @@ msgstr "Aktiviere Secure Shell"
 msgid "Root Login"
 msgstr "Root Login"
 
-#, fuzzy
+#
+# File: src/www/system_advanced_admin.php, line: 536
 msgid "Permit root user login"
-msgstr "Aktiviere root Benutzerlogin"
+msgstr ""
 
 msgid "Root login is generally discouraged. It is advised "
 msgstr ""
@@ -17367,13 +17427,15 @@ msgstr "Passwort erfolgreich geändert"
 msgid "Sorry, you cannot change the password for a non-local user."
 msgstr ""
 
-#, fuzzy
+#
+# File: src/www/system_usermanager_passwordmg.php, line: 114
 msgid "Old password"
-msgstr "PPTP Passwort"
+msgstr ""
 
-#, fuzzy
+#
+# File: src/www/system_usermanager_passwordmg.php, line: 120
 msgid "New password"
-msgstr "PPTP Passwort"
+msgstr ""
 
 msgid "Confirmation"
 msgstr "Bestätigung"

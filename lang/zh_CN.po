@@ -113,26 +113,14 @@ msgid "Allow access to the 'Status: Captive portal: Vouchers' page."
 msgstr ""
 
 #
-# File: src/www/interfaces_assign.php, line: 458
-# File: src/www/interfaces_bridge.php, line: 104
-# File: src/www/interfaces_gif.php, line: 92
-# File: src/www/interfaces_gre.php, line: 93
-# File: src/www/interfaces_groups.php, line: 78
-# File: src/www/interfaces_lagg.php, line: 98
-# File: src/www/interfaces_ppps.php, line: 94
-# File: src/www/interfaces_qinq.php, line: 102
-# File: src/www/interfaces_vlan.php, line: 102
-# File: src/www/interfaces_wireless.php, line: 92
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Create interface groups"
-msgstr "接口组"
+msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 2854
-# File: src/etc/inc/shaper.inc, line: 2861
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 55
 msgid "Allow access to the 'Firewall: Traffic Shaper' page."
-msgstr "欢迎到%s流整形"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 56
@@ -323,11 +311,9 @@ msgid "Indicates whether the user is able to login for example via SSH."
 msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 2854
-# File: src/etc/inc/shaper.inc, line: 2861
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 93
 msgid "Allow access to the 'Status: Traffic Graph' page."
-msgstr "欢迎到%s流整形"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 94
@@ -431,10 +417,9 @@ msgid "Allow access to the 'VPN: L2TP : Users' page."
 msgstr ""
 
 #
-# File: src/www/load_balancer_virtual_server_edit.php, line: 50
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 114
 msgid "Allow access to the 'Load Balancer: Virtual Server: Edit' page."
-msgstr "负载均衡虚拟服务器"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 115
@@ -704,10 +689,9 @@ msgid "Allow access to the 'Services: Captive portal: Mac Addresses' page."
 msgstr ""
 
 #
-# File: src/www/diag_limiter_info.php, line: 31
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 169
 msgid "Allows access to the 'Diagnostics: Limiter Info' page"
-msgstr "诊断：限制者信息"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 170
@@ -876,17 +860,14 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/load_balancer_virtual_server_edit.php, line: 50
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 203
 msgid "Allow access to the 'Status: Load Balancer: Virtual Server' page."
-msgstr "负载均衡虚拟服务器"
+msgstr ""
 
 #
-# File: src/etc/rc.restore_config_backup, line: 34
-# File: src/etc/rc.restore_config_backup, line: 50
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 204
 msgid "Allow access to the 'Diagnostics: Configuration History' page."
-msgstr "配置历史中没有找到备份"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 205
@@ -954,16 +935,14 @@ msgid "Allow access to the 'System: User Manager: settings' page."
 msgstr ""
 
 #
-# File: src/www/services_dhcpv6.php, line: 819
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 218
 msgid "Allow access to the 'Status: DHCPv6 leases' page."
-msgstr "状态：DHCPv6租约"
+msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 2302
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Edit Interface LAGG"
-msgstr "前缀接口"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 220
@@ -1121,10 +1100,9 @@ msgid "Allow access to the 'Services: Load Balancer: Monitors' page."
 msgstr ""
 
 #
-# File: src/www/status_captiveportal.php, line: 45
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 251
 msgid "Allow access to the 'Status: Captive portal' page."
-msgstr "状态：入网认证"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 252
@@ -1157,10 +1135,9 @@ msgid "Allow access to the 'Firewall: Easy Rule' add/status page."
 msgstr ""
 
 #
-# File: src/www/diag_system_activity.php, line: 31
-#, fuzzy
+# File: lang/dynamic/helpers/acl.php, line: 258
 msgid "Allows access to the 'Diagnostics: System Activity' page"
-msgstr "诊断：系统活动"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 259
@@ -1204,10 +1181,9 @@ msgid "Allow access to the 'Services: Igmpproxy' page."
 msgstr ""
 
 #
-# File: src/etc/inc/services.inc, line: 1367
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 35
 msgid "Enable or disable the proxy service."
-msgstr "已启动IGMP代理服务"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 36
@@ -1219,16 +1195,14 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/diag_logs_settings.php, line: 389
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 39
 msgid "Enable access logging."
-msgstr "启用远程日志"
+msgstr ""
 
 #
-# File: src/www/diag_logs_settings.php, line: 389
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 40
 msgid "Enable store logging."
-msgstr "启用远程日志"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 41
@@ -1320,11 +1294,9 @@ msgid "Select interface(s) the ftp proxy will bind to."
 msgstr ""
 
 #
-# File: src/www/vpn_ipsec_phase1.php, line: 673
-# File: src/www/vpn_openvpn_client.php, line: 605
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 61
 msgid "Select Authentication method"
-msgstr "认证方式"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 62
@@ -1358,16 +1330,14 @@ msgid "Enter a description to explain what this blacklist is intended for."
 msgstr ""
 
 #
-# File: src/www/firewall_nat_1to1_edit.php, line: 555
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 68
 msgid "enable IDS"
-msgstr "启用"
+msgstr ""
 
 #
-# File: src/www/interfaces_assign.php, line: 513
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 69
 msgid "Select interface(s) to use."
-msgstr "删除接口"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 70
@@ -1375,12 +1345,9 @@ msgid "enable this pipe and it's related queues and rules"
 msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 1867
-# File: src/etc/inc/shaper.inc, line: 2353
-# File: src/etc/inc/shaper.inc, line: 2627
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 71
 msgid "Total bandwidth for this pipe"
-msgstr "为该队列选择带宽总量"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 72
@@ -1394,16 +1361,14 @@ msgid "Description to identify this pipe."
 msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 1100
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 74
 msgid "enable this queue and it's related rules"
-msgstr "启用/禁用队列及其子队列"
+msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 1159
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 75
 msgid "connected pipe for this queue"
-msgstr "为该队列选择选项"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 76
@@ -1488,23 +1453,19 @@ msgid "Select the command that needs to be executed at given time frame."
 msgstr ""
 
 #
-# File: src/etc/inc/easyrule.inc, line: 371
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 92
 msgid "Enter parameters for this job if required."
-msgstr "放行规则缺少参数"
+msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 1606
-#, fuzzy
+# File: lang/dynamic/helpers/controllers.php, line: 93
 msgid "Enter a description to explain what this job is intended for."
-msgstr "为这里的接口输入一个描述（名字）"
+msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 542
-# File: src/www/interfaces.php, line: 545
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 35
 msgid "Change password"
-msgstr "PPTP 密码"
+msgstr ""
 
 #
 # File: src/www/diag_authentication.php, line: 46
@@ -1534,10 +1495,9 @@ msgid "Certificate Authority"
 msgstr "证书权威"
 
 #
-# File: src/www/system_certificates_tabs.inc, line: 8
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 39
 msgid "Certification Revocation"
-msgstr "证书撤销"
+msgstr ""
 
 #
 # File: src/www/system_firmware_check.php, line: 98
@@ -1571,10 +1531,9 @@ msgid "Admin Access"
 msgstr "管理接入"
 
 #
-# File: src/www/system_advanced_tabs.inc, line: 8
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 46
 msgid "Firewall/NAT"
-msgstr "防火墙/NAT"
+msgstr ""
 
 #
 # File: src/www/system_advanced_network.php, line: 144
@@ -1627,18 +1586,9 @@ msgid "Settings"
 msgstr "设置"
 
 #
-# File: src/www/firewall_shaper.php, line: 411
-# File: src/www/firewall_shaper_queues.php, line: 193
-# File: src/www/firewall_shaper_wizards.php, line: 62
-# File: src/www/firewall_shaper_wizards.php, line: 96
-# File: src/www/vpn_openvpn_client.php, line: 449
-# File: src/www/vpn_openvpn_csc.php, line: 328
-# File: src/www/vpn_openvpn_export.php, line: 588
-# File: src/www/vpn_openvpn_export_shared.php, line: 289
-# File: src/www/vpn_openvpn_server.php, line: 748
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 52
 msgid "Setup Wizard"
-msgstr "向导"
+msgstr ""
 
 #
 # File: src/www/services_captiveportal_zones.php, line: 90
@@ -1729,19 +1679,9 @@ msgid "System"
 msgstr "系统"
 
 #
-# File: src/www/interfaces_assign.php, line: 457
-# File: src/www/interfaces_bridge.php, line: 103
-# File: src/www/interfaces_gif.php, line: 91
-# File: src/www/interfaces_gre.php, line: 92
-# File: src/www/interfaces_groups.php, line: 77
-# File: src/www/interfaces_lagg.php, line: 97
-# File: src/www/interfaces_ppps.php, line: 93
-# File: src/www/interfaces_qinq.php, line: 101
-# File: src/www/interfaces_vlan.php, line: 101
-# File: src/www/interfaces_wireless.php, line: 91
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 59
 msgid "Interface Addignments"
-msgstr "接口定义"
+msgstr ""
 
 #
 # File: src/www/interfaces_assign.php, line: 458
@@ -2135,14 +2075,9 @@ msgid "Voucher"
 msgstr "优惠券"
 
 #
-# File: src/www/services_captiveportal.php, line: 497
-# File: src/www/services_captiveportal_filemanager.php, line: 153
-# File: src/www/services_captiveportal_ip.php, line: 92
-# File: src/www/services_captiveportal_mac.php, line: 150
-# File: src/www/services_captiveportal_vouchers.php, line: 351
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 91
 msgid "FileManager"
-msgstr "文件管理者"
+msgstr ""
 
 #
 # File: src/etc/inc/service-utils.inc, line: 78
@@ -2169,33 +2104,19 @@ msgid "DHCPv6 Relay"
 msgstr "DHCPv6中继"
 
 #
-# File: src/www/services_dhcpv6.php, line: 499
-# File: src/www/services_router_advertisements.php, line: 228
-# File: src/www/services_router_advertisements.php, line: 236
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 96
 msgid "RouterAdvertisement"
-msgstr "路由器通告"
+msgstr ""
 
 #
-# File: src/www/diag_backup.php, line: 144
-# File: src/www/services_dhcpv6.php, line: 498
-# File: src/www/services_dhcpv6.php, line: 518
-# File: src/www/services_router_advertisements.php, line: 227
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 97
 msgid "DHCPv6 Server/RA"
-msgstr "DHCPv6服务器"
+msgstr ""
 
 #
-# File: src/www/diag_dump_states.php, line: 136
-# File: src/www/diag_dump_states_sources.php, line: 130
-# File: src/www/diag_logs.php, line: 102
-# File: src/www/diag_logs_filter.php, line: 177
-# File: src/www/diag_logs_filter.php, line: 243
-# File: src/www/diag_logs_gateways.php, line: 103
-# File: src/www/diag_logs_resolver.php, line: 102
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 98
 msgid "DNS Filter"
-msgstr "过滤"
+msgstr ""
 
 #
 # File: src/etc/inc/service-utils.inc, line: 56
@@ -2267,19 +2188,14 @@ msgid "DNS Resolver"
 msgstr "DNS解析器"
 
 #
-# File: src/www/services_dyndns.php, line: 50
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 103
 msgid "DynamicDNSRFC2136Clients"
-msgstr "动态DNS客户端"
+msgstr ""
 
 #
-# File: src/etc/inc/ipsec.inc, line: 46
-# File: src/www/services_dhcp.php, line: 968
-# File: src/www/services_dhcp_edit.php, line: 482
-# File: src/www/services_dhcpv6.php, line: 670
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 104
 msgid "DynamicDNSEdit"
-msgstr "动态DNS"
+msgstr ""
 
 #
 # File: src/etc/inc/ipsec.inc, line: 46
@@ -2296,11 +2212,9 @@ msgid "IGMP Proxy"
 msgstr "IGMP代理"
 
 #
-# File: src/www/load_balancer_virtual_server_edit.php, line: 132
-# File: src/www/status_lb_vs.php, line: 43
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 107
 msgid "VirtualServer"
-msgstr "虚拟服务器"
+msgstr ""
 
 #
 # File: src/www/load_balancer_monitor.php, line: 107
@@ -2332,10 +2246,9 @@ msgid "Load Balancer"
 msgstr "负载均衡"
 
 #
-# File: src/www/vpn_ipsec_phase1.php, line: 581
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 111
 msgid "Network Time Protocol"
-msgstr "Internet协议"
+msgstr ""
 
 #
 # File: src/www/vpn_pppoe_edit.php, line: 231
@@ -2343,10 +2256,9 @@ msgid "PPPoE Server"
 msgstr "PPPoE服务器"
 
 #
-# File: src/etc/inc/service-utils.inc, line: 180
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 113
 msgid "Proxy Server"
-msgstr "代理服务器"
+msgstr ""
 
 #
 # File: src/www/services_snmp.php, line: 154
@@ -2427,13 +2339,9 @@ msgid "Services"
 msgstr "服务"
 
 #
-# File: src/etc/inc/ipsec.inc, line: 264
-# File: src/www/vpn_ipsec.php, line: 317
-# File: src/www/vpn_ipsec_phase1.php, line: 386
-# File: src/www/vpn_ipsec_phase2.php, line: 313
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 119
 msgid "MobileClients"
-msgstr "移动客户端"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 120
@@ -2441,12 +2349,9 @@ msgid "Keys"
 msgstr ""
 
 #
-# File: src/www/vpn_ipsec_phase1.php, line: 535
-# File: src/www/vpn_ipsec_phase2.php, line: 495
-# File: src/www/vpn_ipsec_tabs.inc, line: 6
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 121
 msgid "AdvancedSettings"
-msgstr "高级设置"
+msgstr ""
 
 #
 # File: src/www/diag_ipsec.php, line: 34
@@ -2465,24 +2370,9 @@ msgid "IPsec"
 msgstr ""
 
 #
-# File: src/www/services_captiveportal_zones.php, line: 90
-# File: src/www/system_authservers.php, line: 450
-# File: src/www/system_groupmanager.php, line: 243
-# File: src/www/system_groupmanager_addprivs.php, line: 158
-# File: src/www/system_usermanager.php, line: 433
-# File: src/www/system_usermanager_addprivs.php, line: 140
-# File: src/www/system_usermanager_settings.php, line: 107
-# File: src/www/vpn_l2tp.php, line: 285
-# File: src/www/vpn_l2tp_users.php, line: 29
-# File: src/www/vpn_l2tp_users.php, line: 98
-# File: src/www/vpn_l2tp_users_edit.php, line: 157
-# File: src/www/vpn_pptp.php, line: 304
-# File: src/www/vpn_pptp_users.php, line: 63
-# File: src/www/vpn_pptp_users.php, line: 92
-# File: src/www/vpn_pptp_users_edit.php, line: 149
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 123
 msgid "L2TPUsers"
-msgstr "用户"
+msgstr ""
 
 #
 # File: src/www/interfaces.php, line: 1351
@@ -2522,24 +2412,14 @@ msgid "Wizards"
 msgstr "向导"
 
 #
-# File: src/www/vpn_openvpn_client.php, line: 450
-# File: src/www/vpn_openvpn_csc.php, line: 329
-# File: src/www/vpn_openvpn_export.php, line: 589
-# File: src/www/vpn_openvpn_export_shared.php, line: 290
-# File: src/www/vpn_openvpn_server.php, line: 749
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 128
 msgid "ClientExport"
-msgstr "客户端输出"
+msgstr ""
 
 #
-# File: src/www/vpn_openvpn_client.php, line: 451
-# File: src/www/vpn_openvpn_csc.php, line: 330
-# File: src/www/vpn_openvpn_export.php, line: 590
-# File: src/www/vpn_openvpn_export_shared.php, line: 291
-# File: src/www/vpn_openvpn_server.php, line: 750
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 129
 msgid "SharedKeyExport"
-msgstr "预共享密钥输出"
+msgstr ""
 
 #
 # File: src/etc/inc/service-utils.inc, line: 165
@@ -2557,24 +2437,9 @@ msgid "OpenVPN"
 msgstr ""
 
 #
-# File: src/www/services_captiveportal_zones.php, line: 90
-# File: src/www/system_authservers.php, line: 450
-# File: src/www/system_groupmanager.php, line: 243
-# File: src/www/system_groupmanager_addprivs.php, line: 158
-# File: src/www/system_usermanager.php, line: 433
-# File: src/www/system_usermanager_addprivs.php, line: 140
-# File: src/www/system_usermanager_settings.php, line: 107
-# File: src/www/vpn_l2tp.php, line: 285
-# File: src/www/vpn_l2tp_users.php, line: 29
-# File: src/www/vpn_l2tp_users.php, line: 98
-# File: src/www/vpn_l2tp_users_edit.php, line: 157
-# File: src/www/vpn_pptp.php, line: 304
-# File: src/www/vpn_pptp_users.php, line: 63
-# File: src/www/vpn_pptp_users.php, line: 92
-# File: src/www/vpn_pptp_users_edit.php, line: 149
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 131
 msgid "PPTPUsers"
-msgstr "用户"
+msgstr ""
 
 #
 # File: src/www/interfaces.php, line: 1351
@@ -2609,40 +2474,24 @@ msgid "CARP"
 msgstr ""
 
 #
-# File: src/www/status_dhcpv6_leases.php, line: 34
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 136
 msgid "DHCP IPv4 Leases"
-msgstr "DHCPv6租约"
+msgstr ""
 
 #
-# File: src/www/status_dhcpv6_leases.php, line: 34
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 137
 msgid "DHCP IPv6 Leases"
-msgstr "DHCPv6租约"
+msgstr ""
 
 #
-# File: src/www/diag_dump_states.php, line: 136
-# File: src/www/diag_dump_states_sources.php, line: 130
-# File: src/www/diag_logs.php, line: 102
-# File: src/www/diag_logs_filter.php, line: 177
-# File: src/www/diag_logs_filter.php, line: 243
-# File: src/www/diag_logs_gateways.php, line: 103
-# File: src/www/diag_logs_resolver.php, line: 102
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 138
 msgid "Filter Reload"
-msgstr "过滤"
+msgstr ""
 
 #
-# File: src/www/load_balancer_pool.php, line: 150
-# File: src/www/status_gateway_groups.php, line: 41
-# File: src/www/status_gateway_groups.php, line: 45
-# File: src/www/status_gateway_groups.php, line: 67
-# File: src/www/status_gateways.php, line: 59
-# File: src/www/system_gateway_groups.php, line: 50
-# File: src/www/system_gateway_groups.php, line: 98
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 139
 msgid "GatewayGroups"
-msgstr "网关组"
+msgstr ""
 
 #
 # File: src/www/diag_logs_gateways.php, line: 57
@@ -2678,18 +2527,9 @@ msgid "SPD"
 msgstr ""
 
 #
-# File: src/www/load_balancer_monitor.php, line: 106
-# File: src/www/load_balancer_pool.php, line: 117
-# File: src/www/load_balancer_relay_action.php, line: 122
-# File: src/www/load_balancer_relay_protocol.php, line: 116
-# File: src/www/load_balancer_setting.php, line: 111
-# File: src/www/load_balancer_virtual_server.php, line: 86
-# File: src/www/load_balancer_virtual_server.php, line: 116
-# File: src/www/status_lb_pool.php, line: 122
-# File: src/www/status_lb_vs.php, line: 66
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 146
 msgid "VirtualServers"
-msgstr "虚拟服务器"
+msgstr ""
 
 #
 # File: src/www/diag_logs_ntpd.php, line: 44
@@ -2718,16 +2558,14 @@ msgid "Resolver"
 msgstr "解析器"
 
 #
-# File: src/www/diag_logs_pills.php, line: 57
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 158
 msgid "DynamicView"
-msgstr "动态浏览"
+msgstr ""
 
 #
-# File: src/www/diag_logs_pills.php, line: 58
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 159
 msgid "SummaryView"
-msgstr "概要浏览"
+msgstr ""
 
 #
 # File: src/www/diag_logs_dhcp.php, line: 46
@@ -2738,11 +2576,9 @@ msgid "DHCP"
 msgstr ""
 
 #
-# File: src/www/diag_logs_auth.php, line: 43
-# File: src/www/diag_logs_tabs.inc, line: 32
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 162
 msgid "PortalAuth"
-msgstr "入口认证"
+msgstr ""
 
 #
 # File: src/www/diag_logs_ppp.php, line: 44
@@ -2753,24 +2589,9 @@ msgid "PPP"
 msgstr ""
 
 #
-# File: src/www/diag_logs_relayd.php, line: 44
-# File: src/www/diag_logs_tabs.inc, line: 36
-# File: src/www/load_balancer_monitor.php, line: 77
-# File: src/www/load_balancer_monitor_edit.php, line: 182
-# File: src/www/load_balancer_pool.php, line: 86
-# File: src/www/load_balancer_pool_edit.php, line: 157
-# File: src/www/load_balancer_relay_action.php, line: 93
-# File: src/www/load_balancer_relay_action_edit.php, line: 170
-# File: src/www/load_balancer_relay_protocol.php, line: 89
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 127
-# File: src/www/load_balancer_setting.php, line: 85
-# File: src/www/load_balancer_virtual_server.php, line: 86
-# File: src/www/load_balancer_virtual_server_edit.php, line: 132
-# File: src/www/status_lb_pool.php, line: 56
-# File: src/www/status_lb_vs.php, line: 43
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 166
 msgid "LoadBalancer"
-msgstr "负载均衡"
+msgstr ""
 
 #
 # File: src/www/diag_logs_proxy.php, line: 44
@@ -2779,33 +2600,14 @@ msgid "Proxy"
 msgstr "代理"
 
 #
-# File: src/www/diag_logs.php, line: 56
-# File: src/www/diag_logs_auth.php, line: 43
-# File: src/www/diag_logs_dhcp.php, line: 46
-# File: src/www/diag_logs_filter.php, line: 108
-# File: src/www/diag_logs_filter_dynamic.php, line: 48
-# File: src/www/diag_logs_filter_summary.php, line: 30
-# File: src/www/diag_logs_gateways.php, line: 57
-# File: src/www/diag_logs_ipsec.php, line: 47
-# File: src/www/diag_logs_ntpd.php, line: 44
-# File: src/www/diag_logs_openvpn.php, line: 31
-# File: src/www/diag_logs_ppp.php, line: 44
-# File: src/www/diag_logs_proxy.php, line: 44
-# File: src/www/diag_logs_relayd.php, line: 44
-# File: src/www/diag_logs_resolver.php, line: 57
-# File: src/www/diag_logs_routing.php, line: 43
-# File: src/www/diag_logs_settings.php, line: 171
-# File: src/www/diag_logs_vpn.php, line: 30
-# File: src/www/diag_logs_wireless.php, line: 45
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 171
 msgid "System Logs"
-msgstr "系统日志"
+msgstr ""
 
 #
-# File: src/www/status_graph.php, line: 95
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 172
 msgid "Traffic Graphs"
-msgstr "数据流整形"
+msgstr ""
 
 #
 # File: src/www/carp_status.php, line: 78
@@ -2885,18 +2687,14 @@ msgid "Authentication"
 msgstr "认证"
 
 #
-# File: src/www/diag_backup.php, line: 601
-# File: src/www/diag_confbak.php, line: 118
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 177
 msgid "History"
-msgstr "配置历史"
+msgstr ""
 
 #
-# File: src/www/diag_backup.php, line: 602
-# File: src/www/diag_confbak.php, line: 119
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 178
 msgid "Backup & Restore"
-msgstr "备份/恢复"
+msgstr ""
 
 #
 # File: src/www/crash_reporter.php, line: 62
@@ -2910,22 +2708,19 @@ msgid "DNS Lookup"
 msgstr "DNS查询"
 
 #
-# File: src/www/diag_defaults.php, line: 33
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 181
 msgid "Factory Defaults"
-msgstr "默认初始值"
+msgstr ""
 
 #
-# File: src/www/diag_halt.php, line: 35
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 182
 msgid "Halt System"
-msgstr "停止系统"
+msgstr ""
 
 #
-# File: src/www/diag_limiter_info.php, line: 31
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 183
 msgid "Limiter Info"
-msgstr "诊断：限制者信息"
+msgstr ""
 
 #
 # File: src/www/diag_ndp.php, line: 91
@@ -2938,11 +2733,9 @@ msgid "Packet Capture"
 msgstr "数据包捕获"
 
 #
-# File: src/www/diag_smart.php, line: 284
-# File: src/www/diag_smart.php, line: 295
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 186
 msgid "pfInfo"
-msgstr "信息"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 187
@@ -2958,10 +2751,9 @@ msgid "Ping"
 msgstr ""
 
 #
-# File: src/www/reboot.php, line: 34
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 189
 msgid "Reboot"
-msgstr "重启动系统"
+msgstr ""
 
 #
 # File: src/www/system_gateways_tabs.inc, line: 7
@@ -2988,17 +2780,14 @@ msgid "States"
 msgstr "状态"
 
 #
-# File: src/www/diag_states_summary.php, line: 180
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 194
 msgid "States Summary"
-msgstr "状态表概要"
+msgstr ""
 
 #
-# File: src/www/status_captiveportal.php, line: 166
-# File: src/www/widgets/widgets/captive_portal_status.widget.php, line: 79
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 195
 msgid "System Activity"
-msgstr "最近活动"
+msgstr ""
 
 #
 # File: src/www/diag_tables.php, line: 33
@@ -3057,13 +2846,9 @@ msgid "Developers Wiki"
 msgstr ""
 
 #
-# File: src/www/diag_authentication.php, line: 56
-# File: src/www/interfaces.php, line: 3192
-# File: src/www/services_captiveportal.php, line: 637
-# File: src/www/services_captiveportal.php, line: 1014
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 202
 msgid "Documentation"
-msgstr "认证"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 203
@@ -3071,21 +2856,14 @@ msgid "FreeBSD Handbook"
 msgstr ""
 
 #
-# File: src/www/services_unbound_advanced.php, line: 173
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 204
 msgid "Paid Support"
-msgstr "预读取支持"
+msgstr ""
 
 #
-# File: src/www/diag_authentication.php, line: 46
-# File: src/www/diag_logs_vpn.php, line: 135
-# File: src/www/system_usermanager.php, line: 76
-# File: src/www/vpn_l2tp_users_edit.php, line: 29
-# File: src/www/vpn_openvpn_export.php, line: 881
-# File: src/www/vpn_pptp_users_edit.php, line: 128
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 205
 msgid "UserForum"
-msgstr "用户"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 206
@@ -3104,10 +2882,9 @@ msgid "test"
 msgstr "测试"
 
 #
-# File: src/www/firewall_nat_1to1_edit.php, line: 149
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 209
 msgid "you should input a valid email address"
-msgstr "%s不是有效的IP地址"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 210
@@ -3115,18 +2892,14 @@ msgid "sid should be a number"
 msgstr ""
 
 #
-# File: src/www/firewall_shaper.php, line: 168
-# File: src/www/firewall_shaper.php, line: 177
-# File: src/www/firewall_shaper.php, line: 186
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 211
 msgid "Related cron not found"
-msgstr "没有发现队列"
+msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 2467
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 212
 msgid "ICP port needs to be an integer value between 1 and 65535"
-msgstr "优先级必须是介于1~255的整数"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 213
@@ -3164,16 +2937,14 @@ msgid "Specify the per host bandwidth for downloads in kilobits per second."
 msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 2467
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 220
 msgid "Proxy port needs to be an integer value between 1 and 65535"
-msgstr "优先级必须是介于1~255的整数"
+msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 2467
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 221
 msgid "FTP Proxy port needs to be an integer value between 1 and 65535"
-msgstr "优先级必须是介于1~255的整数"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 222
@@ -3187,31 +2958,24 @@ msgid "This does not look like a valid url."
 msgstr ""
 
 #
-# File: src/www/interfaces_bridge_edit.php, line: 125
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 224
 msgid "Credentials TTL needs to be an integer value above 0"
-msgstr "超时必须是整数"
+msgstr ""
 
 #
-# File: src/www/interfaces_bridge_edit.php, line: 125
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 225
 msgid "Number of children needs to be an integer value above 0"
-msgstr "超时必须是整数"
+msgstr ""
 
 #
-# File: src/www/diag_traceroute.php, line: 53
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 226
 msgid "Pipe number must be between 1...65535"
-msgstr "最大跳数必须介于1 - %s"
+msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 283
-# File: src/etc/inc/shaper.inc, line: 1534
-# File: src/etc/inc/shaper.inc, line: 2193
-# File: src/etc/inc/shaper.inc, line: 2476
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 227
 msgid "Bandwidth out of range"
-msgstr "带宽必须是整数"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 228
@@ -3236,30 +3000,25 @@ msgid "origin should be regular text of max 30 characters"
 msgstr ""
 
 #
-# File: src/etc/inc/shaper.inc, line: 2467
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 232
+# File: lang/dynamic/helpers/models.php, line: 236
 msgid "Description should be a string between 1 and 255 characters"
-msgstr "优先级必须是介于1~255的整数"
+msgstr ""
 
 #
-# File: src/www/diag_traceroute.php, line: 53
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 233
 msgid "Queue number must be between 1...65535"
-msgstr "最大跳数必须介于1 - %s"
+msgstr ""
 
 #
-# File: src/www/firewall_shaper.php, line: 168
-# File: src/www/firewall_shaper.php, line: 177
-# File: src/www/firewall_shaper.php, line: 186
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 234
 msgid "Related pipe not found"
-msgstr "没有发现队列"
+msgstr ""
 
 #
-# File: src/www/diag_ping.php, line: 47
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 235
 msgid "Weight must be between 1...100"
-msgstr "计数必须介于1~ %s"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 238
@@ -3323,10 +3082,9 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 99
-#, fuzzy
+# File: lang/dynamic/helpers/models.php, line: 249
 msgid "Enter a description."
-msgstr "描述"
+msgstr ""
 
 #
 # File: src/etc/inc/auth.inc, line: 108
@@ -3560,13 +3318,10 @@ msgid "Enter the WAN interface name or 'a' for auto-detection:"
 msgstr "输入WAN接口名称或‘a’自动检测"
 
 #
-# File: src/etc/inc/config.console.inc, line: 184
-# File: src/etc/inc/config.console.inc, line: 208
-# File: src/etc/inc/config.console.inc, line: 240
-# File: src/etc/inc/config.console.inc, line: 485
-#, fuzzy, php-format
+# File: src/etc/inc/config.console.inc, line: 126
+#, php-format
 msgid "Invalid interface name '%s'"
-msgstr "%s无效的接口名称'%s'%s"
+msgstr ""
 
 #
 # File: src/etc/inc/config.console.inc, line: 191
@@ -24486,10 +24241,9 @@ msgid "Root Login"
 msgstr "Root登陆"
 
 #
-# File: src/www/system_advanced_admin.php, line: 515
-#, fuzzy
+# File: src/www/system_advanced_admin.php, line: 536
 msgid "Permit root user login"
-msgstr "启用Root用户登陆"
+msgstr ""
 
 #
 # File: src/www/system_advanced_admin.php, line: 517
@@ -27821,10 +27575,9 @@ msgid "Another entry with the same group name already exists."
 msgstr ""
 
 #
-# File: src/www/system_usermanager.php, line: 213
-#, fuzzy
+# File: src/www/system_groupmanager.php, line: 127
 msgid "That groupname is reserved by the system."
-msgstr "该用户名已被系统保留"
+msgstr ""
 
 #
 # File: src/www/system_groupmanager.php, line: 267
@@ -28302,18 +28055,14 @@ msgid "Sorry, you cannot change the password for a non-local user."
 msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 542
-# File: src/www/interfaces.php, line: 545
-#, fuzzy
+# File: src/www/system_usermanager_passwordmg.php, line: 114
 msgid "Old password"
-msgstr "PPTP 密码"
+msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 542
-# File: src/www/interfaces.php, line: 545
-#, fuzzy
+# File: src/www/system_usermanager_passwordmg.php, line: 120
 msgid "New password"
-msgstr "PPTP 密码"
+msgstr ""
 
 #
 # File: src/www/system_usermanager_passwordmg.php, line: 122
@@ -31750,13 +31499,10 @@ msgid "Ident"
 msgstr "识别"
 
 #
-# File: src/www/system_firmware_check.php, line: 78
-# File: src/www/system_firmware_check.php, line: 80
-# File: src/www/widgets/widgets/system_information.widget.php, line: 57
-# File: src/www/widgets/widgets/system_information.widget.php, line: 59
-#, fuzzy
+# File: src/www/widgets/widgets/system_information.widget.php, line: 45
+# File: src/www/widgets/widgets/system_information.widget.php, line: 47
 msgid "Click to retry"
-msgstr "现在点击重试"
+msgstr ""
 
 #
 # File: src/www/system_firmware_check.php, line: 78
@@ -31776,11 +31522,9 @@ msgid "Your system is up to date."
 msgstr ""
 
 #
-# File: src/www/system_firmware_check.php, line: 90
-# File: src/www/widgets/widgets/system_information.widget.php, line: 63
-#, fuzzy
+# File: src/www/widgets/widgets/system_information.widget.php, line: 51
 msgid " update(s) available."
-msgstr "有可用的更新"
+msgstr ""
 
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 63
@@ -31788,10 +31532,9 @@ msgid "Click to upgrade"
 msgstr "点击更新"
 
 #
-# File: src/www/diag_backup.php, line: 697
-#, fuzzy
+# File: src/www/widgets/widgets/system_information.widget.php, line: 51
 msgid "There are "
-msgstr "恢复区域："
+msgstr ""
 
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 106
@@ -31799,12 +31542,9 @@ msgid "Versions"
 msgstr "版本"
 
 #
-# File: src/www/system_firmware_check.php, line: 82
-# File: src/www/system_firmware_check.php, line: 93
-# File: src/www/widgets/widgets/system_information.widget.php, line: 66
-#, fuzzy
+# File: src/www/widgets/widgets/system_information.widget.php, line: 112
 msgid "Click to check for updates"
-msgstr "现在点击更新"
+msgstr ""
 
 #
 # File: src/www/widgets/widgets/system_information.widget.php, line: 128
