@@ -33,10 +33,9 @@
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("filter.inc");
-require_once("util.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
-require("openvpn-client-export.inc");
+require_once("openvpn-client-export.inc");
 
 global $current_openvpn_version, $current_openvpn_version_rev;
 
