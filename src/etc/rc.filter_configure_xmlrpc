@@ -42,6 +42,7 @@ require_once("vslb.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
+require_once("rrd.inc");
 
 system_routing_configure();
 setup_gateways_monitor();
