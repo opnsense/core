@@ -101,7 +101,7 @@ msgstr "Falscher Benutzername oder falsches Passwort."
 # File: src/etc/inc/auth.inc, line: 1384
 #, php-format
 msgid "Session timed out for user '%1$s' from: %2$s"
-msgstr "Die Sitzung des Benutzers '%1$s' ist abgelaufen von: %2$s"
+msgstr "Die Sitzung des Benutzers '%1$s' von %2$s ist abgelaufen."
 
 #
 # File: src/etc/inc/auth.inc, line: 1386
