@@ -55,3 +55,20 @@ function configd_run($cmd, $detach = false)
 	$backend = new OPNsense\Core\Backend();
 	return $backend->configdRun("{$cmd}", $detach);
 }
+
+/**
+ * simple function to perform htmlspecialchars recursively on all attributes
+ * @param $settings array type form data
+ */
+function legacy_html_escape_form_data(&$settings)
+{
+    if (is_array($settings)) {
+        foreach ($settings as $dataKey => &$dataValue) {
+            if (is_array($dataValue)) {
+                legacy_html_escape_form_data($dataValue);
+            } else {
+                $settings[$dataKey] = htmlspecialchars($dataValue);
+            }
+        }
+    }
+}
