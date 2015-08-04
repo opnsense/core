@@ -64,7 +64,7 @@ function display_widget_tabs(& $tab_array) {
 
 }
 
-
+$ipsec_detail_array = array();
 
 if (isset($config['ipsec']['phase1'])) {
     echo "<div>&nbsp;</div>\n";
@@ -82,7 +82,6 @@ if (isset($config['ipsec']['phase1'])) {
     $activecounter = 0;
     $inactivecounter = 0;
 
-    $ipsec_detail_array = array();
     if (isset($config['ipsec']['phase2'])) {
         foreach ($config['ipsec']['phase2'] as $ph2ent) {
             if ($ph2ent['remoteid']['type'] == "mobile") {
