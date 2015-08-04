@@ -207,12 +207,13 @@ function addMultiSelectClearUI() {
  */
 function initFormHelpUI() {
     // handle help messages show/hide
-    $("a[class='showhelp']").click(function () {
+    $("a[class='showhelp']").click(function (event) {
         $("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
+        event.preventDefault();
     });
 
     // handle all help messages show/hide
-    $('[id*="show_all_help"]').click(function() {
+    $('[id*="show_all_help"]').click(function(event) {
         $('[id*="show_all_help"]').toggleClass("fa-toggle-on fa-toggle-off");
         $('[id*="show_all_help"]').toggleClass("text-success text-danger");
         if ($('[id*="show_all_help"]').hasClass("fa-toggle-on")) {
@@ -222,6 +223,7 @@ function initFormHelpUI() {
             $('[for*="help_for"]').addClass("hidden");
             $('[for*="help_for"]').removeClass("show");
         }
+        event.preventDefault();
     });
 }
 
