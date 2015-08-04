@@ -213,8 +213,10 @@ function index_groups()
 	if (isset($config['system']['group'])) {
 		$i = 0;
 		foreach($config['system']['group'] as $groupent) {
-			$groupindex[$groupent['name']] = $i;
-			$i++;
+			if (isset($groupent['name'])) {
+				$groupindex[$groupent['name']] = $i;
+				$i++;
+			}
 		}
 	}
 
@@ -600,6 +602,10 @@ function local_group_del_user($user)
 
 function local_group_set($group, $reset = false)
 {
+	if (!isset($group['name']) || !isset($group['gid'])) {
+		// input data invalid
+		return false;
+	}
 	$group_name = $group['name'];
 	$group_gid = $group['gid'];
 	$group_members = '';
