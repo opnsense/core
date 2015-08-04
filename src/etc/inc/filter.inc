@@ -382,14 +382,23 @@ function filter_generate_scrubing() {
 	}
 	/* disable scrub option */
 	foreach ($FilterIflist as $scrubif => $scrubcfg) {
-		if(isset($scrubcfg['virtual']) || empty($scrubcfg['descr']))
+		if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
 			continue;
+		}
+
 		/* set up MSS clamping */
-		if($scrubcfg['mss'] <> "" && is_numeric($scrubcfg['mss']) && isset($scrubcfg['if']) && $scrubcfg['if'] != "pppoe" && $scrubcfg['if'] != "pptp" &&
-			$scrubif['if'] != "l2tp")
-			$mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
-		else
-			$mssclamp = "";
+		if (isset($scrubcfg['if'])) {
+			if (
+				$scrubcfg['mss'] != '' && is_numeric($scrubcfg['mss']) &&
+				$scrubcfg['if'] != 'pppoe' && $scrubcfg['if'] != 'pptp' &&
+				$scrubif['if'] != 'l2tp'
+			) {
+				$mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
+			} else {
+				$mssclamp = '';
+			}
+		}
+
 		/* configure no-df for linux nfs and others */
 		if(!empty($config['system']['scrubnodf']))
 			$scrubnodf = "no-df";

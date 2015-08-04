@@ -36,7 +36,7 @@ require_once("openvpn-client-export.inc");
 
 $pgtitle = array("OpenVPN", "Client Export Utility");
 
-if (!is_array($config['openvpn']['openvpn-server'])) {
+if (!isset($config['openvpn']['openvpn-server'])) {
     $config['openvpn']['openvpn-server'] = array();
 }
 

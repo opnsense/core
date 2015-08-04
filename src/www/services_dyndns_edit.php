@@ -42,7 +42,7 @@ function is_dyndns_username($uname) {
                 return true;
 }
 
-if (!is_array($config['dyndnses']['dyndns'])) {
+if (!isset($config['dyndnses']['dyndns'])) {
 	$config['dyndnses']['dyndns'] = array();
 }
 
