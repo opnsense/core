@@ -33,11 +33,16 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
 $pconfig['enable'] = isset($config['dhcrelay']['enable']);
-if (empty($config['dhcrelay']['interface']))
+if (empty($config['dhcrelay']['interface'])) {
 	$pconfig['interface'] = array();
-else
+} else {
 	$pconfig['interface'] = explode(",", $config['dhcrelay']['interface']);
-$pconfig['server'] = $config['dhcrelay']['server'];
+}
+if (!isset($config['dhcrelay']['server'])) {
+	$pconfig['server'] = array();
+} else {
+	$pconfig['server'] = $config['dhcrelay']['server'];
+}
 $pconfig['agentoption'] = isset($config['dhcrelay']['agentoption']);
 
 $iflist = get_configured_interface_with_descr();
