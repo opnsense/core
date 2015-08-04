@@ -196,6 +196,7 @@ function filter_configure_xmlrpc()
     require_once("vslb.inc");
     require_once("openvpn.inc");
     require_once("services.inc");
+    require_once("rrd.inc");
 
     filter_configure();
     system_routing_configure();

@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("rrd.inc");
 
 $a_gateways = return_gateways_array(true, false, true);
 $a_gateways_arr = array();

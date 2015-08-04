@@ -32,6 +32,7 @@ require_once("interfaces.inc");
 require_once("openvpn.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("rrd.inc");
 
 // Resync and restart all VPNs using a gateway group.
 function openvpn_resync_gwgroup($gwgroupname = "") {
