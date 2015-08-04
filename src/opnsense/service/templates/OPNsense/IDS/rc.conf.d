@@ -18,3 +18,5 @@ suricata_flags="-D {%
 {% else %}
 suricata_enable="NO"
 {% endif %}
+
+suricata_opnsense_bootup_run="/usr/local/opnsense/scripts/suricata/setup.sh"
