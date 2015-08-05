@@ -824,7 +824,7 @@ function tuntap_change() {
 											<td>
 												<select name="dev_mode" class="form-control" onchange='tuntap_change()'>
                                                         <?php
-                                                        foreach ($openvpn_dev_mode as $device) :
+                                                        foreach (array("tun", "tap") as $device) :
                                                                $selected = "";
                                                             if (! empty($pconfig['dev_mode'])) {
                                                                 if ($pconfig['dev_mode'] == $device) {
@@ -1709,8 +1709,7 @@ endif; ?>
 							<?php
 else :
 ?>
-							<div class="table-responsive">
-								<table class="table table-striped table-sort sortable">
+								<table class="table table-striped">
 									<thead>
 									<tr>
 										<td width="10%" class="listhdrr"><?=gettext("Disabled"); ?></td>
@@ -1735,20 +1734,17 @@ else :
                                         <?=$disabled;?>
                                     </td>
                                     <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
-                                        <?=htmlspecialchars($server['protocol']);
-?> / <?=htmlspecialchars($server['local_port']);?>
+                                        <?=htmlspecialchars($server['protocol']);?> / <?=htmlspecialchars($server['local_port']);?>
                                     </td>
                                     <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
-                                        <?=htmlspecialchars($server['tunnel_network']);?><br />
-                                        <?=htmlspecialchars($server['tunnel_networkv6']);?><br />
+                                        <?=htmlspecialchars($server['tunnel_network']);?> <?=!empty($server['tunnel_networkv6']) ? "," :""?>
+                                        <?=htmlspecialchars($server['tunnel_networkv6']);?>
                                     </td>
                                     <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
                                         <?=htmlspecialchars($server['description']);?>
                                     </td>
-                                    <td valign="middle" class="list nowrap">
-                                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;
-?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        &nbsp;
+                                    <td valign="middle">
+                                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                                         <a id="del_<?=$i;?>" title="<?=gettext("delete server"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
                                     </td>
 									</tr>
@@ -1759,7 +1755,6 @@ else :
 									<tr style="display:none;"><td></td></tr>
 									</tbody>
 								</table>
-							</div>
 
 						<?php
 endif; ?>

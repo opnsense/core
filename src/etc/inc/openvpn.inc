@@ -29,9 +29,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-global $openvpn_dev_mode;
-$openvpn_dev_mode = array("tun", "tap");
-
 global $openvpn_verbosity_level;
 $openvpn_verbosity_level = array(
 	0 =>	"none",
