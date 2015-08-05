@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
 			,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
 			,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-			,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,nbdd_server1
+			,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
 			,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
 			,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid";
 
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			,serverbridge_interface,serverbridge_dhcp_start,serverbridge_dhcp_end
 			,dns_server1,dns_server2,dns_server3,dns_server4,ntp_server1
 			,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
-			,wins_server2,no_tun_ipv6,push_register_dns,dns_domain,nbdd_server1
+			,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
 			,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
 			,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls";
 			foreach (explode(",",$init_fields) as $fieldname) {
@@ -265,11 +265,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		            $input_errors[] = gettext("The field 'WINS Server #2' must contain a valid IP address");
 		        }
 		    }
-		    if (!empty($pconfig['nbdd_server_enable'])) {
-		        if (!empty($pconfig['nbdd_server1']) && !is_ipaddr(trim($pconfig['nbdd_server1']))) {
-		            $input_errors[] = gettext("The field 'NetBIOS Data Distribution Server #1' must contain a valid IP address");
-		        }
-		    }
 
 		    if (!empty($pconfig['client_mgmt_port_enable'])) {
 		        if ($result = openvpn_validate_port($pconfig['client_mgmt_port'], 'Client management port')) {
@@ -331,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 						,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
 						,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
 						,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
-						,wins_server2,nbdd_server1,client_mgmt_port";
+						,wins_server2,client_mgmt_port";
 
 						foreach (explode(",",$copy_fields) as $fieldname) {
 							$fieldname = trim($fieldname);
