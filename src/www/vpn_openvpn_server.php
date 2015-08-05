@@ -807,7 +807,7 @@ function tuntap_change() {
 												<td>
 												<select name='protocol' class="form-control">
 												<?php
-                                                foreach ($openvpn_prots as $prot) :
+                                                foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
                                                     $selected = "";
                                                     if ($pconfig['protocol'] == $prot) {
                                                         $selected = "selected=\"selected\"";
