@@ -477,11 +477,15 @@ endif; ?>
 							<div class="table-responsive">
 							<table class="table table-striped">
 								<tr>
-									<td colspan="2"><?=gettext("General information"); ?></td>
+									<td width="22%"><?=gettext("General information"); ?></td>
+									<td width="78%" align="right">
+										<small><?=gettext("full help"); ?> </small>
+										<i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_opnvpn_server" type="button"></i></a>
+									</td>
 								</tr>
 								<tr>
-									<td width="22%"><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Disabled"); ?></td>
-									<td width="78%">
+									<td><a id="help_for_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a><?=gettext("Disabled"); ?></td>
+									<td>
 										<input name="disable" type="checkbox" value="yes" <?= !empty($pconfig['disable']) ? "checked=\"checked\"" : "";?> />
 										<div class="hidden" for="help_for_disable">
 											<small><?=gettext("Set this option to disable this client without removing it from the list"); ?>.</small>
