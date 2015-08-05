@@ -163,7 +163,6 @@ if (isset($id) && $a_ppps[$id]) {
 if ($_POST) {
 
 	unset($input_errors);
-	$pconfig = $_POST;
 
 	/* okay first of all, cause we are just hiding the PPPoE HTML
 	 * fields releated to PPPoE resets, we are going to unset $_POST
@@ -177,6 +176,12 @@ if ($_POST) {
 		unset($_POST['pppoe_resetdate']);
 		unset($_POST['pppoe_pr_preset_val']);
 	}
+
+	if (!isset($_POST['interfaces'])) {
+		$_POST['interfaces'] = array();
+	}
+
+	$pconfig = $_POST;
 
 	/* input validation */
 	switch($_POST['type']) {
