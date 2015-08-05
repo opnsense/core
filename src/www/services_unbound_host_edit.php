@@ -249,7 +249,7 @@ include("head.inc");
 													</tr>
 													<?php
 														$counter = 0;
-														if ($pconfig['aliases']['item']):
+														if (isset($pconfig['aliases']['item'])):
 															foreach($pconfig['aliases']['item'] as $item):
 																$host = $item['host'];
 																$domain = $item['domain'];

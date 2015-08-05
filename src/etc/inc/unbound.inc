@@ -537,6 +537,7 @@ function unbound_add_host_entries() {
     }
 
     // Write out entries
+    @mkdir($g['unbound_chroot_path']);
     file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
 }
 
