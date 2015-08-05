@@ -214,7 +214,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="alert alert-info" role="alert" style="min-height: 65px;" id="updatebox">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }} </button>
-            <button class='btn btn-default pull-right' style="vertical-align: middle;" id="checkupdate"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
+            <button class='btn btn-default pull-right' id="checkupdate"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
             <strong><div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates')}}</div></strong>
         </div>
     </div>
