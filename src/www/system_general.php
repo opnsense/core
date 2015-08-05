@@ -221,15 +221,19 @@ if ($_POST) {
 		if (!isset($config['system']['firmware'])) {
 			$config['system']['firmware'] = array();
 		}
-		if ($_POST['mirror'] == 'default' && isset($config['system']['firmware']['mirror'])) {
-			/* default does not set anything for backwards compat */
-			unset($config['system']['firmware']['mirror']);
+		if ($_POST['mirror'] == 'default') {
+			if (isset($config['system']['firmware']['mirror'])) {
+				/* default does not set anything for backwards compat */
+				unset($config['system']['firmware']['mirror']);
+			}
 		} else {
 			$config['system']['firmware']['mirror'] = $_POST['mirror'];
 		}
-		if ($_POST['flavour'] == 'default' && isset($config['system']['firmware']['flavour'])) {
-			/* default does not set anything for backwards compat */
-			unset($config['system']['firmware']['flavour']);
+		if ($_POST['flavour'] == 'default') {
+			if (isset($config['system']['firmware']['flavour'])) {
+				/* default does not set anything for backwards compat */
+				unset($config['system']['firmware']['flavour']);
+			}
 		} else {
 			$config['system']['firmware']['flavour'] = $_POST['flavour'];
 		}
