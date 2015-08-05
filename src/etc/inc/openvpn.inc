@@ -296,7 +296,7 @@ function openvpn_add_dhcpopts(& $settings, & $conf) {
 	if (!empty($settings['ntp_server2']))
 		$conf .= "push \"dhcp-option NTP {$settings['ntp_server2']}\"\n";
 
-	if ($settings['netbios_enable']) {
+	if (!empty($settings['netbios_enable'])) {
 		if (!empty($settings['dhcp_nbttype']) && ($settings['dhcp_nbttype'] != 0))
 			$conf .= "push \"dhcp-option NBT {$settings['dhcp_nbttype']}\"\n";
 		if (!empty($settings['dhcp_nbtscope']))
@@ -308,7 +308,7 @@ function openvpn_add_dhcpopts(& $settings, & $conf) {
 			$conf .= "push \"dhcp-option WINS {$settings['wins_server2']}\"\n";
 	}
 
-	if ($settings['gwredir'])
+	if (!empty($settings['gwredir']))
 		$conf .= "push \"redirect-gateway def1\"\n";
 }
 
@@ -845,10 +845,10 @@ function openvpn_resync_csc(&$settings)
 	openvpn_create_dirs();
 
 	$conf = '';
-	if ($settings['block'])
+	if (!empty($settings['block']))
 		$conf .= "disable\n";
 
-	if ($settings['push_reset'])
+	if (!empty($settings['push_reset']))
 		$conf .= "push-reset\n";
 
 	if (!empty($settings['tunnel_network'])) {
@@ -881,7 +881,7 @@ function openvpn_resync_csc(&$settings)
 
 	openvpn_add_dhcpopts($settings, $conf);
 
-	if ($settings['gwredir'])
+	if (!empty($settings['gwredir']))
 		$conf .= "push \"redirect-gateway def1\"\n";
 
 	openvpn_add_custom($settings, $conf);
