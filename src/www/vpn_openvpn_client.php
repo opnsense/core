@@ -630,7 +630,7 @@ endif; ?>
 							</select>
 							<div style="display:none" id="proxy_authtype_opts">
 								<div><?=gettext("Username"); ?> <br/></div
-								<div><input name="proxy_user" id="proxy_user" class="form-control unknown" size="20" value="<?=$pconfig['proxy_user'];?>" /></div>
+								<div><input name="proxy_user" id="proxy_user" class="form-control unknown" type="text" size="20" value="<?=$pconfig['proxy_user'];?>" /></div>
 								<div><?=gettext("Password"); ?> </div>
 								<div><input name="proxy_passwd" id="proxy_passwd" type="password" class="form-control pwd" size="20" value="<?=$pconfig['proxy_passwd'];?>" /></div>
 							</div>
@@ -665,7 +665,7 @@ endif; ?>
 						<td class="vncell"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
 						<td>
 							<div><?=gettext("Username"); ?></div>
-							<div><input name="auth_user" id="auth_user" class="form-control unknown" size="20" value="<?=htmlspecialchars($pconfig['auth_user']);?>" /></div>
+							<div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=htmlspecialchars($pconfig['auth_user']);?>" /></div>
 							<div><?=gettext("Password"); ?></div>
 							<div><input name="auth_pass" id="auth_pass" type="password" class="form-control pwd" size="20" value="<?=htmlspecialchars($pconfig['auth_pass']);?>" /></div>
 							<div class="hidden" for="help_for_auth_user_pass">
