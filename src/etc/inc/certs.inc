@@ -438,7 +438,7 @@ function is_openvpn_client_cert($certref)
 	}
 
 	foreach ($config['openvpn']['openvpn-client'] as $ovpnc) {
-		if ($ovpnc['certref'] == $certref) {
+		if (isset($ovpnc['certref']) && $ovpnc['certref'] == $certref) {
 			return true;
 		}
 	}
