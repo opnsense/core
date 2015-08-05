@@ -53,6 +53,8 @@ $pagetitle = gentitle( $pgtitle );
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
+		<!-- nvd3 -->
+		<link rel="stylesheet" href="/ui/css/nv.d3.css">
 
 		<script>var theme = '<?=$g['theme'];?>'; </script>
 
@@ -62,7 +64,12 @@ $pagetitle = gentitle( $pgtitle );
 		<!-- Ticker used for notices-->
 		<script type="text/javascript" src="/javascript/ticker.js"></script>
 
+		<!-- d3 -->
+		<script type="text/javascript" src="/ui/js/d3.min.js"></script>
 
+		<!-- nvd3 -->
+		<script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
+		
 		<?php
 		/*
 		 *	Find all javascript files that need to be included
