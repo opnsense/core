@@ -31617,4 +31617,5 @@ msgstr "Assistant OpenVPN %s"
 #
 # File: src/www/wizards/openvpn_wizard.inc, line: 637
 # File: src/www/wizards/openvpn_wizard.inc, line: 652
+msgid "OpenVPN Wizard"
 msgstr "Assistant de configuration pour OpenVPN"
