@@ -297,7 +297,6 @@ function openvpn_add_dhcpopts(& $settings, & $conf) {
 		$conf .= "push \"dhcp-option NTP {$settings['ntp_server2']}\"\n";
 
 	if ($settings['netbios_enable']) {
-
 		if (!empty($settings['dhcp_nbttype']) && ($settings['dhcp_nbttype'] != 0))
 			$conf .= "push \"dhcp-option NBT {$settings['dhcp_nbttype']}\"\n";
 		if (!empty($settings['dhcp_nbtscope']))
@@ -307,9 +306,6 @@ function openvpn_add_dhcpopts(& $settings, & $conf) {
 			$conf .= "push \"dhcp-option WINS {$settings['wins_server1']}\"\n";
 		if (!empty($settings['wins_server2']))
 			$conf .= "push \"dhcp-option WINS {$settings['wins_server2']}\"\n";
-
-		if (!empty($settings['nbdd_server1']))
-			$conf .= "push \"dhcp-option NBDD {$settings['nbdd_server1']}\"\n";
 	}
 
 	if ($settings['gwredir'])
