@@ -36,20 +36,24 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').empty();
         $('#maintabs li:eq(1) a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').attr('class', 'text-info');
+        $('#updatebox').attr('class', 'alert alert-info');
         $('#updatestatus').html("{{ lang._('Updating.... (may take up to 30 seconds)') }}");
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
             // update UI
             if (data['status'] == 'unknown') {
-                $('#updatestatus').attr('class', 'text-warning');
+                $('#updatebox').attr('class', 'alert alert-warning');
             } else if (data['status'] == 'error') {
-                $('#updatestatus').attr('class', 'text-danger');
+                $('#updatebox').attr('class', 'alert alert-danger');
             } else if (data['status'] == 'none' || data['status'] == 'ok') {
-                $('#updatestatus').attr('class', 'text-info');
+                $('#updatesbox').attr('class', 'alert alert-info');
             }
-            $('#updatestatus').html(data['status_msg']);
+            status_msg = data['status_msg'];
+            if (data['upgrade_needs_reboot'] == "1") {
+                status_msg = status_msg + " This update requires a reboot.";
+            }
+            $('#updatestatus').html(status_msg);
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
 
             if (data['status'] == "ok") {
@@ -208,21 +212,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <strong>{{ lang._('Current Firmware Status :')}}</strong>
-            <br/>
-            <span class="text-info" id="updatestatus">{{ lang._('Current status is unknown')}} </span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <button class='btn btn-primary' id="checkupdate"><i id="checkupdate_progress" class=""></i> {{ lang._('Click to check now')}}</button>
-            <button class='btn btn-primary' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade') }} </button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <br/>
+        <div class="alert alert-info" role="alert" style="min-height: 65px;" id="updatebox">
+            <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }} </button>
+            <button class='btn btn-default pull-right' style="vertical-align: middle;" id="checkupdate"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
+            <strong><div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates')}}</div></strong>
         </div>
     </div>
     <div class="row">
