@@ -29,9 +29,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-global $openvpn_prots;
-$openvpn_prots = array("UDP", "UDP6", "TCP", "TCP6");
-
 global $openvpn_dev_mode;
 $openvpn_dev_mode = array("tun", "tap");
 
