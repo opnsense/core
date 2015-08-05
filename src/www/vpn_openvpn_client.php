@@ -137,7 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			}
 			unset($a_client[$id]);
 			write_config();
-			$savemsg = gettext("Client successfully deleted")."<br />";
 	} else {
 			// update client (after validation)
 			$pconfig = $_POST;
@@ -1072,7 +1071,6 @@ else :
                 <td valign="middle" class="list nowrap">
                     <a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 										<a id="del_<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-
                 </td>
 				</tr>
 				<?php

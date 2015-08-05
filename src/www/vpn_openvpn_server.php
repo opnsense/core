@@ -142,7 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		    }
 		    unset($a_server[$id]);
 		    write_config();
-		    $savemsg = gettext("Server successfully deleted")."<br />";
 		} else {
 				// action add/update
 				$input_errors = array();
