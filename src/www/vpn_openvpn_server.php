@@ -725,7 +725,7 @@ function tuntap_change() {
 
 					    <?php if ($act=="new" || $act=="edit") :
 ?>
-							<form action="vpn_openvpn_server.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
+							<form action="vpn_openvpn_server.php" method="post" name="iform" id="iform">
 
 								<div class="table-responsive">
 									<table class="table table-striped">

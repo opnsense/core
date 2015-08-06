@@ -332,7 +332,7 @@ if ($act!="new" && $act!="edit") {
 
 							<?php if ($act=="new" || $act=="edit") :
 ?>
-							<form action="vpn_openvpn_csc.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
+							<form action="vpn_openvpn_csc.php" method="post" name="iform" id="iform">
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
 									<tr>
@@ -619,7 +619,6 @@ else :
 
 							<div class="table-responsive">
 								<table class="table table-striped">
-
 									<tr>
 										<td width="10%" class="listhdrr"><?=gettext("Disabled"); ?></td>
 										<td width="40%" class="listhdrr"><?=gettext("Common Name"); ?></td>
