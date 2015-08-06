@@ -272,12 +272,13 @@ endif; ?>
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<?PHP if (substr(basename($fs['device']), 0, 2) == "md") {
+				<?PHP if (substr(basename($fs['device']), 0, 5) == "tmpfs") {
                     $fs['type'] .= " in RAM";
 } ?>
-				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?PHP echo $fs['used_size'] ."/". $fs['total_size'];?>
-				<br />
-<?PHP
+				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?PHP echo $fs['used_size'] ."/". $fs['total_size'];
+				if ($d != count($filesystems)) {
+					echo '<br/><br/>';
+				}
 endforeach; ?>
 			</td>
 		</tr>
