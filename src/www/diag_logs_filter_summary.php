@@ -135,7 +135,8 @@ include("head.inc"); ?>
 		  									<svg></svg>
 										</div>
 										<table class="table table-striped table-bordered">
-											<th colspan="2"><?=$fields[$field]?> <?=gettext("data");?></th>
+											<th><?=$fields[$field]?></th>
+											<th><?=gettext("Count");?></th>
 											<?php foreach(array_keys($data[$field]) as $row): ?>
 												<tr>
 													<td>
