@@ -88,12 +88,23 @@ function unbound_optimization() {
 
 }
 
+function bootstrap_unbound_root()
+{
+    global $g;
+
+    if (!is_dir($g['unbound_chroot_path'])) {
+        mkdir($g['unbound_chroot_path']);
+        chown($g['unbound_chroot_path'], 'unbound');
+        chgrp($g['unbound_chroot_path'], 'unbound');
+    }
+}
+
 function unbound_generate_config()
 {
     global $config, $g;
 
-    /* bootstrap unbound root (needed for /var MFS */
-    @mkdir($g['unbound_chroot_path']);
+    // Bootstrap needed for /var MFS
+    bootstrap_unbound_root();
 
     // Setup optimization
     $optimization = unbound_optimization();
@@ -361,24 +372,19 @@ function read_hosts() {
     return $etc_hosts;
 }
 
-function sync_unbound_service() {
-    global $config, $g;
-
+function sync_unbound_service()
+{
     // Configure chroot
-    if (!is_dir($g['unbound_chroot_path'])) {
-        mkdir($g['unbound_chroot_path']);
-        chown($g['unbound_chroot_path'], "unbound");
-        chgrp($g['unbound_chroot_path'], "unbound");
-    }
+    bootstrap_unbound_root();
 
     // Configure our Unbound service
     do_as_unbound_user("unbound-anchor");
     unbound_remote_control_setup();
     unbound_generate_config();
     do_as_unbound_user("start");
-    if (is_process_running("unbound"))
+    if (is_process_running('unbound')) {
         do_as_unbound_user("restore_cache");
-
+    }
 }
 
 // Execute commands as the user unbound
@@ -537,7 +543,7 @@ function unbound_add_host_entries() {
     }
 
     // Write out entries
-    @mkdir($g['unbound_chroot_path']);
+    bootstrap_unbound_root();
     file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
 }
 
@@ -649,7 +655,7 @@ function unbound_acls_config() {
     }
 
     // Write out Access list
-    @mkdir($g['unbound_chroot_path']);
+    bootstrap_unbound_root();
     file_put_contents("{$g['unbound_chroot_path']}/access_lists.conf", $aclcfg);
 }
 
