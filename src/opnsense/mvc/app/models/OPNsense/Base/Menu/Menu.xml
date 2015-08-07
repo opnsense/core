@@ -165,7 +165,7 @@
             <Client url="/vpn_openvpn_client.php*"/>
             <CSC url="/vpn_openvpn_csc.php*"/>
             <Wizards url="/wizard.php?xml=openvpn_wizard.xml"/>
-            <ClientExport url="/vpn_openvpn_export.php"/>
+            <ClientExport url="/vpn_openvpn_export.php*"/>
             <SharedKeyExport url="/vpn_openvpn_export_shared.php"/>
         </OpenVPN>
         <PPTP url="/vpn_pptp.php">
