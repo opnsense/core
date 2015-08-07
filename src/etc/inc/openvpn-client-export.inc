@@ -40,8 +40,9 @@ function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null) {
 	$settings = $config['openvpn']['openvpn-server'][$srvid];
 	if (empty($settings))
 		return false;
-	if ($settings['disable'])
+	if (!empty($settings['disable'])) {
 		return false;
+	}
 
 	$host = empty($config['system']['hostname']) ? "openvpn" : $config['system']['hostname'];
 	$prot = ($settings['protocol'] == 'UDP' ? 'udp' : $settings['protocol']);
@@ -75,6 +76,7 @@ function openvpn_client_pem_to_pk12($outpath, $outpass, $crtpath, $keypath, $cap
 
 function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	global $config, $g, $input_errors;
+	$nokeys = false;
 
 	// lookup server settings
 	$settings = $config['openvpn']['openvpn-server'][$srvid];
@@ -82,7 +84,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 		$input_errors[] = "Could not locate server configuration.";
 		return false;
 	}
-	if ($settings['disable']) {
+	if (!empty($settings['disable'])) {
 		$input_errors[] = "You cannot export for disabled servers.";
 		return false;
 	}
@@ -93,7 +95,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	{
 		$input_errors[] = "Could not locate server certificate.";
 	} else {
-		$server_ca = lookup_ca($server_cert['caref']);
+		$server_ca = isset($server_cert['caref']) ? lookup_ca($server_cert['caref']) : null;
 		if (!$server_ca) {
 			$input_errors[] = "Could not locate the CA reference for the server certificate.";
 		}
