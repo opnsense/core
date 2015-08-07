@@ -628,9 +628,16 @@ if (isset($savemsg)) {
         <div class="tab-content content-box col-xs-12">
           <div class="table-responsive">
             <table width="100%" border="0" class="table table-striped" cellpadding="0" cellspacing="0">
+              <tr>
+                <td width="22%"></td>
+                <td width="78%" align="right">
+                  <small><?=gettext("full help"); ?> </small>
+                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_opnvpn_server" type="button"></i></a>
+                </td>
+              </tr>
     					<tr>
-    						<td width="22%" valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
-    						<td width="78%" >
+    						<td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
+    						<td>
     							<select name="server" id="server" class="formselect" onchange="server_changed()">
     								<?php foreach ($ras_server as & $server) :
     ?>
