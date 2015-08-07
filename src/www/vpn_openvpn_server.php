@@ -715,7 +715,6 @@ function tuntap_change() {
                         $tab_array[] = array(gettext("Server"), true, "vpn_openvpn_server.php");
                         $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
                         $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                        $tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
                         $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
                                         $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
                         display_top_tabs($tab_array);
@@ -1746,8 +1745,14 @@ else :
                                     $i++;
                                     endforeach;
                                     ?>
-									<tr style="display:none;"><td></td></tr>
+                      <tr><td colspan="5">&nbsp;</td></tr>
 									</tbody>
+                  <tfoot>
+                    <tr><td colspan="5">
+                      <a href="wizard.php?xml=openvpn_wizard.xml" class="btn btn-default btn-xs"><span class="fa fa-magic"></span></a>
+                      &nbsp;<?=gettext("use a wizard to setup a new server");?>
+                    </td></tr>
+                  </tfoot>
 								</table>
 
 						<?php

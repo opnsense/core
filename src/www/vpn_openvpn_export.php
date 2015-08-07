@@ -620,7 +620,6 @@ if (isset($savemsg)) {
                   $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
                   $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
                   $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                  $tab_array[] = array(gettext("Wizards"), false, "wizard.php?xml=openvpn_wizard.xml");
                   $tab_array[] = array(gettext("Client Export"), true, "vpn_openvpn_export.php");
                   $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
                   display_top_tabs($tab_array);
