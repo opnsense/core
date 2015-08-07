@@ -56,7 +56,7 @@ class FirmwareController extends ApiControllerBase
                 $response["status_msg"] = "Repository Problem";
             } elseif (array_key_exists("updates", $response) && $response['updates'] == 0) {
                 $response["status"] = "none";
-                $response["status_msg"] = "no updates found";
+                $response["status_msg"] = "No updates found";
             } elseif (array_key_exists(0, $response["upgrade_packages"]) &&
                 $response["upgrade_packages"][0]["name"] == "pkg") {
                 $response["status"] = "ok";
