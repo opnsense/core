@@ -19,11 +19,12 @@ install:
 plist:
 .for TREE in ${TREES}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
-		FILE="$${FILE%%.in}"; PREFIX=""; \
+		FILE="$${FILE%%.in}"; \
 		if [ $${FILE%%.sample} != $${FILE} ]; then \
-			PREFIX="@sample "; \
+			echo "@sample ${ROOT}/${TREE}/$${FILE}"; \
+		else \
+			echo "${ROOT}/${TREE}/$${FILE}"; \
 		fi; \
-		echo "${PREFIX} ${ROOT}/${TREE}/$${FILE}"; \
 	done
 .endfor
 
