@@ -218,7 +218,8 @@ class Template(object):
                             result_filenames[new_filename] = copy.deepcopy(result_filenames[filename])
                             result_filenames[new_filename][key] = target_filters[target_filter][key]
 
-            j2_page = self._j2_env.get_template('%s/%s' % (module_name.replace('.', '/'), src_template))
+            template_filename = '%s/%s'%(module_name.replace('.', '/'), src_template)
+            j2_page = self._j2_env.get_template(template_filename)
             for filename in result_filenames.keys():
                 if not (filename.find('[') != -1 and filename.find(']') != -1):
                     # copy config data
@@ -241,6 +242,17 @@ class Template(object):
 
                         f_out = open(filename, 'wb')
                         f_out.write(content)
+                        # Check if the last character of our output contains an end-of-line, if not copy it in if
+                        # it was in the original template.
+                        # It looks like Jinja sometimes isn't consistent on placing this last end-of-line in.
+                        if content[-1] != '\n':
+                            src_file = '%s%s'%(self._template_dir,template_filename)
+                            src_file_handle = open(src_file,'r')
+                            src_file_handle.seek(-1, os.SEEK_END)
+                            last_bytes_template = src_file_handle.read()
+                            src_file_handle.close()
+                            if last_bytes_template in ('\n', '\r'):
+                                f_out.write('\n')
                         f_out.close()
 
                         result.append(filename)
