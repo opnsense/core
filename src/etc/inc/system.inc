@@ -192,6 +192,7 @@ function get_firmware_mirrors()
 	$mirrors = array();
 
 	$mirrors['default'] = '(default)';
+	$mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
 	$mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
 	$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
 	$mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
