@@ -11,8 +11,7 @@
             <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php*"/>
         </Certificates>
 
-        <Firmware url="/ui/core/firmware/">
-        </Firmware>
+        <Firmware url="/ui/core/firmware/"/>
 
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
 
@@ -33,7 +32,7 @@
             <Notifications url="/system_advanced_notifications.php"/>
         </Settings>
 
-        <SetupWizard VisibleName="Setup Wizard" url="wizard.php?xml=setup_wizard.xml"/>
+        <SetupWizard VisibleName="Setup Wizard" url="/wizard.php?xml=setup_wizard.xml"/>
 
         <UserManager VisibleName="User Manager" url="/system_usermanager.php">
             <Users url="/system_usermanager.php"/>
