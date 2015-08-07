@@ -365,7 +365,7 @@ if ($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="description" type="text" class="formfld unknown" size="30" value="<?=$pconfig['description'];?>" />
 											<div class="hidden" for="help_for_description">
-											 	<?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+												<?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
 											</div>
 										</td>
 									</tr>
@@ -409,7 +409,7 @@ if ($act!="new" && $act!="edit") {
 											<div class="hidden" for="help_for_local_network">
 												<?=gettext("These are the IPv4 networks that will be accessible " .
 												"from this particular client. Expressed as a comma-separated list of one or more CIDR ranges."); ?>
- 											<br /><?=gettext("NOTE: You do not need to specify networks here if they have " .
+											<br /><?=gettext("NOTE: You do not need to specify networks here if they have " .
 											"already been defined on the main server configuration.");?>
 											</div>
 										</td>

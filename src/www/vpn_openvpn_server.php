@@ -776,7 +776,7 @@ function tuntap_change() {
 										<tr id="authmodetr" style="display:none">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Backend for authentication");?></td>
                           <td>
-                          	<select name='authmode[]' id='authmode' class="form-control" multiple="multiple" size="5">
+				<select name='authmode[]' id='authmode' class="form-control" multiple="multiple" size="5">
                                                         <?php
 																												if (isset($pconfig['authmode'])) {
 																													$authmodes = explode(",", $pconfig['authmode']);
@@ -794,7 +794,7 @@ function tuntap_change() {
                                                         <?php
                                                         endforeach; ?>
                                                         </select>
-                      	 </td>
+			 </td>
                     </tr>
 										<tr>
 											<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol");?></td>
@@ -1639,7 +1639,7 @@ endif; ?>
 												</div>
 												<div class="hidden" for="help_for_client_mgmt_port">
 													<span>
-				                  	<?=gettext("Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."); ?><br />
+							<?=gettext("Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."); ?><br />
 													</span>
 												</div>
 											</td>
