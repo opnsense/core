@@ -2666,7 +2666,7 @@ function get_service_control_links($service, $addname = false) {
 			default:
 				$output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 		}
-		$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"/></a>\n";
+		$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"> </span> </a>\n";
 		switch ($service['name']) {
 			case "openvpn":
 				$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
@@ -2678,7 +2678,7 @@ function get_service_control_links($service, $addname = false) {
 				$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 				break;
 		}
-		$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" />";
+		$output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" ></span>";
 		$output .= "</a>";
 	} else {
 		switch ($service['name']) {
