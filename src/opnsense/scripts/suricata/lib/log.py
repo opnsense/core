@@ -60,9 +60,9 @@ def reverse_log_reader(filename, block_size = 8192, start_pos=None):
                 eol = data.rfind('\n')
                 # field line and position in file
                 yield {'line':line.strip(),'pos':line_end}
-                if file_byte_start == 0 and eol == -1:
-                    # flush last line
-                    yield {'line':data.strip(),'pos':len(data)}
+            if file_byte_start == 0 and eol == -1:
+                # flush last line
+                yield {'line':data.strip(),'pos':len(data)}
 
             if file_byte_start == 0:
                 break
