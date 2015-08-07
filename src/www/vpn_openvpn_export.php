@@ -832,5 +832,3 @@ server_changed();
 </script>
 
 <?php include("foot.inc"); ?>
-</body>
-</html>
