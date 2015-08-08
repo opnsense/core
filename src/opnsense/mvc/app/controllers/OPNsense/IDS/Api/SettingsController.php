@@ -275,7 +275,7 @@ class SettingsController extends ApiControllerBase
                     }
                     // only update result state if all items until now are ok
                     if ($result['status'] != 'error') {
-                        $result['status'] = $node->enabled;
+                        $result['status'] = (string)$node->enabled;
                     }
                     $update_count++;
                 } else {
