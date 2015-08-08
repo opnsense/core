@@ -57,7 +57,7 @@ class CSVListField extends BaseField
     /**
      * @var string basic regex validation to use for the complete field
      */
-    protected $internalMask = '/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}])*/u';
+    protected $internalMask = null ;
 
     /**
      * set validation mask
