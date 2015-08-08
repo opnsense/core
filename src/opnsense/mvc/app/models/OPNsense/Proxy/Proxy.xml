@@ -28,10 +28,12 @@
                 </enable>
                 <ignoreLogACL type="CSVListField">
                     <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </ignoreLogACL>
             </logging>
             <alternateDNSservers type="CSVListField">
                 <Required>N</Required>
+                <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
             </alternateDNSservers>
             <dnsV4First type="BooleanField">
                 <default>0</default>
@@ -174,12 +176,15 @@
             <acl>
                 <allowedSubnets type="CSVListField">
                     <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </allowedSubnets>
                 <unrestricted type="CSVListField">
                     <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </unrestricted>
                 <bannedHosts type="CSVListField">
                     <Required>N</Required>
+                    <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </bannedHosts>
                 <whiteList type="CSVListField">
                     <Required>N</Required>
@@ -195,11 +200,13 @@
                 </mimeType>
                 <safePorts type="CSVListField">
                     <default>80:http,21:ftp,443:https,70:gopher,210:wais,1025-65535:unregistered ports,280:http-mgmt,488:gss-http,591:filemaker,777:multiling http</default>
+                    <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
                     <Required>N</Required>
                 </safePorts>
                 <sslPorts type="CSVListField">
                     <default>443:https</default>
                     <Required>N</Required>
+                    <mask>/^([ \-0-9a-zA-Z:,])*/u</mask>
                 </sslPorts>
                 <remoteACLs>
                     <blacklists>
