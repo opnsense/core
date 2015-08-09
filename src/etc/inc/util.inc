@@ -815,15 +815,12 @@ function get_configured_ipv6_addresses()
  *   get_interface_list() - Return a list of all physical interfaces
  *   along with MAC, IPv4 and status.
  *
- *   $mode = "active" - use ifconfig -lu
- *           "media"  - use ifconfig to check physical connection
- *			status (much slower)
+ *   $only_active = false -- interfaces that are available in the system
+ *                  true  -- interfaces that are physically connected
  */
-function get_interface_list($mode = 'active')
+function get_interface_list($only_active = false)
 {
 	global $config;
-
-	$upints = array();
 
 	/* list of virtual interface types */
 	$vfaces = array(
@@ -851,25 +848,22 @@ function get_interface_list($mode = 'active')
 		'vip'
 	);
 
+	$ifnames_up = legacy_interface_listget('up');
 	$ifnames = legacy_interface_listget();
 
-	switch ($mode) {
-	case 'media':
-		$intlist = $ifnames;
-		$ifconfig = '';
-		exec("/sbin/ifconfig -a", $ifconfig);
-		$regexp = '/(' . implode('|', $intlist) . '):\s/';
-		$ifstatus = preg_grep('/status:/', $ifconfig);
-		foreach ($ifstatus as $status) {
-			$int = array_shift($intlist);
-			if (stristr($status, 'active')) {
-				$upints[] = $int;
+	if ($only_active) {
+		$_ifnames = array();
+
+		foreach ($ifnames as $ifname) {
+			$ifinfo = legacy_interface_stats($ifname);
+			if (isset($ifinfo['link state'])) {
+				if ($ifinfo['link state'] == '2') {
+					$_ifnames[] = $ifname;
+				}
 			}
 		}
-		break;
-	default:
-		$upints = legacy_interface_listget('up');
-		break;
+
+		$ifnames = $_ifnames;
 	}
 
 	foreach ($ifnames as $ifname) {
@@ -880,7 +874,7 @@ function get_interface_list($mode = 'active')
 		$ifdata = pfSense_get_interface_addresses($ifname);
 
 		$toput = array(
-			'up' => in_array($ifname, $upints),
+			'up' => in_array($ifname, $ifnames_up),
 			'ipaddr' => $ifdata['ipaddr'],
 			'mac' => $ifdata['macaddr']
 		);

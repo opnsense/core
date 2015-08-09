@@ -28,14 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/****f* util/timeout
- * NAME
- *   timeout - console input with timeout countdown. Note: erases 2 char of screen for timer. Leave space.
- * INPUTS
- *   optional, seconds to wait before timeout. Default 9 seconds.
- * RESULT
- *   returns 1 char of user input or null if no input.
- ******/
 function timeout($timer = 9)
 {
 	while (!isset($key)) {
@@ -55,9 +47,7 @@ function timeout($timer = 9)
 	return $key;
 }
 
-
-
-function set_networking_interfaces_ports()
+function set_networking_interfaces_ports($probe = false)
 {
 	global $config;
 
@@ -66,17 +56,22 @@ function set_networking_interfaces_ports()
 	$interactive = true;
 	$key = null;
 
+	/* kernel messages clobber stty probing on ifconfig up */
+	mute_kernel_msgs();
+
 	$iflist = get_interface_list();
 
-	echo PHP_EOL . gettext('Press any key to start the manual interface assignment:  ');
+	if ($probe) {
+		echo PHP_EOL . gettext('Press any key to start the manual interface assignment:  ');
 
-	$key = timeout(7);
-	if (!isset($key)) {
-		$interactive = false;
-	}
+		$key = timeout(7);
+		if (!isset($key)) {
+			$interactive = false;
+		}
 
-	if ($key != "\n") {
-		echo PHP_EOL;
+		if ($key != "\n") {
+			echo PHP_EOL;
+		}
 	}
 
 	echo <<<EOD
@@ -90,6 +85,7 @@ EOD;
 		$iflist = array();
 	} else {
 		foreach ($iflist as $iface => $ifa) {
+			interfaces_bring_up($iface);
 			echo sprintf("% -7s%s %s %s\n", $iface, $ifa['mac'],
 				$ifa['up'] ? "  (up)" : "(down)", $ifa['dmesg']);
 		}
@@ -149,6 +145,9 @@ EOD;
 
 		if ($wanif == 'a') {
 			$wanif = autodetect_interface('WAN', $fp);
+			if (!$wanif) {
+				continue;
+			}
 		}
 
 		if (!array_key_exists($wanif, $iflist)) {
@@ -176,6 +175,9 @@ EOD;
 
 		if ($lanif == 'a') {
 			$lanif = autodetect_interface('LAN', $fp);
+			if (!$lanif) {
+				continue;
+			}
 		}
 
 		if (!array_key_exists($lanif, $iflist)) {
@@ -227,7 +229,7 @@ EOD;
 			}
 
 			if ($optif[$i] == 'a') {
-				$ad = autodetect_interface(gettext("Optional") . " " . $io, $fp);
+				$ad = autodetect_interface('OPT' . $io, $fp);
 				if (!$ad) {
 					unset($optif[$i]);
 					continue;
@@ -288,6 +290,8 @@ EOD;
 	}
 
 	if (!in_array($key, array('y', 'Y'))) {
+		unmute_kernel_msgs();
+		fclose($fp);
 		return false;
 	}
 
@@ -416,33 +420,36 @@ EOD;
 	write_config("Console assignment of interfaces");
 	printf(gettext("done.%s"), "\n");
 
+	unmute_kernel_msgs();
 	fclose($fp);
 
 	return true;
 }
 
-function autodetect_interface($ifname, $fp)
+function autodetect_interface($name, $fp)
 {
-	$iflist_prev = get_interface_list('media');
+	$iflist_prev = get_interface_list(true);
+
 	echo <<<EOD
 
-Connect the {$ifname} interface now and make sure that the link is up.
+Connect the {$name} interface now and make sure that the link is up.
 Then press ENTER to continue.
 
 EOD;
 	fgets($fp);
-	$iflist = get_interface_list('media');
 
-	foreach ($iflist_prev as $ifn => $ifa) {
-		if (!$ifa['up'] && $iflist[$ifn]['up']) {
-			printf(gettext("Detected link-up on interface %s.%s"), $ifn, "\n");
+	$iflist = get_interface_list(true);
+
+	foreach ($iflist as $ifn => $ifa) {
+		if (!isset($iflist_prev[$ifn])) {
+			printf(gettext("Detected link-up: %s%s"), $ifn, "\n");
 			return $ifn;
 		}
 	}
 
 	printf(gettext("No link-up detected.%s"), "\n");
 
-	return null;
+	return false;
 }
 
 function vlan_setup($iflist, $fp)
