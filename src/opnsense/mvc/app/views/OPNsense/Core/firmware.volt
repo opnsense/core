@@ -36,7 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').empty();
         $('#maintabs li:eq(1) a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Updating.... (may take up to 30 seconds)') }}");
+        $('#updatestatus').html("{{ lang._('Fetching... (may take up to 30 seconds)') }}");
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -82,7 +82,7 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function upgrade(){
         $('#maintabs li:eq(2) a').tab('show');
-        $('#updatestatus').html("{{ lang._('Running upgrade. Please do not leave this page while upgrade is in progress.') }}");
+        $('#updatestatus').html("{{ lang._('Upgrading... (do not leave this page while upgrade is in progress)') }}");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
@@ -203,7 +203,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
-            <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates')}}</div>
+            <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
     </div>
     <div class="row">
