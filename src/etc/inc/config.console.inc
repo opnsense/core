@@ -86,8 +86,7 @@ EOD;
 	} else {
 		foreach ($iflist as $iface => $ifa) {
 			interfaces_bring_up($iface);
-			echo sprintf("% -7s%s %s %s\n", $iface, $ifa['mac'],
-				$ifa['up'] ? "  (up)" : "(down)", $ifa['dmesg']);
+			echo sprintf("%-16s %s %s\n", $iface, $ifa['mac'], $ifa['dmesg']);
 		}
 	}
 
