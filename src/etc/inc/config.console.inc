@@ -431,7 +431,7 @@ Then press ENTER to continue.
 
 EOD;
 	fgets($fp);
-	$iflist = get_interface_list("media");
+	$iflist = get_interface_list('media');
 
 	foreach ($iflist_prev as $ifn => $ifa) {
 		if (!$ifa['up'] && $iflist[$ifn]['up']) {

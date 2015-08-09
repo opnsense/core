@@ -813,49 +813,52 @@ function get_configured_ipv6_addresses()
 
 /*
  *   get_interface_list() - Return a list of all physical interfaces
- *   along with MAC and status.
+ *   along with MAC, IPv4 and status.
  *
  *   $mode = "active" - use ifconfig -lu
  *           "media"  - use ifconfig to check physical connection
  *			status (much slower)
  */
-function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "") {
+function get_interface_list($mode = 'active', $keyby = 'physical')
+{
 	global $config;
+
 	$upints = array();
-	/* get a list of virtual interface types */
-	if(!$vfaces) {
-		$vfaces = array (
-				'bridge',
-				'ppp',
-				'pppoe',
-				'pptp',
-				'l2tp',
-				'sl',
-				'gif',
-				'gre',
-				'faith',
-				'lo',
-				'ng',
-				'_vlan',
-				'_wlan',
-				'pflog',
-				'plip',
-				'pfsync',
-				'enc',
-				'tun',
-				'carp',
-				'lagg',
-				'vip',
-				'ipfw'
-		);
-	}
+
+	/* list of virtual interface types */
+	$vfaces = array(
+		'_vlan',
+		'_wlan',
+		'bridge',
+		'carp',
+		'enc',
+		'faith',
+		'gif',
+		'gre',
+		'ipfw',
+		'l2tp',
+		'lagg',
+		'lo',
+		'ng',
+		'pflog',
+		'plip',
+		'ppp',
+		'pppoe',
+		'pptp',
+		'pfsync',
+		'sl',
+		'tun',
+		'vip'
+	);
+
+	$ifnames = legacy_interface_listget();
 
 	switch ($mode) {
 	case 'active':
 		$upints = legacy_interface_listget('up');
 		break;
 	case 'media':
-		$intlist = legacy_interface_listget();
+		$intlist = $ifnames;
 		$ifconfig = "";
 		exec("/sbin/ifconfig -a", $ifconfig);
 		$regexp = '/(' . implode('|', $intlist) . '):\s/';
@@ -868,15 +871,12 @@ function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "")
 		}
 		break;
 	default:
-		$upints = legacy_interface_listget();
+		$upints = $ifnames;
 		break;
 	}
 
-	$ifnames = legacy_interface_listget();
-
 	foreach ($ifnames as $ifname) {
-		if (in_array(array_shift(preg_split('/\d/', $ifname)), $vfaces) ||
-			stristr($ifname, '_vlan') || stristr($ifname, '_wlan')) {
+		if (in_array(array_shift(preg_split('/\d/', $ifname)), $vfaces)) {
 			continue;
 		}
 
