@@ -819,7 +819,7 @@ function get_configured_ipv6_addresses()
  *           "media"  - use ifconfig to check physical connection
  *			status (much slower)
  */
-function get_interface_list($mode = 'active', $keyby = 'physical')
+function get_interface_list($mode = 'active')
 {
 	global $config;
 
@@ -854,12 +854,9 @@ function get_interface_list($mode = 'active', $keyby = 'physical')
 	$ifnames = legacy_interface_listget();
 
 	switch ($mode) {
-	case 'active':
-		$upints = legacy_interface_listget('up');
-		break;
 	case 'media':
 		$intlist = $ifnames;
-		$ifconfig = "";
+		$ifconfig = '';
 		exec("/sbin/ifconfig -a", $ifconfig);
 		$regexp = '/(' . implode('|', $intlist) . '):\s/';
 		$ifstatus = preg_grep('/status:/', $ifconfig);
@@ -871,7 +868,7 @@ function get_interface_list($mode = 'active', $keyby = 'physical')
 		}
 		break;
 	default:
-		$upints = $ifnames;
+		$upints = legacy_interface_listget('up');
 		break;
 	}
 
@@ -888,38 +885,25 @@ function get_interface_list($mode = 'active', $keyby = 'physical')
 			'mac' => $ifdata['macaddr']
 		);
 
-		$friendly = '';
 		if (isset($config['interfaces'])) {
 			foreach($config['interfaces'] as $name => $int) {
 				if ($int['if'] == $ifname) {
-					$friendly = $name;
+					$toput['friendly'] = $name;
+					break;
 				}
 			}
 		}
 
-		switch ($keyby) {
-		case 'physical':
-			if ($friendly != '') {
-				$toput['friendly'] = $friendly;
-			}
-			$dmesg_arr = array();
-			exec("/sbin/dmesg |grep $ifname | head -n1", $dmesg_arr);
-			preg_match_all("/<(.*?)>/i", $dmesg_arr[0], $dmesg);
-			if (isset($dmesg[1][0])) {
-				$toput['dmesg'] = $dmesg[1][0];
-			} else {
-				$toput['dmesg'] = null;
-			}
-			$iflist[$ifname] = $toput;
-			break;
-		case 'friendly':
-		case 'ppp':
-			if ($friendly != '') {
-				$toput['if'] = $ifname;
-				$iflist[$friendly] = $toput;
-			}
-			break;
+		$dmesg_arr = array();
+		exec("/sbin/dmesg |grep $ifname | head -n1", $dmesg_arr);
+		preg_match_all("/<(.*?)>/i", $dmesg_arr[0], $dmesg);
+		if (isset($dmesg[1][0])) {
+			$toput['dmesg'] = $dmesg[1][0];
+		} else {
+			$toput['dmesg'] = null;
 		}
+
+		$iflist[$ifname] = $toput;
 	}
 
 	return $iflist;
