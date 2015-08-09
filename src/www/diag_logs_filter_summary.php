@@ -116,7 +116,7 @@ include("head.inc"); ?>
 			    <section class="col-xs-12">
 						<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.inc'); ?>
 						<div class="tab-content content-box col-xs-12">
-				    	<div class="container-fluid">
+					<div class="container-fluid">
 								<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
 								<p><?php printf (gettext('This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s).'), $gotlines, $lines)?><br /></p>
 							</div>
@@ -132,7 +132,7 @@ include("head.inc"); ?>
 									<div class="panel-heading"><h3 class="panel-title"><?=$fields[$field]?></h3></div>
 									<div class="panel-body">
 										<div class="piechart" id="<?=$field?>">
-		  									<svg></svg>
+											<svg></svg>
 										</div>
 										<table class="table table-striped table-bordered">
 											<th><?=$fields[$field]?></th>
@@ -181,7 +181,7 @@ include("head.inc"); ?>
 					// Update Chart after window resize
 					nv.utils.windowResize(function(){ chart.update(); });
 
-			  	return chart;
+				return chart;
 		});
 });
 

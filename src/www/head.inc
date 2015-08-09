@@ -69,7 +69,7 @@ $pagetitle = gentitle( $pgtitle );
 
 		<!-- nvd3 -->
 		<script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
-		
+
 		<?php
 		/*
 		 *	Find all javascript files that need to be included
