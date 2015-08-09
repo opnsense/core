@@ -184,10 +184,10 @@
                     <label>Enable Transparent HTTP proxy</label>
                     <type>checkbox</type>
                     <help><![CDATA[
-                    	Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server. 
-                    	You may leave the proxy interfaces empty, but remember to set a valid ACL in that case. 
-                    	<br/>
-                    	<a href="/firewall_nat_edit.php?template=transparant_proxy"> add a new firewall rule </a>
+			Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server.
+			You may leave the proxy interfaces empty, but remember to set a valid ACL in that case.
+			<br/>
+			<a href="/firewall_nat_edit.php?template=transparant_proxy"> add a new firewall rule </a>
                     ]]></help>
             </field>
             <field>
