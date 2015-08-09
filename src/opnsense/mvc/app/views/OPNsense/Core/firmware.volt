@@ -40,12 +40,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
-            status_msg = data['status_msg'];
-            if (data['upgrade_needs_reboot'] == "1") {
-                status_msg = status_msg + " This update requires a reboot.";
-            }
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
-            $('#updatestatus').html(status_msg);
+            $('#updatestatus').html(data['status_msg']);
 
             if (data['status'] == "ok") {
                 $.upgrade_action = data['status_upgrade_action'];
