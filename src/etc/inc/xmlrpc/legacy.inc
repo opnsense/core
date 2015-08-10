@@ -301,39 +301,41 @@ function restore_config_section_xmlrpc($new_config)
     if (isset($new_config['virtualip']['vip'])) {
         $carp_setuped = false;
         $anyproxyarp = false;
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['mode'] == "carp" && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
-                if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"] == "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}") {
-                    if (does_vip_exist($vip)) {
-                        unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
-                        continue; // Skip reconfiguring this vips since nothing has changed.
-                    }
-                }
-                unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
-            } else if ($vip['mode'] == "ipalias" && strstr($vip['interface'], "_vip") && isset($oldvips[$vip['subnet']])) {
-                if ($oldvips[$vip['subnet']] == "{$vip['interface']}{$vip['subnet']}{$vip['subnet_bits']}") {
-                    if (does_vip_exist($vip)) {
-                        unset($oldvips[$vip['subnet']]);
-                        continue; // Skip reconfiguring this vips since nothing has changed.
-                    }
-                }
-                unset($oldvips[$vip['subnet']]);
-            }
+        if (isset($config['virtualip']['vip'])) {
+          foreach ($config['virtualip']['vip'] as $vip) {
+              if ($vip['mode'] == "carp" && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
+                  if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"] == "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}") {
+                      if (does_vip_exist($vip)) {
+                          unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
+                          continue; // Skip reconfiguring this vips since nothing has changed.
+                      }
+                  }
+                  unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
+              } else if ($vip['mode'] == "ipalias" && strstr($vip['interface'], "_vip") && isset($oldvips[$vip['subnet']])) {
+                  if ($oldvips[$vip['subnet']] == "{$vip['interface']}{$vip['subnet']}{$vip['subnet_bits']}") {
+                      if (does_vip_exist($vip)) {
+                          unset($oldvips[$vip['subnet']]);
+                          continue; // Skip reconfiguring this vips since nothing has changed.
+                      }
+                  }
+                  unset($oldvips[$vip['subnet']]);
+              }
 
-            switch ($vip['mode']) {
-                case "proxyarp":
-                    $anyproxyarp = true;
-                    break;
-                case "ipalias":
-                    interface_ipalias_configure($vip);
-                    break;
-                case "carp":
-                    if (!$carp_setuped) {
-                        $carp_setuped = true;
-                    }
-                    interface_carp_configure($vip);
-                    break;
-            }
+              switch ($vip['mode']) {
+                  case "proxyarp":
+                      $anyproxyarp = true;
+                      break;
+                  case "ipalias":
+                      interface_ipalias_configure($vip);
+                      break;
+                  case "carp":
+                      if (!$carp_setuped) {
+                          $carp_setuped = true;
+                      }
+                      interface_carp_configure($vip);
+                      break;
+              }
+          }
         }
         if ($carp_setuped) {
             interfaces_carp_setup();
