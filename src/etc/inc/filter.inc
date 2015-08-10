@@ -391,7 +391,7 @@ function filter_generate_scrubing() {
 			if (
 				$scrubcfg['mss'] != '' && is_numeric($scrubcfg['mss']) &&
 				$scrubcfg['if'] != 'pppoe' && $scrubcfg['if'] != 'pptp' &&
-				$scrubif['if'] != 'l2tp'
+				$scrubcfg['if'] != 'l2tp'
 			) {
 				$mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
 			} else {
