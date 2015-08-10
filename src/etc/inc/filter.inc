@@ -73,18 +73,25 @@ function fix_rule_label($descr) {
 		return $descr;
 }
 
-function is_bogonsv6_used() {
-	global $config, $g;
-	# Only use bogonsv6 table if IPv6 Allow is on, and at least 1 enabled interface also has "blockbogons" enabled.
+function is_bogonsv6_used()
+{
+	global $config;
+
+	/*
+	 * Only use bogonsv6 table if IPv6 Allow is on, and at least
+	 * one enabled interface also has "blockbogons" enabled.
+	 */
 	$usebogonsv6 = false;
+
 	if (isset($config['system']['ipv6allow']) && isset($config['interfaces'])) {
 		foreach ($config['interfaces'] as $ifacedata) {
-			if(isset($ifacedata['enable']) && isset($ifacedata['blockbogons'])) {
+			if (isset($ifacedata['enable']) && isset($ifacedata['blockbogons'])) {
 				$usebogonsv6 = true;
 				break;
 			}
 		}
 	}
+
 	return $usebogonsv6;
 }
 
@@ -529,13 +536,12 @@ function filter_generate_aliases()
 	$aliases .= "#Snort tables\n";
 	$aliases .= "table <snort2c>\n";
 	$aliases .= "table <virusprot>\n";
-	if (!file_exists("/usr/local/etc/bogons"))
-		@file_put_contents("/usr/local/etc/bogons", "");
-	if (!file_exists("/usr/local/etc/bogonsv6"))
-		@file_put_contents("/usr/local/etc/bogonsv6", "");
+	touch('/usr/local/etc/bogons');
+	touch('/usr/local/etc/bogonsv6');
 	$aliases .= "table <bogons> persist file \"/usr/local/etc/bogons\"\n";
-	if (is_bogonsv6_used())
+	if (is_bogonsv6_used()) {
 		$aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
+	}
 
 	$vpns_list = filter_get_vpns_list();
 	if($vpns_list)
@@ -2749,34 +2755,24 @@ EOD;
 		}
 	}
 
-	$bogontableinstalled = 0;
 	foreach ($FilterIflist as $on => $oc) {
 		/* block bogon networks */
 		/* http://www.cymru.com/Documents/bogon-bn-nonagg.txt */
 		/* file is automatically in cron every 3000 minutes */
-		if(!isset($config['syslog']['nologbogons']))
-			$bogonlog = "log";
-		else
-			$bogonlog = "";
+		if (!isset($config['syslog']['nologbogons'])) {
+			$bogonlog = 'log';
+		} else {
+			$bogonlog = '';
+		}
 
-		if(isset($config['interfaces'][$on]['blockbogons'])) {
+		if (isset($config['interfaces'][$on]['blockbogons'])) {
 			$ipfrules .= <<<EOD
 # block bogon networks (IPv4)
 # http://www.cymru.com/Documents/bogon-bn-nonagg.txt
-block in $bogonlog quick on \${$oc['descr']} from <bogons> to any  label "{$fix_rule_label("block bogon IPv4 networks from {$oc['descr']}")}"
+block in {$bogonlog} quick on \${$oc['descr']} from <bogons> to any  label "{$fix_rule_label("block bogon IPv4 networks from {$oc['descr']}")}"
 
 EOD;
-
-			if(isset($config['system']['ipv6allow'])) {
-				$ipfrules .= <<<EOD
-# block bogon networks (IPv6)
-# http://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
-block in $bogonlog quick on \${$oc['descr']} from <bogonsv6> to any label "{$fix_rule_label("block bogon IPv6 networks from {$oc['descr']}")}"
-
-EOD;
-			}
 		}
-
 
 		if(isset($config['system']['ipv6allow']) && isset($oc['type6']) && ($oc['type6'] == "slaac" || $oc['type6'] == "dhcp6")) {
 			$ipfrules .= <<<EOD
@@ -2786,6 +2782,17 @@ pass in {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 547 t
 pass out {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 546 to any port = 547 label "{$fix_rule_label("allow dhcpv6 client out {$oc['descr']}")}"
 
 EOD;
+		}
+
+		if (isset($config['interfaces'][$on]['blockbogons'])) {
+			if (isset($config['system']['ipv6allow'])) {
+				$ipfrules .= <<<EOD
+# block bogon networks (IPv6)
+# http://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
+block in {$bogonlog} quick on \${$oc['descr']} from <bogonsv6> to any label "{$fix_rule_label("block bogon IPv6 networks from {$oc['descr']}")}"
+
+EOD;
+			}
 		}
 
 		$isbridged = false;
