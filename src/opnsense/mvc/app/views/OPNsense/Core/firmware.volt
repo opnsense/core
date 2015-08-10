@@ -147,16 +147,14 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#upgrade").attr("style","display:none");
                 packagesInfo();
             } else if (data['status'] == 'reboot') {
-                // reboot required, tell the user to wait until this is finished and redirect after 5 minutes
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
                     title: "{{ lang._('Your device is rebooting') }}",
-                    message: "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait.') }}",
                     closable: false,
                     onshow:function(dialogRef){
                         dialogRef.setClosable(false);
                         dialogRef.getModalBody().html(
-                            "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait...') }}" +
+                            "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
                             ' <i class="fa fa-cog fa-spin"></i>'
                         );
                         setTimeout(rebootWait, 30000);
