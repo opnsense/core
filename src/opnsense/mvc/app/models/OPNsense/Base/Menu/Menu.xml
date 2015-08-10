@@ -150,6 +150,7 @@
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
         <IPsec url="/vpn_ipsec.php">
             <IPsecPhase1Edit  url="/vpn_ipsec_phase1.php*"/>
+            <IPsecPhase2Edit  url="/vpn_ipsec_phase2.php*"/>
             <MobileClients url="/vpn_ipsec_mobile.php"/>
             <Keys url="/vpn_ipsec_keys.php"/>
             <KeysEdit url="/vpn_ipsec_keys_edit.php"/>
