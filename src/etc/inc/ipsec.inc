@@ -55,15 +55,6 @@ $p2_ealgos = array(
 	'cast128' => array( 'name' => 'CAST128' ),
 	'des' => array( 'name' => 'DES' ));
 
-$p1_halgos = array(
-	'md5' => 'MD5',
-	'sha1' => 'SHA1',
-	'sha256' => 'SHA256',
-	'sha384' => 'SHA384',
-	'sha512' => 'SHA512',
-	'aesxcbc' => 'AES-XCBC'
-);
-
 $p2_halgos = array(
 	'hmac_md5' => 'MD5',
 	'hmac_sha1' => 'SHA1',
