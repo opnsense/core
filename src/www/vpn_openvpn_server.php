@@ -1750,7 +1750,7 @@ else :
                   <tfoot>
                     <tr><td colspan="5">
                       <a href="wizard.php?xml=openvpn_wizard.xml" class="btn btn-default btn-xs"><span class="fa fa-magic"></span></a>
-                      &nbsp;<?=gettext("use a wizard to setup a new server");?>
+                      &nbsp;<?=gettext("Use a wizard to setup a new server");?>
                     </td></tr>
                   </tfoot>
 								</table>
