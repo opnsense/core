@@ -585,7 +585,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local port");?></td>
+						<td><a id="help_for_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Local port");?></td>
 						<td>
 							<input name="local_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['local_port'];?>" />
 							<div class="hidden" for="help_for_local_port">
@@ -606,19 +606,19 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy host or address");?></td>
+						<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy host or address");?></td>
 						<td>
 							<input name="proxy_addr" type="text" class="form-control unknown" size="30" value="<?=$pconfig['proxy_addr'];?>" />
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy port");?></td>
+						<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy port");?></td>
 						<td>
 							<input name="proxy_port" type="text" class="form-control unknown" size="5" value="<?=$pconfig['proxy_port'];?>" />
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy authentication extra options");?></td>
+						<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Proxy authentication extra options");?></td>
 						<td>
 							<?=gettext("Authentication method"); ?>
 							<select name="proxy_authtype" id="proxy_authtype" class="form-control select" onchange="useproxy_changed()">
@@ -635,7 +635,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Server host name resolution"); ?></td>
+						<td><a id="help_for_resolve_retry" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Server host name resolution"); ?></td>
 						<td>
 							<input name="resolve_retry" type="checkbox" value="yes" <?= !empty($pconfig['resolve_retry']) ? "checked=\"checked\"" : "";?>  />
 							<div class="hidden" for="help_for_resolve_retry">
@@ -645,7 +645,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+						<td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
 						<td>
 							<input name="description" type="text" class="form-control unknown" size="30" value="<?=$pconfig['description'];?>" />
 							<div class="hidden" for="help_for_description">
@@ -660,7 +660,7 @@ endif; ?>
 						<td colspan="2"><?=gettext("User Authentication Settings"); ?></td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
+						<td><a id="help_for_auth_user_pass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("User name/pass"); ?></td>
 						<td>
 							<div><?=gettext("Username"); ?></div>
 							<div><input name="auth_user" id="auth_user" class="form-control unknown" type="text" size="20" value="<?=htmlspecialchars($pconfig['auth_user']);?>" /></div>
@@ -838,7 +838,7 @@ endif; ?>
 						<td colspan="2"><?=gettext("Tunnel Settings"); ?></td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
+						<td><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
 						<td>
 							<input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
 							<div class="hidden" for="help_for_tunnel_network">
@@ -853,7 +853,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_tunnel_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
+						<td><a id="help_for_tunnel_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
 						<td>
 							<input name="tunnel_networkv6" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_networkv6'];?>" />
 							<div class="hidden" for="help_for_tunnel_networkv6">
@@ -868,7 +868,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network/s"); ?></td>
+						<td><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network/s"); ?></td>
 						<td>
 							<input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
 							<div class="hidden" for="help_for_remote_network">
@@ -883,7 +883,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network/s"); ?></td>
+						<td><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network/s"); ?></td>
 						<td>
 							<input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
 							<div class="hidden" for="help_for_remote_networkv6">
@@ -898,7 +898,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_use_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Limit outgoing bandwidth");?></td>
+						<td><a id="help_for_use_shaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Limit outgoing bandwidth");?></td>
 						<td>
 							<input name="use_shaper" type="text" class="form-control unknown" size="5" value="<?=$pconfig['use_shaper'];?>" />
 							<div class="hidden" for="help_for_use_shaper">
@@ -910,7 +910,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Compression"); ?></td>
+						<td><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Compression"); ?></td>
 						<td>
 							<select name="compression" class="form-control">
 								<?php
@@ -930,7 +930,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
+						<td><a id="help_for_passtos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type-of-Service"); ?></td>
 						<td>
 							<input name="passtos" type="checkbox" value="yes" <?=!empty($pconfig['passtos']) ? "checked=\"checked\"" : "" ;?>  />
 							<div class="hidden" for="help_for_passtos">
@@ -939,7 +939,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr id="chkboxNoTunIPv6">
-						<td class="vncell"><a id="help_for_no_tun_ipv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable IPv6"); ?></td>
+						<td><a id="help_for_no_tun_ipv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable IPv6"); ?></td>
 						<td>
 							<input name="no_tun_ipv6" type="checkbox" value="yes" <?=!empty($pconfig['no_tun_ipv6']) ? "checked=\"checked\"" : "" ;?> />
 							<div class="hidden" for="help_for_no_tun_ipv6">
@@ -948,7 +948,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr id="chkboxRouteNoPull">
-						<td class="vncell"><a id="help_for_route_no_pull" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't pull routes"); ?></td>
+						<td><a id="help_for_route_no_pull" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't pull routes"); ?></td>
 						<td>
 							<input name="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
 							<div class="hidden" for="help_for_route_no_pull">
@@ -958,7 +958,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr id="chkboxRouteNoExec">
-						<td class="vncell"><a id="help_for_route_no_exec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't add/remove routes"); ?></td>
+						<td><a id="help_for_route_no_exec" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Don't add/remove routes"); ?></td>
 						<td>
 							<input name="route_no_exec" type="checkbox" value="yes" <?=!empty($pconfig['route_no_exec']) ? "checked=\"checked\"" : "" ;?> />
 							<div class="hidden" for="help_for_route_no_exec">
@@ -973,7 +973,7 @@ endif; ?>
 						<td colspan="2"><?=gettext("Advanced configuration"); ?></td>
 					</tr>
 					<tr>
-						<td class="vncell"><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
+						<td><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
 						<td>
 							<textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
 							<div class="hidden" for="help_for_custom_options">
@@ -983,7 +983,7 @@ endif; ?>
 						</td>
 					</tr>
 					<tr id="comboboxVerbosityLevel">
-							<td class="vncell"><a id="help_for_verbosity_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verbosity level");?></td>
+							<td><a id="help_for_verbosity_level" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verbosity level");?></td>
 							<td>
 							<select name="verbosity_level" class="form-control">
 							<?php
@@ -1055,19 +1055,19 @@ else :
                     $server = "{$client['server_addr']}:{$client['server_port']}";
                 ?>
 				<tr ondblclick="document.location='vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>'">
-                <td class="listlr">
+                <td>
                     <?=$disabled;?>
                 </td>
-                <td class="listr">
+                <td>
                     <?=htmlspecialchars($client['protocol']);?>
                 </td>
-                <td class="listr">
+                <td>
                     <?=htmlspecialchars($server);?>
                 </td>
-                <td class="listbg">
+                <td>
                     <?=htmlspecialchars($client['description']);?>
                 </td>
-                <td valign="middle" class="list nowrap">
+                <td>
                     <a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 										<a id="del_<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
                 </td>
