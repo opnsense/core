@@ -36,6 +36,7 @@ require_once("vslb.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
+require_once("interfaces.inc");
 
 $pconfig['proxyurl'] = $config['system']['proxyurl'];
 $pconfig['proxyport'] = $config['system']['proxyport'];
