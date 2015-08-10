@@ -165,15 +165,13 @@ if [ "$pkg_running" == "" ]; then
 
               # Check if there are packages that need to be reinstalled
               for i in $(cat $tmp_pkg_output_file | cut -d '(' -f1); do
-                #echo $i
                 if [ "$itemcount" -gt "$linecount" ]; then
-                  #echo $i
                   if [  `echo $linecount + 1 | bc` -eq "$itemcount" ]; then
                     if [ "`echo $i | grep '-'`" == "" ]; then
                       itemcount=0 # This is not a valid item so reset item count
                     else
-                      name=`echo $i | cut -d '-' -f1`
-                      version=`echo $i | cut -d '-' -f2`
+                      name=${i%-*}
+                      version=${i##*-}
                       itemcount=`echo $itemcount + 1 | bc` # Get ready for next item
                       if [ "$packages_reinstall" == "" ]; then
                         packages_reinstall=$packages_reinstall"{\"name\":\"$name\"," # If it is the first item then we do not want a seperator
