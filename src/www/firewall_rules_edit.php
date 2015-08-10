@@ -866,7 +866,7 @@ include("head.inc");
 											<select name="interface" class="formselect" <?=$edit_disabled;?>>
 							<?php endif;
 											/* add group interfaces */
-											if (is_array($config['ifgroups']['ifgroupentry']))
+											if (isset($config['ifgroups']['ifgroupentry']))
 												foreach($config['ifgroups']['ifgroupentry'] as $ifgen)
 													if (have_ruleint_access($ifgen['ifname']))
 														$interfaces[$ifgen['ifname']] = $ifgen['ifname'];
