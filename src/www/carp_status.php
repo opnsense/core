@@ -121,7 +121,7 @@ include("head.inc");
                     <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
                     <?php
 							$carpcount = 0;
-							if(is_array($config['virtualip']['vip'])) {
+							if(isset($config['virtualip']['vip'])) {
 								foreach($config['virtualip']['vip'] as $carp) {
 									if ($carp['mode'] == "carp") {
 										$carpcount++;
