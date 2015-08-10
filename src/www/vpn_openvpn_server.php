@@ -489,7 +489,6 @@ function mode_change() {
 	}
 	switch(value) {
 		case "p2p_shared_key":
-			document.getElementById("client_opts").style.display="none";
 			document.getElementById("remote_optsv4").style.display="";
 			document.getElementById("remote_optsv6").style.display="";
 			document.getElementById("gwredir_opts").style.display="none";
@@ -499,7 +498,6 @@ function mode_change() {
 			document.getElementById("inter_client_communication").style.display="none";
 			break;
 		case "p2p_tls":
-			document.getElementById("client_opts").style.display="none";
 			document.getElementById("remote_optsv4").style.display="";
 			document.getElementById("remote_optsv6").style.display="";
 			document.getElementById("gwredir_opts").style.display="";
@@ -511,7 +509,6 @@ function mode_change() {
 		case "server_user":
                 case "server_tls_user":
 			document.getElementById("authmodetr").style.display="";
-			document.getElementById("client_opts").style.display="";
 			document.getElementById("remote_optsv4").style.display="none";
 			document.getElementById("remote_optsv6").style.display="none";
 			document.getElementById("gwredir_opts").style.display="";
@@ -522,7 +519,6 @@ function mode_change() {
 		case "server_tls":
 			document.getElementById("authmodetr").style.display="none";
 		default:
-			document.getElementById("client_opts").style.display="";
 			document.getElementById("remote_optsv4").style.display="none";
 			document.getElementById("remote_optsv6").style.display="none";
 			document.getElementById("gwredir_opts").style.display="";
@@ -1649,7 +1645,7 @@ endif; ?>
 										<tr>
 											<td colspan="2"><?=gettext("Advanced configuration"); ?></td>
 										</tr>
-										<tr id="client_opts">
+										<tr>
 											<td width="22%" ><a id="help_for_custom_options" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advanced"); ?></td>
 											<td>
 												<textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
