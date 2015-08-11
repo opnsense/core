@@ -394,16 +394,13 @@ function filter_generate_scrubing() {
 		}
 
 		/* set up MSS clamping */
-		if (isset($scrubcfg['if'])) {
-			if (
-				$scrubcfg['mss'] != '' && is_numeric($scrubcfg['mss']) &&
-				$scrubcfg['if'] != 'pppoe' && $scrubcfg['if'] != 'pptp' &&
-				$scrubcfg['if'] != 'l2tp'
-			) {
-				$mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
-			} else {
-				$mssclamp = '';
-			}
+		$mssclamp = '';
+		if (
+			$scrubcfg['mss'] != '' && is_numeric($scrubcfg['mss']) &&
+			$scrubcfg['if'] != 'pppoe' && $scrubcfg['if'] != 'pptp' &&
+			$scrubcfg['if'] != 'l2tp'
+		) {
+			$mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
 		}
 
 		/* configure no-df for linux nfs and others */
