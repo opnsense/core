@@ -268,18 +268,18 @@ function show_phase2(id, buttonid) {
 							<div class="table-responsive">
 							  <table class="table table-striped">
                   <thead>
-  									<tr>
-  										<td>&nbsp;</td>
-  										<td>&nbsp;</td>
-  										<td><?=gettext("IKE"); ?></td>
-  										<td><?=gettext("Remote Gateway"); ?></td>
-  										<td><?=gettext("Mode"); ?></td>
-  										<td><?=gettext("P1 Protocol"); ?></td>
-  										<td><?=gettext("P1 Transforms"); ?></td>
-  										<td><?=gettext("P1 Description"); ?></td>
-  										<td>
-  										</td>
-  									</tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td><?=gettext("IKE"); ?></td>
+										<td><?=gettext("Remote Gateway"); ?></td>
+										<td><?=gettext("Mode"); ?></td>
+										<td><?=gettext("P1 Protocol"); ?></td>
+										<td><?=gettext("P1 Transforms"); ?></td>
+										<td><?=gettext("P1 Description"); ?></td>
+										<td>
+										</td>
+									</tr>
                   </thead>
                   <tbody>
 <?php
@@ -535,22 +535,22 @@ function show_phase2(id, buttonid) {
 						        <td colspan="8"> </td>
                     <td>
                       <button name="move_<?=$i;?>_x"
-  											type="submit"
-  											title="<?=gettext("move selected phase1 entries to end");?>"
-  											class="btn btn-default btn-xs">
-  											<span class="glyphicon glyphicon-arrow-down"></span>
-  										</button>
+											type="submit"
+											title="<?=gettext("move selected phase1 entries to end");?>"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-arrow-down"></span>
+										</button>
                       <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase1");?>" alt="add" class="btn btn-default btn-xs">
-  											<span class="glyphicon glyphicon-plus"></span>
-  										</a>
+											<span class="glyphicon glyphicon-plus"></span>
+										</a>
                       <button
-  											name="del_x"
-  											type="submit"
-  											title="<?=gettext("delete selected phase1 entries");?>"
-  											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
-  											class="btn btn-default btn-xs">
-  											<span class="glyphicon glyphicon-remove"></span>
-  										</button>
+											name="del_x"
+											type="submit"
+											title="<?=gettext("delete selected phase1 entries");?>"
+											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
                     </td>
                   </tr>
 					        <tr>

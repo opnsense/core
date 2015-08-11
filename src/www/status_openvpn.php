@@ -129,9 +129,9 @@ $( document ).ready(function() {
         <div class="row">
             <section class="col-xs-12">
 	            <header class="content-box-head container-fluid"> <h3><?=gettext("OpenVPN Status");?></h3>
-				    	</header>
-				    		<div class="content-box-main col-xs-12">
-						    	<form action="status_openvpn.php" method="get" name="iform">
+					</header>
+						<div class="content-box-main col-xs-12">
+							<form action="status_openvpn.php" method="get" name="iform">
 										<div class="table-responsive">
 										<table class="table table-striped">
 											<?php $i = 0; ?>
@@ -161,7 +161,7 @@ $( document ).ready(function() {
 												<td><?=format_bytes($conn['bytes_recv']);?></td>
 												<td></td>
 												<td>
-													<a 	data-client-port="<?=$server['mgmt'];?>"
+													<a	data-client-port="<?=$server['mgmt'];?>"
 															data-client-ip="<?=$conn['remote_host'];?>"
 															title="<?=gettext("Kill client connection from"). " ".  $conn['remote_host'] ; ?>"
 															class="act_kill_client btn btn-default">
@@ -303,7 +303,7 @@ $( document ).ready(function() {
 					    </form>
 				    </div>
           </section>
-      	</div>
+	</div>
 		</div>
 </section>
 
