@@ -392,7 +392,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 					$ph1ent['ikeid'] = ipsec_ikeid_next();
 			}
 
-			if (isset($p1index) && $a_phase1[$p1index]) {
+			if (isset($p1index) && isset($a_phase1[$p1index])) {
 					$a_phase1[$p1index] = $ph1ent;
 			} else {
 					$a_phase1[] = $ph1ent;
@@ -1038,7 +1038,7 @@ endforeach; ?>
 									<tr>
 										<td>&nbsp;</td>
 										<td>
-											<?php if (isset($p1index) && isset($a_phase1[$p1index]) && !(isset($_GET['dup']) && is_numericint($_GET['dup']))) :
+											<?php if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index]) && !isset($_GET['dup'])) :
 ?>
 											<input name="p1index" type="hidden" value="<?=$p1index;?>" />
 											<?php
