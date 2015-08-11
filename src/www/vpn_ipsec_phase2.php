@@ -47,7 +47,7 @@ function pconfig_to_ealgos($pconfig)
             if (in_array($algo_name, $pconfig['ealgos'])) {
                 $ealg = array();
                 $ealg['name'] = $algo_name;
-                if (is_array($algo_data['keysel'])) {
+                if (isset($algo_data['keysel'])) {
                     $ealg['keylen'] = $pconfig["keylen_".$algo_name];
                 }
                 $ealgos[] = $ealg;
@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 								break;
 				}
 				/* Check if the localid_type is an interface, to confirm if it has a valid subnet. */
-				if (is_array($config['interfaces'][$pconfig['localid_type']])) {
+				if (isset($config['interfaces'][$pconfig['localid_type']])) {
 						// Don't let an empty subnet into racoon.conf, it can cause parse errors. Ticket #2201.
 						$address = get_interface_ip($pconfig['localid_type']);
 						$netbits = get_interface_subnet($pconfig['localid_type']);
@@ -447,7 +447,11 @@ $( document ).ready(function() {
 	change_mode('<?=$pconfig['mode']?>');
 	change_protocol('<?=$pconfig['proto']?>');
 	typesel_change_local(<?=$pconfig['localid_netbits']?>);
+<?php if (isset($pconfig['natlocalid_netbits'])):
+?>
 	typesel_change_natlocal(<?=$pconfig['natlocalid_netbits']?>);
+<?php endif;
+?>
 	<?php if (!isset($pconfig['mobile'])) :
 	?>
 	typesel_change_remote(<?=$pconfig['remoteid_netbits']?>);
@@ -742,7 +746,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
 								<tr>
 									<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address:");?>&nbsp;&nbsp;</td>
 									<td>
-										<input name="natlocalid_address" type="text" class="formfld unknown ipv4v6" id="natlocalid_address" size="28" value="<?=$pconfig['natlocalid_address'];?>" />
+										<input name="natlocalid_address" type="text" class="formfld unknown ipv4v6" id="natlocalid_address" size="28" value="<?=isset($pconfig['natlocalid_address']) ? $pconfig['natlocalid_address'] : "";?>" />
 										/
 										<select name="natlocalid_netbits" class="formselect ipv4v6" id="natlocalid_netbits">
 										<?php for ($i = 128; $i >= 0; $i--) :
