@@ -383,7 +383,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				// 1-on-1 copy
 				foreach (explode(",",$copy_fields) as $fieldname) {
 					$fieldname = trim($fieldname);
-					if(isset($pconfig[$fieldname])) {
+					if(!empty($pconfig[$fieldname])) {
 						$ph2ent[$fieldname] = $pconfig[$fieldname];
 					}
 				}
