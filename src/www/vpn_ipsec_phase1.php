@@ -972,7 +972,7 @@ endforeach; ?>
 										</td>
 									</tr>
                   <tr>
-										<td colspan="2"><?=gettext("Advanced Options"); ?></td>
+										<td colspan="2"><b><?=gettext("Advanced Options"); ?></b></td>
                   </tr>
 									<tr>
 										<td><a id="help_for_rekey_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Enable Rekey");?></td>
