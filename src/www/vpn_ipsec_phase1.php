@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 			$pconfig['remotebits'] = null;
 			$pconfig['remotenet'] = null ;
 			if (isset($a_phase1[$p1index]['remote-subnet']) && strpos($config['ipsec']['phase1'][$p1index]['remote-subnet'],'/') !== false) {
-	    	list($pconfig['remotenet'],$pconfig['remotebits']) = explode("/", $config['ipsec']['phase1'][$p1index]['remote-subnet']);
+		list($pconfig['remotenet'],$pconfig['remotebits']) = explode("/", $config['ipsec']['phase1'][$p1index]['remote-subnet']);
 			} elseif (isset($config['ipsec']['phase1'][$p1index]['remote-subnet'])) {
 				$pconfig['remotenet'] = $config['ipsec']['phase1'][$p1index]['remote-subnet'];
 			}
@@ -628,7 +628,7 @@ function dpdchkbox_change() {
                         <option value="<?=$kidx;?>" <?= $kidx == $pconfig['iketype'] ? "selected=\"selected\"" : "";?> >
                             <?=$name;?>
                         </option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_iketype">
@@ -647,7 +647,7 @@ function dpdchkbox_change() {
 												<option value="<?=$protocol;?>"  <?=$protocol == $pconfig['protocol'] ? "selected=\"selected\"" : "";?> >
 														<?=$name?>
                         </option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_protocol">
@@ -687,7 +687,7 @@ function dpdchkbox_change() {
 												<option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : "" ?> >
 														<?=htmlspecialchars($ifacename);?>
                         </option>
-<?php 									endforeach;
+<?php									endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_interface">
@@ -707,7 +707,7 @@ function dpdchkbox_change() {
 											</div>
 										</td>
 									</tr>
-<?php 						endif;
+<?php						endif;
 ?>
 									<tr>
 										<td><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
@@ -743,9 +743,9 @@ function dpdchkbox_change() {
                           }
 	                      ?>
 													<option value="<?=$method_type;?>" <?= $method_type == $pconfig['authentication_method'] ? "selected=\"selected\"" : "";?> >
-                          	<?=$method_params['name'];?>
+				<?=$method_params['name'];?>
                           </option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_authmethod">
@@ -761,10 +761,10 @@ function dpdchkbox_change() {
                       $modes = array("main" => "Main", "aggressive" => "Aggressive");
                       foreach ($modes as $mode => $mdescr) :
 ?>
-                      	<option value="<?=$mode;?>" <?= $mode == $pconfig['mode'] ? "selected=\"selected\"" : "" ;?> >
+			<option value="<?=$mode;?>" <?= $mode == $pconfig['mode'] ? "selected=\"selected\"" : "" ;?> >
                             <?=$mdescr;?>
 												</option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_mode">
@@ -818,9 +818,9 @@ endforeach; ?>
 												}
 ?>
 												<option value="<?=$id_type;?>" <?= $id_type == $pconfig['peerid_type'] ? "selected=\"selected\"" : "";?> >
-                      		<?=$id_params['desc'];?>
+				<?=$id_params['desc'];?>
 												</option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<input name="peerid_data" type="text" id="peerid_data" size="30" value="<?=$pconfig['peerid_data'];?>" />
@@ -852,7 +852,7 @@ endforeach; ?>
 												<option value="<?=$cert['refid'];?>" <?= isset($pconfig['certref']) && $pconfig['certref'] == $cert['refid'] ? "selected=\"selected\"" : ""?>>
 													<?=$cert['descr'];?>
 												</option>
-<?php     							endforeach;
+<?php								endforeach;
                       endif;
 ?>
 											</select>
@@ -866,7 +866,7 @@ endforeach; ?>
 										<td>
 											<select name="caref" class="formselect">
 											<?php
-					    					$config__ca = isset($config['ca']) ? $config['ca'] : array();
+										$config__ca = isset($config['ca']) ? $config['ca'] : array();
                         foreach ($config__ca as $ca) :
                             $selected = "";
                             if ($pconfig['caref'] == $ca['refid']) {
@@ -876,7 +876,7 @@ endforeach; ?>
 													<option value="<?=$ca['refid'];?>" <?= isset($pconfig['caref']) && $pconfig['caref'] == $ca['refid'] ? "selected=\"selected\"":"";?>>
 														<?=htmlspecialchars($ca['descr']);?>
 													</option>
-<?php      							endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_caref">
@@ -923,7 +923,7 @@ endforeach; ?>
 												<option value="<?=$algo;?>" <?= $algo == $pconfig['halgo'] ? "selected=\"selected\"" : "";?>>
 													<?=$algoname;?>
 												</option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_halgo">
@@ -954,7 +954,7 @@ endforeach; ?>
 												<option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['dhgroup'] ? "selected=\"selected\"" : "";?>>
 													<?=$keygroupname;?>
 												</option>
-<?php 								endforeach;
+<?php								endforeach;
 ?>
 											</select>
 											<div class="hidden" for="help_for_dhgroup">
