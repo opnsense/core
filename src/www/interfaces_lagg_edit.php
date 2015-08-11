@@ -35,8 +35,9 @@ require_once("unbound.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_lagg.php');
 
-if (!is_array($config['laggs']['lagg']))
+if (!isset($config['laggs']['lagg'])) {
 	$config['laggs']['lagg'] = array();
+}
 
 $a_laggs = &$config['laggs']['lagg'];
 
