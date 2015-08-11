@@ -351,7 +351,7 @@ function setup_serial_port($when = 'save', $path = '')
 		/* serial console - write out /boot/loader.conf */
 		if ($when == "upgrade")
 			system("echo \"Reading {$loader_conf_file}...\" >> /conf/upgrade_log.txt");
-		$boot_config = file_get_contents($loader_conf_file);
+		$boot_config = @file_get_contents($loader_conf_file);
 		$boot_config_split = explode("\n", $boot_config);
 		if(count($boot_config_split) > 0) {
 			$new_boot_config = array();
