@@ -28,8 +28,9 @@
 
 require_once("guiconfig.inc");
 
-if (!is_array($config['laggs']['lagg']))
+if (!isset($config['laggs']['lagg'])) {
 	$config['laggs']['lagg'] = array();
+}
 
 $a_laggs = &$config['laggs']['lagg'] ;
 
