@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 16:01+0200\n"
-"PO-Revision-Date: 2015-08-07 19:27+0100\n"
+"PO-Revision-Date: 2015-08-11 16:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -942,7 +942,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Edit Interface LAGG"
-msgstr ""
+msgstr "Éditer l'Interface LAGG"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 220
@@ -1332,7 +1332,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 68
 msgid "enable IDS"
-msgstr ""
+msgstr "activer IDS"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 69
@@ -1465,7 +1465,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 35
 msgid "Change password"
-msgstr ""
+msgstr "Changer le mot de passe"
 
 #
 # File: src/www/diag_authentication.php, line: 46
@@ -1482,7 +1482,7 @@ msgstr "Utilisateur"
 # File: src/www/system_certificates_tabs.inc, line: 6
 # File: src/www/system_crlmanager.php, line: 603
 msgid "Certificates"
-msgstr ""
+msgstr "Certificats"
 
 #
 # File: src/www/system_certificates_tabs.inc, line: 7
@@ -1492,7 +1492,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_client.php, line: 278
 # File: src/www/vpn_openvpn_server.php, line: 372
 msgid "Certificate Authority"
-msgstr ""
+msgstr "Autorité de certification"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 39
@@ -1502,7 +1502,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 41
 msgid "Firmware"
-msgstr ""
+msgstr "Firmware"
 
 #
 # File: src/www/system_hasync.php, line: 87
@@ -1521,7 +1521,7 @@ msgstr ""
 # File: src/www/system_advanced_tabs.inc, line: 6
 # File: src/www/system_general.php, line: 286
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 #
 # File: src/www/system_advanced_admin.php, line: 277
@@ -1586,7 +1586,7 @@ msgstr "Paramètres"
 #
 # File: lang/dynamic/helpers/models.php, line: 52
 msgid "Setup Wizard"
-msgstr ""
+msgstr "Configuration de l'Assistant"
 
 #
 # File: src/www/services_captiveportal_zones.php, line: 95
@@ -1605,7 +1605,7 @@ msgstr ""
 # File: src/www/vpn_pptp_users.php, line: 97
 # File: src/www/vpn_pptp_users_edit.php, line: 160
 msgid "Users"
-msgstr ""
+msgstr "Utilisateurs"
 
 #
 # File: src/www/interfaces_groups.php, line: 53
@@ -1619,7 +1619,7 @@ msgstr ""
 # File: src/www/system_usermanager_addprivs.php, line: 150
 # File: src/www/system_usermanager_settings.php, line: 117
 msgid "Groups"
-msgstr ""
+msgstr "Groupes"
 
 #
 # File: src/www/load_balancer_pool.php, line: 135
@@ -1632,7 +1632,7 @@ msgstr ""
 # File: src/www/system_usermanager_addprivs.php, line: 152
 # File: src/www/system_usermanager_settings.php, line: 119
 msgid "Servers"
-msgstr ""
+msgstr "Serveurs"
 
 #
 # File: src/www/services_captiveportal.php, line: 645
@@ -1711,7 +1711,7 @@ msgstr "Groupes d'Interfaces"
 # File: src/www/status_rrd_graph_tabs.inc, line: 13
 # File: src/www/status_wireless.php, line: 31
 msgid "Wireless"
-msgstr ""
+msgstr "Réseau sans fil"
 
 #
 # File: src/www/interfaces_assign.php, line: 459
@@ -1861,12 +1861,12 @@ msgstr "Interfaces"
 # File: src/www/services_unbound.php, line: 450
 # File: src/www/vpn_pppoe_edit.php, line: 601
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #
 # File: src/www/firewall_aliases.php, line: 177
 msgid "Ports"
-msgstr ""
+msgstr "Ports"
 
 #
 # File: src/www/firewall_aliases.php, line: 178
@@ -2009,7 +2009,7 @@ msgstr "Interface"
 # File: src/www/firewall_rules.php, line: 35
 # File: src/www/firewall_rules_edit.php, line: 709
 msgid "Rules"
-msgstr ""
+msgstr "Règles"
 
 #
 # File: src/www/firewall_schedule.php, line: 36
@@ -2059,7 +2059,7 @@ msgstr "Pare-feu"
 # File: src/www/services_captiveportal_mac.php, line: 153
 # File: src/www/services_captiveportal_vouchers.php, line: 368
 msgid "MAC"
-msgstr ""
+msgstr "MAC"
 
 #
 # File: src/www/status_captiveportal_vouchers.php, line: 128
@@ -2162,7 +2162,7 @@ msgstr "Redirecteur DNS"
 # File: src/www/vpn_openvpn_csc.php, line: 751
 # File: src/www/vpn_openvpn_server.php, line: 1922
 msgid "Advanced"
-msgstr ""
+msgstr "Avancé"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 101
@@ -2199,7 +2199,7 @@ msgstr ""
 # File: src/www/services_igmpproxy.php, line: 65
 # File: src/www/services_igmpproxy_edit.php, line: 31
 msgid "IGMP Proxy"
-msgstr ""
+msgstr "Mandataire IGMP"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 107
@@ -2238,7 +2238,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 111
 msgid "Network Time Protocol"
-msgstr ""
+msgstr "Protocole d'Heure Réseau (NTP)"
 
 #
 # File: src/www/vpn_pppoe_edit.php, line: 254
@@ -2248,12 +2248,12 @@ msgstr "Serveur PPPoE"
 #
 # File: lang/dynamic/helpers/models.php, line: 113
 msgid "Proxy Server"
-msgstr ""
+msgstr "Serveur Mandataire"
 
 #
 # File: src/www/services_snmp.php, line: 154
 msgid "SNMP"
-msgstr ""
+msgstr "SNMP"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 115
@@ -2274,7 +2274,7 @@ msgstr "Wake on LAN"
 # File: lang/dynamic/helpers/models.php, line: 117
 # File: src/etc/inc/service-utils.inc, line: 183
 msgid "Intrusion Detection"
-msgstr ""
+msgstr "Détection d'Intrusion"
 
 #
 # File: src/www/load_balancer_monitor.php, line: 76
@@ -2326,7 +2326,7 @@ msgstr ""
 # File: src/www/system_authservers.php, line: 187
 # File: src/www/vpn_pppoe_edit.php, line: 254
 msgid "Services"
-msgstr ""
+msgstr "Services"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 119
@@ -2336,7 +2336,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 120
 msgid "Keys"
-msgstr ""
+msgstr "Clés"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 121
@@ -2381,7 +2381,7 @@ msgstr "L2TP"
 # File: src/www/vpn_openvpn_export_shared.php, line: 306
 # File: src/www/vpn_openvpn_server.php, line: 817
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 126
@@ -2535,7 +2535,7 @@ msgstr "NTP"
 # File: src/www/status_rrd_graph_settings.php, line: 101
 # File: src/www/status_rrd_graph_settings.php, line: 131
 msgid "RRD Graphs"
-msgstr ""
+msgstr "Graphiques RRD"
 
 #
 # File: src/www/diag_logs_pills.php, line: 66
@@ -2588,12 +2588,12 @@ msgstr "Mandataire"
 #
 # File: lang/dynamic/helpers/models.php, line: 171
 msgid "System Logs"
-msgstr ""
+msgstr "Événements Systèmes"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 172
 msgid "Traffic Graphs"
-msgstr ""
+msgstr "Graphiques du Traffic"
 
 #
 # File: src/www/carp_status.php, line: 78
@@ -2674,12 +2674,12 @@ msgstr "Authentification"
 #
 # File: lang/dynamic/helpers/models.php, line: 177
 msgid "History"
-msgstr ""
+msgstr "Historique"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 178
 msgid "Backup & Restore"
-msgstr ""
+msgstr "Sauvegarde & Restauration"
 
 #
 # File: src/www/crash_reporter.php, line: 62
@@ -2700,7 +2700,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 182
 msgid "Halt System"
-msgstr ""
+msgstr "Arrêter le Système"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 183
@@ -2738,7 +2738,7 @@ msgstr "Ping"
 #
 # File: lang/dynamic/helpers/models.php, line: 189
 msgid "Reboot"
-msgstr ""
+msgstr "Redémarrer"
 
 #
 # File: src/www/system_gateways_tabs.inc, line: 7
@@ -2767,17 +2767,17 @@ msgstr "États"
 #
 # File: lang/dynamic/helpers/models.php, line: 194
 msgid "States Summary"
-msgstr ""
+msgstr "Résumé des États"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 195
 msgid "System Activity"
-msgstr ""
+msgstr "Activté du Système"
 
 #
 # File: src/www/diag_tables.php, line: 33
 msgid "Tables"
-msgstr ""
+msgstr "Tables"
 
 #
 # File: src/www/diag_testport.php, line: 32
@@ -2823,22 +2823,22 @@ msgstr "Diagnostiques"
 #
 # File: lang/dynamic/helpers/models.php, line: 200
 msgid "About this Page"
-msgstr ""
+msgstr "A propos de cette Page"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 201
 msgid "Developers Wiki"
-msgstr ""
+msgstr "Wiki pour Développeurs"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 202
 msgid "Documentation"
-msgstr ""
+msgstr "Documentation"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 203
 msgid "FreeBSD Handbook"
-msgstr ""
+msgstr "Manuel de FreeBSD"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 204
@@ -2853,12 +2853,12 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 206
 msgid "Help"
-msgstr ""
+msgstr "Aide"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 207
 msgid "menu"
-msgstr ""
+msgstr "menu"
 
 #
 # File: src/www/services_dnsmasq_domainoverride_edit.php, line: 140
@@ -26943,17 +26943,17 @@ msgstr ""
 #
 # File: src/www/system_gateways.php, line: 354
 msgid "Edit Gateway"
-msgstr ""
+msgstr "Éditer la passerelle"
 
 #
 # File: src/www/system_gateways.php, line: 363
 msgid "Do you really want to delete this gateway?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer cette passerelle ?"
 
 #
 # File: src/www/system_gateways.php, line: 364
 msgid "Delete Gateway"
-msgstr ""
+msgstr "Supprimer la passerelle"
 
 #
 # File: src/www/system_gateways.php, line: 373
@@ -26963,7 +26963,7 @@ msgstr ""
 #
 # File: src/www/system_gateways.php, line: 392
 msgid "delete selected items"
-msgstr ""
+msgstr "supprimer les éléments sélectionnés"
 
 #
 # File: src/www/system_gateways.php, line: 393
@@ -27164,7 +27164,7 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 548
 # File: src/www/system_gateways_edit.php, line: 673
 msgid "Edit gateway"
-msgstr ""
+msgstr "Éditer la passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 694
@@ -27190,18 +27190,18 @@ msgstr ""
 #
 # File: src/www/system_gateways_edit.php, line: 738
 msgid "Gateway name"
-msgstr ""
+msgstr "Nom de la passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 750
 msgid "Gateway IP address"
-msgstr ""
+msgstr "Adresse IP de la passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 754
 # File: src/www/system_gateways_edit.php, line: 759
 msgid "Default Gateway"
-msgstr ""
+msgstr "Passerelle par défaut"
 
 #
 # File: src/www/system_gateways_edit.php, line: 760
@@ -27267,13 +27267,13 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 834
 # File: src/www/system_gateways_edit.php, line: 846
 msgid "From"
-msgstr ""
+msgstr "De"
 
 #
 # File: src/www/system_gateways_edit.php, line: 837
 # File: src/www/system_gateways_edit.php, line: 849
 msgid "To"
-msgstr ""
+msgstr "Vers"
 
 #
 # File: src/www/system_gateways_edit.php, line: 844
@@ -27341,27 +27341,27 @@ msgstr ""
 #
 # File: src/www/system_general.php, line: 39
 msgid "English"
-msgstr ""
+msgstr "Anglais"
 
 #
 # File: src/www/system_general.php, line: 40
 msgid "German"
-msgstr ""
+msgstr "Allemand"
 
 #
 # File: src/www/system_general.php, line: 41
 msgid "Spanish"
-msgstr ""
+msgstr "Espagnol"
 
 #
 # File: src/www/system_general.php, line: 42
 msgid "Japanese"
-msgstr ""
+msgstr "Japonais"
 
 #
 # File: src/www/system_general.php, line: 41
 msgid "Chinese (Simplified)"
-msgstr ""
+msgstr "Chinois (Simplifié)"
 
 #
 # File: src/www/system_general.php, line: 118
@@ -28523,7 +28523,7 @@ msgstr ""
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 452
 msgid "system"
-msgstr ""
+msgstr "système"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 463
@@ -28605,7 +28605,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 564
 # File: src/www/vpn_openvpn_server.php, line: 1680
 msgid "DNS Servers"
-msgstr ""
+msgstr "Serveurs DNS"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 595
@@ -28619,7 +28619,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 715
 # File: src/www/vpn_openvpn_server.php, line: 1852
 msgid "WINS Servers"
-msgstr ""
+msgstr "Serveurs WINS"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 637
@@ -29393,7 +29393,7 @@ msgstr "Adresse du serveur"
 # File: src/www/vpn_pppoe_edit.php, line: 114
 # File: src/www/vpn_pptp.php, line: 79
 msgid "RADIUS server address"
-msgstr ""
+msgstr "Adresse du serveur RADIUS"
 
 #
 # File: src/www/vpn_l2tp.php, line: 70
@@ -29401,7 +29401,7 @@ msgstr ""
 # File: src/www/vpn_pptp.php, line: 79
 # File: src/www/vpn_pptp.php, line: 474
 msgid "RADIUS shared secret"
-msgstr ""
+msgstr "Secret partagé de RADIUS"
 
 #
 # File: src/www/vpn_l2tp.php, line: 77
@@ -29453,7 +29453,7 @@ msgstr ""
 # File: src/www/vpn_pptp_users.php, line: 96
 # File: src/www/vpn_pptp_users_edit.php, line: 159
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #
 # File: src/www/vpn_l2tp.php, line: 324
@@ -29502,12 +29502,12 @@ msgstr ""
 # File: src/www/vpn_l2tp.php, line: 384
 # File: src/www/vpn_pppoe_edit.php, line: 451
 msgid "is"
-msgstr ""
+msgstr "est"
 
 #
 # File: src/www/vpn_l2tp.php, line: 388
 msgid "Number of L2TP users"
-msgstr ""
+msgstr "Nombre d'utilisateurs L2TP"
 
 #
 # File: src/www/vpn_l2tp.php, line: 403
@@ -29517,7 +29517,7 @@ msgstr ""
 #
 # File: src/www/vpn_l2tp.php, line: 407
 msgid "Secret"
-msgstr ""
+msgstr "Secret"
 
 #
 # File: src/www/vpn_l2tp.php, line: 411
@@ -29529,12 +29529,12 @@ msgstr ""
 #
 # File: src/www/vpn_l2tp.php, line: 415
 msgid "Authentication Type"
-msgstr ""
+msgstr "Type d'Authentification"
 
 #
 # File: src/www/vpn_l2tp.php, line: 421
 msgid "CHAP"
-msgstr ""
+msgstr "CHAP"
 
 #
 # File: src/www/vpn_l2tp.php, line: 428
@@ -29562,14 +29562,14 @@ msgstr "Serveur WINS"
 # File: src/www/vpn_pppoe_edit.php, line: 514
 # File: src/www/vpn_pptp.php, line: 423
 msgid "RADIUS"
-msgstr ""
+msgstr "RADIUS"
 
 #
 # File: src/www/vpn_l2tp.php, line: 454
 # File: src/www/vpn_pppoe_edit.php, line: 519
 # File: src/www/vpn_pptp.php, line: 428
 msgid "Use a RADIUS server for authentication"
-msgstr ""
+msgstr "Utiliser un serveur RADIUS pour l'authentification"
 
 #
 # File: src/www/vpn_l2tp.php, line: 455
@@ -29599,7 +29599,7 @@ msgstr "Serveur RADIUS"
 #
 # File: src/www/vpn_l2tp.php, line: 468
 msgid "Enter the IP address of the RADIUS server."
-msgstr ""
+msgstr "Entrer l'adresse IP du serveur RADIUS."
 
 #
 # File: src/www/vpn_l2tp.php, line: 471
