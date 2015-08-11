@@ -329,7 +329,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 						foreach (explode(",",$copy_fields) as $fieldname) {
 							$fieldname = trim($fieldname);
-							if(isset($pconfig[$fieldname])) {
+							if(!empty($pconfig[$fieldname])) {
 								$server[$fieldname] = $pconfig[$fieldname];
 							}
 						}

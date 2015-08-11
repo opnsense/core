@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 						// 1 on 1 copy of config attributes
 						foreach (explode(",",$all_form_fields) as $fieldname) {
 								$fieldname = trim($fieldname);
-								if(isset($pconfig[$fieldname])) {
+								if(!empty($pconfig[$fieldname])) {
 										$csc[$fieldname] = $pconfig[$fieldname];
 								}
 						}
