@@ -36,21 +36,12 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').empty();
         $('#maintabs li:eq(1) a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').attr('class', 'text-info');
-        $('#updatestatus').html("{{ lang._('Updating.... (may take up to 30 seconds)') }}");
+        $('#updatestatus').html("{{ lang._('Fetching... (may take up to 30 seconds)') }}");
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
-            // update UI
-            if (data['status'] == 'unknown') {
-                $('#updatestatus').attr('class', 'text-warning');
-            } else if (data['status'] == 'error') {
-                $('#updatestatus').attr('class', 'text-danger');
-            } else if (data['status'] == 'none' || data['status'] == 'ok') {
-                $('#updatestatus').attr('class', 'text-info');
-            }
-            $('#updatestatus').html(data['status_msg']);
             $("#checkupdate_progress").removeClass("fa fa-spinner fa-pulse");
+            $('#updatestatus').html(data['status_msg']);
 
             if (data['status'] == "ok") {
                 $.upgrade_action = data['status_upgrade_action'];
@@ -91,11 +82,10 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function upgrade(){
         $('#maintabs li:eq(2) a').tab('show');
-        $('#updatestatus').html("{{ lang._('Starting Upgrade.. Please do not leave this page while upgrade is in progress.') }}");
+        $('#updatestatus').html("{{ lang._('Upgrading... (do not leave this page while upgrade is in progress)') }}");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
-            $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
             $('#updatelist').empty();
             setTimeout(trackStatus, 500);
         });
@@ -152,19 +142,19 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#update_status').scrollTop($('#update_status')[0].scrollHeight);
             }
             if (data['status'] == 'done') {
+                $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
                 $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
+                $("#upgrade").attr("style","display:none");
                 packagesInfo();
             } else if (data['status'] == 'reboot') {
-                // reboot required, tell the user to wait until this is finished and redirect after 5 minutes
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
                     title: "{{ lang._('Your device is rebooting') }}",
-                    message: "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait.') }}",
                     closable: false,
                     onshow:function(dialogRef){
                         dialogRef.setClosable(false);
                         dialogRef.getModalBody().html(
-                            "{{ lang._('The upgrade is finished and your device is being rebooted at the moment, please wait...') }}" +
+                            "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
                             ' <i class="fa fa-cog fa-spin"></i>'
                         );
                         setTimeout(rebootWait, 30000);
@@ -208,21 +198,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-12">
-            <strong>{{ lang._('Current Firmware Status :')}}</strong>
-            <br/>
-            <span class="text-info" id="updatestatus">{{ lang._('Current status is unknown')}} </span>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <button class='btn btn-primary' id="checkupdate"><i id="checkupdate_progress" class=""></i> {{ lang._('Click to check now')}}</button>
-            <button class='btn btn-primary' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade') }} </button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <br/>
+        <div class="alert alert-info" role="alert" style="min-height: 65px;">
+            <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
+            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
+            <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
     </div>
     <div class="row">
@@ -242,7 +221,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </table>
                 </div>
                 <div id="progress" class="tab-pane fade in">
-                    <textarea name="output" id="update_status" class="form-control" rows="10" wrap="hard" readonly style="max-width:100%; font-family: monospace;"></textarea>
+                    <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly style="max-width:100%; font-family: monospace;"></textarea>
                 </div>
             </div>
         </div>

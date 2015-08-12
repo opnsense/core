@@ -45,31 +45,40 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
-        $response = json_decode(trim($backend->configdRun("firmware pkgstatus")), true);
+        $response = json_decode(trim($backend->configdRun('firmware pkgstatus')), true);
 
         if ($response != null) {
-            if (array_key_exists("connection", $response) && $response["connection"]=="error") {
-                $response["status"] = "error";
-                $response["status_msg"] = "Connection Error";
-            } elseif (array_key_exists("repository", $response) && $response["repository"]=="error") {
-                $response["status"] = "error";
-                $response["status_msg"] = "Repository Problem";
-            } elseif (array_key_exists("updates", $response) && $response['updates'] == 0) {
-                $response["status"] = "none";
-                $response["status_msg"] = "no updates found";
-            } elseif (array_key_exists(0, $response["upgrade_packages"]) &&
-                $response["upgrade_packages"][0]["name"] == "pkg") {
-                $response["status"] = "ok";
-                $response["status_upgrade_action"] = "pkg";
-                $response["status_msg"] = "There is a mandatory update for the package manager. ".
-                    "Please install and check for updates again.";
-            } elseif (array_key_exists("updates", $response)) {
-                $response["status"] = "ok";
-                $response["status_upgrade_action"] = "all";
-                $response["status_msg"] = sprintf("A total of %s update(s) are available.", $response["updates"]);
+            if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
+                $response['status_msg'] = 'Connection error.';
+                $response['status'] = 'error';
+            } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
+                $response['status_msg'] = 'Repository problem.';
+                $response['status'] = 'error';
+            } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
+                $response['status_msg'] = 'There are no updates available.';
+                $response['status'] = 'none';
+            } elseif (array_key_exists(0, $response['upgrade_packages']) &&
+                $response['upgrade_packages'][0]['name'] == 'pkg') {
+                $response['status_upgrade_action'] = 'pkg';
+                $response['status'] = 'ok';
+                $response['status_msg'] =
+                    'There is a mandatory update for the package manager available. ' .
+                    'Please install and fetch updates again.';
+            } elseif (array_key_exists('updates', $response)) {
+                $response['status_upgrade_action'] = 'all';
+                $response['status'] = 'ok';
+                if ($response['updates'] == 1) {
+                    /* keep this dynamic for template translation even though %s is always '1' */
+                    $response['status_msg'] = sprintf('There is %s update available.', $response['updates']);
+                } else {
+                    $response['status_msg'] = sprintf('There are %s updates available.', $response['updates']);
+                }
+                if ($response['upgrade_needs_reboot'] == 1) {
+                    $response['status_msg'] = sprintf('%s %s', $response['status_msg'], 'This update requires a reboot.');
+                }
             }
         } else {
-            $response = array("status" => "unknown","status_msg" => "Current status is unknown");
+            $response = array('status' => 'unknown', 'status_msg' => 'Current status is unknown.');
         }
 
         return $response;
