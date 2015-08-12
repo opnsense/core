@@ -287,7 +287,15 @@ function show_source_port_range() {
 						                  <td width="78%" class="vtable">
 										  <select name="members[]" multiple="multiple" class="selectpicker" size="3" data-live-search="true">
 						                      <?php
-												$members_array = explode(',', $pconfig['members']);
+						                      				// let's fix this for now in the template, although it should be fixed at the top of the page
+						                      				// $pconfig['members'] can be of different type now.
+						                      				if ( isset($pconfig['members']) && is_array($pconfig['members'])) {
+						                      					$members_array = $pconfig['members'];
+						                      				} elseif (!empty($pconfig['members'])) {
+													$members_array = explode(',', $pconfig['members']);
+												} else {
+													$members_array = array();
+												}
 												foreach ($ifacelist as $ifn => $ifinfo) {
 													echo "<option value=\"{$ifn}\"";
 													if (in_array($ifn, $members_array))
