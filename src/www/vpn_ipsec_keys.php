@@ -76,6 +76,7 @@ include("head.inc");
 ?>
 
 
+<body>
 <script type="text/javascript">
 $( document ).ready(function() {
 	// link delete buttons
@@ -103,7 +104,6 @@ $( document ).ready(function() {
 });
 </script>
 
-<body>
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
