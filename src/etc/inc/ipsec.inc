@@ -259,6 +259,7 @@ function ipsec_smp_dump_status() {
 
 	@fwrite($fd, $query);
 	$response = "";
+	$sread = "";
 	while (!strstr($sread, "</message>")) {
 		$sread = fgets($fd);
 		$response .= $sread;
@@ -434,16 +435,21 @@ function ipsec_get_number_of_phase2($ikeid) {
 
 
 function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
+	$id_data = null;
 	if ($side == "local") {
 		$id_type = $ph1ent['myid_type'];
-		$id_data = $ph1ent['myid_data'];
+		if (isset($ph1ent['myid_data'])) {
+			$id_data = $ph1ent['myid_data'];
+		}
 
 		$addr = ipsec_get_phase1_src($ph1ent);
 		if (!$addr)
 			return array();
 	} elseif ($side == "peer") {
 		$id_type = $ph1ent['peerid_type'];
-		$id_data = $ph1ent['peerid_data'];
+		if (isset($ph1ent['peerid_data'])) {
+			$id_data = $ph1ent['peerid_data'];
+		}
 
 		if (isset($ph1ent['mobile']))
 			$addr = "%any";
