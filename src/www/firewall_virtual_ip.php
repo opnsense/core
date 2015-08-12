@@ -103,7 +103,7 @@ if ($_GET['act'] == "del") {
 		$subnet .= "/" . $a_vip[$_GET['id']]['subnet_bits'];
 		$if_subnet .= "/" . $if_subnet_bits;
 
-		if (is_array($config['gateways']['gateway_item']))
+		if (isset($config['gateways']['gateway_item'])) {
 			foreach($config['gateways']['gateway_item'] as $gateway) {
 				if ($a_vip[$_GET['id']]['interface'] != $gateway['interface'])
 					continue;
@@ -119,6 +119,7 @@ if ($_GET['act'] == "del") {
 					break;
 				}
 			}
+		}
 
 		if ($a_vip[$_GET['id']]['mode'] == "ipalias") {
 			$subnet = gen_subnet($a_vip[$_GET['id']]['subnet'], $a_vip[$_GET['id']]['subnet_bits']) . "/" . $a_vip[$_GET['id']]['subnet_bits'];
