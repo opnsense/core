@@ -38,73 +38,59 @@ $shortcut_section = "ipsec";
 include("head.inc");
 
 $sad = ipsec_dump_sad();
-
+legacy_html_escape_form_data($sad);
 ?>
 
 <body>
-
 <?php include("fbegin.inc"); ?>
-
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-
-			    <section class="col-xs-12">
-
+			  <section class="col-xs-12">
 				<? $active_tab = "/diag_ipsec_sad.php"; include('diag_ipsec_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-
 							<div class="table-responsive">
-
 								<table class="table table-striped table-sort">
 									<?php if (count($sad)): ?>
 									<tr>
-										<td class="listhdrr nowrap"><?=gettext("Source");?></td>
-										<td class="listhdrr nowrap"><?=gettext("Destination");?></td>
-										<td class="listhdrr nowrap"><?=gettext("Protocol");?></td>
-										<td class="listhdrr nowrap"><?=gettext("SPI");?></td>
-										<td class="listhdrr nowrap"><?=gettext("Enc. alg.");?></td>
-										<td class="listhdr nowrap"><?=gettext("Auth. alg.");?></td>
-										<td class="listhdr nowrap"><?=gettext("Data");?></td>
-										<td class="list nowrap"></td>
+										<td><?=gettext("Source");?></td>
+										<td><?=gettext("Destination");?></td>
+										<td><?=gettext("Protocol");?></td>
+										<td><?=gettext("SPI");?></td>
+										<td><?=gettext("Enc. alg.");?></td>
+										<td><?=gettext("Auth. alg.");?></td>
+										<td><?=gettext("Data");?></td>
 									</tr>
 									<?php foreach ($sad as $sa): ?>
 									<tr>
-										<td class="listlr"><?=htmlspecialchars($sa['src']);?></td>
-										<td class="listr"><?=htmlspecialchars($sa['dst']);?></td>
-										<td class="listr"><?=htmlspecialchars(strtoupper($sa['proto']));?></td>
-										<td class="listr"><?=htmlspecialchars($sa['spi']);?></td>
-										<td class="listr"><?=htmlspecialchars($sa['ealgo']);?></td>
-										<td class="listr"><?=htmlspecialchars($sa['aalgo']);?></td>
-										<td class="listr"><?=htmlspecialchars($sa['data']);?></td>
-										<td class="list nowrap">
-										</td>
+										<td><?=$sa['src'];?></td>
+										<td><?=$sa['dst'];?></td>
+										<td><?=strtoupper($sa['proto']);?></td>
+										<td><?=$sa['spi'];?></td>
+										<td><?=$sa['ealgo'];?></td>
+										<td><?=$sa['aalgo'];?></td>
+										<td><?=$sa['data'];?></td>
 									</tr>
 									<?php endforeach; ?>
 									<?php else: ?>
 									<tr>
-										<td>
+										<td colspan="7">
 											<p><strong><?=gettext("No IPsec security associations.");?></strong></p>
 										</td>
 									</tr>
 									<?php endif; ?>
+									<tr>
+										<td colspan="7">
+											<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
+											<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
+										</td>
+									</tr>
 								</table>
-
-                            <div class="container-fluid">
-
-							<p class="vexpl">
-							<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-							<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
-							</p>
-
-                            </div>
-
-				    </div>
+							</div>
+            </div>
 					</div>
-			    </section>
+			  </section>
 			</div>
 		</div>
 	</section>
