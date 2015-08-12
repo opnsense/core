@@ -36,7 +36,7 @@ $pgtitle = array(gettext("Status"),gettext("IPsec"),gettext("Leases"));
 $shortcut_section = "ipsec";
 include("head.inc");
 
-$mobile = ipsec_dump_mobile();
+$mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();
 
 ?>
 <body>
