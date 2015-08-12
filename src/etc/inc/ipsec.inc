@@ -293,14 +293,14 @@ function ipsec_dump_spd()
 			if ($line == "No SPD entries.")
 				break;
 			if ($line[0] != "\t") {
-				if (is_array($cursp))
+				if (isset($cursp))
 					$spd[] = $cursp;
 				$cursp = array();
 				$linea = explode(" ", $line);
 				$cursp['srcid'] = substr($linea[0], 0, strpos($linea[0], "["));
 				$cursp['dstid'] = substr($linea[1], 0, strpos($linea[1], "["));
 				$i = 0;
-			} else if (is_array($cursp)) {
+			} else if (isset($cursp)) {
 				$linea = explode(" ", trim($line));
 				switch($i)
 				{
@@ -320,7 +320,7 @@ function ipsec_dump_spd()
 			}
 			$i++;
 		}
-		if (is_array($cursp) && count($cursp))
+		if (isset($cursp) && count($cursp))
 			$spd[] = $cursp;
 		pclose($fd);
 	}
