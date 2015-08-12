@@ -173,7 +173,7 @@ if (is_interface_mismatch()) {
 	echo PHP_EOL . gettext('Default interfaces not found -- Running interface assignment option.') . PHP_EOL;
 
 	led_assigninterfaces();
-	while (!set_networking_interfaces_ports());
+	while (!set_networking_interfaces_ports(true));
 	led_kitt();
 }
 

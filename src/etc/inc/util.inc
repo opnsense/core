@@ -813,119 +813,93 @@ function get_configured_ipv6_addresses()
 
 /*
  *   get_interface_list() - Return a list of all physical interfaces
- *   along with MAC and status.
+ *   along with MAC, IPv4 and status.
  *
- *   $mode = "active" - use ifconfig -lu
- *           "media"  - use ifconfig to check physical connection
- *			status (much slower)
+ *   $only_active = false -- interfaces that are available in the system
+ *                  true  -- interfaces that are physically connected
  */
-function get_interface_list($mode = "active", $keyby = "physical", $vfaces = "") {
+function get_interface_list($only_active = false)
+{
 	global $config;
-	$upints = array();
-	/* get a list of virtual interface types */
-	if(!$vfaces) {
-		$vfaces = array (
-				'bridge',
-				'ppp',
-				'pppoe',
-				'pptp',
-				'l2tp',
-				'sl',
-				'gif',
-				'gre',
-				'faith',
-				'lo',
-				'ng',
-				'_vlan',
-				'_wlan',
-				'pflog',
-				'plip',
-				'pfsync',
-				'enc',
-				'tun',
-				'carp',
-				'lagg',
-				'vip',
-				'ipfw'
-		);
-	}
-	switch($mode) {
-	case 'active':
-		$upints = legacy_interface_listget('up');
-		break;
-	case 'media':
-		$intlist = legacy_interface_listget();
-		$ifconfig = "";
-		exec("/sbin/ifconfig -a", $ifconfig);
-		$regexp = '/(' . implode('|', $intlist) . '):\s/';
-		$ifstatus = preg_grep('/status:/', $ifconfig);
-		foreach ($ifstatus as $status) {
-			$int = array_shift($intlist);
-			if (stristr($status, 'active')) {
-				$upints[] = $int;
-			}
-		}
-		break;
-	default:
-		$upints = legacy_interface_listget();
-		break;
-	}
-	/* build interface list with netstat */
-	$linkinfo = "";
-	exec("/usr/bin/netstat -inW -f link | awk '{ print $1, $4 }'", $linkinfo);
-	array_shift($linkinfo);
-	/* build ip address list with netstat */
-	$ipinfo = "";
-	exec("/usr/bin/netstat -inW -f inet | awk '{ print $1, $4 }'", $ipinfo);
-	array_shift($ipinfo);
-	foreach($linkinfo as $link) {
-		$friendly = "";
-		$alink = explode(" ", $link);
-		$ifname = rtrim(trim($alink[0]), '*');
-		/* trim out all numbers before checking for vfaces */
-		if (!in_array(array_shift(preg_split('/\d/', $ifname)), $vfaces) &&
-			!stristr($ifname, "_vlan") && !stristr($ifname, "_wlan")) {
-			$toput = array(
-					"mac" => trim($alink[1]),
-					"up" => in_array($ifname, $upints)
-				);
-			foreach($ipinfo as $ip) {
-				$aip = explode(" ", $ip);
-				if($aip[0] == $ifname) {
-					$toput['ipaddr'] = $aip[1];
-				}
-			}
-			if (isset($config['interfaces'])) {
-				foreach($config['interfaces'] as $name => $int) {
-					if($int['if'] == $ifname) $friendly = $name;
-				}
-			}
-			switch($keyby) {
-			case "physical":
-				if($friendly != "") {
-					$toput['friendly'] = $friendly;
-				}
-				$dmesg_arr = array();
-				exec("/sbin/dmesg |grep $ifname | head -n1", $dmesg_arr);
-				preg_match_all("/<(.*?)>/i", $dmesg_arr[0], $dmesg);
-				if (isset($dmesg[1][0])) {
-					$toput['dmesg'] = $dmesg[1][0];
-				} else {
-					$toput['dmesg'] = null;
-				}
-				$iflist[$ifname] = $toput;
-				break;
-			case "ppp":
 
-			case "friendly":
-				if($friendly != "") {
-					$toput['if'] = $ifname;
-					$iflist[$friendly] = $toput;
+	/* list of virtual interface types */
+	$vfaces = array(
+		'_vlan',
+		'_wlan',
+		'bridge',
+		'carp',
+		'enc',
+		'faith',
+		'gif',
+		'gre',
+		'ipfw',
+		'l2tp',
+		'lagg',
+		'lo',
+		'ng',
+		'pflog',
+		'plip',
+		'ppp',
+		'pppoe',
+		'pptp',
+		'pfsync',
+		'sl',
+		'tun',
+		'vip'
+	);
+
+	$ifnames_up = legacy_interface_listget('up');
+	$ifnames = legacy_interface_listget();
+
+	if ($only_active) {
+		$_ifnames = array();
+
+		foreach ($ifnames as $ifname) {
+			$ifinfo = legacy_interface_stats($ifname);
+			if (isset($ifinfo['link state'])) {
+				if ($ifinfo['link state'] == '2') {
+					$_ifnames[] = $ifname;
 				}
-				break;
 			}
 		}
+
+		$ifnames = $_ifnames;
 	}
+
+	foreach ($ifnames as $ifname) {
+		if (in_array(array_shift(preg_split('/\d/', $ifname)), $vfaces)) {
+			continue;
+		}
+
+		$ifdata = pfSense_get_interface_addresses($ifname);
+
+		$toput = array(
+			'up' => in_array($ifname, $ifnames_up),
+			'ipaddr' => $ifdata['ipaddr'],
+			'mac' => $ifdata['macaddr']
+		);
+
+		if (isset($config['interfaces'])) {
+			foreach($config['interfaces'] as $name => $int) {
+				if ($int['if'] == $ifname) {
+					$toput['friendly'] = $name;
+					break;
+				}
+			}
+		}
+
+		$dmesg_arr = array();
+		exec("/sbin/dmesg |grep $ifname | head -n1", $dmesg_arr);
+		preg_match_all("/<(.*?)>/i", $dmesg_arr[0], $dmesg);
+		if (isset($dmesg[1][0])) {
+			$toput['dmesg'] = $dmesg[1][0];
+		} else {
+			$toput['dmesg'] = null;
+		}
+
+		$iflist[$ifname] = $toput;
+	}
+
 	return $iflist;
 }
 
