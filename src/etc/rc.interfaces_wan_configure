@@ -35,6 +35,7 @@ require_once('openvpn.inc');
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
 require_once("unbound.inc");
+require_once("services.inc");
 
 if (!empty($argv[1])) {
 	$argument = str_replace("\n", "", $argv[1]);
