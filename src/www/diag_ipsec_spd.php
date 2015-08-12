@@ -37,86 +37,67 @@ $shortcut_section = "ipsec";
 include("head.inc");
 
 $spd = ipsec_dump_spd();
+legacy_html_escape_form_data($spd);
 ?>
-
 <body>
 
 <?php include("fbegin.inc"); ?>
-
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-
-			    <section class="col-xs-12">
-
-				<? $active_tab = "/diag_ipsec_spd.php"; include('diag_ipsec_tabs.inc'); ?>
-
+			  <section class="col-xs-12">
+					<? $active_tab = "/diag_ipsec_spd.php"; include('diag_ipsec_tabs.inc'); ?>
 					<div class="tab-content content-box col-xs-12">
-
-
-							<div class="table-responsive">
-
-								<table class="table table-striped table-sort __nomb">
+						<div class="table-responsive">
+							<table class="table table-striped">
 								<?php if (count($spd)): ?>
 								<tr>
-									<td class="listhdrr nowrap"><?= gettext("Source"); ?></td>
-									<td class="listhdrr nowrap"><?= gettext("Destination"); ?></td>
-									<td class="listhdrr nowrap"><?= gettext("Direction"); ?></td>
-									<td class="listhdrr nowrap"><?= gettext("Protocol"); ?></td>
-									<td class="listhdrr nowrap"><?= gettext("Tunnel endpoints"); ?></td>
-									<td class="list nowrap"></td>
+									<td><?= gettext("Source"); ?></td>
+									<td><?= gettext("Destination"); ?></td>
+									<td><?= gettext("Direction"); ?></td>
+									<td><?= gettext("Protocol"); ?></td>
+									<td><?= gettext("Tunnel endpoints"); ?></td>
 								</tr>
 								<?php foreach ($spd as $sp): ?>
 								<tr>
-									<td class="listlr" valign="top"><?=htmlspecialchars($sp['srcid']);?></td>
-									<td class="listr" valign="top"><?=htmlspecialchars($sp['dstid']);?></td>
-									<td class="listr" valign="top"> <span class="glyphicon glyphicon-arrow-<?php if($sp['dir'] == "in" ) echo "right"; else echo "left";?>  aria-hidden="true"></span>
+									<td class="listlr" valign="top"><?=$sp['srcid'];?></td>
+									<td class="listr" valign="top"><?=$sp['dstid'];?></td>
+									<td class="listr" valign="top">
+										<span class="glyphicon glyphicon-arrow-<?= $sp['dir'] == "in" ? "right" : "left";?>" aria-hidden="true"></span>
 									</td>
-									<td class="listr" valign="top"><?=htmlspecialchars(strtoupper($sp['proto']));?></td>
-									<td class="listr" valign="top"><?=htmlspecialchars($sp['src']);?> -> <?=htmlspecialchars($sp['dst']);?></td>
-									<td class="list nowrap">
-										<?php
-											$args = "srcid=".rawurlencode($sp['srcid']);
-											$args .= "&amp;dstid=".rawurlencode($sp['dstid']);
-											$args .= "&amp;dir=".rawurlencode($sp['dir']);
-										?>
-									</td>
+									<td class="listr" valign="top"><?=strtoupper($sp['proto']);?></td>
+									<td class="listr" valign="top"><?=$sp['src'];?> -> <?=$sp['dst'];?></td>
 								</tr>
 								<?php endforeach; ?>
-							</table>
-							<br />
-							<table class="tabcont" border="0" cellspacing="0" cellpadding="6" summary="policies">
 								<tr>
-									<td width="16">	<span class="glyphicon glyphicon-arrow-right" aria-hidden="true" alt="in"></span></td>
-									<td><?= gettext("incoming (as seen by firewall)"); ?></td>
-								</tr>
-								<tr>
-									<td colspan="5" height="4"></td>
-								</tr>
-								<tr>
-									<td><span class="glyphicon glyphicon-arrow-left" aria-hidden="true" alt="out"></span></td>
-									<td><?= gettext("outgoing (as seen by firewall)"); ?></td>
+									<td colspan="2">
+										<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
+										<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
+									</td>
+									<td colspan="3">
+										<span class="glyphicon glyphicon-arrow-right" aria-hidden="true" alt="in"></span>
+										<?= gettext("incoming (as seen by firewall)"); ?> <br/>
+										<span class="glyphicon glyphicon-arrow-left" aria-hidden="true" alt="out"></span>
+										<?= gettext("outgoing (as seen by firewall)"); ?>
+									</td>
 								</tr>
 								<?php else: ?>
 								<tr>
-									<td>
+									<td  colspan="5">
 										<p><strong><?= gettext("No IPsec security policies."); ?></strong></p>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5">
+										<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
+										<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
 									</td>
 								</tr>
 								<?php endif; ?>
 							</table>
-						</div>
-
-						 <div class="container-fluid">
-						<p class="vexpl">
-						<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
-						<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
-						</p>
-				    </div>
+				  	</div>
 					</div>
-			    </section>
+				</section>
 			</div>
 		</div>
 	</section>
