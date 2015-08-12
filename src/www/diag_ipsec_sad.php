@@ -46,7 +46,6 @@ legacy_html_escape_form_data($sad);
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 			  <section class="col-xs-12">
 				<? $active_tab = "/diag_ipsec_sad.php"; include('diag_ipsec_tabs.inc'); ?>
 					<div class="tab-content content-box col-xs-12">
