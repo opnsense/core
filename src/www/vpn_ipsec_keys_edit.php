@@ -31,80 +31,82 @@ require_once("guiconfig.inc");
 require_once("vpn.inc");
 require_once("services.inc");
 
-if (!is_array($config['ipsec'])) {
+if (!isset($config['ipsec'])) {
         $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['mobilekey'])) {
+if (!isset($config['ipsec']['mobilekey'])) {
     $config['ipsec']['mobilekey'] = array();
-}
-ipsec_mobilekey_sort();
-$a_secret = &$config['ipsec']['mobilekey'];
-
-if (is_numericint($_GET['id'])) {
-    $id = $_GET['id'];
-}
-if (isset($_POST['id']) && is_numericint($_POST['id'])) {
-    $id = $_POST['id'];
+} else {
+  ipsec_mobilekey_sort();
 }
 
-if (isset($id) && $a_secret[$id]) {
-    $pconfig['ident'] = $a_secret[$id]['ident'];
-    $pconfig['psk'] = $a_secret[$id]['pre-shared-key'];
-}
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $pconfig = array();
+    if(isset($_GET['id']) && is_numericint($_GET['id']) && isset($config['ipsec']['mobilekey'][$_GET['id']])) {
+        // fetch record
+        $id = $_GET['id'];
+        $pconfig['ident'] = $config['ipsec']['mobilekey'][$id]['ident'];
+        $pconfig['psk'] = $config['ipsec']['mobilekey'][$id]['pre-shared-key'];
+    } else {
+        // init new
+        $pconfig['ident'] = '';
+        $pconfig['psk'] = '';
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
+    $pconfig = $_POST;
+    // fetch record number if valid
+    if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($config['ipsec']['mobilekey'][$_POST['id']]) ) {
+        $id = $_POST['id'];
+    } else {
+        $id = null;
+    }
 
-if ($_POST) {
+    /* input validation */
     $userids = array();
     foreach ($config['system']['user'] as $uid => $user) {
         $userids[$user['name']] = $uid;
     }
+    if (isset($pconfig['ident']) && array_key_exists($pconfig['ident'], $userids)) {
+        $input_errors[] = gettext("A user with this name already exists. Add the key to the user instead.");
+    }
+    unset($userids);
 
-    unset($input_errors);
-    $pconfig = $_POST;
-
-    /* input validation */
     $reqdfields = explode(" ", "ident psk");
     $reqdfieldsn = array(gettext("Identifier"),gettext("Pre-Shared Key"));
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (preg_match("/[^a-zA-Z0-9@\.\-]/", $_POST['ident'])) {
+    if (empty($pconfig['ident']) || preg_match("/[^a-zA-Z0-9@\.\-]/", $pconfig['ident'])) {
         $input_errors[] = gettext("The identifier contains invalid characters.");
     }
 
-    if (array_key_exists($_POST['ident'], $userids)) {
-        $input_errors[] = gettext("A user with this name already exists. Add the key to the user instead.");
-    }
-    unset($userids);
-
-    if (!$input_errors && !(isset($id) && $a_secret[$id])) {
-        /* make sure there are no dupes */
-        foreach ($a_secret as $secretent) {
-            if ($secretent['ident'] == $_POST['ident']) {
-                $input_errors[] = gettext("Another entry with the same identifier already exists.");
-                break;
-            }
+    /* make sure there are no dupes on new entries */
+    $recidx = 0 ;
+    foreach ($config['ipsec']['mobilekey'] as $secretent) {
+        if ($secretent['ident'] == $pconfig['ident'] && ($recidx != $id || $id === null)) {
+            $input_errors[] = gettext("Another entry with the same identifier already exists.");
+            break;
         }
+        $recidx++;
     }
 
-    if (!$input_errors) {
-        if (isset($id) && $a_secret[$id]) {
-            $secretent = $a_secret[$id];
-        }
+    if (count($input_errors) == 0) {
+        $secretent = array();
+        $secretent['ident'] = $pconfig['ident'];
+        $secretent['pre-shared-key'] = $pconfig['psk'];
 
-        $secretent['ident'] = $_POST['ident'];
-        $secretent['pre-shared-key'] = $_POST['psk'];
-        $text = "";
-
-        if (isset($id) && $a_secret[$id]) {
-            $a_secret[$id] = $secretent;
-            $text = gettext("Edited");
+        if ($id !== null) {
+            // edit existing key
+            $config['ipsec']['mobilekey'][$id] = $secretent;
+            $config_write_text = gettext("Edited");
         } else {
-            $a_secret[] = $secretent;
-            $text = gettext("Added");
+            $config_write_text = gettext("Added");
+            $config['ipsec']['mobilekey'][] = $secretent;
         }
 
-        write_config("{$text} IPsec Pre-Shared Keys");
+        write_config("{$config_write_text} IPsec Pre-Shared Keys");
         mark_subsystem_dirty('ipsec');
 
         header("Location: vpn_ipsec_keys.php");
@@ -112,8 +114,11 @@ if ($_POST) {
     }
 }
 
+
 $pgtitle = gettext("VPN: IPsec: Edit Pre-Shared Key");
 $shortcut_section = "ipsec";
+
+legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
 
@@ -123,62 +128,58 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
-
 		<div class="container-fluid">
-
 			<div class="row">
-				<?php if (isset($input_errors) && count($input_errors) > 0) {
-                    print_input_errors($input_errors);
-} ?>
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-                        <form action="vpn_ipsec_keys_edit.php" method="post" name="iform" id="iform">
-
-				<div class="table-responsive">
-					<table class="table table-striped table-sort">
-					                <tr>
-					                  <td valign="top" class="vncellreq"><?=gettext("Identifier"); ?></td>
-					                  <td class="vtable">
-					                  <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=htmlspecialchars($pconfig['ident']);?>" />
-					                    <br />
-					<?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.
-					                  </td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Pre-Shared Key"); ?></td>
-					                  <td width="78%" class="vtable">
-					                  <input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=htmlspecialchars($pconfig['psk']);?>" />
-					                  </td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top">&nbsp;</td>
-					                  <td width="78%">
-					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-					                    <?php if (isset($id) && $a_secret[$id]) :
+        <?php if (isset($input_errors) && count($input_errors) > 0) {
+                print_input_errors($input_errors);
+        }
+        ?>
+        <section class="col-xs-12">
+          <div class="content-box">
+            <form action="vpn_ipsec_keys_edit.php" method="post" name="iform" id="iform">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tr>
+                    <td><a id="help_for_ident" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Identifier"); ?></td>
+					          <td>
+                      <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=$pconfig['ident'];?>" />
+                      <div class="hidden" for="help_for_ident">
+                        <?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Pre-Shared Key"); ?></td>
+                    <td>
+                      <input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=$pconfig['psk'];?>" />
+                    </td>
+					        </tr>
+					        <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+<?php                 if (isset($id) && isset($config['ipsec']['mobilekey'][$id])) :
 ?>
-					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-					                    <?php
+					            <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+<?php
 endif; ?>
-					                  </td>
-					                </tr>
-					              </table>
-				</div>
-
-				<div class="col-xs-12">
-								<span class="vexpl">
-								<span class="text-danger">
-									<strong><?=gettext("Note"); ?>:<br /></strong>
-								</span>
-								<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
-								</span>
-							</div>
-                        </form>
-				</div>
-			    </section>
-			</div>
+					          </td>
+					        </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <span class="text-danger">
+      									<strong><?=gettext("Note"); ?>:<br /></strong>
+      								</span>
+      								<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
+                    </td>
+                  </tr>
+					      </table>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
 		</div>
 	</section>
 
