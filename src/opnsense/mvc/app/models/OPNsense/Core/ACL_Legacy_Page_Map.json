@@ -79,13 +79,6 @@
             "*.widget.php*"
         ]
     },
-    "page-ipsecxml": {
-        "name": "WebCfg - Diag IPsec XML page",
-        "descr": "Allow access to the 'Diag IPsec XML' page.",
-        "match": [
-            "diag_ipsec_xml.php"
-        ]
-    },
     "page-diagnostics-arptable": {
         "name": "WebCfg - Diagnostics: ARP Table page",
         "descr": "Allow access to the 'Diagnostics: ARP Table' page.",
