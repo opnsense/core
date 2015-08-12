@@ -84,6 +84,8 @@ $input_errors = array();
 
 if (isset($_POST['userid']) && is_numericint($_POST['userid'])) {
     $id = $_POST['userid'];
+} elseif (isset($_GET['userid']) && is_numericint($_GET['userid'])) {
+    $id = $_GET['userid'];
 }
 
 if (!isset($config['system']['user']) || !is_array($config['system']['user'])) {
@@ -98,7 +100,7 @@ if (isset($_SERVER['HTTP_REFERER'])) {
     $referer = '/system_usermanager.php';
 }
 
-if (isset($id) && $a_user[$id]) {
+if (isset($id) && isset($a_user[$id])) {
     $pconfig['usernamefld'] = $a_user[$id]['name'];
     $pconfig['user_dn'] = isset($a_user[$id]['user_dn']) ? $a_user[$id]['user_dn'] : null;
     $pconfig['descr'] = $a_user[$id]['descr'];
@@ -503,7 +505,7 @@ function import_ldap_users() {
 						<div class="tab-content content-box col-xs-12 table-responsive">
 
 						<?php
-                        if ($_POST['act'] == "new" || $_POST['act'] == "edit" || count($input_errors) > 0 ) :
+                        if ($_POST['act'] == "new" || $_POST['act'] == "edit" || $_GET['act'] == "new" || $_GET['act'] == "edit"  || count($input_errors) > 0 ) :
                             ?>
 
                 <form action="system_usermanager.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
