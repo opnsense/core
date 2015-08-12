@@ -51,7 +51,7 @@ legacy_html_escape_form_data($sad);
 				<? $active_tab = "/diag_ipsec_sad.php"; include('diag_ipsec_tabs.inc'); ?>
 					<div class="tab-content content-box col-xs-12">
 							<div class="table-responsive">
-								<table class="table table-striped table-sort">
+								<table class="table table-striped">
 									<?php if (count($sad)): ?>
 									<tr>
 										<td><?=gettext("Source");?></td>
