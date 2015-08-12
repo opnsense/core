@@ -389,7 +389,9 @@ function show_phase2(id, buttonid) {
                     $fr_prefix = "frp2{$i}";
 ?>
                       <div id="shph2but-<?=$i?>">
-                        <input type="button" onclick="show_phase2('tdph2-<?=$i?>','shph2but-<?=$i?>')" value="+" /> - <?php printf(gettext("Show %s Phase-2 entries"), $phase2count); ?>
+                        <button class="btn btn-xs" type="button" onclick="show_phase2('tdph2-<?=$i?>','shph2but-<?=$i?>')">
+                          <i class="fa fa-plus"></i> <?php printf(gettext("Show %s Phase-2 entries"), $phase2count); ?>
+                        </button>
                       </div>
                       <div id="tdph2-<?=$i?>" style="display:none">
                         <table class="table table-striped table-condensed">
