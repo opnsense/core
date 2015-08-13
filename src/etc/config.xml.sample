@@ -55,16 +55,9 @@
 		</item>
 		<item>
 			<descr><![CDATA[
-				Redirect attacks are the purposeful mass issuing of ICMP type 5 packets. In a normal network, redirects
-				to the end stations should not be required. To defend against this type of attack both the sending and
-				accepting of redirect should be disabled.
-			]]></descr>
-			<tunable>net.inet.icmp.redirect</tunable>
-			<value>default</value>
-		</item>
-		<item>
-			<descr><![CDATA[
-				This option enables the NIC to drop all inbound ICMP redirect packets without returning a response.
+				Redirect attacks are the purposeful mass-issuing of ICMP type 5 packets. In a normal network, redirects
+				to the end stations should not be required. This option enables the NIC to drop all inbound ICMP redirect
+				packets without returning a response.
 			]]></descr>
 			<tunable>net.inet.icmp.drop_redirect</tunable>
 			<value>default</value>
