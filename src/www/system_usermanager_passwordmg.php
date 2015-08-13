@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("System"),gettext("User Password"));
+$pgtitle = array(gettext("System"), gettext("User Password"));
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -37,7 +37,7 @@ if (session_status() == PHP_SESSION_NONE) {
 $username = $_SESSION['Username'];
 
 if (isset($_POST['save'])) {
-    unset($input_errors);
+    $input_errors = array();
     /* input validation */
 
     $reqdfields = explode(" ", "passwordfld0 passwordfld1 passwordfld2");
@@ -49,7 +49,19 @@ if (isset($_POST['save'])) {
         $input_errors[] = gettext("The passwords do not match.");
     }
 
-    if (!$input_errors) {
+    /* determine if user is not local to system */
+    $userFound = false;
+    foreach ($config['system']['user'] as $user) {
+        if ($user['name'] == $username) {
+            $userFound = true;
+        }
+    }
+
+    if (!$userFound) {
+        $input_errors[] = gettext("Sorry, you cannot change the password for a non-local user.");
+    }
+
+    if (count($input_errors) == 0) {
         // all values are okay --> saving changes
         $config['system']['user'][$userindex[$username]]['password'] = crypt($_POST['passwordfld1'], '$6$');
         local_user_set($config['system']['user'][$userindex[$username]]);
@@ -62,84 +74,60 @@ if (isset($_POST['save'])) {
 
 session_write_close();
 
-/* determine if user is not local to system */
-$islocal = false;
-foreach ($config['system']['user'] as $user) {
-    if ($user['name'] == $username) {
-        $islocal = true;
-    }
-}
-
-
 include("head.inc");
-
 ?>
 
 <body>
 <?php include("fbegin.inc"); ?>
-
 	<section class="page-content-main">
-
 		<div class="container-fluid">
-
 			<div class="row">
-				<?
-
+<?
                 if (isset($input_errors) && count($input_errors) > 0) {
                     print_input_errors($input_errors);
                 }
                 if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
-
-                if ($islocal == false) {
-                    echo gettext("Sorry, you cannot change the password for a non-local user.");
-                                        include("foot.inc");
-                    exit;
-                }
-
-                ?>
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-		                        <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
-
-						<div class="table-responsive">
-							<table class="table table-striped table-sort">
-			                                <tr>
-			                                        <td colspan="2" valign="top" class="listtopic"><?=$username?>'s <?=gettext("Password"); ?></td>
-			                                </tr>
-			                                <tr>
-			                                        <td width="22%" valign="top" class="vncell"><?=gettext("Old password"); ?></td>
-			                                        <td width="78%" class="vtable">
-			                                                <input name="passwordfld0" type="password" class="formfld pwd" id="passwordfld0" size="20" />
-			                                        </td>
-			                                </tr>
-			                                <tr>
-			                                        <td width="22%" valign="top" class="vncell"><?=gettext("New password"); ?></td>
-			                                        <td width="78%" class="vtable">
-			                                                <input name="passwordfld1" type="password" class="formfld pwd" id="passwordfld1" size="20" />
-			                                        </td>
-			                                </tr>
-			                                <tr>
-									<td width="22%" valign="top" class="vncell"><?=gettext("Confirmation");?></td>
-			                                        <td width="78%" class="vtable">
-			                                                <input name="passwordfld2" type="password" class="formfld pwd" id="passwordfld2" size="20" />
-			                                        </td>
-			                                </tr>
-			                                <tr>
-			                                        <td width="22%" valign="top">&nbsp;</td>
-			                                        <td width="78%">
-			                                                <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-			                                        </td>
-			                                </tr>
-			                        </table>
+?>
+        <section class="col-xs-12">
+			    <div class="content-box">
+            <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
+						  <div class="table-responsive">
+							  <table class="table table-striped">
+                  <tr>
+                    <td colspan="2"><?=$username?>'s <?=gettext("Password"); ?></td>
+			            </tr>
+			            <tr>
+			              <td><?=gettext("Old password"); ?></td>
+                    <td>
+                      <input name="passwordfld0" type="password" id="passwordfld0" size="20" />
+                    </td>
+			            </tr>
+			            <tr>
+			              <td><?=gettext("New password"); ?></td>
+                    <td>
+                      <input name="passwordfld1" type="password" id="passwordfld1" size="20" />
+                    </td>
+			            </tr>
+                  <tr>
+									  <td><?=gettext("Confirmation");?></td>
+			              <td>
+                      <input name="passwordfld2" type="password" id="passwordfld2" size="20" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                    </td>
+                  </tr>
+                </table>
 						</div>
-		                        </form>
+          </form>
 				</div>
-			    </section>
-			</div>
+			</section>
 		</div>
-	</section>
+	</div>
+</section>
 <?php include("foot.inc");
