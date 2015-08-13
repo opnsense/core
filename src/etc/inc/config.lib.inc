@@ -67,12 +67,12 @@ function parse_config()
 		$backups = $cnf->getBackups();
 		if (count($backups) > 0) {
 			// load last backup
-			log_error(gettext("No (valid) config.xml found, attempting last known config restore."));
+			syslog(LOG_ERR,	sprintf('parse_config(): %s', gettext('No (valid) config.xml found, attempting last known config restore.')));
 			file_notice("config.xml", gettext("No (valid) config.xml found, attempting last known config restore."), "OPNsenseConfigurator", "");
 			$cnf->restoreBackup($backups[0]);
 		} else {
 			// we don't have backups, try to load the default
-			log_error(gettext('No config.xml found, attempting to restore factory config.'));
+			syslog(LOG_ERR, sprintf('parse_config(): %s', gettext('No config.xml found, attempting to restore factory config.')));
 			$cnf->restoreBackup('/usr/local/etc/config.xml');
 		}
 	}
