@@ -1467,6 +1467,19 @@
     };
 
     /**
+     * refresh grid (OPNsense addition)
+     *
+     * @method reload
+     * @chainable
+     **/
+    Grid.prototype.refresh = function()
+    {
+        loadData.call(this);
+
+        return this;
+    };
+
+    /**
      * Removes rows by ids. Removes selected rows if no ids are provided.
      *
      * @method remove
