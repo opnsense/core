@@ -197,7 +197,6 @@
 			<description><![CDATA[All Users]]></description>
 			<scope>system</scope>
 			<gid>1998</gid>
-			<member>0</member>
 		</group>
 		<group>
 			<name>admins</name>
