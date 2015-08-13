@@ -213,8 +213,6 @@ function write_config($desc = 'Unknown', $backup = true)
 /****f* config/reset_factory_defaults
  * NAME
  *   reset_factory_defaults - Reset the system to its default configuration.
- * RESULT
- *   integer	- indicates completion
  ******/
 function reset_factory_defaults($sync = true)
 {
