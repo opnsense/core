@@ -43,7 +43,7 @@ Do you want to proceed {$yes_no_prompt}
 EOD;
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
-    reset_factory_defaults(true);
+    reset_factory_defaults();
 }
 
 fclose($fp);
