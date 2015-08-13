@@ -125,11 +125,7 @@ function activate_sysctls()
 				$value = $tunable['value'];
 			}
 
-			if ($value !== null) {
-				$sysctls[$tunable['tunable']] = $value;
-			} else {
-				log_error(sprintf(gettext('ignoring sysctl `%s\' due to empty value'), $tunable['tunable']));
-			}
+			$sysctls[$tunable['tunable']] = $value;
 		}
 	}
 
