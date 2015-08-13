@@ -95,12 +95,24 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         /**
-         * Add fileid to alert filter
+         *  add filter criteria to log query
          */
         function addAlertQryFilters(request) {
-            var selected =$('#alert-logfile').find("option:selected").val();
-            if ( selected != "") {
-                request['fileid'] = selected;
+            var selected_logfile =$('#alert-logfile').find("option:selected").val();
+            var selected_max_entries =$('#alert-logfile-max').find("option:selected").val();
+            var search_phrase = $("#inputSearchAlerts").val();
+
+            // add loading overlay
+            $('#processing-dialog').modal('show');
+            $("#grid-alerts").bootgrid().on("loaded.rs.jquery.bootgrid", function (e){
+                $('#processing-dialog').modal('hide');
+            });
+
+
+            if ( selected_logfile != "") {
+                request['fileid'] = selected_logfile;
+                request['rowCount'] = selected_max_entries;
+                request['searchPhrase'] = search_phrase;
             }
             return request;
         }
@@ -170,7 +182,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 // refresh when all toggles are executed
                 $.when.apply(null, deferreds).done(function(){
-                    $("#"+gridId).bootgrid("reload");
+                    $("#"+gridId).bootgrid("refresh");
                 });
             }
         }
@@ -200,6 +212,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             get:'/api/ids/settings/getRuleInfo/',
                             options:{
                                 requestHandler:addRuleFilters,
+                                rowCount:[10, 25, 50,100,500,1000] ,
                                 formatters:{
                                     rowtoggle: function (column, row) {
                                         var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.sid + "\"><span class=\"fa fa-info-circle\"></span></button> ";
@@ -227,12 +240,15 @@ POSSIBILITY OF SUCH DAMAGE.
                             options:{
                                 multiSelect:false,
                                 selection:false,
+                                templates : {
+                                    header: ""
+                                },
                                 requestHandler:addAlertQryFilters,
                                 formatters:{
                                     info: function (column, row) {
                                         return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
                                     }
-                                }
+                                },
                             }
                         });
             }
@@ -344,6 +360,13 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /**
+         * link query alerts button.
+         */
+        $("#actQueryAlerts").click(function(){
+            $('#grid-alerts').bootgrid('reload');
+        });
+
+        /**
          * Initialize
          */
         loadGeneralSettings();
@@ -442,6 +465,23 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
+                    <select id="alert-logfile-max" class="selectpicker" data-width="80px">
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="250">250</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                        <option value="-1">All</option>
+                    </select>
+                    <div class="search form-group">
+                        <div class="input-group">
+                            <input class="search-field form-control" placeholder="{{ lang._('Search') }}" type="text" id="inputSearchAlerts">
+                            <span  id="actQueryAlerts" class="icon input-group-addon fa fa-refresh" title="{{ lang._('Query') }}" style="cursor: pointer;"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -466,6 +506,20 @@ POSSIBILITY OF SUCH DAMAGE.
         <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
         <br/>
         <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download') }} </i>
+    </div>
+</div>
+
+<!-- Static Modal -->
+<div class="modal modal-static fade" id="processing-dialog" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="text-center">
+                    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+                    <h4>{{ lang._('Processing request...') }} </h4>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
