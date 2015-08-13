@@ -451,11 +451,11 @@ POSSIBILITY OF SUCH DAMAGE.
             </tbody>
             <tfoot>
             <tr>
-                <td></td>
                 <td>
                     <button title="{{ lang._('disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
                     <button title="{{ lang._('enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
                 </td>
+                <td></td>
             </tr>
             </tfoot>
         </table>
