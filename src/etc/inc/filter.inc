@@ -3168,7 +3168,7 @@ EOD;
 	$ipfrules .= filter_generate_ipsec_rules($log);
 
 	update_filter_reload_status("Creating uPNP rules...");
-	if (is_array($config['installedpackages']['miniupnpd']) && is_array($config['installedpackages']['miniupnpd']['config'][0])) {
+	if (isset($config['installedpackages']['miniupnpd']['config'][0])) {
 		if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable']))
 			$ipfrules .= "anchor \"miniupnpd\"\n";
 
