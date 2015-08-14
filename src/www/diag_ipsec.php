@@ -118,7 +118,7 @@ include("head.inc");
 			<div class="row">
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 			    <section class="col-xs-12">
-<? 				$active_tab = "/diag_ipsec.php";
+<?				$active_tab = "/diag_ipsec.php";
 					include('diag_ipsec_tabs.inc');
 ?>
 						<div class="tab-content content-box col-xs-12">
@@ -212,22 +212,22 @@ include("head.inc");
 														<form method="post">
 															<input type="hidden" value="<?=$con_id?>" name="ikeid"/>
 															<input type="hidden" value="<?=isset($ikesa['id']) ? $ikesa['id'] :""?>" name="ikesaid" />
-<?php 												if (!$connected): ?>
+<?php												if (!$connected): ?>
 															<button type="submit" class="btn btn-xs" name="action" value="connect"  title="<?=gettext("Connect VPN");?>">
 																<span class="glyphicon glyphicon-play"/>
 															</button>
-<?php 												else: ?>
+<?php												else: ?>
 															<button type="submit" class="btn btn-xs" name="action" value="ikedisconnect" title="<?=gettext("Disconnect VPN");?>">
 																<span class="glyphicon glyphicon-stop"/>
 															</button>
 															<button type="submit" class="btn btn-xs" name="action" value="ikedisconnectconn"  title="<?=gettext("Disconnect VPN Connection");?>">
 																<span class="glyphicon glyphicon-remove"/>
 															</button>
-<?php 												endif; ?>
+<?php												endif; ?>
 														</form>
 													</td>
 												</tr>
-<?php 									if (isset($ikesa['childsalist']) && is_array($ikesa['childsalist']) ): ?>
+<?php									if (isset($ikesa['childsalist']) && is_array($ikesa['childsalist']) ): ?>
 												<tr>
 													<td colspan="8">
 														<div id="btnchildsa-<?=$ikeid;?>">
@@ -264,8 +264,8 @@ include("head.inc");
 																			foreach ($childsa['local']['networks']['network'] as $lnets):
 ?>
 																			<?=htmlspecialchars(ipsec_fixup_network($lnets));?> <br/>
-<?php 																endforeach;
- 																		else:
+<?php																endforeach;
+																		else:
 ?>
 																			Unknown <br/>
 <?php																endif;
@@ -275,12 +275,12 @@ include("head.inc");
 <?php																if (isset($childsa['local']['spi'])):
 ?>
 																			Local : <?=htmlspecialchars($childsa['local']['spi']);?>
-<?php 															endif;
+<?php															endif;
 ?>
 <?php																if (isset($childsa['remote']['spi'])):
 ?>
 																			<br/>Remote : <?=htmlspecialchars($childsa['remote']['spi']);?>
-<?php 															endif;
+<?php															endif;
 ?>
 																	</td>
 																	<td>
@@ -288,7 +288,7 @@ include("head.inc");
 																			foreach ($childsa['remote']['networks']['network'] as $rnets):
 ?>
 																			<?=htmlspecialchars(ipsec_fixup_network($rnets));?> <br/>
-<?php 																endforeach;
+<?php																endforeach;
 																		else:
 ?>
 																			Unknown <br/>
@@ -302,7 +302,7 @@ include("head.inc");
 													</table>
 													</td>
 												</tr>
-<?php 								endif;
+<?php								endif;
 											unset($con_id);
 												// close outer loop {foreach ($status['query']['ikesalist']['ikesa'] as $ikeid => $ikesa)}
 												endforeach;
@@ -356,9 +356,9 @@ include("head.inc");
 											</tr>
 										</tbody>
 									</table>
-				    		</div>
+						</div>
 							</div>
-			    	</section>
+				</section>
 					</div>
 				</div>
 			</section>

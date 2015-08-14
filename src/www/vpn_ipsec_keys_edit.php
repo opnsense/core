@@ -169,9 +169,9 @@ endif; ?>
                     <td>&nbsp;</td>
                     <td>
                       <span class="text-danger">
-      									<strong><?=gettext("Note"); ?>:<br /></strong>
-      								</span>
-      								<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
+									<strong><?=gettext("Note"); ?>:<br /></strong>
+								</span>
+								<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
                     </td>
                   </tr>
 					      </table>

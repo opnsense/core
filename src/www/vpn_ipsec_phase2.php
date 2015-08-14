@@ -711,7 +711,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
 										<input name="localid_address" type="text" id="localid_address" size="28" value="<?=$pconfig['localid_address'];?>" />
 										/
 										<select name="localid_netbits" id="localid_netbits">
-<?php 							for ($i = 128; $i >= 0; $i--) :
+<?php							for ($i = 128; $i >= 0; $i--) :
 ?>
 											<option value="<?=$i;?>" <?= isset($pconfig['localid_netbits']) && $i == $pconfig['localid_netbits'] ? "selected=\"selected\"" : "";?>>
 												<?=$i;?>
@@ -762,7 +762,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
 									</td>
 								</tr>
 
-<?php 					if (!isset($pconfig['mobile'])) :
+<?php					if (!isset($pconfig['mobile'])) :
 ?>
 								<tr id="opt_remoteid">
 									<td colspan="2"><b><?=gettext("Remote Network");?></b></td>
@@ -786,12 +786,12 @@ if (isset($input_errors) && count($input_errors) > 0) {
 										<input name="remoteid_address" type="text" class="formfld unknown ipv4v6" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
 										/
 										<select name="remoteid_netbits" class="formselect ipv4v6" id="remoteid_netbits">
-<?php 							for ($i = 128; $i >= 0; $i--) :
+<?php							for ($i = 128; $i >= 0; $i--) :
 ?>
 											<option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
 												<?=$i;?>
 											</option>
-<?php 							endfor;
+<?php							endfor;
 ?>
 										</select>
 									</td>
@@ -831,18 +831,18 @@ if (isset($input_errors) && count($input_errors) > 0) {
 	?>
 												<input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
 												<?=$algodata['name'];?>
-	<?php 												if (isset($algodata['keysel'])) :
+	<?php												if (isset($algodata['keysel'])) :
 	?>
 											<select name="keylen_<?=$algo;?>" class="formselect">
 												<option value="auto"><?=gettext("auto"); ?></option>
 	<?php
-	                  		for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :
+					for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :
 	?>
 												<option value="<?=$keylen;?>" <?=$keylen == $pconfig["keylen_".$algo] ? "selected=\"selected\"" : "";?>><?=$keylen;?> <?=gettext("bits"); ?></option>
 	<?php
 												endfor; ?>
 											</select>
-	<?php  												else :?>
+	<?php												else :?>
 											<br/>
 	<?php
 											endif; ?>
@@ -860,7 +860,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
 								<tr>
 									<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
 									<td width="78%" class="vtable">
-	<?php 										foreach ($p2_halgos as $algo => $algoname) :
+	<?php										foreach ($p2_halgos as $algo => $algoname) :
 	?>
 										<input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;?>" <?=in_array($algo, $pconfig['hash-algorithm-option']) ?  "checked=\"checked\"" : "";?>/>
 										<?=$algoname;?>
@@ -872,10 +872,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
 								<tr>
 									<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("PFS key group"); ?></td>
 									<td>
-	<?php 					if (!isset($pconfig['mobile']) || !isset($config['ipsec']['client']['pfs_group'])) :
+	<?php					if (!isset($pconfig['mobile']) || !isset($config['ipsec']['client']['pfs_group'])) :
 	?>
 										<select name="pfsgroup">
-	<?php 											foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :
+	<?php											foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :
 	?>
 											<option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['pfsgroup'] ? "selected=\"selected\"" : "";?>>
 												<?=$keygroupname;?>
@@ -920,7 +920,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
 								<tr>
 									<td>&nbsp;</td>
 									<td width="78%">
-<?php 						if (isset($pconfig['mobile'])) :
+<?php						if (isset($pconfig['mobile'])) :
 	?>
 										<input name="mobile" type="hidden" value="true" />
 										<input name="remoteid_type" type="hidden" value="mobile" />

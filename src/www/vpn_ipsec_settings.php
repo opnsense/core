@@ -209,7 +209,7 @@ function maxmss_checked(obj) {
 <?php
                     endforeach; ?>
                         <div class="hidden" for="help_for_ipsec_debug">
-    												<?=gettext("Launches IPSec in debug mode so that more verbose logs " .
+												<?=gettext("Launches IPSec in debug mode so that more verbose logs " .
                                                     "will be generated to aid in troubleshooting."); ?>
                         </div>
                       </td>
@@ -234,7 +234,7 @@ function maxmss_checked(obj) {
 												<strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
 												<input name="maxmss" id="maxmss" type="text" value="<?= !empty($pconfig['maxmss']) ? $pconfig['maxmss'] : "1400";?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
                         <div class="hidden" for="help_for_maxmss_enable">
-  												<?=gettext("Enable MSS clamping on TCP flows over VPN. " .
+												<?=gettext("Enable MSS clamping on TCP flows over VPN. " .
                                                   "This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "); ?>
                         </div>
 											</td>

@@ -95,7 +95,7 @@ legacy_html_escape_form_data($spd);
 								</tr>
 								<?php endif; ?>
 							</table>
-				  	</div>
+					</div>
 					</div>
 				</section>
 			</div>
