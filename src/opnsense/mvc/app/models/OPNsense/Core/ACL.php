@@ -47,45 +47,106 @@ class ACL
     private $legacyGroupPrivs = array();
 
     /**
-     * @var array old page mapping structure
+     * @var array page/endpoint mapping structure
      */
-    private $legacyACL = array();
+    private $ACLtags = array();
 
     /**
-     * temporary hack to support the old pfSense priv to page mapping and metadata.
+     * ACL to page/endpoint mapping method.
+     * Processes all acl tags containing patterns and generates a key/value store acl/pattern.
      * @return array
      */
-    private function loadLegacyPageMap()
+    private function loadPageMap()
     {
-        $legacyPageMap = array();
+        $pageMap = array();
 
-        foreach ($this->legacyACL as $aclKey => $aclItem) {
-            if (property_exists($aclItem, "match")) {
-                // check if acl item already exists and add match expressions
-                if (!array_key_exists($aclKey, $legacyPageMap)) {
-                    $legacyPageMap[$aclKey] = array();
-                }
-                foreach ($aclItem->match as $matchexpr) {
-                    $legacyPageMap[$aclKey][] = trim($matchexpr);
+        foreach ($this->ACLtags as $aclKey => $aclItem) {
+            // check if acl item already exists if there's acl content for it
+            if (!array_key_exists($aclKey, $pageMap) && (isset($aclItem["match"]) || isset($aclItem["pattern"]))) {
+                $pageMap[$aclKey] = array();
+            }
+            if (isset($aclItem["match"])) {
+                foreach ($aclItem['match'] as $matchexpr) {
+                    $pageMap[$aclKey][] = trim($matchexpr);
                 }
             }
         }
-        return $legacyPageMap;
+        return $pageMap;
+    }
+
+    /**
+     * merge legacy acl's from json file into $this->ACLtags
+     */
+    private function mergeLegacyACL()
+    {
+        // load legacy acl from json file
+        $this->ACLtags = array_merge_recursive(
+            $this->ACLtags,
+            json_decode(file_get_contents(__DIR__."/ACL_Legacy_Page_Map.json"), true)
+        );
+    }
+
+    /**
+     * merge pluggable ACL xml's into $this->ACLtags
+     * @throws \Exception
+     */
+    private function mergePluggableACLs()
+    {
+        // crawl all vendors and modules and add acl definitions
+        foreach (glob(__DIR__.'/../../*') as $vendor) {
+            foreach (glob($vendor.'/*') as $module) {
+                $acl_cfg_xml = $module.'/ACL/ACL.xml';
+                if (file_exists($acl_cfg_xml)) {
+                    // load ACL xml file and perform some basic validation
+                    $ACLxml = simplexml_load_file($acl_cfg_xml);
+                    if ($ACLxml === false) {
+                        throw new \Exception('ACL xml '.$acl_cfg_xml.' not valid') ;
+                    }
+                    if ($ACLxml->getName() != "acl") {
+                        throw new \Exception('ACL xml '.$acl_cfg_xml.' seems to be of wrong type') ;
+                    }
+
+                    // when acl was correctly loaded, let's parse data into private $this->ACLtags
+                    foreach ($ACLxml as $aclID => $ACLnode) {
+                        // an acl should minimal have a name, without one skip processing.
+                        if (isset($ACLnode->name)) {
+                            $aclPayload = array();
+                            $aclPayload['name'] = (string)$ACLnode->name;
+                            if (isset($ACLnode->desc)) {
+                                $aclPayload['desc'] = (string)$ACLnode->desc;
+                            }
+                            if (isset($ACLnode->patterns->pattern)) {
+                                // rename pattern to match for internal usage, old code did use match and
+                                // to avoid duplicate conversion let's do this only on input.
+                                $aclPayload['match'] = array();
+                                foreach ($ACLnode->patterns->pattern as $pattern) {
+                                    $aclPayload['match'][] = (string)$pattern;
+                                }
+                            }
+
+                            $this->ACLtags[$aclID] = $aclPayload;
+                        }
+
+                    }
+                }
+            }
+        }
     }
 
     /**
      * init legacy ACL features
      */
-    private function initLegacy()
+    private function init()
     {
-        // load legacy acl from json file
-        $this->legacyACL = json_decode(file_get_contents(__DIR__."/ACL_Legacy_Page_Map.json"));
+        // add acl payload
+        $this->mergeLegacyACL();
+        $this->mergePluggableACLs();
+
+        $pageMap = $this->loadPageMap();
 
         // create privilege mappings
         $this->legacyUsers = array();
         $this->legacyGroupPrivs = array();
-
-        $legacyPageMap = $this->loadLegacyPageMap();
 
         $groupmap = array();
 
@@ -99,9 +160,9 @@ class ACL
                 $this->legacyUsers[$node->name->__toString()]['priv'] = array();
                 foreach ($node->priv as $priv) {
                     if (substr($priv, 0, 5) == 'page-') {
-                        if (array_key_exists($priv->__toString(), $legacyPageMap)) {
+                        if (array_key_exists($priv->__toString(), $pageMap)) {
                             $this->legacyUsers[$node->name->__toString()]['priv'][] =
-                                $legacyPageMap[$priv->__toString()];
+                                $pageMap[$priv->__toString()];
                         }
                     }
                 }
@@ -121,8 +182,8 @@ class ACL
                         }
                     }
                 } elseif ($node->getName() == "priv" && substr($node->__toString(), 0, 5) == "page-") {
-                    if (array_key_exists($node->__toString(), $legacyPageMap)) {
-                        $this->legacyGroupPrivs[$groupkey][] = $legacyPageMap[$node->__toString()];
+                    if (array_key_exists($node->__toString(), $pageMap)) {
+                        $this->legacyGroupPrivs[$groupkey][] = $pageMap[$node->__toString()];
                     }
                 }
             }
@@ -151,7 +212,7 @@ class ACL
      */
     public function __construct()
     {
-        $this->initLegacy();
+        $this->init();
     }
 
     /**
@@ -189,14 +250,14 @@ class ACL
     }
 
     /**
-     * return privilege list as array (sorted)
+     * return privilege list as array (sorted), only for backward compatibility
      * @return array
      */
     public function getLegacyPrivList()
     {
         // convert json priv map to array
         $priv_list = array();
-        foreach ($this->legacyACL as $aclKey => $aclItem) {
+        foreach ($this->ACLtags as $aclKey => $aclItem) {
             $priv_list[$aclKey] = array();
             foreach ($aclItem as $propName => $propValue) {
                 if ($propName == 'name' || $propName == 'descr') {
