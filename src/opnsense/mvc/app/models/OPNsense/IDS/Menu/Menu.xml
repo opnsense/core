@@ -1,0 +1,6 @@
+<menu>
+    <!-- Plugin IDS menu -->
+    <Services order="4" cssClass="glyphicon glyphicon-cog">
+        <IDS VisibleName="Intrusion Detection" url="/ui/ids/"/>
+    </Services>
+</menu>

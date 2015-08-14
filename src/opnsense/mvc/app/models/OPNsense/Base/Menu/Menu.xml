@@ -146,7 +146,6 @@
         <WoL VisibleName="Wake on LAN" url="/services_wol.php">
 		<WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
-        <IDS VisibleName="Intrusion Detection" url="/ui/ids/"/>
     </Services>
 
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
