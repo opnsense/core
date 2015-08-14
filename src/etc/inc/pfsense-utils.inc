@@ -284,53 +284,34 @@ function host_firmware_version()
 	);
 }
 
-
-/****f* legacy/reload_all
- * NAME
- *   reload_all - triggers a reload of all settings
- *   * INPUTS
- *   none
- * RESULT
- *   none
- ******/
 function reload_all()
 {
-	configd_run("service reload all", true);
+	configd_run('service reload all', true);
 }
 
-/****f* legacy/reload_interfaces
- * NAME
- *   reload_interfaces - triggers a reload of all interfaces
- * INPUTS
- *   none
- * RESULT
- *   none
- ******/
 function reload_interfaces()
 {
-	configd_run("interface reload");
+	configd_run('interface reload');
 }
 
-
-function setup_serial_port($when = 'save', $path = '')
+function setup_serial_port($sync = true)
 {
 	global $config;
 
+	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
 	$serial_enabled = isset($config['system']['enableserial']);
 
-	$prefix = "";
-	if (($when == "upgrade") && (!empty($path)) && is_dir($path.'/boot/'))
-		$prefix = "/tmp/{$path}";
-	$boot_config_file = "{$path}/boot.config";
-	$loader_conf_file = "{$path}/boot/loader.conf";
-	/* serial console - write out /boot.config */
-	if(file_exists($boot_config_file))
-		$boot_config = file_get_contents($boot_config_file);
-	else
-		$boot_config = "";
+	$loader_conf_file = '/boot/loader.conf';
+	$boot_config_file = '/boot.config';
 
-	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
 	if (!is_install_media()) {
+		/* serial console - write out /boot.config */
+		if (file_exists($boot_config_file)) {
+			$boot_config = file_get_contents($boot_config_file);
+		} else {
+			$boot_config = '';
+		}
+
 		$boot_config_split = explode("\n", $boot_config);
 		$fd = fopen($boot_config_file,"w");
 		if($fd) {
@@ -348,9 +329,6 @@ function setup_serial_port($when = 'save', $path = '')
 			fclose($fd);
 		}
 
-		/* serial console - write out /boot/loader.conf */
-		if ($when == "upgrade")
-			system("echo \"Reading {$loader_conf_file}...\" >> /conf/upgrade_log.txt");
 		$boot_config = @file_get_contents($loader_conf_file);
 		$boot_config_split = explode("\n", $boot_config);
 		if(count($boot_config_split) > 0) {
@@ -386,6 +364,7 @@ function setup_serial_port($when = 'save', $path = '')
 			file_put_contents($loader_conf_file, implode("\n", $new_boot_config) . "\n");
 		}
 	}
+
 	$ttys = file_get_contents("/etc/ttys");
 	$ttys_split = explode("\n", $ttys);
 	$fd = fopen("/etc/ttys", "w");
@@ -399,6 +378,7 @@ function setup_serial_port($when = 'save', $path = '')
 		$console_type = 'al.Pc';
 		$serial_type = 'al.' . $serialspeed;
 	}
+
 	foreach($ttys_split as $tty) {
 		if (stristr($tty, "ttyv0"))
 			fwrite($fd, "ttyv0	\"/usr/libexec/getty {$console_type}\"	cons25	on	secure\n");
@@ -407,9 +387,13 @@ function setup_serial_port($when = 'save', $path = '')
 		else
 			fwrite($fd, $tty . "\n");
 	}
+
 	unset($on_off, $console_type, $serial_type);
 	fclose($fd);
-	reload_ttys();
+
+	if ($sync) {
+		reload_ttys();
+	}
 }
 
 function reload_ttys()

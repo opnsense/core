@@ -218,7 +218,7 @@ function reset_factory_defaults($sync = true)
 {
 	mwexec('/bin/rm -r /conf/*');
 	disable_security_checks();
-	setup_serial_port();
+	setup_serial_port(false);
 
 	/* as we go through a special case directly reboot */
 	$shutdown_cmd = '/sbin/shutdown -or now';
