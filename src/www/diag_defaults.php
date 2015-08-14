@@ -29,6 +29,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("pfsense-utils.inc");
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Factory defaults"));
 include("head.inc");
