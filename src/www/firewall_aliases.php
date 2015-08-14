@@ -240,8 +240,8 @@ $( document ).ready(function() {
 											  if (!empty($alias["url"])) {
 												    $alias_values = $alias["url"];
 											  } elseif(isset($alias["aliasurl"])) {
-                            $alias_values = implode(", ", array_slice(explode(" ", $alias['aliasurl']), 0, 5));
-													  if(count(explode(" ", $alias['aliasurl'])) > 5) {
+                            $alias_values = implode(", ", array_slice($alias['aliasurl'], 0, 5));
+													  if(count($alias['aliasurl']) > 5) {
 														    $alias_values .= "...";
 													  }
 											  } else {
