@@ -137,6 +137,7 @@ include("head.inc"); ?>
 										<table class="table table-striped table-bordered">
 											<th><?=$fields[$field]?></th>
 											<th><?=gettext("Count");?></th>
+											<?php if (isset($data[$field])):?>
 											<?php foreach(array_keys($data[$field]) as $row): ?>
 												<tr>
 													<td>
@@ -147,6 +148,7 @@ include("head.inc"); ?>
 													<td><?=$data[$field][$row]["value"]?></td>
 												</tr>
 											<?php endforeach ?>
+											<?php endif; ?>
 									</table>
 									</div>
 							</div>
