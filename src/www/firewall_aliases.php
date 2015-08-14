@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   				filter_configure();
   				mark_subsystem_dirty('aliases');
   			}
-  			header("Location: firewall_aliases.php?tab=" . $selected_tab);
+				header("Location: firewall_aliases.php?tab=" . $selected_tab);
   			exit;
   		}
     }
@@ -168,10 +168,8 @@ $( document ).ready(function() {
                 }}, {
 									label: "<?= gettext("Yes");?>",
 									action: function(dialogRef) {
-										$.post(window.location, {act: 'del', id:id}, function(data) {
-													location.reload();
-										});
-										dialogRef.close();
+										$("#delId").val(id);
+										$("#iform").submit()
 								}
             }]
 		});
@@ -198,6 +196,8 @@ $( document ).ready(function() {
 					<div class="tab-content content-box col-xs-12">
             <form action="firewall_aliases.php" method="post" name="iform" id="iform">
               <input type="hidden" name="tab" value="<?=$selected_tab;?>" />
+							<input type="hidden" name="id" value="" id="delId"/>
+							<input type="hidden" name="act" value="del"/>
                 <div class="table-responsive">
                   <table class="table table-striped">
 										<tr>
