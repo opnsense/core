@@ -84,8 +84,15 @@ class MenuSystem
     public function __construct()
     {
         $this->root = new MenuItem("root");
-        $this->addXML(__DIR__."/Menu.xml");
-
+        // crawl all vendors and modules and add menu definitions
+        foreach (glob(__DIR__.'/../../../*') as $vendor) {
+            foreach (glob($vendor.'/*') as $module) {
+                $menu_cfg_xml = $module.'/Menu/Menu.xml';
+                if (file_exists($menu_cfg_xml)) {
+                    $this->addXML($menu_cfg_xml);
+                }
+            }
+        }
     }
 
     /**
