@@ -554,13 +554,14 @@ if ($filtersubmit) {
 	$filterfieldsarray['dstip'] = getGETPOSTsettingvalue('filterlogentries_destinationipaddress', null);
 	$filterfieldsarray['dstport'] = getGETPOSTsettingvalue('filterlogentries_destinationport', null);
 	$filterfieldsarray['proto'] = getGETPOSTsettingvalue('filterlogentries_protocol', null);
-	$filterfieldsarray['tcpflags'] = getGETPOSTsettingvalue('filterlogentries_protocolflags', null);
+  $filterfieldsarray['tcpflags'] = getGETPOSTsettingvalue('filterlogentries_protocolflags', null);
+  $filterfieldsarray['version'] = getGETPOSTsettingvalue('filterlogentries_version', null);
 	$filterlogentries_qty = getGETPOSTsettingvalue('filterlogentries_qty', null);
 } else {
 	$interfacefilter = null;
 	$filterlogentries_qty = null ;
 	$filtertext = null;
-	foreach (array('act','time','interface','srcip','srcport','dstip','dstport','proto','tcpflags') as $tag) {
+	foreach (array('act','time','interface','srcip','srcport','dstip','dstport','proto','tcpflags', 'version') as $tag) {
 		$filterfieldsarray[$tag] = null;
 	}
 }
@@ -652,9 +653,23 @@ include("head.inc");
 					          <td><input type="text" class="form-control" placeholder="<?= gettext('Interface') ?>" id="filterlogentries_interfaces" name="filterlogentries_interfaces" value="<?= $filterfieldsarray['interface'] ?>"></td>
 					          <td><input type="text" class="form-control" placeholder="<?= gettext('Destination IP Address') ?>" id="filterlogentries_destinationipaddress" name="filterlogentries_destinationipaddress" value="<?= $filterfieldsarray['dstip'] ?>"></td>
 					          <td><input type="text" class="form-control" placeholder="<?= gettext('Destination Port') ?>" id="filterlogentries_destinationport" name="filterlogentries_destinationport" value="<?= $filterfieldsarray['dstport'] ?>"></td>
-					          <td><input type="text" class="form-control" placeholder="<?= gettext('Protocol Flags') ?>" id="filterlogentries_protocolflags" name="filterlogentries_protocolflags" value="<?= $filterfieldsarray['tcpflags'] ?>"></td>
+                    <td><input type="text" class="form-control" placeholder="<?= gettext('Protocol Flags') ?>" id="filterlogentries_protocolflags" name="filterlogentries_protocolflags" value="<?= $filterfieldsarray['tcpflags'] ?>"></td>
+                    <td>
+                      <select class="form-control" id="filterlogentries_version" name="filterlogentries_version">
+                        <?php
+                          $versionlist = array("All" => gettext("Any"), "4" => gettext('IPv4'), "6" => gettext('IPv6'));
+                          foreach ($versionlist as $version => $versionname)
+                          {
+                            echo '<option value="' . htmlspecialchars($version) . '"' . ((isset ($filterfieldsarray['version']) && $filterfieldsarray['version'] == $version ) ? ' selected="selected"' : '') . '>' . htmlspecialchars($versionname) . '</option>' ;
+                          }
+                        ?>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td><td></td><td></td><td></td><td></td>
 					          <td><input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align:top;" value="<?=gettext("Filter");?>" /></td>
-					        </tr>
+                  </tr>
 					      </tbody>
 					    </table>
                             </div>
