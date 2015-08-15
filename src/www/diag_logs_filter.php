@@ -657,10 +657,10 @@ include("head.inc");
                     <td>
                       <select class="form-control" id="filterlogentries_version" name="filterlogentries_version">
                         <?php
-                          $versionlist = array("Any" => gettext("Any"), "4" => gettext('IPv4'), "6" => gettext('IPv6'));
+                          $versionlist = array("All" => gettext("Any"), "4" => gettext('IPv4'), "6" => gettext('IPv6'));
                           foreach ($versionlist as $version => $versionname)
                           {
-                            echo '<option value="' . htmlspecialchars($version) . '"' . ((isset ($filterfieldsarray['filterlogentries_version']) && $filterfieldsarray['filterlogentries_version'] == $version ) ? ' selected="selected"' : '') . '>' . htmlspecialchars($versionname) . '</option>' ;
+                            echo '<option value="' . htmlspecialchars($version) . '"' . ((isset ($filterfieldsarray['version']) && $filterfieldsarray['version'] == $version ) ? ' selected="selected"' : '') . '>' . htmlspecialchars($versionname) . '</option>' ;
                           }
                         ?>
                       </select>
