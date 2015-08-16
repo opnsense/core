@@ -307,8 +307,8 @@ include("head.inc");
 												</td>
 											</tr>
 											<tr>
-												<td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
-												<td>
+												<td width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Name"); ?></td>
+												<td width="78%">
 													<input name="origname" type="hidden" id="origname" class="form-control unknown" size="40" value="<?=$pconfig['name'];?>" />
 													<?php if (isset($id)): ?>
 														<input name="id" type="hidden" value="<?=$id;?>" />
@@ -321,7 +321,7 @@ include("head.inc");
 											</tr>
 											<tr>
 												<td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-												<td width="78%" class="vtable">
+												<td>
 													<input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
 													<div class="hidden" for="help_for_description">
 														<?=gettext("You may enter a description here for your reference (not parsed)."); ?>
