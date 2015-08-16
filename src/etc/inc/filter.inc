@@ -1790,6 +1790,24 @@ function filter_nat_rules_generate() {
 
 	$inetd_fd = fopen('/var/etc/inetd.conf', 'w');
 
+	// prevent redirection on ports with "lock out" protection
+	if (!isset($config['system']['webgui']['noantilockout'])) {
+		$alports = filter_get_antilockout_ports();
+		if ( !empty($FilterIflist['lan']['if']) ) {
+			$alintrf = $FilterIflist['lan']['if'];
+		} elseif ( !empty($FilterIflist['wan']['if']) ) {
+			// single-interface deployment, add to WAN
+			$alintrf = $FilterIflist['wan']['if'];
+		} else {
+			$alintrf = null;
+		}
+		if (!empty($alintrf) ) {
+			$natrules .= "# Anti lockout, prevent redirects for protected ports to this interface ip \n";
+			$natrules .= "no rdr on {$alintrf} proto tcp from any to ( {$alintrf} ) port { {$alports} } ";
+		}
+		unset($alports);
+	}
+
 	if(isset($config['nat']['rule'])) {
 		/* start reflection redirects on port 19000 of localhost */
 		$starting_localhost_port = 19000;
