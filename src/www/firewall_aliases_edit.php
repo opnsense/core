@@ -33,40 +33,6 @@
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 
-/* returns an array consisting of every element of $haystack that is not equal to $needle. */
-function array_exclude($needle, $haystack)
-{
-	$result = array();
-
-	if (is_array($haystack)) {
-		foreach ($haystack as $thing) {
-			if ($needle !== $thing) {
-				$result[] = $thing;
-			}
-		}
-	}
-
-	return $result;
-}
-
-function alias_same_type($name, $type) {
-	global $config;
-
-	foreach ($config['aliases']['alias'] as $alias) {
-		if ($name == $alias['name']) {
-			if (in_array($type, array("host", "network")) &&
-				in_array($alias['type'], array("host", "network")))
-				return true;
-			if ($type  == $alias['type'])
-				return true;
-			else
-				return false;
-		}
-	}
-	return true;
-}
-
-
 if (!isset($config['aliases'])) {
         $config['aliases'] = array();
 }
@@ -164,6 +130,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 							break;
 						}
 					}
+				}
+
+				/* user may not change type */
+				if (isset($id) && $pconfig['type'] != $a_aliases[$id]['type']) {
+						$input_errors[] = gettext("Alias type may not be changed for an existing alias.");
 				}
 
 				if ($pconfig['type'] == 'urltable') {
