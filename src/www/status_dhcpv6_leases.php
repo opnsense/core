@@ -481,17 +481,17 @@ if(count($pools) > 0) {
 									echo "<td class=\"listr\">{$fspans}{$data['act']}{$fspane}</td>\n";
 
 									if ($data['type'] == "dynamic") {
-										echo "<td valign=\"middle\"><a href=\"services_dhcpv6_edit.php?if={$data['if']}&amp;duid={$data['duid']}&amp;hostname={$data['hostname']}\">";
-										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("add a static mapping for this MAC address") ."\" alt=\"add\" /></a></td>\n";
+										echo "<td valign=\"middle\" style=\"padding-left: 0px;\"><a href=\"services_dhcpv6_edit.php?if={$data['if']}&amp;duid={$data['duid']}&amp;hostname={$data['hostname']}\" class=\"btn btn-default btn-xs\">";
+										echo "<span class=\"glyphicon glyphicon-plus\"></span></a><br />\n";
 									} else {
-										echo "<td class=\"list\" valign=\"middle\">";
-										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_plus_mo.gif\" width=\"17\" height=\"17\" border=\"0\" alt=\"add\" /></td>\n";
+										echo "<td class=\"list\" valign=\"middle\" style=\"padding-left: 0px;\">";
+										echo "<span class=\"glyphicon glyphicon-plus\"></span>\n";
 									}
 
 									/* Only show the button for offline dynamic leases */
 									if (($data['type'] == "dynamic") && ($data['online'] != "online")) {
-										echo "<td class=\"list\" valign=\"middle\"><a href=\"status_dhcpv6_leases.php?deleteip={$data['ip']}&amp;all=" . htmlspecialchars($_GET['all']) . "\">";
-										echo "<img src=\"/themes/{$g['theme']}/images/icons/icon_x.gif\" width=\"17\" height=\"17\" border=\"0\" title=\"" . gettext("delete this DHCP lease") . "\" alt=\"delete\" /></a></td>\n";
+										echo "<a href=\"status_dhcpv6_leases.php?deleteip={$data['ip']}&amp;all=" . htmlspecialchars($_GET['all']) . "\" class=\"btn btn-default btn-xs\">";
+										echo "<span class=\"glyphicon glyphicon-remove\"></span></a></td>\n";
 									}
 									echo "</tr>\n";
 								}
