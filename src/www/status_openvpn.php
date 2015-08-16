@@ -28,35 +28,14 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext("Status"), gettext("OpenVPN"));
-$shortcut_section = "openvpn";
-
-/* Handle AJAX */
-if($_GET['action']) {
-	if($_GET['action'] == "kill") {
-		$port  = $_GET['port'];
-		$remipp  = $_GET['remipp'];
-		if (!empty($port) and !empty($remipp)) {
-			$retval = kill_client($port, $remipp);
-			echo htmlentities("|{$port}|{$remipp}|{$retval}|");
-		} else {
-			echo gettext("invalid input");
-		}
-		exit;
-	}
-}
-
-
 function kill_client($port, $remipp) {
 	global $g;
 
-	//$tcpsrv = "tcp://127.0.0.1:{$port}";
 	$tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
 	$errval;
 	$errstr;
@@ -87,9 +66,32 @@ function kill_client($port, $remipp) {
 	return $killed;
 }
 
+
+$pgtitle = array(gettext("Status"), gettext("OpenVPN"));
+$shortcut_section = "openvpn";
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+	$vpnid = 0;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	if (isset($_POST['action']) && $_POST['action'] == 'kill') {
+			$port  = escapeshellarg($_POST['port']);
+			$remipp  = escapeshellarg($_POST['remipp']);
+			if (!empty($port) and !empty($remipp)) {
+					$retval = kill_client($port, $remipp);
+					echo htmlentities("|{$port}|{$remipp}|{$retval}|");
+			} else {
+					echo gettext("invalid input");
+			}
+			exit;
+	}
+}
+
 $servers = openvpn_get_active_servers();
+legacy_html_escape_form_data($servers);
 $sk_servers = openvpn_get_active_servers("p2p");
+legacy_html_escape_form_data($sk_servers);
 $clients = openvpn_get_active_clients();
+legacy_html_escape_form_data($clients);
 
 include("head.inc"); ?>
 
@@ -99,326 +101,211 @@ include("head.inc"); ?>
 
 <script type="text/javascript">
 //<![CDATA[
-	function killClient(mport, remipp) {
-		var busy = function(index,icon) {
-			jQuery(icon).bind("onclick","");
-			jQuery(icon).attr('src',jQuery(icon).attr('src').replace("\.gif", "_d.gif"));
-			jQuery(icon).css("cursor","wait");
-		}
+$( document ).ready(function() {
+	// link kill buttons
+	$(".act_kill_client").click(function(){
+		var port = $(this).attr("data-client-port");
+		var ip = $(this).attr("data-client-ip");
+		$.post(window.location, {action: 'kill', port:port,remipp:ip}, function(data) {
+					location.reload();
+		});
+	});
+	// link show/hide routes
+	$(".act_show_routes").click(function(){
+		$("*[for='" + $(this).attr('id') + "']").toggleClass("hidden show");
+	});
 
-		jQuery('img[name="i:' + mport + ":" + remipp + '"]').each(busy);
+	// minimize all buttons, some pf the buttons come from the shared service
+	// functions, which outputs large buttons.
+	$(".btn").each(function(){
+		$(this).addClass("btn-xs");
+	});
 
-		jQuery.ajax(
-			"<?=$_SERVER['SCRIPT_NAME'];?>" +
-				"?action=kill&port=" + mport + "&remipp=" + remipp,
-			{ type: "get", complete: killComplete }
-		);
-	}
-
-	function killComplete(req) {
-		var values = req.responseText.split("|");
-		if(values[3] != "0") {
-			alert('<?=gettext("An error occurred.");?>' + ' (' + values[3] + ')');
-			return;
-		}
-
-		jQuery('tr[name="r:' + values[1] + ":" + values[2] + '"]').each(
-			function(index,row) { jQuery(row).fadeOut(1000); }
-		);
-	}
+});
 //]]>
 </script>
-
-
 <section class="page-content-main">
 	<div class="container-fluid">
-
         <div class="row">
-
             <section class="col-xs-12">
-                <div class="content-box">
-	                <header class="content-box-head container-fluid">
-				        <h3>OpenVPN Status</h3>
-				    </header>
-
-				    <div class="content-box-main col-xs-12">
-					    <form action="status_openvpn.php" method="get" name="iform">
-
-
-							<?php $i = 0; ?>
-							<?php foreach ($servers as $server): ?>
-							<div class="table-responsive">
-							<table class="table table-striped table-sort sortable __nomb">
-								<tr>
-									<td colspan="6" class="listtopic">
-										<?=$server['name'];?> <?=gettext("Client connections"); ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="connections">
-										<tr>
-											<td class="listhdrr"><?=gettext("Common Name"); ?></td>
-											<td class="listhdrr"><?=gettext("Real Address"); ?></td>
-											<td class="listhdrr"><?=gettext("Virtual Address"); ?></td>
-											<td class="listhdrr"><?=gettext("Connected Since"); ?></td>
-											<td class="listhdrr"><?=gettext("Bytes Sent"); ?></td>
-											<td class="listhdrr"><?=gettext("Bytes Received"); ?></td>
-										</tr>
-
-										<?php foreach ($server['conns'] as $conn): ?>
-										<tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
-											<td class="listlr">
-												<?=$conn['common_name'];?>
-											</td>
-											<td class="listr">
-												<?=$conn['remote_host'];?>
-											</td>
-											<td class="listr">
-												<?=$conn['virtual_addr'];?>
-											</td>
-											<td class="listr">
-												<?=$conn['connect_time'];?>
-											</td>
-											<td class="listr">
-												<?=format_bytes($conn['bytes_sent']);?>
-											</td>
-											<td class="listr">
-												<?=format_bytes($conn['bytes_recv']);?>
-											</td>
-											<td class="list">
-												<img src="/themes/<?php echo $g['theme']; ?>/images/icons/icon_x.gif" height="17" width="17" border="0"
-												   onclick="killClient('<?php echo $server['mgmt']; ?>', '<?php echo $conn['remote_host']; ?>');" style="cursor:pointer;"
-												   id="<?php echo "i:{$server['mgmt']}:{$conn['remote_host']}"; ?>"
-												   title="<?php echo gettext("Kill client connection from") . " " . $conn['remote_host']; ?>" alt="delete" />
-											</td>
-										</tr>
-
+	            <header class="content-box-head container-fluid"> <h3><?=gettext("OpenVPN Status");?></h3>
+					</header>
+						<div class="content-box-main col-xs-12">
+							<form action="status_openvpn.php" method="get" name="iform">
+										<div class="table-responsive">
+										<table class="table table-striped">
+											<?php $i = 0; ?>
+											<?php foreach ($servers as $server): ?>
+											<tr>
+												<td colspan="8" class="listtopic">
+													<b><?=$server['name'];?> <?=gettext("Client connections"); ?></b>
+												</td>
+											</tr>
+											<tr>
+												<td><?=gettext("Common Name"); ?></td>
+												<td><?=gettext("Real Address"); ?></td>
+												<td><?=gettext("Virtual Address"); ?></td>
+												<td><?=gettext("Connected Since"); ?></td>
+												<td><?=gettext("Bytes Sent"); ?></td>
+												<td><?=gettext("Bytes Received"); ?></td>
+												<td></td>
+												<td></td>
+											</tr>
+											<?php foreach ($server['conns'] as $conn): ?>
+											<tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
+												<td><?=$conn['common_name'];?></td>
+												<td><?=$conn['remote_host'];?></td>
+												<td><?=$conn['virtual_addr'];?></td>
+												<td><?=$conn['connect_time'];?></td>
+												<td><?=format_bytes($conn['bytes_sent']);?></td>
+												<td><?=format_bytes($conn['bytes_recv']);?></td>
+												<td></td>
+												<td>
+													<a	data-client-port="<?=$server['mgmt'];?>"
+															data-client-ip="<?=$conn['remote_host'];?>"
+															title="<?=gettext("Kill client connection from"). " ".  $conn['remote_host'] ; ?>"
+															class="act_kill_client btn btn-default">
+															<span class="glyphicon glyphicon-remove"></span>
+													</a>
+												</td>
+											</tr>
+											<?php endforeach; ?>
+											<tr>
+												<td colspan="2">
+													<?php $ssvc = find_service_by_openvpn_vpnid($server['vpnid']); ?>
+													<?= get_service_status_icon($ssvc, true, true); ?>
+													<?= get_service_control_links($ssvc, true); ?>
+												</td>
+												<td colspan="6">&nbsp;</td>
+											</tr>
+											<?php if (isset($server['routes']) && count($server['routes'])): ?>
+											<tr>
+												<td colspan="8">
+														<button class="btn btn-default act_show_routes" type="button" id="showroutes_<?=$i?>"><i class="fa fa-info"></i>
+															<?php echo gettext("Show/Hide Routing Table"); ?>
+														</button>
+														<div  class="hidden"  for="showroutes_<?=$i?>">
+															<small>
+																<?=$server['name'];?> <?=gettext("Routing Table"); ?>
+															</small>
+															<table class="table table-striped table-bordered">
+																<thead>
+																	<tr>
+																		<th><?=gettext("Common Name"); ?></th>
+																		<th><?=gettext("Real Address"); ?></th>
+																		<th><?=gettext("Target Network"); ?></th>
+																		<th><?=gettext("Last Used"); ?></th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<?php foreach ($server['routes'] as $conn): ?>
+																	<tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
+																		<td><?=$conn['common_name'];?></td>
+																		<td><?=$conn['remote_host'];?></td>
+																		<td><?=$conn['virtual_addr'];?></td>
+																		<td><?=$conn['last_time'];?></td>
+																	</tr>
+																	<?php endforeach; ?>
+																	<tfoot>
+																	<tr>
+																		<td colspan="6"><?= gettext("An IP address followed by C indicates a host currently connected through the VPN.") ?></td>
+																	</tr>
+																	</tfoot>
+																</tbody>
+															</table>
+														</div>
+												</td>
+											</tr>
+										<?php endif; ?>
+										<?php $i++; ?>
 										<?php endforeach; ?>
-										<tfoot>
-										<tr>
-											<td colspan="2" class="list" height="12">
-											<table>
+
+										<?php if (!empty($sk_servers)) { ?>
 											<tr>
-											<td><?php $ssvc = find_service_by_openvpn_vpnid($server['vpnid']); ?>
-											<?= get_service_status_icon($ssvc, true, true); ?>
-											<?= get_service_control_links($ssvc, true); ?></td>
+												<td colspan="8" class="listtopic">
+													<b><?=gettext("Peer to Peer Server Instance Statistics"); ?></b>
+												</td>
 											</tr>
-											</table>
-											</td>
-											<td colspan="4" class="list" height="12">&nbsp;</td>
-										</tr>
-										</tfoot>
-									</table>
-									</td>
-								</tr>
-							</table>
-							<?php if (is_array($server['routes']) && count($server['routes'])): ?>
-							<div id="shroutebut-<?= $i ?>">
-							<input type="button" onClick="show_routes('tabroute-<?= $i ?>','shroutebut-<?= $i ?>')" value="<?php echo gettext("Show Routing Table"); ?>" /> - <?= gettext("Display OpenVPN's internal routing table for this server.") ?>
-
-							</div>
-							<table style="display: none; padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" id="tabroute-<?= $i ?>" summary="routing table">
-								<tr>
-									<td colspan="6" class="listtopic">
-										<?=$server['name'];?> <?=gettext("Routing Table"); ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="results">
 										<tr>
-											<td class="listhdrr"><?=gettext("Common Name"); ?></td>
-											<td class="listhdrr"><?=gettext("Real Address"); ?></td>
-											<td class="listhdrr"><?=gettext("Target Network"); ?></td>
-											<td class="listhdrr"><?=gettext("Last Used"); ?></td>
+											<td><?=gettext("Name"); ?></td>
+											<td><?=gettext("Remote Host"); ?></td>
+											<td><?=gettext("Virtual Addr"); ?></td>
+											<td><?=gettext("Connected Since"); ?></td>
+											<td><?=gettext("Bytes Sent"); ?></td>
+											<td><?=gettext("Bytes Received"); ?></td>
+											<td><?=gettext("Status"); ?></td>
+											<td></td>
 										</tr>
-
-										<?php foreach ($server['routes'] as $conn): ?>
-										<tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
-											<td class="listlr">
-												<?=$conn['common_name'];?>
-											</td>
-											<td class="listr">
-												<?=$conn['remote_host'];?>
-											</td>
-											<td class="listr">
-												<?=$conn['virtual_addr'];?>
-											</td>
-											<td class="listr">
-												<?=$conn['last_time'];?>
-											</td>
-										</tr>
-
+										<?php foreach ($sk_servers as $sk_server): ?>
+													<tr id="<?php echo "r:{$sk_server['port']}:{$sk_server['vpnid']}"; ?>">
+														<td><?=$sk_server['name'];?></td>
+														<td><?=$sk_server['remote_host'];?></td>
+														<td><?=$sk_server['virtual_addr'];?></td>
+														<td><?=$sk_server['connect_time'];?></td>
+														<td><?=format_bytes($sk_server['bytes_sent']);?></td>
+														<td><?=format_bytes($sk_server['bytes_recv']);?></td>
+														<td><?=$sk_server['status'];?></td>
+														<td>
+															<div>
+																<?php $ssvc = find_service_by_openvpn_vpnid($sk_server['vpnid']); ?>
+																<?= get_service_status_icon($ssvc, false, true); ?>
+																<?= get_service_control_links($ssvc, true); ?>
+															</div>
+														</td>
+													</tr>
 										<?php endforeach; ?>
-										<tfoot>
+										<?php
+										} ?>
+
+										<?php if (!empty($clients)) { ?>
 										<tr>
-											<td colspan="6" class="list" height="12"><?= gettext("An IP address followed by C indicates a host currently connected through the VPN.") ?></td>
-										</tr>
-										</tfoot>
-									</table>
-									</td>
-								</tr>
-							</table>
-							<?php endif; ?>
-
-							<?php $i++; ?>
-							<?php endforeach; ?>
-
-
-							<?php if (!empty($sk_servers)) { ?>
-							<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="peer to peer stats">
-								<tr>
-									<td colspan="6" class="listtopic">
-										<?=gettext("Peer to Peer Server Instance Statistics"); ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="results">
-										<tr>
-											<td class="listhdrr"><?=gettext("Name"); ?></td>
-											<td class="listhdrr"><?=gettext("Status"); ?></td>
-											<td class="listhdrr"><?=gettext("Connected Since"); ?></td>
-											<td class="listhdrr"><?=gettext("Virtual Addr"); ?></td>
-											<td class="listhdrr"><?=gettext("Remote Host"); ?></td>
-											<td class="listhdrr"><?=gettext("Bytes Sent"); ?></td>
-											<td class="listhdrr"><?=gettext("Bytes Rcvd"); ?></td>
-											<td class="listhdrr"><?=gettext("Service"); ?></td>
-										</tr>
-
-							<?php foreach ($sk_servers as $sk_server): ?>
-										<tr id="<?php echo "r:{$sk_server['port']}:{$sk_server['vpnid']}"; ?>">
-											<td class="listlr">
-												<?=$sk_server['name'];?>
-											</td>
-											<td class="listr">
-												<?=$sk_server['status'];?>
-											</td>
-											<td class="listr">
-												<?=$sk_server['connect_time'];?>
-											</td>
-											<td class="listr">
-												<?=$sk_server['virtual_addr'];?>
-											</td>
-											<td class="listr">
-												<?=$sk_server['remote_host'];?>
-											</td>
-											<td class="listr">
-												<?=format_bytes($sk_server['bytes_sent']);?>
-											</td>
-											<td class="listr">
-												<?=format_bytes($sk_server['bytes_recv']);?>
-											</td>
-											<td class="listr">
-											<table>
 											<tr>
-											<td><?php $ssvc = find_service_by_openvpn_vpnid($sk_server['vpnid']); ?>
-											<?= get_service_status_icon($ssvc, false, true); ?>
-											<?= get_service_control_links($ssvc, true); ?></td>
+												<td colspan="8" class="listtopic">
+													<b><?=gettext("Client Instance Statistics"); ?><b>
+												</td>
 											</tr>
-											</table>
-											</td>
-										</tr>
-							<?php endforeach; ?>
-										</table>
-									</td>
-								</tr>
-							</table>
-
-							<?php
-							} ?>
-
-							<?php if (!empty($clients)) { ?>
-							<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" width="100%" border="0" cellpadding="0" cellspacing="0" summary="client stats">
-								<tr>
-									<td colspan="6" class="listtopic">
-										<?=gettext("Client Instance Statistics"); ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<table style="padding-top:0px; padding-bottom:0px; padding-left:0px; padding-right:0px" class="tabcont sortable" width="100%" border="0" cellpadding="0" cellspacing="0" summary="results">
-										<tr>
-											<td class="listhdrr"><?=gettext("Name"); ?></td>
-											<td class="listhdrr"><?=gettext("Status"); ?></td>
-											<td class="listhdrr"><?=gettext("Connected Since"); ?></td>
-											<td class="listhdrr"><?=gettext("Virtual Addr"); ?></td>
-											<td class="listhdrr"><?=gettext("Remote Host"); ?></td>
-											<td class="listhdrr"><?=gettext("Bytes Sent"); ?></td>
-											<td class="listhdrr"><?=gettext("Bytes Rcvd"); ?></td>
-											<td class="listhdrr"><?=gettext("Service"); ?></td>
-										</tr>
-
-							<?php foreach ($clients as $client): ?>
-										<tr id="<?php echo "r:{$client['port']}:{$client['vpnid']}"; ?>">
-											<td class="listlr">
-												<?=$client['name'];?>
-											</td>
-											<td class="listr">
-												<?=$client['status'];?>
-											</td>
-											<td class="listr">
-												<?=$client['connect_time'];?>
-											</td>
-											<td class="listr">
-												<?=$client['virtual_addr'];?>
-											</td>
-											<td class="listr">
-												<?=$client['remote_host'];?>
-											</td>
-											<td class="listr">
-												<?=format_bytes($client['bytes_sent']);?>
-											</td>
-											<td class="listr">
-												<?=format_bytes($client['bytes_recv']);?>
-											</td>
-											<td class="listr" height="12">
-											<table>
 											<tr>
-											<td><?php $ssvc = find_service_by_openvpn_vpnid($client['vpnid']); ?>
-											<?= get_service_status_icon($ssvc, false, true); ?>
-											<?= get_service_control_links($ssvc, true); ?></td>
+												<td><?=gettext("Name"); ?></td>
+												<td><?=gettext("Connected Since"); ?></td>
+												<td><?=gettext("Virtual Addr"); ?></td>
+												<td><?=gettext("Remote Host"); ?></td>
+												<td><?=gettext("Bytes Sent"); ?></td>
+												<td><?=gettext("Bytes Rcvd"); ?></td>
+												<td><?=gettext("Status"); ?></td>
+												<td></td>
 											</tr>
-											</table>
-											</td>
-										</tr>
-							<?php endforeach; ?>
+											<?php foreach ($clients as $client): ?>
+											<tr id="<?php echo "r:{$client['port']}:{$client['vpnid']}"; ?>">
+												<td><?=$client['name'];?></td>
+												<td><?=$client['connect_time'];?></td>
+												<td><?=$client['virtual_addr'];?></td>
+												<td><?=$client['remote_host'];?></td>
+												<td><?=format_bytes($client['bytes_sent']);?></td>
+												<td><?=format_bytes($client['bytes_recv']);?></td>
+												<td><?=$client['status'];?></td>
+												<td>
+													<div>
+														<?php $ssvc = find_service_by_openvpn_vpnid($client['vpnid']); ?>
+														<?= get_service_status_icon($ssvc, false, true); ?>
+														<?= get_service_control_links($ssvc, true); ?>
+													</div>
+												</td>
+											</tr>
+											<?php endforeach; ?>
 										</table>
-									</td>
-								</tr>
-							</table>
-							</div>
-
-							<?php
-							}
-
-							if ($DisplayNote) {
-								echo "<br /><b>" . gettext("NOTE") . ":</b> " . gettext("If you have custom options that override the management features of OpenVPN on a client or server, they will cause that OpenVPN instance to not work correctly with this status page.");
-							}
-
-							if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))) {
-								echo gettext("No OpenVPN instance defined");
-							}
-							?>
-
+										</div>
+										<?php
+										}
+										if ((empty($clients)) && (empty($servers)) && (empty($sk_servers))) {
+											echo gettext("No OpenVPN instance defined");
+										}
+										?>
 					    </form>
 				    </div>
-                </div>
-            </section>
-        </div>
+          </section>
 	</div>
+		</div>
 </section>
 
-
-<script type="text/javascript">
-//<![CDATA[
-function show_routes(id, buttonid) {
-	document.getElementById(buttonid).innerHTML='';
-	aodiv = document.getElementById(id);
-	aodiv.style.display = "block";
-}
-//]]>
-</script>
 
 <?php include("foot.inc"); ?>
