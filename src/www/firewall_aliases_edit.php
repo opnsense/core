@@ -217,13 +217,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $pgtitle = array(gettext("Firewall"),gettext("Aliases"),gettext("Edit"));
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_aliases.php');
 
-
-
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
-
 <body>
 <?php
 	include("fbegin.inc");
@@ -286,7 +282,6 @@ include("head.inc");
 		});
 
 		toggleType();
-
 	});
 </script>
 
