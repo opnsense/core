@@ -85,7 +85,7 @@ if ($_POST) {
 		$retval = 0;
 		$retval |= filter_configure();
 		$retval |= relayd_configure();
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 		/* Wipe out old relayd anchors no longer in use. */
 		cleanup_lb_marked();
 		clear_subsystem_dirty('loadbalancer');

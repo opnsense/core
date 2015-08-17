@@ -148,7 +148,7 @@ if ($_POST) {
 
 		$retval = 0;
 		$retval = services_snmpd_configure();
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 	}
 }
 

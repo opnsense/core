@@ -65,7 +65,7 @@ if ($_POST) {
         }
             $retval = 0;
             $retval |= filter_configure();
-            $savemsg = get_std_save_message($retval);
+            $savemsg = get_std_save_message();
             clear_subsystem_dirty('vpnpppoe');
     }
 }

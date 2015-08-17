@@ -174,7 +174,7 @@ if ($_POST) {
 
         $retval = 0;
         $retval = vpn_l2tp_configure();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
 
         /* if ajax is calling, give them an update message */
         if (isAjax()) {

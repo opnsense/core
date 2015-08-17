@@ -527,7 +527,7 @@ if (isset($_POST['submit']) || isset($_POST['apply'])) {
 
 	if($retvaldhcp == 1 || $retvaldns == 1 || $retvalfc == 1)
 		$retval = 1;
-	$savemsg = get_std_save_message($retval);
+	$savemsg = get_std_save_message();
 }
 
 if ($act == "delpool") {

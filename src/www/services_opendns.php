@@ -91,7 +91,7 @@ if ($_POST) {
 		write_config('OpenDNS filter configuration change');
 		if ($refresh) {
 			$retval = system_resolvconf_generate();
-			$savemsg = get_std_save_message($retval);
+			$savemsg = get_std_save_message();
 		}
 	}
 }

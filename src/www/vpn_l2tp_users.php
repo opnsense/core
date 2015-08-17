@@ -46,7 +46,7 @@ if ($_POST) {
         if (!is_subsystem_dirty('rebootreq')) {
             $retval = vpn_l2tp_configure();
         }
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
         if ($retval == 0) {
             if (is_subsystem_dirty('l2tpusers')) {
                 clear_subsystem_dirty('l2tpusers');

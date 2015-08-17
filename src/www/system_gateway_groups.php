@@ -95,7 +95,7 @@ if ($_POST) {
         /* reconfigure our gateway monitor */
         setup_gateways_monitor();
 
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
         if ($retval == 0) {
             clear_subsystem_dirty('staticroutes');
         }

@@ -176,7 +176,7 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 			|| ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets'])))
 			$retval |= filter_configure();
 
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 
 		if ($oldnologlighttpd !== isset($config['syslog']['nologlighttpd'])) {
 			ob_flush();

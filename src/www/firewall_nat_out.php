@@ -56,7 +56,7 @@ if ($_POST['apply']) {
 	$retval |= filter_configure();
 
 	if(stristr($retval, "error") <> true)
-	        $savemsg = get_std_save_message($retval);
+	        $savemsg = get_std_save_message();
 	else
 		$savemsg = $retval;
 

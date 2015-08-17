@@ -139,7 +139,7 @@ if ($_POST) {
 	write_config("Updated NTP GPS Settings");
 
 	$retval = system_ntp_configure();
-	$savemsg = get_std_save_message($retval);
+	$savemsg = get_std_save_message();
 } else {
 	/* set defaults if they do not already exist */
 	if (empty($config['ntpd']['gps']['type'])) {

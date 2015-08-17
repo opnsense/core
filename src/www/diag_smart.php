@@ -179,7 +179,7 @@ switch($action) {
 				// Don't know what all this means, but it addes the config changed header when config is saved
 				$retval = 0;
 				if(stristr($retval, "error") <> true)
-					$savemsg = get_std_save_message($retval);
+					$savemsg = get_std_save_message();
 				else
 					$savemsg = $retval;
 

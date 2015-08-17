@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $retval = vpn_ipsec_configure();
         /* reload the filter in the background */
         filter_configure();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
         if (is_subsystem_dirty('ipsec')) {
             clear_subsystem_dirty('ipsec');
         }

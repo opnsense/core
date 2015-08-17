@@ -41,7 +41,7 @@ if ($_POST) {
     if ($_POST['apply']) {
         $retval = 0;
         $retval = vpn_setup();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
         if ($retval == 0) {
             if (is_subsystem_dirty('pptpusers')) {
                 clear_subsystem_dirty('pptpusers');

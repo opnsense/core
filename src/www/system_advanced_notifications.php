@@ -94,7 +94,7 @@ if ($_POST) {
     if ($_POST['apply']) {
         $retval = 0;
         system_setup_sysctl();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
     }
 
     if ($_POST['Submit'] == gettext("Save")) {
