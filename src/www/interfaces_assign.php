@@ -228,10 +228,10 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 	write_config();
 
 	$retval = filter_configure();
-	$savemsg = get_std_save_message($retval);
+	$savemsg = get_std_save_message();
 
 	if (stristr($retval, "error") != true) {
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 	} else {
 		$savemsg = $retval;
 	}

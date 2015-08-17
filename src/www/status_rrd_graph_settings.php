@@ -73,7 +73,7 @@ if ($_POST['ResetRRD']) {
 
                 $retval = 0;
                 $retval = enable_rrd_graphing();
-                $savemsg = get_std_save_message($retval);
+                $savemsg = get_std_save_message();
 	}
 }
 

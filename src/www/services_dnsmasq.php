@@ -102,7 +102,7 @@ if ($_POST && isset($_POST['submit'])) {
 		write_config();
 
 		$retval = services_dnsmasq_configure();
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 	}
 } elseif ($_POST && isset($_POST['apply']) ) {
 
@@ -112,7 +112,7 @@ if ($_POST && isset($_POST['submit'])) {
 		system_resolvconf_generate();
 		system_hosts_generate();
 		$retval = services_dnsmasq_configure();
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 		if ($retval == 0)
 			clear_subsystem_dirty('hosts');
 

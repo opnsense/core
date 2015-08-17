@@ -60,7 +60,7 @@ if ($_POST) {
         $retval = 0;
 
         $rules = captiveportal_passthrumac_configure();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
         if ($retval == 0) {
             clear_subsystem_dirty('passthrumac');
         }

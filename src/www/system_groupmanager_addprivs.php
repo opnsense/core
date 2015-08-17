@@ -103,7 +103,7 @@ if ($_POST) {
         admin_groups_sort();
 
         $retval = write_config();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
 
         redirectHeader("system_groupmanager.php?act=edit&amp;id={$groupid}");
         exit;

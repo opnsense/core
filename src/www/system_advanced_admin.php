@@ -262,7 +262,7 @@ if ($_POST) {
         write_config();
 
         $retval = filter_configure();
-        $savemsg = get_std_save_message($retval);
+        $savemsg = get_std_save_message();
 
         if ($restart_webgui) {
             $savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."), $url);

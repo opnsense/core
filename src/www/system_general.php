@@ -327,7 +327,7 @@ if ($_POST) {
 		// Reload the filter - plugins might need to be run.
 		$retval |= filter_configure();
 
-		$savemsg = get_std_save_message($retval);
+		$savemsg = get_std_save_message();
 	}
 
 	unset($ignore_posted_dnsgw);
