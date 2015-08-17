@@ -57,7 +57,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				if (!empty($pconfig['aliasurl']) && !is_array($pconfig['aliasurl'])) {
 					$pconfig['aliasurl'] = array($pconfig['aliasurl']);
 				}
-		} else {
+		} elseif (isset($_GET['name'])) {
+        // search alias by name
+        foreach ($a_aliases as $alias_id => $alias_data) {
+            if (strtolower($alias_data['name']) == strtolower(trim($_GET['name']))) {
+                $id = $alias_id;
+                break;
+            }
+        }
+        // initialize form fields, when not found present empty form
+        foreach (array("name","detail","address","type","descr","updatefreq","aliasurl","url") as $fieldname) {
+					if (isset($id) && isset($a_aliases[$id][$fieldname])) {
+						$pconfig[$fieldname] = $a_aliases[$id][$fieldname];
+					} else {
+						$pconfig[$fieldname] = null;
+					}
+				}
+    } else {
 				// init empty
 				$init_fields = array("name","detail","address","type","descr","updatefreq","url");
 				foreach ($init_fields as $fieldname) {
