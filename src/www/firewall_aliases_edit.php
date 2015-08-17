@@ -82,10 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		unset($pconfig['host_url']);
 		foreach ($pconfig['detail'] as &$detailDescr) {
 				if (empty($detailDescr)) {
-						$detailDescr = trim(str_replace('|',' ' , sprintf(gettext("Entry added %s"), date('r')) ));
+						$detailDescr = sprintf(gettext("Entry added %s"), date('r'));
+				} else {
+						// trim and strip pipes
+						$detailDescr = trim(str_replace('|',' ' , $detailDescr));
 				}
 		}
-		$pconfig['detail'] = implode('||',$pconfig['detail']);
+		$pconfig['detail'] = implode('||', $pconfig['detail']);
 
 
 		if (isset($pconfig['submit'])) {
