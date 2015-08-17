@@ -388,12 +388,13 @@ include("head.inc");
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('filter')): ?><p>
 				<?php
-				if($_REQUEST['undodrag']) {
-					foreach($_REQUEST['dragtable'] as $dt)
+				if ($_REQUEST['undodrag']) {
+					foreach ($_REQUEST['dragtable'] as $dt) {
 						$dragtable .= "&dragtable[]={$dt}";
-					print_info_box_np_undo(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."), "apply" , gettext("Apply changes") , "firewall_rules.php?if={$_REQUEST['if']}&dragdroporder=true&{$dragtable}");
+					}
+					print_info_box_apply_undo(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."), "firewall_rules.php?if={$_REQUEST['if']}&dragdroporder=true&{$dragtable}");
 				} else {
-					print_info_box_np(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));
+					print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));
 				}
 				?>
 
