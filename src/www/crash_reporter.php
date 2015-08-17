@@ -41,6 +41,9 @@ function upload_crash_report($files)
 	$counter = 0;
 
 	foreach($files as $filename) {
+		if (is_link($filename)) {
+			continue;
+		}
 		$post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
 		$counter++;
 	}
