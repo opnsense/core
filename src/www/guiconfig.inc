@@ -466,13 +466,16 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
 	else if (isset($adr['network']))
 		$padr = $adr['network'];
 	else if (isset($adr['address'])) {
-		list($padr, $pmask) = explode("/", $adr['address']);
-		if (!$pmask) {
+		if (strpos($adr['address'], '/') !== false) {
+			list($padr, $pmask) = explode("/", $adr['address']);
+		} else {
+			$padr = $adr['address'];
 			if (is_ipaddrv6($padr))
 				$pmask = 128;
 			else
 				$pmask = 32;
 		}
+		
 	}
 
 	if (isset($adr['not']))
@@ -481,7 +484,7 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
 		$pnot = 0;
 
 	if (isset($adr['port'])) {
-		if (strpos('-', $adr['port']) !== false) {
+		if (strpos($adr['port'], '-') !== false) {
 			list($pbeginport, $pendport) = explode("-", $adr['port']);
 		} else {
 			$pbeginport = $adr['port'];
