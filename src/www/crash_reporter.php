@@ -41,7 +41,7 @@ function upload_crash_report($files)
 	$counter = 0;
 
 	foreach($files as $filename) {
-		if (is_link($filename)) {
+		if (is_link($filename) || $filename == '/var/crash/minfree.gz' || $filename == '/var/crash/bounds.gz') {
 			continue;
 		}
 		$post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
@@ -69,13 +69,14 @@ include('head.inc');
 
 $last_version = '/usr/local/opnsense/version/opnsense.last';
 $crash_report_header = sprintf(
-	"System Information:\n%s\n%s %s%s (%s)\n%s\n",
+	"%s\n%s %s%s %s (%s)\nUUID %s\n",
 	php_uname('v'),
 	$g['product_name'],
 	trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
 	file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
+	trim(shell_exec('/usr/local/bin/openssl version')),
 	php_uname('m'),
-	exec('/usr/local/bin/openssl version')
+	shell_exec('/sbin/sysctl -b kern.hostuuid')
 );
 
 ?>
@@ -95,10 +96,18 @@ $crash_report_header = sprintf(
 
 <?php
 	if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
-		echo '<p>' . gettext('Processing...');
+		echo '<br/><p>' . gettext('Processing...');
 		flush();
 		if (!is_dir('/var/crash')) {
 			mkdir('/var/crash', 0750, true);
+		}
+		$email = trim($_POST['Email']);
+		if (!empty($email)) {
+			$crash_report_header .= "Email {$email}\n";
+		}
+		$desc = trim($_POST['Desc']);
+		if (!empty($desc)) {
+			$crash_report_header .= "Description\n\n{$desc}";
 		}
 		file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
 		@rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
@@ -116,7 +125,7 @@ $crash_report_header = sprintf(
 	}
 
 	if (get_crash_report(true) == '') {
-		echo '<p><strong>';
+		echo '<br/><p><strong>';
 		if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
 			echo gettext('Thank you for submitting this crash report.');
 		} elseif ($_POST['Submit'] == 'no') {
@@ -127,29 +136,31 @@ $crash_report_header = sprintf(
 		echo '</strong></p>';
 	} else {
 		$crash_files = glob("/var/crash/*");
-		$crash_reports = $crash_report_header;
+		$crash_reports['System Information'] = trim($crash_report_header);
 		$php_errors = @file_get_contents('/tmp/PHP_errors.log');
 		if (!empty($php_errors)) {
-			$crash_reports .= "\nPHP Errors:\n";
-			$crash_reports .= $php_errors;
+			$crash_reports['PHP Errors'] = trim($php_errors);
 		}
 		$dmesg_boot = @file_get_contents('/var/run/dmesg.boot');
 		if (!empty($dmesg_boot)) {
-			$crash_reports .= "\ndmesg.boot:\n";
-			$crash_reports .= $dmesg_boot;
+			$crash_reports['dmesg.boot'] = trim($dmesg_boot);
 		}
 		foreach ($crash_files as $cf) {
-			if (filesize($cf) < FILE_SIZE) {
-				$crash_reports .= "\nFilename: {$cf}\n";
-				$crash_reports .= file_get_contents($cf);
+			if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < FILE_SIZE) {
+				$crash_reports[$cf] = trim(file_get_contents($cf));
 			}
 		}
-		echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
-		echo "<p><br/>" . sprintf(gettext("Would you like to submit this crash report to the %s developers?"), $g['product_name']) . "</p>";
+		echo "<br/><p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
+		echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
 		echo "<p><button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"yes\">" . gettext('Yes') . "</button> ";
 		echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-default\" value=\"no\">" . gettext('No') . "</button></p>";
-		echo "<p><br/><i>" . gettext("Please-double check the contents to ensure you are comfortable submitting the following information:") . "</i></p>";
-		echo "<textarea readonly=\"readonly\" style=\"max-width: none;\" rows=\"24\" cols=\"80\" name=\"crashreports\">{$crash_reports}</textarea></p>";
+		echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
+		echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
+		echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
+		echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
+		foreach ($crash_reports as $report => $content) {
+			echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
+		}
 	}
 ?>
 						 </div>
