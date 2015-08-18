@@ -364,8 +364,8 @@ if ($_POST) {
                     'emailAddress' => $pconfig['dn_email'],
                     'commonName' => $pconfig['dn_commonname']);
                 if (!ca_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
+                    $input_errors = array();
                     while ($ssl_err = openssl_error_string()) {
-                        $input_errors = array();
                         array_push($input_errors, "openssl library returns: " . $ssl_err);
                     }
                 }
@@ -378,8 +378,8 @@ if ($_POST) {
                     'emailAddress' => $pconfig['dn_email'],
                     'commonName' => $pconfig['dn_commonname']);
                 if (!ca_inter_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
+                    $input_errors = array();
                     while ($ssl_err = openssl_error_string()) {
-                        $input_errors = array();
                         array_push($input_errors, "openssl library returns: " . $ssl_err);
                     }
                 }
