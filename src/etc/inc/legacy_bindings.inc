@@ -72,3 +72,26 @@ function legacy_html_escape_form_data(&$settings)
         }
     }
 }
+
+/**
+ *  list aliasses by type
+ *  @param string $type type port or network
+ */
+function legacy_list_aliasses($type) {
+    global $config;
+    $result = array();
+    if (isset($config['aliases']['alias'])) {
+        foreach ($config['aliases']['alias'] as $alias) {
+            if ($type == "port") {
+                if (preg_match("/port/i", $alias['type'])) {
+                    $result[] = $alias;
+                }
+            } else {
+                if (!preg_match("/port/i", $alias['type'])){
+                    $result[] = $alias;
+                }
+            }
+        }
+    }
+    return $result;
+}
