@@ -35,6 +35,7 @@ require_once("pfsense-utils.inc");
  * build array with interface options for this form
  */
 function formInterfaces() {
+	global $config;
 	$interfaces = array();
 	foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc)
 			$interfaces[$if] = $ifdesc;
@@ -97,10 +98,10 @@ $a_nat = &$config['nat']['rule'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		// load form data from config
-		if (isset($_GET['id']) && is_numericint($_GET['id'])) {
+		if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_nat[$_GET['id']])) {
 			$id = $_GET['id'];
 			$configId = $id; // load form data from id
-		} else if (isset($_GET['dup']) && is_numericint($_GET['dup'])){
+		} else if (isset($_GET['dup']) && is_numericint($_GET['dup']) && isset($a_nat[$_GET['id']])){
 			$after = $_GET['dup'];
 			$configId = $_GET['dup']; // load form data from id
 		}
@@ -110,11 +111,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 		// initialize form and set defaults
 		$pconfig = array();
-		$pconfig['proto'] = "tcp";
+		$pconfig['protocol'] = "tcp";
 		$pconfig['srcbeginport'] = "any";
 		$pconfig['srcendport'] = "any";
 		$pconfig['interface'] = "wan";
-		if (isset($configId) && isset($a_nat[$configId])) {
+		$pconfig['dstbeginport'] = 80 ;
+		$pconfig['dstendport'] = 80 ;
+		$pconfig['local-port'] = 80;
+		if (isset($configId)) {
 				// copy 1-on-1
 				foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync'
 											,'natreflection','created','updated') as $fieldname) {
@@ -154,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$pconfig['src'] = "any";
 		}
 		// init empty fields
-		foreach (array("dst","dstbeginport","dstendport","target","local-port","natreflection","descr","disabled","nosync") as $fieldname) {
+		foreach (array("dst","dstmask","srcmask","dstbeginport","dstendport","target","local-port","natreflection","descr","disabled","nosync") as $fieldname) {
 				if (!isset($pconfig[$fieldname])) {
 						$pconfig[$fieldname] = null;
 				}
@@ -163,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		$pconfig = $_POST;
 		$input_errors = array();
 		// save form data
-		if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+		if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($a_nat[$_POST['id']])) {
 				$id = $_POST['id'];
 		}
 		if (isset($_POST['after']) && (is_numericint($_POST['after']) || $_POST['after'] == "-1")) {
@@ -241,7 +245,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$natent['protocol'] = $pconfig['protocol'];
 				$natent['interface'] = $pconfig['interface'];
 				$natent['descr'] = $pconfig['descr'];
-				$natent['associated-rule-id'] = $pconfig['associated-rule-id'];
+				if (!empty($pconfig['associated-rule-id'])) {
+						$natent['associated-rule-id'] = $pconfig['associated-rule-id'];
+				} else {
+						$natent['associated-rule-id'] = null;
+				}
+
 
 				// form processing logic
 				$natent['disabled'] = !empty($pconfig['disabled']) ? true:false;
@@ -271,7 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				}
 
 				// If we used to have an associated filter rule, but no-longer should have one
-				if (!empty($a_nat[$id]['associated-rule-id']) && ( empty($natent['associated-rule-id']) || $natent['associated-rule-id'] != $a_nat[$id]['associated-rule-id'] ) ) {
+				if (isset($id) && !empty($a_nat[$id]['associated-rule-id']) && ( empty($natent['associated-rule-id']) || $natent['associated-rule-id'] != $a_nat[$id]['associated-rule-id'] ) ) {
 						// Delete the previous rule
 						foreach ($config['filter']['rule'] as $key => $item){
 								if(isset($item['associated-rule-id']) && $item['associated-rule-id']==$a_nat[$id]['associated-rule-id'] ){
@@ -359,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 				// Update the NAT entry now
 				$natent['updated'] = make_config_revision_entry();
-				if (isset($id) && isset($a_nat[$id])) {
+				if (isset($id)) {
 						if (isset($a_nat[$id]['created'])) {
 								$natent['created'] = $a_nat[$id]['created'];
 						}
@@ -420,8 +429,8 @@ $( document ).ready(function() {
 		});
 
 		// trigger initial form change
-		$("#proto").change(); // protocol
 		$("#nordr").change(); // no-rdr
+		$("#proto").change(); // protocol
 
 		// show source address when selected
 		<?php if (!empty($pconfig['srcnot']) || $pconfig['src'] != "any" || $pconfig['srcbeginport'] != "any" || $pconfig['srcendport'] != "any"): ?>
@@ -618,7 +627,7 @@ $( document ).ready(function() {
 										</table>
 									</td>
 								</tr>
-								<tr class="hidden act_port_select" name="sprtable">
+								<tr class="hidden advanced_opt_src">
 									<td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source port range"); ?></td>
 									<td>
 										<table class="table table-condensed">
@@ -873,7 +882,7 @@ $( document ).ready(function() {
 										</select>
 									</td>
 								</tr>
-<?php 						if (isset($id) && isset($a_nat[$id]) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
+<?php 						if (isset($id) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
 								<tr class="act_no_rdr">
 									<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Filter rule association"); ?></td>
 									<td>
@@ -904,7 +913,7 @@ $( document ).ready(function() {
 										<a href="firewall_rules_edit.php?id=<?=$linkedrule;?>"> <?=gettext("View the filter rule");?></a>
 									</td>
 								</tr>
-<?php 				 elseif ((!isset($id) && !isset($a_nat[$id])) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
+<?php 				 elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
 ?>
 								<tr class="act_no_rdr">
 									<td><a id="help_for_fra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Filter rule association"); ?></td>
@@ -961,8 +970,8 @@ $( document ).ready(function() {
 	                <td>
 	                  <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 	                  <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php';?>'" />
-	                  <?php if (isset($id) && isset($a_nat[$id])): ?>
-	                  <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+	                  <?php if (isset($id)): ?>
+	                  <input name="id" type="hidden" value="<?=$id;?>" />
 	                  <?php endif; ?>
 										<?php if (isset($after)) : ?>
 	                  <input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
