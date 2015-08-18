@@ -104,13 +104,6 @@ if [ ! -f /conf/config.xml ]; then
 	echo "done."
 fi
 
-# Bootstrap openssl.cnf for port if necessary
-if [ ! -f /usr/local/openssl/openssl.cnf ]; then
-	echo -n "Bootstrapping openssl.cnf..."
-	cp /etc/ssl/openssl.cnf /usr/local/openssl/openssl.cnf
-	echo "done."
-fi
-
 # Disable APM on ATA drives.  Leaving this on will kill
 # drives long-term, especially laptop drives, by generating
 # excessive load cycles.

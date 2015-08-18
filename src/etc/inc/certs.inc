@@ -27,8 +27,6 @@
         POSSIBILITY OF SUCH DAMAGE.
 */
 
-define("OPEN_SSL_CONF_PATH", "/etc/ssl/openssl.cnf");
-
 global $openssl_digest_algs;
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
@@ -128,15 +126,16 @@ function ca_chain(& $cert) {
 	return "";
 }
 
-
-function ca_create(& $ca, $keylen, $lifetime, $dn, $digest_alg = "sha256") {
-
+function ca_create(&$ca, $keylen, $lifetime, $dn, $digest_alg = 'sha256')
+{
 	$args = array(
-		"x509_extensions" => "v3_ca",
-		"digest_alg" => $digest_alg,
-		"private_key_bits" => (int)$keylen,
-		"private_key_type" => OPENSSL_KEYTYPE_RSA,
-		"encrypt_key" => false);
+		'config' => '/usr/local/etc/ssl/opnsense.cnf',
+		'private_key_type' => OPENSSL_KEYTYPE_RSA,
+		'private_key_bits' => (int)$keylen,
+		'x509_extensions' => 'v3_ca',
+		'digest_alg' => $digest_alg,
+		'encrypt_key' => false
+	);
 
 	// generate a new key pair
 	$res_key = openssl_pkey_new($args);
@@ -181,33 +180,38 @@ function cert_import(& $cert, $crt_str, $key_str) {
 	return true;
 }
 
-function cert_create(& $cert, $caref, $keylen, $lifetime, $dn, $digest_alg = "sha256") {
-
-	$ca =& lookup_ca($caref);
-	if (!$ca)
+function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256')
+{
+	$ca = &lookup_ca($caref);
+	if (!$ca) {
 		return false;
+	}
 
 	$ca_str_crt = base64_decode($ca['crt']);
 	$ca_str_key = base64_decode($ca['prv']);
 	$ca_res_crt = openssl_x509_read($ca_str_crt);
 	$ca_res_key = openssl_pkey_get_private(array(0 => $ca_str_key, 1 => ""));
-	if(!$ca_res_key) return false;
+	if (!$ca_res_key) {
+		return false;
+	}
 	$ca_serial = ++$ca['serial'];
 
-	// in case of using Subject Alternative Names use other sections (with postfix '_san')
-	// pass subjectAltName over environment variable 'SAN'
+	/* subjectAltName can be set _only_ via configuration file */
 	if ($dn['subjectAltName']) {
-		putenv("SAN={$dn['subjectAltName']}"); // subjectAltName can be set _only_ via configuration file
+		/* TODO: currently disabled */
+		putenv("SAN={$dn['subjectAltName']}");
 		$cert_type .= '_san';
 		unset($dn['subjectAltName']);
 	}
 
 	$args = array(
-		"x509_extensions" => "usr_cert",
-		"digest_alg" => $digest_alg,
-		"private_key_bits" => (int)$keylen,
-		"private_key_type" => OPENSSL_KEYTYPE_RSA,
-		"encrypt_key" => false);
+		'config' => '/usr/local/etc/ssl/opnsense.cnf',
+		'private_key_type' => OPENSSL_KEYTYPE_RSA,
+		'private_key_bits' => (int)$keylen,
+		'x509_extensions' => 'usr_cert',
+		'digest_alg' => $digest_alg,
+		'encrypt_key' => false
+	);
 
 	// generate a new key pair
 	$res_key = openssl_pkey_new($args);
