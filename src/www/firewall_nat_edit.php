@@ -95,7 +95,6 @@ if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
 }
 $a_nat = &$config['nat']['rule'];
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		// load form data from config
 		if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_nat[$_GET['id']])) {
@@ -126,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 								$pconfig[$fieldname] = $a_nat[$configId][$fieldname];
 						}
 				}
-
+				// fields with some kind of logic.
 				$pconfig['disabled'] = isset($a_nat[$configId]['disabled']);
 				$pconfig['nordr'] = isset($a_nat[$configId]['nordr']);
 				address_to_pconfig($a_nat[$configId]['source'], $pconfig['src'],
@@ -166,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		$pconfig = $_POST;
 		$input_errors = array();
-		// save form data
+		// validate id and store if usable
 		if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($a_nat[$_POST['id']])) {
 				$id = $_POST['id'];
 		}
@@ -238,6 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 				$input_errors[] = gettext("The target port range must be an integer between 1 and 65535.");
 		}
 
+		// save data if valid
 		if (count($input_errors) == 0) {
 				$natent = array();
 
@@ -396,16 +396,13 @@ legacy_html_escape_form_data($pconfig);
 $closehead = false;
 $pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("Port Forward"),gettext("Edit"));
 include("head.inc");
-
-
-
 ?>
 </head>
 
 <body>
 <script type="text/javascript">
 $( document ).ready(function() {
-
+		// show source fields (advanced)
 		$("#showadvancedboxsrc").click(function(){
 				$(".advanced_opt_src").toggleClass("hidden visible");
 		});
