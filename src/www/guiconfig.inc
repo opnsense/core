@@ -463,9 +463,9 @@ function update_if_changed($varname, & $orig, $new) {
 function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport) {
 	if (isset($adr['any']))
 		$padr = "any";
-	else if ($adr['network'])
+	else if (isset($adr['network']))
 		$padr = $adr['network'];
-	else if ($adr['address']) {
+	else if (isset($adr['address'])) {
 		list($padr, $pmask) = explode("/", $adr['address']);
 		if (!$pmask) {
 			if (is_ipaddrv6($padr))
