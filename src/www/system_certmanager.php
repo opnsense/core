@@ -430,8 +430,8 @@ if ($_POST) {
                         $dn,
                         $pconfig['digest_alg']
                     )) {
+                        $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
-                            $input_errors = array();
                             array_push($input_errors, "openssl library returns: " . $ssl_err);
                         }
                     }
@@ -453,8 +453,8 @@ if ($_POST) {
                         $dn['subjectAltName'] = implode(",", $altnames_tmp);
                     }
                     if (!csr_generate($cert, $pconfig['csr_keylen'], $dn, $pconfig['csr_digest_alg'])) {
+                        $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
-                            $input_errors = array();
                             array_push($input_errors, "openssl library returns: " . $ssl_err);
                         }
                     }
