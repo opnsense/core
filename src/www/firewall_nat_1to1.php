@@ -304,7 +304,6 @@ $main_buttons = array(
 											</a>
 <?php 							endif;
 ?>
-											<a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 <?php 							if ($i == 0):
 ?>
 											<span title="<?=gettext("delete selected mappings"); ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
@@ -317,6 +316,7 @@ $main_buttons = array(
 											</a>
 <?php 							endif;
 ?>
+											<a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 										</td>
 									</tr>
 									<tr>
