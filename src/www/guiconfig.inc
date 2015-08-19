@@ -212,7 +212,7 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 	if(stristr($msg, gettext("apply")) != false || stristr($msg, gettext("save")) != false || stristr($msg, gettext("create")) != false || $showapply) {
 		$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
 		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
-		if($_POST['if'])
+		if(!empty($_POST['if']))
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
 		$savebutton.="</form>";
 	} else {
