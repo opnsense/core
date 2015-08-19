@@ -10,11 +10,11 @@
 	modification, are permitted provided that the following conditions are met:
 
 	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+		 this list of conditions and the following disclaimer.
 
 	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+		 notice, this list of conditions and the following disclaimer in the
+		 documentation and/or other materials provided with the distribution.
 
 	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
 	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
@@ -496,9 +496,9 @@ $( document ).ready(function() {
 		<div class="container-fluid">
 			<div class="row">
 <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-			  <section class="col-xs-12">
+				<section class="col-xs-12">
 					<div class="content-box">
-            <form action="firewall_nat_edit.php" method="post" name="iform" id="iform">
+						<form action="firewall_nat_edit.php" method="post" name="iform" id="iform">
 							<table class="table table-striped">
 								<tr>
 									<td colspan="2" align="right">
@@ -527,8 +527,8 @@ $( document ).ready(function() {
 											<?=gettext("Enabling this option will disable redirection for traffic matching this rule."); ?>
 											<br /><?=gettext("Hint: this option is rarely needed, don't use this unless you know what you're doing."); ?>
 										</div>
-					        </td>
-					      </tr>
+									</td>
+								</tr>
 								<tr>
 									<td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
 									<td>
@@ -801,19 +801,19 @@ $( document ).ready(function() {
 									</td>
 								</tr>
 								<tr>
-                <tr class="act_no_rdr">
-                  <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
-                  <td>
-                    <input name="target" type="text" class="formfldalias" size="20" value="<?=$pconfig['target'];?>" />
+									<tr class="act_no_rdr">
+									<td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
+									<td>
+										<input name="target" type="text" class="formfldalias" size="20" value="<?=$pconfig['target'];?>" />
 										<div class="hidden" for="help_for_localip">
 											<?=gettext("Enter the internal IP address of " .
-	                    "the server on which you want to map the ports."); ?><br/>
+											"the server on which you want to map the ports."); ?><br/>
 											<?=gettext("e.g."); ?> <em>192.168.1.12</em>
 										</div>
-                </tr>
-					      <tr class="act_port_select act_no_rdr">
-                  <td><a id="help_for_localbeginport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target port"); ?></td>
-                  <td>
+								</tr>
+								<tr class="act_port_select act_no_rdr">
+									<td><a id="help_for_localbeginport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target port"); ?></td>
+									<td>
 										<table class="table table-condensed">
 											<tbody>
 												<tr>
@@ -851,14 +851,14 @@ $( document ).ready(function() {
 										</div>
 									</td>
 								</tr>
-                <tr>
-                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                  <td>
-                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
+								<tr>
+									<td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+									<td>
+										<input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
 										<div class="hidden" for="help_for_descr">
 			<?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
 										</div>
-                </tr>
+								</tr>
 								<tr>
 									<td><a id="help_for_nosync" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("No XMLRPC Sync"); ?></td>
 									<td>
@@ -890,8 +890,8 @@ $( document ).ready(function() {
 											<?php
 											$linkedrule = "";
 											if (isset($config['filter']['rule'])):
-											  filter_rules_sort();
-											  foreach ($config['filter']['rule'] as $filter_id => $filter_rule):
+												filter_rules_sort();
+												foreach ($config['filter']['rule'] as $filter_id => $filter_rule):
 													if (isset($filter_rule['associated-rule-id'])):
 														$is_selected = $filter_rule['associated-rule-id']==$pconfig['associated-rule-id'];
 														if ($is_selected) $linkedrule = $filter_id;
@@ -959,24 +959,24 @@ $( document ).ready(function() {
 								endif;
 ?>
 								<tr>
-	                <td>&nbsp;</td>
-	                <td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
 								</tr>
-	              <tr>
-	                <td>&nbsp;</td>
-	                <td>
-	                  <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-	                  <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php';?>'" />
-	                  <?php if (isset($id)): ?>
-	                  <input name="id" type="hidden" value="<?=$id;?>" />
-	                  <?php endif; ?>
-										<?php if (isset($after)) : ?>
-	                  <input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+										<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat.php';?>'" />
+										<?php if (isset($id)): ?>
+										<input name="id" type="hidden" value="<?=$id;?>" />
 										<?php endif; ?>
-	                </td>
-	              </tr>
-					    </table>
-					  </form>
+										<?php if (isset($after)) : ?>
+										<input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
+										<?php endif; ?>
+									</td>
+								</tr>
+							</table>
+						</form>
 					</div>
 				</div>
 			</section>
