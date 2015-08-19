@@ -81,42 +81,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $pconfig['id'];
     }
     if (isset($pconfig['apply'])) {
-    		write_config();
-    		filter_configure();
-    		$savemsg = get_std_save_message();
-  			clear_subsystem_dirty('natconf');
-  			clear_subsystem_dirty('filter');
-  	} elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
+		write_config();
+		filter_configure();
+		$savemsg = get_std_save_message();
+			clear_subsystem_dirty('natconf');
+			clear_subsystem_dirty('filter');
+	} elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete nat rule and associated rule if it exists
         if (isset($a_nat[$id]['associated-rule-id'])) {
-      			delete_id($a_nat[$id]['associated-rule-id'], $config['filter']['rule']);
-      			mark_subsystem_dirty('filter');
-    		}
-    		unset($a_nat[$id]);
+			delete_id($a_nat[$id]['associated-rule-id'], $config['filter']['rule']);
+			mark_subsystem_dirty('filter');
+		}
+		unset($a_nat[$id]);
 
-    		if (write_config()) {
-    			mark_subsystem_dirty('natconf');
-    		}
-    		header("Location: firewall_nat.php");
-    		exit;
-  	} elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+		if (write_config()) {
+			mark_subsystem_dirty('natconf');
+		}
+		header("Location: firewall_nat.php");
+		exit;
+	} elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         /* delete selected rules */
         foreach ($pconfig['rule'] as $rulei) {
             if (isset($a_nat[$rulei])) {
               $target = $rule['target'];
-    			    // Check for filter rule associations
-    			    if (isset($a_nat[$rulei]['associated-rule-id'])){
+			    // Check for filter rule associations
+			    if (isset($a_nat[$rulei]['associated-rule-id'])){
                   delete_id($a_nat[$rulei]['associated-rule-id'], $config['filter']['rule']);
                   mark_subsystem_dirty('filter');
               }
-    	        unset($a_nat[$rulei]);
+	        unset($a_nat[$rulei]);
             }
-  	    }
-    		if (write_config()) {
+	    }
+		if (write_config()) {
             mark_subsystem_dirty('natconf');
         }
-    		header("Location: firewall_nat.php");
-    		exit;
+		header("Location: firewall_nat.php");
+		exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move') {
         // move records
         if (isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
@@ -183,41 +183,41 @@ $( document ).ready(function() {
     if (id != 'x') {
       // delete single
       BootstrapDialog.show({
-  				type:BootstrapDialog.TYPE_INFO,
-  				title: "<?= gettext("Port Forward");?>",
-  				message: "<?=gettext("Do you really want to delete this rule?");?>",
-  				buttons: [{
+				type:BootstrapDialog.TYPE_INFO,
+				title: "<?= gettext("Port Forward");?>",
+				message: "<?=gettext("Do you really want to delete this rule?");?>",
+				buttons: [{
                   label: "<?= gettext("No");?>",
                   action: function(dialogRef) {
                       dialogRef.close();
                   }}, {
-  									label: "<?= gettext("Yes");?>",
-  									action: function(dialogRef) {
-  										$("#id").val(id);
+									label: "<?= gettext("Yes");?>",
+									action: function(dialogRef) {
+										$("#id").val(id);
                       $("#action").val("del");
-  										$("#iform").submit()
-  								}
+										$("#iform").submit()
+								}
               }]
-  		});
+		});
     } else {
       // delete selected
       BootstrapDialog.show({
-  				type:BootstrapDialog.TYPE_INFO,
-  				title: "<?= gettext("Port Forward");?>",
-  				message: "<?=gettext("Do you really want to delete the selected rules?");?>",
-  				buttons: [{
+				type:BootstrapDialog.TYPE_INFO,
+				title: "<?= gettext("Port Forward");?>",
+				message: "<?=gettext("Do you really want to delete the selected rules?");?>",
+				buttons: [{
                   label: "<?= gettext("No");?>",
                   action: function(dialogRef) {
                       dialogRef.close();
                   }}, {
-  									label: "<?= gettext("Yes");?>",
-  									action: function(dialogRef) {
-  										$("#id").val("");
+									label: "<?= gettext("Yes");?>",
+									action: function(dialogRef) {
+										$("#id").val("");
                       $("#action").val("del_x");
-  										$("#iform").submit()
-  								}
+										$("#iform").submit()
+								}
               }]
-  		});
+		});
     }
 	});
 
@@ -276,7 +276,7 @@ $( document ).ready(function() {
                       <th><?=gettext("Ports");?></th>
                       <th><?=gettext("Description");?></th>
                       <th>&nbsp;</th>
-  									</tr>
+									</tr>
                   </thead>
                   <tbody>
 <?php             if (isset($config['interfaces']['lan'])) {
@@ -330,7 +330,7 @@ $( document ).ready(function() {
 <?                    else:?>
 												<span class="glyphicon glyphicon-play text-success"></span>
 <?php                 endif; ?>
-  										</td>
+										</td>
                       <td>
                         <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr(isset($natent['interface']) ? $natent['interface'] : "wan"));?>
                       </td>
@@ -380,7 +380,7 @@ $( document ).ready(function() {
 <?php                   if (is_alias(pprint_port($localport))): ?>
                         &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_port($localport));?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
-  									  </td>
+									  </td>
                       <td>
                         <?=$natent['descr'];?>
                       </td>
@@ -398,7 +398,7 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-plus"></span>
                         </a>
                       </td>
-  									</tr>
+									</tr>
 <?php $nnats++; endforeach; ?>
                     <tr>
                       <td colspan="8"></td>
@@ -414,7 +414,7 @@ $( document ).ready(function() {
                         </a>
 <?php                   endif; ?>
 <?php                   if (count($a_nat) == 0): ?>
-  											<span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
+											<span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
 <?php                   else: ?>
                         <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-remove"></span>
@@ -423,9 +423,9 @@ $( document ).ready(function() {
                         <a href="firewall_nat_edit.php?after=-1" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
                           <span class="glyphicon glyphicon-plus"></span>
                         </a>
-  										</td>
-  									</tr>
-  								</tbody>
+										</td>
+									</tr>
+								</tbody>
 									<tfoot>
 										<tr>
                       <td colspan="13">&nbsp;</td>

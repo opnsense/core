@@ -553,13 +553,13 @@ $( document ).ready(function() {
 									<td>
 										<div class="input-group">
 											<select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php 								foreach (explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF") as $proto):
+<?php								foreach (explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF") as $proto):
 ?>
-					            	<option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
+							<option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
 													<?=$proto;?>
 												</option>
-<?php 								endforeach; ?>
-					          	</select>
+<?php								endforeach; ?>
+							</select>
 										</div>
 										<div class="hidden" for="help_for_proto">
 											<?=gettext("Choose which IP protocol " ."this rule should match."); ?><br/>
@@ -594,13 +594,13 @@ $( document ).ready(function() {
 														<select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 															<option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
 															<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("network") as $alias):
+<?php												foreach (legacy_list_aliasses("network") as $alias):
 ?>
 																<option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['src'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
 <?php													endforeach; ?>
 															</optgroup>
 															<optgroup label="<?=gettext("net");?>">
-<?php 													foreach (formNetworks() as $ifent => $ifdesc):
+<?php													foreach (formNetworks() as $ifent => $ifdesc):
 ?>
 																<option value="<?=$ifent;?>" <?= $pconfig['src'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
 <?php														endforeach; ?>
@@ -640,7 +640,7 @@ $( document ).ready(function() {
 														<select id="srcbeginport" name="srcbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 															<option data-other=true value="<?=$pconfig['srcbeginport'];?>">(<?=gettext("other"); ?>)</option>
 															<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("port") as $alias):
+<?php												foreach (legacy_list_aliasses("port") as $alias):
 ?>
 																<option value="<?=$alias['name'];?>" <?= $pconfig['srcbeginport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
 <?php													endforeach; ?>
@@ -657,7 +657,7 @@ $( document ).ready(function() {
 														<select id="srcendport" name="srcendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 															<option data-other=true value="<?=$pconfig['srcendport'];?>">(<?=gettext("other"); ?>)</option>
 															<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("port") as $alias):
+<?php												foreach (legacy_list_aliasses("port") as $alias):
 ?>
 																<option value="<?=$alias['name'];?>" <?= $pconfig['srcendport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
 <?php													endforeach; ?>
@@ -708,13 +708,13 @@ $( document ).ready(function() {
 													<select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 														<option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
 														<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("network") as $alias):
+<?php												foreach (legacy_list_aliasses("network") as $alias):
 ?>
 															<option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['dst'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
 <?php													endforeach; ?>
 														</optgroup>
 														<optgroup label="<?=gettext("net");?>">
-<?php 													foreach (formNetworks() as $ifent => $ifdesc):
+<?php													foreach (formNetworks() as $ifent => $ifdesc):
 ?>
 															<option value="<?=$ifent;?>" <?= $pconfig['dst'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
 <?php														endforeach; ?>
@@ -754,7 +754,7 @@ $( document ).ready(function() {
 														<select id="dstbeginport" name="dstbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 															<option data-other=true value="<?=$pconfig['dstbeginport'];?>">(<?=gettext("other"); ?>)</option>
 															<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("port") as $alias):
+<?php												foreach (legacy_list_aliasses("port") as $alias):
 ?>
 																<option value="<?=$alias['name'];?>" <?= $pconfig['dstbeginport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
 <?php													endforeach; ?>
@@ -771,7 +771,7 @@ $( document ).ready(function() {
 														<select id="dstendport" name="dstendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 															<option data-other=true value="<?=$pconfig['dstendport'];?>">(<?=gettext("other"); ?>)</option>
 															<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("port") as $alias):
+<?php												foreach (legacy_list_aliasses("port") as $alias):
 ?>
 																<option value="<?=$alias['name'];?>" <?= $pconfig['dstendport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
 <?php													endforeach; ?>
@@ -821,7 +821,7 @@ $( document ).ready(function() {
 														<select id="localbeginport" name="local-port" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
 															<option data-other=true value="<?=$pconfig['local-port'];?>">(<?=gettext("other"); ?>)</option>
 															<optgroup label="<?=gettext("aliasses");?>">
-<?php 												foreach (legacy_list_aliasses("port") as $alias):
+<?php												foreach (legacy_list_aliasses("port") as $alias):
 ?>
 																<option value="<?=$alias['name'];?>" <?= $pconfig['local-port'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
 <?php													endforeach; ?>
@@ -856,7 +856,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
 										<div class="hidden" for="help_for_descr">
-                    	<?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
+			<?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
 										</div>
                 </tr>
 								<tr>
@@ -879,7 +879,7 @@ $( document ).ready(function() {
 										</select>
 									</td>
 								</tr>
-<?php 						if (isset($id) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
+<?php						if (isset($id) && (!isset($_GET['dup']) || !is_numericint($_GET['dup']))): ?>
 								<tr class="act_no_rdr">
 									<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Filter rule association"); ?></td>
 									<td>
@@ -910,7 +910,7 @@ $( document ).ready(function() {
 										<a href="firewall_rules_edit.php?id=<?=$linkedrule;?>"> <?=gettext("View the filter rule");?></a>
 									</td>
 								</tr>
-<?php 				 elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
+<?php				 elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
 ?>
 								<tr class="act_no_rdr">
 									<td><a id="help_for_fra" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Filter rule association"); ?></td>
@@ -926,7 +926,7 @@ $( document ).ready(function() {
 										</div>
 									</td>
 								</tr>
-<?php 					endif;
+<?php					endif;
 
 								$has_created_time = (isset($pconfig['created']) && is_array($pconfig['created']));
 								$has_updated_time = (isset($pconfig['updated']) && is_array($pconfig['updated']));
@@ -939,14 +939,14 @@ $( document ).ready(function() {
 								<tr>
 									<td colspan="2"><?=gettext("Rule Information");?></td>
 								</tr>
-<?php 					if ($has_created_time): ?>
+<?php					if ($has_created_time): ?>
 								<tr>
 									<td><?=gettext("Created");?></td>
 									<td>
 										<?= date(gettext("n/j/y H:i:s"), $pconfig['created']['time']) ?> <?= gettext("by") ?> <strong><?=$pconfig['created']['username'];?></strong>
 									</td>
 								</tr>
-<?php 					endif;
+<?php					endif;
 								if ($has_updated_time):
 ?>
 								<tr>
@@ -955,7 +955,7 @@ $( document ).ready(function() {
 										<?= date(gettext("n/j/y H:i:s"), $pconfig['updated']['time']) ?> <?= gettext("by") ?> <strong><?=$pconfig['updated']['username'];?></strong>
 									</td>
 								</tr>
-<?php 					endif;
+<?php					endif;
 								endif;
 ?>
 								<tr>

@@ -308,16 +308,16 @@ include("head.inc");
 	<section class="page-content-main">
 		<div class="container-fluid">
 			<div class="row">
-<?php 	if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+<?php	if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 				<div id="inputerrors"></div>
 					<section class="col-xs-12">
 						<div class="content-box">
-					 		<header class="content-box-head container-fluid">
+							<header class="content-box-head container-fluid">
 				        <h3><?=gettext("Alias Edit");?></h3>
 							</header>
-				    	<div class="content-box-main">
+					<div class="content-box-main">
 								<form action="firewall_aliases_edit.php" method="post" name="iform" id="iform">
-	            		<div class="table-responsive">
+				<div class="table-responsive">
 		                <table class="table table-striped">
 											<tr>
 												<td colspan="2" align="right">
@@ -385,10 +385,10 @@ include("head.inc");
 																<input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$aliasid])?$detail_desc[$aliasid]:"";?>"?>
 															</td>
 															<td>
-<?php 													if ($aliasid ==0):
+<?php													if ($aliasid ==0):
 ?>
 																<input type="text" class="form-control input-sm" id="updatefreq"  name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
-<?php 													endif;
+<?php													endif;
 ?>
 															</td>
 														</tr>
@@ -410,15 +410,15 @@ include("head.inc");
 																<input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$addressid])?$detail_desc[$addressid]:"";?>"?>
 															</td>
 															<td>
-<?php 													if ($addressid ==0):
+<?php													if ($addressid ==0):
 ?>
 																<input type="text" class="form-control  input-sm" id="updatefreq" name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
-<?php 													endif;
+<?php													endif;
 ?>
 															</td>
 														</tr>
 
-<?php 											endforeach;
+<?php											endforeach;
 													endif;
 ?>
 													</tbody>

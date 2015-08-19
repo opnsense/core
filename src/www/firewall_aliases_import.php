@@ -154,8 +154,8 @@ include("head.inc");
 <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 			  <section class="col-xs-12">
 					<div class="content-box">
-					 	<header class="content-box-head container-fluid">
-				    	<h3><?=gettext("Alias Import");?></h3>
+						<header class="content-box-head container-fluid">
+					<h3><?=gettext("Alias Import");?></h3>
 				    </header>
 				    <div class="content-box-main">
 							<form action="firewall_aliases_import.php" method="post" name="iform">

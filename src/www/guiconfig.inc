@@ -163,7 +163,7 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
 	for ($i = 0; $i < count($reqdfields); $i++) {
 		// why.. do you want to do this? we send data to validate and then validate something else....
 		// can't now for sure if any page uses this wrong behaviour, but it should die eventually.
-		// TODO: kill 
+		// TODO: kill
 		if (empty($_POST[$reqdfields[$i]]) && empty($_REQUEST[$reqdfields[$i]])) {
 			$input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
 		}
@@ -475,7 +475,7 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
 			else
 				$pmask = 32;
 		}
-		
+
 	}
 
 	if (isset($adr['not']))
