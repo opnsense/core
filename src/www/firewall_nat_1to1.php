@@ -246,7 +246,7 @@ $main_buttons = array(
 								$i = 0;
 								foreach ($a_1to1 as $natent):
 ?>
-									<tr valign="top" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+									<tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> valign="top" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
 										<td>
 											<input type="checkbox" name="rule[]" value="<?=$i;?>" />
 										</td>
@@ -259,12 +259,21 @@ $main_buttons = array(
 										</td>
 										<td>
 											<?=isset($natent['external']) ? $natent['external'] : "";?><?=isset($natent['source']) ? strstr(pprint_address($natent['source']), '/') : "";?>
+<?php 								if (is_alias(pprint_address($natent['external']))): ?>
+											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['external']));?>"><i class="fa fa-list"></i> </a>
+<?php 								endif; ?>
 										</td>
 										<td>
 											<?=pprint_address($natent['source']);?>
+<?php 								if (is_alias(pprint_address($natent['source']))): ?>
+											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['source']));?>"><i class="fa fa-list"></i> </a>
+<?php 								endif; ?>
 										</td>
 										<td>
 											<?=pprint_address($natent['destination']);?>
+<?php 								if (is_alias(pprint_address($natent['destination']))): ?>
+											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['destination']));?>"><i class="fa fa-list"></i> </a>
+<?php 								endif; ?>
 										</td>
 										<td>
 											<?=$natent['descr'];?> &nbsp;
@@ -319,6 +328,23 @@ $main_buttons = array(
 											<a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 										</td>
 									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="9">&nbsp;</td>
+									</tr>
+									<tr>
+										<td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+										<td colspan="8"><?=gettext("Enabled rule"); ?></td>
+									</tr>
+									<tr>
+										<td><span class="glyphicon glyphicon-play text-muted"></span></td>
+										<td colspan="8"><?=gettext("Disabled rule"); ?></td>
+									</tr>
+									<tr>
+										<td><a><i class="fa fa-list"></i></a></td>
+										<td colspan="8"><?=gettext("Alias (click to view/edit)");?></td>
+									</tr>
 									<tr>
 										<td colspan="9">
 											<p>
@@ -335,7 +361,7 @@ $main_buttons = array(
 											</p>
 										</td>
 									</tr>
-								</tbody>
+								</tfoot>
 							</table>
 						</form>
 					</div>
