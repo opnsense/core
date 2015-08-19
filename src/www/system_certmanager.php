@@ -30,27 +30,34 @@
 require_once('guiconfig.inc');
 require_once("system.inc");
 
-function csr_generate(& $cert, $keylen, $dn, $digest_alg = "sha256") {
-
+function csr_generate(&$cert, $keylen, $dn, $digest_alg = 'sha256')
+{
 	$args = array(
-		"x509_extensions" => "v3_req",
-		"digest_alg" => $digest_alg,
-		"private_key_bits" => (int)$keylen,
-		"private_key_type" => OPENSSL_KEYTYPE_RSA,
-		"encrypt_key" => false);
+		'config' => '/usr/local/etc/ssl/opnsense.cnf',
+		'private_key_type' => OPENSSL_KEYTYPE_RSA,
+		'private_key_bits' => (int)$keylen,
+		'x509_extensions' => 'v3_req',
+		'digest_alg' => $digest_alg,
+		'encrypt_key' => false
+	);
 
 	// generate a new key pair
 	$res_key = openssl_pkey_new($args);
-	if(!$res_key) return false;
+	if (!$res_key) {
+		return false;
+	}
 
 	// generate a certificate signing request
 	$res_csr = openssl_csr_new($dn, $res_key, $args);
-	if(!$res_csr) return false;
+	if (!$res_csr) {
+		return false;
+	}
 
 	// export our request data
 	if (!openssl_pkey_export($res_key, $str_key) ||
-	    !openssl_csr_export($res_csr, $str_csr))
+	    !openssl_csr_export($res_csr, $str_csr)) {
 		return false;
+	}
 
 	// return our request information
 	$cert['csr'] = base64_encode($str_csr);
@@ -59,8 +66,8 @@ function csr_generate(& $cert, $keylen, $dn, $digest_alg = "sha256") {
 	return true;
 }
 
-function csr_complete(& $cert, $str_crt) {
-
+function csr_complete(& $cert, $str_crt)
+{
 	// return our request information
 	$cert['crt'] = base64_encode($str_crt);
 	unset($cert['csr']);
@@ -72,7 +79,6 @@ function csr_get_modulus($str_crt, $decode = true)
 {
 	return cert_get_modulus($str_crt, $decode, 'csr');
 }
-
 
 $cert_methods = array(
     "import" => gettext("Import an existing Certificate"),
