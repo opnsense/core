@@ -501,17 +501,15 @@ $( document ).ready(function() {
 						<form action="firewall_nat_edit.php" method="post" name="iform" id="iform">
 							<table class="table table-striped">
 								<tr>
-									<td colspan="2" align="right">
+									<td width="22%"><?=gettext("Edit Redirect entry"); ?></td>
+									<td  width="78%" align="right">
 										<small><?=gettext("full help"); ?> </small>
 										<i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_opnvpn_server" type="button"></i></a>
 									</td>
 								</tr>
 								<tr>
-									<td colspan="2"><?=gettext("Edit Redirect entry"); ?></td>
-								</tr>
-								<tr>
-									<td width="22%"><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
-									<td width="78%">
+									<td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+									<td>
 										<input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
 										<div class="hidden" for="help_for_disabled">
 											<strong><?=gettext("Disable this rule"); ?></strong><br />
