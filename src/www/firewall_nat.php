@@ -160,6 +160,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         header("Location: firewall_nat.php");
         exit;
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
+        // toggle item
+        if(isset($a_nat[$id]['disabled'])) {
+            unset($a_nat[$id]['disabled']);
+        } else {
+            $a_nat[$id]['disabled'] = true;
+        }
+        if (write_config("Firewall: NAT: Outbound, enable/disable NAT rule")) {
+            mark_subsystem_dirty('natconf');
+        }
+        header("Location: firewall_nat.php");
+        exit;
     }
 }
 
@@ -226,6 +238,14 @@ $( document ).ready(function() {
       var id = $(this).attr("id").split('_').pop(-1);
       $("#id").val(id);
       $("#action").val("move");
+      $("#iform").submit();
+  });
+
+	// link toggle buttons
+  $(".act_toggle").click(function(){
+      var id = $(this).attr("id").split('_').pop(-1);
+      $("#id").val(id);
+      $("#action").val("toggle");
       $("#iform").submit();
   });
 
@@ -319,18 +339,20 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                       </td>
                       <td>
-<?php                 if (!empty($natent['associated-rule-id'])): ?>
-<?php                   if(isset($natent['disabled'])):?>
-												<span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
-<?                      else:?>
-												<span class="glyphicon glyphicon-resize-horizontal text-success"></span>
-<?php                   endif; ?>
-<?                    elseif(isset($natent['disabled'])):?>
-												<span class="glyphicon glyphicon-play text-muted"></span>
-<?                    else:?>
-												<span class="glyphicon glyphicon-play text-success"></span>
-<?php                 endif; ?>
-										</td>
+												<a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>">
+<?php                 	if (!empty($natent['associated-rule-id'])): ?>
+<?php                   	if(isset($natent['disabled'])):?>
+													<span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
+<?                      	else:?>
+													<span class="glyphicon glyphicon-resize-horizontal text-success"></span>
+<?php                   	endif; ?>
+<?                    	elseif(isset($natent['disabled'])):?>
+													<span class="glyphicon glyphicon-play text-muted"></span>
+<?                    	else:?>
+													<span class="glyphicon glyphicon-play text-success"></span>
+<?php                 	endif; ?>
+												</a>
+											</td>
                       <td>
                         <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr(isset($natent['interface']) ? $natent['interface'] : "wan"));?>
                       </td>
