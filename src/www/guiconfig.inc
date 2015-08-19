@@ -255,7 +255,7 @@ function print_info_box($msg)
 	print_info_box_np($msg);
 }
 
-function get_std_save_message($ok) {
+function get_std_save_message($ok = '') {
 	global $d_sysrebootreqd_path;
 	$filter_related = false;
 	$filter_pages = array("nat", "filter");
