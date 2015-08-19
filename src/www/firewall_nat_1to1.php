@@ -260,19 +260,19 @@ $main_buttons = array(
 										<td>
 											<?=isset($natent['external']) ? $natent['external'] : "";?><?=isset($natent['source']) ? strstr(pprint_address($natent['source']), '/') : "";?>
 <?php 								if (isset($natent['external']['address']) && is_alias($natent['external']['address'])): ?>
-											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['external']));?>"><i class="fa fa-list"></i> </a>
+											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['external']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php 								endif; ?>
 										</td>
 										<td>
 											<?=pprint_address($natent['source']);?>
 <?php 								if (isset($natent['source']['address']) && is_alias($natent['source']['address'])): ?>
-											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['source']));?>"><i class="fa fa-list"></i> </a>
+											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php 								endif; ?>
 										</td>
 										<td>
 											<?=pprint_address($natent['destination']);?>
 <?php 								if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['destination']));?>"><i class="fa fa-list"></i> </a>
+											&nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php 								endif; ?>
 										</td>
 										<td>
