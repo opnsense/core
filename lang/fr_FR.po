@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 16:01+0200\n"
-"PO-Revision-Date: 2015-08-02 11:32+0100\n"
+"PO-Revision-Date: 2015-08-11 16:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.1\n"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 35
@@ -942,7 +942,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Edit Interface LAGG"
-msgstr ""
+msgstr "Éditer l'Interface LAGG"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 220
@@ -1332,7 +1332,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 68
 msgid "enable IDS"
-msgstr ""
+msgstr "activer IDS"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 69
@@ -1465,7 +1465,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 35
 msgid "Change password"
-msgstr ""
+msgstr "Changer le mot de passe"
 
 #
 # File: src/www/diag_authentication.php, line: 46
@@ -1482,7 +1482,7 @@ msgstr "Utilisateur"
 # File: src/www/system_certificates_tabs.inc, line: 6
 # File: src/www/system_crlmanager.php, line: 603
 msgid "Certificates"
-msgstr ""
+msgstr "Certificats"
 
 #
 # File: src/www/system_certificates_tabs.inc, line: 7
@@ -1492,7 +1492,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_client.php, line: 278
 # File: src/www/vpn_openvpn_server.php, line: 372
 msgid "Certificate Authority"
-msgstr ""
+msgstr "Autorité de certification"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 39
@@ -1502,7 +1502,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 41
 msgid "Firmware"
-msgstr ""
+msgstr "Firmware"
 
 #
 # File: src/www/system_hasync.php, line: 87
@@ -1521,7 +1521,7 @@ msgstr ""
 # File: src/www/system_advanced_tabs.inc, line: 6
 # File: src/www/system_general.php, line: 286
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 #
 # File: src/www/system_advanced_admin.php, line: 277
@@ -1586,7 +1586,7 @@ msgstr "Paramètres"
 #
 # File: lang/dynamic/helpers/models.php, line: 52
 msgid "Setup Wizard"
-msgstr ""
+msgstr "Configuration de l'Assistant"
 
 #
 # File: src/www/services_captiveportal_zones.php, line: 95
@@ -1605,7 +1605,7 @@ msgstr ""
 # File: src/www/vpn_pptp_users.php, line: 97
 # File: src/www/vpn_pptp_users_edit.php, line: 160
 msgid "Users"
-msgstr ""
+msgstr "Utilisateurs"
 
 #
 # File: src/www/interfaces_groups.php, line: 53
@@ -1619,7 +1619,7 @@ msgstr ""
 # File: src/www/system_usermanager_addprivs.php, line: 150
 # File: src/www/system_usermanager_settings.php, line: 117
 msgid "Groups"
-msgstr ""
+msgstr "Groupes"
 
 #
 # File: src/www/load_balancer_pool.php, line: 135
@@ -1632,7 +1632,7 @@ msgstr ""
 # File: src/www/system_usermanager_addprivs.php, line: 152
 # File: src/www/system_usermanager_settings.php, line: 119
 msgid "Servers"
-msgstr ""
+msgstr "Serveurs"
 
 #
 # File: src/www/services_captiveportal.php, line: 645
@@ -1711,7 +1711,7 @@ msgstr "Groupes d'Interfaces"
 # File: src/www/status_rrd_graph_tabs.inc, line: 13
 # File: src/www/status_wireless.php, line: 31
 msgid "Wireless"
-msgstr ""
+msgstr "Réseau sans fil"
 
 #
 # File: src/www/interfaces_assign.php, line: 459
@@ -1861,12 +1861,12 @@ msgstr "Interfaces"
 # File: src/www/services_unbound.php, line: 450
 # File: src/www/vpn_pppoe_edit.php, line: 601
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 #
 # File: src/www/firewall_aliases.php, line: 177
 msgid "Ports"
-msgstr ""
+msgstr "Ports"
 
 #
 # File: src/www/firewall_aliases.php, line: 178
@@ -2009,7 +2009,7 @@ msgstr "Interface"
 # File: src/www/firewall_rules.php, line: 35
 # File: src/www/firewall_rules_edit.php, line: 709
 msgid "Rules"
-msgstr ""
+msgstr "Règles"
 
 #
 # File: src/www/firewall_schedule.php, line: 36
@@ -2059,7 +2059,7 @@ msgstr "Pare-feu"
 # File: src/www/services_captiveportal_mac.php, line: 153
 # File: src/www/services_captiveportal_vouchers.php, line: 368
 msgid "MAC"
-msgstr ""
+msgstr "MAC"
 
 #
 # File: src/www/status_captiveportal_vouchers.php, line: 128
@@ -2162,7 +2162,7 @@ msgstr "Redirecteur DNS"
 # File: src/www/vpn_openvpn_csc.php, line: 751
 # File: src/www/vpn_openvpn_server.php, line: 1922
 msgid "Advanced"
-msgstr ""
+msgstr "Avancé"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 101
@@ -2199,7 +2199,7 @@ msgstr ""
 # File: src/www/services_igmpproxy.php, line: 65
 # File: src/www/services_igmpproxy_edit.php, line: 31
 msgid "IGMP Proxy"
-msgstr ""
+msgstr "Mandataire IGMP"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 107
@@ -2238,7 +2238,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 111
 msgid "Network Time Protocol"
-msgstr ""
+msgstr "Protocole d'Heure Réseau (NTP)"
 
 #
 # File: src/www/vpn_pppoe_edit.php, line: 254
@@ -2248,12 +2248,12 @@ msgstr "Serveur PPPoE"
 #
 # File: lang/dynamic/helpers/models.php, line: 113
 msgid "Proxy Server"
-msgstr ""
+msgstr "Serveur Mandataire"
 
 #
 # File: src/www/services_snmp.php, line: 154
 msgid "SNMP"
-msgstr ""
+msgstr "SNMP"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 115
@@ -2274,7 +2274,7 @@ msgstr "Wake on LAN"
 # File: lang/dynamic/helpers/models.php, line: 117
 # File: src/etc/inc/service-utils.inc, line: 183
 msgid "Intrusion Detection"
-msgstr ""
+msgstr "Détection d'Intrusion"
 
 #
 # File: src/www/load_balancer_monitor.php, line: 76
@@ -2326,7 +2326,7 @@ msgstr ""
 # File: src/www/system_authservers.php, line: 187
 # File: src/www/vpn_pppoe_edit.php, line: 254
 msgid "Services"
-msgstr ""
+msgstr "Services"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 119
@@ -2336,7 +2336,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 120
 msgid "Keys"
-msgstr ""
+msgstr "Clés"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 121
@@ -2381,7 +2381,7 @@ msgstr "L2TP"
 # File: src/www/vpn_openvpn_export_shared.php, line: 306
 # File: src/www/vpn_openvpn_server.php, line: 817
 msgid "Client"
-msgstr ""
+msgstr "Client"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 126
@@ -2535,7 +2535,7 @@ msgstr "NTP"
 # File: src/www/status_rrd_graph_settings.php, line: 101
 # File: src/www/status_rrd_graph_settings.php, line: 131
 msgid "RRD Graphs"
-msgstr ""
+msgstr "Graphiques RRD"
 
 #
 # File: src/www/diag_logs_pills.php, line: 66
@@ -2588,12 +2588,12 @@ msgstr "Mandataire"
 #
 # File: lang/dynamic/helpers/models.php, line: 171
 msgid "System Logs"
-msgstr ""
+msgstr "Événements Systèmes"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 172
 msgid "Traffic Graphs"
-msgstr ""
+msgstr "Graphiques du Traffic"
 
 #
 # File: src/www/carp_status.php, line: 78
@@ -2674,12 +2674,12 @@ msgstr "Authentification"
 #
 # File: lang/dynamic/helpers/models.php, line: 177
 msgid "History"
-msgstr ""
+msgstr "Historique"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 178
 msgid "Backup & Restore"
-msgstr ""
+msgstr "Sauvegarde & Restauration"
 
 #
 # File: src/www/crash_reporter.php, line: 62
@@ -2700,7 +2700,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 182
 msgid "Halt System"
-msgstr ""
+msgstr "Arrêter le Système"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 183
@@ -2738,7 +2738,7 @@ msgstr "Ping"
 #
 # File: lang/dynamic/helpers/models.php, line: 189
 msgid "Reboot"
-msgstr ""
+msgstr "Redémarrer"
 
 #
 # File: src/www/system_gateways_tabs.inc, line: 7
@@ -2767,23 +2767,23 @@ msgstr "États"
 #
 # File: lang/dynamic/helpers/models.php, line: 194
 msgid "States Summary"
-msgstr ""
+msgstr "Résumé des États"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 195
 msgid "System Activity"
-msgstr ""
+msgstr "Activté du Système"
 
 #
 # File: src/www/diag_tables.php, line: 33
 msgid "Tables"
-msgstr ""
+msgstr "Tables"
 
 #
 # File: src/www/diag_testport.php, line: 32
 # File: src/www/diag_testport.php, line: 102
 msgid "Test Port"
-msgstr ""
+msgstr "Tester le Port"
 
 #
 # File: src/www/diag_dns.php, line: 252
@@ -2823,22 +2823,22 @@ msgstr "Diagnostiques"
 #
 # File: lang/dynamic/helpers/models.php, line: 200
 msgid "About this Page"
-msgstr ""
+msgstr "A propos de cette Page"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 201
 msgid "Developers Wiki"
-msgstr ""
+msgstr "Wiki pour Développeurs"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 202
 msgid "Documentation"
-msgstr ""
+msgstr "Documentation"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 203
 msgid "FreeBSD Handbook"
-msgstr ""
+msgstr "Manuel de FreeBSD"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 204
@@ -2853,18 +2853,18 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 206
 msgid "Help"
-msgstr ""
+msgstr "Aide"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 207
 msgid "menu"
-msgstr ""
+msgstr "menu"
 
 #
 # File: src/www/services_dnsmasq_domainoverride_edit.php, line: 140
 # File: src/www/services_unbound_domainoverride_edit.php, line: 135
 msgid "test"
-msgstr ""
+msgstr "tester"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 209
@@ -6073,14 +6073,14 @@ msgstr ""
 # File: src/www/crash_reporter.php, line: 101
 # File: src/www/crash_reporter.php, line: 105
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 #
 # File: src/www/system_usermanager_settings_test.php, line: 71
 # File: src/www/system_usermanager_settings_test.php, line: 75
 # File: src/www/system_usermanager_settings_test.php, line: 78
 msgid "failed"
-msgstr ""
+msgstr "échec"
 
 #
 # File: src/www/crash_reporter.php, line: 115
@@ -6292,7 +6292,7 @@ msgstr "Mot de passe:"
 # File: src/www/diag_smart.php, line: 373
 # File: src/www/diag_testport.php, line: 166
 msgid "Test"
-msgstr ""
+msgstr "Tester"
 
 #
 # File: src/www/diag_backup.php, line: 140
@@ -9118,7 +9118,7 @@ msgstr "Courrier envoyé à %s"
 #
 # File: src/www/diag_smart.php, line: 208
 msgid "Information/Tests"
-msgstr ""
+msgstr "Information/Tests"
 
 #
 # File: src/www/diag_smart.php, line: 209
@@ -9129,13 +9129,13 @@ msgstr ""
 #
 # File: src/www/diag_smart.php, line: 245
 msgid "Test email"
-msgstr ""
+msgstr "Tester le courriel"
 
 #
 # File: src/www/diag_smart.php, line: 250
 #, php-format
 msgid "Send test email to %s"
-msgstr ""
+msgstr "Envoyer le message de test à %s"
 
 #
 # File: src/www/diag_smart.php, line: 258
@@ -9191,7 +9191,7 @@ msgstr ""
 #
 # File: src/www/diag_smart.php, line: 346
 msgid "Test type"
-msgstr ""
+msgstr "Type de test"
 
 #
 # File: src/www/diag_smart.php, line: 349
@@ -9230,7 +9230,7 @@ msgstr ""
 #
 # File: src/www/diag_smart.php, line: 402
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 #
 # File: src/www/diag_smart.php, line: 403
@@ -9240,27 +9240,27 @@ msgstr ""
 #
 # File: src/www/diag_smart.php, line: 441
 msgid "Abort tests"
-msgstr ""
+msgstr "Annuler les tests"
 
 #
 # File: src/www/diag_smart.php, line: 466
 msgid "Do you really want to abort the test?"
-msgstr ""
+msgstr "Vous-vous vraiment anuller le test?"
 
 #
 # File: src/www/diag_smart.php, line: 485
 msgid "Back"
-msgstr ""
+msgstr "Retour"
 
 #
 # File: src/www/diag_states_summary.php, line: 147
 msgid "Src Ports"
-msgstr ""
+msgstr "Ports Src"
 
 #
 # File: src/www/diag_states_summary.php, line: 148
 msgid "Dst Ports"
-msgstr ""
+msgstr "Ports Dst"
 
 #
 # File: src/www/diag_states_summary.php, line: 180
@@ -9315,7 +9315,7 @@ msgstr ""
 #
 # File: src/www/diag_system_pftop.php, line: 120
 msgid "Number of States:"
-msgstr ""
+msgstr "Nombres d'États:"
 
 #
 # File: src/www/diag_system_pftop.php, line: 126
@@ -9326,22 +9326,22 @@ msgstr ""
 # File: src/www/interfaces.php, line: 2994
 # File: src/www/interfaces.php, line: 3010
 msgid "Default"
-msgstr ""
+msgstr "Défaut"
 
 #
 # File: src/www/diag_system_pftop.php, line: 127
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 #
 # File: src/www/diag_system_pftop.php, line: 131
 msgid "Speed"
-msgstr ""
+msgstr "Vitesse"
 
 #
 # File: src/www/diag_system_pftop.php, line: 136
 msgid "Age"
-msgstr ""
+msgstr "Age"
 
 #
 # File: src/www/diag_system_pftop.php, line: 137
@@ -9351,14 +9351,14 @@ msgstr "Octets"
 #
 # File: src/www/diag_system_pftop.php, line: 138
 msgid "Destination Address"
-msgstr ""
+msgstr "Adresse de Destination"
 
 #
 # File: src/www/diag_system_pftop.php, line: 139
 # File: src/www/firewall_nat_out.php, line: 309
 # File: src/www/firewall_nat_out.php, line: 496
 msgid "Destination Port"
-msgstr ""
+msgstr "Port de Destination"
 
 #
 # File: src/www/diag_system_pftop.php, line: 140
@@ -9373,7 +9373,7 @@ msgstr ""
 #
 # File: src/www/diag_system_pftop.php, line: 143
 msgid "Packet"
-msgstr ""
+msgstr "Paquet"
 
 #
 # File: src/www/diag_system_pftop.php, line: 146
@@ -9381,7 +9381,7 @@ msgstr ""
 # File: src/www/firewall_nat_out.php, line: 307
 # File: src/www/firewall_nat_out.php, line: 494
 msgid "Source Port"
-msgstr ""
+msgstr "Port Source"
 
 #
 # File: src/www/diag_system_pftop.php, line: 177
@@ -9415,17 +9415,17 @@ msgstr ""
 # File: src/www/diag_tables.php, line: 170
 # File: src/www/services_dhcpv6.php, line: 782
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #
 # File: src/www/diag_testport.php, line: 47
 msgid "Please enter a valid IP or hostname."
-msgstr ""
+msgstr "Veuillez entrer une IP ou nom d'hôte valide."
 
 #
 # File: src/www/diag_testport.php, line: 51
 msgid "Please enter a valid port number."
-msgstr ""
+msgstr "Veuillez entrer un numéro de port valide."
 
 #
 # File: src/www/diag_testport.php, line: 55
@@ -9544,7 +9544,7 @@ msgstr "Utiliser ICMP"
 # File: src/www/services_ntpd_gps.php, line: 400
 # File: src/www/services_ntpd_gps.php, line: 401
 msgid "Note: "
-msgstr ""
+msgstr "Note: "
 
 #
 # File: src/www/diag_traceroute.php, line: 154
@@ -11319,13 +11319,13 @@ msgstr ""
 # File: src/www/firewall_nat_out.php, line: 421
 # File: src/www/firewall_nat_out.php, line: 573
 msgid "YES"
-msgstr ""
+msgstr "OUI"
 
 #
 # File: src/www/firewall_nat_out.php, line: 423
 # File: src/www/firewall_nat_out.php, line: 575
 msgid "NO"
-msgstr ""
+msgstr "NON"
 
 #
 # File: src/www/firewall_nat_out.php, line: 433
@@ -11474,7 +11474,7 @@ msgstr ""
 #
 # File: src/www/firewall_nat_out_edit.php, line: 572
 msgid "Source port:"
-msgstr ""
+msgstr "Port source:"
 
 #
 # File: src/www/firewall_nat_out_edit.php, line: 575
@@ -11490,7 +11490,7 @@ msgstr ""
 #
 # File: src/www/firewall_nat_out_edit.php, line: 632
 msgid "Destination port:"
-msgstr ""
+msgstr "Port de destination:"
 
 #
 # File: src/www/firewall_nat_out_edit.php, line: 642
@@ -11573,7 +11573,7 @@ msgstr ""
 #
 # File: src/www/firewall_nat_out_edit.php, line: 767
 msgid "Port:"
-msgstr ""
+msgstr "Port:"
 
 #
 # File: src/www/firewall_nat_out_edit.php, line: 775
@@ -11698,7 +11698,7 @@ msgstr ""
 # File: src/www/firewall_rules.php, line: 357
 # File: src/www/guiconfig.inc, line: 275
 msgid "Apply changes"
-msgstr ""
+msgstr "Appliquer les changements"
 
 #
 # File: src/www/firewall_rules.php, line: 357
@@ -11722,7 +11722,7 @@ msgstr ""
 # File: src/www/system_routes_edit.php, line: 84
 # File: src/www/system_routes_edit.php, line: 282
 msgid "Gateway"
-msgstr ""
+msgstr "Passerelle"
 
 #
 # File: src/www/firewall_rules.php, line: 404
@@ -11733,7 +11733,7 @@ msgstr ""
 # File: src/www/firewall_rules.php, line: 405
 # File: src/www/firewall_rules_edit.php, line: 1360
 msgid "Schedule"
-msgstr ""
+msgstr "Planifier"
 
 #
 # File: src/www/firewall_rules.php, line: 448
@@ -11782,7 +11782,7 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 51
 # File: src/www/firewall_schedule_edit.php, line: 861
 msgid "Fri"
-msgstr ""
+msgstr "Ven"
 
 #
 # File: src/www/firewall_rules.php, line: 583
@@ -11790,7 +11790,7 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 51
 # File: src/www/firewall_schedule_edit.php, line: 857
 msgid "Mon"
-msgstr ""
+msgstr "Lun"
 
 #
 # File: src/www/firewall_rules.php, line: 583
@@ -11798,7 +11798,7 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 51
 # File: src/www/firewall_schedule_edit.php, line: 862
 msgid "Sat"
-msgstr ""
+msgstr "Sam"
 
 #
 # File: src/www/firewall_rules.php, line: 583
@@ -11806,21 +11806,21 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 51
 # File: src/www/firewall_schedule_edit.php, line: 863
 msgid "Sun"
-msgstr ""
+msgstr "Dim"
 
 #
 # File: src/www/firewall_rules.php, line: 583
 # File: src/www/firewall_schedule.php, line: 30
 # File: src/www/firewall_schedule_edit.php, line: 51
 msgid "Thur"
-msgstr ""
+msgstr "Jeu"
 
 #
 # File: src/www/firewall_rules.php, line: 583
 # File: src/www/firewall_schedule.php, line: 30
 # File: src/www/firewall_schedule_edit.php, line: 51
 msgid "Tues"
-msgstr ""
+msgstr "Mar"
 
 #
 # File: src/www/firewall_rules.php, line: 583
@@ -11828,91 +11828,91 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 51
 # File: src/www/firewall_schedule_edit.php, line: 859
 msgid "Wed"
-msgstr ""
+msgstr "Mer"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "April"
-msgstr ""
+msgstr "Avril"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "August"
-msgstr ""
+msgstr "Août"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "December"
-msgstr ""
+msgstr "Décembre"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "February"
-msgstr ""
+msgstr "Février"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "January"
-msgstr ""
+msgstr "Janvier"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "July"
-msgstr ""
+msgstr "Juillet"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "June"
-msgstr ""
+msgstr "Juin"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "March"
-msgstr ""
+msgstr "Mars"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "November"
-msgstr ""
+msgstr "Novembre"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "October"
-msgstr ""
+msgstr "Octobre"
 
 #
 # File: src/www/firewall_rules.php, line: 584
 # File: src/www/firewall_schedule.php, line: 31
 # File: src/www/firewall_schedule_edit.php, line: 52
 msgid "September"
-msgstr ""
+msgstr "Septembre"
 
 #
 # File: src/www/firewall_rules.php, line: 693
@@ -12289,7 +12289,7 @@ msgstr ""
 #
 # File: src/www/firewall_rules_edit.php, line: 743
 msgid "Edit Firewall rule"
-msgstr ""
+msgstr "Éditer la règle de pare-feu"
 
 #
 # File: src/www/firewall_rules_edit.php, line: 761
@@ -12352,7 +12352,7 @@ msgstr ""
 #
 # File: src/www/firewall_rules_edit.php, line: 882
 msgid "TCP/IP Version"
-msgstr ""
+msgstr "Version TCP/IP"
 
 #
 # File: src/www/firewall_rules_edit.php, line: 894
@@ -12780,7 +12780,7 @@ msgstr ""
 #
 # File: src/www/firewall_schedule_edit.php, line: 815
 msgid "Month"
-msgstr ""
+msgstr "Mois"
 
 #
 # File: src/www/firewall_schedule_edit.php, line: 858
@@ -12815,13 +12815,13 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 941
 # File: src/www/firewall_schedule_edit.php, line: 966
 msgid "Hr"
-msgstr ""
+msgstr "H"
 
 #
 # File: src/www/firewall_schedule_edit.php, line: 948
 # File: src/www/firewall_schedule_edit.php, line: 973
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 #
 # File: src/www/firewall_schedule_edit.php, line: 977
@@ -12858,7 +12858,7 @@ msgstr ""
 #
 # File: src/www/firewall_schedule_edit.php, line: 1014
 msgid "Day(s)"
-msgstr ""
+msgstr "Jour(s)"
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 83
@@ -13013,7 +13013,7 @@ msgstr ""
 #
 # File: src/www/firewall_virtual_ip_edit.php, line: 352
 msgid "Proxy ARP"
-msgstr ""
+msgstr "Mandataire ARP"
 
 #
 # File: src/www/firewall_virtual_ip_edit.php, line: 354
@@ -13177,32 +13177,32 @@ msgstr ""
 #
 # File: src/www/graph.php, line: 350
 msgid "Kbps"
-msgstr ""
+msgstr "Kbps"
 
 #
 # File: src/www/graph.php, line: 352
 msgid "Mbps"
-msgstr ""
+msgstr "Mbps"
 
 #
 # File: src/www/graph.php, line: 354
 msgid "Gbps"
-msgstr ""
+msgstr "Gbps"
 
 #
 # File: src/www/graph.php, line: 360
 msgid "KB/s"
-msgstr ""
+msgstr "Ko/s"
 
 #
 # File: src/www/graph.php, line: 362
 msgid "MB/s"
-msgstr ""
+msgstr "Mo/s"
 
 #
 # File: src/www/graph.php, line: 364
 msgid "GB/s"
-msgstr ""
+msgstr "Go/s"
 
 #
 # File: src/www/graph_cpu.php, line: 71
@@ -13229,31 +13229,31 @@ msgstr ""
 #
 # File: src/www/guiconfig.inc, line: 282
 msgid "apply"
-msgstr ""
+msgstr "appliquer"
 
 #
 # File: src/www/guiconfig.inc, line: 282
 # File: src/www/system_certmanager.php, line: 711
 # File: src/www/vpn_ipsec_mobile.php, line: 373
 msgid "create"
-msgstr ""
+msgstr "créer"
 
 #
 # File: src/www/guiconfig.inc, line: 282
 msgid "save"
-msgstr ""
+msgstr "sauvegarder"
 
 #
 # File: src/www/guiconfig.inc, line: 324
 msgid "Undo"
-msgstr ""
+msgstr "annuler"
 
 #
 # File: src/www/guiconfig.inc, line: 347
 # File: src/www/system_usermanager_settings_ldapacpicker.php, line: 69
 # File: src/www/system_usermanager_settings_test.php, line: 85
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 
 #
 # File: src/www/guiconfig.inc, line: 375
@@ -13295,7 +13295,7 @@ msgstr ""
 #
 # File: src/www/index.php, line: 354
 msgid "Dashboard"
-msgstr ""
+msgstr "Tableau de bord"
 
 #
 # File: src/www/index.php, line: 354
@@ -13305,7 +13305,7 @@ msgstr ""
 #
 # File: src/www/index.php, line: 384
 msgid "Starting initial configuration"
-msgstr ""
+msgstr "Démarrage de la configuration initiale"
 
 #
 # File: src/www/index.php, line: 400
@@ -13405,7 +13405,7 @@ msgstr ""
 # File: src/www/interfaces.php, line: 525
 # File: src/www/interfaces.php, line: 2596
 msgid "Modem Port"
-msgstr ""
+msgstr "Port du modem"
 
 #
 # File: src/www/interfaces.php, line: 525
@@ -13413,7 +13413,7 @@ msgstr ""
 # File: src/www/interfaces_ppps_edit.php, line: 183
 # File: src/www/interfaces_ppps_edit.php, line: 541
 msgid "Phone Number"
-msgstr ""
+msgstr "Numéro de Téléphone"
 
 #
 # File: src/www/interfaces.php, line: 531
@@ -13457,7 +13457,7 @@ msgstr ""
 # File: src/www/interfaces.php, line: 541
 # File: src/www/interfaces.php, line: 544
 msgid "PPTP password"
-msgstr ""
+msgstr "Mot de passe PPTP"
 
 #
 # File: src/www/interfaces.php, line: 541
@@ -13481,7 +13481,7 @@ msgstr "Nom d’utilisateur PPTP"
 # File: src/www/interfaces.php, line: 551
 # File: src/www/interfaces.php, line: 554
 msgid "L2TP password"
-msgstr ""
+msgstr "Mot de passe L2TP"
 
 #
 # File: src/www/interfaces.php, line: 551
@@ -17112,7 +17112,7 @@ msgstr ""
 #
 # File: src/www/license.php, line: 32
 msgid "License"
-msgstr ""
+msgstr "Licence"
 
 #
 # File: src/www/load_balancer_monitor.php, line: 60
@@ -17320,7 +17320,7 @@ msgstr ""
 #
 # File: src/www/load_balancer_pool_edit.php, line: 68
 msgid "Server List"
-msgstr ""
+msgstr "Liste des Serveurs"
 
 #
 # File: src/www/load_balancer_pool_edit.php, line: 75
@@ -17416,7 +17416,7 @@ msgstr ""
 #
 # File: src/www/load_balancer_pool_edit.php, line: 239
 msgid "Retry"
-msgstr ""
+msgstr "Réessayer"
 
 #
 # File: src/www/load_balancer_pool_edit.php, line: 242
@@ -17514,7 +17514,7 @@ msgstr ""
 # File: src/www/load_balancer_relay_action_edit.php, line: 174
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 132
 msgid "DNS"
-msgstr ""
+msgstr "DNS"
 
 #
 # File: src/www/load_balancer_relay_action_edit.php, line: 409
@@ -17572,23 +17572,23 @@ msgstr ""
 #
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 97
 msgid "name"
-msgstr ""
+msgstr "nom"
 
 #
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 98
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 100
 msgid "type"
-msgstr ""
+msgstr "type"
 
 #
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 99
 msgid "description"
-msgstr ""
+msgstr "description"
 
 #
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 101
 msgid "action"
-msgstr ""
+msgstr "action"
 
 #
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 194
@@ -17609,12 +17609,12 @@ msgstr ""
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 254
 # File: src/www/system_crlmanager.php, line: 585
 msgid "Add"
-msgstr ""
+msgstr "Ajouter"
 
 #
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 261
 msgid "Enabled Actions"
-msgstr ""
+msgstr "Activer les Actions"
 
 #
 # File: src/www/load_balancer_setting.php, line: 55
@@ -17805,7 +17805,7 @@ msgstr ""
 # File: src/www/status_captiveportal_expire.php, line: 97
 # File: src/www/status_captiveportal_test.php, line: 97
 msgid "Submit"
-msgstr ""
+msgstr "Valider"
 
 #
 # File: src/www/load_balancer_virtual_server_edit.php, line: 289
@@ -17817,7 +17817,7 @@ msgstr ""
 #
 # File: src/www/reboot.php, line: 34
 msgid "Reboot System"
-msgstr ""
+msgstr "Redémarrer le Système"
 
 #
 # File: src/www/reboot.php, line: 49
@@ -17974,7 +17974,7 @@ msgstr ""
 # File: src/www/services_captiveportal_mac.php, line: 154
 # File: src/www/services_captiveportal_vouchers.php, line: 369
 msgid "Allowed IP addresses"
-msgstr ""
+msgstr "Adresses IP autorisées"
 
 #
 # File: src/www/services_captiveportal.php, line: 495
@@ -18032,7 +18032,7 @@ msgstr ""
 # File: src/www/services_captiveportal.php, line: 552
 # File: src/www/services_captiveportal_vouchers_edit.php, line: 86
 msgid "minutes"
-msgstr ""
+msgstr "minutes"
 
 #
 # File: src/www/services_captiveportal.php, line: 546
@@ -18082,7 +18082,7 @@ msgstr ""
 #
 # File: src/www/services_captiveportal.php, line: 567
 msgid "hours"
-msgstr ""
+msgstr "heures"
 
 #
 # File: src/www/services_captiveportal.php, line: 568
@@ -18202,7 +18202,7 @@ msgstr ""
 # File: src/www/services_captiveportal.php, line: 625
 # File: src/www/services_captiveportal.php, line: 629
 msgid "Kbit/s"
-msgstr ""
+msgstr "Kbit/s"
 
 #
 # File: src/www/services_captiveportal.php, line: 628
@@ -26943,17 +26943,17 @@ msgstr ""
 #
 # File: src/www/system_gateways.php, line: 354
 msgid "Edit Gateway"
-msgstr ""
+msgstr "Éditer la passerelle"
 
 #
 # File: src/www/system_gateways.php, line: 363
 msgid "Do you really want to delete this gateway?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer cette passerelle ?"
 
 #
 # File: src/www/system_gateways.php, line: 364
 msgid "Delete Gateway"
-msgstr ""
+msgstr "Supprimer la passerelle"
 
 #
 # File: src/www/system_gateways.php, line: 373
@@ -26963,7 +26963,7 @@ msgstr ""
 #
 # File: src/www/system_gateways.php, line: 392
 msgid "delete selected items"
-msgstr ""
+msgstr "supprimer les éléments sélectionnés"
 
 #
 # File: src/www/system_gateways.php, line: 393
@@ -27164,7 +27164,7 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 548
 # File: src/www/system_gateways_edit.php, line: 673
 msgid "Edit gateway"
-msgstr ""
+msgstr "Éditer la passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 694
@@ -27190,18 +27190,18 @@ msgstr ""
 #
 # File: src/www/system_gateways_edit.php, line: 738
 msgid "Gateway name"
-msgstr ""
+msgstr "Nom de la passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 750
 msgid "Gateway IP address"
-msgstr ""
+msgstr "Adresse IP de la passerelle"
 
 #
 # File: src/www/system_gateways_edit.php, line: 754
 # File: src/www/system_gateways_edit.php, line: 759
 msgid "Default Gateway"
-msgstr ""
+msgstr "Passerelle par défaut"
 
 #
 # File: src/www/system_gateways_edit.php, line: 760
@@ -27267,13 +27267,13 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 834
 # File: src/www/system_gateways_edit.php, line: 846
 msgid "From"
-msgstr ""
+msgstr "De"
 
 #
 # File: src/www/system_gateways_edit.php, line: 837
 # File: src/www/system_gateways_edit.php, line: 849
 msgid "To"
-msgstr ""
+msgstr "Vers"
 
 #
 # File: src/www/system_gateways_edit.php, line: 844
@@ -27341,27 +27341,27 @@ msgstr ""
 #
 # File: src/www/system_general.php, line: 39
 msgid "English"
-msgstr ""
+msgstr "Anglais"
 
 #
 # File: src/www/system_general.php, line: 40
 msgid "German"
-msgstr ""
+msgstr "Allemand"
 
 #
 # File: src/www/system_general.php, line: 41
 msgid "Spanish"
-msgstr ""
+msgstr "Espagnol"
 
 #
 # File: src/www/system_general.php, line: 42
 msgid "Japanese"
-msgstr ""
+msgstr "Japonais"
 
 #
 # File: src/www/system_general.php, line: 41
 msgid "Chinese (Simplified)"
-msgstr ""
+msgstr "Chinois (Simplifié)"
 
 #
 # File: src/www/system_general.php, line: 118
@@ -28523,7 +28523,7 @@ msgstr ""
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 452
 msgid "system"
-msgstr ""
+msgstr "système"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 463
@@ -28605,7 +28605,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 564
 # File: src/www/vpn_openvpn_server.php, line: 1680
 msgid "DNS Servers"
-msgstr ""
+msgstr "Serveurs DNS"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 595
@@ -28619,7 +28619,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 715
 # File: src/www/vpn_openvpn_server.php, line: 1852
 msgid "WINS Servers"
-msgstr ""
+msgstr "Serveurs WINS"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 637
@@ -29393,7 +29393,7 @@ msgstr "Adresse du serveur"
 # File: src/www/vpn_pppoe_edit.php, line: 114
 # File: src/www/vpn_pptp.php, line: 79
 msgid "RADIUS server address"
-msgstr ""
+msgstr "Adresse du serveur RADIUS"
 
 #
 # File: src/www/vpn_l2tp.php, line: 70
@@ -29401,7 +29401,7 @@ msgstr ""
 # File: src/www/vpn_pptp.php, line: 79
 # File: src/www/vpn_pptp.php, line: 474
 msgid "RADIUS shared secret"
-msgstr ""
+msgstr "Secret partagé de RADIUS"
 
 #
 # File: src/www/vpn_l2tp.php, line: 77
@@ -29453,7 +29453,7 @@ msgstr ""
 # File: src/www/vpn_pptp_users.php, line: 96
 # File: src/www/vpn_pptp_users_edit.php, line: 159
 msgid "Configuration"
-msgstr ""
+msgstr "Configuration"
 
 #
 # File: src/www/vpn_l2tp.php, line: 324
@@ -29502,12 +29502,12 @@ msgstr ""
 # File: src/www/vpn_l2tp.php, line: 384
 # File: src/www/vpn_pppoe_edit.php, line: 451
 msgid "is"
-msgstr ""
+msgstr "est"
 
 #
 # File: src/www/vpn_l2tp.php, line: 388
 msgid "Number of L2TP users"
-msgstr ""
+msgstr "Nombre d'utilisateurs L2TP"
 
 #
 # File: src/www/vpn_l2tp.php, line: 403
@@ -29517,7 +29517,7 @@ msgstr ""
 #
 # File: src/www/vpn_l2tp.php, line: 407
 msgid "Secret"
-msgstr ""
+msgstr "Secret"
 
 #
 # File: src/www/vpn_l2tp.php, line: 411
@@ -29529,12 +29529,12 @@ msgstr ""
 #
 # File: src/www/vpn_l2tp.php, line: 415
 msgid "Authentication Type"
-msgstr ""
+msgstr "Type d'Authentification"
 
 #
 # File: src/www/vpn_l2tp.php, line: 421
 msgid "CHAP"
-msgstr ""
+msgstr "CHAP"
 
 #
 # File: src/www/vpn_l2tp.php, line: 428
@@ -29562,14 +29562,14 @@ msgstr "Serveur WINS"
 # File: src/www/vpn_pppoe_edit.php, line: 514
 # File: src/www/vpn_pptp.php, line: 423
 msgid "RADIUS"
-msgstr ""
+msgstr "RADIUS"
 
 #
 # File: src/www/vpn_l2tp.php, line: 454
 # File: src/www/vpn_pppoe_edit.php, line: 519
 # File: src/www/vpn_pptp.php, line: 428
 msgid "Use a RADIUS server for authentication"
-msgstr ""
+msgstr "Utiliser un serveur RADIUS pour l'authentification"
 
 #
 # File: src/www/vpn_l2tp.php, line: 455
@@ -29599,7 +29599,7 @@ msgstr "Serveur RADIUS"
 #
 # File: src/www/vpn_l2tp.php, line: 468
 msgid "Enter the IP address of the RADIUS server."
-msgstr ""
+msgstr "Entrer l'adresse IP du serveur RADIUS."
 
 #
 # File: src/www/vpn_l2tp.php, line: 471
