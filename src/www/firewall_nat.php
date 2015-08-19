@@ -361,26 +361,26 @@ $( document ).ready(function() {
                       </td>
                       <td class="hidden-xs hidden-sm">
                         <?=htmlspecialchars(pprint_address($natent['source']));?>
-<?php                   if (is_alias(pprint_address($natent['source']))): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['source']));?>"><i class="fa fa-list"></i> </a>
+<?php                   if (isset($natent['source']['address']) && is_alias($natent['source']['address'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
                       <td class="hidden-xs hidden-sm">
                         <?=htmlspecialchars(pprint_port($natent['source']['port']));?>
-<?php                   if (is_alias(pprint_port($natent['source']['port']))): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_port($natent['source']['port']));?>"><i class="fa fa-list"></i> </a>
+<?php                   if (is_alias($natent['source']['port'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['port']);?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
                       <td class="hidden-xs hidden-sm">
                         <?=htmlspecialchars(pprint_address($natent['destination']));?>
-<?php                   if (is_alias(pprint_address($natent['destination']))): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_address($natent['destination']));?>"><i class="fa fa-list"></i> </a>
+<?php                   if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
                       <td class="hidden-xs hidden-sm">
                         <?=htmlspecialchars(pprint_port($natent['destination']['port']));?>
-<?php                   if (is_alias(pprint_port($natent['destination']['port']))): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_port($natent['destination']['port']));?>"><i class="fa fa-list"></i> </a>
+<?php                   if (is_alias($natent['destination']['port'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['port']);?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
                       <td>
@@ -399,8 +399,8 @@ $( document ).ready(function() {
                         }
 ?>
 												<?=htmlspecialchars(pprint_port($localport));?>
-<?php                   if (is_alias(pprint_port($localport))): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars(pprint_port($localport));?>"><i class="fa fa-list"></i> </a>
+<?php                   if (is_alias($localport)): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($localport);?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
 									  </td>
                       <td>
