@@ -288,7 +288,7 @@ function pprint_address($adr) {
 	} else if (isset($adr['network'])) {
 		$padr = $specialnets[$adr['network']];
 	} else {
-		$padr = $adr['address'];
+		$padr = isset($adr['address']) ? $adr['address'] : null;
 	}
 
 	if (isset($adr['not']))
