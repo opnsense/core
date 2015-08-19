@@ -69,7 +69,9 @@
             <NatEdit url="/firewall_nat_edit.php*"/>
             <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
             <OneOnOne VisibleName="1:1" url="/firewall_nat_1to1.php"/>
+            <OneOnOneEdit url="/firewall_nat_1to1_edit.php*"/>
             <Outbound url="/firewall_nat_out.php"/>
+            <OutboundEdit url="/firewall_nat_out_edit.php*"/>
             <NPt url="/firewall_nat_npt.php"/>
             <NPtEdit url="/firewall_nat_npt_edit.php"/>
         </NAT>
