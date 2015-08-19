@@ -490,38 +490,39 @@ function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendp
 }
 
 function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $pendport=0) {
-	$adr = array();
-
-	if ($padr == "any")
-		$adr['any'] = true;
-	else if (is_specialnet($padr))
-		$adr['network'] = $padr;
-	else {
-		$adr['address'] = $padr;
-		if (is_ipaddrv6($padr)) {
-			if ($pmask != 128)
-				$adr['address'] .= "/" . $pmask;
+		$adr = array();
+		if ($padr == "any") {
+				$adr['any'] = true;
+		} elseif (is_specialnet($padr)) {
+				$adr['network'] = $padr;
+		} elseif (is_alias($padr)) {
+				$adr['address'] = $padr;
 		} else {
-			if ($pmask != 32)
-				$adr['address'] .= "/" . $pmask;
+			$adr['address'] = $padr;
+			if (is_ipaddrv6($padr)) {
+				if ($pmask != 128)
+					$adr['address'] .= "/" . $pmask;
+			} else {
+				if ($pmask != 32)
+					$adr['address'] .= "/" . $pmask;
+			}
 		}
-	}
 
-	if ($pnot)
-		$adr['not'] = true;
-	else
-		unset($adr['not']);
+		if ($pnot) {
+				$adr['not'] = true;
+		} elseif (isset($adr['not'])) {
+				unset($adr['not']);
+		}
 
-	if (($pbeginport != 0) && ($pbeginport != "any")) {
-		if ($pbeginport != $pendport)
-			$adr['port'] = $pbeginport . "-" . $pendport;
-		else
-			$adr['port'] = $pbeginport;
-	}
-
-	if(is_alias($pbeginport)) {
-		$adr['port'] = $pbeginport;
-	}
+		if(is_alias($pbeginport)) {
+				$adr['port'] = $pbeginport;
+		} elseif (($pbeginport != 0) && ($pbeginport != "any")) {
+				if ($pbeginport != $pendport) {
+						$adr['port'] = $pbeginport . "-" . $pendport;
+				} else {
+						$adr['port'] = $pbeginport;
+				}
+		}
 }
 
 function is_specialnet($net) {
