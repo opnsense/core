@@ -55,15 +55,6 @@ $p2_ealgos = array(
 	'cast128' => array( 'name' => 'CAST128' ),
 	'des' => array( 'name' => 'DES' ));
 
-$p1_halgos = array(
-	'md5' => 'MD5',
-	'sha1' => 'SHA1',
-	'sha256' => 'SHA256',
-	'sha384' => 'SHA384',
-	'sha512' => 'SHA512',
-	'aesxcbc' => 'AES-XCBC'
-);
-
 $p2_halgos = array(
 	'hmac_md5' => 'MD5',
 	'hmac_sha1' => 'SHA1',
@@ -268,6 +259,7 @@ function ipsec_smp_dump_status() {
 
 	@fwrite($fd, $query);
 	$response = "";
+	$sread = "";
 	while (!strstr($sread, "</message>")) {
 		$sread = fgets($fd);
 		$response .= $sread;
@@ -301,14 +293,14 @@ function ipsec_dump_spd()
 			if ($line == "No SPD entries.")
 				break;
 			if ($line[0] != "\t") {
-				if (is_array($cursp))
+				if (isset($cursp))
 					$spd[] = $cursp;
 				$cursp = array();
 				$linea = explode(" ", $line);
 				$cursp['srcid'] = substr($linea[0], 0, strpos($linea[0], "["));
 				$cursp['dstid'] = substr($linea[1], 0, strpos($linea[1], "["));
 				$i = 0;
-			} else if (is_array($cursp)) {
+			} else if (isset($cursp)) {
 				$linea = explode(" ", trim($line));
 				switch($i)
 				{
@@ -328,7 +320,7 @@ function ipsec_dump_spd()
 			}
 			$i++;
 		}
-		if (is_array($cursp) && count($cursp))
+		if (isset($cursp) && count($cursp))
 			$spd[] = $cursp;
 		pclose($fd);
 	}
@@ -443,16 +435,21 @@ function ipsec_get_number_of_phase2($ikeid) {
 
 
 function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
+	$id_data = null;
 	if ($side == "local") {
 		$id_type = $ph1ent['myid_type'];
-		$id_data = $ph1ent['myid_data'];
+		if (isset($ph1ent['myid_data'])) {
+			$id_data = $ph1ent['myid_data'];
+		}
 
 		$addr = ipsec_get_phase1_src($ph1ent);
 		if (!$addr)
 			return array();
 	} elseif ($side == "peer") {
 		$id_type = $ph1ent['peerid_type'];
-		$id_data = $ph1ent['peerid_data'];
+		if (isset($ph1ent['peerid_data'])) {
+			$id_data = $ph1ent['peerid_data'];
+		}
 
 		if (isset($ph1ent['mobile']))
 			$addr = "%any";
