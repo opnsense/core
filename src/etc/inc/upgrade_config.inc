@@ -3346,16 +3346,6 @@ function upgrade_110_to_111()
 {
 	global $config;
 
-	/* Make sure unbound user exist */
-	mwexec('/usr/sbin/pw groupadd -n unbound -g 59', true);
-	mwexec('/usr/sbin/pw useradd -n unbound -c "Unbound DNS Resolver" -d /var/unbound -s /usr/sbin/nologin -u 59 -g 59', true);
-
-	/* cleanup old unbound package stuffs */
-	@unlink('/usr/local/www/unbound_status.php');
-	@unlink('/usr/local/www/unbound_acls.php');
-	@unlink('/usr/local/bin/unbound_monitor.sh');
-	@unlink('/usr/local/etc/rc.d/unbound.sh');
-
 	/* Remove old menu and service entries */
 	if (isset($config['installedpackages']['menu']) && is_array($config['installedpackages']['menu'])) {
 		foreach ($config['installedpackages']['menu'] as $idx => $menu) {
