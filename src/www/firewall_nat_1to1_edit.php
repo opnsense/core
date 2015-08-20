@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // validate input
     foreach ($pconfig as $key => $value) {
       if($value <> htmlentities($value))
-        $input_errors[] = sprintf(gettext("Invalid characters detected (%s).  Please remove invalid characters and save again."),$temp);
+        $input_errors[] = sprintf(gettext("Invalid characters detected (%s).  Please remove invalid characters and save again."),htmlentities($value));
     }
 
     /* input validation */
