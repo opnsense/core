@@ -706,7 +706,7 @@ include("head.inc");
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat_out.php');?>'" />
 <?php
-                    if (isset($id) && $a_out[$id]):
+                    if (isset($id)):
 ?>
                     <input name="id" type="hidden" value="<?=$id;?>" />
 <?php
