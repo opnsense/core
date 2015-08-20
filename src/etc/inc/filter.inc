@@ -895,7 +895,7 @@ function filter_generate_optcfg_array()
 		if (!empty($vips)) {
 			foreach ($vips as $vipidx => $vip) {
 				if (is_ipaddrv4($vip['subnet'])) {
-					if (!is_array($oic['vips']))
+					if (!isset($oic['vips']))
 						$oic['vips'] = array();
 					$oic['vips'][$vipidx]['ip'] = $vip['subnet'];
 					if (empty($vip['subnet_bits']))
