@@ -343,8 +343,7 @@ if(count($pools) > 0) {
 }
 
 foreach($config['interfaces'] as $ifname => $ifarr) {
-	if (is_array($config['dhcpdv6'][$ifname]) &&
-		is_array($config['dhcpdv6'][$ifname]['staticmap'])) {
+	if (isset($config['dhcpdv6'][$ifname]['staticmap'])) {
 		foreach($config['dhcpdv6'][$ifname]['staticmap'] as $static) {
 			$slease = array();
 			$slease['ip'] = $static['ipaddrv6'];
