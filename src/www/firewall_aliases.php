@@ -81,14 +81,9 @@ $selected_tab = htmlspecialchars(($_REQUEST['tab'] == "" ? "ip" : preg_replace("
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['apply'])) {
 		/* reload all components that use aliases */
-		$retval = filter_configure();
-
-		if(stristr($retval, "error") <> true)
-		    $savemsg = get_std_save_message();
-		else
-		    $savemsg = $retval;
-		if ($retval == 0)
-			clear_subsystem_dirty('aliases');
+		filter_configure();
+		$savemsg = get_std_save_message();
+		clear_subsystem_dirty('aliases');
 	} elseif (isset($_POST['act']) && $_POST['act'] == "del") {
     if (isset($_POST['id']) && isset($a_aliases[$_POST['id']])) {
       // perform validation
