@@ -107,6 +107,7 @@ CORE_DEPENDS?=		apinger \
 			sudo \
 			suricata \
 			syslogd \
+			unbound \
 			voucher \
 			wol \
 			zip

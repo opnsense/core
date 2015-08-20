@@ -388,21 +388,22 @@ function sync_unbound_service()
 }
 
 // Execute commands as the user unbound
-function do_as_unbound_user($cmd) {
+function do_as_unbound_user($cmd)
+{
     global $g;
 
     switch ($cmd) {
-        case "start":
-            mwexec("/usr/sbin/unbound -c {$g['unbound_chroot_path']}/unbound.conf");
+        case 'start':
+            mwexec("/usr/local/sbin/unbound -c {$g['unbound_chroot_path']}/unbound.conf");
             break;
-        case "stop":
-            mwexec("chroot -u unbound -g unbound / /usr/sbin/unbound-control stop", true);
+        case 'stop':
+            mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-control stop", true);
             break;
-        case "unbound-anchor":
-            mwexec("chroot -u unbound -g unbound / /usr/sbin/unbound-anchor -a {$g['unbound_chroot_path']}/root.key", true);
+        case 'unbound-anchor':
+            mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a {$g['unbound_chroot_path']}/root.key", true);
             break;
-        case "unbound-control-setup":
-            mwexec("chroot -u unbound -g unbound / /usr/sbin/unbound-control-setup -d {$g['unbound_chroot_path']}", true);
+        case 'unbound-control-setup':
+            mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d {$g['unbound_chroot_path']}", true);
             break;
         default:
             break;
