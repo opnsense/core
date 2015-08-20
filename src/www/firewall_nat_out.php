@@ -365,9 +365,7 @@ include("head.inc");
                     <th class="hidden-xs hidden-sm"><?=gettext("NAT Port");?></th>
                     <th><?=gettext("Static Port");?></th>
                     <th><?=gettext("Description");?></th>
-                    <th>
-                      <a href="firewall_nat_out_edit.php?after=-1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-                    </th>
+                    <th>&nbsp;</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -472,7 +470,6 @@ include("head.inc");
 <?php
                 endif;
 ?>
-                  <a href="firewall_nat_out_edit.php" title="<?=gettext("add new mapping");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
 <?php
                 if ($i == 0):
 ?>
@@ -486,6 +483,7 @@ include("head.inc");
 <?php
                 endif;
 ?>
+                  <a href="firewall_nat_out_edit.php" title="<?=gettext("add new mapping");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                   </td>
                 </tr>
               </tbody>
