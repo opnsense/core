@@ -397,6 +397,9 @@ include("head.inc");
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?= $natent['source']['network'] == "(self)" ? "This Firewall" : $natent['source']['network']; ?>
+<?php                   if (isset($natent['source']['network']) && is_alias($natent['source']['network'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['network']);?>"><i class="fa fa-list"></i> </a>
+<?php                   endif; ?>
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?=!empty($natent['protocol']) ? $natent['protocol'] . '/' : "" ;?>
@@ -405,6 +408,9 @@ include("head.inc");
                     <td class="hidden-xs hidden-sm">
                       <?=isset($natent['destination']['not']) ? "!&nbsp;" :"";?>
                       <?=isset($natent['destination']['any']) ? "*" : $natent['destination']['address'] ;?>
+<?php                   if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
+<?php                   endif; ?>
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?=!empty($natent['protocol']) ? $natent['protocol'] . '/' : "" ;?>
@@ -423,6 +429,9 @@ include("head.inc");
                         $nat_address = $natent['target'];
 ?>
                       <?=htmlspecialchars($nat_address);?>
+<?php                   if (isset($natent['target']) && is_alias($natent['target'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['target']);?>"><i class="fa fa-list"></i> </a>
+<?php                   endif; ?>
                     </td>
                     <td class="hidden-xs hidden-sm">
                       <?=empty($natent['natport']) ? "*" : htmlspecialchars($natent['natport']);?>
