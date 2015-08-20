@@ -43,14 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 
 	if (isset($pconfig['apply'])) {
-		$retval = 0;
-		$retval |= filter_configure();
+		filter_configure();
 		$savemsg = get_std_save_message();
-
-		if ($retval == 0) {
-			clear_subsystem_dirty('natconf');
-			clear_subsystem_dirty('filter');
-		}
+		clear_subsystem_dirty('natconf');
+		clear_subsystem_dirty('filter');
 	} elseif (isset($pconfig['action']) && $pconfig['action'] == 'del' && isset($id)) {
 			// delete single entry
 			unset($a_1to1[$id]);
