@@ -56,6 +56,16 @@ function configd_run($cmd, $detach = false)
 	return $backend->configdRun("{$cmd}", $detach);
 }
 
+/*************************************************************************************************
+ * Legacy helper functions, only to be used in old (legacy) code.
+ * Some patterns are very common in the old code, this section contains functions to help
+ * cleanup the old code by performing less repetition.
+ *
+ * Never use these functions in new style OPNsense software, their only purpose is to help
+ * migrating to something new.
+ *
+ ************************************************************************************************/
+
 /**
  * simple function to perform htmlspecialchars recursively on all attributes
  * @param $settings array type form data
