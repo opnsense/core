@@ -186,7 +186,7 @@ function print_info_box_apply($msg)
 
 	$savebutton = '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
 	$savebutton .= '<input name="' . $name . '" type="submit" class="btn btn-default" id="' . $name . '" value="' . $value . '" />';
-	if ($_POST['if']) {
+	if (!empty($_POST['if'])) {
 		$savebutton .= '<input type="hidden" name="if" value="' . htmlspecialchars($_POST['if']) . '" />';
 	}
 	$savebutton .= '</form>';
@@ -303,9 +303,9 @@ function pprint_port($port) {
 		return "*";
 	else {
 		$srcport = explode("-", $port);
-		if ((!$srcport[1]) || ($srcport[0] == $srcport[1])) {
+		if ((empty($srcport[1])) || ($srcport[0] == $srcport[1])) {
 			$pport = $srcport[0];
-			if ($wkports[$srcport[0]]) {
+			if (!empty($wkports[$srcport[0]])) {
 				$pport .= " (" . $wkports[$srcport[0]] . ")";
 			}
 		} else
