@@ -151,7 +151,7 @@ include("head.inc");
 legacy_html_escape_form_data($a_nat);
 
 $main_buttons = array(
-  array('label'=>'Add', 'href'=>'firewall_nat_edit.php?after=-1'),
+  array('label'=>'Add', 'href'=>'firewall_nat_edit.php'),
 );
 ?>
 
@@ -411,7 +411,7 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-remove"></span>
                         </a>
 <?php                   endif; ?>
-                        <a href="firewall_nat_edit.php?after=-1" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
+                        <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
                           <span class="glyphicon glyphicon-plus"></span>
                         </a>
                     </td>
