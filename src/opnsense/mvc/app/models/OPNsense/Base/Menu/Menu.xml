@@ -73,7 +73,7 @@
             <Outbound url="/firewall_nat_out.php"/>
             <OutboundEdit url="/firewall_nat_out_edit.php*"/>
             <NPt url="/firewall_nat_npt.php"/>
-            <NPtEdit url="/firewall_nat_npt_edit.php"/>
+            <NPtEdit url="/firewall_nat_npt_edit.php*"/>
         </NAT>
         <Rules url="/firewall_rules.php">
             <RulesEdit url="/firewall_rules_edit.php*"/>
