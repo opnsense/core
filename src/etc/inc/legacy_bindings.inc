@@ -95,3 +95,51 @@ function legacy_list_aliasses($type) {
     }
     return $result;
 }
+
+/**
+ *  Function to move selected array items before another one.
+ *  Mainly used in form processing.
+ *  @param array $source config section to apply move on
+ *  @param int $id item number to move selected to (before)
+ *  @param array $items item numbers to move
+ *  @return new constructed list
+ */
+function legacy_move_config_list_items($source, $id, $items) {
+    $new_config = array();
+
+    if (!is_array($source)) {
+        // input of wrong type, return empty array
+        return array();
+    } elseif ( !is_array($items) || !is_numericint($id)) {
+        // selected items isn't an array or selected item isn't an int, return input
+        return $source;
+    } else {
+        // input types are valid, move items around
+        // copy all rules before selected target ($id) and not in items
+        for ($i = 0; $i < min($id, count($source)); $i++) {
+            if (!in_array($i, $items)) {
+                $new_config[] = $source[$i];
+            }
+        }
+
+        // next copy all selected rules (=before $id)
+        for ($i = 0; $i < count($source); $i++) {
+          if ($i != $id && in_array($i, $items)) {
+              $new_config[] = $source[$i];
+          }
+        }
+
+        // copy $id rule
+        if ($id < count($source)) {
+            $new_config[] = $source[$id];
+        }
+
+        /* copy all rules > $id and not selected */
+        for ($i = $id+1; $i < count($source); $i++) {
+            if (!in_array($i, $items)) {
+                $new_config[] = $source[$i];
+            }
+        }
+        return $new_config;
+    }
+}
