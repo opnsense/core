@@ -1,985 +1,616 @@
 <?php
-
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+  Copyright (C) 2014-2015 Deciso B.V.
+  Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
+  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("pfsense-utils.inc");
 
-function rule_popup($src,$srcport,$dst,$dstport){
-	global $config,$g;
-	$aliases_array = array();
-	if (isset($config['aliases']['alias'])) {
-		$descriptions = array ();
-		foreach ($config['aliases']['alias'] as $alias_id=>$alias_name){
-			if ($alias_name['name'] == $src) {
-				//var_dump($config['aliases']['alias'][$alias_id]);
-				$aliases_array['src']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['src']['aliasid']=$alias_id;
-				//$descriptions['src'] = $span_begin;
-				//$descriptions['src_end'] = $span_end;
-			}
-			if ($alias_name['name'] == $srcport) {
-				$aliases_array['srcport']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['srcport']['aliasid']=$alias_id;
-				//$descriptions['srcport'] = $span_begin;
-				//$descriptions['srcport_end'] = $span_end;
-			}
-			if ($alias_name['name'] == $dst ) {
-				$aliases_array['dst']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['dst']['aliasid']=$alias_id;
-				//$descriptions['dst'] = $span_begin;
-				//$descriptions['dst_end'] = $span_end;
-			}
-			if ($alias_name['name'] == $dstport) {
-				$aliases_array['dstport']=$config['aliases']['alias'][$alias_id];
-				$aliases_array['dstport']['aliasid']=$alias_id;
-				//$descriptions['dstport'] = $span_begin;
-				//$descriptions['dstport_end'] = $span_end;
-			}
-		}
-		return $aliases_array;//$descriptions;
-	}
+
+if (!isset($config['filter']['rule'])) {
+    $config['filter']['rule'] = array();
 }
 
+$a_filter = &$config['filter']['rule'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_GET['if'])) {
+        $current_if = htmlspecialchars($_GET['if']);
+    } else {
+        $current_if = "FloatingRules";
+    }
+    $pconfig = $_POST;
+    if (isset($pconfig['id']) && isset($a_filter[$pconfig['id']])) {
+        // id found and valid
+        $id = $pconfig['id'];
+    }
+    if (isset($pconfig['apply'])) {
+        filter_configure();
+        clear_subsystem_dirty('filter');
+        $savemsg = sprintf(gettext("The settings have been applied. The firewall rules are now reloading in the background.<br />You can also %s monitor %s the reload progress"),"<a href='status_filter_reload.php'>","</a>");
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
+        // delete single item
+        if (!empty($a_filter[$id]['associated-rule-id'])) {
+            // unlink nat entry
+            if (isset($config['nat']['rule'])) {
+                $a_nat = &$config['nat']['rule'];
+                foreach ($a_nat as &$natent) {
+                    if ($natent['associated-rule-id'] == $a_filter[$id]['associated-rule-id']) {
+                        $natent['associated-rule-id'] = '';
+                    }
+                }
+            }
+        }
+        unset($a_filter[$id]);
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        exit;
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        // delete selected rules
+        foreach ($pconfig['rule'] as $rulei) {
+            // unlink nat entry
+            if (isset($config['nat']['rule'])) {
+                $a_nat = &$config['nat']['rule'];
+                foreach ($a_nat as &$natent) {
+                    if ($natent['associated-rule-id'] == $a_filter[$rulei]['associated-rule-id']) {
+                        $natent['associated-rule-id'] = '';
+                    }
+                }
+            }
+            unset($a_filter[$rulei]);
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        exit;
+    } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        // move selected rules
+        if (!isset($id)) {
+            // if rule not set/found, move to end
+            $id = count($a_nat);
+        }
+        $a_filter = legacy_move_config_list_items($a_filter, $id,  $pconfig['rule']);
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        exit;
 
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
+        // toggle item
+        if(isset($a_filter[$id]['disabled'])) {
+            unset($a_filter[$id]['disabled']);
+        } else {
+            $a_filter[$id]['disabled'] = true;
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        exit;
+    }
+
+    echo $id;
+    print_r($_POST);
+    die;
+}
+
+if (isset($_GET['if'])) {
+    $selected_if = htmlspecialchars($_GET['if']);
+} else {
+    $selected_if = "FloatingRules";
+}
+$closehead = true;
 $pgtitle = array(gettext("Firewall"),gettext("Rules"));
 $shortcut_section = "firewall";
 
-function delete_nat_association($id) {
-	global $config;
-
-	if (!$id || !isset($config['nat']['rule']))
-		return;
-
-	$a_nat = &$config['nat']['rule'];
-
-	foreach ($a_nat as &$natent)
-		if ($natent['associated-rule-id'] == $id)
-			$natent['associated-rule-id'] = '';
-}
-
-if (!isset($config['filter']['rule'])) {
-	$config['filter']['rule'] = array();
-}
-filter_rules_sort();
-$a_filter = &$config['filter']['rule'];
-
-$if = $_GET['if'];
-if ($_POST['if'])
-	$if = $_POST['if'];
-
-$ifdescs = get_configured_interface_with_descr();
-
-
-// Drag and drop reordering
-if($_REQUEST['dragdroporder']) {
-
-
-
-
-	// First create a new ruleset array and tmp arrays
-	$a_filter_before = array();
-	$a_filter_order = array();
-	$a_filter_order_tmp = array();
-	$a_filter_after = array();
-	$found = false;
-	$drag_order = $_REQUEST['dragtable'];
-	// Next traverse through rules building a new order for interface
-	for ($i = 0; isset($a_filter[$i]); $i++) {
-		if(( $_REQUEST['if'] == "FloatingRules" && isset($a_filter[$i]['floating']) ) || ( $a_filter[$i]['interface'] == $_REQUEST['if'] && !isset($a_filter[$i]['floating']) )) {
-			$a_filter_order_tmp[] = $a_filter[$i];
-			$found = true;
-		} else if (!$found)
-			$a_filter_before[] = $a_filter[$i];
-		else
-			$a_filter_after[] = $a_filter[$i];
-	}
-	// Reorder rules with the posted order
-	for ($i = 0; $i<count($drag_order); $i++)
-		$a_filter_order[] = $a_filter_order_tmp[$drag_order[$i]];
-	// In case $drag_order didn't account for some rules, make sure we don't lose them
-	if(count($a_filter_order) < count($a_filter_order_tmp)) {
-		for ($i = 0; $i<count($a_filter_order_tmp); $i++)
-			if(!in_array($i, $drag_order))
-				$a_filter_order[] = $a_filter_order_tmp[$i];
-	}
-	// Overwrite filter rules with newly created items
-	$config['filter']['rule'] = array_merge($a_filter_before, $a_filter_order, $a_filter_after);
-	// Write configuration
-	$config = write_config(gettext("Drag and drop firewall rules ordering update."));
-	// Redirect back to page
-	mark_subsystem_dirty('filter');
-	$undo = array();
-	foreach($_REQUEST['dragtable'] as $dt)
-		$undo[] = "";
-	$counter = 0;
-	foreach($_REQUEST['dragtable'] as $dt) {
-		$undo[$dt] = $counter;
-		$counter++;
-	}
-	foreach($undo as $dt)
-		$undotxt .= "&dragtable[]={$dt}";
-	header("Location: firewall_rules.php?if=" . $_REQUEST['if'] . "&undodrag=true" . $undotxt);
-	exit;
-}
-
-$icmptypes = array(
-	"" => gettext("any"),
-	"echoreq" => gettext("Echo request"),
-	"echorep" => gettext("Echo reply"),
-	"unreach" => gettext("Destination unreachable"),
-	"squench" => gettext("Source quench"),
-	"redir" => gettext("Redirect"),
-	"althost" => gettext("Alternate Host"),
-	"routeradv" => gettext("Router advertisement"),
-	"routersol" => gettext("Router solicitation"),
-	"timex" => gettext("Time exceeded"),
-	"paramprob" => gettext("Invalid IP header"),
-	"timereq" => gettext("Timestamp"),
-	"timerep" => gettext("Timestamp reply"),
-	"inforeq" => gettext("Information request"),
-	"inforep" => gettext("Information reply"),
-	"maskreq" => gettext("Address mask request"),
-	"maskrep" => gettext("Address mask reply")
-);
-
-/* add group interfaces */
-if (isset($config['ifgroups']['ifgroupentry']))
-	foreach($config['ifgroups']['ifgroupentry'] as $ifgen)
-		if (have_ruleint_access($ifgen['ifname']))
-			$iflist[$ifgen['ifname']] = $ifgen['ifname'];
-
-foreach ($ifdescs as $ifent => $ifdesc)
-	if(have_ruleint_access($ifent))
-		$iflist[$ifent] = $ifdesc;
-
-if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
-	if(have_ruleint_access("l2tp"))
-		$iflist['l2tp'] = "L2TP VPN";
-
-if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
-	if(have_ruleint_access("pptp"))
-		$iflist['pptp'] = "PPTP VPN";
-
-if (isset($config['pppoes']['pppoe'])) {
-	foreach ($config['pppoes']['pppoe'] as $pppoes) {
-		if (($pppoes['mode'] == 'server') && have_ruleint_access('pppoe')) {
-			$iflist['pppoe'] = "PPPoE Server";
-		}
-	}
-}
-
-/* add ipsec interfaces */
-if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
-	if (have_ruleint_access('enc0')) {
-		$iflist['enc0'] = 'IPsec';
-	}
-}
-
-/* add openvpn/tun interfaces */
-if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-	$iflist['openvpn'] = 'OpenVPN';
-}
-
-if (!$if || !isset($iflist[$if])) {
-	if ("any" == $if)
-		$if = "FloatingRules";
-	else if ("FloatingRules" != $if) {
-		if (isset($iflist['wan']))
-			$if = "wan";
-		else
-			$if = "FloatingRules";
-	}
-}
-
-if ($_POST) {
-
-	$pconfig = $_POST;
-
-	if ($_POST['apply']) {
-		$retval = 0;
-		$retval = filter_configure();
-
-		clear_subsystem_dirty('filter');
-
-		$savemsg = sprintf(gettext("The settings have been applied. The firewall rules are now reloading in the background.<br />You can also %s monitor %s the reload progress"),"<a href='status_filter_reload.php'>","</a>");
-	}
-}
-
-if ($_GET['act'] == "del") {
-	if ($a_filter[$_GET['id']]) {
-		if (!empty($a_filter[$_GET['id']]['associated-rule-id'])) {
-			delete_nat_association($a_filter[$_GET['id']]['associated-rule-id']);
-		}
-		unset($a_filter[$_GET['id']]);
-		if (write_config())
-			mark_subsystem_dirty('filter');
-		header("Location: firewall_rules.php?if=" . htmlspecialchars($if));
-		exit;
-	}
-}
-
-// Handle save msg if defined
-if($_REQUEST['savemsg'])
-	$savemsg = htmlentities($_REQUEST['savemsg']);
-
-if (isset($_POST['del_x'])) {
-	/* delete selected rules */
-	if (isset($_POST['rule']) && count($_POST['rule'])) {
-		foreach ($_POST['rule'] as $rulei) {
-			delete_nat_association($a_filter[$rulei]['associated-rule-id']);
-			unset($a_filter[$rulei]);
-		}
-		if (write_config())
-			mark_subsystem_dirty('filter');
-		header("Location: firewall_rules.php?if=" . htmlspecialchars($if));
-		exit;
-	}
-} else if ($_GET['act'] == "toggle") {
-	if ($a_filter[$_GET['id']]) {
-		if(isset($a_filter[$_GET['id']]['disabled']))
-			unset($a_filter[$_GET['id']]['disabled']);
-		else
-			$a_filter[$_GET['id']]['disabled'] = true;
-		if (write_config())
-			mark_subsystem_dirty('filter');
-		header("Location: firewall_rules.php?if=" . htmlspecialchars($if));
-		exit;
-	}
-} else {
-	/* yuck - IE won't send value attributes for image buttons, while Mozilla does -
-	   so we use .x/.y to fine move button clicks instead... */
-	unset($movebtn);
-	foreach ($_POST as $pn => $pd) {
-		if (preg_match("/move_(\d+)_x/", $pn, $matches)) {
-			$movebtn = $matches[1];
-			break;
-		}
-	}
-
-
-
-	/* move selected rules before this rule */
-	if (isset($movebtn) && isset($_POST['rule']) && count($_POST['rule'])) {
-		$a_filter_new = array();
-
-		/* copy all rules < $movebtn and not selected */
-		for ($i = 0; $i < $movebtn; $i++) {
-			if (!in_array($i, $_POST['rule']))
-				$a_filter_new[] = $a_filter[$i];
-		}
-
-		/* copy all selected rules */
-		for ($i = 0; $i < count($a_filter); $i++) {
-			if ($i == $movebtn)
-				continue;
-			if (in_array($i, $_POST['rule']))
-				$a_filter_new[] = $a_filter[$i];
-		}
-
-		/* copy $movebtn rule */
-		if ($movebtn < count($a_filter))
-			$a_filter_new[] = $a_filter[$movebtn];
-
-		/* copy all rules > $movebtn and not selected */
-		for ($i = $movebtn+1; $i < count($a_filter); $i++) {
-			if (!in_array($i, $_POST['rule']))
-				$a_filter_new[] = $a_filter[$i];
-		}
-
-		$a_filter = $a_filter_new;
-		if (write_config())
-			mark_subsystem_dirty('filter');
-		header("Location: firewall_rules.php?if=" . htmlspecialchars($if));
-		exit;
-	}
-}
-$closehead = true;
-
-
-
 include("head.inc");
 ?>
-	<script type="text/javascript" src="/themes/<?=$g['theme'];?>/assets/javascripts/jquery-sortable.js"></script>
-	<style type="text/css">
-		body.dragging, body.dragging * {
-		  cursor: move !important;
-		}
-
-		.dragged {
-		  position: absolute;
-		  opacity: 0.5;
-		  z-index: 2000;
-		}
-
-		ol.example li.placeholder {
-		  position: relative;
-		  /** More li styles **/
-		}
-		ol.example li.placeholder:before {
-		  position: absolute;
-		  /** Define arrowhead **/
-		}
-	</style>
 </head>
 <body>
+<script type="text/javascript">
+$( document ).ready(function() {
+  // link delete buttons
+  $(".act_delete").click(function(){
+    var id = $(this).attr("id").split('_').pop(-1);
+    if (id != 'x') {
+      // delete single
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_INFO,
+        title: "<?= gettext("Rules");?>",
+        message: "<?=gettext("Do you really want to delete this rule?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val(id);
+                    $("#action").val("del");
+                    $("#iform").submit()
+                }
+              }]
+    });
+    } else {
+      // delete selected
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_INFO,
+        title: "<?= gettext("Rules");?>",
+        message: "<?=gettext("Do you really want to delete the selected rules?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val("");
+                    $("#action").val("del_x");
+                    $("#iform").submit()
+                }
+              }]
+      });
+    }
+  });
 
-<script type='text/javascript'>//<![CDATA[
-	jQuery(window).load(
-		function(){
-			var originalLeave=jQuery.fn.popover.Constructor.prototype.leave;
-			jQuery.fn.popover.Constructor.prototype.leave=function(obj)
-			{
-				var self=obj instanceof this.constructor?obj:jQuery(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.'+this.type)
-				var container,timeout;originalLeave.call(this,obj);
-				if(obj.currentTarget){container=jQuery(obj.currentTarget).siblings('.popover')
-					timeout=self.timeout;
-					container.one('mouseenter',function()
-					{
-						clearTimeout(timeout);
-						container.one('mouseleave',function()
-						{
-							jQuery.fn.popover.Constructor.prototype.leave.call(self,self);
-						});
-					})
-				}
-			};
-			jQuery('body').popover({selector:'[data-popover]',trigger:'click hover',placement:'auto',delay:{show:250,hide:50}
-		});
-	});
-//]]>
+  // link move buttons
+  $(".act_move").click(function(){
+    var id = $(this).attr("id").split('_').pop(-1);
+    $("#id").val(id);
+    $("#action").val("move");
+    $("#iform").submit();
+  });
+
+  // link toggle buttons
+  $(".act_toggle").click(function(){
+    var id = $(this).attr("id").split('_').pop(-1);
+    $("#id").val(id);
+    $("#action").val("toggle");
+    $("#iform").submit();
+  });
+
+});
 </script>
 
 <?php include("fbegin.inc"); ?>
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+        <?php if (is_subsystem_dirty('filter')): ?><p>
+        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
+        <?php endif; ?>
+        <section class="col-xs-12">
+<?php
+           // create tabs per interface + floating
+           $iflist_tabs = array();
+           $iflist_tabs['FloatingRules'] = 'Floating';
+           if (isset($config['ifgroups']['ifgroupentry']))
+             foreach($config['ifgroups']['ifgroupentry'] as $ifgen)
+                 $iflist_tabs[$ifgen['ifname']] = $ifgen['ifname'];
+
+           foreach (get_configured_interface_with_descr() as $ifent => $ifdesc)
+               $iflist_tabs[$ifent] = $ifdesc;
+
+           if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
+               $iflist_tabs['l2tp'] = "L2TP VPN";
+
+           if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
+               $iflist_tabs['pptp'] = "PPTP VPN";
+
+           if (isset($config['pppoes']['pppoe'])) {
+             foreach ($config['pppoes']['pppoe'] as $pppoes) {
+               if (($pppoes['mode'] == 'server') && have_ruleint_access('pppoe')) {
+                 $iflist_tabs['pppoe'] = "PPPoE Server";
+               }
+             }
+           }
+
+           /* add ipsec interfaces */
+           if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
+               $iflist_tabs['enc0'] = 'IPsec';
+           }
+
+           /* add openvpn/tun interfaces */
+           if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+             $iflist_tabs['openvpn'] = 'OpenVPN';
+           }
+
+          $tab_array = array();
+          foreach ($iflist_tabs as $ifent => $ifname) {
+            $active = false;
+            // mark active if selected or mark floating active when none is selected
+            if ($ifent == $selected_if) {
+                $active = true;
+            }
+            $tab_array[] = array($ifname, $active, "firewall_rules.php?if={$ifent}");
+          }
+          display_top_tabs($tab_array);
+?>
+          <div class="tab-content content-box col-xs-12">
+            <form action="firewall_rules.php?if=<?=$selected_if;?>" method="post" name="iform" id="iform">
+              <input type="hidden" id="id" name="id" value="" />
+              <input type="hidden" id="action" name="act" value="" />
+              <div class="table-responsive" >
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>&nbsp;</th>
+                      <th>&nbsp;</th>
+                      <th><?=gettext("Proto");?></th>
+                      <th><?=gettext("Source");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Port");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Destination");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Port");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Gateway");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Schedule");?></th>
+                      <th><?=gettext("Description");?></th>
+                      <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+<?php
+                // Show the anti-lockout rule if it's enabled, and we are on LAN with an if count > 1, or WAN with an if count of 1.
+                if (!isset($config['system']['webgui']['noantilockout']) &&
+                        (((count($config['interfaces']) > 1) && ($selected_if == 'lan'))
+                        || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
+                        $alports = implode('<br />', filter_get_antilockout_ports(true));
+?>
+                  <tr valign="top">
+                    <td>&nbsp;</td>
+                    <td><span class="glyphicon glyphicon-play text-success"></span></td>
+                    <td>*</td>
+                    <td>*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm"><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($selected_if));?> Address</td>
+                    <td class="hidden-xs hidden-sm"><?=$alports;?></td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td><?=gettext("Anti-Lockout Rule");?></td>
+                    <td>
+                      <a href="system_advanced_admin.php" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </td>
+                  </tr>
+<?php
+                endif; ?>
+<?php
+                if (isset($config['interfaces'][$selected_if]['blockpriv'])): ?>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>*</td>
+                    <td><?=gettext("RFC 1918 networks");?></td>
+                    <td>*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td class="hidden-xs hidden-sm"><?=gettext("Block private networks");?></td>
+                    <td valign="middle" class="list nowrap">
+                        <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </td>
+                  </tr>
+<?php
+              endif;
+              if (isset($config['interfaces'][$selected_if]['blockbogons'])): ?>
+                  <tr valign="top" id="frrfc1918">
+                    <td>&nbsp;</td>
+                    <td align="center"><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>*</td>
+                    <td><?=gettext("Reserved/not assigned by IANA");?></td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td><?=gettext("Block bogon networks");?></td>
+                    <td>
+                      <a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </td>
+                  </tr>
+<?php
+                endif; ?>
+<?php
+                $interface_has_rules = false;
+                foreach ($a_filter as $i => $filterent):
+                if ( (isset($filterent['interface']) && $filterent['interface'] == $selected_if) ||
+                     (isset($filterent['floating']) && $selected_if == "FloatingRules" )):
+                  $interface_has_rules = true;
+                  // select icon
+                  if (!isset($filterent['type']) && empty($filterent['disabled'])) {
+                      // not very nice.... associated NAT rules don't have a type...
+                      $iconfn = "glyphicon-play text-success";
+                  } else if (!isset($filterent['type']) && !empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-play text-muted";
+                  } elseif ($filterent['type'] == "block" && empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-remove text-danger";
+                  } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-remove text-muted";
+                  }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-remove  text-warning";
+                  }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-remove  text-muted";
+                  } else if ($filterent['type'] == "match" && empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-ok";
+                  } else if ($filterent['type'] == "match" && !empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-ok text-muted";
+                  } elseif (empty($filterent['disabled'])) {
+                      $iconfn = "glyphicon-play text-success";
+                  } else {
+                      $iconfn = "glyphicon-play text-muted";
+                  }
+
+                  // construct line ipprotocol
+                  if (isset($filterent['ipprotocol'])) {
+                      switch($filterent['ipprotocol']) {
+                          case "inet":
+                              $record_ipprotocol = "IPv4 ";
+                              break;
+                          case "inet6":
+                              $record_ipprotocol = "IPv6 ";
+                              break;
+                          case "inet46":
+                              $record_ipprotocol = "IPv4+6 ";
+                              break;
+                      }
+                  } else {
+                      $record_ipprotocol = "IPv4 ";
+                  }
 
 
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
-				<?php if (is_subsystem_dirty('filter')): ?><p>
-				<?php
-				if ($_REQUEST['undodrag']) {
-					foreach ($_REQUEST['dragtable'] as $dt) {
-						$dragtable .= "&dragtable[]={$dt}";
-					}
-					print_info_box_apply_undo(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."), "firewall_rules.php?if={$_REQUEST['if']}&dragdroporder=true&{$dragtable}");
-				} else {
-					print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));
-				}
-				?>
-
-				<?php endif; ?>
-
-			    <section class="col-xs-12">
-
-
-					 <?php
-							/* active tabs */
-							$tab_array = array();
-							if ("FloatingRules" == $if)
-								$active = true;
-							else
-								$active = false;
-							$tab_array[] = array(gettext("Floating"), $active, "firewall_rules.php?if=FloatingRules");
-							$tabscounter = 0; $i = 0; foreach ($iflist as $ifent => $ifname) {
-								if ($ifent == $if)
-									$active = true;
-								else
-									$active = false;
-								$tab_array[] = array($ifname, $active, "firewall_rules.php?if={$ifent}");
-							}
-							display_top_tabs($tab_array);
-						?>
-
-
-						<div class="tab-content content-box col-xs-12" style="overflow: auto;">
-
-
-		                        <form action="firewall_rules.php<? if (!empty($if)): ?>?if=<?=$if;?><? endif; ?>" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive" >
-			                        <table class="table table-striped table-sort dragable">
-				                        <thead>
-										<tr id="frheader">
-										<th class="list">&nbsp;</th>
-										<th class="list">&nbsp;</th>
-										<th class="listhdrr"><?=gettext("Proto");?></th>
-										<th class="listhdrr"><?=gettext("Source");?></th>
-										<th class="listhdrr"><?=gettext("Port");?></th>
-										<th class="listhdrr"><?=gettext("Destination");?></th>
-										<th class="listhdrr"><?=gettext("Port");?></th>
-										<th class="listhdrr"><?=gettext("Gateway");?></th>
-										<th class="listhdrr"><?=gettext("Queue");?></th>
-										<th class="listhdrr"><?=gettext("Schedule");?></th>
-										<th class="listhdr"><?=gettext("Description");?></th>
-										<th class="list">
-
-												<?php
-													$nrules = 0;
-													for ($i = 0; isset($a_filter[$i]); $i++) {
-														$filterent = $a_filter[$i];
-														if ($filterent['interface'] != $if && !isset($filterent['floating']))
-															continue;
-														if (isset($filterent['floating']) && "FloatingRules" != $if)
-															continue;
-														$nrules++;
-													}
-												?>
-
-												<?php if ($nrules): ?>
-													<button name="del" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
-												<?php endif; ?>
-												<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>&amp;after=-1" title="<?=gettext("add new rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-										</th>
-										</tr>
-				                        </thead>
-				                        <tbody>
-										<?php   // Show the anti-lockout rule if it's enabled, and we are on LAN with an if count > 1, or WAN with an if count of 1.
-											if (!isset($config['system']['webgui']['noantilockout']) &&
-												(((count($config['interfaces']) > 1) && ($if == 'lan'))
-												|| ((count($config['interfaces']) == 1) && ($if == 'wan')))):
-
-												$alports = implode('<br />', filter_get_antilockout_ports(true));
-										?>
-										<tr valign="top" id="antilockout">
-										<td class="list">&nbsp;</td>
-										<td class="listt" align="center"><span class="glyphicon glyphicon-play text-success"></span></td>
-
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr"><?=$iflist[$if];?> Address</td>
-										<td class="listr"><?= $alports ?></td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">&nbsp;</td>
-										<td class="listbg"><?=gettext("Anti-Lockout Rule");?></td>
-										<td valign="middle" class="list nowrap">
-											<span title="<?=gettext("move selected rules before this rule");?>" alt="move" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-											<a href="system_advanced_admin.php" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-
-											<span title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="add" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></span>
-										</td>
-										</tr>
-							<?php endif; ?>
-
-							<?php if (isset($config['interfaces'][$if]['blockpriv'])): ?>
-										<tr valign="top" id="frrfc1918">
-										<td class="list">&nbsp;</td>
-										<td class="listt" align="center"><span class="glyphicon glyphicon-remove text-danger"></span></td>
-
-										<td class="listr">*</td>
-										<td class="listr"><?=gettext("RFC 1918 networks");?></td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">&nbsp;</td>
-										<td class="listbg"><?=gettext("Block private networks");?></td>
-										<td valign="middle" class="list nowrap">
-											<span title="<?=gettext("move selected rules before this rule");?>" alt="move" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-
-												<a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-
-												<span title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="add" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></span>
-										</td>
-										</tr>
-							<?php endif; ?>
-							<?php if (isset($config['interfaces'][$if]['blockbogons'])): ?>
-										<tr valign="top" id="frrfc1918">
-										<td class="list">&nbsp;</td>
-										<td class="listt" align="center"><span class="glyphicon glyphicon-remove text-danger"></span></td>
-
-										<td class="listr">*</td>
-										<td class="listr"><?=gettext("Reserved/not assigned by IANA");?></td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listr">*</td>
-										<td class="listbg"><?=gettext("Block bogon networks");?></td>
-										<td valign="middle" class="list nowrap">
-											<span title="<?=gettext("move selected rules before this rule");?>" alt="move" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-
-											<a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-
-											<span title="<?=gettext("add a new rule based on this one");?>" width="17" height="17" border="0" alt="add" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></span>
-
-										</td>
-										</tr>
-				                        </tbody>
-							<?php endif; ?>
-										<tbody id="dragtable">
-							<?php $nrules = 0; for ($i = 0; isset($a_filter[$i]); $i++):
-								$filterent = $a_filter[$i];
-								if ($filterent['interface'] != $if && !isset($filterent['floating']))
-									continue;
-								if (isset($filterent['floating']) && "FloatingRules" != $if)
-									continue;
-								$isadvset = firewall_check_for_advanced_options($filterent);
-								if($isadvset)
-									$advanced_set = "<span class=\"glyphicon glypicon-cog\" title=\"" . gettext("advanced settings set") . ": {$isadvset}\"></span>";
-								else
-									$advanced_set = "";
-							?>
-										<tr valign="top" id="fr<?=$nrules;?>">
-										<td class="listt">
-											<input type="checkbox" id="frc<?=$nrules;?>" name="rule[]" value="<?=$i;?>"  />
-											<?php echo $advanced_set; ?>
-										</td>
-										<td class="listt" align="center">
-										<?php
-											if ($filterent['type'] == "block") {
-												$iconfn = "glyphicon-remove";
-												$textss = "text-danger"; }
-											else if ($filterent['type'] == "reject") {
-												$iconfn = "glyphicon-remove";
-												$textss = "text-warning"; }
-											else if ($filterent['type'] == "match") {
-												$iconfn = "glyphicon-ok";
-												$textss = ""; }
-											else {
-												$iconfn = "glyphicon-play";
-												$textss = "text-success"; }
-											if (isset($filterent['disabled'])) {
-												$textss = $textse = "text-muted";
-
-											} else {
-												//$textss = $textse = "";
-												$textse = "";
-											}
-										?>
-											<a href="?if=<?=htmlspecialchars($if);?>&amp;act=toggle&amp;id=<?=$i;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" ><span class="glyphicon <?=$iconfn;?> <?=$textss;?>"></span></a>
-										<?php
-											if (isset($filterent['log'])):
-												$iconfnlog = "glyphicon-info-sign";
-											if (isset($filterent['disabled']))
-												$iconfnlog .= " text-muted";
-										?>
-											<span class="glyphicon <?=$iconfnlog;?>"></span>
-							<?php endif; ?>
-										</td>
-										<?php
-											//build Alias popup box
-											$alias_src_span_begin = "";
-
-											$alias_popup = rule_popup($filterent['source']['address'],pprint_port($filterent['source']['port']),$filterent['destination']['address'],pprint_port($filterent['destination']['port']));
-
-											$alias_src_span_end = ""; //$alias_popup["src_end"];
-											if ( count($alias_popup) > 0 ) {
-												$aliases_popup['src']['addrlist']=explode(" ",$alias_popup['src']['address']);
-												$aliases_popup['src']['detlist']=explode("||",$alias_popup['src']['detail']);
-
-												$alias_src_span_begin="<span title=\"\" type=\"button\" data-placement=\"bottom\" data-popover=\"true\" data-html=\"true\" data-content='";
-												foreach ($aliases_popup['src']['addrlist'] as $addrkey => $address) {
-													$alias_src_span_begin=$alias_src_span_begin."<b>".$address."</b> <small>(".$aliases_popup['src']['detlist'][$addrkey].")</small>&nbsp;<br>";
-												}
-												$alias_src_span_begin=$alias_src_span_begin."' data-original-title='<a href=\"/firewall_aliases_edit.php?id=".(string)$alias_popup['src']['aliasid']."\" target=\"_self\" >
-													<span class=\"text-primary\"><b>".htmlspecialchars(pprint_address($filterent['source']))."(".count($aliases_popup['src']['addrlist']).")"."</span></b></a>'>";
-														//<i class="glyphicon glyphicon-list">&nbsp;</i><b>Vergelijk Producten</b>&nbsp;<span class="badge">2</span>
-												$alias_src_span_end="</span>";
-											}
-											//build Schedule popup box
-											$a_schedules = &$config['schedules']['schedule'];
-											$schedule_span_begin = "";
-											$schedule_span_end = "";
-											$sched_caption_escaped = "";
-											$sched_content = "";
-											$schedstatus = false;
-											$dayArray = array (gettext('Mon'),gettext('Tues'),gettext('Wed'),gettext('Thur'),gettext('Fri'),gettext('Sat'),gettext('Sun'));
-											$monthArray = array (gettext('January'),gettext('February'),gettext('March'),gettext('April'),gettext('May'),gettext('June'),gettext('July'),gettext('August'),gettext('September'),gettext('October'),gettext('November'),gettext('December'));
-											if(isset($config['schedules']['schedule'])) {
-												foreach ($a_schedules as $schedule)
-												{
-													if ($schedule['name'] == $filterent['sched'] ){
-														$schedstatus = filter_get_time_based_rule_status($schedule);
-
-														foreach($schedule['timerange'] as $timerange) {
-															$tempFriendlyTime = "";
-															$tempID = "";
-															$firstprint = false;
-															if ($timerange){
-																$dayFriendly = "";
-																$tempFriendlyTime = "";
-
-																//get hours
-																$temptimerange = $timerange['hour'];
-																$temptimeseparator = strrpos($temptimerange, "-");
-
-																$starttime = substr ($temptimerange, 0, $temptimeseparator);
-																$stoptime = substr ($temptimerange, $temptimeseparator+1);
-
-																if ($timerange['month']){
-																	$tempmontharray = explode(",", $timerange['month']);
-																	$tempdayarray = explode(",",$timerange['day']);
-																	$arraycounter = 0;
-																	$firstDayFound = false;
-																	$firstPrint = false;
-																	foreach ($tempmontharray as $monthtmp){
-																		$month = $tempmontharray[$arraycounter];
-																		$day = $tempdayarray[$arraycounter];
-
-																		if (!$firstDayFound)
-																		{
-																			$firstDay = $day;
-																			$firstmonth = $month;
-																			$firstDayFound = true;
-																		}
-
-																		$currentDay = $day;
-																		$nextDay = $tempdayarray[$arraycounter+1];
-																		$currentDay++;
-																		if (($currentDay != $nextDay) || ($tempmontharray[$arraycounter] != $tempmontharray[$arraycounter+1])){
-																			if ($firstPrint)
-																				$dayFriendly .= ", ";
-																			$currentDay--;
-																			if ($currentDay != $firstDay)
-																				$dayFriendly .= $monthArray[$firstmonth-1] . " " . $firstDay . " - " . $currentDay ;
-																			else
-																				$dayFriendly .=  $monthArray[$month-1] . " " . $day;
-																			$firstDayFound = false;
-																			$firstPrint = true;
-																		}
-																		$arraycounter++;
-																	}
-																}
-																else
-																{
-																	$tempdayFriendly = $timerange['position'];
-																	$firstDayFound = false;
-																	$tempFriendlyDayArray = explode(",", $tempdayFriendly);
-																	$currentDay = "";
-																	$firstDay = "";
-																	$nextDay = "";
-																	$counter = 0;
-																	foreach ($tempFriendlyDayArray as $day){
-																		if ($day != ""){
-																			if (!$firstDayFound)
-																			{
-																				$firstDay = $tempFriendlyDayArray[$counter];
-																				$firstDayFound = true;
-																			}
-																			$currentDay =$tempFriendlyDayArray[$counter];
-																			//get next day
-																			$nextDay = $tempFriendlyDayArray[$counter+1];
-																			$currentDay++;
-																			if ($currentDay != $nextDay){
-																				if ($firstprint)
-																					$dayFriendly .= ", ";
-																				$currentDay--;
-																				if ($currentDay != $firstDay)
-																					$dayFriendly .= $dayArray[$firstDay-1] . " - " . $dayArray[$currentDay-1];
-																				else
-																					$dayFriendly .= $dayArray[$firstDay-1];
-																				$firstDayFound = false;
-																				$firstprint = true;
-																			}
-																			$counter++;
-																		}
-																	}
-																}
-																$timeFriendly = $starttime . " - " . $stoptime;
-																$description = $timerange['rangedescr'];
-																$sched_content .= $dayFriendly . "; " . $timeFriendly . "<br />";
-															}
-														}
-														$sched_caption_escaped = str_replace("'", "\'", $schedule['descr']);
-														$schedule_span_begin = "<span style=\"cursor: help;\" onmouseover=\"domTT_activate(this, event, 'content', '<h1>{$sched_caption_escaped}</h1><p>{$sched_content}</p>', 'trail', true, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'styleClass', 'niceTitle');\" onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\"><u>";
-														$schedule_span_end = "</u></span>";
-													}
-												}
-											}
-											$printicon = false;
-											$alttext = "";
-											$image = "";
-											if (!isset($filterent['disabled'])) {
-												if ($schedstatus) {
-													if ($iconfn == "block" || $iconfn == "reject") {
-														$image = "glyphicon-remove text-danger";
-														$alttext = gettext("Traffic matching this rule is currently being denied");
-													} else {
-														$image = "glyphicon-play text-success";
-														$alttext = gettext("Traffic matching this rule is currently being allowed");
-													}
-													$printicon = true;
-												} else if ($filterent['sched']) {
-													if ($iconfn == "block" || $iconfn == "reject")
-														$image = "glyphicon-remove text-muted";
-													else
-														$image = "glyphicon-remove text-danger";
-													$alttext = gettext("This rule is not currently active because its period has expired");
-													$printicon = true;
-												}
-											}
-										?>
-										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-										<span class="<?=$textse;?>">
-										<?php
-											if (isset($filterent['ipprotocol'])) {
-												switch($filterent['ipprotocol']) {
-													case "inet":
-														echo "IPv4 ";
-														break;
-													case "inet6":
-														echo "IPv6 ";
-														break;
-													case "inet46":
-														echo "IPv4+6 ";
-														break;
-												}
-											} else {
-												echo "IPv4 ";
-											}
-											if (isset($filterent['protocol'])) {
-												echo strtoupper($filterent['protocol']);
-												if (strtoupper($filterent['protocol']) == "ICMP" && !empty($filterent['icmptype'])) {
-													echo ' <span style="cursor: help;" title="ICMP type: ' . $icmptypes[$filterent['icmptype']] . '"><u>';
-													echo $filterent['icmptype'];
-													echo '</u></span>';
-												}
-											} else echo "*";
-										?>
-										</span>
-										</td>
-										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo $alias_src_span_begin;?><?php echo htmlspecialchars(pprint_address($filterent['source']));?><?php echo $alias_src_span_end;?></span>
-										</td>
-										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo htmlspecialchars(pprint_port($filterent['source']['port'])); ?></span>
-										</td>
-										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo htmlspecialchars(pprint_address($filterent['destination'])); ?></span>
-										</td>
-										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php echo htmlspecialchars(pprint_port($filterent['destination']['port'])); ?></span>
-										</td>
-										<td class="listr"  id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?php if (isset($config['interfaces'][$filterent['gateway']]['descr'])) echo htmlspecialchars($config['interfaces'][$filterent['gateway']]['descr']); else  echo htmlspecialchars(pprint_port($filterent['gateway'])); ?></span>
-										</td>
-										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-										<span class="<?=$textse;?>"><?=gettext('none');?></span>
-										</td>
-										<td class="listr" id="frd<?=$nrules;?>" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';"><font color="black">
-											<?php if ($printicon) { ?><span class="glyphicon <?php echo $image; ?>" title="<?php echo $alttext;?>"></span><?php } ?><span class="<?=$textse;?>"><?php echo $schedule_span_begin;?><?=htmlspecialchars($filterent['sched']);?>&nbsp;<?php echo $schedule_span_end; ?></span>
-										</font></td>
-
-										<td class="listbg descr" ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
-											<span class="<?=$textse;?>"><?=htmlspecialchars($filterent['descr']);?>&nbsp;</span>
-										</td>
-										<td valign="middle" class="list nowrap">
-												<button name="move_<?=$i;?>_x" type="submit" title="<?=gettext("move selected rules before this rule"); ?>" class="btn btn-default btn-xs" value="<?=$i;?>"><span class="glyphicon glyphicon-arrow-left"></span></button>
-												<a href="firewall_rules_edit.php?id=<?=$i;?>" title="<?=gettext("edit rule"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-
-												<a href="firewall_rules.php?act=del&amp;if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" title="<?=gettext("delete rule"); ?>" onclick="return confirm('Do you really want to delete this rule?')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-												<a href="firewall_rules_edit.php?dup=<?=$i;?>" title="<?=gettext("add a new rule based on this one"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-										</td>
-										</tr>
-										<?php $nrules++; endfor; ?>
-										  </tbody>
-							<?php if ($nrules == 0): ?>
-										<tr>
-										<td class="listt"></td>
-										<td class="listt"></td>
-										<td class="listlr" colspan="11" align="center" valign="middle">
-										<span class="gray">
-								<?php if ($_REQUEST['if'] == "FloatingRules"): ?>
-											<?=gettext("No floating rules are currently defined."); ?><br /><br />
-								<?php else: ?>
-											<?=gettext("No rules are currently defined for this interface"); ?><br />
-											<?=gettext("All incoming connections on this interface will be blocked until you add pass rules."); ?><br /><br />
-								<?php endif; ?>
-											<?=gettext("Click the"); ?> <a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a><?=gettext(" button to add a new rule.");?></span>
-										</td>
-										</tr>
-							<?php endif; ?>
-										<tr id="fr<?=$nrules;?>">
-										<td class="list"></td>
-										<td class="list"></td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">&nbsp;</td>
-										<td class="list">
-
-										<?php if ($nrules): ?>
-											<button name="move_<?=$i;?>_x" type="submit" value="<?=$i;?>"  title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
-											<button name="del_x" type="submit" title="<?=gettext("delete selected rules");?>" onclick="return confirm('<?=gettext('Do you really want to delete the selected rules?');?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
-											<a href="firewall_rules_edit.php?if=<?=htmlspecialchars($if);?>" title="<?=gettext("add new rule");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-										<?php endif; ?>
-
-										</td>
-										</tr>
-									</tbody>
-									</table>
-
-
-									<div class="container-fluid">
-									<table class="tabcont" width="100%" border="0" cellspacing="0" cellpadding="0" summary="icons">
-										<tr>
-											<td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
-											<td width="100"><?=gettext("pass");?></td>
-											<td width="14"></td>
-											<td width="16"><span class="glyphicon glyphicon-ok"></span></td>
-											<td width="100"><?=gettext("match");?></td>
-											<td width="14"></td>
-											<td width="16"><span class="glyphicon glyphicon-remove text-danger"></span></td>
-											<td width="100"><?=gettext("block");?></td>
-											<td width="14"></td>
-											<td width="16"><span class="glyphicon glyphicon-remove text-warning"></span></td>
-											<td width="100"><?=gettext("reject");?></td>
-											<td width="14"></td>
-											<td width="16"><span class="glyphicon glyphicon-info-sign"></span></td>
-											<td width="100"><?=gettext("log");?></td>
-										</tr>
-										<tr>
-											<td><span class="glyphicon glyphicon-play text-muted"></span></td>
-											<td class="nowrap"><?=gettext("pass (disabled)");?></td>
-											<td>&nbsp;</td>
-											<td><span class="glyphicon glyphicon-ok text-muted"></span></td>
-											<td class="nowrap"><?=gettext("match (disabled)");?></td>
-											<td>&nbsp;</td>
-											<td><span class="glyphicon glyphicon-remove text-muted"></span></td>
-											<td class="nowrap"><?=gettext("block (disabled)");?></td>
-											<td>&nbsp;</td>
-											<td><span class="glyphicon glyphicon-remove text-muted"></span></td>
-											<td class="nowrap"><?=gettext("reject (disabled)");?></td>
-											<td>&nbsp;</td>
-											<td width="16"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
-											<td class="nowrap"><?=gettext("log (disabled)");?></td>
-										</tr>
-										<tr>
-											<td colspan="10">
-												<p>&nbsp;</p>
-												<strong>
-													<span class="red"><?=gettext("Hint:");?></span>
-												</strong><br />
-												<ul>
-												<?php if ("FloatingRules" != $if): ?>
-													<li><?=gettext("Rules are evaluated on a first-match basis (i.e. " .
-													"the action of the first rule to match a packet will be executed). " .
-													"This means that if you use block rules, you'll have to pay attention " .
-													"to the rule order. Everything that isn't explicitly passed is blocked " .
-													"by default. ");?>
-													</li>
-												<?php else: ?>
-													<li><?=gettext("Floating rules are evaluated on a first-match basis (i.e. " .
-													"the action of the first rule to match a packet will be executed) only " .
-													"if the 'quick' option is checked on a rule. Otherwise they will only apply if no " .
-													"other rules match. Pay close attention to the rule order and options " .
-													"chosen. If no rule here matches, the per-interface or default rules are used. ");?>
-													</li>
-												<?php endif; ?>
-												</ul>
-											 </td>
-										</tr>
-									</table>
-									</div>
-								</div>
-		                    </form>
-					</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
-<input type="hidden" name="if" value="<?=htmlspecialchars($if);?>" />
-<!-- <script type="text/javascript">
-//<![CDATA[
-	var number_of_rules = <?=$nrules?>;
-	<?php $nrules = 0; for ($i = 0; isset($a_filter[$i]); $i++): ?>
-
-		Sortable.create("dragtable", {
-			tag:"tr",
-			format:"fr([0-9999999])",
-			containment:["dragtable"],
-			onChange:function(affected) {
-				document.body.style.cursor = 'move';
-			},
-			onUpdate:function(container) {
-				document.body.style.cursor = 'move';
-				updateOrder(Sortable.serialize('dragtable', 'tr'));
-			}
-		});
-
-	<?php endfor; ?>
-
-	jQuery('#loading').hide();
-//]]>
-</script> -->
-
-<script type="text/javascript">
-
-	$(function  () {
-	 $('table.dragable').sortable({
-		  containerSelector: 'table',
-		  itemPath: '> tbody#dragtable',
-		  itemSelector: 'tr',
-		  placeholder: '<tr class="placeholder"/>',
-		  onDrop: function(item,container,_super, event) {
-			   item.removeClass("dragged").removeAttr("style");
-			   $("body").removeClass("dragging");
-
-
-			  updateOrder(container);
-		  }
-		})
-	});
-
-	function updateOrder(container) {
-		if(document.getElementById("redboxtable"))
-			//jQuery('#redboxtable').hide();
-
-		//jQuery('#loading').show();
-
-		document.body.style.cursor = 'wait';
-
-		var drag_url = '';
-		$('tbody#dragtable tr').each(function(i, obj) {
-
-			drag_url += '&dragtable[]='+$(obj).attr('id').replace('fr','');
-		});
-
-		document.location = 'firewall_rules.php?if=<?=htmlspecialchars($if);?>&dragdroporder=true' + drag_url;
-		return;
-	}
-
-</script>
+?>
+                  <tr ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+                    <td>
+                      <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                    </td>
+                    <td>
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>">
+                        <span class="glyphicon <?=$iconfn;?>"></span>
+                      </a>
+<?php
+                      if (isset($filterent['log'])):?>
+                      <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? "text-muted" :""?>"></span>
+<?php
+                      endif; ?>
+                    </td>
+                    <td>
+                        <?=$record_ipprotocol;?>
+<?php
+                        $icmptypes = array(
+                          "" => gettext("any"),
+                          "echoreq" => gettext("Echo request"),
+                          "echorep" => gettext("Echo reply"),
+                          "unreach" => gettext("Destination unreachable"),
+                          "squench" => gettext("Source quench"),
+                          "redir" => gettext("Redirect"),
+                          "althost" => gettext("Alternate Host"),
+                          "routeradv" => gettext("Router advertisement"),
+                          "routersol" => gettext("Router solicitation"),
+                          "timex" => gettext("Time exceeded"),
+                          "paramprob" => gettext("Invalid IP header"),
+                          "timereq" => gettext("Timestamp"),
+                          "timerep" => gettext("Timestamp reply"),
+                          "inforeq" => gettext("Information request"),
+                          "inforep" => gettext("Information reply"),
+                          "maskreq" => gettext("Address mask request"),
+                          "maskrep" => gettext("Address mask reply")
+                        );
+                        if (isset($filterent['protocol']) && $filterent['protocol'] == "icmp" && !empty($filterent['icmptype'])):
+?>
+                        <span data-toggle="tooltip" title="ICMP type: <?=$icmptypes[$filterent['icmptype']];?> ">
+                            <?= isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*";?>
+                        </span>
+<?php
+                        else:?>
+                        <?= isset($filterent['protocol']) ? strtoupper($filterent['protocol']) : "*";?>
+<?php
+                        endif;?>
+                    </td>
+                    <td>
+                      <?=htmlspecialchars(pprint_address($filterent['source']));?>
+<?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
+                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['address']);?>"><i class="fa fa-list"></i> </a>
+<?php                 endif; ?>
+                    </td>
+                    <td class="hidden-xs hidden-sm">
+                      <?=htmlspecialchars(pprint_port(isset($filterent['source']['port']) ? $filterent['source']['port'] : null)); ?>
+<?php                   if (isset($filterent['source']['port']) && is_alias($filterent['source']['port'])): ?>
+                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['port']);?>"><i class="fa fa-list"></i> </a>
+<?php                   endif; ?>
+                    </td>
+                    <td class="hidden-xs hidden-sm">
+                      <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
+<?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
+                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
+<?php                 endif; ?>
+                    </td>
+                    <td class="hidden-xs hidden-sm">
+                      <?=htmlspecialchars(pprint_port(isset($filterent['destination']['port']) ? $filterent['destination']['port'] : null)); ?>
+<?php                 if (isset($filterent['destination']['port']) && is_alias($filterent['destination']['port'])): ?>
+                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['port']);?>"><i class="fa fa-list"></i> </a>
+<?php                 endif; ?>
+                    </td>
+                    <td class="hidden-xs hidden-sm">
+<?php
+                       if (isset($filterent['gateway'])):?>
+                      <?=isset($config['interfaces'][$filterent['gateway']]['descr']) ? htmlspecialchars($config['interfaces'][$filterent['gateway']]['descr']) : htmlspecialchars(pprint_port($filterent['gateway'])); ?>
+<?php
+                      else: ?>
+                      *
+<?php                 endif; ?>
+                    </td>
+                    <td class="hidden-xs hidden-sm">
+<?php
+                       if (!empty($filterent['sched'])):?>
+                      <?=htmlspecialchars($filterent['sched']);?>
+                      <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"> <span class="glyphicon glyphicon-calendar"> </span> </a>
+<?php
+                       endif;?>
+                    </td>
+                    <td>
+                      <?=htmlspecialchars($filterent['descr']);?>
+                    </td>
+                    <td>
+                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      </a>
+                      <a href="firewall_rules_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this rule");?>" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </a>
+                      <a id="del_<?=$i;?>" title="<?=gettext("delete this rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </a>
+                      <a href="firewall_rules_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule based on this one");?>">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                    </td>
+                  </tr>
+<?php
+                  endif;
+                  endforeach;
+                  if (!$interface_has_rules):
+?>
+                  <tr>
+                    <td colspan="11" align="center" valign="middle">
+                    <span class="gray">
+                <?php if ($selected_if == "FloatingRules"): ?>
+                      <?=gettext("No floating rules are currently defined."); ?><br /><br />
+                <?php else: ?>
+                      <?=gettext("No rules are currently defined for this interface"); ?><br />
+                      <?=gettext("All incoming connections on this interface will be blocked until you add pass rules."); ?><br /><br />
+                <?php endif; ?>
+                      <?=gettext("Click the"); ?>
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>"  class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                      <?=gettext(" button to add a new rule.");?></span>
+                    </td>
+                  </tr>
+              <?php else: ?>
+                  <tr>
+                    <td colspan="5"></td>
+                    <td colspan="5" class="hidden-xs hidden-sm"></td>
+                    <td>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      </a>
+                      <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </a>
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                    </td>
+                  </tr>
+              <?php endif; ?>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="11">&nbsp;</td>
+                  </tr>
+                  <tr class="hidden-xs hidden-sm">
+                    <td colspan="11">
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+                          <td width="100"><?=gettext("pass");?></td>
+                          <td width="14"></td>
+                          <td width="16"><span class="glyphicon glyphicon-ok"></span></td>
+                          <td width="100"><?=gettext("match");?></td>
+                          <td width="14"></td>
+                          <td width="16"><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                          <td width="100"><?=gettext("block");?></td>
+                          <td width="14"></td>
+                          <td width="16"><span class="glyphicon glyphicon-remove text-warning"></span></td>
+                          <td width="100"><?=gettext("reject");?></td>
+                          <td width="14"></td>
+                          <td width="16"><span class="glyphicon glyphicon-info-sign"></span></td>
+                          <td width="100"><?=gettext("log");?></td>
+                        </tr>
+                        <tr>
+                          <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                          <td class="nowrap"><?=gettext("pass (disabled)");?></td>
+                          <td>&nbsp;</td>
+                          <td><span class="glyphicon glyphicon-ok text-muted"></span></td>
+                          <td class="nowrap"><?=gettext("match (disabled)");?></td>
+                          <td>&nbsp;</td>
+                          <td><span class="glyphicon glyphicon-remove text-muted"></span></td>
+                          <td class="nowrap"><?=gettext("block (disabled)");?></td>
+                          <td>&nbsp;</td>
+                          <td><span class="glyphicon glyphicon-remove text-muted"></span></td>
+                          <td class="nowrap"><?=gettext("reject (disabled)");?></td>
+                          <td>&nbsp;</td>
+                          <td width="16"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
+                          <td class="nowrap"><?=gettext("log (disabled)");?></td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr class="hidden-xs hidden-sm">
+                    <td><a><i class="fa fa-list"></i></a></td>
+                    <td colspan="10"><?=gettext("Alias (click to view/edit)");?></td>
+                  </tr>
+                  <tr class="hidden-xs hidden-sm">
+                    <td><a><span class="glyphicon glyphicon-calendar"> </span></a></td>
+                    <td colspan="10"><?=gettext("Schedule (click to view/edit)");?></td>
+                  </tr>
+                  <tr class="hidden-xs hidden-sm">
+                    <td colspan="11">
+                      <strong>
+                        <span class="text-danger"><?=gettext("Hint:");?></span>
+                      </strong>
+                      <br />
+                      <?php if ("FloatingRules" != $selected_if): ?>
+                      <?=gettext("Rules are evaluated on a first-match basis (i.e. " .
+                        "the action of the first rule to match a packet will be executed). " .
+                        "This means that if you use block rules, you'll have to pay attention " .
+                        "to the rule order. Everything that isn't explicitly passed is blocked " .
+                        "by default. ");?>
+                      <?php else: ?>
+                        <?=gettext("Floating rules are evaluated on a first-match basis (i.e. " .
+                        "the action of the first rule to match a packet will be executed) only " .
+                        "if the 'quick' option is checked on a rule. Otherwise they will only apply if no " .
+                        "other rules match. Pay close attention to the rule order and options " .
+                        "chosen. If no rule here matches, the per-interface or default rules are used. ");?>
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
 
 <?php include("foot.inc"); ?>
