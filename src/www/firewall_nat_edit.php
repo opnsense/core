@@ -98,14 +98,14 @@ $a_nat = &$config['nat']['rule'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // load form data from config
     if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_nat[$_GET['id']])) {
-      $id = $_GET['id'];
-      $configId = $id; // load form data from id
-    } else if (isset($_GET['dup']) && is_numericint($_GET['dup']) && isset($a_nat[$_GET['id']])){
-      $after = $_GET['dup'];
-      $configId = $_GET['dup']; // load form data from id
+        $id = $_GET['id'];
+        $configId = $id; // load form data from id
+    } else if (isset($_GET['dup']) && isset($a_nat[$_GET['dup']])){
+        $after = $_GET['dup'];
+        $configId = $_GET['dup']; // load form data from id
     }
-    if (isset($_GET['after']) && (is_numericint($_GET['after']) || $_GET['after'] == "-1")) {
-     $after = $_GET['after'];
+    if (isset($_GET['after']) && isset($a_nat[$_GET['after']])) {
+        $after = $_GET['after'];
     }
 
     // initialize form and set defaults
@@ -166,12 +166,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
     $input_errors = array();
     // validate id and store if usable
-    if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($a_nat[$_POST['id']])) {
+    if (isset($pconfig['id']) && is_numericint($pconfig['id']) && isset($a_nat[$pconfig['id']])) {
         $id = $_POST['id'];
     }
-    if (isset($_POST['after']) && (is_numericint($_POST['after']) || $_POST['after'] == "-1")) {
-        $after = $_POST['after'];
-    }
+    if (isset($pconfig['after']) && isset($a_nat[$pconfig['after']])) {
+				// place record after provided sequence number
+				$after = $pconfig['after'];
+		}
 
     /* Validate input data  */
     foreach ($pconfig as $key => $value) {
@@ -375,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_nat[$id] = $natent;
         } else {
             $natent['created'] = make_config_revision_entry();
-            if (is_numeric($after)) {
+            if (isset($after)) {
                 array_splice($a_nat, $after+1, 0, array($natent));
             } else {
                 $a_nat[] = $natent;
@@ -969,7 +970,7 @@ $( document ).ready(function() {
                     <input name="id" type="hidden" value="<?=$id;?>" />
                     <?php endif; ?>
                     <?php if (isset($after)) : ?>
-                    <input name="after" type="hidden" value="<?=htmlspecialchars($after);?>" />
+                    <input name="after" type="hidden" value="<?=$after;?>" />
                     <?php endif; ?>
                   </td>
                 </tr>
