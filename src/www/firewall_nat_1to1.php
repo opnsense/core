@@ -72,42 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           if (!isset($id)) {
               $id = count($a_1to1);
           }
-          $a_1to1_new = array();
+          $a_1to1 = legacy_move_config_list_items($a_1to1, $id,  $pconfig['rule']);
 
-          /* copy all rules < $id and not selected */
-          for ($i = 0; $i < $id; $i++) {
-                  if (!in_array($i, $pconfig['rule'])) {
-                      $a_1to1_new[] = $a_1to1[$i];
-                  }
+          if (write_config()) {
+              mark_subsystem_dirty('natconf');
           }
-
-          /* copy all selected rules */
-          for ($i = 0; $i < count($a_1to1); $i++) {
-                  if ($i == $id)
-                          continue;
-                  if (in_array($i, $pconfig['rule'])) {
-                      $a_1to1_new[] = $a_1to1[$i];
-                  }
-          }
-
-          /* copy $id rule */
-          if ($id < count($a_1to1)) {
-              $a_1to1_new[] = $a_1to1[$id];
-          }
-
-          /* copy all rules > $id and not selected */
-          for ($i = $id+1; $i < count($a_1to1); $i++) {
-                  if (!in_array($i, $pconfig['rule'])) {
-                      $a_1to1_new[] = $a_1to1[$i];
-                  }
-          }
-          $a_1to1 = $a_1to1_new;
+          header("Location: firewall_nat_1to1.php");
+          exit;
       }
-      if (write_config()) {
-          mark_subsystem_dirty('natconf');
-      }
-      header("Location: firewall_nat_1to1.php");
-      exit;
   } elseif (isset($pconfig['action']) && $pconfig['action'] == 'toggle' && isset($id)) {
       // toggle item
       if(isset($a_1to1[$id]['disabled'])) {
