@@ -2295,27 +2295,30 @@ EOD;
 	return 0;
 }
 
-/* configure cron service */
-function configure_cron() {
-	global $g, $config;
+function configure_cron()
+{
+	global $config;
+
+	$anchor = '# custom crontab entries';
 
 	/* preserve existing crontab entries */
-	$crontab_contents = file("/etc/crontab", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$crontab_contents = file('/etc/crontab', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 
 	for ($i = 0; $i < count($crontab_contents); $i++) {
-		$cron_item =& $crontab_contents[$i];
-		if (strpos($cron_item, "# pfSense specific crontab entries") !== false) {
+		$cron_item = &$crontab_contents[$i];
+		if (strpos($cron_item, $anchor) !== false) {
 			array_splice($crontab_contents, $i - 1);
 			break;
 		}
 	}
+
+	/* please maintain the newline at the end of file */
 	$crontab_contents = implode("\n", $crontab_contents) . "\n";
 
-
-	if (is_array($config['cron']['item'])) {
+	if (isset($config['cron']['item'])) {
 		$crontab_contents .= "#\n";
-		$crontab_contents .= "# " . gettext("pfSense specific crontab entries") . "\n";
-		$crontab_contents .= "# " .gettext( "Created:") . " " . date("F j, Y, g:i a") . "\n";
+		$crontab_contents .= $anchor . "\n";
+		$crontab_contents .= '# auto-generated at ' . date('F j, Y, g:i a') . "\n";
 		$crontab_contents .= "#\n";
 
 		foreach ($config['cron']['item'] as $item) {
@@ -2329,18 +2332,15 @@ function configure_cron() {
 		}
 
 		$crontab_contents .= "\n#\n";
-		$crontab_contents .= "# " . gettext("If possible do not add items to this file manually.") . "\n";
-		$crontab_contents .= "# " . gettext("If you do so, this file must be terminated with a blank line (e.g. new line)") . "\n";
+		$crontab_contents .= "# If possible do not add items to this file manually.\n";
+		$crontab_contents .= "# If you do so, this file must be terminated with a blank line (e.g. new line)\n";
 		$crontab_contents .= "#\n\n";
 	}
 
-	/* please maintain the newline at the end of file */
 	file_put_contents('/etc/crontab', $crontab_contents);
 	unset($crontab_contents);
 
-	/* do a HUP kill to force sync changes */
 	killbypid('/var/run/cron.pid', 'HUP');
-
 }
 
 function upnp_action ($action) {
