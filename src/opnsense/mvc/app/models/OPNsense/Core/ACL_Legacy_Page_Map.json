@@ -54,7 +54,7 @@
     },
     "page-diagnostics-crash-reporter": {
         "name": "WebCfg - Crash reporter",
-        "descr": "Uploads crash reports to pfSense and or deletes crash reports.",
+        "descr": "Uploads crash reports to the developers.",
         "match": [
             "crash_reporter.php*"
         ]
@@ -641,8 +641,8 @@
         ]
     },
     "page-pfsensewizardsubsystem": {
-        "name": "WebCfg - pfSense wizard subsystem page",
-        "descr": "Allow access to the 'pfSense wizard subsystem' page.",
+        "name": "WebCfg - Wizard subsystem page",
+        "descr": "Allow access to the 'Wizard subsystem' page.",
         "match": [
             "wizard.php*"
         ]
