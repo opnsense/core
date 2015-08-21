@@ -115,18 +115,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
         }
         // read settings with some kind of logic
-        address_to_pconfig($a_1to1[$id]['source'], $pconfig['src'],
+        address_to_pconfig(
+          $a_1to1[$id]['source'], $pconfig['src'],
           $pconfig['srcmask'], $pconfig['srcnot'],
-          $pconfig['srcbeginport'], $pconfig['srcendport']);
+          $pconfig['__unused__'],$pconfig['__unused__']
+        );
 
-        address_to_pconfig($a_1to1[$id]['destination'], $pconfig['dst'],
+        address_to_pconfig(
+          $a_1to1[$id]['destination'], $pconfig['dst'],
           $pconfig['dstmask'], $pconfig['dstnot'],
-          $pconfig['dstbeginport'], $pconfig['dstendport']);
+          $pconfig['__unused__'],$pconfig['__unused__']
+        );
     } else {
         // init form data on new
         foreach (array('disabled','interface','external','descr','natreflection'
-                      ,'src','srcmask','srcnot','srcbeginport','srcendport'
-                      ,'dst','dstmask','dstnot','dstbeginport','dstendport'
+                      ,'src','srcmask','srcnot','dst','dstmask','dstnot'
                     ) as $fieldname) {
             if (!isset($pconfig[$fieldname])) {
                 $pconfig[$fieldname] =  null;
