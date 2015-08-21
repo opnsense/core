@@ -92,6 +92,16 @@ if (is_numericint($_GET['id']))
 if (isset($_POST['id']) && is_numericint($_POST['id']))
 	$id = $_POST['id'];
 
+// quick hack, cleanup follows
+if (!empty($_GET['name'])) {
+	foreach ($a_schedules as $i => $sched) {
+		if ($sched['name'] == $_GET['name']) {
+			$id = $i;
+			break;
+		}
+	}
+}
+
 if (isset($id) && $a_schedules[$id]) {
 	$pconfig['name'] = $a_schedules[$id]['name'];
 	$pconfig['descr'] = html_entity_decode($a_schedules[$id]['descr']);
