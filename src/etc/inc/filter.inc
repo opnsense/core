@@ -895,7 +895,7 @@ function filter_generate_optcfg_array()
 		if (!empty($vips)) {
 			foreach ($vips as $vipidx => $vip) {
 				if (is_ipaddrv4($vip['subnet'])) {
-					if (!is_array($oic['vips']))
+					if (!isset($oic['vips']))
 						$oic['vips'] = array();
 					$oic['vips'][$vipidx]['ip'] = $vip['subnet'];
 					if (empty($vip['subnet_bits']))
@@ -1319,11 +1319,11 @@ function filter_nat_rules_automatic_tonathosts($with_descr = false) {
 	foreach($FilterIflist as $ocname => $oc) {
 		if(interface_has_gateway($ocname))
 			continue;
-		if(is_ipaddr($oc['alias-address'])) {
+		if(isset($oc['alias-address']) && is_ipaddr($oc['alias-address'])) {
 			$tonathosts[] = "{$oc['alias-address']}/{$oc['alias-subnet']}";
 			$descriptions[] = $oc['descr'] . " " . gettext("DHCP alias address");
 		}
-		if($oc['sa']) {
+		if(!empty($oc['sa'])) {
 			$tonathosts[] = "{$oc['sa']}/{$oc['sn']}";
 			$descriptions[] = $oc['descr'];
 			if (isset($oc['vips']) && is_array($oc['vips'])) {

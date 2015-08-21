@@ -56,6 +56,16 @@ function configd_run($cmd, $detach = false)
 	return $backend->configdRun("{$cmd}", $detach);
 }
 
+/*************************************************************************************************
+ * Legacy helper functions, only to be used in old (legacy) code.
+ * Some patterns are very common in the old code, this section contains functions to help
+ * cleanup the old code by performing less repetition.
+ *
+ * Never use these functions in new style OPNsense software, their only purpose is to help
+ * migrating to something new.
+ *
+ ************************************************************************************************/
+
 /**
  * simple function to perform htmlspecialchars recursively on all attributes
  * @param $settings array type form data
@@ -70,5 +80,76 @@ function legacy_html_escape_form_data(&$settings)
                 $settings[$dataKey] = htmlspecialchars($dataValue);
             }
         }
+    }
+}
+
+/**
+ *  list aliasses by type
+ *  @param string $type type port or network
+ */
+function legacy_list_aliasses($type) {
+    global $config;
+    $result = array();
+    if (isset($config['aliases']['alias'])) {
+        foreach ($config['aliases']['alias'] as $alias) {
+            if ($type == "port") {
+                if (preg_match("/port/i", $alias['type'])) {
+                    $result[] = $alias;
+                }
+            } else {
+                if (!preg_match("/port/i", $alias['type'])){
+                    $result[] = $alias;
+                }
+            }
+        }
+    }
+    return $result;
+}
+
+/**
+ *  Function to move selected array items before another one.
+ *  Mainly used in form processing.
+ *  @param array $source config section to apply move on
+ *  @param int $id item number to move selected to (before)
+ *  @param array $items item numbers to move
+ *  @return new constructed list
+ */
+function legacy_move_config_list_items($source, $id, $items) {
+    $new_config = array();
+
+    if (!is_array($source)) {
+        // input of wrong type, return empty array
+        return array();
+    } elseif ( !is_array($items) || !is_numericint($id)) {
+        // selected items isn't an array or selected item isn't an int, return input
+        return $source;
+    } else {
+        // input types are valid, move items around
+        // copy all rules before selected target ($id) and not in items
+        for ($i = 0; $i < min($id, count($source)); $i++) {
+            if (!in_array($i, $items)) {
+                $new_config[] = $source[$i];
+            }
+        }
+
+        // next copy all selected rules (=before $id)
+        for ($i = 0; $i < count($source); $i++) {
+          if ($i != $id && in_array($i, $items)) {
+              $new_config[] = $source[$i];
+          }
+        }
+
+        // copy $id rule
+        if ($id < count($source)) {
+            $new_config[] = $source[$id];
+        }
+
+        /* copy all rules > $id and not selected */
+        for ($i = $id+1; $i < count($source); $i++) {
+            if (!in_array($i, $items)) {
+                $new_config[] = $source[$i];
+            }
+        }
+        return $new_config;
     }
 }
