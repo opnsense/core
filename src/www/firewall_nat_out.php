@@ -146,36 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!isset($id)) {
             $id = count($a_out);
         }
-        $a_out_new = array();
-        /* copy all rules < $id and not selected */
-        for ($i = 0; $i < $id; $i++) {
-            if (!in_array($i, $pconfig['rule'])) {
-                $a_out_new[] = $a_out[$i];
-            }
-        }
-
-        /* copy all selected rules */
-        for ($i = 0; $i < count($a_out); $i++) {
-            if ($i == $id) {
-                continue;
-            }
-            if (in_array($i, $pconfig['rule'])) {
-                $a_out_new[] = $a_out[$i];
-            }
-        }
-
-        /* copy $id rule */
-        if ($id < count($a_out)) {
-            $a_out_new[] = $a_out[$id];
-        }
-
-        /* copy all rules > $id and not selected */
-        for ($i = $id+1; $i < count($a_out); $i++) {
-            if (!in_array($i, $pconfig['rule'])) {
-                $a_out_new[] = $a_out[$i];
-            }
-        }
-        $a_out = $a_out_new;
+        $a_out = legacy_move_config_list_items($a_out, $id,  $pconfig['rule']);
         if (write_config()) {
             mark_subsystem_dirty('natconf');
         }
