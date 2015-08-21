@@ -1,305 +1,308 @@
 <?php
 /*
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
-	All rights reserved.
+  Copyright (C) 2014 Deciso B.V.
+  Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
 
-function natnptcmp($a, $b) {
-	return ipcmp($a['external'], $b['external']);
+/**
+ * build array with interface options for this form
+ */
+function formInterfaces() {
+    global $config;
+    $interfaces = array();
+    foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc)
+        $interfaces[$if] = $ifdesc;
+
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
+        $interfaces['l2tp'] = "L2TP VPN";
+
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
+        $interfaces['pptp'] = "PPTP VPN";
+
+    if (is_pppoe_server_enabled())
+      $interfaces['pppoe'] = "PPPoE VPN";
+
+    /* add ipsec interfaces */
+    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
+        $interfaces["enc0"] = "IPsec";
+
+    /* add openvpn/tun interfaces */
+    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+      $interfaces['openvpn'] = 'OpenVPN';
+    }
+    return $interfaces;
 }
 
-function nat_npt_rules_sort() {
-        global $g, $config;
-
-        if (!is_array($config['nat']['npt']))
-                return;
-
-
-        usort($config['nat']['npt'], "natnptcmp");
-}
-
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat_npt.php');
-
-$ifdisp = get_configured_interface_with_descr();
-foreach ($ifdisp as $kif => $kdescr) {
-        $specialsrcdst[] = "{$kif}";
-        $specialsrcdst[] = "{$kif}ip";
-}
-
-if (!is_array($config['nat']['npt'])) {
-	$config['nat']['npt'] = array();
+if (!isset($config['nat']['npt'])) {
+    $config['nat']['npt'] = array();
 }
 $a_npt = &$config['nat']['npt'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['dup']) && isset($a_npt[$_GET['dup']])) {
+        $configId = $_GET['dup'];
+        $after = $_GET['dup'];
+    } elseif (isset($_GET['id']) && isset($a_npt[$_GET['id']])) {
+        $configId = $_GET['id'];
+        $id = $configId;
+    }
 
-if (isset($id) && $a_npt[$id]) {
-	$pconfig['disabled'] = isset($a_npt[$id]['disabled']);
+    $pconfig = array();
+    // set defaults
+    $pconfig['interface'] = "wan";
+    if (isset($configId)) {
+      // copy 1-to-1 attributes
+      foreach (array('disabled','interface','descr') as $fieldname) {
+          if (isset($a_npt[$configId][$fieldname])) {
+              $pconfig[$fieldname] = $a_npt[$configId][$fieldname];
+          }
+      }
+      // load attributes with some kind of logic
+      address_to_pconfig(
+          $a_npt[$configId]['source'], $pconfig['src'],$pconfig['srcmask'], $pconfig['srcnot'],
+          $pconfig['__unused__'],$pconfig['__unused__']
+      );
 
-	address_to_pconfig($a_npt[$id]['source'], $pconfig['src'],
-                $pconfig['srcmask'], $pconfig['srcnot'],
-		$pconfig['srcbeginport'], $pconfig['srcendport']);
+      address_to_pconfig(
+          $a_npt[$configId]['destination'], $pconfig['dst'],$pconfig['dstmask'], $pconfig['dstnot'],
+          $pconfig['__unused__'],$pconfig['__unused__']
+      );
+    }
 
-        address_to_pconfig($a_npt[$id]['destination'], $pconfig['dst'],
-                $pconfig['dstmask'], $pconfig['dstnot'],
-		$pconfig['dstbeginport'], $pconfig['dstendport']);
+    // initialize empty form values
+    foreach (array('disabled','interface','descr','src','srcmask','dst','dstmask','srcnot','dstnot') as $fieldname) {
+        if (!isset($pconfig[$fieldname])) {
+            $pconfig[$fieldname] = null;
+        }
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
+    $pconfig = $_POST;
+    if (isset($pconfig['id']) && isset($a_npt[$pconfig['id']])) {
+        $id = $pconfig['id'];
+    }
 
-	$pconfig['interface'] = $a_npt[$id]['interface'];
-	if (!$pconfig['interface'])
-		$pconfig['interface'] = "wan";
+    if (isset($pconfig['after']) && isset($a_npt[$pconfig['after']])) {
+        // place record after provided sequence number
+        $after = $pconfig['after'];
+    }
 
-	$pconfig['external'] = $a_npt[$id]['external'];
-	$pconfig['descr'] = $a_npt[$id]['descr'];
-} else
-	$pconfig['interface'] = "wan";
+    /* input validation */
+    $reqdfields = explode(" ", "interface");
+    $reqdfieldsn = array(gettext("Interface"));
+    $reqdfields[] = "src";
+    $reqdfieldsn[] = gettext("Source prefix");
+    $reqdfields[] = "dst";
+    $reqdfieldsn[] = gettext("Destination prefix");
 
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-if ($_POST) {
+    if (count($input_errors) == 0) {
+      $natent = array();
 
-	unset($input_errors);
-	$pconfig = $_POST;
+      $natent['disabled'] = isset($pconfig['disabled']) ? true:false;
+      $natent['descr'] = $pconfig['descr'];
+      $natent['interface'] = $pconfig['interface'];
+      pconfig_to_address(
+          $natent['source'], trim($pconfig['src']),$pconfig['srcmask'], !empty($pconfig['srcnot'])
+      );
 
-	/* input validation */
-	$reqdfields = explode(" ", "interface");
-	$reqdfieldsn = array(gettext("Interface"));
-        $reqdfields[] = "src";
-        $reqdfieldsn[] = gettext("Source prefix");
-        $reqdfields[] = "dst";
-        $reqdfieldsn[] = gettext("Destination prefix");
+      pconfig_to_address(
+          $natent['destination'], trim($pconfig['dst']),$pconfig['dstmask'], !empty($pconfig['dstnot'])
+      );
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+      if (isset($id)) {
+          $a_npt[$id] = $natent;
+      } elseif (isset($after)) {
+          array_splice($a_npt, $after+1, 0, array($natent));
+      } else {
+          $a_npt[] = $natent;
+      }
 
-	if (!$input_errors) {
-		$natent = array();
-
-		$natent['disabled'] = isset($_POST['disabled']) ? true:false;
-		$natent['descr'] = $_POST['descr'];
-		$natent['interface'] = $_POST['interface'];
-
-	if ($_POST['src'])
-		$_POST['src'] = trim($_POST['src']);
-	if ($_POST['dst'])
-		$_POST['dst'] = trim($_POST['dst']);
-
-		pconfig_to_address($natent['source'], $_POST['src'],
-                        $_POST['srcmask'], $_POST['srcnot']);
-
-                pconfig_to_address($natent['destination'], $_POST['dst'],
-                        $_POST['dstmask'], $_POST['dstnot']);
-
-		if (isset($id) && $a_npt[$id])
-			$a_npt[$id] = $natent;
-		else
-			$a_npt[] = $natent;
-		nat_npt_rules_sort();
-
-		if (write_config())
-			mark_subsystem_dirty('natconf');
-
-		header("Location: firewall_nat_npt.php");
-		exit;
-	}
+      if (write_config()) {
+          mark_subsystem_dirty('natconf');
+      }
+      header("Location: firewall_nat_npt.php");
+      exit;
+    }
 }
 
+
+legacy_html_escape_form_data($pconfig);
 $pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("NPt"),gettext("Edit"));
 include("head.inc");
 
 ?>
 
 <body>
-	<?php include("fbegin.inc"); ?>
-	<script type="text/javascript" src="/javascript/suggestions.js"></script>
-	<script type="text/javascript" src="/javascript/autosuggest.js"></script>
+  <?php include("fbegin.inc"); ?>
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+          <section class="col-xs-12">
+            <div class="content-box">
+              <form action="firewall_nat_npt_edit.php" method="post" name="iform" id="iform">
+                <table class="table table-striped">
+                  <tr>
+                    <td><?=gettext("Edit NAT NPt entry"); ?></td>
+                    <td align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
+                    <td>
+                      <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <div class="hidden" for="help_for_disabled">
+                        <strong><?=gettext("Disable this rule"); ?></strong><br />
+                        <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
+                    <td>
+                      <div class="input-group">
+                        <select name="interface" class="selectpicker" data-width="auto" data-live-search="true" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
+  <?php
+                          foreach (formInterfaces() as $iface => $ifacename): ?>
+                          <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
+                            <?=htmlspecialchars($ifacename);?>
+                          </option>
+                          <?php endforeach; ?>
+                        </select>
+                      </div>
+                      <div class="hidden" for="help_for_interface">
+                        <?=gettext("Choose which interface this rule applies to"); ?>.<br />
+                        <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                      <td colspan="2"><?=gettext("Internal IPv6 Prefix"); ?></td>
+                  </tr>
+                  <tr>
+                      <td><a id="help_for_srcnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ".gettext("Invert");?> </td>
+                      <td>
+                        <input name="srcnot" type="checkbox" value="yes" <?= !empty($pconfig['srcnot']) ? "checked=\"checked\"" :"";?> />
+                        <div class="hidden" for="help_for_srcnot">
+                            <?=gettext("Use this option to invert the sense of the match."); ?>
+                        </div>
+                      </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_src" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source") . " / ". gettext("Address:"); ?></td>
+                    <td>
+                      <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td width="348px">
+                            <input name="src" type="text" value="<?=$pconfig['src'];?>" aria-label="<?=gettext("Source address");?>"/>
+                          </td>
+                          <td >
+                            <select name="srcmask" class="selectpicker" data-size="5"  data-width="auto">
+                              <?php for ($i = 128; $i > 0; $i--): ?>
+                                <option value="<?=$i;?>" <?= $i == $pconfig['srcmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
+                              <?php endfor; ?>
+                            </select>
+                          </td>
+                        </tr>
+                      </table>
+                      <div class="hidden" for="help_for_src">
+                        <?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the external prefix.");?>
+                      </div>
+                    </td>
+                  </tr>
 
-	<section class="page-content-main">
-
-		<div class="container-fluid">
-
-			<div class="row">
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-                        <form action="firewall_nat_npt_edit.php" method="post" name="iform" id="iform">
-					<table class="table table-striped table-sort">
 
 
-									<tr>
-										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit NAT NPt entry"); ?></td>
-									</tr>
-							<tr>
-					                        <td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>
-					                        <td width="78%" class="vtable">
-					                                <input name="disabled" type="checkbox" id="disabled" value="yes" <?php if ($pconfig['disabled']) echo "checked=\"checked\""; ?> />
-					                                <strong><?=gettext("Disable this rule"); ?></strong><br />
-					                                <span class="vexpl"><?=gettext("Set this option to disable this rule without removing it from the list."); ?></span>
-					                        </td>
-							</tr>
-							<tr>
-								  <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface"); ?></td>
-								  <td width="78%" class="vtable">
-									<select name="interface" class="formselect">
-										<?php
-										foreach ($ifdisp as $if => $ifdesc)
-											if(have_ruleint_access($if))
-												$interfaces[$if] = $ifdesc;
 
-										if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
-											if(have_ruleint_access("l2tp"))
-												$interfaces['l2tp'] = "L2TP VPN";
-
-										if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
-											if(have_ruleint_access("pptp"))
-												$interfaces['pptp'] = "PPTP VPN";
-
-										if (isset($config['pppoe']['mode']) && $config['pppoe']['mode'] == "server")
-											if(have_ruleint_access("pppoe"))
-												$interfaces['pppoe'] = "PPPoE VPN";
-
-										/* add ipsec interfaces */
-										if (isset($config['ipsec']['enable']) || isset($config['ipsec']['mobileclients']['enable']))
-											if(have_ruleint_access("enc0"))
-												$interfaces["enc0"] = "IPsec";
-
-										/* add openvpn/tun interfaces */
-										if  ($config['openvpn']["openvpn-server"] || $config['openvpn']["openvpn-client"])
-											$interfaces["openvpn"] = "OpenVPN";
-
-										foreach ($interfaces as $iface => $ifacename):
-										?>
-										<option value="<?=$iface;?>" <?php if ($iface == $pconfig['interface']) echo "selected=\"selected\""; ?>>
-										<?=htmlspecialchars($ifacename);?>
-										</option>
-										<?php endforeach; ?>
-									</select><br />
-								  <span class="vexpl"><?=gettext("Choose which interface this rule applies to"); ?>.<br />
-								  <?=gettext("Hint: in most cases, you'll want to use WAN here"); ?>.</span></td>
-							</tr>
-							<tr>
-					                        <td width="22%" valign="top" class="vncellreq"><?=gettext("Internal IPv6 Prefix"); ?></td>
-					                        <td width="78%" class="vtable">
-					                                <input name="srcnot" type="checkbox" id="srcnot" value="yes" <?php if ($pconfig['srcnot']) echo "checked=\"checked\""; ?> />
-					                                <strong><?=gettext("not"); ?></strong>
-					                                <br />
-					                                <?=gettext("Use this option to invert the sense of the match."); ?>
-					                                <br />
-					                                <br />
-					                                <table border="0" cellspacing="0" cellpadding="0" summary="internal">
-					                                        <tr>
-					                                                <td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
-					                                                <td>
-													<table>
-													<tr>
-														<td width="348px">
-							                                                        <input name="src" type="text" class="formfldalias" id="src" size="20" value="<?php if (!is_specialnet($pconfig['src'])) echo htmlspecialchars($pconfig['src']);?>" />
-													</td>
-													<td>
-														<select name="srcmask" class="selectpicker" id="srcmask" data-width="auto">
-																						<?php for ($i = 128; $i > 0; $i--): ?>
-									                                                        <option value="<?=$i;?>" <?php if ($i == $pconfig['srcmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-																						<?php endfor; ?>
-							                                                        </select>
-							                                                    </td>
-							                                                </tr>
-							                                            </table>
-					                                                </td>
-					                                        </tr>
-					                                </table>
-								<br />
-					                     <span class="vexpl"><?=gettext("Enter the internal (LAN) ULA IPv6 Prefix for the Network Prefix translation. The prefix size specified for the internal IPv6 prefix will be applied to the
-					external prefix.");
-					?></span>
-								</td>
-					                </tr>
-							<tr>
-					                        <td width="22%" valign="top" class="vncellreq"><?=gettext("Destination IPv6 Prefix"); ?></td>
-					                        <td width="78%" class="vtable">
-					                                <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?php if ($pconfig['dstnot']) echo "checked=\"checked\""; ?> />
-					                                <strong><?=gettext("not"); ?></strong>
-					                                        <br />
-					                                <?=gettext("Use this option to invert the sense of the match."); ?>
-					                                        <br />
-					                                        <br />
-					                                <table border="0" cellspacing="0" cellpadding="0" summary="destination">
-					                                        <tr>
-					                                                <td><?=gettext("Address:"); ?>&nbsp;&nbsp;</td>
-					                                                <td>
-													<table>
-														<tr>
-															<td width="348px">
-															<input name="dst" type="text" class="formfldalias" id="dst" size="20" value="<?php if (!is_specialnet($pconfig['dst'])) echo htmlspecialchars($pconfig['dst']);?>" />
-														</td>
-														<td>
-															<select name="dstmask" class="selectpicker" id="dstmask" data-width="auto">
-																						<?php
-									                                                        for ($i = 128; $i > 0; $i--): ?>
-							                                                                <option value="<?=$i;?>" <?php if ($i == $pconfig['dstmask']) echo "selected=\"selected\""; ?>><?=$i;?></option>
-																						<?php endfor; ?>
-								                                                        </select>
-															</td>
-													</tr>
-					                                                        </table>
-					                                                </td>
-					                                        </tr>
-					                                </table>
-								<br />
-					                     <span class="vexpl"><?=gettext("Enter the Global Unicast routable IPv6 prefix here"); ?><br /></span>
-					                     </td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-					                  <td width="78%" class="vtable">
-					                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-					                    <br /> <span class="vexpl"><?=gettext("You may enter a description here " .
-					                    "for your reference (not parsed)."); ?></span></td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top">&nbsp;</td>
-					                  <td width="78%">
-					                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-					                    <?php if (isset($id) && $a_npt[$id]): ?>
-					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-					                    <?php endif; ?>
-					                  </td>
-					                </tr>
-					              </table>
-				</div>
-                        </form>
-			    </section>
-			</div>
-		</div>
-	</section>
+                  <tr>
+                      <td colspan="2"><?=gettext("Destination IPv6 Prefix"); ?></td>
+                  </tr>
+                  <tr>
+                      <td><a id="help_for_dstnot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
+                      <td>
+                        <input name="dstnot" type="checkbox" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" :"";?> />
+                        <div class="hidden" for="help_for_dstnot">
+                            <?=gettext("Use this option to invert the sense of the match."); ?>
+                        </div>
+                      </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_dst" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ". gettext("Address:"); ?></td>
+                    <td>
+                      <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                          <td width="348px">
+                            <input name="dst" type="text" value="<?=$pconfig['dst'];?>" aria-label="<?=gettext("Source address");?>"/>
+                          </td>
+                          <td >
+                            <select name="dstmask" class="selectpicker" data-size="5"  data-width="auto">
+                              <?php for ($i = 128; $i > 0; $i--): ?>
+                                <option value="<?=$i;?>" <?= $i == $pconfig['dstmask'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
+                              <?php endfor; ?>
+                            </select>
+                          </td>
+                        </tr>
+                      </table>
+                      <div class="hidden" for="help_for_dst">
+                        <?=gettext("Enter the Global Unicast routable IPv6 prefix here"); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td>
+                      <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                      <div class="hidden" for="help_for_descr">
+                        <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
+                      </div>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_nat_npt.php');?>'" />
+                      <?php if (isset($id)): ?>
+                        <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                      <?php endif; ?>
+                      <input name="after" type="hidden" value="<?=isset($after) ? $after : "";?>" />
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </form>
+          </section>
+      </div>
+    </div>
+  </section>
 
 <?php include("foot.inc"); ?>
