@@ -60,6 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $config['ipsec']['enable'] = !empty($_POST['enable']) ? true : false;
     write_config();
     vpn_ipsec_configure();
+    header("Location: vpn_ipsec.php");
+    exit;
   } elseif (isset($_POST['del_x'])) {
       /* delete selected p1 entries */
       if (isset($_POST['p1entry']) && count($_POST['p1entry'])) {
@@ -69,6 +71,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           if (write_config()) {
               mark_subsystem_dirty('ipsec');
           }
+          header("Location: vpn_ipsec.php");
+          exit;
       }
   } elseif (isset($_POST['delp2_x'])) {
       /* delete selected p2 entries */
@@ -79,6 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           if (write_config()) {
               mark_subsystem_dirty('ipsec');
           }
+          header("Location: vpn_ipsec.php");
+          exit;
       }
   } else {
     // move, delete, toggle items by id.
@@ -217,7 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mark_subsystem_dirty('ipsec');
         }
     }
+    header("Location: vpn_ipsec.php");
+    exit;
   }
+
 }
 
 // form data
