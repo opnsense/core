@@ -15,20 +15,20 @@ $zindex: (
 
 @font-face {
   font-family: 'SourceSansProBold';
-  src: url('/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff') format('woff'),
-       url('/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf') format('truetype');
+  src: url('/ui/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff') format('woff'),
+       url('/ui/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'SourceSansProSemibold';
-  src: url('/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff') format('woff'),
-       url('/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf') format('truetype');
+  src: url('/ui/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.woff') format('woff'),
+       url('/ui/themes/opnsense/build/fonts/SourceSansPro-Semibold/SourceSansPro-Semibold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'SourceSansProRegular';
-  src: url('/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff') format('woff'),
-       url('/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf') format('truetype');
+  src: url('/ui/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.woff') format('woff'),
+       url('/ui/themes/opnsense/build/fonts/SourceSansPro-Regular/SourceSansPro-Regular.ttf') format('truetype');
 }
 
 // Core variables and mixins
