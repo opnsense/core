@@ -59,7 +59,7 @@ echo gettext('
 echo gettext('Select interface(s) the ftp proxy will bind to.');
 echo gettext('The port the proxy service will listen to.');
 echo gettext('Select Authentication method');
-echo gettext('The prompt will be displayed in the autherntication request window.');
+echo gettext('The prompt will be displayed in the authentication request window.');
 echo gettext('The total number of authenticator processes to spawn.');
 echo gettext('Select if job is enabled or not');
 echo gettext('Enter a filename for storing the blacklist.');
