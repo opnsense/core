@@ -359,7 +359,7 @@
                 <id>proxy.forward.authentication.realm</id>
                 <label>Authentication Prompt</label>
                 <type>text</type>
-                <help><![CDATA[The prompt will be displayed in the autherntication request window.]]></help>
+                <help><![CDATA[The prompt will be displayed in the authentication request window.]]></help>
             </field>
             <field>
                 <id>proxy.forward.authentication.credentialsttl</id>
