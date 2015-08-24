@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
 	All rights reserved.
@@ -28,9 +29,4 @@
 require_once("guiconfig.inc");
 require_once("includes/functions.inc.php");
 
-$cpu = cpu_usage();
-
-echo $cpu;
-exit;
-
-?>
+echo cpu_usage();

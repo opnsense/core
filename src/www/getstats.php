@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2009 Bill Marquette
@@ -37,5 +38,3 @@ require_once("system.inc");
 include_once("includes/functions.inc.php");
 
 echo get_stats();
-
-?>

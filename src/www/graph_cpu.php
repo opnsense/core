@@ -1,6 +1,7 @@
 <?php
+
 /*
-  Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
 	and Jonathan Watt <jwatt@jwatt.org>.
 	All rights reserved.
@@ -39,7 +40,7 @@ header("Content-type: image/svg+xml");
 /********* Other conf *******/
 
 $nb_plot = 120;  // maximum number of data points to plot in the graph
-$fetch_link = "stats.php?stats=cpu";
+$fetch_link = 'stats.php';
 
 //SVG attributes
 $attribs['axis']='fill="black" stroke="black"';
