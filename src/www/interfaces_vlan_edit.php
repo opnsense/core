@@ -101,10 +101,12 @@ if ($_POST) {
 			break;
 		}
 	}
-	if (is_array($config['qinqs']['qinqentry'])) {
-		foreach ($config['qinqs']['qinqentry'] as $qinq)
-			if ($qinq['tag'] == $_POST['tag'] && $qinq['if'] == $_POST['if'])
+	if (isset($config['qinqs']['qinqentry'])) {
+		foreach ($config['qinqs']['qinqentry'] as $qinq) {
+			if ($qinq['tag'] == $_POST['tag'] && $qinq['if'] == $_POST['if']) {
 				$input_errors[] = gettext("A QinQ VLAN exists with this tag please remove it to use this tag with.");
+			}
+		}
 	}
 
 	if (!$input_errors) {
