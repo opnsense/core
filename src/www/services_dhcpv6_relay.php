@@ -159,7 +159,7 @@ function enable_change(enable_over) {
 												if (!is_ipaddrv6(get_interface_ipv6($ifent)))
 													continue;
 												echo "<option value=\"{$ifent}\"";
-												if (in_array($ifent, $pconfig['interface']))
+												if (!empty($pconfig['interface']) && in_array($ifent, $pconfig['interface']))
 													echo " selected=\"selected\"";
 												echo ">{$ifdesc}</option>\n";
 											}
