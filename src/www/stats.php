@@ -27,6 +27,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("includes/functions.inc.php");
+require_once("stats.inc");
 
 echo cpu_usage();
