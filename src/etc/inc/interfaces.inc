@@ -4094,7 +4094,7 @@ function convert_friendly_interface_to_friendly_descr($interface) {
 				$ifdesc = strtoupper($config['interfaces'][$interface]['descr']);
 			break;
 		} else if (stristr($interface, "_vip")) {
-			if (is_array($config['virtualip']['vip'])) {
+			if (isset($config['virtualip']['vip'])) {
 				foreach ($config['virtualip']['vip'] as $counter => $vip) {
 					if ($vip['mode'] == "carp")  {
 						if ($interface == "{$vip['interface']}_vip{$vip['vhid']}")

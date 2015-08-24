@@ -39,7 +39,7 @@ $carp_enabled = get_carp_status();
 ?>
 <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="carp status">
 <?php
-if (is_array($config['virtualip']['vip'])) {
+if (isset($config['virtualip']['vip'])) {
     $carpint=0;
     foreach ($config['virtualip']['vip'] as $carp) {
         if ($carp['mode'] != "carp") {
