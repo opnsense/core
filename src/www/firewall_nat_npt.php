@@ -231,11 +231,9 @@ $main_buttons = array(
                       </td>
                       <td>
                           <?= pprint_address($natent['destination']);?>
-                          <?= strstr(pprint_address($natent['destination']), '/'); ?>
                       </td>
                       <td>
                           <?= pprint_address($natent['source']) ;?>
-                          <?= strstr(pprint_address($natent['source']), '/'); ?>
                       </td>
                       <td>
                           <?=$natent['descr'];?>
