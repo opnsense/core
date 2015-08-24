@@ -10,18 +10,15 @@
             <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php*"/>
             <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php*"/>
         </Certificates>
-
+        <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <Firmware url="/ui/core/firmware/"/>
-
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
-
         <Routing url="/system_gateways.php">
 		<Routes url="/system_routes.php"/>
 		<RoutesEdit url="/system_routes_edit.php*"/>
 		<GatewayGroups url="/system_gateway_groups.php"/>
 		<GatewayGroupsEdit url="/system_gateway_groups_edit.php*"/>
         </Routing>
-
         <Settings url="/system_general.php">
             <General VisibleName="General" url="/system_general.php"/>
             <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
@@ -31,18 +28,14 @@
             <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
             <Notifications url="/system_advanced_notifications.php"/>
         </Settings>
-
         <SetupWizard VisibleName="Setup Wizard" url="/wizard.php?xml=setup_wizard.xml"/>
-
         <UserManager VisibleName="User Manager" url="/system_usermanager.php">
             <Users url="/system_usermanager.php"/>
             <Groups url="/system_groupmanager.php"/>
             <Settings url="/system_usermanager_settings.php"/>
             <Servers url="/system_authservers.php*"/>
         </UserManager>
-
     </System>
-
     <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
         <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
             <InterfaceAssignments VisibleName="Interface Addignments" url="/interfaces_assign.php"/>
@@ -243,7 +236,6 @@
         <BackupRestore VisibleName="Backup &amp; Restore" url="/diag_backup.php">
             <History url="/diag_confbak.php"/>
         </BackupRestore>
-        <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
         <FactoryDefaults VisibleName="Factory Defaults" url="/diag_defaults.php"/>
         <HaltSystem VisibleName="Halt System" url="/diag_halt.php"/>
