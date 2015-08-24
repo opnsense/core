@@ -33,7 +33,7 @@ require_once("captiveportal.inc");
 
 define("FILE_SIZE", 450000);
 
-function upload_crash_report($files)
+function upload_crash_report($files, $agent)
 {
 	global $g;
 
@@ -53,7 +53,7 @@ function upload_crash_report($files)
 	curl_setopt($ch, CURLOPT_HEADER, false);
 	curl_setopt($ch, CURLOPT_VERBOSE, false);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible;)');
+	curl_setopt($ch, CURLOPT_USERAGENT, $agent);
 	curl_setopt($ch, CURLOPT_POST, true);
 	curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
@@ -64,7 +64,7 @@ function upload_crash_report($files)
 	return !$response;
 }
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Crash Reporter"));
+$pgtitle = array(gettext('System'), gettext('Crash Reporter'));
 include('head.inc');
 
 $last_version = '/usr/local/opnsense/version/opnsense.last';
@@ -78,6 +78,9 @@ $crash_report_header = sprintf(
 	php_uname('m'),
 	shell_exec('/sbin/sysctl -b kern.hostuuid')
 );
+
+$pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
+$user_agent = $g['product_name'] . '/' . $pkgver[0];
 
 ?>
 
@@ -116,7 +119,7 @@ $crash_report_header = sprintf(
 		$files_to_upload = glob('/var/crash/*');
 		echo gettext('ok') . '<br/>' . gettext('Uploading...');
 		flush();
-		$resp = upload_crash_report($files_to_upload);
+		$resp = upload_crash_report($files_to_upload, $user_agent);
 		echo ($resp ? gettext('ok') : gettext('failed')) . '</p>';
 		array_map('unlink', $files_to_upload);
 	} elseif (isset($_POST['Submit']) && $_POST['Submit'] == 'no') {
@@ -124,17 +127,7 @@ $crash_report_header = sprintf(
 		@unlink('/tmp/PHP_errors.log');
 	}
 
-	if (get_crash_report(true) == '') {
-		echo '<br/><p><strong>';
-		if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
-			echo gettext('Thank you for submitting this crash report.');
-		} elseif ($_POST['Submit'] == 'no') {
-			echo gettext('Please consider submitting a crash report if the error persists.');
-		} else {
-			echo gettext('Luckily we have not detected a programming bug.');
-		}
-		echo '</strong></p>';
-	} else {
+	if (get_crash_report(true) != '' || (isset($_POST['Submit']) && $_POST['Submit'] == 'new')) {
 		$crash_files = glob("/var/crash/*");
 		$crash_reports['System Information'] = trim($crash_report_header);
 		$php_errors = @file_get_contents('/tmp/PHP_errors.log');
@@ -160,6 +153,19 @@ $crash_report_header = sprintf(
 		echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
 		foreach ($crash_reports as $report => $content) {
 			echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
+		}
+	} else {
+		if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
+			echo '<br/><p><strong>';
+			echo gettext('Thank you for submitting this crash report.');
+			echo '</strong></p><br/>';
+		} elseif ($_POST['Submit'] == 'no') {
+			echo '<br/><p><strong>';
+			echo gettext('Please consider submitting a crash report if the error persists.');
+			echo '</strong></p><br/>';
+		} else {
+			echo '<br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new">' . gettext('Report an issue') . '</button>';
+			echo '<p><strong>' . gettext('Luckily we have not detected a programming bug.') . '</strong></p><br/>';
 		}
 	}
 ?>
