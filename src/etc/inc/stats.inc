@@ -1,9 +1,5 @@
 <?php
 
-if(Connection_Aborted()) {
-	exit;
-}
-
 require_once("config.inc");
 require_once("filter.inc");
 require_once("pfsense-utils.inc");

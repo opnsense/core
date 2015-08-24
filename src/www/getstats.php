@@ -35,6 +35,6 @@ header("Pragma: no-cache"); // HTTP/1.0
 
 require_once("guiconfig.inc");
 require_once("system.inc");
-include_once("includes/functions.inc.php");
+require_once("stats.inc");
 
 echo get_stats();
