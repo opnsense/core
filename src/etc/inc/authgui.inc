@@ -351,8 +351,8 @@ function display_error_form($http_code, $desc)
 
 		<title><?=$http_code?></title>
 
-		<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
+		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+		<link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 	</head>
@@ -422,8 +422,8 @@ function display_login_form()
 
 		<title><?=gettext("Login"); ?></title>
 
-		<link href="/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-		<link href="/themes/<?=$g['theme'];?>/assets/images/favicon.png" rel="shortcut icon">
+		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+		<link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
@@ -442,7 +442,7 @@ function display_login_form()
 		<main class="login-modal-container">
 			<header class="login-modal-head" style="height:55px;">
 				<div class="navbar-brand">
-					<img src="/themes/<?=$g['theme'];?>/assets/images/default-logo.png" height="30" width="150"/>
+					<img src="/ui/themes/<?=$g['theme'];?>/build/images/default-logo.png" height="30" width="150"/>
 				</div>
 			</header>
 
