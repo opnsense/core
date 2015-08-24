@@ -27,8 +27,8 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-/* load up the dyndns.class */
-require_once("dyndns.class");
+
+require_once('dyndns.class');
 require_once('unbound.inc');
 require_once('miniupnpd.inc');
 
@@ -1756,9 +1756,12 @@ function services_dyndns_configure($int = '')
 	return 0;
 }
 
-function dyndnsCheckIP($int) {
+function dyndnsCheckIP($int)
+{
 	global $config;
+
 	$ip_address = get_interface_ip($int);
+
 	if (is_private_ip($ip_address)) {
 		$gateways_status = return_gateways_status(true);
 		// If the gateway for this interface is down, then the external check cannot work.
