@@ -36,7 +36,7 @@ require_once("widgets/include/dyn_dns_status.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-if (!is_array($config['dyndnses']['dyndns'])) {
+if (!isset($config['dyndnses']['dyndns'])) {
     $config['dyndnses']['dyndns'] = array();
 }
 

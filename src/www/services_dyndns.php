@@ -33,13 +33,13 @@ require_once("services.inc");
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
 
-if (!isset($config['dyndnses']['dyndns']))
+if (!isset($config['dyndnses']['dyndns'])) {
 	$config['dyndnses']['dyndns'] = array();
+}
 
 $a_dyndns = &$config['dyndnses']['dyndns'];
 
 if ($_GET['act'] == "del") {
-
 	$conf = $a_dyndns[$_GET['id']];
 	@unlink("/conf/dyndns_{$conf['interface']}{$conf['type']}" . escapeshellarg($conf['host']) . "{$conf['id']}.cache");
 	unset($a_dyndns[$_GET['id']]);
