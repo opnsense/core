@@ -31,8 +31,6 @@
 require_once("guiconfig.inc");
 require_once("captiveportal.inc");
 
-define("FILE_SIZE", 450000);
-
 function upload_crash_report($files, $agent)
 {
 	global $g;
@@ -81,26 +79,11 @@ $crash_report_header = sprintf(
 
 $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
 $user_agent = $g['product_name'] . '/' . $pkgver[0];
+$has_crashed = get_crash_report(true) != '';
+$crash_reports = array();
 
-?>
-
-<body>
-<?php include("fbegin.inc"); ?>
-
-<section class="page-content-main">
-	<div class="container-fluid">
-		<div class="row">
-
-			<section class="col-xs-12">
-                <div class="content-box">
-					 <form action="crash_reporter.php" method="post">
-						 <div class="col-xs-12">
-
-
-<?php
-	if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
-		echo '<br/><p>' . gettext('Processing...');
-		flush();
+if (isset($_POST['Submit'])) {
+	if ($_POST['Submit'] == 'yes') {
 		if (!is_dir('/var/crash')) {
 			mkdir('/var/crash', 0750, true);
 		}
@@ -117,64 +100,85 @@ $user_agent = $g['product_name'] . '/' . $pkgver[0];
 		@copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
 		exec('/usr/bin/gzip /var/crash/*');
 		$files_to_upload = glob('/var/crash/*');
-		echo gettext('ok') . '<br/>' . gettext('Uploading...');
-		flush();
 		$resp = upload_crash_report($files_to_upload, $user_agent);
-		echo ($resp ? gettext('ok') : gettext('failed')) . '</p>';
 		array_map('unlink', $files_to_upload);
-	} elseif (isset($_POST['Submit']) && $_POST['Submit'] == 'no') {
+	} elseif ($_POST['Submit'] == 'no') {
 		array_map('unlink', glob('/var/crash/*'));
 		@unlink('/tmp/PHP_errors.log');
+	} elseif ($_POST['Submit'] == 'new') {
+		/* force a crash report generation */
+		$has_crashed = true;
+	}
+}
+
+if ($has_crashed) {
+	$crash_files = glob("/var/crash/*");
+	$crash_reports['System Information'] = trim($crash_report_header);
+	$php_errors = @file_get_contents('/tmp/PHP_errors.log');
+	if (!empty($php_errors)) {
+		$crash_reports['PHP Errors'] = trim($php_errors);
+	}
+	$dmesg_boot = @file_get_contents('/var/run/dmesg.boot');
+	if (!empty($dmesg_boot)) {
+		$crash_reports['dmesg.boot'] = trim($dmesg_boot);
+	}
+	foreach ($crash_files as $cf) {
+		if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < 450000) {
+			$crash_reports[$cf] = trim(file_get_contents($cf));
+		}
+	}
+}
+
+?>
+
+<body>
+
+<?php include("fbegin.inc"); ?>
+
+<section class="page-content-main">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-xs-12">
+                <div class="content-box">
+                    <form action="/crash_reporter.php" method="post">
+                        <div class="col-xs-12">
+
+<?php
+
+if ($has_crashed) {
+	echo "<br/><p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
+	echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
+	echo "<p><button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"yes\">" . gettext('Yes') . "</button> ";
+	echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-default\" value=\"no\">" . gettext('No') . "</button></p>";
+	echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
+	echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
+	echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
+	echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
+	foreach ($crash_reports as $report => $content) {
+		echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
+	}
+} else {
+	$message = gettext('Luckily we have not detected a programming bug.');
+	if (isset($_POST['Submit'])) {
+		if ($_POST['Submit'] == 'yes') {
+			$message = gettext('Thank you for submitting this crash report.');
+		} elseif ($_POST['Submit'] == 'no') {
+			$message = gettext('Please consider submitting a crash report if the error persists.');
+		}
 	}
 
-	if (get_crash_report(true) != '' || (isset($_POST['Submit']) && $_POST['Submit'] == 'new')) {
-		$crash_files = glob("/var/crash/*");
-		$crash_reports['System Information'] = trim($crash_report_header);
-		$php_errors = @file_get_contents('/tmp/PHP_errors.log');
-		if (!empty($php_errors)) {
-			$crash_reports['PHP Errors'] = trim($php_errors);
-		}
-		$dmesg_boot = @file_get_contents('/var/run/dmesg.boot');
-		if (!empty($dmesg_boot)) {
-			$crash_reports['dmesg.boot'] = trim($dmesg_boot);
-		}
-		foreach ($crash_files as $cf) {
-			if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < FILE_SIZE) {
-				$crash_reports[$cf] = trim(file_get_contents($cf));
-			}
-		}
-		echo "<br/><p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
-		echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
-		echo "<p><button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"yes\">" . gettext('Yes') . "</button> ";
-		echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-default\" value=\"no\">" . gettext('No') . "</button></p>";
-		echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
-		echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
-		echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
-		echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
-		foreach ($crash_reports as $report => $content) {
-			echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
-		}
-	} else {
-		if (isset($_POST['Submit']) && $_POST['Submit'] == 'yes') {
-			echo '<br/><p><strong>';
-			echo gettext('Thank you for submitting this crash report.');
-			echo '</strong></p><br/>';
-		} elseif ($_POST['Submit'] == 'no') {
-			echo '<br/><p><strong>';
-			echo gettext('Please consider submitting a crash report if the error persists.');
-			echo '</strong></p><br/>';
-		} else {
-			echo '<br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new">' . gettext('Report an issue') . '</button>';
-			echo '<p><strong>' . gettext('Luckily we have not detected a programming bug.') . '</strong></p><br/>';
-		}
-	}
+	echo '<br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new">' . gettext('Report an issue') . '</button>';
+	echo '<p><strong>' . $message . '</strong></p><br/>';
+}
+
 ?>
-						 </div>
-					</form>
+
+                        </div>
+                    </form>
                 </div>
-			</section>
-		</div>
-	</div>
+            </section>
+        </div>
+    </div>
 </section>
 
-<?php include("foot.inc"); ?>
+<?php include("foot.inc");
