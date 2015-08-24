@@ -821,8 +821,10 @@ EOD;
 		mwexec("/usr/local/sbin/ipsec start", false);
 	}
 
-	if ($natfilterrules == true)
+	if ($natfilterrules == true) {
 		filter_configure();
+	}
+
 	/* start filterdns, if necessary */
 	if (count($filterdns_list) > 0) {
 		$interval = 60;

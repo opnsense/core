@@ -30,10 +30,10 @@
 */
 require_once("guiconfig.inc");
 require_once("vpn.inc");
+require_once("filter.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
-
 
 /*
  * ikeid management functions
@@ -59,15 +59,15 @@ function ipsec_ikeid_next() {
 }
 
 
-if (!is_array($config['ipsec'])) {
-		$config['ipsec'] = array();
+if (!isset($config['ipsec'])) {
+    $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['phase1'])) {
+if (!isset($config['ipsec']['phase1'])) {
     $config['ipsec']['phase1'] = array();
 }
 
-if (!is_array($config['ipsec']['phase2'])) {
+if (!isset($config['ipsec']['phase2'])) {
     $config['ipsec']['phase2'] = array();
 }
 

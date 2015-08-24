@@ -29,19 +29,20 @@
 
 require_once("interfaces.inc");
 require_once("guiconfig.inc");
+require_once("filter.inc");
 require_once("vpn.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 
-if (!is_array($config['ipsec'])) {
+if (!isset($config['ipsec'])) {
     $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['phase1'])) {
+if (!isset($config['ipsec']['phase1'])) {
     $config['ipsec']['phase1'] = array();
 }
 
-if (!is_array($config['ipsec']['client'])) {
+if (!isset($config['ipsec']['client'])) {
     $config['ipsec']['client'] = array();
 }
 
