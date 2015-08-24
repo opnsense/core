@@ -241,11 +241,12 @@ function merge_config_section_xmlrpc($confData)
 function restore_config_section_xmlrpc($new_config)
 {
     global $config;
+
     require_once("interfaces.inc");
+    require_once("filter.inc");
 
     // TODO: initial cleanup operation performed, but a full rewrite is probably a better plan.
     $old_config = $config;
-
 
     // Some sections should just be copied and not merged or we end
     //   up unable to sync the deletion of the last item in a section
