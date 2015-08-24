@@ -541,7 +541,7 @@ include("head.inc");
 							<td width="78%" class="vtable">
 								<select name="theme" class="selectpicker" data-style="btn-default" data-width="auto">
 									<?php
-										$files = return_dir_as_array('/usr/local/www/themes/');
+										$files = return_dir_as_array('/usr/local/opnsense/www/themes/');
 										$curtheme = get_current_theme();
 
 										foreach ($files as $file):
