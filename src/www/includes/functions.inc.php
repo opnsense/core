@@ -177,17 +177,6 @@ function get_pfstate($percent=false) {
 		return $curentries . "/" . $maxstates;
 }
 
-function has_temp() {
-	/* no known temp monitors available at present */
-
-	/* should only reach here if there is no hardware monitor */
-	return false;
-}
-
-function get_hwtype() {
-	return;
-}
-
 function get_mbuf($percent=false) {
 	$mbufs_output=trim(`/usr/bin/netstat -mb | /usr/bin/grep "mbuf clusters in use" | /usr/bin/awk '{ print $1 }'`);
 	list( $mbufs_current, $mbufs_cache, $mbufs_total, $mbufs_max ) = explode( "/", $mbufs_output);
@@ -292,71 +281,59 @@ function get_load_average() {
 	return $load_average[0];
 }
 
-function get_interfacestats() {
-	global $config;
-	//build interface list for widget use
+function get_interfacestats()
+{
 	$ifdescrs = get_configured_interface_list();
-
-	$array_in_packets = array();
-	$array_out_packets = array();
-	$array_in_bytes = array();
-	$array_out_bytes = array();
-	$array_in_errors = array();
-	$array_out_errors = array();
 	$array_collisions = array();
-	$array_interrupt = array();
-	$new_data = "";
+	$new_data = '';
 
-	//build data arrays
-	foreach ($ifdescrs as $ifdescr => $ifname){
+	foreach ($ifdescrs as $ifdescr => $ifname) {
 		$ifinfo = get_interface_info($ifdescr);
-			$new_data .= "{$ifinfo['inpkts']},";
-			$new_data .= "{$ifinfo['outpkts']},";
-			$new_data .= format_bytes($ifinfo['inbytes']) . ",";
-			$new_data .= format_bytes($ifinfo['outbytes']) . ",";
-			if (isset($ifinfo['inerrs'])){
-				$new_data .= "{$ifinfo['inerrs']},";
-				$new_data .= "{$ifinfo['outerrs']},";
-			}
-			else{
-				$new_data .= "0,";
-				$new_data .= "0,";
-			}
-			if (isset($ifinfo['collisions']))
-				$new_data .= htmlspecialchars($ifinfo['collisions']) . ",";
-			else
-				$new_data .= "0,";
-	}//end for
+		$new_data .= "{$ifinfo['inpkts']},";
+		$new_data .= "{$ifinfo['outpkts']},";
+		$new_data .= format_bytes($ifinfo['inbytes']) . ",";
+		$new_data .= format_bytes($ifinfo['outbytes']) . ",";
+		if (isset($ifinfo['inerrs'])){
+			$new_data .= "{$ifinfo['inerrs']},";
+			$new_data .= "{$ifinfo['outerrs']},";
+		} else {
+			$new_data .= "0,";
+			$new_data .= "0,";
+		}
+		if (isset($ifinfo['collisions'])) {
+			$new_data .= htmlspecialchars($ifinfo['collisions']) . ",";
+		} else {
+			$new_data .= "0,";
+		}
+	}
 
 	return $new_data;
 }
 
-function get_interfacestatus() {
-	$data = "";
-	global $config;
-
-	//build interface list for widget use
+function get_interfacestatus()
+{
 	$ifdescrs = get_configured_interface_with_descr();
+	$data = '';
 
-	foreach ($ifdescrs as $ifdescr => $ifname){
+	foreach ($ifdescrs as $ifdescr => $ifname) {
 		$ifinfo = get_interface_info($ifdescr);
 		$data .= $ifname . ",";
-		if($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") {
+		if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") {
 			$data .= "up";
-		}else if ($ifinfo['status'] == "no carrier") {
+		} elseif ($ifinfo['status'] == "no carrier") {
 			$data .= "down";
-		}else if ($ifinfo['status'] == "down") {
+		} elseif ($ifinfo['status'] == "down") {
 			$data .= "block";
 		}
 		$data .= ",";
-		if ($ifinfo['ipaddr'])
+		if ($ifinfo['ipaddr']) {
 			$data .= htmlspecialchars($ifinfo['ipaddr']);
+		}
 		$data .= ",";
-		if ($ifinfo['status'] != "down")
+		if ($ifinfo['status'] != "down") {
 			$data .= htmlspecialchars($ifinfo['media']);
-
+		}
 		$data .= "~";
-
 	}
 	return $data;
 }
