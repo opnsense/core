@@ -186,6 +186,39 @@ $main_buttons = array(
                                     }
                                     $arraycounter++;
                                   }
+                                } else {
+                                  $tempdayFriendly = $timerange['position'];
+                                  $firstDayFound = false;
+                                  $tempFriendlyDayArray = explode(",", $tempdayFriendly);
+                                  $currentDay = "";
+                                  $firstDay = "";
+                                  $nextDay = "";
+                                  $counter = 0;
+                                  foreach ($tempFriendlyDayArray as $day){
+                                    if ($day != ""){
+                                      if (!$firstDayFound)
+                                      {
+                                        $firstDay = $tempFriendlyDayArray[$counter];
+                                        $firstDayFound = true;
+                                      }
+                                      $currentDay =$tempFriendlyDayArray[$counter];
+                                      //get next day
+                                      $nextDay = $tempFriendlyDayArray[$counter+1];
+                                      $currentDay++;
+                                      if ($currentDay != $nextDay){
+                                        if ($firstprint)
+                                          $dayFriendly .= "<br />";
+                                        $currentDay--;
+                                        if ($currentDay != $firstDay)
+                                          $dayFriendly .= $dayArray[$firstDay-1] . " - " . $dayArray[$currentDay-1];
+                                        else
+                                          $dayFriendly .= $dayArray[$firstDay-1];
+                                        $firstDayFound = false;
+                                        $firstprint = true;
+                                      }
+                                      $counter++;
+                                    }
+                                  }
                                 }
                                 $timeFriendly = $starttime . "-" . $stoptime;
                                 $description = $timerange['rangedescr'];
