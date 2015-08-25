@@ -92,7 +92,6 @@ function enable_rrd_graphing()
 	$packets = "-packets.rrd";
 	$states = "-states.rrd";
 	$wireless = "-wireless.rrd";
-	$spamd = "-spamd.rrd";
 	$proc = "-processor.rrd";
 	$mem = "-memory.rrd";
 	$mbuf = "-mbuf.rrd";
@@ -110,7 +109,6 @@ function enable_rrd_graphing()
 	$sysctl = "/sbin/sysctl";
 	$php = "/usr/local/bin/php";
 	$cpustats = "/usr/local/sbin/cpustats";
-	$spamd_gather = "/usr/local/bin/spamd_gather_stats.php";
 	$ifconfig = "/sbin/ifconfig";
 	$captiveportal_gather = "/usr/local/sbin/captiveportal_gather_stats.php";
 	$ntpq = "/usr/local/sbin/ntpq";
@@ -119,7 +117,6 @@ function enable_rrd_graphing()
 	$rrdwirelessinterval = 60;
 	$rrdpacketsinterval = 60;
 	$rrdstatesinterval = 60;
-	$rrdspamdinterval = 60;
 	$rrdlbpoolinterval = 60;
 	$rrdprocinterval = 60;
 	$rrdmeminterval = 60;
@@ -133,7 +130,6 @@ function enable_rrd_graphing()
 	$wirelessvalid = $rrdwirelessinterval * 2;
 	$packetsvalid = $rrdpacketsinterval * 2;
 	$statesvalid = $rrdstatesinterval*2;
-	$spamdvalid = $rrdspamdinterval * 2;
 	$lbpoolvalid = $rrdlbpoolinterval * 2;
 	$procvalid = $rrdlbpoolinterval * 2;
 	$memvalid = $rrdmeminterval * 2;

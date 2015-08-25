@@ -199,11 +199,6 @@ $colorqualityloss	= 'ee0000';
 /* Cellular Graph		RSSI,     */
 $colorwireless		= array('333333','a83c3c','999999');
 
-/* SPAMD Times			min area, avg area, max area, Time line */
-$colorspamdtime		= array('DDDDFF', 'AAAAFF', 'DDDDFF', '000066');
-/* SPAMD Connections		max area,   min area,   min line,   max line,   avg line */
-$colorspamdconn		= array('AA00BB', 'FFFFFF', '660088', 'FFFF88', '006600');
-
 /* OpenVPN Users		Online Users */
 $colorvpnusers		= array('990000');
 
@@ -967,45 +962,6 @@ elseif((strstr($curdatabase, "-quality.rrd")) && (file_exists("$rrddbpath$curdat
 		AREA:loss10#$colorqualityloss:\"Packet loss\\n\" \\
 		LINE1:delay#$colorqualityrtt[5]:\"Delay average\\n\" \\
 		COMMENT:\"\t\t\t\t\t\t\t\t\t\t\t\t\t" . strftime('%b %d %H\:%M\:%S %Y') . "\"";
-}
-elseif((strstr($curdatabase, "spamd.rrd")) && (file_exists("$rrddbpath$curdatabase"))) {
-	/* graph a spamd statistics graph */
-	$graphcmd = "$rrdtool graph $rrdtmppath$curdatabase-$curgraph.png \\
-		--start $start --end $end --step $step \\
-		--title \"" . php_uname('n') . " - {$prettydb} - {$hperiod} - {$havg} average\" \\
-		--color SHADEA#eeeeee --color SHADEB#eeeeee \\
-		--vertical-label=\"Conn / Time, sec.\" \\
-		--height 200 --width 620 --no-gridfit \\
-		--lower-limit 0 \\
-		DEF:consmin=$rrddbpath$curdatabase:conn:MIN:step=$step \\
-		DEF:consavg=$rrddbpath$curdatabase:conn:AVERAGE:step=$step \\
-		DEF:consmax=$rrddbpath$curdatabase:conn:MAX:step=$step \\
-		DEF:timemin=$rrddbpath$curdatabase:time:MIN:step=$step \\
-		DEF:timeavg=$rrddbpath$curdatabase:time:AVERAGE:step=$step \\
-		DEF:timemax=$rrddbpath$curdatabase:time:MAX:step=$step \\
-		\"CDEF:timeminadj=timemin,0,86400,LIMIT,UN,0,timemin,IF\" \\
-		\"CDEF:timeavgadj=timeavg,0,86400,LIMIT,UN,0,timeavg,IF\" \\
-		\"CDEF:timemaxadj=timemax,0,86400,LIMIT,UN,0,timemax,IF\" \\
-		\"CDEF:t1=timeminadj,timeavgadj,+,2,/,timeminadj,-\" \\
-		\"CDEF:t2=timeavgadj,timemaxadj,+,2,/,timeminadj,-,t1,-\" \\
-		\"CDEF:t3=timemaxadj,timeminadj,-,t1,-,t2,-\" \\
-		AREA:timeminadj \\
-		AREA:t1#$colorspamdtime[0]::STACK \\
-		AREA:t2#$colorspamdtime[1]::STACK \\
-		AREA:t3#$colorspamdtime[2]::STACK \\
-		LINE2:timeavgadj#$colorspamdtime[3]:\"Time \" \\
-		GPRINT:timeminadj:MIN:\"Min\\:%6.2lf\\t\" \\
-		GPRINT:timeavgadj:AVERAGE:\"Avg\\:%6.2lf\\t\" \\
-		GPRINT:timemaxadj:MAX:\"Max\\:%6.2lf\\n\" \\
-		AREA:consmax#$colorspamdconn[0] \\
-		AREA:consmin#$colorspamdconn[1] \\
-		LINE1:consmin#$colorspamdconn[2] \\
-		LINE1:consmax#$colorspamdconn[3] \\
-		LINE1:consavg#$colorspamdconn[4]:\"Cons \" \\
-		GPRINT:consmin:MIN:\"Min\\:%6.2lf\\t\" \\
-		GPRINT:consavg:AVERAGE:\"Avg\\:%6.2lf\\t\" \\
-		GPRINT:consmax:MAX:\"Max\\:%6.2lf\\n\" \\
-		COMMENT:\"\t\t\t\t\t\t\t\t\t\t\t\t\t" . strftime('%b %d %H\:%M\:%S %Y') . "\" ";
 }
 elseif((strstr($curdatabase, "-cellular.rrd")) && (file_exists("$rrddbpath$curdatabase"))) {
 	$graphcmd = "$rrdtool graph $rrdtmppath$curdatabase-$curgraph.png ";
