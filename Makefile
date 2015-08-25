@@ -60,7 +60,7 @@ CORE_DEPENDS?=		apinger \
 			ntp \
 			openssh-portable \
 			openvpn \
-			os-update \
+			opnsense-update \
 			pecl-radius \
 			pftop \
 			phalcon \
