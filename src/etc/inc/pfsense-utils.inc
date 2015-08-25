@@ -278,8 +278,8 @@ function host_firmware_version()
 
 	return array(
 		'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
-		'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/os-update.kernel')),
-		'base' => array('version' => file_get_contents('/usr/local/opnsense/version/os-update.base')),
+		'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.kernel')),
+		'base' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.base')),
 		'config_version' => $config['version']
 	);
 }
