@@ -198,7 +198,7 @@ $main_buttons = array(
                       <?=$schedule['descr'];?>
                       </td>
                       <td>
-                        <a href="firewall_schedule.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this schedule");?>" class="btn btn-default btn-xs">
+                        <a href="firewall_schedule_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this schedule");?>" class="btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         <a id="del_<?=$i;?>" title="<?=gettext("delete this schedule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
