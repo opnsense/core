@@ -651,7 +651,11 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped">
                   <tr>
-                    <th colspan="2"><?=gettext("Edit Firewall rule");?></th>
+                    <td valign="top"><strong><?=gettext("Edit Firewall rule");?></strong></td>
+                    <td align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                    </td>
                   </tr>
                   <tr>
                     <td width="22%"><a id="help_for_action" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Action");?></td>
