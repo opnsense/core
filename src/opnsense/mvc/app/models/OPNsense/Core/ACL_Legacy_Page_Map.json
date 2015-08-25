@@ -106,13 +106,6 @@
             "diag_confbak.php*"
         ]
     },
-    "page-diagnostics-cpuutilization": {
-        "name": "WebCfg - Diagnostics: CPU Utilization page",
-        "descr": "Allow access to the 'Diagnostics: CPU Utilization' page.",
-        "match": [
-            "stats.php*"
-        ]
-    },
     "page-diagnostics-factorydefaults": {
         "name": "WebCfg - Diagnostics: Factory defaults page",
         "descr": "Allow access to the 'Diagnostics: Factory defaults' page.",
