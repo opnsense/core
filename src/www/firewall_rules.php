@@ -116,10 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
         exit;
     }
-
-    echo $id;
-    print_r($_POST);
-    die;
 }
 
 if (isset($_GET['if'])) {
