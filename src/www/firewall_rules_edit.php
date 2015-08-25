@@ -334,58 +334,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!in_array($pconfig['protocol'], array("tcp","tcp/udp"))) {
       if (!empty($pconfig['max-src-conn']))
-        $input_errors[] = gettext("You can only specify the maximum number of established connections per host (advanced option) for TCP protocol.");
+          $input_errors[] = gettext("You can only specify the maximum number of established connections per host (advanced option) for TCP protocol.");
       if (!empty($pconfig['max-src-conn-rate']) || !empty($pconfig['max-src-conn-rates']))
-        $input_errors[] = gettext("You can only specify the maximum new connections per host / per second(s) (advanced option) for TCP protocol.");
+          $input_errors[] = gettext("You can only specify the maximum new connections per host / per second(s) (advanced option) for TCP protocol.");
       if (!empty($pconfig['statetimeout']))
-        $input_errors[] = gettext("You can only specify the state timeout (advanced option) for TCP protocol.");
+          $input_errors[] = gettext("You can only specify the state timeout (advanced option) for TCP protocol.");
     }
     if ($pconfig['type'] <> "pass") {
       if (!empty($pconfig['max']))
-        $input_errors[] = gettext("You can only specify the maximum state entries (advanced option) for Pass type rules.");
+          $input_errors[] = gettext("You can only specify the maximum state entries (advanced option) for Pass type rules.");
       if (!empty($pconfig['max-src-nodes']))
-        $input_errors[] = gettext("You can only specify the maximum number of unique source hosts (advanced option) for Pass type rules.");
+          $input_errors[] = gettext("You can only specify the maximum number of unique source hosts (advanced option) for Pass type rules.");
       if (!empty($pconfig['max-src-conn']))
-        $input_errors[] = gettext("You can only specify the maximum number of established connections per host (advanced option) for Pass type rules.");
+          $input_errors[] = gettext("You can only specify the maximum number of established connections per host (advanced option) for Pass type rules.");
       if (!empty($pconfig['max-src-states']))
-        $input_errors[] = gettext("You can only specify the maximum state entries per host (advanced option) for Pass type rules.");
+          $input_errors[] = gettext("You can only specify the maximum state entries per host (advanced option) for Pass type rules.");
       if (!empty($pconfig['max-src-conn-rate']) || !empty($pconfig['max-src-conn-rates']))
-        $input_errors[] = gettext("You can only specify the maximum new connections per host / per second(s) (advanced option) for Pass type rules.");
+          $input_errors[] = gettext("You can only specify the maximum new connections per host / per second(s) (advanced option) for Pass type rules.");
       if (!empty($pconfig['statetimeout']))
-        $input_errors[] = gettext("You can only specify the state timeout (advanced option) for Pass type rules.");
+          $input_errors[] = gettext("You can only specify the state timeout (advanced option) for Pass type rules.");
     }
     if ($pconfig['statetype'] == "none") {
       if (!empty($pconfig['max']))
-        $input_errors[] = gettext("You cannot specify the maximum state entries (advanced option) if statetype is none.");
+          $input_errors[] = gettext("You cannot specify the maximum state entries (advanced option) if statetype is none.");
       if (!empty($pconfig['max-src-nodes']))
-        $input_errors[] = gettext("You cannot specify the maximum number of unique source hosts (advanced option) if statetype is none.");
+          $input_errors[] = gettext("You cannot specify the maximum number of unique source hosts (advanced option) if statetype is none.");
       if (!empty($pconfig['max-src-conn']))
-        $input_errors[] = gettext("You cannot specify the maximum number of established connections per host (advanced option) if statetype is none.");
+          $input_errors[] = gettext("You cannot specify the maximum number of established connections per host (advanced option) if statetype is none.");
       if (!empty($pconfig['max-src-states']))
-        $input_errors[] = gettext("You cannot specify the maximum state entries per host (advanced option) if statetype is none.");
+          $input_errors[] = gettext("You cannot specify the maximum state entries per host (advanced option) if statetype is none.");
       if (!empty($pconfig['max-src-conn-rate']) || !empty($pconfig['max-src-conn-rates']))
-        $input_errors[] = gettext("You cannot specify the maximum new connections per host / per second(s) (advanced option) if statetype is none.");
+          $input_errors[] = gettext("You cannot specify the maximum new connections per host / per second(s) (advanced option) if statetype is none.");
       if (!empty($pconfig['statetimeout']))
-        $input_errors[] = gettext("You cannot specify the state timeout (advanced option) if statetype is none.");
+          $input_errors[] = gettext("You cannot specify the state timeout (advanced option) if statetype is none.");
     }
 
     if (!empty($pconfig['max']) && !is_posnumericint($pconfig['max']))
-      $input_errors[] = gettext("Maximum state entries (advanced option) must be a positive integer");
+        $input_errors[] = gettext("Maximum state entries (advanced option) must be a positive integer");
 
     if (!empty($pconfig['max-src-nodes']) && !is_posnumericint($pconfig['max-src-nodes']))
-      $input_errors[] = gettext("Maximum number of unique source hosts (advanced option) must be a positive integer");
+        $input_errors[] = gettext("Maximum number of unique source hosts (advanced option) must be a positive integer");
 
     if (!empty($pconfig['max-src-conn']) && !is_posnumericint($pconfig['max-src-conn']))
-      $input_errors[] = gettext("Maximum number of established connections per host (advanced option) must be a positive integer");
+        $input_errors[] = gettext("Maximum number of established connections per host (advanced option) must be a positive integer");
 
     if (!empty($pconfig['max-src-states']) && !is_posnumericint($pconfig['max-src-states']))
-      $input_errors[] = gettext("Maximum state entries per host (advanced option) must be a positive integer");
+        $input_errors[] = gettext("Maximum state entries per host (advanced option) must be a positive integer");
 
     if (!empty($pconfig['max-src-conn-rate']) && !is_posnumericint($pconfig['max-src-conn-rate']))
-      $input_errors[] = gettext("Maximum new connections per host / per second(s) (advanced option) must be a positive integer");
+        $input_errors[] = gettext("Maximum new connections per host / per second(s) (advanced option) must be a positive integer");
 
     if (!empty($pconfig['statetimeout']) && !is_posnumericint($pconfig['statetimeout']))
-      $input_errors[] = gettext("State timeout (advanced option) must be a positive integer");
+        $input_errors[] = gettext("State timeout (advanced option) must be a positive integer");
 
     if ( (empty($pconfig['max-src-conn-rate']) && !empty($pconfig['max-src-conn-rates'])) ||
          (!empty($pconfig['max-src-conn-rate']) && empty($pconfig['max-src-conn-rates']))
@@ -394,7 +394,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (empty($pconfig['tcpflags2']) && !empty($pconfig['tcpflags1']))
-      $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
+        $input_errors[] = gettext("If you specify TCP flags that should be set you should specify out of which flags as well.");
 
 
     if (count($input_errors)  == 0) {
@@ -467,10 +467,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // reset port values for non tcp/udp traffic
         if (($pconfig['protocol'] != "tcp") && ($pconfig['protocol'] != "udp") && ($pconfig['protocol'] != "tcp/udp")) {
-          $pconfig['srcbeginport'] = 0;
-          $pconfig['srcendport'] = 0;
-          $pconfig['dstbeginport'] = 0;
-          $pconfig['dstendport'] = 0;
+            $pconfig['srcbeginport'] = 0;
+            $pconfig['srcendport'] = 0;
+            $pconfig['dstbeginport'] = 0;
+            $pconfig['dstendport'] = 0;
         }
 
         pconfig_to_address($filterent['source'], $pconfig['src'],
