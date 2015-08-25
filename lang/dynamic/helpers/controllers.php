@@ -38,6 +38,8 @@ echo gettext('The port number where Squid sends and receives ICP queries to
                 ');
 echo gettext('Enable access logging.');
 echo gettext('Enable store logging.');
+echo gettext('If set (default), Squid will include a Via header in requests and
+            replies as required by RFC2616.');
 echo gettext('Select what to do with X-Forwarded for header.');
 echo gettext('Suppress Squid version string info in HTTP headers and HTML error pages.');
 echo gettext('Enter the storage size for the local cache (default is 100).');
@@ -59,7 +61,7 @@ echo gettext('
 echo gettext('Select interface(s) the ftp proxy will bind to.');
 echo gettext('The port the proxy service will listen to.');
 echo gettext('Select Authentication method');
-echo gettext('The prompt will be displayed in the autherntication request window.');
+echo gettext('The prompt will be displayed in the authentication request window.');
 echo gettext('The total number of authenticator processes to spawn.');
 echo gettext('Select if job is enabled or not');
 echo gettext('Enter a filename for storing the blacklist.');
@@ -76,6 +78,8 @@ echo gettext('connected pipe for this queue');
 echo gettext('Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 is high)');
 echo gettext('Description to identify this pipe.');
 echo gettext('order in which the rule will be evaluated (lowest first)');
+echo gettext('secondary interface, matches packets going traveling from interface (1) to interface (2).
+        ');
 echo gettext('source ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('source port number or well known name (imap,imaps, http,https,...)');
 echo gettext('destination ip or network, examples 10.0.0.0/24, 10.0.0.1');
