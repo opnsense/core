@@ -318,48 +318,6 @@ function pprint_port($port) {
 	return $pport;
 }
 
-function firewall_check_for_advanced_options(&$item) {
-	$item_set = "";
-	if($item['os'])
-		$item_set .= "os {$item['os']} ";
-	if($item['dscp'])
-		$item_set .= "dscp {$item['dscp']} ";
-	if($item['max'])
-		$item_set .= "max {$item['max']} ";
-	if($item['max-src-nodes'])
-		$item_set .= "max-src-nodes {$item['max-src-nodes']} ";
-	if($item['max-src-conn'])
-		$item_set .= "max-src-conn {$item['max-src-conn']} ";
-	if($item['max-src-states'])
-		$item_set .= "max-src-states {$item['max-src-states']} ";
-	if(isset($item['nopfsync']))
-		$item_set .= "nopfsync ";
-	if($item['statetype'] != "keep state" && $item['statetype'] != "")
-		$item_set .= "statetype {$item['statetype']} ";
-	if($item['statetimeout'])
-		$item_set .= "statetimeout {$item['statetimeout']} ";
-	if(isset($item['nosync']))
-		$item_set .= "no XMLRPC Sync ";
-	if($item['max-src-conn-rate'])
-		$item_set .= "max-src-conn-rate {$item['max-src-conn-rate']} ";
-	if($item['max-src-conn-rates'])
-		$item_set .= "max-src-conn-rates {$item['max-src-conn-rates']} ";
-	if($item['gateway'])
-		$item_set .= "gateway {$item['gateway']} ";
-	if($item['tag'])
-		$item_set .= "tag {$item['tag']} ";
-	if($item['tagged'])
-		$item_set .= "tagged {$item['tagged']} ";
-	if(isset($item['allowopts']))
-		$item_set .= "allowopts ";
-	if(isset($item['disablereplyto']))
-		$item_set .= "disable reply-to ";
-	if($item['tcpflags_any'] || $item['tcpflags1'] || $item['tcpflags2'])
-		$item_set .= "tcpflags set";
-
-	return $item_set;
-}
-
 function gentitle($title) {
 	$navlevelsep = ": ";	/* navigation level separator string */
 	if(!is_array($title))
