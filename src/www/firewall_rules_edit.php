@@ -1381,7 +1381,7 @@ include("head.inc");
                     <tr class="opt_advanced hidden">
                         <td><a id="help_for_statetype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("State Type");?></td>
                         <td>
-                          <select name="statetype">
+                          <select name="statetype" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                             <option value="keep state" <?= empty($pconfig['statetype']) || $pconfig['statetype'] == "keep state" ? "selected=\"selected\"" : ""; ?>>
                               <?=gettext("keep state");?>
                             </option>
