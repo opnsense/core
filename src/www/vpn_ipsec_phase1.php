@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	$pconfig['interface'] = "wan";
 	$pconfig['iketype'] = "ikev1";
 	$phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
-	,encryption-algorithm,halgo,dhgroup,lifetime,authentication_method,descr,nat_traversal
+	,encryption-algorithm,hash-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
 	,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
 	,caref,reauth_enable,rekey_enable";
 	if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	    $pconfig['peerid_type'] = "peeraddress";
 	    $pconfig['authentication_method'] = "pre_shared_key";
 	    $pconfig['encryption-algorithm'] = array("name" => "3des") ;
-	    $pconfig['halgo'] = "sha1";
+	    $pconfig['hash-algorithm'] = "sha1";
 	    $pconfig['dhgroup'] = "2";
 	    $pconfig['lifetime'] = "28800";
 	    $pconfig['nat_traversal'] = "on";
@@ -908,7 +908,7 @@ endforeach; ?>
 									<tr>
 										<td><a id="help_for_halgo" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hash algorithm"); ?></td>
 										<td>
-											<select name="halgo" class="formselect">
+											<select name="hash-algorithm" class="formselect">
 											<?php
 											$p1_halgos = array(
 												'md5' => 'MD5',
@@ -920,7 +920,7 @@ endforeach; ?>
 											);
 											foreach ($p1_halgos as $algo => $algoname) :
 ?>
-												<option value="<?=$algo;?>" <?= $algo == $pconfig['halgo'] ? "selected=\"selected\"" : "";?>>
+												<option value="<?=$algo;?>" <?= $algo == $pconfig['hash-algorithm'] ? "selected=\"selected\"" : "";?>>
 													<?=$algoname;?>
 												</option>
 <?php								endforeach;
