@@ -734,7 +734,7 @@ function get_current_theme()
 {
 	$theme = 'opnsense';
 
-	if (isset($config['theme']) && is_dir('/usr/local/www/themes/' . $config['theme'])) {
+	if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
 		$theme = $config['theme'];
 	}
 
