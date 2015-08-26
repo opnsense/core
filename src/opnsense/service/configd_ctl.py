@@ -108,11 +108,11 @@ if sys.argv[1] == '-m':
         result=exec_config_cmd(exec_command=exec_command)
         if result is None:
             sys.exit(-1)
-        print('%s'%(result))
+        print('%s' % (result.strip()))
 else:
     # execute single command sequence
     exec_command=' '.join(sys.argv[1:])
     result=exec_config_cmd(exec_command=exec_command)
     if result is None:
         sys.exit(-1)
-    print('%s'%(result))
+    print('%s' % (result.strip()))
