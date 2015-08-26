@@ -29,10 +29,10 @@
 
 require_once("guiconfig.inc");
 
-if (!is_array($config['aliases'])) {
+if (!isset($config['aliases']) || !is_array($config['aliases'])) {
         $config['aliases'] = array();
 }
-if (!is_array($config['aliases']['alias'])) {
+if (!isset($config['aliases']['alias'])) {
   $config['aliases']['alias'] = array();
 }
 

@@ -709,7 +709,7 @@ function filter_get_vpns_list() {
 
 	/* ipsec */
 	if (isset($config['ipsec']['enable'])) {
-		if (is_array($config['ipsec']['phase2'])) {
+		if (isset($config['ipsec']['phase2'])) {
 			foreach ($config['ipsec']['phase2'] as $ph2ent) {
 				if ((!$ph2ent['mobile']) && ($ph2ent['mode'] != 'transport')) {
 					if (!is_array($ph2ent['remoteid']))
@@ -1648,8 +1648,8 @@ function filter_nat_rules_generate() {
 	}
 
 	/* ipsec nat */
-	if (is_array($config['ipsec']) && isset($config['ipsec']['enable'])) {
-		if (is_array($config['ipsec']['phase2'])) {
+	if (isset($config['ipsec']) && is_array($config['ipsec']) && isset($config['ipsec']['enable'])) {
+		if (isset($config['ipsec']['phase2'])) {
 			foreach ($config['ipsec']['phase2'] as $ph2ent) {
 				if ($ph2ent['mode'] != 'transport' && !empty($ph2ent['natlocalid'])) {
 					if (!is_array($ph2ent['localid']))

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2014 Electric Sheep Fencing, LLC
@@ -33,7 +34,7 @@ require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
-if (!isset($config['ipsec'])) {
+if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }
 
@@ -65,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($config['ipsec']['preferoldsa'])) {
         unset($config['ipsec']['preferoldsa']);
     }
-    if (is_array($config['ipsec'])) {
+    if (isset($config['ipsec']) && is_array($config['ipsec'])) {
         foreach ($ipsec_loglevels as $lkey => $ldescr) {
             if (empty($_POST["ipsec_{$lkey}"])) {
                 if (isset($config['ipsec']["ipsec_{$lkey}"])) {

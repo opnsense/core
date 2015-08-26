@@ -67,7 +67,7 @@ function find_alias_reference($section, $field, $origname, &$is_alias_referenced
 }
 
 
-if (!isset($config['aliases'])) {
+if (!isset($config['aliases']) || !is_array($config['aliases'])) {
     $config['aliases'] = array();
 }
 if (!isset($config['aliases']['alias'])) {

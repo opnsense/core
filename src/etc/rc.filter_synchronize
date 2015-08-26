@@ -159,7 +159,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['filter']['rule'][$x]);
 		}
 	}
-	if (is_array($config_copy['aliases']) && is_array($config_copy['aliases']['alias'])) {
+	if (isset($config_copy['aliases']) && is_array($config_copy['aliases']) && is_array($config_copy['aliases']['alias'])) {
 		$aliascnt = count($config_copy['aliases']['alias']);
 		for ($x = 0; $x < $aliascnt; $x++) {
 			$config_copy['aliases']['alias'][$x]['descr'] = remove_special_characters($config_copy['aliases']['alias'][$x]['descr']);
@@ -175,7 +175,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
 				unset ($config_copy['dnsmasq']['hosts'][$x]);
 		}
 	}
-	if (is_array($config_copy['ipsec']) && is_array($config_copy['ipsec']['tunnel'])) {
+	if (isset($config_copy['ipsec']) && is_array($config_copy['ipsec']) && is_array($config_copy['ipsec']['tunnel'])) {
 		$ipseccnt = count($config_copy['ipsec']['tunnel']);
 		for ($x = 0; $x < $ipseccnt; $x++) {
 			$config_copy['ipsec']['tunnel'][$x]['descr'] = remove_special_characters($config_copy['ipsec']['tunnel'][$x]['descr']);
@@ -285,8 +285,9 @@ if (is_array($config['hasync'])) {
 		$sections[] = 'nat';
 	}
 	if (isset($hasync['synchronizealiases'])) {
-		if (!is_array($config['aliases']))
+		if (!isset($config['aliases']) || !is_array($config['aliases'])) {
 			$config['aliases'] = array();
+		}
 		$sections[] = 'aliases';
 	}
 	if (isset($hasync['synchronizedhcpd']) && is_array($config['dhcpd']))
@@ -317,8 +318,9 @@ if (is_array($config['hasync'])) {
 		$sections[] = 'load_balancer';
 	}
 	if (isset($hasync['synchronizeipsec'])) {
-		if (!is_array($config['ipsec']))
+		if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
 			$config['ipsec'] = array();
+		}
 		$sections[] = 'ipsec';
 	}
 	if (isset($hasync['synchronizeopenvpn'])) {
