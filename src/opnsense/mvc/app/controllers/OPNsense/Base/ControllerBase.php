@@ -212,8 +212,8 @@ class ControllerBase extends ControllerRoot
 
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
-        // set theme in ui_theme template var
-        if ($cnf->object()->theme != null) {
+        // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
+        if ($cnf->object()->theme != null && !empty($cnf->object()->theme)) {
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
