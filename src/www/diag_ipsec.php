@@ -50,11 +50,11 @@ function ipsec_fixup_network($network) {
 	return $result;
 }
 
-if (!is_array($config['ipsec'])) {
+if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
     $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['phase1'])) {
+if (!isset($config['ipsec']['phase1'])) {
     $config['ipsec']['phase1'] = array();
 }
 

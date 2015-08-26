@@ -129,16 +129,22 @@ function easyrule_block_rule_create($int = 'wan', $ipproto = "inet") {
 	return true;
 }
 
-function easyrule_block_alias_getid($int = 'wan') {
+function easyrule_block_alias_getid($int = 'wan')
+{
 	global $config;
+
 	$blockaliasname = 'EasyRuleBlockHosts';
-	if (!is_array($config['aliases']))
+
+	if (!isset($config['aliases']) || !is_array($config['aliases'])) {
 		return false;
+	}
 
 	/* Hunt down an alias with the name we want, return its id */
-	foreach ($config['aliases']['alias'] as $aliasid => $alias)
-		if ($alias['name'] == $blockaliasname . strtoupper($int))
+	foreach ($config['aliases']['alias'] as $aliasid => $alias) {
+		if ($alias['name'] == $blockaliasname . strtoupper($int)) {
 			return $aliasid;
+		}
+	}
 
 	return false;
 }
@@ -152,10 +158,10 @@ function easyrule_block_alias_add($host, $int = 'wan') {
 		return false;
 
 	/* If there are no aliases, start an array */
-	if (!is_array($config['aliases'])) {
+	if (!isset($config['aliases']) || !is_array($config['aliases'])) {
 		$config['aliases'] = array();
 	}
-	if (!is_array($config['aliases']['alias'])) {
+	if (!isset($config['aliases']['alias'])) {
 		$config['aliases']['alias'] = array();
 	}
 	$a_aliases = &$config['aliases']['alias'];

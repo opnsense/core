@@ -205,15 +205,19 @@ function ipsec_idinfo_to_text(& $idinfo) {
 /*
  * Return phase1 association for phase2
  */
-function ipsec_lookup_phase1(& $ph2ent,& $ph1ent) {
+function ipsec_lookup_phase1(&$ph2ent, &$ph1ent)
+{
 	global $config;
 
-	if (!is_array($config['ipsec']))
+	if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
 		return false;
-	if (!is_array($config['ipsec']['phase1']))
+	}
+	if (!is_array($config['ipsec']['phase1'])) {
 		return false;
-	if (empty($config['ipsec']['phase1']))
+	}
+	if (empty($config['ipsec']['phase1'])) {
 		return false;
+	}
 
 	foreach ($config['ipsec']['phase1'] as $ph1tmp) {
 	    if ($ph1tmp['ikeid'] == $ph2ent['ikeid']) {

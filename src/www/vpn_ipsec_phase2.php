@@ -133,19 +133,17 @@ function getIndexByUniqueId($uniqid) {
 	return $p2index;
 }
 
-
-if (!is_array($config['ipsec'])) {
-		$config['ipsec'] = array();
+if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
+    $config['ipsec'] = array();
 }
 
-if (!is_array($config['ipsec']['client'])) {
+if (!isset($config['ipsec']['client'])) {
     $config['ipsec']['client'] = array();
 }
 
-if (!is_array($config['ipsec']['phase2'])) {
+if (!isset($config['ipsec']['phase2'])) {
     $config['ipsec']['phase2'] = array();
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	// lookup p2index

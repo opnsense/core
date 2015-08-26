@@ -31,7 +31,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
-if (!isset($config['aliases'])) {
+if (!isset($config['aliases']) || !is_array($config['aliases'])) {
         $config['aliases'] = array();
 }
 if (!isset($config['aliases']['alias'])) {

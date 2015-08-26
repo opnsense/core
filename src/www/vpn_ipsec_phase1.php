@@ -59,7 +59,7 @@ function ipsec_ikeid_next() {
 }
 
 
-if (!isset($config['ipsec'])) {
+if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
     $config['ipsec'] = array();
 }
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
@@ -31,14 +32,14 @@ require_once("guiconfig.inc");
 require_once("vpn.inc");
 require_once("services.inc");
 
-if (!isset($config['ipsec'])) {
+if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
         $config['ipsec'] = array();
 }
 
 if (!isset($config['ipsec']['mobilekey'])) {
     $config['ipsec']['mobilekey'] = array();
 } else {
-  ipsec_mobilekey_sort();
+    ipsec_mobilekey_sort();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
