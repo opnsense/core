@@ -351,7 +351,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 		$pconfig['encryption-algorithm'] = array();
 	}
 	$pconfig['encryption-algorithm']['name'] = $pconfig['ealgo'];
-	$pconfig['encryption-algorithm']['keylen'] = $pconfig['ealgo_keylen'];
+	if (!empty($pconfig['ealgo_keylen'])) {
+			$pconfig['encryption-algorithm']['keylen'] = $pconfig['ealgo_keylen'];
+	}
 
 	if (count($input_errors) == 0) {
 			$copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
