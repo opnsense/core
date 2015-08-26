@@ -350,10 +350,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	if (!isset($pconfig['encryption-algorithm']) || !is_array($pconfig['encryption-algorithm'])) {
 		$pconfig['encryption-algorithm'] = array();
 	}
-	$pconfig['encryption-algorithm']['name'] = $_POST['encryption-algorithm'];
-	if ($pconfig['ealgo_keylen']) {
-			$pconfig['ealgo']['keylen'] = $_POST['ealgo_keylen'];
-	}
+	$pconfig['encryption-algorithm']['name'] = $pconfig['ealgo'];
+	$pconfig['encryption-algorithm']['keylen'] = $pconfig['ealgo_keylen'];
 
 	if (count($input_errors) == 0) {
 			$copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
@@ -890,7 +888,7 @@ endforeach; ?>
 									<tr>
 										<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
 										<td>
-											<select name="encryption-algorithm" id="ealgo" class="formselect" onchange="ealgosel_change()">
+											<select name="ealgo" id="ealgo" class="formselect" onchange="ealgosel_change()">
 <?php
                       foreach ($p1_ealgos as $algo => $algodata) :
                       ?>
