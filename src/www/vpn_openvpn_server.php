@@ -95,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 					$pconfig['tls'] = base64_decode($a_server[$id]['tls']);
 			} else {
 				$pconfig['tls'] = null;
+        $pconfig['tlsauth_enable'] = null;
 			}
 	} elseif ($act == "new") {
 	    $pconfig['dh_length'] = 1024;
