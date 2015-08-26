@@ -475,13 +475,6 @@ function upgrade_017_to_018() {
 	}
 }
 
-
-function upgrade_018_to_019() {
-	global $config;
-	$config['theme']="metallic";
-}
-
-
 function upgrade_019_to_020() {
 	global $config;
 	if(is_array($config['ipsec']['tunnel'])) {
@@ -2334,18 +2327,6 @@ function upgrade_061_to_062() {
 
 		unset($natent);
 	}
-}
-
-function upgrade_062_to_063() {
-	/* Upgrade legacy Themes to the new pfsense_ng */
-	global $config;
-
-	switch($config['theme']) {
-		case "nervecenter":
-			$config['theme'] = "pfsense_ng";
-			break;
-	}
-
 }
 
 function upgrade_063_to_064() {
