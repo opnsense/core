@@ -216,7 +216,8 @@ include('head.inc');
 				        <h3>IPv4</h3>
 				    </header>
 
-				     <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
+             <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
+            <thead></thead>
 						<tbody>
 							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
 						</tbody>
@@ -232,7 +233,7 @@ include('head.inc');
 				        <h3>IPv6</h3>
 				    </header>
 					<table class="table table-striped table-sort sortable __nomb" id="IPv6" summary="IPv6 routes">
-
+            <thead></thead>
 						<tbody>
 							<tr><td class="listhdrr"><?=gettext("Gathering data, please wait...");?></td></tr>
 						</tbody>
