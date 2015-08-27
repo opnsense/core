@@ -188,33 +188,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (in_array($pconfig['protocol'], explode(" ", "any tcp udp tcp/udp"))) {
         if(!empty($pconfig['sourceport']) && !is_portoralias($pconfig['sourceport']))
-          $input_errors[] = gettext("You must supply either a valid port or port alias for the source port entry.");
+            $input_errors[] = gettext("You must supply either a valid port or port alias for the source port entry.");
 
         if(!empty($pconfig['dstport']) && !is_portoralias($pconfig['dstport']))
-          $input_errors[] = gettext("You must supply either a valid port or port alias for the destination port entry.");
+            $input_errors[] = gettext("You must supply either a valid port or port alias for the destination port entry.");
 
         if(!empty($pconfig['natport']) && !is_port($pconfig['natport']) && empty($pconfig['nonat']))
-          $input_errors[] = gettext("You must supply a valid port for the NAT port entry.");
+            $input_errors[] = gettext("You must supply a valid port for the NAT port entry.");
     }
 
     if (!(in_array($pconfig['source'], array("any","self")) || is_ipaddroralias($pconfig['source']))) {
         $input_errors[] = gettext("A valid source must be specified.");
     }
     if (!empty($pconfig['source_subnet']) && !is_numericint($pconfig['source_subnet'])) {
-      $input_errors[] = gettext("A valid source bit count must be specified.");
+        $input_errors[] = gettext("A valid source bit count must be specified.");
     }
     if (!(in_array($pconfig['destination'], array("any","self")) || is_ipaddroralias($pconfig['destination']))) {
         $input_errors[] = gettext("A valid destination must be specified.");
     }
     if (!empty($pconfig['destination_subnet']) && !is_numericint($pconfig['destination_subnet'])) {
-      $input_errors[] = gettext("A valid destination bit count must be specified.");
+        $input_errors[] = gettext("A valid destination bit count must be specified.");
     }
     if ($pconfig['destination'] == "any" && !empty($pconfig['destination_not'])) {
-      $input_errors[] = gettext("Negating destination address of \"any\" is invalid.");
+        $input_errors[] = gettext("Negating destination address of \"any\" is invalid.");
     }
 
     if (!is_ipaddr($pconfig['targetip']) && !is_subnet($pconfig['targetip']) && !is_alias($pconfig['targetip']) && empty($pconfig['nonat'])) {
-      $input_errors[] = gettext("A valid target IP address must be specified.");
+        $input_errors[] = gettext("A valid target IP address must be specified.");
     }
     /* Verify Pool Options */
     if (!is_alias($pconfig['targetip']) && substr($pconfig['poolopts'], 0, 11) == "round-robin") {
@@ -289,7 +289,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // boolean fields
         if(!empty($pconfig['disabled'])) {
-          $natent['disabled'] = true;
+            $natent['disabled'] = true;
         }
         if(!empty($pconfig['nonat'])) {
             $natent['nonat'] = true;
@@ -306,12 +306,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id)) {
             $a_out[$id] = $natent;
         } else {
-          $natent['created'] = make_config_revision_entry();
-          if (isset($after)) {
-              array_splice($a_out, $after+1, 0, array($natent));
-          } else {
-              $a_out[] = $natent;
-          }
+            $natent['created'] = make_config_revision_entry();
+            if (isset($after)) {
+                array_splice($a_out, $after+1, 0, array($natent));
+            } else {
+                $a_out[] = $natent;
+            }
         }
         if (write_config()) {
             mark_subsystem_dirty('natconf');
