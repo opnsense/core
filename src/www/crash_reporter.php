@@ -79,8 +79,8 @@ $crash_report_header = sprintf(
 
 $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
 $user_agent = $g['product_name'] . '/' . $pkgver[0];
-$has_crashed = get_crash_report(true) != '';
 $crash_reports = array();
+$has_crashed = false;
 
 if (isset($_POST['Submit'])) {
 	if ($_POST['Submit'] == 'yes') {
@@ -109,6 +109,9 @@ if (isset($_POST['Submit'])) {
 		/* force a crash report generation */
 		$has_crashed = true;
 	}
+} else {
+	/* if there is no user activity probe for a crash report */
+	$has_crashed = get_crash_report(true) != '';
 }
 
 if ($has_crashed) {
