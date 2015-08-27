@@ -71,41 +71,40 @@ function formInterfaces() {
  * fetch list of selectable networks to use in form
  */
 function formNetworks() {
-
-  $networks = array();
-  $networks["any"] = gettext("any");
-  $networks["pptp"] = gettext("PPTP clients");
-  $networks["pppoe"] = gettext("PPPoE clients");
-  $networks["l2tp"] = gettext("L2TP clients");
-  foreach (get_configured_interface_with_descr() as $ifent => $ifdesc) {
-      $networks[$ifent] = htmlspecialchars($ifdesc) . " " . gettext("net");
-      $networks[$ifent."ip"] = htmlspecialchars($ifdesc). " ". gettext("address");
-  }
-  return $networks;
+    $networks = array();
+    $networks["any"] = gettext("any");
+    $networks["pptp"] = gettext("PPTP clients");
+    $networks["pppoe"] = gettext("PPPoE clients");
+    $networks["l2tp"] = gettext("L2TP clients");
+    foreach (get_configured_interface_with_descr() as $ifent => $ifdesc) {
+        $networks[$ifent] = htmlspecialchars($ifdesc) . " " . gettext("net");
+        $networks[$ifent."ip"] = htmlspecialchars($ifdesc). " ". gettext("address");
+    }
+    return $networks;
 }
 
 /**
  * check if advanced options are set on selected element
  */
 function FormSetAdvancedOptions(&$item) {
-  foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout"
-                ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "disablereplyto","tcpflags1"
-                ,"tcpflags2") as $fieldname) {
+    foreach (array("max", "max-src-nodes", "max-src-conn", "max-src-states","nopfsync", "statetimeout"
+                  ,"max-src-conn-rate","max-src-conn-rates", "tag", "tagged", "allowopts", "disablereplyto","tcpflags1"
+                  ,"tcpflags2") as $fieldname) {
 
-      if (!empty($item[$fieldname])) {
-          return true;
-      }
-  }
-  if (!empty($item["statetype"]) && $item["statetype"] != 'keep state') {
-      return true;
-  }
-  return false;
+        if (!empty($item[$fieldname])) {
+            return true;
+        }
+    }
+    if (!empty($item["statetype"]) && $item["statetype"] != 'keep state') {
+        return true;
+    }
+    return false;
 }
 
 
 function is_posnumericint($arg) {
-  // Note that to be safe we do not allow any leading zero - "01", "007"
-  return (is_numericint($arg) && $arg[0] != '0' && $arg > 0);
+    // Note that to be safe we do not allow any leading zero - "01", "007"
+    return (is_numericint($arg) && $arg[0] != '0' && $arg > 0);
 }
 
 
@@ -117,12 +116,12 @@ function is_posnumericint($arg) {
 $specialsrcdst = explode(" ", "any (self) pptp pppoe l2tp openvpn");
 $ifdisp = get_configured_interface_with_descr();
 foreach ($ifdisp as $kif => $kdescr) {
-  $specialsrcdst[] = "{$kif}";
-  $specialsrcdst[] = "{$kif}ip";
+    $specialsrcdst[] = "{$kif}";
+    $specialsrcdst[] = "{$kif}ip";
 }
 
 if (!isset($config['filter']['rule'])) {
-  $config['filter']['rule'] = array();
+    $config['filter']['rule'] = array();
 }
 $a_filter = &$config['filter']['rule'];
 
@@ -205,9 +204,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $outoftcpflags = array();
         foreach ($tcpflags as $tcpflag) {
           if (isset($pconfig['tcpflags1_' . $tcpflag]) && $pconfig['tcpflags1_' . $tcpflag] == "on")
-            $settcpflags[] = $tcpflag;
+              $settcpflags[] = $tcpflag;
           if (isset($pconfig['tcpflags2_' . $tcpflag]) && $pconfig['tcpflags2_' . $tcpflag] == "on")
-            $outoftcpflags[] = $tcpflag;
+              $outoftcpflags[] = $tcpflag;
         }
         // flags should be set within
         if (!empty($outoftcpflags)) {
@@ -302,11 +301,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if((is_ipaddr($pconfig['src']) && is_ipaddr($pconfig['dst']))) {
       if(!validate_address_family($pconfig['src'], $pconfig['dst']))
-        $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
+          $input_errors[] = sprintf(gettext("The Source IP address %s Address Family differs from the destination %s."), $pconfig['src'], $pconfig['dst']);
       if((is_ipaddrv6($pconfig['src']) || is_ipaddrv6($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet"))
-        $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
+          $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
       if((is_ipaddrv4($pconfig['src']) || is_ipaddrv4($pconfig['dst'])) && ($pconfig['ipprotocol'] == "inet6"))
-        $input_errors[] = gettext("You can not use IPv4 addresses in IPv6 rules.");
+          $input_errors[] = gettext("You can not use IPv4 addresses in IPv6 rules.");
     }
 
     if (is_ipaddrv4($pconfig['src']) && $pconfig['srcmask'] > 32) {
