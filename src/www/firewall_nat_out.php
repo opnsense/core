@@ -40,13 +40,13 @@ require_once("interfaces.inc");
 global $GatewaysList;
 
 if (!isset($config['nat']['outbound']))
-  $config['nat']['outbound'] = array();
+    $config['nat']['outbound'] = array();
 
 if (!isset($config['nat']['outbound']['rule']))
-  $config['nat']['outbound']['rule'] = array();
+    $config['nat']['outbound']['rule'] = array();
 
 if (!isset($config['nat']['outbound']['mode']))
-  $config['nat']['outbound']['mode'] = "automatic";
+    $config['nat']['outbound']['mode'] = "automatic";
 
 $a_out = &$config['nat']['outbound']['rule'];
 
