@@ -31,6 +31,7 @@
 import tempfile
 import subprocess
 import os
+import sys
 import ujson
 
 result=[]
@@ -42,4 +43,11 @@ with tempfile.NamedTemporaryFile() as output_stream:
         for line in data.split('\n')[2:]:
             result.append(line.replace('\t',' ').strip())
 
-print(ujson.dumps(result))
+# handle command line argument (type selection)
+if len(sys.argv) > 1 and sys.argv[1] == 'json':
+    print(ujson.dumps(result))
+else:
+    # output plain
+    print ('------------------------- OS fingerprints -------------------------')
+    for ostype in result:
+        print (ostype)
