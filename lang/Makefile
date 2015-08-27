@@ -9,7 +9,7 @@ MSGMERGE=	${_MSGMERGE} -U -N --backup=off
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 
-LANGUAGES=	de_DE es_CO fr_FR ja_JP zh_CN
+LANGUAGES=	de_DE es_CO fr_FR ja_JP mn_MN zh_CN
 TEMPLATE=	en_US
 INSTALL=
 MERGE=

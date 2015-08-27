@@ -45,6 +45,7 @@ function get_locale_list()
 	$locales['fr_FR'] = gettext('French');
 	$locales['de_DE'] = gettext('German');
 	$locales['ja_JP'] = gettext('Japanese');
+	$locales['mn_MN'] = gettext('Mongolian');
 	$locales['es_CO'] = gettext('Spanish');
 
 	return $locales;
