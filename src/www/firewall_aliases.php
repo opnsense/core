@@ -39,9 +39,9 @@ function find_alias_reference($section, $field, $origname, &$is_alias_referenced
     $sectionref = &$config;
     foreach($section as $sectionname) {
         if(is_array($sectionref) && isset($sectionref[$sectionname]))
-          $sectionref = &$sectionref[$sectionname];
+            $sectionref = &$sectionref[$sectionname];
         else
-          return;
+            return;
     }
 
     if(is_array($sectionref)) {
@@ -121,15 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Static routes
             find_alias_reference(array('staticroutes', 'route'), array('network'), $alias_name, $is_alias_referenced, $referenced_by);
             if($is_alias_referenced) {
-              $savemsg = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $referenced_by);
+                $savemsg = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $referenced_by);
             } else {
-              unset($a_aliases[$_POST['id']]);
-              if (write_config()) {
-                filter_configure();
-                mark_subsystem_dirty('aliases');
-              }
+                unset($a_aliases[$_POST['id']]);
+                if (write_config()) {
+                    filter_configure();
+                    mark_subsystem_dirty('aliases');
+                }
                 header("Location: firewall_aliases.php?tab=" . $selected_tab);
-              exit;
+                exit;
             }
         }
     }
@@ -139,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pgtitle = array(gettext("Firewall"), gettext("Aliases"));
 $shortcut_section = "aliases";
 $main_buttons = array(
-  array('href'=>'firewall_aliases_edit.php?tab='.$selected_tab, 'label'=>gettext("Add a new alias")),
-  array('href'=>'firewall_aliases_import.php', 'label'=>gettext("Bulk import aliases from list")),
+    array('href'=>'firewall_aliases_edit.php?tab='.$selected_tab, 'label'=>gettext("Add a new alias")),
+    array('href'=>'firewall_aliases_import.php', 'label'=>gettext("Bulk import aliases from list")),
 );
 
 
