@@ -421,7 +421,7 @@ include("head.inc");
                   <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface"); ?></td>
                   <td>
                     <div class="input-group">
-                      <select name="interface" class="selectpicker" data-width="auto" data-live-search="true" onchange="dst_change(this.value,iface_old,document.iform.dsttype.value);iface_old = document.iform.interface.value;typesel_change();">
+                      <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
 <?php
                         foreach (formInterfaces() as $iface => $ifacename): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
