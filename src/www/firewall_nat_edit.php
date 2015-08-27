@@ -713,10 +713,40 @@ $( document ).ready(function() {
 <?php                          endforeach; ?>
                             </optgroup>
                             <optgroup label="<?=gettext("net");?>">
-<?php                          foreach (formNetworks() as $ifent => $ifdesc):
+<?php                         foreach (formNetworks() as $ifent => $ifdesc):
 ?>
                               <option value="<?=$ifent;?>" <?= $pconfig['dst'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
-<?php                            endforeach; ?>
+<?php                         endforeach;
+?>
+                            </optgroup>
+                            <optgroup label="<?=gettext("virtualip");?>">
+<?php
+                              if (isset($config['virtualip']['vip'])):
+                                foreach ($config['virtualip']['vip'] as $sn):
+                                  if (isset($sn['noexpand']))
+                                    continue;
+                                  if ($sn['mode'] == "proxyarp" && $sn['type'] == "network"):
+                                    $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
+                                    $end = ip2long32(gen_subnet_max($sn['subnet'], $sn['subnet_bits']));
+                                    $len = $end - $start;
+                                    for ($i = 0; $i <= $len; $i++):
+                                      $snip = long2ip32($start+$i);
+?>
+                              <option value="<?=$snip;?>" <?=$snip == $pconfig['dst'] ? "selected=\"selected\"" : "";?>>
+                                <?=htmlspecialchars("{$snip} ({$sn['descr']})");?>
+                              </option>
+<?php
+                                    endfor;
+                                  else:
+?>
+                              <option value="<?=$sn['subnet'];?>" <?= $sn['subnet'] == $pconfig['dst'] ? "selected=\"selected\"" : ""; ?>>
+                                <?=htmlspecialchars("{$sn['subnet']} ({$sn['descr']})");?>
+                              </option>
+<?php
+                                  endif;
+                                endforeach;
+                              endif;
+?>
                             </optgroup>
                           </select>
                         </td>
