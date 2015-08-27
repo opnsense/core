@@ -67,7 +67,7 @@ $( document ).ready(function() {
 });
 </script>
 <section class="page-content-main">
-  <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+  <div class="container-fluid col-xs-12">
     <div class="row">
         <section class="col-xs-12">
           <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
@@ -98,6 +98,4 @@ $( document ).ready(function() {
     </div>
   </div>
 </section>
-
-
 <?php include("foot.inc"); ?>
