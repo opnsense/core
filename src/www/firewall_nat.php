@@ -88,8 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete nat rule and associated rule if it exists
         if (isset($a_nat[$id]['associated-rule-id'])) {
-          delete_id($a_nat[$id]['associated-rule-id'], $config['filter']['rule']);
-          mark_subsystem_dirty('filter');
+            delete_id($a_nat[$id]['associated-rule-id'], $config['filter']['rule']);
+            mark_subsystem_dirty('filter');
         }
         unset($a_nat[$id]);
         if (write_config()) {
