@@ -35,46 +35,45 @@ require_once("pfsense-utils.inc");
  * build array with interface options for this form
  */
 function formInterfaces() {
-  global $config;
-  $interfaces = array();
-  foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc)
-      $interfaces[$if] = $ifdesc;
+    global $config;
+    $interfaces = array();
+    foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc)
+        $interfaces[$if] = $ifdesc;
 
-  if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
-      $interfaces['l2tp'] = "L2TP VPN";
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
+        $interfaces['l2tp'] = "L2TP VPN";
 
-  if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
-      $interfaces['pptp'] = "PPTP VPN";
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
+        $interfaces['pptp'] = "PPTP VPN";
 
-  if (is_pppoe_server_enabled())
-    $interfaces['pppoe'] = "PPPoE VPN";
+    if (is_pppoe_server_enabled())
+        $interfaces['pppoe'] = "PPPoE VPN";
 
-  /* add ipsec interfaces */
-  if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
-      $interfaces["enc0"] = "IPsec";
+    /* add ipsec interfaces */
+    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
+        $interfaces["enc0"] = "IPsec";
 
-  /* add openvpn/tun interfaces */
-  if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-    $interfaces['openvpn'] = 'OpenVPN';
-  }
-  return $interfaces;
+    /* add openvpn/tun interfaces */
+    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+        $interfaces['openvpn'] = 'OpenVPN';
+    }
+    return $interfaces;
 }
 
 /**
  * fetch list of selectable networks to use in form
  */
 function formNetworks() {
-
-  $networks = array();
-  $networks["any"] = gettext("any");
-  $networks["pptp"] = gettext("PPTP clients");
-  $networks["pppoe"] = gettext("PPPoE clients");
-  $networks["l2tp"] = gettext("L2TP clients");
-  foreach (get_configured_interface_with_descr() as $ifent => $ifdesc) {
-      $networks[$ifent] = htmlspecialchars($ifdesc) . " " . gettext("net");
-      $networks[$ifent."ip"] = htmlspecialchars($ifdesc). " ". gettext("address");
-  }
-  return $networks;
+    $networks = array();
+    $networks["any"] = gettext("any");
+    $networks["pptp"] = gettext("PPTP clients");
+    $networks["pppoe"] = gettext("PPPoE clients");
+    $networks["l2tp"] = gettext("L2TP clients");
+    foreach (get_configured_interface_with_descr() as $ifent => $ifdesc) {
+        $networks[$ifent] = htmlspecialchars($ifdesc) . " " . gettext("net");
+        $networks[$ifent."ip"] = htmlspecialchars($ifdesc). " ". gettext("address");
+    }
+    return $networks;
 }
 
 /**
@@ -84,14 +83,14 @@ function formNetworks() {
 $specialsrcdst = explode(" ", "any (self) pptp pppoe l2tp openvpn");
 $ifdisp = get_configured_interface_with_descr();
 foreach ($ifdisp as $kif => $kdescr) {
-  $specialsrcdst[] = "{$kif}";
-  $specialsrcdst[] = "{$kif}ip";
+    $specialsrcdst[] = "{$kif}";
+    $specialsrcdst[] = "{$kif}ip";
 }
 
 
 // init config and get reference
 if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
-  $config['nat']['rule'] = array();
+    $config['nat']['rule'] = array();
 }
 $a_nat = &$config['nat']['rule'];
 
@@ -170,9 +169,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_POST['id'];
     }
     if (isset($pconfig['after']) && isset($a_nat[$pconfig['after']])) {
-				// place record after provided sequence number
-				$after = $pconfig['after'];
-		}
+        // place record after provided sequence number
+        $after = $pconfig['after'];
+    }
 
     /* Validate input data  */
     foreach ($pconfig as $key => $value) {
@@ -299,13 +298,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Create a rule or if we want to create a new one
         if( $natent['associated-rule-id']=='new' ) {
             $need_filter_rule = true;
-            unset( $natent['associated-rule-id'] );
+            unset($natent['associated-rule-id']);
             $pconfig['filter-rule-association']='add-associated';
         }
         // If creating a new rule, where we want to add the filter rule, associated or not
-        else if( isset($pconfig['filter-rule-association']) &&
-          ($pconfig['filter-rule-association']=='add-associated' ||
-          $pconfig['filter-rule-association']=='add-unassociated') )
+        else if (isset($pconfig['filter-rule-association']) && ($pconfig['filter-rule-association']=='add-associated' ||
+                       $pconfig['filter-rule-association']=='add-unassociated')
+        )
             $need_filter_rule = true;
 
         if ($need_filter_rule) {
