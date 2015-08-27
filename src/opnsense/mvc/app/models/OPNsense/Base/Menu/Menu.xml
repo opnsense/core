@@ -254,7 +254,9 @@
         <States url="/diag_dump_states.php"/>
         <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
         <SystemActivity VisibleName="System Activity" url="/diag_system_activity.php"/>
-        <Tables url="/diag_tables.php"/>
+        <Tables url="/diag_tables.php">
+                <TablesDetails url="/diag_tables.php*"/>
+        </Tables>
         <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
         <Traceroute url="/diag_traceroute.php"/>
     </Diagnostics>
