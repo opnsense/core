@@ -36,7 +36,7 @@ require_once("interfaces.inc");
 $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
 
 /* OS types, request from backend */
-$ostypes = json_decode(configd_run('filter list osfp'));
+$ostypes = json_decode(configd_run('filter list osfp json'));
 
 /**
  * build array with interface options for this form
