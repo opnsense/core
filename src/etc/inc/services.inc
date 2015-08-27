@@ -600,12 +600,12 @@ EOPP;
 			} else {
 				$newzone['domain-name'] = $config['system']['domain'];
 			}
-			$revsubnet = explode(".", $subnet);
-			$revsubnet = array_reverse($revsubnet);
-			foreach ($revsubnet as $octet) {
-				if ($octet != "0")
-					break;
-				array_shift($revsubnet);
+			$revsubnet = array_reverse(explode(".", $subnet));
+			$subnetmask_rev = array_reverse(explode('.', $subnetmask));
+			foreach ($subnetmask_rev as $octet) {
+				if ($octet == "0") {
+					array_shift($revsubnet);
+				}
 			}
 			$newzone['ptr-domain'] = implode(".", $revsubnet) . ".in-addr.arpa";
 		}
