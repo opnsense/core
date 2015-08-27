@@ -268,7 +268,7 @@
                          IsExternal="Y"/>
         <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/"
                      IsExternal="Y"/>
-        <UserForum VisibleName="UserForum" url="https://forum.opnsense.org/" IsExternal="Y"/>
+        <UserForum VisibleName="User Forum" url="https://forum.opnsense.org/" IsExternal="Y"/>
     </Help>
 
 </menu>
