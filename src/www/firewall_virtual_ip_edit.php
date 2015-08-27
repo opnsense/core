@@ -40,11 +40,11 @@ function find_last_used_vhid() {
     global $config;
     $vhid = 0;
     if (isset($config['virtualip']['vip'])) {
-      foreach($config['virtualip']['vip'] as $vip) {
-          if(!empty($vip['vhid']) && $vip['vhid'] > $vhid) {
-              $vhid = $vip['vhid'];
-          }
-      }
+        foreach($config['virtualip']['vip'] as $vip) {
+            if(!empty($vip['vhid']) && $vip['vhid'] > $vhid) {
+                $vhid = $vip['vhid'];
+            }
+        }
     }
     return $vhid;
 }
@@ -109,12 +109,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid IP address must be specified.");
         } else {
             if ($pconfig['mode'] == 'carp') {
-              $ignore_if = $pconfig['interface']."_vip{$pconfig['vhid']}";
+                $ignore_if = $pconfig['interface']."_vip{$pconfig['vhid']}";
             } else {
-              $ignore_if = $pconfig['interface'];
+                $ignore_if = $pconfig['interface'];
             }
             if (is_ipaddr_configured($pconfig['subnet'], $ignore_if)) {
-              $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
+                $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
             }
         }
     }
