@@ -33,467 +33,460 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_virtual_ip.php');
+/**
+ * find max vhid
+ */
+function find_last_used_vhid() {
+    global $config;
+    $vhid = 0;
+    if (isset($config['virtualip']['vip'])) {
+      foreach($config['virtualip']['vip'] as $vip) {
+          if(!empty($vip['vhid']) && $vip['vhid'] > $vhid) {
+              $vhid = $vip['vhid'];
+          }
+      }
+    }
+    return $vhid;
+}
 
-if (!is_array($config['virtualip']['vip'])) {
-        $config['virtualip']['vip'] = array();
+
+// create new vip array if none existent
+if (!isset($config['virtualip']) || !is_array($config['virtualip'])) {
+    $config['virtualip'] = array();
+}
+if (!isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'])) {
+    $config['virtualip']['vip'] = array();
 }
 $a_vip = &$config['virtualip']['vip'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
 
-function return_first_two_octets($ip) {
-	$ip_split = explode(".", $ip);
-	return $ip_split[0] . "." . $ip_split[1];
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // input record id, if valid
+    if (isset($_GET['dup']) && isset($a_vip[$_GET['dup']]))  {
+        $configId = $_GET['dup'];
+        $after = $configId;
+    } elseif (isset($_GET['id']) && isset($a_vip[$_GET['id']])) {
+        $id = $_GET['id'];
+        $configId = $id;
+    }
+    $pconfig = array();
+    $pconfig['vhid'] = find_last_used_vhid() + 1;
+    $form_fields = array('mode', 'vhid', 'advskew', 'advbase', 'password', 'subnet', 'subnet_bits'
+                        , 'descr' ,'type', 'interface' );
+
+    if (isset($configId)) {
+        // 1-on-1 copy of config data
+        foreach ($form_fields as $fieldname) {
+            if (isset($a_vip[$configId][$fieldname])) {
+                $pconfig[$fieldname] = $a_vip[$configId][$fieldname] ;
+            }
+        }
+    }
+
+    // initialize empty form fields
+    foreach ($form_fields as $fieldname) {
+        if (!isset($pconfig[$fieldname])) {
+            $pconfig[$fieldname] = null ;
+        }
+    }
+}  elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
+    $pconfig = $_POST;
+
+    // input record id, if valid
+    if (isset($pconfig['id']) && isset($a_vip[$pconfig['id']])) {
+        $id = $pconfig['id'];
+    }
+
+    // perform form validations
+    $reqdfields = array("mode");
+    $reqdfieldsn = array(gettext("Type"));
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+
+    if (isset($pconfig['subnet'])) {
+        $pconfig['subnet'] = trim($pconfig['subnet']);
+        if (!is_ipaddr($pconfig['subnet'])) {
+            $input_errors[] = gettext("A valid IP address must be specified.");
+        } else {
+            if ($pconfig['mode'] == 'carp') {
+              $ignore_if = $pconfig['interface']."_vip{$pconfig['vhid']}";
+            } else {
+              $ignore_if = $pconfig['interface'];
+            }
+            if (is_ipaddr_configured($pconfig['subnet'], $ignore_if)) {
+              $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
+            }
+        }
+    }
+    $natiflist = get_configured_interface_with_descr();
+    foreach ($natiflist as $natif => $natdescr) {
+        if ($pconfig['interface'] == $natif && (empty($config['interfaces'][$natif]['ipaddr']) && empty($config['interfaces'][$natif]['ipaddrv6']))) {
+            $input_errors[] = gettext("The interface chosen for the VIP has no IPv4 or IPv6 address configured so it cannot be used as a parent for the VIP.");
+        }
+    }
+    /* ipalias and carp should not use network or broadcast address */
+    if ($pconfig['mode'] == "ipalias" || $pconfig['mode'] == "carp") {
+        if (is_ipaddrv4($pconfig['subnet']) && $pconfig['subnet_bits'] != "32") {
+            $network_addr = gen_subnet($pconfig['subnet'], $pconfig['subnet_bits']);
+            $broadcast_addr = gen_subnet_max($pconfig['subnet'], $pconfig['subnet_bits']);
+        } else if (is_ipaddrv6($pconfig['subnet']) && $_POST['subnet_bits'] != "128" ) {
+            $network_addr = gen_subnetv6($pconfig['subnet'], $pconfig['subnet_bits']);
+            $broadcast_addr = gen_subnetv6_max($pconfig['subnet'], $pconfig['subnet_bits']);
+        }
+        if (isset($network_addr) && $pconfig['subnet'] == $network_addr) {
+            $input_errors[] = gettext("You cannot use the network address for this VIP");
+        } else if (isset($broadcast_addr) && $pconfig['subnet'] == $broadcast_addr) {
+            $input_errors[] = gettext("You cannot use the broadcast address for this VIP");
+        }
+    }
+
+    /* make sure new ip is within the subnet of a valid ip
+     * on one of our interfaces (wan, lan optX)
+     */
+    if ($pconfig['mode'] == 'carp') {
+        /* verify against reusage of vhids */
+        foreach($config['virtualip']['vip'] as $vipId => $vip) {
+          if(isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['interface'] == $pconfig['interface'] && $vipId <> $id) {
+              $input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
+          }
+        }
+        if (empty($pconfig['password'])) {
+            $input_errors[] = gettext("You must specify a CARP password that is shared between the two VHID members.");
+        }
+
+        if (is_ipaddrv4($pconfig['subnet'])) {
+            $parent_ip = get_interface_ip($pconfig['interface']);
+            $parent_sn = get_interface_subnet($pconfig['interface']);
+            $subnet = gen_subnet($parent_ip, $parent_sn);
+        } else if (is_ipaddrv6($pconfig['subnet'])) {
+            $parent_ip = get_interface_ipv6($pconfig['interface']);
+            $parent_sn = get_interface_subnetv6($pconfig['interface']);
+            $subnet = gen_subnetv6($parent_ip, $parent_sn);
+        }
+
+        if (isset($parent_ip) && !ip_in_subnet($pconfig['subnet'], "{$subnet}/{$parent_sn}") && !ip_in_interface_alias_subnet($pconfig['interface'], $pconfig['subnet'])) {
+            $cannot_find = $pconfig['subnet'] . "/" . $pconfig['subnet_bits'] ;
+            $input_errors[] = sprintf(gettext("Sorry, we could not locate an interface with a matching subnet for %s.  Please add an IP alias in this subnet on this interface."),$cannot_find);
+        }
+
+        if ($pconfig['interface'] == "lo0") {
+            $input_errors[] = gettext("For this type of vip localhost is not allowed.");
+        }
+    } else if ($pconfig['mode'] != 'ipalias' && $pconfig['interface'] == "lo0") {
+        $input_errors[] = gettext("For this type of vip localhost is not allowed.");
+    }
+
+
+    if (count($input_errors) == 0) {
+        $vipent = array();
+        // defaults
+        $vipent['type'] = "single";
+        $vipent['subnet_bits'] = "32";
+        // 1-on-1 copy attributes
+        foreach (array('mode', 'interface', 'descr', 'type', 'subnet_bits', 'subnet', 'vhid'
+                      ,'advskew','advbase','password') as $fieldname) {
+            if (!empty($pconfig[$fieldname])) {
+                $vipent[$fieldname] = $pconfig[$fieldname];
+            }
+        }
+
+        if (!empty($pconfig['noexpand'])) {
+            // noexpand, only used for proxyarp
+            $vipent['noexpand'] = true;
+        }
+
+        // virtual ip UI keeps track of it's changes in a separate file
+        // (which is only use on apply in firewall_virtual_ip)
+        // add or change this administration here.
+        // Not the nicest thing to do, but we keep it for now.
+        if (file_exists('/tmp/.firewall_virtual_ip.apply')) {
+            $toapplylist = unserialize(file_get_contents('/tmp/.firewall_virtual_ip.apply'));
+        } else {
+            $toapplylist = array();
+        }
+        if (isset($id)) {
+            if (isset($toapplylist[$id])) {
+                $toapplylist[$id] = $a_vip[$id];
+            } else {
+                $toapplylist[] = $a_vip[$id];
+            }
+        }
+
+        if (isset($id)) {
+            /* modify all virtual IP rules with this address */
+            for ($i = 0; isset($config['nat']['rule'][$i]); $i++) {
+                if (isset($config['nat']['rule'][$i]['destination']['address']) && $config['nat']['rule'][$i]['destination']['address'] == $a_vip[$id]['subnet']) {
+                    $config['nat']['rule'][$i]['destination']['address'] = $vipent['subnet'];
+                }
+            }
+        }
+
+        // update or insert item in config
+        if (isset($id)) {
+            $a_vip[$id] = $vipent;
+        } else {
+            $a_vip[] = $vipent;
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('vip');
+            file_put_contents('/tmp/.firewall_virtual_ip.apply', serialize($toapplylist));
+        }
+        header("Location: firewall_virtual_ip.php");
+        exit;
+    }
 }
 
-function find_last_used_vhid() {
-	global $config, $g;
-	$vhid = 0;
-	foreach($config['virtualip']['vip'] as $vip) {
-		if($vip['vhid'] > $vhid)
-			$vhid = $vip['vhid'];
-	}
-	return $vhid;
-}
-
-if (isset($id) && $a_vip[$id]) {
-	$pconfig['mode'] = $a_vip[$id]['mode'];
-	$pconfig['vhid'] = $a_vip[$id]['vhid'];
-	$pconfig['advskew'] = $a_vip[$id]['advskew'];
-	$pconfig['advbase'] = $a_vip[$id]['advbase'];
-	$pconfig['password'] = $a_vip[$id]['password'];
-	$pconfig['range'] = $a_vip[$id]['range'];
-	$pconfig['subnet'] = $a_vip[$id]['subnet'];
-	$pconfig['subnet_bits'] = $a_vip[$id]['subnet_bits'];
-	$pconfig['noexpand'] = $a_vip[$id]['noexpand'];
-	$pconfig['descr'] = $a_vip[$id]['descr'];
-	$pconfig['type'] = $a_vip[$id]['type'];
-	$pconfig['interface'] = $a_vip[$id]['interface'];
-} else {
-	$lastvhid = find_last_used_vhid();
-	$lastvhid++;
-	$pconfig['vhid'] = $lastvhid;
-}
-
-if ($_POST) {
-	unset($input_errors);
-	$pconfig = $_POST;
-
-	/* input validation */
-	$reqdfields = explode(" ", "mode");
-	$reqdfieldsn = array(gettext("Type"));
-
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-
-	if (isset($_POST['subnet'])) {
-		$_POST['subnet'] = trim($_POST['subnet']);
-		if (!is_ipaddr($_POST['subnet']))
-			$input_errors[] = gettext("A valid IP address must be specified.");
-		else {
-			if ($_POST['mode'] == 'carp') {
-				$ignore_if = $_POST['interface']."_vip{$_POST['vhid']}";
-			} else {
-				$ignore_if = $_POST['interface'];
-			}
-
-			if (is_ipaddr_configured($_POST['subnet'], $ignore_if)) {
-				$input_errors[] = gettext("This IP address is being used by another interface or VIP.");
-			}
-
-			unset($ignore_if);
-		}
-	}
-
-	$natiflist = get_configured_interface_with_descr();
-	foreach ($natiflist as $natif => $natdescr) {
-		if ($_POST['interface'] == $natif && (empty($config['interfaces'][$natif]['ipaddr']) && empty($config['interfaces'][$natif]['ipaddrv6'])))
-			$input_errors[] = gettext("The interface chosen for the VIP has no IPv4 or IPv6 address configured so it cannot be used as a parent for the VIP.");
-	}
-
-	/* ipalias and carp should not use network or broadcast address */
-	if ($_POST['mode'] == "ipalias" || $_POST['mode'] == "carp") {
-		if (is_ipaddrv4($_POST['subnet']) && $_POST['subnet_bits'] != "32") {
-			$network_addr = gen_subnet($_POST['subnet'], $_POST['subnet_bits']);
-			$broadcast_addr = gen_subnet_max($_POST['subnet'], $_POST['subnet_bits']);
-		} else if (is_ipaddrv6($_POST['subnet']) && $_POST['subnet_bits'] != "128" ) {
-			$network_addr = gen_subnetv6($_POST['subnet'], $_POST['subnet_bits']);
-			$broadcast_addr = gen_subnetv6_max($_POST['subnet'], $_POST['subnet_bits']);
-		}
-
-		if (isset($network_addr) && $_POST['subnet'] == $network_addr)
-			$input_errors[] = gettext("You cannot use the network address for this VIP");
-		else if (isset($broadcast_addr) && $_POST['subnet'] == $broadcast_addr)
-			$input_errors[] = gettext("You cannot use the broadcast address for this VIP");
-	}
-
-	/* make sure new ip is within the subnet of a valid ip
-	 * on one of our interfaces (wan, lan optX)
-	 */
-	if ($_POST['mode'] == 'carp') {
-		/* verify against reusage of vhids */
-		$idtracker = 0;
-		foreach($config['virtualip']['vip'] as $vip) {
-			if($vip['vhid'] == $_POST['vhid'] && $vip['interface'] == $_POST['interface'] && $idtracker <> $id)
-				$input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$_POST['vhid'], convert_friendly_interface_to_friendly_descr($_POST['interface']));
-			$idtracker++;
-		}
-		if (empty($_POST['password']))
-			$input_errors[] = gettext("You must specify a CARP password that is shared between the two VHID members.");
-
-		if (is_ipaddrv4($_POST['subnet'])) {
-			$parent_ip = get_interface_ip($_POST['interface']);
-			$parent_sn = get_interface_subnet($_POST['interface']);
-			$subnet = gen_subnet($parent_ip, $parent_sn);
-		} else if (is_ipaddrv6($_POST['subnet'])) {
-			$parent_ip = get_interface_ipv6($_POST['interface']);
-			$parent_sn = get_interface_subnetv6($_POST['interface']);
-			$subnet = gen_subnetv6($parent_ip, $parent_sn);
-		}
-
-		if (isset($parent_ip) && !ip_in_subnet($_POST['subnet'], "{$subnet}/{$parent_sn}") && !ip_in_interface_alias_subnet($_POST['interface'], $_POST['subnet'])) {
-			$cannot_find = $_POST['subnet'] . "/" . $_POST['subnet_bits'] ;
-			$input_errors[] = sprintf(gettext("Sorry, we could not locate an interface with a matching subnet for %s.  Please add an IP alias in this subnet on this interface."),$cannot_find);
-		}
-
-		if ($_POST['interface'] == "lo0")
-			$input_errors[] = gettext("For this type of vip localhost is not allowed.");
-	} else if ($_POST['mode'] != 'ipalias' && $_POST['interface'] == "lo0")
-		$input_errors[] = gettext("For this type of vip localhost is not allowed.");
-
-	if (!$input_errors) {
-		$vipent = array();
-
-		$vipent['mode'] = $_POST['mode'];
-		$vipent['interface'] = $_POST['interface'];
-
-		/* ProxyARP specific fields */
-		if ($_POST['mode'] === "proxyarp") {
-			if ($_POST['type'] == "range") {
-				$vipent['range']['from'] = $_POST['range_from'];
-				$vipent['range']['to'] = $_POST['range_to'];
-
-			}
-			$vipent['noexpand'] = isset($_POST['noexpand']);
-		}
-
-		/* CARP specific fields */
-		if ($_POST['mode'] === "carp") {
-			$vipent['vhid'] = $_POST['vhid'];
-			$vipent['advskew'] = $_POST['advskew'];
-			$vipent['advbase'] = $_POST['advbase'];
-			$vipent['password'] = $_POST['password'];
-		}
-
-		/* Common fields */
-		$vipent['descr'] = $_POST['descr'];
-		if (isset($_POST['type']))
-			$vipent['type'] = $_POST['type'];
-		else
-			$vipent['type'] = "single";
-
-		if ($vipent['type'] == "single" || $vipent['type'] == "network") {
-			if (!isset($_POST['subnet_bits'])) {
-				$vipent['subnet_bits'] = "32";
-			} else {
-				$vipent['subnet_bits'] = $_POST['subnet_bits'];
-			}
-			$vipent['subnet'] = $_POST['subnet'];
-		}
-
-		if (!isset($id))
-			$id = count($a_vip);
-		if (file_exists('/tmp/.firewall_virtual_ip.apply')) {
-			$toapplylist = unserialize(file_get_contents('/tmp/.firewall_virtual_ip.apply'));
-		} else {
-			$toapplylist = array();
-		}
-
-		$toapplylist[$id] = $a_vip[$id];
-		if (!empty($a_vip[$id])) {
-			/* modify all virtual IP rules with this address */
-			for ($i = 0; isset($config['nat']['rule'][$i]); $i++) {
-				if ($config['nat']['rule'][$i]['destination']['address'] == $a_vip[$id]['subnet'])
-					$config['nat']['rule'][$i]['destination']['address'] = $vipent['subnet'];
-			}
-		}
-		$a_vip[$id] = $vipent;
-
-		if (write_config()) {
-			mark_subsystem_dirty('vip');
-			file_put_contents('/tmp/.firewall_virtual_ip.apply', serialize($toapplylist));
-		}
-		header("Location: firewall_virtual_ip.php");
-		exit;
-	}
-}
-
+legacy_html_escape_form_data($pconfig);
 $pgtitle = array(gettext("Firewall"),gettext("Virtual IP Address"),gettext("Edit"));
 include("head.inc");
-
 ?>
 
 <body>
-	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
+  <script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
 
-<?php include("fbegin.inc"); ?>
-
-	<script type="text/javascript">
-//<![CDATA[
-function get_radio_value(obj)
-{
-        for (i = 0; i < obj.length; i++) {
-                if (obj[i].checked)
-                        return obj[i].value;
-        }
-        return null;
-}
-function set_note(noteMessage){
-	var note = document.getElementById("typenote");
-	if (note.firstChild != null)
-		note.removeChild(note.firstChild);
-	if (noteMessage)
-		note.appendChild(noteMessage);
-}
-function enable_change() {
-	var carpnote     = document.createTextNode("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
-	var proxyarpnote = document.createTextNode("<?=gettext("This is a CIDR block of proxy ARP addresses.");?>");
-	var ipaliasnote  = document.createTextNode("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
-
-	$mode = get_radio_value(document.iform.mode);
-
-	document.iform.password.disabled = $mode != "carp";
-	document.iform.vhid.disabled     = $mode != "carp";
-	document.iform.advskew.disabled  = $mode != "carp";
-	document.iform.advbase.disabled  = $mode != "carp";
-	document.iform.type.disabled     = $mode in {"carp":1,"ipalias":1};
-
-	if ($mode in {"carp":1,"ipalias":1})
-		document.iform.type.selectedIndex = 0;// single-adress
-	switch($mode)
-	{
-		case "carp"    : set_note(carpnote);		break;
-		case "ipalias" : set_note(ipaliasnote);		break;
-		case "proxyarp": set_note(proxyarpnote);	break;
-		default: set_note(undefined);
-	}
-	typesel_change();
-}
-
-function typesel_change() {
-	switch (document.iform.type.selectedIndex) {
-	case 0: // single
-		document.iform.subnet.disabled = 0;
-		document.iform.subnet_bits.disabled = (get_radio_value(document.iform.mode) == "proxyarp") || (get_radio_value(document.iform.mode) == "other");
-		document.iform.noexpand.disabled = 1;
-		jQuery('#noexpandrow').css('display','none');
-		break;
-	case 1: // network
-		document.iform.subnet.disabled = 0;
-		document.iform.subnet_bits.disabled = 0;
-		document.iform.noexpand.disabled = 0;
-		jQuery('#noexpandrow').css('display','');
-		//document.iform.range_from.disabled = 1;
-		//document.iform.range_to.disabled = 1;
-		break;
-	case 2: // range
-		document.iform.subnet.disabled = 1;
-		document.iform.subnet_bits.disabled = 1;
-		document.iform.noexpand.disabled = 1;
-		jQuery('#noexpandrow').css('display','none');
-		//document.iform.range_from.disabled = 0;
-		//document.iform.range_to.disabled = 0;
-		break;
-	case 3: // IP alias
-		document.iform.subnet.disabled = 1;
-		document.iform.subnet_bits.disabled = 0;
-		document.iform.noexpand.disabled = 1;
-		jQuery('#noexpandrow').css('display','none');
-		//document.iform.range_from.disabled = 0;
-		//document.iform.range_to.disabled = 0;
-		break;
-	}
-}
-//]]>
-</script>
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-				<div id="inputerrors"></div>
-
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-					 <header class="content-box-head container-fluid">
-				        <h3><?=gettext("Edit Virtual IP");?></h3>
-				    </header>
-
-				    <div class="content-box-main">
-
-						<form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">
-						                <tr>
-										  <td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
-						                  <td width="78%" class="vtable">
-											<input name="mode" type="radio" onclick="enable_change()" value="ipalias"
-											<?php if ($pconfig['mode'] == "ipalias") echo "checked=\"checked\"";?> /> <?=gettext("IP Alias");?>
-											<input name="mode" type="radio" onclick="enable_change()" value="carp"
-											<?php if ($pconfig['mode'] == "carp") echo "checked=\"checked\"";?> /> <?=gettext("CARP"); ?>
-						                    <input name="mode" type="radio" onclick="enable_change()" value="proxyarp"
-											<?php if ($pconfig['mode'] == "proxyarp") echo "checked=\"checked\"";?> /> <?=gettext("Proxy ARP"); ?>
-											<input name="mode" type="radio" onclick="enable_change()" value="other"
-											<?php if ($pconfig['mode'] == "other") echo "checked=\"checked\"";?> /> <?=gettext("Other");?>
-										  </td>
-										</tr>
-										<tr>
-										  <td width="22%" valign="top" class="vncellreq"><?=gettext("Interface");?></td>
-										  <td width="78%" class="vtable">
-											<select name="interface" class="form-control">
-											<?php
-											$interfaces = get_configured_interface_with_descr(false, true);
-											$interfaces['lo0'] = "Localhost";
-											foreach ($interfaces as $iface => $ifacename): ?>
-												<option value="<?=$iface;?>" <?php if ($iface == $pconfig['interface']) echo "selected=\"selected\""; ?>>
-												<?=htmlspecialchars($ifacename);?>
-												</option>
-											  <?php endforeach; ?>
-											</select>
-										  </td>
-						                </tr>
-						                <tr>
-						                  <td valign="top" class="vncellreq"><?=gettext("IP Address(es)");?></td>
-						                  <td class="vtable">
-						                    <table border="0" cellspacing="0" cellpadding="0" summary="ip addresses">
-						                      <tr>
-						                        <td><?=gettext("Type:");?>&nbsp;&nbsp;</td>
-						                        <td><select name="type" class="form-control" onchange="typesel_change()">
-						                            <option value="single" <?php if ((!$pconfig['range'] && $pconfig['subnet_bits'] == 32) || (!isset($pconfig['subnet']))) echo "selected=\"selected\""; ?>>
-						                            <?=gettext("Single address");?></option>
-						                            <option value="network" <?php if (!$pconfig['range'] && $pconfig['subnet_bits'] != 32 && isset($pconfig['subnet'])) echo "selected=\"selected\""; ?>>
-						                            <?=gettext("Network");?></option>
-						                            <!-- XXX: Billm, don't let anyone choose this until NAT configuration screens are ready for it <option value="range" <?php if ($pconfig['range']) echo "selected=\"selected\""; ?>>
-						                            Range</option> -->
-						                          </select></td>
-						                      </tr>
-						                      <tr>
-						                        <td><?=gettext("Address:");?>&nbsp;&nbsp;</td>
-						                        <td><input name="subnet" type="text" class="form-control unknown ipv4v6" id="subnet" size="28" value="<?=htmlspecialchars($pconfig['subnet']);?>" />
-						                          /<select name="subnet_bits" class="form-control ipv4v6" id="select">
-						                            <?php for ($i = 128; $i >= 1; $i--): ?>
-						                            <option value="<?=$i;?>" <?php if ($i == $pconfig['subnet_bits']) echo "selected=\"selected\""; ?>>
-						                            <?=$i;?>
-						                      </option>
-						                            <?php endfor; ?>
-						                      </select> <i id="typenote"></i>
-												</td>
-						                      </tr>
-						                      <tr id="noexpandrow">
-						                        <td><?=gettext("Expansion:");?>&nbsp;&nbsp;</td>
-						                        <td><input name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?php echo (isset($pconfig['noexpand'])) ? "checked=\"checked\"" : "" ; ?> />
-										Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.)
-										</td>
-						                      </tr>
-								      <?php
-								      /*
-						                        <tr>
-						                         <td>Range:&nbsp;&nbsp;</td>
-						                          <td><input name="range_from" type="text" class="form-control unknown" id="range_from" size="28" value="<?=htmlspecialchars($pconfig['range']['from']);?>" />
-						-
-						                          <input name="range_to" type="text" class="form-control unknown" id="range_to" size="28" value="<?=htmlspecialchars($pconfig['range']['to']);?>" />
-						                          </td>
-									 </tr>
-								       */
-									?>
-						                    </table>
-						                  </td>
-						                </tr>
-										<tr valign="top">
-										  <td width="22%" class="vncellreq"><?=gettext("Virtual IP Password");?></td>
-										  <td class="vtable"><input type='password'  name='password' value="<?=htmlspecialchars($pconfig['password']);?>" />
-											<br /><?=gettext("Enter the VHID group password.");?>
-										  </td>
-										</tr>
-										<tr valign="top">
-										  <td width="22%" class="vncellreq"><?=gettext("VHID Group");?></td>
-										  <td class="vtable"><select id='vhid' name='vhid'>
-						                            <?php for ($i = 1; $i <= 255; $i++): ?>
-						                            <option value="<?=$i;?>" <?php if ($i == $pconfig['vhid']) echo "selected=\"selected\""; ?>>
-						                            <?=$i;?>
-						                      </option>
-						                            <?php endfor; ?>
-						                      </select>
-											<br /><?=gettext("Enter the VHID group that the machines will share");?>
-										  </td>
-										</tr>
-										<tr valign="top">
-										  <td width="22%" class="vncellreq"><?=gettext("Advertising Frequency");?></td>
-										  <td class="vtable">
-											 Base: <select id='advbase' name='advbase'>
-						                            <?php for ($i = 1; $i <= 254; $i++): ?>
-										<option value="<?=$i;?>" <?php if ($i == $pconfig['advbase']) echo "selected=\"selected\""; ?>>
-						                            <?=$i;?>
-											</option>
-						                            <?php endfor; ?>
-										</select>
-											Skew: <select id='advskew' name='advskew'>
-						                            <?php for ($i = 0; $i <= 254; $i++): ?>
-										<option value="<?=$i;?>" <?php if ($i == $pconfig['advskew']) echo "selected=\"selected\""; ?>>
-						                            <?=$i;?>
-											</option>
-						                            <?php endfor; ?>
-										</select>
-										<br /><br />
-										<?=gettext("The frequency that this machine will advertise.  0 means usually master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
-										  </td>
-										</tr>
-						                <tr>
-						                  <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-						                  <td width="78%" class="vtable">
-						                    <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-						                    <br /> <span class="vexpl"><?=gettext("You may enter a description here for your reference (not parsed).");?></span></td>
-						                </tr>
-						                <tr>
-						                  <td width="22%" valign="top">&nbsp;</td>
-						                  <td width="78%">
-						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-						                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-						                    <?php if (isset($id) && $a_vip[$id]): ?>
-						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-						                    <?php endif; ?>
-						                  </td>
-						                </tr>
-			                        </table>
-		                        </div>
-		                        <div class="container-fluid">
-		                        <p class="vexpl">
-						<span class="text-danger">
-							<strong><?=gettext("Note:");?><br /></strong>
-						</span>
-						<?=gettext("Proxy ARP and Other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
-						<br /><br /><?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
-						</p>
-		                        </div>
-						</form>
-				    </div>
-				</div>
-			    </section>
-			</div>
-		</div>
-	</section>
+<?php include("fbegin.inc");?>
 
 <script type="text/javascript">
-//<![CDATA[
-enable_change();
-//]]>
+$( document ).ready(function() {
+    $("#mode").change(function(){
+        //$("#subnet").attr('disabled', true);
+        $("#type").attr('disabled', true);
+        $("#subnet_bits").attr('disabled', true);
+        $("#noexpand").attr('disabled', true);
+        $("#password").attr('disabled', true);
+        $("#vhid").attr('disabled', true);
+        $("#advskew").attr('disabled', true);
+        $("#advbase").attr('disabled', true);
+        $("#noexpand").attr('disabled', true);
+        $("#noexpandrow").addClass("hidden");
+
+        switch ($(this).val()) {
+            case "ipalias":
+              $("#type").prop("selectedIndex",0);
+              $("#typenote").html("<?=gettext("Please provide a single IP address");?>");
+              break;
+            case "carp":
+              $("#type").prop("selectedIndex",0);
+              $("#subnet_bits").attr('disabled', false);
+              $("#password").attr('disabled', false);
+              $("#vhid").attr('disabled', false);
+              $("#advskew").attr('disabled', false);
+              $("#advbase").attr('disabled', false);
+              $("#typenote").html("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
+              break;
+            case "proxyarp":
+              $("#type").attr('disabled', false);
+              $("#subnet_bits").attr('disabled', false);
+              $("#noexpand").attr('disabled', false);
+              $("#noexpandrow").removeClass("hidden");
+              $("#typenote").html("<?=gettext("This is a CIDR block of proxy ARP addresses.");?>");
+              break;
+            case "other":
+              $("#type").attr('disabled', false);
+              $("#subnet_bits").attr('disabled', false);
+              $("#typenote").html("<?=gettext("This must be the network's subnet mask. It does not specify a CIDR range.");?>");
+              break;
+        }
+        // refresh selectpickers
+        setTimeout(function(){
+            $('.selectpicker').selectpicker('refresh');
+          }, 100);
+    });
+
+    // IPv4 address, fix dstmask
+    $("#subnet").change(function(){
+      if ( $(this).val().indexOf('.') > -1 && $("#subnet_bits").val() > 32) {
+          $("#subnet_bits").val("32");
+          $('#subnet_bits').selectpicker('refresh');
+      }
+    });
+
+    // toggle initial mode change
+    $("#mode").change();
+});
+
 </script>
+
+</script>
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <section class="col-xs-12">
+          <div class="content-box">
+            <form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead></thead>
+                  <tbody>
+                    <tr>
+                      <td width="22%"><strong><?=gettext("Edit Virtual IP");?></strong></td>
+                      <td  width="78%" align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type");?></td>
+                      <td>
+                        <select id="mode" name="mode" class="selectpicker" data-width="auto" data-live-search="true">
+                          <option value="ipalias" <?=$pconfig['mode'] == "ipalias" ? "selected=\"selected\"" : ""; ?>><?=gettext("IP Alias");?></option>
+                          <option value="carp" <?=$pconfig['mode'] == "carp" ? "selected=\"selected\"" : ""; ?>><?=gettext("carp");?></option>
+                          <option value="proxyarp" <?=$pconfig['mode'] == "proxyarp" ? "selected=\"selected\"" : ""; ?>><?=gettext("Proxy ARP");?></option>
+                          <option value="other" <?=$pconfig['mode'] == "other" ? "selected=\"selected\"" : ""; ?>><?=gettext("Other");?></option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface");?></td>
+                      <td>
+                        <select name="interface" class="selectpicker" data-width="auto">
+<?php
+                        $interfaces = get_configured_interface_with_descr(false, true);
+                        $interfaces['lo0'] = "Localhost";
+                        foreach ($interfaces as $iface => $ifacename): ?>
+                          <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
+                            <?=htmlspecialchars($ifacename);?>
+                          </option>
+<?php
+                        endforeach; ?>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                        <td><?=gettext("IP Address(es)");?></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type:");?></td>
+                        <td>
+                          <select name="type" class="selectpicker" data-width="auto" id="type">
+                              <option value="single" <?=(!empty($pconfig['subnet_bits']) && $pconfig['subnet_bits'] == 32) || !isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
+                                <?=gettext("Single address");?>
+                              </option>
+                              <option value="network" <?=empty($pconfig['subnet_bits']) || $pconfig['subnet_bits'] != 32 || isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
+                                <?=gettext("Network");?></option>
+                              </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address:");?></td>
+                        <td>
+                          <table border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                              <td width="348px">
+                                <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
+                              </td>
+                              <td >
+                                <select name="subnet_bits"  class="selectpicker" data-size="10"  data-width="auto" id="subnet_bits">
+<?php
+                                  for ($i = 128; $i >= 1; $i--): ?>
+                                    <option value="<?=$i;?>" <?php if ($i == $pconfig['subnet_bits']) echo "selected=\"selected\""; ?>>
+                                      <?=$i;?>
+                                    </option>
+<?php
+                                  endfor; ?>
+                                </select>
+                              </td>
+                            </tr>
+                          </table>
+                          <div class="hidden" for="help_for_address">
+                              <i id="typenote"></i>
+                          </div>
+                        </td>
+                    </tr>
+                    <tr id="noexpandrow">
+                        <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion:");?> </td>
+                        <td>
+                            <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
+                            <div class="hidden" for="help_for_noexpand">
+                              <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>
+                            </div>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Virtual IP Password");?></td>
+                      <td>
+                        <input type='password'  name='password' id="password" value="<?=$pconfig['password'];?>" />
+                        <div class="hidden" for="help_for_password">
+                          <?=gettext("Enter the VHID group password.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_vhid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VHID Group");?></td>
+                      <td>
+                        <select id='vhid' name='vhid' class="selectpicker" data-size="10" data-width="auto">
+                          <?php for ($i = 1; $i <= 255; $i++): ?>
+                            <option value="<?=$i;?>" <?= $i == $pconfig['vhid'] ?  "selected=\"selected\"" : ""; ?>>
+                              <?=$i;?>
+                            </option>
+                          <?php endfor; ?>
+                        </select>
+                        <div class="hidden" for="help_for_vhid">
+                          <?=gettext("Enter the VHID group that the machines will share");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_adv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advertising Frequency");?></td>
+                      <td>
+                        <?=gettext("Base");?>:
+                        <select id='advbase' name='advbase' class="selectpicker" data-size="10" data-width="auto">
+                          <?php for ($i = 1; $i <= 254; $i++): ?>
+                            <option value="<?=$i;?>" <?=$i == $pconfig['advbase'] ? "selected=\"selected\"" :""; ?>>
+                              <?=$i;?>
+                            </option>
+                          <?php endfor; ?>
+                        </select>
+                        <?=gettext("Skew");?>:
+                        <select id='advskew' name='advskew' class="selectpicker" data-size="10" data-width="auto">
+                          <?php for ($i = 0; $i <= 254; $i++): ?>
+                            <option value="<?=$i;?>" <?php if ($i == $pconfig['advskew']) echo "selected=\"selected\""; ?>>
+                              <?=$i;?>
+                            </option>
+                          <?php endfor; ?>
+                        </select>
+
+                        <div class="hidden" for="help_for_adv">
+                          <br/>
+                          <?=gettext("The frequency that this machine will advertise.  0 means usually master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                      <td>
+                        <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                        <div class="hidden" for="help_for_adv">
+                          <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td>
+                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_virtual_ip.php');?>'" />
+                        <?php if (isset($id) && $a_vip[$id]): ?>
+                          <input name="id" type="hidden" value="<?=$id;?>" />
+                        <?php endif; ?>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </form>
+            <div class="container-fluid">
+              <span class="text-danger">
+                <strong><?=gettext("Note:");?><br /></strong>
+              </span>
+              <?=gettext("Proxy ARP and Other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
+              <br /><br />
+              <?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
