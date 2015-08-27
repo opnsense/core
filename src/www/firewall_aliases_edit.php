@@ -34,10 +34,10 @@ require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 
 if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-        $config['aliases'] = array();
+    $config['aliases'] = array();
 }
 if (!isset($config['aliases']['alias'])) {
-  $config['aliases']['alias'] = array();
+    $config['aliases']['alias'] = array();
 }
 $a_aliases = &$config['aliases']['alias'];
 
@@ -46,15 +46,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_aliases[$_GET['id']])) {
         $id = $_GET['id'];
         foreach (array("name","detail","address","type","descr","updatefreq","aliasurl","url") as $fieldname) {
-          if (isset($a_aliases[$id][$fieldname])) {
-            $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
-          } else {
-            $pconfig[$fieldname] = null;
-          }
+            if (isset($a_aliases[$id][$fieldname])) {
+                $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
+            } else {
+                $pconfig[$fieldname] = null;
+            }
         }
         // convert to array if only one is provided
         if (!empty($pconfig['aliasurl']) && !is_array($pconfig['aliasurl'])) {
-          $pconfig['aliasurl'] = array($pconfig['aliasurl']);
+            $pconfig['aliasurl'] = array($pconfig['aliasurl']);
         }
     } elseif (isset($_GET['name'])) {
         // search alias by name
@@ -66,17 +66,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         // initialize form fields, when not found present empty form
         foreach (array("name","detail","address","type","descr","updatefreq","aliasurl","url") as $fieldname) {
-          if (isset($id) && isset($a_aliases[$id][$fieldname])) {
-            $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
-          } else {
-            $pconfig[$fieldname] = null;
-          }
+            if (isset($id) && isset($a_aliases[$id][$fieldname])) {
+                $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
+            } else {
+                $pconfig[$fieldname] = null;
+            }
         }
     } else {
         // init empty
         $init_fields = array("name","detail","address","type","descr","updatefreq","url");
         foreach ($init_fields as $fieldname) {
-          $pconfig[$fieldname] = null;
+            $pconfig[$fieldname] = null;
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -105,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['detail'] = implode('||', $pconfig['detail']);
 
-
     if (isset($pconfig['submit'])) {
         $input_errors = array();
         // validate data
@@ -116,21 +115,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // Add all Load balance names to reserved_keywords
         if (is_array($config['load_balancer']['lbpool']))
-          foreach ($config['load_balancer']['lbpool'] as $lbpool)
-            $reserved_keywords[] = $lbpool['name'];
+            foreach ($config['load_balancer']['lbpool'] as $lbpool)
+                $reserved_keywords[] = $lbpool['name'];
 
         $reserved_ifs = get_configured_interface_list(false, true);
         $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
         foreach($reserved_keywords as $rk)
-          if($rk == $pconfig['name'])
-            $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
+            if($rk == $pconfig['name'])
+                $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
 
         /* check for name interface description conflicts */
         foreach($config['interfaces'] as $interface) {
-          if($interface['descr'] == $pconfig['name']) {
-            $input_errors[] = gettext("An interface description with this name already exists.");
-            break;
-          }
+            if($interface['descr'] == $pconfig['name']) {
+                $input_errors[] = gettext("An interface description with this name already exists.");
+                break;
+            }
         }
         if ( is_validaliasname($pconfig['name']) !== true) {
             $input_errors[] = gettext("The alias name must be less than 32 characters long and may only consist of the characters") . " a-z, A-Z, 0-9, _.";
@@ -142,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         /* check for name conflicts */
         if (empty($a_aliases[$id])) {
-          foreach ($a_aliases as $alias) {
-            if ($alias['name'] == $_POST['name']) {
-              $input_errors[] = gettext("An alias with this name already exists.");
-              break;
+            foreach ($a_aliases as $alias) {
+                if ($alias['name'] == $_POST['name']) {
+                    $input_errors[] = gettext("An alias with this name already exists.");
+                    break;
+                }
             }
-          }
         }
 
         /* user may not change type */
