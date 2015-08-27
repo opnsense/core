@@ -2000,7 +2000,7 @@ function interface_proxyarp_configure($interface = '')
 				if (!empty($interface) && $interface != $proxyif)
 					continue;
 
-				if (!is_array($paa[$proxyif]))
+				if (!isset($paa[$proxyif]) || !is_array($paa[$proxyif]))
 					$paa[$proxyif] = array();
 
 				$paa[$proxyif][] = $vipent;
@@ -2009,7 +2009,7 @@ function interface_proxyarp_configure($interface = '')
 	}
 
 	if (!empty($interface)) {
-		if (is_array($paa[$interface])) {
+		if (isset($paa[$interface]) && is_array($paa[$interface])) {
 			$paaifip = get_interface_ip($interface);
 			if (!is_ipaddr($paaifip))
 				return;
