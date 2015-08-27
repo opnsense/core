@@ -62,7 +62,7 @@ function formInterfaces() {
         $interfaces['pptp'] = "PPTP VPN";
 
     if (is_pppoe_server_enabled())
-      $interfaces['pppoe'] = "PPPoE VPN";
+        $interfaces['pppoe'] = "PPPoE VPN";
 
     /* add ipsec interfaces */
     if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
@@ -153,8 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // validate input
     foreach ($pconfig as $key => $value) {
-      if($value <> htmlentities($value))
-        $input_errors[] = sprintf(gettext("Invalid characters detected (%s).  Please remove invalid characters and save again."),htmlentities($value));
+        if($value <> htmlentities($value))
+            $input_errors[] = sprintf(gettext("Invalid characters detected (%s).  Please remove invalid characters and save again."),htmlentities($value));
     }
 
     /* input validation */
