@@ -30,10 +30,10 @@
 require_once("guiconfig.inc");
 
 if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-        $config['aliases'] = array();
+    $config['aliases'] = array();
 }
 if (!isset($config['aliases']['alias'])) {
-  $config['aliases']['alias'] = array();
+    $config['aliases']['alias'] = array();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -71,73 +71,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
     /* Check for reserved keyword names */
     foreach($reserved_keywords as $rk)
-      if ($rk == $pconfig['name'])
-        $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
+        if ($rk == $pconfig['name'])
+            $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
 
     /* check for name interface description conflicts */
     foreach($config['interfaces'] as $interface) {
-      if($interface['descr'] == $pconfig['name']) {
-        $input_errors[] = gettext("An interface description with this name already exists.");
-        break;
-      }
+        if($interface['descr'] == $pconfig['name']) {
+            $input_errors[] = gettext("An interface description with this name already exists.");
+            break;
+        }
     }
 
     $imported_ips = array();
     $imported_descs = array();
     foreach (explode("\n", $pconfig['aliasimport']) as $impline) {
-      $implinea = explode(" ",trim($impline),2);
-      $impip = trim($implinea[0]);
-      if (!empty($implinea[1])) {
-          // trim and truncate description to max 200 characters
-          $impdesc = substr(trim($implinea[1]),0, 200);
-      } else {
-          // no description given, use alias description
-          $impdesc = trim(str_replace('|',' ' , $pconfig['descr']));
-      }
+        $implinea = explode(" ",trim($impline),2);
+        $impip = trim($implinea[0]);
+        if (!empty($implinea[1])) {
+            // trim and truncate description to max 200 characters
+            $impdesc = substr(trim($implinea[1]),0, 200);
+        } else {
+            // no description given, use alias description
+            $impdesc = trim(str_replace('|',' ' , $pconfig['descr']));
+        }
 
-      if (strpos($impip,'-') !== false) {
-          // ip range provided
-          $ipaddr1 = explode('-', $impip)[0];
-          $ipaddr2 = explode('-', $impip)[1];
-          if (!is_ipaddr($ipaddr1)) {
-              $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $ipaddr1);
-          } elseif (!is_ipaddr($ipaddr2)) {
-              $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $ipaddr2);
-          } else {
-              foreach (ip_range_to_subnet_array($ipaddr1, $ipaddr2) as $network) {
-                $imported_ips[] = $network;
+        if (strpos($impip,'-') !== false) {
+            // ip range provided
+            $ipaddr1 = explode('-', $impip)[0];
+            $ipaddr2 = explode('-', $impip)[1];
+            if (!is_ipaddr($ipaddr1)) {
+                $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $ipaddr1);
+            } elseif (!is_ipaddr($ipaddr2)) {
+                $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $ipaddr2);
+            } else {
+                foreach (ip_range_to_subnet_array($ipaddr1, $ipaddr2) as $network) {
+                    $imported_ips[] = $network;
+                    $imported_descs[] = $impdesc;
+                }
+            }
+        } else {
+            // single ip or network
+            if (!is_ipaddr($impip) && !is_subnet($impip) && !is_hostname($impip) && !empty($impip)) {
+                $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $impip);
+            } else {
+                $imported_ips[] = $impip;
                 $imported_descs[] = $impdesc;
-              }
-          }
-      } else {
-          // single ip or network
-          if (!is_ipaddr($impip) && !is_subnet($impip) && !is_hostname($impip) && !empty($impip)) {
-              $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $impip);
-          } else {
-            $imported_ips[] = $impip;
-            $imported_descs[] = $impdesc;
-          }
-      }
+            }
+        }
     }
 
     if (count($input_errors) == 0) {
-      // create output structure and serialize to config
-      $alias = array();
-      $alias['address'] = implode(" ", $imported_ips);
-      $alias['detail'] = implode("||", $imported_descs);
-      $alias['name'] = $pconfig['name'];
-      $alias['type'] = "network";
-      $alias['descr'] = $pconfig['descr'];
-      $config['aliases']['alias'][] = $alias;
+        // create output structure and serialize to config
+        $alias = array();
+        $alias['address'] = implode(" ", $imported_ips);
+        $alias['detail'] = implode("||", $imported_descs);
+        $alias['name'] = $pconfig['name'];
+        $alias['type'] = "network";
+        $alias['descr'] = $pconfig['descr'];
+        $config['aliases']['alias'][] = $alias;
 
-      // Sort list
-      $config['aliases']['alias'] = msort($config['aliases']['alias'], "name");
+        // Sort list
+        $config['aliases']['alias'] = msort($config['aliases']['alias'], "name");
 
-      if (write_config()) {
-          mark_subsystem_dirty('aliases');
-      }
-      redirectHeader("firewall_aliases.php");
-      exit;
+        if (write_config()) {
+            mark_subsystem_dirty('aliases');
+        }
+        redirectHeader("firewall_aliases.php");
+        exit;
     }
 }
 
