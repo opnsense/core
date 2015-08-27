@@ -9,93 +9,94 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-08-25 07:47+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2015-08-25 21:53+0200\n"
+"Last-Translator: Nasantogtokh Amarsaikhan\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: mn\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 #
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
 msgstr ""
+"'Статус: Captive portal: Эрх олгох' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
-msgstr ""
+msgstr "'Статус: IPsec: SAD' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 37
 msgid "Allow access to the 'VPN: PPTP: Users' page."
-msgstr ""
+msgstr "'VPN: PPTP: хэрэглэгчид' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 38
 msgid "Allow access to the 'VPN: IPsec: Pre-Shared Keys List' page."
-msgstr ""
+msgstr "'VPN: IPsec: Pre-Shared түлхүүрүүдийн жагсаалт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 39
 msgid "Allow access to the 'System: Authentication Servers' page."
-msgstr ""
+msgstr "'Систем: Баталгаажуулалтын Серверүүд' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 40
 msgid "Allow access to the 'Diagnostics: States Summary' page."
-msgstr ""
+msgstr "'Оношилгоо: Нэгдтэн дүгнэсэн статус' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 41
 msgid "Allow access to the 'Services: Wake on LAN' page."
-msgstr ""
+msgstr "'Сервисүүд: Wake on LAN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 42
 msgid "Allow access to the 'Status: IPsec' page."
-msgstr ""
+msgstr "'Статус: IPsec' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 43
 msgid "Allow access to the 'VPN: PPTP: User: Edit' page."
-msgstr ""
+msgstr "'VPN: PPTP: Хэрэглэгч: Хянан засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 44
 msgid "Show all items on help menu"
-msgstr ""
+msgstr "Тусламжийн цэсэн дээр бүх функцүүдийг харуулах"
 #
 # File: lang/dynamic/helpers/acl.php, line: 45
 msgid "Allow access to the 'System: Firmware: Settings' page."
-msgstr ""
+msgstr "'Систем: Firmware: Тохиргоо' хуудас руу хандар эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 46
 msgid "Allow access to the 'System: User Manager: Add Privileges' page."
-msgstr ""
+msgstr "'Систем: Хэрэглэгчийг удирдах: Давуу эрх нэмэх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 47
 msgid "Allow access to the 'Services: NTP' page."
-msgstr ""
+msgstr "'Сервисүүд: NTP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 48
 msgid "Allow access to the 'VPN: OpenVPN: Client Specific Override' page."
-msgstr ""
+msgstr "'VPN: OpenVPN: Client Specific Override' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 49
 msgid "Allow access to the 'VPN: OpenVPN: Client' page."
-msgstr ""
+msgstr "'VPN: OpenVPN: Клиент' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 50
 msgid "Allow access to the 'Interfaces: Assign network ports' page."
-msgstr ""
+msgstr "'Интерфэйсүүд: Сүлжээний портуудыг зааж тохируулах' хуудас руу ханлах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 51
 msgid "Allow access to the 'Firewall: NAT: Port Forward' page."
-msgstr ""
+msgstr "'Галт хана: NAT: Порт Форвард' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 52
 msgid "Allow access to the 'Status: Captive portal: Vouchers' page."
-msgstr ""
+msgstr "'Статус: Captive portal: Нэвтрэх эрх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 53
 msgid "Create interface groups"
-msgstr ""
+msgstr "Интерфэйс бүлэг үүсгэх"
 #
 # File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Allow access to the 'Firewall: Traffic Shaper' page."
-msgstr ""
+msgstr "'Галт хана: Траффик хэлбэрт оруулагч' хуудас хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 55
 msgid "Allow access to the 'Interfaces: VLAN: Edit' page."
