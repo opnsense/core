@@ -14,10 +14,10 @@
         <Firmware url="/ui/core/firmware/"/>
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
         <Routing url="/system_gateways.php">
-		<Routes url="/system_routes.php"/>
-		<RoutesEdit url="/system_routes_edit.php*"/>
-		<GatewayGroups url="/system_gateway_groups.php"/>
-		<GatewayGroupsEdit url="/system_gateway_groups_edit.php*"/>
+            <Routes url="/system_routes.php"/>
+            <RoutesEdit url="/system_routes_edit.php*"/>
+            <GatewayGroups url="/system_gateway_groups.php"/>
+            <GatewayGroupsEdit url="/system_gateway_groups_edit.php*"/>
         </Routing>
         <Settings url="/system_general.php">
             <General VisibleName="General" url="/system_general.php"/>
@@ -74,11 +74,11 @@
             <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
         <Schedules url="/firewall_schedule.php">
-		<SchedulesEdit  url="/firewall_schedule_edit.php*"/>
+            <SchedulesEdit url="/firewall_schedule_edit.php*"/>
         </Schedules>
         <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper"/>
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php">
-		<VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
+            <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
     </Firewall>
 
@@ -94,8 +94,8 @@
         </CaptivePortal>
         <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
         <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
-		<DHCPServerTab url="/services_dhcp.php?if=*"/>
-		<DHCPServerEdit url="/services_dhcp_edit.php?*"/>
+            <DHCPServerTab url="/services_dhcp.php?if=*"/>
+            <DHCPServerEdit url="/services_dhcp_edit.php?*"/>
         </DHCPServer>
         <DHCPv6Relay VisibleName="DHCPv6 Relay" url="/services_dhcpv6_relay.php"/>
         <DHCPv6ServerRA VisibleName="DHCPv6 Server/RA" url="/services_dhcpv6.php">
@@ -114,7 +114,7 @@
             <DynamicDNSEdit url="/services_dyndns_edit.php"/>
         </DynamicDNS>
         <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php">
-		<IGMPProxyEdit url="/services_igmpproxy_edit.php"/>
+            <IGMPProxyEdit url="/services_igmpproxy_edit.php"/>
         </IGMPProxy>
         <LoadBalancer VisibleName="Load Balancer" url="/load_balancer_pool.php">
             <Edit url="/load_balancer_pool_edit.php"/>
@@ -124,27 +124,27 @@
             <Settings url="/load_balancer_setting.php"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php">
-		<GPS url="/services_ntpd_gps.php"/>
-		<PPS url="/services_ntpd_pps.php"/>
+            <GPS url="/services_ntpd_gps.php"/>
+            <PPS url="/services_ntpd_pps.php"/>
         </NTP>
         <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php">
-		<PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
-		<VPNPPPOE url="/vpn_pppoe.php"/>
+            <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
+            <VPNPPPOE url="/vpn_pppoe.php"/>
         </PPPoEServer>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
         <UPnP VisibleName="Universal Plug and Play" url="/services_upnp.php">
-		<UPnPEdit url="/services_upnp.php?*"/>
+            <UPnPEdit url="/services_upnp.php?*"/>
         </UPnP>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php">
-		<WoLEdit url="/services_wol_edit.php*"/>
+            <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
     </Services>
 
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
         <IPsec url="/vpn_ipsec.php">
-            <IPsecPhase1Edit  url="/vpn_ipsec_phase1.php*"/>
-            <IPsecPhase2Edit  url="/vpn_ipsec_phase2.php*"/>
+            <IPsecPhase1Edit url="/vpn_ipsec_phase1.php*"/>
+            <IPsecPhase2Edit url="/vpn_ipsec_phase2.php*"/>
             <MobileClients url="/vpn_ipsec_mobile.php"/>
             <Keys url="/vpn_ipsec_keys.php"/>
             <KeysEdit url="/vpn_ipsec_keys_edit.php"/>
@@ -170,14 +170,14 @@
 
     <Status order="6" cssClass="glyphicon glyphicon-tasks">
         <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php">
-		<CaptivePortalDetails url="/status_captiveportal.php?*"/>
+            <CaptivePortalDetails url="/status_captiveportal.php?*"/>
         </CaptivePortal>
         <CARP url="/carp_status.php"/>
         <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php">
-		<DHCPLeasesDetails  url="/status_dhcp_leases.php?*"/>
+            <DHCPLeasesDetails url="/status_dhcp_leases.php?*"/>
         </DHCPLeases>
         <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
-		<DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
+            <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
         <Gateways url="/status_gateways.php">
@@ -199,7 +199,7 @@
             <Settings url="/status_rrd_graph_settings.php"/>
         </RRDGraphs>
         <Services url="/status_services.php">
-		<ServicesActions url="/status_services.php?*"/>
+            <ServicesActions url="/status_services.php?*"/>
         </Services>
         <SystemLogs VisibleName="System Logs" url="/diag_logs.php">
             <System url="/diag_logs.php">
@@ -225,7 +225,7 @@
         </SystemLogs>
 
         <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php">
-		<TrafficGraphsDetails  url="/status_graph.php?*"/>
+            <TrafficGraphsDetails url="/status_graph.php?*"/>
         </TrafficGraphs>
         <UPnP VisibleName="Universal Plug and Play" url="/status_upnp.php"/>
     </Status>
@@ -249,13 +249,13 @@
         <Routes url="/diag_routes.php"/>
         <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
         <Sockets url="/diag_sockets.php">
-		<SocketsDetails url="/diag_sockets.php?*"/>
+            <SocketsDetails url="/diag_sockets.php?*"/>
         </Sockets>
         <States url="/diag_dump_states.php"/>
         <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
         <SystemActivity VisibleName="System Activity" url="/diag_system_activity.php"/>
         <Tables url="/diag_tables.php">
-                <TablesDetails url="/diag_tables.php*"/>
+            <TablesDetails url="/diag_tables.php*"/>
         </Tables>
         <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
         <Traceroute url="/diag_traceroute.php"/>
