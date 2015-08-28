@@ -526,12 +526,11 @@ function filter_generate_aliases()
 		}
 	}
 
-	$aliases .= "\n#SSH Lockout Table\n";
+	$aliases .= "\n# SSH Lockout Table\n";
 	$aliases .= "table <sshlockout> persist\n";
 	$aliases .= "table <webConfiguratorlockout> persist\n";
 
-	$aliases .= "#Snort tables\n";
-	$aliases .= "table <snort2c>\n";
+	$aliases .= "# Other tables\n";
 	$aliases .= "table <virusprot>\n";
 	touch('/usr/local/etc/bogons');
 	touch('/usr/local/etc/bogonsv6');
@@ -2679,10 +2678,6 @@ block {$log['block']} quick inet proto { tcp, udp } from any port = 0 to any
 block {$log['block']} quick inet proto { tcp, udp } from any to any port = 0
 block {$log['block']} quick inet6 proto { tcp, udp } from any port = 0 to any
 block {$log['block']} quick inet6 proto { tcp, udp } from any to any port = 0
-
-# Snort package
-block {$log['block']} quick from <snort2c> to any  label "Block snort2c hosts"
-block {$log['block']} quick from any to <snort2c>  label "Block snort2c hosts"
 
 EOD;
 

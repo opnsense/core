@@ -501,7 +501,8 @@ function upgrade_024_to_025() {
 	unset($config['system']['use_rrd_gateway']);
 }
 
-function upgrade_025_to_026() {
+function upgrade_025_to_026()
+{
 	global $config;
 	$cron_item = array();
 	$cron_item['minute'] = "0";
@@ -568,19 +569,7 @@ function upgrade_025_to_026() {
 	$cron_item['command'] = "/usr/local/sbin/expiretable -v -t 3600 virusprot";
 
 	$config['cron']['item'][] = $cron_item;
-
-	$cron_item = array();
-	$cron_item['minute'] = "*/60";
-	$cron_item['hour'] = "*";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/sbin/expiretable -t 1800 snort2c";
-
-	$config['cron']['item'][] = $cron_item;
 }
-
 
 function upgrade_028_to_029() {
 	global $config;
