@@ -80,6 +80,10 @@
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php">
             <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
+        <Diagnostics order="900" VisibleName="Diagnostics" cssClass="glyphicon glyphicon-wrench">
+            <pfInfo url="/diag_pf_info.php" VisibleName="pfInfo"/>
+            <pfTop url="/diag_system_pftop.php" VisibleName="pfTop"/>
+        </Diagnostics>
     </Firewall>
 
     <Services order="4" cssClass="glyphicon glyphicon-cog">
@@ -242,8 +246,6 @@
         <LimiterInfo VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
         <NDPTable VisibleName="NDP Table" url="/diag_ndp.php"/>
         <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
-        <pfInfo url="/diag_pf_info.php"/>
-        <pfTop url="/diag_system_pftop.php"/>
         <Ping url="/diag_ping.php"/>
         <Reboot url="/diag_reboot.php"/>
         <Routes url="/diag_routes.php"/>
