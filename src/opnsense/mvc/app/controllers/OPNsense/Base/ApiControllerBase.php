@@ -35,6 +35,21 @@ namespace OPNsense\Base;
 class ApiControllerBase extends ControllerRoot
 {
     /**
+     * @var bool cleanse output before sending to client, be very careful to disable this (XSS).
+     */
+    private $cleanseOutput = true;
+
+    /**
+     * disable output cleansing.
+     * Prevents the framework from executing automatic XSS protection on all delivered json data.
+     * Be very careful to disable this, if content can't be guaranteed you might introduce XSS vulnerabilities.
+     */
+    protected function disableOutputCleansing()
+    {
+        $this->cleanseOutput = false;
+    }
+
+    /**
      * Initialize API controller
      */
     public function initialize()
@@ -90,7 +105,12 @@ class ApiControllerBase extends ControllerRoot
             $data = $dispatcher->getReturnedValue();
             if (is_array($data)) {
                 $this->response->setContentType('application/json', 'UTF-8');
-                echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
+                if ($this->cleanseOutput) {
+                    echo htmlspecialchars(json_encode($data), ENT_NOQUOTES);
+                } else {
+                    echo json_encode($data);
+                }
+
             }
         }
 
