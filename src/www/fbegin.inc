@@ -170,7 +170,23 @@ if($need_alert_display == true) {
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>
 <?php
-                              if ($subMenuItem->IsExternal == "Y" ):?>
+                              if ($subMenuItem->Url == '' ):?>
+                                <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : "";?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>"><?=$subMenuItem->VisibleName;?><span class="<?=$subMenuItem->CssClass;?> __iconspacer pull-right"></span></a>
+                               <div class="collapse <?=$subMenuItem->Selected ? "active-menu in" :"";?>" id="<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>">
+<?php
+                                  foreach ($subMenuItem->Children as $subsubMenuItem):?>
+<?php
+                                    if ($subsubMenuItem->IsExternal == "Y"):?>
+                                            <a href="<?=$subsubMenuItem->Url;?>" target="_new" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=$subsubMenuItem->VisibleName;?></a>
+<?php
+                                    elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subsubMenuItem->Url)):?>
+                                            <a href="<?=$subsubMenuItem->Url;?>" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=$subsubMenuItem->VisibleName;?></a>
+<?php
+                                    endif;
+                                  endforeach;?>
+                                </div>
+<?php
+                              elseif ($subMenuItem->IsExternal == "Y" ):?>
                                 <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>"><?=$subMenuItem->VisibleName ?></a>
 <?php
                               elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subMenuItem->Url)):?>
