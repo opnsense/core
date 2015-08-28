@@ -165,7 +165,7 @@ if($need_alert_display == true) {
                     <div class="panel list-group" style="border:0px">
 <?php
                           foreach($menuSystem as $topMenuItem): ?>
-                            <a href="#<?php echo $topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ""; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=$topMenuItem->VisibleName;?>  </a>
+                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ""; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=$topMenuItem->VisibleName;?>  </a>
                             <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :"";?>" id="<?=$topMenuItem->Id;?>">
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>
