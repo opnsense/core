@@ -108,6 +108,15 @@ $pagetitle = gentitle( $pgtitle );
 			$("input").attr("autocomplete","off");
 			// hide empty menu items
 			$('#mainmenu > div > .collapse').each(function(){
+				// cleanup empty second level menu containers
+				$(this).find("div.collapse").each(function(){
+					if ($(this).children().length == 0 ) {
+							$("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
+							$(this).remove();
+					}
+				});
+
+				// cleanup empty first level menu items
 				if ($(this).children().length == 0) {
 					$("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
 				}
