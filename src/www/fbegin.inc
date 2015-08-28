@@ -163,18 +163,25 @@ if($need_alert_display == true) {
             <nav class="page-side-nav" role="navigation">
                 <div id="mainmenu" class="panel" style="border:0px" >
                     <div class="panel list-group" style="border:0px">
-                        <?php foreach($menuSystem as $topMenuItem): ?>
-                            <a href="#<?php echo $topMenuItem->Id;?>" class="list-group-item <?php if ($topMenuItem->Selected) echo 'active-menu-title'; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?php echo $topMenuItem->CssClass;?> __iconspacer"></span><?php echo $topMenuItem->VisibleName;?>  </a>
-                            <div class="collapse <?php if ($topMenuItem->Selected) echo 'active-menu in';?>" id="<?php echo $topMenuItem->Id;?>">
-			    <?php foreach($topMenuItem->Children as $subMenuItem): ?>
-				<?php if ($subMenuItem->IsExternal == "Y" ):?>
-					<a href="<?php echo $subMenuItem->Url;?>" target="_new" class="list-group-item <?php if ($subMenuItem->Selected ) echo "active";?>"><?php echo $subMenuItem->VisibleName ?></a>
-				<?php elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subMenuItem->Url)):?>
-					<a href="<?php echo $subMenuItem->Url;?>" class="list-group-item <?php if ($subMenuItem->Selected) echo "active";?>"><?php echo $subMenuItem->VisibleName;?></a>
-				<?php endif;?>
-			    <?php endforeach; ?>
-		            </div>
-		        <?php endforeach; ?>
+<?php
+                          foreach($menuSystem as $topMenuItem): ?>
+                            <a href="#<?php echo $topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ""; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=$topMenuItem->VisibleName;?>  </a>
+                            <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :"";?>" id="<?=$topMenuItem->Id;?>">
+<?php
+                            foreach($topMenuItem->Children as $subMenuItem): ?>
+<?php
+                              if ($subMenuItem->IsExternal == "Y" ):?>
+                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>"><?=$subMenuItem->VisibleName ?></a>
+<?php
+                              elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subMenuItem->Url)):?>
+                                <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? "active" :"";?>"><?=$subMenuItem->VisibleName;?></a>
+<?php
+                              endif;?>
+<?php
+                            endforeach; ?>
+                            </div>
+<?php
+                        endforeach; ?>
                     </div>
                 </div>
             </nav>
