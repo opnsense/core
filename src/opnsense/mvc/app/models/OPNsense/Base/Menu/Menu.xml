@@ -83,6 +83,9 @@
         <Diagnostics order="900" VisibleName="Diagnostics" cssClass="glyphicon glyphicon-wrench">
             <pfInfo url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop url="/diag_system_pftop.php" VisibleName="pfTop"/>
+            <Tables url="/diag_tables.php">
+                <TablesDetails url="/diag_tables.php*"/>
+            </Tables>
         </Diagnostics>
     </Firewall>
 
@@ -256,9 +259,6 @@
         <States url="/diag_dump_states.php"/>
         <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
         <SystemActivity VisibleName="System Activity" url="/diag_system_activity.php"/>
-        <Tables url="/diag_tables.php">
-            <TablesDetails url="/diag_tables.php*"/>
-        </Tables>
         <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
         <Traceroute url="/diag_traceroute.php"/>
     </Diagnostics>
