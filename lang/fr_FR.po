@@ -2945,12 +2945,12 @@ msgstr "Capture de paquets"
 #
 # File: lang/dynamic/helpers/models.php, line: 186
 msgid "pfInfo"
-msgstr ""
+msgstr "pfInfo"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 187
 msgid "pfTop"
-msgstr ""
+msgstr "pfTop"
 
 #
 # File: src/www/diag_dns.php, line: 251
@@ -3115,7 +3115,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 212
 msgid "ICP port needs to be an integer value between 1 and 65535"
-msgstr ""
+msgstr "Le port ICP doit être un entier compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 213
@@ -3155,23 +3155,25 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 220
 msgid "Proxy port needs to be an integer value between 1 and 65535"
-msgstr ""
+msgstr "Le port du mandataire doit être un entier compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 221
 msgid "FTP Proxy port needs to be an integer value between 1 and 65535"
-msgstr ""
+msgstr "Le port du mandataire FTP doit être un entier compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 222
 msgid ""
 "The filename may only contain letters,digits and one dot (not required)."
 msgstr ""
+"Le fichier ne peut contenir que des lettres, chiffres et un point (non "
+"nécessaire)."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 223
 msgid "This does not look like a valid url."
-msgstr ""
+msgstr "Ceci ne semble pas être une url correcte."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 224
@@ -3289,7 +3291,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 247
 msgid "Select a command from the list."
-msgstr ""
+msgstr "Sélectionner une commande à partir de la liste."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 248
@@ -3584,7 +3586,7 @@ msgstr ""
 #
 # File: src/etc/inc/config.lib.inc, line: 157
 msgid "WARNING: User"
-msgstr "ALERTE : Nom d’utilisateur"
+msgstr "AVERTISSEMENT : Nom d’utilisateur"
 
 #
 # File: src/etc/inc/config.lib.inc, line: 157
@@ -3595,13 +3597,13 @@ msgstr ""
 #
 # File: src/etc/inc/config.lib.inc, line: 169
 msgid "WARNING: Corrupt config!"
-msgstr "ALERTE : Configuration corrompue !"
+msgstr "AVERTISSEMENT : Configuration corrompue !"
 
 #
 # File: src/etc/inc/config.lib.inc, line: 180
 msgid "WARNING: Config contents could not be saved. Could not open file!"
 msgstr ""
-"ALERTE : Le contenu de la configuration ne peut pas être sauvegardé. "
+"AVERTISSEMENT : Le contenu de la configuration ne peut pas être sauvegardé. "
 "Impossible d’ouvrir le fichier !"
 
 #
@@ -11712,7 +11714,7 @@ msgstr ""
 #
 # File: src/www/firewall_rules_edit.php, line: 468
 msgid "ID must be an integer"
-msgstr ""
+msgstr "L'ID doit être un entier"
 
 #
 # File: src/www/firewall_rules_edit.php, line: 472
@@ -13593,6 +13595,8 @@ msgstr ""
 msgid ""
 "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank"
 msgstr ""
+"Entrer une adresse MAC avec le format suivant: xx:xx:xx:xx:xx:xx ou laisser "
+"vide"
 
 #
 # File: src/www/interfaces.php, line: 1661
