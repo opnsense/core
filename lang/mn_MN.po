@@ -44,7 +44,7 @@ msgstr "'Оношилгоо: Нэгдтэн дүгнэсэн статус' ху�
 #
 # File: lang/dynamic/helpers/acl.php, line: 41
 msgid "Allow access to the 'Services: Wake on LAN' page."
-msgstr "'Сервисүүд: Wake on LAN' хуудас руу хандах эрх олгох"
+msgstr "'Сервис: Wake on LAN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 42
 msgid "Allow access to the 'Status: IPsec' page."
@@ -68,7 +68,7 @@ msgstr "'Систем: Хэрэглэгчийг удирдах: Давуу эр�
 #
 # File: lang/dynamic/helpers/acl.php, line: 47
 msgid "Allow access to the 'Services: NTP' page."
-msgstr "'Сервисүүд: NTP' хуудас руу хандах эрх олгох"
+msgstr "'Сервис: NTP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 48
 msgid "Allow access to the 'VPN: OpenVPN: Client Specific Override' page."
@@ -80,7 +80,7 @@ msgstr "'VPN: OpenVPN: Клиент' хуудас руу хандах эрх о�
 #
 # File: lang/dynamic/helpers/acl.php, line: 50
 msgid "Allow access to the 'Interfaces: Assign network ports' page."
-msgstr "'Интерфэйсүүд: Сүлжээний портуудыг зааж тохируулах' хуудас руу ханлах эрх олгох"
+msgstr "'Интерфэйс: Сүлжээний портыг тохируулах' хуудас руу ханлах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 51
 msgid "Allow access to the 'Firewall: NAT: Port Forward' page."
@@ -96,856 +96,859 @@ msgstr "Интерфэйс бүлэг үүсгэх"
 #
 # File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Allow access to the 'Firewall: Traffic Shaper' page."
-msgstr "'Галт хана: Траффик хэлбэрт оруулагч' хуудас хандах эрх олгох"
+msgstr "'Галт хана: Траффик хэлбэрт оруулагч' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 55
 msgid "Allow access to the 'Interfaces: VLAN: Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: VLAN: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 56
 msgid "Allow access to the 'Diagnostics: Reboot System' page."
-msgstr ""
+msgstr "'Оношилгоо: Системийг дахин ачааллах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 57
 msgid "Allow access to the 'Services: Load Balancer: Relay Actions' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал Тэнцвэржүүлэгч: Дамжуулах процесс' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 58
 msgid "Allow access to the 'Load Balancer: Pool: Edit' page."
-msgstr ""
+msgstr "'Ачаалал тэнцвэржүүлэх: Pool: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 59
 msgid "Allow access to the 'System: User Manager' page."
-msgstr ""
+msgstr "'Систем: Хэрэглэгчийн Удирдалага' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 60
 msgid ""
 "Allow access to the 'Services: DHCPv6 Server : Edit static mapping' page."
-msgstr ""
+msgstr "'Сервис: DHCPv6 Сервер: Статик mapping засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 61
 msgid "Allow access to the 'Load Balancer: Pool' page."
-msgstr ""
+msgstr "'Ачаалал тэнцвэржүүлэгч: Pool' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 62
 msgid "Allow access to the 'VPN: L2TP: Users : Edit' page."
-msgstr ""
+msgstr "'VPN: L2TP: Хэрэглэгчид: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 63
 msgid "Allow access to the 'Firewall: Schedules' page."
-msgstr ""
+msgstr "'Галт хана: Ажиллах цагийн хуваарь' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 64
 msgid "Allow access to the 'Diagnostics: Logs: Settings' page."
-msgstr ""
+msgstr "'Оношилгоо: Лог: Тохиргоо' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 65
 msgid "Allow access to the 'Services: Captive portal: Vouchers' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Хандах эрх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 66
 msgid "Allow access to the 'Service: Univeral Plug and Play' page."
-msgstr ""
+msgstr "'Сервис: Universal Plug and Play' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 67
 msgid "Allow access to the 'Firewall: Virtual IP Addresses' page."
-msgstr ""
+msgstr "'Галт хана: Виртуал IP Хаяг' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 68
 msgid "Allow access to the 'System: Firmware: Manual Update' page."
-msgstr ""
+msgstr "'Систем: Firmware: Гар аргаар шинэчлэх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 69
 msgid "Allow access to the 'Status: System logs: System: Routing' page."
-msgstr ""
+msgstr "'Статус: Системийн лог: Систем: Чиглүүлэлт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 70
 msgid "Allow access to the 'Status: Services' page."
-msgstr ""
+msgstr "'Статус: Сервис' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 71
 msgid "Allow access to the 'Status: IPsec: Leases' page."
-msgstr ""
+msgstr "'Статус: IPsec: Leases' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 72
 msgid ""
 "Allow access to the 'Services: DNS Forwarder: Edit Domain Override' page."
-msgstr ""
+msgstr "'Сервис: DNS Forwarder: Domain override засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 73
 msgid "Allow access to the 'Status: CPU load' page."
-msgstr ""
+msgstr "'Статус: CPU ачаалал' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 74
 msgid "Allow access to the 'Diagnostics: ARP Table' page."
-msgstr ""
+msgstr "'Оношилгоо: ARP хүснэгт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 75
 msgid "Allow access to the 'Interfaces: ppps' page."
-msgstr ""
+msgstr "'Интерфэйс: ppps' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 76
 msgid "Allow access to the 'Firewall: NAT: 1:1' page."
-msgstr ""
+msgstr "'Галт хана: NAT: 1:1' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 77
 msgid "Indicates whether the user is allowed to use the proxy"
-msgstr ""
+msgstr "Хэрэглэгч прокси ашиглахыг зөвшөөрсөн эсэхийг илэрхийлнэ"
 #
 # File: lang/dynamic/helpers/acl.php, line: 78
 # File: lang/dynamic/helpers/acl.php, line: 173
 msgid "Allow access to the 'Status: System logs: IPsec VPN' page."
-msgstr ""
+msgstr "'Статус: Систем лог: IPsec VPN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 79
 msgid "Allow access to the 'Services: DHCP Server : Edit static mapping' page."
-msgstr ""
+msgstr "'Сервис: DHCP Сервер: Статик mapping засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 80
 msgid "Allow access to the 'Services: DHCPv6 server' page."
-msgstr ""
+msgstr "'Сервис: DHCPv6 сервер' хуудас руу хандах"
 #
 # File: lang/dynamic/helpers/acl.php, line: 81
 msgid "Allow access to the 'Status: Captive portal: Test Vouchers' page."
-msgstr ""
+msgstr "'Статус: Captive Portal: Нэвтрэх эрхийг шалгах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 82
 msgid "Allow access to the 'Status: System logs: Load Balancer' page."
-msgstr ""
+msgstr "'Статус: Систем Лог: Ачаалал тэнцвэржүүлэгч хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 83
 msgid "Allow access to the 'Services: Captive portal' page."
-msgstr ""
+msgstr "'Сервис: Captive portal' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 84
-msgid "Allow access to the 'Lobby: Login / Logout/ Dashboard' page."
-msgstr ""
+msgid "Allow access to the 'Lobby: Нэвтрэх / Гарах/ Dashboard' page."
+msgstr "'Lobby: Login/ Logout/ Dashboard' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 85
 msgid "Allow access to the 'Services: DNS Resolver: Edit host' page."
-msgstr ""
+msgstr "'Севрис: DNS Хөрвүүлэгч: Хост засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 86
 msgid "Allow access to the 'Services: SNMP' page."
-msgstr ""
+msgstr "'Сервис: SNMP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 87
 msgid "Allow access to the 'Settings: Load Balancer: Settings' page."
-msgstr ""
+msgstr "'Тохиргоо: Ачаалал тэнцвэржүүлэгч: Тохиргоо' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 88
 msgid "Allow access to the 'Diagnostics: Show States' page."
-msgstr ""
+msgstr "'Оношилгоо: Төлөв харуулах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 89
 msgid "Allow access to the 'VPN: OpenVPN: Client Export Utility' page."
-msgstr ""
+msgstr "'VPN: OpenVPN: Клиент экспорт хийх хэрэгсэл' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 90
 msgid "Indicates whether the user is able to login for example via SSH."
-msgstr ""
+msgstr "SSh гэх мэт зүйлийг ашиглан хэрэглэгч нэвтэрч орох боломжтой эсэхийг илэрхийлнэ"
 #
 # File: lang/dynamic/helpers/acl.php, line: 91
 msgid "Allow access to the 'Status: Traffic Graph' page."
-msgstr ""
+msgstr "'Статус: Траффикын граффик' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 92
 msgid "Allow access to the 'Diagnostics: Authentication' page."
-msgstr ""
+msgstr "Оношилгоо: Нэвтрэх эрхийн баталгаажуулалт' хуудас руу хандах эрх олгох '"
 #
 # File: lang/dynamic/helpers/acl.php, line: 93
 msgid "Allow access to the 'Services: Captive portal: Edit Allowed IPs' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Зөвшөөрөгдсөн IP хаягуудыг засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 94
 msgid "Allow access to the 'System: CRL Manager' page."
-msgstr ""
+msgstr "'Систем: CRL Manager' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 95
 msgid "Allow access to the 'VPN: PPTP' page."
-msgstr ""
+msgstr "'VPN: PPTP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 96
 msgid ""
 "Allow access to the 'Services: Captive portal: Edit MAC Addresses' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: МАС хаяг засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 97
 msgid "Allow access to the 'Diagnostics: Interface Traffic' page."
-msgstr ""
+msgstr "'Оношилгоо: Интерфэйс Траффик' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 98
 msgid "Allow access to the 'System: Firmware: Auto Update' page."
-msgstr ""
+msgstr "'Систем: Firmware: Автомат шинэчлэл' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 99
 msgid "Allow access to the 'Diagnostics: Sockets' page."
-msgstr ""
+msgstr "'Оношилгоо: Сокет' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 100
 msgid "Allow access to the 'Status: Univeral Plug and Play Status' page."
-msgstr ""
+msgstr "'Статус: Universal Plug and Play статус' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 101
 msgid "Allow access to the 'Services: PPPoE Server' page."
-msgstr ""
+msgstr "'Сервис: PPPoE Сервер' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 102
 msgid "Allow access to the 'Status: System logs: OpenVPN' page."
-msgstr ""
+msgstr "'Статус: Систем лог: OpenVPN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 103
 msgid "Allow access to the 'Status: OpenVPN' page."
-msgstr ""
+msgstr "'Статус: OpenVPN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 104
 msgid "Allow access to the 'Services: RFC 2136 clients' page."
-msgstr ""
+msgstr "'Сервис: RFC 2136 клиент' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 105
 msgid "Uploads crash reports to the developers."
-msgstr ""
+msgstr "Програмын эвдрэлийн мэдээллийг хөгжүүлэгчдэд мэдээллэх"
 #
 # File: lang/dynamic/helpers/acl.php, line: 106
 msgid "Allow access to the 'Firewall: Alias: Edit' page."
-msgstr ""
+msgstr "'Галт хана: Alias: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 107
 msgid "Allow access to the 'Interfaces: PPPs: Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: PPPs: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 108
 msgid "Allow access to the 'Firewall: NAT: NPT' page."
-msgstr ""
+msgstr "'Галт хана: NAT: NPT' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 109
 msgid "Allow access to the 'Diagnostics: NDP Table' page."
-msgstr ""
+msgstr "'Оношилгоо: NDP хүснэгт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 110
 msgid "Allow access to the 'VPN: IPsec' page."
-msgstr ""
+msgstr "'VPN: IPsec' хуудас руу хандах эрх олгох "
 #
 # File: lang/dynamic/helpers/acl.php, line: 111
 msgid "Allow access to the 'VPN: L2TP : Users' page."
-msgstr ""
+msgstr "'VPN: L2TP: Хэрэглэгч' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 112
 msgid "Allow access to the 'Load Balancer: Virtual Server: Edit' page."
-msgstr ""
+msgstr "'Ачаалал Тэнцвэржүүлэгч: Виртуал Север: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 113
 msgid "Allow access to the 'Status: System logs: NTP' page."
-msgstr ""
+msgstr "'Статус: Систем лог: NTP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 114
 msgid "Allow access to the 'Interfaces: GRE' page."
-msgstr ""
+msgstr "'Интерфэйс: GRE' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 115
 # File: lang/dynamic/helpers/acl.php, line: 139
 msgid "Allow access to the 'Services: Captive portal: Allowed Hostnames' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Зөвшөөрөдсөн Хостын нэрс' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 116
 msgid "Allow access to the 'Services: Router Advertisements' page."
-msgstr ""
+msgstr "'Сервис: Router Advertisements' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 117
 msgid "Allow access to the 'VPN: IPsec: Edit Phase 2' page."
-msgstr ""
+msgstr "'VPN: IPsec: Phase 2 засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 118
 msgid "Allow access to the 'Status: RRD Graphs' page."
-msgstr ""
+msgstr "'Статус: RRD Graphs' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 119
 msgid "Allow access to the 'System: Advanced: Networking' page."
-msgstr ""
+msgstr "'Систем: Advanced: Сүлжээ' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 120
 msgid "Allow access to the 'VPN: IPsec: Edit Phase 1' page."
-msgstr ""
+msgstr "'VPN: IPsec: Phase 1 засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 121
 msgid "Allow access to the 'Interfaces: VLAN' page."
-msgstr ""
+msgstr "'Интерфэйс: VLAN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 122
 msgid "Allow access to the 'Services: Load Balancer: Relay Action: Edit' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал тэнцвэржүүлэгч: Дахин дамжуулах: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 123
 msgid "Allow access to the 'Firewall: NAT: Port Forward: Edit' page."
-msgstr ""
+msgstr "'Галт хана: NAT: Порт Forward: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 124
 msgid ""
 "Allow access to the 'Services: DNS Resolver: Edit Domain Override' page."
-msgstr ""
+msgstr "'Сервис: DNS хөрвүүлэгч: Domain Override засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 125
 msgid "Allow access to the 'Firewall: Alias: Import' page."
-msgstr ""
+msgstr "'Галт хана: Alias: Импорт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 126
 msgid "Allow access to the 'Diagnostics: Reset state' page."
-msgstr ""
+msgstr "'Оношилгоо: Төлөвийг дахин шинэчлэх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 127
 msgid "Allow access to the 'Services: Wake on LAN: Edit' page."
-msgstr ""
+msgstr "Сервис: Wake on LAN: Засварлах' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 128
 msgid "Allow access to the 'Firewall: Virtual IP Address: Edit' page."
-msgstr ""
+msgstr "'Галт хана: Виртуал IP хаяг: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 129
 msgid "Allow access to the 'Diagnostics: Routing tables' page."
-msgstr ""
+msgstr "'Оношилгоо: Routing хүснэгт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 130
 msgid "Allow access to the 'System: Advanced: Admin Access' page."
-msgstr ""
+msgstr "'Систем: Advanced: Админ Хандалт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 131
 msgid "Allow access to the 'Status: Captive portal: Expire Vouchers' page."
-msgstr ""
+msgstr "'Статус: Captive portal: Нэвтрэх эрхийн хүчинтэй хугацаа' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 132
 msgid "Allow access to the 'Status: Interfaces' page."
-msgstr ""
+msgstr "'Статус: Интерфэйс' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 133
 msgid "Allow access to the 'Services: DNS Forwarder' page."
-msgstr ""
+msgstr "'Сервис: DNS Forwarder' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 134
 msgid "Allow access to the 'Status: Gateways' page."
-msgstr ""
+msgstr "'Статуё: Gateway' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 135
 msgid "Allow access to the 'Status: DHCP leases' page."
-msgstr ""
+msgstr "'Статус: DHCP leases' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 136
 msgid "Allow access to the 'Services: Load Balancer: Monitor: Edit' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал тэнцвэржүүлэгч: Монитор: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 137
 msgid "Allow access to the 'Hidden: Detailed Status' page."
-msgstr ""
+msgstr "'Hidden: Дэлгэрэнгүй Статус' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 138
 msgid "Allow access to the 'System: Advanced: Miscellaneous' page."
-msgstr ""
+msgstr "'Систем: Advanced: Бусад зүйлс' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 140
 msgid "Allow access to the 'AJAX: Service Providers' page."
-msgstr ""
+msgstr "'AJAX: Service Providers' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 141
 msgid "Allow access to the 'Diagnostics: Backup/restore' page."
-msgstr ""
+msgstr "'Оношилгоо: Backup/Restore' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 142
 msgid "Allow access to the 'Diagnostics: Halt system' page."
-msgstr ""
+msgstr "'Оношилгоо: Системийг унтраах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 143
 msgid "Allow access to the 'Services: DHCP server' page."
-msgstr ""
+msgstr "'Сервис: DHCP сервер' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 144
 msgid "Allow access to the 'Services: Igmpproxy: Edit' page."
-msgstr ""
+msgstr "'Сервис: Igmpproxy: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 145
 msgid "Allow access to the 'System: User Manager: Settings: Test LDAP' page."
-msgstr ""
+msgstr "'Систем: Хэрэглэгчийн удирдлага: Тохиргоо: LDAP тест' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 146
 msgid "Allow access to the 'VPN: L2TP' page."
-msgstr ""
+msgstr "'VPN: L2TP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 147
 msgid "Allow access to the 'XMLRPC Library' page."
-msgstr ""
+msgstr "'XMLRPC сан' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 148
 msgid "Allow access to the 'Status: IPsec: SPD' page."
-msgstr ""
+msgstr "'Статус: IPsec: SPD' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 149
 msgid "Allow access to the 'Status: Filter Reload Status' page."
-msgstr ""
+msgstr "'Статус: Filter Reload Status' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 150
 msgid "Allow access to all pages"
-msgstr ""
+msgstr "Бүх хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 151
 msgid "Allow access to the 'Firewall: NAT: NPt: Edit' page."
-msgstr ""
+msgstr "'Галт хана: NAT: NPt: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 152
 msgid "Indicates whether the user is allowed to dial in via PPPOE"
-msgstr ""
+msgstr "Хэгэрэгч PPPoE ашиглан холболт хийх боломжтой эсэхийг илэрхийлнэ"
 #
 # File: lang/dynamic/helpers/acl.php, line: 153
 msgid "Allow access to the 'System: Advanced: Notifications' page."
-msgstr ""
+msgstr "'Систем: Advanced: Мэдэгдэх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 154
 msgid "Allow access to the 'Diagnostics: Logs: DHCP' page."
-msgstr ""
+msgstr "'Оношилгоо: Лог: DHCP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 155
 msgid "Allow access to the 'System: Gateway Groups' page."
-msgstr ""
+msgstr "'Систем: Gateway Groups' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 156
 msgid "Allow access to the 'Wizard subsystem' page."
-msgstr ""
+msgstr "'Wizard subsystem' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 157
 msgid "Allow access to the 'Diagnostics: Restore Full Backup' page."
-msgstr ""
+msgstr "'Оношилгоо: Нөөцлөлтийн файлаас бүрэн сэргээлт хийх' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 158
 msgid "Allow access to the 'Status: CARP' page."
-msgstr ""
+msgstr "'Статус: CARP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 159
 msgid "Allow access to the 'Firewall: Aliases' page."
-msgstr ""
+msgstr "'Галт хана: Aliases' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 160
 msgid "Allow access to the 'Services: Captive portal: File Manager' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: File Manager' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 161
 msgid "Allow access to the 'Firewall: Rules' page."
-msgstr ""
+msgstr "'Галт хана: Дүрмүүд' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 162
 msgid "Allow access to the 'Diagnostics: Logs: System: Gateways' page."
-msgstr ""
+msgstr "'Оношилгоо: Лог: Систем: Gateways' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 163
 msgid "Allow access to the 'Services: DNS Resolver: Advanced' page."
-msgstr ""
+msgstr "'Сервис: DNS хөрвүүлэгч: Advanced' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 164
 msgid "Allow access to the 'Services: Load Balancer: Virtual Servers' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал Тэнцвэржүүлэгч: Виртуал Серверүүд' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 165
 msgid "Allow access to the 'Status: NTP' page."
-msgstr ""
+msgstr "'Статус: NTP' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 166
 msgid "Allow access to the 'Services: Captive portal: Mac Addresses' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: MAC хаяг' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 167
 msgid "Allows access to the 'Diagnostics: Limiter Info' page"
-msgstr ""
+msgstr "'Оношилгоо: Хязгаарлагч Мэдээлэл' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 168
 msgid "Allow access to the 'Services: DHCPv6 Relay' page."
-msgstr ""
+msgstr "'Сервис: DHCPv6 Relay' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 169
 msgid "Allow access to the 'Diagnostics: Logs: System: Resolver' page."
-msgstr ""
+msgstr "'Оношилгоо: Лог: Систем: Хөрвүүлэгч' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 170
 msgid "Allow access to the 'Status: Wireless' page."
-msgstr ""
+msgstr "'Статус: Утасгүй Сүлжээ' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 171
 msgid "Allow access to the 'Hidden: No longer included' page."
-msgstr ""
+msgstr "'Hidden: No longer included' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 172
 msgid "Allow access to the 'Status: NTP PPS' page."
-msgstr ""
+msgstr "'Статус: NTP PPS' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 174
 msgid "Allow access to the 'Diagnostics: NanoBSD' page."
-msgstr ""
+msgstr "'Оношилгоо: NanoBSD' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 175
 msgid "Allow access to the 'System: CA Manager' page."
-msgstr ""
+msgstr "'Систем: CA Manager' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 176
 msgid "Allow access to all pages required for the dashboard."
-msgstr ""
+msgstr "Хяналтын самбарт шаардлагатай бүх хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 177
 msgid "Allow access to the 'Diagnostics: Patterns' page."
-msgstr ""
+msgstr "'Оношилгоо: Patterns' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 178
 msgid "Allow access to the 'System: User Password Manager' page."
-msgstr ""
+msgstr "'Систем: Хэрэглэгчийн нууц үгийн удирдлага' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 179
 msgid "Allow access to 'Interfaces: QinQ: Edit' page"
-msgstr ""
+msgstr "'Интерфэйс: QinQ: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 180
 msgid "Allow access to the 'Firewall: Rules: Edit' page."
-msgstr ""
+msgstr "'Галт хана: Дүрэм: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 181
 msgid "Allow access to the 'Diagnostics: Packet Capture' page."
-msgstr ""
+msgstr "'Оношилгоо: Пакет чагнах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 182
 msgid "Allow access to the 'Services: DNS Resolver: Access Lists' page."
-msgstr ""
+msgstr "'Сервис: DNS хөрвүүлэгч: Access Lists' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 183
 msgid "Allow access to the 'Firewall: NAT: Outbound: Edit' page."
-msgstr ""
+msgstr "'Галт хана: NAT: Гарах урсгал: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 184
 msgid "Allow access to the 'Diagnostics: Logs: VPN' page."
-msgstr ""
+msgstr "'Оношилгоо: Лог: VPN' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 185
 msgid "Allow access to the 'Interfaces: Wireless : Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: Утасгүй сүлжээ: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 186
 msgid "Allow access to the 'Diagnostics: Test Port' page."
-msgstr ""
+msgstr "'Оношилгоо: Тест Порт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 187
 msgid "Allow access to the 'Diagnostics: Logs: System' page."
-msgstr ""
+msgstr "'Оношилгоо: Лог: Систем' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 188
 msgid ""
 "Allow access to the 'Services: Captive portal: Edit Voucher Rolls' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Voucher Rolls засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 189
 msgid "If present, ignores requests from this user to write config.xml."
-msgstr ""
+msgstr "Хэрэглэгчээс хүсэлт байгаа үед, энэ хэрэглэгчээс config.xml хуудас руу бичих хүсэлтүүдэд татгалзах"
 #
 # File: lang/dynamic/helpers/acl.php, line: 190
 msgid "Allow access to the 'Interfaces: Groups: Edit' page."
-msgstr ""
+msgstr "Интерфэйс: Groups: Засварлах' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 191
 msgid ""
 "Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал тэнцвэржүүлэгч: Relay Protocol: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 192
 msgid "Allows access to the 'Diagnostics: pfInfo' page"
-msgstr ""
+msgstr "'Оношилгоо: pfInfo' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 193
 msgid ""
 "Indicates whether the user is allowed to dial in via IPsec xauth (Note: Does "
 "not allow shell access, but may allow the user to create ssh tunnels)"
 msgstr ""
+"Хэрэглэгч IPsec xaith-ийг ашиглан холболт хийх болмжтой эсэхийг илэрхийлнэ."
+"(Shel хандалтыг зөвшөөрөхгүй боловч хэрэглэгчийг ssh туннел үүсгэхийг зөвшөөрч болно)"
 #
 # File: lang/dynamic/helpers/acl.php, line: 194
 msgid "Allow access to the 'Interfaces: LAGG: Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: LAGG: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 195
 msgid "Allow access to the 'VPN: OpenVPN: Server' page."
-msgstr ""
+msgstr "'VPN: OpenVPN: Сервер' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 196
 msgid "Allow access to the 'VPN: IPsec: Mobile' page."
-msgstr ""
+msgstr "'VPN: IPsec: Mobile' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 197
 msgid "Allow access to the 'System: Gateways: Edit Gateway' page."
-msgstr ""
+msgstr "'Систем: Gateway: Gateway засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 198
 msgid "Allow access to the 'Services: Captive portal: Edit Zones' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Бүсчлэл засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 199
 msgid "Allow access to the 'Diagnostics: Logs: Firewall' page."
-msgstr ""
+msgstr "'Оногилгоо: Лог: Галт хана' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 200
 msgid ""
 "Allow direct access to all Dashboard widget pages, required for some widgets "
 "using AJAX."
-msgstr ""
+msgstr "AJAX хэрэглэдэг зарим widget-үүд болон хяналтын самбарын widget "
+"хуудсууд руу шууд хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 201
 msgid "Allow access to the 'Status: Load Balancer: Virtual Server' page."
-msgstr ""
+msgstr "'Статус: Ачаалал тэнцвэржүүлэгч: Виртуал Сервер' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 202
 msgid "Allow access to the 'Diagnostics: Configuration History' page."
-msgstr ""
+msgstr "Оношилгоо: Тохиргооны түүх' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 203
 msgid "Allow access to the 'Interfaces: GRE: Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: GRE: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 204
 msgid "Allow access to the 'System: General Setup' page."
-msgstr ""
+msgstr "'Систем: General Setup' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 205
 msgid "Allow access to the 'Status: Gateway Groups' page."
-msgstr ""
+msgstr "'Статус: Gateway Groups' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 206
 msgid "Allow access to the 'Interfaces' page."
-msgstr ""
+msgstr "Интерфэйс' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 207
 msgid "Allow access to the 'Services: DNS Forwarder: Edit host' page."
-msgstr ""
+msgstr "'Сервис: DNS Forwarder: Хост засварлах' хуудас руу хандах"
 #
 # File: lang/dynamic/helpers/acl.php, line: 208
 msgid "Allow access to the 'Status: System logs: Captive portal' page."
-msgstr ""
+msgstr "'Статус: Систем лог: Captive portal' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 209
 msgid "Indicates whether the user is able to login on the captive portal."
-msgstr ""
+msgstr "Хэрэглэгч captive portal руу нэвтрэх боломжтой эсэхийг илэрхийлнэ"
 #
 # File: lang/dynamic/helpers/acl.php, line: 210
 msgid "Allow access to the 'Services: Captive portal: Zones' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Бүсчлэл' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 211
 msgid "Allow access to the 'Diagnostics: CPU Utilization' page."
-msgstr ""
+msgstr "'Оношилгоо: CPU ашиглалт' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 212
 msgid "Allow access to the 'Firewall: NAT: 1:1: Edit' page."
-msgstr ""
+msgstr "Галт хана: NAT: 1:1: Засварлах' хуудас руу хандах эрх олгох '"
 #
 # File: lang/dynamic/helpers/acl.php, line: 213
 msgid "Allow access to the 'Diagnostics: Tables' page."
-msgstr ""
+msgstr "Оношилгоо: Хүснэгтүүд' хуудас руу хандах эрх олго'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 214
 msgid "Allow access to the 'System: Group manager' page."
-msgstr ""
+msgstr "'Систем: Group удирдах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 215
 msgid "Allow access to the 'System: User Manager: settings' page."
-msgstr ""
+msgstr "'Систем: Хэрэглэгч Удирдах: тохиргоо' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 216
 msgid "Allow access to the 'Status: DHCPv6 leases' page."
-msgstr ""
+msgstr "Статус: DHCPv6 leases' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 217
 msgid "Edit Interface LAGG"
-msgstr ""
+msgstr "LAGG Интерфэйс засварлах"
 #
 # File: lang/dynamic/helpers/acl.php, line: 218
 msgid "Allow access to the 'Status: NTP Serial GPS' page."
-msgstr ""
+msgstr "'Статус: NTP Serial GPS' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Indicates whether the user is allowed to dial in via L2TP"
-msgstr ""
+msgstr "Хэрэглэгч L2TP ашиглан холболт хийх боломжтой эсэхийг илэрхийлнэ"
 #
 # File: lang/dynamic/helpers/acl.php, line: 220
 msgid "Allow access to the 'Status: Load Balancer: Pool' page."
-msgstr ""
+msgstr "'Статус: Ачаалал Тэнцвэржүүлэгч: Pool' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 221
 msgid "Allow access to the 'Services: Load Balancer: Relay Protocols' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал Тэнцвэржүүлэгч: Relay Protocols' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 222
 msgid "Allow access to the 'Interfaces: QinQ' page."
-msgstr ""
+msgstr "'Интерфэйс: QinQ' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 223
 msgid "Allow access to the 'Interfaces: Bridge : Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: Bridge: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 224
 msgid "Allow access to the 'Interfaces: Wireless' page."
-msgstr ""
+msgstr "'Интерфэйс: утасгүй сүлжээ' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 225
 msgid "Allow access to the 'Services: Dynamic DNS clients' page."
-msgstr ""
+msgstr "'Сервис: Динамик DNS клиентүүд' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 226
 msgid "Allow access to the 'Status: System logs: System: Wireless' page."
-msgstr ""
+msgstr "'Статус: Систем лог: Систем: Утасгүй сүлжээ' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 227
 msgid "Allow access to the 'Firewall: Schedules: Edit' page."
-msgstr ""
+msgstr "'Галт хана: Цагийн хуваарьт ажил: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 228
 msgid "Allow access to the 'Diagnostics: Ping' page."
-msgstr ""
+msgstr "Оношилгоо: Ping' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 229
 msgid "Allow access to the 'System: Certificate Manager' page."
-msgstr ""
+msgstr "'Систем: Сертификат удирдах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 230
 msgid "Allow access to the 'System: Gateways: Edit Gateway Groups' page."
-msgstr ""
+msgstr "'Систем: Gateway: Gateway Groups засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 231
 msgid "Allow access to the 'System: Static Routes: Edit route' page."
-msgstr ""
+msgstr "'Систем: Статик route: Route засварлах' хуудас руу хандах"
 #
 # File: lang/dynamic/helpers/acl.php, line: 232
 msgid "Allow access to the 'Services: Captive portal: Allowed IPs' page."
-msgstr ""
+msgstr "'Сервис: Captive portal: Зөвшөөрөгдсөн IP хаягууд' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 233
 msgid "Allow access to the 'System: License' page."
-msgstr ""
+msgstr "'Систем: Лиценз' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 234
 msgid "Allow access to the 'Services: DNS Filter' page."
-msgstr ""
+msgstr "'Сервис: DNS шүүлтүүр' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 235
 msgid "Allow access to the 'Services: DNS Resolver' page."
-msgstr ""
+msgstr "Сервис: DNS хөрвүүлэгч' хуудас руу хандах эрх олгох'"
 #
 # File: lang/dynamic/helpers/acl.php, line: 236
 msgid "Allows access to the 'Diagnostics: pfTop' page"
-msgstr ""
+msgstr "'Оношилгоо: pfTop' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 237
 msgid "Allow access to the 'Status: RRD Graphs: settings' page."
-msgstr ""
+msgstr "'Статус: RRD Graphs: тохиргоо' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 238
 msgid "Allow access to the 'Services: DNS Resolver: Access Lists: Edit' page."
-msgstr ""
+msgstr "'Сервис: DNS хөрвүлэгч: Access Lists: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 239
 msgid "Allow access to the 'Interfaces: GIF' page."
-msgstr ""
+msgstr "'Интерфэйс: GIF' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 240
 msgid "Allow access to the 'VPN: IPsec: Edit Pre-Shared Keys' page."
-msgstr ""
+msgstr "'VPN: IPsec: Pre-Shared түлхүүр засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 241
 msgid "Allow access to the 'Services: Dynamic DNS client' page."
-msgstr ""
+msgstr "'Сервис: Динамик DNS клиент' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 242
 msgid "Allow access to the 'Services: Proxy' page."
-msgstr ""
+msgstr "'Сервис: Proxy' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 243
 msgid "Allow access to the 'Services: PPPoE Server: Edit' page."
-msgstr ""
+msgstr "'Сервис: PPPoE Сервер: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 244
 msgid "Allow access to the 'Interfaces: GIF: Edit' page."
-msgstr ""
+msgstr "'Интерфэйс: GIF: Засварлах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 245
 msgid "Allow access to the 'AJAX: Get Stats' page."
-msgstr ""
+msgstr "'AJAX: Статус авах' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 246
 msgid "Allow access to the 'System: Advanced: Tunables' page."
-msgstr ""
+msgstr "'Систем: Advanced: Tunables' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 247
 msgid "Allow access to the 'System: Group Manager: Add Privileges' page."
-msgstr ""
+msgstr "'Систем: Group Manager: Add Privilieges' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 248
 msgid "Allow access to the 'Services: Load Balancer: Monitors' page."
-msgstr ""
+msgstr "'Сервис: Ачаалал тэнцвэржүүлэгч: Монитор' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 249
 msgid "Allow access to the 'Status: Captive portal' page."
-msgstr ""
+msgstr "'Статус: Captive portal' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 250
 msgid "Indicates whether the user is allowed to dial in via PPTP"
-msgstr ""
+msgstr "Хэрэглэгч PPTP ашиглан холболт хийх боломжтой эсэхийг илэрхийлнэ"
 #
 # File: lang/dynamic/helpers/acl.php, line: 251
 msgid "Allow access to the 'Diagnostics: Traceroute' page."
-msgstr ""
+msgstr "'Оношилгоо: Traceroute' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 252
 msgid "Allow access to the 'Firewall: NAT: Outbound' page."
-msgstr ""
+msgstr "'Галт хана: NAT: Гарах урсгал' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 253
 msgid "Allow access to the 'System: Advanced: Firewall and NAT' page."
-msgstr ""
+msgstr "'Систем: Advanced: галт хана болон NAT' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 254
 msgid "Allow access to the 'System: Gateways' page."
-msgstr ""
+msgstr "'Систем: Gateways' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 255
 msgid "Allow access to the 'Firewall: Easy Rule' add/status page."
-msgstr ""
+msgstr "'Галт хана: Энгийн дүрэм' нэмэх/статус хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 256
 msgid "Allows access to the 'Diagnostics: System Activity' page"
-msgstr ""
+msgstr "'Оношилгоо: System Activity' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 257
 msgid "Allow access to the 'System: Static Routes' page."
-msgstr ""
+msgstr "'Систем: Статик Routes' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 258
 msgid "Allow access to the 'XMLRPC Interface Stats' page."
-msgstr ""
+msgstr "'XMLRPC Интерфэйс Статус' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 259
 msgid "Allow access to the 'Interfaces: Bridge' page."
-msgstr ""
+msgstr "'Интерфэйс: Bridge' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 260
 msgid "Allow access to the 'System: High Availability' page."
-msgstr ""
+msgstr "'Систем: High Availability' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 261
 msgid "Allow access to the 'Diagnostics: Factory defaults' page."
-msgstr ""
+msgstr "'Оношилгоо: Factory defaults' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 262
 msgid "Allow access to the 'Services: DHCP Relay' page."
-msgstr ""
+msgstr "'Сервис: DHCP Relay' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 263
 msgid ""
 "Allow access to the 'System: Firmware: Manual Update: Progress bar' page."
-msgstr ""
+msgstr "'Систем: Firmware: Гар аргаар шинэчлэх: Progress bar' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/acl.php, line: 264
 msgid "Allow access to the 'Services: Igmpproxy' page."
-msgstr ""
+msgstr "'Сервис: Ifmpproxy' хуудас руу хандах эрх олгох"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 35
 msgid "Enable or disable the proxy service."
-msgstr ""
+msgstr "Proxy сервисийг идэвхижүүлэх эсвэл идэвхигүй болгох"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 36
 msgid ""
@@ -953,34 +956,41 @@ msgid ""
 "                    and from neighbor caches. Leave blank to disable "
 "(default). The standard UDP port for ICP is 3130.\n"
 "                "
-msgstr ""
+msgstr "Neighbor cache рүү Squid-ийн ICP хүсэлт иллгээж хүлээн авах порт\n"
+" Хүсэлтийг идэвхигүй болгох (өгөдмөл тохиргоогоор) болгох бол хоосон үлдээнэ үү"
+" ICP хүсэлтийн стандарт порт нь UDP-гийн 3130"
+"                "
 #
 # File: lang/dynamic/helpers/controllers.php, line: 39
 msgid "Enable access logging."
-msgstr ""
+msgstr "Хандалтын логийг идэвхийжүүлэх"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 40
 msgid "Enable store logging."
-msgstr ""
+msgstr "Хадгалалтын логийг идэвхижүүлэх"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 41
 msgid ""
 "If set (default), Squid will include a Via header in requests and\n"
 "            replies as required by RFC2616."
 msgstr ""
+"Хэрэв Squid тохируулсан бол (өгөгдмөл тохиргоогоор) Squid нь хүсэлт "
+"болон түүний хариултын header дотор нь RFC2616-д зааж өгсний дагуу байрлана"
+
 #
 # File: lang/dynamic/helpers/controllers.php, line: 43
 msgid "Select what to do with X-Forwarded for header."
-msgstr ""
+msgstr "Header - лүү X-Forwarded-ийг ашиглан хийх зүйлээ сонго"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 44
 msgid ""
 "Suppress Squid version string info in HTTP headers and HTML error pages."
 msgstr ""
+"HTTP header болон HTML алдааны хуудсанд байгаа Squid-ийн хувилбарийн мэдээллийг нуух"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 45
 msgid "Enter the storage size for the local cache (default is 100)."
-msgstr ""
+msgstr "Локал cashe-ийн хадгалах хэмжээг оруулна уу (Өгөгдмөл хэмжээ 100)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 46
 msgid ""
@@ -988,6 +998,9 @@ msgid ""
 "                    Enter the number of first-level subdirectories for the "
 "local cache (default is 16)."
 msgstr ""
+"\n"
+"Локал cache-д зориулсан нэгдүгээр түвшний subdirectory-ийн тоог оруулна уу"
+"(Өгөгдмөл хэмжээ нь 16)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 48
 msgid ""
@@ -995,20 +1008,25 @@ msgid ""
 "                    Enter the number of first-level subdirectories for the "
 "local cache (default is 256)."
 msgstr ""
+"\n"
+"Локал cache-д зориулсан нэгдүгээр түвшний subdirectory-ийн тоог оруулна уу"
+"(Өгөгдмөл хэмжээ нь 256)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 50
 msgid "Enable or disable traffic management."
-msgstr ""
+msgstr "Траффикийн удирдагыг идэвхижүүлэх эсвэл идэвхигүй болгох"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 51
 msgid ""
 "Enter the maxium size for downloads in kilobytes (leave empty to disable)."
-msgstr ""
+msgstr "Татаж авч болох хамгийн их хэмжээг Килобайтаар оруулна уу"
+"(Идэвхигүй болгох бол хоосон орхино уу)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 52
 msgid ""
 "Enter the maxium size for uploads in kilobytes (leave empty to disable)."
-msgstr ""
+msgstr "Upload хийж болох хамгийн их хэмжээг килобайтаар оруулна уу"
+"(Идэвхигүй болгох бол хоосон орхино уу)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 53
 msgid ""
@@ -1016,6 +1034,9 @@ msgid ""
 "                    Enter the allowed overall bandtwith in kilobits per "
 "second (leave empty to disable)."
 msgstr ""
+"\n"
+"         Зөвшөөрөгдсөн шугамын өргөний нийт хэмжээг килобит/секундээр оруулнауу"
+"(Идэвхигүй болгох бол хоосон орхино уу)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 55
 msgid ""
@@ -1023,15 +1044,18 @@ msgid ""
 "                    Enter the allowed per host bandwidth in kilobits per "
 "second (leave empty to disable)."
 msgstr ""
+"\n"
+"Хостод зөвшөөрөгдсөн шумагын өргөнийг килобит/секундээр оруулна уу"
+"(Идэвхигүй болгохын тулд хоосон орхино уу)"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 57
 msgid "Select interface(s) the proxy will bind to."
-msgstr ""
+msgstr "Proxy bind хийх интерфэйсийг сонго"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 58
 # File: lang/dynamic/helpers/controllers.php, line: 62
 msgid "The port the proxy service will listen to."
-msgstr ""
+msgstr "Proxy сервис сонсож ажиллах порт"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 59
 msgid ""
