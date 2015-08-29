@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-07-02 16:01+0200\n"
-"PO-Revision-Date: 2015-08-29 12:32+0100\n"
+"PO-Revision-Date: 2015-08-29 17:39+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -2462,12 +2462,12 @@ msgstr "CARP"
 #
 # File: lang/dynamic/helpers/models.php, line: 136
 msgid "DHCP IPv4 Leases"
-msgstr ""
+msgstr "Baux DHCP IPv4"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 137
 msgid "DHCP IPv6 Leases"
-msgstr ""
+msgstr "Baux DHCP IPv6"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 138
@@ -2720,12 +2720,12 @@ msgstr "Capture de paquets"
 #
 # File: lang/dynamic/helpers/models.php, line: 186
 msgid "pfInfo"
-msgstr ""
+msgstr "pfInfo"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 187
 msgid "pfTop"
-msgstr ""
+msgstr "pfTop"
 
 #
 # File: src/www/diag_dns.php, line: 251
@@ -2743,7 +2743,7 @@ msgstr "Redémarrer"
 #
 # File: src/www/system_gateways_tabs.inc, line: 7
 msgid "Routes"
-msgstr ""
+msgstr "Routes"
 
 #
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 41
@@ -2884,7 +2884,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 212
 msgid "ICP port needs to be an integer value between 1 and 65535"
-msgstr ""
+msgstr "Le port ICP doit être un entier compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 213
@@ -2924,23 +2924,25 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 220
 msgid "Proxy port needs to be an integer value between 1 and 65535"
-msgstr ""
+msgstr "Le port du mandataire doit être un entier compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 221
 msgid "FTP Proxy port needs to be an integer value between 1 and 65535"
-msgstr ""
+msgstr "Le port du mandataire FTP doit être un entier compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 222
 msgid ""
 "The filename may only contain letters,digits and one dot (not required)."
 msgstr ""
+"Le fichier ne peut contenir que des lettres, chiffres et un point (non "
+"nécessaire)."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 223
 msgid "This does not look like a valid url."
-msgstr ""
+msgstr "Ceci ne semble pas être une url correcte."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 224
@@ -3058,7 +3060,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 247
 msgid "Select a command from the list."
-msgstr ""
+msgstr "Sélectionner une commande à partir de la liste."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 248
@@ -3447,7 +3449,7 @@ msgstr ""
 #
 # File: src/etc/inc/config.lib.inc, line: 157
 msgid "WARNING: User"
-msgstr "ALERTE : Nom d’utilisateur"
+msgstr "AVERTISSEMENT : Nom d’utilisateur"
 
 #
 # File: src/etc/inc/config.lib.inc, line: 157
@@ -3458,13 +3460,13 @@ msgstr ""
 #
 # File: src/etc/inc/config.lib.inc, line: 169
 msgid "WARNING: Corrupt config!"
-msgstr "ALERTE : Configuration corrompue !"
+msgstr "AVERTISSEMENT : Configuration corrompue !"
 
 #
 # File: src/etc/inc/config.lib.inc, line: 180
 msgid "WARNING: Config contents could not be saved. Could not open file!"
 msgstr ""
-"ALERTE : Le contenu de la configuration ne peut pas être sauvegardé. "
+"AVERTISSEMENT : Le contenu de la configuration ne peut pas être sauvegardé. "
 "Impossible d’ouvrir le fichier !"
 
 #
@@ -9802,7 +9804,7 @@ msgstr ""
 # File: src/www/firewall_aliases_edit.php, line: 257
 #, php-format
 msgid "URL '%s' is not valid."
-msgstr ""
+msgstr "l'URL '%s' n'est pas valide."
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 279
@@ -9819,7 +9821,7 @@ msgstr ""
 # File: src/www/firewall_aliases_edit.php, line: 294
 #, php-format
 msgid "%s/%s is not a valid subnet."
-msgstr ""
+msgstr "%s/%s n'est pas un sous-réseau valide."
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 318
@@ -9831,38 +9833,38 @@ msgstr ""
 #
 # File: src/www/firewall_aliases_edit.php, line: 459
 msgid "Network or FQDN"
-msgstr ""
+msgstr "Réseau ou FQDN"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 460
 # File: src/www/firewall_aliases_edit.php, line: 669
 msgid "Network(s)"
-msgstr ""
+msgstr "Réseau(x)"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 461
 # File: src/www/services_igmpproxy_edit.php, line: 224
 # File: src/www/services_unbound_acls.php, line: 234
 msgid "CIDR"
-msgstr ""
+msgstr "CIDR"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 463
 # File: src/www/firewall_aliases_edit.php, line: 668
 # File: src/www/firewall_aliases_edit.php, line: 680
 msgid "Host(s)"
-msgstr ""
+msgstr "Hôtes(s)"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 464
 msgid "IP or FQDN"
-msgstr ""
+msgstr "IP ou FQDN"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 465
 # File: src/www/firewall_aliases_edit.php, line: 670
 msgid "Port(s)"
-msgstr ""
+msgstr "Port(s)"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 467
@@ -9961,7 +9963,7 @@ msgstr ""
 # File: src/www/firewall_aliases_edit.php, line: 482
 # File: src/www/firewall_aliases_edit.php, line: 671
 msgid "OpenVPN Users"
-msgstr ""
+msgstr "Utilisateurs OpenVPN"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 483
@@ -10035,7 +10037,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_phase2.php, line: 625
 # File: src/www/vpn_ipsec_phase2.php, line: 685
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 686
@@ -12149,7 +12151,7 @@ msgstr ""
 #
 # File: src/www/firewall_rules_edit.php, line: 468
 msgid "ID must be an integer"
-msgstr ""
+msgstr "L'ID doit être un entier"
 
 #
 # File: src/www/firewall_rules_edit.php, line: 472
@@ -13826,6 +13828,8 @@ msgstr ""
 msgid ""
 "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank"
 msgstr ""
+"Entrer une adresse MAC avec le format suivant: xx:xx:xx:xx:xx:xx ou laisser "
+"vide"
 
 #
 # File: src/www/interfaces.php, line: 1661
