@@ -213,11 +213,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Negating destination address of \"any\" is invalid.");
     }
 
-    if (!is_ipaddr($pconfig['targetip']) && !is_subnet($pconfig['targetip']) && !is_alias($pconfig['targetip']) && empty($pconfig['nonat'])) {
+    if (!empty($pconfig['targetip']) && !is_ipaddr($pconfig['targetip']) && !is_subnet($pconfig['targetip']) && !is_alias($pconfig['targetip']) && empty($pconfig['nonat'])) {
         $input_errors[] = gettext("A valid target IP address must be specified.");
     }
     /* Verify Pool Options */
-    if (!is_alias($pconfig['targetip']) && substr($pconfig['poolopts'], 0, 11) == "round-robin") {
+    if (!empty($pconfig['targetip']) && !is_alias($pconfig['targetip']) && substr($pconfig['poolopts'], 0, 11) == "round-robin") {
         $input_errors[] = gettext("Only Round Robin pool options may be chosen when selecting an alias.");
     }
 
@@ -558,7 +558,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                    <td><a id="help_for_target" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation"); ?></td>
+                    <td><a id="help_for_target" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Translation / target"); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
