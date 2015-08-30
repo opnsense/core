@@ -96,7 +96,7 @@ include("head.inc");
 						  <div class="table-responsive">
 							  <table class="table table-striped">
                   <tr>
-                    <td colspan="2"><?=sprintf(gettext("%s's Password"),$username); ?></td>
+                    <td colspan="2"><?=gettext("Change your password"); ?></td>
 			            </tr>
 			            <tr>
 			              <td><?=gettext("Old password"); ?></td>
