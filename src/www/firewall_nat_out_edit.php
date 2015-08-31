@@ -249,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         // handle fields containing portnumbers
         if (in_array($pconfig['protocol'], explode(" ", "any tcp udp tcp/udp"))) {
-            if (isset($pconfig['staticnatport']) && !empty($pconfig['nonat'])) {
+            if (isset($pconfig['staticnatport']) && empty($pconfig['nonat'])) {
                 $natent['staticnatport'] = true;
             }
             $natent['sourceport'] = trim($pconfig['sourceport']);
