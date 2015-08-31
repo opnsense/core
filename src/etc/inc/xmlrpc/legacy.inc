@@ -213,6 +213,7 @@ function filter_configure_xmlrpc()
         # twice, as described on ticket #3797
         services_dhcpd_configure();
     }
+    system_hosts_generate();
     local_sync_accounts();
 
     return true;

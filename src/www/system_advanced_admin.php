@@ -269,6 +269,7 @@ if ($_POST) {
         }
 
         setup_serial_port();
+        system_hosts_generate();
         // Restart DNS in case dns rebinding toggled
         if (isset($config['dnsmasq']['enable'])) {
             services_dnsmasq_configure();

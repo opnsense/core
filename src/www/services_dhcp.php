@@ -505,6 +505,7 @@ if (isset($_POST['submit']) || isset($_POST['apply'])) {
 	/* Stop DHCP so we can cleanup leases */
 	killbyname("dhcpd");
 	dhcp_clean_leases();
+	system_hosts_generate();
 	/* dnsmasq_configure calls dhcpd_configure */
 	/* no need to restart dhcpd twice */
 	if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))	{
