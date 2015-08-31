@@ -42,7 +42,8 @@ result = []
 for filename in sorted(glob.glob('%s*'%suricata_alert_log)):
     row = dict()
     row['size'] = os.stat(filename).st_size
-    if row['size']  > 0:
+    # always list first file and non empty next.
+    if row['size']  > 0 or filename.split('/')[-1].count('.') > 1:
         row['modified'] = os.stat(filename).st_mtime
         row['filename'] = filename.split('/')[-1]
         # try to find actual timestamp from file
