@@ -246,7 +246,7 @@ POSSIBILITY OF SUCH DAMAGE.
                                 requestHandler:addAlertQryFilters,
                                 formatters:{
                                     info: function (column, row) {
-                                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "\"><span class=\"fa fa-info-circle\"></span></button> ";
+                                        return "<button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filepos + "/" + row.fileid + "\"><span class=\"fa fa-info-circle\"></span></button> ";
                                     }
                                 },
                             }
