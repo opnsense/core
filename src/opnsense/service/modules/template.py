@@ -245,7 +245,7 @@ class Template(object):
                         # Check if the last character of our output contains an end-of-line, if not copy it in if
                         # it was in the original template.
                         # It looks like Jinja sometimes isn't consistent on placing this last end-of-line in.
-                        if content[-1] != '\n':
+                        if len(content) > 1 and content[-1] != '\n':
                             src_file = '%s%s'%(self._template_dir,template_filename)
                             src_file_handle = open(src_file,'r')
                             src_file_handle.seek(-1, os.SEEK_END)
