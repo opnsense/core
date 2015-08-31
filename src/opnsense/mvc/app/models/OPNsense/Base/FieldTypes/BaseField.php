@@ -250,7 +250,7 @@ abstract class BaseField
     public function setValue($value)
     {
         // if first set, store initial value
-        if ($this->internalInitialValue === false) {
+        if ($this->internalInitialValue === false && !empty($value)) {
             $this->internalInitialValue = $value;
         }
         $this->internalValue = $value;
