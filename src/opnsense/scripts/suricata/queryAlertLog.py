@@ -96,6 +96,7 @@ if os.path.exists(suricata_log):
         if 'alert' in record:
             # add position in file
             record['filepos'] = line['pos']
+            record['fileid'] = parameters['fileid']
             # flatten structure
             record['alert_sid'] = record['alert']['signature_id']
             record['alert'] = record['alert']['signature']
