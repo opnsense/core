@@ -33,20 +33,34 @@
 import os
 import glob
 import ujson
+import time
+import datetime
 from lib import suricata_alert_log
+from lib.log import reverse_log_reader
 
 result = []
 for filename in sorted(glob.glob('%s*'%suricata_alert_log)):
     row = dict()
-    row['modified'] = os.stat(filename).st_mtime
-    row['filename'] = filename.split('/')[-1]
-    ext=filename.split('.')[-1]
-    if ext.isdigit():
-        row['sequence'] = int(ext)
-    else:
-        row['sequence'] = None
+    row['size'] = os.stat(filename).st_size
+    if row['size']  > 0:
+        row['modified'] = os.stat(filename).st_mtime
+        row['filename'] = filename.split('/')[-1]
+        # try to find actual timestamp from file
+        for line in reverse_log_reader(filename=filename):
+            if line['line'] != '':
+                record = ujson.loads(line['line'])
+                if record.has_key('timestamp'):
+                    row['modified'] = int(time.mktime(datetime.datetime.strptime(record['timestamp'].split('.')[0], "%Y-%m-%dT%H:%M:%S").timetuple()))
+                    break
 
-    result.append(row)
+
+        ext=filename.split('.')[-1]
+        if ext.isdigit():
+            row['sequence'] = int(ext)
+        else:
+            row['sequence'] = None
+
+        result.append(row)
 
 # output results
 print(ujson.dumps(result))
