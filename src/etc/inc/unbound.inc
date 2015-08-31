@@ -208,7 +208,7 @@ EOF;
     $infra_lame_ttl = (!empty($config['unbound']['infra_lame_ttl'])) ? $config['unbound']['infra_lame_ttl'] : "900";
     $infra_cache_numhosts = (!empty($config['unbound']['infra_cache_numhosts'])) ? $config['unbound']['infra_cache_numhosts'] : "10000";
     $unwanted_reply_threshold = (!empty($config['unbound']['unwanted_reply_threshold'])) ? $config['unbound']['unwanted_reply_threshold'] : "0";
-    $verbosity = isset($config['unbound']['loglevel']) ? $config['unbound']['loglevel'] : 1;
+    $verbosity = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : 1;
 
     // Set up forwarding if it configured
     if (isset($config['unbound']['forwarding'])) {
