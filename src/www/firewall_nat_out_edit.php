@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (strpos($a_out[$configId]['source']['network'], "/") !== false) {
             list($pconfig['source'],$pconfig['source_subnet']) = explode('/', $a_out[$configId]['source']['network']);
         } else {
-            $pconfig['source_subnet'] = $a_out[$configId]['source']['network'];
+            $pconfig['source'] = $a_out[$configId]['source']['network'];
         }
 
         if (!is_numeric($pconfig['source_subnet']))
