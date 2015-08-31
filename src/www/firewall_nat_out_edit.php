@@ -441,7 +441,7 @@ include("head.inc");
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php                foreach (explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF") as $proto):
+<?php                foreach (explode(" ", "any TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF") as $proto):
 ?>
               <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
                           <?=$proto;?>
