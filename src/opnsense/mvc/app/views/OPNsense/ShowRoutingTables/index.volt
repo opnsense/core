@@ -45,7 +45,7 @@ function escape(string) {
 window.routingstrings = {};
 window.routingstrings['Destination'] = '{{ lang._('Destination')|escape_js }}';
 window.routingstrings['Gateway'] = '{{ lang._('Gateway')|escape_js }}';
-window.routingstrings['Flags'] = '{{ ('Flags')|escape_js }}';
+window.routingstrings['Flags'] = '{{ lang._('Flags')|escape_js }}';
 window.routingstrings['Use'] = '{{ lang._('Use')|escape_js }}';
 window.routingstrings['Mtu'] = '{{ lang._('MTU')|escape_js }}';
 window.routingstrings['Netif'] = '{{ lang._('Interface')|escape_js }}';
