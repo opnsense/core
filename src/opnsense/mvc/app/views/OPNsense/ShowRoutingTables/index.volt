@@ -43,15 +43,15 @@ function escape(string) {
 }
 
 window.routingstrings = {};
-window.routingstrings['Destination'] = '{{ ('Destination')|escape_js }}';
-window.routingstrings['Gateway'] = '{{ ('Gateway')|escape_js }}';
+window.routingstrings['Destination'] = '{{ lang._('Destination')|escape_js }}';
+window.routingstrings['Gateway'] = '{{ lang._('Gateway')|escape_js }}';
 window.routingstrings['Flags'] = '{{ ('Flags')|escape_js }}';
-window.routingstrings['Use'] = '{{ ('Use')|escape_js }}';
-window.routingstrings['Mtu'] = '{{ ('MTU')|escape_js }}';
-window.routingstrings['Netif'] = '{{ ('Interface')|escape_js }}';
-window.routingstrings['Expire'] = '{{ ('Expire')|escape_js }}';
+window.routingstrings['Use'] = '{{ lang._('Use')|escape_js }}';
+window.routingstrings['Mtu'] = '{{ lang._('MTU')|escape_js }}';
+window.routingstrings['Netif'] = '{{ lang._('Interface')|escape_js }}';
+window.routingstrings['Expire'] = '{{ lang._('Expire')|escape_js }}';
 
-window.routingstrings['No data found.'] = '{{ ('No data found.')|escape_js }}';
+window.routingstrings['No data found.'] = '{{ lang._('No data found.')|escape_js }}';
 
 function translate_string(str) {
   if (str in window.routingstrings)
