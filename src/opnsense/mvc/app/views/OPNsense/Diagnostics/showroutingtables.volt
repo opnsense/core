@@ -155,7 +155,7 @@ function update_gui(data) {
 
 function refresh()
 {
-  $.get( "/api/diagnostics/loadroutingtable", function( data ) {
+  $.get( "/api/diagnostics/index/loadroutingtable", function( data ) {
     routingdata = data;
     update_gui(data);
     create_filter_form(data);

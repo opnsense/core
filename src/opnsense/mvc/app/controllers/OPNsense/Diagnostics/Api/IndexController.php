@@ -26,7 +26,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\ShowRoutingTables\Api;
+namespace OPNsense\Diagnostics\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 
@@ -35,7 +35,7 @@ class IndexController extends ApiControllerBase
   /**
    * @return array
    */
-  public function indexAction()
+  public function loadroutingtableAction()
   {
     $types = array("IPv6" => "inet6", "IPv4" => "inet");
     $output = array();

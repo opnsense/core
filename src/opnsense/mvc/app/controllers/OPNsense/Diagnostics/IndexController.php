@@ -26,17 +26,16 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace OPNsense\ShowRoutingTables;
+namespace OPNsense\Diagnostics;
 
 /**
  * Class IndexController
- * @package OPNsense\Sample
  */
 class IndexController extends \OPNsense\Base\IndexController
 {
-    public function indexAction()
+    public function showroutingtablesAction()
     {
         $this->view->title = gettext("Show routing tables");
-        $this->view->pick('OPNsense/ShowRoutingTables/index');
+        $this->view->pick('OPNsense/Diagnostics/showroutingtables');
     }
 }
