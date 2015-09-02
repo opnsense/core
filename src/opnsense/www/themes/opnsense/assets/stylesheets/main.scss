@@ -558,3 +558,14 @@ table{
     padding-top:0px !important;
     padding-bottom:20px;
 }
+
+select {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: right;
+  background-image: url(/ui/themes/opnsense/build/images/caret.png) !important;}
