@@ -52,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	$pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
 	$pconfig['autokey_enable'] = "yes";
 	$pconfig['autotls_enable'] = "yes";
-	$pconfig['tlsauth_enable'] = "yes";
 	if ($act == "edit" && isset($id) && isset($a_server[$id])) {
 			if ($a_server[$id]['mode'] != "p2p_shared_key") {
 					$pconfig['cert_depth'] = 1;
@@ -98,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['tlsauth_enable'] = null;
 			}
 	} elseif ($act == "new") {
+	    $pconfig['tlsauth_enable'] = "yes";
 	    $pconfig['dh_length'] = 1024;
 	    $pconfig['dev_mode'] = "tun";
 	    $pconfig['interface'] = "wan";
