@@ -92,13 +92,15 @@ function legacy_list_aliasses($type) {
     $result = array();
     if (isset($config['aliases']['alias'])) {
         foreach ($config['aliases']['alias'] as $alias) {
-            if ($type == "port") {
-                if (preg_match("/port/i", $alias['type'])) {
-                    $result[] = $alias;
-                }
-            } else {
-                if (!preg_match("/port/i", $alias['type'])){
-                    $result[] = $alias;
+            if (!empty($alias['address'])) {
+                if ($type == "port") {
+                    if (preg_match("/port/i", $alias['type'])) {
+                        $result[] = $alias;
+                    }
+                } else {
+                    if (!preg_match("/port/i", $alias['type'])){
+                        $result[] = $alias;
+                    }
                 }
             }
         }
