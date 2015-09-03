@@ -706,7 +706,7 @@ EOD;
                                     $ealg_kl = null;
                                 }
 
-                                if (!empty($ealg_kl) && $ealg_kl == "auto") {
+                                if ($ealg_kl == "auto") {
                                     $key_hi = $p2_ealgos[$ealg_id]['keysel']['hi'];
                                     $key_lo = $p2_ealgos[$ealg_id]['keysel']['lo'];
                                     $key_step = $p2_ealgos[$ealg_id]['keysel']['step'];
@@ -831,7 +831,7 @@ EOD;
                 }
             } else {
                 // mobile and ikev2
-                $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}-00{$idx}", $connEntry);
+                $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
                 if (!empty($rightsubnet_spec)) {
                     $tmpconf .= "\trightsubnet = " . join(",", $rightsubnet_spec) . "\n";
                 }
