@@ -104,10 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $savemsg = gettext($retval);
     }
-
-    vpn_ipsec_configure_preferoldsa();
     vpn_ipsec_configure();
-    vpn_ipsec_configure_loglevels();
 }
 
 $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Settings"));
