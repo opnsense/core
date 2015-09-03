@@ -52,13 +52,14 @@
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases cssClass="fa fa-list-alt">
-            <IP order="100" url="/firewall_aliases.php?tab=ip"/>
+            <IP order="100" url="/firewall_aliases.php?tab=ip">
+              <none url="/firewall_aliases.php"/>
+            </IP>
             <Ports order="200"  url="/firewall_aliases.php?tab=port"/>
             <URLs  order="300"  url="/firewall_aliases.php?tab=url"/>
             <All order="400"  url="/firewall_aliases.php?tab=all">
               <AliasesEdit url="/firewall_aliases_edit.php*"/>
               <Import url="/firewall_aliases_import.php"/>
-              <none url="/firewall_aliases.php"/>
             </All>
         </Aliases>
         <NAT url="/firewall_nat.php">
