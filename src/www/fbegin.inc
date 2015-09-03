@@ -187,10 +187,10 @@ if($need_alert_display == true) {
                                 </div>
 <?php
                               elseif ($subMenuItem->IsExternal == "Y" ):?>
-                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>"><?=$subMenuItem->VisibleName ?></a>
+                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>"><?=$subMenuItem->VisibleName ?><span class="<?=$subMenuItem->CssClass;?> __iconspacer pull-right"></span></a>
 <?php
                               elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subMenuItem->Url)):?>
-                                <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? "active" :"";?>"><?=$subMenuItem->VisibleName;?></a>
+                                <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? "active" :"";?>"><?=$subMenuItem->VisibleName;?><span class="<?=$subMenuItem->CssClass;?> __iconspacer pull-right"></span></a>
 <?php
                               endif;?>
 <?php
