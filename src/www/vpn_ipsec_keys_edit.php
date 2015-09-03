@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+  Copyright (C) 2014-2015 Deciso B.V.
+  Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("interfaces.inc");
@@ -33,7 +33,7 @@ require_once("vpn.inc");
 require_once("services.inc");
 
 if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-        $config['ipsec'] = array();
+    $config['ipsec'] = array();
 }
 
 if (!isset($config['ipsec']['mobilekey'])) {
@@ -128,9 +128,9 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) {
                 print_input_errors($input_errors);
         }
@@ -142,7 +142,7 @@ include("head.inc");
                 <table class="table table-striped">
                   <tr>
                     <td><a id="help_for_ident" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Identifier"); ?></td>
-					          <td>
+                    <td>
                       <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=$pconfig['ident'];?>" />
                       <div class="hidden" for="help_for_ident">
                         <?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.
@@ -154,34 +154,34 @@ include("head.inc");
                     <td>
                       <input name="psk" type="text" class="formfld unknown" id="psk" size="40" value="<?=$pconfig['psk'];?>" />
                     </td>
-					        </tr>
-					        <tr>
+                  </tr>
+                  <tr>
                     <td>&nbsp;</td>
                     <td>
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
 <?php                 if (isset($id) && isset($config['ipsec']['mobilekey'][$id])) :
 ?>
-					            <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php
 endif; ?>
-					          </td>
-					        </tr>
+                    </td>
+                  </tr>
                   <tr>
                     <td>&nbsp;</td>
                     <td>
                       <span class="text-danger">
-									<strong><?=gettext("Note"); ?>:<br /></strong>
-								</span>
-								<?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
+                  <strong><?=gettext("Note"); ?>:<br /></strong>
+                </span>
+                <?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
                     </td>
                   </tr>
-					      </table>
+                </table>
               </div>
             </form>
           </div>
         </section>
       </div>
-		</div>
-	</section>
+    </div>
+  </section>
 
 <?php include("foot.inc");
