@@ -251,7 +251,7 @@ $( document ).ready(function() {
           }
           display_top_tabs($tab_array);
 ?>
-          <div class="tab-content content-box col-xs-12">
+          <div class="content-box">
             <form action="firewall_rules.php?if=<?=$selected_if;?>" method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
