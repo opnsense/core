@@ -52,11 +52,11 @@ if (isset($_POST) && count($_POST) > 0) {
     }
 
     if (isset($_POST['ipv6nat_enable']) && $_POST['ipv6nat_enable'] == "yes") {
+    	$config['diag']['ipv6nat'] = array();
         $config['diag']['ipv6nat']['enable'] = true;
         $config['diag']['ipv6nat']['ipaddr'] = $_POST['ipv6nat_ipaddr'];
-    } elseif (isset($config['diag']['ipv6nat'])) {
-        unset($config['diag']['ipv6nat']['enable']);
-        unset($config['diag']['ipv6nat']['ipaddr']);
+    } elseif (isset($config['diag']['ipv6nat'])) {    	
+        unset($config['diag']['ipv6nat']);
     }
 
     if (isset($_POST['ipv6allow']) && $_POST['ipv6allow'] == "yes") {
