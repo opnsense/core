@@ -20,9 +20,9 @@
                                     {% endfor %}
                                 </div>
                         {% elseif subMenuItem.IsExternal == "Y" %}
-                                <a href="{{ subMenuItem.Url }}" target="_new" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}">{{ subMenuItem.VisibleName }}</a>
+                                <a href="{{ subMenuItem.Url }}" target="_new" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}">{{ subMenuItem.VisibleName }}<span class="{{ subMenuItem.CssClass }} __iconspacer pull-right"></span></a>
                             {% elseif acl.isPageAccessible(session.get('Username'),subMenuItem.Url)  %}
-                                <a href="{{ subMenuItem.Url }}" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}">{{ subMenuItem.VisibleName }}</a>
+                                <a href="{{ subMenuItem.Url }}" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}">{{ subMenuItem.VisibleName }}<span class="{{ subMenuItem.CssClass }} __iconspacer pull-right"></span></a>
                             {% endif %}
                         {% endfor %}
                     </div>
