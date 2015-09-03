@@ -197,13 +197,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("You must supply a valid port for the NAT port entry.");
     }
 
-    if (!(in_array($pconfig['source'], array("any","self")) || is_ipaddroralias($pconfig['source']))) {
+    if (!(in_array($pconfig['source'], array("any","(self)")) || is_ipaddroralias($pconfig['source']))) {
         $input_errors[] = gettext("A valid source must be specified.");
     }
     if (!empty($pconfig['source_subnet']) && !is_numericint($pconfig['source_subnet'])) {
         $input_errors[] = gettext("A valid source bit count must be specified.");
     }
-    if (!(in_array($pconfig['destination'], array("any","self")) || is_ipaddroralias($pconfig['destination']))) {
+    if (!(in_array($pconfig['destination'], array("any","(self)")) || is_ipaddroralias($pconfig['destination']))) {
         $input_errors[] = gettext("A valid destination must be specified.");
     }
     if (!empty($pconfig['destination_subnet']) && !is_numericint($pconfig['destination_subnet'])) {
