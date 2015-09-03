@@ -416,7 +416,11 @@ function backup_to_google_drive()
 				foreach ($configfiles as $filename => $file) {
 					if ($fcount >= $config->system->remotebackup->GDriveBackupCount->__toString()) {
 						log_error("remove " . $filename . " from Google Drive");
-						$client->delete($file);
+						try {
+							$client->delete($file);
+						} catch (Google_Service_Exception $e) {
+							log_error("unable to remove " . $filename . " from Google Drive");
+						}
 					}
 					$fcount++;
 				}
