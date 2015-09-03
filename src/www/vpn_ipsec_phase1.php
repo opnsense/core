@@ -974,7 +974,7 @@ endforeach; ?>
                     <td colspan="2"><b><?=gettext("Advanced Options"); ?></b></td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rekey_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Enable Rekey");?></td>
+                    <td><a id="help_for_rekey_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disable Rekey");?></td>
                     <td>
                       <input name="rekey_enable" type="checkbox" id="rekey_enable" value="yes" <?=isset($pconfig['rekey_enable']) ? "checked=\"checked\"" : ""; ?> />
                       <div class="hidden" for="help_for_rekey_enable">
@@ -983,7 +983,7 @@ endforeach; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_reauth_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Enable Reauth");?></td>
+                    <td><a id="help_for_reauth_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Disable Reauth");?></td>
                     <td>
                       <input name="reauth_enable" type="checkbox" id="reauth_enable" value="yes" <?= isset($pconfig['reauth_enable']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_reauth_enable">
