@@ -218,7 +218,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
             }
 
-            if(!empty($pconfig['type']) == 'host') {
+            if($pconfig['type'] == 'host') {
                 header("Location: firewall_aliases.php?tab=ip");
             } elseif (strpos($pconfig['type'],'url') !== false) {
                 header("Location: firewall_aliases.php?tab=url");
