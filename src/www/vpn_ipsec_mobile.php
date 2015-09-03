@@ -52,6 +52,10 @@ $form_fields = "user_source,group_source,pool_address,pool_netbits,net_list
 ,dns_server4,wins_server1,wins_server2,pfs_group,login_banner";
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // pass savemessage
+    if (isset($_GET['savemsg'])) {
+        $savemsg = htmlspecialchars($_GET['savemsg']);
+    }
     $pconfig = array();
     // defaults
     $pconfig['pool_netbits'] = 24;
@@ -92,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 clear_subsystem_dirty('ipsec');
             }
         }
+        header("Location: vpn_ipsec_mobile.php?savemsg=".$savemsg);
     } elseif (isset($_POST['submit'])) {
         // save form changes
 
