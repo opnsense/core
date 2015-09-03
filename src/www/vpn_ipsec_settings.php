@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2014 Electric Sheep Fencing, LLC
-	All rights reserved.
+  Copyright (C) 2014-2015 Deciso B.V.
+  Copyright (C) 2014 Electric Sheep Fencing, LLC
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
@@ -35,7 +35,7 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
 if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-        $config['ipsec'] = array();
+    $config['ipsec'] = array();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['noinstalllanspd']) && $pconfig['noinstalllanspd'] == "yes") {
         $config['system']['noinstalllanspd'] = true;
     } elseif (isset($config['system']['noinstalllanspd'])) {
-            unset($config['system']['noinstalllanspd']);
+        unset($config['system']['noinstalllanspd']);
     }
     if (isset($pconfig['preferoldsa_enable']) && $pconfig['preferoldsa_enable'] == "yes") {
         $config['ipsec']['preferoldsa'] = true;
@@ -123,7 +123,7 @@ $( document ).ready(function() {
 });
 
 function maxmss_checked(obj) {
-	if ($('#maxmss_enable').is(":checked")) {
+  if ($('#maxmss_enable').is(":checked")) {
     $('#maxmss').attr('disabled',false);
     $("#maxmss").addClass('show');
     $("#maxmss").removeClass('hidden');
@@ -137,9 +137,9 @@ function maxmss_checked(obj) {
 
 //]]>
 </script>
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
 
 <?php
       if (isset($savemsg)) {
@@ -150,22 +150,22 @@ function maxmss_checked(obj) {
       }
 ?>
         <section class="col-xs-12">
-				<? $active_tab = "/vpn_ipsec_settings.php";
+        <? $active_tab = "/vpn_ipsec_settings.php";
                 include('vpn_ipsec_tabs.inc'); ?>
-					<div class="tab-content content-box col-xs-12">
-							<form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
-								<div class="table-responsive">
-									<table class="table table-striped">
+          <div class="tab-content content-box col-xs-12">
+              <form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
+                <div class="table-responsive">
+                  <table class="table table-striped">
                     <tr>
                       <td ><strong><?=gettext("IPSec Advanced Settings"); ?></strong></td>
                       <td align="right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
                       </td>
-	                  </tr>
-										<tr>
-											<td><a id="help_for_noinstalllanspd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("LAN security associsations"); ?></td>
-											<td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_noinstalllanspd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("LAN security associsations"); ?></td>
+                      <td>
                         <input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?=!empty($pconfig['noinstalllanspd']) ? "checked=\"checked\""  : "";?> />
                         <strong><?=gettext("Do not install LAN SPD"); ?></strong>
                         <div class="hidden" for="help_for_noinstalllanspd">
@@ -173,10 +173,10 @@ function maxmss_checked(obj) {
                                                   "This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
                         </div>
                       </td>
-										</tr>
-										<tr>
-											<td><a id="help_for_preferoldsa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Security Associations"); ?></td>
-											<td width="78%" class="vtable">
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_preferoldsa_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Security Associations"); ?></td>
+                      <td width="78%" class="vtable">
                         <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
                         <div class="hidden" for="help_for_preferoldsa_enable">
@@ -184,13 +184,13 @@ function maxmss_checked(obj) {
                                                   "preferred if it's at least 30 seconds old. Select this " .
                                                   "option to always prefer old SAs over new ones."); ?>
                         </div>
-											</td>
-										</tr>
-										<tr>
-											<td><a id="help_for_ipsec_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Debug"); ?></td>
-											<td>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_ipsec_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Debug"); ?></td>
+                      <td>
                         <div class="hidden" for="help_for_ipsec_debug">
-												              <strong><?=gettext("Start IPSec in debug mode based on sections selected"); ?></strong> <br/>
+                                      <strong><?=gettext("Start IPSec in debug mode based on sections selected"); ?></strong> <br/>
                         </div>
 <?php                   foreach ($ipsec_loglevels as $lkey => $ldescr) :
 ?>
@@ -203,18 +203,18 @@ function maxmss_checked(obj) {
                           </option>
 <?php
                         endforeach; ?>
-												</select>
+                        </select>
 <?php
                     endforeach; ?>
                         <div class="hidden" for="help_for_ipsec_debug">
-												<?=gettext("Launches IPSec in debug mode so that more verbose logs " .
+                        <?=gettext("Launches IPSec in debug mode so that more verbose logs " .
                                                     "will be generated to aid in troubleshooting."); ?>
                         </div>
                       </td>
                     </tr>
-										<tr>
-											<td><a id="help_for_failoverforcereloadg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Reload on Failover"); ?></td>
-											<td>
+                    <tr>
+                      <td><a id="help_for_failoverforcereloadg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Reload on Failover"); ?></td>
+                      <td>
                         <input name="failoverforcereload" type="checkbox" id="failoverforcereload" value="yes" <?= !empty($pconfig['failoverforcereload']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Force IPsec Reload on Failover"); ?></strong>
                         <div class="hidden" for="help_for_failoverforcereloadg">
@@ -223,32 +223,32 @@ function maxmss_checked(obj) {
                                                   "when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior" .
                                                   " is disabled by default. Check this box to force IPsec to fully reload on failover."); ?>
                         </div>
-											</td>
-										</tr>
-										<tr>
-											<td><a id="help_for_maxmss_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum MSS"); ?></td>
-											<td>
-												<input name="maxmss_enable" type="checkbox" id="maxmss_enable" value="yes" <?= !empty($pconfig['maxmss_enable']) ? "checked=\"checked\"" : "" ;?> onclick="maxmss_checked()" />
-												<strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
-												<input name="maxmss" id="maxmss" type="text" value="<?= !empty($pconfig['maxmss']) ? $pconfig['maxmss'] : "1400";?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_maxmss_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum MSS"); ?></td>
+                      <td>
+                        <input name="maxmss_enable" type="checkbox" id="maxmss_enable" value="yes" <?= !empty($pconfig['maxmss_enable']) ? "checked=\"checked\"" : "" ;?> onclick="maxmss_checked()" />
+                        <strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
+                        <input name="maxmss" id="maxmss" type="text" value="<?= !empty($pconfig['maxmss']) ? $pconfig['maxmss'] : "1400";?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
                         <div class="hidden" for="help_for_maxmss_enable">
-												<?=gettext("Enable MSS clamping on TCP flows over VPN. " .
+                        <?=gettext("Enable MSS clamping on TCP flows over VPN. " .
                                                   "This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "); ?>
                         </div>
-											</td>
-										</tr>
-										<tr>
-											<td>&nbsp;</td>
-											<td>
-												<input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-											</td>
-										</tr>
-									</table>
-								</div>
-							</form>
-					  </div>
-				  </section>
-			  </div>
-	    </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                      <td>
+                        <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
     </section>
 <?php include("foot.inc");
