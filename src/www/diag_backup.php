@@ -440,7 +440,6 @@ if ($_POST) {
 											}
 										}
 									}
-									$config['diag']['ipv6nat'] = true;
 									write_config();
 									convert_config();
 									$savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
