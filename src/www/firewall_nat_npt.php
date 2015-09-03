@@ -182,15 +182,7 @@ $main_buttons = array(
         <?php print_info_box_np(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
-<?php
-            $tab_array = array();
-            $tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
-            $tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
-            $tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-            $tab_array[] = array(gettext("NPt"), true, "firewall_nat_npt.php");
-            display_top_tabs($tab_array);
-?>
-          <div class="tab-content content-box col-xs-12">
+          <div class="content-box">
             <form action="firewall_nat_npt.php" method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />

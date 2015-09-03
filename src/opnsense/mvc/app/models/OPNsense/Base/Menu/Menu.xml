@@ -62,15 +62,19 @@
               <Import url="/firewall_aliases_import.php"/>
             </All>
         </Aliases>
-        <NAT url="/firewall_nat.php">
-            <NatEdit url="/firewall_nat_edit.php*"/>
-            <PortForward VisibleName="Port Forward" url="/firewall_nat.php"/>
-            <OneOnOne VisibleName="1:1" url="/firewall_nat_1to1.php"/>
-            <OneOnOneEdit url="/firewall_nat_1to1_edit.php*"/>
-            <Outbound url="/firewall_nat_out.php"/>
-            <OutboundEdit url="/firewall_nat_out_edit.php*"/>
-            <NPt url="/firewall_nat_npt.php"/>
-            <NPtEdit url="/firewall_nat_npt_edit.php*"/>
+        <NAT cssClass="fa fa-exchange">
+            <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
+              <NatEdit url="/firewall_nat_edit.php*"/>
+            </PortForward>
+            <OneOnOne order="200" VisibleName="1:1" url="/firewall_nat_1to1.php">
+              <OneOnOneEdit url="/firewall_nat_1to1_edit.php*"/>
+            </OneOnOne>
+            <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
+              <OutboundEdit url="/firewall_nat_out_edit.php*"/>
+            </Outbound>
+            <NPt VisibleName="NPt (IPv6)"  order="400" url="/firewall_nat_npt.php">
+                <NPtEdit url="/firewall_nat_npt_edit.php*"/>
+            </NPt>
         </NAT>
         <Rules url="/firewall_rules.php">
             <RulesEdit url="/firewall_rules_edit.php*"/>
