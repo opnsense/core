@@ -180,15 +180,7 @@ $( document ).ready(function() {
 <?php print_info_box_np(gettext("The alias list has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?>
 <?php endif; ?>
         <section class="col-xs-12">
-<?php
-              $tab_array = array();
-              $tab_array[] = array(gettext("IP"),($selected_tab=="ip" ? true : ($selected_tab=="host" ? true : ($selected_tab == "network" ? true : false))), "/firewall_aliases.php?tab=ip");
-              $tab_array[] = array(gettext("Ports"), ($selected_tab=="port"? true : false), "/firewall_aliases.php?tab=port");
-              $tab_array[] = array(gettext("URLs"), ($selected_tab=="url"? true : false), "/firewall_aliases.php?tab=url");
-              $tab_array[] = array(gettext("All"), ($selected_tab=="all"? true : false), "/firewall_aliases.php?tab=all");
-              display_top_tabs($tab_array);
-?>
-          <div class="tab-content content-box col-xs-12">
+          <div class="content-box">
             <form action="firewall_aliases.php" method="post" name="iform" id="iform">
               <input type="hidden" name="tab" value="<?=$selected_tab;?>" />
               <input type="hidden" name="id" value="" id="delId"/>
