@@ -151,7 +151,9 @@ function getAllowedPages($username) {
 	// build a list of allowed pages
 	if (is_array($config['system']['group']) && is_array($allowed_groups)) {
 		foreach ($config['system']['group'] as $group) {
-			if (in_array($group['name'], $allowed_groups)) {
+			// a bit odd, we have seem some cases in the wild where $group doesn't contain a name attribute.
+			// this shouldn't happen, but to avoid warnings we will check over here.
+			if (isset($group['name']) && in_array($group['name'], $allowed_groups)) {
 				getPrivPages($group, $allowed_pages);
 			}
 		}
