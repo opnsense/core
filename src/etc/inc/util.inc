@@ -821,6 +821,7 @@ function get_configured_ipv6_addresses()
 function get_interface_list($only_active = false)
 {
 	global $config;
+	$iflist = array();
 
 	/* list of virtual interface types */
 	$vfaces = array(
