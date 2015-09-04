@@ -34,12 +34,13 @@ require_once("interfaces.inc");
 
 $system_logfile = '/var/log/system.log';
 
-$nentries = $config['syslog']['nentries'];
-if (!$nentries) {
+if (empty($config['syslog']['nentries'])) {
 	$nentries = 50;
+} else {
+	$nentries = $config['syslog']['nentries'];
 }
 
-if ($_POST['clear']) {
+if (isset($_POST['clear'])) {
 	clear_log_file($system_logfile);
 }
 

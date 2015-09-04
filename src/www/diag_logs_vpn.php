@@ -33,9 +33,11 @@ require_once("vpn.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$nentries = $config['syslog']['nentries'];
-if (!$nentries)
-	$nentries = 50;
+if (empty($config['syslog']['nentries'])) {
+        $nentries = 50;
+} else {
+        $nentries = $config['syslog']['nentries'];
+}
 
 if (htmlspecialchars($_POST['vpntype']))
 	$vpntype = htmlspecialchars($_POST['vpntype']);
