@@ -35,9 +35,10 @@ require_once("interfaces.inc");
 
 $wireless_logfile = '/var/log/wireless.log';
 
-$nentries = $config['syslog']['nentries'];
-if (!$nentries) {
-	$nentries = 50;
+if (empty($config['syslog']['nentries'])) {
+        $nentries = 50;
+} else {
+        $nentries = $config['syslog']['nentries'];
 }
 
 if ($_POST['clear']) {

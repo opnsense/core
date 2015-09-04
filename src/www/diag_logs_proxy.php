@@ -29,9 +29,10 @@ require_once("guiconfig.inc");
 
 $logfile = '/var/log/squid/cache.log';
 
-$max_logentries = $config['syslog']['nentries'];
-if (!$max_logentries) {
-	$max_logentries = 50;
+if (empty($config['syslog']['nentries'])) {
+        $nentries = 50;
+} else {
+        $nentries = $config['syslog']['nentries'];
 }
 
 if ($_POST['clear']) {
