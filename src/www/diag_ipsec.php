@@ -60,32 +60,57 @@ if (!isset($config['ipsec']['phase1'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		// check if post can be valid
-		if (!empty($_POST['ikeid']) && ctype_digit($_POST['ikeid']) && !empty($_POST['action'])) {
+		if (!empty($_POST['ikeid']) && ctype_digit(str_replace('-','',$_POST['ikeid'])) && !empty($_POST['action'])) {
+			// temporary solution to find related IKEv1 connections
+			// eventually we need to look at VICI (https://wiki.strongswan.org/projects/strongswan/wiki/VICI)
+			$ipsec_connlist = array();
+			exec("/usr/local/sbin/ipsec statusall", $ipsec_status_all);
+			foreach ($ipsec_status_all as $line ) {
+					if (strpos($line, "child:") !== false) {
+							$connId = trim(explode(":",$line)[0]);
+							if (strpos($line, "-") !== false) {
+									// IKEv1 items with more then one phase 2 entry
+									if (!isset($ipsec_connlist[explode("-",$connId)[0]])) {
+											$ipsec_connlist[trim(explode("-",$connId)[0])] = array();
+									}
+									$ipsec_connlist[trim(explode("-",$connId)[0])][] = $connId;
+							} else {
+									$ipsec_connlist[$connId] = array($connId);
+							}
+					}
+			}
+
 			$act = $_POST['action'];
-			$ikeid = $_POST['ikeid'];
+			$ikeid = 'con'.$_POST['ikeid'];
 			// check if a valid ikesaid is provided
 			if (!empty($_POST['ikesaid']) && ctype_digit($_POST['ikesaid'])) {
-				$ikesaid = $_POST['ikesaid'];
+					$ikesaid = $_POST['ikesaid'];
 			} else {
-				$ikesaid = null;
+					$ikesaid = null;
 			}
 			// todo: move to configctl calls
 			switch ($act) {
 				case 'connect':
-					mwexec("/usr/local/sbin/ipsec down con" . $ikeid);
-					mwexec("/usr/local/sbin/ipsec up con" . $ikeid);
+					if (isset($ipsec_connlist[$ikeid])) {
+							foreach ($ipsec_connlist[$ikeid] as $client) {
+									mwexec("/usr/local/sbin/ipsec down " . $client);
+									mwexec("/usr/local/sbin/ipsec up " . $client);
+							}
+					} else {
+							// ipsec statusall should have found this connection
+							mwexec("/usr/local/sbin/ipsec down " . $ikeid);
+							mwexec("/usr/local/sbin/ipsec up " . $ikeid);
+					}
 					break;
 				case 'ikedisconnect':
-					mwexec("/usr/local/sbin/ipsec down con" . $ikeid);
-					break;
-				case 'ikedisconnectconn':
 					if ($ikesaid !== null) {
-						mwexec("/usr/local/sbin/ipsec down con" . $ikeid . "[" . $ikesaid . "]");
+						mwexec("/usr/local/sbin/ipsec down " . $ikeid . "[" . $ikesaid . "]");
 					} else {
-
+						mwexec("/usr/local/sbin/ipsec down " . $ikeid);
 					}
+					break;
 				case 'childdisconnect':
-					mwexec("/usr/local/sbin/ipsec down con" . $ikeid . "{" . $ikesaid . "}");
+					mwexec("/usr/local/sbin/ipsec down " . $ikeid . "{" . $ikesaid . "}");
 					break;
 
 			}
@@ -143,7 +168,7 @@ include("head.inc");
 											foreach ($status['query']['ikesalist']['ikesa'] as $ikeid => $ikesa):
 												// first do formatting
 												$con_id = substr($ikesa['peerconfig'], 3);
-												$ipsecconnected[$con_id] = $con_id;
+												$ipsecconnected[trim(explode("-",$con_id)[0])] = $con_id;
 												$ipsec_get_descr = '';
 												foreach ($pconfig as $p1) {
 														if ($p1['ikeid'] == $con_id) {
@@ -219,9 +244,6 @@ include("head.inc");
 <?php												else: ?>
 															<button type="submit" class="btn btn-xs" name="action" value="ikedisconnect" title="<?=gettext("Disconnect VPN");?>">
 																<span class="glyphicon glyphicon-stop"/>
-															</button>
-															<button type="submit" class="btn btn-xs" name="action" value="ikedisconnectconn"  title="<?=gettext("Disconnect VPN Connection");?>">
-																<span class="glyphicon glyphicon-remove"/>
 															</button>
 <?php												endif; ?>
 														</form>
