@@ -1600,7 +1600,7 @@ function services_dhcrelay6_configure()
 			}
 		}
 		if (!isset($destif)) {
-			if (is_array($config['staticroutes']['route'])) {
+			if (isset($config['staticroutes']['route'])) {
 				foreach ($config['staticroutes']['route'] as $rtent) {
 					if (ip_in_subnet($srvip, $rtent['network'])) {
 						$a_gateways = return_gateways_array(true);
