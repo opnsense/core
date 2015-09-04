@@ -44,13 +44,12 @@ if (!isset($config['system']['ssh']['enabled'])) {
 }
 
 /* reinstall the backup if it is available */
-if (file_exists('/conf/sshd/ssh_host_key') && !file_exists("{$etc_ssh}/ssh_host_key")) {
+if (file_exists('/conf/sshd/ssh_host_rsa_key') && !file_exists("{$etc_ssh}/ssh_host_rsa_key")) {
 	mwexec("/bin/cp -p /conf/sshd/* {$etc_ssh}/");
 }
 
 $keys = array(
 	/* .pub files are implied */
-	'rsa1' => 'ssh_host_key',
 	'rsa' => 'ssh_host_rsa_key',
 	'dsa' => 'ssh_host_dsa_key',
 	'ecdsa' => 'ssh_host_ecdsa_key',
