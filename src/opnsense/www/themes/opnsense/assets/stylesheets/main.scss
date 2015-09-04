@@ -367,7 +367,7 @@ body{
 	border-bottom: none;
 }
 
-.nav-tabs > li.active > a{
+.nav-tabs > li.active {
 	background: #FFF !important;
 }
 
@@ -378,13 +378,13 @@ body{
 
 .nav-tabs.nav-justified{
 	border-right:1px solid map-get($colors, bordergrey);
-
-	> li > a{
-	    border-bottom:1px solid map-get($colors, bordergrey);
+	> li {
+		border-bottom:1px solid map-get($colors, bordergrey);
 		border-top:1px solid map-get($colors, bordergrey);
 		border-left:1px solid map-get($colors, bordergrey);
 		border-radius: 0px;
 		background: map-get($colors, lightgrey);
+	> a {
 		color: map-get($colors, darkgrey);
 		font-family: 'SourceSansProSemibold';
 
@@ -392,10 +392,12 @@ body{
 		border-bottom: 1px solid transparent;
 	}
 	}
+	}
 
-	> li.active a{
+	> li.active > a{
 	@media (max-width:$screen-xs-max){
 		border-right: 0 !important;
+	}
 	}
 	}
 
@@ -412,7 +414,6 @@ body{
 		margin-bottom: 0;
 	}
 	}
-}
 
 .btn .glyphicon {
     vertical-align: -1px;
