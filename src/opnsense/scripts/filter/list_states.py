@@ -62,7 +62,7 @@ if __name__ == '__main__':
             for line in data.split('\n'):
                 parts = line.split()
                 if len(parts) >= 6:
-                    record = dict
+                    record = dict()
                     record['nat_addr'] = None
                     record['nat_port'] = None
                     record['iface'] = parts[0]
