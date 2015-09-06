@@ -34,34 +34,35 @@ import os
 import sys
 import ujson
 
+
 def parse_address(addr):
-    result = {'port':'0'}
+    parse_result = {'port': '0'}
     if addr.count(':') > 1:
         # parse IPv6 address
-        result['addr'] = addr.split('[')[0]
-        result['ipproto'] = 'ipv6'
+        parse_result['addr'] = addr.split('[')[0]
+        parse_result['ipproto'] = 'ipv6'
         if addr.find('[') > -1:
-            result['port'] = addr.split('[')[1].split(']')[0]
+            parse_result['port'] = addr.split('[')[1].split(']')[0]
     else:
         # parse IPv4 address
-        result['ipproto'] = 'ipv4'
-        result['addr'] = addr.split(':')[0]
+        parse_result['ipproto'] = 'ipv4'
+        parse_result['addr'] = addr.split(':')[0]
         if addr.find(':') > -1:
-            result['port'] = addr.split(':')[1]
+            parse_result['port'] = addr.split(':')[1]
 
-    return result
+    return parse_result
 
 if __name__ == '__main__':
-    result={'details':[]}
+    result = {'details': []}
     with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl','-s', 'state'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+        subprocess.call(['/sbin/pfctl', '-s', 'state'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         data = output_stream.read().strip()
-        if (data.count('\n') > 2):
+        if data.count('\n') > 2:
             for line in data.split('\n'):
                 parts = line.split()
                 if len(parts) >= 6:
-                    record = {}
+                    record = dict
                     record['nat_addr'] = None
                     record['nat_port'] = None
                     record['iface'] = parts[0]
@@ -99,10 +100,10 @@ if __name__ == '__main__':
             if state['ipproto'] == 'ipv4':
                 if state['nat_addr'] is not None:
                     print ('%(iface)s %(proto)s %(src_addr)s:%(src_port)s \
-  (%(nat_addr)s:%(nat_port)s) %(direction)s %(dst_addr)s:%(dst_port)s %(state)s'%state)
+  (%(nat_addr)s:%(nat_port)s) %(direction)s %(dst_addr)s:%(dst_port)s %(state)s' % state)
                 else:
                     print ('%(iface)s %(proto)s %(src_addr)s:%(src_port)s \
-  %(direction)s %(dst_addr)s:%(dst_port)s %(state)s'%state)
+  %(direction)s %(dst_addr)s:%(dst_port)s %(state)s' % state)
             else:
                 print ('%(iface)s %(proto)s %(src_addr)s[%(src_port)s] \
-  %(direction)s %(dst_addr)s[%(dst_port)s] %(state)s'%state)
+  %(direction)s %(dst_addr)s[%(dst_port)s] %(state)s' % state)
