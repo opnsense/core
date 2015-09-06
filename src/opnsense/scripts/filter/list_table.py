@@ -35,19 +35,21 @@ import os
 import sys
 import ujson
 
-result = []
-if len(sys.argv) > 1:
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'show'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        for line in output_stream.read().strip().split('\n'):
-            if line.strip() != "":
-                result.append(line.strip())
+if __name__ == '__main__':
+    result = []
+    if len(sys.argv) > 1:
+        with tempfile.NamedTemporaryFile() as output_stream:
+            subprocess.call(['/sbin/pfctl', '-t', sys.argv[1], '-T', 'show'],
+                            stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            output_stream.seek(0)
+            for line in output_stream.read().strip().split('\n'):
+                if line.strip() != "":
+                    result.append(line.strip())
 
-# handle command line argument (type selection)
-if len(sys.argv) > 2 and sys.argv[2] == 'json':
-    print(ujson.dumps(result))
-else:
-    # output plain
-    for table in result:
-        print (table)
+    # handle command line argument (type selection)
+    if len(sys.argv) > 2 and sys.argv[2] == 'json':
+        print(ujson.dumps(result))
+    else:
+        # output plain
+        for table in result:
+            print (table)
