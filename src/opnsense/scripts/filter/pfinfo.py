@@ -35,18 +35,19 @@ import os
 import sys
 import ujson
 
-result=collections.OrderedDict()
-for stattype in ['info', 'memory', 'timeouts', 'Interfaces']:
-    with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl','-vvs'+stattype], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-        output_stream.seek(0)
-        result[stattype] = output_stream.read().strip()
+if __name__ == '__main__':
+    result = collections.OrderedDict()
+    for stattype in ['info', 'memory', 'timeouts', 'Interfaces']:
+        with tempfile.NamedTemporaryFile() as output_stream:
+            subprocess.call(['/sbin/pfctl', '-vvs'+stattype], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            output_stream.seek(0)
+            result[stattype] = output_stream.read().strip()
 
-# handle command line argument (type selection)
-if len(sys.argv) > 1 and sys.argv[1] == 'json':
-    print(ujson.dumps(result))
-else:
-    # output plain
-    for stattype in result:
-        print ('------------------------- %s -------------------------' % (stattype) )
-        print (result[stattype])
+    # handle command line argument (type selection)
+    if len(sys.argv) > 1 and sys.argv[1] == 'json':
+        print(ujson.dumps(result))
+    else:
+        # output plain
+        for stattype in result:
+            print ('------------------------- %s -------------------------' % stattype)
+            print (result[stattype])
