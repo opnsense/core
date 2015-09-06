@@ -34,20 +34,21 @@ import os
 import sys
 import ujson
 
-result=[]
-with tempfile.NamedTemporaryFile() as output_stream:
-    subprocess.call(['/sbin/pfctl','-s', 'osfp'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
-    output_stream.seek(0)
-    data = output_stream.read().strip()
-    if (data.count('\n') > 2):
-        for line in data.split('\n')[2:]:
-            result.append(line.replace('\t',' ').strip())
+if __name__ == '__main__':
+    result = []
+    with tempfile.NamedTemporaryFile() as output_stream:
+        subprocess.call(['/sbin/pfctl', '-s', 'osfp'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+        output_stream.seek(0)
+        data = output_stream.read().strip()
+        if data.count('\n') > 2:
+            for line in data.split('\n')[2:]:
+                result.append(line.replace('\t', ' ').strip())
 
-# handle command line argument (type selection)
-if len(sys.argv) > 1 and sys.argv[1] == 'json':
-    print(ujson.dumps(result))
-else:
-    # output plain
-    print ('------------------------- OS fingerprints -------------------------')
-    for ostype in result:
-        print (ostype)
+    # handle command line argument (type selection)
+    if len(sys.argv) > 1 and sys.argv[1] == 'json':
+        print(ujson.dumps(result))
+    else:
+        # output plain
+        print ('------------------------- OS fingerprints -------------------------')
+        for ostype in result:
+            print (ostype)
