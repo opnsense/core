@@ -38,30 +38,31 @@ import datetime
 from lib import suricata_alert_log
 from lib.log import reverse_log_reader
 
-result = []
-for filename in sorted(glob.glob('%s*'%suricata_alert_log)):
-    row = dict()
-    row['size'] = os.stat(filename).st_size
-    # always list first file and non empty next.
-    if row['size']  > 0 or filename.split('/')[-1].count('.') == 1:
-        row['modified'] = os.stat(filename).st_mtime
-        row['filename'] = filename.split('/')[-1]
-        # try to find actual timestamp from file
-        for line in reverse_log_reader(filename=filename):
-            if line['line'] != '':
-                record = ujson.loads(line['line'])
-                if record.has_key('timestamp'):
-                    row['modified'] = int(time.mktime(datetime.datetime.strptime(record['timestamp'].split('.')[0], "%Y-%m-%dT%H:%M:%S").timetuple()))
-                    break
+if __name__ == '__main__':
+    result = []
+    for filename in sorted(glob.glob('%s*'%suricata_alert_log)):
+        row = dict()
+        row['size'] = os.stat(filename).st_size
+        # always list first file and non empty next.
+        if row['size']  > 0 or filename.split('/')[-1].count('.') == 1:
+            row['modified'] = os.stat(filename).st_mtime
+            row['filename'] = filename.split('/')[-1]
+            # try to find actual timestamp from file
+            for line in reverse_log_reader(filename=filename):
+                if line['line'] != '':
+                    record = ujson.loads(line['line'])
+                    if record.has_key('timestamp'):
+                        row['modified'] = int(time.mktime(datetime.datetime.strptime(record['timestamp'].split('.')[0], "%Y-%m-%dT%H:%M:%S").timetuple()))
+                        break
 
 
-        ext=filename.split('.')[-1]
-        if ext.isdigit():
-            row['sequence'] = int(ext)
-        else:
-            row['sequence'] = None
+            ext=filename.split('.')[-1]
+            if ext.isdigit():
+                row['sequence'] = int(ext)
+            else:
+                row['sequence'] = None
 
-        result.append(row)
+            result.append(row)
 
-# output results
-print(ujson.dumps(result))
+    # output results
+    print(ujson.dumps(result))
