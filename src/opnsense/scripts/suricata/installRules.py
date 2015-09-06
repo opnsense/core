@@ -34,60 +34,61 @@ from ConfigParser import ConfigParser
 import lib.rulecache
 from lib import rule_source_directory
 
-RuleCache = lib.rulecache.RuleCache()
+if __name__ == '__main__':
+    RuleCache = lib.rulecache.RuleCache()
 
-rule_config_fn = ('%s../rules.config'%rule_source_directory)
-rule_target_dir = ('%s../opnsense.rules'%rule_source_directory)
-rule_yaml_list = ('%s../installed_rules.yaml'%rule_source_directory)
+    rule_config_fn = ('%s../rules.config'%rule_source_directory)
+    rule_target_dir = ('%s../opnsense.rules'%rule_source_directory)
+    rule_yaml_list = ('%s../installed_rules.yaml'%rule_source_directory)
 
-# parse OPNsense rule config
-rule_updates = {}
-if os.path.exists(rule_config_fn):
-    cnf = ConfigParser()
-    cnf.read(rule_config_fn)
-    for section in cnf.sections():
-        if section[0:5] == 'rule_':
-            sid = section[5:]
-            rule_updates[sid] = {}
-            for rule_item in cnf.items(section):
-                rule_updates[sid][rule_item[0]] = rule_item[1]
+    # parse OPNsense rule config
+    rule_updates = {}
+    if os.path.exists(rule_config_fn):
+        cnf = ConfigParser()
+        cnf.read(rule_config_fn)
+        for section in cnf.sections():
+            if section[0:5] == 'rule_':
+                sid = section[5:]
+                rule_updates[sid] = {}
+                for rule_item in cnf.items(section):
+                    rule_updates[sid][rule_item[0]] = rule_item[1]
 
-# create target rule directory if not existing
-if not os.path.exists(rule_target_dir):
-    os.mkdir(rule_target_dir, 0o755)
+    # create target rule directory if not existing
+    if not os.path.exists(rule_target_dir):
+        os.mkdir(rule_target_dir, 0o755)
 
-# install ruleset
-all_installed_files = []
-for filename in RuleCache.listLocal():
-    output_data = []
-    for rule_info_record in RuleCache.listRules(filename=filename):
-        # default behavior, do not touch rule, only copy to output
-        rule = rule_info_record['rule']
-        # change rule if in rule rule updates
-        if rule_info_record['metadata'] is not None and 'sid' in rule_info_record['metadata'] \
-                and rule_info_record['metadata']['sid'] in rule_updates:
-            # search last comment marker
-            for i in range(len(rule_info_record['rule'])):
-                if rule[i] != '#':
-                    break
+    # install ruleset
+    all_installed_files = []
+    for filename in RuleCache.listLocal():
+        output_data = []
+        for rule_info_record in RuleCache.listRules(filename=filename):
+            # default behavior, do not touch rule, only copy to output
+            rule = rule_info_record['rule']
+            # change rule if in rule rule updates
+            if rule_info_record['metadata'] is not None and 'sid' in rule_info_record['metadata'] \
+                    and rule_info_record['metadata']['sid'] in rule_updates:
+                # search last comment marker
+                for i in range(len(rule_info_record['rule'])):
+                    if rule[i] != '#':
+                        break
 
-            # generate altered rule
-            if 'enabled' in rule_updates[rule_info_record['metadata']['sid']]:
-                if (rule_updates[rule_info_record['metadata']['sid']]['enabled']) == '0':
-                    rule = ('#%s'%rule[i:])
-                else:
-                    rule = rule[i:]
+                # generate altered rule
+                if 'enabled' in rule_updates[rule_info_record['metadata']['sid']]:
+                    if (rule_updates[rule_info_record['metadata']['sid']]['enabled']) == '0':
+                        rule = ('#%s'%rule[i:])
+                    else:
+                        rule = rule[i:]
 
-        output_data.append(rule)
+            output_data.append(rule)
 
-    # write data to file
-    all_installed_files.append(filename.split('/')[-1])
-    open('%s/%s'%(rule_target_dir, filename.split('/')[-1]), 'wb').write('\n'.join(output_data))
+        # write data to file
+        all_installed_files.append(filename.split('/')[-1])
+        open('%s/%s'%(rule_target_dir, filename.split('/')[-1]), 'wb').write('\n'.join(output_data))
 
-# flush all written rule filenames into yaml file
-with open(rule_yaml_list,'wb') as f_out:
-    f_out.write('%YAML 1.1\n')
-    f_out.write('---\n')
-    f_out.write('rule-files:\n')
-    for installed_file in all_installed_files:
-        f_out.write(' - %s\n'%installed_file)
+    # flush all written rule filenames into yaml file
+    with open(rule_yaml_list,'wb') as f_out:
+        f_out.write('%YAML 1.1\n')
+        f_out.write('---\n')
+        f_out.write('rule-files:\n')
+        for installed_file in all_installed_files:
+            f_out.write(' - %s\n'%installed_file)
