@@ -62,16 +62,16 @@ else
 
 //SVG attributes
 $attribs['axis']='fill="black" stroke="black"';
-$attribs['in']='fill="#FF0000" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="7"';
-$attribs['out']='fill="#000000" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="7"';
-$attribs['graph_in']='fill="none" stroke="#FF0000" stroke-opacity="0.8"';
-$attribs['graph_out']='fill="none" stroke="#000000" stroke-opacity="0.8"';
+$attribs['in']='fill="#f07712" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="7"';
+$attribs['out']='fill="#333333" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="7"';
+$attribs['graph_in']='fill="none" stroke="#f07712" stroke-opacity="0.8"';
+$attribs['graph_out']='fill="none" stroke="#333333" stroke-opacity="0.8"';
 $attribs['legend']='fill="black" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4"';
-$attribs['graphname']='fill="#FF0000" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="8"';
+$attribs['graphname']='fill="#f07712" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="8"';
 $attribs['grid_txt']='fill="gray" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="6"';
 $attribs['grid']='stroke="gray" stroke-opacity="0.5"';
-$attribs['switch_unit']='fill="#FF0000" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4" text-decoration="underline"';
-$attribs['switch_scale']='fill="#FF0000" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4" text-decoration="underline"';
+$attribs['switch_unit']='fill="#f07712" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4" text-decoration="underline"';
+$attribs['switch_scale']='fill="#f07712" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4" text-decoration="underline"';
 $attribs['error']='fill="blue" font-family="Arial" font-size="4"';
 $attribs['collect_initial']='fill="gray" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4"';
 
