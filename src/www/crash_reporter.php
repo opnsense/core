@@ -33,33 +33,33 @@ require_once("captiveportal.inc");
 
 function upload_crash_report($files, $agent)
 {
-	global $g;
+    global $g;
 
-	$post = array();
-	$counter = 0;
+    $post = array();
+    $counter = 0;
 
-	foreach($files as $filename) {
-		if (is_link($filename) || $filename == '/var/crash/minfree.gz' || $filename == '/var/crash/bounds.gz') {
-			continue;
-		}
-		$post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
-		$counter++;
-	}
+    foreach ($files as $filename) {
+        if (is_link($filename) || $filename == '/var/crash/minfree.gz' || $filename == '/var/crash/bounds.gz') {
+            continue;
+        }
+        $post["file{$counter}"] = curl_file_create($filename, "application/x-gzip", basename($filename));
+        $counter++;
+    }
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, 'https://crash.opnsense.org/');
-	curl_setopt($ch, CURLOPT_HEADER, false);
-	curl_setopt($ch, CURLOPT_VERBOSE, false);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, $agent);
-	curl_setopt($ch, CURLOPT_POST, true);
-	curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: multipart/form-data;' ) );
-	$response = curl_exec($ch);
-	curl_close($ch);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://crash.opnsense.org/');
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_VERBOSE, false);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_SAFE_UPLOAD, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: multipart/form-data;' ));
+    $response = curl_exec($ch);
+    curl_close($ch);
 
-	return !$response;
+    return !$response;
 }
 
 $pgtitle = array(gettext('System'), gettext('Crash Reporter'));
@@ -67,14 +67,14 @@ include('head.inc');
 
 $last_version = '/usr/local/opnsense/version/opnsense.last';
 $crash_report_header = sprintf(
-	"%s\n%s %s%s %s (%s)\nUUID %s\n",
-	php_uname('v'),
-	$g['product_name'],
-	trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
-	file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
-	trim(shell_exec('/usr/local/bin/openssl version')),
-	php_uname('m'),
-	shell_exec('/sbin/sysctl -b kern.hostuuid')
+    "%s\n%s %s%s %s (%s)\nUUID %s\n",
+    php_uname('v'),
+    $g['product_name'],
+    trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
+    file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
+    trim(shell_exec('/usr/local/bin/openssl version')),
+    php_uname('m'),
+    shell_exec('/sbin/sysctl -b kern.hostuuid')
 );
 
 $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
@@ -83,53 +83,53 @@ $crash_reports = array();
 $has_crashed = false;
 
 if (isset($_POST['Submit'])) {
-	if ($_POST['Submit'] == 'yes') {
-		if (!is_dir('/var/crash')) {
-			mkdir('/var/crash', 0750, true);
-		}
-		$email = trim($_POST['Email']);
-		if (!empty($email)) {
-			$crash_report_header .= "Email {$email}\n";
-		}
-		$desc = trim($_POST['Desc']);
-		if (!empty($desc)) {
-			$crash_report_header .= "Description\n\n{$desc}";
-		}
-		file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
-		@rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
-		@copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
-		exec('/usr/bin/gzip /var/crash/*');
-		$files_to_upload = glob('/var/crash/*');
-		$resp = upload_crash_report($files_to_upload, $user_agent);
-		array_map('unlink', $files_to_upload);
-	} elseif ($_POST['Submit'] == 'no') {
-		array_map('unlink', glob('/var/crash/*'));
-		@unlink('/tmp/PHP_errors.log');
-	} elseif ($_POST['Submit'] == 'new') {
-		/* force a crash report generation */
-		$has_crashed = true;
-	}
+    if ($_POST['Submit'] == 'yes') {
+        if (!is_dir('/var/crash')) {
+            mkdir('/var/crash', 0750, true);
+        }
+        $email = trim($_POST['Email']);
+        if (!empty($email)) {
+            $crash_report_header .= "Email {$email}\n";
+        }
+        $desc = trim($_POST['Desc']);
+        if (!empty($desc)) {
+            $crash_report_header .= "Description\n\n{$desc}";
+        }
+        file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
+        @rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
+        @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
+        exec('/usr/bin/gzip /var/crash/*');
+        $files_to_upload = glob('/var/crash/*');
+        $resp = upload_crash_report($files_to_upload, $user_agent);
+        array_map('unlink', $files_to_upload);
+    } elseif ($_POST['Submit'] == 'no') {
+        array_map('unlink', glob('/var/crash/*'));
+        @unlink('/tmp/PHP_errors.log');
+    } elseif ($_POST['Submit'] == 'new') {
+        /* force a crash report generation */
+        $has_crashed = true;
+    }
 } else {
-	/* if there is no user activity probe for a crash report */
-	$has_crashed = get_crash_report(true) != '';
+    /* if there is no user activity probe for a crash report */
+    $has_crashed = get_crash_report(true) != '';
 }
 
 if ($has_crashed) {
-	$crash_files = glob("/var/crash/*");
-	$crash_reports['System Information'] = trim($crash_report_header);
-	$php_errors = @file_get_contents('/tmp/PHP_errors.log');
-	if (!empty($php_errors)) {
-		$crash_reports['PHP Errors'] = trim($php_errors);
-	}
-	$dmesg_boot = @file_get_contents('/var/run/dmesg.boot');
-	if (!empty($dmesg_boot)) {
-		$crash_reports['dmesg.boot'] = trim($dmesg_boot);
-	}
-	foreach ($crash_files as $cf) {
-		if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < 450000) {
-			$crash_reports[$cf] = trim(file_get_contents($cf));
-		}
-	}
+    $crash_files = glob("/var/crash/*");
+    $crash_reports['System Information'] = trim($crash_report_header);
+    $php_errors = @file_get_contents('/tmp/PHP_errors.log');
+    if (!empty($php_errors)) {
+        $crash_reports['PHP Errors'] = trim($php_errors);
+    }
+    $dmesg_boot = @file_get_contents('/var/run/dmesg.boot');
+    if (!empty($dmesg_boot)) {
+        $crash_reports['dmesg.boot'] = trim($dmesg_boot);
+    }
+    foreach ($crash_files as $cf) {
+        if (!is_link($cf) && $cf != '/var/crash/minfree' && $cf != '/var/crash/bounds' && filesize($cf) < 450000) {
+            $crash_reports[$cf] = trim(file_get_contents($cf));
+        }
+    }
 }
 
 ?>
@@ -149,29 +149,29 @@ if ($has_crashed) {
 <?php
 
 if ($has_crashed) {
-	echo "<br/><button name=\"Submit\" type=\"submit\" class=\"btn btn-default pull-right\" value=\"no\">" . gettext('Dismiss this report') . "</button>";
-	echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary pull-right\" style=\"margin-right: 8px;\" value=\"yes\">" . gettext('Submit this report') . "</button>";
-	echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
-	echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
-	echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
-	echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
-	echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
-	echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
-	foreach ($crash_reports as $report => $content) {
-		echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
-	}
+    echo "<br/><button name=\"Submit\" type=\"submit\" class=\"btn btn-default pull-right\" value=\"no\">" . gettext('Dismiss this report') . "</button>";
+    echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary pull-right\" style=\"margin-right: 8px;\" value=\"yes\">" . gettext('Submit this report') . "</button>";
+    echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
+    echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
+    echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
+    echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
+    echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
+    echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
+    foreach ($crash_reports as $report => $content) {
+        echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
+    }
 } else {
-	$message = gettext('Luckily we have not detected a programming bug.');
-	if (isset($_POST['Submit'])) {
-		if ($_POST['Submit'] == 'yes') {
-			$message = gettext('Thank you for submitting this crash report.');
-		} elseif ($_POST['Submit'] == 'no') {
-			$message = gettext('Please consider submitting a crash report if the error persists.');
-		}
-	}
+    $message = gettext('Luckily we have not detected a programming bug.');
+    if (isset($_POST['Submit'])) {
+        if ($_POST['Submit'] == 'yes') {
+            $message = gettext('Thank you for submitting this crash report.');
+        } elseif ($_POST['Submit'] == 'no') {
+            $message = gettext('Please consider submitting a crash report if the error persists.');
+        }
+    }
 
-	echo '<br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new">' . gettext('Report an issue') . '</button>';
-	echo '<p><strong>' . $message . '</strong></p><br/>';
+    echo '<br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new">' . gettext('Report an issue') . '</button>';
+    echo '<p><strong>' . $message . '</strong></p><br/>';
 }
 
 ?>
