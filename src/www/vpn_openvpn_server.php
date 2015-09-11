@@ -39,26 +39,26 @@ $a_server = &$config['openvpn']['openvpn-server'];
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   // fetch id if provided
-  if (isset($_GET['id']) && is_numericint($_GET['id'])) {
-      $id = $_GET['id'];
-  }
-  if (isset($_GET['act'])) {
-      $act = $_GET['act'];
-  }
-  $pconfig = array();
+    if (isset($_GET['id']) && is_numericint($_GET['id'])) {
+        $id = $_GET['id'];
+    }
+    if (isset($_GET['act'])) {
+        $act = $_GET['act'];
+    }
+    $pconfig = array();
   // defaults
-  $vpnid = 0;
-  $pconfig['verbosity_level'] = 1;
-  $pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
-  $pconfig['autokey_enable'] = "yes";
-  $pconfig['autotls_enable'] = "yes";
-  if ($act == "edit" && isset($id) && isset($a_server[$id])) {
-      if ($a_server[$id]['mode'] != "p2p_shared_key") {
-          $pconfig['cert_depth'] = 1;
-      }
+    $vpnid = 0;
+    $pconfig['verbosity_level'] = 1;
+    $pconfig['digest'] = "SHA1"; // OpenVPN Defaults to SHA1 if unset
+    $pconfig['autokey_enable'] = "yes";
+    $pconfig['autotls_enable'] = "yes";
+    if ($act == "edit" && isset($id) && isset($a_server[$id])) {
+        if ($a_server[$id]['mode'] != "p2p_shared_key") {
+            $pconfig['cert_depth'] = 1;
+        }
 
-      // 1 on 1 copy of config attributes
-      $copy_fields = "mode,protocol,authmode,dev_mode,interface,local_port
+        // 1 on 1 copy of config attributes
+        $copy_fields = "mode,protocol,authmode,dev_mode,interface,local_port
       ,description,custom_options,crypto,engine,tunnel_network
       ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
       ,local_networkv6,maxclients,compression,passtos,client2client
@@ -70,42 +70,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
       ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid";
 
-      foreach (explode(",",$copy_fields) as $fieldname) {
-        $fieldname = trim($fieldname);
-        if(isset($a_server[$id][$fieldname])) {
-          $pconfig[$fieldname] = $a_server[$id][$fieldname];
-        } elseif (!isset($pconfig[$fieldname])) {
-          // initialize element
-          $pconfig[$fieldname] = null;
+        foreach (explode(",", $copy_fields) as $fieldname) {
+            $fieldname = trim($fieldname);
+            if (isset($a_server[$id][$fieldname])) {
+                $pconfig[$fieldname] = $a_server[$id][$fieldname];
+            } elseif (!isset($pconfig[$fieldname])) {
+              // initialize element
+                $pconfig[$fieldname] = null;
+            }
         }
-      }
 
-      // load / convert
-      if (!empty($a_server[$id]['ipaddr'])) {
-          $pconfig['interface'] = $pconfig['interface'] . '|' . $a_server[$id]['ipaddr'];
-      }
-      if (!empty($a_server[$id]['shared_key'])) {
-        $pconfig['shared_key'] = base64_decode($a_server[$id]['shared_key']);
-      } else {
-        $pconfig['shared_key'] = null;
-      }
-      if (!empty($a_server[$id]['tls'])) {
-          $pconfig['tlsauth_enable'] = "yes";
-          $pconfig['tls'] = base64_decode($a_server[$id]['tls']);
-      } else {
-        $pconfig['tls'] = null;
-        $pconfig['tlsauth_enable'] = null;
-      }
-  } elseif ($act == "new") {
-      $pconfig['tlsauth_enable'] = "yes";
-      $pconfig['dh_length'] = 1024;
-      $pconfig['dev_mode'] = "tun";
-      $pconfig['interface'] = "wan";
-      $pconfig['local_port'] = openvpn_port_next('UDP');
-      $pconfig['pool_enable'] = "yes";
-      $pconfig['cert_depth'] = 1;
-      // init all fields used in the form
-      $init_fields = "mode,protocol,authmode,dev_mode,interface,local_port
+        // load / convert
+        if (!empty($a_server[$id]['ipaddr'])) {
+            $pconfig['interface'] = $pconfig['interface'] . '|' . $a_server[$id]['ipaddr'];
+        }
+        if (!empty($a_server[$id]['shared_key'])) {
+            $pconfig['shared_key'] = base64_decode($a_server[$id]['shared_key']);
+        } else {
+            $pconfig['shared_key'] = null;
+        }
+        if (!empty($a_server[$id]['tls'])) {
+            $pconfig['tlsauth_enable'] = "yes";
+            $pconfig['tls'] = base64_decode($a_server[$id]['tls']);
+        } else {
+            $pconfig['tls'] = null;
+            $pconfig['tlsauth_enable'] = null;
+        }
+    } elseif ($act == "new") {
+        $pconfig['tlsauth_enable'] = "yes";
+        $pconfig['dh_length'] = 1024;
+        $pconfig['dev_mode'] = "tun";
+        $pconfig['interface'] = "wan";
+        $pconfig['local_port'] = openvpn_port_next('UDP');
+        $pconfig['pool_enable'] = "yes";
+        $pconfig['cert_depth'] = 1;
+        // init all fields used in the form
+        $init_fields = "mode,protocol,authmode,dev_mode,interface,local_port
       ,description,custom_options,crypto,engine,tunnel_network
       ,tunnel_networkv6,remote_network,remote_networkv6,gwredir,local_network
       ,local_networkv6,maxclients,compression,passtos,client2client
@@ -116,14 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
       ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
       ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls";
-      foreach (explode(",",$init_fields) as $fieldname) {
-        $fieldname = trim($fieldname);
-        if (!isset($pconfig[$fieldname])) {
-          $pconfig[$fieldname] = null;
+        foreach (explode(",", $init_fields) as $fieldname) {
+            $fieldname = trim($fieldname);
+            if (!isset($pconfig[$fieldname])) {
+                $pconfig[$fieldname] = null;
+            }
         }
-      }
 
-  }
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && is_numericint($_POST['id'])) {
         $id = $_POST['id'];
@@ -163,11 +163,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // all input validators
-        if (strpos($pconfig['interface'],'|') !== false) {
-          list($iv_iface, $iv_ip) = explode("|", $pconfig['interface']);
+        if (strpos($pconfig['interface'], '|') !== false) {
+            list($iv_iface, $iv_ip) = explode("|", $pconfig['interface']);
         } else {
-          $iv_iface = $pconfig['interface'];
-          $iv_ip = null;
+            $iv_iface = $pconfig['interface'];
+            $iv_ip = null;
         }
 
         if (is_ipaddrv4($iv_ip) && (stristr($pconfig['protocol'], "6") !== false)) {
@@ -328,11 +328,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
             ,wins_server2,client_mgmt_port";
 
-            foreach (explode(",",$copy_fields) as $fieldname) {
-              $fieldname = trim($fieldname);
-              if(!empty($pconfig[$fieldname])) {
-                $server[$fieldname] = $pconfig[$fieldname];
-              }
+            foreach (explode(",", $copy_fields) as $fieldname) {
+                $fieldname = trim($fieldname);
+                if (!empty($pconfig[$fieldname])) {
+                    $server[$fieldname] = $pconfig[$fieldname];
+                }
             }
 
             // attributes containing some kind of logic
@@ -349,7 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $server['authmode'] = implode(",", $pconfig['authmode']);
             }
             if (strpos($pconfig['interface'], "|") !== false) {
-              list($server['interface'], $server['ipaddr']) = explode("|", $pconfig['interface']);
+                list($server['interface'], $server['ipaddr']) = explode("|", $pconfig['interface']);
             }
 
             $server['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
@@ -363,9 +363,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
                 foreach (array("caref","crlref",
                       "certref","dh_length","cert_depth") as $cpKey) {
-                        if (isset($pconfig[$cpKey])) {
-                          $server[$cpKey] = $pconfig[$cpKey];
-                        }
+                    if (isset($pconfig[$cpKey])) {
+                        $server[$cpKey] = $pconfig[$cpKey];
+                    }
                 }
                 if (isset($pconfig['mode']) && $pconfig['mode'] == "server_tls_user" && isset($server['strictusercn'])) {
                     $server['strictusercn'] = $pconfig['strictusercn'];
@@ -697,12 +697,12 @@ function tuntap_change() {
       <div class="row">
 
         <?php
-                if (isset($input_errors) && count($input_errors) > 0) {
-                    print_input_errors($input_errors);
-                }
-                if (isset($savemsg)) {
-                    print_info_box_np($savemsg);
-                }
+        if (isset($input_errors) && count($input_errors) > 0) {
+            print_input_errors($input_errors);
+        }
+        if (isset($savemsg)) {
+            print_info_box_np($savemsg);
+        }
                 ?>
 
           <section class="col-xs-12">
@@ -719,7 +719,7 @@ function tuntap_change() {
 
           <div class="tab-content content-box col-xs-12">
 
-              <?php if ($act=="new" || $act=="edit") :
+                <?php if ($act=="new" || $act=="edit") :
 ?>
               <form action="vpn_openvpn_server.php" method="post" name="iform" id="iform">
 
@@ -757,15 +757,17 @@ function tuntap_change() {
                                               'server_tls' => gettext("Remote Access ( SSL/TLS )"),
                                               'server_user' => gettext("Remote Access ( User Auth )"),
                                               'server_tls_user' => gettext("Remote Access ( SSL/TLS + User Auth )"));
-                                                foreach ($openvpn_server_modes as $name => $desc) :
-                                                    $selected = "";
-                                                    if ($pconfig['mode'] == $name) {
-                                                        $selected = "selected=\"selected\"";
-                                                    }
-                                                ?>
-                                                <option value="<?=$name;?>" <?=$selected;?>><?=$desc;?></option>
+                        foreach ($openvpn_server_modes as $name => $desc) :
+                            $selected = "";
+                            if ($pconfig['mode'] == $name) {
+                                $selected = "selected=\"selected\"";
+                            }
+                        ?>
+                        <option value="<?=$name;
+?>" <?=$selected;
+?>><?=$desc;?></option>
                         <?php
-                                                endforeach; ?>
+                        endforeach; ?>
                         </select>
                       </td>
                     </tr>
@@ -775,9 +777,9 @@ function tuntap_change() {
         <select name='authmode[]' id='authmode' class="form-control" multiple="multiple" size="5">
                                                         <?php
                                                         if (isset($pconfig['authmode'])) {
-                                                          $authmodes = explode(",", $pconfig['authmode']);
+                                                            $authmodes = explode(",", $pconfig['authmode']);
                                                         } else {
-                                                          $authmodes = array();
+                                                            $authmodes = array();
                                                         }
                                                         $auth_servers = auth_get_authserver_list();
                                                         foreach ($auth_servers as $auth_server) :
@@ -786,7 +788,9 @@ function tuntap_change() {
                                                                     $selected = "selected=\"selected\"";
                                                             }
                                                         ?>
-                                                        <option value="<?=htmlspecialchars($auth_server['name']);?>" <?=$selected;?>><?=htmlspecialchars($auth_server['name']);?></option>
+                                                        <option value="<?=htmlspecialchars($auth_server['name']);
+?>" <?=$selected;
+?>><?=htmlspecialchars($auth_server['name']);?></option>
                                                         <?php
                                                         endforeach; ?>
                                                         </select>
@@ -797,15 +801,17 @@ function tuntap_change() {
                         <td>
                         <select name='protocol' class="form-control">
                         <?php
-                                                foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
-                                                    $selected = "";
-                                                    if ($pconfig['protocol'] == $prot) {
-                                                        $selected = "selected=\"selected\"";
-                                                    }
-                                                ?>
-                                                <option value="<?=$prot;?>" <?=$selected;?>><?=$prot;?></option>
+                        foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
+                            $selected = "";
+                            if ($pconfig['protocol'] == $prot) {
+                                $selected = "selected=\"selected\"";
+                            }
+                        ?>
+                        <option value="<?=$prot;
+?>" <?=$selected;
+?>><?=$prot;?></option>
                         <?php
-                                                endforeach; ?>
+                        endforeach; ?>
                         </select>
                         </td>
                     </tr>
@@ -826,7 +832,9 @@ function tuntap_change() {
                                                                 }
                                                             }
                                                         ?>
-                                                        <option value="<?=$device;?>" <?=$selected;?>><?=$device;?></option>
+                                                        <option value="<?=$device;
+?>" <?=$selected;
+?>><?=$device;?></option>
                                                         <?php
                                                         endforeach; ?>
                         </select>
@@ -836,41 +844,42 @@ function tuntap_change() {
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface"); ?></td>
                       <td>
                         <select name="interface" class="form-control">
-                          <?php
+                            <?php
                                                     $interfaces = get_configured_interface_with_descr();
                                                     $carplist = get_configured_carp_interface_list();
-                                                    foreach ($carplist as $cif => $carpip) {
-                                                        $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-                                                    }
+                            foreach ($carplist as $cif => $carpip) {
+                                $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
+                            }
                                                         $aliaslist = get_configured_ip_aliases_list();
-                                                    foreach ($aliaslist as $aliasip => $aliasif) {
-                                                        $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-                                                    }
+                            foreach ($aliaslist as $aliasip => $aliasif) {
+                                $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                            }
                                                         $grouplist = return_gateway_groups_array();
-                                                    foreach ($grouplist as $name => $group) {
-                                                        if ($group['ipprotocol'] != inet) {
-                                                            continue;
-                                                        }
-                                                        if ($group[0]['vip'] <> "") {
-                                                            $vipif = $group[0]['vip'];
-                                                        } else {
-                                                            $vipif = $group[0]['int'];
-                                                        }
-                                                        $interfaces[$name] = "GW Group {$name}";
-                                                    }
+                            foreach ($grouplist as $name => $group) {
+                                if ($group['ipprotocol'] != inet) {
+                                    continue;
+                                }
+                                if ($group[0]['vip'] <> "") {
+                                    $vipif = $group[0]['vip'];
+                                } else {
+                                    $vipif = $group[0]['int'];
+                                }
+                                $interfaces[$name] = "GW Group {$name}";
+                            }
                                                         $interfaces['lo0'] = "Localhost";
                                                         $interfaces['any'] = "any";
-                                                    foreach ($interfaces as $iface => $ifacename) :
-                                                        $selected = "";
-                                                        if ($iface == $pconfig['interface']) {
-                                                            $selected = "selected=\"selected\"";
-                                                        }
-                                                    ?>
-                                                    <option value="<?=$iface;?>" <?=$selected;?>>
-                                                        <?=htmlspecialchars($ifacename);?>
+                            foreach ($interfaces as $iface => $ifacename) :
+                                $selected = "";
+                                if ($iface == $pconfig['interface']) {
+                                    $selected = "selected=\"selected\"";
+                                }
+                            ?>
+                            <option value="<?=$iface;
+?>" <?=$selected;?>>
+                                <?=htmlspecialchars($ifacename);?>
                                                     </option>
-                          <?php
-                                                    endforeach; ?>
+                            <?php
+                            endforeach; ?>
                         </select> <br />
                       </td>
                     </tr>
@@ -885,7 +894,7 @@ function tuntap_change() {
                       <td>
                         <input name="description" type="text" class="form-control unknown" size="30" value="<?=htmlspecialchars($pconfig['description']);?>" />
                         <div class="hidden" for="help_for_description">
-                          <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+                            <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
                         </div>
                       </td>
                     </tr>
@@ -930,7 +939,7 @@ endif; ?>
                           <tr>
                             <td>
                               <textarea name="tls" cols="65" rows="7" class="formpre"><?=$pconfig['tls'];?></textarea>
-                              <?=gettext("Paste your shared key here"); ?>.
+                                <?=gettext("Paste your shared key here"); ?>.
                             </td>
                           </tr>
                         </table>
@@ -943,20 +952,23 @@ endif; ?>
 ?>
                         <select name='caref' class="form-control">
                         <?php
-                                                foreach ($config['ca'] as $ca) :
-                                                    $selected = "";
-                                                    if ($pconfig['caref'] == $ca['refid']) {
-                                                        $selected = "selected=\"selected\"";
-                                                    }
-                                                ?>
-                                                <option value="<?=htmlspecialchars($ca['refid']);?>" <?=$selected;?>><?=htmlspecialchars($ca['descr']);?></option>
+                        foreach ($config['ca'] as $ca) :
+                            $selected = "";
+                            if ($pconfig['caref'] == $ca['refid']) {
+                                $selected = "selected=\"selected\"";
+                            }
+                        ?>
+                        <option value="<?=htmlspecialchars($ca['refid']);
+?>" <?=$selected;
+?>><?=htmlspecialchars($ca['descr']);?></option>
                         <?php
-                                                endforeach; ?>
+                        endforeach; ?>
                         </select>
                         <?php
 else :
 ?>
-                          <b><?=gettext("No Certificate Authorities defined.");?></b> <br /><?=gettext("Create one under")?> <a href="system_camanager.php"> <?=gettext("System: Certificates");?></a>.
+                          <b><?=gettext("No Certificate Authorities defined.");
+?></b> <br /><?=gettext("Create one under")?> <a href="system_camanager.php"> <?=gettext("System: Certificates");?></a>.
                         <?php
 endif; ?>
                         </td>
@@ -969,27 +981,31 @@ endif; ?>
                         <select name='crlref' class="form-control">
                           <option value="">None</option>
                         <?php
-                                                foreach ($config['crl'] as $crl) :
-                                                    if (isset($acrl['refid'])) {
-                                                      $selected = "";
-                                                      $caname = "";
-                                                      $ca = lookup_ca($crl['caref']);
-                                                      if ($ca) {
-                                                          $caname = " (CA: {$ca['descr']})";
-                                                          if ($pconfig['crlref'] == $crl['refid']) {
-                                                              $selected = "selected=\"selected\"";
-                                                          }
-                                                      }
-                                                    }
-                                                ?>
-                                                <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>><?=htmlspecialchars($crl['descr'] . $caname);?></option>
+                        foreach ($config['crl'] as $crl) :
+                            if (isset($acrl['refid'])) {
+                                $selected = "";
+                                $caname = "";
+                                $ca = lookup_ca($crl['caref']);
+                                if ($ca) {
+                                    $caname = " (CA: {$ca['descr']})";
+                                    if ($pconfig['crlref'] == $crl['refid']) {
+                                        $selected = "selected=\"selected\"";
+                                    }
+                                }
+                            }
+                        ?>
+                        <option value="<?=htmlspecialchars($crl['refid']);
+?>" <?=$selected;
+?>><?=htmlspecialchars($crl['descr'] . $caname);?></option>
                         <?php
-                                                endforeach; ?>
+                        endforeach; ?>
                         </select>
                         <?php
 else :
 ?>
-                          <b><?=gettext("No Certificate Revocation Lists (CRLs) defined.");?></b> <br /><?=gettext("Create one under");?> <a href="system_crlmanager.php"><?=gettext("System: Certificates");?></a>.
+                          <b><?=gettext("No Certificate Revocation Lists (CRLs) defined.");
+?></b> <br /><?=gettext("Create one under");
+?> <a href="system_crlmanager.php"><?=gettext("System: Certificates");?></a>.
                         <?php
 endif; ?>
                         </td>
@@ -1001,35 +1017,39 @@ endif; ?>
 ?>
                         <select name='certref' class="form-control">
                         <?php
-                                                foreach ($config['cert'] as $cert) :
-                                                    $selected = "";
-                                                    $caname = "";
-                                                    $inuse = "";
-                                                    $revoked = "";
-                                                    if (isset($cert['caref'])) {
-                                                      $ca = lookup_ca($cert['caref']);
-                                                      if (!empty($ca)) {
-                                                          $caname = " (CA: {$ca['descr']})";
-                                                      }
-                                                    }
-                                                    if ($pconfig['certref'] == $cert['refid']) {
-                                                        $selected = "selected=\"selected\"";
-                                                    }
-                                                    if (cert_in_use($cert['refid'])) {
-                                                        $inuse = " *In Use";
-                                                    }
-                                                    if (is_cert_revoked($cert)) {
-                                                        $revoked = " *Revoked";
-                                                    }
-                                                ?>
-                          <option value="<?=htmlspecialchars($cert['refid']);?>" <?=$selected;?>><?=htmlspecialchars($cert['descr'] . $caname . $inuse . $revoked);?></option>
+                        foreach ($config['cert'] as $cert) :
+                            $selected = "";
+                            $caname = "";
+                            $inuse = "";
+                            $revoked = "";
+                            if (isset($cert['caref'])) {
+                                $ca = lookup_ca($cert['caref']);
+                                if (!empty($ca)) {
+                                    $caname = " (CA: {$ca['descr']})";
+                                }
+                            }
+                            if ($pconfig['certref'] == $cert['refid']) {
+                                $selected = "selected=\"selected\"";
+                            }
+                            if (cert_in_use($cert['refid'])) {
+                                $inuse = " *In Use";
+                            }
+                            if (is_cert_revoked($cert)) {
+                                $revoked = " *Revoked";
+                            }
+                        ?>
+  <option value="<?=htmlspecialchars($cert['refid']);
+?>" <?=$selected;
+?>><?=htmlspecialchars($cert['descr'] . $caname . $inuse . $revoked);?></option>
                         <?php
-                                                endforeach; ?>
+                        endforeach; ?>
                         </select>
                         <?php
 else :
 ?>
-                          <b><?=gettext("No Certificates defined.");?></b> <br /><?=gettext("Create one under");?> <a href="system_certmanager.php"><?=gettext("System: Certificates");?></a>.
+                          <b><?=gettext("No Certificates defined.");
+?></b> <br /><?=gettext("Create one under");
+?> <a href="system_certmanager.php"><?=gettext("System: Certificates");?></a>.
                         <?php
 endif; ?>
                       </td>
@@ -1038,19 +1058,19 @@ endif; ?>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DH Parameters Length"); ?></td>
                       <td>
                         <select name="dh_length" class="form-control">
-                          <?php
-                                                    foreach (array(1024, 2048, 4096) as $length) :
-                                                        $selected = "";
-                                                        if ($length == $pconfig['dh_length']) {
-                                                            $selected = " selected=\"selected\"";
-                                                        }
-                                                    ?>
+                            <?php
+                            foreach (array(1024, 2048, 4096) as $length) :
+                                $selected = "";
+                                if ($length == $pconfig['dh_length']) {
+                                    $selected = " selected=\"selected\"";
+                                }
+                            ?>
                           <option<?=$selected?>><?=$length;?></option>
-                          <?php
-                                                    endforeach; ?>
+                            <?php
+                            endforeach; ?>
                         </select>
                         <span>
-                          <?=gettext("bits"); ?>
+                            <?=gettext("bits"); ?>
                         </span>
                       </td>
                     </tr>
@@ -1077,7 +1097,7 @@ endif; ?>
                           <tr>
                             <td>
                               <textarea name="shared_key" cols="65" rows="7" class="formpre"><?=$pconfig['shared_key'];?></textarea>
-                              <?=gettext("Paste your shared key here"); ?>.
+                                <?=gettext("Paste your shared key here"); ?>.
                             </td>
                           </tr>
                         </table>
@@ -1087,19 +1107,19 @@ endif; ?>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
                       <td>
                         <select name="crypto" class="form-control">
-                          <?php
+                            <?php
                                                     $cipherlist = openvpn_get_cipherlist();
-                                                    foreach ($cipherlist as $name => $desc) :
-                                                        $selected = "";
-                                                        if ($name == $pconfig['crypto']) {
-                                                            $selected = " selected=\"selected\"";
-                                                        }
-                                                    ?>
+                            foreach ($cipherlist as $name => $desc) :
+                                $selected = "";
+                                if ($name == $pconfig['crypto']) {
+                                    $selected = " selected=\"selected\"";
+                                }
+                            ?>
                           <option value="<?=$name;?>"<?=$selected?>>
                                                     <?=htmlspecialchars($desc);?>
                           </option>
-                          <?php
-                                                    endforeach; ?>
+                            <?php
+                            endforeach; ?>
                         </select>
                       </td>
                     </tr>
@@ -1107,22 +1127,22 @@ endif; ?>
                       <td><a id="help_for_digest" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auth Digest Algorithm"); ?></td>
                       <td>
                         <select name="digest" class="form-control">
-                          <?php
+                            <?php
                                                         $digestlist = openvpn_get_digestlist();
-                                                    foreach ($digestlist as $name => $desc) :
-                                                        $selected = "";
-                                                        if ($name == $pconfig['digest']) {
-                                                            $selected = " selected=\"selected\"";
-                                                        }
-                                                    ?>
+                            foreach ($digestlist as $name => $desc) :
+                                $selected = "";
+                                if ($name == $pconfig['digest']) {
+                                    $selected = " selected=\"selected\"";
+                                }
+                            ?>
                           <option value="<?=$name;?>"<?=$selected?>>
                                                     <?=htmlspecialchars($desc);?>
                           </option>
-                          <?php
-                                                    endforeach; ?>
+                            <?php
+                            endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_digest">
-                          <?PHP echo gettext("NOTE: Leave this set to SHA1 unless all clients are set to match. SHA1 is the default for OpenVPN."); ?>
+                            <?PHP echo gettext("NOTE: Leave this set to SHA1 unless all clients are set to match. SHA1 is the default for OpenVPN."); ?>
                         </div>
                       </td>
                     </tr>
@@ -1130,19 +1150,19 @@ endif; ?>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hardware Crypto"); ?></td>
                       <td>
                         <select name="engine" class="form-control">
-                          <?php
+                            <?php
                                                         $engines = openvpn_get_engines();
-                                                    foreach ($engines as $name => $desc) :
-                                                        $selected = "";
-                                                        if ($name == $pconfig['engine']) {
-                                                            $selected = " selected=\"selected\"";
-                                                        }
-                                                    ?>
+                            foreach ($engines as $name => $desc) :
+                                $selected = "";
+                                if ($name == $pconfig['engine']) {
+                                    $selected = " selected=\"selected\"";
+                                }
+                            ?>
                           <option value="<?=$name;?>"<?=$selected?>>
                                                     <?=htmlspecialchars($desc);?>
                           </option>
-                          <?php
-                                                    endforeach; ?>
+                            <?php
+                            endforeach; ?>
                         </select>
                       </td>
                     </tr>
@@ -1153,7 +1173,7 @@ endif; ?>
                         <tr><td>
                         <select name="cert_depth" class="form-control">
                           <option value="">Do Not Check</option>
-                          <?php
+                            <?php
                                                     $openvpn_cert_depths = array(
                                                       1 => "One (Client+Server)",
                                                       2 => "Two (Client+Intermediate+Server)",
@@ -1168,7 +1188,7 @@ endif; ?>
                                                         }
                                                     ?>
                           <option value="<?= $depth ?>" <?= $selected ?>><?= $depthdesc ?></option>
-                          <?php
+                            <?php
                                                     endforeach; ?>
                         </select>
                         </td></tr>
@@ -1188,7 +1208,7 @@ endif; ?>
                               <input name="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
                               <div class="hidden" for="help_for_strictusercn">
                                 <span>
-                                  <?=gettext("When authenticating users, enforce a match between the common name of the client certificate and the username given at login."); ?>
+                                    <?=gettext("When authenticating users, enforce a match between the common name of the client certificate and the username given at login."); ?>
                                 </span>
                               </div>
                       </td>
@@ -1204,7 +1224,7 @@ endif; ?>
                       <td>
                         <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                         <div class="hidden" for="help_for_tunnel_network">
-                          <?=gettext("This is the IPv4 virtual network used for private " .
+                            <?=gettext("This is the IPv4 virtual network used for private " .
                                                   "communications between this server and client " .
                                                   "hosts expressed using CIDR (eg. 10.0.8.0/24). " .
                                                   "The first network address will be assigned to " .
@@ -1219,7 +1239,7 @@ endif; ?>
                       <td>
                         <input name="tunnel_networkv6" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_networkv6'];?>" />
                         <div class="hidden" for="help_for_tunnel_networkv6">
-                          <?=gettext("This is the IPv6 virtual network used for private " .
+                            <?=gettext("This is the IPv6 virtual network used for private " .
                                                   "communications between this server and client " .
                                                   "hosts expressed using CIDR (eg. fe80::/64). " .
                                                   "The first network address will be assigned to " .
@@ -1235,7 +1255,7 @@ endif; ?>
                               <input name="serverbridge_dhcp" type="checkbox" value="yes" <?=!empty($pconfig['serverbridge_dhcp']) ? "checked=\"checked\"" : "" ;?> onchange="tuntap_change()" />
                               <div class="hidden" for="help_for_serverbridge_dhcp">
                                 <span>
-                                  <?=gettext("Allow clients on the bridge to obtain DHCP."); ?><br />
+                                    <?=gettext("Allow clients on the bridge to obtain DHCP."); ?><br />
                                 </span>
                               </div>
                       </td>
@@ -1244,32 +1264,32 @@ endif; ?>
                       <td width="22%" ><a id="help_for_serverbridge_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bridge Interface"); ?></td>
                       <td>
                         <select name="serverbridge_interface" class="form-control">
-                          <?php
+                            <?php
                                                     $serverbridge_interface['none'] = "none";
                                                     $serverbridge_interface = array_merge($serverbridge_interface, get_configured_interface_with_descr());
                                                     $carplist = get_configured_carp_interface_list();
-                                                    foreach ($carplist as $cif => $carpip) {
-                                                        $serverbridge_interface[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-                                                    }
+                            foreach ($carplist as $cif => $carpip) {
+                                $serverbridge_interface[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
+                            }
                                                         $aliaslist = get_configured_ip_aliases_list();
-                                                    foreach ($aliaslist as $aliasip => $aliasif) {
-                                                        $serverbridge_interface[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-                                                    }
-                                                    foreach ($serverbridge_interface as $iface => $ifacename) :
-                                                        $selected = "";
-                                                        if ($iface == $pconfig['serverbridge_interface']) {
-                                                            $selected = "selected=\"selected\"";
-                                                        }
-                                                    ?>
-                                                    <option value="<?=$iface;
+                            foreach ($aliaslist as $aliasip => $aliasif) {
+                                $serverbridge_interface[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+                            }
+                            foreach ($serverbridge_interface as $iface => $ifacename) :
+                                $selected = "";
+                                if ($iface == $pconfig['serverbridge_interface']) {
+                                    $selected = "selected=\"selected\"";
+                                }
+                            ?>
+                            <option value="<?=$iface;
 ?>" <?=$selected;?>>
-                                                        <?=htmlspecialchars($ifacename);?>
-                                                    </option>
-                          <?php
-                                                    endforeach; ?>
+                                <?=htmlspecialchars($ifacename);?>
+                            </option>
+    <?php
+                            endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_serverbridge_interface">
-                          <?=gettext("The interface to which this tap instance will be " .
+                            <?=gettext("The interface to which this tap instance will be " .
                                                   "bridged. This is not done automatically. You must assign this " .
                                                   "interface and create the bridge separately. " .
                                                   "This setting controls which existing IP address and subnet " .
@@ -1283,7 +1303,7 @@ endif; ?>
                       <td>
                         <input name="serverbridge_dhcp_start" type="text" class="form-control unknown" size="20" value="<?=$pconfig['serverbridge_dhcp_start'];?>" />
                         <div class="hidden" for="help_for_serverbridge_dhcp_start">
-                          <?=gettext("When using tap mode as a multi-point server, " .
+                            <?=gettext("When using tap mode as a multi-point server, " .
                                                   "you may optionally supply a DHCP range to use on the " .
                                                   "interface to which this tap instance is bridged. " .
                                                   "If these settings are left blank, DHCP will be passed " .
@@ -1305,7 +1325,7 @@ endif; ?>
                         <input name="gwredir" type="checkbox" value="yes" <?=!empty($pconfig['gwredir']) ? "checked=\"checked\"" : "" ;?> onclick="gwredir_change()" />
                         <div class="hidden" for="help_for_gwredir">
                             <span>
-                              <?=gettext("Force all client generated traffic through the tunnel"); ?>.
+                                <?=gettext("Force all client generated traffic through the tunnel"); ?>.
                             </span>
                         </div>
                       </td>
@@ -1315,7 +1335,7 @@ endif; ?>
                       <td>
                         <input name="local_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['local_network'];?>" />
                         <div class="hidden" for="help_local_network">
-                          <?=gettext("These are the IPv4 networks that will be accessible " .
+                            <?=gettext("These are the IPv4 networks that will be accessible " .
                                                   "from the remote endpoint. Expressed as a comma-separated list of one or more CIDR ranges. " .
                                                   "You may leave this blank if you don't " .
                                                   "want to add a route to the local network " .
@@ -1329,7 +1349,7 @@ endif; ?>
                       <td>
                         <input name="local_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['local_networkv6'];?>" />
                         <div class="hidden" for="help_for_local_networkv6">
-                          <?=gettext("These are the IPv6 networks that will be accessible " .
+                            <?=gettext("These are the IPv6 networks that will be accessible " .
                                                   "from the remote endpoint. Expressed as a comma-separated list of one or more IP/PREFIX. " .
                                                   "You may leave this blank if you don't " .
                                                   "want to add a route to the local network " .
@@ -1343,7 +1363,7 @@ endif; ?>
                       <td>
                         <input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
                         <div class="hidden" for="help_for_remote_network">
-                          <?=gettext("These are the IPv4 networks that will be routed through " .
+                            <?=gettext("These are the IPv4 networks that will be routed through " .
                                                   "the tunnel, so that a site-to-site VPN can be " .
                                                   "established without manually changing the routing tables. " .
                                                   "Expressed as a comma-separated list of one or more CIDR ranges. " .
@@ -1358,7 +1378,7 @@ endif; ?>
                       <td>
                         <input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
                         <div class="hidden" for="help_for_remote_networkv6">
-                          <?=gettext("These are the IPv6 networks that will be routed through " .
+                            <?=gettext("These are the IPv6 networks that will be routed through " .
                                                   "the tunnel, so that a site-to-site VPN can be " .
                                                   "established without manually changing the routing tables. " .
                                                   "Expressed as a comma-separated list of one or more IP/PREFIX. " .
@@ -1373,7 +1393,7 @@ endif; ?>
                       <td>
                         <input name="maxclients" type="text" class="form-control unknown" size="5" value="<?=$pconfig['maxclients'];?>" />
                         <div class="hidden" for="help_for_maxclients">
-                          <?=gettext("Specify the maximum number of clients allowed to concurrently connect to this server"); ?>.
+                            <?=gettext("Specify the maximum number of clients allowed to concurrently connect to this server"); ?>.
                         </div>
                       </td>
                     </tr>
@@ -1381,19 +1401,19 @@ endif; ?>
                       <td width="22%" ><a id="help_for_compression" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Compression"); ?></td>
                       <td>
                         <select name="compression" class="form-control">
-                          <?php
-                                                    foreach ($openvpn_compression_modes as $cmode => $cmodedesc) :
-                                                        $selected = "";
-                                                        if ($cmode == $pconfig['compression']) {
-                                                            $selected = " selected=\"selected\"";
-                                                        }
-                                                    ?>
+                            <?php
+                            foreach ($openvpn_compression_modes as $cmode => $cmodedesc) :
+                                $selected = "";
+                                if ($cmode == $pconfig['compression']) {
+                                    $selected = " selected=\"selected\"";
+                                }
+                            ?>
                           <option value="<?= $cmode ?>" <?= $selected ?>><?= $cmodedesc ?></option>
-                          <?php
-                                                    endforeach; ?>
+                            <?php
+                            endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_compression">
-                          <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently"); ?>.
+                            <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently"); ?>.
                         </div>
                       </td>
                     </tr>
@@ -1414,7 +1434,7 @@ endif; ?>
                           <input name="client2client" type="checkbox" value="yes"  <?=!empty($pconfig['client2client']) ? "checked=\"checked\"" : "" ;?> />
                           <div class="hidden" for="help_for_client2client">
                             <span>
-                              <?=gettext("Allow communication between clients connected to this server"); ?>
+                                <?=gettext("Allow communication between clients connected to this server"); ?>
                             </span>
                           </div>
                       </td>
@@ -1563,8 +1583,8 @@ endif; ?>
                         <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?> onclick="netbios_change()" />
                         <div class="hidden" for="help_for_netbios_enable">
                           <span>
-                          <?=gettext("Enable NetBIOS over TCP/IP"); ?><br />
-                          <?=gettext("If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled"); ?>.
+                            <?=gettext("Enable NetBIOS over TCP/IP"); ?><br />
+                            <?=gettext("If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled"); ?>.
                           </span>
                         </div>
                         <div id="netbios_data" summary="netboios options">
@@ -1572,21 +1592,21 @@ endif; ?>
                             <?=gettext("Node Type"); ?>:&nbsp;
                           </span>
                           <select name='netbios_ntype' class="form-control">
-                          <?php
-                                                        foreach ($netbios_nodetypes as $type => $name) :
-                                                            $selected = "";
-                                                            if ($pconfig['netbios_ntype'] == $type) {
-                                                                $selected = "selected=\"selected\"";
-                                                            }
-                                                        ?>
-                                                        <option value="<?=$type;
+                            <?php
+                            foreach ($netbios_nodetypes as $type => $name) :
+                                $selected = "";
+                                if ($pconfig['netbios_ntype'] == $type) {
+                                    $selected = "selected=\"selected\"";
+                                }
+                            ?>
+                            <option value="<?=$type;
 ?>" <?=$selected;
 ?>><?=$name;?></option>
-                          <?php
-                                                        endforeach; ?>
+<?php
+                            endforeach; ?>
                           </select>
                           <div class="hidden" for="help_for_netbios_enable">
-                          <?=gettext("Possible options: b-node (broadcasts), p-node " .
+                            <?=gettext("Possible options: b-node (broadcasts), p-node " .
                                                         "(point-to-point name queries to a WINS server), " .
                                                         "m-node (broadcast then query name server), and " .
                                                         "h-node (query name server, then broadcast)"); ?>.
@@ -1596,7 +1616,7 @@ endif; ?>
                           </span>
                           <input name="netbios_scope" type="text" class="form-control unknown" id="netbios_scope" size="30" value="<?=$pconfig['netbios_scope'];?>" />
                           <div class="hidden" for="help_for_netbios_enable">
-                          <?=gettext("A NetBIOS Scope  ID provides an extended naming " .
+                            <?=gettext("A NetBIOS Scope  ID provides an extended naming " .
                                                         "service for  NetBIOS over TCP/IP. The NetBIOS " .
                                                         "scope ID isolates NetBIOS traffic on a single " .
                                                         "network to only those nodes with the same " .
@@ -1635,7 +1655,7 @@ endif; ?>
                         </div>
                         <div class="hidden" for="help_for_client_mgmt_port">
                           <span>
-              <?=gettext("Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."); ?><br />
+                <?=gettext("Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."); ?><br />
                           </span>
                         </div>
                       </td>
@@ -1651,8 +1671,8 @@ endif; ?>
                       <td>
                         <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
                         <div class="hidden" for="help_for_custom_options">
-                          <?=gettext("Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon"); ?><br />
-                          <?=gettext("EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""); ?>;
+                            <?=gettext("Enter any additional options you would like to add to the OpenVPN server configuration here, separated by a semicolon"); ?><br />
+                            <?=gettext("EXAMPLE: push \"route 10.0.0.0 255.255.255.0\""); ?>;
                         </div>
                       </td>
                     </tr>
@@ -1661,18 +1681,20 @@ endif; ?>
                       <td>
                         <select name="verbosity_level" class="form-control">
                         <?php
-                                                foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
-                                                    $selected = "";
-                                                    if ($pconfig['verbosity_level'] == $verb_value) {
-                                                        $selected = "selected=\"selected\"";
-                                                    }
-                                                ?>
-                                                <option value="<?=$verb_value;?>" <?=$selected;?>><?=$verb_desc;?></option>
+                        foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
+                            $selected = "";
+                            if ($pconfig['verbosity_level'] == $verb_value) {
+                                $selected = "selected=\"selected\"";
+                            }
+                        ?>
+                        <option value="<?=$verb_value;
+?>" <?=$selected;
+?>><?=$verb_desc;?></option>
                         <?php
-                                                endforeach; ?>
+                        endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_verbosity_level">
-                          <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output"); ?>.<br /> <br />
+                            <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output"); ?>.<br /> <br />
                           <strong>none</strong> -- <?=gettext("No output except fatal errors"); ?>. <br />
                           <strong>default</strong>-<strong>4</strong> -- <?=gettext("Normal usage range"); ?>. <br />
                           <strong>5</strong> -- <?=gettext("Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets"); ?>. <br />
@@ -1696,7 +1718,7 @@ endif; ?>
                 </div>
               </form>
 
-              <?php
+                <?php
 else :
 ?>
                 <table class="table table-striped">
@@ -1711,36 +1733,39 @@ else :
                   </thead>
 
                   <tbody>
-                  <?php
+                    <?php
                                         $i = 0;
-                                    foreach ($a_server as $server) :
-                                        $disabled = "NO";
-                                        if (!empty($server['disable'])) {
-                                            $disabled = "YES";
-                                        }
-                                    ?>
+                    foreach ($a_server as $server) :
+                        $disabled = "NO";
+                        if (!empty($server['disable'])) {
+                            $disabled = "YES";
+                        }
+                    ?>
                   <tr>
-                                    <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
-                                        <?=$disabled;?>
+                    <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
+                        <?=$disabled;?>
                                     </td>
                                     <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
-                                        <?=htmlspecialchars($server['protocol']);?> / <?=htmlspecialchars($server['local_port']);?>
+                        <?=htmlspecialchars($server['protocol']);
+?> / <?=htmlspecialchars($server['local_port']);?>
                                     </td>
                                     <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
-                                        <?=htmlspecialchars($server['tunnel_network']);?> <?=!empty($server['tunnel_networkv6']) ? "," :""?>
-                                        <?=htmlspecialchars($server['tunnel_networkv6']);?>
+                        <?=htmlspecialchars($server['tunnel_network']);?> <?=!empty($server['tunnel_networkv6']) ? "," :""?>
+                        <?=htmlspecialchars($server['tunnel_networkv6']);?>
                                     </td>
                                     <td ondblclick="document.location='vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>'">
-                                        <?=htmlspecialchars($server['description']);?>
+                        <?=htmlspecialchars($server['description']);?>
                                     </td>
                                     <td valign="middle">
-                                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                                        <a id="del_<?=$i;?>" title="<?=gettext("delete server"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+                        <a href="vpn_openvpn_server.php?act=edit&amp;id=<?=$i;
+?>" title="<?=gettext("edit server"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a id="del_<?=$i;
+?>" title="<?=gettext("delete server"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
                                     </td>
                   </tr>
-                  <?php
-                                    $i++;
-                                    endforeach;
+                    <?php
+                    $i++;
+                    endforeach;
                                     ?>
                       <tr><td colspan="5">&nbsp;</td></tr>
                   </tbody>

@@ -74,19 +74,19 @@ if (isset($config['openvpn']['openvpn-server'])) {
                         $ras_userent['certname'] = $cert['descr'];
                         $ras_user[] = $ras_userent;
                     }
-                  }
-              }
+                }
+            }
         } elseif (($server['mode'] == "server_tls") || (($server['mode'] == "server_tls_user") && ($server['authmode'] != "Local Database"))) {
             if (isset($config['cert'])) {
-              foreach ($config['cert'] as $cindex => $cert) {
-                  if (($cert['caref'] != $server['caref']) || ($cert['refid'] == $server['certref'])) {
-                      continue;
-                  }
-                  $ras_cert_entry['cindex'] = $cindex;
-                  $ras_cert_entry['certname'] = $cert['descr'];
-                  $ras_cert_entry['certref'] = $cert['refid'];
-                  $ras_certs[] = $ras_cert_entry;
-              }
+                foreach ($config['cert'] as $cindex => $cert) {
+                    if (($cert['caref'] != $server['caref']) || ($cert['refid'] == $server['certref'])) {
+                        continue;
+                    }
+                    $ras_cert_entry['cindex'] = $cindex;
+                    $ras_cert_entry['certname'] = $cert['descr'];
+                    $ras_cert_entry['certref'] = $cert['refid'];
+                    $ras_certs[] = $ras_cert_entry;
+                }
             }
         }
 
@@ -174,18 +174,18 @@ if (isset($config['openvpn']['openvpn-server'])) {
             }
             if (isset($_GET['proxy_authtype'])) {
                 $proxy['proxy_authtype'] = $_GET['proxy_authtype'];
-              if ($_GET['proxy_authtype'] != "none") {
-                  if (empty($_GET['proxy_user'])) {
-                      $input_errors[] = "You need to specify a username with the proxy config.";
-                  } else {
-                      $proxy['user'] = $_GET['proxy_user'];
-                  }
-                  if (!empty($_GET['proxy_user']) && empty($_GET['proxy_password'])) {
-                      $input_errors[] = "You need to specify a password with the proxy user.";
-                  } else {
-                      $proxy['password'] = $_GET['proxy_password'];
-                  }
-              }
+                if ($_GET['proxy_authtype'] != "none") {
+                    if (empty($_GET['proxy_user'])) {
+                        $input_errors[] = "You need to specify a username with the proxy config.";
+                    } else {
+                        $proxy['user'] = $_GET['proxy_user'];
+                    }
+                    if (!empty($_GET['proxy_user']) && empty($_GET['proxy_password'])) {
+                        $input_errors[] = "You need to specify a password with the proxy user.";
+                    } else {
+                        $proxy['password'] = $_GET['proxy_password'];
+                    }
+                }
             }
         }
 
@@ -623,7 +623,7 @@ if (isset($savemsg)) {
                   $tab_array[] = array(gettext("Client Export"), true, "vpn_openvpn_export.php");
                   $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
                   display_top_tabs($tab_array);
-              ?>
+                ?>
         <div class="tab-content content-box col-xs-12">
           <div class="table-responsive">
             <table width="100%" border="0" class="table table-striped" cellpadding="0" cellspacing="0">
@@ -640,9 +640,10 @@ if (isset($savemsg)) {
 							<select name="server" id="server" class="formselect" onchange="server_changed()">
 								<?php foreach ($ras_server as & $server) :
     ?>
-								<option value="<?=$server['index'];?>"><?=htmlspecialchars($server['name']);?></option>
+								<option value="<?=$server['index'];
+?>"><?=htmlspecialchars($server['name']);?></option>
 								<?php
-    endforeach; ?>
+endforeach; ?>
 							</select>
 						</td>
 					</tr>
@@ -656,19 +657,21 @@ if (isset($savemsg)) {
                     <option value="serverhostname" ><?=gettext("Installation hostname");?></option>
                     <?php if (isset($config['dyndnses']['dyndns'])) :
 ?>
-                      <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
+                        <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
-                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("DynDNS");?>: <?= htmlspecialchars($ddns["host"]); ?></option>
-                      <?php
+                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("DynDNS");
+?>: <?= htmlspecialchars($ddns["host"]); ?></option>
+                        <?php
 endforeach; ?>
                     <?php
 endif; ?>
                     <?php if (isset($config['dnsupdates']['dnsupdate'])) :
 ?>
-                      <?php foreach ($config['dnsupdates']['dnsupdate'] as $ddns) :
+                        <?php foreach ($config['dnsupdates']['dnsupdate'] as $ddns) :
 ?>
-                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("DynDNS");?>: <?= htmlspecialchars($ddns["host"]); ?></option>
-                      <?php
+                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("DynDNS");
+?>: <?= htmlspecialchars($ddns["host"]); ?></option>
+                        <?php
 endforeach; ?>
                     <?php
 endif; ?>
@@ -676,7 +679,7 @@ endif; ?>
                   </select>
                   <div id="HostName" style="display:none;" >
                     <div>
-                      <?=gettext("Enter the hostname or IP address the client will use to connect to this server.");?>
+                        <?=gettext("Enter the hostname or IP address the client will use to connect to this server.");?>
                     </div>
                     <input name="useaddr_hostname" type="text" id="useaddr_hostname" size="40" />
                   </div>
@@ -745,7 +748,7 @@ endif; ?>
                     <?=gettext("Port");?> :
                     <input name="proxyport" id="proxyport" type="text" class="formfld unknown" size="5" value="" />
                     <div>
-                      <?=gettext("Choose proxy authentication if any.");?>
+                        <?=gettext("Choose proxy authentication if any.");?>
                       <select name="useproxypass" id="useproxypass" class="formselect" onchange="useproxy_changed(this)">
                         <option value="none"><?=gettext("none");?></option>
                         <option value="basic"><?=gettext("basic");?></option>
@@ -754,9 +757,9 @@ endif; ?>
                       <div id="useproxypass_opts" style="display:none">
                         <?=gettext("Username");?> :
                         <input name="proxyuser" id="proxyuser" type="text" class="formfld unknown" size="20" value="" />
-                         <?=gettext("Password");?> :
+                            <?=gettext("Password");?> :
                         <input name="proxypass" id="proxypass" type="password" class="formfld pwd" size="20" value="" />
-                         <?=gettext("Confirm");?> :
+                            <?=gettext("Confirm");?> :
                         <input name="proxyconf" id="proxyconf" type="password" class="formfld pwd" size="20" value="" />
                       </div>
                     </div>

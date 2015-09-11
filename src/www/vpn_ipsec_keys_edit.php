@@ -44,7 +44,7 @@ if (!isset($config['ipsec']['mobilekey'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    if(isset($_GET['id']) && is_numericint($_GET['id']) && isset($config['ipsec']['mobilekey'][$_GET['id']])) {
+    if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($config['ipsec']['mobilekey'][$_GET['id']])) {
         // fetch record
         $id = $_GET['id'];
         $pconfig['ident'] = $config['ipsec']['mobilekey'][$id]['ident'];
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
     // fetch record number if valid
-    if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($config['ipsec']['mobilekey'][$_POST['id']]) ) {
+    if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($config['ipsec']['mobilekey'][$_POST['id']])) {
         $id = $_POST['id'];
     } else {
         $id = null;
@@ -133,7 +133,7 @@ include("head.inc");
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) {
                 print_input_errors($input_errors);
-        }
+}
         ?>
         <section class="col-xs-12">
           <div class="content-box">
