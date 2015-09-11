@@ -1,7 +1,8 @@
 <?php
+
 /*
-	Copyritgh (C) 2014 Deciso B.V.
-	Copyright (C) 2013 Jim P (jimp@pfsense.org)
+	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2013 Jim Pingle <jimp@pfsense.org>
 	Copyright (C) 2003-2005 Bob Zoller (bob@kludgebox.com) and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
