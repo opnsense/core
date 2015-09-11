@@ -1,6 +1,6 @@
 <?php
 /*
-	Copyritgh (C) 2014 Deciso B.V.
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2006 Fernando Lamos
 	All rights reserved.
 

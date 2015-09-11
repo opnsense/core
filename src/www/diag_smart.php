@@ -1,8 +1,8 @@
 <?php
 /*
-	Copyritgh (C) 2014 Deciso B.V.
-	Copyright (C) 2010 - Jim Pingle
-	Copyright (C) 2006, Eric Friesen
+	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2010 Jim Pingle
+	Copyright (C) 2006 Eric Friesen
 	All rights reserved
 
 	Redistribution and use in source and binary forms, with or without

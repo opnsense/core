@@ -1,7 +1,7 @@
 <?php
 
 /*
-	Copyritgh (C) 2014 Deciso B.V.
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) Scott Ullrich
 	Copyright (C) 2009 Jim Pingle
 	All rights reserved.
