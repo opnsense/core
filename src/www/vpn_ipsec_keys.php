@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
       // nothing to post, redirect
-      header("Location: vpn_ipsec_keys.php");
-      exit;
+        header("Location: vpn_ipsec_keys.php");
+        exit;
     }
 }
 
@@ -110,12 +110,12 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
 <?php
-      if (isset($savemsg)) {
-          print_info_box($savemsg);
-      }
-      if (is_subsystem_dirty('ipsec')) {
-          print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-      }
+if (isset($savemsg)) {
+    print_info_box($savemsg);
+}
+if (is_subsystem_dirty('ipsec')) {
+    print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+}
 
 ?>
       <section class="col-xs-12">
@@ -136,45 +136,48 @@ $( document ).ready(function() {
                 </tr>
 <?php           $i = 0;
                 $userkeys = array();
-                foreach ($config['system']['user'] as $id => $user) {
-                    if (!empty($user['ipsecpsk'])) {
-                        $userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);
-                        ;
-                    }
-                }
-                foreach ($userkeys as $secretent) :
+foreach ($config['system']['user'] as $id => $user) {
+    if (!empty($user['ipsecpsk'])) {
+        $userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);
+        ;
+    }
+}
+foreach ($userkeys as $secretent) :
 ?>
-                <tr>
-                  <td>
-                    <?=$secretent['ident'] == 'allusers' ? gettext("ANY USER") : htmlspecialchars($secretent['ident']) ;?>
-                  </td>
-                  <td>
-                    <?=htmlspecialchars($secretent['pre-shared-key']);?>
-                  </td>
-                  <td>
-                    <a href="system_usermanager.php?userid=<?=$secretent['id'];?>&act=edit" title="<?=gettext("edit"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                  </td>
-                </tr>
+<tr>
+  <td>
+    <?=$secretent['ident'] == 'allusers' ? gettext("ANY USER") : htmlspecialchars($secretent['ident']) ;?>
+  </td>
+  <td>
+    <?=htmlspecialchars($secretent['pre-shared-key']);?>
+  </td>
+  <td>
+    <a href="system_usermanager.php?userid=<?=$secretent['id'];
+?>&act=edit" title="<?=gettext("edit"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+  </td>
+</tr>
 <?php           $i++;
-                endforeach; ?>
+endforeach; ?>
 <?php
                 $i = 0;
-                foreach ($config['ipsec']['mobilekey'] as $secretent) :
+foreach ($config['ipsec']['mobilekey'] as $secretent) :
 ?>
-                <tr>
-                  <td>
-                    <?=htmlspecialchars($secretent['ident']);?>
-                  </td>
-                  <td>
-                    <?=htmlspecialchars($secretent['pre-shared-key']);?>
-                  </td>
-                  <td>
-                    <a href="vpn_ipsec_keys_edit.php?id=<?=$i;?>" title="<?=gettext("edit key"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <a id="del_<?=$i;?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-                  </td>
-                </tr>
+<tr>
+  <td>
+    <?=htmlspecialchars($secretent['ident']);?>
+  </td>
+  <td>
+    <?=htmlspecialchars($secretent['pre-shared-key']);?>
+  </td>
+  <td>
+    <a href="vpn_ipsec_keys_edit.php?id=<?=$i;
+?>" title="<?=gettext("edit key"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+    <a id="del_<?=$i;
+?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+  </td>
+</tr>
 <?php           $i++;
-                endforeach; ?>
+endforeach; ?>
                 <tr>
                   <td colspan="2"></td>
                   <td>

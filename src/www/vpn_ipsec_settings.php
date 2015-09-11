@@ -142,12 +142,12 @@ function maxmss_checked(obj) {
       <div class="row">
 
 <?php
-      if (isset($savemsg)) {
-          print_info_box($savemsg);
-      }
-      if (isset($input_errors) && count($input_errors) > 0) {
-          print_input_errors($input_errors);
-      }
+if (isset($savemsg)) {
+    print_info_box($savemsg);
+}
+if (isset($input_errors) && count($input_errors) > 0) {
+    print_input_errors($input_errors);
+}
 ?>
         <section class="col-xs-12">
         <? $active_tab = "/vpn_ipsec_settings.php";
@@ -169,7 +169,7 @@ function maxmss_checked(obj) {
                         <input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?=!empty($pconfig['noinstalllanspd']) ? "checked=\"checked\""  : "";?> />
                         <strong><?=gettext("Do not install LAN SPD"); ?></strong>
                         <div class="hidden" for="help_for_noinstalllanspd">
-                          <?=gettext("By default, if IPSec is enabled negating SPD are inserted to provide protection. " .
+                            <?=gettext("By default, if IPSec is enabled negating SPD are inserted to provide protection. " .
                                                   "This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
                         </div>
                       </td>
@@ -180,7 +180,7 @@ function maxmss_checked(obj) {
                         <input name="preferoldsa_enable" type="checkbox" id="preferoldsa_enable" value="yes" <?= !empty($pconfig['preferoldsa_enable']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Prefer older IPsec SAs"); ?></strong>
                         <div class="hidden" for="help_for_preferoldsa_enable">
-                          <?=gettext("By default, if several SAs match, the newest one is " .
+                            <?=gettext("By default, if several SAs match, the newest one is " .
                                                   "preferred if it's at least 30 seconds old. Select this " .
                                                   "option to always prefer old SAs over new ones."); ?>
                         </div>
@@ -196,16 +196,16 @@ function maxmss_checked(obj) {
 ?>
                         <?=$ldescr?>
                         <select name="ipsec_<?=$lkey?>" id="ipsec_<?=$lkey?>">
-<?php                   foreach (array("Silent", "Audit", "Control", "Diag", "Raw", "Highest") as $lidx => $lvalue):
+<?php                   foreach (array("Silent", "Audit", "Control", "Diag", "Raw", "Highest") as $lidx => $lvalue) :
 ?>
                           <option value="<?=$lidx?>" <?= isset($pconfig["ipsec_{$lkey}"]) && $pconfig["ipsec_{$lkey}"] == $lidx ? "selected=\"selected\"" : "";?> ?>
-                              <?=$lvalue?>
+                                <?=$lvalue?>
                           </option>
 <?php
-                        endforeach; ?>
+endforeach; ?>
                         </select>
 <?php
-                    endforeach; ?>
+endforeach; ?>
                         <div class="hidden" for="help_for_ipsec_debug">
                         <?=gettext("Launches IPSec in debug mode so that more verbose logs " .
                                                     "will be generated to aid in troubleshooting."); ?>
@@ -218,7 +218,7 @@ function maxmss_checked(obj) {
                         <input name="failoverforcereload" type="checkbox" id="failoverforcereload" value="yes" <?= !empty($pconfig['failoverforcereload']) ? "checked=\"checked\"" : "";?> />
                         <strong><?=gettext("Force IPsec Reload on Failover"); ?></strong>
                         <div class="hidden" for="help_for_failoverforcereloadg">
-                          <?=gettext("In some circumstances using a gateway group as the interface for " .
+                            <?=gettext("In some circumstances using a gateway group as the interface for " .
                                                   "an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded " .
                                                   "when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior" .
                                                   " is disabled by default. Check this box to force IPsec to fully reload on failover."); ?>
@@ -230,7 +230,8 @@ function maxmss_checked(obj) {
                       <td>
                         <input name="maxmss_enable" type="checkbox" id="maxmss_enable" value="yes" <?= !empty($pconfig['maxmss_enable']) ? "checked=\"checked\"" : "" ;?> onclick="maxmss_checked()" />
                         <strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
-                        <input name="maxmss" id="maxmss" type="text" value="<?= !empty($pconfig['maxmss']) ? $pconfig['maxmss'] : "1400";?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
+                        <input name="maxmss" id="maxmss" type="text" value="<?= !empty($pconfig['maxmss']) ? $pconfig['maxmss'] : "1400";
+?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
                         <div class="hidden" for="help_for_maxmss_enable">
                         <?=gettext("Enable MSS clamping on TCP flows over VPN. " .
                                                   "This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "); ?>

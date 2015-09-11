@@ -45,271 +45,271 @@ $a_client = &$config['openvpn']['openvpn-client'];
 $vpnid = 0;
 $act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-		if (isset($_GET['id']) && is_numericint($_GET['id'])) {
-		    $id = $_GET['id'];
-		}
-		if (isset($_GET['act'])) {
-		    $act = $_GET['act'];
-		}
+    if (isset($_GET['id']) && is_numericint($_GET['id'])) {
+        $id = $_GET['id'];
+    }
+    if (isset($_GET['act'])) {
+        $act = $_GET['act'];
+    }
 
-		$pconfig = array();
-		// set defaults
-		$pconfig['autokey_enable'] = "yes"; // just in case the modes switch
-		$pconfig['autotls_enable'] = "yes"; // just in case the modes switch
-		$pconfig['tlsauth_enable'] = "yes";
-		$pconfig['digest'] = "SHA1";
-		$pconfig['verbosity_level'] = 1; // Default verbosity is 1
+        $pconfig = array();
+        // set defaults
+        $pconfig['autokey_enable'] = "yes"; // just in case the modes switch
+        $pconfig['autotls_enable'] = "yes"; // just in case the modes switch
+        $pconfig['tlsauth_enable'] = "yes";
+        $pconfig['digest'] = "SHA1";
+        $pconfig['verbosity_level'] = 1; // Default verbosity is 1
 
-		// edit existing.
-		if ($act=="edit" && isset($id) && $a_client[$id] ) {
-				// 1 on 1 copy of config attributes
-				$copy_fields = "auth_user,auth_pass,disable,mode,protocol,interface
+        // edit existing.
+    if ($act=="edit" && isset($id) && $a_client[$id]) {
+            // 1 on 1 copy of config attributes
+            $copy_fields = "auth_user,auth_pass,disable,mode,protocol,interface
 				,local_port,server_addr,server_port,resolve_retry
 				,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
 				,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
 				,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
 				,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
-				foreach (explode(",",$copy_fields) as $fieldname) {
-					$fieldname = trim($fieldname);
-					if(isset($a_client[$id][$fieldname])) {
-						$pconfig[$fieldname] = $a_client[$id][$fieldname];
-					} elseif (!isset($pconfig[$fieldname])) {
-						// initialize element
-						$pconfig[$fieldname] = null;
-					}
-				}
+        foreach (explode(",", $copy_fields) as $fieldname) {
+            $fieldname = trim($fieldname);
+            if (isset($a_client[$id][$fieldname])) {
+                $pconfig[$fieldname] = $a_client[$id][$fieldname];
+            } elseif (!isset($pconfig[$fieldname])) {
+                // initialize element
+                $pconfig[$fieldname] = null;
+            }
+        }
 
-				// load / convert
-				if (!empty($a_client[$id]['ipaddr'])) {
+            // load / convert
+        if (!empty($a_client[$id]['ipaddr'])) {
             $pconfig['interface'] = $pconfig['interface'] . '|' . $a_client[$id]['ipaddr'];
         }
 
         if (isset($a_client[$id]['tls'])) {
             $pconfig['tls'] = base64_decode($a_client[$id]['tls']);
-        } else  {
-						$pconfig['tls'] = null;
-				}
+        } else {
+                    $pconfig['tls'] = null;
+        }
 
-				if (isset($a_client[$id]['shared_key'])) {
-						$pconfig['shared_key'] = base64_decode($a_client[$id]['shared_key']);
-				} else {
-						$pconfig['shared_key'] = null ;
-				}
+        if (isset($a_client[$id]['shared_key'])) {
+                $pconfig['shared_key'] = base64_decode($a_client[$id]['shared_key']);
+        } else {
+                $pconfig['shared_key'] = null ;
+        }
 
-				if (isset($id) && $a_client[$id]) {
-				    $vpnid = $a_client[$id]['vpnid'];
-				}
-		} elseif ($act=="new") {
-				// create new
-		    $pconfig['interface'] = "wan";
-		    $pconfig['server_port'] = 1194;
-				$init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
+        if (isset($id) && $a_client[$id]) {
+            $vpnid = $a_client[$id]['vpnid'];
+        }
+    } elseif ($act=="new") {
+            // create new
+        $pconfig['interface'] = "wan";
+        $pconfig['server_port'] = 1194;
+            $init_fields = "auth_user,auth_pass,disable,mode,protocol,interface
 				,local_port,server_addr,server_port,resolve_retry
 				,proxy_addr,proxy_port,proxy_user,proxy_passwd,proxy_authtype,description
 				,custom_options,ns_cert_type,dev_mode,caref,certref,crypto,digest,engine
 				,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6,use_shaper
 				,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec,verbosity_level";
 
-				foreach (explode(",",$init_fields) as $fieldname) {
-					$fieldname = trim($fieldname);
-					if (!isset($pconfig[$fieldname])) {
-						$pconfig[$fieldname] = null;
-					}
-				}
-		}
+        foreach (explode(",", $init_fields) as $fieldname) {
+            $fieldname = trim($fieldname);
+            if (!isset($pconfig[$fieldname])) {
+                $pconfig[$fieldname] = null;
+            }
+        }
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	if (isset($_POST['id']) && is_numericint($_POST['id'])) {
-			$id = $_POST['id'];
-	}
-	if (isset($_POST['act'])) {
-			$act = $_POST['act'];
-	}
+    if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+            $id = $_POST['id'];
+    }
+    if (isset($_POST['act'])) {
+            $act = $_POST['act'];
+    }
 
-	if ($act == "del") {
-			// remove client
-			if (!isset($id) || !isset($a_client[$id])) {
-					redirectHeader("vpn_openvpn_client.php");
-					exit;
-			}
-			if (!empty($a_client[$id])) {
-					openvpn_delete('client', $a_client[$id]);
-			}
-			unset($a_client[$id]);
-			write_config();
-	} else {
-			// update client (after validation)
-			$pconfig = $_POST;
-			$input_errors = array();
+    if ($act == "del") {
+            // remove client
+        if (!isset($id) || !isset($a_client[$id])) {
+                redirectHeader("vpn_openvpn_client.php");
+                exit;
+        }
+        if (!empty($a_client[$id])) {
+                openvpn_delete('client', $a_client[$id]);
+        }
+            unset($a_client[$id]);
+            write_config();
+    } else {
+            // update client (after validation)
+            $pconfig = $_POST;
+            $input_errors = array();
 
-	    if (isset($id) && $a_client[$id]) {
-	        $vpnid = $a_client[$id]['vpnid'];
-	    }
-			if (isset($pconfig['mode']) && $pconfig['mode'] != "p2p_shared_key") {
-	        $tls_mode = true;
-	    } else {
-	        $tls_mode = false;
-	    }
+        if (isset($id) && $a_client[$id]) {
+            $vpnid = $a_client[$id]['vpnid'];
+        }
+        if (isset($pconfig['mode']) && $pconfig['mode'] != "p2p_shared_key") {
+            $tls_mode = true;
+        } else {
+            $tls_mode = false;
+        }
 
-			// generate new key
-			if (!empty($pconfig['autokey_enable'])) {
-	        $pconfig['shared_key'] = openvpn_create_key();
-	    }
+            // generate new key
+        if (!empty($pconfig['autokey_enable'])) {
+            $pconfig['shared_key'] = openvpn_create_key();
+        }
 
-	    /* input validation */
-			if (strpos($pconfig['interface'],'|') !== false) {
-					list($iv_iface, $iv_ip) = explode("|", $pconfig['interface']);
-			} else {
-					$iv_iface = $pconfig['interface'];
-					$iv_ip = null;
-			}
+        /* input validation */
+        if (strpos($pconfig['interface'], '|') !== false) {
+                list($iv_iface, $iv_ip) = explode("|", $pconfig['interface']);
+        } else {
+                $iv_iface = $pconfig['interface'];
+                $iv_ip = null;
+        }
 
-	    if (is_ipaddrv4($iv_ip) && (stristr($pconfig['protocol'], "6") !== false)) {
-	        $input_errors[] = gettext("Protocol and IP address families do not match. You cannot select an IPv6 protocol and an IPv4 IP address.");
-	    } elseif (is_ipaddrv6($iv_ip) && (stristr($pconfig['protocol'], "6") === false)) {
-	        $input_errors[] = gettext("Protocol and IP address families do not match. You cannot select an IPv4 protocol and an IPv6 IP address.");
-	    } elseif ((stristr($pconfig['protocol'], "6") === false) && !get_interface_ip($iv_iface) && ($pconfig['interface'] != "any")) {
-	        $input_errors[] = gettext("An IPv4 protocol was selected, but the selected interface has no IPv4 address.");
-	    } elseif ((stristr($pconfig['protocol'], "6") !== false) && !get_interface_ipv6($iv_iface) && ($pconfig['interface'] != "any")) {
-	        $input_errors[] = gettext("An IPv6 protocol was selected, but the selected interface has no IPv6 address.");
-	    }
-	    if (!empty($pconfig['local_port'])) {
-					if (empty($pconfig['local_port']) || !is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
-							$input_errors[] = "The field Local port must contain a valid port, ranging from 0 to 65535.";
-					}
-	        $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
-	        if (($portused != $vpnid) && ($portused != 0)) {
-	            $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
-	        }
-	    }
-			if (empty($pconfig['server_addr']) || (!is_domain($pconfig['server_addr']) && !is_ipaddr($pconfig['server_addr']))) {
-					$input_errors[] = gettext("The field Server host or address must contain a valid IP address or domain name.") ;
-			}
+        if (is_ipaddrv4($iv_ip) && (stristr($pconfig['protocol'], "6") !== false)) {
+            $input_errors[] = gettext("Protocol and IP address families do not match. You cannot select an IPv6 protocol and an IPv4 IP address.");
+        } elseif (is_ipaddrv6($iv_ip) && (stristr($pconfig['protocol'], "6") === false)) {
+            $input_errors[] = gettext("Protocol and IP address families do not match. You cannot select an IPv4 protocol and an IPv6 IP address.");
+        } elseif ((stristr($pconfig['protocol'], "6") === false) && !get_interface_ip($iv_iface) && ($pconfig['interface'] != "any")) {
+            $input_errors[] = gettext("An IPv4 protocol was selected, but the selected interface has no IPv4 address.");
+        } elseif ((stristr($pconfig['protocol'], "6") !== false) && !get_interface_ipv6($iv_iface) && ($pconfig['interface'] != "any")) {
+            $input_errors[] = gettext("An IPv6 protocol was selected, but the selected interface has no IPv6 address.");
+        }
+        if (!empty($pconfig['local_port'])) {
+            if (empty($pconfig['local_port']) || !is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
+                    $input_errors[] = "The field Local port must contain a valid port, ranging from 0 to 65535.";
+            }
+            $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
+            if (($portused != $vpnid) && ($portused != 0)) {
+                $input_errors[] = gettext("The specified 'Local port' is in use. Please select another value");
+            }
+        }
+        if (empty($pconfig['server_addr']) || (!is_domain($pconfig['server_addr']) && !is_ipaddr($pconfig['server_addr']))) {
+                $input_errors[] = gettext("The field Server host or address must contain a valid IP address or domain name.") ;
+        }
 
-			if (empty($pconfig['server_port']) || !is_numeric($pconfig['server_port']) || $pconfig['server_port'] < 0 || ($pconfig['server_port'] > 65535)) {
-					$input_errors[] = "The field Server port must contain a valid port, ranging from 0 to 65535.";
-			}
+        if (empty($pconfig['server_port']) || !is_numeric($pconfig['server_port']) || $pconfig['server_port'] < 0 || ($pconfig['server_port'] > 65535)) {
+                $input_errors[] = "The field Server port must contain a valid port, ranging from 0 to 65535.";
+        }
 
-	    if (!empty($pconfig['proxy_addr'])) {
-					if (empty($pconfig['proxy_addr']) || (!is_domain($pconfig['proxy_addr']) && !is_ipaddr($pconfig['proxy_addr']))) {
-							$input_errors[] = gettext("The field Proxy host or address must contain a valid IP address or domain name.") ;
-					}
-					if (empty($pconfig['proxy_port']) || !is_numeric($pconfig['proxy_port']) || $pconfig['proxy_port'] < 0 || ($pconfig['proxy_port'] > 65535)) {
-							$input_errors[] = "The field Proxy port must contain a valid port, ranging from 0 to 65535.";
-					}
-	        if (isset($pconfig['proxy_authtype']) && $pconfig['proxy_authtype'] != "none") {
-	            if (empty($pconfig['proxy_user']) || empty($pconfig['proxy_passwd'])) {
-	                $input_errors[] = gettext("User name and password are required for proxy with authentication.");
-	            }
-	        }
-	    }
-	    if (!empty($pconfig['tunnel_network'])) {
-	        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
-	            $input_errors[] = $result;
-	        }
-	    }
-	    if (!empty($pconfig['tunnel_networkv6'])) {
-	        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
-	            $input_errors[] = $result;
-	        }
-	    }
-	    if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4")) {
-	        $input_errors[] = $result;
-	    }
-	    if ($result = openvpn_validate_cidr($pconfig['remote_networkv6'], 'IPv6 Remote Network', true, "ipv6")) {
-	        $input_errors[] = $result;
-	    }
-	    if (!empty($pconfig['use_shaper']) && (!is_numeric($pconfig['use_shaper']) || ($pconfig['use_shaper'] <= 0))) {
-	        $input_errors[] = gettext("The bandwidth limit must be a positive numeric value.");
-	    }
-	    if (!$tls_mode && empty($pconfig['autokey_enable'])) {
-	        if (!strstr($pconfig['shared_key'], "-----BEGIN OpenVPN Static key V1-----") ||
-	            !strstr($pconfig['shared_key'], "-----END OpenVPN Static key V1-----")) {
-	            $input_errors[] = gettext("The field 'Shared Key' does not appear to be valid");
-	        }
-	    }
-	    if ($tls_mode && !empty($pconfig['tlsauth_enable']) && empty($pconfig['autotls_enable'])) {
-	        if (!strstr($pconfig['tls'], "-----BEGIN OpenVPN Static key V1-----") ||
-	            !strstr($pconfig['tls'], "-----END OpenVPN Static key V1-----")) {
-	            $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid");
-	        }
-	    }
+        if (!empty($pconfig['proxy_addr'])) {
+            if (empty($pconfig['proxy_addr']) || (!is_domain($pconfig['proxy_addr']) && !is_ipaddr($pconfig['proxy_addr']))) {
+                    $input_errors[] = gettext("The field Proxy host or address must contain a valid IP address or domain name.") ;
+            }
+            if (empty($pconfig['proxy_port']) || !is_numeric($pconfig['proxy_port']) || $pconfig['proxy_port'] < 0 || ($pconfig['proxy_port'] > 65535)) {
+                    $input_errors[] = "The field Proxy port must contain a valid port, ranging from 0 to 65535.";
+            }
+            if (isset($pconfig['proxy_authtype']) && $pconfig['proxy_authtype'] != "none") {
+                if (empty($pconfig['proxy_user']) || empty($pconfig['proxy_passwd'])) {
+                    $input_errors[] = gettext("User name and password are required for proxy with authentication.");
+                }
+            }
+        }
+        if (!empty($pconfig['tunnel_network'])) {
+            if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network', false, "ipv4")) {
+                $input_errors[] = $result;
+            }
+        }
+        if (!empty($pconfig['tunnel_networkv6'])) {
+            if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
+                $input_errors[] = $result;
+            }
+        }
+        if ($result = openvpn_validate_cidr($pconfig['remote_network'], 'IPv4 Remote Network', true, "ipv4")) {
+            $input_errors[] = $result;
+        }
+        if ($result = openvpn_validate_cidr($pconfig['remote_networkv6'], 'IPv6 Remote Network', true, "ipv6")) {
+            $input_errors[] = $result;
+        }
+        if (!empty($pconfig['use_shaper']) && (!is_numeric($pconfig['use_shaper']) || ($pconfig['use_shaper'] <= 0))) {
+            $input_errors[] = gettext("The bandwidth limit must be a positive numeric value.");
+        }
+        if (!$tls_mode && empty($pconfig['autokey_enable'])) {
+            if (!strstr($pconfig['shared_key'], "-----BEGIN OpenVPN Static key V1-----") ||
+                !strstr($pconfig['shared_key'], "-----END OpenVPN Static key V1-----")) {
+                $input_errors[] = gettext("The field 'Shared Key' does not appear to be valid");
+            }
+        }
+        if ($tls_mode && !empty($pconfig['tlsauth_enable']) && empty($pconfig['autotls_enable'])) {
+            if (!strstr($pconfig['tls'], "-----BEGIN OpenVPN Static key V1-----") ||
+                !strstr($pconfig['tls'], "-----END OpenVPN Static key V1-----")) {
+                $input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid");
+            }
+        }
 
-	    /* If we are not in shared key mode, then we need the CA/Cert. */
-	    if (isset($pconfig['mode']) && $pconfig['mode'] != "p2p_shared_key") {
-	        $reqdfields = explode(" ", "caref");
-	        $reqdfieldsn = array(gettext("Certificate Authority"));
-	    } elseif (empty($pconfig['autokey_enable'])) {
-	        /* We only need the shared key filled in if we are in shared key mode and autokey is not selected. */
-	        $reqdfields = array('shared_key');
-	        $reqdfieldsn = array(gettext('Shared key'));
-	    }
+        /* If we are not in shared key mode, then we need the CA/Cert. */
+        if (isset($pconfig['mode']) && $pconfig['mode'] != "p2p_shared_key") {
+            $reqdfields = explode(" ", "caref");
+            $reqdfieldsn = array(gettext("Certificate Authority"));
+        } elseif (empty($pconfig['autokey_enable'])) {
+            /* We only need the shared key filled in if we are in shared key mode and autokey is not selected. */
+            $reqdfields = array('shared_key');
+            $reqdfieldsn = array(gettext('Shared key'));
+        }
 
-			do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+            do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-	    if (($pconfig['mode'] != "p2p_shared_key") && empty($pconfig['certref']) && empty($pconfig['auth_user']) && empty($pconfig['auth_pass'])) {
-	        $input_errors[] = gettext("If no Client Certificate is selected, a username and password must be entered.");
-	    }
+        if (($pconfig['mode'] != "p2p_shared_key") && empty($pconfig['certref']) && empty($pconfig['auth_user']) && empty($pconfig['auth_pass'])) {
+            $input_errors[] = gettext("If no Client Certificate is selected, a username and password must be entered.");
+        }
 
-	    if (count($input_errors) == 0) {
-					// save data
-	        $client = array();
-					// 1 on 1 copy of config attributes
-					$copy_fields = "auth_user,auth_pass,protocol,dev_mode,local_port
+        if (count($input_errors) == 0) {
+                    // save data
+            $client = array();
+                    // 1 on 1 copy of config attributes
+                    $copy_fields = "auth_user,auth_pass,protocol,dev_mode,local_port
 					,server_addr,server_port,resolve_retry,proxy_addr,proxy_port
 					,proxy_authtype,proxy_user,proxy_passwd,description,mode,crypto,digest
 					,engine,tunnel_network,tunnel_networkv6,remote_network,remote_networkv6
 					,use_shaper,compression,passtos,no_tun_ipv6,route_no_pull,route_no_exec
 					,verbosity_level,interface";
 
-					foreach (explode(",",$copy_fields) as $fieldname) {
-						$fieldname = trim($fieldname);
-						if(!empty($pconfig[$fieldname])) {
-							$client[$fieldname] = $pconfig[$fieldname];
-						}
-					}
+            foreach (explode(",", $copy_fields) as $fieldname) {
+                $fieldname = trim($fieldname);
+                if (!empty($pconfig[$fieldname])) {
+                    $client[$fieldname] = $pconfig[$fieldname];
+                }
+            }
 
-					// attributes containing some kind of logic
-	        if ($vpnid) {
-	            $client['vpnid'] = $vpnid;
-	        } else {
-	            $client['vpnid'] = openvpn_vpnid_next();
-	        }
-	        if (isset($pconfig['disable']) && $pconfig['disable'] == "yes") {
-	            $client['disable'] = true;
-	        }
+                    // attributes containing some kind of logic
+            if ($vpnid) {
+                $client['vpnid'] = $vpnid;
+            } else {
+                $client['vpnid'] = openvpn_vpnid_next();
+            }
+            if (isset($pconfig['disable']) && $pconfig['disable'] == "yes") {
+                $client['disable'] = true;
+            }
 
-					if (strpos($pconfig['interface'], "|") !== false) {
-							list($client['interface'], $client['ipaddr']) = explode("|", $pconfig['interface']);
-					}
-	        $client['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
+            if (strpos($pconfig['interface'], "|") !== false) {
+                    list($client['interface'], $client['ipaddr']) = explode("|", $pconfig['interface']);
+            }
+            $client['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
 
-	        if ($tls_mode) {
-	            $client['caref'] = $pconfig['caref'];
-	            $client['certref'] = $pconfig['certref'];
-	            if (!empty($pconfig['tlsauth_enable'])) {
-	                if (!empty($pconfig['autotls_enable'])) {
-	                    $pconfig['tls'] = openvpn_create_key();
-	                }
-	                $client['tls'] = base64_encode($pconfig['tls']);
-	            }
-	        } else {
-	            $client['shared_key'] = base64_encode($pconfig['shared_key']);
-	        }
+            if ($tls_mode) {
+                $client['caref'] = $pconfig['caref'];
+                $client['certref'] = $pconfig['certref'];
+                if (!empty($pconfig['tlsauth_enable'])) {
+                    if (!empty($pconfig['autotls_enable'])) {
+                        $pconfig['tls'] = openvpn_create_key();
+                    }
+                    $client['tls'] = base64_encode($pconfig['tls']);
+                }
+            } else {
+                $client['shared_key'] = base64_encode($pconfig['shared_key']);
+            }
 
-	        if (isset($id) && isset($a_client[$id])) {
-	            $a_client[$id] = $client;
-	        } else {
-	            $a_client[] = $client;
-	        }
+            if (isset($id) && isset($a_client[$id])) {
+                $a_client[$id] = $client;
+            } else {
+                $a_client[] = $client;
+            }
 
-	        openvpn_resync('client', $client);
-	        write_config();
+            openvpn_resync('client', $client);
+            write_config();
 
-	        header("Location: vpn_openvpn_client.php");
-	        exit;
-	    }
-		}
+            header("Location: vpn_openvpn_client.php");
+            exit;
+        }
+    }
 }
 
 // escape form output before processing
@@ -448,12 +448,12 @@ endif; ?>
 			<div class="row">
 
 <?php
-                if (isset($input_errors) && count($input_errors) > 0) {
-                    print_input_errors($input_errors);
-                }
-                if (isset($savemsg)) {
-                    print_info_box($savemsg);
-                }
+if (isset($input_errors) && count($input_errors) > 0) {
+    print_input_errors($input_errors);
+}
+if (isset($savemsg)) {
+    print_info_box($savemsg);
+}
 ?>
 
 
@@ -495,18 +495,20 @@ endif; ?>
 									<td>
 										<select name="mode" id="mode" class="form-control" onchange="mode_change()">
 <?php
-														$openvpn_client_modes = array(
-															'p2p_tls' => gettext("Peer to Peer ( SSL/TLS )"),
-															'p2p_shared_key' => gettext("Peer to Peer ( Shared Key )") );
-                            foreach ($openvpn_client_modes as $name => $desc) :
-                                $selected = "";
-                                if ($pconfig['mode'] == $name) {
-                                    $selected = "selected=\"selected\"";
-                                }
+                                                        $openvpn_client_modes = array(
+                                                            'p2p_tls' => gettext("Peer to Peer ( SSL/TLS )"),
+                                                            'p2p_shared_key' => gettext("Peer to Peer ( Shared Key )") );
+foreach ($openvpn_client_modes as $name => $desc) :
+    $selected = "";
+    if ($pconfig['mode'] == $name) {
+        $selected = "selected=\"selected\"";
+    }
 ?>
-                            <option value="<?=$name;?>" <?=$selected;?>><?=$desc;?></option>
+<option value="<?=$name;
+?>" <?=$selected;
+?>><?=$desc;?></option>
 <?php
-                            endforeach; ?>
+endforeach; ?>
 										</select>
 									</td>
 								</tr>
@@ -515,15 +517,17 @@ endif; ?>
 									<td>
 										<select name='protocol' class="form-control">
 <?php
-                            foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
-                                $selected = "";
-                                if ($pconfig['protocol'] == $prot) {
-                                    $selected = "selected=\"selected\"";
-                                }
+foreach (array("UDP", "UDP6", "TCP", "TCP6") as $prot) :
+    $selected = "";
+    if ($pconfig['protocol'] == $prot) {
+        $selected = "selected=\"selected\"";
+    }
 ?>
-                            <option value="<?=$prot;?>" <?=$selected;?>><?=$prot;?></option>
+<option value="<?=$prot;
+?>" <?=$selected;
+?>><?=$prot;?></option>
 <?php
-                            endforeach; ?>
+endforeach; ?>
 							</select>
 							</td>
 					</tr>
@@ -538,7 +542,9 @@ endif; ?>
                                     $selected = "selected=\"selected\"";
                                 }
 ?>
-                            <option value="<?=$mode;?>" <?=$selected;?>><?=$mode;?></option>
+                            <option value="<?=$mode;
+?>" <?=$selected;
+?>><?=$mode;?></option>
 <?php
                             endforeach; ?>
 							</select>
@@ -551,36 +557,38 @@ endif; ?>
 <?php
                                     $interfaces = get_configured_interface_with_descr();
                                     $carplist = get_configured_carp_interface_list();
-                                foreach ($carplist as $cif => $carpip) {
-                                    $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
-                                }
+foreach ($carplist as $cif => $carpip) {
+    $interfaces[$cif.'|'.$carpip] = $carpip." (".get_vip_descr($carpip).")";
+}
                                     $aliaslist = get_configured_ip_aliases_list();
-                                foreach ($aliaslist as $aliasip => $aliasif) {
-                                    $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
-                                }
+foreach ($aliaslist as $aliasip => $aliasif) {
+    $interfaces[$aliasif.'|'.$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
+}
                                     $grouplist = return_gateway_groups_array();
-                                foreach ($grouplist as $name => $group) {
-                                    if ($group['ipprotocol'] != inet) {
-                                        continue;
-                                    }
-                                    if ($group[0]['vip'] <> "") {
-                                        $vipif = $group[0]['vip'];
-                                    } else {
-                                        $vipif = $group[0]['int'];
-                                    }
-                                    $interfaces[$name] = "GW Group {$name}";
-                                }
+foreach ($grouplist as $name => $group) {
+    if ($group['ipprotocol'] != inet) {
+        continue;
+    }
+    if ($group[0]['vip'] <> "") {
+        $vipif = $group[0]['vip'];
+    } else {
+        $vipif = $group[0]['int'];
+    }
+    $interfaces[$name] = "GW Group {$name}";
+}
                                     $interfaces['lo0'] = "Localhost";
                                     $interfaces['any'] = "any";
-                                foreach ($interfaces as $iface => $ifacename) :
-                                    $selected = "";
-                                    if ($iface == $pconfig['interface']) {
-                                        $selected = "selected=\"selected\"";
-                                    }
-                                ?>
-                                <option value="<?=$iface;?>" <?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
+foreach ($interfaces as $iface => $ifacename) :
+    $selected = "";
+    if ($iface == $pconfig['interface']) {
+        $selected = "selected=\"selected\"";
+    }
+?>
+<option value="<?=$iface;
+?>" <?=$selected;
+?>><?=htmlspecialchars($ifacename);?></option>
 <?php
-                                endforeach; ?>
+endforeach; ?>
 							</select> <br />
 						</td>
 					</tr>
@@ -702,20 +710,24 @@ endif; ?>
 ?>
 							<select name='caref' class="form-control">
 <?php
-                            foreach ($config['ca'] as $ca) :
-                                $selected = "";
-                                if (isset($pconfig['caref']) && $pconfig['caref'] == $ca['refid']) {
-                                    $selected = "selected=\"selected\"";
-                                }
-                            ?>
-                            <option value="<?=$ca['refid'];?>" <?=$selected;?>><?=$ca['descr'];?></option>
+foreach ($config['ca'] as $ca) :
+    $selected = "";
+    if (isset($pconfig['caref']) && $pconfig['caref'] == $ca['refid']) {
+        $selected = "selected=\"selected\"";
+    }
+?>
+<option value="<?=$ca['refid'];
+?>" <?=$selected;
+?>><?=$ca['descr'];?></option>
 <?php
-                            endforeach; ?>
+endforeach; ?>
 							</select>
 							<?php
 else :
 ?>
-								<b><?=gettext("No Certificate Authorities defined.");?></b> <br /><?=gettext("Create one under");?> <a href="system_camanager.php"><?=gettext("System: Certificates");?></a>.
+								<b><?=gettext("No Certificate Authorities defined.");
+?></b> <br /><?=gettext("Create one under");
+?> <a href="system_camanager.php"><?=gettext("System: Certificates");?></a>.
 							<?php
 endif; ?>
 							</td>
@@ -730,12 +742,12 @@ endif; ?>
                                 $caname = "";
                                 $inuse = "";
                                 $revoked = "";
-																if (isset($cert['caref'])) {
-																	$ca = lookup_ca($cert['caref']);
-	                                if (!empty($ca)) {
-	                                    $caname = " (CA: {$ca['descr']})";
-	                                }
-																}
+                                if (isset($cert['caref'])) {
+                                    $ca = lookup_ca($cert['caref']);
+                                    if (!empty($ca)) {
+                                        $caname = " (CA: {$ca['descr']})";
+                                    }
+                                }
                                 if (isset($pconfig['certref']) && $pconfig['certref'] == $cert['refid']) {
                                     $selected = "selected=\"selected\"";
                                 }
@@ -746,14 +758,21 @@ endif; ?>
                                     $revoked = " *Revoked";
                                 }
                             ?>
-								<option value="<?=$cert['refid'];?>" <?=$selected;?>><?=$cert['descr'] . $caname . $inuse . $revoked;?></option>
+								<option value="<?=$cert['refid'];
+?>" <?=$selected;
+?>><?=$cert['descr'] . $caname . $inuse . $revoked;?></option>
 							<?php
                             endforeach; ?>
-								<option value="" <?=empty($pconfig['certref'])?  "selected=\"selected\"" : "";?>> <?=gettext("None");?> <?=gettext("(Username and Password required)");?></option>
+								<option value="" <?=empty($pconfig['certref'])?  "selected=\"selected\"" : "";
+?>> <?=gettext("None");
+?> <?=gettext("(Username and Password required)");?></option>
 							</select>
 							<?php if (!isset($config['cert']) || count($config['cert']) == 0) :
 ?>
-								<b><?=gettext("No Certificates defined.");?></b> <br /><?=gettext("Create one under");?> <a href="system_certmanager.php"><?=gettext("System: Certificates");?></a> <?=gettext("if one is required for this connection.");?>
+								<b><?=gettext("No Certificates defined.");
+?></b> <br /><?=gettext("Create one under");
+?> <a href="system_certmanager.php"><?=gettext("System: Certificates");
+?></a> <?=gettext("if one is required for this connection.");?>
 <?php
 endif; ?>
 						</td>
@@ -786,7 +805,8 @@ endif; ?>
                                         $selected = " selected=\"selected\"";
                                     }
                                 ?>
-								<option value="<?=$name;?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
+								<option value="<?=$name;
+?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
 								<?php
                                 endforeach; ?>
 							</select>
@@ -804,7 +824,8 @@ endif; ?>
                                         $selected = " selected=\"selected\"";
                                     }
                                 ?>
-								<option value="<?=$name;?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
+								<option value="<?=$name;
+?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
 								<?php
                                 endforeach; ?>
 							</select>
@@ -825,7 +846,8 @@ endif; ?>
                                         $selected = " selected=\"selected\"";
                                     }
                                 ?>
-								<option value="<?=$name;?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
+								<option value="<?=$name;
+?>"<?=$selected?>><?=htmlspecialchars($desc);?></option>
 								<?php
                                 endforeach; ?>
 							</select>
@@ -843,12 +865,12 @@ endif; ?>
 							<input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
 							<div class="hidden" for="help_for_tunnel_network">
 								<?=gettext("This is the virtual network used for private " .
-								"communications between this client and the " .
-								"server expressed using CIDR (eg. 10.0.8.0/24). " .
-								"The first network address is assumed to be the " .
-								"server address and the second network address " .
-								"will be assigned to the client virtual " .
-								"interface"); ?>.
+                                "communications between this client and the " .
+                                "server expressed using CIDR (eg. 10.0.8.0/24). " .
+                                "The first network address is assumed to be the " .
+                                "server address and the second network address " .
+                                "will be assigned to the client virtual " .
+                                "interface"); ?>.
 							</div>
 						</td>
 					</tr>
@@ -858,12 +880,12 @@ endif; ?>
 							<input name="tunnel_networkv6" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_networkv6'];?>" />
 							<div class="hidden" for="help_for_tunnel_networkv6">
 								<?=gettext("This is the IPv6 virtual network used for private " .
-								"communications between this client and the " .
-								"server expressed using CIDR (eg. fe80::/64). " .
-								"The first network address is assumed to be the " .
-								"server address and the second network address " .
-								"will be assigned to the client virtual " .
-								"interface"); ?>.
+                                "communications between this client and the " .
+                                "server expressed using CIDR (eg. fe80::/64). " .
+                                "The first network address is assumed to be the " .
+                                "server address and the second network address " .
+                                "will be assigned to the client virtual " .
+                                "interface"); ?>.
 							</div>
 						</td>
 					</tr>
@@ -873,12 +895,12 @@ endif; ?>
 							<input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
 							<div class="hidden" for="help_for_remote_network">
 								<?=gettext("These are the IPv4 networks that will be routed through " .
-                            "the tunnel, so that a site-to-site VPN can be " .
-                            "established without manually changing the routing tables. " .
-                            "Expressed as a comma-separated list of one or more CIDR ranges. " .
-                            "If this is a site-to-site VPN, enter the " .
-                            "remote LAN/s here. You may leave this blank to " .
-                            "only communicate with other clients"); ?>.
+                                "the tunnel, so that a site-to-site VPN can be " .
+                                "established without manually changing the routing tables. " .
+                                "Expressed as a comma-separated list of one or more CIDR ranges. " .
+                                "If this is a site-to-site VPN, enter the " .
+                                "remote LAN/s here. You may leave this blank to " .
+                                "only communicate with other clients"); ?>.
 							</div>
 						</td>
 					</tr>
@@ -888,12 +910,12 @@ endif; ?>
 							<input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
 							<div class="hidden" for="help_for_remote_networkv6">
 								<?=gettext("These are the IPv6 networks that will be routed through " .
-                            "the tunnel, so that a site-to-site VPN can be " .
-                            "established without manually changing the routing tables. " .
-                            "Expressed as a comma-separated list of one or more IP/PREFIX. " .
-                            "If this is a site-to-site VPN, enter the " .
-                            "remote LAN/s here. You may leave this blank to " .
-                            "only communicate with other clients"); ?>.
+                                "the tunnel, so that a site-to-site VPN can be " .
+                                "established without manually changing the routing tables. " .
+                                "Expressed as a comma-separated list of one or more IP/PREFIX. " .
+                                "If this is a site-to-site VPN, enter the " .
+                                "remote LAN/s here. You may leave this blank to " .
+                                "only communicate with other clients"); ?>.
 							</div>
 						</td>
 					</tr>
@@ -903,9 +925,9 @@ endif; ?>
 							<input name="use_shaper" type="text" class="form-control unknown" size="5" value="<?=$pconfig['use_shaper'];?>" />
 							<div class="hidden" for="help_for_use_shaper">
 								<?=gettext("Maximum outgoing bandwidth for this tunnel. " .
-                            "Leave empty for no limit. The input value has " .
-                            "to be something between 100 bytes/sec and 100 " .
-                            "Mbytes/sec (entered as bytes per second)"); ?>.
+                                "Leave empty for no limit. The input value has " .
+                                "to be something between 100 bytes/sec and 100 " .
+                                "Mbytes/sec (entered as bytes per second)"); ?>.
 							</div>
 						</td>
 					</tr>
@@ -1069,7 +1091,8 @@ else :
                 </td>
                 <td>
                     <a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-										<a id="del_<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+										<a id="del_<?=$i;
+?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
                 </td>
 				</tr>
 				<?php

@@ -38,28 +38,28 @@ $pgtitle = array("OpenVPN", "Client Export Utility");
 
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {
-  foreach ($config['openvpn']['openvpn-server'] as $sindex => $server) {
-      if (isset($server['disable'])) {
-          continue;
-      }
-      $ras_user = array();
-      if ($server['mode'] != "p2p_shared_key") {
-          continue;
-      }
+    foreach ($config['openvpn']['openvpn-server'] as $sindex => $server) {
+        if (isset($server['disable'])) {
+            continue;
+        }
+        $ras_user = array();
+        if ($server['mode'] != "p2p_shared_key") {
+            continue;
+        }
 
-      $ras_serverent = array();
-      $prot = $server['protocol'];
-      $port = $server['local_port'];
-      if ($server['description']) {
-          $name = "{$server['description']} {$prot}:{$port}";
-      } else {
-          $name = "Shared Key Server {$prot}:{$port}";
-      }
-      $ras_serverent['index'] = $sindex;
-      $ras_serverent['name'] = $name;
-      $ras_serverent['mode'] = $server['mode'];
-      $ras_server[] = $ras_serverent;
-  }
+        $ras_serverent = array();
+        $prot = $server['protocol'];
+        $port = $server['local_port'];
+        if ($server['description']) {
+            $name = "{$server['description']} {$prot}:{$port}";
+        } else {
+            $name = "Shared Key Server {$prot}:{$port}";
+        }
+        $ras_serverent['index'] = $sindex;
+        $ras_serverent['name'] = $name;
+        $ras_serverent['mode'] = $server['mode'];
+        $ras_server[] = $ras_serverent;
+    }
 }
 
 if (isset($_GET['act'])) {
@@ -67,7 +67,7 @@ if (isset($_GET['act'])) {
     $act = $_GET['act'];
     if (($act == "skconf") || ($act == "skzipconf")) {
         $srvid = isset($_GET['srvid']) ? $_GET['srvid'] : false;
-        if ( $srvid === false || !isset($config['openvpn']['openvpn-server'][$srvid]['mode']) ||
+        if ($srvid === false || !isset($config['openvpn']['openvpn-server'][$srvid]['mode']) ||
               $config['openvpn']['openvpn-server'][$srvid]['mode'] != "p2p_shared_key") {
                 redirectHeader("vpn_openvpn_export.php");
                 exit;
@@ -302,7 +302,7 @@ if (isset($savemsg)) {
                   $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
                   $tab_array[] = array(gettext("Shared Key Export"), true, "vpn_openvpn_export_shared.php");
                   display_top_tabs($tab_array);
-              ?>
+                ?>
         <div class="tab-content content-box col-xs-12">
           <div class="table-responsive">
             <table width="100%" border="0" class="table table-striped" cellpadding="0" cellspacing="0">
@@ -319,9 +319,10 @@ if (isset($savemsg)) {
                   <select name="server" id="server" class="formselect" onchange="server_changed()">
                     <?php foreach ($ras_server as & $server) :
     ?>
-                    <option value="<?=htmlspecialchars($server['sindex']);?>"><?=htmlspecialchars($server['name']);?></option>
+                    <option value="<?=htmlspecialchars($server['sindex']);
+?>"><?=htmlspecialchars($server['name']);?></option>
                     <?php
-    endforeach; ?>
+endforeach; ?>
                   </select>
                 </td>
               </tr>
@@ -333,10 +334,12 @@ if (isset($savemsg)) {
                     <option value="serverhostname" ><?=gettext("Installation hostname");?></option>
                     <?php if (isset($config['dyndnses']['dyndns'])) :
 ?>
-                      <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
+                        <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
-                        <option value="<?= htmlspecialchars($ddns["host"]); ?>"><?=gettext("DynDNS:");?> <?= htmlspecialchars($ddns["host"]);?></option>
-                      <?php
+                        <option value="<?= htmlspecialchars($ddns["host"]);
+?>"><?=gettext("DynDNS:");
+?> <?= htmlspecialchars($ddns["host"]);?></option>
+                        <?php
 endforeach; ?>
                     <?php
 endif; ?>
@@ -354,17 +357,17 @@ endif; ?>
                   <input name="useproxy" id="useproxy" type="checkbox" value="yes" onclick="useproxy_changed(this)" />
 
                   <div id="useproxy_opts" style="display:none">
-                      <?=gettext("Type");?> :
+                        <?=gettext("Type");?> :
                       <select name="useproxytype" id="useproxytype" class="formselect">
                         <option value="http"><?=gettext("HTTP");?></option>
                         <option value="socks"><?=gettext("Socks");?></option>
                       </select>
 
-                      <?=gettext("IP Address")?> :
+                        <?=gettext("IP Address")?> :
                       <input name="proxyaddr" id="proxyaddr" type="text" class="formfld unknown" size="30" value="" />
-                      <?=gettext("Port");?> :
+                        <?=gettext("Port");?> :
                       <input name="proxyport" id="proxyport" type="text" class="formfld unknown" size="5" value="" />
-                      <?=gettext("Choose proxy authentication if any.");?>
+                        <?=gettext("Choose proxy authentication if any.");?>
                       <select name="useproxypass" id="useproxypass" class="formselect" onchange="useproxy_changed(this)">
                         <option value="none"><?=gettext("none");?></option>
                         <option value="basic"><?=gettext("basic");?></option>
@@ -380,7 +383,7 @@ endif; ?>
                       </div>
                   </div>
                   <div class="hidden" for="help_for_use_proxy">
-                      <?= gettext("Use proxy to communicate with the server.");?>
+                        <?= gettext("Use proxy to communicate with the server.");?>
                   </div>
                 </td>
               </tr>
@@ -394,8 +397,8 @@ endif; ?>
                     </tr>
                   </table>
                   <div class="hidden" for="help_for_client_conf_pkg">
-                      <?= gettext("NOTE:") ?> <br/>
-                      <?= gettext("These are shared key configurations for use in site-to-site tunnels with other routers. Shared key tunnels are not normally used for remote access connections to end users.") ?>
+                        <?= gettext("NOTE:") ?> <br/>
+                        <?= gettext("These are shared key configurations for use in site-to-site tunnels with other routers. Shared key tunnels are not normally used for remote access connections to end users.") ?>
                   </div>
                 </td>
               </tr>

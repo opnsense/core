@@ -82,8 +82,7 @@ function pconfig_to_idinfo($prefix, $pconfig)
     $address = isset($pconfig[$prefix."id_address"]) ? $pconfig[$prefix."id_address"] : null;
     $netbits = isset($pconfig[$prefix."id_netbits"]) ? $pconfig[$prefix."id_netbits"] : null;
 
-    switch($type)
-    {
+    switch ($type) {
         case "address":
             return array('type' => $type, 'address' => $address);
         case "network":
@@ -99,8 +98,7 @@ function pconfig_to_idinfo($prefix, $pconfig)
 function idinfo_to_pconfig($prefix, $idinfo, & $pconfig)
 {
 
-    switch($idinfo['type'])
-    {
+    switch ($idinfo['type']) {
         case "address":
             $pconfig[$prefix."id_type"] = $idinfo['type'];
             $pconfig[$prefix."id_address"] = $idinfo['address'];
@@ -119,7 +117,8 @@ function idinfo_to_pconfig($prefix, $idinfo, & $pconfig)
 /**
  * search phase 2 entries for record with uniqid
  */
-function getIndexByUniqueId($uniqid) {
+function getIndexByUniqueId($uniqid)
+{
     global $config;
     $p2index = null;
     if ($uniqid != null) {
@@ -149,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // lookup p2index
     if (!empty($_GET['dup'])) {
         $p2index = getIndexByUniqueId($_GET['dup']);
-    } else if (!empty($_GET['p2index'])) {
+    } elseif (!empty($_GET['p2index'])) {
         $p2index = getIndexByUniqueId($_GET['p2index']);
     } else {
         $p2index = null;
@@ -163,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // 1-on-1 copy
         foreach (explode(",", $phase2_fields) as $fieldname) {
             $fieldname = trim($fieldname);
-            if(isset($config['ipsec']['phase2'][$p2index][$fieldname])) {
+            if (isset($config['ipsec']['phase2'][$p2index][$fieldname])) {
                 $pconfig[$fieldname] = $config['ipsec']['phase2'][$p2index][$fieldname];
             } elseif (!isset($pconfig[$fieldname])) {
                 // initialize element
@@ -381,9 +380,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         ,protocol";
 
         // 1-on-1 copy
-        foreach (explode(",",$copy_fields) as $fieldname) {
+        foreach (explode(",", $copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
-            if(!empty($pconfig[$fieldname])) {
+            if (!empty($pconfig[$fieldname])) {
                 $ph2ent[$fieldname] = $pconfig[$fieldname];
             }
         }
@@ -398,7 +397,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $ph2ent['remoteid'] = pconfig_to_idinfo("remote", $pconfig);
         }
 
-        $ph2ent['encryption-algorithm-option'] = pconfig_to_ealgos($pconfig);;
+        $ph2ent['encryption-algorithm-option'] = pconfig_to_ealgos($pconfig);
+        ;
         if (!empty($pconfig['hash-algorithm-option'])) {
             $ph2ent['hash-algorithm-option'] = $pconfig['hash-algorithm-option'];
         } else {
@@ -447,16 +447,16 @@ $( document ).ready(function() {
   change_mode('<?=$pconfig['mode']?>');
   change_protocol('<?=$pconfig['protocol']?>');
   typesel_change_local(<?=$pconfig['localid_netbits']?>);
-<?php if (isset($pconfig['natlocalid_netbits'])):
+<?php if (isset($pconfig['natlocalid_netbits'])) :
 ?>
   typesel_change_natlocal(<?=$pconfig['natlocalid_netbits']?>);
 <?php endif;
 ?>
-  <?php if (!isset($pconfig['mobile'])) :
-  ?>
+    <?php if (!isset($pconfig['mobile'])) :
+    ?>
   typesel_change_remote(<?=$pconfig['remoteid_netbits']?>);
-  <?php
-  endif; ?>
+    <?php
+endif; ?>
 });
 
 function change_mode() {
@@ -651,8 +651,8 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td width="78%" class="vtable">
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : "" ;?> />
                     <div class="hidden" for="help_for_disabled">
-                      <?=gettext("Disable this phase2 entry"); ?><br/>
-                      <?=gettext("Set this option to disable this phase2 entry without " .
+                        <?=gettext("Disable this phase2 entry"); ?><br/>
+                        <?=gettext("Set this option to disable this phase2 entry without " .
                                                   "removing it from the list"); ?>.
                     </div>
                   </td>
@@ -661,16 +661,18 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Mode"); ?></td>
                   <td>
                     <select name="mode" class="formselect" onchange="change_mode()">
-                      <?php
-                      $p2_modes = array(
+                        <?php
+                        $p2_modes = array(
                         'tunnel' => 'Tunnel IPv4',
                         'tunnel6' => 'Tunnel IPv6',
                         'transport' => 'Transport');
-                      foreach ($p2_modes as $name => $value) :
-?>
-                      <option value="<?=$name;?>" <?=$name == $pconfig['mode'] ? "selected=\"selected\"":"" ;?>><?=$value;?></option>
+                        foreach ($p2_modes as $name => $value) :
+    ?>
+                      <option value="<?=$name;
+?>" <?=$name == $pconfig['mode'] ? "selected=\"selected\"":"" ;
+?>><?=$value;?></option>
 <?php
-                      endforeach;
+                        endforeach;
 ?>
                     </select>
                   </td>
@@ -680,7 +682,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td>
                     <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                     <div class="hidden" for="help_for_descr">
-                      <?=gettext("You may enter a description here " .
+                        <?=gettext("You may enter a description here " .
                                                     "for your reference (not parsed)"); ?>.
                     </div>
                   </td>
@@ -696,11 +698,13 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       <option value="network" <?=$pconfig['localid_type'] == "network" ? "selected=\"selected\"" : ""?> ><?=gettext("Network"); ?></option>
 <?php
                       $iflist = get_configured_interface_with_descr();
-                      foreach ($iflist as $ifname => $ifdescr) :
+foreach ($iflist as $ifname => $ifdescr) :
 ?>
-                      <option value="<?=htmlspecialchars($ifname); ?>" <?= $pconfig['localid_type'] == $ifname ? "selected=\"selected\"" : "" ;?> ><?=sprintf(gettext("%s subnet"), htmlspecialchars($ifdescr)); ?></option>
+<option value="<?=htmlspecialchars($ifname);
+?>" <?= $pconfig['localid_type'] == $ifname ? "selected=\"selected\"" : "" ;
+?> ><?=sprintf(gettext("%s subnet"), htmlspecialchars($ifdescr)); ?></option>
 <?php
-                      endforeach;
+endforeach;
 ?>
                     </select>
                   </td>
@@ -713,11 +717,12 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <select name="localid_netbits" id="localid_netbits">
 <?php              for ($i = 128; $i >= 0; $i--) :
 ?>
-                      <option value="<?=$i;?>" <?= isset($pconfig['localid_netbits']) && $i == $pconfig['localid_netbits'] ? "selected=\"selected\"" : "";?>>
+                      <option value="<?=$i;
+?>" <?= isset($pconfig['localid_netbits']) && $i == $pconfig['localid_netbits'] ? "selected=\"selected\"" : "";?>>
                         <?=$i;?>
                       </option>
 <?php
-                    endfor; ?>
+endfor; ?>
                     </select>
                   </td>
                 </tr>
@@ -739,7 +744,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       </option>
                     </select>
                     <div class="hidden" for="help_for_natlocalid_type">
-                      <?php echo gettext("In case you need NAT/BINAT on this network specify the address to be translated"); ?>
+                        <?php echo gettext("In case you need NAT/BINAT on this network specify the address to be translated"); ?>
                     </div>
                   </td>
                 </tr>
@@ -757,7 +762,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <?=$i;?>
                       </option>
 <?php
-                    endfor; ?>
+endfor; ?>
                     </select>
                   </td>
                 </tr>
@@ -788,7 +793,8 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <select name="remoteid_netbits" class="formselect ipv4v6" id="remoteid_netbits">
 <?php              for ($i = 128; $i >= 0; $i--) :
 ?>
-                      <option value="<?=$i;?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
+                      <option value="<?=$i;
+?>" <?= isset($pconfig['remoteid_netbits']) && $i == $pconfig['remoteid_netbits'] ? "selected=\"selected\"" : "";?> >
                         <?=$i;?>
                       </option>
 <?php              endfor;
@@ -798,7 +804,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 </tr>
 
 <?php
-                endif; ?>
+endif; ?>
                 <tr>
                   <td colspan="2">
                     <b><?=gettext("Phase 2 proposal (SA/Key Exchange)"); ?></b>
@@ -808,50 +814,56 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td width="78%" class="vtable">
                     <select name="protocol" class="formselect" onchange="change_protocol()">
-  <?php
-                      foreach (array('esp' => 'ESP','ah' => 'AH') as $proto => $protoname) :
-  ?>
-                      <option value="<?=$proto;?>" <?= $proto == $pconfig['protocol'] ? "selected=\"selected\"" : "";?>>
-                        <?=$protoname;?>
-                      </option>
-                    <?php
-  endforeach; ?>
+    <?php
+    foreach (array('esp' => 'ESP','ah' => 'AH') as $proto => $protoname) :
+    ?>
+    <option value="<?=$proto;
+?>" <?= $proto == $pconfig['protocol'] ? "selected=\"selected\"" : "";?>>
+        <?=$protoname;?>
+    </option>
+    <?php
+    endforeach; ?>
                     </select>
                     <br />
                     <div class="hidden" for="help_for_proto">
-                      <?=gettext("ESP is encryption, AH is authentication only"); ?>
+                        <?=gettext("ESP is encryption, AH is authentication only"); ?>
                     </div>
                   </td>
                 </tr>
                 <tr id="opt_enc">
                   <td><a id="help_for_encalg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Encryption algorithms"); ?></td>
                   <td>
-  <?php
-                    foreach ($p2_ealgos as $algo => $algodata) :
-  ?>
-                        <input type="checkbox" name="ealgos[]" value="<?=$algo;?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
-                        <?=$algodata['name'];?>
-  <?php                        if (isset($algodata['keysel'])) :
-  ?>
+    <?php
+    foreach ($p2_ealgos as $algo => $algodata) :
+    ?>
+        <input type="checkbox" name="ealgos[]" value="<?=$algo;
+?>" <?=isset($pconfig['ealgos']) && in_array($algo, $pconfig['ealgos']) ? "checked=\"checked\"" : ""; ?> />
+        <?=$algodata['name'];?>
+    <?php                        if (isset($algodata['keysel'])) :
+    ?>
                       <select name="keylen_<?=$algo;?>" class="formselect">
                         <option value="auto"><?=gettext("auto"); ?></option>
-  <?php
-          for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :
-  ?>
-                        <option value="<?=$keylen;?>" <?=$keylen == $pconfig["keylen_".$algo] ? "selected=\"selected\"" : "";?>><?=$keylen;?> <?=gettext("bits"); ?></option>
-  <?php
-                        endfor; ?>
+    <?php
+    for ($keylen = $algodata['keysel']['hi']; $keylen >= $algodata['keysel']['lo']; $keylen -= $algodata['keysel']['step']) :
+    ?>
+                  <option value="<?=$keylen;
+?>" <?=$keylen == $pconfig["keylen_".$algo] ? "selected=\"selected\"" : "";
+?>><?=$keylen;
+?> <?=gettext("bits"); ?></option>
+    <?php
+    endfor; ?>
                       </select>
-  <?php                        else :?>
+    <?php
+else :?>
                       <br/>
-  <?php
-                      endif; ?>
+    <?php
+endif; ?>
 
-  <?php
-                    endforeach; ?>
+    <?php
+    endforeach; ?>
 
                     <div class="hidden" for="help_for_encalg">
-                      <?=gettext("Hint: use 3DES for best compatibility or if you have a hardware " .
+                        <?=gettext("Hint: use 3DES for best compatibility or if you have a hardware " .
                                                   "crypto accelerator card. Blowfish is usually the fastest in " .
                                                   "software encryption"); ?>.
                     </div>
@@ -860,32 +872,34 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hash algorithms"); ?></td>
                   <td width="78%" class="vtable">
-  <?php                    foreach ($p2_halgos as $algo => $algoname) :
-  ?>
-                    <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;?>" <?=in_array($algo, $pconfig['hash-algorithm-option']) ?  "checked=\"checked\"" : "";?>/>
+    <?php                    foreach ($p2_halgos as $algo => $algoname) :
+    ?>
+                    <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;
+?>" <?=in_array($algo, $pconfig['hash-algorithm-option']) ?  "checked=\"checked\"" : "";?>/>
                     <?=$algoname;?>
                     </br>
-  <?php
-                  endforeach; ?>
+    <?php
+endforeach; ?>
                   </td>
                 </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("PFS key group"); ?></td>
                   <td>
-  <?php          if (!isset($pconfig['mobile']) || !isset($config['ipsec']['client']['pfs_group'])) :
-  ?>
+    <?php          if (!isset($pconfig['mobile']) || !isset($config['ipsec']['client']['pfs_group'])) :
+    ?>
                     <select name="pfsgroup">
-  <?php                      foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :
-  ?>
-                      <option value="<?=$keygroup;?>" <?= $keygroup == $pconfig['pfsgroup'] ? "selected=\"selected\"" : "";?>>
+    <?php                      foreach ($p2_pfskeygroups as $keygroup => $keygroupname) :
+    ?>
+                      <option value="<?=$keygroup;
+?>" <?= $keygroup == $pconfig['pfsgroup'] ? "selected=\"selected\"" : "";?>>
                         <?=$keygroupname;?>
                       </option>
-  <?php
-                    endforeach; ?>
+    <?php
+endforeach; ?>
                     </select>
                     <?php
-                  else :
-  ?>
+else :
+    ?>
                     <select disabled="disabled">
                       <option selected="selected"><?=$p2_pfskeygroups[$config['ipsec']['client']['pfs_group']];?></option>
                     </select>
@@ -893,7 +907,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     <br />
                     <em><?=gettext("Set globally in mobile client options"); ?></em>
 <?php
-                  endif; ?>
+endif; ?>
                   </td>
                 </tr>
                 <tr>
@@ -913,7 +927,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td>
                     <input name="pinghost" type="text" class="formfld unknown" id="pinghost" size="28" value="<?=$pconfig['pinghost'];?>" />
                     <div class="hidden" for="help_for_pinghost">
-                      <?=gettext("IP address"); ?>
+                        <?=gettext("IP address"); ?>
                     </div>
                   </td>
                 </tr>
@@ -921,11 +935,11 @@ if (isset($input_errors) && count($input_errors) > 0) {
                   <td>&nbsp;</td>
                   <td width="78%">
 <?php            if (isset($pconfig['mobile'])) :
-  ?>
+    ?>
                     <input name="mobile" type="hidden" value="true" />
                     <input name="remoteid_type" type="hidden" value="mobile" />
 <?php
-                  endif; ?>
+endif; ?>
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     <input name="ikeid" type="hidden" value="<?=$pconfig['ikeid'];?>" />
                     <input name="uniqid" type="hidden" value="<?=$pconfig['uniqid'];?>" />
