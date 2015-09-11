@@ -95,9 +95,6 @@ include("head.inc");
             <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
 						  <div class="table-responsive">
 							  <table class="table table-striped">
-                  <tr>
-                    <td colspan="2"><?=$username?>'s <?=gettext("Password"); ?></td>
-			            </tr>
 			            <tr>
 			              <td><?=gettext("Old password"); ?></td>
                     <td>
