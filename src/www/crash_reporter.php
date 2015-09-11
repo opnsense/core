@@ -149,10 +149,10 @@ if ($has_crashed) {
 <?php
 
 if ($has_crashed) {
-	echo "<br/><p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
+	echo "<br/><button name=\"Submit\" type=\"submit\" class=\"btn btn-default pull-right\" value=\"no\">" . gettext('Dismiss this report') . "</button>";
+	echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary pull-right\" style=\"margin-right: 8px;\" value=\"yes\">" . gettext('Submit this report') . "</button>";
+	echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
 	echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
-	echo "<p><button name=\"Submit\" type=\"submit\" class=\"btn btn-primary\" value=\"yes\">" . gettext('Yes') . "</button> ";
-	echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-default\" value=\"no\">" . gettext('No') . "</button></p>";
 	echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
 	echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
 	echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
