@@ -127,9 +127,8 @@
 		<GPS url="/services_ntpd_gps.php"/>
 		<PPS url="/services_ntpd_pps.php"/>
         </NTP>
-        <PPPoEServer VisibleName="PPPoE Server" url="/services_vpn_pppoe.php">
+        <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php">
 		<PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
-		<VPNPPPOE url="/vpn_pppoe.php"/>
         </PPPoEServer>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
