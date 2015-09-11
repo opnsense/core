@@ -1,6 +1,7 @@
 <?php
 /**
  *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015 Fabian Franz
  *
  *    All rights reserved.
  *
