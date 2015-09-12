@@ -62,7 +62,7 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("NPt"));
+$pgtitle = array(gettext('Firewall'), gettext('NAT'), gettext('NPT'));
 include("head.inc");
 
 $main_buttons = array(
@@ -92,7 +92,7 @@ $main_buttons = array(
 						$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
 						$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
 						$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-						$tab_array[] = array(gettext("NPt"), true, "firewall_nat_npt.php");
+						$tab_array[] = array(gettext("NPT"), true, "firewall_nat_npt.php");
 						display_top_tabs($tab_array);
 					?>
 

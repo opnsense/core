@@ -359,8 +359,8 @@
         ]
     },
     "page-firewall-nat-npt-edit": {
-        "name": "WebCfg - Firewall: NAT: NPt: Edit page",
-        "descr": "Allow access to the 'Firewall: NAT: NPt: Edit' page.",
+        "name": "WebCfg - Firewall: NAT: NPT: Edit page",
+        "descr": "Allow access to the 'Firewall: NAT: NPT: Edit' page.",
         "match": [
             "firewall_nat_npt_edit.php*"
         ]
@@ -542,8 +542,8 @@
         ]
     },
     "page-interfaces-ppps": {
-        "name": "WebCfg - Interfaces: ppps page",
-        "descr": "Allow access to the 'Interfaces: ppps' page.",
+        "name": "WebCfg - Interfaces: PPPs page",
+        "descr": "Allow access to the 'Interfaces: PPPs' page.",
         "match": [
             "interfaces_ppps.php*"
         ]
@@ -1218,15 +1218,15 @@
         ]
     },
     "page-service-upnp": {
-        "name": "WebCfg - Service: Univeral Plug and Play page",
-        "descr": "Allow access to the 'Service: Univeral Plug and Play' page.",
+        "name": "WebCfg - Service: Universal Plug and Play page",
+        "descr": "Allow access to the 'Service: Universal Plug and Play' page.",
         "match": [
             "services_upnp.php*"
         ]
     },
     "page-status-upnpstatus": {
-        "name": "WebCfg - Status: Univeral Plug and Play Status page",
-        "descr": "Allow access to the 'Status: Univeral Plug and Play Status' page.",
+        "name": "WebCfg - Status: Universal Plug and Play Status page",
+        "descr": "Allow access to the 'Status: Universal Plug and Play Status' page.",
         "match": [
             "status_upnp.php*"
         ]

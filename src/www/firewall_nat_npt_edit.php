@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>.
@@ -130,7 +131,7 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("NPt"),gettext("Edit"));
+$pgtitle = array(gettext('Firewall'), gettext('NAT'), gettext('NPT'), gettext('Edit'));
 include("head.inc");
 
 ?>
@@ -156,7 +157,7 @@ include("head.inc");
 
 
 									<tr>
-										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit NAT NPt entry"); ?></td>
+										<td colspan="2" valign="top" class="listtopic"><?=gettext("Edit NAT NPT entry"); ?></td>
 									</tr>
 							<tr>
 					                        <td width="22%" valign="top" class="vncellreq"><?=gettext("Disabled"); ?></td>

@@ -24,7 +24,7 @@
             <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
             <Firewall_NAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
             <Networking url="/system_advanced_network.php"></Networking>
-            <Miscellaneos url="/system_advanced_misc.php"/>
+            <Miscellaneous url="/system_advanced_misc.php"/>
             <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
             <Notifications url="/system_advanced_notifications.php"/>
         </Settings>
@@ -38,7 +38,7 @@
     </System>
     <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
         <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
-            <InterfaceAssignments VisibleName="Interface Addignments" url="/interfaces_assign.php"/>
+            <InterfaceAssignments VisibleName="Interface Assignments" url="/interfaces_assign.php"/>
             <InterfaceGroups VisibleName="Interface Groups" url="/interfaces_groups.php"/>
             <Wireless url="/interfaces_wireless.php"/>
             <VLANs url="/interfaces_vlan.php"/>
@@ -65,8 +65,8 @@
             <OneOnOneEdit url="/firewall_nat_1to1_edit.php*"/>
             <Outbound url="/firewall_nat_out.php"/>
             <OutboundEdit url="/firewall_nat_out_edit.php*"/>
-            <NPt url="/firewall_nat_npt.php"/>
-            <NPtEdit url="/firewall_nat_npt_edit.php*"/>
+            <NPT url="/firewall_nat_npt.php"/>
+            <NPTEdit url="/firewall_nat_npt_edit.php*"/>
         </NAT>
         <Rules url="/firewall_rules.php">
             <RulesEdit url="/firewall_rules_edit.php*"/>

@@ -254,7 +254,7 @@ $main_buttons = array(
 							$tab_array[] = array(gettext("Port Forward"), true, "firewall_nat.php");
 							$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
 							$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-							$tab_array[] = array(gettext("NPt"), false, "firewall_nat_npt.php");
+							$tab_array[] = array(gettext("NPT"), false, "firewall_nat_npt.php");
 							display_top_tabs($tab_array);
 						?>
 
