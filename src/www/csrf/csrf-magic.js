@@ -8,53 +8,37 @@
 // Here are the basic overloaded method definitions
 // The wrapper must be set BEFORE onreadystatechange is written to, since
 // a bug in ActiveXObject prevents us from properly testing for it.
-CsrfMagic = function (real) {
+CsrfMagic = function(real) {
     // try to make it ourselves, if you didn't pass it
-    if (!real) {
-        try {
-            real = new XMLHttpRequest; } } catch (e) {
-            ;}
-            if (!real) {
-                try {
-                        real = new ActiveXObject('Msxml2.XMLHTTP'); } } catch (e) {
-                        ;}
-                        if (!real) {
-                            try {
-                                real = new ActiveXObject('Microsoft.XMLHTTP'); } } catch (e) {
-                                ;}
-                                if (!real) {
-                                    try {
-                                        real = new ActiveXObject('Msxml2.XMLHTTP.4.0'); } } catch (e) {
-                                        ;}
-                                        this.csrf = real;
+    if (!real) try { real = new XMLHttpRequest; } catch (e) {;}
+    if (!real) try { real = new ActiveXObject('Msxml2.XMLHTTP'); } catch (e) {;}
+    if (!real) try { real = new ActiveXObject('Microsoft.XMLHTTP'); } catch (e) {;}
+    if (!real) try { real = new ActiveXObject('Msxml2.XMLHTTP.4.0'); } catch (e) {;}
+    this.csrf = real;
     // properties
-                                        var csrfMagic = this;
-                                        real.onreadystatechange = function () {
-                                            csrfMagic._updateProps();
-                                            return csrfMagic.onreadystatechange ? csrfMagic.onreadystatechange() : null;
-                                        };
+    var csrfMagic = this;
+    real.onreadystatechange = function() {
+        csrfMagic._updateProps();
+        return csrfMagic.onreadystatechange ? csrfMagic.onreadystatechange() : null;
+    };
     csrfMagic._updateProps();
 }
 
 CsrfMagic.prototype = {
 
-    open: function (method, url, async, username, password) {
-        if (method == 'POST') {
-            this.csrf_isPost = true; }
+    open: function(method, url, async, username, password) {
+        if (method == 'POST') this.csrf_isPost = true;
         // deal with Opera bug, thanks jQuery
-        if (username) {
-            return this.csrf_open(method, url, async, username, password); } else {
-            return this.csrf_open(method, url, async); }
+        if (username) return this.csrf_open(method, url, async, username, password);
+        else return this.csrf_open(method, url, async);
     },
-    csrf_open: function (method, url, async, username, password) {
-        if (username) {
-            return this.csrf.open(method, url, async, username, password); } else {
-            return this.csrf.open(method, url, async); }
+    csrf_open: function(method, url, async, username, password) {
+        if (username) return this.csrf.open(method, url, async, username, password);
+        else return this.csrf.open(method, url, async);
     },
 
-    send: function (data) {
-        if (!this.csrf_isPost) {
-            return this.csrf_send(data); }
+    send: function(data) {
+        if (!this.csrf_isPost) return this.csrf_send(data);
         prepend = csrfMagicName + '=' + csrfMagicToken + '&';
         if (this.csrf_purportedLength === undefined) {
             this.csrf_setRequestHeader("Content-length", this.csrf_purportedLength + prepend.length);
@@ -63,11 +47,11 @@ CsrfMagic.prototype = {
         delete this.csrf_isPost;
         return this.csrf_send(prepend + data);
     },
-    csrf_send: function (data) {
+    csrf_send: function(data) {
         return this.csrf.send(data);
     },
 
-    setRequestHeader: function (header, value) {
+    setRequestHeader: function(header, value) {
         // We have to auto-set this at the end, since we don't know how long the
         // nonce is when added to the data.
         if (this.csrf_isPost && header == "Content-length") {
@@ -76,23 +60,23 @@ CsrfMagic.prototype = {
         }
         return this.csrf_setRequestHeader(header, value);
     },
-    csrf_setRequestHeader: function (header, value) {
+    csrf_setRequestHeader: function(header, value) {
         return this.csrf.setRequestHeader(header, value);
     },
 
-    abort: function () {
+    abort: function() {
         return this.csrf.abort();
     },
-    getAllResponseHeaders: function () {
+    getAllResponseHeaders: function() {
         return this.csrf.getAllResponseHeaders();
     },
-    getResponseHeader: function (header) {
+    getResponseHeader: function(header) {
         return this.csrf.getResponseHeader(header);
     } // ,
 }
 
 // proprietary
-CsrfMagic.prototype._updateProps = function () {
+CsrfMagic.prototype._updateProps = function() {
     this.readyState = this.csrf.readyState;
     if (this.readyState == 4) {
         this.responseText = this.csrf.responseText;
@@ -101,23 +85,20 @@ CsrfMagic.prototype._updateProps = function () {
         this.statusText   = this.csrf.statusText;
     }
 }
-CsrfMagic.process = function (base) {
+CsrfMagic.process = function(base) {
     var prepend = csrfMagicName + '=' + csrfMagicToken;
-    if (base) {
-        return prepend + '&' + base; }
+    if (base) return prepend + '&' + base;
     return prepend;
 }
 // callback function for when everything on the page has loaded
-CsrfMagic.end = function () {
+CsrfMagic.end = function() {
     // This rewrites forms AGAIN, so in case buffering didn't work this
     // certainly will.
     forms = document.getElementsByTagName('form');
     for (var i = 0; i < forms.length; i++) {
         form = forms[i];
-        if (form.method.toUpperCase() !== 'POST') {
-            continue; }
-        if (form.elements[csrfMagicName]) {
-            continue; }
+        if (form.method.toUpperCase() !== 'POST') continue;
+        if (form.elements[csrfMagicName]) continue;
         var input = document.createElement('input');
         input.setAttribute('name',  csrfMagicName);
         input.setAttribute('value', csrfMagicToken);
@@ -151,7 +132,7 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
         // jQuery didn't implement a new XMLHttpRequest function, so we have
         // to do this the hard way.
         jQuery.csrf_ajax = jQuery.ajax;
-        jQuery.ajax = function ( s ) {
+        jQuery.ajax = function( s ) {
             if (s.type && s.type.toUpperCase() == 'POST') {
                 s = jQuery.extend(true, s, jQuery.extend(true, {}, jQuery.ajaxSettings, s));
                 if ( s.data && s.processData && typeof s.data != "string" ) {
@@ -159,13 +140,13 @@ if (window.XMLHttpRequest && window.XMLHttpRequest.prototype && '\v' != 'v') {
                 }
                 s.data = CsrfMagic.process(s.data);
             }
-            return jQuery.csrf_ajax(s);
+            return jQuery.csrf_ajax( s );
         }
     }
     if (window.Prototype) {
         // This works for script.aculo.us too
         Ajax.csrf_getTransport = Ajax.getTransport;
-        Ajax.getTransport = function () {
+        Ajax.getTransport = function() {
             return new CsrfMagic(Ajax.csrf_getTransport());
         }
     }
