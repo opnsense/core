@@ -337,7 +337,7 @@ endforeach; ?>
                         <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
                         <option value="<?= htmlspecialchars($ddns["host"]);
-?>"><?=gettext("DynDNS:");
+?>"><?=gettext("Dynamic DNS:");
 ?> <?= htmlspecialchars($ddns["host"]);?></option>
                         <?php
 endforeach; ?>

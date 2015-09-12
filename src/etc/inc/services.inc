@@ -1736,7 +1736,7 @@ function services_dyndns_configure($int = '')
 		$gwgroups = return_gateway_groups_array();
 		if (is_array($dyndnscfg)) {
 			if (file_exists("/var/run/booting"))
-				echo gettext("Starting DynDNS clients...");
+				echo gettext("Starting dynamic DNS clients...");
 
 			foreach ($dyndnscfg as $dyndns) {
 				if ((empty($int)) || ($int == $dyndns['interface']) || (is_array($gwgroups[$dyndns['interface']]))) {
@@ -2250,12 +2250,12 @@ EOD;
 					if (($wanip != $cachedipv4) || (($currentTime - $cacheTimev4) > $maxCacheAgeSecs) || $forced) {
 						$upinst .= "update delete {$dnsupdate['host']}. A\n";
 						$upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} A {$wanip}\n";
-						$notify_text .= sprintf(gettext('DynDNS updated IP Address (A) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanip) . "\n";
+						$notify_text .= sprintf(gettext('Dynamic DNS updated IP Address (A) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanip) . "\n";
 						@file_put_contents($cacheFile, "{$wanip}|{$currentTime}");
-						log_error("phpDynDNS: updating cache file {$cacheFile}: {$wanip}");
+						log_error("Dynamic DNS: updating cache file {$cacheFile}: {$wanip}");
 						$need_update = true;
 					} else {
-						log_error("phpDynDNS: Not updating {$dnsupdate['host']} A record because the IP address has not changed.");
+						log_error("Dynamic DNS: Not updating {$dnsupdate['host']} A record because the IP address has not changed.");
 					}
 				} else
 					@unlink($cacheFile);
@@ -2265,12 +2265,12 @@ EOD;
 					if (($wanipv6 != $cachedipv6) || (($currentTime - $cacheTimev6) > $maxCacheAgeSecs) || $forced) {
 						$upinst .= "update delete {$dnsupdate['host']}. AAAA\n";
 						$upinst .= "update add {$dnsupdate['host']}. {$dnsupdate['ttl']} AAAA {$wanipv6}\n";
-						$notify_text .= sprintf(gettext('DynDNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "\n";
+						$notify_text .= sprintf(gettext('Dynamic DNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s'), $dnsupdate['host'], convert_real_interface_to_friendly_descr($if), $if, $wanipv6) . "\n";
 						@file_put_contents("{$cacheFile}.ipv6", "{$wanipv6}|{$currentTime}");
-						log_error("phpDynDNS: updating cache file {$cacheFile}.ipv6: {$wanipv6}");
+						log_error("Dynamic DNS: updating cache file {$cacheFile}.ipv6: {$wanipv6}");
 						$need_update = true;
 					} else {
-						log_error("phpDynDNS: Not updating {$dnsupdate['host']} AAAA record because the IPv6 address has not changed.");
+						log_error("Dynamic DNS: Not updating {$dnsupdate['host']} AAAA record because the IPv6 address has not changed.");
 					}
 				} else
 					@unlink("{$cacheFile}.ipv6");

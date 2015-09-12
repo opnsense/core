@@ -653,13 +653,13 @@ endforeach; ?>
                   <select name="useaddr" id="useaddr" class="formselect" onchange="useaddr_changed(this)">
                     <option value="serveraddr" ><?=gettext("Interface IP Address");?></option>
                     <option value="servermagic" ><?=gettext("Automagic Multi-WAN IPs (port forward targets)");?></option>
-                    <option value="servermagichost" ><?=gettext("Automagic Multi-WAN DDNS Hostnames (port forward targets)");?></option>
+                    <option value="servermagichost" ><?=gettext("Automagic Multi-WAN dynamic DNS Hostnames (port forward targets)");?></option>
                     <option value="serverhostname" ><?=gettext("Installation hostname");?></option>
                     <?php if (isset($config['dyndnses']['dyndns'])) :
 ?>
                         <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
-                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("DynDNS");
+                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("Dynamic DNS");
 ?>: <?= htmlspecialchars($ddns["host"]); ?></option>
                         <?php
 endforeach; ?>
@@ -669,7 +669,7 @@ endif; ?>
 ?>
                         <?php foreach ($config['dnsupdates']['dnsupdate'] as $ddns) :
 ?>
-                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("DynDNS");
+                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("Dynamic DNS");
 ?>: <?= htmlspecialchars($ddns["host"]); ?></option>
                         <?php
 endforeach; ?>
