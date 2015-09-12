@@ -776,7 +776,7 @@ if ($_POST['apply']) {
 	if (isset($config['dhcpd']) && isset($config['dhcpd'][$if]['enable']) && (! preg_match("/^staticv4/", $_POST['type'])))
 		$input_errors[] = gettext("The DHCP Server is active on this interface and it can be used only with a static IP configuration. Please disable the DHCP Server service on this interface first, then change the interface configuration.");
 	if (isset($config['dhcpdv6']) && isset($config['dhcpdv6'][$if]['enable']) && (! preg_match("/^staticv6/", $_POST['type6'])))
-		$input_errors[] = gettext("The DHCP6 Server is active on this interface and it can be used only with a static IPv6 configuration. Please disable the DHCPv6 Server service on this interface first, then change the interface configuration.");
+		$input_errors[] = gettext("The DHCPv6 Server is active on this interface and it can be used only with a static IPv6 configuration. Please disable the DHCPv6 Server service on this interface first, then change the interface configuration.");
 
 	switch(strtolower($_POST['type'])) {
 		case "staticv4":
@@ -1623,7 +1623,7 @@ $shortcut_section = "interfaces";
 $closehead = false;
 include("head.inc");
 $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
-$types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCP6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
+$types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
 
 ?>
 
@@ -2432,7 +2432,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 												<td colspan="2" style="padding: 0px;">
 													<table width="100%" class="table table-striped"  border="0" cellpadding="6" cellspacing="0" summary="dhcp6">
 														<tr>
-															<td colspan="2" valign="top" class="listtopic"><?=gettext("DHCP6 client configuration &nbsp; &nbsp; " .
+															<td colspan="2" valign="top" class="listtopic"><?=gettext("DHCPv6 client configuration &nbsp; &nbsp; " .
 															' <input name="adv_dhcp6_config_advanced" type="checkbox" id="adv_dhcp6_config_advanced" value="" onclick="show_adv_dhcp6_config(this)" /> ' .
 															" Advanced &nbsp; &nbsp; " .
 															' <input name="adv_dhcp6_config_file_override" type="checkbox" id="adv_dhcp6_config_file_override" value="" onclick="show_adv_dhcp6_config(this)" /> ' .

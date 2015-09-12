@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 
 legacy_html_escape_form_data($pconfig);
-$pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("NPt"),gettext("Edit"));
+$pgtitle = array(gettext('Firewall'), gettext('NAT'), gettext('NPT'), gettext('Edit'));
 include("head.inc");
 
 ?>
@@ -171,7 +171,7 @@ include("head.inc");
               <form action="firewall_nat_npt_edit.php" method="post" name="iform" id="iform">
                 <table class="table table-striped">
                   <tr>
-                    <td><?=gettext("Edit NAT NPt entry"); ?></td>
+                    <td><?=gettext("Edit NAT NPT entry"); ?></td>
                     <td align="right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
