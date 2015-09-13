@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-08-25 07:47+0200\n"
-"PO-Revision-Date: 2015-09-12 10:22+0200\n"
+"PO-Revision-Date: 2015-09-13 03:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: OPNSense French team\n"
 "Language: fr_FR\n"
@@ -238,6 +238,7 @@ msgstr "Autoriser l'accès à la page 'Pare-feu: NAT: 1:1'."
 # File: lang/dynamic/helpers/acl.php, line: 79
 msgid "Indicates whether the user is allowed to use the proxy"
 msgstr ""
+"Indique si l'utilisateur est autorisé à utiliser le serveur mandataire (proxy)"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 80
@@ -307,7 +308,7 @@ msgstr "Autoriser l'accès à la page 'VPN: OpenVPN: Utilitaire d'export client'
 #
 # File: lang/dynamic/helpers/acl.php, line: 92
 msgid "Indicates whether the user is able to login for example via SSH."
-msgstr ""
+msgstr "Indique si l'utilisateur est autorisé à se connecter par exemple via SSH."
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 93
@@ -624,7 +625,7 @@ msgstr "Autoriser l'accès à la page 'Pare-feu: NAT: NPT: Editer'."
 #
 # File: lang/dynamic/helpers/acl.php, line: 154
 msgid "Indicates whether the user is allowed to dial in via PPPOE"
-msgstr ""
+msgstr "Indique si l'utilisateur est autorisé à composer via PPPOE"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 155
@@ -813,6 +814,8 @@ msgstr ""
 # File: lang/dynamic/helpers/acl.php, line: 191
 msgid "If present, ignores requests from this user to write config.xml."
 msgstr ""
+"Si actif, ne tient pas compte des demandes de cet utilisateur d'écrire config."
+"xml."
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 192
@@ -837,6 +840,9 @@ msgid ""
 "Indicates whether the user is allowed to dial in via IPsec xauth (Note: Does not "
 "allow shell access, but may allow the user to create ssh tunnels)"
 msgstr ""
+"Indique si l'utilisateur est autorisé à composer via IPsec xauth (Note: "
+"N'autorise pas l'accès au shell, mais peut permettre à l'utilisateur de créer "
+"des tunnels SSH)"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 196
@@ -919,6 +925,7 @@ msgstr "Autoriser l'accès à la page 'Statut: Journaux système: Portail captif
 # File: lang/dynamic/helpers/acl.php, line: 211
 msgid "Indicates whether the user is able to login on the captive portal."
 msgstr ""
+"Indique si l'utilisateur est capable de se connecter sur le portail captif."
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 212
@@ -969,7 +976,7 @@ msgstr "Autoriser l'accès à la page 'Statut: NTP GPS série'."
 #
 # File: lang/dynamic/helpers/acl.php, line: 221
 msgid "Indicates whether the user is allowed to dial in via L2TP"
-msgstr ""
+msgstr "Indique si l'utilisateur est autorisé à composer via L2TP"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 222
@@ -1129,7 +1136,7 @@ msgstr "Autoriser l'accès à la page 'Statut: Portail captif'."
 #
 # File: lang/dynamic/helpers/acl.php, line: 252
 msgid "Indicates whether the user is allowed to dial in via PPTP"
-msgstr ""
+msgstr "Indique si l'utilisateur est autorisé à composer via PPTP"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 253
@@ -1216,6 +1223,10 @@ msgid ""
 "The standard UDP port for ICP is 3130.\n"
 "                "
 msgstr ""
+"Le numéro de port où Squid envoie et reçoit des requêtes ICP vers et\n"
+" à partir des caches voisins. Laissez vide pour désactiver (par défaut). Le port "
+"UDP standard pour ICP est 3130.\n"
+"                  "
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 39
@@ -1233,16 +1244,20 @@ msgid ""
 "If set (default), Squid will include a Via header in requests and\n"
 "            replies as required by RFC2616."
 msgstr ""
+"Si activé (par défaut), Squid inclura Via l'en-tête dans les demandes\n"
+"          et réponses tel que requis par RFC2616."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 41
 msgid "Select what to do with X-Forwarded for header."
-msgstr ""
+msgstr "Sélectionnez ce qu'il faut faire avec X-Forwarded pour l'en-tête."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 42
 msgid "Suppress Squid version string info in HTTP headers and HTML error pages."
 msgstr ""
+"Supprimer la chaîne d'information de la version de SQUID dans les en-têtes HTTP "
+"et les pages d'erreur HTML."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 43
@@ -1323,7 +1338,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 61
 msgid "Select Authentication method"
-msgstr ""
+msgstr "Sélectionne la méthode d'authentification"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 64
@@ -1339,7 +1354,7 @@ msgstr ""
 # File: lang/dynamic/helpers/controllers.php, line: 64
 # File: lang/dynamic/helpers/controllers.php, line: 85
 msgid "Select if job is enabled or not"
-msgstr ""
+msgstr "Sélectionne si la tâche est active ou non"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 65
@@ -1374,7 +1389,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 71
 msgid "Total bandwidth for this pipe"
-msgstr ""
+msgstr "Bande passante totale pour ce tuyau"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 72
@@ -1385,17 +1400,17 @@ msgstr ""
 # File: lang/dynamic/helpers/controllers.php, line: 73
 # File: lang/dynamic/helpers/controllers.php, line: 77
 msgid "Description to identify this pipe."
-msgstr ""
+msgstr "Description pour identifier ce tuyau (pipe)."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 74
 msgid "enable this queue and it's related rules"
-msgstr ""
+msgstr "activer cette file d'attente et ses règles relatives."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 75
 msgid "connected pipe for this queue"
-msgstr ""
+msgstr "Tuyaux (pipe) connectés pour cette file d'attente"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 76
@@ -1420,32 +1435,32 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
-msgstr ""
+msgstr "ip source ou réseau, exemples 10.0.0.0/24, 10.0.0.1"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 80
 msgid "source port number or well known name (imap,imaps, http,https,...)"
-msgstr ""
+msgstr "Numéro de port ou nom connu (imap, imaps, http, https,...) source "
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 81
 msgid "destination ip or network, examples 10.0.0.0/24, 10.0.0.1"
-msgstr ""
+msgstr "ip destination ou réseau, exemples 10.0.0.0/24, 10.0.0.1"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 82
 msgid "destination port number or well known name (imap,imaps, http,https,...)"
-msgstr ""
+msgstr "Numéro de port ou nom connu (imap, imaps, http, https,...) de destination "
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 83
 msgid "matches incomming or outgoing packets or both (default)"
-msgstr ""
+msgstr "correspondance des paquets entrants ou sortants ou les deux (par défaut)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 84
 msgid "target pipe or queue"
-msgstr ""
+msgstr "tuyau ou file d'attente cible"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 86
@@ -1453,6 +1468,8 @@ msgid ""
 "Enter the minutes for the job to act, can also be a comma separated list, * "
 "(each) or a range (ex. 10,20,30 or 10-30)"
 msgstr ""
+"Entrez les minutes pour l'execution de la tâche, peut aussi être une liste "
+"séparée par des virgules, * (chacun) ou une plage (ex. 10,20,30 ou 10-30)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 87
@@ -1460,6 +1477,8 @@ msgid ""
 "Enter the hours for the job to act, can also be a comma separated list, * (each) "
 "or a range (ex. 10,11,12 or 10-12)"
 msgstr ""
+"Entrez les heures pour l'execution de la tâche, peut aussi être une liste "
+"séparée par des virgules, * (chacun) ou une plage (ex. 10,11,12 ou 10-12)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 88
@@ -1467,6 +1486,8 @@ msgid ""
 "Enter the days of the month for the job to act, can also be a comma separated "
 "list, * (each) or a range (ex. 1,20,28 or 1-28)"
 msgstr ""
+"Entrez les jours du mois pour l'execution de la tâche, peut aussi être une liste "
+"séparée par des virgules, * (chacun) ou une plage (ex. 1,20,28 ou 1-28)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 89
@@ -1474,6 +1495,8 @@ msgid ""
 "Enter the months for the job to act, can also be a comma separated list, * "
 "(each) or a range (ex. 1,2,3 or 1-3)"
 msgstr ""
+"Entrez les mois pour l'execution de la tâche, peut aussi être une liste séparée "
+"par des virgules, * (chacun) ou une plage (ex. 1,2,3 ou 1-3)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 90
@@ -1481,21 +1504,23 @@ msgid ""
 "Enter the days of the week for the job to act, can also be a comma separated "
 "list, * (each) or a range (ex. 1,2,3 or 1-3)"
 msgstr ""
+"Entrez les jours de la semaine pour l'execution de la tâche, peut aussi être une "
+"liste séparée par des virgules, * (chacun) ou une plage (ex. 1,2,3 ou 1-3)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 91
 msgid "Select the command that needs to be executed at given time frame."
-msgstr ""
+msgstr "Sélectionnez la commande qui sera exécuté dans le temps imparti."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 92
 msgid "Enter parameters for this job if required."
-msgstr ""
+msgstr "Entrez les paramètres de cette tâche si nécessaire."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 93
 msgid "Enter a description to explain what this job is intended for."
-msgstr ""
+msgstr "Entrez une description pour décrire ce à quoi est destiné cette tâche."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 35
@@ -1742,7 +1767,7 @@ msgstr "Système"
 #
 # File: lang/dynamic/helpers/models.php, line: 59
 msgid "Interface Addignments"
-msgstr ""
+msgstr "Attribution d'interface"
 
 #
 # File: src/www/interfaces_assign.php, line: 457
@@ -3124,7 +3149,7 @@ msgstr "tester"
 #
 # File: lang/dynamic/helpers/models.php, line: 209
 msgid "you should input a valid email address"
-msgstr ""
+msgstr "vous devez entrer une adresse email valide"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 117
@@ -3170,17 +3195,21 @@ msgstr "Spécifiez la taille maximum de téléchargement. (Nombre de Ko)"
 #
 # File: lang/dynamic/helpers/models.php, line: 217
 msgid "Specify the maximum upload size. (number of KB's)"
-msgstr ""
+msgstr "Indiquez la taille maximale de téléchargement. (nombre de Ko)"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 218
 msgid "Specify the overall bandwidth for downloads in kilobits per second."
 msgstr ""
+"Spécifiez la bande passante globale pour les téléchargements en kilobits par "
+"seconde."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 219
 msgid "Specify the per host bandwidth for downloads in kilobits per second."
 msgstr ""
+"Spécifiez la bande passante par hôte pour les téléchargements en kilobits par "
+"seconde."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 220
@@ -3207,27 +3236,28 @@ msgstr "Ceci ne semble pas être une url correcte."
 #
 # File: lang/dynamic/helpers/models.php, line: 224
 msgid "Credentials TTL needs to be an integer value above 0"
-msgstr ""
+msgstr "Credentials TTL doit être une valeur entière supérieure à 0"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 225
 msgid "Number of children needs to be an integer value above 0"
-msgstr ""
+msgstr "Le nombre d'enfants doit être une valeur entière supérieure à 0"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 226
 msgid "Pipe number must be between 1...65535"
-msgstr ""
+msgstr "Le numéro de tuyaux (pipe) doit être compris entre 1 ... 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 227
 msgid "Bandwidth out of range"
-msgstr ""
+msgstr "Bande passante hors de portée"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 228
 msgid "Bandwidth metric should be one of bit,Kbit,Mbit"
 msgstr ""
+"Le métrique de la bande passante métrique doit être l'un des bits, Kbit, Mbit"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 229
@@ -3237,50 +3267,50 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 230
 msgid "queue size should be between 2...100"
-msgstr ""
+msgstr "taille de la file d'attente doit être compris entre 2 et 100"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 231
 # File: lang/dynamic/helpers/models.php, line: 237
 # File: lang/dynamic/helpers/models.php, line: 240
 msgid "origin should be regular text of max 30 characters"
-msgstr ""
+msgstr "origine doit être un texte régulier de 30 caractères max"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 232
 # File: lang/dynamic/helpers/models.php, line: 236
 msgid "Description should be a string between 1 and 255 characters"
-msgstr ""
+msgstr "La description devrait être une chaîne entre 1 et 255 caractères"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 233
 msgid "Queue number must be between 1...65535"
-msgstr ""
+msgstr "Le numéro de file d'attente doit être compris entre 1 et 65535"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 234
 msgid "Related pipe not found"
-msgstr ""
+msgstr "Le tuyau (pipe) concerné introuvable"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 235
 msgid "Weight must be between 1...100"
-msgstr ""
+msgstr "Le poids doit être compris entre 1 et 100"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 238
 msgid "provide a valid sequence for sorting"
-msgstr ""
+msgstr "fournir une séquence valide de tri"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 239
 msgid "Related pipe or queue not found"
-msgstr ""
+msgstr "Le tuyau (pipe) ou la file d'attente concerné introuvable"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 241
 msgid "Origin should be regular text of max 30 characters"
-msgstr ""
+msgstr "L'origine devrait être un texte régulier de 30 caractères max"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 242
@@ -3288,6 +3318,8 @@ msgid ""
 "Value needs to be between 0 and 59, multiple values, ranges and * are supported "
 "(ex. 1,10,20,30 or 1-30  )"
 msgstr ""
+"La valeur doit être comprise entre 0 et 59, plusieurs valeurs, plages et * sont "
+"pris en charge (ex. 1,10,20,30 ou 1-30)"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 243
@@ -3295,6 +3327,8 @@ msgid ""
 "Value needs to be between 0 and 23, multiple values, ranges and * are supported "
 "(ex. 1,2,8 or 0-8 )"
 msgstr ""
+"La valeur doit être comprise entre 0 et 23, plusieurs valeurs, plage et * sont "
+"pris en charge (ex. 1,2,8 ou 0-8)"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 244
@@ -3302,6 +3336,8 @@ msgid ""
 "Value needs to be between 1 and 31, multiple values, ranges, L (last day of "
 "month) and * are supported (ex. 1,2,8 or 1-28  )"
 msgstr ""
+"La valeur doit être comprise entre 1 et 31, plusieurs valeurs, plages, L "
+"(dernier jour du mois) et * sont pris en charge (ex. 1,2,8 ou 1-28)"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 245
@@ -3309,6 +3345,8 @@ msgid ""
 "Value needs to be between 1 and 12 or JAN to DEC, multiple values, ranges and * "
 "are supported (ex. JAN,2,10 or 3-8 )"
 msgstr ""
+"La valeur doit être comprise entre 1 et 12 ou de JAN à DEC plusieurs valeurs, "
+"plages et * sont pris en charge (ex. JAN, 2,10 ou 3-8)"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 246
@@ -3316,6 +3354,8 @@ msgid ""
 "Value needs to be between 0 and 6 ( Sunday to Saturday), multiple values, ranges "
 "and * are supported (ex. 1,2,4 or 0-4  ) "
 msgstr ""
+"La valeur doit être comprise entre 0 et 6 (du Dimanche au Samedi), plusieurs "
+"valeurs, plages et * sont pris en charge (ex. 1,2,4 ou 0-4)"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 247
@@ -3326,6 +3366,8 @@ msgstr "Sélectionner une commande à partir de la liste."
 # File: lang/dynamic/helpers/models.php, line: 248
 msgid "Enter valid parameter(s) for the chosen command (Found illegal characters)."
 msgstr ""
+"Entrez paramètre(s) valide pour la commande choisie (Caractères illégaux "
+"trouvés)."
 
 #
 # File: lang/dynamic/helpers/models.php, line: 249
@@ -3365,7 +3407,7 @@ msgstr ""
 # File: src/etc/inc/auth.inc, line: 676
 #, php-format
 msgid "LDAP: Could not lookup CA by reference for host %s."
-msgstr ""
+msgstr "LDAP: Impossible de chercher le CA par référence pour l'hôte %s."
 
 #
 # File: src/etc/inc/auth.inc, line: 656
@@ -3408,7 +3450,7 @@ msgstr "Utilisateur déconnecté pour l’utilisateur '%1$s' à partir de : %2$s
 #
 # File: src/etc/inc/authgui.inc, line: 66
 msgid "No page assigned to this user! Click here to logout."
-msgstr ""
+msgstr "Aucune page assignée à cet utilisateur! Cliquez ici pour se déconnecter."
 
 #
 # File: src/etc/inc/authgui.inc, line: 98
@@ -3429,6 +3471,10 @@ msgid ""
 "be forwarded by NAT or other means. <br /><br />If you did not setup this "
 "forwarding, you may be the target of a man-in-the-middle attack."
 msgstr ""
+"Vous accédez à ce routeur par une adresse IP non configurée localement, qui "
+"peuvent être transmis par NAT ou d'autres moyens. <br /> <br /> Si vous n'avez "
+"pas installer ce transfert, vous pouvez être la cible d'une attaque man-in-the-"
+"middle."
 
 #
 # File: src/etc/inc/authgui.inc, line: 263
@@ -3456,7 +3502,7 @@ msgstr "Erreur : impossible d’ouvrir ‘%s’ dans captiveportal_write_element
 #
 # File: src/etc/inc/config.console.inc, line: 42
 msgid "Press any key to start the manual interface assignment:  "
-msgstr ""
+msgstr "Appuyez sur une touche pour démarrer l'affectation d'interface manuel: "
 
 #
 # File: src/etc/inc/config.console.inc, line: 58
@@ -3539,13 +3585,13 @@ msgstr "fait.%s"
 # File: src/etc/inc/config.console.inc, line: 444
 #, php-format
 msgid "Detected link-up: %s%s"
-msgstr ""
+msgstr "Liaison active détecté: %s%s"
 
 #
 # File: src/etc/inc/config.console.inc, line: 425
 #, php-format
 msgid "No link-up detected.%s"
-msgstr ""
+msgstr "Pas de liaison détecté.%s"
 
 #
 # File: src/etc/inc/config.console.inc, line: 459
@@ -3561,6 +3607,7 @@ msgstr "Aucune interface ne support les VLAN"
 # File: src/etc/inc/config.console.inc, line: 478
 msgid "Enter the parent interface name for the new VLAN (or nothing if finished):"
 msgstr ""
+"Entrez le nom de l'interface parent pour le nouveau VLAN (ou rien si fini):"
 
 #
 # File: src/etc/inc/config.console.inc, line: 491
@@ -3578,17 +3625,21 @@ msgstr "%s VLAN tag incorrect ‘%s’%s"
 # File: src/etc/inc/config.lib.inc, line: 53
 msgid "No (valid) config.xml found, attempting last known config restore."
 msgstr ""
+"Aucun config.xml (valable) a trouvé, essai de restaauration de la dernière "
+"config connue."
 
 #
 # File: src/etc/inc/config.lib.inc, line: 57
 msgid "No config.xml found, attempting to restore factory config."
-msgstr ""
+msgstr "config.xml non trouvé, tente de restaurer la config usine."
 
 #
 # File: src/etc/inc/config.lib.inc, line: 86
 #, php-format
 msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
 msgstr ""
+"Début de la configuration de mise à niveau à %s, réglage l'exécution à un de "
+"délai de 15 minutes"
 
 #
 # File: src/etc/inc/config.lib.inc, line: 97
@@ -3682,7 +3733,7 @@ msgstr "Création d'alias"
 #
 # File: src/etc/inc/filter.inc, line: 187
 msgid "Generating Limiter rules"
-msgstr ""
+msgstr "Génération des règles de limitation"
 
 #
 # File: src/etc/inc/filter.inc, line: 188
@@ -3805,7 +3856,7 @@ msgstr "route statique"
 #
 # File: src/etc/inc/filter.inc, line: 1288
 msgid "DHCP alias address"
-msgstr ""
+msgstr "Alias d'adresse DHCP"
 
 #
 # File: src/etc/inc/filter.inc, line: 1325
@@ -3840,7 +3891,7 @@ msgstr "Client IPsec"
 #
 # File: src/etc/inc/filter.inc, line: 1409
 msgid "Auto created rule for ISAKMP"
-msgstr ""
+msgstr "Règle auto créée pour ISAKMP"
 
 #
 # File: src/etc/inc/filter.inc, line: 1419
@@ -3884,13 +3935,13 @@ msgstr "Création de la règle de filtrage %s"
 # File: src/etc/inc/filter.inc, line: 1990
 #, php-format
 msgid "filter_generate_port: %s is not a valid %s port."
-msgstr ""
+msgstr "filter_generate_port: %s n'est pas valide, port %s."
 
 #
 # File: src/etc/inc/filter.inc, line: 2295
 #, php-format
 msgid "Setting up pass/block rules %s"
-msgstr ""
+msgstr "Mise en place de la règle passe/bloque %s"
 
 #
 # File: src/etc/inc/filter.inc, line: 2310
@@ -4067,7 +4118,7 @@ msgstr "Configuration de l’interface %s..."
 #
 # File: src/etc/inc/interfaces.inc, line: 1245
 msgid "Wrong parameters used during interface_bring_down"
-msgstr ""
+msgstr "Mauvais paramètres utilisé durant interface_bring_down"
 
 #
 # File: src/etc/inc/interfaces.inc, line: 1571
@@ -4093,13 +4144,13 @@ msgstr ""
 # File: src/etc/inc/interfaces.inc, line: 1641
 #, php-format
 msgid "Unkown %s configured as ppp interface."
-msgstr ""
+msgstr "%s inconnu configué comme interface ppp."
 
 #
 # File: src/etc/inc/interfaces.inc, line: 1913
 #, php-format
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
-msgstr ""
+msgstr "Erreur: Impossible d'ouvrir mpd_%s.conf dans interface_ppps_configure().%s"
 
 #
 # File: src/etc/inc/interfaces.inc, line: 1985
@@ -4121,6 +4172,8 @@ msgid ""
 "Sorry but we could not find a required assigned ip address on the interface for "
 "the virtual IP address %s."
 msgstr ""
+"Désolé, mais nous ne pouvons pas trouver une adresse IP attribuée nécessaire sur "
+"l'interface virtuelle pour l'adresse IP %s."
 
 #
 # File: src/etc/inc/interfaces.inc, line: 2211
@@ -4129,6 +4182,8 @@ msgid ""
 "Sorry but we could not find a required assigned ip address on the interface for "
 "the virtual IPv6 address %s."
 msgstr ""
+"Désolé, mais nous ne pouvons pas trouver une adresse IP attribuée nécessaire sur "
+"l'interface virtuelle pour l'adresse IPv6 % s."
 
 #
 # File: src/etc/inc/interfaces.inc, line: 2269
@@ -4159,6 +4214,7 @@ msgstr "Clonage d'une nouvelle interface sans fil %s"
 #, php-format
 msgid "Failed to clone interface %1$s with error code %2$s, output %3$s"
 msgstr ""
+"Impossible de cloner l'interface %1$s avec le code d'erreur %2$s, la sortie %3$s"
 
 #
 # File: src/etc/inc/interfaces.inc, line: 3018
@@ -5943,7 +5999,7 @@ msgstr ""
 #
 # File: src/www/crash_reporter.php, line: 170
 msgid "Report an issue"
-msgstr ""
+msgstr "Signaler un problème"
 
 #
 # File: src/etc/inc/ipsec.inc, line: 41
@@ -6139,7 +6195,7 @@ msgstr "Tester"
 #
 # File: src/www/diag_backup.php, line: 140
 msgid "Captive Portal Vouchers"
-msgstr ""
+msgstr "Coupons portail captif"
 
 #
 # File: src/www/diag_backup.php, line: 143
@@ -6568,19 +6624,19 @@ msgstr ""
 # File: src/www/services_dhcpv6.php, line: 581
 # File: src/www/services_dhcpv6.php, line: 588
 msgid "to"
-msgstr ""
+msgstr "vers"
 
 #
 # File: src/www/diag_confbak.php, line: 204
 # File: src/www/diag_gmirror.php, line: 187
 msgid "Confirm Action"
-msgstr ""
+msgstr "Confirmez l'action"
 
 #
 # File: src/www/diag_confbak.php, line: 209
 # File: src/www/diag_gmirror.php, line: 192
 msgid "Please confirm the selected action"
-msgstr ""
+msgstr "Confirmez l'action sélectionnée"
 
 #
 # File: src/www/diag_confbak.php, line: 211
@@ -6594,7 +6650,7 @@ msgstr ""
 # File: src/www/services_unbound_acls.php, line: 209
 # File: src/www/services_unbound_acls.php, line: 309
 msgid "Action"
-msgstr ""
+msgstr "Action"
 
 #
 # File: src/www/diag_confbak.php, line: 213
@@ -6609,13 +6665,13 @@ msgstr "Supprimer la Sauvegarde de la Configuration"
 #
 # File: src/www/diag_confbak.php, line: 221
 msgid "Target Configuration"
-msgstr ""
+msgstr "Configuration cible"
 
 #
 # File: src/www/diag_confbak.php, line: 222
 #, php-format
 msgid "Timestamp %1$s"
-msgstr ""
+msgstr "Horodatage %1$s"
 
 #
 # File: src/www/diag_confbak.php, line: 223
@@ -6791,7 +6847,7 @@ msgstr ""
 #
 # File: src/www/diag_confbak.php, line: 297
 msgid "Current"
-msgstr ""
+msgstr "Courant"
 
 #
 # File: src/www/diag_confbak.php, line: 325
@@ -6811,7 +6867,7 @@ msgstr "Télécharger cette sauvegarde"
 #
 # File: src/www/diag_defaults.php, line: 33
 msgid "Factory defaults"
-msgstr ""
+msgstr "Paramètres d'usine"
 
 #
 # File: src/www/diag_defaults.php, line: 49
@@ -6833,7 +6889,7 @@ msgstr "le firewall ferra:"
 #
 # File: src/www/diag_defaults.php, line: 61
 msgid "Reset to factory defaults"
-msgstr ""
+msgstr "Retour aux paramètres d'usine."
 
 #
 # File: src/www/diag_defaults.php, line: 62
@@ -6879,12 +6935,12 @@ msgstr "L'hôte doit être un nom valide ou une adresse IP."
 #
 # File: src/www/diag_dns.php, line: 109
 msgid "No response"
-msgstr ""
+msgstr "Pas de réponse"
 
 #
 # File: src/www/diag_dns.php, line: 142
 msgid "No record found"
-msgstr ""
+msgstr "Pas d'enregistrement trouvé"
 
 #
 # File: src/www/diag_dns.php, line: 150
@@ -6907,7 +6963,7 @@ msgstr "Nom d’hôte"
 #
 # File: src/www/diag_dns.php, line: 154
 msgid "Query Time"
-msgstr ""
+msgstr "Heure de requête"
 
 #
 # File: src/www/diag_dns.php, line: 154
@@ -6970,7 +7026,7 @@ msgstr ""
 #
 # File: src/www/diag_dns.php, line: 232
 msgid "Query time"
-msgstr ""
+msgstr "Heure de requête"
 
 #
 # File: src/www/diag_dns.php, line: 250
@@ -7593,7 +7649,7 @@ msgstr ""
 #
 # File: src/www/diag_ipsec.php, line: 227
 msgid "Local subnets"
-msgstr ""
+msgstr "Sous-réseau local"
 
 #
 # File: src/www/diag_ipsec.php, line: 228
@@ -7618,12 +7674,12 @@ msgstr ""
 #
 # File: src/www/diag_ipsec_leases.php, line: 66
 msgid "usage: "
-msgstr ""
+msgstr "usage: "
 
 #
 # File: src/www/diag_ipsec_leases.php, line: 67
 msgid "online: "
-msgstr ""
+msgstr "en ligne: "
 
 #
 # File: src/www/diag_ipsec_leases.php, line: 73
@@ -7659,7 +7715,7 @@ msgstr ""
 #
 # File: src/www/diag_ipsec_leases.php, line: 97
 msgid "No IPsec pools."
-msgstr ""
+msgstr "Pas de groupement IPsec."
 
 #
 # File: src/www/diag_ipsec_leases.php, line: 103
@@ -7740,17 +7796,17 @@ msgstr "Protocole"
 #
 # File: src/www/diag_ipsec_sad.php, line: 65
 msgid "SPI"
-msgstr ""
+msgstr "SPI"
 
 #
 # File: src/www/diag_ipsec_sad.php, line: 66
 msgid "Enc. alg."
-msgstr ""
+msgstr "Enc. alg."
 
 #
 # File: src/www/diag_ipsec_sad.php, line: 67
 msgid "Auth. alg."
-msgstr ""
+msgstr "Auth. alg."
 
 #
 # File: src/www/diag_ipsec_sad.php, line: 68
@@ -7760,7 +7816,7 @@ msgstr "Donnée"
 #
 # File: src/www/diag_ipsec_sad.php, line: 87
 msgid "No IPsec security associations."
-msgstr ""
+msgstr "Pas d'associations de sécurité IPsec."
 
 #
 # File: src/www/diag_ipsec_spd.php, line: 64
@@ -7768,32 +7824,32 @@ msgstr ""
 # File: src/www/load_balancer_relay_action_edit.php, line: 107
 # File: src/www/load_balancer_relay_action_edit.php, line: 444
 msgid "Direction"
-msgstr ""
+msgstr "Direction"
 
 #
 # File: src/www/diag_ipsec_spd.php, line: 66
 msgid "Tunnel endpoints"
-msgstr ""
+msgstr "Point d'arrivé Tunnel"
 
 #
 # File: src/www/diag_ipsec_spd.php, line: 91
 msgid "incoming (as seen by firewall)"
-msgstr ""
+msgstr "Entrée (vue par le Pare-feu)"
 
 #
 # File: src/www/diag_ipsec_spd.php, line: 98
 msgid "outgoing (as seen by firewall)"
-msgstr ""
+msgstr "Sortie (vue par le Pare-feu)"
 
 #
 # File: src/www/diag_ipsec_spd.php, line: 103
 msgid "No IPsec security policies."
-msgstr ""
+msgstr "Pas de politique de sécurité IPsec."
 
 #
 # File: src/www/diag_ipsec_tabs.inc, line: 28
 msgid "Overview"
-msgstr ""
+msgstr "vue d'ensemble"
 
 #
 # File: src/www/diag_ipsec_tabs.inc, line: 32
@@ -7803,12 +7859,12 @@ msgstr "Événements"
 #
 # File: src/www/diag_limiter_info.php, line: 31
 msgid "Diagnostics: Limiter Info"
-msgstr ""
+msgstr "Diagnostics: Info limiteur"
 
 #
 # File: src/www/diag_limiter_info.php, line: 92
 msgid "Gathering Limiter information, please wait..."
-msgstr ""
+msgstr "Rassemblement des informations du limiteur, attendez s'il vous plait."
 
 #
 # File: src/www/diag_logs.php, line: 56
@@ -7855,19 +7911,19 @@ msgstr "Effacer les événements"
 # File: src/www/diag_logs_auth.php, line: 43
 # File: src/www/diag_logs_tabs.inc, line: 32
 msgid "Portal Auth"
-msgstr ""
+msgstr "Authentification portail"
 
 #
 # File: src/www/diag_logs_auth.php, line: 67
 #, php-format
 msgid "Last %s Portal Auth log entries"
-msgstr ""
+msgstr "Dernières entrées du journal d'authentification du portail %s"
 
 #
 # File: src/www/diag_logs_dhcp.php, line: 69
 #, php-format
 msgid "Last %s DHCP service log entries"
-msgstr ""
+msgstr "Dernières entrées du journal DHCP %s"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 114
@@ -7878,13 +7934,13 @@ msgstr ""
 # File: src/etc/inc/easyrule.inc, line: 115
 # File: src/etc/inc/easyrule.inc, line: 301
 msgid "Easy Rule"
-msgstr ""
+msgstr "Règle facile"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 178
 # File: src/etc/inc/easyrule.inc, line: 186
 msgid "Entry added"
-msgstr ""
+msgstr "Entrée ajoutée"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 183
@@ -7899,12 +7955,12 @@ msgstr ""
 #
 # File: src/etc/inc/easyrule.inc, line: 318
 msgid "Tried to block invalid IP:"
-msgstr ""
+msgstr "Tenté de bloquer une IP invalide:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 322
 msgid "Invalid interface for block rule:"
-msgstr ""
+msgstr "Interface invalide pour la règle de blocage:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 325
@@ -7929,22 +7985,22 @@ msgstr "Erreur de blocage inconnue."
 #
 # File: src/etc/inc/easyrule.inc, line: 343
 msgid "Invalid interface for pass rule:"
-msgstr ""
+msgstr "Interface invalide pour la règle de passe:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 346
 msgid "Invalid protocol for pass rule:"
-msgstr ""
+msgstr "Protocole invalide pour la règle de passe:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 349
 msgid "Tried to pass invalid source IP:"
-msgstr ""
+msgstr "Tentative de passage d'une IP source invalide:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 352
 msgid "Tried to pass invalid destination IP:"
-msgstr ""
+msgstr "Tentative de passage d'une IP destination invalide:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 356
@@ -7954,22 +8010,22 @@ msgstr "Le port de destination est manquant"
 #
 # File: src/etc/inc/easyrule.inc, line: 359
 msgid "Tried to pass invalid destination port:"
-msgstr ""
+msgstr "Tentative de passage d'un port de destination invalide:"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 366
 msgid "Successfully added pass rule!"
-msgstr ""
+msgstr "règle de passage ajouté avec succès!"
 
 #
 # File: src/etc/inc/easyrule.inc, line: 368
 msgid "Failed to add pass rule."
-msgstr ""
+msgstr "Impossible d'ajouter la règle de passage."
 
 #
 # File: src/etc/inc/easyrule.inc, line: 371
 msgid "Missing parameters for pass rule."
-msgstr ""
+msgstr "Paramètres manquants pour la règle de passage."
 
 #
 # File: src/etc/inc/easyrule.inc, line: 373
@@ -7980,7 +8036,7 @@ msgstr "Erreur d’autorisation inconnue."
 # File: src/etc/inc/filter_log.inc, line: 276
 #, php-format
 msgid "Service %1$s/%2$s: %3$s"
-msgstr ""
+msgstr "Service %1$s/%2$s: %3$s"
 
 #
 # File: src/www/diag_logs_filter.php, line: 43
@@ -7990,22 +8046,22 @@ msgstr "Impossible de résoudre"
 #
 # File: src/www/diag_logs_filter.php, line: 63
 msgid "The rule that triggered this action is"
-msgstr ""
+msgstr "La règle qui a déclenché cette action est"
 
 #
 # File: src/www/diag_logs_filter.php, line: 627
 msgid "Time and interface"
-msgstr ""
+msgstr "Heure et interface"
 
 #
 # File: src/www/diag_logs_filter.php, line: 628
 msgid "Source and destination IP Address"
-msgstr ""
+msgstr "Adresse IP source et destination "
 
 #
 # File: src/www/diag_logs_filter.php, line: 629
 msgid "Source and destination port"
-msgstr ""
+msgstr "port source et destination "
 
 #
 # File: src/www/diag_logs_filter.php, line: 299
@@ -8015,12 +8071,12 @@ msgstr ""
 # File: src/www/firewall_schedule_edit.php, line: 924
 # File: src/www/widgets/widgets/log.widget.php, line: 221
 msgid "Time"
-msgstr ""
+msgstr "Heure"
 
 #
 # File: src/www/diag_logs_filter.php, line: 642
 msgid "Source IP Address"
-msgstr ""
+msgstr "Adresse IP source"
 
 #
 # File: src/www/diag_system_pftop.php, line: 146
@@ -8033,12 +8089,12 @@ msgstr "Port Source"
 #
 # File: src/www/diag_logs_filter.php, line: 238
 msgid "Quantity"
-msgstr ""
+msgstr "Quantité"
 
 #
 # File: src/www/diag_logs_filter.php, line: 654
 msgid "Destination IP Address"
-msgstr ""
+msgstr "Adresse IP destination"
 
 #
 # File: src/www/diag_system_pftop.php, line: 139
@@ -8050,12 +8106,12 @@ msgstr "Port de Destination"
 #
 # File: src/www/diag_logs_filter.php, line: 656
 msgid "Protocol Flags"
-msgstr ""
+msgstr "Drapeaux protocole"
 
 #
 # File: src/www/interfaces.php, line: 3050
 msgid "Any"
-msgstr ""
+msgstr "quelconque"
 
 #
 # File: src/www/diag_testport.php, line: 155
@@ -8140,7 +8196,7 @@ msgstr ""
 #
 # File: src/www/diag_logs_filter_dynamic.php, line: 107
 msgid "Pause"
-msgstr ""
+msgstr "Pause"
 
 #
 # File: src/www/diag_logs_filter_dynamic.php, line: 146
@@ -8156,7 +8212,7 @@ msgstr ""
 # File: src/www/diag_logs_filter_summary.php, line: 42
 # File: src/www/load_balancer_relay_protocol_edit.php, line: 232
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
 #
 # File: src/www/diag_logs_filter_summary.php, line: 44
@@ -8198,25 +8254,25 @@ msgstr ""
 # File: src/www/services_captiveportal_vouchers_edit.php, line: 86
 # File: src/www/services_captiveportal_vouchers_edit.php, line: 211
 msgid "Count"
-msgstr ""
+msgstr "Nombre"
 
 #
 # File: src/www/diag_logs_ipsec.php, line: 72
 #, php-format
 msgid "Last %s  IPsec log entries"
-msgstr ""
+msgstr "Dernières entrées du journal IPsec %s"
 
 #
 # File: src/www/diag_logs_ntpd.php, line: 69
 #, php-format
 msgid "Last %s NTP log entries"
-msgstr ""
+msgstr "Dernières entrées du journal NTP %s"
 
 #
 # File: src/www/diag_logs_openvpn.php, line: 71
 #, php-format
 msgid "Last %s OpenVPN log entries"
-msgstr ""
+msgstr "Dernières entrées du journal OpenVPN %s"
 
 #
 # File: src/www/diag_logs_pills.php, line: 33
@@ -8226,7 +8282,7 @@ msgstr "Connexion PPTP"
 #
 # File: src/www/diag_logs_pills.php, line: 36
 msgid "PPTP Raw"
-msgstr ""
+msgstr "PPTP brut"
 
 #
 # File: src/www/diag_logs_pills.php, line: 39
@@ -8236,7 +8292,7 @@ msgstr "Connexions PPPoE"
 #
 # File: src/www/diag_logs_pills.php, line: 42
 msgid "PPPoE Raw"
-msgstr ""
+msgstr "PPPoE brut"
 
 #
 # File: src/www/diag_logs_pills.php, line: 45
@@ -8246,51 +8302,51 @@ msgstr "Connexions L2TP"
 #
 # File: src/www/diag_logs_pills.php, line: 48
 msgid "L2TP Raw"
-msgstr ""
+msgstr "L2TP brut"
 
 #
 # File: src/www/diag_logs_pills.php, line: 56
 msgid "Normal View"
-msgstr ""
+msgstr "Vue normale"
 
 #
 # File: src/www/diag_logs_pills.php, line: 57
 msgid "Dynamic View"
-msgstr ""
+msgstr "Vue dynamique"
 
 #
 # File: src/www/diag_logs_pills.php, line: 58
 msgid "Summary View"
-msgstr ""
+msgstr "Vue sommaire"
 
 #
 # File: src/www/diag_logs_ppp.php, line: 68
 #, php-format
 msgid "Last %s PPP log entries"
-msgstr ""
+msgstr "Dernières entrées du journal PPP %s"
 
 #
 # File: src/www/diag_logs_proxy.php, line: 59
 #, php-format
 msgid "Last %s log entries"
-msgstr ""
+msgstr "Dernières entrées du journal %s"
 
 #
 # File: src/www/diag_logs_relayd.php, line: 70
 #, php-format
 msgid "Last %s Load Balancer log entries"
-msgstr ""
+msgstr "Dernières entrées du journal Répartiteur de charge %s"
 
 #
 # File: src/www/diag_logs_settings.php, line: 71
 # File: src/www/diag_logs_settings.php, line: 342
 msgid "Reset Log Files"
-msgstr ""
+msgstr "Réinitialiser les fichiers des journaux"
 
 #
 # File: src/www/diag_logs_settings.php, line: 73
 msgid "The log files have been reset."
-msgstr ""
+msgstr "Les fichiers journaux ont été réinitialisés."
 
 #
 # File: src/www/diag_logs_settings.php, line: 81
@@ -8298,6 +8354,8 @@ msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
 "syslog server #1."
 msgstr ""
+"Une adresse IP valide/nom d'hôte ou IP/nom d'hôte:port doivent être spécifiés "
+"pour le serveur syslog distant #1."
 
 #
 # File: src/www/diag_logs_settings.php, line: 84
@@ -8305,6 +8363,8 @@ msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
 "syslog server #2."
 msgstr ""
+"Une adresse IP valide/nom d'hôte ou IP/nom d'hôte:port doivent être spécifiés "
+"pour le serveur syslog distant #2."
 
 #
 # File: src/www/diag_logs_settings.php, line: 87
@@ -8312,16 +8372,18 @@ msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
 "syslog server #3."
 msgstr ""
+"Une adresse IP valide/nom d'hôte ou IP/nom d'hôte:port doivent être spécifiés "
+"pour le serveur syslog distant #3."
 
 #
 # File: src/www/diag_logs_settings.php, line: 91
 msgid "Number of log entries to show must be between 5 and 2000."
-msgstr ""
+msgstr "Nombre d'entrées du journal à montrer doit être compris entre 5 et 2000."
 
 #
 # File: src/www/diag_logs_settings.php, line: 96
 msgid "Log file size must be a positive integer greater than 5120."
-msgstr ""
+msgstr "La taille du fichier journal doit être un entier positif supérieur à 5120."
 
 #
 # File: src/www/diag_logs_settings.php, line: 161
@@ -8332,17 +8394,19 @@ msgstr ""
 #
 # File: src/www/diag_logs_settings.php, line: 163
 msgid "WebGUI process is restarting."
-msgstr ""
+msgstr "Le processus WebGUI en cours de redémarrage."
 
 #
 # File: src/www/diag_logs_settings.php, line: 266
 msgid "General Logging Options"
-msgstr ""
+msgstr "Options générale des journaux"
 
 #
 # File: src/www/diag_logs_settings.php, line: 271
 msgid "Show log entries in reverse order (newest entries on top)"
 msgstr ""
+"Afficher Entrées de journaux dans l'ordre inverse (les entrées les plus récentes "
+"sur le dessus)"
 
 #
 # File: src/www/diag_logs_settings.php, line: 277
@@ -8378,12 +8442,12 @@ msgstr ""
 #
 # File: src/www/diag_logs_settings.php, line: 287
 msgid "Disk space currently used by log files: "
-msgstr ""
+msgstr "L'espace disque actuellement utilisé par les fichiers journaux:"
 
 #
 # File: src/www/diag_logs_settings.php, line: 288
 msgid "Remaining disk space for log files: "
-msgstr ""
+msgstr "Espace disque restant pour les fichiers journaux:"
 
 #
 # File: src/www/diag_logs_settings.php, line: 295
@@ -8540,7 +8604,7 @@ msgstr ""
 #
 # File: src/www/diag_logs_settings.php, line: 393
 msgid "Remote Syslog Servers"
-msgstr ""
+msgstr "Serveurs Syslog distant"
 
 #
 # File: src/www/diag_logs_settings.php, line: 410
@@ -8550,12 +8614,12 @@ msgstr ""
 #
 # File: src/www/diag_logs_settings.php, line: 416
 msgid "Remote Syslog Contents"
-msgstr ""
+msgstr "Contenu Syslog distant"
 
 #
 # File: src/www/diag_logs_settings.php, line: 419
 msgid "Everything"
-msgstr ""
+msgstr "Tous"
 
 #
 # File: src/www/diag_logs_settings.php, line: 421
@@ -8575,7 +8639,7 @@ msgstr "Événements du service DHCP"
 #
 # File: src/www/diag_logs_settings.php, line: 427
 msgid "Portal Auth events"
-msgstr ""
+msgstr "Évènements Authentification portail"
 
 #
 # File: src/www/diag_logs_settings.php, line: 429
@@ -8585,12 +8649,12 @@ msgstr "Événements VPN (PPTP, IPsec, OpenVPN)"
 #
 # File: src/www/diag_logs_settings.php, line: 431
 msgid "Gateway Monitor events"
-msgstr ""
+msgstr "Évènements moniteur passerelle"
 
 #
 # File: src/www/diag_logs_settings.php, line: 433
 msgid "Server Load Balancer events"
-msgstr ""
+msgstr "Évènements serveur répartiteur de charge"
 
 #
 # File: src/www/diag_logs_settings.php, line: 435
@@ -8630,7 +8694,7 @@ msgstr "Interface invalide."
 #
 # File: src/www/diag_packet_capture.php, line: 117
 msgid "Invalid address family."
-msgstr ""
+msgstr "Famille d'adresse invalide"
 
 #
 # File: src/www/diag_packet_capture.php, line: 120
@@ -8641,22 +8705,22 @@ msgstr "Protocole invalide."
 # File: src/www/diag_packet_capture.php, line: 132
 #, php-format
 msgid "A valid IP address or CIDR block must be specified. [%s]"
-msgstr ""
+msgstr "Une adresse IP valide ou un blocage CIDR doit être spécifié. [%s]"
 
 #
 # File: src/www/diag_packet_capture.php, line: 138
 msgid "Invalid value specified for port."
-msgstr ""
+msgstr "Valeur invalide spécifié pour le port."
 
 #
 # File: src/www/diag_packet_capture.php, line: 145
 msgid "Invalid value specified for packet length."
-msgstr ""
+msgstr "Valeur invalide spécifié pour la longueur du paquet."
 
 #
 # File: src/www/diag_packet_capture.php, line: 152
 msgid "Invalid value specified for packet count."
-msgstr ""
+msgstr "Valeur invalide spécifié pour le nombre de paquet."
 
 #
 # File: src/www/diag_packet_capture.php, line: 176
@@ -8683,17 +8747,17 @@ msgstr "Capture de paquets"
 #
 # File: src/www/diag_packet_capture.php, line: 246
 msgid "Select the interface on which to capture traffic."
-msgstr ""
+msgstr "Sélectionnez l'interface sur laquelle sera capturé le trafic"
 
 #
 # File: src/www/diag_packet_capture.php, line: 250
 msgid "Promiscuous"
-msgstr ""
+msgstr "Promiscuité"
 
 #
 # File: src/www/diag_packet_capture.php, line: 253
 msgid "If checked, the"
-msgstr ""
+msgstr "Si cochée, le"
 
 #
 # File: src/www/diag_packet_capture.php, line: 253
@@ -8703,18 +8767,20 @@ msgstr "capture de paquets"
 #
 # File: src/www/diag_packet_capture.php, line: 253
 msgid "will be performed using promiscuous mode."
-msgstr ""
+msgstr "sera effectué en utilisant le mode promiscuité."
 
 #
 # File: src/www/diag_packet_capture.php, line: 254
 msgid "Some network adapters do not support or work well in promiscuous mode."
 msgstr ""
+"Certains adaptateurs réseau ne supportent pas ou fonctionnent bien en mode "
+"promiscuité."
 
 #
 # File: src/www/diag_packet_capture.php, line: 258
 # File: src/www/system_gateways_edit.php, line: 717
 msgid "Address Family"
-msgstr ""
+msgstr "Famille d'adresse"
 
 #
 # File: src/www/diag_packet_capture.php, line: 265
@@ -8725,7 +8791,7 @@ msgstr ""
 #
 # File: src/www/diag_packet_capture.php, line: 287
 msgid "Select the protocol to capture, or Any."
-msgstr ""
+msgstr "Sélectionnez le protocole à capturer ou quelconque."
 
 #
 # File: src/www/diag_packet_capture.php, line: 291
@@ -8789,7 +8855,7 @@ msgstr ""
 #
 # File: src/www/diag_packet_capture.php, line: 309
 msgid "Packet Length"
-msgstr ""
+msgstr "Longueur paquet"
 
 #
 # File: src/www/diag_packet_capture.php, line: 312
@@ -8801,7 +8867,7 @@ msgstr ""
 #
 # File: src/www/diag_packet_capture.php, line: 319
 msgid "Enter 0 (zero) for no count limit."
-msgstr ""
+msgstr "Entrez 0 (zéro) pour pas de limite de nombre."
 
 #
 # File: src/www/diag_packet_capture.php, line: 319
@@ -8812,27 +8878,27 @@ msgstr ""
 #
 # File: src/www/diag_packet_capture.php, line: 324
 msgid "Level of Detail"
-msgstr ""
+msgstr "Niveau de détail"
 
 #
 # File: src/www/diag_packet_capture.php, line: 327
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #
 # File: src/www/diag_packet_capture.php, line: 328
 msgid "Medium"
-msgstr ""
+msgstr "Moyen"
 
 #
 # File: src/www/diag_packet_capture.php, line: 329
 msgid "High"
-msgstr ""
+msgstr "Haut"
 
 #
 # File: src/www/diag_packet_capture.php, line: 330
 msgid "Full"
-msgstr ""
+msgstr "Tout"
 
 #
 # File: src/www/diag_packet_capture.php, line: 332
@@ -8879,33 +8945,33 @@ msgstr ""
 # File: src/www/diag_packet_capture.php, line: 388
 # File: src/www/diag_packet_capture.php, line: 426
 msgid "Packet Capture is running."
-msgstr ""
+msgstr "Capture de paquets en cours."
 
 #
 # File: src/www/diag_packet_capture.php, line: 435
 msgid "Packet Capture stopped."
-msgstr ""
+msgstr "Capture de paquets arrêté."
 
 #
 # File: src/www/diag_packet_capture.php, line: 435
 msgid "Packets Captured:"
-msgstr ""
+msgstr "Paquets capturés:"
 
 #
 # File: src/www/diag_pf_info.php, line: 31
 msgid "Diagnostics: pfInfo"
-msgstr ""
+msgstr "Diagnostics: pfInfo"
 
 #
 # File: src/www/diag_pf_info.php, line: 87
 msgid "Gathering PF information, please wait..."
-msgstr ""
+msgstr "Rassemblement des informations PF, attendez s'il vous plait."
 
 #
 # File: src/www/diag_ping.php, line: 47
 #, php-format
 msgid "Count must be between 1 and %s"
-msgstr ""
+msgstr "Le nombre doit être compris entre 1 et %s"
 
 #
 # File: src/www/diag_ping.php, line: 53
@@ -8995,44 +9061,47 @@ msgstr "Réinitialiser"
 # File: src/www/diag_routes.php, line: 57
 # File: src/www/diag_routes.php, line: 161
 msgid "Routing tables"
-msgstr ""
+msgstr "Tables de routage"
 
 #
 # File: src/www/diag_routes.php, line: 171
 msgid "Name resolution"
-msgstr ""
+msgstr "Résolution de nom"
 
 #
 # File: src/www/diag_routes.php, line: 173
 msgid "Enable this to attempt to resolve names when displaying the tables."
 msgstr ""
+"Activez cette option pour tenter de résoudre les noms lors de l'affichage des "
+"tableaux."
 
 #
 # File: src/www/diag_routes.php, line: 177
 msgid "Number of rows"
-msgstr ""
+msgstr "Nombres de ligne"
 
 #
 # File: src/www/diag_routes.php, line: 180
 # File: src/www/diag_tables.php, line: 170
 msgid "all"
-msgstr ""
+msgstr "tout"
 
 #
 # File: src/www/diag_routes.php, line: 185
 msgid "Select how many rows to display."
-msgstr ""
+msgstr "Sélectionnez le nombre de lignes à afficher."
 
 #
 # File: src/www/diag_logs_filter.php, line: 234
 # File: src/www/diag_routes.php, line: 189
 msgid "Filter expression"
-msgstr ""
+msgstr "Expression filtre"
 
 #
 # File: src/www/diag_routes.php, line: 192
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
+"Utiliser une expression régulière pour filtrer l'adresse IP ou les noms d'hôtes."
 
 #
 # File: src/www/diag_routes.php, line: 198
@@ -9040,7 +9109,7 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 1095
 # File: src/www/system_certmanager.php, line: 1140
 msgid "Update"
-msgstr ""
+msgstr "Mise à jour"
 
 #
 # File: src/www/diag_routes.php, line: 199
@@ -9053,33 +9122,33 @@ msgstr ""
 # File: src/www/diag_routes.php, line: 221
 # File: src/www/diag_routes.php, line: 237
 msgid "Gathering data, please wait..."
-msgstr ""
+msgstr "Rassemblement des données, attendez s'il vous plait."
 
 #
 # File: src/www/diag_smart.php, line: 32
 msgid "S.M.A.R.T. Monitor Tools"
-msgstr ""
+msgstr "Outils de surveillance S.M.A.R.T."
 
 #
 # File: src/www/diag_smart.php, line: 68
 msgid "PASSED"
-msgstr ""
+msgstr "PASSÉ"
 
 #
 # File: src/www/diag_smart.php, line: 69
 msgid "FAILED"
-msgstr ""
+msgstr "ÉCHOUÉ"
 
 #
 # File: src/www/diag_smart.php, line: 70
 msgid "Warning"
-msgstr ""
+msgstr "Attention"
 
 #
 # File: src/www/diag_smart.php, line: 121
 # File: src/www/diag_smart.php, line: 466
 msgid "Abort"
-msgstr ""
+msgstr "Abandonner"
 
 #
 # File: src/www/diag_smart.php, line: 170
@@ -9096,7 +9165,7 @@ msgstr "Information/Tests"
 # File: src/www/diag_smart.php, line: 209
 # File: src/www/diag_smart.php, line: 220
 msgid "Config"
-msgstr ""
+msgstr "Config"
 
 #
 # File: src/www/diag_smart.php, line: 245
@@ -9119,27 +9188,27 @@ msgstr "Envoyer"
 # File: src/www/diag_smart.php, line: 284
 # File: src/www/diag_smart.php, line: 295
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #
 # File: src/www/diag_smart.php, line: 293
 msgid "Info type"
-msgstr ""
+msgstr "type d'Info "
 
 #
 # File: src/www/diag_smart.php, line: 296
 msgid "Health"
-msgstr ""
+msgstr "Santé"
 
 #
 # File: src/www/diag_smart.php, line: 297
 msgid "SMART Capabilities"
-msgstr ""
+msgstr "capacités SMART"
 
 #
 # File: src/www/diag_smart.php, line: 298
 msgid "Attributes"
-msgstr ""
+msgstr "Attributs"
 
 #
 # File: src/www/diag_smart.php, line: 304
@@ -9147,18 +9216,18 @@ msgstr ""
 # File: src/www/diag_smart.php, line: 408
 # File: src/www/diag_smart.php, line: 450
 msgid "Device: /dev/"
-msgstr ""
+msgstr "Périphérique: /dev/"
 
 #
 # File: src/www/diag_smart.php, line: 320
 # File: src/www/diag_smart.php, line: 424
 msgid "View"
-msgstr ""
+msgstr "Vue"
 
 #
 # File: src/www/diag_smart.php, line: 337
 msgid "Perform Self-tests"
-msgstr ""
+msgstr "Effectuer Auto-tests"
 
 #
 # File: src/www/diag_smart.php, line: 346
@@ -9171,33 +9240,33 @@ msgstr "Type de test"
 # File: src/www/status_gateways.php, line: 122
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 63
 msgid "Offline"
-msgstr ""
+msgstr "Hors ligne"
 
 #
 # File: src/www/diag_smart.php, line: 350
 msgid "Short"
-msgstr ""
+msgstr "Court"
 
 #
 # File: src/www/diag_smart.php, line: 351
 # File: src/www/diag_system_pftop.php, line: 128
 msgid "Long"
-msgstr ""
+msgstr "Long"
 
 #
 # File: src/www/diag_smart.php, line: 352
 msgid "Conveyance (ATA Disks Only)"
-msgstr ""
+msgstr "Transport (Seuls les disques ATA)"
 
 #
 # File: src/www/diag_smart.php, line: 390
 msgid "View Logs"
-msgstr ""
+msgstr "Afficher les journaux"
 
 #
 # File: src/www/diag_smart.php, line: 399
 msgid "Log type"
-msgstr ""
+msgstr "Type de journal"
 
 #
 # File: src/www/diag_smart.php, line: 402
@@ -9207,7 +9276,7 @@ msgstr "Erreur"
 #
 # File: src/www/diag_smart.php, line: 403
 msgid "Self-test"
-msgstr ""
+msgstr "Auto-tests"
 
 #
 # File: src/www/diag_smart.php, line: 441
@@ -9237,52 +9306,52 @@ msgstr "Ports Dst"
 #
 # File: src/www/diag_states_summary.php, line: 180
 msgid "State Table Summary"
-msgstr ""
+msgstr "Résumé table d'état"
 
 #
 # File: src/www/diag_states_summary.php, line: 194
 msgid "By Source IP"
-msgstr ""
+msgstr "Par IP source"
 
 #
 # File: src/www/diag_states_summary.php, line: 195
 msgid "By Destination IP"
-msgstr ""
+msgstr "Par IP destination"
 
 #
 # File: src/www/diag_states_summary.php, line: 196
 msgid "Total per IP"
-msgstr ""
+msgstr "Total par IP"
 
 #
 # File: src/www/diag_states_summary.php, line: 197
 msgid "By IP Pair"
-msgstr ""
+msgstr "Par paire d'IP"
 
 #
 # File: src/www/diag_system_activity.php, line: 31
 msgid "Diagnostics: System Activity"
-msgstr ""
+msgstr "Diagnostics: Activité système"
 
 #
 # File: src/www/diag_system_activity.php, line: 86
 msgid "Gathering CPU activity, please wait..."
-msgstr ""
+msgstr "Rassemblement de l'activité CPU, attendez s'il vous plait."
 
 #
 # File: src/www/diag_system_pftop.php, line: 31
 msgid "Diagnostics: pfTop"
-msgstr ""
+msgstr "Diagnostics: pfTop"
 
 #
 # File: src/www/diag_system_pftop.php, line: 118
 msgid "View type:"
-msgstr ""
+msgstr "Type de vue:"
 
 #
 # File: src/www/diag_system_pftop.php, line: 119
 msgid "Sort type:"
-msgstr ""
+msgstr "Type de tri:"
 
 #
 # File: src/www/diag_system_pftop.php, line: 120
@@ -9328,12 +9397,12 @@ msgstr "Adresse de Destination"
 #
 # File: src/www/diag_system_pftop.php, line: 140
 msgid "Expiry"
-msgstr ""
+msgstr "expiration"
 
 #
 # File: src/www/diag_system_pftop.php, line: 142
 msgid "Peak"
-msgstr ""
+msgstr "Pic"
 
 #
 # File: src/www/diag_system_pftop.php, line: 143
@@ -9343,7 +9412,7 @@ msgstr "Paquet"
 #
 # File: src/www/diag_system_pftop.php, line: 177
 msgid "Gathering pfTOP activity, please wait..."
-msgstr ""
+msgstr "Rassemblement de l'activité pfTOP, attendez s'il vous plait."
 
 #
 # File: src/www/diag_tables.php, line: 76
@@ -9530,7 +9599,7 @@ msgstr ""
 #
 # File: src/www/firewall_aliases.php, line: 152
 msgid "Add a new alias"
-msgstr ""
+msgstr "Ajouter un nouvel alias"
 
 #
 # File: src/www/firewall_aliases.php, line: 153
@@ -9585,17 +9654,17 @@ msgstr ""
 # File: src/www/firewall_aliases.php, line: 192
 # File: src/www/services_igmpproxy.php, line: 98
 msgid "Values"
-msgstr ""
+msgstr "Valeurs"
 
 #
 # File: src/www/firewall_aliases.php, line: 254
 msgid "Edit alias"
-msgstr ""
+msgstr "Éditer alias"
 
 #
 # File: src/www/firewall_schedule.php, line: 226
 msgid "delete alias"
-msgstr ""
+msgstr "Effacer alias"
 
 #
 # File: src/www/firewall_aliases.php, line: 270
@@ -9615,7 +9684,7 @@ msgstr ""
 # File: src/www/firewall_aliases_edit.php, line: 313
 #, php-format
 msgid "Entry added %s"
-msgstr ""
+msgstr "Entrée ajoutée %s"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 140
