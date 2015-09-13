@@ -106,13 +106,13 @@
                 <maxDownloadSize type="IntegerField">
                     <default>2048</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>Specify the maximum download size. (number of KB's)</ValidationMessage>
+                    <ValidationMessage>Specify the maximum download size. (number of KBs)</ValidationMessage>
                     <Required>N</Required>
                 </maxDownloadSize>
                 <maxUploadSize type="IntegerField">
                     <default>1024</default>
                     <MinimumValue>1</MinimumValue>
-                    <ValidationMessage>Specify the maximum upload size. (number of KB's)</ValidationMessage>
+                    <ValidationMessage>Specify the maximum upload size. (number of KBs)</ValidationMessage>
                     <Required>N</Required>
                 </maxUploadSize>
                 <OverallBandwidthTrotteling type="IntegerField">

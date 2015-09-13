@@ -52,7 +52,7 @@
         <label>direction</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <help>matches incomming or outgoing packets or both (default)</help>
+        <help>matches incoming or outgoing packets or both (default)</help>
     </field>
     <field>
         <id>rule.target</id>
