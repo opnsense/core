@@ -243,6 +243,18 @@ include("head.inc");
 ?>
 <script type="text/javascript">
   $( document ).ready(function() {
+    /**
+     * remove host/port row or clear values on last entry
+     */
+    function removeRow() {
+        if ( $('#detailTable > tbody > tr').length == 1 ) {
+            $('#detailTable > tbody > tr:last > td > input').each(function(){
+              $(this).val("");
+            });
+        } else {
+            $(this).parent().parent().remove();
+        }
+    }
     // add new detail record
     $("#addNew").click(function(){
         // copy last row and reset values
@@ -250,7 +262,10 @@ include("head.inc");
         $('#detailTable > tbody > tr:last > td > input').each(function(){
           $(this).val("");
         });
+        $(".act-removerow").click(removeRow);
     });
+
+    $(".act-removerow").click(removeRow);
 
     function toggleType() {
       if ($("#typeSelect").val() == 'urltable' || $("#typeSelect").val() == 'urltable_ports'  ) {
@@ -365,6 +380,7 @@ include("head.inc");
                         <table class="table table-striped table-condensed" id="detailTable">
                           <thead>
                             <tr>
+                              <th></th>
                               <th id="detailsHeading1"><?=gettext("Network"); ?></th>
                               <th id="detailsHeading3"><?=gettext("Description"); ?></th>
                               <th id="updatefreqHeader" ><?=gettext("Update Freq. (days)");?></th>
@@ -376,6 +392,9 @@ include("head.inc");
                             foreach ($pconfig['aliasurl'] as $aliasid => $aliasurl):
 ?>
                             <tr>
+                              <td>
+                                <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                              </td>
                               <td>
                                 <input type="text" class="form-control" name="host_url[]" value="<?=$aliasurl;?>"/>
                               </td>
@@ -402,6 +421,9 @@ include("head.inc");
 ?>
                             <tr>
                               <td>
+                                <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                              </td>
+                              <td>
                                 <input type="text" class="form-control"  name="host_url[]" value="<?=$address;?>"/>
                               </td>
                               <td>
@@ -422,7 +444,7 @@ include("head.inc");
                           </tbody>
                           <tfoot>
                             <tr>
-                              <td colspan="3">
+                              <td colspan="4">
                                 <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
                               </td>
                             </tr>
