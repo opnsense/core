@@ -29,68 +29,73 @@
 require_once("guiconfig.inc");
 
 $pgtitle = gettext("Diagnostics: pfInfo");
+$data_tabs = array("info", "memory", "timeouts", "interfaces");
 
-if($_REQUEST['getactivity']) {
-	$text = `/sbin/pfctl -vvsi`;
-	$text .= "<p/>";
-	$text .= `/sbin/pfctl -vvsm`;
-	$text .= "<p/>";
-	$text .= `/sbin/pfctl -vvst`;
-	$text .= "<p/>";
-	$text .= `/sbin/pfctl -vvsI`;
-	echo $text;
-	exit;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['getactivity'])) {
+        $diag =  configd_run("filter diag info json");
+        echo $diag;
+    }
+    exit;
 }
 
 include("head.inc");
-
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
-jQuery(document).ready(function() {setTimeout('getpfinfo()', 500);});
-//<![CDATA[
-	function getpfinfo() {
-		jQuery.ajax({
-			type: "POST",
-			url: "/diag_pf_info.php",
-			data: 'getactivity=yes',
-			async: false,
-			complete: activitycallback
-		});
-	}
-	function activitycallback(transport) {
-		jQuery('#pfactivitydiv').html('<font face="Courier" size="2"><pre style="text-align:left;">' + transport.responseText  + '<\/pre><\/font>');
-		setTimeout('getpfinfo()', 2000);
-	}
-//]]>
+$( document ).ready(function() {
+  function getpfinfo() {
+    jQuery.ajax({
+      type: "post",
+      url: "/diag_pf_info.php",
+      data: 'getactivity=yes',
+      dataType: "json",
+      success: function(data) {
+          // push data into tabs
+          $.each(data, function(key, value) {
+              if ($("#data_"+key.toLowerCase()).length) {
+                  $("#data_"+key.toLowerCase()).html(value);
+              }
+          });
+          setTimeout(getpfinfo, 2000);
+      }
+    });
+  }
+
+  getpfinfo();
+});
 </script>
-
-
 <section class="page-content-main">
-	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
-		<div class="row">
-		    <section class="col-xs-12">
-
-
-			<?php
-				if($savemsg) {
-					echo "<div id=\"savemsg\">";
-					print_info_box($savemsg);
-					echo "</div>";
-				}
-				if (isset($input_errors) && count($input_errors) > 0)
-					print_input_errors($input_errors);
-			?>
-
-			<div id="pfactivitydiv">
-				<?=gettext("Gathering PF information, please wait...");?>
-			</div>
-
-		 </section>
-		</div>
-	</div>
+  <div class="container-fluid col-xs-12">
+    <div class="row">
+        <section class="col-xs-12">
+          <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+<?php
+             foreach($data_tabs as $i => $tabname):?>
+            <li <?= $i == 0 ? 'class="active"' : '';?>>
+              <a data-toggle="tab" href="#<?=$tabname;?>" id="<?=$tabname;?>_tab">
+                <?=ucfirst($tabname);?>
+              </a>
+            </li>
+<?php
+            endforeach;?>
+          </ul>
+          <div class="tab-content content-box tab-content">
+<?php
+             foreach($data_tabs as $i => $tabname):?>
+            <div id="<?=$tabname;?>" class="tab-pane fade in <?= $i == 0 ? 'active' : '';?>">
+              <div class="container-fluid">
+                <pre id="data_<?=$tabname;?>" class="pre-scrollable" >
+                <?=gettext("Gathering PF information, please wait...");?>
+                </pre>
+              </div>
+            </div>
+<?php
+            endforeach;?>
+          </div>
+     </section>
+    </div>
+  </div>
 </section>
-
-
 <?php include("foot.inc"); ?>
