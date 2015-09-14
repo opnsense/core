@@ -91,6 +91,10 @@ if (isset($_POST['Submit'])) {
         if (!empty($email)) {
             $crash_report_header .= "Email {$email}\n";
         }
+        if (isset($_SERVER["HTTP_USER_AGENT"]))
+        {
+            $crash_report_header .= "User Agent " . $_SERVER["HTTP_USER_AGENT"] . "\n";
+        }
         $desc = trim($_POST['Desc']);
         if (!empty($desc)) {
             $crash_report_header .= "Description\n\n{$desc}";
