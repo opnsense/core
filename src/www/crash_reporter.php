@@ -77,6 +77,10 @@ $crash_report_header = sprintf(
     shell_exec('/sbin/sysctl -b kern.hostuuid')
 );
 
+if (isset($_SERVER['HTTP_USER_AGENT'])) {
+    $crash_report_header .= "User Agent {$_SERVER['HTTP_USER_AGENT']}\n";
+}
+
 $pkgver = explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')));
 $user_agent = $g['product_name'] . '/' . $pkgver[0];
 $crash_reports = array();
@@ -90,10 +94,6 @@ if (isset($_POST['Submit'])) {
         $email = trim($_POST['Email']);
         if (!empty($email)) {
             $crash_report_header .= "Email {$email}\n";
-        }
-        if (isset($_SERVER["HTTP_USER_AGENT"]))
-        {
-            $crash_report_header .= "User Agent " . $_SERVER["HTTP_USER_AGENT"] . "\n";
         }
         $desc = trim($_POST['Desc']);
         if (!empty($desc)) {
