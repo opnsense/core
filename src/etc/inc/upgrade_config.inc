@@ -3419,8 +3419,6 @@ function upgrade_111_to_112()
 {
 	global $config;
 
-	$config['theme'] = 'opnsense';
-
 	if (isset($config['system']['ssh']['sshdkeyonly'])) {
 		unset($config['system']['ssh']['sshdkeyonly']);
 	} else {
