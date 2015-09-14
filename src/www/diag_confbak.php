@@ -120,7 +120,7 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 }
 
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Configuration History"));
+$pgtitle = array(gettext('System'), gettext('Config History'));
 include("head.inc");
 
 ?>
@@ -140,8 +140,8 @@ include("head.inc");
 
 					<?php
 							$tab_array = array();
-							$tab_array[0] = array(gettext("Config History"), true, "diag_confbak.php");
-							$tab_array[1] = array(gettext("Backup/Restore"), false, "diag_backup.php");
+							$tab_array[0] = array(gettext("History"), true, "diag_confbak.php");
+							$tab_array[1] = array(gettext("Backups"), false, "diag_backup.php");
 							display_top_tabs($tab_array);
 					?>
 
@@ -168,21 +168,21 @@ include("head.inc");
 														<tr><td></td></tr>
 														<?php foreach ($diff as $line) {
 															switch (substr($line, 0, 1)) {
-																case "+":
-																	$color = "#caffd3";
+																case '+':
+																	$color = '#3bbb33';
 																	break;
-																case "-":
-																	$color = "#ffe8e8";
+																case '-':
+																	$color = '#c13928';
 																	break;
-																case "@":
-																	$color = "#a0a0a0";
+																case '@':
+																	$color = '#3bb9c3';
 																	break;
 																default:
-																	$color = "#ffffff";
+																	$color = '#000000';
 															}
 															?>
 														<tr>
-															<td valign="middle" bgcolor="<?php echo $color; ?>" style="white-space: pre-wrap;"><?php echo htmlentities($line);?></td>
+															<td valign="middle" style="color: <?=$color;?>; white-space: pre-wrap; font-family: monospace;"><?php echo htmlentities($line);?></td>
 														</tr>
 														<?php } ?>
 													</table>
@@ -266,6 +266,7 @@ include("head.inc");
 											<div class="content-box-main">
 
 												<div class="container-fluid __mb">
+												<button type="submit" name="diff" class="btn btn-primary pull-left" style="margin-right: 8px;" value="Diff"><?=gettext('View differences');?></button>
 												<?= gettext("To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the Diff button."); ?>
 												</div>
 
@@ -286,7 +287,7 @@ include("head.inc");
 											<tr valign="top">
 												<td valign="middle" class="list nowrap"></td>
 												<td class="list">
-													<input type="radio" name="newtime" value="current" />
+													<input type="radio" name="newtime" value="current" checked="checked"/>
 												</td>
 												<td class="listlr"> <?= date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
 												<td class="listr"> <?= $config['version'] ?></td>
@@ -304,11 +305,11 @@ include("head.inc");
 											?>
 											<tr valign="top">
 												<td class="list">
-													<input type="radio" name="oldtime" value="<?php echo $version['time'];?>" />
+													<input type="radio" name="oldtime" value="<?php echo $version['time'];?>" <?= ($c == 0) ? 'checked="checked"' : ''; ?>/>
 												</td>
 												<td class="list">
 													<?php if ($c < (count($confvers) - 1)) { ?>
-													<input type="radio" name="newtime" value="<?php echo $version['time'];?>" />
+													<input type="radio" name="newtime" value="<?php echo $version['time'];?>"/>
 													<?php } else { ?>
 													&nbsp;
 													<?php }
@@ -329,11 +330,6 @@ include("head.inc");
 											<?php endforeach; ?>
 											</tbody>
 										</table>
-
-										<div class="container-fluid">
-										<input type="submit" name="diff" class="btn btn-primary" value="<?=gettext("Diff"); ?>" />
-										</div>
-
 										</div>
 									</section>
 									</form>
