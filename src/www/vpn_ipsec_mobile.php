@@ -86,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_POST['create'])) {
         // create new phase1 entry
         header("Location: vpn_ipsec_phase1.php?mobile=true");
+        exit;
     } elseif (isset($_POST['apply'])) {
         // apply changes
         $retval = 0;
@@ -97,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         header("Location: vpn_ipsec_mobile.php?savemsg=".$savemsg);
+        exit;
     } elseif (isset($_POST['submit'])) {
         // save form changes
 
