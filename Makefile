@@ -14,6 +14,8 @@ mount: force
 umount: force
 	umount -f "<above>:${.CURDIR}/src"
 
+remount: umount mount
+
 CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
 CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
