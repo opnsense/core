@@ -3267,21 +3267,8 @@ function upgrade_105_to_106() {
 	}
 }
 
-function upgrade_106_to_107() {
-	global $config;
-
-}
-
-function upgrade_107_to_108() {
-	global $config;
-
-	if (isset($config['system']['webgui']['noautocomplete']))
-		unset($config['system']['webgui']['noautocomplete']);
-	else
-		$config['system']['webgui']['loginautocomplete'] = true;
-}
-
-function upgrade_108_to_109() {
+function upgrade_108_to_109()
+{
 	global $config;
 
 	if (!isset($config['filter']['rule']) || !is_array($config['filter']['rule']))
