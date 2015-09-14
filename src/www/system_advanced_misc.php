@@ -192,16 +192,10 @@ if ($_POST) {
         }
 
         write_config();
+        $savemsg = get_std_save_message();
 
-        $retval = 0;
         system_resolvconf_generate(true);
-        $retval = filter_configure();
-        if (stristr($retval, "error") <> true) {
-            $savemsg = get_std_save_message(gettext($retval));
-        } else {
-            $savemsg = gettext($retval);
-        }
-
+        filter_configure();
         activate_powerd();
         load_crypto();
         load_thermal_hardware();

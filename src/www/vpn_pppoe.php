@@ -43,7 +43,7 @@ if (!is_array($config['pppoes']['pppoe'])) {
 $a_pppoes = &$config['pppoes']['pppoe'];
 
 if ($_POST) {
-        $pconfig = $_POST;
+    $pconfig = $_POST;
 
     if ($_POST['apply']) {
         if (file_exists('/tmp/.vpn_pppoe.apply')) {
@@ -61,12 +61,12 @@ if ($_POST) {
                     }
                 }
             }
-                @unlink('/tmp/.vpn_pppoe.apply');
+            @unlink('/tmp/.vpn_pppoe.apply');
         }
-            $retval = 0;
-            $retval |= filter_configure();
-            $savemsg = get_std_save_message();
-            clear_subsystem_dirty('vpnpppoe');
+
+        filter_configure();
+        $savemsg = get_std_save_message();
+        clear_subsystem_dirty('vpnpppoe');
     }
 }
 

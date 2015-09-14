@@ -98,12 +98,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     write_config();
-    $retval = filter_configure();
-    if (stristr($retval, "error") <> true) {
-        $savemsg = get_std_save_message(gettext($retval));
-    } else {
-        $savemsg = gettext($retval);
-    }
+    $savemsg = get_std_save_message();
+
+    filter_configure();
     vpn_ipsec_configure();
 }
 
