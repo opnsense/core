@@ -42,19 +42,10 @@ $a_aliases = &$config['aliases']['alias'];
 $tab = ($_REQUEST['tab'] == "" ? "ip" : preg_replace("/\W/","",$_REQUEST['tab']));
 
 if ($_POST) {
-
 	if ($_POST['apply']) {
-		$retval = 0;
-
-		/* reload all components that use aliases */
-		$retval = filter_configure();
-
-		if(stristr($retval, "error") <> true)
-		    $savemsg = get_std_save_message($retval);
-		else
-		    $savemsg = $retval;
-		if ($retval == 0)
-			clear_subsystem_dirty('aliases');
+		filter_configure();
+		$savemsg = get_std_save_message();
+		clear_subsystem_dirty('aliases');
 	}
 }
 

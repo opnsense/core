@@ -160,7 +160,10 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
 	}
 
 	for ($i = 0; $i < count($reqdfields); $i++) {
-		if ($_POST[$reqdfields[$i]] == "" && $_REQUEST[$reqdfields[$i]] == "") {
+		// why.. do you want to do this? we send data to validate and then validate something else....
+		// can't now for sure if any page uses this wrong behaviour, but it should die eventually.
+		// TODO: kill
+		if (empty($_POST[$reqdfields[$i]]) && empty($_REQUEST[$reqdfields[$i]])) {
 			$input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
 		}
 	}
@@ -208,7 +211,7 @@ function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
 	if(stristr($msg, gettext("apply")) != false || stristr($msg, gettext("save")) != false || stristr($msg, gettext("create")) != false || $showapply) {
 		$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
 		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
-		if($_POST['if'])
+		if(!empty($_POST['if']))
 			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
 		$savebutton.="</form>";
 	} else {
@@ -254,7 +257,7 @@ function print_info_box($msg)
 	print_info_box_np($msg);
 }
 
-function get_std_save_message($ok = '') {
+function get_std_save_message() {
 	global $d_sysrebootreqd_path;
 	$filter_related = false;
 	$filter_pages = array("nat", "filter");
@@ -284,7 +287,7 @@ function pprint_address($adr) {
 	} else if (isset($adr['network'])) {
 		$padr = $specialnets[$adr['network']];
 	} else {
-		$padr = $adr['address'];
+		$padr = isset($adr['address']) ? $adr['address'] : null;
 	}
 
 	if (isset($adr['not']))

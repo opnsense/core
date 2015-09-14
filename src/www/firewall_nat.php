@@ -95,23 +95,14 @@ if ($_GET['savemsg'])
 	$savemsg = $_GET['savemsg'];
 
 if ($_POST) {
-
 	$pconfig = $_POST;
 
 	if ($_POST['apply']) {
-
 		write_config();
-
-		$retval = 0;
-
-		$retval |= filter_configure();
-		$savemsg = get_std_save_message($retval);
-
-		if ($retval == 0) {
-			clear_subsystem_dirty('natconf');
-			clear_subsystem_dirty('filter');
-		}
-
+		filter_configure();
+		$savemsg = get_std_save_message();
+		clear_subsystem_dirty('natconf');
+		clear_subsystem_dirty('filter');
 	}
 }
 
