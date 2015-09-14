@@ -95,6 +95,10 @@ if (isset($_POST['Submit'])) {
         if (!empty($desc)) {
             $crash_report_header .= "Description\n\n{$desc}";
         }
+        if (isset($_SERVER["HTTP_USER_AGENT"]))
+        {
+            $crash_report_header .= "User Agent\n\n" . $_SERVER["HTTP_USER_AGENT"];
+        }
         file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
         @rename('/tmp/PHP_errors.log', '/var/crash/PHP_errors.log');
         @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
