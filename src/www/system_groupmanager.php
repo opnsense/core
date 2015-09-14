@@ -140,8 +140,7 @@ if (isset($_POST['save'])) {
 
         if (empty($_POST['members'])) {
             unset($group['member']);
-        } elseif ($group['gid'] != 1998) {
-        // all group
+        } else {
             $group['member'] = $_POST['members'];
         }
 
@@ -301,10 +300,6 @@ function presubmit() {
                                         <?=gettext("Group description, for your own information only");?>
                                     </td>
                                 </tr>
-						<?php
-                        if ($pconfig['gid'] != 1998) :
-// all users group
-                        ?>
                         <tr>
                             <td width="22%" valign="top" class="vncell"><?=gettext("Group Memberships");?></td>
                             <td width="78%" class="vtable" align="center">
@@ -375,7 +370,6 @@ function presubmit() {
                             </td>
                         </tr>
 					<?php
-                        endif;
                         if ($act != "new") :
                     ?>
                             <th colspan="2" valign="top" class="vncell"><?=gettext("Assigned Privileges");?></th>

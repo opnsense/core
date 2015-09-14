@@ -606,10 +606,6 @@ function import_ldap_users() {
 				<?php
                                                 $rowIndex = 0;
                 foreach ($config['system']['group'] as $group) :
-                    if ($group['gid'] == 1998) {
-/* all users group */
-                        continue;
-                    }
                     if (is_array($pconfig['groups']) && in_array($group['name'], $pconfig['groups'])) {
                         continue;
                     }
@@ -645,10 +641,6 @@ function import_ldap_users() {
                                                 $rowIndex = 0;
                 if (is_array($pconfig['groups'])) :
                     foreach ($config['system']['group'] as $group) :
-                        if ($group['gid'] == 1998) {
-/* all users group */
-                            continue;
-                        }
                         if (!in_array($group['name'], $pconfig['groups'])) {
                             continue;
                         }
