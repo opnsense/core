@@ -94,18 +94,20 @@ if($_GET['getcfg'] != "") {
 
 if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime'])
       && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
-	$oldfile = "";
-	$newfile = "" ;
+	$oldfile = '';
+	$newfile = '';
 	// search filenames to compare
 	foreach ($confvers as $filename => $revision) {
 		if ($revision['time'] == $_GET['oldtime']) {
 			$oldfile = $filename;
-		} elseif  ($revision['time'] == $_GET['oldtime']) {
+		}
+		if ($revision['time'] == $_GET['newtime']) {
 			$newfile = $filename;
 		}
 	}
 
-	$diff = "";
+	$diff = '';
+
 	$oldtime = $_GET['oldtime'];
 	if ($_GET['newtime'] == 'current') {
 		$newfile = '/conf/config.xml';
@@ -118,7 +120,6 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 		exec("/usr/bin/diff -u " . escapeshellarg($oldfile) . " " . escapeshellarg($newfile), $diff);
 	}
 }
-
 
 $pgtitle = array(gettext('System'), gettext('Config History'));
 include("head.inc");
