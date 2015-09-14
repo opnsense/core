@@ -319,7 +319,7 @@ include("head.inc");
 												<td class="listlr"> <?= $date ?></td>
 												<td class="listr"> <?= $version['version'] ?></td>
 												<td class="listr"> <?= format_bytes($version['filesize']) ?></td>
-												<td class="listr"> <?= substr($version['description'],0,50) ?></td>
+												<td class="listr"> <?= $version['description'] ?></td>
 
 												 <td class="btn-group-table">
 		                                            <a href="diag_confbak.php?newver=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Revert to this configuration");?>"><span class="glyphicon glyphicon-log-in"></span></a>
