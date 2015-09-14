@@ -70,7 +70,7 @@ class TextField extends BaseField
         if ($this->internalIsRequired && empty($this->internalValue)) {
             $validators[] = new PresenceOf(array('message' => $msg)) ;
         } elseif ($this->internalValue != null && $this->internalMask != null) {
-            $validators[] = array(new Regex(array('message' => $msg,'pattern'=>trim($this->internalMask))));
+            $validators[] = new Regex(array('message' => $msg,'pattern'=>trim($this->internalMask)));
         }
         return $validators;
     }
