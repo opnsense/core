@@ -38,6 +38,14 @@ $pagetitle = gentitle( $pgtitle );
 		<!-- include (theme) style -->
 		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
 
+		<!-- TODO: move to theme style -->
+		<style>
+			.menu-level-3-item {
+				font-size: 90%;
+				padding-left: 54px !important;
+			}
+		</style>
+
 		<!-- Favicon -->
 		<link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
 
@@ -100,6 +108,15 @@ $pagetitle = gentitle( $pgtitle );
 			$("input").attr("autocomplete","off");
 			// hide empty menu items
 			$('#mainmenu > div > .collapse').each(function(){
+				// cleanup empty second level menu containers
+				$(this).find("div.collapse").each(function(){
+					if ($(this).children().length == 0 ) {
+							$("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
+							$(this).remove();
+					}
+				});
+
+				// cleanup empty first level menu items
 				if ($(this).children().length == 0) {
 					$("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
 				}

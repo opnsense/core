@@ -18,6 +18,15 @@
         <!-- include (theme) style -->
 		<link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/main.css" media="screen, projection" rel="stylesheet">
 
+		<!-- TODO: move to theme style -->
+		<style>
+			.menu-level-3-item {
+				font-size: 90%;
+				padding-left: 54px !important;
+			}
+
+		</style>
+
 		<!-- Favicon -->
 		<link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/favicon.png" rel="shortcut icon">
 
@@ -44,9 +53,18 @@
                 });
 
                 // hide empty menu items
-                $('#mainmenu > div > .collapse').each(function(){
+                $('#mainmenu > div > .collapse').each(function () {
+                    // cleanup empty second level menu containers
+                    $(this).find("div.collapse").each(function () {
+                        if ($(this).children().length == 0) {
+                            $("#mainmenu").find('[href="#' + $(this).attr('id') + '"]').remove();
+                            $(this).remove();
+                        }
+                    });
+
+                    // cleanup empty first level menu items
                     if ($(this).children().length == 0) {
-                        $("#mainmenu").find('[href="#'+$(this).attr('id')+'"]').remove();
+                        $("#mainmenu").find('[href="#' + $(this).attr('id') + '"]').remove();
                     }
                 });
 
