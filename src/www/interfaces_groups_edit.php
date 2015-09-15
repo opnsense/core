@@ -33,8 +33,9 @@ require_once("interfaces.inc");
 $pgtitle = array(gettext("Interfaces"),gettext("Groups"),gettext("Edit"));
 $shortcut_section = "interfaces";
 
-if (!is_array($config['ifgroups']['ifgroupentry']))
+if (!isset($config['ifgroups']['ifgroupentry']) || !is_array($config['ifgroups']['ifgroupentry'])) {
 	$config['ifgroups']['ifgroupentry'] = array();
+}
 
 $a_ifgroups = &$config['ifgroups']['ifgroupentry'];
 
