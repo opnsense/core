@@ -439,10 +439,12 @@ EOD;
 
 	$iflist = get_interface_list(true);
 
-	foreach ($iflist as $ifn => $ifa) {
-		if (!isset($iflist_prev[$ifn])) {
-			printf(gettext("Detected link-up: %s%s"), $ifn, "\n");
-			return $ifn;
+	if (is_array($iflist)) {
+		foreach ($iflist as $ifn => $ifa) {
+			if (!isset($iflist_prev[$ifn])) {
+				printf(gettext("Detected link-up: %s%s"), $ifn, "\n");
+				return $ifn;
+			}
 		}
 	}
 
