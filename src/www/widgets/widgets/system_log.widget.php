@@ -32,10 +32,7 @@ require_once("pfsense-utils.inc");
 $system_logfile = '/var/log/system.log';
 
 if (!$config['widgets']['systemlogfiltercount']){
-	$syslogEntriesToFetch = $config['syslog']['nentries'];
-	if (!$syslogEntriesToFetch) {
-		$syslogEntriesToFetch = 20;
-	}
+	$syslogEntriesToFetch = isset($config['syslog']['nentries']) ? $config['syslog']['nentries'] : 20;
 } else {
 	$syslogEntriesToFetch = $config['widgets']['systemlogfiltercount'];
 }
