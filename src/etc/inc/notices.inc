@@ -90,19 +90,22 @@ function get_notices($category = 'all')
 {
 	if (file_exists('/tmp/notices')) {
 		$queue = unserialize(file_get_contents('/tmp/notices'));
-		if(!$queue) return false;
-		if($category != 'all') {
+		if (!$queue) {
+			return false;
+		}
+		if ($category != 'all') {
 			foreach($queue as $time => $notice) {
-				if(strtolower($notice['category']) == strtolower($category))
+				if (strtolower($notice['category']) == strtolower($category)) {
 					$toreturn[$time] = $notice;
+				}
 			}
 			return $toreturn;
-		} else {
-			return $queue;
 		}
-	} else {
-		return false;
+
+		return $queue;
 	}
+
+	return false;
 }
 
 /****f* notices/close_notice
@@ -159,8 +162,14 @@ function close_notice($id)
  * RESULT
  *   prints notices to the GUI
  ******/
-function print_notices($notices, $category = "all") {
-	foreach($notices as $notice) {
+function print_notices($notices, $category = "all")
+{
+	if (!is_array($notices) || count($notices) == 0) {
+		/* nothing to do */
+		return;
+	}
+
+	foreach ($notices as $notice) {
 		if($category != "all") {
 			if(in_array($notice['category'], $category)) $categories[] = $notice['category'];
 		} else {
@@ -184,6 +193,7 @@ function print_notices($notices, $category = "all") {
 		}
 		$toreturn .= "</ul></li></ul>";
 	}
+
 	return $toreturn;
 }
 
