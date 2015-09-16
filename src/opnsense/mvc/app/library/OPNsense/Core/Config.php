@@ -406,9 +406,9 @@ class Config extends Singleton
                     $xmlNode = simplexml_load_file($filename, "SimpleXMLElement", LIBXML_NOERROR |  LIBXML_ERR_NONE);
                     if (isset($xmlNode->revision)) {
                         $result[$filename] = $this->toArray(null, $xmlNode->revision);
+                        $result[$filename]['version'] = $xmlNode->version->__toString();
+                        $result[$filename]['filesize'] = filesize($filename);
                     }
-                    // append filesize to revision info object
-                    $result[$filename]['filesize'] = filesize($filename);
                 }
 
                 return $result;

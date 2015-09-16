@@ -92,6 +92,14 @@ if($_GET['getcfg'] != "") {
 	}
 }
 
+$newcheck = 'current';
+$oldcheck = '';
+foreach ($confvers as $revision) {
+	/* grab first entry if any */
+	$oldcheck = $revision['time'];
+	break;
+}
+
 if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime'])
       && is_numeric($_GET['oldtime']) && (is_numeric($_GET['newtime']) || ($_GET['newtime'] == 'current'))) {
 	$oldfile = '';
@@ -109,11 +117,15 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 	$diff = '';
 
 	$oldtime = $_GET['oldtime'];
+	$oldcheck = $oldtime;
+
 	if ($_GET['newtime'] == 'current') {
 		$newfile = '/conf/config.xml';
 		$newtime = $config['revision']['time'];
+		$newcheck = 'current';
 	} else {
 		$newtime = $_GET['newtime'];
+		$newcheck = $newtime;
 	}
 
 	if (file_exists($oldfile) && file_exists($newfile)) {
@@ -138,62 +150,8 @@ include("head.inc");
 			<div class="row">
 
 			    <section class="col-xs-12">
-
-					<?php
-							$tab_array = array();
-							$tab_array[0] = array(gettext("History"), true, "diag_confbak.php");
-							$tab_array[1] = array(gettext("Backups"), false, "diag_backup.php");
-							display_top_tabs($tab_array);
-					?>
-
-
-						<div class="tab-content content-box col-xs-12">
-
 					    <div class="container-fluid tab-content">
-
 							<div class="tab-pane active" id="system">
-
-
-									<?php if ($diff): ?>
-									<section class="__mb">
-										<div classs="content-box">
-											<header class="content-box-head container-fluid">
-									        <h3><?=gettext("Configuration diff from");?> <?php echo date(gettext("n/j/y H:i:s"), $oldtime); ?> <?=gettext("to");?> <?php echo date(gettext("n/j/y H:i:s"), $newtime); ?></h3>
-									    </header>
-
-									     <div class="content-box-main">
-
-									    <div class="table-responsive">
-
-													<table summary="diag confbak">
-														<tr><td></td></tr>
-														<?php foreach ($diff as $line) {
-															switch (substr($line, 0, 1)) {
-																case '+':
-																	$color = '#3bbb33';
-																	break;
-																case '-':
-																	$color = '#c13928';
-																	break;
-																case '@':
-																	$color = '#3bb9c3';
-																	break;
-																default:
-																	$color = '#000000';
-															}
-															?>
-														<tr>
-															<td valign="middle" style="color: <?=$color;?>; white-space: pre-wrap; font-family: monospace;"><?php echo htmlentities($line);?></td>
-														</tr>
-														<?php } ?>
-													</table>
-									    </div>
-									     </div>
-										</div>
-									</section>
-									<?php endif; ?>
-
-
 									<?PHP if ($_GET["newver"] || $_GET["rmver"]): ?>
 									<form action="<?=explode("?", $_SERVER['REQUEST_URI'])[0];?>" method="post">
 									<section>
@@ -233,7 +191,7 @@ include("head.inc");
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
-									        <h3>Config history</h3>
+									        <h3><?=gettext('Settings');?></h3>
 									    </header>
 
 									    <div class="content-box-main">
@@ -259,11 +217,54 @@ include("head.inc");
 									</section>
 									</form>
 
+									<?php if ($diff): ?>
+									<section style="margin-bottom:15px;">
+										<div class="content-box">
+											<header class="content-box-head container-fluid">
+									        <h3><?=gettext("Configuration diff from");?> <?php echo date(gettext("n/j/y H:i:s"), $oldtime); ?> <?=gettext("to");?> <?php echo date(gettext("n/j/y H:i:s"), $newtime); ?></h3>
+									    </header>
+											<div class="content-box-main">
+
+												<div class="container-fluid __mb">
+									    <div class="table-responsive">
+
+													<table summary="Differences">
+														<tr><td></td></tr>
+														<?php foreach ($diff as $line) {
+															switch (substr($line, 0, 1)) {
+																case '+':
+																	$color = '#3bbb33';
+																	break;
+																case '-':
+																	$color = '#c13928';
+																	break;
+																case '@':
+																	$color = '#3bb9c3';
+																	break;
+																default:
+																	$color = '#000000';
+															}
+															?>
+														<tr>
+															<td valign="middle" style="color: <?=$color;?>; white-space: pre-wrap; font-family: monospace;"><?php echo htmlentities($line);?></td>
+														</tr>
+														<?php } ?>
+													</table>
+									    </div>
+									     </div>
+										</div>
+										</div>
+									</section>
+									<?php endif; ?>
+
 
 									<?php if (is_array($confvers)): ?>
 									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="get">
 									<section>
 										<div class="content-box">
+				                            <header class="content-box-head container-fluid">
+									        <h3><?=gettext('History');?></h3>
+									    </header>
 											<div class="content-box-main">
 
 												<div class="container-fluid __mb">
@@ -288,38 +289,34 @@ include("head.inc");
 											<tr valign="top">
 												<td valign="middle" class="list nowrap"></td>
 												<td class="list">
-													<input type="radio" name="newtime" value="current" checked="checked"/>
+													<input type="radio" name="newtime" value="current" <?= $newcheck == 'current' ? 'checked="checked"' : '' ?>/>
 												</td>
 												<td class="listlr"> <?= date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
 												<td class="listr"> <?= $config['version'] ?></td>
 												<td class="listr"> <?= format_bytes(filesize("/conf/config.xml")) ?></td>
-												<td class="listr"> <?= $config['revision']['description'] ?></td>
+												<td class="listr"> <?= "{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
 												<td valign="middle" class="list nowrap"><b><?=gettext("Current");?></b></td>
 											</tr>
 											<?php
 												$c = 0;
 												foreach($confvers as $version):
-													if($version['time'] != 0)
-														$date = date(gettext("n/j/y H:i:s"), $version['time']);
-													else
-														$date = gettext("Unknown");
 											?>
 											<tr valign="top">
 												<td class="list">
-													<input type="radio" name="oldtime" value="<?php echo $version['time'];?>" <?= ($c == 0) ? 'checked="checked"' : ''; ?>/>
+													<input type="radio" name="oldtime" value="<?php echo $version['time'];?>" <?= $oldcheck == $version['time'] ? 'checked="checked"' : '' ?>/>
 												</td>
 												<td class="list">
 													<?php if ($c < (count($confvers) - 1)) { ?>
-													<input type="radio" name="newtime" value="<?php echo $version['time'];?>"/>
+													<input type="radio" name="newtime" value="<?php echo $version['time'];?>" <?= $newcheck == $version['time'] ? 'checked="checked"' : ''?>/>
 													<?php } else { ?>
 													&nbsp;
 													<?php }
 													$c++; ?>
 												</td>
-												<td class="listlr"> <?= $date ?></td>
+												<td class="listlr"> <?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
 												<td class="listr"> <?= $version['version'] ?></td>
 												<td class="listr"> <?= format_bytes($version['filesize']) ?></td>
-												<td class="listr"> <?= $version['description'] ?></td>
+												<td class="listr"> <?= "{$version['username']}: {$version['description']}" ?></td>
 
 												 <td class="btn-group-table">
 		                                            <a href="diag_confbak.php?newver=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Revert to this configuration");?>"><span class="glyphicon glyphicon-log-in"></span></a>
@@ -335,16 +332,8 @@ include("head.inc");
 									</section>
 									</form>
 									<? endif; endif; ?>
-
-
-
-					    </div>
-
 					</div>
 				</section>
-
-
-
 			</div>
 		</div>
 	</section>

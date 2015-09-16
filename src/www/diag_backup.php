@@ -591,17 +591,6 @@ function backuparea_change(obj) {
 
 			    <section class="col-xs-12">
 
-
-					<?php
-								$tab_array = array();
-								$tab_array[0] = array(gettext("History"), false, "diag_confbak.php");
-								$tab_array[1] = array(gettext("Backups"), true, "diag_backup.php");
-								display_top_tabs($tab_array);
-						?>
-
-
-						<div class="tab-content content-box col-xs-12">
-
 					    <div class="container-fluid tab-content">
 
 							<div class="tab-pane active" id="system">
@@ -610,7 +599,7 @@ function backuparea_change(obj) {
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
-									        <h3>Backup configuration</h3>
+									        <h3><?=gettext('Download')?></h3>
 									    </header>
 
 									    <div class="content-box-main ">
@@ -680,7 +669,7 @@ function backuparea_change(obj) {
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
-									        <h3><?=gettext("Restore configuration"); ?></h3>
+									        <h3><?=gettext("Restore"); ?></h3>
 									    </header>
 
 									    <div class="content-box-main ">
@@ -742,7 +731,7 @@ function backuparea_change(obj) {
                                                                 <section class="__mb">
 						                        <div class="content-box">
 						                            <header class="content-box-head container-fluid">
-									        <h3><?=gettext("Remote backup (using Google drive)"); ?></h3>
+									        <h3><?=gettext("Google Drive"); ?></h3>
 									    </header>
 
 									    <div class="content-box-main ">
@@ -769,15 +758,9 @@ function backuparea_change(obj) {
 									</div>
                                                                 </section>
 
-
-						</div>
 						</div>
 
 					</div>
-
-
-
-
 
 				</section>
 
@@ -799,7 +782,6 @@ decrypt_change();
 
 <?php
 
-if (is_subsystem_dirty('restore'))
+if (is_subsystem_dirty('restore')) {
 	system_reboot();
-
-?>
+}

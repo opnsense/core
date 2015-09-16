@@ -10,8 +10,11 @@
             <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php*"/>
             <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php*"/>
         </Certificates>
-        <ConfigManager VisibleName="Config Manager" url="/diag_confbak.php">
-            <ConfigBackup url="/diag_backup.php"/>
+        <ConfigManager VisibleName="Config Manager" cssClass="fa fa-history">
+            <History url="/diag_confbak.php">
+                <none url="/diag_confbak.php*"/>
+            </History>
+            <Backups url="/diag_backup.php"/>
         </ConfigManager>
         <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <Firmware url="/ui/core/firmware/"/>
