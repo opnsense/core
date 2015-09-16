@@ -37,7 +37,6 @@ require_once("legacy_bindings.inc");
 require_once('upgrade_config.inc');
 require_once("certs.inc");
 
-
 /* make a global alias table (for faster lookups) */
 function alias_make_table($config)
 {
@@ -98,11 +97,19 @@ function parse_config()
  *   null
  ******/
 /* convert configuration, if necessary */
-function convert_config() {
+function convert_config()
+{
 	global $config, $g;
-	$now = date("H:i:s");
-	log_error(sprintf(gettext("Start Configuration upgrade at %s, set execution timeout to 15 minutes"), $now));
-	//ini_set("max_execution_time", "900");
+
+	if (!isset($config['revision'])) {
+		/* force a revision tag for proper handling in config history */
+		write_config('Factory configuration', false);
+	}
+
+	if ($config['version'] == $g['latest_config']) {
+		/* already at latest version */
+		return;
+	}
 
 	/* special case upgrades */
 	/* fix every minute crontab bogons entry */
@@ -118,8 +125,6 @@ function convert_config() {
 			}
 		}
 	}
-	if ($config['version'] == $g['latest_config'])
-		return;		/* already at latest version */
 
 	// Save off config version
 	$prev_version = $config['version'];
@@ -134,11 +139,9 @@ function convert_config() {
 		$config['version'] = sprintf('%.1f', $next / 10);
 	}
 
-	$now = date("H:i:s");
-	log_error(sprintf(gettext("Ended Configuration upgrade at %s"), $now));
-
-	if ($prev_version != $config['version'])
+	if ($prev_version != $config['version']) {
 		write_config(sprintf(gettext('Upgraded config version level from %1$s to %2$s'), $prev_version, $config['version']));
+	}
 }
 
 
@@ -318,7 +321,10 @@ function set_device_perms() {
 }
 
 
-function make_config_revision_entry($desc = null, $override_user = null) {
+function make_config_revision_entry($desc = null, $override_user = null)
+{
+	global $config;
+
 	if (empty($override_user)) {
 		if (empty($_SESSION["Username"])) {
 			$username = getenv("USER");
@@ -330,22 +336,26 @@ function make_config_revision_entry($desc = null, $override_user = null) {
 		if (!empty($_SERVER['REMOTE_ADDR'])) {
 			$username .= '@' . $_SERVER['REMOTE_ADDR'];
 		}
-	}
-	else {
+	} else {
 		$username = $override_user;
 	}
 
 	$revision = array();
 
-	if (time() > mktime(0, 0, 0, 9, 1, 2004))       /* make sure the clock settings are plausible */
-		$revision['time'] = time();
-
-	/* Log the running script so it's not entirely unlogged what changed */
-	if ($desc == "Unknown")
-		$desc = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
-	if (!empty($desc))
-		$revision['description'] = "{$username}: " . $desc;
 	$revision['username'] = $username;
+
+	$revision['time'] = time();
+	if ($revision['time'] == $config['revision']['time']) {
+		/* avoid conflicting timestamps (a second is long) */
+		$revision['time'] = intval($revision['time']) + 1;
+	}
+
+	if ($desc == null || $desc == 'Unknown') {
+		$revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
+	} else {
+		$revision['description'] = $desc;
+	}
+
 	return $revision;
 }
 
