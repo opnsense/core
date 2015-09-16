@@ -470,9 +470,6 @@ function method_change() {
             ?>
 
             <section class="col-xs-12">
-
-                <? include('system_certificates_tabs.inc'); ?>
-
                 <div class="content-box tab-content table-responsive" style="overflow: auto;">
 
 				<?php if ($act == "new" || $act == "edit" || $act == gettext("Save") || isset($input_errors)) :

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
@@ -357,9 +358,6 @@ include("head.inc");
             }
             ?>
             <section class="col-xs-12">
-
-                <? include('system_certificates_tabs.inc'); ?>
-
                 <div class="content-box tab-content">
 
 				<?php if ($act == "new" || $act == gettext("Save") || (isset($input_errors) && count($input_errors)) ) :

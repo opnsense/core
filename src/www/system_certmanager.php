@@ -665,9 +665,6 @@ endif; ?>
             }
             ?>
             <section class="col-xs-12">
-
-                <?php include('system_certificates_tabs.inc'); ?>
-
                 <div class="content-box tab-content table-responsive">
 
 					<?php if ($act == "new" || ((isset($_POST['save']) && $_POST['save'] == gettext("Save")) && $input_errors)) :

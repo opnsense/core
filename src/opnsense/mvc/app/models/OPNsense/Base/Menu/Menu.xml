@@ -5,11 +5,17 @@
         <Logout VisibleName="Logout" url="/index.php?logout"/>
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
-        <Certificates url="/system_certmanager.php">
-            <Certificates url="/system_certmanager.php*"/>
-            <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php*"/>
-            <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php*"/>
-        </Certificates>
+        <CertificateManager VisibleName="Certificate Manager" cssClass="fa fa-certificate">
+            <Certificates url="/system_certmanager.php">
+                <workAround url="/system_certmanager.php*"/>
+            </Certificates>
+            <Authorities url="/system_camanager.php">
+                <workAround url="/system_camanager.php*"/>
+            </Authorities>
+            <Revocation url="/system_crlmanager.php">
+                <workAround url="/system_crlmanager.php*"/>
+            </Revocation>
+        </CertificateManager>
         <ConfigManager VisibleName="Config Manager" cssClass="fa fa-history">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*"/>
