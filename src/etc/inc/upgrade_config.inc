@@ -786,13 +786,15 @@ function upgrade_042_to_043() {
 }
 
 
-function upgrade_043_to_044() {
+function upgrade_043_to_044()
+{
 	global $config;
 
 	/* migrate static routes to the new gateways config */
 	$gateways = return_gateways_array(true);
 	$i = 0;
-	if (is_array($config['staticroutes']['route'])) {
+
+	if (isset($config['staticroutes']['route'])) {
 		$gwmap = array();
 		foreach ($config['staticroutes']['route'] as $idx => $sroute) {
 			$found = false;
