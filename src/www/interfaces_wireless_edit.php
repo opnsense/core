@@ -166,9 +166,13 @@ include("head.inc");
 					                      <?php
 					                      foreach ($portlist as $ifn => $ifinfo)
 					                        if (match_wireless_interface($ifn)) {
+					                            if (strstr($ifn, '_wlan')) {
+					                                continue;
+					                            }
 					                            echo "<option value=\"{$ifn}\"";
-					                            if ($ifn == $pconfig['if'])
+					                            if ($ifn == $pconfig['if']) {
 					                                echo " selected=\"selected\"";
+					                            }
 					                            echo ">";
 					                            echo htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");
 					                            echo "</option>";
@@ -176,19 +180,6 @@ include("head.inc");
 					                      ?>
 					                    </select>
 					                </td>
-				                </tr>
-				                <tr>
-				                  <td valign="top" class="vncellreq"><?=gettext("Mode");?></td>
-				                  <td class="vtable">
-				                    <select name="mode" class="selectpicker">
-				                      <option <?php if ($pconfig['mode'] == 'bss') echo "selected=\"selected\"";?> value="bss"><?=gettext("Infrastructure (BSS)");?></option>
-<?php if (interfaces_test_wireless_capability($pconfig['cloneif'], 'adhoc')): ?>
-				                      <option <?php if ($pconfig['mode'] == 'adhoc') echo "selected=\"selected\"";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)");?></option>
-<?php endif; ?>
-<?php if (interfaces_test_wireless_capability($pconfig['cloneif'], 'hostap')): ?>
-				                      <option <?php if ($pconfig['mode'] == 'hostap') echo "selected=\"selected\"";?> value="hostap"><?=gettext("Access Point");?></option>
-<?php endif; ?>
-				                    </select></td>
 				                </tr>
 				                <tr>
 					                <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
@@ -201,6 +192,7 @@ include("head.inc");
 				                <tr>
 				                  <td width="22%" valign="top">&nbsp;</td>
 				                  <td width="78%">
+				                    <input type="hidden" name="mode" value="bss" />
 				                    <input type="hidden" name="cloneif" value="<?=htmlspecialchars($pconfig['cloneif']); ?>" />
 				                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
 				                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
