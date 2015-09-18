@@ -182,8 +182,12 @@ include("head.inc");
 				                  <td class="vtable">
 				                    <select name="mode" class="selectpicker">
 				                      <option <?php if ($pconfig['mode'] == 'bss') echo "selected=\"selected\"";?> value="bss"><?=gettext("Infrastructure (BSS)");?></option>
+<?php if (interfaces_test_wireless_capability($pconfig['cloneif'], 'adhoc')): ?>
 				                      <option <?php if ($pconfig['mode'] == 'adhoc') echo "selected=\"selected\"";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)");?></option>
+<?php endif; ?>
+<?php if (interfaces_test_wireless_capability($pconfig['cloneif'], 'hostap')): ?>
 				                      <option <?php if ($pconfig['mode'] == 'hostap') echo "selected=\"selected\"";?> value="hostap"><?=gettext("Access Point");?></option>
+<?php endif; ?>
 				                    </select></td>
 				                </tr>
 				                <tr>
