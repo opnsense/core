@@ -446,6 +446,12 @@ function enable_change(enable_change) {
 ?>&amp;act=csv&amp;id=<?=$i;
 ?>"><span class="glyphicon glyphicon-download-alt" title="<?=gettext("generate vouchers for this roll to CSV file");
 ?>" alt="<?=gettext("generate vouchers for this roll to CSV file"); ?>"></span></a>
+                                  <a class="btn btn-default btn-xs" href="/ui/captiveportal/seriesprint/seriesprint/<?=$cpzone;?>/<?=$i;?>">
+                                    <span class="glyphicon glyphicon-print" title="<?=gettext("open page for printing voucher series");
+                                      ?>" alt="<?=gettext("Series Print"); ?>">
+                                    </span>
+                                  </a>
+
 													<?php
 endif;?>
 															</div>
