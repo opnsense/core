@@ -38,16 +38,24 @@
     </System>
     <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
         <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
-            <InterfaceAssignments VisibleName="Interface Assignments" url="/interfaces_assign.php"/>
-            <InterfaceGroups VisibleName="Interface Groups" url="/interfaces_groups.php"/>
-            <Wireless url="/interfaces_wireless.php"/>
-            <VLANs url="/interfaces_vlan.php"/>
-            <QinQs url="/interfaces_qinq.php"/>
-            <PPPs url="/interfaces_ppps.php"/>
-            <GRE url="/interfaces_gre.php"/>
+            <Bridge url="/interfaces_bridge.php"/>
+            <BridgeEdit url="/interfaces_bridge_edit.php*"/>
             <GIF url="/interfaces_gif.php"/>
-            <Bridges url="/interfaces_bridge.php"/>
+            <GIFEdit url="/interfaces_gif_edit.php*"/>
+            <GRE url="/interfaces_gre.php"/>
+            <GREEdit url="/interfaces_gre_edit.php*"/>
+            <Groups url="/interfaces_groups.php"/>
+            <GroupsEdit url="/interfaces_groups_edit.php*"/>
             <LAGG url="/interfaces_lagg.php"/>
+            <LAGGEdit url="/interfaces_lagg_edit.php*"/>
+            <PPP url="/interfaces_ppps.php"/>
+            <PPPEdit url="/interfaces_ppps_edit.php*"/>
+            <QinQ url="/interfaces_qinq.php"/>
+            <QinQEdit url="/interfaces_qinq_edit.php*"/>
+            <VLAN url="/interfaces_vlan.php"/>
+            <VLANEdit url="/interfaces_vlan_edit.php*"/>
+            <Wireless url="/interfaces_wireless.php"/>
+            <WirelessEdit url="/interfaces_wireless_edit.php*"/>
         </Assign>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
