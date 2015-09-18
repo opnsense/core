@@ -162,6 +162,7 @@ if (is_install_media()) {
 echo "Loading configuration...";
 global $config;
 $config = parse_config();
+convert_config();
 echo "done.\n";
 
 /*
@@ -176,11 +177,6 @@ if (is_interface_mismatch()) {
 	while (!set_networking_interfaces_ports(true));
 	led_kitt();
 }
-
-/* convert config and clean backups */
-echo "Updating configuration...";
-convert_config();
-echo "done.\n";
 
 /* read in /etc/sysctl.conf and set values if needed */
 echo "Setting up extended sysctls...";
