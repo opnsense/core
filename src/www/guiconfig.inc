@@ -30,16 +30,15 @@
 require_once("config.inc");
 require_once("util.inc");
 
-/* Include authentication routines */
 /* THIS MUST BE ABOVE ALL OTHER CODE */
-if(empty($nocsrf)) {
-
-function csrf_startup() {
+if (empty($nocsrf)) {
+	function csrf_startup()
+	{
 		csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
 		$timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
 		csrf_conf('expires', $timeout_minutes * 60);
 	}
-	require_once("csrf/csrf-magic.php");
+	require_once('csrf/csrf-magic.php');
 }
 
 function set_language($lang)
@@ -54,7 +53,18 @@ function set_language($lang)
 	bind_textdomain_codeset($textdomain, $lang_encoding);
 }
 
+function get_current_theme()
+{
+	global $config;
 
+	$theme = 'opnsense';
+
+	if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
+		$theme = $config['theme'];
+	}
+
+	return $theme;
+}
 
 /* make sure nothing is cached */
 if (isset($omit_nocacheheaders) && $omit_nocacheheaders) {
@@ -734,15 +744,4 @@ function get_menu_messages()
 	}
 
 	return ($menu_messages);
-}
-
-function get_current_theme()
-{
-	$theme = 'opnsense';
-
-	if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
-		$theme = $config['theme'];
-	}
-
-	return $theme;
 }
