@@ -41,9 +41,10 @@ $a_qinqs = &$config['qinqs']['qinqentry'];
 $portlist = get_interface_list();
 
 /* add LAGG interfaces */
-if (is_array($config['laggs']['lagg']) && count($config['laggs']['lagg'])) {
-        foreach ($config['laggs']['lagg'] as $lagg)
+if (isset($config['laggs']['lagg'])) {
+        foreach ($config['laggs']['lagg'] as $lagg) {
                 $portlist[$lagg['laggif']] = $lagg;
+	}
 }
 
 if (count($portlist) < 1) {
