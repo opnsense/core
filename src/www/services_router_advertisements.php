@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -30,11 +31,6 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-
-/*  Fix failover DHCP problem
- *  http://article.gmane.org/gmane.comp.security.firewalls.pfsense.support/18749
- */
-ini_set("memory_limit","64M");
 
 $if = $_GET['if'];
 if ($_POST['if'])
