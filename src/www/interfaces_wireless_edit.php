@@ -192,7 +192,7 @@ include("head.inc");
 				                <tr>
 				                  <td width="22%" valign="top">&nbsp;</td>
 				                  <td width="78%">
-				                    <input type="hidden" name="mode" value="bss" />
+				                    <input type="hidden" name="mode" value="<?= isset($pconfig['mode']) ? $pconfig['mode'] : 'bss' ?>" />
 				                    <input type="hidden" name="cloneif" value="<?=htmlspecialchars($pconfig['cloneif']); ?>" />
 				                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
 				                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
