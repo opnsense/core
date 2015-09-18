@@ -147,8 +147,11 @@ $wkports = array(
 	69 => "TFTP",
 	5900 => "VNC");
 
-$wlan_modes = array("bss" => "Infrastructure (BSS)", "adhoc" => "Ad-hoc (IBSS)",
-	"hostap" => "Access Point");
+$wlan_modes = array(
+	'bss' => 'Infrastructure (BSS)',
+	'adhoc' => 'Ad-hoc (IBSS)',
+	'hostap' => 'Access Point'
+);
 
 function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_errors)
 {

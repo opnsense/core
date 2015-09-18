@@ -3304,8 +3304,12 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 												<td class="vtable">
 													<select name="mode" class="selectpicker" data-style="btn-default" id="mode">
 														<option <?php if ($pconfig['mode'] == 'bss') echo "selected=\"selected\"";?> value="bss"><?=gettext("Infrastructure (BSS)"); ?></option>
+<?php if (interfaces_test_wireless_capability(get_real_interface($wancfg['if']), 'adhoc')): ?>
 														<option <?php if ($pconfig['mode'] == 'adhoc') echo "selected=\"selected\"";?> value="adhoc"><?=gettext("Ad-hoc (IBSS)"); ?></option>
+<?php endif; ?>
+<?php if (interfaces_test_wireless_capability(get_real_interface($wancfg['if']), 'hostap')): ?>
 														<option <?php if ($pconfig['mode'] == 'hostap') echo "selected=\"selected\"";?> value="hostap"><?=gettext("Access Point"); ?></option>
+<?php endif; ?>
 													</select>
 												</td>
 											</tr>
