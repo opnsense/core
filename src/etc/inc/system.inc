@@ -250,6 +250,7 @@ function get_firmware_mirrors()
 	$mirrors['http://mirror.wdc1.us.leaseweb.net/opnsense'] = 'LeaseWeb (Washington, D.C., US)';
 	$mirrors['http://mirrors.nycbug.org/pub/opnsense'] = 'NYC*BUG (New York, US)';
 	$mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
+	$mirrors['http://mirrors.supranet.net/pub/opnsense'] = 'Supranet Communications (Middleton, US)';
 
 	return $mirrors;
 }
