@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-08-25 07:47+0200\n"
-"PO-Revision-Date: 2015-09-13 03:18+0200\n"
+"PO-Revision-Date: 2015-09-19 18:31+0200\n"
 "Last-Translator: \n"
 "Language-Team: OPNSense French team\n"
 "Language: fr_FR\n"
@@ -385,7 +385,7 @@ msgstr "Autoriser l'accès à la page 'Services: clients RFC 2136'."
 #
 # File: lang/dynamic/helpers/acl.php, line: 105
 msgid "Uploads crash reports to the developers."
-msgstr ""
+msgstr "Télécharger les rapports de crash vers les développeurs."
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 108
@@ -1094,7 +1094,7 @@ msgstr "Autoriser l'accès à la page 'Services: Client DNS dynamique'."
 #
 # File: lang/dynamic/helpers/acl.php, line: 244
 msgid "Allow access to the 'Services: Proxy' page."
-msgstr ""
+msgstr "Autoriser l'accès à la page 'Services: Mandataire'."
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 245
@@ -1236,7 +1236,7 @@ msgstr "Activer la journalisation des accès "
 #
 # File: lang/dynamic/helpers/controllers.php, line: 40
 msgid "Enable store logging."
-msgstr ""
+msgstr "Activer la journalisation des accès "
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 41
@@ -1262,7 +1262,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 43
 msgid "Enter the storage size for the local cache (default is 100)."
-msgstr ""
+msgstr "Entrez la taille de stockage pour le cache local (par défaut 100)."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 44
@@ -1314,13 +1314,13 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 55
 msgid "Select interface(s) the proxy will bind to."
-msgstr ""
+msgstr "Sélectionner les interfaces qui seront liées au mandataire."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 56
 # File: lang/dynamic/helpers/controllers.php, line: 60
 msgid "The port the proxy service will listen to."
-msgstr ""
+msgstr "Le port le service mandataire va écouter."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 57
@@ -1333,7 +1333,7 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 59
 msgid "Select interface(s) the ftp proxy will bind to."
-msgstr ""
+msgstr "Sélectionner les interfaces qui seront liées au mandataire ftp ."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 61
@@ -1343,7 +1343,7 @@ msgstr "Sélectionne la méthode d'authentification"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 64
 msgid "The prompt will be displayed in the authentication request window."
-msgstr ""
+msgstr "L'invite sera affiché dans la fenêtre de demande d'authentification."
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 63
@@ -1384,7 +1384,7 @@ msgstr "Sélectionnez l'interface ou les interfaces à utiliser."
 #
 # File: lang/dynamic/helpers/controllers.php, line: 70
 msgid "enable this pipe and it's related queues and rules"
-msgstr ""
+msgstr "activer ce tuyau avec ses files d'attente et règles connexes"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 71
@@ -1394,7 +1394,7 @@ msgstr "Bande passante totale pour ce tuyau"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 72
 msgid "number of dynamic queues, leave empty for default"
-msgstr ""
+msgstr "nombre de files d'attente dynamiques, laisser vide pour défaut"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 73
@@ -1418,6 +1418,8 @@ msgid ""
 "Weight of this queue (1..100), used to prioritize within a pipe. (1 is low, 100 "
 "is high)"
 msgstr ""
+"Poids de cette file d'attente (1..100), utilisé pour donner la priorité dans un "
+"tuyau. (1 est faible, 100 est élevé)"
 
 #
 # File: lang/dynamic/helpers/controllers.php, line: 78
@@ -3783,30 +3785,30 @@ msgstr "fait."
 #
 # File: src/etc/inc/filter.inc, line: 250
 msgid "Setting up logging information"
-msgstr ""
+msgstr "Paramétrage des informations de journal"
 
 #
 # File: src/etc/inc/filter.inc, line: 255
 msgid "Setting up SCRUB information"
-msgstr ""
+msgstr "Paramétrage des informations de SCRUB"
 
 #
 # File: src/etc/inc/filter.inc, line: 291
 #, php-format
 msgid "The line in question reads [%1$d]: %2$s"
-msgstr ""
+msgstr "La ligne en question lit [%1$d]: %2$s"
 
 #
 # File: src/etc/inc/filter.inc, line: 297
 msgid "PF was wedged/busy and has been reset."
-msgstr ""
+msgstr "PF était coincé/occupé et a été réinitialisé."
 
 #
 # File: src/etc/inc/filter.inc, line: 305
 # File: src/etc/inc/filter.inc, line: 306
 #, php-format
 msgid "There were error(s) loading the rules: %1$s - %2$s"
-msgstr ""
+msgstr "Il y eu des erreur(s) pour charger les règles: %1$s -%2$s"
 
 #
 # File: src/etc/inc/filter.inc, line: 366
@@ -3821,7 +3823,7 @@ msgstr "Fait"
 #
 # File: src/etc/inc/filter.inc, line: 631
 msgid "Creating gateway group item..."
-msgstr ""
+msgstr "Création de l'élément groupe de passerelle..."
 
 #
 # File: src/etc/inc/filter.inc, line: 671
@@ -3830,18 +3832,20 @@ msgid ""
 "An error occurred while trying to find the interface got %s .  The rule has not "
 "been added."
 msgstr ""
+"Une erreur est survenue en essayant de trouver l'interface obtenu %s. La règle "
+"n'a pas été ajouté."
 
 #
 # File: src/etc/inc/filter.inc, line: 997
 #, php-format
 msgid "Creating reflection NAT rule for %s..."
-msgstr ""
+msgstr "Création de la règle de réflexion NAT pour %s ..."
 
 #
 # File: src/etc/inc/filter.inc, line: 1086
 #, php-format
 msgid "Creating reflection rule for %s..."
-msgstr ""
+msgstr "Création de la règle de réflexion pour %s ..."
 
 #
 # File: src/etc/inc/filter.inc, line: 1269
@@ -3969,11 +3973,13 @@ msgstr "Création des règles IPsec..."
 # File: src/etc/inc/filter.inc, line: 3206
 msgid "Installed 15 minute filter reload for Time Based Rules"
 msgstr ""
+"Installé rechargement de filtre 15 minutes pour les Règles Basées sur le Temps"
 
 #
 # File: src/etc/inc/filter.inc, line: 3213
 msgid "Removed 15 minute filter reload for Time Based Rules"
 msgstr ""
+"Enlevé rechargement de filtre 15 minutes pour les Règles Basées sur le Temps"
 
 #
 # File: src/etc/inc/filter_log.inc, line: 137
@@ -4493,28 +4499,28 @@ msgstr ""
 #
 # File: src/etc/inc/notices.smtp.inc, line: 411
 msgid "POP3 authentication server greeting was not found"
-msgstr ""
+msgstr "L'accueil de l'authentification du serveur POP3 n'a pas été trouvé"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 419
 msgid "POP3 authentication user was not accepted:"
-msgstr ""
+msgstr "L'utilisateur de l'authentification POP3 n'a pas été accepté:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 427
 msgid "POP3 authentication password was not accepted:"
-msgstr ""
+msgstr "Le mot de passe de l'authentification POP3 n'a pas été accepté:"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 436
 msgid "could not determine the SMTP to connect"
-msgstr ""
+msgstr "Ne peut pas déterminer le SMTP à connecter"
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 442
 #, php-format
 msgid "Resolving SMTP server domain \"%s\"..."
-msgstr ""
+msgstr "Résolution du domaine du serveur SMTP \"%s\"..."
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 454
@@ -4532,6 +4538,7 @@ msgstr "Le serveur ne requiert pas d’authenfication"
 msgid ""
 "it is not supported any of the authentication mechanisms required by the server"
 msgstr ""
+"Auncun des mécanismes d'authentification requis par le serveur n'est supporté "
 
 #
 # File: src/etc/inc/notices.smtp.inc, line: 629
@@ -5686,7 +5693,7 @@ msgstr ""
 # File: src/www/firewall_rules_edit.php, line: 1452
 # File: src/www/firewall_rules_edit.php, line: 1460
 msgid "n/j/y H:i:s"
-msgstr ""
+msgstr "n/j/y H:i:s"
 
 #
 # File: src/etc/rc.restore_config_backup, line: 16
@@ -5736,7 +5743,7 @@ msgstr "O"
 # File: src/www/diag_confbak.php, line: 60
 #, php-format
 msgid "Successfully reverted to timestamp %1$s with description \"%2$s\"."
-msgstr ""
+msgstr "Retour avec succès à la date %1$s avec la description \"%2$s\"."
 
 #
 # File: src/etc/rc.restore_config_backup, line: 78
@@ -5749,7 +5756,7 @@ msgstr ""
 # File: src/etc/rc.restore_config_backup, line: 80
 # File: src/www/diag_confbak.php, line: 62
 msgid "Unable to revert to the selected configuration."
-msgstr ""
+msgstr "Impossible de revenir à la configuration sélectionnée."
 
 #
 # File: src/etc/rc.restore_config_backup, line: 83
@@ -5759,7 +5766,7 @@ msgstr "Restauration annulée."
 #
 # File: src/etc/rc.restore_config_backup, line: 86
 msgid "Restore canceled due to invalid input."
-msgstr ""
+msgstr "Restauration annulée dû à une entrée invalide."
 
 #
 # File: src/etc/rc.restore_config_backup, line: 93
@@ -5829,7 +5836,7 @@ msgstr ""
 # File: src/sbin/gmirror_status_check.php, line: 70
 #, php-format
 msgid "Mirror %s drive status changed. Old: (%s) New: (%s)"
-msgstr ""
+msgstr "Miroir %s statut du disque changé. Ancien: (%s) Nouveau: (%s) "
 
 #
 # File: src/www/bandwidth_by_ip.php, line: 47
@@ -5839,7 +5846,7 @@ msgstr "Mauvaise interface"
 #
 # File: src/www/bandwidth_by_ip.php, line: 142
 msgid "no info"
-msgstr ""
+msgstr "pas d'info"
 
 #
 # File: src/www/carp_status.php, line: 55
@@ -5900,7 +5907,7 @@ msgstr "IP virtuelle"
 #
 # File: src/www/carp_status.php, line: 137
 msgid "Could not locate any defined CARP interfaces."
-msgstr ""
+msgstr "Impossible de localiser aucune des interfaces CARP définis"
 
 #
 # File: src/www/carp_status.php, line: 179
@@ -5917,12 +5924,12 @@ msgstr ""
 # File: src/www/vpn_pppoe_edit.php, line: 664
 # File: src/www/vpn_pptp.php, line: 521
 msgid "Note"
-msgstr ""
+msgstr "Note"
 
 #
 # File: src/www/carp_status.php, line: 181
 msgid "You can configure high availability settings"
-msgstr ""
+msgstr "Vous pouvez configurer les paramètres de haute disponbibilité"
 
 #
 # File: src/www/carp_status.php, line: 181
@@ -5935,7 +5942,7 @@ msgstr "ici"
 #
 # File: src/www/carp_status.php, line: 185
 msgid "pfSync nodes"
-msgstr ""
+msgstr "noeuds pfSync"
 
 #
 # File: src/www/crash_reporter.php, line: 136
@@ -6243,7 +6250,7 @@ msgstr "Routes statiques"
 #
 # File: src/www/diag_backup.php, line: 155
 msgid "System tunables"
-msgstr ""
+msgstr "Réglages système"
 
 #
 # File: src/www/diag_backup.php, line: 156
@@ -6904,23 +6911,26 @@ msgstr ""
 #
 # File: src/www/diag_defaults.php, line: 64
 msgid "Reboot after changes are installed"
-msgstr ""
+msgstr "Redémarrer après que les changements soit installés"
 
 #
 # File: src/www/diag_defaults.php, line: 65
 msgid ""
 "WAN interface will be set to obtain an address automatically from a DHCP server"
 msgstr ""
+"L'interface WAN sera configurée pour obtenir automatiquement une adresse depuis "
+"le serveur DHCP"
 
 #
 # File: src/www/diag_defaults.php, line: 66
 msgid "webConfigurator admin username will be reset to 'root'"
 msgstr ""
+"le nom d'utilisateur de l'admin de webConfigurator sera réinitialisé à 'root'"
 
 #
 # File: src/www/diag_defaults.php, line: 67
 msgid "webConfigurator admin password will be reset to"
-msgstr ""
+msgstr "le mot de passe admin de webConfigurator sera réinitialisé à "
 
 #
 # File: src/www/diag_defaults.php, line: 69
@@ -7009,7 +7019,7 @@ msgstr "Serveur"
 #
 # File: src/www/diag_dns.php, line: 181
 msgid "Resolve DNS hostname or IP"
-msgstr ""
+msgstr "Résolution du nom d'hôte DNS ou IP"
 
 #
 # File: src/www/diag_dns.php, line: 189
@@ -7056,7 +7066,7 @@ msgstr ""
 # File: src/www/status_openvpn.php, line: 49
 # File: src/www/widgets/widgets/openvpn.widget.php, line: 43
 msgid "invalid input"
-msgstr ""
+msgstr "Entrée invalide"
 
 #
 # File: src/www/diag_dump_states.php, line: 59
@@ -7069,7 +7079,7 @@ msgstr "Afficher les états"
 # File: src/www/status_openvpn.php, line: 121
 # File: src/www/widgets/widgets/openvpn.widget.php, line: 113
 msgid "An error occurred."
-msgstr ""
+msgstr "Une erreur est survenue."
 
 #
 # File: src/www/diag_dump_states.php, line: 118
@@ -7080,13 +7090,13 @@ msgstr "Réinitialiser les états"
 #
 # File: src/www/diag_dump_states.php, line: 133
 msgid "Current total state count"
-msgstr ""
+msgstr "Nombre total des états courants"
 
 #
 # File: src/www/diag_dump_states.php, line: 134
 # File: src/www/diag_dump_states_sources.php, line: 119
 msgid "Filter expression:"
-msgstr ""
+msgstr "Expression du filtre:"
 
 #
 # File: src/www/diag_dump_states.php, line: 136
@@ -7097,17 +7107,17 @@ msgstr ""
 # File: src/www/diag_logs_gateways.php, line: 103
 # File: src/www/diag_logs_resolver.php, line: 102
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #
 # File: src/www/diag_dump_states.php, line: 138
 msgid "Kill"
-msgstr ""
+msgstr "Tué"
 
 #
 # File: src/www/diag_dump_states.php, line: 162
 msgid "Int"
-msgstr ""
+msgstr "Int"
 
 #
 # File: src/www/diag_dump_states.php, line: 172
@@ -7117,12 +7127,12 @@ msgstr ""
 # File: src/www/firewall_nat.php, line: 219
 # File: src/www/firewall_rules.php, line: 398
 msgid "Proto"
-msgstr ""
+msgstr "Proto"
 
 #
 # File: src/www/diag_dump_states.php, line: 182
 msgid "Source -> Router -> Destination"
-msgstr ""
+msgstr "Source -> Routeur -> Destination"
 
 #
 # File: src/www/diag_dump_states.php, line: 192
@@ -7134,27 +7144,27 @@ msgstr "État"
 #
 # File: src/www/diag_dump_states.php, line: 234
 msgid "Remove all state entries from"
-msgstr ""
+msgstr "Retirer tous les entrées état de "
 
 #
 # File: src/www/diag_dump_states.php, line: 247
 msgid "No states were found."
-msgstr ""
+msgstr "Aucun état trouvé"
 
 #
 # File: src/www/diag_dump_states.php, line: 257
 msgid "States matching current filter"
-msgstr ""
+msgstr "États correspondant au filtre actuel"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 53
 msgid "Show Source Tracking"
-msgstr ""
+msgstr "Montrer le Suivi de Source"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 100
 msgid "Source Tracking"
-msgstr ""
+msgstr "Suivi de Source"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 101
@@ -7181,68 +7191,68 @@ msgstr "# Connexions"
 # File: src/www/diag_system_pftop.php, line: 144
 # File: src/www/status_interfaces.php, line: 366
 msgid "Rate"
-msgstr ""
+msgstr "Taux"
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 177
 msgid "Remove all source tracking entries from"
-msgstr ""
+msgstr "Retirer toutes les entrées de suivi de source de "
 
 #
 # File: src/www/diag_dump_states_sources.php, line: 188
 msgid "No source tracking entries were found."
-msgstr ""
+msgstr "Aucune entrée de suivi de source trouvé."
 
 #
 # File: src/www/diag_gmirror.php, line: 33
 msgid "GEOM Mirrors"
-msgstr ""
+msgstr "Miroir GEOM"
 
 #
 # File: src/www/diag_gmirror.php, line: 45
 msgid "Forget all formerly connected consumers"
-msgstr ""
+msgstr "Oubliez tous les consommateurs anciennement connectés"
 
 #
 # File: src/www/diag_gmirror.php, line: 46
 # File: src/www/diag_gmirror.php, line: 302
 msgid "Remove metadata from disk"
-msgstr ""
+msgstr "Supprimer les métadonnées du disque"
 
 #
 # File: src/www/diag_gmirror.php, line: 47
 msgid "Insert consumer into mirror"
-msgstr ""
+msgstr "Insérer un consommateur dans le miroir"
 
 #
 # File: src/www/diag_gmirror.php, line: 48
 msgid "Remove consumer from mirror"
-msgstr ""
+msgstr "Retirer un consommateur du miroir"
 
 #
 # File: src/www/diag_gmirror.php, line: 49
 msgid "Reactivate consumer on mirror"
-msgstr ""
+msgstr "Réactiver consommateur sur le miroir"
 
 #
 # File: src/www/diag_gmirror.php, line: 50
 msgid "Deactivate consumer from mirror"
-msgstr ""
+msgstr "Désactiver un consommateur du miroir"
 
 #
 # File: src/www/diag_gmirror.php, line: 51
 msgid "Force rebuild of mirror consumer"
-msgstr ""
+msgstr "Force de la reconstruction du miroir consommateur"
 
 #
 # File: src/www/diag_gmirror.php, line: 68
 msgid "You must supply a valid mirror name."
-msgstr ""
+msgstr "Vous devez fournir un nom de miroir valide."
 
 #
 # File: src/www/diag_gmirror.php, line: 71
 msgid "You must supply a valid consumer name"
-msgstr ""
+msgstr "Vous devez fournir un nom de consommateur valide."
 
 #
 # File: src/www/diag_gmirror.php, line: 77
@@ -7250,6 +7260,8 @@ msgid ""
 "Consumer is already in use and cannot be inserted. Remove consumer from existing "
 "mirror first."
 msgstr ""
+"Consommateur est déjà en cours d'utilisation et ne peut être inséré. Retirer le "
+"consommateur du miroir existant en premier."
 
 #
 # File: src/www/diag_gmirror.php, line: 79
@@ -7257,6 +7269,8 @@ msgid ""
 "Consumer has metadata from an existing mirror. Clear metadata before inserting "
 "consumer."
 msgstr ""
+"Consommateur a des métadonnées à partir d'un miroir existant. Effacer les "
+"métadonnées avant d'insérer consommateur."
 
 #
 # File: src/www/diag_gmirror.php, line: 82
@@ -7269,11 +7283,13 @@ msgstr ""
 # File: src/www/diag_gmirror.php, line: 86
 msgid "Consumer is in use and cannot be cleared. Deactivate disk first."
 msgstr ""
+"Consommateur en cours d'utilisation et ne peut pas être effacé. Désactiver le "
+"disque en premier ."
 
 #
 # File: src/www/diag_gmirror.php, line: 88
 msgid "Consumer has no metadata to clear."
-msgstr ""
+msgstr "Le consommateur n'a pas de métadonnées à effacer."
 
 #
 # File: src/www/diag_gmirror.php, line: 92
@@ -7283,12 +7299,12 @@ msgstr ""
 #
 # File: src/www/diag_gmirror.php, line: 94
 msgid "Consumer has no metadata and cannot be reactivated."
-msgstr ""
+msgstr "Le consommateur n'a pas de métadonnées et ne peut être réactiver."
 
 #
 # File: src/www/diag_gmirror.php, line: 101
 msgid "Consumer must be present on the specified mirror."
-msgstr ""
+msgstr "Le consommateur doit être présent sur le miroir spécifié."
 
 #
 # File: src/www/diag_gmirror.php, line: 163
@@ -7307,7 +7323,7 @@ msgstr ""
 # File: src/www/system_routes_edit.php, line: 444
 # File: src/www/vpn_openvpn_export_shared.php, line: 480
 msgid "NOTE:"
-msgstr ""
+msgstr "NOTE:"
 
 #
 # File: src/www/diag_gmirror.php, line: 178
@@ -7319,17 +7335,17 @@ msgstr ""
 #
 # File: src/www/diag_gmirror.php, line: 197
 msgid "Mirror"
-msgstr ""
+msgstr "Miroir"
 
 #
 # File: src/www/diag_gmirror.php, line: 201
 msgid "Consumer"
-msgstr ""
+msgstr "Consommateur"
 
 #
 # File: src/www/diag_gmirror.php, line: 210
 msgid "GEOM Mirror information"
-msgstr ""
+msgstr "Information miroir GEOM"
 
 #
 # File: src/www/diag_gmirror.php, line: 214
@@ -7385,12 +7401,12 @@ msgstr "Nom"
 #
 # File: src/www/diag_gmirror.php, line: 223
 msgid "Component"
-msgstr ""
+msgstr "Composant"
 
 #
 # File: src/www/diag_gmirror.php, line: 235
 msgid "Forget Disconnected Disks"
-msgstr ""
+msgstr "Oublier les disques déconnectés"
 
 #
 # File: src/www/diag_gmirror.php, line: 243
@@ -7416,7 +7432,7 @@ msgstr "Supprimer"
 #
 # File: src/www/diag_gmirror.php, line: 268
 msgid "No Mirrors Found"
-msgstr ""
+msgstr "Pas de miroir trouvé"
 
 #
 # File: src/www/diag_gmirror.php, line: 272
@@ -7428,17 +7444,17 @@ msgstr ""
 #
 # File: src/www/diag_gmirror.php, line: 277
 msgid "Consumer information"
-msgstr ""
+msgstr "Information consommateur"
 
 #
 # File: src/www/diag_gmirror.php, line: 281
 msgid "Available Consumers"
-msgstr ""
+msgstr "Consommateurs disponibles"
 
 #
 # File: src/www/diag_gmirror.php, line: 290
 msgid "Add to Mirror"
-msgstr ""
+msgstr "Ajouter au mirroir"
 
 #
 # File: src/www/diag_gmirror.php, line: 301
@@ -7602,44 +7618,44 @@ msgstr "Description"
 #
 # File: src/www/diag_ipsec.php, line: 96
 msgid "Local ID"
-msgstr ""
+msgstr "ID locale"
 
 #
 # File: src/www/diag_ipsec.php, line: 97
 # File: src/www/interfaces_ppps_edit.php, line: 670
 # File: src/www/vpn_pppoe.php, line: 122
 msgid "Local IP"
-msgstr ""
+msgstr "Adresse IP locale"
 
 #
 # File: src/www/diag_ipsec.php, line: 98
 msgid "Remote ID"
-msgstr ""
+msgstr "ID distant"
 
 #
 # File: src/www/diag_ipsec.php, line: 99
 msgid "Remote IP"
-msgstr ""
+msgstr "Adresse IP distante"
 
 #
 # File: src/www/diag_ipsec.php, line: 100
 msgid "Role"
-msgstr ""
+msgstr "Rôle"
 
 #
 # File: src/www/diag_ipsec.php, line: 216
 msgid "Connect VPN"
-msgstr ""
+msgstr "Connecter VPN"
 
 #
 # File: src/www/diag_ipsec.php, line: 220
 msgid "Disconnect VPN"
-msgstr ""
+msgstr "Déconnecter VPN"
 
 #
 # File: src/www/diag_ipsec.php, line: 223
 msgid "Disconnect VPN Connection"
-msgstr ""
+msgstr "Déconnecter les connexions VPN"
 
 #
 # File: src/www/diag_ipsec.php, line: 235
@@ -7669,7 +7685,7 @@ msgstr "Vous pouvez configurer IPsec"
 #
 # File: src/www/diag_ipsec_leases.php, line: 65
 msgid "Pool: "
-msgstr ""
+msgstr "Ensemble: "
 
 #
 # File: src/www/diag_ipsec_leases.php, line: 66
@@ -7710,7 +7726,7 @@ msgstr "Hôte"
 #
 # File: src/www/diag_ipsec_leases.php, line: 90
 msgid "No leases from this pool yet."
-msgstr ""
+msgstr "Pas de baux de cet ensemble pour le moment."
 
 #
 # File: src/www/diag_ipsec_leases.php, line: 97
@@ -24867,17 +24883,17 @@ msgstr ""
 #
 # File: src/www/system_advanced_misc.php, line: 539
 msgid "RAM Disk Settings (Reboot to Apply Changes)"
-msgstr ""
+msgstr "Paramètres disques mémoire (Redémarrer pour appliquer les changements)"
 
 #
 # File: src/www/system_advanced_misc.php, line: 542
 msgid "Use RAM Disks"
-msgstr ""
+msgstr "Utiliser disque mémoire"
 
 #
 # File: src/www/system_advanced_misc.php, line: 547
 msgid "Use memory file system for /tmp and /var"
-msgstr ""
+msgstr "Utilisez le système de fichiers mémoire pour / tmp et / var"
 
 #
 # File: src/www/system_advanced_misc.php, line: 548
@@ -24891,13 +24907,13 @@ msgstr ""
 #
 # File: src/www/system_advanced_misc.php, line: 579
 msgid "Periodic RRD Backup"
-msgstr ""
+msgstr "Sauvegarde périodique RRD"
 
 #
 # File: src/www/system_advanced_misc.php, line: 594
 # File: src/www/system_advanced_misc.php, line: 622
 msgid "hour"
-msgstr ""
+msgstr "heure"
 
 #
 # File: src/www/system_advanced_misc.php, line: 601
@@ -24910,7 +24926,7 @@ msgstr ""
 #
 # File: src/www/system_advanced_misc.php, line: 607
 msgid "Periodic DHCP Leases Backup"
-msgstr ""
+msgstr "Sauvegarde périodique des Baux DHCP "
 
 #
 # File: src/www/system_advanced_misc.php, line: 629
@@ -24923,24 +24939,25 @@ msgstr ""
 #
 # File: src/www/system_advanced_network.php, line: 52
 msgid "You must specify an IP address to NAT IPv6 packets."
-msgstr ""
+msgstr "Vous devez spécifier une adresse IP aux paquets NAT IPv6."
 
 #
 # File: src/www/system_advanced_network.php, line: 184
 msgid "IPv6 Options"
-msgstr ""
+msgstr "Options IPv6"
 
 #
 # File: src/www/system_advanced_network.php, line: 189
 # File: src/www/system_advanced_network.php, line: 194
 msgid "Allow IPv6"
-msgstr ""
+msgstr "Autoriser IPv6"
 
 #
 # File: src/www/system_advanced_network.php, line: 195
 msgid ""
 "All IPv6 traffic will be blocked by the firewall unless this box is checked."
 msgstr ""
+"Tout le trafic IPv6 sera bloqué par le pare-feu, sauf si cette case est cochée."
 
 #
 # File: src/www/system_advanced_network.php, line: 196
@@ -24948,16 +24965,18 @@ msgid ""
 "NOTE: This does not disable any IPv6 features on the firewall, it only blocks "
 "traffic."
 msgstr ""
+"NOTE: Ceci ne désactive pas toutes les fonctionnalités IPv6 sur le pare-feu, "
+"cela ne bloque que le trafic."
 
 #
 # File: src/www/system_advanced_network.php, line: 201
 msgid "IPv6 over IPv4 Tunneling"
-msgstr ""
+msgstr "IPv6 sur tunnel IPv4"
 
 #
 # File: src/www/system_advanced_network.php, line: 206
 msgid "Enable IPv4 NAT encapsulation of IPv6 packets"
-msgstr ""
+msgstr "Activer l'encapsulation NAT IPv4 des paquets IPv6"
 
 #
 # File: src/www/system_advanced_network.php, line: 207
@@ -24970,12 +24989,12 @@ msgstr ""
 #
 # File: src/www/system_advanced_network.php, line: 217
 msgid "Prefer IPv4 over IPv6"
-msgstr ""
+msgstr "Préférer IPv4 à IPv6"
 
 #
 # File: src/www/system_advanced_network.php, line: 222
 msgid "Prefer to use IPv4 even if IPv6 is available"
-msgstr ""
+msgstr "Préfère utiliser IPv4 même si IPv6 est disponible"
 
 #
 # File: src/www/system_advanced_network.php, line: 223
@@ -24987,12 +25006,12 @@ msgstr ""
 #
 # File: src/www/system_advanced_network.php, line: 232
 msgid "Device polling"
-msgstr ""
+msgstr "Interrogation de périphériques"
 
 #
 # File: src/www/system_advanced_network.php, line: 237
 msgid "Enable device polling"
-msgstr ""
+msgstr "Activer l'interrogation de périphériques"
 
 #
 # File: src/www/system_advanced_network.php, line: 238
@@ -28166,17 +28185,17 @@ msgstr ""
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 270
 msgid "Mobile"
-msgstr ""
+msgstr "Mobile"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 373
 msgid "Create Phase1"
-msgstr ""
+msgstr "Créer Phase1"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 373
 msgid "Please click Create to define one."
-msgstr ""
+msgstr "S'il vous plait cliquez sur Créer pour en définir un."
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 373
@@ -28187,27 +28206,27 @@ msgstr ""
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 396
 msgid "IKE Extensions"
-msgstr ""
+msgstr "Extensions IKE"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 405
 msgid "Enable IPsec Mobile Client Support"
-msgstr ""
+msgstr "Activer le support des Client Mobile IPsec"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 418
 msgid "Extended Authentication (Xauth)"
-msgstr ""
+msgstr "Authentification étendue (Xauth)"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 425
 msgid "User Authentication"
-msgstr ""
+msgstr "Authentification utilisateur"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 444
 msgid "Group Authentication"
-msgstr ""
+msgstr "Authentification Groupe"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 452
@@ -28217,37 +28236,39 @@ msgstr "système"
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 463
 msgid "Client Configuration (mode-cfg)"
-msgstr ""
+msgstr "Configuration Client (mode-cfg)"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 470
 msgid "Virtual Address Pool"
-msgstr ""
+msgstr "Ensemble d'adresse virtuelle"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 479
 msgid "Provide a virtual IP address to clients"
-msgstr ""
+msgstr "Fournir une adresse IP virtuelle aux clients"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 506
 msgid "Network List"
-msgstr ""
+msgstr "Liste réseau"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 515
 msgid "Provide a list of accessible networks to clients"
-msgstr ""
+msgstr "Fournir la liste des réseaux accéssibles aux clients"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 522
 msgid "Save Xauth Password"
-msgstr ""
+msgstr "Sauver mot de passe Xauth"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 531
 msgid "Allow clients to save Xauth passwords (Cisco VPN client only)."
 msgstr ""
+"Autoriser les clients à sauver les mots de passe Xauth (Client VPN Cisco "
+"seulement)."
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 532
@@ -28268,12 +28289,12 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 549
 # File: src/www/vpn_openvpn_server.php, line: 1665
 msgid "Provide a default domain name to clients"
-msgstr ""
+msgstr "Fournir un nom de domaine par défaut aux clients"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 562
 msgid "Split DNS"
-msgstr ""
+msgstr "Séparer DNS"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 571
@@ -28300,7 +28321,7 @@ msgstr "Serveurs DNS"
 # File: src/www/vpn_openvpn_csc.php, line: 574
 # File: src/www/vpn_openvpn_server.php, line: 1690
 msgid "Provide a DNS server list to clients"
-msgstr ""
+msgstr "Fournir la liste des serveurs DNS aux clients"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 628
@@ -28314,28 +28335,30 @@ msgstr "Serveurs WINS"
 # File: src/www/vpn_openvpn_csc.php, line: 725
 # File: src/www/vpn_openvpn_server.php, line: 1862
 msgid "Provide a WINS server list to clients"
-msgstr ""
+msgstr "Fournir la liste des serveurs WINS aux clients"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 658
 msgid "Phase2 PFS Group"
-msgstr ""
+msgstr "Groupe PFS phase 2"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 667
 msgid ""
 "Provide the Phase2 PFS group to clients ( overrides all mobile phase2 settings )"
 msgstr ""
+"Fournir la phase 2 du groupe PFS aux clients (remplace tous les paramétrages de "
+"phase2 mobile)"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 692
 msgid "Login Banner"
-msgstr ""
+msgstr "Bannière à la connexion"
 
 #
 # File: src/www/vpn_ipsec_mobile.php, line: 701
 msgid "Provide a login banner to clients"
-msgstr ""
+msgstr "Fournir une bannière de connexion aux clients"
 
 #
 # File: src/www/vpn_ipsec_phase1.php, line: 174
@@ -28346,7 +28369,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_phase1.php, line: 196
 # File: src/www/vpn_ipsec_phase1.php, line: 702
 msgid "Remote gateway"
-msgstr ""
+msgstr "Paserelle distante"
 
 #
 # File: src/www/vpn_ipsec_phase1.php, line: 202
@@ -31325,7 +31348,7 @@ msgstr ""
 #
 # File: src/www/vpn_pptp.php, line: 491
 msgid "Secondary RADIUS shared secret"
-msgstr ""
+msgstr "Secret partagé RADIUS secondaire"
 
 #
 # File: src/www/vpn_pptp.php, line: 495
@@ -31806,7 +31829,7 @@ msgstr "Secondes"
 #
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 148
 msgid "changing this setting will increase CPU utilization"
-msgstr ""
+msgstr "La modification de ce paramètre va augmenter l'utilisation du processeur"
 
 #
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 44
