@@ -218,7 +218,7 @@
     </user>
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>
-    <timezone>Etc/UTC</timezone>
+    <timezone>Europe/Amsterdam</timezone>
     <time-update-interval>300</time-update-interval>
     <timeservers>0.nl.pool.ntp.org</timeservers>
     <webgui>
@@ -226,7 +226,6 @@
     </webgui>
     <disablenatreflection>yes</disablenatreflection>
     <disableconsolemenu/>
-    <!-- <harddiskstandby></harddiskstandby> -->
     <disablesegmentationoffloading/>
     <disablelargereceiveoffloading/>
     <ipv6allow/>
@@ -248,7 +247,6 @@
       <mtu></mtu>
       <ipaddr>dhcp</ipaddr>
       <ipaddrv6>dhcp6</ipaddrv6>
-      <!-- *or* ipv4-address *or* 'pppoe' *or* 'pptp' *or* 'bigpond' -->
       <subnet></subnet>
       <gateway></gateway>
       <blockpriv/>
@@ -258,11 +256,6 @@
       <mediaopt></mediaopt>
       <dhcp6-duid></dhcp6-duid>
       <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
-      <!--
-      <wireless>
-        *see below (opt[n])*
-      </wireless>
-      -->
     </wan>
     <lan>
       <enable/>
@@ -275,46 +268,8 @@
       <mediaopt></mediaopt>
       <track6-interface>wan</track6-interface>
       <track6-prefix-id>0</track6-prefix-id>
-      <!--
-      <wireless>
-        *see below (opt[n])*
-      </wireless>
-      -->
     </lan>
-    <!--
-    <opt[n]>
-      <enable/>
-      <descr></descr>
-      <if></if>
-      <ipaddr></ipaddr>
-      <subnet></subnet>
-      <media></media>
-      <mediaopt></mediaopt>
-      <bridge>lan|wan|opt[n]</bridge>
-      <wireless>
-        <mode>hostap *or* bss *or* ibss</mode>
-        <ssid></ssid>
-        <channel></channel>
-        <wep>
-          <enable/>
-          <key>
-            <txkey/>
-            <value></value>
-          </key>
-        </wep>
-      </wireless>
-    </opt[n]>
-    -->
   </interfaces>
-  <!--
-  <vlans>
-    <vlan>
-      <tag></tag>
-      <if></if>
-      <descr></descr>
-    </vlan>
-  </vlans>
-  -->
   <staticroutes>
     <!--
     <route>
@@ -409,25 +364,6 @@
     <nologdefaultblock/>
     -->
   </syslog>
-  <!--
-  <captiveportal>
-    <enable/>
-    <interface>lan|opt[n]</interface>
-    <idletimeout>minutes</idletimeout>
-    <timeout>minutes</timeout>
-    <page>
-      <htmltext></htmltext>
-      <errtext></errtext>
-    </page>
-    <httpslogin/>
-    <httpsname></httpsname>
-    <redirurl></redirurl>
-    <radiusip></radiusip>
-    <radiusport></radiusport>
-    <radiuskey></radiuskey>
-    <nomacfilter/>
-  </captiveportal>
-  -->
   <nat>
     <outbound>
       <mode>automatic</mode>
