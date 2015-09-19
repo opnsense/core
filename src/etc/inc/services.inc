@@ -2613,29 +2613,32 @@ function service_name_compare($a, $b) {
 }
 
 
-function get_service_status($service) {
-	global $g;
+function get_service_status($service)
+{
 	switch ($service['name']) {
-		case "openvpn":
+		case 'openvpn':
 			$running = isvalidpid("/var/run/openvpn_{$service['mode']}{$service['vpnid']}.pid");
 			break;
-		case "captiveportal":
+		case 'captiveportal':
 			$running = isvalidpid("/var/run/lighty-{$service['zone']}-CaptivePortal.pid");
-			if (isset($config['captiveportal'][$service['zone']]['httpslogin']))
+			if (isset($config['captiveportal'][$service['zone']]['httpslogin'])) {
 				$running = $running && isvalidpid("/var/run/lighty-{$service['zone']}-CaptivePortal-SSL.pid");
+			}
 			break;
-		case "vhosts-http":
-			$running = isvalidpid("/var/run/vhosts-http.pid");
-			break;
-		case "dhcrelay6":
-			$running = isvalidpid("/var/run/dhcrelay6.pid");
+		case 'dhcrelay6':
+			$running = isvalidpid('/var/run/dhcrelay6.pid');
 			break;
 		case 'ipsec':
-			$running = isvalidpid("/var/run/charon.pid");
+			$running = isvalidpid('/var/run/charon.pid');
+			break;
+		case 'ntpd':
+			$running = isvalidpid('/var/run/ntpd.pid');
 			break;
 		default:
 			$running = is_process_running($service['name']);
+			break;
 	}
+
 	return $running;
 }
 
