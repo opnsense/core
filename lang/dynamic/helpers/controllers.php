@@ -84,7 +84,7 @@ echo gettext('source ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('source port number or well known name (imap,imaps, http,https,...)');
 echo gettext('destination ip or network, examples 10.0.0.0/24, 10.0.0.1');
 echo gettext('destination port number or well known name (imap,imaps, http,https,...)');
-echo gettext('matches incomming or outgoing packets or both (default)');
+echo gettext('matches incoming or outgoing packets or both (default)');
 echo gettext('target pipe or queue');
 echo gettext('Select if job is enabled or not');
 echo gettext('Enter the minutes for the job to act, can also be a comma separated list, * (each) or a range (ex. 10,20,30 or 10-30)');
