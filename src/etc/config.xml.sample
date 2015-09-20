@@ -191,13 +191,6 @@
     <domain>localdomain</domain>
     <dnsallowoverride/>
     <group>
-      <name>all</name>
-      <description><![CDATA[All Users]]></description>
-      <scope>system</scope>
-      <gid>1998</gid>
-      <member>0</member>
-    </group>
-    <group>
       <name>admins</name>
       <description><![CDATA[System Administrators]]></description>
       <scope>system</scope>
