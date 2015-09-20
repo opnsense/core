@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-25 07:47+0200\n"
+"POT-Creation-Date: 2015-09-20 10:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,9 +146,10 @@ msgstr "Den Zugriff zur Seite 'Diagnose: Protokolle: Einstellungen' erlauben."
 msgid "Allow access to the 'Services: Captive portal: Vouchers' page."
 msgstr "Den Zugriff zur Seite 'Dienste: Captive Portal: Voucher' erlauben."
 
-# File: lang/dynamic/helpers/acl.php, line: 67
-msgid "Allow access to the 'Service: Univeral Plug and Play' page."
-msgstr "Den Zugriff zur Seite 'Dienste: Universal Plug and Play' erlauben."
+#
+# File: lang/dynamic/helpers/acl.php, line: 66
+msgid "Allow access to the 'Service: Universal Plug and Play' page."
+msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 68
 msgid "Allow access to the 'Firewall: Virtual IP Addresses' page."
@@ -176,17 +177,14 @@ msgid ""
 "Allow access to the 'Services: DNS Forwarder: Edit Domain Override' page."
 msgstr ""
 
-# File: lang/dynamic/helpers/acl.php, line: 75
-msgid "Allow access to the 'Status: CPU load' page."
-msgstr "Den Zugriff zur Seite 'Status: CPU-Auslastung' erlauben."
-
 # File: lang/dynamic/helpers/acl.php, line: 76
 msgid "Allow access to the 'Diagnostics: ARP Table' page."
 msgstr "Den Zugriff zur Seite 'Diagnose: ARP Tabelle' erlauben."
 
-# File: lang/dynamic/helpers/acl.php, line: 77
-msgid "Allow access to the 'Interfaces: ppps' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: PPPS' erlauben."
+#
+# File: lang/dynamic/helpers/acl.php, line: 74
+msgid "Allow access to the 'Interfaces: PPPs' page."
+msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 78
 msgid "Allow access to the 'Firewall: NAT: 1:1' page."
@@ -299,10 +297,10 @@ msgstr ""
 msgid "Allow access to the 'Diagnostics: Sockets' page."
 msgstr "Den Zugriff zur Seite 'Diagnose: Sockets' erlauben."
 
-# File: lang/dynamic/helpers/acl.php, line: 102
-msgid "Allow access to the 'Status: Univeral Plug and Play Status' page."
+#
+# File: lang/dynamic/helpers/acl.php, line: 99
+msgid "Allow access to the 'Status: Universal Plug and Play' page."
 msgstr ""
-"Den Zugriff zur Seite 'Status: Universal Plug and Play Status' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 103
 msgid "Allow access to the 'Services: PPPoE Server' page."
@@ -521,9 +519,10 @@ msgstr "Den Zugriff zur Seite 'Status: Filterneuladestatus' erlauben."
 msgid "Allow access to all pages"
 msgstr "Erlaube Zugriff auf alle Seiten"
 
-# File: lang/dynamic/helpers/acl.php, line: 153
-msgid "Allow access to the 'Firewall: NAT: NPt: Edit' page."
-msgstr "Den Zugriff zur Seite 'Firewall: NAT: NPt: Bearbeiten' erlauben."
+#
+# File: lang/dynamic/helpers/acl.php, line: 150
+msgid "Allow access to the 'Firewall: NAT: NPT: Edit' page."
+msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 154
 msgid "Indicates whether the user is allowed to dial in via PPPOE"
@@ -786,9 +785,9 @@ msgstr "Zeigt an, ob sich der Benutzer im Captive Portal anmelden kann."
 msgid "Allow access to the 'Services: Captive portal: Zones' page."
 msgstr "Den Zugriff zur Seite 'Dienste: Captive Portal: Zonen' erlauben."
 
-# File: lang/dynamic/helpers/acl.php, line: 213
-msgid "Allow access to the 'Diagnostics: CPU Utilization' page."
-msgstr "Den Zugriff zur Seite 'Diagnose: CPU-Auslastung' erlauben."
+# File: lang/dynamic/helpers/acl.php, line: 240
+msgid "Allow access to the 'Services: DNS Resolver: Access Lists: Edit' page."
+msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 214
 msgid "Allow access to the 'Firewall: NAT: 1:1: Edit' page."
@@ -899,10 +898,6 @@ msgstr "Den Zugriff zur Seite 'Diagnose: pfTop' erlauben."
 # File: lang/dynamic/helpers/acl.php, line: 239
 msgid "Allow access to the 'Status: RRD Graphs: settings' page."
 msgstr "Den Zugriff zur Seite 'Status: RRD Graphen: Einstellungen' erlauben."
-
-# File: lang/dynamic/helpers/acl.php, line: 240
-msgid "Allow access to the 'Services: DNS Resolver: Access Lists: Edit' page."
-msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 241
 msgid "Allow access to the 'Interfaces: GIF' page."
@@ -1225,8 +1220,9 @@ msgstr "Ziel-IP oder -netzwerk, z.B. 10.0.0.0/24, 10.0.0.1"
 msgid "destination port number or well known name (imap,imaps, http,https,...)"
 msgstr "Zielportnummer oder bekannter Name (imap,imaps, http,https,...)"
 
-# File: lang/dynamic/helpers/controllers.php, line: 83
-msgid "matches incomming or outgoing packets or both (default)"
+#
+# File: lang/dynamic/helpers/controllers.php, line: 87
+msgid "matches incoming or outgoing packets or both (default)"
 msgstr ""
 
 # File: lang/dynamic/helpers/controllers.php, line: 84
@@ -1295,15 +1291,45 @@ msgstr "Abmelden"
 msgid "User"
 msgstr "Benutzer"
 
+#
+# File: lang/dynamic/helpers/models.php, line: 38
+# File: lang/dynamic/helpers/models.php, line: 40
+# File: lang/dynamic/helpers/models.php, line: 42
+msgid "workAround"
+msgstr ""
+
 msgid "Certificates"
 msgstr "Zertifikate"
 
-msgid "Certificate Authority"
-msgstr "Zertifizierungsstelle"
+#
+# File: lang/dynamic/helpers/models.php, line: 41
+msgid "Authorities"
+msgstr ""
 
-# File: lang/dynamic/helpers/models.php, line: 39
-msgid "Certification Revocation"
-msgstr "Zertifizierungsrückruf"
+#
+# File: lang/dynamic/helpers/models.php, line: 43
+msgid "Revocation"
+msgstr ""
+
+msgid "Certificate Manager"
+msgstr "Zertifikatsmanager"
+
+msgid "none"
+msgstr "keiner"
+
+# File: lang/dynamic/helpers/models.php, line: 177
+msgid "History"
+msgstr "Verlauf"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 47
+msgid "Backups"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 48
+msgid "Config Manager"
+msgstr ""
 
 msgid "Crash Reporter"
 msgstr "Absturzreporter"
@@ -1349,9 +1375,8 @@ msgstr "Firewall/NAT"
 msgid "Networking"
 msgstr ""
 
-# Autsch, kommt auch auf die Code-Änderungen-Liste :D
-msgid "Miscellaneos"
-msgstr "Sonstiges"
+msgid "Miscellaneous"
+msgstr "Verschiedenes"
 
 msgid "System Tunables"
 msgstr "Systemoptimierungen"
@@ -1381,36 +1406,74 @@ msgstr "Benutzerwaltung"
 msgid "System"
 msgstr "System"
 
-# File: lang/dynamic/helpers/models.php, line: 59
-msgid "Interface Addignments"
-msgstr "Interface Zuweisung"
+msgid "Bridge"
+msgstr "Bridge"
 
-msgid "Interface Groups"
-msgstr "Interface Gruppen"
-
-msgid "Wireless"
-msgstr "Drahtlos"
-
-msgid "VLANs"
-msgstr "VLANs"
-
-msgid "QinQs"
-msgstr "QinQs"
-
-msgid "PPPs"
-msgstr "PPPs"
-
-msgid "GRE"
-msgstr "GRE"
+#
+# File: lang/dynamic/helpers/models.php, line: 73
+msgid "BridgeEdit"
+msgstr ""
 
 msgid "GIF"
 msgstr "GIF"
 
-msgid "Bridges"
-msgstr "Bridges"
+#
+# File: lang/dynamic/helpers/models.php, line: 75
+msgid "GIFEdit"
+msgstr ""
+
+msgid "GRE"
+msgstr "GRE"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 77
+msgid "GREEdit"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 79
+msgid "GroupsEdit"
+msgstr ""
 
 msgid "LAGG"
 msgstr "LAGG"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 81
+msgid "LAGGEdit"
+msgstr ""
+
+msgid "PPP"
+msgstr "PPP"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 83
+msgid "PPPEdit"
+msgstr ""
+
+msgid "QinQ"
+msgstr "QinQ"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 85
+msgid "QinQEdit"
+msgstr ""
+
+msgid "VLAN"
+msgstr "VLAN"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 87
+msgid "VLANEdit"
+msgstr ""
+
+msgid "Wireless"
+msgstr "Drahtlos"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 89
+msgid "WirelessEdit"
+msgstr ""
 
 # File: lang/dynamic/helpers/models.php, line: 69
 msgid "(Assign)"
@@ -1418,11 +1481,6 @@ msgstr "(Zuweisen)"
 
 msgid "Interfaces"
 msgstr "Interfaces"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 77
-msgid "AliasesEdit"
-msgstr ""
 
 msgid "IP"
 msgstr "IP"
@@ -1432,6 +1490,16 @@ msgstr "Ports"
 
 msgid "URLs"
 msgstr "URLs"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 77
+msgid "AliasesEdit"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 97
+msgid "Import"
+msgstr ""
 
 msgid "All"
 msgstr "Alle"
@@ -1447,28 +1515,30 @@ msgstr ""
 msgid "Port Forward"
 msgstr "Portweiterleitung"
 
-msgid "1:1"
-msgstr "1:1"
-
 #
 # File: lang/dynamic/helpers/models.php, line: 86
 msgid "OneOnOneEdit"
 msgstr ""
 
-msgid "Outbound"
-msgstr "Abgehend"
+msgid "1:1"
+msgstr "1:1"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 88
 msgid "OutboundEdit"
 msgstr ""
 
-msgid "NPt"
-msgstr "NPt"
+msgid "Outbound"
+msgstr "Abgehend"
 
 #
-# File: lang/dynamic/helpers/models.php, line: 90
-msgid "NPtEdit"
+# File: lang/dynamic/helpers/models.php, line: 106
+msgid "NPTEdit"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 107
+msgid "NPT (IPv6)"
 msgstr ""
 
 msgid "NAT"
@@ -1506,6 +1576,29 @@ msgstr ""
 
 msgid "Virtual IPs"
 msgstr "Virtuelle IPs"
+
+# File: lang/dynamic/helpers/models.php, line: 186
+msgid "pfInfo"
+msgstr "pfInfo"
+
+# File: lang/dynamic/helpers/models.php, line: 187
+msgid "pfTop"
+msgstr "pfTop"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 120
+msgid "TablesDetails"
+msgstr ""
+
+msgid "Tables"
+msgstr "Tabellen"
+
+# File: lang/dynamic/helpers/models.php, line: 194
+msgid "States Summary"
+msgstr "Statuszusammenfassung"
+
+msgid "Diagnostics"
+msgstr "Diagnose"
 
 msgid "Firewall"
 msgstr "Firewall"
@@ -1637,11 +1730,6 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/models.php, line: 138
 msgid "PPPoeServerEdit"
-msgstr ""
-
-#
-# File: lang/dynamic/helpers/models.php, line: 139
-msgid "VPNPPPOE"
 msgstr ""
 
 msgid "PPPoE Server"
@@ -1839,9 +1927,6 @@ msgstr "DHCP"
 msgid "PortalAuth"
 msgstr "Portalauthentifizierung"
 
-msgid "PPP"
-msgstr "PPP"
-
 # File: lang/dynamic/helpers/models.php, line: 166
 msgid "LoadBalancer"
 msgstr "Lastverteiler"
@@ -1873,14 +1958,6 @@ msgstr "ARP Tabelle"
 msgid "Authentication"
 msgstr "Authentifizierung"
 
-# File: lang/dynamic/helpers/models.php, line: 177
-msgid "History"
-msgstr "Verlauf"
-
-# File: lang/dynamic/helpers/models.php, line: 178
-msgid "Backup & Restore"
-msgstr "Sicherung & Wiederherstellung"
-
 msgid "DNS Lookup"
 msgstr "DNS-Abfrage"
 
@@ -1901,14 +1978,6 @@ msgstr "NDP Tabelle"
 
 msgid "Packet Capture"
 msgstr "Paketaufzeichnung"
-
-# File: lang/dynamic/helpers/models.php, line: 186
-msgid "pfInfo"
-msgstr "pfInfo"
-
-# File: lang/dynamic/helpers/models.php, line: 187
-msgid "pfTop"
-msgstr "pfTop"
 
 msgid "Ping"
 msgstr "Ping"
@@ -1931,25 +2000,15 @@ msgstr "Sockets"
 msgid "States"
 msgstr "Status"
 
-# File: lang/dynamic/helpers/models.php, line: 194
-msgid "States Summary"
-msgstr "Statuszusammenfassung"
-
 # File: lang/dynamic/helpers/models.php, line: 195
 msgid "System Activity"
 msgstr "Systemaktivität"
-
-msgid "Tables"
-msgstr "Tabellen"
 
 msgid "Test Port"
 msgstr "Port testen"
 
 msgid "Traceroute"
 msgstr "Traceroute"
-
-msgid "Diagnostics"
-msgstr "Diagnose"
 
 # File: lang/dynamic/helpers/models.php, line: 200
 msgid "About this Page"
@@ -1971,9 +2030,10 @@ msgstr "FreeBSD Handbuch"
 msgid "Paid Support"
 msgstr "Bezahlte Unterstützung"
 
-# File: lang/dynamic/helpers/models.php, line: 205
-msgid "UserForum"
-msgstr "Benutzerforum"
+#
+# File: lang/dynamic/helpers/models.php, line: 262
+msgid "User Forum"
+msgstr ""
 
 # File: lang/dynamic/helpers/models.php, line: 206
 msgid "Help"
@@ -2019,13 +2079,15 @@ msgstr ""
 msgid "Specify a positive number of second-level subdirectories."
 msgstr ""
 
-# File: lang/dynamic/helpers/models.php, line: 216
-msgid "Specify the maximum download size. (number of KB's)"
-msgstr "Geben Sie eine maximale Download-Größe an. (Anzahl von KB's)"
+#
+# File: lang/dynamic/helpers/models.php, line: 276
+msgid "Specify the maximum download size. (number of KBs)"
+msgstr ""
 
-# File: lang/dynamic/helpers/models.php, line: 217
-msgid "Specify the maximum upload size. (number of KB's)"
-msgstr "Geben Sie eine maximale Upload-Größe an. (Anzahl von KB's)"
+#
+# File: lang/dynamic/helpers/models.php, line: 277
+msgid "Specify the maximum upload size. (number of KBs)"
+msgstr ""
 
 # File: lang/dynamic/helpers/models.php, line: 218
 msgid "Specify the overall bandwidth for downloads in kilobits per second."
@@ -2347,18 +2409,8 @@ msgstr ""
 "Konnte keine config.xml finden, versuche auf Werkseinstellungen "
 "zurückzusetzen."
 
-#, php-format
-msgid "Start Configuration upgrade at %s, set execution timeout to 15 minutes"
-msgstr ""
-"Starte Konfigurationsaktualisierung am %s mit Ausführungszeitlimit von 15 "
-"Minuten"
-
 msgid "Updated bogon update frequency to 3am"
 msgstr ""
-
-#, php-format
-msgid "Ended Configuration upgrade at %s"
-msgstr "Konfigurationsaktualisierung am %s beendet"
 
 #, php-format
 msgid "Upgraded config version level from %1$s to %2$s"
@@ -2408,13 +2460,17 @@ msgstr "%s machte unbekannte Änderungen"
 msgid "Failed to encrypt/decrypt data!"
 msgstr "Konnte Daten nicht ver- bzw. entschlüsseln!"
 
+#
+# File: src/etc/inc/dyndns.class, line: 1197
 #, php-format
-msgid "DynDNS updated IP Address on %s (%s) to %s"
-msgstr "DynDNS aktualisierte IP-Adresse auf %s (%s) auf %s"
+msgid "Dynamic DNS updated IP Address on %s (%s) to %s"
+msgstr ""
 
+#
+# File: src/etc/inc/dyndns.class, line: 1204
 #, php-format
-msgid "DynDNS updated IPv6 Address on %s (%s) to %s"
-msgstr "DynDNS aktualisierte IPv6 Adresse auf %s (%s) auf %s"
+msgid "Dynamic DNS updated IPv6 Address on %s (%s) to %s"
+msgstr ""
 
 msgid "Initializing"
 msgstr "Initialisieren"
@@ -2831,8 +2887,9 @@ msgstr ": Datenzugriff Time out"
 msgid ": the server disconnected"
 msgstr ": der Server trennte"
 
+#
 # File: src/etc/inc/notices.smtp.inc, line: 98
-msgid "reached the end of data while reading from the SMTP server conection"
+msgid "reached the end of data while reading from the SMTP server connection"
 msgstr ""
 
 # File: src/etc/inc/notices.smtp.inc, line: 104
@@ -3143,7 +3200,9 @@ msgstr ""
 msgid "Starting DHCPv6 relay service..."
 msgstr ""
 
-msgid "Starting DynDNS clients..."
+#
+# File: src/etc/inc/services.inc, line: 1739
+msgid "Starting dynamic DNS clients..."
 msgstr ""
 
 msgid "Starting DNS forwarder..."
@@ -3159,15 +3218,17 @@ msgstr "Starte SNMP Daemon... "
 msgid "Error: cannot open snmpd.conf in services_snmpd_configure().%s"
 msgstr ""
 
-# File: src/etc/inc/services.inc, line: 2185
+#
+# File: src/etc/inc/services.inc, line: 2253
 #, php-format
-msgid "DynDNS updated IP Address (A) for %s on %s (%s) to %s"
-msgstr "DynDNS aktualisierte IP-Adresse (A) für %s auf %s (%s) auf %s"
+msgid "Dynamic DNS updated IP Address (A) for %s on %s (%s) to %s"
+msgstr ""
 
-# File: src/etc/inc/services.inc, line: 2200
+#
+# File: src/etc/inc/services.inc, line: 2268
 #, php-format
-msgid "DynDNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s"
-msgstr "DynDNS aktualisierte IP-Adresse (AAAA) für %s auf %s (%s) auf %s"
+msgid "Dynamic DNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s"
+msgstr ""
 
 msgid "Starting UPnP service... "
 msgstr "Starte UPnP Dienst..."
@@ -3921,6 +3982,16 @@ msgstr "hier"
 msgid "pfSync nodes"
 msgstr "pfSync Knoten"
 
+#
+# File: src/www/crash_reporter.php, line: 156
+msgid "Dismiss this report"
+msgstr ""
+
+#
+# File: src/www/crash_reporter.php, line: 157
+msgid "Submit this report"
+msgstr ""
+
 # File: src/www/crash_reporter.php, line: 136
 msgid "Unfortunately we have detected at least one programming bug."
 msgstr ""
@@ -3930,12 +4001,6 @@ msgstr ""
 # File: src/www/crash_reporter.php, line: 150
 msgid "Would you like to submit this crash report to the developers?"
 msgstr ""
-
-msgid "Yes"
-msgstr "Ja"
-
-msgid "No"
-msgstr "Nein"
 
 #
 # File: src/www/crash_reporter.php, line: 153
@@ -4129,20 +4194,16 @@ msgstr "Kommunikation mit Google Drive fehlgeschlagen"
 msgid "Backup succesfull, current filelist:"
 msgstr "Backup erfolgreich, aktuelle Dateiliste:"
 
-msgid "Backup/restore"
-msgstr "Backup/Wiederherstellung"
+#
+# File: src/www/diag_backup.php, line: 537
+msgid "Config Backups"
+msgstr ""
 
 msgid "The firewall configuration has been changed."
 msgstr "Die Firewallkonfiguration wurde geändert."
 
 msgid "The firewall is now rebooting."
 msgstr "Die Firewall startet jetzt neu."
-
-msgid "Config History"
-msgstr "Konfigurationsverlauf"
-
-msgid "Backup/Restore"
-msgstr "Backup/Wiederherstellung"
 
 msgid "Backup area:"
 msgstr "Backup Bereich:"
@@ -4165,6 +4226,11 @@ msgstr "bestätigen:"
 
 msgid "Download configuration"
 msgstr "Konfiguration herunterladen"
+
+#
+# File: src/www/diag_backup.php, line: 672
+msgid "Restore"
+msgstr ""
 
 msgid "Open a"
 msgstr "Öffne ein(e)"
@@ -4193,9 +4259,10 @@ msgid "The firewall will reboot after restoring the configuration."
 msgstr ""
 "Die Firewall wird nach der Wiederherstellung der Konfiguration neu starten."
 
-# File: src/www/diag_backup.php, line: 748
-msgid "Remote backup (using Google drive)"
-msgstr "Fernes Backup (verwendet Google Drive)"
+#
+# File: src/www/diag_backup.php, line: 734
+msgid "Google Drive"
+msgstr ""
 
 msgid "Enable"
 msgstr "Aktivieren"
@@ -4235,14 +4302,8 @@ msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
 msgstr ""
 "Sicherung mit dem Zeitstempel %1$s und der Beschreibung \"%2$s\" gelöscht."
 
-msgid "Configuration History"
+msgid "Config History"
 msgstr "Konfigurationsverlauf"
-
-msgid "Configuration diff from"
-msgstr "Konfigurationsunterschied von"
-
-msgid "to"
-msgstr "an"
 
 msgid "Confirm Action"
 msgstr "Aktion bestätigen"
@@ -4283,6 +4344,17 @@ msgid ""
 "this value. Current space used by backups: "
 msgstr ""
 
+msgid "Configuration diff from"
+msgstr "Konfigurationsunterschied von"
+
+msgid "to"
+msgstr "an"
+
+#
+# File: src/www/diag_confbak.php, line: 271
+msgid "View differences"
+msgstr ""
+
 msgid ""
 "To view the differences between an older configuration and a newer "
 "configuration, select the older configuration using the left column of radio "
@@ -4319,6 +4391,9 @@ msgstr "Dieses Backup herunterladen"
 
 msgid "Factory defaults"
 msgstr "Werkseinstellungen"
+
+msgid "Yes"
+msgstr "Ja"
 
 msgid ""
 "The system has been reset to factory defaults and is now rebooting. This may "
@@ -4359,6 +4434,9 @@ msgstr "Webkonfigurator Administratorpasswort wird zurückgesetzt auf"
 
 msgid "Are you sure you want to proceed?"
 msgstr "Sind Sie sicher dass Sie fortfahren möchten?"
+
+msgid "No"
+msgstr "Nein"
 
 msgid "Host must be a valid hostname or IP address."
 msgstr ""
@@ -4654,11 +4732,6 @@ msgstr ""
 #
 # File: src/www/diag_ipsec.php, line: 220
 msgid "Disconnect VPN"
-msgstr ""
-
-#
-# File: src/www/diag_ipsec.php, line: 223
-msgid "Disconnect VPN Connection"
 msgstr ""
 
 #
@@ -5723,20 +5796,36 @@ msgstr "Paket"
 msgid "Gathering pfTOP activity, please wait..."
 msgstr "Sammle pfTOP-Aktivität, bitte warten..."
 
+#
+# File: src/www/diag_tables.php, line: 53
+msgid "The bogons database has NOT been updated."
+msgstr ""
+
 msgid "The bogons database has been updated."
 msgstr ""
 
-msgid " the latest bogon data."
-msgstr " die neuesten Bogon Daten"
+#
+# File: src/www/diag_tables.php, line: 130
+msgid "Do you really want to flush this table?"
+msgstr ""
+
+#
+# File: src/www/diag_tables.php, line: 164
+msgid "Flush"
+msgstr ""
+
+#
+# File: src/www/diag_tables.php, line: 166
+msgid "Update bogons"
+msgstr ""
 
 msgid "No entries exist in this table."
 msgstr "Es existieren keine Einträge in dieser Tabelle."
 
-msgid "entries in this table."
-msgstr "Einträge in dieser Tabelle."
-
-msgid "Delete"
-msgstr "Löschen"
+#
+# File: src/www/diag_tables.php, line: 187
+msgid "delete this entry"
+msgstr ""
 
 msgid "Please enter a valid IP or hostname."
 msgstr "Bitte geben Sie eine gültige IP oder einen gültigen Hostnamen ein."
@@ -6501,6 +6590,11 @@ msgid ""
 "'any')"
 msgstr ""
 
+#
+# File: src/www/firewall_nat_edit.php, line: 721
+msgid "virtualip"
+msgstr ""
+
 msgid "Destination port range"
 msgstr "Zielportbereich"
 
@@ -6593,7 +6687,9 @@ msgstr "Quellpräfix"
 msgid "Destination prefix"
 msgstr "Zielpräfix"
 
-msgid "Edit NAT NPt entry"
+#
+# File: src/www/firewall_nat_npt_edit.php, line: 174
+msgid "Edit NAT NPT entry"
 msgstr ""
 
 msgid "Internal IPv6 Prefix"
@@ -6771,7 +6867,9 @@ msgstr "(leerlassen für alle)"
 msgid "Destination port:"
 msgstr "Zielport:"
 
-msgid "Translation"
+#
+# File: src/www/firewall_nat_out_edit.php, line: 561
+msgid "Translation / target"
 msgstr ""
 
 #
@@ -6852,6 +6950,9 @@ msgid ""
 "Sticky Address: The Sticky Address option can be used with the Random and "
 "Round Robin pool types to ensure that a particular source address is always "
 "mapped to the same translation address."
+msgstr ""
+
+msgid "Translation"
 msgstr ""
 
 #
@@ -7017,6 +7118,9 @@ msgid ""
 "matches, the per-interface or default rules are used. "
 msgstr ""
 
+msgid "TCP/IP Version"
+msgstr "TCP/IP Version"
+
 msgid "You can not assign a gateway to a rule that applies to IPv4 and IPv6"
 msgstr ""
 
@@ -7043,17 +7147,19 @@ msgstr "%s ist nur mit dem Protokoll TCP gültig"
 msgid "%s is only valid if the gateway is set to 'default'."
 msgstr "%s ist nur gültig, wenn Gateway auf 'standard' gesetzt wird."
 
-#, php-format
+#
+# File: src/www/firewall_rules_edit.php, line: 281
 msgid ""
-"%s  is not a valid end source port. It must be a port alias or integer "
-"between 1 and 65535."
+"When selecting aliases for source ports, both from and to fields must be the "
+"same"
 msgstr ""
-"%s  ist kein gültiger End-Quellport. Es muss ein gültiger Alias oder eine "
-"Zahl zwischen 1 und 65535 sein."
 
-msgid "You must specify single host or alias for alias entries."
+#
+# File: src/www/firewall_rules_edit.php, line: 284
+msgid ""
+"When selecting aliases for destination ports, both from and to fields must "
+"be the same"
 msgstr ""
-"Sie müssen einen einzelnen Host oder Alias für Alias-Einträge spezifizieren."
 
 #, php-format
 msgid ""
@@ -7064,6 +7170,16 @@ msgid "You can not use IPv6 addresses in IPv4 rules."
 msgstr ""
 
 msgid "You can not use IPv4 addresses in IPv6 rules."
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 312
+msgid "Invalid subnet mask on IPv4 source"
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 315
+msgid "Invalid subnet mask on IPv4 destination"
 msgstr ""
 
 msgid "You can not use a IPv4 or IPv6 address in combined IPv4 + IPv6 rules."
@@ -7078,9 +7194,6 @@ msgstr ""
 msgid ""
 "You can not use gateways in Floating rules without choosing a direction."
 msgstr ""
-
-msgid "ID must be an integer"
-msgstr "ID must be an integer"
 
 msgid ""
 "You can only specify the maximum number of established connections per host "
@@ -7238,9 +7351,6 @@ msgstr ""
 "Wählen Sie aus, auf welchem Interface die Pakete ankommen müssen um dieser "
 "Regel zu entsprechen."
 
-msgid "TCP/IP Version"
-msgstr "TCP/IP Version"
-
 msgid "Select the Internet Protocol version this rule applies to"
 msgstr ""
 "Wählen Sie die Internet Protokoll-Version aus, auf die diese Regel angewandt "
@@ -7255,45 +7365,6 @@ msgstr "ICMP Typ"
 msgid ""
 "If you selected ICMP for the protocol above, you may specify an ICMP type "
 "here."
-msgstr ""
-
-msgid "not"
-msgstr ""
-
-msgid "Type:"
-msgstr ""
-
-msgid "Single host or alias"
-msgstr "Einzelner Host oder Alias"
-
-msgid "Show source port range"
-msgstr ""
-
-msgid "'to'"
-msgstr "'an'"
-
-msgid "Hint: you can leave the"
-msgstr ""
-
-msgid "Specify the source port or port range for this rule."
-msgstr ""
-
-msgid ""
-"and almost never equal to the destination port range (and should usually be"
-msgstr ""
-
-msgid "field empty if you only want to filter a single port."
-msgstr ""
-
-msgid "Destination port range "
-msgstr "Zielportbereich "
-
-msgid ""
-"Specify the port or port range for the destination of the packet for this "
-"rule."
-msgstr ""
-
-msgid "field empty if you only want to filter a single port"
 msgstr ""
 
 msgid "Log"
@@ -7317,17 +7388,11 @@ msgstr "Seite"
 msgid "see the"
 msgstr "siehe die"
 
-msgid "You may enter a description here for your reference."
-msgstr "Beschreibung (wird nicht als Parameter verwendet)."
-
 msgid "Advanced features"
 msgstr "Erweiterte Funktionen"
 
 msgid "Source OS"
 msgstr "Quellbetriebssystem"
-
-msgid "Show advanced option"
-msgstr "Zeige erweiterte Optionen"
 
 msgid "OS Type:"
 msgstr "Betriebssystemtyp"
@@ -7339,8 +7404,34 @@ msgstr ""
 msgid "Diffserv Code Point"
 msgstr ""
 
+msgid "Leave as 'none' to leave the rule enabled all the time."
+msgstr ""
+
+msgid "default"
+msgstr "standard"
+
+msgid ""
+"Leave as 'default' to use the system routing table.  Or choose a gateway to "
+"utilize policy based routing."
+msgstr ""
+
 msgid "Advanced Options"
 msgstr "Erweiterte Optionen"
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1219
+msgid "Show/Hide"
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1224
+msgid "Note: Leave fields blank to disable the feature."
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1227
+msgid "allow options"
+msgstr ""
 
 msgid ""
 "This allows packets with IP options to pass. Otherwise they are blocked by "
@@ -7350,7 +7441,17 @@ msgstr ""
 "Ansonsten werden sie standardmäßig blockiert. Dies ist normalerweise nur in "
 "Multicastverkehr üblich."
 
+#
+# File: src/www/firewall_rules_edit.php, line: 1236
+msgid "disable reply-to"
+msgstr ""
+
 msgid "This will disable auto generated reply-to for this rule."
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1245
+msgid "Set local tag"
 msgstr ""
 
 msgid "Policy filtering"
@@ -7361,28 +7462,60 @@ msgid ""
 "NAT/filter rules. It is called"
 msgstr ""
 
+#
+# File: src/www/firewall_rules_edit.php, line: 1254
+msgid "Match local tag"
+msgstr ""
+
 msgid "You can match packet on a mark placed before on another rule."
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1263
+msgid "Max states"
 msgstr ""
 
 msgid " Maximum state entries this rule can create"
 msgstr "Maximale Statuseinträge, die diese Regel erzeugen kann"
 
+#
+# File: src/www/firewall_rules_edit.php, line: 1272
+msgid "Max source nodes"
+msgstr ""
+
 msgid " Maximum number of unique source hosts"
 msgstr " Maximale Anzahl einmaliger Quellhosts"
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1281
+msgid "Max established"
+msgstr ""
 
 msgid " Maximum number of established connections per host (TCP only)"
 msgstr " Maximale Anzahl bestehender Verbindungen per Host (Nur TCP)"
 
+#
+# File: src/www/firewall_rules_edit.php, line: 1290
+msgid "Max source states"
+msgstr ""
+
 msgid " Maximum state entries per host"
 msgstr " Maximale Statuseinträge pro Host"
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1299
+msgid "Max new connections"
+msgstr ""
 
 msgid "Maximum new connections per host / per second(s) (TCP only)"
 msgstr ""
 
-msgid "State Timeout in seconds (TCP only)"
+#
+# File: src/www/firewall_rules_edit.php, line: 1329
+msgid "State timeout"
 msgstr ""
 
-msgid "Note: Leave fields blank to disable that feature."
+msgid "State Timeout in seconds (TCP only)"
 msgstr ""
 
 msgid "TCP flags"
@@ -7394,6 +7527,11 @@ msgstr "Jegliche Flags."
 msgid ""
 "Use this to choose TCP flags that must be set or cleared for this rule to "
 "match."
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 1376
+msgid "NO pfsync"
 msgstr ""
 
 msgid "State Type"
@@ -7411,9 +7549,6 @@ msgstr ""
 
 msgid "synproxy state"
 msgstr ""
-
-msgid "none"
-msgstr "keiner"
 
 msgid ""
 "Hint: Select which type of state tracking mechanism you would like to use.  "
@@ -7433,17 +7568,6 @@ msgid ""
 "Do not use state mechanisms to keep track.  This is only useful if you're "
 "doing advanced queueing in certain situations.  Please check the "
 "documentation."
-msgstr ""
-
-msgid "Leave as 'none' to leave the rule enabled all the time."
-msgstr ""
-
-msgid "default"
-msgstr "standard"
-
-msgid ""
-"Leave as 'default' to use the system routing table.  Or choose a gateway to "
-"utilize policy based routing."
 msgstr ""
 
 msgid "Fri"
@@ -7507,16 +7631,28 @@ msgstr "September"
 msgid "Cannot delete Schedule.  Currently in use by %s"
 msgstr "Konnte Planung nicht löschen, da sie gerade von %s verwendet wird."
 
+msgid "Do you really want to delete this schedule?"
+msgstr ""
+
 msgid "Time Range(s)"
 msgstr ""
 
 msgid "Schedule is currently active"
 msgstr ""
 
-msgid "edit alias"
-msgstr "Alias bearbeiten"
+#
+# File: src/www/firewall_schedule.php, line: 234
+msgid "edit this schedule"
+msgstr ""
 
-msgid "Do you really want to delete this schedule?"
+#
+# File: src/www/firewall_schedule.php, line: 237
+msgid "delete this schedule"
+msgstr ""
+
+#
+# File: src/www/firewall_schedule.php, line: 240
+msgid "add new schedule based on this one"
 msgstr ""
 
 msgid ""
@@ -7585,12 +7721,6 @@ msgstr "Startzeit"
 msgid "Stop Time"
 msgstr "Endzeit"
 
-msgid "Hr"
-msgstr ""
-
-msgid "Min"
-msgstr "Min"
-
 msgid ""
 "Select the time range for the day(s) selected on the Month(s) above. A full "
 "day is 0:00-23:59."
@@ -7632,17 +7762,38 @@ msgstr ""
 msgid "Virtual IP Addresses"
 msgstr "Virtuelle IP-Adressen"
 
-msgid "The VIP configuration has been changed."
-msgstr ""
+msgid "Add"
+msgstr "Hinzufügen"
 
 msgid "CARP Settings"
 msgstr "CARP Einstellungen"
 
-msgid "Virtual IP address"
-msgstr "Virtuelle IP-Adresse"
+#
+# File: src/www/firewall_virtual_ip.php, line: 225
+msgid "Alias"
+msgstr ""
 
 msgid "Do you really want to delete this entry?"
 msgstr "Wollen Sie diesen Eintrag wirklich löschen?"
+
+msgid "The VIP configuration has been changed."
+msgstr ""
+
+msgid "Virtual IP address"
+msgstr "Virtuelle IP-Adresse"
+
+#
+# File: src/www/firewall_virtual_ip.php, line: 311
+msgid "move selected alias before this rule"
+msgstr ""
+
+msgid "edit this alias"
+msgstr "Diesen Alias bearbeiten"
+
+#
+# File: src/www/firewall_virtual_ip.php, line: 317
+msgid "delete this alias"
+msgstr ""
 
 msgid "The virtual IP addresses defined on this page may be used in"
 msgstr ""
@@ -7694,6 +7845,11 @@ msgstr ""
 msgid "Virtual IP Address"
 msgstr "virtuelle IP-Adresse"
 
+#
+# File: src/www/firewall_virtual_ip_edit.php, line: 266
+msgid "Please provide a single IP address"
+msgstr ""
+
 msgid ""
 "This must be the network's subnet mask. It does not specify a CIDR range."
 msgstr ""
@@ -7707,6 +7863,11 @@ msgstr "Virtuelle IP bearbeiten"
 msgid "IP Alias"
 msgstr "IP Alias"
 
+#
+# File: src/www/firewall_virtual_ip_edit.php, line: 334
+msgid "carp"
+msgstr ""
+
 msgid "Proxy ARP"
 msgstr ""
 
@@ -7716,11 +7877,21 @@ msgstr "Andere(r|s)"
 msgid "IP Address(es)"
 msgstr "IP-Adresse(n)"
 
+msgid "Type:"
+msgstr ""
+
 msgid "Single address"
 msgstr "Einzelne Adresse"
 
 msgid "Expansion:"
 msgstr "Erweiterung:"
+
+#
+# File: src/www/firewall_virtual_ip_edit.php, line: 403
+msgid ""
+"Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 "
+"expands to 256 entries."
+msgstr ""
 
 msgid "Virtual IP Password"
 msgstr "Passwort der virtuellen IP"
@@ -7735,6 +7906,16 @@ msgid "Enter the VHID group that the machines will share"
 msgstr "Geben Sie die VHID Gruppe ein, die die Maschinen teilen werden"
 
 msgid "Advertising Frequency"
+msgstr ""
+
+#
+# File: src/www/firewall_virtual_ip_edit.php, line: 433
+msgid "Base"
+msgstr ""
+
+#
+# File: src/www/firewall_virtual_ip_edit.php, line: 441
+msgid "Skew"
 msgstr ""
 
 msgid ""
@@ -7811,9 +7992,6 @@ msgstr "MB/s"
 
 msgid "GB/s"
 msgstr "GB/s"
-
-msgid "Cannot get CPU load"
-msgstr "Konnte CPU Last nicht ermitteln"
 
 #, php-format
 msgid "The field %s contains invalid characters."
@@ -7930,15 +8108,13 @@ msgstr ""
 "DHCP Serverdienst auf diesem Interface zuerst und dann ändern Sie die "
 "Interfacekonfiguration."
 
+#
+# File: src/www/interfaces.php, line: 779
 msgid ""
-"The DHCP6 Server is active on this interface and it can be used only with a "
+"The DHCPv6 Server is active on this interface and it can be used only with a "
 "static IPv6 configuration. Please disable the DHCPv6 Server service on this "
 "interface first, then change the interface configuration."
 msgstr ""
-"Der DHCP6 Server ist auf diesem Interface aktiv und kann nur mit einer "
-"statischen IPv6-Konfiguration verwendet werden. Bitte deaktivieren Sie den "
-"DHCPv6 Serverdienst auf diesem Interface zuerst und dann ändern Sie die "
-"Interfacekonfiguration."
 
 msgid "IPv4 address"
 msgstr "IPv4 Adresse"
@@ -8135,8 +8311,8 @@ msgstr "6rd Tunnel"
 msgid "6to4 Tunnel"
 msgstr "6zu4 Tunnel"
 
-msgid "DHCP6"
-msgstr "DHCP6"
+msgid "DHCPv6"
+msgstr "DHCPv6"
 
 msgid "SLAAC"
 msgstr "SLAAC"
@@ -8206,6 +8382,9 @@ msgstr ""
 
 msgid "Speed and duplex"
 msgstr ""
+
+msgid "Show advanced option"
+msgstr "Zeige erweiterte Optionen"
 
 msgid ""
 "Here you can explicitly set speed and duplex mode for this interface. "
@@ -8416,9 +8595,10 @@ msgid ""
 "ISPs may require certain options be or not be sent. "
 msgstr ""
 
-# File: src/www/interfaces.php, line: 2160
+#
+# File: src/www/interfaces.php, line: 2435
 msgid ""
-"DHCP6 client configuration &nbsp; &nbsp;  <input name="
+"DHCPv6 client configuration &nbsp; &nbsp;  <input name="
 "\"adv_dhcp6_config_advanced\" type=\"checkbox\" id="
 "\"adv_dhcp6_config_advanced\" value=\"\" onclick="
 "\"show_adv_dhcp6_config(this)\" />  Advanced &nbsp; &nbsp;  <input name="
@@ -9267,6 +9447,21 @@ msgstr "Interface wurde gelöscht."
 msgid "Interface assignments"
 msgstr "Interfacezuweisungen"
 
+msgid "Interface Groups"
+msgstr "Interface Gruppen"
+
+msgid "VLANs"
+msgstr "VLANs"
+
+msgid "QinQs"
+msgstr "QinQs"
+
+msgid "PPPs"
+msgstr "PPPs"
+
+msgid "Bridges"
+msgstr "Bridges"
+
 msgid "Network port"
 msgstr "Netzwerkport"
 
@@ -9289,9 +9484,6 @@ msgstr ""
 
 msgid "This bridge cannot be deleted because it is assigned as an interface."
 msgstr ""
-
-msgid "Bridge"
-msgstr "Bridge"
 
 msgid "Members"
 msgstr "Mitglieder"
@@ -9565,15 +9757,14 @@ msgstr "Wollen Sie diesen gif Tunnel wirklich löschen?"
 msgid "GIF tunnels are configured here."
 msgstr ""
 
-msgid "HE.net Tunnelbroker type DynDNS Entry"
-msgstr ""
-
+#
+# File: src/www/interfaces_gif.php, line: 158
+#, php-format
 msgid ""
 "If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) "
-"Tunnel Broker on a WAN with a dynamic IP, you may want to add a"
-msgstr ""
-
-msgid "to keep your tunnel functional when your IP changes."
+"Tunnel Broker on a WAN with a dynamic IP, you may want to add a %sHE.net "
+"Tunnelbroker dynamic DNS entry%s to keep your tunnel functional when your IP "
+"changes."
 msgstr ""
 
 msgid ""
@@ -10143,9 +10334,6 @@ msgstr ""
 msgid "QinQ interface does not exist"
 msgstr "QinQ Interface existiert nicht"
 
-msgid "QinQ"
-msgstr "QinQ"
-
 msgid "Tag"
 msgstr ""
 
@@ -10228,9 +10416,6 @@ msgid ""
 msgstr ""
 "Dieses VLAN kann nicht gelöscht werden, da es von einem Interface benutzt "
 "wird."
-
-msgid "VLAN"
-msgstr "VLAN"
 
 msgid "VLAN tag"
 msgstr "VLAN Tag"
@@ -10595,9 +10780,6 @@ msgstr "Hinzufügen / Entfernen von verfügbaren Aktionen"
 
 msgid "Available Actions"
 msgstr "Verfügbare Aktionen"
-
-msgid "Add"
-msgstr "Hinzufügen"
 
 msgid "Enabled Actions"
 msgstr "Aktivierte Aktionen"
@@ -12460,6 +12642,9 @@ msgstr ""
 msgid "Enter the Bootfile URL"
 msgstr "Geben Sie die Bootdatei-URL ein"
 
+msgid "Delete"
+msgstr "Löschen"
+
 msgid "Status: DHCPv6 leases"
 msgstr ""
 
@@ -12477,9 +12662,6 @@ msgstr "Eine gültige DUID Kennung muss angegeben werden."
 
 msgid "This Hostname, IP or DUID Identifier already exists."
 msgstr ""
-
-msgid "DHCPv6"
-msgstr "DHCPv6"
 
 msgid "Static DHCPv6 Mapping"
 msgstr ""
@@ -12828,8 +13010,11 @@ msgstr ""
 msgid "MX"
 msgstr "MX"
 
+#
+# File: src/www/services_dyndns_edit.php, line: 338
 msgid ""
-"Note: With DynDNS service you can only use a hostname, not an IP address."
+"Note: With a dynamic DNS service you can only use a hostname, not an IP "
+"address."
 msgstr ""
 
 msgid ""
@@ -12910,9 +13095,12 @@ msgstr ""
 msgid "This field is only used by Custom Dynamic DNS Entries."
 msgstr ""
 
+#
+# File: src/www/services_dyndns_edit.php, line: 407
 msgid ""
-"This field should be identical to what your DDNS Provider will return if the "
-"update succeeds, leave it blank to disable checking of returned results."
+"This field should be identical to what your dynamic DNS Provider will return "
+"if the update succeeds, leave it blank to disable checking of returned "
+"results."
 msgstr ""
 
 msgid ""
@@ -13727,6 +13915,9 @@ msgstr ""
 "Snooping verwendet und sollte idealerweise nur für Ihren administrativen "
 "Host konfiguriert werden."
 
+msgid "You may enter a description here for your reference."
+msgstr "Beschreibung (wird nicht als Parameter verwendet)."
+
 msgid "Access List Name"
 msgstr "Zugriffslistenname"
 
@@ -14223,18 +14414,6 @@ msgstr ""
 
 # der die das?
 msgid "the"
-msgstr ""
-
-msgid "CPU load"
-msgstr "CPU Last"
-
-msgid "Status: CPU Graph"
-msgstr ""
-
-msgid "Adobe SVG viewer"
-msgstr "Adobe SVG viewer"
-
-msgid "if you can't see the graph, you may have to install the"
 msgstr ""
 
 msgid "interface"
@@ -15253,9 +15432,6 @@ msgstr ""
 msgid "Please select a valid Thermal Hardware Sensor."
 msgstr ""
 
-msgid "Miscellaneous"
-msgstr "Verschiedenes"
-
 msgid "Proxy support"
 msgstr "Proxy Unterstützung"
 
@@ -16089,9 +16265,6 @@ msgstr ""
 msgid "delete ca"
 msgstr "Zertifizierungsstelle löschen"
 
-msgid "Certificate Revocation"
-msgstr "Zertifikatsrückruf"
-
 msgid "Import an existing Certificate"
 msgstr ""
 
@@ -16100,9 +16273,6 @@ msgstr "Erstelle ein neues internes Zertifikat"
 
 msgid "Create a Certificate Signing Request"
 msgstr "Erstelle eine neue Zertifikatssignaturanfrage"
-
-msgid "Certificate Manager"
-msgstr "Zertifikatsmanager"
 
 msgid "Choose an existing certificate"
 msgstr "Wählen Sie ein existierendes Zertifikat aus"
@@ -16261,6 +16431,9 @@ msgstr "Das Löschen des Zertifikats %s von der CRL %s ist fehlgeschlagen"
 
 msgid "Certificate Revocation List data"
 msgstr ""
+
+msgid "Certificate Authority"
+msgstr "Zertifizierungsstelle"
 
 msgid "Existing Certificate Revocation List"
 msgstr "Existierende Zertifikatsrückrufliste"
@@ -16743,6 +16916,11 @@ msgstr "Deutsch"
 # File: src/www/system_general.php, line: 42
 msgid "Japanese"
 msgstr "Japanisch"
+
+#
+# File: src/www/system_general.php, line: 48
+msgid "Mongolian"
+msgstr ""
 
 # File: src/www/system_general.php, line: 41
 msgid "Spanish"
@@ -17382,11 +17560,11 @@ msgstr "Ausgewählte Phase 1 Einträge löschen"
 msgid "Do you really want to delete the selected phase1 entries?"
 msgstr "Wollen Sie die ausgewählten Phase 1 Einträge wirklich löschen?"
 
-msgid "Status:IPsec"
-msgstr "Status:IPsec"
-
 msgid "You can check your IPsec status at"
 msgstr ""
+
+msgid "Status:IPsec"
+msgstr "Status:IPsec"
 
 msgid "IPsec Debug Mode can be enabled at"
 msgstr ""
@@ -17802,18 +17980,14 @@ msgstr "Hashalgorithmus"
 msgid "DH key group"
 msgstr "DH Schlüsselgruppe"
 
-#
-# File: src/www/vpn_ipsec_phase1.php, line: 978
-msgid "Enable Rekey"
-msgstr ""
+msgid "Disable Rekey"
+msgstr "ReKey deaktivieren"
 
 msgid "Whether a connection should be renegotiated when it is about to expire."
 msgstr ""
 
-#
-# File: src/www/vpn_ipsec_phase1.php, line: 987
-msgid "Enable Reauth"
-msgstr ""
+msgid "Disable Reauth"
+msgstr "Reauth deaktivieren"
 
 msgid ""
 "Whether rekeying of an IKE_SA should also reauthenticate the peer. In IKEv1, "
@@ -18408,6 +18582,14 @@ msgstr ""
 
 #
 # File: src/www/vpn_openvpn_client.php, line: 718
+# File: src/www/vpn_openvpn_client.php.orig, line: 718
+# File: src/www/vpn_openvpn_server.php, line: 958
+# File: src/www/vpn_openvpn_server.php.orig, line: 958
+msgid "No Certificate Authorities defined."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_client.php, line: 718
 # File: src/www/vpn_openvpn_client.php, line: 756
 # File: src/www/vpn_openvpn_client.php.orig, line: 718
 # File: src/www/vpn_openvpn_client.php.orig, line: 756
@@ -18418,14 +18600,6 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php.orig, line: 991
 # File: src/www/vpn_openvpn_server.php.orig, line: 1031
 msgid "Create one under"
-msgstr ""
-
-#
-# File: src/www/vpn_openvpn_client.php, line: 718
-# File: src/www/vpn_openvpn_client.php.orig, line: 718
-# File: src/www/vpn_openvpn_server.php, line: 958
-# File: src/www/vpn_openvpn_server.php.orig, line: 958
-msgid "No Certificate Authorities defined."
 msgstr ""
 
 #
@@ -18813,9 +18987,8 @@ msgid "Automagic Multi-WAN IPs (port forward targets)"
 msgstr ""
 
 #
-# File: src/www/vpn_openvpn_export.php, line: 655
-# File: src/www/vpn_openvpn_export.php.orig, line: 655
-msgid "Automagic Multi-WAN DDNS Hostnames (port forward targets)"
+# File: src/www/vpn_openvpn_export.php, line: 656
+msgid "Automagic Multi-WAN dynamic DNS Hostnames (port forward targets)"
 msgstr ""
 
 #
@@ -18824,14 +18997,6 @@ msgstr ""
 # File: src/www/vpn_openvpn_export_shared.php, line: 333
 # File: src/www/vpn_openvpn_export_shared.php.orig, line: 333
 msgid "Installation hostname"
-msgstr ""
-
-#
-# File: src/www/vpn_openvpn_export.php, line: 661
-# File: src/www/vpn_openvpn_export.php, line: 670
-# File: src/www/vpn_openvpn_export.php.orig, line: 661
-# File: src/www/vpn_openvpn_export.php.orig, line: 670
-msgid "DynDNS"
 msgstr ""
 
 #
@@ -19121,9 +19286,8 @@ msgid "Shared Key Server"
 msgstr ""
 
 #
-# File: src/www/vpn_openvpn_export_shared.php, line: 338
-# File: src/www/vpn_openvpn_export_shared.php.orig, line: 338
-msgid "DynDNS:"
+# File: src/www/vpn_openvpn_export_shared.php, line: 340
+msgid "Dynamic DNS:"
 msgstr ""
 
 #
@@ -19236,11 +19400,12 @@ msgid ""
 "client certificate and the username given at login."
 msgstr ""
 
-# File: src/www/vpn_openvpn_server.php, line: 1315
+#
+# File: src/www/vpn_openvpn_server.php, line: 1227
 msgid ""
 "This is the IPv4 virtual network used for private communications between "
 "this server and client hosts expressed using CIDR (eg. 10.0.8.0/24). The "
-"first network address will be assigned to the\tserver virtual interface. The "
+"first network address will be assigned to the  server virtual interface. The "
 "remaining network addresses can optionally be assigned to connecting "
 "clients. (see Address Pool)"
 msgstr ""
@@ -19395,6 +19560,14 @@ msgid ""
 msgstr ""
 
 msgid "Scope ID"
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_server.php, line: 1619
+msgid ""
+"A NetBIOS Scope  ID provides an extended naming service for  NetBIOS over "
+"TCP/IP. The NetBIOS scope ID isolates NetBIOS traffic on a single network to "
+"only those nodes with the same NetBIOS scope ID"
 msgstr ""
 
 msgid "Client Management Port"
@@ -20060,283 +20233,3 @@ msgstr ""
 
 msgid "OpenVPN Wizard"
 msgstr "OpenVPN Assistent"
-
-# File: lang/dynamic/helpers/acl.php, line: 45
-#~ msgid "Allow access to the 'Services: Intrusion Detection' page'"
-#~ msgstr "Den Zugriff zur Seite 'Dienste: Einbruchserkennung' erlauben."
-
-# File: lang/dynamic/helpers/acl.php, line: 121
-#~ msgid "Allow access to the 'Diag IPsec XML' page."
-#~ msgstr "Den Zugriff zur Seite 'Diag IPsec XML' erlauben."
-
-#~ msgid "ERROR! ldap_get_user_ous() could not bind anonymously to server %s."
-#~ msgstr ""
-#~ "FEHLER! ldap_get_user_ous() konnte den Server %s nicht anonym binden."
-
-#~ msgid "ERROR! ldap_get_groups() Could not connect to server %s."
-#~ msgstr "FEHLER! ldap_get_groups() Konnte nicht zum Server %s verbinden."
-
-#~ msgid "ERROR! ldap_get_groups() could not bind to server %s."
-#~ msgstr "FEHLER! ldap_get_groups() Bindung an Server %s nicht möglich."
-
-#~ msgid "ERROR! Could not bind to server %s."
-#~ msgstr "FEHLER: Bindung an Server %s nicht möglich."
-
-#~ msgid "Search resulted in error: %s"
-#~ msgstr "Suche endete mit einem Fehler: %s"
-
-#~ msgid "ERROR! Either LDAP search failed, or multiple users were found."
-#~ msgstr ""
-#~ "FEHLER! Entweder LDAP-Suche fehlgeschlagen oder mehrere Benutzer gefunden."
-
-#~ msgid "ERROR! Could not login to server %1$s as user %2$s: %3$s"
-#~ msgstr ""
-#~ "FEHLER! Konnte nicht am Server %1$s als Benutzer %2$s anmelden: %3$s"
-
-#~ msgid "unknown reason"
-#~ msgstr "unbekannter Grund"
-
-#~ msgid "Invalid login (%s)."
-#~ msgstr "Ungültige Anmeldung (%s)."
-
-#~ msgid "This device is currently being maintained by: %s."
-#~ msgstr "Dieses Gerät wird derzeit von %s gewartet."
-
-#~ msgid "Optional"
-#~ msgstr "Optional"
-
-#~ msgid "Detected link-up on interface %s.%s"
-#~ msgstr "Änderung des Status des Interfaces %s auf aktiv geändert.%s"
-
-#~ msgid "Running plugins"
-#~ msgstr "Laufende Plugins"
-
-#~ msgid "The field '%s' must contain a valid IP address or domain name."
-#~ msgstr ""
-#~ "Das Feld '%s' muss eine gültige IP-Adresse oder einen gültigen "
-#~ "Domainnamen beinhalten."
-
-#~ msgid "Error creating socket!"
-#~ msgstr "Fehler beim Ertellen des Sockets!"
-
-# File: src/etc/inc/pfsense-utils.inc, line: 363
-#~ msgid "Error code is '%1$s' - %2$s"
-#~ msgstr "Der Fehlercode ist '%1$s' - %2$s"
-
-#~ msgid "setsockopt() failed, error: %s"
-#~ msgstr "setsockopt() fehlgeschlagen, Fehler: %s"
-
-#~ msgid "Magic Packet sent (%1$s) to {%2$s} MAC=%3$s"
-#~ msgstr "Magic Packet gesendet (%1$s) an {%2$s} MAC=%3$s"
-
-#~ msgid "Created:"
-#~ msgstr "Erstellt:"
-
-#~ msgid "WARNING: Could not mark subsystem: %s dirty"
-#~ msgstr "WARNUNG: Konnte das Subsystem nicht markieren: %s schmut­zig"
-
-#~ msgid "Processing..."
-#~ msgstr "Verarbeite..."
-
-#~ msgid "Uploading..."
-#~ msgstr "Hochladen..."
-
-# File: src/www/crash_reporter.php, line: 137
-#~ msgid "Would you like to submit this crash report to the %s developers?"
-#~ msgstr "Möchten Sie diesen Crash Report an die %s-Entwickler senden?"
-
-# File: src/www/crash_reporter.php, line: 140
-#~ msgid ""
-#~ "Please-double check the contents to ensure you are comfortable submitting "
-#~ "the following information:"
-#~ msgstr ""
-#~ "Bitte prüfen Sie noch einmal ob Sie damit einverstanden sind, dass "
-#~ "folgende Informationen übertragen werden:"
-
-#~ msgid "Backups are also nice."
-#~ msgstr "Backups sind auch nett."
-
-#~ msgid "Do you really want to add this BLOCK rule?"
-#~ msgstr "Wollen Sie diese Blockierregel wirklich hinzufügen?"
-
-#~ msgid "Easy Rule is still experimental."
-#~ msgstr "Easy Rule ist immer noch experimentell."
-
-#~ msgid "Do you really want to add this PASS rule?"
-#~ msgstr "Wollen Sie diese Erlaubnisregel wirklich hinzufügen?"
-
-#~ msgid "data"
-#~ msgstr "Daten"
-
-#~ msgid "Firewall: EasyRule"
-#~ msgstr "Firewall: Einfache Regel"
-
-#~ msgid "Message"
-#~ msgstr "Nachricht"
-
-#~ msgid ""
-#~ "This page is meant to be called from the block/pass buttons on the "
-#~ "Firewall Logs page"
-#~ msgstr ""
-#~ "Diese Seite ist dazu gedacht, von Blockieren/Erlauben Buttons von der "
-#~ "Firewallprotokollseite aufgerufen zu werden"
-
-#~ msgid "Reserved word used for alias name."
-#~ msgstr "Ein reserviertes Wort wurde für einen Aliasnamen benutzt."
-
-#~ msgid "You must provide a valid URL. Could not fetch usable data from '%s'."
-#~ msgstr ""
-#~ "Sie müssen eine gültige URL eingeben. Konnte keine Daten von '%s' abrufen."
-
-#~ msgid "is not a valid port or alias."
-#~ msgstr "ist kein gültiger Port oder Alias."
-
-#~ msgid "%1$s is not a valid %2$s alias."
-#~ msgstr "%1$s ist kein gültiger %2$s Alias."
-
-#~ msgid "%s/%s is not a valid subnet."
-#~ msgstr "%s/%s ist kein gültiges Subnetz"
-
-#~ msgid "Network or FQDN"
-#~ msgstr "Netzwerk oder Voll qualifizierter Domainname"
-
-#~ msgid "OpenVPN Users"
-#~ msgstr "OpenVPN Benutzer"
-
-#~ msgid "Enter as many usernames as you wish."
-#~ msgstr "Geben Sie so viele Benutzer ein wie Sie wollen."
-
-#~ msgid "Descriptions must be less than 200 characters long."
-#~ msgstr "Beschreibungen müssen kürzer als 200 Zeichen sein."
-
-#~ msgid "Src. addr"
-#~ msgstr "Quelladresse"
-
-#~ msgid "Src. ports"
-#~ msgstr "Quellports"
-
-#~ msgid "Dest. addr"
-#~ msgstr "Zieladresse"
-
-#~ msgid "Dest. ports"
-#~ msgstr "Zielports"
-
-#~ msgid "NAT IP"
-#~ msgstr "NAT IP"
-
-#~ msgid "NAT Ports"
-#~ msgstr "NAT Ports"
-
-#~ msgid "%s is not a valid internal IP address."
-#~ msgstr "%s ist keine gültige interne IP Adresse"
-
-#~ msgid "A valid internal bit count must be specified."
-#~ msgstr "Eine gültige interne Bitzahl muss angegeben werden."
-
-#~ msgid "Single host"
-#~ msgstr "Einzelner Host"
-
-#~ msgid "use system default"
-#~ msgstr "verwende Systemstandard"
-
-#~ msgid "enable"
-#~ msgstr "aktivieren"
-
-#~ msgid "disable"
-#~ msgstr "deaktivieren"
-
-#~ msgid "The destination port range overlaps with an existing entry."
-#~ msgstr "Der Zielportbereich überlappt mit einem existierendem Eintrag."
-
-#~ msgid "Interface address"
-#~ msgstr "Interface Adresse"
-
-#~ msgid "Other Subnet:"
-#~ msgstr "Anderes Subnetz:"
-
-#~ msgid "Port:"
-#~ msgstr "Port:"
-
-#~ msgid "Traffic matching this rule is currently being denied"
-#~ msgstr "Datenverkehr, der dieser Regel entspricht, wird derzeit abgelehnt."
-
-#~ msgid "Traffic matching this rule is currently being allowed"
-#~ msgstr "Datenverkehr, der dieser Regel entspricht, wird derzeit erlaubt."
-
-#~ msgid "edit this alias"
-#~ msgstr "Diesen Alias bearbeiten"
-
-#~ msgid "The system is now rebooting.  Please wait."
-#~ msgstr "Das System startet jetzt neu.  Bitte warten."
-
-#~ msgid "Reboot is needed. Please apply the settings in order to reboot."
-#~ msgstr ""
-#~ "Ein Neustart ist erforderlich. Bitte wenden Sie die Einstellungen an um "
-#~ "neuzustarten."
-
-#~ msgid "Display OpenVPN's internal routing table for this server."
-#~ msgstr "OpenVPNs interne Routingtabelle für diesen Server anzeigen."
-
-#~ msgid "Note:  This will also turn off NAT!"
-#~ msgstr "Hinweis: Dies wird auch NAT deaktivieren!"
-
-#~ msgid "/tmp Size must be numeric and should not be less than 40MB."
-#~ msgstr "/tmp Größer muss nummerisch und nicht kleiner als 40MB sein."
-
-#~ msgid "/var Size must be numeric and should not be less than 60MB."
-#~ msgstr "/var Größe muss numerisch und größer als 60MB sein."
-
-#~ msgid "Cryptographic Hardware"
-#~ msgstr "Kryptografische Hardware"
-
-#~ msgid "/tmp RAM Disk Size"
-#~ msgstr "/tmp Ramdiskgröße"
-
-#~ msgid "/var RAM Disk Size"
-#~ msgstr "/var Ramdiskgröße"
-
-#~ msgid "Frequency:"
-#~ msgstr "Frequenz:"
-
-#~ msgid "Attempting bind to"
-#~ msgstr "Versuche zu binden an"
-
-#~ msgid ""
-#~ "At least one DNS server must be specified to enable the DNS Server option."
-#~ msgstr ""
-#~ "Mindestens ein DNS Server muss angegeben werden, um die DNS Server Option "
-#~ "zu aktivieren."
-
-#~ msgid "A valid value for 'Login Banner' must be specified."
-#~ msgstr "Ein gültiger Wert für 'Login Banner' muss angegeben werden."
-
-#~ msgid "Disable Rekey"
-#~ msgstr "ReKey deaktivieren"
-
-#~ msgid "Disable Reauth"
-#~ msgstr "Reauth deaktivieren"
-
-#~ msgid "Client successfully deleted"
-#~ msgstr "Client wurde erfolgreich gelöscht"
-
-#~ msgid "Disable this client"
-#~ msgstr "Diesen Client deaktivieren"
-
-#~ msgid ""
-#~ "The field 'NetBIOS Data Distribution Server #1' must contain a valid IP "
-#~ "address"
-#~ msgstr ""
-#~ "Das Feld 'NetBIOS Data Distribution Server #1' muss eine gültige IP-"
-#~ "Adresse enthalten"
-
-#~ msgid "Disable this override"
-#~ msgstr "Deaktiviere diese Überschreibung"
-
-#~ msgid "edit csc"
-#~ msgstr "csc bearbeiten"
-
-#~ msgid "Server successfully deleted"
-#~ msgstr "Server erfolgreich gelöscht"
-
-#~ msgid "Disable this server"
-#~ msgstr "Deaktiviere diesen Server"
