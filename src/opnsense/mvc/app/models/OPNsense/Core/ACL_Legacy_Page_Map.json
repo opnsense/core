@@ -1225,8 +1225,8 @@
         ]
     },
     "page-status-upnpstatus": {
-        "name": "WebCfg - Status: Universal Plug and Play Status page",
-        "descr": "Allow access to the 'Status: Universal Plug and Play Status' page.",
+        "name": "WebCfg - Status: Universal Plug and Play page",
+        "descr": "Allow access to the 'Status: Universal Plug and Play' page.",
         "match": [
             "status_upnp.php*"
         ]
