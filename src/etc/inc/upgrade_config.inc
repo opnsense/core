@@ -3431,4 +3431,13 @@ function upgrade_111_to_112()
 		$config['system']['ssh']['enabled'] = true;
 		unset($config['system']['enablesshd']);
 	}
+
+	if (isset($config['system']['user'])) {
+		foreach ($config['system']['user'] as &$user) {
+			if ($user['uid'] == '0') {
+				/* root user must be named root */
+				$user['name'] = 'root';
+			}
+		}
+	}
 }
