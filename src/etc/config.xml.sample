@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <opnsense>
   <trigger_initial_wizard/>
-  <version>9.9</version>
+  <version>11.2</version>
   <theme>opnsense</theme>
   <sysctl>
     <item>
@@ -234,9 +234,6 @@
       <interval>monthly</interval>
     </bogons>
     <kill_states/>
-    <ssh>
-      <sshdkeyonly/>
-    </ssh>
   </system>
   <interfaces>
     <wan>
