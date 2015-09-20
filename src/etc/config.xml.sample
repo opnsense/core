@@ -239,7 +239,7 @@
       <gateway/>
       <blockpriv/>
       <blockbogons/>
-      <dhcphostname></dhcphostname>
+      <dhcphostname/>
       <media/>
       <mediaopt/>
       <dhcp6-duid/>
