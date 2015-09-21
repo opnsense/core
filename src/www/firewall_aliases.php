@@ -140,7 +140,6 @@ $pgtitle = array(gettext("Firewall"), gettext("Aliases"));
 $shortcut_section = "aliases";
 $main_buttons = array(
     array('href'=>'firewall_aliases_edit.php?tab='.$selected_tab, 'label'=>gettext("Add a new alias")),
-    array('href'=>'firewall_aliases_import.php', 'label'=>gettext("Bulk import aliases from list")),
 );
 
 
