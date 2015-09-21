@@ -126,13 +126,13 @@ if ($_GET['act'] == "del") {
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Gateway Groups"));
+$pgtitle = array(gettext('System'), gettext('Gateways'), gettext('Groups'));
 $shortcut_section = "gateway-groups";
 
 include("head.inc");
 
 $main_buttons = array(
-    array('label'=>'Add group', 'href'=>'system_gateway_groups_edit.php'),
+    array('label'=> gettext('Add group'), 'href'=>'system_gateway_groups_edit.php'),
 );
 
 ?>
@@ -155,8 +155,6 @@ $main_buttons = array(
 endif; ?>
 
 			    <section class="col-xs-12">
-
-				<? include('system_gateways_tabs.inc'); ?>
 
 					<div class="tab-content content-box col-xs-12">
 

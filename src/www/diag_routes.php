@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2006 Fernando Lamos
@@ -54,7 +55,7 @@ if (isset($_REQUEST['isAjax'])) {
 	exit;
 }
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Routing tables"));
+$pgtitle = array(gettext('System'), gettext('Routes'), gettext('Status'));
 $shortcut_section = "routing";
 
 include('head.inc');

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
@@ -546,8 +547,7 @@ if ($_POST) {
     }
 }
 
-
-$pgtitle = array(gettext("System"),gettext("Gateways"),gettext("Edit gateway"));
+$pgtitle = array(gettext('System'), gettext('Gateway'), gettext('Edit'));
 $shortcut_section = "gateways";
 
 include("head.inc");

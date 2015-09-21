@@ -201,13 +201,13 @@ if (isset($_POST['del_x'])) {
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Static Routes"));
+$pgtitle = array(gettext('System'), gettext('Routes'));
 $shortcut_section = "routing";
 
 include("head.inc");
 
 $main_buttons = array(
-    array('label'=>'Add', 'href'=>'system_routes_edit.php'),
+    array('label'=> gettext('Add route'), 'href'=>'system_routes_edit.php'),
 );
 
 
@@ -232,8 +232,6 @@ $main_buttons = array(
 endif; ?>
 
 			    <section class="col-xs-12">
-
-				<? include('system_gateways_tabs.inc'); ?>
 
 					<div class="tab-content content-box col-xs-12">
 

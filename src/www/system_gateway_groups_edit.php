@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
@@ -148,7 +149,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Gateways"),gettext("Edit gateway group"));
+$pgtitle = array(gettext('System'),gettext('Gateways'), gettext('Edit Group'));
 $shortcut_section = "gateway-groups";
 
 function build_gateway_protocol_map (&$a_gateways)

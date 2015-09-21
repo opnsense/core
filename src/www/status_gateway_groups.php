@@ -57,7 +57,7 @@ $changedesc = gettext("Gateway Groups") . ": ";
 
 $gateways_status = return_gateways_status();
 
-$pgtitle = array(gettext("Status"),gettext("Gateway Groups"));
+$pgtitle = array(gettext('System'), gettext('Gateways'), gettext('Group Status'));
 $shortcut_section = "gateway-groups";
 include("head.inc");
 

@@ -220,7 +220,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Static Routes"),gettext("Edit route"));
+$pgtitle = array(gettext('System'), gettext('Routes'), gettext('Edit'));
 $shortcut_section = "routing";
 include("head.inc");
 ?>

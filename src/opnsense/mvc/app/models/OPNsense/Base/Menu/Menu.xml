@@ -28,12 +28,23 @@
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" visibleName="CARP Status" url="/carp_status.php"/>
         </HighAvailability>
-        <Routing url="/system_gateways.php">
-            <Routes url="/system_routes.php"/>
-            <RoutesEdit url="/system_routes_edit.php*"/>
-            <GatewayGroups url="/system_gateway_groups.php"/>
-            <GatewayGroupsEdit url="/system_gateway_groups_edit.php*"/>
-        </Routing>
+        <Routes cssClass="fa fa-wrench">
+            <All url="/system_routes.php">
+                <Edit url="/system_routes_edit.php*"/>
+            </All>
+            <Status url="/diag_routes.php"/>
+        </Routes>
+        <Gateways cssClass="fa fa-location-arrow">
+            <All url="/system_gateways.php">
+                <Edit url="/system_gateways_edit.php*"/>
+            </All>
+            <Groups url="/system_gateway_groups.php">
+                <Edit url="/system_gateway_groups_edit.php*"/>
+            </Groups>
+            <Status url="/status_gateways.php">
+                <Groups url="/status_gateway_groups.php"/>
+            </Status>
+        </Gateways>
         <Settings url="/system_general.php">
             <General VisibleName="General" url="/system_general.php"/>
             <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
@@ -216,9 +227,6 @@
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
-        <Gateways url="/status_gateways.php">
-            <GatewayGroups url="/status_gateway_groups.php"/>
-        </Gateways>
         <Interfaces url="/status_interfaces.php"/>
         <IPsec url="/diag_ipsec.php">
             <IPsecACT url="/diag_ipsec.php?*"/>
@@ -277,7 +285,6 @@
         <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
         <Ping url="/diag_ping.php"/>
         <Reboot url="/diag_reboot.php"/>
-        <Routes url="/diag_routes.php"/>
         <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
         <Sockets url="/diag_sockets.php">
             <SocketsDetails url="/diag_sockets.php?*"/>

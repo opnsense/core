@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
@@ -37,7 +38,7 @@ $gateways_status = return_gateways_status(true);
 $now = time();
 $year = date("Y");
 
-$pgtitle = array(gettext("Status"),gettext("Gateways"));
+$pgtitle = array(gettext('System'), gettext('Gateways'), gettext('Status'));
 $shortcut_section = "gateways";
 include("head.inc");
 

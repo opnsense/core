@@ -185,13 +185,13 @@ if (isset($_POST['del_x'])) {
     exit;
 }
 
-$pgtitle = array(gettext("System"),gettext("Gateways"));
+$pgtitle = array(gettext('System'), gettext('Gateways'));
 $shortcut_section = "gateways";
 
 include("head.inc");
 
 $main_buttons = array(
-    array('label'=>'Add Gateway', 'href'=>'system_gateways_edit.php'),
+    array('label'=> gettext('Add gateway'), 'href'=>'system_gateways_edit.php'),
 );
 
 ?>
@@ -220,7 +220,6 @@ $main_buttons = array(
             ?>
 
             <section class="col-xs-12">
-                <? include('system_gateways_tabs.inc'); ?>
 
                 <div class="content-box">
 
