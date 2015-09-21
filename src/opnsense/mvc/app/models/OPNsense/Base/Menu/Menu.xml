@@ -65,6 +65,7 @@
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases url="/firewall_aliases.php">
             <AliasesEdit url="/firewall_aliases_edit.php*"/>
+            <AliasesImport url="/firewall_aliases_import.php"/>
             <IP url="/firewall_aliases.php?tab=ip"/>
             <Ports url="/firewall_aliases.php?tab=port"/>
             <URLs url="/firewall_aliases.php?tab=url"/>
