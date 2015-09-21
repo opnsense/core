@@ -114,9 +114,6 @@ if (isset($config['system']['firmware']['flavour'])) {
 	$pconfig['flavour'] = $config['system']['firmware']['flavour'];
 }
 
-$changedesc = gettext("System") . ": ";
-$changecount = 0;
-
 if (isset($_POST['timezone']) && $pconfig['timezone'] <> $_POST['timezone']) {
 	filter_pflog_start();
 }
@@ -132,9 +129,6 @@ foreach($interfaces as $interface) {
 }
 
 if ($_POST) {
-
-	$changecount++;
-
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -306,8 +300,7 @@ if ($_POST) {
 			}
 		}
 
-		if ($changecount > 0)
-			write_config($changedesc);
+		write_config();
 
 		$retval = 0;
 		$retval = system_hostname_configure();
