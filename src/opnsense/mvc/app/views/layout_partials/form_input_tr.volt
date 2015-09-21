@@ -62,7 +62,7 @@ allownew    :   allow new items (for list) if applicable
         {% elseif type == "dropdown" %}
             <select {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" class="{{style|default('selectpicker')}}"  data-width="{{width|default("348px")}}"></select>
         {% elseif type == "info" %}
-            <span id="{{ id }}" />
+            <span id="{{ id }}" ></span>
         {% endif %}
 
         {% if help|default(false) %}
