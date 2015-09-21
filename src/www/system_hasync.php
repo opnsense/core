@@ -94,8 +94,7 @@ foreach (array('pfsyncpeerip','pfsyncinterface','synchronizetoip','username','pa
 $ifaces = get_configured_interface_with_descr();
 $ifaces["lo0"] = "loopback";
 
-$pgtitle = array(gettext("System"),gettext("High Availability"));
-$shortcut_section = "carp";
+$pgtitle = array(gettext('System'), gettext('High Availability'), gettext('Synchronization'));
 include("head.inc");
 ?>
 

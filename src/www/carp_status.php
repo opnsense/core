@@ -96,8 +96,7 @@ $status = get_carp_status();
 
 $carp_detected_problems = (array_pop(get_sysctl("net.inet.carp.demotion")) > 0);
 
-$pgtitle = array(gettext("Status"),gettext("CARP"));
-$shortcut_section = "carp";
+$pgtitle = array(gettext('System'), gettext('High Availability'), gettext('CARP Status'));
 include("head.inc");
 
 ?>
@@ -200,19 +199,12 @@ include("head.inc");
                     </div>
 
                     <div class="col-xs-12">
-						<p class="vexpl">
-							<span class="red"><strong><?=gettext("Note"); ?>:</strong></span>
-							<br />
-							<?=gettext("You can configure high availability settings");
-?> <a href="system_hasync.php"><?=gettext("here"); ?></a>.
-						</p>
-
-						<?php
+<?php
                             echo "<br />" . gettext("pfSync nodes") . ":<br />";
                             echo "<pre>";
                             system("/sbin/pfctl -vvss | /usr/bin/grep creator | /usr/bin/cut -d\" \" -f7 | /usr/bin/sort -u");
                             echo "</pre>";
-                        ?>
+?>
                     </div>
 
 				</div>

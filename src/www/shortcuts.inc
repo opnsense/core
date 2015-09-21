@@ -248,10 +248,6 @@ $shortcuts['l2tps'] = array();
 $shortcuts['l2tps']['main'] = "vpn_l2tp.php";
 $shortcuts['l2tps']['log'] = "diag_logs_vpn.php?vpntype=l2tp";
 
-$shortcuts['carp'] = array();
-$shortcuts['carp']['main'] = "system_hasync.php";
-$shortcuts['carp']['status'] = "carp_status.php";
-
 $shortcuts['snmp'] = array();
 $shortcuts['snmp']['main'] = "services_snmp.php";
 $shortcuts['snmp']['service'] = "bsnmpd";

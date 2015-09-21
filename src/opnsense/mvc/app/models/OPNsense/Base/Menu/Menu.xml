@@ -16,7 +16,7 @@
                 <workAround url="/system_crlmanager.php*"/>
             </Revocation>
         </CertificateManager>
-        <ConfigManager VisibleName="Config Manager" cssClass="fa fa-history">
+        <ConfigManager VisibleName="Config Manager" cssClass="fa fa-book">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*"/>
             </History>
@@ -24,7 +24,10 @@
         </ConfigManager>
         <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <Firmware url="/ui/core/firmware/"/>
-        <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
+        <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh">
+            <Synchronization url="/system_hasync.php"/>
+            <CARPStatus order="100" visibleName="CARP Status" url="/carp_status.php"/>
+        </HighAvailability>
         <Routing url="/system_gateways.php">
             <Routes url="/system_routes.php"/>
             <RoutesEdit url="/system_routes_edit.php*"/>
@@ -206,7 +209,6 @@
         <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php">
             <CaptivePortalDetails url="/status_captiveportal.php?*"/>
         </CaptivePortal>
-        <CARP url="/carp_status.php"/>
         <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php">
             <DHCPLeasesDetails url="/status_dhcp_leases.php?*"/>
         </DHCPLeases>
