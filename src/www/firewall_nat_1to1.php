@@ -1,310 +1,342 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+  Copyright (C) 2014 Deciso B.V.
+  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 
-if (!is_array($config['nat']['onetoone']))
-	$config['nat']['onetoone'] = array();
-
+if (!isset($config['nat']['onetoone'])) {
+    $config['nat']['onetoone'] = array();
+}
 $a_1to1 = &$config['nat']['onetoone'];
 
-if ($_POST) {
-	$pconfig = $_POST;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
+    if (isset($pconfig['id']) && isset($a_1to1[$pconfig['id']])) {
+        // id found and valid
+        $id = $pconfig['id'];
+    }
 
-	if ($_POST['apply']) {
-		$retval = 0;
-		$retval |= filter_configure();
-		$savemsg = get_std_save_message();
+    if (isset($pconfig['apply'])) {
+        filter_configure();
+        $savemsg = get_std_save_message();
+        clear_subsystem_dirty('natconf');
+        clear_subsystem_dirty('filter');
+    } elseif (isset($pconfig['action']) && $pconfig['action'] == 'del' && isset($id)) {
+        // delete single entry
+        unset($a_1to1[$id]);
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
+        header("Location: firewall_nat_1to1.php");
+        exit;
+    } elseif (isset($pconfig['action']) && $pconfig['action'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        // delete selected
+        foreach ($pconfig['rule'] as $rulei) {
+            unset($a_1to1[$rulei]);
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
+        header("Location: firewall_nat_1to1.php");
+        exit;
+    } elseif (isset($pconfig['action']) && $pconfig['action'] == 'move') {
+        // move selected
+        if (isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+            // if rule not set/found, move to end
+            if (!isset($id)) {
+                $id = count($a_1to1);
+            }
+            $a_1to1 = legacy_move_config_list_items($a_1to1, $id,  $pconfig['rule']);
 
-		if ($retval == 0) {
-			clear_subsystem_dirty('natconf');
-			clear_subsystem_dirty('filter');
-		}
-	}
+            if (write_config()) {
+                mark_subsystem_dirty('natconf');
+            }
+            header("Location: firewall_nat_1to1.php");
+            exit;
+        }
+    } elseif (isset($pconfig['action']) && $pconfig['action'] == 'toggle' && isset($id)) {
+        // toggle item
+        if(isset($a_1to1[$id]['disabled'])) {
+            unset($a_1to1[$id]['disabled']);
+        } else {
+            $a_1to1[$id]['disabled'] = true;
+        }
+        if (write_config("Firewall: NAT: Outbound, enable/disable NAT rule")) {
+            mark_subsystem_dirty('natconf');
+        }
+        header("Location: firewall_nat_1to1.php");
+        exit;
+    }
 }
 
-if ($_GET['act'] == "del") {
-	if ($a_1to1[$_GET['id']]) {
-		unset($a_1to1[$_GET['id']]);
-		if (write_config())
-			mark_subsystem_dirty('natconf');
-		header("Location: firewall_nat_1to1.php");
-		exit;
-	}
-}
-
-if (isset($_POST['del_x'])) {
-	/* delete selected rules */
-	if (is_array($_POST['rule']) && count($_POST['rule'])) {
-		foreach ($_POST['rule'] as $rulei) {
-			unset($a_1to1[$rulei]);
-		}
-		if (write_config())
-			mark_subsystem_dirty('natconf');
-		header("Location: firewall_nat_1to1.php");
-		exit;
-	}
-
-} else if ($_GET['act'] == "toggle") {
-	if ($a_1to1[$_GET['id']]) {
-		if(isset($a_1to1[$_GET['id']]['disabled']))
-			unset($a_1to1[$_GET['id']]['disabled']);
-		else
-			$a_1to1[$_GET['id']]['disabled'] = true;
-		if (write_config("Firewall: NAT: Outbound, enable/disable NAT rule"))
-			mark_subsystem_dirty('natconf');
-		header("Location: firewall_nat_1to1.php");
-		exit;
-	}
-} else {
-	/* yuck - IE won't send value attributes for image buttons, while Mozilla does - so we use .x/.y to find move button clicks instead... */
-	unset($movebtn);
-	foreach ($_POST as $pn => $pd) {
-		if (preg_match("/move_(\d+)_x/", $pn, $matches)) {
-			$movebtn = $matches[1];
-			break;
-		}
-	}
-	/* move selected rules before this rule */
-	if (isset($movebtn) && is_array($_POST['rule']) && count($_POST['rule'])) {
-		$a_1to1_new = array();
-
-		/* copy all rules < $movebtn and not selected */
-		for ($i = 0; $i < $movebtn; $i++) {
-			if (!in_array($i, $_POST['rule']))
-				$a_1to1_new[] = $a_1to1[$i];
-		}
-
-		/* copy all selected rules */
-		for ($i = 0; $i < count($a_1to1); $i++) {
-			if ($i == $movebtn)
-				continue;
-			if (in_array($i, $_POST['rule']))
-				$a_1to1_new[] = $a_1to1[$i];
-		}
-
-		/* copy $movebtn rule */
-		if ($movebtn < count($a_1to1))
-			$a_1to1_new[] = $a_1to1[$movebtn];
-
-		/* copy all rules > $movebtn and not selected */
-		for ($i = $movebtn+1; $i < count($a_1to1); $i++) {
-			if (!in_array($i, $_POST['rule']))
-				$a_1to1_new[] = $a_1to1[$i];
-		}
-		if (count($a_1to1_new) > 0)
-			$a_1to1 = $a_1to1_new;
-
-		if (write_config())
-			mark_subsystem_dirty('natconf');
-		header("Location: firewall_nat_1to1.php");
-		exit;
-	}
-}
-
+legacy_html_escape_form_data($a_1to1);
 $pgtitle = array(gettext("Firewall"),gettext("NAT"),gettext("1:1"));
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>gettext("add rule"), 'href'=>'firewall_nat_1to1_edit.php'),
+    array('label'=>gettext("add rule"), 'href'=>'firewall_nat_1to1_edit.php'),
 );
-
 
 ?>
 <body>
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    // link delete buttons
+    $(".act_delete").click(function(){
+      var id = $(this).attr("id").split('_').pop(-1);
+      if (id != 'x') {
+        // delete single
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: "<?= gettext("1:1");?>",
+            message: "<?=gettext("Do you really want to delete this rule?");?>",
+            buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                      label: "<?= gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#id").val(id);
+                        $("#action").val("del");
+                        $("#iform").submit()
+                    }
+                }]
+        });
+      } else {
+        // delete selected
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: "<?= gettext("1:1");?>",
+            message: "<?=gettext("Do you really want to delete the selected mappings?");?>",
+            buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                      label: "<?= gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#id").val("");
+                        $("#action").val("del_x");
+                        $("#iform").submit()
+                    }
+                }]
+        });
+      }
+    });
+
+    // link move buttons
+    $(".act_move").click(function(){
+        var id = $(this).attr("id").split('_').pop(-1);
+        $("#id").val(id);
+        $("#action").val("move");
+        $("#iform").submit();
+    });
+
+    // link toggle buttons
+    $(".act_toggle").click(function(){
+        var id = $(this).attr("id").split('_').pop(-1);
+        $("#id").val(id);
+        $("#action").val("toggle");
+        $("#iform").submit();
+    });
+
+  });
+  </script>
+
+
 <?php include("fbegin.inc"); ?>
-
-	<script type="text/javascript" src="/javascript/row_toggle.js"></script>
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php
-				if (isset($savemsg))
-					print_info_box($savemsg);
-				if (is_subsystem_dirty('natconf'))
-					print_info_box_np(gettext("The NAT configuration has been changed.") .
-						"<br />" .
-						gettext("You must apply the changes in order for them to take effect."));
-				?>
-
-			    <section class="col-xs-12">
-
-					<?php
-							$tab_array = array();
-							$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
-							$tab_array[] = array(gettext("1:1"), true, "firewall_nat_1to1.php");
-							$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-							$tab_array[] = array(gettext("NPT"), false, "firewall_nat_npt.php");
-							display_top_tabs($tab_array);
-					?>
-
-					<div class="tab-content content-box col-xs-12">
-
-
-	                        <form action="firewall_nat_1to1.php" method="post" name="iform" id="iform">
-					<input type="hidden" id="id" name="id" value="<?php echo htmlspecialchars($id); ?>" />
-
-		                        <table class="table table-striped table-sort">
-		                        <thead>
-									<tr id="frheader">
-										<th width="3%" class="list">&nbsp;</th>
-										<th width="3%" class="list">&nbsp;</th>
-										<th class="listhdrr"><?=gettext("Interface"); ?></th>
-										<th class="listhdrr"><?=gettext("External IP"); ?></th>
-										<th class="listhdrr"><?=gettext("Internal IP"); ?></th>
-										<th class="listhdrr"><?=gettext("Destination IP"); ?></th>
-										<th class="listhdr"><?=gettext("Description"); ?></th>
-										<th class="list"></th>
-									</tr>
-		                        </thead>
-		                        <tbody>
-						<?php
-								$textse = "";
-								$i = 0;
-								foreach ($a_1to1 as $natent):
-									if (isset($natent['disabled'])) {
-										$textss = "text-muted";
-										$iconfn = "glyphicon glyphicon-play";
-									} else {
-										$textss = "text-success";
-										$iconfn = "glyphicon glyphicon-play";
-									}
-						?>
-									<tr valign="top" id="fr<?=$i;?>">
-										<td class="listt">
-											<input type="checkbox" id="frc<?=$i;?>" name="rule[]" value="<?=$i;?>" />
-										</td>
-										<td class="listt" align="center">
-											<a href="?act=toggle&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" class="glyphicon <?=$iconfn;?> <?=$textss;?>" title="<?=gettext("click to toggle enabled/disabled status");?>" ></a>
-										</td>
-										<td class="listlr" onclick="fr_toggle(<?=$i;?>)" id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
-						<?php
-
-											if (!$natent['interface'])
-												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr("wan"));
-											else
-												echo htmlspecialchars(convert_friendly_interface_to_friendly_descr($natent['interface']));
-
-						?>
-										</td>
-										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
-						<?php
-											$source_net = pprint_address($natent['source']);
-											$source_cidr = strstr($source_net, '/');
-											echo $natent['external'] . $source_cidr;
-						?>
-										</td>
-										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
-						<?php
-											echo $source_net . $textse;
-						?>
-										</td>
-										<td class="listr"  id="frd<?=$i;?>" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
-						<?php
-											echo pprint_address($natent['destination']);
-						?>
-										</td>
-										<td class="listbg"  ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
-						<?php
-											echo htmlspecialchars($natent['descr']) . '&nbsp;';
-						?>
-										</td>
-										<td class="list nowrap" valign="middle">
-											<button  name="move_<?=$i;?>_x"
-												title="<?=gettext("move selected mapping before this rule");?>"
-												type="submit" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-arrow-left"></span></button>
-
-											<a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this mapping");?>"><span class="glyphicon glyphicon-pencil"></span></a>
-											<a href="firewall_nat_1to1.php?act=del&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete this mapping");?>" onclick="return confirm('<?=gettext("Do you really want to delete this rule?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
-											<a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping based on this one");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-										</td>
-									</tr>
-						<?php
-									$i++;
-								endforeach;
-						?>
-									<tr>
-										<td class="list" colspan="7"></td>
-										<td class="list nowrap" valign="middle">
-
-						<?php
-													if ($i == 0):
-						?>
-														<span title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></span>
-						<?php
-													else:
-						?>
-														<button name="move_<?=$i;?>_x" type="submit"  data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-arrow-left"></span></button>
-						<?php
-													endif;
-						?>
-
-														<a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-
-						<?php
-													if ($i == 0):
-						?>
-														<span title="<?=gettext("delete selected rules");?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete mapping");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></span>
-						<?php
-													else:
-						?>
-														<button name="del_x" type="submit" data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected mappings");?>"
-															onclick="return confirm('<?=gettext("Do you really want to delete the selected mappings?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button>
-						<?php
-													endif;
-						?>
-										</td>
-									</tr>
-									<tr>
-										<td colspan="9">
-											<p><span class="vexpl">
-												<span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span>
-												<?=gettext("Depending on the way your WAN connection is setup, you may also need a"); ?>
-												<a href="firewall_virtual_ip.php"><?=gettext("Virtual IP."); ?></a><br />
-												<?=gettext("If you add a 1:1 NAT entry for any of the interface IPs on this system, " .
-													"it will make this system inaccessible on that IP address. i.e. if " .
-													"you use your WAN IP address, any services on this system (IPsec, OpenVPN server, etc.) " .
-													"using the WAN IP address will no longer function."); ?>
-											</span></p>
-										</td>
-									</tr>
-		                        </tbody>
-								</table>
-	                        </form>
-					</div>
-			    </section>
-			</div>
-		</div>
-	</section>
+  <section class="page-content-main">
+    <div class="container-fluid">
+<?php
+$tab_array = array();
+$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
+$tab_array[] = array(gettext("1:1"), true, "firewall_nat_1to1.php");
+$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
+$tab_array[] = array(gettext("NPT"), false, "firewall_nat_npt.php");
+display_top_tabs($tab_array);
+?>
+      <div class="row">
+<?php
+        if (isset($savemsg))
+          print_info_box($savemsg);
+        if (is_subsystem_dirty('natconf'))
+          print_info_box_np(gettext("The NAT configuration has been changed.") .
+            "<br />" .
+            gettext("You must apply the changes in order for them to take effect."));
+?>
+          <section class="col-xs-12">
+          <div class="content-box">
+            <form action="firewall_nat_1to1.php" method="post" name="iform" id="iform">
+              <input type="hidden" id="id" name="id" value="" />
+              <input type="hidden" id="action" name="action" value="" />
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>&nbsp;</th>
+                    <th>&nbsp;</th>
+                    <th><?=gettext("Interface"); ?></th>
+                    <th><?=gettext("External IP"); ?></th>
+                    <th><?=gettext("Internal IP"); ?></th>
+                    <th><?=gettext("Destination IP"); ?></th>
+                    <th><?=gettext("Description"); ?></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+<?php
+                $i = 0;
+                foreach ($a_1to1 as $natent):
+?>
+                  <tr <?=isset($natent['disabled'])?"class=\"text-muted\"":"";?> valign="top" ondblclick="document.location='firewall_nat_1to1_edit.php?id=<?=$i;?>';">
+                    <td>
+                      <input type="checkbox" name="rule[]" value="<?=$i;?>" />
+                    </td>
+                    <td>
+                      <a href="#" type="submit" id="toggle_<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>" class="act_toggle glyphicon glyphicon glyphicon-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
+                      </a>
+                    </td>
+                    <td>
+                      <?=htmlspecialchars(convert_friendly_interface_to_friendly_descr(isset($natent['interface']) ? $natent['interface'] : "wan"));?>
+                    </td>
+                    <td>
+                      <?=isset($natent['external']) ? $natent['external'] : "";?><?=isset($natent['source']) ? strstr(pprint_address($natent['source']), '/') : "";?>
+<?php                 if (isset($natent['external']['address']) && is_alias($natent['external']['address'])): ?>
+                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['external']['address']);?>"><i class="fa fa-list"></i> </a>
+<?php                 endif; ?>
+                    </td>
+                    <td>
+                      <?=pprint_address($natent['source']);?>
+<?php                 if (isset($natent['source']['address']) && is_alias($natent['source']['address'])): ?>
+                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"><i class="fa fa-list"></i> </a>
+<?php                 endif; ?>
+                    </td>
+                    <td>
+                      <?=pprint_address($natent['destination']);?>
+<?php                 if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
+                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
+<?php                 endif; ?>
+                    </td>
+                    <td>
+                      <?=$natent['descr'];?> &nbsp;
+                    </td>
+                    <td>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected mapping before this rule");?>" class="act_move btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      </a>
+                      <a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this mapping");?>">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </a>
+                      <a id="del_<?=$i;?>" title="<?=gettext("delete this mapping"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </a>
+                      <a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping based on this one");?>" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                    </td>
+                  </tr>
+<?php
+                  $i++;
+                endforeach;
+?>
+                  <tr>
+                    <td colspan="7"></td>
+                    <td>
+<?php               if ($i == 0):
+?>
+                      <span title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left">
+                        </span>
+                      </span>
+<?php               else:
+?>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected mappings to end");?>" class="act_move btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      </a>
+<?php               endif;
+?>
+<?php               if ($i == 0):
+?>
+                      <span title="<?=gettext("delete selected mappings"); ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </span>
+<?php               else:
+?>
+                      <a id="del_x" title="<?=gettext("delete selected mappings"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </a>
+<?php               endif;
+?>
+                      <a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="9">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
+                    <td colspan="8"><?=gettext("Enabled rule"); ?></td>
+                  </tr>
+                  <tr>
+                    <td><span class="glyphicon glyphicon-play text-muted"></span></td>
+                    <td colspan="8"><?=gettext("Disabled rule"); ?></td>
+                  </tr>
+                  <tr>
+                    <td><a><i class="fa fa-list"></i></a></td>
+                    <td colspan="8"><?=gettext("Alias (click to view/edit)");?></td>
+                  </tr>
+                  <tr>
+                    <td colspan="9">
+                      <p>
+                        <span class="text-danger">
+                          <strong><?=gettext("Note:"); ?><br />
+                          </strong>
+                        </span>
+                        <?=gettext("Depending on the way your WAN connection is setup, you may also need a"); ?>
+                        <a href="firewall_virtual_ip.php"><?=gettext("Virtual IP."); ?></a><br />
+                        <?=gettext("If you add a 1:1 NAT entry for any of the interface IPs on this system, " .
+                          "it will make this system inaccessible on that IP address. i.e. if " .
+                          "you use your WAN IP address, any services on this system (IPsec, OpenVPN server, etc.) " .
+                          "using the WAN IP address will no longer function."); ?>
+                      </p>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 
 <?php include("foot.inc"); ?>
