@@ -60,7 +60,7 @@ data_title      :   data-title to set on form
         </colgroup>
         <tbody>
         <tr>
-            <td align="left"><a href="#">{% if advanced|default(false) %}<i class="fa fa-toggle-off text-danger" id="show_advanced_{{id}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
+            <td align="left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{id}}" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
             <td colspan="2" align="right">
                 {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{id}}" type="button"></i></a>{% endif %}
             </td>
