@@ -175,7 +175,7 @@ if($need_alert_display == true) {
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
-                                        <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
+                                        <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                       </div>
                                   </div>
                                </a>
@@ -198,7 +198,7 @@ if($need_alert_display == true) {
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
-                                        <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
+                                        <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                       </div>
                                   </div>
                                 </a>
@@ -208,7 +208,7 @@ if($need_alert_display == true) {
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
-                                        <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
+                                        <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                     </div>
                                   </div>
                                 </a>
