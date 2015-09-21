@@ -344,27 +344,48 @@ class Config extends Singleton
      */
     private function updateRevision($revision, $node = null)
     {
-        // input must be an array
-        if (is_array($revision)) {
-            if ($node == null) {
-                if (isset($this->simplexml->revision)) {
-                    $node = $this->simplexml->revision;
-                } else {
-                    $node = $this->simplexml->addChild("revision");
-                }
+        // if revision info is not provided, create a default.
+        if (!is_array($revision)) {
+            $revision = array();
+            // try to fetch userinfo from session
+            if (!empty($_SESSION["Username"])) {
+                $revision['username'] = $_SESSION["Username"];
+            } else {
+                $revision['username'] = "(system)";
             }
-            foreach ($revision as $revKey => $revItem) {
-                if (isset($node->{$revKey})) {
-                    // key already in revision object
-                    $childNode = $node->{$revKey};
-                } else {
-                    $childNode = $node->addChild($revKey);
-                }
-                if (is_array($revItem)) {
-                    $this->updateRevision($revItem, $childNode);
-                } else {
-                    $childNode[0] = $revItem;
-                }
+            if (!empty($_SERVER['REMOTE_ADDR'])) {
+                $revision['username'] .= "@".$_SERVER['REMOTE_ADDR'];
+            }
+            if (!empty($_SERVER['REQUEST_URI'])) {
+                // when update revision is called from a controller, log the endpoint uri
+                $revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['REQUEST_URI']);
+            } else {
+                // called from a script, log script name and path
+                $revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
+            }
+        }
+
+        // always set timestamp
+        $revision['time'] = microtime(true);
+
+        if ($node == null) {
+            if (isset($this->simplexml->revision)) {
+                $node = $this->simplexml->revision;
+            } else {
+                $node = $this->simplexml->addChild("revision");
+            }
+        }
+        foreach ($revision as $revKey => $revItem) {
+            if (isset($node->{$revKey})) {
+                // key already in revision object
+                $childNode = $node->{$revKey};
+            } else {
+                $childNode = $node->addChild($revKey);
+            }
+            if (is_array($revItem)) {
+                $this->updateRevision($revItem, $childNode);
+            } else {
+                $childNode[0] = $revItem;
             }
         }
     }
