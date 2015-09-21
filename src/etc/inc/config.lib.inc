@@ -341,15 +341,8 @@ function make_config_revision_entry($desc = null, $override_user = null)
 	}
 
 	$revision = array();
-
 	$revision['username'] = $username;
-
-	$revision['time'] = time();
-	if ($revision['time'] == $config['revision']['time']) {
-		/* avoid conflicting timestamps (a second is long) */
-		$revision['time'] = intval($revision['time']) + 1;
-	}
-
+	$revision['time'] = microtime(true);
 	if ($desc == null || $desc == 'Unknown') {
 		$revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
 	} else {
