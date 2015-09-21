@@ -10,6 +10,10 @@
             <CertificateAuthority VisibleName="Certificate Authority" url="/system_camanager.php*"/>
             <CertificationRevocation VisibleName="Certification Revocation" url="/system_crlmanager.php*"/>
         </Certificates>
+        <ConfigManager VisibleName="Config Manager" url="/diag_confbak.php">
+            <History url="/diag_confbak.php*"/>
+            <Backups url="/diag_backup.php"/>
+        </ConfigManager>
         <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <Firmware url="/ui/core/firmware/"/>
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
@@ -240,9 +244,6 @@
     <Diagnostics order="7" cssClass="glyphicon glyphicon-stats">
         <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
         <Authentication url="/diag_authentication.php"/>
-        <BackupRestore VisibleName="Backup &amp; Restore" url="/diag_backup.php">
-            <History url="/diag_confbak.php"/>
-        </BackupRestore>
         <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
         <FactoryDefaults VisibleName="Factory Defaults" url="/diag_defaults.php"/>
         <HaltSystem VisibleName="Halt System" url="/diag_halt.php"/>

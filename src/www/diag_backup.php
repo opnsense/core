@@ -534,7 +534,7 @@ $id = rand() . '.' . time();
 $mth = ini_get('upload_progress_meter.store_method');
 $dir = ini_get('upload_progress_meter.file.filename_template');
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Backup/restore"));
+$pgtitle = array(gettext('System'), gettext('Config Backups'));
 
 include("head.inc");
 
@@ -594,8 +594,8 @@ function backuparea_change(obj) {
 
 					<?php
 								$tab_array = array();
-								$tab_array[0] = array(gettext("Config History"), false, "diag_confbak.php");
-								$tab_array[1] = array(gettext("Backup/Restore"), true, "diag_backup.php");
+								$tab_array[0] = array(gettext("History"), false, "diag_confbak.php");
+								$tab_array[1] = array(gettext("Backups"), true, "diag_backup.php");
 								display_top_tabs($tab_array);
 						?>
 
@@ -610,7 +610,7 @@ function backuparea_change(obj) {
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
-									        <h3>Backup configuration</h3>
+									        <h3><?=gettext('Download')?></h3>
 									    </header>
 
 									    <div class="content-box-main ">
@@ -680,7 +680,7 @@ function backuparea_change(obj) {
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
-									        <h3><?=gettext("Restore configuration"); ?></h3>
+									        <h3><?=gettext("Restore"); ?></h3>
 									    </header>
 
 									    <div class="content-box-main ">
@@ -742,7 +742,7 @@ function backuparea_change(obj) {
                                                                 <section class="__mb">
 						                        <div class="content-box">
 						                            <header class="content-box-head container-fluid">
-									        <h3><?=gettext("Remote backup (using Google drive)"); ?></h3>
+									        <h3><?=gettext("Google Drive"); ?></h3>
 									    </header>
 
 									    <div class="content-box-main ">
@@ -799,7 +799,6 @@ decrypt_change();
 
 <?php
 
-if (is_subsystem_dirty('restore'))
+if (is_subsystem_dirty('restore')) {
 	system_reboot();
-
-?>
+}
