@@ -209,8 +209,9 @@ if($need_alert_display == true) {
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
                                         <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
-                                      </div>
+                                    </div>
                                   </div>
+                                </a>
 <?php
                               endif;?>
 <?php
