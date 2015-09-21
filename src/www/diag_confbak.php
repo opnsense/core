@@ -38,12 +38,10 @@ $confvers = $cnf->getBackups(true);
 if (isset($_POST['backupcount'])) {
 	if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
 		$config['system']['backupcount'] = $_POST['backupcount'];
-		$changedescr = $config['system']['backupcount'];
 	} else {
 		unset($config['system']['backupcount']);
-		$changedescr = "(platform default)";
 	}
-	write_config("Changed backup revision count to {$changedescr}");
+	write_config('Changed backup revision count');
 } elseif ($_POST) {
 	if (!isset($_POST['confirm']) || ($_POST['confirm'] != "Confirm") || (!isset($_POST['newver']) && !isset($_POST['rmver']))) {
 		header("Location: diag_confbak.php");
