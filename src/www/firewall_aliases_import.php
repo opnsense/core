@@ -1,230 +1,222 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2005 Scott Ullrich
-	All rights reserved.
+  Copyright (C) 2014 Deciso B.V.
+  Copyright (C) 2005 Scott Ullrich
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
-
-// Keywords not allowed in names
-$reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min", "pptp", "pppoe", "L2TP", "OpenVPN", "IPsec");
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("Firewall"),gettext("Aliases"),gettext("Bulk import"));
-
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_aliases.php');
-
-// Add all Load balance names to reserved_keywords
-if (is_array($config['load_balancer']['lbpool']))
-	foreach ($config['load_balancer']['lbpool'] as $lbpool)
-		$reserved_keywords[] = $lbpool['name'];
-
-$reserved_ifs = get_configured_interface_list(false, true);
-$reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
-
 if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-        $config['aliases'] = array();
+    $config['aliases'] = array();
 }
 if (!isset($config['aliases']['alias'])) {
-	$config['aliases']['alias'] = array();
+    $config['aliases']['alias'] = array();
 }
-$a_aliases = &$config['aliases']['alias'];
 
-if($_POST['aliasimport'] <> "") {
-	$reqdfields = explode(" ", "name aliasimport");
-	$reqdfieldsn = array(gettext("Name"),gettext("Aliases"));
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // initialize form vars
+    $pconfig = array("name" => null, "descr" => null, "aliasimport" => null);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // save form data
+    $input_errors =  array();
+    $pconfig = $_POST;
+    // input validation
+    $reqdfields = explode(" ", "name aliasimport");
+    $reqdfieldsn = array(gettext("Name"),gettext("Aliases"));
 
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if (is_validaliasname($_POST['name']) == false)
-		$input_errors[] = gettext("The alias name may only consist of the characters") . " a-z, A-Z, 0-9, _.";
+    if (is_validaliasname($pconfig['name']) == false) {
+        $input_errors[] = gettext("The alias name may only consist of the characters") . " a-z, A-Z, 0-9, _.";
+    }
 
-	/* check for name duplicates */
-	if (is_alias($_POST['name']))
-		$input_errors[] = gettext("An alias with this name already exists.");
+    /* check for name duplicates */
+    if (is_alias($pconfig['name'])) {
+        $input_errors[] = gettext("An alias with this name already exists.");
+    }
 
+    // Add all Load balance names to reserved_keywords
+    if (isset($config['load_balancer']['lbpool'])) {
+        foreach ($config['load_balancer']['lbpool'] as $lbpool) {
+            $reserved_keywords[] = $lbpool['name'];
+        }
+    }
 
-	/* Check for reserved keyword names */
-	foreach($reserved_keywords as $rk)
-		if ($rk == $_POST['name'])
-			$input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
+    // Keywords not allowed in names
+    $reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min", "pptp", "pppoe", "L2TP", "OpenVPN", "IPsec");
+    $reserved_ifs = get_configured_interface_list(false, true);
+    $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
+    /* Check for reserved keyword names */
+    foreach($reserved_keywords as $rk)
+        if ($rk == $pconfig['name'])
+            $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
 
-	/* check for name interface description conflicts */
-	foreach($config['interfaces'] as $interface) {
-		if($interface['descr'] == $_POST['name']) {
-			$input_errors[] = gettext("An interface description with this name already exists.");
-			break;
-		}
-	}
+    /* check for name interface description conflicts */
+    foreach($config['interfaces'] as $interface) {
+        if($interface['descr'] == $pconfig['name']) {
+            $input_errors[] = gettext("An interface description with this name already exists.");
+            break;
+        }
+    }
 
-	if ($_POST['aliasimport']) {
-		$tocheck = explode("\n", $_POST['aliasimport']);
-		$imported_ips = array();
-		$imported_descs = array();
-		$desc_len_err_found = false;
-		$desc_fmt_err_found = false;
-		foreach ($tocheck as $impline) {
-			$implinea = explode(" ",trim($impline),2);
-			$impip = $implinea[0];
-			$impdesc = trim($implinea[1]);
-			if (strlen($impdesc) < 200) {
-				if ((strpos($impdesc, "||") === false) && (substr($impdesc, 0, 1) != "|") && (substr($impdesc, -1, 1) != "|")) {
-					if (is_iprange($impip)) {
-						list($startip, $endip) = explode('-', $impip);
-						$rangesubnets = ip_range_to_subnet_array($startip, $endip);
-						$imported_ips = array_merge($imported_ips, $rangesubnets);
-						$rangedescs = array_fill(0, count($rangesubnets), $impdesc);
-						$imported_descs = array_merge($imported_descs, $rangedescs);
-					} else if (!is_ipaddr($impip) && !is_subnet($impip) && !is_hostname($impip) && !empty($impip)) {
-						$input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $impip);
-					} elseif (!empty($impip)) {
-						$imported_ips[] = $impip;
-						$imported_descs[] = $impdesc;
-					}
-				}
-				else {
-					if (!$desc_fmt_err_found) {
-						$input_errors[] = gettext("Descriptions may not start or end with vertical bar (|) or contain double vertical bar ||.");
-						$desc_fmt_err_found = true;
-					}
-				}
-			}
-			else {
-				if (!$desc_len_err_found) {
-					/* Note: The 200 character limit is just a practical check to avoid accidents */
-					/* if the user pastes a large number of IP addresses without line breaks.     */
-					$input_errors[] = gettext("Descriptions must be less than 200 characters long.");
-					$desc_len_err_found = true;
-				}
-			}
-		}
-		unset($desc_len_err_found, $desc_fmt_err_found);
-	}
+    $imported_ips = array();
+    $imported_descs = array();
+    foreach (explode("\n", $pconfig['aliasimport']) as $impline) {
+        $implinea = explode(" ",trim($impline),2);
+        $impip = trim($implinea[0]);
+        if (!empty($implinea[1])) {
+            // trim and truncate description to max 200 characters
+            $impdesc = substr(trim($implinea[1]),0, 200);
+        } else {
+            // no description given, use alias description
+            $impdesc = trim(str_replace('|',' ' , $pconfig['descr']));
+        }
 
-	if (!$input_errors && is_array($imported_ips)) {
-		$alias = array();
-		$alias['address'] = implode(" ", $imported_ips);
-		$alias['detail'] = implode("||", $imported_descs);
-		$alias['name'] = $_POST['name'];
-		$alias['type'] = "network";
-		$alias['descr'] = $_POST['descr'];
-		unset($imported_ips, $imported_descs);
-		$a_aliases[] = $alias;
+        if (strpos($impip,'-') !== false) {
+            // ip range provided
+            $ipaddr1 = explode('-', $impip)[0];
+            $ipaddr2 = explode('-', $impip)[1];
+            if (!is_ipaddr($ipaddr1)) {
+                $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $ipaddr1);
+            } elseif (!is_ipaddr($ipaddr2)) {
+                $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $ipaddr2);
+            } else {
+                foreach (ip_range_to_subnet_array($ipaddr1, $ipaddr2) as $network) {
+                    $imported_ips[] = $network;
+                    $imported_descs[] = $impdesc;
+                }
+            }
+        } else {
+            // single ip or network
+            if (!is_ipaddr($impip) && !is_subnet($impip) && !is_hostname($impip) && !empty($impip)) {
+                $input_errors[] = sprintf(gettext("%s is not an IP address. Please correct the error to continue"), $impip);
+            } else {
+                $imported_ips[] = $impip;
+                $imported_descs[] = $impdesc;
+            }
+        }
+    }
 
-		// Sort list
-		$a_aliases = msort($a_aliases, "name");
+    if (count($input_errors) == 0) {
+        // create output structure and serialize to config
+        $alias = array();
+        $alias['address'] = implode(" ", $imported_ips);
+        $alias['detail'] = implode("||", $imported_descs);
+        $alias['name'] = $pconfig['name'];
+        $alias['type'] = "network";
+        $alias['descr'] = $pconfig['descr'];
+        $config['aliases']['alias'][] = $alias;
 
-		if (write_config())
-			mark_subsystem_dirty('aliases');
-		redirectHeader("firewall_aliases.php");
+        // Sort list
+        $config['aliases']['alias'] = msort($config['aliases']['alias'], "name");
 
-		exit;
-	}
+        if (write_config()) {
+            mark_subsystem_dirty('aliases');
+        }
+        redirectHeader("firewall_aliases.php");
+        exit;
+    }
 }
+
+$pgtitle = array(gettext("Firewall"),gettext("Aliases"),gettext("Bulk import"));
+legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
-
 ?>
 <body>
 <?php include("fbegin.inc"); ?>
-
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-				<div id="inputerrors"></div>
-
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-					 <header class="content-box-head container-fluid">
-				        <h3><?=gettext("Alias Import");?></h3>
-				    </header>
-
-				    <div class="content-box-main">
-
-						<form action="firewall_aliases_import.php" method="post" name="iform" id="iform">
-			                        <table class="table table-striped table-sort">
-										<tr>
-											<td valign="top" class="vncellreq"><?=gettext("Alias Name"); ?></td>
-											<td class="vtable">
-												<input name="name" type="text" class="form-control unknown" id="name" size="40" maxlength="31" value="<?=htmlspecialchars($_POST['name']);?>" />
-												<br />
-												<span class="vexpl">
-													<?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
-												</span>
-											</td>
-										</tr>
-										<tr>
-											<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-											<td width="78%" class="vtable">
-												<input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($_POST['descr']);?>" />
-												<br />
-												<span class="vexpl">
-													<?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
-												</span>
-											</td>
-										</tr>
-										<tr>
-											<td valign="top" class="vncellreq"><?=gettext("Aliases to import"); ?></td>
-											<td class="vtable">
-												<textarea name="aliasimport" rows="15" cols="40"><?php echo $_POST['aliasimport']; ?></textarea>
-												<br />
-												<span class="vexpl">
-													<?=gettext("Paste in the aliases to import separated by a carriage return.  Common examples are lists of IPs, networks, blacklists, etc."); ?>
-													<br />
-													<?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
-													<br />172.16.1.2
-													<br />172.16.0.0/24
-													<br />10.11.12.100-10.11.12.200
-													<br />192.168.1.254 Home router
-													<br />10.20.0.0/16 Office network
-													<br />10.40.1.10-10.40.1.19 Managed switches
-												</span>
-											</td>
-										</tr>
-										<tr>
-											<td width="22%" valign="top">&nbsp;</td>
-											<td width="78%">
-												<input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-												<input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-											</td>
-										</tr>
-									</table>
-						</form>
-				    </div>
-				</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
-
-
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <section class="col-xs-12">
+          <div class="content-box">
+            <header class="content-box-head container-fluid">
+          <h3><?=gettext("Alias Import");?></h3>
+            </header>
+            <div class="content-box-main">
+              <form action="firewall_aliases_import.php" method="post" name="iform">
+                <table class="table table-striped">
+                  <tr>
+                    <td colspan="2" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td  width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alias Name"); ?></td>
+                    <td  width="78%">
+                      <input name="name" type="text" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
+                      <div class="hidden" for="help_for_name">
+                        <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td>
+                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                      <div class="hidden" for="help_for_description">
+                        <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases to import"); ?></td>
+                    <td>
+                      <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
+                      <div class="hidden" for="help_for_alias">
+                        <?=gettext("Paste in the aliases to import separated by a carriage return.  Common examples are lists of IPs, networks, blacklists, etc."); ?>
+                        <br />
+                        <?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
+                        <code>
+                          <br/>172.16.1.2
+                          <br/>172.16.0.0/24
+                          <br/>10.11.12.100-10.11.12.200
+                          <br/>192.168.1.254 Home router
+                          <br/>10.20.0.0/16 Office network
+                          <br/>10.40.1.10-10.40.1.19 Managed switches
+                        </code>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
+                             onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_aliases.php');?>'" />
+                    </td>
+                  </tr>
+                </table>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
