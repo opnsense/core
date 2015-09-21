@@ -396,14 +396,17 @@ class Config extends Singleton
     public function backup()
     {
         $target_dir = dirname($this->config_file)."/backup/";
-        $target_filename = "config-".time().".xml";
+        $target_filename = "config-".microtime(true).".xml";
 
         if (!file_exists($target_dir)) {
             // create backup directory if it's missing
             mkdir($target_dir);
         }
-        copy($this->config_file, $target_dir.$target_filename);
-
+        // The new target backup filename shouldn't exists, because of the use of microtime.
+        // But if for some reason a script keeps calling this backup very often, it shouldn't crash.
+        if (!file_exists($target_dir . $target_filename)) {
+            copy($this->config_file, $target_dir . $target_filename);
+        }
     }
 
     /**
