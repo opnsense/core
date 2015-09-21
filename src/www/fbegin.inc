@@ -171,7 +171,14 @@ if($need_alert_display == true) {
                             foreach($topMenuItem->Children as $subMenuItem): ?>
 <?php
                               if ($subMenuItem->Url == '' ):?>
-                                <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : "";?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>"><?=$subMenuItem->VisibleName;?><span class="<?=$subMenuItem->CssClass;?> __iconspacer pull-right"></span></a>
+                               <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : "";?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>">
+                                  <div style="display: table;width: 100%;">
+                                    <div style="display: table-row">
+                                      <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
+                                        <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
+                                      </div>
+                                  </div>
+                               </a>
                                <div class="collapse <?=$subMenuItem->Selected ? "active-menu in" :"";?>" id="<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>">
 <?php
                                   foreach ($subMenuItem->Children as $subsubMenuItem):?>
@@ -187,10 +194,23 @@ if($need_alert_display == true) {
                                 </div>
 <?php
                               elseif ($subMenuItem->IsExternal == "Y" ):?>
-                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>"><?=$subMenuItem->VisibleName ?><span class="<?=$subMenuItem->CssClass;?> __iconspacer pull-right"></span></a>
+                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>">
+                                  <div style="display: table;width: 100%;">
+                                    <div style="display: table-row">
+                                      <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
+                                        <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
+                                      </div>
+                                  </div>
+                                </a>
 <?php
                               elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subMenuItem->Url)):?>
-                                <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? "active" :"";?>"><?=$subMenuItem->VisibleName;?><span class="<?=$subMenuItem->CssClass;?> __iconspacer pull-right"></span></a>
+                                <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? "active" :"";?>">
+                                  <div style="display: table;width: 100%;">
+                                    <div style="display: table-row">
+                                      <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
+                                        <div style="display: table-cell; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
+                                      </div>
+                                  </div>
 <?php
                               endif;?>
 <?php
