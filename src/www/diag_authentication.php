@@ -113,12 +113,12 @@ include("head.inc");
 					          <td><select name="authmode" id="authmode" class="form-control" >
 									<?php
 										$auth_servers = auth_get_authserver_list();
-										foreach ($auth_servers as $auth_server):
+										foreach ($auth_servers as $auth_server_id => $auth_server):
 											$selected = "";
 											if ($auth_server['name'] == $pconfig['authmode'])
 												$selected = "selected=\"selected\"";
 									?>
-									<option value="<?=$auth_server['name'];?>" <?=$selected;?>><?=$auth_server['name'];?></option>
+									<option value="<?=$auth_server_id;?>" <?=$selected;?>><?=$auth_server['name'];?></option>
 									<?php   endforeach; ?>
 									</select>
 								</td>
