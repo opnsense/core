@@ -57,7 +57,7 @@ class SettingsController extends ApiControllerBase
 
 
     /**
-     *
+     * update proxy configuration fields
      * @return array
      * @throws \Phalcon\Validation\Exception
      */
@@ -151,6 +151,12 @@ class SettingsController extends ApiControllerBase
     }
 
 
+    /**
+     * update remote blacklist item
+     * @param string $uuid
+     * @return array result status
+     * @throws \Phalcon\Validation\Exception
+     */
     public function setRemoteBlacklistAction($uuid)
     {
         if ($this->request->isPost() && $this->request->hasPost("blacklist")) {

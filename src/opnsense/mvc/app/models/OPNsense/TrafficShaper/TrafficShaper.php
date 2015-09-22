@@ -30,6 +30,10 @@ namespace OPNsense\TrafficShaper;
 
 use OPNsense\Base\BaseModel;
 
+/**
+ * Class TrafficShaper
+ * @package OPNsense\TrafficShaper
+ */
 class TrafficShaper extends BaseModel
 {
     /**

@@ -89,6 +89,7 @@ class IntegerField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
     public function getValidators()

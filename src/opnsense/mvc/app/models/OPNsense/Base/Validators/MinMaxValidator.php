@@ -33,6 +33,10 @@ use \Phalcon\Validation\Validator;
 use \Phalcon\Validation\ValidatorInterface;
 use \Phalcon\Validation\Message;
 
+/**
+ * Class MinMaxValidator
+ * @package OPNsense\Base\Validators
+ */
 class MinMaxValidator extends Validator implements ValidatorInterface
 {
     /**

@@ -34,6 +34,10 @@ namespace OPNsense\Cron;
  */
 class IndexController extends \OPNsense\Base\IndexController
 {
+    /**
+     * cron index page
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $this->view->title = "Cron settings";

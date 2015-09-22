@@ -220,6 +220,7 @@ class MenuItem
     }
 
     /**
+     * check if this item is selected
      * @return bool is this item selected
      */
     public function getSelected()

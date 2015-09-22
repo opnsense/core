@@ -113,6 +113,7 @@ class ArrayField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @param string|array $fieldNames sort by fieldname
      * @param bool $descending sort descending
      * @return array

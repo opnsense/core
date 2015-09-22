@@ -121,6 +121,7 @@ class CSVListField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @return array returns regex validator
      */
     public function getValidators()

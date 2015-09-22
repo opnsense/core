@@ -36,10 +36,11 @@ use Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class BaseModel implements base model to bind config and definition to object.
- * Derive from this class to create usable models.
- * Every model definition should include a class (derived from this) and a xml model to define the data (model.xml)
+ * Derive from BaseModel to create usable models.
+ * Every model definition should include a class (derived from BaseModel) and a xml model to define the data (model.xml)
  *
- * See the Sample model for a full implementation.
+ * See the HelloWorld model for a full implementation.
+ * (https://github.com/opnsense/plugins/tree/master/devel/helloworld/src/opnsense/mvc/app/models/OPNsense/HelloWorld)
  *
  * @package OPNsense\Base
  */

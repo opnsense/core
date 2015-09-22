@@ -43,6 +43,7 @@ class BooleanField extends BaseField
 
 
     /**
+     * retrieve field validators for this field type
      * @return array returns validators
      */
     public function getValidators()

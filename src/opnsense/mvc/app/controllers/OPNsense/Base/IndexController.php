@@ -35,6 +35,9 @@ namespace OPNsense\Base;
 class IndexController extends ControllerBase
 {
 
+    /**
+     * default index action
+     */
     public function indexAction()
     {
     }

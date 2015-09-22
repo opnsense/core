@@ -34,6 +34,10 @@ namespace OPNsense\TrafficShaper;
  */
 class IndexController extends \OPNsense\Base\IndexController
 {
+    /**
+     * traffic shaper index
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $this->view->title = "Traffic Shaper";

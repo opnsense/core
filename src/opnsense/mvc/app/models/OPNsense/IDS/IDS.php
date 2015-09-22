@@ -30,6 +30,10 @@ namespace OPNsense\IDS;
 
 use OPNsense\Base\BaseModel;
 
+/**
+ * Class IDS
+ * @package OPNsense\IDS
+ */
 class IDS extends BaseModel
 {
     /**

@@ -30,6 +30,10 @@ namespace OPNsense\Cron;
 
 use OPNsense\Base\BaseModel;
 
+/**
+ * Class Cron
+ * @package OPNsense\Cron
+ */
 class Cron extends BaseModel
 {
     /**

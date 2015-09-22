@@ -42,6 +42,9 @@ class PortField extends BaseField
      */
     protected $internalIsContainer = false;
 
+    /**
+     * @var array list of well known services
+     */
     private static $wellknownservices = array(
         'cvsup',
         'domain',
@@ -119,6 +122,7 @@ class PortField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @return array returns InclusionIn validator
      */
     public function getValidators()
