@@ -41,6 +41,7 @@ class UIModelGrid
     private $DataField = null;
 
     /**
+     * construct a new UIModelGrid
      * @param FieldTypes\ArrayField $DataField
      */
     public function __construct($DataField)

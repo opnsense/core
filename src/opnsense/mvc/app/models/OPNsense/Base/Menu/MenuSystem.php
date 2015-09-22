@@ -28,8 +28,15 @@
  */
 namespace OPNsense\Base\Menu;
 
+/**
+ * Class MenuSystem
+ * @package OPNsense\Base\Menu
+ */
 class MenuSystem
 {
+    /**
+     * @var null|MenuItem root node
+     */
     private $root = null ;
 
     /**

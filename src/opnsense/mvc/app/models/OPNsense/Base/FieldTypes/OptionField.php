@@ -43,7 +43,7 @@ class OptionField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var array
+     * @var array valid options for this list
      */
     private $internalOptionList = array();
 
@@ -89,6 +89,7 @@ class OptionField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @return array returns InclusionIn validator
      */
     public function getValidators()

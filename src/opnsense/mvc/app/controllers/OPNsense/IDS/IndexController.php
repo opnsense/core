@@ -34,6 +34,10 @@ namespace OPNsense\IDS;
  */
 class IndexController extends \OPNsense\Base\IndexController
 {
+    /**
+     * default ids index page
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $this->view->title = "Intrusion Detection";

@@ -125,6 +125,7 @@ class Backend
     }
 
     /**
+     * check configd socket for last restart, return 0 socket not present.
      * @return int last restart timestamp
      */
     public function getLastRestart()

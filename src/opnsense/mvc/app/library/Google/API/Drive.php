@@ -51,6 +51,9 @@ class Drive
      */
     private $cred = null;
 
+    /**
+     * construct a new Drive object
+     */
     public function __construct()
     {
         // hook in Google's autoloader
@@ -95,6 +98,7 @@ class Drive
 
 
     /**
+     * download a file by given GDrive file handle
      * @param $fileHandle (object from listFiles)
      * @return null|string
      */

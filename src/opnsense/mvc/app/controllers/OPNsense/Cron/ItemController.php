@@ -34,6 +34,11 @@ namespace OPNsense\Cron;
  */
 class ItemController extends \OPNsense\Base\IndexController
 {
+    /**
+     * open cron form with selected item
+     * @param null $uuid cron item to open
+     * @throws \Exception
+     */
     public function openAction($uuid = null)
     {
         $this->view->title = "Cron settings";

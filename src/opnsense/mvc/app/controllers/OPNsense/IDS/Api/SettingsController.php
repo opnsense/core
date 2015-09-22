@@ -41,6 +41,9 @@ use \OPNsense\Core\Config;
  */
 class SettingsController extends ApiControllerBase
 {
+    /**
+     * @var null|IDS IDS model to share across some methods (see getModel)
+     */
     private $idsModel = null;
 
     /**

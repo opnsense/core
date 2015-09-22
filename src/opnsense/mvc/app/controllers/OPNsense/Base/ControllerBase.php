@@ -120,6 +120,7 @@ class ControllerBase extends ControllerRoot
     }
 
     /**
+     * parse an xml type form
      * @param $formname
      * @return array
      * @throws \Exception

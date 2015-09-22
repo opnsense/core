@@ -36,6 +36,11 @@ use \Phalcon\Filter;
  */
 class QueryFilter
 {
+    /**
+     * sanitize query string
+     * @param $value sanitize input
+     * @return mixed sanitize output
+     */
     public function filter($value)
     {
         return preg_replace("/[^0-9,a-z,A-Z, ,*,\-,.,\#]/", "", $value);

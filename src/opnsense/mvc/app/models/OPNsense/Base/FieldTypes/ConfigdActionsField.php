@@ -49,7 +49,7 @@ class ConfigdActionsField extends BaseField
     private static $internalOptionList = array();
 
     /**
-     * @var array
+     * @var array filters to use on the configd selection
      */
     private $internalFilters = array();
 
@@ -146,6 +146,7 @@ class ConfigdActionsField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
     public function getValidators()

@@ -34,6 +34,10 @@ namespace OPNsense\Proxy;
  */
 class IndexController extends \OPNsense\Base\IndexController
 {
+    /**
+     * proxy index page
+     * @throws \Exception
+     */
     public function indexAction()
     {
         $this->view->title = "Proxy Server";

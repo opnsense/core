@@ -43,6 +43,7 @@ class EmailField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * retrieve field validators for this field type
      * @return array returns Email validator
      */
     public function getValidators()

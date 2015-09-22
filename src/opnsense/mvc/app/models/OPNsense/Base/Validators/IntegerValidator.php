@@ -33,6 +33,10 @@ use \Phalcon\Validation\Validator;
 use \Phalcon\Validation\ValidatorInterface;
 use \Phalcon\Validation\Message;
 
+/**
+ * Class IntegerValidator
+ * @package OPNsense\Base\Validators
+ */
 class IntegerValidator extends Validator implements ValidatorInterface
 {
 

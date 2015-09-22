@@ -57,6 +57,7 @@ class Config extends Singleton
 
 
     /**
+     * return last known status of this configuration (valid or not)
      * @return bool return (last known) status of this configuration
      */
     public function isValid()
@@ -213,6 +214,7 @@ class Config extends Singleton
     }
 
     /**
+     * check if there's a valid config loaded, throws an error if config isn't valid.
      * @throws ConfigException
      */
     private function checkvalid()

@@ -41,7 +41,7 @@ class LDAP
     private $ldapVersion = 3 ;
 
     /**
-     * @var null
+     * @var null base ldap search DN
      */
     private $baseSearchDN = null;
 
@@ -113,6 +113,7 @@ class LDAP
     }
 
     /**
+     * construct a new LDAP connector
      * @param null $baseSearchDN setup base searchDN or list of DN's separated by ;
      * @param int $ldapVersion setup ldap version
      */
@@ -134,6 +135,7 @@ class LDAP
     }
 
     /**
+     * initiate a connection.
      * @param $bind_url string url to use
      * @param null $userdn connect dn to use, leave empty for anonymous
      * @param null $password password

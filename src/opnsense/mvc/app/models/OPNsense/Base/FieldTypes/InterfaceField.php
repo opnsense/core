@@ -51,7 +51,7 @@ class InterfaceField extends BaseField
     private static $internalOptionList = array();
 
     /**
-     * @var array
+     * @var array filters to use on the interface list
      */
     private $internalFilters = array();
 
@@ -159,6 +159,7 @@ class InterfaceField extends BaseField
     }
 
     /**
+     * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
     public function getValidators()

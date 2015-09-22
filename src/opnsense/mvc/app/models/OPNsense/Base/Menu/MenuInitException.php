@@ -28,6 +28,10 @@
  */
 namespace OPNsense\Base\Menu;
 
+/**
+ * Class MenuInitException
+ * @package OPNsense\Base\Menu
+ */
 class MenuInitException extends \Exception
 {
 }

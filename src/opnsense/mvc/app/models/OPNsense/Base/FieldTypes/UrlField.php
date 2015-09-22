@@ -43,6 +43,7 @@ class UrlField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * retrieve field validators for this field type
      * @return array returns Url validator
      */
     public function getValidators()
