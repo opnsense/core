@@ -125,7 +125,7 @@ include("head.inc");
 				    <div class="container-fluid">
 
 
-							<? $tab_group = 'vpn'; include('diag_logs_pills.php'); ?>
+							<? $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?>
 
 
 							 <div class="table-responsive">
