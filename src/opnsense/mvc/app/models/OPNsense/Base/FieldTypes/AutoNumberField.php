@@ -73,6 +73,7 @@ class AutoNumberField extends BaseField
      * (see ArrayField for how this works).
      *
      * In this case, the default is a new sequence based on the same field in this fields direct neighbours.
+     * When maximum_value is reached, all succeeding items will get maximum_value+1. (which fails on validation)
      */
     public function applyDefault()
     {
