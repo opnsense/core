@@ -773,10 +773,8 @@ function system_syslogd_start()
 	}
 
 	$log_directive = '%';
-	$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
-	$log_create_directive = '/usr/local/sbin/clog -i -s ';
+	$syslogd_extra = '';
 
-	$syslogd_extra = "";
 	if (isset($syslogcfg)) {
 		$separatelogfacilities = array('ntp','ntpd','ntpdate','charon','openvpn','pptps','poes','l2tps','relayd','hostapd','dnsmasq','filterdns','unbound','dhcpd','dhcrelay','dhclient','dhcp6c','apinger','radvd','routed','olsrd','zebra','ospfd','bgpd','miniupnpd','filterlog');
 		$syslogconf = "";
