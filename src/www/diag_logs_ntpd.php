@@ -43,7 +43,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($ntpd_logfile);
+	clear_clog($ntpd_logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("NTP"));

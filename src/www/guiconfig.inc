@@ -347,59 +347,121 @@ function update_changedesc($update) {
 	$changecount++;
 }
 
-function clear_log_file($logfile = '/var/log/system.log', $restart_syslogd = true)
+function clear_log($logfile, $restart_syslogd = true)
 {
-	global $config, $g;
-	if ($restart_syslogd)
-		exec("/usr/bin/killall syslogd");
-	if(isset($config['system']['disablesyslogclog'])) {
-		unlink($logfile);
-		touch($logfile);
-	} else {
-		$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : "511488";
-		exec("/usr/local/sbin/clog -i -s {$log_size} " . escapeshellarg($logfile));
+	if ($restart_syslogd) {
+		killbyname('syslogd');
 	}
+
+	foreach (glob($logfile . '.*') as $rotated) {
+		@unlink($rotated);
+	}
+
+	/* preserve file ownership and permissions */
+	$handle = fopen($logfile, 'r+');
+	if ($handle) {
+		ftruncate($handle, 0);
+		fclose($handle);
+	}
+
 	if ($restart_syslogd) {
 		system_syslogd_start();
 	}
 }
 
-function dump_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert = "") {
-	global $g, $config;
-	$sor = isset($config['syslog']['reverse']) ? "-r" : "";
-	$logarr = "";
-	$grepline = "  ";
-	if(is_array($grepfor))
-		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
-	if(is_array($grepinvert))
-		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
-	if (is_dir($logfile)) {
-		$logarr = array("File $logfile is a directory.");
-	} elseif (file_exists($logfile) && filesize($logfile) == 0) {
-		$logarr = array("Log file started.");
-	} else {
-		if($config['system']['disablesyslogclog']) {
-			exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-		} else {
-			exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-		}
+function clear_clog($logfile, $restart_syslogd = true)
+{
+	global $config;
+
+	if ($restart_syslogd) {
+		killbyname('syslogd');
 	}
-	foreach ($logarr as $logent) {
-			$logent = preg_split("/\s+/", $logent, 6);
-			echo "<tr valign=\"top\">\n";
-			if ($withorig) {
-					$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-					$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
-					$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
-					echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
-					echo "<td class=\"listr\">{$entry_text}</td>\n";
-			} else {
-					echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logent[5]) . "</td>\n";
-			}
-			echo "</tr>\n";
+
+	$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
+	mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
+
+	if ($restart_syslogd) {
+		system_syslogd_start();
 	}
 }
 
+function print_dump($logarr, $withorig)
+{
+	global $config;
+
+	foreach ($logarr as $logent) {
+		$logent = preg_split("/\s+/", $logent, 6);
+		echo "<tr valign=\"top\">\n";
+		if ($withorig) {
+			$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
+			$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
+			$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
+			echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
+			echo "<td class=\"listr\">{$entry_text}</td>\n";
+		} else {
+			echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logent[5]) . "</td>\n";
+		}
+		echo "</tr>\n";
+	}
+}
+
+function dump_clog($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert = '')
+{
+	global $config;
+
+	$sor = isset($config['syslog']['reverse']) ? '-r' : '';
+	$grepline = '  ';
+	$logarr = '';
+
+	if (is_array($grepfor)) {
+		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
+	}
+
+	if (is_array($grepinvert)) {
+		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
+	}
+
+	if (is_dir($logfile)) {
+		$logarr = array("File $logfile is a directory.");
+	} elseif (!file_exists($logfile)) {
+		$logarr = array("File $logfile doesn't exist.");
+	} elseif (filesize($logfile) == 0) {
+		$logarr = array("Log file started.");
+	} else {
+		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+	}
+
+	print_dump($logarr, $withorig);
+}
+
+function dump_log($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert = '')
+{
+	global $config;
+
+	$sor = isset($config['syslog']['reverse']) ? '-r' : '';
+	$grepline = '  ';
+	$logarr = '';
+
+	if (is_array($grepfor)) {
+		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
+	}
+
+	if (is_array($grepinvert)) {
+		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
+	}
+
+	if (is_dir($logfile)) {
+		$logarr = array("File $logfile is a directory.");
+	} elseif (!file_exists($logfile)) {
+		$logarr = array("File $logfile doesn't exist.");
+	} elseif (filesize($logfile) == 0) {
+		$logarr = array("Log file started.");
+	} else {
+		exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+	}
+
+	print_dump($logarr, $withorig);
+}
 
 /* Check if variable has changed, update and log if it has
  * returns true if var changed
@@ -523,9 +585,10 @@ function is_specialnet($net) {
  * RESULT
  *   null
  ******/
-function display_top_tabs(& $tab_array, $no_drop_down = false) {
+function display_top_tabs(& $tab_array, $no_drop_down = false)
+{
 	global $config;
-	global $g;
+
 	$tab_array_char_limit = 92;
 
 	/*  does the user have access to this tab?
@@ -582,9 +645,6 @@ function display_top_tabs(& $tab_array, $no_drop_down = false) {
 		echo "</ul>\n";
 	}
 }
-
-
-
 
 $timezone = $config['system']['timezone'];
 if (!$timezone) {

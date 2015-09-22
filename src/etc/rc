@@ -165,7 +165,6 @@ rm -rf /tmp/*
 chmod 1777 /tmp
 
 echo -n "."
-DISABLESYSLOGCLOG=`/usr/bin/grep -c disablesyslogclog /conf/config.xml`
 LOG_FILES="system filter dhcpd vpn pptps poes l2tps openvpn portalauth ipsec ppps relayd wireless lighttpd ntpd gateways resolver routing"
 
 DEFAULT_LOG_FILE_SIZE=`/usr/local/bin/xmllint --xpath 'string(//opnsense/syslog/logfilesize)' /conf/config.xml`
@@ -174,12 +173,8 @@ if [ ! ${DEFAULT_LOG_FILE_SIZE} ]; then
 fi
 
 for logfile in $LOG_FILES; do
-	if [ "$DISABLESYSLOGCLOG" -gt "0" ]; then
-		touch /var/log/$logfile.log
-	else
-		if [ ! -f /var/log/$logfile.log ]; then
-			clog -i -s ${DEFAULT_LOG_FILE_SIZE} /var/log/$logfile.log
-		fi
+	if [ ! -f /var/log/$logfile.log ]; then
+		clog -i -s ${DEFAULT_LOG_FILE_SIZE} /var/log/$logfile.log
 	fi
 	chmod 0600 /var/log/$logfile.log
 done

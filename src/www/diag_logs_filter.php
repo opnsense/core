@@ -586,9 +586,8 @@ if (isset($filterlogentries_qty) && $filterlogentries_qty != null) {
 	$nentries = $filterlogentries_qty;
 }
 
-
 if (isset($_POST['clear'])) {
-	clear_log_file($filter_logfile);
+	clear_clog($filter_logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Firewall"));
@@ -598,7 +597,6 @@ include("head.inc");
 ?>
 
 <script src="/javascript/filter_log.js" type="text/javascript"></script>
-
 
 <body>
 

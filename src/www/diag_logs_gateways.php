@@ -43,7 +43,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($system_logfile);
+	clear_clog($system_logfile);
 }
 
 if ($_GET['filtertext']) {
