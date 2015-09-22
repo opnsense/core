@@ -69,7 +69,7 @@ function clear_all_log_files()
 		'squid/cache',
 	);
 
-	foreach ($clog_files as $lfile) {
+	foreach ($log_files as $lfile) {
 		clear_log("/var/log/{$lfile}.log", false);
 	}
 
