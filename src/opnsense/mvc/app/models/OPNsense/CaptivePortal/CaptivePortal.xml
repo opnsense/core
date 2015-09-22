@@ -1,0 +1,36 @@
+<model>
+    <mount>//OPNsense/captiveportal</mount>
+    <description>
+        Captive portal application model
+    </description>
+    <items>
+        <zones>
+            <zone type="ArrayField">
+                <enabled type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </enabled>
+                <zoneid type="AutoNumberField">
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>19</MaximumValue>
+                    <ValidationMessage>Maximum number of zones reached</ValidationMessage>
+                    <Required>Y</Required>
+                </zoneid>
+                <interfaces type="InterfaceField">
+                    <Required>Y</Required>
+                    <multiple>Y</multiple>
+                    <default>lan</default>
+                    <filters>
+                        <enable>/^(?!0).*$/</enable>
+                        <ipaddr>/^((?!dhcp).)*$/</ipaddr>
+                    </filters>
+                </interfaces>
+                <description type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                </description>
+            </zone>
+        </zones>
+    </items>
+</model>

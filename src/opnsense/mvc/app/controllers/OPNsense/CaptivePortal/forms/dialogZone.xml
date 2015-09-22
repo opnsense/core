@@ -1,0 +1,28 @@
+<form>
+    <field>
+        <id>zone.enabled</id>
+        <label>enabled</label>
+        <type>checkbox</type>
+        <help>enable this zone</help>
+    </field>
+    <field>
+        <id>zone.zoneid</id>
+        <label>zone#</label>
+        <type>info</type>
+        <help>internal number used for this zone</help>
+    </field>
+    <field>
+        <id>zone.interfaces</id>
+        <label>interfaces</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Select the interface(s) to enable for captive portal.]]></help>
+        <hint>Type or select interface.</hint>
+    </field>
+    <field>
+        <id>zone.description</id>
+        <label>description</label>
+        <type>text</type>
+        <help>Description to identify this zone.</help>
+    </field>
+</form>
