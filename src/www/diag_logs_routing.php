@@ -40,7 +40,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($routing_logfile);
+	clear_clog($routing_logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Routing"));

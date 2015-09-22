@@ -34,25 +34,6 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-
-function return_clog($logfile, $tail, $withorig = true, $grepfor = "", $grepinvert = "", $grepreverse = false) {
-	global $g, $config;
-	$sor = (isset($config['syslog']['reverse']) || $grepreverse) ? "-r" : "";
-	$logarr = "";
-	$grepline = "  ";
-	if(is_array($grepfor))
-		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
-	if(is_array($grepinvert))
-		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
-	if($config['system']['disablesyslogclog']) {
-		exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-	} else {
-		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-	}
-	return($logarr);
-}
-
-
 $ipsec_logfile = '/var/log/ipsec.log';
 
 if (empty($config['syslog']['nentries'])) {
@@ -62,17 +43,14 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($ipsec_logfile);
+	clear_clog($ipsec_logfile);
 }
-
-$ipsec_logarr = return_clog($ipsec_logfile, $nentries);
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("IPsec VPN"));
 $shortcut_section = "ipsec";
 include("head.inc");
 
 ?>
-
 
 <body>
 <?php include("fbegin.inc"); ?>
@@ -96,17 +74,7 @@ include("head.inc");
 
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
-										<?php
-										foreach($ipsec_logarr as $logent){
-											$logent = htmlspecialchars($logent);
-											$logent = preg_split("/\s+/", $logent, 6);
-											echo "<tr valign=\"top\">\n";
-											$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-											echo "<td class=\"listlr nowrap\">" . $entry_date_time  . "</td>\n";
-											echo "<td class=\"listr\">" . $logent[4] . " " . $logent[5] . "</td>\n";
-											echo "</tr>\n";
-										}
-										?>
+										<?php dump_clog($ipsec_logfile, $nentries); ?>
 									</table>
 								 </div>
 

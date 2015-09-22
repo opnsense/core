@@ -42,7 +42,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($relayd_logfile);
+	clear_clog($relayd_logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Load Balancer"));

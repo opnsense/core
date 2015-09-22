@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2015 Deciso B.V.
 	All rights reserved.
@@ -26,6 +27,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("system.inc");
 
 $logfile = '/var/log/squid/cache.log';
 
@@ -36,10 +38,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-        // trash log file
-        $handle = fopen($logfile, 'r+');
-        ftruncate($handle, 0);
-        fclose($handle);
+	clear_log($logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Proxy"));
@@ -57,12 +56,12 @@ include("head.inc");
                 <? include('diag_logs_tabs.inc'); ?>
                 <div class="tab-content content-box col-xs-12">
                     <div class="container-fluid">
-                        <p> <?php printf(gettext("Last %s log entries"), $max_logentries);?></p>
-                        <pre><?php
-                                if (file_exists($logfile)) {
-                                        echo trim(implode("", array_slice(file($logfile), -$max_logentries)));
-                                }
-                        ?></pre>
+                        <p><?php printf(gettext("Last %s Proxy log entries"), $nentries);?></p>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-sort">
+                                <?php dump_log($logfile, $nentries); ?>
+                            </table>
+                        </div>
                         <form method="post">
                             <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
                         </form>

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -38,21 +39,44 @@ function clear_all_log_files()
 {
 	killbyname('syslogd');
 
-	$log_files = array(
-		"system", "filter", "dhcpd", "vpn", "pptps", "poes", "l2tps", "openvpn", "portalauth",
-		"ipsec", "ppps", "relayd", "wireless", "lighttpd", "ntpd", "gateways", "resolver", "routing"
+	$clog_files = array(
+		'dhcpd',
+		'filter',
+		'gateways',
+		'ipsec',
+		'l2tps',
+		'lighttpd',
+		'ntpd',
+		'openvpn',
+		'poes',
+		'portalauth',
+		'ppps',
+		'pptps',
+		'relayd',
+		'resolver',
+		'routing',
+		'system',
+		'vpn',
+		'wireless',
 	);
 
-	foreach ($log_files as $lfile) {
-		clear_log_file("/var/log/{$lfile}.log", false);
+	foreach ($clog_files as $lfile) {
+		clear_clog("/var/log/{$lfile}.log", false);
+	}
+
+	$log_files = array(
+		'squid/access',
+		'squid/cache',
+	);
+
+	foreach ($clog_files as $lfile) {
+		clear_log("/var/log/{$lfile}.log", false);
 	}
 
 	system_syslogd_start();
-	killbyname("dhcpd");
+	killbyname('dhcpd');
 	services_dhcpd_configure();
 }
-
-
 
 $pconfig['reverse'] = isset($config['syslog']['reverse']);
 $pconfig['nentries'] = $config['syslog']['nentries'];

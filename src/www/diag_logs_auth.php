@@ -41,7 +41,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($portal_logfile);
+	clear_clog($portal_logfile);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Portal Auth"));

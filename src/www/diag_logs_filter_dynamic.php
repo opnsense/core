@@ -42,7 +42,7 @@ $nentries = 50;
 handle_ajax($nentries, $nentries + 20);
 
 if (isset($_POST['clear'])) {
-	clear_log_file($filter_logfile);
+	clear_clog($filter_logfile);
 }
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);

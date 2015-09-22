@@ -42,7 +42,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($dhcpd_logfile);
+	clear_clog($dhcpd_logfile);
 	killbyname("dhcpd");
 	services_dhcpd_configure();
 }

@@ -46,7 +46,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-	clear_log_file($openvpn_logfile);
+	clear_clog($openvpn_logfile);
 }
 
 include("head.inc");

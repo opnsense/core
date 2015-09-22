@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V. - J. Schellevis
 	Copyright (C) 2009 Jim Pingle (jpingle@gmail.com)
