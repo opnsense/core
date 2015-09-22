@@ -46,6 +46,11 @@ abstract class BaseField
     protected $internalChildnodes = array();
 
     /**
+     * @var null pointer to parent
+     */
+    protected $internalParentNode = null;
+
+    /**
      * @var bool marks if this is a data node or a container
      */
     protected $internalIsContainer = true;
@@ -185,6 +190,16 @@ abstract class BaseField
     public function addChildNode($name, $node)
     {
         $this->internalChildnodes[$name] = $node;
+        $node->setParentNode($this);
+    }
+
+    /**
+     * set pointer to parent node, used by addChildNode to backref this node
+     * @param BaseField $node pointer to parent
+     */
+    private function setParentNode($node)
+    {
+        $this->internalParentNode = $node;
     }
 
     /**
