@@ -56,6 +56,8 @@ class IntegerField extends BaseField
 
     /**
      * constructor, set absolute min and max values
+     * @param null|string $ref direct reference to this object
+     * @param null|string $tagname xml tagname to use
      */
     public function __construct($ref = null, $tagname = null)
     {
