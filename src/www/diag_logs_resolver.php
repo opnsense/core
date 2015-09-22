@@ -82,7 +82,7 @@ include("head.inc");
 				    <div class="container-fluid">
 
 
-							<? include('diag_logs_pills.php'); ?>
+							<? include('diag_logs_pills.inc'); ?>
 				    </div>
 
 							 <div class="table-responsive">

@@ -616,7 +616,7 @@ include("head.inc");
 				    <div class="container-fluid">
 
 
-							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
+							<? $tab_group = 'firewall'; include('diag_logs_pills.inc'); ?>
 
 							<form id="filterlogentries" name="filterlogentries" action="diag_logs_filter.php" method="post">
 							<?php

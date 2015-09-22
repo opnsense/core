@@ -97,7 +97,7 @@ include("head.inc");
 				    <div class="container-fluid">
 
 
-							<? $tab_group = 'firewall'; include('diag_logs_pills.php'); ?>
+							<? $tab_group = 'firewall'; include('diag_logs_pills.inc'); ?>
 
 
 
