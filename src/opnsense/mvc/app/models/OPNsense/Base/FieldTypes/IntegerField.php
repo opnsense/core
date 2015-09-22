@@ -32,7 +32,7 @@ use OPNsense\Base\Validators\MinMaxValidator;
 use OPNsense\Base\Validators\IntegerValidator;
 
 /**
- * Class TextField
+ * Class IntegerField
  * @package OPNsense\Base\FieldTypes
  */
 class IntegerField extends BaseField
