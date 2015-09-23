@@ -29,15 +29,20 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-$logfile = '/var/log/squid/cache.log';
-
 if (empty($config['syslog']['nentries'])) {
         $nentries = 50;
 } else {
         $nentries = $config['syslog']['nentries'];
 }
 
-if ($_POST['clear']) {
+$type = 'cache';
+if (isset($_GET['type']) && $_GET['type'] === 'access') {
+	$type = $_GET['type'];
+}
+
+$logfile = "/var/log/squid/{$type}.log";
+
+if (isset($_GET['clear'])) {
 	clear_log($logfile);
 }
 
@@ -53,17 +58,19 @@ include("head.inc");
     <div class="container-fluid">
         <div class="row">
             <section class="col-xs-12">
-                <? include('diag_logs_tabs.inc'); ?>
+                <?php include('diag_logs_tabs.inc'); ?>
                 <div class="tab-content content-box col-xs-12">
                     <div class="container-fluid">
+                        <?php $tab_group = 'proxy'; include('diag_logs_pills.inc'); ?>
                         <p><?php printf(gettext("Last %s Proxy log entries"), $nentries);?></p>
                         <div class="table-responsive">
                             <table class="table table-striped table-sort">
                                 <?php dump_log($logfile, $nentries); ?>
                             </table>
                         </div>
-                        <form method="post">
+                        <form method="get">
                             <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+                            <input name="type" type="hidden" value="<?= $type ?>" />
                         </form>
                     </div>
                 </div>

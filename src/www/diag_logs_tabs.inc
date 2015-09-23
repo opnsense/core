@@ -38,6 +38,6 @@ $tab_array[] = array(gettext("VPN"), $active_tab == "/diag_logs_vpn.php", "diag_
 $tab_array[] = array(gettext("Load Balancer"), $active_tab == "/diag_logs_relayd.php", "diag_logs_relayd.php");
 $tab_array[] = array(gettext("OpenVPN"), $active_tab == "/diag_logs_openvpn.php", "diag_logs_openvpn.php");
 $tab_array[] = array(gettext("NTP"), $active_tab == "/diag_logs_ntpd.php", "diag_logs_ntpd.php");
-$tab_array[] = array(gettext("Proxy"), $active_tab == "/diag_logs_proxy.php", "diag_logs_proxy.php");
+$tab_array[] = array(gettext("Proxy"), $active_tab == "/diag_logs_proxy.php", "diag_logs_proxy.php?type=cache");
 $tab_array[] = array(gettext("Settings"), $active_tab == "/diag_logs_settings.php", "diag_logs_settings.php");
 display_top_tabs($tab_array);
