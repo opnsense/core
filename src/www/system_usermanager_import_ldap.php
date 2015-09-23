@@ -1,8 +1,9 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
-	All rights reserved.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -113,13 +114,15 @@ if ($authcfg['type'] == 'ldap') {
         }
       }
     } else {
-      // list all missing accounts
-      foreach ($result as $ldap_user ) {
-        if (!in_array($ldap_user['dn'], $confDNs)) {
-          $ldap_users[$ldap_user['name']] = $ldap_user['dn'];
+      if (is_array($result)) {
+        // list all missing accounts
+        foreach ($result as $ldap_user ) {
+          if (!in_array($ldap_user['dn'], $confDNs)) {
+            $ldap_users[$ldap_user['name']] = $ldap_user['dn'];
+          }
         }
+        ksort($ldap_users);
       }
-      ksort($ldap_users);
     }
   }
 }
