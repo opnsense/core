@@ -4728,8 +4728,9 @@ function get_interface_ipv6($interface = "wan", $flush = false) {
 		case 'l2tp':
 		case 'pptp':
 		case 'ppp':
-			if ($config['interfaces'][$interface]['ipaddrv6'] == 'dhcp6')
-				$realif = get_real_interface($interface, "inet6", true);
+			if ($config['interfaces'][$interface]['ipaddrv6'] == 'dhcp6') {
+				$realif = get_real_interface($interface, 'inet6');
+			}
 			break;
 		}
 		if (isset($config['interfaces'][$interface]['dhcp6prefixonly'])) {
