@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+    <head>
+
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+        <meta name="robots" content="index, follow, noodp, noydir" />
+        <meta name="keywords" content="" />
+        <meta name="description" content="" />
+        <meta name="copyright" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+        <title></title>
+        <!-- Bootstrap -->
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/signin.css" rel="stylesheet">
+
+        <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+        <script>
+            $( document ).ready(function() {
+                /**
+                 * logon action
+                 */
+                $("#signin").click(function (event) {
+                    event.preventDefault();
+                    // hide alerts
+                    $("#alertMSG").addClass("hidden");
+                    // try to login
+                    $.ajax({
+                        type: "POST",
+                        url: "http://127.0.0.1:8888/api/captiveportal/access/logon",
+                        dataType:"json",
+                        data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
+                    }).done(function(data) {
+                        alert(JSON.stringify(data));
+                    }).fail(function(){
+                        $("#errorMSGtext").html("unable to connect to authentication server");
+                        $("#alertMSG").removeClass("hidden");
+                    });
+                });
+
+                /**
+                 * close / hide error message
+                 */
+                $("#btnCloseError").click(function(){
+                    $("#alertMSG").addClass("hidden");
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <header class="page-head">
+            <nav class="navbar navbar-default" >
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/index.php">
+                            <img class="brand-logo" src="images/default-logo.png" height="30" width="150">
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <main class="page-content col-sm-6 col-sm-push-3">
+            <form class="form-signin">
+                <h2 class="form-signin-heading">Please sign in</h2>
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                <button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
+            </form>
+            <div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
+                <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <span id="errorMSGtext"></span>
+            </div>
+        </main>
+
+        <!-- bootstrap script -->
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    </body>
+</html>
