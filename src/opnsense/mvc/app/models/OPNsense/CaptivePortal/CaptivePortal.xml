@@ -25,6 +25,11 @@
                         <ipaddr>/^((?!dhcp).)*$/</ipaddr>
                     </filters>
                 </interfaces>
+                <authservers type="AuthenticationServerField">
+                    <Required>Y</Required>
+                    <multiple>Y</multiple>
+                    <default>Local Database</default>
+                </authservers>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
