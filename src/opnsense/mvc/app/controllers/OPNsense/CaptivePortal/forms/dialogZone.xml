@@ -20,6 +20,14 @@
         <hint>Type or select interface.</hint>
     </field>
     <field>
+        <id>zone.authservers</id>
+        <label>authenticate using</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
+        <hint>Type or select server.</hint>
+    </field>
+    <field>
         <id>zone.description</id>
         <label>description</label>
         <type>text</type>
