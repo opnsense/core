@@ -455,6 +455,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $filterent['disabled'] = true;
         }
 
+        if (!empty($pconfig['log'])) {
+            $filterent['log'] = true;
+        }
 
         if ($pconfig['protocol'] != "any") {
             $filterent['protocol'] = $pconfig['protocol'];
