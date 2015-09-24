@@ -89,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['tls'] = base64_decode($a_client[$id]['tls']);
         } else {
                     $pconfig['tls'] = null;
+                    $pconfig['tlsauth_enable'] = null;
         }
 
         if (isset($a_client[$id]['shared_key'])) {
