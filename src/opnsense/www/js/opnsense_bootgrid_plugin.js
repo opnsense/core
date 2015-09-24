@@ -185,6 +185,7 @@ $.fn.UIBootgrid = function (params) {
                         urlMap['frm_' + editDlg] = gridParams['get'];
                         mapDataToFormUI(urlMap).done(function(){
                             // update selectors
+                            formatTokenizersUI();
                             $('.selectpicker').selectpicker('refresh');
                             // clear validation errors (if any)
                             clearFormValidation('frm_' + editDlg);
