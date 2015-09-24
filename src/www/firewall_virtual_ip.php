@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // move selected rules
         if (!isset($id)) {
             // if rule not set/found, move to end
-            $id = count($a_nat);
+            $id = count($a_vip);
         }
         $a_vip = legacy_move_config_list_items($a_vip, $id,  $pconfig['rule']);
         write_config();
@@ -222,7 +222,7 @@ $main_buttons = array(
       // delete single
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_INFO,
-        title: "<?= gettext("Alias");?>",
+        title: "<?= gettext("Virtual IP");?>",
         message: "<?=gettext("Do you really want to delete this entry?");?>",
         buttons: [{
                   label: "<?= gettext("No");?>",
@@ -308,13 +308,13 @@ $main_buttons = array(
                           <?=htmlspecialchars($vipent['descr']);?>
                         </td>
                         <td>
-                          <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected alias before this rule");?>" class="act_move btn btn-default btn-xs">
+                          <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected virtual ip before this rule");?>" class="act_move btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-arrow-left"></span>
                           </a>
-                          <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this alias");?>" class="btn btn-default btn-xs">
+                          <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this virtual ip");?>" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-pencil"></span>
                           </a>
-                          <a id="del_<?=$i;?>" title="<?=gettext("delete this alias"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <a id="del_<?=$i;?>" title="<?=gettext("delete this virtual ip"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-remove"></span>
                           </a>
                           <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule based on this one");?>">
