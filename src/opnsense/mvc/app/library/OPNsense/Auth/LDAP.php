@@ -33,7 +33,7 @@ namespace OPNsense\Auth;
  * Class LDAP connector
  * @package OPNsense\Auth
  */
-class LDAP
+class LDAP implements IAuthConnector
 {
     /**
      * @var int ldap version to use
@@ -54,6 +54,36 @@ class LDAP
      * @var array list of attributes to return in searches
      */
     private $ldapSearchAttr = array();
+
+    /**
+     * @var null|string ldap configuration property set.
+     */
+    private $ldapBindURL = null;
+
+    /**
+     * @var null|string ldap administrative bind dn
+     */
+    private $ldapBindDN = null ;
+
+    /**
+     * @var null|string ldap administrative bind passwd
+     */
+    private $ldapBindPassword = null ;
+
+    /**
+     * @var null|string user attribute
+     */
+    private $ldapAttributeUser = null;
+
+    /**
+     * @var null|string ldap extended query
+     */
+    private $ldapExtendedQuery = null;
+
+    /**
+     * @var array list of already known usernames vs distinguished names
+     */
+    private $userDNmap = array();
 
     /**
      * close ldap handle if open
@@ -124,6 +154,40 @@ class LDAP
         // setup ldap general search list, list gets updated by requested data
         $this->addSearchAttribute("dn");
         $this->addSearchAttribute("name");
+    }
+
+    /**
+     * set connector properties
+     * @param array $config connection properties
+     */
+    public function setProperties($config)
+    {
+        $confMap = array("ldap_protver" => "ldapVersion",
+            "ldap_basedn" => "baseSearchDN",
+            "ldap_binddn" => "ldapBindDN",
+            "ldap_bindpw" => "ldapBindPassword",
+            "ldap_attr_user" => "ldapAttributeUser",
+            "ldap_extended_query" => "ldapExtendedQuery",
+            "local_users" => "userDNmap"
+        ) ;
+
+        // map properties 1-on-1
+        foreach ($confMap as $confSetting => $objectProperty) {
+            if (!empty($config[$confSetting]) && property_exists($this, $objectProperty)) {
+                $this->$objectProperty = $config[$confSetting];
+            }
+        }
+
+        // translate config settings
+        if (strstr($config['ldap_urltype'], "Standard")) {
+            $this->ldapBindURL = "ldap://";
+        } else {
+            $this->ldapBindURL = "ldaps://";
+        }
+        $this->ldapBindURL .= strpos($config['host'], "::") !== false ? "[{$config['host']}]" : $config['host'];
+        if (!empty($config['ldap_port'])) {
+            $this->ldapBindURL .= ":{$config['ldap_port']}";
+        }
     }
 
     /**
@@ -218,5 +282,34 @@ class LDAP
         }
 
         return false;
+    }
+
+    /**
+     * authenticate user against ldap server
+     * @param $username username to authenticate
+     * @param $password user password
+     * @return bool authentication status
+     */
+    public function authenticate($username, $password)
+    {
+        // todo: implement SSL parts (legacy : ldap_setup_caenv)
+        // authenticate user
+        if (array_key_exists($username, $this->userDNmap)) {
+            // we can map $username to distinguished name, just feed to connect
+            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->userDNmap[$username], $password);
+            return $ldap_is_connected;
+        } else {
+            // we don't know this users distinguished name, try to find it
+            $ldap_is_connected = $this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword);
+            if ($ldap_is_connected) {
+                $result = $this->searchUsers($username, $this->ldapAttributeUser, $this->ldapExtendedQuery);
+                if (count($result) > 0) {
+                    $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
+                    return $ldap_is_connected;
+                }
+            }
+            return false;
+        }
+
     }
 }
