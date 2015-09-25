@@ -579,7 +579,9 @@ class SystemhealthController extends ApiControllerBase
 
             return ["sets" => $data_sets_full,
                 "d3" => $result,
-                "title"=>$rrd_details["title"],
+                "title"=>$rrd_details["title"] != "" ?
+                         $rrd_details["title"] . " | " . ucfirst($rrd_details['itemName']) :
+                         ucfirst($rrd_details['itemName']),
                 "y-axis_label"=>$rrd_details["y-axis_label"]
             ]; // return details and d3 data
         } else {
