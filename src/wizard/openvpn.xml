@@ -28,6 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 </copyright>
+<includefile>openvpn_wizard.inc</includefile>
 <totalsteps>12</totalsteps>
 <step>
 	<id>1</id>
@@ -66,7 +67,6 @@
 		</field>
 	</fields>
 	<stepsubmitphpaction>step1_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>2</id>
@@ -102,7 +102,6 @@
 	<stepbeforeformdisplay>step2_stepbeforeformdisplay();</stepbeforeformdisplay>
 	<stepsubmitphpaction>step2_submitphpaction();</stepsubmitphpaction>
 	<javascriptafterformdisplay>enablechange();</javascriptafterformdisplay>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>3</id>
@@ -229,7 +228,6 @@
 	</fields>
 	<stepsubmitphpaction>step3_submitphpaction();</stepsubmitphpaction>
 	<javascriptafterformdisplay>enablechange();</javascriptafterformdisplay>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>4</id>
@@ -265,7 +263,6 @@
 	<stepbeforeformdisplay>step4_stepbeforeformdisplay();</stepbeforeformdisplay>
 	<stepsubmitphpaction>step4_submitphpaction();</stepsubmitphpaction>
 	<javascriptafterformdisplay>enablechange();</javascriptafterformdisplay>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>5</id>
@@ -314,7 +311,6 @@
 		</field>
 	</fields>
 	<stepsubmitphpaction>step5_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>6</id>
@@ -343,7 +339,6 @@
 	</fields>
 	<stepbeforeformdisplay>step6_stepbeforeformdisplay();</stepbeforeformdisplay>
 	<stepsubmitphpaction>step6_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>7</id>
@@ -444,7 +439,6 @@
 		</field>
 	</fields>
 	<stepsubmitphpaction>step7_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 	<javascriptafterformdisplay>enablechange();</javascriptafterformdisplay>
 </step>
 <step>
@@ -474,7 +468,6 @@
 	</fields>
 	<stepbeforeformdisplay>step8_stepbeforeformdisplay();</stepbeforeformdisplay>
 	<stepsubmitphpaction>step8_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>9</id>
@@ -576,7 +569,6 @@
 	</fields>
 	<stepbeforeformdisplay>step9_stepbeforeformdisplay();</stepbeforeformdisplay>
 	<stepsubmitphpaction>step9_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>10</id>
@@ -911,7 +903,6 @@
 	</fields>
 	<stepbeforeformdisplay>step10_stepbeforeformdisplay();</stepbeforeformdisplay>
 	<stepsubmitphpaction>step10_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 <step>
 	<id>11</id>
@@ -979,6 +970,5 @@
 		</field>
 	</fields>
 	<stepsubmitphpaction>step12_submitphpaction();</stepsubmitphpaction>
-	<includefile>openvpn_wizard.inc</includefile>
 </step>
 </opnsensewizard>
