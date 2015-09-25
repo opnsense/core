@@ -1,0 +1,8 @@
+<model>
+    <mount>//OPNsense/systemhealth</mount>
+    <description>
+        (rrd) System Health Settings
+    </description>
+    <items>
+    </items>
+</model>
