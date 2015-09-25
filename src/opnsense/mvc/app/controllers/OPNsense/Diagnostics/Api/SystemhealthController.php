@@ -183,9 +183,15 @@ class SystemhealthController extends ApiControllerBase
                         break;
                     }
                 }
+                if ( $overview != 0 ) {
+                    $condensed_rowCount = (int)($rra_info[$last_rra_key]["available_rows"] / $overview);
+                } else {
+                    $condensed_rowCount = 0;
+                }
+
                 array_push($archives, [
                     "key" => $last_rra_key,
-                    "condensed_rowCount" => (int)($rra_info[$last_rra_key]["available_rows"] / $overview),
+                    "condensed_rowCount" => $condensed_rowCount,
                     "condense_by" => (int)$overview,
                     "type" => "overview"
                 ]);
