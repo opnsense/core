@@ -75,7 +75,7 @@
 			<!-- we must unset the fields because this is an array. -->
 			<unsetfield>yes</unsetfield>
 			<arraynum>0</arraynum>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>Primary DNS Server field is invalid</message>
 		</field>
 		<field>
@@ -83,7 +83,7 @@
 			<type>input</type>
 			<bindstofield>system->dnsserver</bindstofield>
 			<arraynum>1</arraynum>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>Secondary DNS Server field is invalid</message>
 		</field>
 		<field>
@@ -248,7 +248,7 @@
 			<type>input</type>
 			<typehint> / </typehint>
 			<combinefieldsbegin>true</combinefieldsbegin>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>IP Address field is invalid</message>
 		</field>
 		<field>
@@ -263,7 +263,7 @@
 			<name>Upstream Gateway</name>
 			<bindstofield>wizardtemp->wangateway</bindstofield>
 			<type>input</type>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>Gateway IP Address field is invalid</message>
 		</field>
 		<field>
@@ -329,7 +329,7 @@
 			<type>input</type>
 			<typehint> / </typehint>
 			<bindstofield>wizardtemp->wan->localip</bindstofield>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>PPTP Local IP Address field is invalid</message>
 		</field>
 		<field>
@@ -344,7 +344,7 @@
 			<name>PPTP Remote IP Address</name>
 			<bindstofield>wizardtemp->wan->gateway</bindstofield>
 			<type>input</type>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>PPTP Remote IP Address field is invalid</message>
 		</field>
 		<field>
@@ -498,7 +498,7 @@
 			<name>LAN IP Address</name>
 			<type>input</type>
 			<bindstofield>interfaces->lan->ipaddr</bindstofield>
-			<validate>^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$</validate>
+			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
 			<message>LAN IP Address field is invalid</message>
 		</field>
 				<field>
