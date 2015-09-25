@@ -28,11 +28,13 @@
  */
 namespace OPNsense\Diagnostics;
 
+use OPNsense\Base\IndexController;
+
 /**
  * Class IndexController
  * @package OPNsense\Proxy
  */
-class SystemhealthController extends \OPNsense\Base\IndexController
+class SystemhealthController extends IndexController
 {
     public function indexAction()
     {
@@ -40,4 +42,3 @@ class SystemhealthController extends \OPNsense\Base\IndexController
         $this->view->pick('OPNsense/Diagnostics/systemhealth');
     }
 }
-

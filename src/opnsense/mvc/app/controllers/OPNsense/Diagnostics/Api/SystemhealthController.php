@@ -32,6 +32,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+
 /**
  * Class ServiceController
  * @package OPNsense\SystemHealth
@@ -41,8 +42,8 @@ class SystemhealthController extends ApiControllerBase
 
     /**
      * Return full archive information
-     * @param array $xml
-     * @return array
+     * @param \SimpleXMLElement $xml rrd data xml
+     * @return array info set, metadata
      */
     private function getDataSetInfo($xml)
     {
@@ -78,10 +79,10 @@ class SystemhealthController extends ApiControllerBase
 
     /**
      * Returns row number of first row with values other than 'NaN'
-     * @param array $data
-     * @return int
+     * @param \SimpleXMLElement $data rrd data xml
+     * @return int rownumber
      */
-    private function findFirstValue($data = array())
+    private function findFirstValue($data)
     {
 
         $rowNumber = 0;
@@ -104,10 +105,10 @@ class SystemhealthController extends ApiControllerBase
 
     /**
      * Return total number of rows in rra
-     * @param array $data
-     * @return int
+     * @param \SimpleXMLElement $data rrd data xml
+     * @return int total number of rows
      */
-    private function countRows($data = array())
+    private function countRows($data)
     {
         $rowCount = 0;
         foreach ($data->database->row as $item => $row) {
@@ -119,13 +120,13 @@ class SystemhealthController extends ApiControllerBase
 
     /**
      * internal: retrieve selections within range (0-0=full range) and limit number of datapoints (max_values)
-     * @param array $rra_info
-     * @param int $from_timestamp
-     * @param int $to_timestamp
-     * @param $max_values
+     * @param array $rra_info dataset information
+     * @param int $from_timestamp from
+     * @param int $to_timestamp to
+     * @param int $max_values approx. max number of values
      * @return array
      */
-    private function getSelection($rra_info = array(), $from_timestamp = 0, $to_timestamp = 0, $max_values = 120)
+    private function getSelection($rra_info, $from_timestamp, $to_timestamp, $max_values)
     {
         $full_range = false;
         if ($from_timestamp == 0 && $to_timestamp == 0) {
@@ -183,7 +184,7 @@ class SystemhealthController extends ApiControllerBase
                         break;
                     }
                 }
-                if ( $overview != 0 ) {
+                if ($overview != 0) {
                     $condensed_rowCount = (int)($rra_info[$last_rra_key]["available_rows"] / $overview);
                 } else {
                     $condensed_rowCount = 0;
@@ -208,7 +209,7 @@ class SystemhealthController extends ApiControllerBase
      * @param array $rra_info
      * @return array
      */
-    private function getMaxRange($rra_info = array())
+    private function getMaxRange($rra_info)
     {
         // count the number if rra's (sets), deduct 1 as we need the counter to start at 0
         $last_rra_key = count($rra_info) - 1;
@@ -235,7 +236,8 @@ class SystemhealthController extends ApiControllerBase
     /**
      * translate rrd data to usable format for d3 charts
      * @param array $data
-     * @param boolean $applyInverse
+     * @param boolean $applyInverse inverse selection (multiply -1)
+     * @param array $field_units mapping for descriptive field names
      * @return array
      */
     private function translateD3($data, $applyInverse, $field_units)
