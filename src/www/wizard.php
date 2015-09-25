@@ -89,10 +89,9 @@ if (isset($_GET['xml'])) {
  */
 switch ($xml) {
 	case 'openvpn':
-		$xml = 'openvpn.xml';
 		break;
 	default:
-		$xml = 'setup.xml';
+		$xml = 'setup';
 		break;
 }
 
@@ -122,7 +121,7 @@ $listtags = array_flip(array(
 	'template',
 ));
 
-$pkg = parse_xml_config_raw('/usr/local/wizard/' . $xml, 'opnsensewizard', false);
+$pkg = parse_xml_config_raw("/usr/local/wizard/{$xml}.xml", 'opnsensewizard', false);
 if (!is_array($pkg)) {
 	print_info_box_np(sprintf(gettext("ERROR: Could not parse %s wizard file."), $xml));
 	die;
@@ -132,11 +131,9 @@ $description = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$step
 $title = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
 $totalsteps = $pkg['totalsteps'];
 
-if ($pkg['includefile'])
+if ($pkg['includefile']) {
 	require_once($pkg['includefile']);
-
-if ($pkg['step'][$stepid]['includefile'])
-	require_once($pkg['step'][$stepid]['includefile']);
+}
 
 if($pkg['step'][$stepid]['stepsubmitbeforesave']) {
 	eval($pkg['step'][$stepid]['stepsubmitbeforesave']);
@@ -726,11 +723,19 @@ function showchange() {
 				if(!$field['dontcombinecells'])
 					echo "<td class=\"vtable\">";
 				echo "<select class='form-control' name='{$name}' style='max-width:5em;'>\n";
-				for($x=1; $x<33; $x++) {
-					$CHECKED = "";
-					if($value == $x) $CHECKED = " selected=\"selected\"";
-					if($x <> 31)
-						echo "<option value='{$x}' {$CHECKED}>{$x}</option>\n";
+				$CHECKED = ' selected="selected"';
+				for ($x = 1; $x <= 32; $x++) {
+					if ($x == 31) {
+						continue;
+					}
+					if ($value == $x) $CHECKED = " selected=\"selected\"";
+					echo "<option value='{$x}'";
+					if ($value == $x || $x == 32) {
+						echo $CHECKED;
+						/* only used once */
+						$CHECKED = '';
+					}
+					echo ">{$x}</option>\n";
 				}
 				echo "</select>\n";
 

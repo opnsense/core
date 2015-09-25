@@ -477,11 +477,9 @@
 	</stepsubmitphpaction>
 	<stepsubmitbeforesave>
 		<![CDATA[
-			$_POST['ipaddress'] = $_POST['selectedtype'];
-			$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
-			write_config();
-			if (!isset($config['interfaces']['lan'])) {
-				header("Location: /wizard.php?xml=setup&stepid=5");
+			if ($_POST['selectedtype'] != "Static") {
+				$_POST['ipaddress'] = $_POST['selectedtype'];
+				$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
 			}
 		]]>
 	</stepsubmitbeforesave>
@@ -496,6 +494,7 @@
 			<type>input</type>
 			<bindstofield>interfaces->lan->ipaddr</bindstofield>
 			<validate>^(?:[0]*(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:[0]*(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]))$</validate>
+			<description>(leave empty for none)</description>
 			<message>LAN IP Address field is invalid</message>
 		</field>
 				<field>
@@ -510,23 +509,31 @@
 	</fields>
 	<stepsubmitphpaction>
 		<![CDATA[
-		if(empty($_POST['lanipaddress']) || !is_ipaddr($_POST['lanipaddress'])) {
-			print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
-			die;
+		if (!empty(trim($_POST['lanipaddress']))) {
+			if (!is_ipaddr($_POST['lanipaddress'])) {
+				print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
+				die;
+			}
+
+			if ($_POST['subnetmask'] < 31 &&
+			    ($_POST['lanipaddress'] == gen_subnet($_POST['lanipaddress'], $_POST['subnetmask']) ||
+			     $_POST['lanipaddress'] == gen_subnet_max($_POST['lanipaddress'], $_POST['subnetmask']))) {
+				print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
+				die;
+			}
+
+			$ft = explode(".", $_POST['lanipaddress']);
+			$ft_ip = $ft[0] . "." . $ft[1] . "." . $ft[2] . ".";
+			$config['dhcpd']['lan']['range']['from'] = $ft_ip . "10";
+			$highestip = gen_subnet_max($_POST['lanipaddress'], $config['interfaces']['lan']['subnet']);
+			$hi = explode(".", $highestip);
+			$highestip = $hi[3]-10;
+			$config['dhcpd']['lan']['range']['to'] = $ft_ip . $highestip;
+		} else {
+			if (isset($config['interfaces']['lan'])) {
+				unset($config['interfaces']['lan']);
+			}
 		}
-		if ($_POST['subnetmask'] < 31 &&
-		    ($_POST['lanipaddress'] == gen_subnet($_POST['lanipaddress'], $_POST['subnetmask']) ||
-		     $_POST['lanipaddress'] == gen_subnet_max($_POST['lanipaddress'], $_POST['subnetmask']))) {
-			print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
-			die;
-		}
-		$ft = explode(".", $_POST['lanipaddress']);
-		$ft_ip = $ft[0] . "." . $ft[1] . "." . $ft[2] . ".";
-		$config['dhcpd']['lan']['range']['from'] = $ft_ip . "10";
-		$highestip = gen_subnet_max($_POST['lanipaddress'], $config['interfaces']['lan']['subnet']);
-		$hi = explode(".", $highestip);
-		$highestip = $hi[3]-10;
-		$config['dhcpd']['lan']['range']['to'] = $ft_ip . $highestip;
 		]]>
 	</stepsubmitphpaction>
 </step>
