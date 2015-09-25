@@ -36,7 +36,7 @@ use \OPNsense\Core\Backend;
  * Class ServiceController
  * @package OPNsense\SystemHealth
  */
-class SystemHealthController extends ApiControllerBase
+class SystemhealthController extends ApiControllerBase
 {
 
     /**
@@ -242,18 +242,7 @@ class SystemHealthController extends ApiControllerBase
             $timestamp = $rowValues['timestamp'] * 1000; // javascript works with milliseconds
             foreach ($data['columns'] as $key => $value) {
                 $name = $value['name'];
-                if ($value['type'] == "GAUGE") {
-                    // return values as float
-                    $value = $rowValues['condensed_values'][$key];
-                } else {
-                    // return values as int
-                    if ((string)$rowValues['condensed_values'][$key] != "NaN") {
-                        $value = (int)$rowValues['condensed_values'][$key];
-                    } else {
-                        $value = $rowValues['condensed_values'][$key];
-                    }
-
-                }
+                $value = $rowValues['condensed_values'][$key];
                 if (!isset($d3_data[$key])) {
                     $d3_data[$key] = [];
                     $d3_data[$key]["area"] = true;
@@ -263,7 +252,6 @@ class SystemHealthController extends ApiControllerBase
                         $d3_data[$key]["key"] = $name;
                     }
                     $d3_data[$key]["values"] = [];
-
                 }
 
                 if ($value == "NaN") {
@@ -311,7 +299,7 @@ class SystemHealthController extends ApiControllerBase
             "stepSize" => $data['condensed_step'],
             "from_timestamp" => $from_timestamp,
             "to_timestamp" => $to_timestamp,
-            "count" => count($d3_data[0]['values']),
+            "count" => isset($d3_data[0]) ? count($d3_data[0]['values']) : 0,
             "data" => $d3_data
         ];
     }
@@ -555,7 +543,7 @@ class SystemHealthController extends ApiControllerBase
         if ($xml !== false) {
             // we only use the average databases in any RRD, remove the rest to avoid strange behaviour.
             for ($count = count($xml->rra) -1; $count >= 0; $count--) {
-                if ((string)$xml->rra[$count]->cf != "AVERAGE") {
+                if (trim((string)$xml->rra[$count]->cf) != "AVERAGE") {
                     unset($xml->rra[$count]);
                 }
 

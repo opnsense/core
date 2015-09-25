@@ -32,7 +32,7 @@ namespace OPNsense\Diagnostics;
  * Class IndexController
  * @package OPNsense\Proxy
  */
-class SystemHealthController extends \OPNsense\Base\IndexController
+class SystemhealthController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
