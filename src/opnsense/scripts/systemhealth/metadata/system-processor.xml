@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<details>
+    <title> System Information - Utilization and Processes</title>
+    <x-axis_label>[U]tilization ,  [#]Number</x-axis_label>
+    <field_units>
+        <user>[U]</user>
+        <nice>[U]</nice>
+        <system>[U]</system>
+        <interrupt>[#]</interrupt>
+        <processes>[#]</processes>
+    </field_units>
+</details>
