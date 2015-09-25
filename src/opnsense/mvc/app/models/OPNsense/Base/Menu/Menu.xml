@@ -24,6 +24,7 @@
         </ConfigManager>
         <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-ticket"/>
         <Firmware url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
+        <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh">
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" visibleName="CARP Status" url="/carp_status.php"/>
