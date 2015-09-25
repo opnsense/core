@@ -16,6 +16,7 @@
         </ConfigManager>
         <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php"/>
         <Firmware url="/ui/core/firmware/"/>
+        <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
         <HighAvailSync VisibleName="High Availability" url="/system_hasync.php"/>
         <Routing url="/system_gateways.php">
             <Routes url="/system_routes.php"/>
