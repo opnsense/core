@@ -28,7 +28,7 @@
  */
 
 
-namespace OPNsense\SystemHealth\Api;
+namespace OPNsense\Diagnostics\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
@@ -36,140 +36,8 @@ use \OPNsense\Core\Backend;
  * Class ServiceController
  * @package OPNsense\SystemHealth
  */
-class ServiceController extends ApiControllerBase
+class SystemHealthController extends ApiControllerBase
 {
-
-    /**
-     * retrieve Available RRD data
-     * @return array
-     */
-    public function getRRDlistAction()
-    {
-        # Suurce of data: filelisting of /var/db/rrd/*.rrd
-        $result = array();
-
-        $output = [
-            "system" => ["processor","states", "mbuf"],
-            "traffic" => ["lan", "wan", "ipsec"],
-            "packets" => ["wan", "lan", "ipsec"],
-            "quality" => ["GW_WAN"]
-
-        ];
-        $result["result"] = "ok";
-        $result["data"] = $output;
-
-        // Category => Items
-        return $result;
-    }
-
-
-    private function getRRDdetails($rrd = "")
-    {
-        # Source of data: xml fields of corresponding .xml metadata
-        $result = array();
-        if ($rrd == "system-processor") {
-            $backend = new Backend();
-            $response = $backend->configdpRun("systemhealth query details"); #, array(1, 0, "filepos/".$id, $fileid));
-            // $response = $backend->configdRun("configd actions");
-            $xml=simplexml_load_string($response);
-            $json = json_encode($xml);
-            $output= json_decode($json, true);
-//            $output = [
-//                "title" => "System Information - Utilization and Processes",
-//                "x-axis_label" => "[U]tilization ,  [#]Number",
-//                "field_units" => [
-//                    "user" => "[U]",
-//                    "nice" => "[U]",
-//                    "system" => "[U]",
-//                    "interrupt" => "[#]",
-//                    "processes" => "[#]"
-//                ]
-//            ];
-            $result["result"] = "ok";
-        } else {
-            $result["result"] = "not found";
-            $output=["title"=>"","x-axis_label"=>"","field_units"=>[]]; // always return a valid (empty) data set
-        }
-
-        $result["data"] = $output;
-
-        return $result;
-    }
-    /**
-     * retrieve SystemHealth Data (previously called RRD Graphs)
-     * @param string $rrd
-     * @param int $from
-     * @param int $to
-     * @param int $max_values
-     * @param bool $inverse
-     * @param int $detail
-     * @return array
-     */
-    public function getSystemHealthAction(
-        $rrd = "",
-        $from = 0,
-        $to = 0,
-        $max_values = 120,
-        $inverse = false,
-        $detail = -1
-    ) {
-        /**
-         * $rrd = rrd filename without extension
-         * $from = from timestamp (0=min)
-         * $to = to timestamp (0=max)
-         * $max_values = limit datapoint as close as possible to this number (or twice if detail (zoom) + overview )
-         * $inverse = Inverse every odd row (multiply by -1)
-         * $detail = limits processing of dataSets to max given (-1 = all ; 1 = 0,1 ; 2 = 0,1,2 ; etc)
-         */
-
-        $rrd_details=$this->getRRDdetails($rrd)["data"];
-
-        $rrd = $rrd . ".xml"; // Test data
-        $xml = $this->getXMLdata($rrd);
-
-
-        $data_sets_full = $this->getDataSetInfo($xml); // get dataSet information to include in answer
-
-        if ($inverse == 'true') {
-            $inverse = true;
-        } else {
-            $inverse = false;
-        }
-
-        if ((int)$detail >= 0) {
-            for ($count = count($xml->rra); $count > $detail; $count--) {
-                unset($xml->rra[$count]);
-            }
-        }
-
-        // determine available dataSets within range and how to handle them
-        $selected_archives = $this->getSelection($this->getDataSetInfo($xml), $from, $to, $max_values);
-        // get condensed dataSets and translate them to d3 usable data
-        $result = $this->translateD3(
-            $this->getCondensedArchive($xml, $selected_archives),
-            $inverse,
-            $rrd_details["field_units"]
-        );
-
-        return ["sets" => $data_sets_full,
-            "d3" => $result,
-            "title"=>$rrd_details["title"],
-            "x-axis_label"=>$rrd_details["x-axis_label"]
-        ]; // return details and d3 data
-    }
-
-    /**
-     * Return XML data dump for given rrd
-     * @param $rrd
-     * @return \SimpleXMLElement
-     */
-    private function getXMLdata($rrd)
-    {
-        # Source: rrdtool dump filename.rrd
-        $xml = simplexml_load_file(__DIR__ . '/../../../../../../../../../../opnsense_gui/test/conf/' . $rrd);
-
-        return $xml;
-    }
 
     /**
      * Return full archive information
@@ -364,7 +232,7 @@ class ServiceController extends ApiControllerBase
      * @param boolean $applyInverse
      * @return array
      */
-    private function translateD3($data = array(), $applyInverse = false, $field_units)
+    private function translateD3($data, $applyInverse, $field_units)
     {
         $d3_data = array();
         $from_timestamp = 0;
@@ -448,7 +316,13 @@ class ServiceController extends ApiControllerBase
         ];
     }
 
-    private function getCondensedArchive($xml = array(), $selection = array())
+    /**
+     * retrieve rrd data
+     * @param array $xml
+     * @param array $selection
+     * @return array
+     */
+    private function getCondensedArchive($xml, $selection)
     {
         $key_counter = 0;
         $info = $this->getDataSetInfo($xml);
@@ -583,5 +457,139 @@ class ServiceController extends ApiControllerBase
     private function orderByTimestampASC($a, $b)
     {
         return $a[0] - $b[0];
+    }
+
+    /**
+     * retrieve descriptive details of rrd
+     * @param string $rrd rrd filename
+     * @return array result status and data
+     */
+    private function getRRDdetails($rrd)
+    {
+        # Source of data: xml fields of corresponding .xml metadata
+        $result = array();
+        $backend = new Backend();
+        $response = $backend->configdpRun("systemhealth list");
+        $output= json_decode($response, true);
+        if (is_array($output) && array_key_exists($rrd, $output)) {
+            $result["result"] = "ok";
+            $result["data"] = $output[$rrd];
+        } else {
+            // always return a valid (empty) data set
+            $result["result"] = "not found";
+            $result["data"] = ["title"=>"","y-axis_label"=>"","field_units"=>[]];
+        }
+        return $result;
+    }
+
+
+    /**
+     * retrieve Available RRD data
+     * @return array
+     */
+    public function getRRDlistAction()
+    {
+        # Suurce of data: filelisting of /var/db/rrd/*.rrd
+        $result = array();
+        $backend = new Backend();
+        $response = $backend->configdpRun("systemhealth list");
+        $healthList = json_decode($response, true);
+
+        $result['data'] = array();
+        if (is_array($healthList)) {
+            foreach ($healthList as $healthItem => $details) {
+                if (!array_key_exists($details['topic'], $result['data'])) {
+                    $result['data'][$details['topic']] = array();
+                }
+                $result['data'][$details['topic']][] = $details['itemName'];
+            }
+        }
+        ksort($result['data']);
+        $output = [
+            "system" => ["processor","states", "mbuf"],
+            "traffic" => ["lan", "wan", "ipsec"],
+            "packets" => ["wan", "lan", "ipsec"],
+            "quality" => ["GW_WAN"]
+
+        ];
+        $result["result"] = "ok";
+        $result["data2"] = $output;
+
+        // Category => Items
+        return $result;
+    }
+
+    /**
+     * retrieve SystemHealth Data (previously called RRD Graphs)
+     * @param string $rrd
+     * @param int $from
+     * @param int $to
+     * @param int $max_values
+     * @param bool $inverse
+     * @param int $detail
+     * @return array
+     */
+    public function getSystemHealthAction(
+        $rrd = "",
+        $from = 0,
+        $to = 0,
+        $max_values = 120,
+        $inverse = false,
+        $detail = -1
+    ) {
+        /**
+         * $rrd = rrd filename without extension
+         * $from = from timestamp (0=min)
+         * $to = to timestamp (0=max)
+         * $max_values = limit datapoint as close as possible to this number (or twice if detail (zoom) + overview )
+         * $inverse = Inverse every odd row (multiply by -1)
+         * $detail = limits processing of dataSets to max given (-1 = all ; 1 = 0,1 ; 2 = 0,1,2 ; etc)
+         */
+
+        $rrd_details=$this->getRRDdetails($rrd)["data"];
+
+        $backend = new Backend();
+        $response = $backend->configdpRun("systemhealth fetch ", array($rrd));
+        $xml = simplexml_load_string($response);
+
+        if ($xml !== false) {
+            // we only use the average databases in any RRD, remove the rest to avoid strange behaviour.
+            for ($count = count($xml->rra) -1; $count >= 0; $count--) {
+                if ((string)$xml->rra[$count]->cf != "AVERAGE") {
+                    unset($xml->rra[$count]);
+                }
+
+            }
+            $data_sets_full = $this->getDataSetInfo($xml); // get dataSet information to include in answer
+
+            if ($inverse == 'true') {
+                $inverse = true;
+            } else {
+                $inverse = false;
+            }
+
+            if ((int)$detail >= 0) {
+                for ($count = count($xml->rra) - 1; $count > $detail; $count--) {
+                    unset($xml->rra[$count]);
+                }
+            }
+
+            // determine available dataSets within range and how to handle them
+            $selected_archives = $this->getSelection($this->getDataSetInfo($xml), $from, $to, $max_values);
+            // get condensed dataSets and translate them to d3 usable data
+            $result = $this->translateD3(
+                $this->getCondensedArchive($xml, $selected_archives),
+                $inverse,
+                $rrd_details["field_units"]
+            );
+
+            return ["sets" => $data_sets_full,
+                "d3" => $result,
+                "title"=>$rrd_details["title"],
+                "y-axis_label"=>$rrd_details["y-axis_label"]
+            ]; // return details and d3 data
+        } else {
+            return ["sets" => [], "d3" => [], "title" => "error", "y-axis_label" => ""];
+        }
     }
 }

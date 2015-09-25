@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
-<details>
+<systemhealth>
+    <file-match>system-processor</file-match>
     <title> System Information - Utilization and Processes</title>
-    <x-axis_label>[U]tilization ,  [#]Number</x-axis_label>
+    <y-axis_label>[U]tilization ,  [#]Number</y-axis_label>
     <field_units>
         <user>[U]</user>
         <nice>[U]</nice>
@@ -9,4 +10,4 @@
         <interrupt>[#]</interrupt>
         <processes>[#]</processes>
     </field_units>
-</details>
+</systemhealth>
