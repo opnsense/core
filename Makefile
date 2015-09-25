@@ -10,9 +10,11 @@ mount: force
 	@${.CURDIR}/scripts/version.sh > \
 	    ${.CURDIR}/src/opnsense/version/opnsense
 	mount_unionfs ${.CURDIR}/src /usr/local
+	@service configd restart
 
 umount: force
 	umount -f "<above>:${.CURDIR}/src"
+	@service configd restart
 
 remount: umount mount
 
