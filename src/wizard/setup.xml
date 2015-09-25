@@ -477,14 +477,11 @@
 	</stepsubmitphpaction>
 	<stepsubmitbeforesave>
 		<![CDATA[
-			if($_POST['selectedtype'] == "Static") {
-
-			} else {
-				$_POST['ipaddress'] = $_POST['selectedtype'];
-				$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
-				write_config();
-				if(!$config['interfaces']['lan'])
-					header("Location: /wizard.php?xml=setup&stepid=6&next=Next");
+			$_POST['ipaddress'] = $_POST['selectedtype'];
+			$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
+			write_config();
+			if (!isset($config['interfaces']['lan'])) {
+				header("Location: /wizard.php?xml=setup&stepid=5");
 			}
 		]]>
 	</stepsubmitbeforesave>
