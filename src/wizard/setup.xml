@@ -484,7 +484,7 @@
 				$config['interfaces']['wan']['ipaddr'] = $_POST['selectedtype'];
 				write_config();
 				if(!$config['interfaces']['lan'])
-					header("Location: /wizard.php?xml=setup_wizard.xml&stepid=6&next=Next");
+					header("Location: /wizard.php?xml=setup&stepid=6&next=Next");
 			}
 		]]>
 	</stepsubmitbeforesave>
@@ -622,7 +622,7 @@
 	<title>Reload in progress</title>
 	<description>
 		A reload is now in progress.  Please wait. &lt;p&gt;
-		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup_wizard.xml&amp;stepid=8" &gt;
+		&lt;meta http-equiv="refresh" content="5; url=wizard.php?xml=setup&amp;stepid=8" &gt;
 		&lt;p&gt;
 		The wizard will redirect to the next step once the reload is completed.
 	</description>

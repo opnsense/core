@@ -400,7 +400,7 @@ if (isset($config['trigger_initial_wizard'])) :
 			</div>
 		</div>
 	</section>
-	<meta http-equiv="refresh" content="3;url=wizard.php?xml=setup_wizard.xml">
+	<meta http-equiv="refresh" content="3;url=wizard.php">
 	<?php exit; ?>
 <?php
 endif; ?>
