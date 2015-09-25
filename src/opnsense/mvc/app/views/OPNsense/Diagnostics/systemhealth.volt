@@ -172,7 +172,7 @@
     }
 
     function getRRDlist() {
-        ajaxGet(url = "/api/systemhealth/service/getRRDlist/", sendData = {}, callback = function (data, status) {
+        ajaxGet(url = "/api/diagnostics/systemhealth/getRRDlist/", sendData = {}, callback = function (data, status) {
             if (status == "success") {
                 var category;
                 var tabs="";
@@ -293,7 +293,7 @@
         // info bar - show loading info bar while refreshing data
         $('#loading').show();
         // API call to request data
-        ajaxGet(url = "/api/systemhealth/service/getSystemHealth/" + rrd_name + "/" + String(from) + "/" + String(to) + "/" + String(maxitems) + "/" + String(inverse) + "/" + String(detail), sendData = {}, callback = function (data, status) {
+        ajaxGet(url = "/api/diagnostics/systemhealth/getSystemHealth/" + rrd_name + "/" + String(from) + "/" + String(to) + "/" + String(maxitems) + "/" + String(inverse) + "/" + String(detail), sendData = {}, callback = function (data, status) {
             if (status == "success") {
                 var stepsize = data["d3"]["stepSize"];
                 var scale = "{{ lang._('seconds') }}";
@@ -473,7 +473,7 @@
                         .tickFormat(function (d) {
                             return d3.time.format(dtformat)(new Date(d))
                         });
-                chart.yAxis.axisLabel(data["x-axis_label"]);
+                chart.yAxis.axisLabel(data["y-axis_label"]);
                 chart.useInteractiveGuideline(true);
                 chart.interactive(true);
 

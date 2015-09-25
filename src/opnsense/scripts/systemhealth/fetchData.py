@@ -1,7 +1,7 @@
 #!/usr/local/bin/python2.7
 
 """
-    Copyright (c) 2015 Deciso B.V. - J. Schellevis
+    Copyright (c) 2015 Deciso B.V. - Ad Schellevis
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,29 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
+    fetch xmldata from rrd tool, but only if filename is valid (with or without .rrd extension)
 
 """
+import sys
+import glob
+import tempfile
+import subprocess
+import os.path
 
-file = open('/Users/josschellevis/Development/opnsense/scripts/systemhealth/metadata/system-processor.xml', 'r')
-file_contents = file.read()
-print (file_contents)
-file.close()
+rrd_reports_dir = '/var/db/rrd'
+if len(sys.argv) > 1:
+    filename = sys.argv[1]
+    # suffix rrd if not already in request
+    if filename.split('.')[-1] != 'rrd':
+        filename += '.rrd'
+
+    # scan rrd directory for requested file
+    for rrdFilename in glob.glob('%s/*.rrd' % rrd_reports_dir):
+        if os.path.basename(rrdFilename) == filename:
+            with tempfile.NamedTemporaryFile() as output_stream:
+                subprocess.check_call(['/usr/local/bin/rrdtool', 'dump', rrdFilename],
+                                                      stdout=output_stream, stderr=subprocess.STDOUT)
+                output_stream.seek(0)
+                print (output_stream.read())
+            break
+

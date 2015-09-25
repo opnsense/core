@@ -1,6 +1,6 @@
 <?php
 /**
- *    Copyright (C) 2015  Deciso B.V. - J. Schellevis
+ *    Copyright (C) 2015 Deciso B.V. - J.Schellevis
  *
  *    All rights reserved.
  *
@@ -26,19 +26,18 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-
-namespace OPNsense\SystemHealth\Api;
-
-use \OPNsense\Base\ApiControllerBase;
+namespace OPNsense\Diagnostics;
 
 /**
- * Class SettingsController
- * @package OPNsense\SystemHealth
+ * Class IndexController
+ * @package OPNsense\Proxy
  */
-class SettingsController extends ApiControllerBase
+class SystemHealthController extends \OPNsense\Base\IndexController
 {
-
+    public function indexAction()
+    {
+        $this->view->title = "System Health";
+        $this->view->pick('OPNsense/Diagnostics/systemhealth');
+    }
 }
 
-?>

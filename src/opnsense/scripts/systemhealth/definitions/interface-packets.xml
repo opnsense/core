@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>.*-packets$</file-match>
+    <title>System Information - Packets </title>
+    <y-axis_label>Packets/Second</y-axis_label>
+</systemhealth>
