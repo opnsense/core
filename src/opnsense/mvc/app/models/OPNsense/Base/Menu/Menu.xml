@@ -46,13 +46,13 @@
                 <Groups url="/status_gateway_groups.php"/>
             </Status>
         </Gateways>
-        <Settings url="/system_general.php" cssClass="fa fa-cogs">
-            <General VisibleName="General" url="/system_general.php"/>
-            <Admin_Access VisibleName="Admin Access" url="/system_advanced_admin.php"/>
-            <Firewall_NAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
-            <Networking url="/system_advanced_network.php"></Networking>
+        <Settings cssClass="fa fa-cogs">
+            <General url="/system_general.php"/>
+            <AdminAccess VisibleName="Admin Access" url="/system_advanced_admin.php"/>
+            <FirewallNAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
+            <Networking url="/system_advanced_network.php"/>
             <Miscellaneous url="/system_advanced_misc.php"/>
-            <System_Tunables VisibleName="System Tunables" url="/system_advanced_sysctl.php"/>
+            <Tunables VisibleName="Tunables" url="/system_advanced_sysctl.php"/>
             <Notifications url="/system_advanced_notifications.php"/>
         </Settings>
         <Wizard url="/wizard.php" cssClass="fa fa-magic">

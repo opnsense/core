@@ -116,7 +116,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Settings"),gettext("System Tunables"));
+$pgtitle = array(gettext('System'), gettext('Settings'), gettext('Tunables'));
 include("head.inc");
 
 ?>
@@ -144,7 +144,6 @@ include("head.inc");
 			</form>
 
             <section class="col-xs-12">
-                <? include('system_advanced_tabs.inc'); ?>
                 <div class="table-responsive content-box tab-content" style="overflow: auto;">
                     <?php if ($act != "edit") :
 ?>
