@@ -165,7 +165,7 @@ if($need_alert_display == true) {
                     <div class="panel list-group" style="border:0px">
 <?php
                           foreach($menuSystem as $topMenuItem): ?>
-                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ""; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=$topMenuItem->VisibleName;?>  </a>
+                            <a href="#<?=$topMenuItem->Id;?>" class="list-group-item <?= $topMenuItem->Selected ? 'active-menu-title' : ""; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><?=gettext($topMenuItem->VisibleName);?>  </a>
                             <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :"";?>" id="<?=$topMenuItem->Id;?>">
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>
@@ -174,7 +174,7 @@ if($need_alert_display == true) {
                                <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : "";?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
-                                      <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
+                                      <div style="display: table-cell"><?=gettext($subMenuItem->VisibleName);?></div>
                                         <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                       </div>
                                   </div>
@@ -184,10 +184,10 @@ if($need_alert_display == true) {
                                   foreach ($subMenuItem->Children as $subsubMenuItem):?>
 <?php
                                     if ($subsubMenuItem->IsExternal == "Y"):?>
-                                            <a href="<?=$subsubMenuItem->Url;?>" target="_new" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=$subsubMenuItem->VisibleName;?></a>
+                                            <a href="<?=$subsubMenuItem->Url;?>" target="_new" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=gettext($subsubMenuItem->VisibleName);?></a>
 <?php
                                     elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subsubMenuItem->Url)):?>
-                                            <a href="<?=$subsubMenuItem->Url;?>" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=$subsubMenuItem->VisibleName;?></a>
+                                            <a href="<?=$subsubMenuItem->Url;?>" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=gettext($subsubMenuItem->VisibleName);?></a>
 <?php
                                     endif;
                                   endforeach;?>
@@ -197,7 +197,7 @@ if($need_alert_display == true) {
                                 <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
-                                      <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
+                                      <div style="display: table-cell"><?=gettext($subMenuItem->VisibleName);?></div>
                                         <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                       </div>
                                   </div>
@@ -207,7 +207,7 @@ if($need_alert_display == true) {
                                 <a href="<?=$subMenuItem->Url;?>" class="list-group-item <?=$subMenuItem->Selected ? "active" :"";?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
-                                      <div style="display: table-cell"><?=$subMenuItem->VisibleName;?></div>
+                                      <div style="display: table-cell"><?=gettext($subMenuItem->VisibleName);?></div>
                                         <div style="display: table-cell; text-align:right; vertical-align:middle;"><span class="<?=$subMenuItem->CssClass;?>"></span></div>
                                     </div>
                                   </div>
