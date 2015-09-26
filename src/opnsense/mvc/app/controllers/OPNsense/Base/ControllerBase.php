@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -31,7 +32,6 @@ namespace OPNsense\Base;
 use OPNsense\Core\Config;
 use Phalcon\Mvc\Controller;
 use Phalcon\Translate\Adapter\Gettext;
-use Phalcon\Translate\Adapter\NativeArray;
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -41,25 +41,23 @@ class ControllerBase extends ControllerRoot
 {
     /**
      * translate a text
-     * @return NativeArray
+     * @return Gettext
      */
     public function getTranslator()
     {
-        /*
-        if (function_exists("gettext")) {
-            // gettext installed, return gettext translator
-            return new Gettext(array(
-                "locale" => "en_US",
-                "directory" => "/usr/local/share/locale/",
-                'file' => 'LC_MESSAGES/OPNsense.pot',
-            ));
-        } else {
-        */
-            // no gettext installed, return original content
-            return new NativeArray(array(
-                "content" => array()
-            ));
-        //}
+        $lang = 'en_US';	/* XXX select proper language */
+        $lang_encoding = $lang . '.UTF-8';
+
+        $ret = new Gettext(array(
+            'directory' => '/usr/local/share/locale',
+            'defaultDomain' => 'OPNsense',
+            'locale' => $lang_encoding,
+        ));
+
+        /* this isn't being done by Phalcon */
+        putenv('LANG=' . $lang_encoding);
+
+        return $ret;
     }
 
     /**
