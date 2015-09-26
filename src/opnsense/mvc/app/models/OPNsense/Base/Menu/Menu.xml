@@ -71,7 +71,7 @@
             <Settings url="/system_usermanager_settings.php"/>
         </Users>
     </System>
-    <Interfaces order="2" cssClass="glyphicon glyphicon-wrench">
+    <Interfaces order="2" cssClass="fa fa-sitemap">
         <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
             <Bridge url="/interfaces_bridge.php"/>
             <BridgeEdit url="/interfaces_bridge_edit.php*"/>
