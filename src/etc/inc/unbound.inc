@@ -121,12 +121,32 @@ function unbound_generate_config()
         // Private-addresses for DNS Rebinding
         $private_addr = <<<EOF
 # For DNS Rebinding prevention
+#
+# All these addresses are either private or should not be routable in the global IPv4 or IPv6 internet.
+#
+# IPv4 Addresses
+#
+private-address: 0.0.0.0/8       # Broadcast address
 private-address: 10.0.0.0/8
+private-address: 100.64.0.0/10
+private-address: 127.0.0.0/8     # Loopback Localhost
 private-address: 172.16.0.0/12
+private-address: 192.0.0.0/24    # IANA IPv4 special purpose net
+private-address: 192.0.2.0/24    # Documentation network TEST-NET
 private-address: 192.168.0.0/16
 private-address: 192.254.0.0/16
-private-address: fd00::/8
-private-address: fe80::/10
+private-address: 198.18.0.0/15   # Used for testing inter-network communications
+private-address: 198.51.100.0/24 # Documentation network TEST-NET-2
+private-address: 203.0.113.0/24  # Documentation network TEST-NET-3
+private-address: 233.252.0.0/24  # Documentation network MCAST-TEST-NET
+#
+# IPv6 Addresses
+#
+private-address: ::1/128         # Loopback Localhost
+private-address: 2001:db8::/32   # Documentation network IPv6
+private-address: fc00::/8        # Unique local address (ULA) part of "fc00::/7", not defined yet
+private-address: fd00::/8        # Unique local address (ULA) part of "fc00::/7", "/48" prefix group
+private-address: fe80::/10       # Link-local address (LLA)
 EOF;
     }
 
