@@ -4311,7 +4311,7 @@ a.thumbnail.active {
 .list-group-item {
   position: relative;
   display: block;
-  padding: 12px 20px;
+  padding: 6px 20px;
   margin-bottom: -1px;
   background-color: #fff; }
   .list-group-item:last-child {
