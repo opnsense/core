@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc.
@@ -30,9 +31,9 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("System"), gettext("Group manager"));
+$pgtitle = array(gettext('System'), gettext('Groups'));
 
-if (!is_array($config['system']['group'])) {
+if (!isset($config['system']['group'])) {
     $config['system']['group'] = array();
 }
 
@@ -250,17 +251,6 @@ function presubmit() {
                 ?>
 
 			    <section class="col-xs-12">
-
-
-					<?php
-                                    $tab_array = array();
-                                    $tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-                                    $tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
-                                    $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-                                    $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-                                    display_top_tabs($tab_array);
-                        ?>
-
 						<div class="tab-content content-box col-xs-12">
 
 							<?php

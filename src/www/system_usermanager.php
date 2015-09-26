@@ -75,7 +75,7 @@ function get_user_privdesc(& $user)
 
 
 // start admin user code
-$pgtitle = array(gettext("System"),gettext("User Manager"));
+$pgtitle = array(gettext('System'), gettext('Users'));
 
 // find web ui authentication method
 $authcfg_type = auth_get_authserver($config['system']['webgui']['authmode'])['type'];
@@ -491,16 +491,6 @@ function import_ldap_users() {
                 ?>
 
 			    <section class="col-xs-12">
-
-
-					<?php
-                                    $tab_array = array();
-                                    $tab_array[] = array(gettext("Users"), true, "system_usermanager.php");
-                                    $tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
-                                    $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-                                    $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-                                    display_top_tabs($tab_array);
-                        ?>
 
 						<div class="tab-content content-box col-xs-12 table-responsive">
 

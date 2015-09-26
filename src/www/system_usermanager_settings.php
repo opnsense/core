@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
@@ -34,7 +35,7 @@ $pconfig['authmode'] = &$config['system']['webgui']['authmode'];
 $pconfig['backend'] = &$config['system']['webgui']['backend'];
 
 // Page title for main admin
-$pgtitle = array(gettext("System"),gettext("User manager settings"));
+$pgtitle = array(gettext('System'), gettext('Users'), gettext('Settings'));
 
 $save_and_test = false;
 if ($_POST) {
@@ -109,16 +110,7 @@ if ($save_and_test) {
 }?>
 
 			    <section class="col-xs-12">
-
-
 					<?php
-                            $tab_array = array();
-                            $tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-                            $tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
-                            $tab_array[] = array(gettext("Settings"), true, "system_usermanager_settings.php");
-                            $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-                            display_top_tabs($tab_array);
-
                             /* Default to pfsense backend type if none is defined */
                     if (!$pconfig['backend']) {
                         $pconfig['backend'] = "pfsense";

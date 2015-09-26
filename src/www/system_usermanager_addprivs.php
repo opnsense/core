@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2006 Daniel S. Haischt.
@@ -44,7 +45,7 @@ function sort_user_privs($privs) {
 }
 
 
-$pgtitle = array("System","User manager","Add privileges");
+$pgtitle = array(gettext('System'), gettext('Users'),gettext('Privileges'));
 
 if (is_numericint($_GET['userid'])) {
     $userid = $_GET['userid'];
@@ -155,15 +156,6 @@ function update_description() {
             }
             ?>
 			<section class="col-xs-12">
-				<?php
-                    $tab_array = array();
-                    $tab_array[] = array(gettext("Users"), true, "system_usermanager.php");
-                    $tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
-                    $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-                    $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-                    display_top_tabs($tab_array);
-                ?>
-
 				<div class="tab-content content-box col-xs-12">
 					<form action="system_usermanager_addprivs.php" method="post" name="iform" id="iform">
 						<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">

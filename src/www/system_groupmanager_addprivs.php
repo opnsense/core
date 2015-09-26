@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2006 Daniel S. Haischt.
@@ -44,7 +45,7 @@ function admin_groups_sort()
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("System"),gettext("Group manager"),gettext("Add privileges"));
+$pgtitle = array(gettext('System'), gettext('Groups'), gettext('Privileges'));
 
 if (is_numericint($_GET['groupid'])) {
     $groupid = $_GET['groupid'];
@@ -163,15 +164,6 @@ function update_description() {
             }
             ?>
 			<section class="col-xs-12">
-
-						<?php
-                            $tab_array = array();
-                            $tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-                            $tab_array[] = array(gettext("Groups"), true, "system_groupmanager.php");
-                            $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-                            $tab_array[] = array(gettext("Servers"), false, "system_authservers.php");
-                            display_top_tabs($tab_array);
-                        ?>
 						<div class="tab-content content-box col-xs-12">
 
 						<form action="system_groupmanager_addprivs.php" method="post" name="iform" id="iform">

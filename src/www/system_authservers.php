@@ -71,7 +71,7 @@ $radius_srvcs = array(
 
 
 
-$pgtitle = array(gettext("System"), gettext("Authentication Servers"));
+$pgtitle = array(gettext('System'), gettext('Users'), gettext('Servers'));
 $shortcut_section = "authentication";
 
 if (isset($_GET['id']) && is_numericint($_GET['id'])) {
@@ -478,15 +478,6 @@ endif; ?>
                 ?>
 
 			    <section class="col-xs-12">
-
-					<?php
-                            $tab_array = array();
-                            $tab_array[] = array(gettext("Users"), false, "system_usermanager.php");
-                            $tab_array[] = array(gettext("Groups"), false, "system_groupmanager.php");
-                            $tab_array[] = array(gettext("Settings"), false, "system_usermanager_settings.php");
-                            $tab_array[] = array(gettext("Servers"), true, "system_authservers.php");
-                            display_top_tabs($tab_array);
-                        ?>
 
 						<div class="tab-content content-box col-xs-12 table-responsive">
 
