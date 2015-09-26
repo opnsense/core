@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core\Api;
 
 use \OPNsense\Base\ApiControllerBase;
@@ -143,36 +145,24 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $response = array('local' => array(), 'remote' => array());
-
+        $keys = array('name', 'version', 'comment', 'flatsize');
         $backend = new Backend();
-        $remote = $backend->configdRun('firmware remote');
-        $local = $backend->configdRun('firmware local');
+        $response = array();
 
-        /*
-         * pkg(8) returns malformed json by simply outputting each
-         * indivudual package json block... fix it up for now.
-         */
-        $local = str_replace("\n}\n", "\n},\n", trim($local));
-        $local = json_decode('[' . $local . ']', true);
-        if ($local != null) {
-            $keep = array('name', 'version', 'comment', 'www', 'flatsize', 'licenses', 'desc', 'categories');
-            foreach ($local as $infos) {
-                $stripped = array();
-                foreach ($infos as $key => $info) {
-                    if (in_array($key, $keep)) {
-                        $stripped[$key] = $info;
-                    }
+        /* package infos are flat lists with 3 pipes as delimiter */
+        foreach (array('local', 'remote') as $type) {
+            $current = $backend->configdRun("firmware ${type}");
+            $current = explode("\n", trim($current));
+            $response[$type] = array();
+            foreach ($current as $line) {
+                $expanded = explode('|||', $line);
+                $translated = array();
+                $index = 0;
+                foreach ($keys as $key) {
+                    $translated[$key] = $expanded[$index++];
                 }
-                $response['local'][] = $stripped;
+                $response[$type][] = $translated;
             }
-        }
-
-        /* Remote packages are only a flat list */
-        $remote = explode("\n", trim($remote));
-        foreach ($remote as $name) {
-            /* keep layout compatible with the above */
-            $response['remote'][] = array('name' => $name);
         }
 
         return $response;
