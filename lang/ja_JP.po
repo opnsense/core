@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OPNsense 15.1.10.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-20 10:18+0200\n"
+"POT-Creation-Date: 2015-09-27 17:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Chie Taguchi <taguchi.ch@gmail.com>\n"
 "Language-Team: https://github.com/dotike/opnsense.core.ja_JP.UTF8\n"
@@ -2879,6 +2879,13 @@ msgstr ""
 "フィールド %s は、カンマで区切られた、有効な %s CIDR 範囲である必要がありま"
 "す。"
 
+#, php-format
+msgid "OpenVPN %s wizard"
+msgstr "OpenVPN %s ウィザード"
+
+msgid "OpenVPN Wizard"
+msgstr "OpenVPN ウィザード"
+
 msgid "MASTER"
 msgstr "マスタ"
 
@@ -3745,6 +3752,406 @@ msgid "Could not process aliases from alias: %s"
 msgstr "リストからエイリアスを一括インポート"
 
 #
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 63
+msgid "Error reconfiguring captiveportal"
+msgstr ""
+
+msgid "Zones"
+msgstr "ゾーン"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 86
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 409
+msgid "Enabled"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 87
+msgid "Zoneid"
+msgstr ""
+
+msgid "Description"
+msgstr "説明"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 89
+msgid "Commands"
+msgstr ""
+
+msgid "ID"
+msgstr "ID"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 111
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 505
+msgid "Apply"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
+msgid "Fetching... (may take up to 30 seconds)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 57
+msgid "Package Name"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
+msgid "Current Version"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
+msgid "New Version"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 64
+msgid "NEW"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 67
+msgid "REINSTALL"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 85
+msgid "Upgrading... (do not leave this page while upgrade is in progress)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 146
+msgid "Upgrade done!"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 152
+msgid "Your device is rebooting"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 157
+msgid ""
+"The upgrade has finished and your device is being rebooted at the moment, "
+"please wait..."
+msgstr ""
+
+msgid "Name"
+msgstr "名前"
+
+msgid "Size"
+msgstr "サイズ"
+
+msgid "Version"
+msgstr "バージョン"
+
+msgid "Comment"
+msgstr "コメント"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 207
+msgid "Upgrade now"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 208
+msgid "Fetch updates"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 209
+msgid "Click to check for updates."
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 215
+msgid "Packages"
+msgstr ""
+
+#
+# File: src/www/widgets/widgets/system_information.widget.php, line: 108
+msgid "Updates"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 217
+msgid "Progress"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Cron/index.volt, line: 116
+msgid "Jobs"
+msgstr ""
+
+msgid "seconds"
+msgstr "秒"
+
+msgid "days"
+msgstr "日"
+
+msgid "hours"
+msgstr "時間"
+
+msgid "minutes"
+msgstr "分"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 336
+msgid "Year(s)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 338
+msgid "Days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 340
+msgid "Hours"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 342
+msgid "Minutes"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 369
+msgid "full date & time"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 371
+msgid "timestamp"
+msgstr ""
+
+msgid "Options"
+msgstr "オプション"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 578
+msgid "Zoom level"
+msgstr ""
+
+msgid "Inverse"
+msgstr "逆"
+
+msgid "Off"
+msgstr "オフ"
+
+msgid "On"
+msgstr "オン"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 602
+msgid "Resolution"
+msgstr ""
+
+msgid "Standard"
+msgstr "標準"
+
+msgid "Medium"
+msgstr "中"
+
+msgid "High"
+msgstr "高"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 622
+msgid "Show Tables"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
+msgid "Current detail is showing"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
+msgid "averages"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 646
+msgid "Please wait while loading data..."
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 668
+msgid "Current View - Overview"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 692
+msgid "Current View - Details"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 696
+msgid "Toggle Timeview"
+msgstr ""
+
+msgid "Timestamp"
+msgstr "タイムスタンプ"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 706
+msgid ""
+"Full Date &\n"
+"                                Time"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 712
+msgid "Download as CSV"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 383
+msgid "Alerts"
+msgstr ""
+
+msgid "Schedule"
+msgstr "スケジュール"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 399
+msgid "rulesets"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 408
+msgid "Last updated"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 418
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 455
+msgid "disable selected"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 419
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 456
+msgid "enable selected"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 443
+msgid "sid"
+msgstr ""
+
+msgid "Source"
+msgstr "送信元"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 445
+msgid "ClassType"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 446
+msgid "Message"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 447
+msgid "Info / enabled"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 481
+msgid "Search"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 482
+msgid "Query"
+msgstr ""
+
+msgid "Destination"
+msgstr "送信先"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 495
+msgid "Alert"
+msgstr ""
+
+msgid "Info"
+msgstr "情報"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 506
+msgid "Download & Update Rules"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 508
+msgid ""
+"Please use \"Download & Update Rules\" to fetch your initial ruleset, "
+"automatic updating can be scheduled after the first download"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 519
+msgid "Processing request..."
+msgstr ""
+
+#
+# File: src/www/firewall_aliases_edit.php, line: 324
+# File: src/www/firewall_aliases_import.php, line: 165
+# File: src/www/firewall_nat_1to1_edit.php, line: 288
+# File: src/www/firewall_nat_edit.php, line: 507
+# File: src/www/firewall_nat_npt_edit.php, line: 176
+# File: src/www/firewall_nat_out_edit.php, line: 393
+# File: src/www/vpn_ipsec_mobile.php, line: 348
+# File: src/www/vpn_ipsec_phase1.php, line: 604
+# File: src/www/vpn_ipsec_phase2.php, line: 645
+# File: src/www/vpn_ipsec_settings.php, line: 164
+# File: src/www/vpn_openvpn_client.php, line: 480
+# File: src/www/vpn_openvpn_client.php.orig, line: 480
+# File: src/www/vpn_openvpn_csc.php, line: 340
+# File: src/www/vpn_openvpn_export.php, line: 633
+# File: src/www/vpn_openvpn_export.php.orig, line: 633
+# File: src/www/vpn_openvpn_export_shared.php, line: 312
+# File: src/www/vpn_openvpn_export_shared.php.orig, line: 312
+# File: src/www/vpn_openvpn_server.php, line: 730
+# File: src/www/vpn_openvpn_server.php.orig, line: 730
+msgid "full help"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Proxy/index.volt, line: 234
+msgid ""
+"\n"
+"                    Add an item to the table to fetch a remote acl for "
+"blacklisting.<br/>\n"
+"                    You can enable or disable the blacklist list.<br/>\n"
+"                    The active blacklists will be merged with the settings "
+"under <b>Forward Proxy -> Access Control List</b>.\n"
+"                    "
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 102
+msgid "Pipes"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 103
+msgid "Queues"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/layout_partials/base_dialog.volt, line: 73
+# File: src/opnsense/mvc/app/views/layout_partials/base_form.volt, line: 63
+msgid "advanced mode"
+msgstr ""
+
+#
 # File: src/sbin/gmirror_status_check.php, line: 51
 #, php-format
 msgid "List of mirrors changed. Old: (%s) New: (%s)"
@@ -3786,6 +4193,11 @@ msgid "CARP has been enabled."
 msgstr "CARP は有効になりました"
 
 #
+# File: src/www/carp_status.php, line: 99
+msgid "CARP Status"
+msgstr ""
+
+#
 # File: src/www/carp_status.php, line: 95
 msgid ""
 "CARP has detected a problem and this unit has been demoted to BACKUP status."
@@ -3823,16 +4235,6 @@ msgstr "仮想 IP"
 
 msgid "Could not locate any defined CARP interfaces."
 msgstr "定義された CARP インタフェースを見つけられません"
-
-msgid "Note"
-msgstr "注意"
-
-#, fuzzy
-msgid "You can configure high availability settings"
-msgstr "高可用性同期設定を構成できます"
-
-msgid "here"
-msgstr "こちらです"
 
 msgid "pfSync nodes"
 msgstr "pfSync ノード"
@@ -4244,12 +4646,6 @@ msgstr "差分"
 msgid "Date"
 msgstr "日付"
 
-msgid "Version"
-msgstr "バージョン"
-
-msgid "Size"
-msgstr "サイズ"
-
 msgid "Configuration Change"
 msgstr "構成変更"
 
@@ -4561,9 +4957,6 @@ msgstr "その他の情報: "
 msgid "Mirror Status"
 msgstr "SMART ステータス"
 
-msgid "Name"
-msgstr "名前"
-
 #, fuzzy
 msgid "Component"
 msgstr "完了しました"
@@ -4637,9 +5030,6 @@ msgstr "システムは停止中です。1 分程かかります"
 msgid "Are you sure you want to halt the system?"
 msgstr "本当にシステムを停止してもよろしいですか？"
 
-msgid "Description"
-msgstr "説明"
-
 #, fuzzy
 msgid "Local ID"
 msgstr "ローカル IP"
@@ -4701,9 +5091,6 @@ msgstr "CPU 使用率"
 msgid "online: "
 msgstr "オンライン"
 
-msgid "ID"
-msgstr "ID"
-
 msgid "Host"
 msgstr "ホスト"
 
@@ -4721,12 +5108,6 @@ msgstr "IPsec を構成できます"
 
 msgid "here."
 msgstr " "
-
-msgid "Source"
-msgstr "送信元"
-
-msgid "Destination"
-msgstr "送信先"
 
 msgid "Protocol"
 msgstr "プロトコル"
@@ -5035,13 +5416,25 @@ msgstr "動的表示"
 msgid "Summary View"
 msgstr "概要表示"
 
+#
+# File: src/www/diag_logs_pills.inc, line: 44
+msgid "Cache"
+msgstr ""
+
+#
+# File: src/www/diag_logs_pills.inc, line: 45
+msgid "Access"
+msgstr ""
+
 #, php-format
 msgid "Last %s PPP log entries"
 msgstr "最新 %s PPP ログエントリ"
 
-#, fuzzy, php-format
-msgid "Last %s log entries"
-msgstr "最新 %s PPP ログエントリ"
+#
+# File: src/www/diag_logs_proxy.php, line: 65
+#, php-format
+msgid "Last %s Proxy log entries"
+msgstr ""
 
 #, php-format
 msgid "Last %s Load Balancer log entries"
@@ -5377,6 +5770,9 @@ msgstr "パケットキャプチャ"
 msgid "will be performed using promiscuous mode."
 msgstr "は無作為検出モードを使用して実行されます。"
 
+msgid "Note"
+msgstr "注意"
+
 msgid "Some network adapters do not support or work well in promiscuous mode."
 msgstr ""
 "一部のネットワークアダプタは、無作為検出モードに対応していないか、または正し"
@@ -5460,12 +5856,6 @@ msgstr "詳細度"
 
 msgid "Normal"
 msgstr "標準"
-
-msgid "Medium"
-msgstr "中"
-
-msgid "High"
-msgstr "高"
 
 msgid "Full"
 msgstr "全部"
@@ -5671,9 +6061,6 @@ msgstr "%s にテストメールを送信"
 
 msgid "Send"
 msgstr "送信"
-
-msgid "Info"
-msgstr "情報"
 
 msgid "Info type"
 msgstr "情報タイプ"
@@ -5953,9 +6340,6 @@ msgstr "エイリアスを削除できません。%s で現在使用されてい
 msgid "Add a new alias"
 msgstr "新規エイリアスの追加"
 
-msgid "Bulk import aliases from list"
-msgstr "リストからエイリアスを一括インポート"
-
 #
 # File: src/www/firewall_aliases.php, line: 157
 msgid "Aliasses"
@@ -6048,29 +6432,6 @@ msgstr "ポート"
 
 msgid "Alias Edit"
 msgstr "エイリアスの編集"
-
-#
-# File: src/www/firewall_aliases_edit.php, line: 324
-# File: src/www/firewall_aliases_import.php, line: 165
-# File: src/www/firewall_nat_1to1_edit.php, line: 288
-# File: src/www/firewall_nat_edit.php, line: 507
-# File: src/www/firewall_nat_npt_edit.php, line: 176
-# File: src/www/firewall_nat_out_edit.php, line: 393
-# File: src/www/vpn_ipsec_mobile.php, line: 348
-# File: src/www/vpn_ipsec_phase1.php, line: 604
-# File: src/www/vpn_ipsec_phase2.php, line: 645
-# File: src/www/vpn_ipsec_settings.php, line: 164
-# File: src/www/vpn_openvpn_client.php, line: 480
-# File: src/www/vpn_openvpn_client.php.orig, line: 480
-# File: src/www/vpn_openvpn_csc.php, line: 340
-# File: src/www/vpn_openvpn_export.php, line: 633
-# File: src/www/vpn_openvpn_export.php.orig, line: 633
-# File: src/www/vpn_openvpn_export_shared.php, line: 312
-# File: src/www/vpn_openvpn_export_shared.php.orig, line: 312
-# File: src/www/vpn_openvpn_server.php, line: 730
-# File: src/www/vpn_openvpn_server.php.orig, line: 730
-msgid "full help"
-msgstr ""
 
 msgid ""
 "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and "
@@ -6957,6 +7318,11 @@ msgid "Translation / target"
 msgstr ""
 
 #
+# File: src/www/firewall_nat_out_edit.php, line: 572
+msgid "Interface address"
+msgstr ""
+
+#
 # File: src/www/firewall_nat_out_edit.php, line: 582
 msgid "Translation address"
 msgstr ""
@@ -7083,9 +7449,6 @@ msgstr ""
 msgid "Gateway"
 msgstr "ゲートウェイ"
 
-msgid "Schedule"
-msgstr "スケジュール"
-
 msgid "edit rule"
 msgstr "ルールの編集"
 
@@ -7130,9 +7493,6 @@ msgstr "時間超過"
 
 msgid "Invalid IP header"
 msgstr "無効な IP ヘッダです"
-
-msgid "Timestamp"
-msgstr "タイムスタンプ"
 
 msgid "Timestamp reply"
 msgstr "タイムスタンプ応答"
@@ -7957,11 +8317,6 @@ msgstr "追加"
 msgid "CARP Settings"
 msgstr "CARP 設定"
 
-#
-# File: src/www/firewall_virtual_ip.php, line: 225
-msgid "Alias"
-msgstr ""
-
 msgid "Do you really want to delete this entry?"
 msgstr "本当にこのエントリを削除しますか？"
 
@@ -7973,15 +8328,17 @@ msgstr "仮想 IP アドレス"
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 311
-msgid "move selected alias before this rule"
+msgid "move selected virtual ip before this rule"
 msgstr ""
 
-msgid "edit this alias"
-msgstr "このエイリアスを編集"
+#
+# File: src/www/firewall_virtual_ip.php, line: 314
+msgid "edit this virtual ip"
+msgstr ""
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 317
-msgid "delete this alias"
+msgid "delete this virtual ip"
 msgstr ""
 
 msgid "The virtual IP addresses defined on this page may be used in"
@@ -7993,6 +8350,9 @@ msgstr " マッピングに使用されます。"
 msgid "You can check the status of your CARP Virtual IPs and interfaces "
 msgstr ""
 "CARP 仮想 IP 及びインタフェースのステータスを次のリンク先で確認できます: "
+
+msgid "here"
+msgstr "こちらです"
 
 msgid "A valid IP address must be specified."
 msgstr "有効な IP アドレスを指定してください"
@@ -8154,9 +8514,6 @@ msgstr "自動サイズ設定"
 
 msgid "Graph shows last"
 msgstr "次のグラフを表示: 最新 "
-
-msgid "seconds"
-msgstr "秒"
 
 msgid "Collecting initial data, please wait"
 msgstr "初期データを収集しています。しばらくお待ちください"
@@ -9334,9 +9691,6 @@ msgstr ""
 "これを有効にすると、インタフェースが削除、再割当てされても、共通の無線構成を"
 "保持します。"
 
-msgid "Standard"
-msgstr "標準"
-
 msgid "Protection Mode"
 msgstr "保護モード"
 
@@ -9393,12 +9747,6 @@ msgstr "アンテナ設定"
 
 msgid "Diversity"
 msgstr "ダイバーシティ"
-
-msgid "Off"
-msgstr "オフ"
-
-msgid "On"
-msgstr "オン"
 
 msgid "Transmit antenna"
 msgstr "送信アンテナ"
@@ -10931,9 +11279,6 @@ msgstr ""
 "第 1 階層 VLAN タグです。下記で定義されるメンバ VLAN の積層の一番上になりま"
 "す。"
 
-msgid "Options"
-msgstr "オプション"
-
 msgid ""
 "Adds interface to QinQ interface groups so you can write filter rules easily."
 msgstr ""
@@ -11632,9 +11977,6 @@ msgstr ""
 "す！設定可能な値は、クライアント IP アドレス毎に、最小 4 接続、合計で最大 "
 "100 接続までです。"
 
-msgid "minutes"
-msgstr "分"
-
 msgid ""
 "Clients will be disconnected after this amount of inactivity. They may log "
 "in again immediately, though. Leave this field blank for no idle timeout."
@@ -11677,9 +12019,6 @@ msgstr ""
 
 msgid "Waiting period to restore pass-through credits"
 msgstr "パススルークレジットを復元する待ち時間"
-
-msgid "hours"
-msgstr "時間"
 
 msgid ""
 "Clients will have their available pass-through credits restored to the "
@@ -12405,9 +12744,6 @@ msgstr "分 / チケット"
 msgid "of Tickets"
 msgstr "チケット番号"
 
-msgid "Comment"
-msgstr "コメント"
-
 msgid "edit voucher"
 msgstr "バウチャーの編集"
 
@@ -12625,9 +12961,6 @@ msgstr "このロールを追加識別子として使用できます。システ
 
 msgid "Captiveportal"
 msgstr "キャプティブポータル"
-
-msgid "Zones"
-msgstr "ゾーン"
 
 msgid "add a new captiveportal instance"
 msgstr "新規キャプティブポータルインスタンスの追加"
@@ -15530,6 +15863,11 @@ msgstr ""
 "このページは、フィルタの再読み込みが完了するまで、自動的に 3 秒毎に更新されま"
 "す。"
 
+#
+# File: src/www/status_gateway_groups.php, line: 60
+msgid "Group Status"
+msgstr ""
+
 #, php-format
 msgid "Tier %s"
 msgstr "ティア %s"
@@ -15809,9 +16147,6 @@ msgstr "無効な開始日 / 時間: "
 
 msgid "Invalid end date/time:"
 msgstr "無効な終了日 / 時間: "
-
-msgid "Inverse"
-msgstr "逆"
 
 msgid "Absolute"
 msgstr "絶対"
@@ -17336,6 +17671,11 @@ msgstr "起動 / シャットダウンビープ音を無効"
 msgid "When this is checked, startup and shutdown sounds will no longer play."
 msgstr "これをチェックすると、起動とシャットダウンの音が鳴らなくなります。"
 
+#
+# File: src/www/system_advanced_sysctl.php, line: 119
+msgid "Tunables"
+msgstr ""
+
 msgid ""
 "The firewall tunables have changed.  You must apply the configuration to "
 "take affect."
@@ -17359,12 +17699,6 @@ msgstr "システム調整パラメータの編集"
 
 msgid "Tunable"
 msgstr "調整パラメータ"
-
-msgid "Firewall / NAT"
-msgstr "ファイアウォール / NAT"
-
-msgid "Authentication Servers"
-msgstr "認証サーバ"
 
 msgid "deleted"
 msgstr "削除済"
@@ -17635,9 +17969,6 @@ msgid ""
 msgstr ""
 "注意: 可能であれば、SHA1 よりも強固なアルゴリズムを使用することをお勧めしま"
 "す。"
-
-msgid "days"
-msgstr "日"
 
 msgid "Distinguished name"
 msgstr "識別名"
@@ -17965,6 +18296,11 @@ msgstr "CRL の削除"
 msgid "removed gateway group"
 msgstr "ゲートウェイグループを削除しました"
 
+#
+# File: src/www/system_gateway_groups.php, line: 135
+msgid "Add group"
+msgstr ""
+
 #, php-format
 msgid ""
 "The gateway configuration has been changed.%sYou must apply the changes in "
@@ -18021,8 +18357,10 @@ msgstr ""
 msgid "No gateway(s) have been selected to be used in this group"
 msgstr "このグループで使用するゲートウェイは選択されていません"
 
-msgid "Edit gateway group"
-msgstr "ゲートウェイグループの編集"
+#
+# File: src/www/system_gateway_groups_edit.php, line: 152
+msgid "Edit Group"
+msgstr ""
 
 msgid "Edit gateway group entry"
 msgstr "ゲートウェイグループエントリの編集"
@@ -18090,6 +18428,11 @@ msgid ""
 "Gateway '%s' cannot be deleted because it is in use on Static Route '%s'"
 msgstr ""
 "この GRE トンネルは削除できません。インタフェースとして使用されています"
+
+#
+# File: src/www/system_gateways.php, line: 194
+msgid "Add gateway"
+msgstr ""
 
 msgid "The gateway configuration has been changed."
 msgstr "ゲートウェイの設定が変更されました。"
@@ -18560,9 +18903,6 @@ msgstr ""
 msgid "Select the firmware cryptography flavour."
 msgstr ""
 
-msgid "Group manager"
-msgstr "グループ管理"
-
 msgid "Group"
 msgstr "グループ"
 
@@ -18642,8 +18982,11 @@ msgstr ""
 msgid "Do you really want to delete this group?"
 msgstr "本当にこのグループを削除しますか？"
 
-msgid "Add privileges"
-msgstr "権限の追加"
+#
+# File: src/www/system_groupmanager_addprivs.php, line: 48
+# File: src/www/system_usermanager_addprivs.php, line: 48
+msgid "Privileges"
+msgstr ""
 
 msgid "Selected priveleges"
 msgstr "選択した権限"
@@ -18653,6 +18996,11 @@ msgstr "システム権限"
 
 msgid "Select a privilege from the list above for a description"
 msgstr "説明する権限を、上記のリストから選択してください"
+
+#
+# File: src/www/system_hasync.php, line: 97
+msgid "Synchronization"
+msgstr ""
 
 msgid "Static Routes"
 msgstr "静的ルート"
@@ -18667,6 +19015,11 @@ msgstr "次へのルートを削除: "
 #, fuzzy
 msgid "disabled route to"
 msgstr "次へのルートを削除: "
+
+#
+# File: src/www/system_routes.php, line: 210
+msgid "Add route"
+msgstr ""
 
 #, php-format
 msgid ""
@@ -18725,9 +19078,6 @@ msgstr "これらの送信先ネットワークへのルートは、既に存在
 msgid "This network conflicts with address configured on interface %s."
 msgstr ""
 "このネットワークは、インタフェース %s で構成されたアドレスが競合しています。"
-
-msgid "Edit route"
-msgstr "ルートの編集"
 
 msgid "Edit route entry"
 msgstr "ルートエントリの編集"
@@ -18930,9 +19280,6 @@ msgstr "PPTP パスワード"
 #, fuzzy
 msgid "Confirmation"
 msgstr "確認"
-
-msgid "User manager settings"
-msgstr "ユーザ管理設定"
 
 msgid "Session timeout must be an integer value."
 msgstr "セッションタイムアウトは整数値です"
@@ -21883,11 +22230,6 @@ msgstr "復元領域: "
 msgid "Versions"
 msgstr "バージョン"
 
-#
-# File: src/www/widgets/widgets/system_information.widget.php, line: 108
-msgid "Updates"
-msgstr ""
-
 msgid "CPU Type"
 msgstr "CPU タイプ"
 
@@ -22044,17 +22386,8 @@ msgstr "WOL アドレスは保存されていません"
 msgid "DHCP Leases Status"
 msgstr ""
 
+#
+# File: src/www/wizard.php, line: 126
 #, php-format
-msgid "ERROR:  Could not open %s."
-msgstr "エラー: %s を開けません"
-
-#, fuzzy, php-format
-msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
-msgstr "エラー: %s/wizards/%s ファイルを解析できません"
-
-#, php-format
-msgid "OpenVPN %s wizard"
-msgstr "OpenVPN %s ウィザード"
-
-msgid "OpenVPN Wizard"
-msgstr "OpenVPN ウィザード"
+msgid "ERROR: Could not parse %s wizard file."
+msgstr ""
