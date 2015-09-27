@@ -43,9 +43,17 @@ class ControllerBase extends ControllerRoot
      * translate a text
      * @return Gettext
      */
-    public function getTranslator()
+    public function getTranslator($cnf)
     {
-        $lang = 'en_US';	/* XXX select proper language */
+        $lang = 'en_US';
+
+        foreach ($cnf->object()->system->children() as $key => $node) {
+            if ($key == 'language') {
+                $lang = $node->__toString();
+                break;
+            }
+        }
+
         $lang_encoding = $lang . '.UTF-8';
 
         $ret = new Gettext(array(
@@ -186,14 +194,15 @@ class ControllerBase extends ControllerRoot
             'csrf_token' => $this->security->getToken()
         ]);
 
-        // set translator
-        $this->view->setVar('lang', $this->getTranslator());
-
         // link menu system to view, append /ui in uri because of rewrite
         $menu = new Menu\MenuSystem();
 
         // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
         $cnf = Config::getInstance();
+
+        // set translator
+        $this->view->setVar('lang', $this->getTranslator($cnf));
+
         $ifarr = array();
         foreach ($cnf->object()->interfaces->children() as $key => $node) {
             $ifarr[$key] = $node;
