@@ -1,21 +1,18 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-27 17:28+0200\n"
-"PO-Revision-Date: 2015-09-19 18:31+0200\n"
-"Last-Translator: \n"
-"Language-Team: OPNSense French team\n"
-"Language: fr_FR\n"
+"POT-Creation-Date: 2015-09-27 18:28+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Translate Toolkit 1.13.0\n"
+"X-Pootle-Path: /fr/gui/fr.po\n"
+"X-Pootle-Revision: 1059\n"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 35
