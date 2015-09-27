@@ -51,4 +51,3 @@ if len(sys.argv) > 1:
                 output_stream.seek(0)
                 print (output_stream.read())
             break
-
