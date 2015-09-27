@@ -1,11 +1,16 @@
-all:
-
 _XGETTEXT!=	which xgettext || echo true
 XGETTEXT=	${_XGETTEXT} -L PHP --from-code=UTF-8 -F --strict --debug
+_XGETTEXT_PL!=	which xgettext.pl || echo true
+XGETTEXT_PL=	${_XGETTEXT_PL} -P Locale::Maketext::Extract::Plugin::Volt \
+		-u -w -W
 _MSGFMT!=	which msgfmt || echo true
 MSGFMT=		${_MSGFMT} --strict
 _MSGMERGE!=	which msgmerge || echo true
 MSGMERGE=	${_MSGMERGE} -U -N --backup=off
+
+PERL_DIR=	/usr/local/lib/perl5/site_perl
+PERL_NAME=	Locale/Maketext/Extract/Plugin
+PERL_CP!=	cp -v ${.CURDIR}/Volt.pm ${PERL_DIR}/${PERL_NAME}/
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 
@@ -18,6 +23,12 @@ TEMPLATE=	en_US
 INSTALL=
 MERGE=
 PLIST=
+
+PAGER?=		less
+
+all:
+	@cat ${.CURDIR}/README.md | ${PAGER}
+
 
 .for LANG in ${LANGUAGES}
 ${LANG}DIR=	${LOCALEDIR:S/%%LANG%%/${LANG}/g}
@@ -38,6 +49,8 @@ MERGE+=		merge-${LANG}
 
 ${TEMPLATE}:
 	@: > ${TEMPLATE}.pot
+	cd ${.CURDIR}/.. && \
+	    ${XGETTEXT_PL} -D src -p ${.CURDIR} -o ${TEMPLATE}.pot
 	cd ${.CURDIR}/.. && find src lang/dynamic/helpers | \
 	    xargs ${XGETTEXT} -j -o ${.CURDIR}/${TEMPLATE}.pot
 
