@@ -234,7 +234,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // target ip/net
-        if (!array_key_exists($pconfig['targetip'], formTranslateAddresses())) {
+        if (empty($pconfig['targetip'])) {
+            // empty target "Interface address"
+            $natent['target'] = $pconfig['targetip'] ;
+            $natent['targetip_subnet'] = 0;
+            $natent['target'] = $pconfig['targetip'] ;
+        } elseif (!array_key_exists($pconfig['targetip'], formTranslateAddresses())) {
             // a bit vague behaviour in "target" and "targetip", if a custom net is given
             // the backend code wants target to be filled with "other-subnet".
             // if any other known net is given, target is used to provide the actual address....
@@ -564,6 +569,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <select name="targetip" id="targetip" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                                <option data-other=true value="" <?= empty($pconfig['targetip']) ? "selected=\"selected\"" : "";?> > <?=gettext("Interface address");?> </option>
                                 <option data-other=true value="<?=$pconfig['targetip'];?>" <?= !empty($pconfig['target']) && !array_key_exists($pconfig['targetip'], formTranslateAddresses() ) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
 <?                              foreach (formTranslateAddresses() as $optKey => $optValue):
 ?>
