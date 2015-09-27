@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-20 10:18+0200\n"
+"POT-Creation-Date: 2015-09-27 17:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3111,6 +3111,13 @@ msgid ""
 "The field '%s' must contain only valid %s CIDR range(s) separated by commas."
 msgstr ""
 
+#, php-format
+msgid "OpenVPN %s wizard"
+msgstr ""
+
+msgid "OpenVPN Wizard"
+msgstr "OpenVPN Assistent"
+
 msgid "MASTER"
 msgstr "MASTER"
 
@@ -3908,6 +3915,406 @@ msgstr ""
 msgid "Could not process aliases from alias: %s"
 msgstr "Konnte Aliase von Alias nicht verarbeiten: %s"
 
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 63
+msgid "Error reconfiguring captiveportal"
+msgstr ""
+
+msgid "Zones"
+msgstr "Zonen"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 86
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 409
+msgid "Enabled"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 87
+msgid "Zoneid"
+msgstr ""
+
+msgid "Description"
+msgstr "Beschreibung"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 89
+msgid "Commands"
+msgstr ""
+
+msgid "ID"
+msgstr "ID"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 111
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 505
+msgid "Apply"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
+msgid "Fetching... (may take up to 30 seconds)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 57
+msgid "Package Name"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
+msgid "Current Version"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
+msgid "New Version"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 64
+msgid "NEW"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 67
+msgid "REINSTALL"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 85
+msgid "Upgrading... (do not leave this page while upgrade is in progress)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 146
+msgid "Upgrade done!"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 152
+msgid "Your device is rebooting"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 157
+msgid ""
+"The upgrade has finished and your device is being rebooted at the moment, "
+"please wait..."
+msgstr ""
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Size"
+msgstr "Größe"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Comment"
+msgstr "Kommentar"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 207
+msgid "Upgrade now"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 208
+msgid "Fetch updates"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 209
+msgid "Click to check for updates."
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 215
+msgid "Packages"
+msgstr ""
+
+#
+# File: src/www/widgets/widgets/system_information.widget.php, line: 108
+msgid "Updates"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 217
+msgid "Progress"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Cron/index.volt, line: 116
+msgid "Jobs"
+msgstr ""
+
+msgid "seconds"
+msgstr "Sekunden"
+
+msgid "days"
+msgstr "Tage"
+
+msgid "hours"
+msgstr "Stunden"
+
+msgid "minutes"
+msgstr "Minuten"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 336
+msgid "Year(s)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 338
+msgid "Days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 340
+msgid "Hours"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 342
+msgid "Minutes"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 369
+msgid "full date & time"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 371
+msgid "timestamp"
+msgstr ""
+
+msgid "Options"
+msgstr "Einstellungen"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 578
+msgid "Zoom level"
+msgstr ""
+
+msgid "Inverse"
+msgstr "Inverse"
+
+msgid "Off"
+msgstr "Aus"
+
+msgid "On"
+msgstr "Ein"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 602
+msgid "Resolution"
+msgstr ""
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Medium"
+msgstr "Mittel"
+
+msgid "High"
+msgstr "Hoch"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 622
+msgid "Show Tables"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
+msgid "Current detail is showing"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
+msgid "averages"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 646
+msgid "Please wait while loading data..."
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 668
+msgid "Current View - Overview"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 692
+msgid "Current View - Details"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 696
+msgid "Toggle Timeview"
+msgstr ""
+
+msgid "Timestamp"
+msgstr "Zeitstempel"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 706
+msgid ""
+"Full Date &\n"
+"                                Time"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 712
+msgid "Download as CSV"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 383
+msgid "Alerts"
+msgstr ""
+
+msgid "Schedule"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 399
+msgid "rulesets"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 408
+msgid "Last updated"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 418
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 455
+msgid "disable selected"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 419
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 456
+msgid "enable selected"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 443
+msgid "sid"
+msgstr ""
+
+msgid "Source"
+msgstr "Quelle"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 445
+msgid "ClassType"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 446
+msgid "Message"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 447
+msgid "Info / enabled"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 481
+msgid "Search"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 482
+msgid "Query"
+msgstr ""
+
+msgid "Destination"
+msgstr "Ziel"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 495
+msgid "Alert"
+msgstr ""
+
+msgid "Info"
+msgstr "Info"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 506
+msgid "Download & Update Rules"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 508
+msgid ""
+"Please use \"Download & Update Rules\" to fetch your initial ruleset, "
+"automatic updating can be scheduled after the first download"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 519
+msgid "Processing request..."
+msgstr ""
+
+#
+# File: src/www/firewall_aliases_edit.php, line: 324
+# File: src/www/firewall_aliases_import.php, line: 165
+# File: src/www/firewall_nat_1to1_edit.php, line: 288
+# File: src/www/firewall_nat_edit.php, line: 507
+# File: src/www/firewall_nat_npt_edit.php, line: 176
+# File: src/www/firewall_nat_out_edit.php, line: 393
+# File: src/www/vpn_ipsec_mobile.php, line: 348
+# File: src/www/vpn_ipsec_phase1.php, line: 604
+# File: src/www/vpn_ipsec_phase2.php, line: 645
+# File: src/www/vpn_ipsec_settings.php, line: 164
+# File: src/www/vpn_openvpn_client.php, line: 480
+# File: src/www/vpn_openvpn_client.php.orig, line: 480
+# File: src/www/vpn_openvpn_csc.php, line: 340
+# File: src/www/vpn_openvpn_export.php, line: 633
+# File: src/www/vpn_openvpn_export.php.orig, line: 633
+# File: src/www/vpn_openvpn_export_shared.php, line: 312
+# File: src/www/vpn_openvpn_export_shared.php.orig, line: 312
+# File: src/www/vpn_openvpn_server.php, line: 730
+# File: src/www/vpn_openvpn_server.php.orig, line: 730
+msgid "full help"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Proxy/index.volt, line: 234
+msgid ""
+"\n"
+"                    Add an item to the table to fetch a remote acl for "
+"blacklisting.<br/>\n"
+"                    You can enable or disable the blacklist list.<br/>\n"
+"                    The active blacklists will be merged with the settings "
+"under <b>Forward Proxy -> Access Control List</b>.\n"
+"                    "
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 102
+msgid "Pipes"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 103
+msgid "Queues"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/layout_partials/base_dialog.volt, line: 73
+# File: src/opnsense/mvc/app/views/layout_partials/base_form.volt, line: 63
+msgid "advanced mode"
+msgstr ""
+
 #, php-format
 msgid "List of mirrors changed. Old: (%s) New: (%s)"
 msgstr ""
@@ -3941,6 +4348,11 @@ msgstr ""
 msgid "CARP has been enabled."
 msgstr "CARP wurde aktiviert"
 
+#
+# File: src/www/carp_status.php, line: 99
+msgid "CARP Status"
+msgstr ""
+
 msgid ""
 "CARP has detected a problem and this unit has been demoted to BACKUP status."
 msgstr ""
@@ -3968,16 +4380,6 @@ msgstr "Virtuelle IP"
 
 msgid "Could not locate any defined CARP interfaces."
 msgstr "Konnte kein definiertes CARP Interface finden."
-
-msgid "Note"
-msgstr "Anmerkung"
-
-# File: src/www/carp_status.php, line: 181
-msgid "You can configure high availability settings"
-msgstr "Sie können Hochverfügbarkeitseinstellungen konfigurieren"
-
-msgid "here"
-msgstr "hier"
 
 msgid "pfSync nodes"
 msgstr "pfSync Knoten"
@@ -4368,12 +4770,6 @@ msgstr "Unterschied"
 msgid "Date"
 msgstr "Datum"
 
-msgid "Version"
-msgstr "Version"
-
-msgid "Size"
-msgstr "Größe"
-
 msgid "Configuration Change"
 msgstr "Konfigurationsänderung"
 
@@ -4643,9 +5039,6 @@ msgstr ""
 msgid "Mirror Status"
 msgstr ""
 
-msgid "Name"
-msgstr "Name"
-
 msgid "Component"
 msgstr "Komponente"
 
@@ -4706,9 +5099,6 @@ msgstr ""
 msgid "Are you sure you want to halt the system?"
 msgstr "Sind Sie sicher, dass Sie das System herunterfahren möchten?"
 
-msgid "Description"
-msgstr "Beschreibung"
-
 msgid "Local ID"
 msgstr "Lokale ID"
 
@@ -4760,9 +5150,6 @@ msgstr ""
 msgid "online: "
 msgstr "online: "
 
-msgid "ID"
-msgstr "ID"
-
 msgid "Host"
 msgstr "Host"
 
@@ -4777,12 +5164,6 @@ msgstr "Sie können IPsec konfigurieren"
 
 msgid "here."
 msgstr "hier."
-
-msgid "Source"
-msgstr "Quelle"
-
-msgid "Destination"
-msgstr "Ziel"
 
 msgid "Protocol"
 msgstr "Protokoll"
@@ -5092,14 +5473,25 @@ msgstr "Dynamische Ansicht"
 msgid "Summary View"
 msgstr "Zusammengefasste Ansicht"
 
+#
+# File: src/www/diag_logs_pills.inc, line: 44
+msgid "Cache"
+msgstr ""
+
+#
+# File: src/www/diag_logs_pills.inc, line: 45
+msgid "Access"
+msgstr ""
+
 #, php-format
 msgid "Last %s PPP log entries"
 msgstr ""
 
-# File: src/www/diag_logs_proxy.php, line: 59
+#
+# File: src/www/diag_logs_proxy.php, line: 65
 #, php-format
-msgid "Last %s log entries"
-msgstr "Letzte %s Protokolleinträge"
+msgid "Last %s Proxy log entries"
+msgstr ""
 
 #, php-format
 msgid "Last %s Load Balancer log entries"
@@ -5388,6 +5780,9 @@ msgstr "Paketaufzeichnung"
 msgid "will be performed using promiscuous mode."
 msgstr ""
 
+msgid "Note"
+msgstr "Anmerkung"
+
 msgid "Some network adapters do not support or work well in promiscuous mode."
 msgstr ""
 
@@ -5466,12 +5861,6 @@ msgstr "Detaillierungsgrad"
 
 msgid "Normal"
 msgstr "Normal"
-
-msgid "Medium"
-msgstr "Mittel"
-
-msgid "High"
-msgstr "Hoch"
 
 msgid "Full"
 msgstr "Voll"
@@ -5666,9 +6055,6 @@ msgstr "Sende Test-Email an %s"
 
 msgid "Send"
 msgstr "Senden"
-
-msgid "Info"
-msgstr "Info"
 
 msgid "Info type"
 msgstr "Infotyp"
@@ -5934,9 +6320,6 @@ msgstr "Konnte den Alias nicht löschen, da er gerade durch %s genutzt wird."
 msgid "Add a new alias"
 msgstr "Neuen Alias hinzufügen"
 
-msgid "Bulk import aliases from list"
-msgstr "Massenimport von Aliase von einer Liste"
-
 #
 # File: src/www/firewall_aliases.php, line: 157
 msgid "Aliasses"
@@ -6031,29 +6414,6 @@ msgstr "Port(s)"
 
 msgid "Alias Edit"
 msgstr "Alias bearbeiten"
-
-#
-# File: src/www/firewall_aliases_edit.php, line: 324
-# File: src/www/firewall_aliases_import.php, line: 165
-# File: src/www/firewall_nat_1to1_edit.php, line: 288
-# File: src/www/firewall_nat_edit.php, line: 507
-# File: src/www/firewall_nat_npt_edit.php, line: 176
-# File: src/www/firewall_nat_out_edit.php, line: 393
-# File: src/www/vpn_ipsec_mobile.php, line: 348
-# File: src/www/vpn_ipsec_phase1.php, line: 604
-# File: src/www/vpn_ipsec_phase2.php, line: 645
-# File: src/www/vpn_ipsec_settings.php, line: 164
-# File: src/www/vpn_openvpn_client.php, line: 480
-# File: src/www/vpn_openvpn_client.php.orig, line: 480
-# File: src/www/vpn_openvpn_csc.php, line: 340
-# File: src/www/vpn_openvpn_export.php, line: 633
-# File: src/www/vpn_openvpn_export.php.orig, line: 633
-# File: src/www/vpn_openvpn_export_shared.php, line: 312
-# File: src/www/vpn_openvpn_export_shared.php.orig, line: 312
-# File: src/www/vpn_openvpn_server.php, line: 730
-# File: src/www/vpn_openvpn_server.php.orig, line: 730
-msgid "full help"
-msgstr ""
 
 msgid ""
 "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and "
@@ -6873,6 +7233,11 @@ msgid "Translation / target"
 msgstr ""
 
 #
+# File: src/www/firewall_nat_out_edit.php, line: 572
+msgid "Interface address"
+msgstr ""
+
+#
 # File: src/www/firewall_nat_out_edit.php, line: 582
 msgid "Translation address"
 msgstr ""
@@ -6980,9 +7345,6 @@ msgstr ""
 msgid "Gateway"
 msgstr "Gateway"
 
-msgid "Schedule"
-msgstr ""
-
 msgid "edit rule"
 msgstr "Regel bearbeiten"
 
@@ -7027,9 +7389,6 @@ msgstr ""
 
 msgid "Invalid IP header"
 msgstr "Ungültiger IP Header"
-
-msgid "Timestamp"
-msgstr "Zeitstempel"
 
 msgid "Timestamp reply"
 msgstr ""
@@ -7768,11 +8127,6 @@ msgstr "Hinzufügen"
 msgid "CARP Settings"
 msgstr "CARP Einstellungen"
 
-#
-# File: src/www/firewall_virtual_ip.php, line: 225
-msgid "Alias"
-msgstr ""
-
 msgid "Do you really want to delete this entry?"
 msgstr "Wollen Sie diesen Eintrag wirklich löschen?"
 
@@ -7784,15 +8138,17 @@ msgstr "Virtuelle IP-Adresse"
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 311
-msgid "move selected alias before this rule"
+msgid "move selected virtual ip before this rule"
 msgstr ""
 
-msgid "edit this alias"
-msgstr "Diesen Alias bearbeiten"
+#
+# File: src/www/firewall_virtual_ip.php, line: 314
+msgid "edit this virtual ip"
+msgstr ""
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 317
-msgid "delete this alias"
+msgid "delete this virtual ip"
 msgstr ""
 
 msgid "The virtual IP addresses defined on this page may be used in"
@@ -7803,6 +8159,9 @@ msgstr ""
 
 msgid "You can check the status of your CARP Virtual IPs and interfaces "
 msgstr ""
+
+msgid "here"
+msgstr "hier"
 
 msgid "A valid IP address must be specified."
 msgstr "Eine gültige IP Adresse muss spezifiziert werden."
@@ -7953,9 +8312,6 @@ msgstr "Automatische Skalierung"
 
 msgid "Graph shows last"
 msgstr "Graph zeigt die letzten"
-
-msgid "seconds"
-msgstr "Sekunden"
 
 msgid "Collecting initial data, please wait"
 msgstr "Sammle initiale Daten, bitte warten"
@@ -8992,9 +9348,6 @@ msgid ""
 "deletions and reassignments."
 msgstr ""
 
-msgid "Standard"
-msgstr "Standard"
-
 msgid "Protection Mode"
 msgstr "Schutzmodus"
 
@@ -9044,12 +9397,6 @@ msgstr "Antenneneinstellungen"
 
 msgid "Diversity"
 msgstr ""
-
-msgid "Off"
-msgstr "Aus"
-
-msgid "On"
-msgstr "Ein"
 
 msgid "Transmit antenna"
 msgstr "Sendeantenne"
@@ -10396,9 +10743,6 @@ msgid ""
 "VLANs defined below."
 msgstr ""
 
-msgid "Options"
-msgstr "Einstellungen"
-
 msgid ""
 "Adds interface to QinQ interface groups so you can write filter rules easily."
 msgstr ""
@@ -11028,9 +11372,6 @@ msgstr ""
 "sind! Mögliche erlaubte Einstellungen sind: mindestens 4 Verbindungen pro "
 "Client IP-Adresse, mit einer maximalen Anzahl von 100 Verbindungen."
 
-msgid "minutes"
-msgstr "Minuten"
-
 msgid ""
 "Clients will be disconnected after this amount of inactivity. They may log "
 "in again immediately, though. Leave this field blank for no idle timeout."
@@ -11072,9 +11413,6 @@ msgstr ""
 
 msgid "Waiting period to restore pass-through credits"
 msgstr "Wartezeit zur Wiederherstellung des Pass-through Credits"
-
-msgid "hours"
-msgstr "Stunden"
 
 msgid ""
 "Clients will have their available pass-through credits restored to the "
@@ -11726,9 +12064,6 @@ msgstr "Minuten/Ticket"
 msgid "of Tickets"
 msgstr "Anzahl Tickets"
 
-msgid "Comment"
-msgstr "Kommentar"
-
 msgid "edit voucher"
 msgstr "Voucher bearbeiten"
 
@@ -11910,9 +12245,6 @@ msgstr ""
 
 msgid "Captiveportal"
 msgstr "Captive Portal"
-
-msgid "Zones"
-msgstr "Zonen"
 
 msgid "add a new captiveportal instance"
 msgstr "Erzeuge eine neue Captive Portal Instanz"
@@ -14360,6 +14692,11 @@ msgid ""
 "done reloading"
 msgstr ""
 
+#
+# File: src/www/status_gateway_groups.php, line: 60
+msgid "Group Status"
+msgstr ""
+
 #, php-format
 msgid "Tier %s"
 msgstr ""
@@ -14633,9 +14970,6 @@ msgstr "Ungültige(s) Startdatum/-zeit"
 
 msgid "Invalid end date/time:"
 msgstr ""
-
-msgid "Inverse"
-msgstr "Inverse"
 
 msgid "Absolute"
 msgstr "Absolut"
@@ -15910,6 +16244,11 @@ msgstr "Deaktiviere den Piepton beim Starten/Herunterfahren"
 msgid "When this is checked, startup and shutdown sounds will no longer play."
 msgstr ""
 
+#
+# File: src/www/system_advanced_sysctl.php, line: 119
+msgid "Tunables"
+msgstr ""
+
 msgid ""
 "The firewall tunables have changed.  You must apply the configuration to "
 "take affect."
@@ -15929,12 +16268,6 @@ msgstr "Systemoptimierung bearbeiten"
 
 msgid "Tunable"
 msgstr "Optimierung"
-
-msgid "Firewall / NAT"
-msgstr "Firewall / NAT"
-
-msgid "Authentication Servers"
-msgstr "Authentifizierungsserver"
 
 msgid "deleted"
 msgstr "gelöscht"
@@ -16190,9 +16523,6 @@ msgstr "Hashalgorithmus"
 msgid ""
 "NOTE: It is recommended to use an algorithm stronger than SHA1 when possible."
 msgstr ""
-
-msgid "days"
-msgstr "Tage"
 
 msgid "Distinguished name"
 msgstr "Distinguished name"
@@ -16518,6 +16848,11 @@ msgstr "CRL löschen"
 msgid "removed gateway group"
 msgstr "diese Gateway Gruppe entfernen"
 
+#
+# File: src/www/system_gateway_groups.php, line: 135
+msgid "Add group"
+msgstr ""
+
 #, php-format
 msgid ""
 "The gateway configuration has been changed.%sYou must apply the changes in "
@@ -16569,8 +16904,10 @@ msgstr ""
 msgid "No gateway(s) have been selected to be used in this group"
 msgstr ""
 
-msgid "Edit gateway group"
-msgstr "Gatewaygruppe bearbeiten"
+#
+# File: src/www/system_gateway_groups_edit.php, line: 152
+msgid "Edit Group"
+msgstr ""
 
 msgid "Edit gateway group entry"
 msgstr "Gatewaygruppeneintrag bearbeiten"
@@ -16634,6 +16971,11 @@ msgid ""
 msgstr ""
 "Gateway '%s' kann nicht gelöscht werden weil es in Benutzung einer satischen "
 "Route ist '%s'"
+
+#
+# File: src/www/system_gateways.php, line: 194
+msgid "Add gateway"
+msgstr ""
 
 msgid "The gateway configuration has been changed."
 msgstr "Die Gateway-Konfiguration wurde geändert."
@@ -17053,9 +17395,6 @@ msgstr ""
 msgid "Select the firmware cryptography flavour."
 msgstr ""
 
-msgid "Group manager"
-msgstr "Gruppenverwaltung"
-
 msgid "Group"
 msgstr "Gruppe"
 
@@ -17132,8 +17471,11 @@ msgstr ""
 msgid "Do you really want to delete this group?"
 msgstr "Wollen Sie diese Gruppe wirklich löschen?"
 
-msgid "Add privileges"
-msgstr "Berechtigungen hinzufügen"
+#
+# File: src/www/system_groupmanager_addprivs.php, line: 48
+# File: src/www/system_usermanager_addprivs.php, line: 48
+msgid "Privileges"
+msgstr ""
 
 msgid "Selected priveleges"
 msgstr ""
@@ -17146,6 +17488,11 @@ msgstr ""
 "Wählen Sie eine Berechtigung aus obiger Liste aus, um eine Beschreibung zu "
 "erhalten."
 
+#
+# File: src/www/system_hasync.php, line: 97
+msgid "Synchronization"
+msgstr ""
+
 msgid "Static Routes"
 msgstr "Statische Routen"
 
@@ -17157,6 +17504,11 @@ msgstr "aktivierte Route zu"
 
 msgid "disabled route to"
 msgstr "deaktivierte Route zu"
+
+#
+# File: src/www/system_routes.php, line: 210
+msgid "Add route"
+msgstr ""
 
 #, php-format
 msgid ""
@@ -17208,9 +17560,6 @@ msgstr "Eine Route zu diesem Zielnetzwerk existiert bereits"
 #, php-format
 msgid "This network conflicts with address configured on interface %s."
 msgstr ""
-
-msgid "Edit route"
-msgstr "Route bearbeiten"
 
 msgid "Edit route entry"
 msgstr "Routingeintrag bearbeiten"
@@ -17415,9 +17764,6 @@ msgstr "Neues Passwort"
 
 msgid "Confirmation"
 msgstr "Bestätigung"
-
-msgid "User manager settings"
-msgstr "Benutzermanager Einstellungen"
 
 msgid "Session timeout must be an integer value."
 msgstr "Sitzungs-Zeitlimit muss eine Zahl sein."
@@ -20061,11 +20407,6 @@ msgstr "Es gibt "
 msgid "Versions"
 msgstr "Versionen"
 
-#
-# File: src/www/widgets/widgets/system_information.widget.php, line: 108
-msgid "Updates"
-msgstr ""
-
 msgid "CPU Type"
 msgstr "CPU-Typ"
 
@@ -20219,17 +20560,8 @@ msgstr ""
 msgid "DHCP Leases Status"
 msgstr ""
 
+#
+# File: src/www/wizard.php, line: 126
 #, php-format
-msgid "ERROR:  Could not open %s."
-msgstr "FEHLER: Konnte %s nicht öffnen."
-
-#, php-format
-msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
+msgid "ERROR: Could not parse %s wizard file."
 msgstr ""
-
-#, php-format
-msgid "OpenVPN %s wizard"
-msgstr ""
-
-msgid "OpenVPN Wizard"
-msgstr "OpenVPN Assistent"

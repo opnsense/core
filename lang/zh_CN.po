@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 15.x releases\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-20 10:18+0200\n"
+"POT-Creation-Date: 2015-09-27 17:28+0200\n"
 "PO-Revision-Date: 2015-07-20 21:08+0900\n"
 "Last-Translator: Liu <liuyonghui@grapecity.com>\n"
 "Language-Team: Chinese <http://opnsense.org/>\n"
@@ -4545,6 +4545,19 @@ msgid ""
 msgstr "区域 '%s'必须只包含一个有效的 %s CIDR范围，由逗号隔开"
 
 #
+# File: src/www/wizards/openvpn_wizard.inc, line: 625
+# File: src/www/wizards/openvpn_wizard.inc, line: 642
+#, php-format
+msgid "OpenVPN %s wizard"
+msgstr "OpenVPN %s 向导"
+
+#
+# File: src/www/wizards/openvpn_wizard.inc, line: 637
+# File: src/www/wizards/openvpn_wizard.inc, line: 652
+msgid "OpenVPN Wizard"
+msgstr "OpenVPN向导"
+
+#
 # File: src/etc/inc/pfsense-utils.inc, line: 264
 msgid "MASTER"
 msgstr "控制者"
@@ -5721,6 +5734,678 @@ msgid "Could not process aliases from alias: %s"
 msgstr "不能处理来自别名组 %s的别名"
 
 #
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 63
+msgid "Error reconfiguring captiveportal"
+msgstr ""
+
+#
+# File: src/www/services_captiveportal_zones.php, line: 56
+msgid "Zones"
+msgstr "区域"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 86
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 409
+msgid "Enabled"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 87
+msgid "Zoneid"
+msgstr ""
+
+#
+# File: src/etc/inc/shaper.inc, line: 1161
+# File: src/www/diag_ipsec.php, line: 95
+# File: src/www/firewall_aliases.php, line: 194
+# File: src/www/firewall_aliases_edit.php, line: 463
+# File: src/www/firewall_aliases_edit.php, line: 656
+# File: src/www/firewall_aliases_edit.php, line: 693
+# File: src/www/firewall_aliases_import.php, line: 188
+# File: src/www/firewall_nat.php, line: 227
+# File: src/www/firewall_nat_1to1.php, line: 186
+# File: src/www/firewall_nat_1to1_edit.php, line: 538
+# File: src/www/firewall_nat_edit.php, line: 794
+# File: src/www/firewall_nat_npt.php, line: 111
+# File: src/www/firewall_nat_npt_edit.php, line: 282
+# File: src/www/firewall_nat_out.php, line: 314
+# File: src/www/firewall_nat_out.php, line: 518
+# File: src/www/firewall_nat_out_edit.php, line: 794
+# File: src/www/firewall_rules.php, line: 407
+# File: src/www/firewall_rules_edit.php, line: 1188
+# File: src/www/firewall_schedule.php, line: 107
+# File: src/www/firewall_schedule_edit.php, line: 805
+# File: src/www/firewall_schedule_edit.php, line: 1018
+# File: src/www/firewall_virtual_ip.php, line: 229
+# File: src/www/firewall_virtual_ip_edit.php, line: 460
+# File: src/www/interfaces.php, line: 1603
+# File: src/www/interfaces_bridge.php, line: 128
+# File: src/www/interfaces_bridge_edit.php, line: 300
+# File: src/www/interfaces_gif.php, line: 116
+# File: src/www/interfaces_gif_edit.php, line: 233
+# File: src/www/interfaces_gre.php, line: 117
+# File: src/www/interfaces_gre_edit.php, line: 238
+# File: src/www/interfaces_groups.php, line: 102
+# File: src/www/interfaces_groups_edit.php, line: 261
+# File: src/www/interfaces_lagg.php, line: 123
+# File: src/www/interfaces_lagg_edit.php, line: 228
+# File: src/www/interfaces_ppps.php, line: 118
+# File: src/www/interfaces_ppps_edit.php, line: 487
+# File: src/www/interfaces_qinq.php, line: 128
+# File: src/www/interfaces_qinq_edit.php, line: 334
+# File: src/www/interfaces_vlan.php, line: 125
+# File: src/www/interfaces_vlan_edit.php, line: 202
+# File: src/www/interfaces_wireless.php, line: 116
+# File: src/www/interfaces_wireless_edit.php, line: 189
+# File: src/www/load_balancer_monitor.php, line: 125
+# File: src/www/load_balancer_monitor_edit.php, line: 77
+# File: src/www/load_balancer_monitor_edit.php, line: 243
+# File: src/www/load_balancer_pool.php, line: 139
+# File: src/www/load_balancer_pool_edit.php, line: 216
+# File: src/www/load_balancer_relay_action.php, line: 141
+# File: src/www/load_balancer_relay_action_edit.php, line: 107
+# File: src/www/load_balancer_relay_action_edit.php, line: 418
+# File: src/www/load_balancer_relay_protocol.php, line: 135
+# File: src/www/load_balancer_relay_protocol_edit.php, line: 69
+# File: src/www/load_balancer_relay_protocol_edit.php, line: 220
+# File: src/www/load_balancer_virtual_server.php, line: 137
+# File: src/www/load_balancer_virtual_server_edit.php, line: 173
+# File: src/www/services_captiveportal_ip.php, line: 107
+# File: src/www/services_captiveportal_ip_edit.php, line: 190
+# File: src/www/services_captiveportal_mac.php, line: 166
+# File: src/www/services_captiveportal_mac_edit.php, line: 217
+# File: src/www/services_captiveportal_zones.php, line: 91
+# File: src/www/services_captiveportal_zones_edit.php, line: 111
+# File: src/www/services_dhcp.php, line: 815
+# File: src/www/services_dhcp.php, line: 1178
+# File: src/www/services_dhcp_edit.php, line: 412
+# File: src/www/services_dhcpv6.php, line: 836
+# File: src/www/services_dhcpv6_edit.php, line: 235
+# File: src/www/services_dnsmasq.php, line: 369
+# File: src/www/services_dnsmasq.php, line: 447
+# File: src/www/services_dnsmasq_domainoverride_edit.php, line: 157
+# File: src/www/services_dnsmasq_edit.php, line: 223
+# File: src/www/services_dnsmasq_edit.php, line: 244
+# File: src/www/services_dyndns.php, line: 93
+# File: src/www/services_dyndns_edit.php, line: 425
+# File: src/www/services_igmpproxy.php, line: 99
+# File: src/www/services_igmpproxy_edit.php, line: 175
+# File: src/www/services_rfc2136.php, line: 86
+# File: src/www/services_rfc2136_edit.php, line: 218
+# File: src/www/services_unbound.php, line: 387
+# File: src/www/services_unbound.php, line: 451
+# File: src/www/services_unbound_acls.php, line: 235
+# File: src/www/services_unbound_acls.php, line: 285
+# File: src/www/services_unbound_acls.php, line: 310
+# File: src/www/services_unbound_domainoverride_edit.php, line: 151
+# File: src/www/services_unbound_host_edit.php, line: 225
+# File: src/www/services_unbound_host_edit.php, line: 246
+# File: src/www/services_wol.php, line: 173
+# File: src/www/services_wol_edit.php, line: 158
+# File: src/www/status_gateway_groups.php, line: 82
+# File: src/www/status_gateways.php, line: 77
+# File: src/www/status_lb_pool.php, line: 140
+# File: src/www/status_lb_vs.php, line: 83
+# File: src/www/status_services.php, line: 78
+# File: src/www/status_upnp.php, line: 78
+# File: src/www/system_advanced_sysctl.php, line: 144
+# File: src/www/system_advanced_sysctl.php, line: 210
+# File: src/www/system_gateway_groups.php, line: 140
+# File: src/www/system_gateway_groups_edit.php, line: 338
+# File: src/www/system_gateways.php, line: 220
+# File: src/www/system_gateways_edit.php, line: 857
+# File: src/www/system_groupmanager.php, line: 280
+# File: src/www/system_groupmanager.php, line: 364
+# File: src/www/system_groupmanager.php, line: 436
+# File: src/www/system_groupmanager_addprivs.php, line: 198
+# File: src/www/system_routes.php, line: 237
+# File: src/www/system_routes_edit.php, line: 333
+# File: src/www/system_usermanager.php, line: 598
+# File: src/www/system_usermanager_addprivs.php, line: 167
+# File: src/www/vpn_ipsec_phase1.php, line: 646
+# File: src/www/vpn_ipsec_phase2.php, line: 648
+# File: src/www/vpn_openvpn_client.php, line: 664
+# File: src/www/vpn_openvpn_client.php, line: 1110
+# File: src/www/vpn_openvpn_csc.php, line: 373
+# File: src/www/vpn_openvpn_csc.php, line: 752
+# File: src/www/vpn_openvpn_server.php, line: 894
+# File: src/www/vpn_openvpn_server.php, line: 1833
+# File: src/www/vpn_pppoe.php, line: 119
+# File: src/www/vpn_pppoe_edit.php, line: 459
+msgid "Description"
+msgstr "描述"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 89
+msgid "Commands"
+msgstr ""
+
+#
+# File: src/www/diag_ipsec_leases.php, line: 73
+# File: src/www/load_balancer_relay_action_edit.php, line: 511
+msgid "ID"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 111
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 505
+msgid "Apply"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
+msgid "Fetching... (may take up to 30 seconds)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 57
+msgid "Package Name"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
+msgid "Current Version"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
+msgid "New Version"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 64
+msgid "NEW"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 67
+msgid "REINSTALL"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 85
+msgid "Upgrading... (do not leave this page while upgrade is in progress)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 146
+msgid "Upgrade done!"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 152
+msgid "Your device is rebooting"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 157
+msgid ""
+"The upgrade has finished and your device is being rebooted at the moment, "
+"please wait..."
+msgstr ""
+
+#
+# File: src/etc/inc/shaper.inc, line: 582
+# File: src/etc/inc/shaper.inc, line: 932
+# File: src/www/diag_gmirror.php, line: 221
+# File: src/www/diag_gmirror.php, line: 288
+# File: src/www/firewall_aliases.php, line: 192
+# File: src/www/firewall_aliases_edit.php, line: 115
+# File: src/www/firewall_aliases_edit.php, line: 642
+# File: src/www/firewall_aliases_import.php, line: 60
+# File: src/www/firewall_schedule.php, line: 105
+# File: src/www/interfaces_groups.php, line: 100
+# File: src/www/load_balancer_monitor.php, line: 123
+# File: src/www/load_balancer_monitor_edit.php, line: 77
+# File: src/www/load_balancer_monitor_edit.php, line: 237
+# File: src/www/load_balancer_pool.php, line: 134
+# File: src/www/load_balancer_pool_edit.php, line: 68
+# File: src/www/load_balancer_pool_edit.php, line: 201
+# File: src/www/load_balancer_relay_action.php, line: 138
+# File: src/www/load_balancer_relay_action_edit.php, line: 107
+# File: src/www/load_balancer_relay_action_edit.php, line: 412
+# File: src/www/load_balancer_relay_protocol.php, line: 132
+# File: src/www/load_balancer_relay_protocol_edit.php, line: 69
+# File: src/www/load_balancer_relay_protocol_edit.php, line: 197
+# File: src/www/load_balancer_virtual_server.php, line: 131
+# File: src/www/load_balancer_virtual_server_edit.php, line: 61
+# File: src/www/load_balancer_virtual_server_edit.php, line: 66
+# File: src/www/load_balancer_virtual_server_edit.php, line: 167
+# File: src/www/services_captiveportal_filemanager.php, line: 190
+# File: src/www/services_igmpproxy.php, line: 96
+# File: src/www/status_gateways.php, line: 71
+# File: src/www/status_lb_pool.php, line: 136
+# File: src/www/status_lb_vs.php, line: 79
+# File: src/www/status_openvpn.php, line: 280
+# File: src/www/status_openvpn.php, line: 343
+# File: src/www/system_camanager.php, line: 598
+# File: src/www/system_certmanager.php, line: 1055
+# File: src/www/system_crlmanager.php, line: 547
+# File: src/www/system_gateways.php, line: 216
+# File: src/www/system_gateways_edit.php, line: 104
+# File: src/www/system_gateways_edit.php, line: 694
+# File: src/www/system_groupmanager.php, line: 363
+# File: src/www/system_usermanager.php, line: 597
+# File: src/www/system_usermanager.php, line: 658
+# File: src/www/widgets/widgets/gateways.widget.php, line: 46
+# File: src/www/widgets/widgets/system_information.widget.php, line: 102
+msgid "Name"
+msgstr "名字"
+
+#
+# File: src/www/diag_confbak.php, line: 255
+# File: src/www/diag_gmirror.php, line: 289
+# File: src/www/diag_system_pftop.php, line: 131
+# File: src/www/diag_system_pftop.php, line: 146
+# File: src/www/services_captiveportal_filemanager.php, line: 191
+msgid "Size"
+msgstr "大小"
+
+#
+# File: src/www/diag_confbak.php, line: 254
+msgid "Version"
+msgstr "版本"
+
+#
+# File: src/www/services_captiveportal_vouchers.php, line: 381
+# File: src/www/services_captiveportal_vouchers_edit.php, line: 205
+# File: src/www/status_captiveportal_voucher_rolls.php, line: 93
+msgid "Comment"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 207
+msgid "Upgrade now"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 208
+msgid "Fetch updates"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 209
+msgid "Click to check for updates."
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 215
+msgid "Packages"
+msgstr ""
+
+#
+# File: src/www/widgets/widgets/system_information.widget.php, line: 108
+msgid "Updates"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 217
+msgid "Progress"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Cron/index.volt, line: 116
+msgid "Jobs"
+msgstr ""
+
+#
+# File: src/www/graph.php, line: 108
+# File: src/www/interfaces.php, line: 2675
+# File: src/www/interfaces.php, line: 2797
+# File: src/www/interfaces_bridge_edit.php, line: 355
+# File: src/www/interfaces_bridge_edit.php, line: 365
+# File: src/www/interfaces_bridge_edit.php, line: 374
+# File: src/www/interfaces_bridge_edit.php, line: 445
+# File: src/www/services_dhcp.php, line: 895
+# File: src/www/services_dhcp.php, line: 905
+# File: src/www/services_dhcp_edit.php, line: 465
+# File: src/www/services_dhcp_edit.php, line: 475
+# File: src/www/services_dhcpv6.php, line: 628
+# File: src/www/services_dhcpv6.php, line: 638
+# File: src/www/services_ntpd_gps.php, line: 460
+# File: src/www/services_ntpd_gps.php, line: 466
+# File: src/www/services_ntpd_pps.php, line: 155
+# File: src/www/services_rfc2136_edit.php, line: 174
+# File: src/www/vpn_ipsec_phase1.php, line: 857
+# File: src/www/vpn_ipsec_phase1.php, line: 909
+# File: src/www/vpn_ipsec_phase2.php, line: 767
+msgid "seconds"
+msgstr "秒"
+
+#
+# File: src/www/system_camanager.php, line: 501
+# File: src/www/system_certmanager.php, line: 714
+# File: src/www/system_crlmanager.php, line: 370
+msgid "days"
+msgstr "天"
+
+#
+# File: src/www/services_captiveportal.php, line: 568
+msgid "hours"
+msgstr ""
+
+#
+# File: src/www/services_captiveportal.php, line: 546
+# File: src/www/services_captiveportal.php, line: 553
+# File: src/www/services_captiveportal_vouchers_edit.php, line: 84
+msgid "minutes"
+msgstr "分钟"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 336
+msgid "Year(s)"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 338
+msgid "Days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 340
+msgid "Hours"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 342
+msgid "Minutes"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 369
+msgid "full date & time"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 371
+msgid "timestamp"
+msgstr ""
+
+#
+# File: src/www/interfaces_qinq_edit.php, line: 327
+# File: src/www/load_balancer_relay_action.php, line: 140
+# File: src/www/load_balancer_relay_action_edit.php, line: 516
+# File: src/www/load_balancer_relay_action_edit.php, line: 536
+# File: src/www/load_balancer_relay_protocol.php, line: 134
+msgid "Options"
+msgstr "选项"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 578
+msgid "Zoom level"
+msgstr ""
+
+#
+# File: src/www/status_rrd_graph.php, line: 175
+# File: src/www/status_rrd_graph_settings.php, line: 51
+msgid "Inverse"
+msgstr ""
+
+#
+# File: src/www/interfaces.php, line: 2927
+# File: src/www/vpn_l2tp.php, line: 300
+# File: src/www/vpn_pppoe_edit.php, line: 375
+# File: src/www/vpn_pptp.php, line: 319
+msgid "Off"
+msgstr "关闭"
+
+#
+# File: src/www/interfaces.php, line: 2928
+msgid "On"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 602
+msgid "Resolution"
+msgstr ""
+
+#
+# File: src/www/interfaces.php, line: 2835
+msgid "Standard"
+msgstr "标准"
+
+#
+# File: src/www/diag_packet_capture.php, line: 328
+msgid "Medium"
+msgstr "中等"
+
+#
+# File: src/www/diag_packet_capture.php, line: 329
+msgid "High"
+msgstr "高"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 622
+msgid "Show Tables"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
+msgid "Current detail is showing"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
+msgid "averages"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 646
+msgid "Please wait while loading data..."
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 668
+msgid "Current View - Overview"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 692
+msgid "Current View - Details"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 696
+msgid "Toggle Timeview"
+msgstr ""
+
+#
+# File: src/www/firewall_rules.php, line: 129
+# File: src/www/firewall_rules_edit.php, line: 956
+msgid "Timestamp"
+msgstr "时间戳"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 706
+msgid ""
+"Full Date &\n"
+"                                Time"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 712
+msgid "Download as CSV"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 383
+msgid "Alerts"
+msgstr ""
+
+#
+# File: src/www/firewall_rules.php, line: 406
+# File: src/www/firewall_rules_edit.php, line: 1432
+msgid "Schedule"
+msgstr "计划"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 399
+msgid "rulesets"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 408
+msgid "Last updated"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 418
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 455
+msgid "disable selected"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 419
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 456
+msgid "enable selected"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 443
+msgid "sid"
+msgstr ""
+
+#
+# File: src/www/diag_ipsec_sad.php, line: 62
+# File: src/www/diag_ipsec_spd.php, line: 62
+# File: src/www/diag_logs_filter.php, line: 304
+# File: src/www/diag_logs_filter_dynamic.php, line: 114
+# File: src/www/firewall_nat_edit.php, line: 537
+# File: src/www/firewall_nat_edit.php, line: 543
+# File: src/www/firewall_nat_out.php, line: 307
+# File: src/www/firewall_nat_out.php, line: 511
+# File: src/www/firewall_nat_out_edit.php, line: 135
+# File: src/www/firewall_nat_out_edit.php, line: 530
+# File: src/www/firewall_rules.php, line: 400
+# File: src/www/firewall_rules_edit.php, line: 973
+# File: src/www/vpn_ipsec_mobile.php, line: 388
+# File: src/www/vpn_ipsec_mobile.php, line: 406
+# File: src/www/widgets/widgets/log.widget.php, line: 200
+msgid "Source"
+msgstr "源"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 445
+msgid "ClassType"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 446
+msgid "Message"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 447
+msgid "Info / enabled"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 481
+msgid "Search"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 482
+msgid "Query"
+msgstr ""
+
+#
+# File: src/www/diag_ipsec_sad.php, line: 63
+# File: src/www/diag_ipsec_spd.php, line: 63
+# File: src/www/diag_logs_filter.php, line: 305
+# File: src/www/diag_logs_filter_dynamic.php, line: 115
+# File: src/www/firewall_nat_1to1_edit.php, line: 445
+# File: src/www/firewall_nat_edit.php, line: 641
+# File: src/www/firewall_nat_out.php, line: 309
+# File: src/www/firewall_nat_out.php, line: 513
+# File: src/www/firewall_nat_out_edit.php, line: 135
+# File: src/www/firewall_nat_out_edit.php, line: 583
+# File: src/www/firewall_rules.php, line: 402
+# File: src/www/firewall_rules_edit.php, line: 1076
+# File: src/www/widgets/widgets/log.widget.php, line: 201
+msgid "Destination"
+msgstr "目标"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 495
+msgid "Alert"
+msgstr ""
+
+#
+# File: src/www/diag_smart.php, line: 284
+# File: src/www/diag_smart.php, line: 295
+msgid "Info"
+msgstr "信息"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 506
+msgid "Download & Update Rules"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 508
+msgid ""
+"Please use \"Download & Update Rules\" to fetch your initial ruleset, "
+"automatic updating can be scheduled after the first download"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 519
+msgid "Processing request..."
+msgstr ""
+
+#
+# File: src/www/firewall_aliases_edit.php, line: 324
+# File: src/www/firewall_aliases_import.php, line: 165
+# File: src/www/firewall_nat_1to1_edit.php, line: 288
+# File: src/www/firewall_nat_edit.php, line: 507
+# File: src/www/firewall_nat_npt_edit.php, line: 176
+# File: src/www/firewall_nat_out_edit.php, line: 393
+# File: src/www/vpn_ipsec_mobile.php, line: 348
+# File: src/www/vpn_ipsec_phase1.php, line: 604
+# File: src/www/vpn_ipsec_phase2.php, line: 645
+# File: src/www/vpn_ipsec_settings.php, line: 164
+# File: src/www/vpn_openvpn_client.php, line: 480
+# File: src/www/vpn_openvpn_client.php.orig, line: 480
+# File: src/www/vpn_openvpn_csc.php, line: 340
+# File: src/www/vpn_openvpn_export.php, line: 633
+# File: src/www/vpn_openvpn_export.php.orig, line: 633
+# File: src/www/vpn_openvpn_export_shared.php, line: 312
+# File: src/www/vpn_openvpn_export_shared.php.orig, line: 312
+# File: src/www/vpn_openvpn_server.php, line: 730
+# File: src/www/vpn_openvpn_server.php.orig, line: 730
+msgid "full help"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/Proxy/index.volt, line: 234
+msgid ""
+"\n"
+"                    Add an item to the table to fetch a remote acl for "
+"blacklisting.<br/>\n"
+"                    You can enable or disable the blacklist list.<br/>\n"
+"                    The active blacklists will be merged with the settings "
+"under <b>Forward Proxy -> Access Control List</b>.\n"
+"                    "
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 102
+msgid "Pipes"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 103
+msgid "Queues"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/layout_partials/base_dialog.volt, line: 73
+# File: src/opnsense/mvc/app/views/layout_partials/base_form.volt, line: 63
+msgid "advanced mode"
+msgstr ""
+
+#
 # File: src/sbin/gmirror_status_check.php, line: 51
 #, php-format
 msgid "List of mirrors changed. Old: (%s) New: (%s)"
@@ -5766,6 +6451,11 @@ msgstr "%s IPs已禁用。请注意，该禁用在系统重启后不保存"
 # File: src/www/carp_status.php, line: 57
 msgid "CARP has been enabled."
 msgstr "CARP 已经启用"
+
+#
+# File: src/www/carp_status.php, line: 99
+msgid "CARP Status"
+msgstr ""
 
 #
 # File: src/www/carp_status.php, line: 95
@@ -5815,38 +6505,6 @@ msgstr "虚拟IP"
 # File: src/www/carp_status.php, line: 137
 msgid "Could not locate any defined CARP interfaces."
 msgstr ""
-
-#
-# File: src/www/carp_status.php, line: 179
-# File: src/www/diag_packet_capture.php, line: 254
-# File: src/www/diag_packet_capture.php, line: 343
-# File: src/www/interfaces_wireless.php, line: 150
-# File: src/www/pkg_edit.php, line: 948
-# File: src/www/services_ntpd_pps.php, line: 132
-# File: src/www/status_graph.php, line: 352
-# File: src/www/status_graph_cpu.php, line: 41
-# File: src/www/status_queues.php, line: 190
-# File: src/www/vpn_ipsec.php, line: 656
-# File: src/www/vpn_ipsec_keys.php, line: 174
-# File: src/www/vpn_ipsec_keys_edit.php, line: 165
-# File: src/www/vpn_pppoe_edit.php, line: 611
-# File: src/www/vpn_pptp.php, line: 486
-msgid "Note"
-msgstr "注意："
-
-#
-# File: src/www/carp_status.php, line: 181
-msgid "You can configure high availability settings"
-msgstr ""
-
-#
-# File: src/www/carp_status.php, line: 181
-# File: src/www/firewall_virtual_ip.php, line: 280
-# File: src/www/interfaces.php, line: 3446
-# File: src/www/interfaces.php, line: 3455
-# File: src/www/status_queues.php, line: 192
-msgid "here"
-msgstr "这里"
 
 #
 # File: src/www/carp_status.php, line: 185
@@ -6725,20 +7383,6 @@ msgid "Date"
 msgstr "日期"
 
 #
-# File: src/www/diag_confbak.php, line: 254
-msgid "Version"
-msgstr "版本"
-
-#
-# File: src/www/diag_confbak.php, line: 255
-# File: src/www/diag_gmirror.php, line: 289
-# File: src/www/diag_system_pftop.php, line: 131
-# File: src/www/diag_system_pftop.php, line: 146
-# File: src/www/services_captiveportal_filemanager.php, line: 191
-msgid "Size"
-msgstr "大小"
-
-#
 # File: src/www/diag_confbak.php, line: 256
 msgid "Configuration Change"
 msgstr "配置更改"
@@ -7259,54 +7903,6 @@ msgid "Mirror Status"
 msgstr "镜像状态"
 
 #
-# File: src/etc/inc/shaper.inc, line: 582
-# File: src/etc/inc/shaper.inc, line: 932
-# File: src/www/diag_gmirror.php, line: 221
-# File: src/www/diag_gmirror.php, line: 288
-# File: src/www/firewall_aliases.php, line: 192
-# File: src/www/firewall_aliases_edit.php, line: 115
-# File: src/www/firewall_aliases_edit.php, line: 642
-# File: src/www/firewall_aliases_import.php, line: 60
-# File: src/www/firewall_schedule.php, line: 105
-# File: src/www/interfaces_groups.php, line: 100
-# File: src/www/load_balancer_monitor.php, line: 123
-# File: src/www/load_balancer_monitor_edit.php, line: 77
-# File: src/www/load_balancer_monitor_edit.php, line: 237
-# File: src/www/load_balancer_pool.php, line: 134
-# File: src/www/load_balancer_pool_edit.php, line: 68
-# File: src/www/load_balancer_pool_edit.php, line: 201
-# File: src/www/load_balancer_relay_action.php, line: 138
-# File: src/www/load_balancer_relay_action_edit.php, line: 107
-# File: src/www/load_balancer_relay_action_edit.php, line: 412
-# File: src/www/load_balancer_relay_protocol.php, line: 132
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 69
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 197
-# File: src/www/load_balancer_virtual_server.php, line: 131
-# File: src/www/load_balancer_virtual_server_edit.php, line: 61
-# File: src/www/load_balancer_virtual_server_edit.php, line: 66
-# File: src/www/load_balancer_virtual_server_edit.php, line: 167
-# File: src/www/services_captiveportal_filemanager.php, line: 190
-# File: src/www/services_igmpproxy.php, line: 96
-# File: src/www/status_gateways.php, line: 71
-# File: src/www/status_lb_pool.php, line: 136
-# File: src/www/status_lb_vs.php, line: 79
-# File: src/www/status_openvpn.php, line: 280
-# File: src/www/status_openvpn.php, line: 343
-# File: src/www/system_camanager.php, line: 598
-# File: src/www/system_certmanager.php, line: 1055
-# File: src/www/system_crlmanager.php, line: 547
-# File: src/www/system_gateways.php, line: 216
-# File: src/www/system_gateways_edit.php, line: 104
-# File: src/www/system_gateways_edit.php, line: 694
-# File: src/www/system_groupmanager.php, line: 363
-# File: src/www/system_usermanager.php, line: 597
-# File: src/www/system_usermanager.php, line: 658
-# File: src/www/widgets/widgets/gateways.widget.php, line: 46
-# File: src/www/widgets/widgets/system_information.widget.php, line: 102
-msgid "Name"
-msgstr "名字"
-
-#
 # File: src/www/diag_gmirror.php, line: 223
 msgid "Component"
 msgstr "组件"
@@ -7406,127 +8002,6 @@ msgid "Are you sure you want to halt the system?"
 msgstr "你确定要停止系统吗？"
 
 #
-# File: src/etc/inc/shaper.inc, line: 1161
-# File: src/www/diag_ipsec.php, line: 95
-# File: src/www/firewall_aliases.php, line: 194
-# File: src/www/firewall_aliases_edit.php, line: 463
-# File: src/www/firewall_aliases_edit.php, line: 656
-# File: src/www/firewall_aliases_edit.php, line: 693
-# File: src/www/firewall_aliases_import.php, line: 188
-# File: src/www/firewall_nat.php, line: 227
-# File: src/www/firewall_nat_1to1.php, line: 186
-# File: src/www/firewall_nat_1to1_edit.php, line: 538
-# File: src/www/firewall_nat_edit.php, line: 794
-# File: src/www/firewall_nat_npt.php, line: 111
-# File: src/www/firewall_nat_npt_edit.php, line: 282
-# File: src/www/firewall_nat_out.php, line: 314
-# File: src/www/firewall_nat_out.php, line: 518
-# File: src/www/firewall_nat_out_edit.php, line: 794
-# File: src/www/firewall_rules.php, line: 407
-# File: src/www/firewall_rules_edit.php, line: 1188
-# File: src/www/firewall_schedule.php, line: 107
-# File: src/www/firewall_schedule_edit.php, line: 805
-# File: src/www/firewall_schedule_edit.php, line: 1018
-# File: src/www/firewall_virtual_ip.php, line: 229
-# File: src/www/firewall_virtual_ip_edit.php, line: 460
-# File: src/www/interfaces.php, line: 1603
-# File: src/www/interfaces_bridge.php, line: 128
-# File: src/www/interfaces_bridge_edit.php, line: 300
-# File: src/www/interfaces_gif.php, line: 116
-# File: src/www/interfaces_gif_edit.php, line: 233
-# File: src/www/interfaces_gre.php, line: 117
-# File: src/www/interfaces_gre_edit.php, line: 238
-# File: src/www/interfaces_groups.php, line: 102
-# File: src/www/interfaces_groups_edit.php, line: 261
-# File: src/www/interfaces_lagg.php, line: 123
-# File: src/www/interfaces_lagg_edit.php, line: 228
-# File: src/www/interfaces_ppps.php, line: 118
-# File: src/www/interfaces_ppps_edit.php, line: 487
-# File: src/www/interfaces_qinq.php, line: 128
-# File: src/www/interfaces_qinq_edit.php, line: 334
-# File: src/www/interfaces_vlan.php, line: 125
-# File: src/www/interfaces_vlan_edit.php, line: 202
-# File: src/www/interfaces_wireless.php, line: 116
-# File: src/www/interfaces_wireless_edit.php, line: 189
-# File: src/www/load_balancer_monitor.php, line: 125
-# File: src/www/load_balancer_monitor_edit.php, line: 77
-# File: src/www/load_balancer_monitor_edit.php, line: 243
-# File: src/www/load_balancer_pool.php, line: 139
-# File: src/www/load_balancer_pool_edit.php, line: 216
-# File: src/www/load_balancer_relay_action.php, line: 141
-# File: src/www/load_balancer_relay_action_edit.php, line: 107
-# File: src/www/load_balancer_relay_action_edit.php, line: 418
-# File: src/www/load_balancer_relay_protocol.php, line: 135
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 69
-# File: src/www/load_balancer_relay_protocol_edit.php, line: 220
-# File: src/www/load_balancer_virtual_server.php, line: 137
-# File: src/www/load_balancer_virtual_server_edit.php, line: 173
-# File: src/www/services_captiveportal_ip.php, line: 107
-# File: src/www/services_captiveportal_ip_edit.php, line: 190
-# File: src/www/services_captiveportal_mac.php, line: 166
-# File: src/www/services_captiveportal_mac_edit.php, line: 217
-# File: src/www/services_captiveportal_zones.php, line: 91
-# File: src/www/services_captiveportal_zones_edit.php, line: 111
-# File: src/www/services_dhcp.php, line: 815
-# File: src/www/services_dhcp.php, line: 1178
-# File: src/www/services_dhcp_edit.php, line: 412
-# File: src/www/services_dhcpv6.php, line: 836
-# File: src/www/services_dhcpv6_edit.php, line: 235
-# File: src/www/services_dnsmasq.php, line: 369
-# File: src/www/services_dnsmasq.php, line: 447
-# File: src/www/services_dnsmasq_domainoverride_edit.php, line: 157
-# File: src/www/services_dnsmasq_edit.php, line: 223
-# File: src/www/services_dnsmasq_edit.php, line: 244
-# File: src/www/services_dyndns.php, line: 93
-# File: src/www/services_dyndns_edit.php, line: 425
-# File: src/www/services_igmpproxy.php, line: 99
-# File: src/www/services_igmpproxy_edit.php, line: 175
-# File: src/www/services_rfc2136.php, line: 86
-# File: src/www/services_rfc2136_edit.php, line: 218
-# File: src/www/services_unbound.php, line: 387
-# File: src/www/services_unbound.php, line: 451
-# File: src/www/services_unbound_acls.php, line: 235
-# File: src/www/services_unbound_acls.php, line: 285
-# File: src/www/services_unbound_acls.php, line: 310
-# File: src/www/services_unbound_domainoverride_edit.php, line: 151
-# File: src/www/services_unbound_host_edit.php, line: 225
-# File: src/www/services_unbound_host_edit.php, line: 246
-# File: src/www/services_wol.php, line: 173
-# File: src/www/services_wol_edit.php, line: 158
-# File: src/www/status_gateway_groups.php, line: 82
-# File: src/www/status_gateways.php, line: 77
-# File: src/www/status_lb_pool.php, line: 140
-# File: src/www/status_lb_vs.php, line: 83
-# File: src/www/status_services.php, line: 78
-# File: src/www/status_upnp.php, line: 78
-# File: src/www/system_advanced_sysctl.php, line: 144
-# File: src/www/system_advanced_sysctl.php, line: 210
-# File: src/www/system_gateway_groups.php, line: 140
-# File: src/www/system_gateway_groups_edit.php, line: 338
-# File: src/www/system_gateways.php, line: 220
-# File: src/www/system_gateways_edit.php, line: 857
-# File: src/www/system_groupmanager.php, line: 280
-# File: src/www/system_groupmanager.php, line: 364
-# File: src/www/system_groupmanager.php, line: 436
-# File: src/www/system_groupmanager_addprivs.php, line: 198
-# File: src/www/system_routes.php, line: 237
-# File: src/www/system_routes_edit.php, line: 333
-# File: src/www/system_usermanager.php, line: 598
-# File: src/www/system_usermanager_addprivs.php, line: 167
-# File: src/www/vpn_ipsec_phase1.php, line: 646
-# File: src/www/vpn_ipsec_phase2.php, line: 648
-# File: src/www/vpn_openvpn_client.php, line: 664
-# File: src/www/vpn_openvpn_client.php, line: 1110
-# File: src/www/vpn_openvpn_csc.php, line: 373
-# File: src/www/vpn_openvpn_csc.php, line: 752
-# File: src/www/vpn_openvpn_server.php, line: 894
-# File: src/www/vpn_openvpn_server.php, line: 1833
-# File: src/www/vpn_pppoe.php, line: 119
-# File: src/www/vpn_pppoe_edit.php, line: 459
-msgid "Description"
-msgstr "描述"
-
-#
 # File: src/www/diag_ipsec.php, line: 96
 msgid "Local ID"
 msgstr "本地ID"
@@ -7604,12 +8079,6 @@ msgid "online: "
 msgstr "在线："
 
 #
-# File: src/www/diag_ipsec_leases.php, line: 73
-# File: src/www/load_balancer_relay_action_edit.php, line: 511
-msgid "ID"
-msgstr ""
-
-#
 # File: src/www/diag_ipsec_leases.php, line: 74
 # File: src/www/diag_ping.php, line: 43
 # File: src/www/diag_ping.php, line: 95
@@ -7654,42 +8123,6 @@ msgstr "你可以配置你的IPsec"
 # File: src/www/firewall_rules_edit.php, line: 936
 msgid "here."
 msgstr "这里"
-
-#
-# File: src/www/diag_ipsec_sad.php, line: 62
-# File: src/www/diag_ipsec_spd.php, line: 62
-# File: src/www/diag_logs_filter.php, line: 304
-# File: src/www/diag_logs_filter_dynamic.php, line: 114
-# File: src/www/firewall_nat_edit.php, line: 537
-# File: src/www/firewall_nat_edit.php, line: 543
-# File: src/www/firewall_nat_out.php, line: 307
-# File: src/www/firewall_nat_out.php, line: 511
-# File: src/www/firewall_nat_out_edit.php, line: 135
-# File: src/www/firewall_nat_out_edit.php, line: 530
-# File: src/www/firewall_rules.php, line: 400
-# File: src/www/firewall_rules_edit.php, line: 973
-# File: src/www/vpn_ipsec_mobile.php, line: 388
-# File: src/www/vpn_ipsec_mobile.php, line: 406
-# File: src/www/widgets/widgets/log.widget.php, line: 200
-msgid "Source"
-msgstr "源"
-
-#
-# File: src/www/diag_ipsec_sad.php, line: 63
-# File: src/www/diag_ipsec_spd.php, line: 63
-# File: src/www/diag_logs_filter.php, line: 305
-# File: src/www/diag_logs_filter_dynamic.php, line: 115
-# File: src/www/firewall_nat_1to1_edit.php, line: 445
-# File: src/www/firewall_nat_edit.php, line: 641
-# File: src/www/firewall_nat_out.php, line: 309
-# File: src/www/firewall_nat_out.php, line: 513
-# File: src/www/firewall_nat_out_edit.php, line: 135
-# File: src/www/firewall_nat_out_edit.php, line: 583
-# File: src/www/firewall_rules.php, line: 402
-# File: src/www/firewall_rules_edit.php, line: 1076
-# File: src/www/widgets/widgets/log.widget.php, line: 201
-msgid "Destination"
-msgstr "目标"
 
 #
 # File: src/www/diag_ipsec_sad.php, line: 64
@@ -8242,16 +8675,26 @@ msgid "Summary View"
 msgstr "概要浏览"
 
 #
+# File: src/www/diag_logs_pills.inc, line: 44
+msgid "Cache"
+msgstr ""
+
+#
+# File: src/www/diag_logs_pills.inc, line: 45
+msgid "Access"
+msgstr ""
+
+#
 # File: src/www/diag_logs_ppp.php, line: 68
 #, php-format
 msgid "Last %s PPP log entries"
 msgstr "最后 %s PPP日志条目"
 
 #
-# File: src/www/diag_logs_proxy.php, line: 59
+# File: src/www/diag_logs_proxy.php, line: 65
 #, php-format
-msgid "Last %s log entries"
-msgstr "最后%s日志条目"
+msgid "Last %s Proxy log entries"
+msgstr ""
 
 #
 # File: src/www/diag_logs_relayd.php, line: 70
@@ -8690,6 +9133,24 @@ msgid "will be performed using promiscuous mode."
 msgstr "将执行混杂模式"
 
 #
+# File: src/www/carp_status.php, line: 179
+# File: src/www/diag_packet_capture.php, line: 254
+# File: src/www/diag_packet_capture.php, line: 343
+# File: src/www/interfaces_wireless.php, line: 150
+# File: src/www/pkg_edit.php, line: 948
+# File: src/www/services_ntpd_pps.php, line: 132
+# File: src/www/status_graph.php, line: 352
+# File: src/www/status_graph_cpu.php, line: 41
+# File: src/www/status_queues.php, line: 190
+# File: src/www/vpn_ipsec.php, line: 656
+# File: src/www/vpn_ipsec_keys.php, line: 174
+# File: src/www/vpn_ipsec_keys_edit.php, line: 165
+# File: src/www/vpn_pppoe_edit.php, line: 611
+# File: src/www/vpn_pptp.php, line: 486
+msgid "Note"
+msgstr "注意："
+
+#
 # File: src/www/diag_packet_capture.php, line: 254
 msgid "Some network adapters do not support or work well in promiscuous mode."
 msgstr ""
@@ -8806,16 +9267,6 @@ msgstr "细节级别"
 # File: src/www/diag_packet_capture.php, line: 327
 msgid "Normal"
 msgstr "普通"
-
-#
-# File: src/www/diag_packet_capture.php, line: 328
-msgid "Medium"
-msgstr "中等"
-
-#
-# File: src/www/diag_packet_capture.php, line: 329
-msgid "High"
-msgstr "高"
 
 #
 # File: src/www/diag_packet_capture.php, line: 330
@@ -9103,12 +9554,6 @@ msgstr "发送测试邮件到 %s"
 # File: src/www/services_wol.php, line: 158
 msgid "Send"
 msgstr "发送"
-
-#
-# File: src/www/diag_smart.php, line: 284
-# File: src/www/diag_smart.php, line: 295
-msgid "Info"
-msgstr "信息"
 
 #
 # File: src/www/diag_smart.php, line: 293
@@ -9530,11 +9975,6 @@ msgid "Add a new alias"
 msgstr "添加新别名"
 
 #
-# File: src/www/firewall_aliases.php, line: 154
-msgid "Bulk import aliases from list"
-msgstr ""
-
-#
 # File: src/www/firewall_aliases.php, line: 157
 msgid "Aliasses"
 msgstr ""
@@ -9686,29 +10126,6 @@ msgstr "端口"
 # File: src/www/firewall_aliases_edit.php, line: 620
 msgid "Alias Edit"
 msgstr "编辑别名"
-
-#
-# File: src/www/firewall_aliases_edit.php, line: 324
-# File: src/www/firewall_aliases_import.php, line: 165
-# File: src/www/firewall_nat_1to1_edit.php, line: 288
-# File: src/www/firewall_nat_edit.php, line: 507
-# File: src/www/firewall_nat_npt_edit.php, line: 176
-# File: src/www/firewall_nat_out_edit.php, line: 393
-# File: src/www/vpn_ipsec_mobile.php, line: 348
-# File: src/www/vpn_ipsec_phase1.php, line: 604
-# File: src/www/vpn_ipsec_phase2.php, line: 645
-# File: src/www/vpn_ipsec_settings.php, line: 164
-# File: src/www/vpn_openvpn_client.php, line: 480
-# File: src/www/vpn_openvpn_client.php.orig, line: 480
-# File: src/www/vpn_openvpn_csc.php, line: 340
-# File: src/www/vpn_openvpn_export.php, line: 633
-# File: src/www/vpn_openvpn_export.php.orig, line: 633
-# File: src/www/vpn_openvpn_export_shared.php, line: 312
-# File: src/www/vpn_openvpn_export_shared.php.orig, line: 312
-# File: src/www/vpn_openvpn_server.php, line: 730
-# File: src/www/vpn_openvpn_server.php.orig, line: 730
-msgid "full help"
-msgstr ""
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 651
@@ -11225,6 +11642,11 @@ msgid "Translation / target"
 msgstr ""
 
 #
+# File: src/www/firewall_nat_out_edit.php, line: 572
+msgid "Interface address"
+msgstr ""
+
+#
 # File: src/www/firewall_nat_out_edit.php, line: 582
 msgid "Translation address"
 msgstr ""
@@ -11375,12 +11797,6 @@ msgid "Gateway"
 msgstr "网关"
 
 #
-# File: src/www/firewall_rules.php, line: 406
-# File: src/www/firewall_rules_edit.php, line: 1432
-msgid "Schedule"
-msgstr "计划"
-
-#
 # File: src/www/firewall_nat_npt.php, line: 155
 # File: src/www/firewall_rules.php, line: 452
 # File: src/www/firewall_rules.php, line: 476
@@ -11471,12 +11887,6 @@ msgstr "超时"
 # File: src/www/firewall_rules_edit.php, line: 955
 msgid "Invalid IP header"
 msgstr "无效的IP首部"
-
-#
-# File: src/www/firewall_rules.php, line: 129
-# File: src/www/firewall_rules_edit.php, line: 956
-msgid "Timestamp"
-msgstr "时间戳"
 
 #
 # File: src/www/firewall_rules.php, line: 130
@@ -12618,11 +13028,6 @@ msgid "CARP Settings"
 msgstr "CARP设置"
 
 #
-# File: src/www/firewall_virtual_ip.php, line: 225
-msgid "Alias"
-msgstr ""
-
-#
 # File: src/www/firewall_virtual_ip.php, line: 266
 # File: src/www/services_captiveportal_zones.php, line: 121
 # File: src/www/services_dyndns.php, line: 180
@@ -12643,17 +13048,17 @@ msgstr "虚拟IP地址"
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 311
-msgid "move selected alias before this rule"
+msgid "move selected virtual ip before this rule"
 msgstr ""
 
 #
-# File: src/www/guiconfig.inc, line: 1038
-msgid "edit this alias"
-msgstr "编辑该别名组"
+# File: src/www/firewall_virtual_ip.php, line: 314
+msgid "edit this virtual ip"
+msgstr ""
 
 #
 # File: src/www/firewall_virtual_ip.php, line: 317
-msgid "delete this alias"
+msgid "delete this virtual ip"
 msgstr ""
 
 #
@@ -12670,6 +13075,15 @@ msgstr "映射"
 # File: src/www/firewall_virtual_ip.php, line: 280
 msgid "You can check the status of your CARP Virtual IPs and interfaces "
 msgstr ""
+
+#
+# File: src/www/carp_status.php, line: 181
+# File: src/www/firewall_virtual_ip.php, line: 280
+# File: src/www/interfaces.php, line: 3446
+# File: src/www/interfaces.php, line: 3455
+# File: src/www/status_queues.php, line: 192
+msgid "here"
+msgstr "这里"
 
 #
 # File: src/www/firewall_virtual_ip_edit.php, line: 95
@@ -12901,30 +13315,6 @@ msgstr "自动刻度"
 # File: src/www/graph.php, line: 108
 msgid "Graph shows last"
 msgstr "显示上一条图形"
-
-#
-# File: src/www/graph.php, line: 108
-# File: src/www/interfaces.php, line: 2675
-# File: src/www/interfaces.php, line: 2797
-# File: src/www/interfaces_bridge_edit.php, line: 355
-# File: src/www/interfaces_bridge_edit.php, line: 365
-# File: src/www/interfaces_bridge_edit.php, line: 374
-# File: src/www/interfaces_bridge_edit.php, line: 445
-# File: src/www/services_dhcp.php, line: 895
-# File: src/www/services_dhcp.php, line: 905
-# File: src/www/services_dhcp_edit.php, line: 465
-# File: src/www/services_dhcp_edit.php, line: 475
-# File: src/www/services_dhcpv6.php, line: 628
-# File: src/www/services_dhcpv6.php, line: 638
-# File: src/www/services_ntpd_gps.php, line: 460
-# File: src/www/services_ntpd_gps.php, line: 466
-# File: src/www/services_ntpd_pps.php, line: 155
-# File: src/www/services_rfc2136_edit.php, line: 174
-# File: src/www/vpn_ipsec_phase1.php, line: 857
-# File: src/www/vpn_ipsec_phase1.php, line: 909
-# File: src/www/vpn_ipsec_phase2.php, line: 767
-msgid "seconds"
-msgstr "秒"
 
 #
 # File: src/www/graph.php, line: 111
@@ -14565,11 +14955,6 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/interfaces.php, line: 2835
-msgid "Standard"
-msgstr "标准"
-
-#
 # File: src/www/interfaces.php, line: 2855
 msgid "Protection Mode"
 msgstr "保护模式"
@@ -14644,19 +15029,6 @@ msgstr "天线设置"
 #
 # File: src/www/interfaces.php, line: 2924
 msgid "Diversity"
-msgstr ""
-
-#
-# File: src/www/interfaces.php, line: 2927
-# File: src/www/vpn_l2tp.php, line: 300
-# File: src/www/vpn_pppoe_edit.php, line: 375
-# File: src/www/vpn_pptp.php, line: 319
-msgid "Off"
-msgstr "关闭"
-
-#
-# File: src/www/interfaces.php, line: 2928
-msgid "On"
 msgstr ""
 
 #
@@ -16776,15 +17148,6 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/interfaces_qinq_edit.php, line: 327
-# File: src/www/load_balancer_relay_action.php, line: 140
-# File: src/www/load_balancer_relay_action_edit.php, line: 516
-# File: src/www/load_balancer_relay_action_edit.php, line: 536
-# File: src/www/load_balancer_relay_protocol.php, line: 134
-msgid "Options"
-msgstr "选项"
-
-#
 # File: src/www/interfaces_qinq_edit.php, line: 330
 msgid ""
 "Adds interface to QinQ interface groups so you can write filter rules easily."
@@ -17848,13 +18211,6 @@ msgid ""
 msgstr ""
 
 #
-# File: src/www/services_captiveportal.php, line: 546
-# File: src/www/services_captiveportal.php, line: 553
-# File: src/www/services_captiveportal_vouchers_edit.php, line: 84
-msgid "minutes"
-msgstr "分钟"
-
-#
 # File: src/www/services_captiveportal.php, line: 547
 msgid ""
 "Clients will be disconnected after this amount of inactivity. They may log "
@@ -17897,11 +18253,6 @@ msgstr ""
 #
 # File: src/www/services_captiveportal.php, line: 565
 msgid "Waiting period to restore pass-through credits"
-msgstr ""
-
-#
-# File: src/www/services_captiveportal.php, line: 568
-msgid "hours"
 msgstr ""
 
 #
@@ -18895,13 +19246,6 @@ msgid "of Tickets"
 msgstr "令牌"
 
 #
-# File: src/www/services_captiveportal_vouchers.php, line: 381
-# File: src/www/services_captiveportal_vouchers_edit.php, line: 205
-# File: src/www/status_captiveportal_voucher_rolls.php, line: 93
-msgid "Comment"
-msgstr ""
-
-#
 # File: src/www/services_captiveportal_vouchers.php, line: 401
 msgid "edit voucher"
 msgstr "编辑优惠券"
@@ -19164,11 +19508,6 @@ msgstr ""
 # File: src/www/services_captiveportal_zones.php, line: 56
 msgid "Captiveportal"
 msgstr "入网认证"
-
-#
-# File: src/www/services_captiveportal_zones.php, line: 56
-msgid "Zones"
-msgstr "区域"
 
 #
 # File: src/www/services_captiveportal_zones.php, line: 61
@@ -23086,6 +23425,11 @@ msgid ""
 msgstr ""
 
 #
+# File: src/www/status_gateway_groups.php, line: 60
+msgid "Group Status"
+msgstr ""
+
+#
 # File: src/www/status_gateway_groups.php, line: 109
 #, php-format
 msgid "Tier %s"
@@ -23547,12 +23891,6 @@ msgstr "无效开始日期/时间"
 # File: src/www/status_rrd_graph.php, line: 160
 msgid "Invalid end date/time:"
 msgstr "无效的结束日期/时间"
-
-#
-# File: src/www/status_rrd_graph.php, line: 175
-# File: src/www/status_rrd_graph_settings.php, line: 51
-msgid "Inverse"
-msgstr ""
 
 #
 # File: src/www/status_rrd_graph.php, line: 176
@@ -25423,6 +25761,11 @@ msgid "When this is checked, startup and shutdown sounds will no longer play."
 msgstr ""
 
 #
+# File: src/www/system_advanced_sysctl.php, line: 119
+msgid "Tunables"
+msgstr ""
+
+#
 # File: src/www/system_advanced_sysctl.php, line: 132
 msgid ""
 "The firewall tunables have changed.  You must apply the configuration to "
@@ -25453,16 +25796,6 @@ msgstr "编辑系统调谐"
 # File: src/www/system_advanced_sysctl.php, line: 204
 msgid "Tunable"
 msgstr "调谐"
-
-#
-# File: src/www/system_advanced_tabs.inc, line: 8
-msgid "Firewall / NAT"
-msgstr "防火墙/NAT"
-
-#
-# File: src/www/system_authservers.php, line: 34
-msgid "Authentication Servers"
-msgstr "认证服务器"
 
 #
 # File: src/www/system_authservers.php, line: 75
@@ -25960,13 +26293,6 @@ msgstr "摘要算法"
 msgid ""
 "NOTE: It is recommended to use an algorithm stronger than SHA1 when possible."
 msgstr ""
-
-#
-# File: src/www/system_camanager.php, line: 501
-# File: src/www/system_certmanager.php, line: 714
-# File: src/www/system_crlmanager.php, line: 370
-msgid "days"
-msgstr "天"
 
 #
 # File: src/etc/inc/ipsec.inc, line: 42
@@ -26528,6 +26854,11 @@ msgid "removed gateway group"
 msgstr "已移除网关组"
 
 #
+# File: src/www/system_gateway_groups.php, line: 135
+msgid "Add group"
+msgstr ""
+
+#
 # File: src/www/system_gateway_groups.php, line: 119
 #, php-format
 msgid ""
@@ -26604,9 +26935,9 @@ msgid "No gateway(s) have been selected to be used in this group"
 msgstr ""
 
 #
-# File: src/www/system_gateway_groups_edit.php, line: 144
-msgid "Edit gateway group"
-msgstr "编辑网关组"
+# File: src/www/system_gateway_groups_edit.php, line: 152
+msgid "Edit Group"
+msgstr ""
 
 #
 # File: src/www/system_gateway_groups_edit.php, line: 226
@@ -26697,6 +27028,11 @@ msgstr ""
 #, php-format
 msgid ""
 "Gateway '%s' cannot be deleted because it is in use on Static Route '%s'"
+msgstr ""
+
+#
+# File: src/www/system_gateways.php, line: 194
+msgid "Add gateway"
 msgstr ""
 
 #
@@ -27311,12 +27647,6 @@ msgid "Select the firmware cryptography flavour."
 msgstr ""
 
 #
-# File: src/www/system_groupmanager.php, line: 33
-# File: src/www/system_groupmanager_addprivs.php, line: 44
-msgid "Group manager"
-msgstr "组管理者"
-
-#
 # File: src/www/system_groupmanager.php, line: 57
 # File: src/www/vpn_ipsec_mobile.php, line: 627
 msgid "Group"
@@ -27437,9 +27767,10 @@ msgid "Do you really want to delete this group?"
 msgstr "真要删除该组吗？"
 
 #
-# File: src/www/system_groupmanager_addprivs.php, line: 44
-msgid "Add privileges"
-msgstr "添加权限"
+# File: src/www/system_groupmanager_addprivs.php, line: 48
+# File: src/www/system_usermanager_addprivs.php, line: 48
+msgid "Privileges"
+msgstr ""
 
 #
 # File: src/www/system_groupmanager_addprivs.php, line: 68
@@ -27457,6 +27788,11 @@ msgstr "系统权限"
 # File: src/www/system_groupmanager_addprivs.php, line: 200
 # File: src/www/system_usermanager_addprivs.php, line: 169
 msgid "Select a privilege from the list above for a description"
+msgstr ""
+
+#
+# File: src/www/system_hasync.php, line: 97
+msgid "Synchronization"
 msgstr ""
 
 #
@@ -27481,6 +27817,11 @@ msgstr "启用路由"
 # File: src/www/system_routes.php, line: 137
 msgid "disabled route to"
 msgstr "禁用路由"
+
+#
+# File: src/www/system_routes.php, line: 210
+msgid "Add route"
+msgstr ""
 
 #
 # File: src/www/system_routes.php, line: 214
@@ -27568,11 +27909,6 @@ msgstr ""
 #, php-format
 msgid "This network conflicts with address configured on interface %s."
 msgstr ""
-
-#
-# File: src/www/system_routes_edit.php, line: 207
-msgid "Edit route"
-msgstr "编辑路由"
 
 #
 # File: src/www/system_routes_edit.php, line: 235
@@ -27891,11 +28227,6 @@ msgstr ""
 # File: src/www/system_usermanager_passwordmg.php, line: 122
 msgid "Confirmation"
 msgstr "确认"
-
-#
-# File: src/www/system_usermanager_settings.php, line: 37
-msgid "User manager settings"
-msgstr "用户管理者设置"
 
 #
 # File: src/www/system_usermanager_settings.php, line: 47
@@ -31812,11 +32143,6 @@ msgid "Versions"
 msgstr "版本"
 
 #
-# File: src/www/widgets/widgets/system_information.widget.php, line: 108
-msgid "Updates"
-msgstr ""
-
-#
 # File: src/www/widgets/widgets/system_information.widget.php, line: 128
 msgid "CPU Type"
 msgstr "CPU类型"
@@ -32010,27 +32336,7 @@ msgid "DHCP Leases Status"
 msgstr ""
 
 #
-# File: src/www/wizard.php, line: 52
-# File: src/www/wizard.php, line: 60
+# File: src/www/wizard.php, line: 126
 #, php-format
-msgid "ERROR:  Could not open %s."
-msgstr "错误：无法打开%s"
-
-#
-# File: src/www/wizard.php, line: 66
-#, php-format
-msgid "ERROR: Could not parse /usr/local/www/wizards/%s file."
-msgstr "错误：无法解析 /usr/local/www/wizards/%s file."
-
-#
-# File: src/www/wizards/openvpn_wizard.inc, line: 625
-# File: src/www/wizards/openvpn_wizard.inc, line: 642
-#, php-format
-msgid "OpenVPN %s wizard"
-msgstr "OpenVPN %s 向导"
-
-#
-# File: src/www/wizards/openvpn_wizard.inc, line: 637
-# File: src/www/wizards/openvpn_wizard.inc, line: 652
-msgid "OpenVPN Wizard"
-msgstr "OpenVPN向导"
+msgid "ERROR: Could not parse %s wizard file."
+msgstr ""
