@@ -127,11 +127,11 @@ are permitted provided that the following conditions are met:
         </tr>
         <tr>
           <td><label for="fieldtextfefore">{{ lang._('Text before code') }}</label></td>
-          <td><input type="text" id="fieldtextfefore" value="{{ lang._('Connect to our network, open a and enter this code:') }}" /></td>
+          <td><input type="text" id="fieldtextfefore" value="{{ lang._('Connect to our network, open a Browser and enter this code:') }}" /></td>
         </tr>
         <tr>
           <td><label for="fieldtextafter">{{ lang._('Text after code') }}</label></td>
-          <td><input type="text" id="fieldtextafter" value="{{ lang._('Thank you for using our Network') }}" /></td>
+          <td><input type="text" id="fieldtextafter" value="{{ lang._('Thank you for using our network') }}" /></td>
         </tr>
         <tr>
           <td></td>
