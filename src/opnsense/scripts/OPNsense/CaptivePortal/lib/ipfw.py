@@ -139,11 +139,12 @@ class IPFW(object):
                     break
 
             # add accounting rule
-            DEVNULL = open(os.devnull, 'w')
-            subprocess.call(['/sbin/ipfw', 'add', 'count','ip','from', address, 'to', 'any'],
-                            stdout=DEVNULL, stderr=DEVNULL)
-            subprocess.call(['/sbin/ipfw', 'add', 'count','ip','from', 'any', 'to', address],
-                            stdout=DEVNULL, stderr=DEVNULL)
+            if newRuleid != -1:
+                DEVNULL = open(os.devnull, 'w')
+                subprocess.call(['/sbin/ipfw', 'add', str(newRuleid), 'count','ip','from', address, 'to', 'any'],
+                                stdout=DEVNULL, stderr=DEVNULL)
+                subprocess.call(['/sbin/ipfw', 'add', str(newRuleid), 'count','ip','from', 'any', 'to', address],
+                                stdout=DEVNULL, stderr=DEVNULL)
 
     def del_accounting(self, address):
         """ remove ip address from accounting rules
@@ -153,5 +154,5 @@ class IPFW(object):
         acc_info = self.list_accounting_info()
         if address in acc_info:
             DEVNULL = open(os.devnull, 'w')
-            subprocess.call(['/sbin/ipfw', 'delete', acc_info[address]['rule']],
+            subprocess.call(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])],
                             stdout=DEVNULL, stderr=DEVNULL)
