@@ -203,12 +203,14 @@ class LDAP implements IAuthConnector
      * @param $bind_url string url to use
      * @param null $userdn connect dn to use, leave empty for anonymous
      * @param null $password password
+     * @param int $timeout network timeout
      * @return bool connect status (success/fail)
      */
-    public function connect($bind_url, $userdn = null, $password = null)
+    public function connect($bind_url, $userdn = null, $password = null, $timeout = 30)
     {
         $this->closeLDAPHandle();
         $this->ldapHandle = @ldap_connect($bind_url);
+        ldap_set_option($this->ldapHandle, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
         if ($this->ldapHandle !== false) {
             ldap_set_option($this->ldapHandle, LDAP_OPT_REFERRALS, 0);
