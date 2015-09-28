@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>.*-traffic$</file-match>
+    <title>System Information - Traffic </title>
+    <y-axis_label>Bits/Second</y-axis_label>
+</systemhealth>

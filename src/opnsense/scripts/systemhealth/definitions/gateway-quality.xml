@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>.*-quality$</file-match>
+    <title>System Information - Quality </title>
+    <y-axis_label>seconds/%</y-axis_label>
+</systemhealth>

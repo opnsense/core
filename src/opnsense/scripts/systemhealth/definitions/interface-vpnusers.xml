@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>.*-vpnusers$</file-match>
+    <title>System Information - VPN Users </title>
+    <y-axis_label>users</y-axis_label>
+</systemhealth>
