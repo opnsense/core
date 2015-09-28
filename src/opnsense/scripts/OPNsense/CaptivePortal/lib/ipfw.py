@@ -74,7 +74,6 @@ class IPFW(object):
         DEVNULL = open(os.devnull, 'w')
         subprocess.call(['/sbin/ipfw', 'table', table_number, 'add', address], stdout=DEVNULL, stderr=DEVNULL)
 
-
     def delete_from_table(self, table_number, address):
         """ remove entry from ipfw table
         :param table_number: ipfw table number
@@ -83,3 +82,76 @@ class IPFW(object):
         """
         DEVNULL = open(os.devnull, 'w')
         subprocess.call(['/sbin/ipfw', 'table', table_number, 'delete', address], stdout=DEVNULL, stderr=DEVNULL)
+
+    def list_accounting_info(self):
+        """ list accounting info per ip addres, addresses can't overlap in zone's so we just output all we know here
+        instead of trying to map addresses back to zones.
+        :return: list accounting info per ip address
+        """
+        DEVNULL = open(os.devnull, 'w')
+        result = dict()
+        with tempfile.NamedTemporaryFile() as output_stream:
+            subprocess.check_call(['/sbin/ipfw','-aT', 'list'],
+                                  stdout=output_stream,
+                                  stderr=DEVNULL)
+            output_stream.seek(0)
+            for line in output_stream.read().split('\n'):
+                parts = line.split()
+                if len(parts) > 5:
+                    if  30001 <= int(parts[0]) <= 50000 and parts[4] == 'count':
+                        in_pkts = int(parts[1])
+                        out_pkts = int(parts[2])
+                        last_accessed = int(parts[3])
+                        if parts[7] != 'any':
+                            ip_address = parts[7]
+                        else:
+                            ip_address = parts[9]
+
+                        if ip_address not in result:
+                            result[ip_address] = {'rule': int(parts[0]),
+                                                  'last_accessed': last_accessed,
+                                                  'in_pkts': in_pkts,
+                                                  'out_pkts': out_pkts
+                                                  }
+                        else:
+                            result[ip_address]['in_pkts'] += in_pkts
+                            result[ip_address]['out_pkts'] += out_pkts
+                            result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'], last_accessed)
+            return result
+
+    def add_accounting(self, address):
+        """ add ip address for accounting
+        :param address: ip address
+        :return: None
+        """
+        # search for unused rule number
+        acc_info = self.list_accounting_info()
+        if address not in acc_info:
+            rule_ids = list()
+            for ip_address in acc_info:
+                if acc_info[ip_address]['rule'] not in rule_ids:
+                    rule_ids.append(acc_info[ip_address]['rule'])
+
+            newRuleid = -1
+            for ruleId in range(30001, 50000):
+                if ruleId not in rule_ids:
+                    newRuleid = ruleId
+                    break
+
+            # add accounting rule
+            DEVNULL = open(os.devnull, 'w')
+            subprocess.call(['/sbin/ipfw', 'add', 'count','ip','from', address, 'to', 'any'],
+                            stdout=DEVNULL, stderr=DEVNULL)
+            subprocess.call(['/sbin/ipfw', 'add', 'count','ip','from', 'any', 'to', address],
+                            stdout=DEVNULL, stderr=DEVNULL)
+
+    def del_accounting(self, address):
+        """ remove ip address from accounting rules
+        :param address: ip address
+        :return: None
+        """
+        acc_info = self.list_accounting_info()
+        if address in acc_info:
+            DEVNULL = open(os.devnull, 'w')
+            subprocess.call(['/sbin/ipfw', 'delete', acc_info[address]['rule']],
+                            stdout=DEVNULL, stderr=DEVNULL)
