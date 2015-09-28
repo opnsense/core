@@ -36,4 +36,18 @@ use OPNsense\Base\BaseModel;
  */
 class CaptivePortal extends BaseModel
 {
+    /**
+     * retrieve zone by number
+     * @param $zoneid zone number
+     * @return null|BaseField zone details
+     */
+    public function getByZoneID($zoneid)
+    {
+        foreach ($this->zones->zone->__items as $zone) {
+            if ($zoneid == (string)$zone->zoneid) {
+                return $zone;
+            }
+        }
+        return null;
+    }
 }
