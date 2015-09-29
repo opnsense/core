@@ -29,7 +29,6 @@ import subprocess
 
 
 class ARP(object):
-
     def __init__(self):
         """ construct new arp helper
         :return: None
@@ -44,7 +43,7 @@ class ARP(object):
         # parse arp table
         self._arp_table = dict()
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.check_call(['/usr/sbin/arp','-an'], stdout=output_stream, stderr=subprocess.STDOUT)
+            subprocess.check_call(['/usr/sbin/arp', '-an'], stdout=output_stream, stderr=subprocess.STDOUT)
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
                 if line.find('(') > -1 and line.find(')') > -1:
@@ -71,4 +70,3 @@ class ARP(object):
             return self._arp_table[address]
         else:
             return None
-

@@ -33,23 +33,24 @@ class IPFW(object):
     def __init__(self):
         pass
 
-    def list_table(self, table_number):
+    @staticmethod
+    def list_table(table_number):
         """ list ipfw table
         :param table_number: ipfw table number
         :return: list
         """
-        DEVNULL = open(os.devnull, 'w')
+        devnull = open(os.devnull, 'w')
         result = list()
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.check_call(['/sbin/ipfw','table', table_number, 'list'],
+            subprocess.check_call(['/sbin/ipfw', 'table', table_number, 'list'],
                                   stdout=output_stream,
-                                  stderr=DEVNULL)
+                                  stderr=devnull)
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
                 result.append(line.split(' ')[0])
             return result
 
-    def ip_or_net_in_table(self, table_number,  address):
+    def ip_or_net_in_table(self, table_number, address):
         """ check if address or net is in this zone's table
         :param table_number: ipfw table number to query
         :param address: ip address or net
@@ -58,47 +59,50 @@ class IPFW(object):
         ipfw_tbl = self.list_table(table_number)
         if address.find('.') > -1 and address.find('/') == -1:
             # address given, search for /32 net in ipfw rules
-            if '%s/32'%address.strip() in ipfw_tbl:
+            if '%s/32' % address.strip() in ipfw_tbl:
                 return True
         elif address.strip() in ipfw_tbl:
             return True
 
         return False
 
-    def add_to_table(self, table_number, address):
+    @staticmethod
+    def add_to_table(table_number, address):
         """ add new entry to ipfw table
         :param table_number: ipfw table number
         :param address: ip address or net to add to table
         :return:
         """
-        DEVNULL = open(os.devnull, 'w')
-        subprocess.call(['/sbin/ipfw', 'table', table_number, 'add', address], stdout=DEVNULL, stderr=DEVNULL)
+        devnull = open(os.devnull, 'w')
+        subprocess.call(['/sbin/ipfw', 'table', table_number, 'add', address], stdout=devnull, stderr=devnull)
 
-    def delete_from_table(self, table_number, address):
+    @staticmethod
+    def delete_from_table(table_number, address):
         """ remove entry from ipfw table
         :param table_number: ipfw table number
         :param address: ip address or net to add to table
         :return:
         """
-        DEVNULL = open(os.devnull, 'w')
-        subprocess.call(['/sbin/ipfw', 'table', table_number, 'delete', address], stdout=DEVNULL, stderr=DEVNULL)
+        devnull = open(os.devnull, 'w')
+        subprocess.call(['/sbin/ipfw', 'table', table_number, 'delete', address], stdout=devnull, stderr=devnull)
 
-    def list_accounting_info(self):
+    @staticmethod
+    def list_accounting_info():
         """ list accounting info per ip addres, addresses can't overlap in zone's so we just output all we know here
         instead of trying to map addresses back to zones.
         :return: list accounting info per ip address
         """
-        DEVNULL = open(os.devnull, 'w')
+        devnull = open(os.devnull, 'w')
         result = dict()
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.check_call(['/sbin/ipfw','-aT', 'list'],
+            subprocess.check_call(['/sbin/ipfw', '-aT', 'list'],
                                   stdout=output_stream,
-                                  stderr=DEVNULL)
+                                  stderr=devnull)
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
                 parts = line.split()
                 if len(parts) > 5:
-                    if  30001 <= int(parts[0]) <= 50000 and parts[4] == 'count':
+                    if 30001 <= int(parts[0]) <= 50000 and parts[4] == 'count':
                         in_pkts = int(parts[1])
                         out_pkts = int(parts[2])
                         last_accessed = int(parts[3])
@@ -116,7 +120,8 @@ class IPFW(object):
                         else:
                             result[ip_address]['in_pkts'] += in_pkts
                             result[ip_address]['out_pkts'] += out_pkts
-                            result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'], last_accessed)
+                            result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'],
+                                                                      last_accessed)
             return result
 
     def add_accounting(self, address):
@@ -132,19 +137,19 @@ class IPFW(object):
                 if acc_info[ip_address]['rule'] not in rule_ids:
                     rule_ids.append(acc_info[ip_address]['rule'])
 
-            newRuleid = -1
+            new_rule_id = -1
             for ruleId in range(30001, 50000):
                 if ruleId not in rule_ids:
-                    newRuleid = ruleId
+                    new_rule_id = ruleId
                     break
 
             # add accounting rule
-            if newRuleid != -1:
-                DEVNULL = open(os.devnull, 'w')
-                subprocess.call(['/sbin/ipfw', 'add', str(newRuleid), 'count','ip','from', address, 'to', 'any'],
-                                stdout=DEVNULL, stderr=DEVNULL)
-                subprocess.call(['/sbin/ipfw', 'add', str(newRuleid), 'count','ip','from', 'any', 'to', address],
-                                stdout=DEVNULL, stderr=DEVNULL)
+            if new_rule_id != -1:
+                devnull = open(os.devnull, 'w')
+                subprocess.call(['/sbin/ipfw', 'add', str(new_rule_id), 'count', 'ip', 'from', address, 'to', 'any'],
+                                stdout=devnull, stderr=devnull)
+                subprocess.call(['/sbin/ipfw', 'add', str(new_rule_id), 'count', 'ip', 'from', 'any', 'to', address],
+                                stdout=devnull, stderr=devnull)
 
     def del_accounting(self, address):
         """ remove ip address from accounting rules
@@ -153,6 +158,6 @@ class IPFW(object):
         """
         acc_info = self.list_accounting_info()
         if address in acc_info:
-            DEVNULL = open(os.devnull, 'w')
+            devnull = open(os.devnull, 'w')
             subprocess.call(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])],
-                            stdout=DEVNULL, stderr=DEVNULL)
+                            stdout=devnull, stderr=devnull)
