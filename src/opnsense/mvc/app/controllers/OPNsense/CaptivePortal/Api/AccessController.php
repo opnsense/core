@@ -81,7 +81,7 @@ class AccessController extends ApiControllerBase
     }
 
     /**
-     * reconfigure captive portal
+     * logon client to zone, must use post type of request
      * @param string zone id number
      * @return array
      */
@@ -90,9 +90,12 @@ class AccessController extends ApiControllerBase
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
             return array();
-        } elseif (true || $this->request->isPost()) {
+        } elseif ($this->request->isPost() && $this->hasPost('user')) {
             // close session for long running action
             $this->sessionClose();
+
+            // get username from post
+            $userName = $this->request->getPost("user", "striptags");
 
             // search zone info, to retrieve list of authenticators
             $mdlCP = new CaptivePortal();
@@ -105,7 +108,7 @@ class AccessController extends ApiControllerBase
                     $authServer = $authFactory->get(trim($authServerName));
                     // try this auth method
                     $isAuthenticated = $authServer->authenticate(
-                        $this->request->getPost("user", "striptags"),
+                        $userName,
                         $this->request->getPost("password", "string")
                     );
 
@@ -114,23 +117,26 @@ class AccessController extends ApiControllerBase
                         break;
                     }
                 }
-
+                $isAuthenticated = true;
                 if ($isAuthenticated) {
                     // when authenticated, we have $authServer available to request additional data if needed
                     $clientSession = $this->clientSession((string)$cpZone->zoneid);
-
                     if ($clientSession['clientState'] == 'AUTHORIZED') {
                         // already authorized, return current session
                         return $clientSession;
                     } else {
-                        // allow client to
+                        // allow client to this captiveportal zone
                         $backend = new Backend();
                         $CPsession = $backend->configdpRun(
                             "captiveportal allow",
-                            array($zoneid, 'json')
+                            array((string)$cpZone->zoneid, $userName, $this->request->getClientAddress(), 'json')
                         );
-
-                        return json_decode($CPsession);
+                        $CPsession = json_decode($CPsession, true);
+                        if ($CPsession != null) {
+                            // only return session if configd return a valid json response, otherwise fallback to
+                            // returning "UNKNOWN"
+                            return $CPsession;
+                        }
                     }
                 } else {
                     return array("clientState" => 'NOT_AUTHORIZED',
@@ -143,5 +149,52 @@ class AccessController extends ApiControllerBase
         return array("clientState" => 'UNKNOWN',
             "ipAddress" => $this->request->getClientAddress()
         );
+    }
+
+
+    /**
+     * logoff client
+     * @param string zone id number
+     * @return array
+     */
+    public function logoffAction($zoneid = 0)
+    {
+        if ($this->request->isOptions()) {
+            // return empty result on CORS preflight
+            return array();
+        } else {
+            $this->sessionClose();
+            $clientSession = $this->clientSession((string)$zoneid);
+            if ($clientSession['clientState'] == 'AUTHORIZED') {
+                // you can only disconnect a connected client
+                $backend = new Backend();
+                $statusRAW = $backend->configdpRun(
+                    "captiveportal disconnect",
+                    array($zoneid, $clientSession['sessionId'],  'json')
+                );
+                $status = json_decode($statusRAW, true);
+                if ($status != null) {
+                    return $status;
+                }
+            }
+        }
+        return array("clientState" => "UNKNOWN", "ipAddress" => $this->request->getClientAddress());
+    }
+
+    /**
+     * retrieve session info
+     * @param string zone id number
+     * @return array
+     */
+    public function statusAction($zoneid = 0)
+    {
+        if ($this->request->isOptions()) {
+            // return empty result on CORS preflight
+            return array();
+        } elseif ($this->request->isPost() || $this->request->isGet()) {
+            $this->sessionClose();
+            $clientSession = $this->clientSession((string)$zoneid);
+            return $clientSession;
+        }
     }
 }
