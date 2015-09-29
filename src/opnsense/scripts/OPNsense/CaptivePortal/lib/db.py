@@ -55,7 +55,7 @@ class DB(object):
         if cur.fetchall()[0][0] == 0:
             # empty database, initialize database
             init_script_filename = '%s/../sql/init.sql' % os.path.dirname(os.path.abspath(__file__))
-            cur.executescript(open(init_script_filename,'rb').read())
+            cur.executescript(open(init_script_filename, 'rb').read())
         cur.close()
 
     def add_client(self, zoneid, username, ip_address, mac_address):
@@ -71,8 +71,8 @@ class DB(object):
         response['username'] = username
         response['ip_address'] = ip_address
         response['mac_address'] = mac_address
-        response['created'] = time.time() # record creation = sign-in time
-        response['sessionid'] = base64.b64encode(os.urandom(16)) # generate a new random session id
+        response['created'] = time.time()  # record creation = sign-in time
+        response['sessionid'] = base64.b64encode(os.urandom(16))  # generate a new random session id
 
         cur = self._connection.cursor()
         # update cp_clients in case there's already a user logged-in at this ip address.
@@ -89,7 +89,7 @@ class DB(object):
         if cur.rowcount == 0:
             cur.execute("""insert into cp_clients(zoneid, sessionid, username,  ip_address, mac_address, created)
                            values (:zoneid, :sessionid, :username, :ip_address, :mac_address, :created)
-                        """,response)
+                        """, response)
 
         self._connection.commit()
         return response
