@@ -36,7 +36,7 @@ from lib.db import DB
 parameters = {'zoneid': None, 'output_type':'plain'}
 current_param = None
 for param in sys.argv[1:]:
-    if param[0] == '/':
+    if len(param) > 1 and param[0] == '/':
         current_param = param[1:].lower()
     elif current_param is not None:
         if current_param in parameters:
