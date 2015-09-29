@@ -103,8 +103,8 @@ class IPFW(object):
                 parts = line.split()
                 if len(parts) > 5:
                     if 30001 <= int(parts[0]) <= 50000 and parts[4] == 'count':
-                        in_pkts = int(parts[1])
-                        out_pkts = int(parts[2])
+                        line_pkts = int(parts[1])
+                        line_bytes = int(parts[2])
                         last_accessed = int(parts[3])
                         if parts[7] != 'any':
                             ip_address = parts[7]
@@ -113,15 +113,23 @@ class IPFW(object):
 
                         if ip_address not in result:
                             result[ip_address] = {'rule': int(parts[0]),
-                                                  'last_accessed': last_accessed,
-                                                  'in_pkts': in_pkts,
-                                                  'out_pkts': out_pkts
+                                                  'last_accessed': 0,
+                                                  'in_pkts' : 0,
+                                                  'in_bytes' : 0,
+                                                  'out_pkts' : 0,
+                                                  'out_bytes' : 0
                                                   }
+                        result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'],
+                                                                  last_accessed)
+                        if parts[7] != 'any':
+                            # count input
+                            result[ip_address]['in_pkts'] = line_pkts
+                            result[ip_address]['in_bytes'] = line_bytes
                         else:
-                            result[ip_address]['in_pkts'] += in_pkts
-                            result[ip_address]['out_pkts'] += out_pkts
-                            result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'],
-                                                                      last_accessed)
+                            # count output
+                            result[ip_address]['out_pkts'] = line_pkts
+                            result[ip_address]['out_bytes'] = line_bytes
+
             return result
 
     def add_accounting(self, address):

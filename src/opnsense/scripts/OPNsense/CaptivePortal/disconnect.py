@@ -26,14 +26,16 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    list connected clients for a captive portal zone
+    disconnect client
 """
 import sys
 import ujson
 from lib.db import DB
+from lib.arp import ARP
+from lib.ipfw import IPFW
 
 # parse input parameters
-parameters = {'zoneid': None, 'output_type':'plain'}
+parameters = {'sessionid': None, 'zoneid': None, 'output_type':'plain'}
 current_param = None
 for param in sys.argv[1:]:
     if len(param) > 1 and param[0] == '/':
@@ -43,23 +45,21 @@ for param in sys.argv[1:]:
             parameters[current_param] = param.strip()
         current_param = None
 
-if parameters['zoneid'] is not None:
-    cpDB = DB()
-    response = cpDB.list_clients(parameters['zoneid'])
-else:
-    response = []
+# disconnect client
+response = {'terminateCause': 'UNKNOWN'}
+if parameters['sessionid'] is not None and parameters['zoneid']  is not None:
+    cp_db = DB()
+    # remove client
+    client_session_info = cp_db.del_client(parameters['zoneid'], parameters['sessionid'])
+    if client_session_info is not None:
+        cpIPFW = IPFW()
+        cpIPFW.delete_from_table(parameters['zoneid'], client_session_info['ip_address'])
+        client_session_info['terminateCause'] = 'User-Request'
+        response = client_session_info
 
 # output result as plain text or json
 if parameters['output_type'] != 'json':
-    heading = {'sessionId': 'sessionid',
-               'userName': 'username',
-               'ipAddress': 'ip_address',
-               'macAddress': 'mac_address',
-               'total_bytes': 'total_bytes'
-               }
-    print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-20s' % heading
     for item in response:
-        item['total_bytes'] = (item['bytes_out'] + item['bytes_in'])
-        print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-20s' % item
+        print '%20s %s' % (item, response[item])
 else:
     print(ujson.dumps(response))
