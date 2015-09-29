@@ -33,30 +33,31 @@ import syslog
 import glob
 import xml.etree.ElementTree
 
+
 class Metadata(object):
     def __init__(self):
-        self._rules_dir = '%s/../metadata/rules/'%(os.path.dirname(os.path.abspath(__file__)))
+        self._rules_dir = '%s/../metadata/rules/' % (os.path.dirname(os.path.abspath(__file__)))
 
     def list_rules(self):
         """ list all available rules
         :return: generator method returning all known rulefiles
         """
-        for filename in sorted(glob.glob('%s*.xml'%self._rules_dir)):
+        for filename in sorted(glob.glob('%s*.xml' % self._rules_dir)):
             try:
-                ruleXML=xml.etree.ElementTree.fromstring(open(filename).read())
+                rule_xml = xml.etree.ElementTree.fromstring(open(filename).read())
             except xml.etree.ElementTree.ParseError:
                 # unparseable metadata
-                syslog.syslog(syslog.LOG_ERR,'suricata metadata unparsable @ %s'%filename)
+                syslog.syslog(syslog.LOG_ERR, 'suricata metadata unparsable @ %s' % filename)
                 continue
 
-            src_location = ruleXML.find('location')
+            src_location = rule_xml.find('location')
             if src_location is None or 'url' not in src_location.attrib:
-                syslog.syslog(syslog.LOG_ERR,'suricata metadata missing location  @ %s'%filename)
+                syslog.syslog(syslog.LOG_ERR, 'suricata metadata missing location  @ %s' % filename)
             else:
-                if ruleXML.find('files') is None:
-                    syslog.syslog(syslog.LOG_ERR,'suricata metadata missing files  @ %s'%filename)
+                if rule_xml.find('files') is None:
+                    syslog.syslog(syslog.LOG_ERR, 'suricata metadata missing files  @ %s' % filename)
                 else:
-                    for rule_filename in ruleXML.find('files'):
+                    for rule_filename in rule_xml.find('files'):
                         metadata_record = dict()
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()

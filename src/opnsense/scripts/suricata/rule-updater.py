@@ -40,7 +40,7 @@ from lib import rule_source_directory
 
 # check for a running update process, this may take a while so it's better to check...
 try:
-    lck = open('/tmp/suricata-rule-updater.py','w+')
+    lck = open('/tmp/suricata-rule-updater.py', 'w+')
     fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
 except IOError:
     # already running, exit status 99
@@ -48,13 +48,13 @@ except IOError:
 
 if __name__ == '__main__':
     # load list of configured rules from generated config
-    enabled_rulefiles=[]
-    updater_conf='/usr/local/etc/suricata/rule-updater.config'
+    enabled_rulefiles = []
+    updater_conf = '/usr/local/etc/suricata/rule-updater.config'
     if os.path.exists(updater_conf):
         cnf = ConfigParser()
         cnf.read(updater_conf)
         for section in cnf.sections():
-            if cnf.has_option(section,'enabled') and cnf.getint(section,'enabled') == 1:
+            if cnf.has_option(section, 'enabled') and cnf.getint(section, 'enabled') == 1:
                 enabled_rulefiles.append(section.strip())
 
     # download / remove rules
@@ -62,14 +62,14 @@ if __name__ == '__main__':
     dl = downloader.Downloader(target_dir=rule_source_directory)
     for rule in md.list_rules():
         if 'url' in rule['source']:
-            download_proto=str(rule['source']['url']).split(':')[0].lower()
+            download_proto = str(rule['source']['url']).split(':')[0].lower()
             if dl.is_supported(download_proto):
                 if rule['filename'] not in enabled_rulefiles:
                     try:
                         # remove configurable but unselected file
-                        os.remove(('%s/%s'%(rule_source_directory, rule['filename'])).replace('//', '/'))
-                    except:
+                        os.remove(('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/'))
+                    except OSError:
                         pass
                 else:
-                    url = ('%s/%s'%(rule['source']['url'],rule['filename']))
+                    url = ('%s/%s' % (rule['source']['url'], rule['filename']))
                     dl.download(proto=download_proto, url=url)

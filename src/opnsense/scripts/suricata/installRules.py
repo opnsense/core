@@ -37,9 +37,9 @@ from lib import rule_source_directory
 if __name__ == '__main__':
     RuleCache = lib.rulecache.RuleCache()
 
-    rule_config_fn = ('%s../rules.config'%rule_source_directory)
-    rule_target_dir = ('%s../opnsense.rules'%rule_source_directory)
-    rule_yaml_list = ('%s../installed_rules.yaml'%rule_source_directory)
+    rule_config_fn = ('%s../rules.config' % rule_source_directory)
+    rule_target_dir = ('%s../opnsense.rules' % rule_source_directory)
+    rule_yaml_list = ('%s../installed_rules.yaml' % rule_source_directory)
 
     # parse OPNsense rule config
     rule_updates = {}
@@ -59,9 +59,9 @@ if __name__ == '__main__':
 
     # install ruleset
     all_installed_files = []
-    for filename in RuleCache.listLocal():
+    for filename in RuleCache.list_local():
         output_data = []
-        for rule_info_record in RuleCache.listRules(filename=filename):
+        for rule_info_record in RuleCache.list_rules(filename=filename):
             # default behavior, do not touch rule, only copy to output
             rule = rule_info_record['rule']
             # change rule if in rule rule updates
@@ -75,7 +75,7 @@ if __name__ == '__main__':
                 # generate altered rule
                 if 'enabled' in rule_updates[rule_info_record['metadata']['sid']]:
                     if (rule_updates[rule_info_record['metadata']['sid']]['enabled']) == '0':
-                        rule = ('#%s'%rule[i:])
+                        rule = ('#%s' % rule[i:])
                     else:
                         rule = rule[i:]
 
@@ -83,12 +83,12 @@ if __name__ == '__main__':
 
         # write data to file
         all_installed_files.append(filename.split('/')[-1])
-        open('%s/%s'%(rule_target_dir, filename.split('/')[-1]), 'wb').write('\n'.join(output_data))
+        open('%s/%s' % (rule_target_dir, filename.split('/')[-1]), 'wb').write('\n'.join(output_data))
 
     # flush all written rule filenames into yaml file
-    with open(rule_yaml_list,'wb') as f_out:
+    with open(rule_yaml_list, 'wb') as f_out:
         f_out.write('%YAML 1.1\n')
         f_out.write('---\n')
         f_out.write('rule-files:\n')
         for installed_file in all_installed_files:
-            f_out.write(' - %s\n'%installed_file)
+            f_out.write(' - %s\n' % installed_file)

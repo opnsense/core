@@ -36,17 +36,17 @@ import sre_constants
 import shlex
 import ujson
 from lib.log import reverse_log_reader
-from lib.params import updateParams
+from lib.params import update_params
 from lib import suricata_alert_log
 
 if __name__ == '__main__':
     # handle parameters
-    parameters = {'limit':'0','offset':'0', 'filter':'','fileid':''}
-    updateParams(parameters)
+    parameters = {'limit': '0', 'offset': '0', 'filter': '', 'fileid': ''}
+    update_params(parameters)
 
     # choose logfile by number
     if parameters['fileid'].isdigit():
-        suricata_log = '%s.%d'%(suricata_alert_log,int(parameters['fileid']))
+        suricata_log = '%s.%d' % (suricata_alert_log, int(parameters['fileid']))
     else:
         suricata_log = suricata_alert_log
 
@@ -60,13 +60,12 @@ if __name__ == '__main__':
     else:
         offset = 0
 
-
     data_filters = {}
     data_filters_comp = {}
-    for filter in shlex.split(parameters['filter']):
-        filterField = filter.split('/')[0]
-        if filter.find('/') > -1:
-            data_filters[filterField] = '/'.join(filter.split('/')[1:])
+    for filter_txt in shlex.split(parameters['filter']):
+        filterField = filter_txt.split('/')[0]
+        if filter_txt.find('/') > -1:
+            data_filters[filterField] = '/'.join(filter_txt.split('/')[1:])
             filter_regexp = data_filters[filterField]
             filter_regexp = filter_regexp.replace('*', '.*')
             filter_regexp = filter_regexp.lower()
@@ -74,7 +73,7 @@ if __name__ == '__main__':
                 data_filters_comp[filterField] = re.compile(filter_regexp)
             except sre_constants.error:
                 # remove illegal expression
-                #del data_filters[filterField]
+                # del data_filters[filterField]
                 data_filters_comp[filterField] = re.compile('.*')
 
     # filter one specific log line
@@ -84,7 +83,7 @@ if __name__ == '__main__':
         log_start_pos = None
 
     # query suricata eve log
-    result = {'filters':data_filters,'rows':[],'total_rows':0,'origin':suricata_log.split('/')[-1]}
+    result = {'filters': data_filters, 'rows': [], 'total_rows': 0, 'origin': suricata_log.split('/')[-1]}
     if os.path.exists(suricata_log):
         for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
             try:
@@ -107,7 +106,8 @@ if __name__ == '__main__':
                 for filterKeys in data_filters:
                     filter_hit = False
                     for filterKey in filterKeys.split(','):
-                        if record.has_key(filterKey) and data_filters_comp[filterKeys].match(('%s'%record[filterKey]).lower()):
+                        if filterKey in record and data_filters_comp[filterKeys].match(
+                                ('%s' % record[filterKey]).lower()):
                             filter_hit = True
 
                     if not filter_hit:
@@ -121,7 +121,7 @@ if __name__ == '__main__':
                         break
 
             # only try to fetch one line when filepos is given
-            if log_start_pos != None:
+            if log_start_pos is not None:
                 break
 
     # output results
