@@ -77,7 +77,7 @@ class AccessController extends ApiControllerBase
         // disable standard authentication in CaptivePortal Access API calls.
         // set CORS headers
         $this->response->setHeader("Access-Control-Allow-Origin", "*");
-        $this->response->setHeader("Access-Control-Allow-Methods", "POST");
+        $this->response->setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
     }
 
     /**
@@ -90,7 +90,7 @@ class AccessController extends ApiControllerBase
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
             return array();
-        } elseif ($this->request->isPost() && $this->hasPost('user')) {
+        } elseif ($this->request->isPost() && $this->request->hasPost('user')) {
             // close session for long running action
             $this->sessionClose();
 
@@ -117,7 +117,7 @@ class AccessController extends ApiControllerBase
                         break;
                     }
                 }
-                $isAuthenticated = true;
+
                 if ($isAuthenticated) {
                     // when authenticated, we have $authServer available to request additional data if needed
                     $clientSession = $this->clientSession((string)$cpZone->zoneid);
