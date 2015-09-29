@@ -58,7 +58,7 @@ class DB(object):
             cur.executescript(open(init_script_filename, 'rb').read())
         cur.close()
 
-    def add_client(self, zoneid, username, ip_address, mac_address):
+    def add_client(self, zoneid, authenticated_via, username, ip_address, mac_address):
         """ add a new client to the captive portal administration
         :param zoneid: cp zone number
         :param username: username, maybe empty
@@ -68,6 +68,7 @@ class DB(object):
         """
         response = dict()
         response['zoneid'] = zoneid
+        response['authenticated_via'] = authenticated_via
         response['userName'] = username
         response['ipAddress'] = ip_address
         response['macAddress'] = mac_address
@@ -83,8 +84,8 @@ class DB(object):
                     """, response)
 
         # add new session
-        cur.execute("""insert into cp_clients(zoneid, sessionid, username,  ip_address, mac_address, created)
-                       values (:zoneid, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
+        cur.execute("""insert into cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
+                       values (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
                     """, response)
 
         self._connection.commit()
@@ -129,6 +130,7 @@ class DB(object):
         # rename fields for API
         cur.execute(""" select  cc.zoneid
                         ,       cc.sessionid   sessionId
+                        ,       cc.authenticated_via authenticated_via
                         ,       cc.username    userName
                         ,       cc.created     startTime
                         ,       cc.ip_address  ipAddress

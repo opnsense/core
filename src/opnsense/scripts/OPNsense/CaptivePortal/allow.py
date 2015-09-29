@@ -35,7 +35,7 @@ from lib.arp import ARP
 from lib.ipfw import IPFW
 
 # parse input parameters
-parameters = {'username': '', 'ip_address': None, 'zoneid': None, 'output_type':'plain'}
+parameters = {'username': '', 'ip_address': None, 'zoneid': None,'authenticated_via': None, 'output_type':'plain'}
 current_param = None
 for param in sys.argv[1:]:
     if len(param) > 1 and param[0] == '/':
@@ -56,6 +56,7 @@ if parameters['ip_address'] is not None and parameters['zoneid'] is not None:
         mac_address = None
 
     response = cpDB.add_client(zoneid=parameters['zoneid'],
+                               authenticated_via=parameters['authenticated_via'],
                                username=parameters['username'],
                                ip_address=parameters['ip_address'],
                                mac_address=mac_address
@@ -77,4 +78,3 @@ if parameters['output_type'] != 'json':
         print '%20s %s' % (item, response[item])
 else:
     print(ujson.dumps(response))
-
