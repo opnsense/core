@@ -29,7 +29,7 @@
                     // try to login
                     $.ajax({
                         type: "POST",
-                        url: "http://127.0.0.1:8888/api/captiveportal/access/logon",
+                        url: "https://10.211.55.100/api/captiveportal/access/logon/0/",
                         dataType:"json",
                         data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
                     }).done(function(data) {

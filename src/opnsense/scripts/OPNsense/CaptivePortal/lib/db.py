@@ -77,15 +77,15 @@ class DB(object):
 
         cur = self._connection.cursor()
         # set cp_client as deleted in case there's already a user logged-in at this ip address.
-        cur.execute("""update cp_clients
-                       set    deleted = 1
-                       where  zoneid = :zoneid
-                       and    ip_address = :ipAddress
+        cur.execute("""UPDATE cp_clients
+                       SET    deleted = 1
+                       WHERE  zoneid = :zoneid
+                       AND    ip_address = :ipAddress
                     """, response)
 
         # add new session
-        cur.execute("""insert into cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
-                       values (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
+        cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
+                       VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
                     """, response)
 
         self._connection.commit()
@@ -98,11 +98,11 @@ class DB(object):
         :return: client info before removal or None if client not found
         """
         cur = self._connection.cursor()
-        cur.execute(""" select  *
-                        from    cp_clients
-                        where   sessionid = :sessionid
-                        and     zoneid = :zoneid
-                        and     deleted = 0
+        cur.execute(""" SELECT  *
+                        FROM    cp_clients
+                        WHERE   sessionid = :sessionid
+                        AND     zoneid = :zoneid
+                        AND     deleted = 0
                     """, {'zoneid': zoneid, 'sessionid': sessionid})
         data = cur.fetchall()
         if len(data) > 0:
@@ -110,14 +110,13 @@ class DB(object):
             for fields in cur.description:
                 session_info[fields[0]] = data[0][len(session_info)]
             # remove client
-            cur.execute("update cp_clients set deleted = 1 where sessionid = :sessionid and zoneid = :zoneid",
+            cur.execute("UPDATE cp_clients SET deleted = 1 WHERE sessionid = :sessionid AND zoneid = :zoneid",
                         {'zoneid': zoneid, 'sessionid': sessionid})
             self._connection.commit()
 
             return session_info
         else:
             return None
-
 
     def list_clients(self, zoneid):
         """ return list of (administrative) connected clients and usage statistics
@@ -128,22 +127,22 @@ class DB(object):
         fieldnames = list()
         cur = self._connection.cursor()
         # rename fields for API
-        cur.execute(""" select  cc.zoneid
+        cur.execute(""" SELECT  cc.zoneid
                         ,       cc.sessionid   sessionId
                         ,       cc.authenticated_via authenticated_via
                         ,       cc.username    userName
                         ,       cc.created     startTime
                         ,       cc.ip_address  ipAddress
                         ,       cc.mac_address macAddress
-                        ,       case when si.packets_in is null then 0 else si.packets_in end packets_in
-                        ,       case when si.packets_out is null then 0 else si.packets_out end packets_out
-                        ,       case when si.bytes_in is null then 0 else si.bytes_in end bytes_in
-                        ,       case when si.bytes_out is null then 0 else si.bytes_out end bytes_out
-                        ,       case when si.last_accessed is null then 0 else si.last_accessed end last_accessed
-                        from    cp_clients cc
-                        left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
-                        where   cc.zoneid = :zoneid
-                        and     cc.deleted = 0
+                        ,       CASE WHEN si.packets_in IS NULL THEN 0 ELSE si.packets_in END packets_in
+                        ,       CASE WHEN si.packets_out IS NULL THEN 0 ELSE si.packets_out END packets_out
+                        ,       CASE WHEN si.bytes_in IS NULL THEN 0 ELSE si.bytes_in END bytes_in
+                        ,       CASE WHEN si.bytes_out IS NULL THEN 0 ELSE si.bytes_out END bytes_out
+                        ,       CASE WHEN si.last_accessed IS NULL THEN 0 ELSE si.last_accessed END last_accessed
+                        FROM    cp_clients cc
+                        LEFT JOIN session_info si ON si.zoneid = cc.zoneid AND si.sessionid = cc.sessionid
+                        WHERE   cc.zoneid = :zoneid
+                        AND     cc.deleted = 0
                         """, {'zoneid': zoneid})
         while True:
             # fetch field names
@@ -218,12 +217,15 @@ class DB(object):
                         # add usage to session
                         record['last_accessed'] = details[record['ip_address']]['last_accessed']
                         if record['prev_packets_in'] <= details[record['ip_address']]['in_pkts'] and \
-                            record['prev_packets_out'] <= details[record['ip_address']]['out_pkts']:
+                           record['prev_packets_out'] <= details[record['ip_address']]['out_pkts']:
                             # ipfw data is still valid, add difference to use
-                            record['packets_in']  = (details[record['ip_address']]['in_pkts'] - record['prev_packets_in'])
-                            record['packets_out'] = (details[record['ip_address']]['out_pkts'] - record['prev_packets_out'])
-                            record['bytes_in']  = (details[record['ip_address']]['in_bytes'] - record['prev_bytes_in'])
-                            record['bytes_out'] = (details[record['ip_address']]['out_bytes'] - record['prev_bytes_out'])
+                            record['packets_in'] = (
+                                details[record['ip_address']]['in_pkts'] - record['prev_packets_in'])
+                            record['packets_out'] = (
+                                details[record['ip_address']]['out_pkts'] - record['prev_packets_out'])
+                            record['bytes_in'] = (details[record['ip_address']]['in_bytes'] - record['prev_bytes_in'])
+                            record['bytes_out'] = (
+                                details[record['ip_address']]['out_bytes'] - record['prev_bytes_out'])
                         else:
                             # the data has been reset (reloading rules), add current packet count
                             record['packets_in'] = details[record['ip_address']]['in_pkts']
