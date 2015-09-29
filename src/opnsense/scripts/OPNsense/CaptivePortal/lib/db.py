@@ -68,27 +68,27 @@ class DB(object):
         """
         response = dict()
         response['zoneid'] = zoneid
-        response['username'] = username
-        response['ip_address'] = ip_address
-        response['mac_address'] = mac_address
-        response['created'] = time.time()  # record creation = sign-in time
-        response['sessionid'] = base64.b64encode(os.urandom(16))  # generate a new random session id
+        response['userName'] = username
+        response['ipAddress'] = ip_address
+        response['macAddress'] = mac_address
+        response['startTime'] = time.time()  # record creation = sign-in time
+        response['sessionId'] = base64.b64encode(os.urandom(16))  # generate a new random session id
 
         cur = self._connection.cursor()
         # update cp_clients in case there's already a user logged-in at this ip address.
         # places an implicit lock on this client.
         cur.execute("""update cp_clients
-                       set    created = :created
-                       ,      username = :username
-                       ,      mac_address = :mac_address
+                       set    created = :startTime
+                       ,      username = :userName
+                       ,      mac_address = :macAddress
                        where  zoneid = :zoneid
-                       and    ip_address = :ip_address
+                       and    ip_address = :ipAddress
                     """, response)
 
         # normal operation, new user at this ip, add to host
         if cur.rowcount == 0:
             cur.execute("""insert into cp_clients(zoneid, sessionid, username,  ip_address, mac_address, created)
-                           values (:zoneid, :sessionid, :username, :ip_address, :mac_address, :created)
+                           values (:zoneid, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
                         """, response)
 
         self._connection.commit()
@@ -102,7 +102,16 @@ class DB(object):
         result = list()
         fieldnames = list()
         cur = self._connection.cursor()
-        cur.execute("select * from cp_clients where zoneid = :zoneid", {'zoneid': zoneid})
+        # rename fields for API
+        cur.execute(""" select  zoneid
+                        ,       sessionid   sessionId
+                        ,       username    userName
+                        ,       created     startTime
+                        ,       ip_address  ipAddress
+                        ,       mac_address macAddress
+                        from    cp_clients
+                        where   zoneid = :zoneid
+                        """, {'zoneid': zoneid})
         while True:
             # fetch field names
             if len(fieldnames) == 0:

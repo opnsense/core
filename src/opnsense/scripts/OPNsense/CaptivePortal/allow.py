@@ -66,9 +66,9 @@ if parameters['ip_address'] is not None and parameters['zoneid'] is not None:
 
     # add accounting for this ip address
     cpIPFW.add_accounting(parameters['ip_address'])
-    response['state'] = 'AUTHORIZED'
+    response['clientState'] = 'AUTHORIZED'
 else:
-    response = {'state': 'UNKNOWN'}
+    response = {'clientState': 'UNKNOWN'}
 
 
 # output result as plain text or json
