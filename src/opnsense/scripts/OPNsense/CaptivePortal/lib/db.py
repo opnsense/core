@@ -75,27 +75,51 @@ class DB(object):
         response['sessionId'] = base64.b64encode(os.urandom(16))  # generate a new random session id
 
         cur = self._connection.cursor()
-        # update cp_clients in case there's already a user logged-in at this ip address.
-        # places an implicit lock on this client.
+        # set cp_client as deleted in case there's already a user logged-in at this ip address.
         cur.execute("""update cp_clients
-                       set    created = :startTime
-                       ,      username = :userName
-                       ,      mac_address = :macAddress
+                       set    deleted = 1
                        where  zoneid = :zoneid
                        and    ip_address = :ipAddress
                     """, response)
 
-        # normal operation, new user at this ip, add to host
-        if cur.rowcount == 0:
-            cur.execute("""insert into cp_clients(zoneid, sessionid, username,  ip_address, mac_address, created)
-                           values (:zoneid, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
-                        """, response)
+        # add new session
+        cur.execute("""insert into cp_clients(zoneid, sessionid, username,  ip_address, mac_address, created)
+                       values (:zoneid, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
+                    """, response)
 
         self._connection.commit()
         return response
 
+    def del_client(self, zoneid, sessionid):
+        """ mark (administrative) client for removal
+        :param zoneid: zone id
+        :param sessionid: session id
+        :return: client info before removal or None if client not found
+        """
+        cur = self._connection.cursor()
+        cur.execute(""" select  *
+                        from    cp_clients
+                        where   sessionid = :sessionid
+                        and     zoneid = :zoneid
+                        and     deleted = 0
+                    """, {'zoneid': zoneid, 'sessionid': sessionid})
+        data = cur.fetchall()
+        if len(data) > 0:
+            session_info = dict()
+            for fields in cur.description:
+                session_info[fields[0]] = data[0][len(session_info)]
+            # remove client
+            cur.execute("update cp_clients set deleted = 1 where sessionid = :sessionid and zoneid = :zoneid",
+                        {'zoneid': zoneid, 'sessionid': sessionid})
+            self._connection.commit()
+
+            return session_info
+        else:
+            return None
+
+
     def list_clients(self, zoneid):
-        """ return list of (administrative) connected clients
+        """ return list of (administrative) connected clients and usage statistics
         :param zoneid: zone id
         :return: list of clients
         """
@@ -103,14 +127,21 @@ class DB(object):
         fieldnames = list()
         cur = self._connection.cursor()
         # rename fields for API
-        cur.execute(""" select  zoneid
-                        ,       sessionid   sessionId
-                        ,       username    userName
-                        ,       created     startTime
-                        ,       ip_address  ipAddress
-                        ,       mac_address macAddress
-                        from    cp_clients
-                        where   zoneid = :zoneid
+        cur.execute(""" select  cc.zoneid
+                        ,       cc.sessionid   sessionId
+                        ,       cc.username    userName
+                        ,       cc.created     startTime
+                        ,       cc.ip_address  ipAddress
+                        ,       cc.mac_address macAddress
+                        ,       case when si.packets_in is null then 0 else si.packets_in end packets_in
+                        ,       case when si.packets_out is null then 0 else si.packets_out end packets_out
+                        ,       case when si.bytes_in is null then 0 else si.bytes_in end bytes_in
+                        ,       case when si.bytes_out is null then 0 else si.bytes_out end bytes_out
+                        ,       case when si.last_accessed is null then 0 else si.last_accessed end last_accessed
+                        from    cp_clients cc
+                        left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
+                        where   cc.zoneid = :zoneid
+                        and     cc.deleted = 0
                         """, {'zoneid': zoneid})
         while True:
             # fetch field names
@@ -128,3 +159,81 @@ class DB(object):
 
                 result.append(record)
         return result
+
+    def update_accounting_info(self, details):
+        """ update internal accounting database with given ipfw info (not per zone)
+        :param details: ipfw accounting details
+        """
+        if type(details) == dict:
+            # query registered data
+            sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid
+                      ,         si.rowid si_rowid, si.prev_packets_in, si.prev_bytes_in
+                      ,         si.prev_packets_out, si.prev_bytes_out, si.last_accessed
+                      from      cp_clients cc
+                      left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
+                      order by  cc.ip_address, cc.deleted
+                  """
+            cur = self._connection.cursor()
+            cur2 = self._connection.cursor()
+            cur.execute(sql)
+            prev_record = {'ip_address': None}
+            for row in cur.fetchall():
+                # map fieldnumbers to names
+                record = {}
+                for fieldId in range(len(row)):
+                    record[cur.description[fieldId][0]] = row[fieldId]
+                # search unique hosts from dataset, both disabled and enabled.
+                if prev_record['ip_address'] != record['ip_address'] and record['ip_address'] in details:
+                    if record['si_rowid'] is None:
+                        # new session, add info object
+                        sql_new = """ insert into session_info(zoneid, sessionid, prev_packets_in, prev_bytes_in,
+                                                               prev_packets_out, prev_bytes_out,
+                                                               packets_in, packets_out, bytes_in, bytes_out,
+                                                               last_accessed)
+                                      values (:zoneid, :sessionid, :packets_in, :bytes_in, :packets_out, :bytes_out,
+                                              :packets_in, :packets_out, :bytes_in, :bytes_out, :last_accessed)
+                        """
+                        record['packets_in'] = details[record['ip_address']]['in_pkts']
+                        record['bytes_in'] = details[record['ip_address']]['in_bytes']
+                        record['packets_out'] = details[record['ip_address']]['out_pkts']
+                        record['bytes_out'] = details[record['ip_address']]['out_bytes']
+                        record['last_accessed'] = details[record['ip_address']]['last_accessed']
+                        cur2.execute(sql_new, record)
+                    else:
+                        # update session
+                        sql_update = """ update session_info
+                                         set    last_accessed = :last_accessed
+                                         ,      prev_packets_in = :prev_packets_in
+                                         ,      prev_packets_out = :prev_packets_out
+                                         ,      prev_bytes_in = :prev_bytes_in
+                                         ,      prev_bytes_out = :prev_bytes_out
+                                         ,      packets_in = packets_in + :packets_in
+                                         ,      packets_out = packets_out + :packets_out
+                                         ,      bytes_in = bytes_in + :bytes_in
+                                         ,      bytes_out = bytes_out + :bytes_out
+                                         where  rowid = :si_rowid
+                        """
+                        # add usage to session
+                        record['last_accessed'] = details[record['ip_address']]['last_accessed']
+                        if record['prev_packets_in'] <= details[record['ip_address']]['in_pkts'] and \
+                            record['prev_packets_out'] <= details[record['ip_address']]['out_pkts']:
+                            # ipfw data is still valid, add difference to use
+                            record['packets_in']  = (details[record['ip_address']]['in_pkts'] - record['prev_packets_in'])
+                            record['packets_out'] = (details[record['ip_address']]['out_pkts'] - record['prev_packets_out'])
+                            record['bytes_in']  = (details[record['ip_address']]['in_bytes'] - record['prev_bytes_in'])
+                            record['bytes_out'] = (details[record['ip_address']]['out_bytes'] - record['prev_bytes_out'])
+                        else:
+                            # the data has been reset (reloading rules), add current packet count
+                            record['packets_in'] = details[record['ip_address']]['in_pkts']
+                            record['packets_out'] = details[record['ip_address']]['out_pkts']
+                            record['bytes_in'] = details[record['ip_address']]['in_bytes']
+                            record['bytes_out'] = details[record['ip_address']]['out_bytes']
+
+                        record['prev_packets_in'] = details[record['ip_address']]['in_pkts']
+                        record['prev_packets_out'] = details[record['ip_address']]['out_pkts']
+                        record['prev_bytes_in'] = details[record['ip_address']]['in_bytes']
+                        record['prev_bytes_out'] = details[record['ip_address']]['out_bytes']
+                        cur2.execute(sql_update, record)
+
+                prev_record = record
+            self._connection.commit()

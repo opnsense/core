@@ -10,6 +10,7 @@ create table cp_clients (
 ,     ip_address varchar
 ,     mac_address varchar
 ,     created number
+,     deleted integer default (0)
 ,     primary key (zoneid, sessionid)
 );
 
@@ -20,6 +21,14 @@ create index cp_clients_zone ON cp_clients (zoneid);
 create table session_info (
       zoneid int
 ,     sessionid varchar
+,     prev_packets_in integer
+,     prev_bytes_in   integer
+,     prev_packets_out integer
+,     prev_bytes_out   integer
+,     packets_in integer default (0)
+,     packets_out integer default (0)
+,     bytes_in integer default (0)
+,     bytes_out integer default (0)
+,     last_accessed integer
 ,     primary key (zoneid, sessionid)
 );
-

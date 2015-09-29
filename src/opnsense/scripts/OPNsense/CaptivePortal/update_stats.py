@@ -26,40 +26,38 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    list connected clients for a captive portal zone
+    update captive portal statistics
 """
 import sys
 import ujson
 from lib.db import DB
+from lib.arp import ARP
+from lib.ipfw import IPFW
 
-# parse input parameters
-parameters = {'zoneid': None, 'output_type':'plain'}
-current_param = None
-for param in sys.argv[1:]:
-    if len(param) > 1 and param[0] == '/':
-        current_param = param[1:].lower()
-    elif current_param is not None:
-        if current_param in parameters:
-            parameters[current_param] = param.strip()
-        current_param = None
+db = DB()
+cur = db._connection.cursor();
 
-if parameters['zoneid'] is not None:
-    cpDB = DB()
-    response = cpDB.list_clients(parameters['zoneid'])
-else:
-    response = []
+# update accounting
+ipfw = IPFW()
+#print ipfw.list_accounting_info()
+db.update_accounting_info(ipfw.list_accounting_info())
 
-# output result as plain text or json
-if parameters['output_type'] != 'json':
-    heading = {'sessionId': 'sessionid',
-               'userName': 'username',
-               'ipAddress': 'ip_address',
-               'macAddress': 'mac_address',
-               'total_bytes': 'total_bytes'
-               }
-    print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-20s' % heading
-    for item in response:
-        item['total_bytes'] = (item['bytes_out'] + item['bytes_in'])
-        print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-20s' % item
-else:
-    print(ujson.dumps(response))
+# tmp = """
+# create table session_info (
+#       zoneid int
+# ,     sessionid varchar
+# ,     prev_packets_in integer
+# ,     prev_bytes_in   integer
+# ,     prev_packets_out integer
+# ,     prev_bytes_out   integer
+# ,     packets_in integer default (0)
+# ,     packets_out integer default (0)
+# ,     bytes_in integer default (0)
+# ,     bytes_out integer default (0)
+# ,     last_accessed integer
+# ,     primary key (zoneid, sessionid)
+# );
+#  """
+
+# cur.execute("drop table session_info");
+# cur.execute(tmp);
