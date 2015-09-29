@@ -6,6 +6,7 @@
 create table cp_clients (
       zoneid int
 ,     sessionid varchar
+,     authenticated_via varchar
 ,     username varchar
 ,     ip_address varchar
 ,     mac_address varchar
