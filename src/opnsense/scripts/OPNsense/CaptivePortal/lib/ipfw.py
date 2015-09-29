@@ -114,10 +114,10 @@ class IPFW(object):
                         if ip_address not in result:
                             result[ip_address] = {'rule': int(parts[0]),
                                                   'last_accessed': 0,
-                                                  'in_pkts' : 0,
-                                                  'in_bytes' : 0,
-                                                  'out_pkts' : 0,
-                                                  'out_bytes' : 0
+                                                  'in_pkts': 0,
+                                                  'in_bytes': 0,
+                                                  'out_pkts': 0,
+                                                  'out_bytes': 0
                                                   }
                         result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'],
                                                                   last_accessed)

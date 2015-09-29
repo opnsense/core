@@ -35,7 +35,7 @@ from lib.arp import ARP
 from lib.ipfw import IPFW
 
 # parse input parameters
-parameters = {'username': '', 'ip_address': None, 'zoneid': None,'authenticated_via': None, 'output_type':'plain'}
+parameters = {'username': '', 'ip_address': None, 'zoneid': None, 'authenticated_via': None, 'output_type': 'plain'}
 current_param = None
 for param in sys.argv[1:]:
     if len(param) > 1 and param[0] == '/':

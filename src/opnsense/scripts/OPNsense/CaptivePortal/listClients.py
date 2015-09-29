@@ -33,7 +33,7 @@ import ujson
 from lib.db import DB
 
 # parse input parameters
-parameters = {'zoneid': None, 'output_type':'plain'}
+parameters = {'zoneid': None, 'output_type': 'plain'}
 current_param = None
 for param in sys.argv[1:]:
     if len(param) > 1 and param[0] == '/':

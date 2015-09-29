@@ -31,11 +31,10 @@
 import sys
 import ujson
 from lib.db import DB
-from lib.arp import ARP
 from lib.ipfw import IPFW
 
 # parse input parameters
-parameters = {'sessionid': None, 'zoneid': None, 'output_type':'plain'}
+parameters = {'sessionid': None, 'zoneid': None, 'output_type': 'plain'}
 current_param = None
 for param in sys.argv[1:]:
     if len(param) > 1 and param[0] == '/':
@@ -47,7 +46,7 @@ for param in sys.argv[1:]:
 
 # disconnect client
 response = {'terminateCause': 'UNKNOWN'}
-if parameters['sessionid'] is not None and parameters['zoneid']  is not None:
+if parameters['sessionid'] is not None and parameters['zoneid'] is not None:
     cp_db = DB()
     # remove client
     client_session_info = cp_db.del_client(parameters['zoneid'], parameters['sessionid'])
