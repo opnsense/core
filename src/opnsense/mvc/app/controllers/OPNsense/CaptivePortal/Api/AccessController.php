@@ -129,7 +129,11 @@ class AccessController extends ApiControllerBase
                         $backend = new Backend();
                         $CPsession = $backend->configdpRun(
                             "captiveportal allow",
-                            array((string)$cpZone->zoneid, $userName, $this->request->getClientAddress(), 'json')
+                            array((string)$cpZone->zoneid,
+                                $userName,
+                                $this->request->getClientAddress(),
+                                $authServerName,
+                                'json')
                         );
                         $CPsession = json_decode($CPsession, true);
                         if ($CPsession != null) {
