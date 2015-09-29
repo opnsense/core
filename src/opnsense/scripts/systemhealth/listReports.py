@@ -43,7 +43,7 @@ result = {}
 for filename in glob.glob('%s/*.rrd' % rrd_reports_dir):
     rrdFilename = os.path.basename(filename).split('.')[0]
     # determine topic and item name, fixes naming issues
-    if rrdFilename.split('-')[0] in ('system') and rrdFilename.find('-') > -1:
+    if rrdFilename.split('-')[0] == 'system' and rrdFilename.find('-') > -1:
         topic = rrdFilename.split('-')[0]
         itemName = '-'.join(rrdFilename.split('-')[1:])
     else:
@@ -55,7 +55,7 @@ for filename in glob.glob('%s/*.rrd' % rrd_reports_dir):
 for filename in glob.glob('%s/*.xml' % rrd_definition_dir):
     rrdFilename = os.path.basename(filename).split('.')[0]
     try:
-        ruleXML=xml.etree.ElementTree.fromstring(open(filename).read())
+        ruleXML = xml.etree.ElementTree.fromstring(open(filename).read())
         rrdDef = {}
         if ruleXML.tag == 'systemhealth':
             # only parse systemhealth items
