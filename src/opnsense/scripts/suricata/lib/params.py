@@ -26,7 +26,8 @@
 
 import sys
 
-def updateParams(parameters):
+
+def update_params(parameters):
     """ update predefined parameters with given list from shell (as switches)
         for example /a valA /b valB
         converts to
@@ -35,11 +36,11 @@ def updateParams(parameters):
     :param parameters: parameter dictionary
     :return:
     """
-    cmd=None
+    cmd = None
     for arg in sys.argv[1:]:
         if cmd is None:
-            cmd=arg[1:]
+            cmd = arg[1:]
         else:
             if cmd in parameters and arg.strip() != '':
                 parameters[cmd] = arg.strip()
-            cmd=None
+            cmd = None

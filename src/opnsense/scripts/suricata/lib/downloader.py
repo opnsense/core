@@ -31,24 +31,25 @@
 import syslog
 import requests
 
+
 class Downloader(object):
     def __init__(self, target_dir):
         self._target_dir = target_dir
 
     def download(self, proto, url):
-        if proto in ('http','https'):
-            frm_url = url.replace('//','/').replace(':/','://')
+        if proto in ('http', 'https'):
+            frm_url = url.replace('//', '/').replace(':/', '://')
             req = requests.get(url=frm_url)
             if req.status_code == 200:
-                target_filename = ('%s/%s'%(self._target_dir, frm_url.split('/')[-1])).replace('//','/')
+                target_filename = ('%s/%s' % (self._target_dir, frm_url.split('/')[-1])).replace('//', '/')
                 try:
-                    open(target_filename,'wb').write(req.text)
+                    open(target_filename, 'wb').write(req.text)
                 except IOError:
-                    syslog.syslog(syslog.LOG_ERR, 'cannot write to %s'%(target_filename))
+                    syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                     return None
-                syslog.syslog(syslog.LOG_INFO, 'download completed for %s'%(frm_url))
+                syslog.syslog(syslog.LOG_INFO, 'download completed for %s' % frm_url)
             else:
-                syslog.syslog(syslog.LOG_ERR, 'download failed for %s'%(frm_url))
+                syslog.syslog(syslog.LOG_ERR, 'download failed for %s' % frm_url)
 
     @staticmethod
     def is_supported(proto):
@@ -56,7 +57,7 @@ class Downloader(object):
         :param proto:
         :return:
         """
-        if proto in ['http','https']:
+        if proto in ['http', 'https']:
             return True
         else:
             return False

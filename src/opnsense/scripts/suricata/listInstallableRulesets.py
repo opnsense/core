@@ -43,10 +43,10 @@ if __name__ == '__main__':
     items = dict()
     for rule in md.list_rules():
         items[rule['filename']] = rule
-        rule_filename = ('%s/%s'%(rule_source_directory, rule['filename'])).replace('//', '/')
+        rule_filename = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
         if os.path.exists(rule_filename):
             items[rule['filename']]['modified_local'] = os.stat(rule_filename).st_mtime
         else:
             items[rule['filename']]['modified_local'] = None
-    result = {'items': items, 'count':len(items)}
+    result = {'items': items, 'count': len(items)}
     print (ujson.dumps(result))

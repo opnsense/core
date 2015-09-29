@@ -35,10 +35,10 @@ from lib.rulecache import RuleCache
 
 if __name__ == '__main__':
     rc = RuleCache()
-    if rc.isChanged():
+    if rc.is_changed():
         rc.create()
 
-    items=rc.listClassTypes()
-    result = {'items': items, 'count':len(items)}
+    items = rc.list_class_types()
+    result = {'items': items, 'count': len(items)}
 
     print (ujson.dumps(result))
