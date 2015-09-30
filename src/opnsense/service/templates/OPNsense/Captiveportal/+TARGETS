@@ -1,2 +1,3 @@
 #rc.conf.d:/etc/rc.conf.d/captiveportal
 captiveportal.conf:/usr/local/etc/captiveportal.conf
+lighttpd-api-dispatcher.conf:/var/etc/lighttpd-api-dispatcher.conf
