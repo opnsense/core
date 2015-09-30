@@ -155,7 +155,10 @@ class Template(object):
                 if xmlNodeName in config_ptr:
                     config_ptr = config_ptr[xmlNodeName]
                 elif xmlNodeName == '%':
-                    target_keys = config_ptr.keys()
+                    if type(config_ptr) in (collections.OrderedDict, dict):
+                        target_keys = config_ptr.keys()
+                    else:
+                        target_keys = map(lambda x: str(x), range(len(config_ptr)))
                 else:
                     break
 
@@ -177,6 +180,11 @@ class Template(object):
                                     result[tag]['.'.join(filter_target)] = xmlNodeName
 
                                 config_ptr = config_ptr[xmlNodeName]
+                            elif type(config_ptr[xmlNodeName]) in (list, tuple):
+                                if str_wildcard_loc >= len(filter_target):
+                                    filter_target.append(xmlNodeName)
+                                    filter_target.append(target_node)
+                                config_ptr = config_ptr[xmlNodeName][int(target_node)]
                             else:
                                 # fill in node value
                                 result[tag]['.'.join(filter_target)] = config_ptr[xmlNodeName]
