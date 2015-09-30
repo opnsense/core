@@ -1,0 +1,8 @@
+name: opnsense-captiveportal
+version: 0.1
+origin: opnsense/captiveportal
+comment: captiveportal configuration
+desc: configuration templates for captiveportal
+maintainer: ad at opnsense.org
+www: https://opnsense.org
+prefix: /
