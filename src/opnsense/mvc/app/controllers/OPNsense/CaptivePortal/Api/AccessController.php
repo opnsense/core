@@ -55,7 +55,7 @@ class AccessController extends ApiControllerBase
         if ($allClients != null) {
             // search for client by ip address
             foreach ($allClients as $connectedClient) {
-                if ($connectedClient['ipAddress'] == $this->request->getClientAddress()) {
+                if ($connectedClient['ipAddress'] == $this->getClientIp()) {
                     // client is authorized in this zone according to our administration
                     $connectedClient['clientState'] = 'AUTHORIZED';
                     return $connectedClient;
@@ -64,7 +64,22 @@ class AccessController extends ApiControllerBase
         }
 
         // return Unauthorized
-        return array('clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->request->getClientAddress());
+        return array('clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp());
+    }
+
+    /**
+     * determine clients ip address
+     */
+    private function getClientIp()
+    {
+      // determine orginal sender of this request
+      if ($this->request->getHeader('X-Forwarded-For') != "") {
+          // use X-Forwarded-For header to determine real client
+          return $this->request->getHeader('X-Forwarded-For');
+      } else {
+          // client accesses the Api directly
+          return $this->request->getClientAddress();
+      }
     }
 
     /**
@@ -87,6 +102,7 @@ class AccessController extends ApiControllerBase
      */
     public function logonAction($zoneid = 0)
     {
+        $clientIp = $this->getClientIp();
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
             return array();
@@ -131,7 +147,7 @@ class AccessController extends ApiControllerBase
                             "captiveportal allow",
                             array((string)$cpZone->zoneid,
                                 $userName,
-                                $this->request->getClientAddress(),
+                                $clientIp,
                                 $authServerName,
                                 'json')
                         );
@@ -143,16 +159,12 @@ class AccessController extends ApiControllerBase
                         }
                     }
                 } else {
-                    return array("clientState" => 'NOT_AUTHORIZED',
-                        "ipAddress" => $this->request->getClientAddress()
-                    );
+                    return array("clientState" => 'NOT_AUTHORIZED',"ipAddress" => $clientIp);
                 }
             }
         }
 
-        return array("clientState" => 'UNKNOWN',
-            "ipAddress" => $this->request->getClientAddress()
-        );
+        return array("clientState" => 'UNKNOWN',"ipAddress" => $clientIp);
     }
 
 
@@ -182,7 +194,7 @@ class AccessController extends ApiControllerBase
                 }
             }
         }
-        return array("clientState" => "UNKNOWN", "ipAddress" => $this->request->getClientAddress());
+        return array("clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp());
     }
 
     /**
