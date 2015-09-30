@@ -1,0 +1,2 @@
+#rc.conf.d:/etc/rc.conf.d/captiveportal
+captiveportal.conf:/usr/local/etc/captiveportal.conf
