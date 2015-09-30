@@ -28,6 +28,20 @@
         <hint>Type or select server.</hint>
     </field>
     <field>
+        <id>zone.idletimeout</id>
+        <label>idle timeout (minutes)</label>
+        <type>text</type>
+        <help><![CDATA[Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Leave this field blank for no idle timeout.]]></help>
+        <hint>Type or select server.</hint>
+    </field>
+    <field>
+        <id>zone.hardtimeout</id>
+        <label>hard timeout (minutes)</label>
+        <type>text</type>
+        <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set).]]></help>
+        <hint>Type or select server.</hint>
+    </field>
+    <field>
         <id>zone.description</id>
         <label>description</label>
         <type>text</type>

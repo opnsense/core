@@ -30,6 +30,20 @@
                     <multiple>Y</multiple>
                     <default>Local Database</default>
                 </authservers>
+                <idletimeout type="IntegerField">
+                    <Required>Y</Required>
+                    <Default>0</Default>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>10080</MaximumValue>
+                    <ValidationMessage>Idle timeout must be between 0(no timeout) and 10080 (a week)</ValidationMessage>
+                </idletimeout>
+                <hardtimeout type="IntegerField">
+                    <Required>Y</Required>
+                    <Default>0</Default>
+                    <MinimumValue>0</MinimumValue>
+                    <MaximumValue>10080</MaximumValue>
+                    <ValidationMessage>Hard timeout must be between 0(no timeout) and 10080 (a week)</ValidationMessage>
+                </hardtimeout>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
