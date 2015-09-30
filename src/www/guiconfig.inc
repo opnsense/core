@@ -358,10 +358,12 @@ function clear_log($logfile, $restart_syslogd = true)
 	}
 
 	/* preserve file ownership and permissions */
-	$handle = fopen($logfile, 'r+');
-	if ($handle) {
-		ftruncate($handle, 0);
-		fclose($handle);
+	if (file_exists($logfile)) {
+		$handle = fopen($logfile, 'r+');
+		if ($handle) {
+			ftruncate($handle, 0);
+			fclose($handle);
+		}
 	}
 
 	if ($restart_syslogd) {
