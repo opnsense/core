@@ -52,6 +52,8 @@ class ServiceController extends ApiControllerBase
             $backend->configdRun("template reload OPNsense.IPFW");
             $bckresult = trim($backend->configdRun("ipfw reload"));
             if ($bckresult == "OK") {
+                // generate captive portal config
+                $backend->configdRun("template reload OPNsense.Captiveportal");
                 // TODO: implement portal webservers restart/reconfigure
                 $status = "ok";
             } else {
