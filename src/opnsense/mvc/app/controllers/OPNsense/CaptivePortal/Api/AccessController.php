@@ -73,7 +73,8 @@ class AccessController extends ApiControllerBase
     private function getClientIp()
     {
       // determine orginal sender of this request
-      if ($this->request->getHeader('X-Forwarded-For') != "") {
+      $trusted_proxy = array("127.0.0.1");
+      if ($this->request->getHeader('X-Forwarded-For') != "" && in_array($this->request->getClientAddress(), $trusted_proxy) ) {
           // use X-Forwarded-For header to determine real client
           return $this->request->getHeader('X-Forwarded-For');
       } else {
