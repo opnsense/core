@@ -220,6 +220,8 @@ EOD;
         } elseif ($auth_list['auth_val'] == 3) {
             captiveportal_logportalauth($user, $clientmac, $clientip, "FAILURE", $auth_list['reply_message']);
             portal_reply_page($redirurl, $type, $auth_list['reply_message'] ? $auth_list['reply_message'] : $errormsg);
+        } else {
+            portal_reply_page($redirurl, "redir", "Just redirect the user.");
         }
     } else {
         if (!empty($_POST['auth_user'])) {
