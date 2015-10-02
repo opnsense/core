@@ -13,10 +13,10 @@
 
         <title></title>
         <!-- Bootstrap -->
-        <link href="css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/signin.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/signin.css" rel="stylesheet">
 
-        <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="/js/jquery-1.11.2.min.js"></script>
         <script>
             $( document ).ready(function() {
                 /**
@@ -29,7 +29,7 @@
                     // try to login
                     $.ajax({
                         type: "POST",
-                        url: "https://10.211.55.100/api/captiveportal/access/logon/0/",
+                        url: "/api/captiveportal/access/logon",
                         dataType:"json",
                         data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
                     }).done(function(data) {
@@ -77,6 +77,6 @@
         </main>
 
         <!-- bootstrap script -->
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/js/bootstrap.min.js"></script>
     </body>
 </html>
