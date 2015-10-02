@@ -42,12 +42,13 @@ class IPFW(object):
         devnull = open(os.devnull, 'w')
         result = list()
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.check_call(['/sbin/ipfw', 'table', table_number, 'list'],
+            subprocess.check_call(['/sbin/ipfw', 'table', str(table_number), 'list'],
                                   stdout=output_stream,
                                   stderr=devnull)
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
-                result.append(line.split(' ')[0])
+                if line.split(' ')[0].strip() != "":
+                    result.append(line.split(' ')[0])
             return result
 
     def ip_or_net_in_table(self, table_number, address):

@@ -31,7 +31,7 @@ import sqlite3
 
 
 class DB(object):
-    database_filename = '/tmp/captiveportal.sqlite'
+    database_filename = '/var/captiveportal/captiveportal.sqlite'
 
     def __init__(self):
         """ construct new database connection
@@ -39,6 +39,11 @@ class DB(object):
         """
         self._connection = sqlite3.connect(self.database_filename)
         self.create()
+
+    def __del__(self):
+        """ destruct, close database handle
+        """
+        self._connection.close()
 
     def create(self, force_recreate=False):
         """ create/initialize new database

@@ -36,6 +36,11 @@ class ARP(object):
         self._arp_table = dict()
         self._fetch_arp_table()
 
+    def reload(self):
+        """ reload / parse arp table
+        """
+        self._fetch_arp_table()
+
     def _fetch_arp_table(self):
         """ parse system arp table and store result in this object
         :return: None
