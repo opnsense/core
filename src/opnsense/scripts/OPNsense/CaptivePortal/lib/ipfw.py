@@ -48,7 +48,14 @@ class IPFW(object):
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
                 if line.split(' ')[0].strip() != "":
-                    result.append(line.split(' ')[0])
+                    # process / 32 nets as single addresses to align better with the rule syntax
+                    # and local administration.
+                    if line.split(' ')[0].split('/')[-1] == '32':
+                        # single IPv4 address
+                        result.append(line.split(' ')[0].split('/')[0])
+                    else:
+                        # network
+                        result.append(line.split(' ')[0])
             return result
 
     def ip_or_net_in_table(self, table_number, address):
@@ -58,11 +65,7 @@ class IPFW(object):
         :return: boolean
         """
         ipfw_tbl = self.list_table(table_number)
-        if address.find('.') > -1 and address.find('/') == -1:
-            # address given, search for /32 net in ipfw rules
-            if '%s/32' % address.strip() in ipfw_tbl:
-                return True
-        elif address.strip() in ipfw_tbl:
+        if address.strip() in ipfw_tbl:
             return True
 
         return False

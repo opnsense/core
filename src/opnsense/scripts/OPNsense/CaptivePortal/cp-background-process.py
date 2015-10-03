@@ -62,11 +62,8 @@ def main():
                 expected_clients = db.list_clients(zoneid)
                 # handle connected clients, timeouts, address changes, etc.
                 for db_client in expected_clients:
-                    # convert ip address to net, tables are registered as  nets
-                    if db_client['ipAddress'].strip().find('/') == -1:
-                        cpnet = '%s/32' % db_client['ipAddress'].strip()
-                    else:
-                        cpnet = db_client['ipAddress'].strip()
+                    # fetch ip address (or network) from database
+                    cpnet = db_client['ipAddress'].strip()
 
                     # there are different reasons why a session should be removed, check for all reasons and
                     # use the same method for the actual removal
@@ -75,10 +72,17 @@ def main():
                     # todo, static ip and addresses shouldn't be affected by the timeout rules below.
                     # check if hardtimeout is set and overrun for this session
                     if 'hardtimeout' in cpzones[zoneid] and str(cpzones[zoneid]['hardtimeout']).isdigit():
-                        if int(cpzones[zoneid]['hardtimeout']) > 0:
-                            if time.time() - float(db_client['startTime']) / 60 > int(cpzones[zoneid]['hardtimeout']):
+                        # hardtimeout should be set and we should have collected some session data from the client
+                        if int(cpzones[zoneid]['hardtimeout']) > 0  and float(db_client['startTime']) > 0:
+                            if (time.time() - float(db_client['startTime'])) / 60 > int(cpzones[zoneid]['hardtimeout']):
                                 drop_session = True
-                                drop_session = False
+
+                    # check if idletimeout is set and overrun for this session
+                    if 'idletimeout' in cpzones[zoneid] and str(cpzones[zoneid]['idletimeout']).isdigit():
+                        # idletimeout should be set and we should have collected some session data from the client
+                        if int(cpzones[zoneid]['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
+                            if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzones[zoneid]['idletimeout']):
+                                drop_session = True
 
                     # check session, if it should be active, validate its properties
                     if not drop_session:
