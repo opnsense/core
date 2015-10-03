@@ -29,6 +29,7 @@
     list connected clients for a captive portal zone
 """
 import sys
+import time
 import ujson
 from lib.db import DB
 
@@ -55,11 +56,15 @@ if parameters['output_type'] != 'json':
                'userName': 'username',
                'ipAddress': 'ip_address',
                'macAddress': 'mac_address',
-               'total_bytes': 'total_bytes'
+               'total_bytes': 'total_bytes',
+               'idletime' : 'idletime',
+               'totaltime': 'totaltime'
                }
-    print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-20s' % heading
+    print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-15s %(idletime)-10s %(totaltime)-10s' % heading
     for item in response:
         item['total_bytes'] = (item['bytes_out'] + item['bytes_in'])
-        print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-20s' % item
+        item['idletime'] = time.time() - item['last_accessed']
+        item['totaltime'] = time.time() - item['startTime']
+        print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s %(total_bytes)-15s %(idletime)-10d %(totaltime)-10d' % item
 else:
     print(ujson.dumps(response))
