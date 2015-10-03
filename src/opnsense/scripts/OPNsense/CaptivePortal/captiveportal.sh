@@ -31,9 +31,7 @@ CPDEFAULTTEMPLATE="/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_def
 CPZONES=`cat /usr/local/etc/captiveportal.conf | grep "\[zone_" | sed 's/\[zone_//' | sed 's/\]//'`
 
 # initialize captiveportal work directory
-if [ ! -d $CPWORKDIR ]; then
-  mkdir -p $CPWORKDIR
-fi
+mkdir -p $CPWORKDIR
 
 # startup API dispatcher, forwards captive portal api request to shared OPNsense API
 if [ -f /var/run/lighttpd-api-dispatcher.pid ]; then
