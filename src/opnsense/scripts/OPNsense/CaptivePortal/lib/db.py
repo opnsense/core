@@ -78,6 +78,7 @@ class DB(object):
         response['ipAddress'] = ip_address
         response['macAddress'] = mac_address
         response['startTime'] = time.time()  # record creation = sign-in time
+        response['last_accessed'] = time.time() # last accessed_time = sign-in time
         response['sessionId'] = base64.b64encode(os.urandom(16))  # generate a new random session id
 
         cur = self._connection.cursor()
@@ -89,8 +90,8 @@ class DB(object):
                     """, response)
 
         # add new session
-        cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
-                       VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
+        cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created, last_accessed)
+                       VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime, :last_accessed)
                     """, response)
 
         self._connection.commit()
