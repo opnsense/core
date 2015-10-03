@@ -43,7 +43,7 @@ function lagg_inuse($num) {
 			return true;
 	}
 
-	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
+	if (isset($config['vlans']['vlan'])) {
                 foreach ($config['vlans']['vlan'] as $vlan) {
                         if($vlan['if'] == $a_laggs[$num]['laggif'])
 				return true;
