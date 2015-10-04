@@ -501,15 +501,7 @@ class SystemhealthController extends ApiControllerBase
             }
         }
         ksort($result['data']);
-        $output = [
-            "system" => ["processor","states", "mbuf"],
-            "traffic" => ["lan", "wan", "ipsec"],
-            "packets" => ["wan", "lan", "ipsec"],
-            "quality" => ["GW_WAN"]
-
-        ];
         $result["result"] = "ok";
-        $result["data2"] = $output;
 
         // Category => Items
         return $result;
