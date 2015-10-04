@@ -457,7 +457,7 @@ class SystemhealthController extends ApiControllerBase
 
     /**
      * retrieve descriptive details of rrd
-     * @param string $rrd rrd filename
+     * @param string $rrd rrd category - item
      * @return array result status and data
      */
     private function getRRDdetails($rrd)
@@ -466,15 +466,22 @@ class SystemhealthController extends ApiControllerBase
         $result = array();
         $backend = new Backend();
         $response = $backend->configdpRun("systemhealth list");
-        $output= json_decode($response, true);
-        if (is_array($output) && array_key_exists($rrd, $output)) {
-            $result["result"] = "ok";
-            $result["data"] = $output[$rrd];
-        } else {
-            // always return a valid (empty) data set
-            $result["result"] = "not found";
-            $result["data"] = ["title"=>"","y-axis_label"=>"","field_units"=>[]];
+        $healthList = json_decode($response, true);
+        // search by topic and name, return array with filename
+        if (is_array($healthList)) {
+            foreach ($healthList as $filename => $healthItem) {
+                if ($healthItem['itemName'] .'-' . $healthItem['topic'] == $rrd) {
+                    $result["result"] = "ok";
+                    $healthItem['filename'] = $filename;
+                    $result["data"] = $healthItem;
+                    return $result;
+                }
+            }
         }
+
+        // always return a valid (empty) data set
+        $result["result"] = "not found";
+        $result["data"] = ["title"=>"","y-axis_label"=>"","field_units"=>[], "itemName" => "", "filename" => ""];
         return $result;
     }
 
@@ -485,7 +492,7 @@ class SystemhealthController extends ApiControllerBase
      */
     public function getRRDlistAction()
     {
-        # Suurce of data: filelisting of /var/db/rrd/*.rrd
+        # Source of data: filelisting of /var/db/rrd/*.rrd
         $result = array();
         $backend = new Backend();
         $response = $backend->configdpRun("systemhealth list");
@@ -536,9 +543,13 @@ class SystemhealthController extends ApiControllerBase
 
         $rrd_details=$this->getRRDdetails($rrd)["data"];
 
-        $backend = new Backend();
-        $response = $backend->configdpRun("systemhealth fetch ", array($rrd));
-        $xml = simplexml_load_string($response);
+        if ($rrd_details['filename'] != "") {
+            $backend = new Backend();
+            $response = $backend->configdpRun("systemhealth fetch ", array($rrd_details['filename']));
+            $xml = simplexml_load_string($response);
+        } else {
+            $xml = false;
+        }
 
         if ($xml !== false) {
             // we only use the average databases in any RRD, remove the rest to avoid strange behaviour.

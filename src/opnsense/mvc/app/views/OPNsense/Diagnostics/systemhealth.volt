@@ -188,11 +188,7 @@
                     }
 
                     subitem=data["data"][category][0]; // first sub item
-                    if (category=="system") {
-                        rrd_name = category + '-' + subitem;
-                    } else {
-                        rrd_name = subitem + '-' + category;
-                    }
+                    rrd_name = subitem + '-' + category;
 
                     // create dropdown menu
                     tabs+='<a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button" style="border-left: 1px dashed lightgray;">';
@@ -205,11 +201,7 @@
                     // add subtabs
                     for (var count=0;  count<data["data"][category].length;++count ) {
                         subitem=data["data"][category][count];
-                        if (category=="system") {
-                            rrd_name = category + '-' + subitem;
-                        } else {
-                            rrd_name = subitem + '-' + category;
-                        }
+                        rrd_name = subitem + '-' + category;
 
                         if (subitem==active_subitem) {
                             tabs += '<li class="active"><a data-toggle="tab"  onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'"><i class="fa fa-check-square"></i> ' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';

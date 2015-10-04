@@ -46,6 +46,10 @@ for filename in glob.glob('%s/*.rrd' % rrd_reports_dir):
     if rrdFilename.split('-')[0] == 'system' and rrdFilename.find('-') > -1:
         topic = rrdFilename.split('-')[0]
         itemName = '-'.join(rrdFilename.split('-')[1:])
+    elif rrdFilename.find('-') == -1:
+        # set topic for items without one
+        topic = 'services'
+        itemName = rrdFilename.split('.')[0]
     else:
         topic = rrdFilename.split('-')[-1]
         itemName = '-'.join(rrdFilename.split('-')[:-1])
