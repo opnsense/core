@@ -114,8 +114,8 @@
 						<li></li><li></li><li></li>
 
 
-						<li><a href="/help.php?page=firewall_virtual_ip.php" target="_blank" title="Help for items on this page">Help</a></li>
-						<li class="active"><a href="/index.php?logout">Logout</a></li>
+						<li><a href="/help.php?page=firewall_virtual_ip.php" target="_blank" title="{{ lang._('Help for items on this page') }}">{{ lang._('Help') }}</a></li>
+						<li class="active"><a href="/index.php?logout">{{ lang._('Logout') }}</a></li>
 					</ul>
 
 				</div>
