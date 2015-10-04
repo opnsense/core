@@ -864,13 +864,13 @@ include("head.inc");
                             <td>
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-                                <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("network") as $alias):
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("network") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['src'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("net");?>">
+                                <optgroup label="<?=gettext("Networks");?>">
   <?php                          foreach (formNetworks() as $ifent => $ifdesc):
   ?>
                                   <option value="<?=$ifent;?>" <?= $pconfig['src'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
@@ -929,13 +929,13 @@ include("head.inc");
                             <td >
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  id="srcbeginport" name="srcbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['srcbeginport'];?>">(<?=gettext("other"); ?>)</option>
-                                <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("port") as $alias):
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("port") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?= $pconfig['srcbeginport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("well known ports");?>">
+                                <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['srcbeginport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                            foreach ($wkports as $wkport => $wkportdesc): ?>
                                   <option value="<?=$wkport;?>" <?= $wkport == $pconfig['srcbeginport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
@@ -946,13 +946,13 @@ include("head.inc");
                             <td>
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>  id="srcendport" name="srcendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['srcendport'];?>">(<?=gettext("other"); ?>)</option>
-                                <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("port") as $alias):
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("port") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?= $pconfig['srcendport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("well known ports");?>">
+                                <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['srcendport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                          foreach ($wkports as $wkport => $wkportdesc): ?>
                                   <option value="<?=$wkport;?>" <?= $wkport == $pconfig['srcendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
@@ -997,13 +997,13 @@ include("head.inc");
                           <td>
                             <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                               <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-                              <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("network") as $alias):
+                              <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("network") as $alias):
   ?>
                                 <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['dst'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
   <?php                          endforeach; ?>
                               </optgroup>
-                              <optgroup label="<?=gettext("net");?>">
+                              <optgroup label="<?=gettext("Networks");?>">
   <?php                          foreach (formNetworks() as $ifent => $ifdesc):
   ?>
                                 <option value="<?=$ifent;?>" <?= $pconfig['dst'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
@@ -1051,13 +1051,13 @@ include("head.inc");
                             <td >
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="dstbeginport" name="dstbeginport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['dstbeginport'];?>">(<?=gettext("other"); ?>)</option>
-                                <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("port") as $alias):
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("port") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?= $pconfig['dstbeginport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("well known ports");?>">
+                                <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['dstbeginport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                            foreach ($wkports as $wkport => $wkportdesc): ?>
                                   <option value="<?=$wkport;?>" <?= $wkport == $pconfig['dstbeginport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
@@ -1068,13 +1068,13 @@ include("head.inc");
                             <td>
                               <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> id="dstendport" name="dstendport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['dstendport'];?>">(<?=gettext("other"); ?>)</option>
-                                <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("port") as $alias):
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("port") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?= $pconfig['dstendport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("well known ports");?>">
+                                <optgroup label="<?=gettext("Well-known ports");?>">
                                   <option value="any" <?= $pconfig['dstendport'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
   <?php                          foreach ($wkports as $wkport => $wkportdesc): ?>
                                   <option value="<?=$wkport;?>" <?= $wkport == $pconfig['dstendport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>

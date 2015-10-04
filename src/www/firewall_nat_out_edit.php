@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2014-2015 Deciso B.V.
   Copyright (C) 2004 Scott Ullrich
@@ -95,7 +96,7 @@ function formTranslateAddresses() {
     }
 
     // add Aliases
-    foreach (legacy_list_aliasses("network") as $alias) {
+    foreach (legacy_list_aliases("network") as $alias) {
         if ($alias['type'] == "host") {
             $retval[$alias['name']] = $alias['name'];;
         }
@@ -470,8 +471,8 @@ include("head.inc");
                               <option data-other=true value="<?=$pconfig['source'];?>" <?=!is_alias($pconfig['source']) && !in_array($pconfig['source'],array('(self)','any'))  ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <option value="any" <?=$pconfig['source'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any");?></option>
                               <option value="(self)" <?=$pconfig['source'] == "(self)" ? "selected=\"selected\"" : ""; ?>><?=gettext("This Firewall (self)");?></option>
-                              <optgroup label="<?=gettext("aliasses");?>">
-<?php                            foreach (legacy_list_aliasses("network") as $alias):
+                              <optgroup label="<?=gettext("Aliases");?>">
+<?php                            foreach (legacy_list_aliases("network") as $alias):
 ?>
                                 <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['source'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
 <?php                            endforeach; ?>
@@ -525,8 +526,8 @@ include("head.inc");
                             <select name="destination" id="destination" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                               <option data-other=true value="<?=$pconfig['destination'];?>" <?=!is_alias($pconfig['destination']) && $pconfig['destination'] != 'any' ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <option value="any" <?=$pconfig['destination'] == "any" ? "selected=\"selected\"" : ""; ?>><?=gettext("any");?></option>
-                              <optgroup label="<?=gettext("aliasses");?>">
-<?php                        foreach (legacy_list_aliasses("network") as $alias):
+                              <optgroup label="<?=gettext("Aliases");?>">
+<?php                        foreach (legacy_list_aliases("network") as $alias):
 ?>
                                 <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['destination'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
 <?php                          endforeach; ?>

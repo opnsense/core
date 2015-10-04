@@ -154,7 +154,7 @@ $( document ).ready(function() {
     var id = $(this).attr("id").split('_').pop(-1);
     BootstrapDialog.show({
         type:BootstrapDialog.TYPE_INFO,
-        title: "<?= gettext("Aliasses");?>",
+        title: "<?= gettext("Aliases");?>",
         message: "<?=gettext("Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!");?>",
         buttons: [{
                 label: "<?= gettext("No");?>",

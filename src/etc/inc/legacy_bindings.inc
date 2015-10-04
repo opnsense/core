@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -84,10 +85,11 @@ function legacy_html_escape_form_data(&$settings)
 }
 
 /**
- *  list aliasses by type
+ *  list aliases by type
  *  @param string $type type port or network
  */
-function legacy_list_aliasses($type) {
+function legacy_list_aliases($type)
+{
     global $config;
     $result = array();
     if (isset($config['aliases']['alias'])) {
