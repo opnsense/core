@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2014 Deciso B.V.
   Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -347,13 +348,13 @@ include("head.inc");
                             <td>
                               <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-                                <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("network") as $alias):
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("network") as $alias):
   ?>
                                   <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['src'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
   <?php                          endforeach; ?>
                                 </optgroup>
-                                <optgroup label="<?=gettext("net");?>">
+                                <optgroup label="<?=gettext("Networks");?>">
   <?php                          foreach (formNetworks() as $ifent => $ifdesc):
   ?>
                                   <option value="<?=$ifent;?>" <?= $pconfig['src'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
@@ -398,13 +399,13 @@ include("head.inc");
                           <td>
                             <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                               <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-                              <optgroup label="<?=gettext("aliasses");?>">
-  <?php                        foreach (legacy_list_aliasses("network") as $alias):
+                              <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("network") as $alias):
   ?>
                                 <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['dst'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
   <?php                          endforeach; ?>
                               </optgroup>
-                              <optgroup label="<?=gettext("net");?>">
+                              <optgroup label="<?=gettext("Networks");?>">
   <?php                          foreach (formNetworks() as $ifent => $ifdesc):
   ?>
                                 <option value="<?=$ifent;?>" <?= $pconfig['dst'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
