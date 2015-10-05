@@ -342,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($pconfig['iketype']) && $pconfig['iketype'] != "ikev1" && $pconfig['iketype'] != "ikev2") {
-        $input_errors[] = gettext("Valid arguments for IKE type is v1 or v2");
+        $input_errors[] = gettext('Invalid argument for key exchange protocol version.');
     }
 
     /* build our encryption algorithms array */
