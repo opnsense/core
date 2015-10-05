@@ -118,16 +118,16 @@
                 <NPTEdit url="/firewall_nat_npt_edit.php*"/>
             </NPT>
         </NAT>
-        <Rules url="/firewall_rules.php">
+        <Rules url="/firewall_rules.php" cssClass="fa fa-check">
             <RulesEdit url="/firewall_rules_edit.php*"/>
             <Floating url="/firewall_rules.php?if=FloatingRules"/>
             <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
-        <Schedules url="/firewall_schedule.php">
+        <Schedules url="/firewall_schedule.php" cssClass="fa fa-calendar">
             <SchedulesEdit url="/firewall_schedule_edit.php*"/>
         </Schedules>
-        <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper"/>
-        <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php">
+        <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper" cssClass="fa fa-filter"/>
+        <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
             <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
         <Diagnostics order="900" VisibleName="Diagnostics" cssClass="glyphicon glyphicon-wrench">
