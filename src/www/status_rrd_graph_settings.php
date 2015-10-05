@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2007 Seth Mos <seth.mos@dds.nl>
@@ -98,7 +99,7 @@ foreach($databases as $database) {
 	}
 }
 
-$pgtitle = array(gettext("Status"),gettext("RRD Graphs"));
+$pgtitle = array(gettext('System'), gettext('Settings'), gettext('RRD Graphs'));
 include("head.inc");
 
 ?>
@@ -115,8 +116,6 @@ include("head.inc");
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-
-				<? include("status_rrd_graph_tabs.inc"); ?>
 
 					<div class="tab-content content-box col-xs-12">
 

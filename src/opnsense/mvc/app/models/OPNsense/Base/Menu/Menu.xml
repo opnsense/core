@@ -54,6 +54,7 @@
             <Miscellaneous url="/system_advanced_misc.php"/>
             <Tunables VisibleName="Tunables" url="/system_advanced_sysctl.php"/>
             <Notifications url="/system_advanced_notifications.php"/>
+            <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph_settings.php"/>
         </Settings>
         <Wizard url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>
@@ -247,9 +248,6 @@
         </LoadBalancer>
         <NTP url="/status_ntpd.php"/>
         <OpenVPN url="/status_openvpn.php"/>
-        <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph.php">
-            <Settings url="/status_rrd_graph_settings.php"/>
-        </RRDGraphs>
         <Services url="/status_services.php">
             <ServicesActions url="/status_services.php?*"/>
         </Services>
