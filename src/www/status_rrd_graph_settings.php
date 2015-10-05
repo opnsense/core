@@ -33,26 +33,20 @@ require_once("interfaces.inc");
 
 $pconfig['enable'] = isset($config['rrd']['enable']);
 
-if ($_POST['ResetRRD']) {
-	mwexec('/bin/rm /var/db/rrd/*');
-	enable_rrd_graphing();
-	setup_gateways_monitor();
-	$savemsg = "RRD data has been cleared. New RRD files have been generated.";
-} elseif ($_POST) {
-	unset($input_errors);
+if ($_POST) {
 	$pconfig = $_POST;
 
-	/* input validation */
-	/* none */
-
-        if (!$input_errors) {
-                $config['rrd']['enable'] = $_POST['enable'] ? true : false;
-                write_config();
-
-                $retval = 0;
-                $retval = enable_rrd_graphing();
-                $savemsg = get_std_save_message();
+	if (isset($pconfig['ResetRRD'])) {
+		$savemsg = gettext('RRD data has been cleared.');
+		mwexec('/bin/rm /var/db/rrd/*');
+	} else {
+		$config['rrd']['enable'] = $_POST['enable'] ? true : false;
+		$savemsg = get_std_save_message();
+		write_config();
 	}
+
+	enable_rrd_graphing();
+	setup_gateways_monitor();
 }
 
 $pgtitle = array(gettext('System'), gettext('Settings'), gettext('RRD Graphs'));
@@ -68,7 +62,6 @@ include("head.inc");
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
