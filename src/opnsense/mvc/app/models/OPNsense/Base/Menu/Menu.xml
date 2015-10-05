@@ -1,8 +1,7 @@
 <menu>
-    <!-- Core menu system including legacy stuff -->
     <User order="0" cssClass="glyphicon glyphicon-user">
-        <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php"/>
-        <Logout VisibleName="Logout" url="/index.php?logout"/>
+        <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
+        <Logout VisibleName="Logout" url="/index.php?logout" cssClass="fa fa-sign-out"/>
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <CertificateManager VisibleName="Certificate Manager" cssClass="fa fa-certificate">
@@ -140,7 +139,6 @@
             <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
         </Diagnostics>
     </Firewall>
-
     <Services order="4" cssClass="glyphicon glyphicon-cog">
         <CaptivePortal VisibleName="Captive Portal" url="/services_captiveportal_zones.php">
             <Edit url="/services_captiveportal.php?zone=*"/>
@@ -198,7 +196,6 @@
             <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
     </Services>
-
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
         <IPsec url="/vpn_ipsec.php">
             <IPsecPhase1Edit url="/vpn_ipsec_phase1.php*"/>
@@ -224,7 +221,6 @@
             <PPTPUsersEdit url="/vpn_pptp_users_edit.php"/>
         </PPTP>
     </VPN>
-
     <Status order="6" cssClass="glyphicon glyphicon-tasks">
         <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php">
             <CaptivePortalDetails url="/status_captiveportal.php?*"/>
@@ -275,13 +271,11 @@
             </Proxy>
             <Settings url="/diag_logs_settings.php"/>
         </SystemLogs>
-
         <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php">
             <TrafficGraphsDetails url="/status_graph.php?*"/>
         </TrafficGraphs>
         <UPnP VisibleName="Universal Plug and Play" url="/status_upnp.php"/>
     </Status>
-
     <Diagnostics order="7" cssClass="glyphicon glyphicon-stats">
         <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
         <Authentication url="/diag_authentication.php"/>
@@ -302,7 +296,6 @@
         <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
         <Traceroute url="/diag_traceroute.php"/>
     </Diagnostics>
-
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
         <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
@@ -314,5 +307,4 @@
                      IsExternal="Y"/>
         <UserForum VisibleName="User Forum" url="https://forum.opnsense.org/" IsExternal="Y"/>
     </Help>
-
 </menu>
