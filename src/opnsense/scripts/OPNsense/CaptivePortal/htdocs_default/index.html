@@ -50,7 +50,8 @@
                         if (data['clientState'] == 'AUTHORIZED') {
                             window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
                         } else {
-                            // todo implement alert for login failure
+                            $("#inputUsername").val("");
+                            $("#inputPassword").val("");
                             $("#errorMSGtext").html("authentication failed");
                             $("#alertMSG").removeClass("hidden");
                         }
