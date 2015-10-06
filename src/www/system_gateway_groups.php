@@ -39,7 +39,7 @@ function openvpn_resync_gwgroup($gwgroupname = "") {
 	global $g, $config;
 
 	if ($gwgroupname <> "") {
-		if (is_array($config['openvpn']['openvpn-server'])) {
+		if (isset($config['openvpn']['openvpn-server'])) {
 			foreach ($config['openvpn']['openvpn-server'] as & $settings) {
 				if ($gwgroupname == $settings['interface']) {
 					log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " server " . $settings["description"] . ".");
@@ -48,7 +48,7 @@ function openvpn_resync_gwgroup($gwgroupname = "") {
 			}
 		}
 
-		if (is_array($config['openvpn']['openvpn-client'])) {
+		if (isset($config['openvpn']['openvpn-client'])) {
 			foreach ($config['openvpn']['openvpn-client'] as & $settings) {
 				if ($gwgroupname == $settings['interface']) {
 					log_error("Resyncing OpenVPN for gateway group " . $gwgroupname . " client " . $settings["description"] . ".");
