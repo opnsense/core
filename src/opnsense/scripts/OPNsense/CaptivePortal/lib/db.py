@@ -78,7 +78,6 @@ class DB(object):
         response['ipAddress'] = ip_address
         response['macAddress'] = mac_address
         response['startTime'] = time.time()  # record creation = sign-in time
-        response['last_accessed'] = time.time() # last accessed_time = sign-in time
         response['sessionId'] = base64.b64encode(os.urandom(16))  # generate a new random session id
 
         cur = self._connection.cursor()
@@ -90,8 +89,8 @@ class DB(object):
                     """, response)
 
         # add new session
-        cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created, last_accessed)
-                       VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime, :last_accessed)
+        cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
+                       VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
                     """, response)
 
         self._connection.commit()
@@ -144,7 +143,7 @@ class DB(object):
                         ,       CASE WHEN si.packets_out IS NULL THEN 0 ELSE si.packets_out END packets_out
                         ,       CASE WHEN si.bytes_in IS NULL THEN 0 ELSE si.bytes_in END bytes_in
                         ,       CASE WHEN si.bytes_out IS NULL THEN 0 ELSE si.bytes_out END bytes_out
-                        ,       CASE WHEN si.last_accessed IS NULL THEN 0 ELSE si.last_accessed END last_accessed
+                        ,       CASE WHEN si.last_accessed IS NULL THEN cc.created ELSE si.last_accessed END last_accessed
                         FROM    cp_clients cc
                         LEFT JOIN session_info si ON si.zoneid = cc.zoneid AND si.sessionid = cc.sessionid
                         WHERE   cc.zoneid = :zoneid
