@@ -24,7 +24,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-
     package : configd
     function: unix domain socket process worker process
 """
@@ -457,12 +456,19 @@ class Action(object):
                     return 'Execute error'
             elif self.type.lower() == 'script_output':
                 try:
-                    with tempfile.NamedTemporaryFile() as output_stream:
-                        subprocess.check_call(script_command, env=self.config_environment, shell=True,
-                                                              stdout=output_stream, stderr=subprocess.STDOUT)
-                        output_stream.seek(0)
-                        script_output = output_stream.read()
-                        return script_output
+                    with tempfile.NamedTemporaryFile() as error_stream:
+                        with tempfile.NamedTemporaryFile() as output_stream:
+                            subprocess.check_call(script_command, env=self.config_environment, shell=True,
+                                                                  stdout=output_stream, stderr=error_stream)
+                            output_stream.seek(0)
+                            error_stream.seek(0)
+                            script_output = output_stream.read()
+                            script_error_output = error_stream.read()
+                            if len(script_error_output) > 0:
+                                syslog.syslog(syslog.LOG_ERR, '[%s] Script action stderr returned "%s"' % (message_uuid,
+                                              script_error_output.strip()[:255])
+                                              )
+                            return script_output
                 except:
                     syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
                                                                                        traceback.format_exc()))
