@@ -10,7 +10,6 @@ MSGMERGE=	${_MSGMERGE} -U -N --backup=off
 
 PERL_DIR=	/usr/local/lib/perl5/site_perl
 PERL_NAME=	Locale/Maketext/Extract/Plugin
-PERL_CP!=	cp -v ${.CURDIR}/Volt.pm ${PERL_DIR}/${PERL_NAME}/
 
 LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 
@@ -48,6 +47,8 @@ MERGE+=		merge-${LANG}
 .endfor
 
 ${TEMPLATE}:
+	# bootstrap Volt template, fail means no xgettext.pl found
+	@cp ${.CURDIR}/Volt.pm ${PERL_DIR}/${PERL_NAME}/
 	@: > ${TEMPLATE}.pot
 	cd ${.CURDIR}/.. && \
 	    ${XGETTEXT_PL} -D src -p ${.CURDIR} -o ${TEMPLATE}.pot
