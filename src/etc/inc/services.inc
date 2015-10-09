@@ -1920,6 +1920,7 @@ function services_dnsmasq_configure()
 		$cmd = "/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}";
 		//log_error("dnsmasq command: {$cmd}");
 		mwexec_bg($cmd);
+		system_dhcpleases_configure();
 		unset($args);
 
 		if (file_exists("/var/run/booting"))
@@ -1949,6 +1950,7 @@ function services_unbound_configure()
 			sleep(1);
 
 		sync_unbound_service();
+		system_dhcpleases_configure();
 		if (file_exists("/var/run/booting"))
 			echo gettext("done.") . "\n";
 	}
