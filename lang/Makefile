@@ -1,12 +1,8 @@
-_XGETTEXT!=	which xgettext || echo true
-XGETTEXT=	${_XGETTEXT} -L PHP --from-code=UTF-8 -F --strict --debug
-_XGETTEXT_PL!=	which xgettext.pl || echo true
-XGETTEXT_PL=	${_XGETTEXT_PL} -P Locale::Maketext::Extract::Plugin::Volt \
+XGETTEXT=	xgettext -L PHP --from-code=UTF-8 -F --strict --debug
+XGETTEXT_PL=	xgettext.pl -P Locale::Maketext::Extract::Plugin::Volt \
 		-u -w -W
-_MSGFMT!=	which msgfmt || echo true
-MSGFMT=		${_MSGFMT} --strict
-_MSGMERGE!=	which msgmerge || echo true
-MSGMERGE=	${_MSGMERGE} -U -N --backup=off
+MSGMERGE=	msgmerge -U -N --backup=off
+MSGFMT=		msgfmt --strict
 
 PERL_DIR=	/usr/local/lib/perl5/site_perl
 PERL_NAME=	Locale/Maketext/Extract/Plugin
@@ -47,7 +43,6 @@ MERGE+=		merge-${LANG}
 .endfor
 
 ${TEMPLATE}:
-	# bootstrap Volt template, fail means no xgettext.pl found
 	@cp ${.CURDIR}/Volt.pm ${PERL_DIR}/${PERL_NAME}/
 	@: > ${TEMPLATE}.pot
 	cd ${.CURDIR}/.. && \
