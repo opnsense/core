@@ -122,8 +122,8 @@ if [ "$pkg_running" == "" ]; then
               RQUERY=$(pkg rquery %v opnsense-update)
               if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
                 upgrade_needs_reboot="1"
-              #elif opnsense-update -c; then
-              #  upgrade_needs_reboot="1"
+              elif opnsense-update -c > /dev/null; then
+                upgrade_needs_reboot="1"
               fi
 
               # First check if there are new packages that need to be installed
