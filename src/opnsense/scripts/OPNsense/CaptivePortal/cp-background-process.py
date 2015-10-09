@@ -106,6 +106,8 @@ def main():
             time.sleep(5)
         except KeyboardInterrupt:
             break
+        except SystemExit:
+            break
         except:
             syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
 
