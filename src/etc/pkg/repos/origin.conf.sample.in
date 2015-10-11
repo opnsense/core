@@ -1,6 +1,6 @@
 OPNsense: {
   fingerprints: "/usr/local/etc/pkg/fingerprints/OPNsense",
-  url: "pkg+%%CORE_PACKAGESITE%%/${ABI}/%%CORE_REPOSITORY%%",
+  url: "pkg+%%CORE_PACKAGESITE%%/${ABI}/15.7/%%CORE_REPOSITORY%%",
   signature_type: "fingerprints",
   mirror_type: "srv",
   priority: 11,
