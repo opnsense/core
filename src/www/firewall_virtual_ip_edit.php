@@ -205,11 +205,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $toapplylist = array();
         }
         if (isset($id)) {
-            if (isset($toapplylist[$id])) {
-                $toapplylist[$id] = $a_vip[$id];
-            } else {
-                $toapplylist[] = $a_vip[$id];
-            }
+            // save existing content before changing it
+            $toapplylist[$id] = $a_vip[$id];
+        } else {
+            // new entry, no old data
+            $toapplylist[count($a_vip)] = array();
         }
 
         if (isset($id)) {
