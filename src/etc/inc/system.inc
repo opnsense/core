@@ -1378,19 +1378,11 @@ function system_firmware_configure()
 	copy("${origin_conf}.sample", $origin_conf);
 
 	if (isset($config['system']['firmware']['mirror'])) {
-		/* XXX create a proper backend call */
-		mwexecf(
-			'/usr/local/sbin/opnsense-update -sm %s',
-			str_replace('/', '\/', $config['system']['firmware']['mirror'])
-		);
+		configd_run('firmware mirror ' . escapeshellarg(str_replace('/', '\/', $config['system']['firmware']['mirror'])));
 	}
 
 	if (isset($config['system']['firmware']['flavour'])) {
-		/* XXX create a proper backend call */
-		mwexecf(
-			'/usr/local/sbin/opnsense-update -sn %s',
-			str_replace('/', '\/', $config['system']['firmware']['flavour'])
-		);
+		configd_run('firmware flavour ' . escapeshellarg(str_replace('/', '\/', $config['system']['firmware']['flavour'])));
 	}
 }
 
