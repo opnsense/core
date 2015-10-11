@@ -158,8 +158,8 @@
         <!-- page footer -->
 		<footer class="page-foot col-sm-push-2">
 			<div class="container-fluid">
-				<a target="_blank" href="https://www.opnsense.org/" class="redlnk">OPNsense</a> is &copy;2014 - 2015 by <a href="http://www.deciso.com" class="tblnk">Deciso B.V.</a> All Rights Reserved.
-				[<a href="/license.php" class="tblnk">view license</a>]
+				<a target="_blank" href="https://opnsense.org/" class="redlnk">OPNsense</a> (c) 2014-2015 <a href="https://www.deciso.com" class="tblnk">Deciso B.V.</a>
+				(<a href="/license.php" class="tblnk">{{ lang._('view license') }}</a>)
 			</div>
 		</footer>
 

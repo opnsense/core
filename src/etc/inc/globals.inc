@@ -42,7 +42,7 @@ $g = array(
 	"product_website" => "https://opnsense.org",
 	"product_email" => "project@opnsense.org",
 	"product_copyright_owner" => "Deciso B.V.",
-	"product_copyright_years" => "2014 - 2015",
+	"product_copyright_years" => "2014-2015",
 	"product_copyright_url" => "https://www.deciso.com/",
 	"latest_config" => "11.2",
 );
