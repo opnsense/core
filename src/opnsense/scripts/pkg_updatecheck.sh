@@ -118,21 +118,11 @@ if [ "$pkg_running" == "" ]; then
                 download_size="none"
               fi
 
-              # XXX backwards compat
-              LOCAL=opnsense-update
-              if pkg query %n os-update > /dev/null; then
-                LOCAL=os-update
-              fi
-              REMOTE=opnsense-update
-              if pkg rquery %n os-update > /dev/null; then
-                REMOTE=os-update
-              fi
-
-              LQUERY=$(pkg query %v ${LOCAL})
-              RQUERY=$(pkg rquery %v ${REMOTE})
-
-              # only version change requires reboot
+              LQUERY=$(pkg query %v opnsense-update)
+              RQUERY=$(pkg rquery %v opnsense-update)
               if [ "${LQUERY%%_*}" != "${RQUERY%%_*}" ]; then
+                upgrade_needs_reboot="1"
+              elif opnsense-update -c > /dev/null; then
                 upgrade_needs_reboot="1"
               fi
 
