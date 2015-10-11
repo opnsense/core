@@ -35,8 +35,7 @@
                 <label>Ignore hosts in access.log</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>
-                    <![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type subnet adresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -46,8 +45,7 @@
                 <label>Use alternate DNS-servers</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>
-                    <![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>]]></help>
+                <help><![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>]]></help>
                 <hint>Type IP adresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -115,16 +113,14 @@
                 <id>proxy.general.cache.local.l1</id>
                 <label>Number of first-level subdirectories</label>
                 <type>text</type>
-                <help>
-                    <![CDATA[Enter the number of first-level subdirectories for the local cache (default is 16).]]></help>
+                <help><![CDATA[Enter the number of first-level subdirectories for the local cache (default is 16).]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.general.cache.local.l2</id>
                 <label>Number of second-level subdirectories</label>
                 <type>text</type>
-                <help>
-                    <![CDATA[Enter the number of first-level subdirectories for the local cache (default is 256).]]></help>
+                <help><![CDATA[Enter the number of first-level subdirectories for the local cache (default is 256).]]></help>
                 <advanced>true</advanced>
             </field>
         </subtab>
@@ -151,15 +147,13 @@
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
                 <label>Overall bandwidth throtteling (Kbps)</label>
                 <type>text</type>
-                <help>
-                    <![CDATA[Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).]]></help>
+                <help><![CDATA[Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.perHostTrotteling</id>
                 <label>Per host bandwidth throtteling (Kbps)</label>
                 <type>text</type>
-                <help>
-                    <![CDATA[Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).]]></help>
+                <help><![CDATA[Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).]]></help>
             </field>
         </subtab>
     </tab>
@@ -194,8 +188,7 @@
                 <id>proxy.forward.addACLforInterfaceSubnets</id>
                 <label>Allow interface subnets</label>
                 <type>checkbox</type>
-                <help>
-                    <![CDATA[When enabled the subnets of the selected interfaces will be added to the allow access list.]]></help>
+                <help><![CDATA[When enabled the subnets of the selected interfaces will be added to the allow access list.]]></help>
                 <advanced>true</advanced>
             </field>
         </subtab>
@@ -219,8 +212,7 @@
                             <id>proxy.forward.ftpTransparentMode</id>
                             <label>Enable Transparent mode</label>
                             <type>checkbox</type>
-                            <help>
-                                <![CDATA[Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.]]></help>
+                            <help><![CDATA[Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.]]></help>
                         </field>
             -->
         </subtab>
@@ -230,8 +222,7 @@
                 <label>Allowed Subnets</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>
-                    <![CDATA[Type subnets you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type subnets you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type subnet adresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
@@ -240,8 +231,7 @@
                 <label>Unrestricted IP adresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>
-                    <![CDATA[Type IP adresses you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IP adresses you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type IP adresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
@@ -250,8 +240,7 @@
                 <label>Banned host IP adresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help>
-                    <![CDATA[Type IP adresses you want to deny acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <help><![CDATA[Type IP adresses you want to deny acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type IP adresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
