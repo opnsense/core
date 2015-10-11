@@ -157,9 +157,10 @@ if ($has_crashed) {
     echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary pull-right\" style=\"margin-right: 8px;\" value=\"yes\">" . gettext('Submit this report') . "</button>";
     echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
     echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
-    echo "<hr><p>" . gettext("You can help us further by optionally adding your contact information and a problem description.") . "</p>";
-    echo "<p><input type=\"text\" placeholder=\"your@email.com\" name=\"Email\"></p>";
-    echo "<p><textarea rows=\"5\" placeholder=\"A short problem description or steps to reproduce.\" name=\"Desc\"></textarea></p>";
+    echo '<hr><p>' . gettext('You can help us further by adding your contact information and a problem description. ' .
+        'Please note that providing your contact information greatly improves the chances of bugs being fixed.') . '</p>';
+    echo sprintf('<p><input type="text" placeholder="%s" name="Email"></p>', gettext('your@email.com'));
+    echo sprintf('<p><textarea rows="5" placeholder="%s" name="Desc"></textarea></p>', gettext('A short problem description or steps to reproduce.'));
     echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
     foreach ($crash_reports as $report => $content) {
         echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
