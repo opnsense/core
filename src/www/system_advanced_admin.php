@@ -683,5 +683,5 @@ if ($restart_webgui) {
     ob_flush();
     flush();
     log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-    configd_run("webgui restart 2", true);
+    mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
 }
