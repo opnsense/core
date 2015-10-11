@@ -232,15 +232,6 @@ minicron 3600 /var/run/expire_accounts.pid /usr/local/etc/rc.expireaccounts
 # Start alias url updater every 24 hours
 minicron 86400 /var/run/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
 
-# Check for GEOM mirrors
-GMIRROR_STATUS=`/sbin/gmirror status`
-if [ "${GMIRROR_STATUS}" != "" ]; then
-	# Using a flag file at bootup saves an expensive exec/check on each page load.
-	touch /var/run/gmirror_active
-	# Setup monitoring/notifications
-	minicron 60 /var/run/gmirror_status_check.pid /usr/local/sbin/gmirror_status_check.php
-fi
-
 /usr/local/sbin/beep.sh start
 
 /usr/local/etc/rc.initial.banner
