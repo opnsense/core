@@ -158,6 +158,9 @@ class FirmwareController extends ApiControllerBase
                 $expanded = explode('|||', $line);
                 $translated = array();
                 $index = 0;
+                if (count($expanded) != count($keys)) {
+                    continue;
+                }
                 foreach ($keys as $key) {
                     $translated[$key] = $expanded[$index++];
                 }
