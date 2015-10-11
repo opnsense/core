@@ -26,7 +26,7 @@
         <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh">
             <Synchronization url="/system_hasync.php"/>
-            <CARPStatus order="100" visibleName="CARP Status" url="/carp_status.php"/>
+            <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
         </HighAvailability>
         <Routes cssClass="fa fa-wrench">
             <All url="/system_routes.php">
