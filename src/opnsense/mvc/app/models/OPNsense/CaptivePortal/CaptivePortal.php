@@ -50,4 +50,18 @@ class CaptivePortal extends BaseModel
         }
         return null;
     }
+
+    /**
+     * check if module is enabled
+     * @return bool is the captive portal enabled (1 or more active zones)
+     */
+    public function isEnabled()
+    {
+        foreach ($this->zones->zone->__items as $zone) {
+            if ((string)$zone->enabled == "1") {
+                return true;
+            }
+        }
+        return false;
+    }
 }
