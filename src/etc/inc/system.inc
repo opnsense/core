@@ -1373,16 +1373,23 @@ function system_firmware_configure()
 {
 	global $config;
 
+	/* our own ABI prefix on the mirror */
+	$osabi = '15.7';
+
 	/* rewrite the config via the defaults */
 	$origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
 	copy("${origin_conf}.sample", $origin_conf);
 
 	if (isset($config['system']['firmware']['mirror'])) {
-		configd_run('firmware mirror ' . escapeshellarg(str_replace('/', '\/', $config['system']['firmware']['mirror'])));
+		configd_run('firmware mirror ' . escapeshellarg(
+			str_replace('/', '\/', $config['system']['firmware']['mirror'])
+		));
 	}
 
 	if (isset($config['system']['firmware']['flavour'])) {
-		configd_run('firmware flavour ' . escapeshellarg(str_replace('/', '\/', $config['system']['firmware']['flavour'])));
+		configd_run('firmware flavour ' . escapeshellarg(
+			str_replace('/', '\/', $osabi . '/' . $config['system']['firmware']['flavour'])
+		));
 	}
 }
 
