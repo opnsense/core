@@ -140,11 +140,16 @@ class SimpleXMLRPC_Client
             )
         ));
 
-        $this->response_received = file_get_contents($this->url, false, $context);
+        $this->response_received = @file_get_contents($this->url, false, $context);
+        if ($this->response_received === false) {
+            $this->error = 'fetch error. remote host down?';
+            return false;
+        }
 
         if ($this->debug) {
             echo ">>> received : \n".$this->response_received."\n";
         }
+
         $this->message = new IXR_Message($this->response_received);
         if (!$this->message->parse()) {
             $this->error = 'parse error. not well formed';
@@ -153,6 +158,7 @@ class SimpleXMLRPC_Client
             $this->error = $this->message->faultString;
             return false;
         }
+
         return true;
     }
 
