@@ -655,14 +655,6 @@ EOD;
                                 continue;
                             }
                             if (!empty($ph2ent['natlocalid'])) {
-                                $natleftsubnet_data =  ipsec_idinfo_to_cidr($ph2ent['natlocalid'], false, $ph2ent['mode']);
-                                if ($ph2ent['natlocalid']['type'] != "address") {
-                                    if (is_subnet($natleftsubnet_data))
-                                        $leftsubnet_data = "{$natleftsubnet_data}|{$leftsubnet_data}";
-                                } else {
-                                    if (is_ipaddr($natleftsubnet_data))
-                                        $leftsubnet_data = "{$natleftsubnet_data}|{$leftsubnet_data}";
-                                }
                                 $natfilterrules = true;
                             }
                         }
