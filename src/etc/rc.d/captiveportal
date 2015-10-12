@@ -28,9 +28,12 @@
 . /etc/rc.subr
 
 name=captiveportal
+rcvar=captiveportal_enable
 start_precmd=captiveportal_prestart
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
+
+[ -z "$captiveportal_enable" ]       && captiveportal_enable="NO"
 
 captiveportal_load_rc_config()
 {
