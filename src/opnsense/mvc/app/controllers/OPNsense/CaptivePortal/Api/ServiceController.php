@@ -31,6 +31,7 @@ namespace OPNsense\CaptivePortal\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\CaptivePortal\CaptivePortal;
+use \Phalcon\Filter;
 
 /**
  * Class ServiceController
@@ -72,7 +73,7 @@ class ServiceController extends ApiControllerBase
                     $status = "error reloading captive portal template";
                 }
             } else {
-                $status = "error reloading captive portal rules (".$bckresult.")";
+                $status = "error reloading captive portal rules (" . $bckresult . ")";
             }
 
             return array("status" => $status);
@@ -80,4 +81,38 @@ class ServiceController extends ApiControllerBase
             return array("status" => "failed");
         }
     }
+
+    /**
+     * @param null $name template name
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getTemplateAction($name = null)
+    {
+        // get template name
+        $paramfilter = new Filter();
+        if ($name != null) {
+            $templatename = $paramfilter->sanitize($name, 'alphanum');
+        } else {
+            $templatename = 'default';
+        }
+
+        // request template data and output result (zipfile)
+        $backend = new Backend();
+        $response = $backend->configdpRun("captiveportal fetch_template", array($templatename));
+        $result = json_decode($response, true);
+        if ($result != null) {
+            $response = $result['payload'];
+            $this->response->setContentType('application/octet-stream', 'UTF-8');
+            $this->response->setHeader(
+                "Content-disposition:",
+                "attachment; filename=template_" . $templatename . ".zip"
+            );
+            return base64_decode($response);
+        } else {
+            // return empty response on error
+            return "";
+        }
+    }
+
 }
