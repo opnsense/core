@@ -43,16 +43,16 @@ class SettingsController extends ApiControllerBase
      * validate and save model after update or insertion.
      * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
      * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $mdlShaper
+     * @param $mdl model reference
      * @param $node reference node, to use as relative offset
      * @param $reference reference for validation output, used to rename the validation output keys
      * @return array result / validation output
      */
-    private function save($mdlShaper, $node = null, $reference = null)
+    private function save($mdl, $node = null, $reference = null)
     {
         $result = array("result"=>"failed","validations" => array());
         // perform validation
-        $valMsgs = $mdlShaper->performValidation();
+        $valMsgs = $mdl->performValidation();
         foreach ($valMsgs as $field => $msg) {
             // replace absolute path to attribute for relative one at uuid.
             if ($node != null) {
@@ -66,7 +66,7 @@ class SettingsController extends ApiControllerBase
         // serialize model to config and save when there are no validation errors
         if (count($result['validations']) == 0) {
             // save config if validated correctly
-            $mdlShaper->serializeToConfig();
+            $mdl->serializeToConfig();
 
             Config::getInstance()->save();
             $result = array("result" => "saved");
