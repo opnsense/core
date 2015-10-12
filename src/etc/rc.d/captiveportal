@@ -91,7 +91,7 @@ captiveportal_start()
                     fi
                     if [ "$is_installed" -eq 0 ]; then
                         echo "Uninstall : zone $installed_zoneid"
-                        # todo, insert rm
+                        rm -rf "$CPWORKDIR/zone$installed_zoneid"
                     fi
                 done
             fi
