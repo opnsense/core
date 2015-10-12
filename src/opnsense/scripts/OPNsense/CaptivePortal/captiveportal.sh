@@ -49,6 +49,7 @@ captiveportal_prestart()
 
 captiveportal_start()
 {
+    # if the API dispatcher is already running, we will assume all parts are running
     if [ ! -f /var/run/lighttpd-api-dispatcher.pid ]; then
         echo "Starting API dispatcher"
         /usr/local/sbin/lighttpd -f /var/etc/lighttpd-api-dispatcher.conf
