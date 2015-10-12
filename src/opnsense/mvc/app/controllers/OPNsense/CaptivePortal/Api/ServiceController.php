@@ -30,6 +30,7 @@ namespace OPNsense\CaptivePortal\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\CaptivePortal\CaptivePortal;
 
 /**
  * Class ServiceController
@@ -53,11 +54,25 @@ class ServiceController extends ApiControllerBase
             $bckresult = trim($backend->configdRun("ipfw reload"));
             if ($bckresult == "OK") {
                 // generate captive portal config
-                $backend->configdRun("template reload OPNsense.Captiveportal");
-                // TODO: implement portal webservers restart/reconfigure
-                $status = "ok";
+                $bckresult = trim($backend->configdRun("template reload OPNsense.Captiveportal"));
+                if ($bckresult == "OK") {
+                    $mdlCP = new CaptivePortal();
+                    if ($mdlCP->isEnabled()) {
+                        $bckresult = trim($backend->configdRun("captiveportal restart"));
+                        if ($bckresult == "OK") {
+                            $status = "ok";
+                        } else {
+                            $status = "error reloading captive portal";
+                        }
+                    } else {
+                        $backend->configdRun("captiveportal restart");
+                        $status = "ok";
+                    }
+                } else {
+                    $status = "error reloading captive portal template";
+                }
             } else {
-                $status = "error reloading captive portal (".$bckresult.")";
+                $status = "error reloading captive portal rules (".$bckresult.")";
             }
 
             return array("status" => $status);
