@@ -72,15 +72,17 @@ class AccessController extends ApiControllerBase
      */
     private function getClientIp()
     {
-      // determine orginal sender of this request
-      $trusted_proxy = array("127.0.0.1");
-      if ($this->request->getHeader('X-Forwarded-For') != "" && in_array($this->request->getClientAddress(), $trusted_proxy) ) {
-          // use X-Forwarded-For header to determine real client
-          return $this->request->getHeader('X-Forwarded-For');
-      } else {
-          // client accesses the Api directly
-          return $this->request->getClientAddress();
-      }
+        // determine orginal sender of this request
+        $trusted_proxy = array("127.0.0.1");
+        if ($this->request->getHeader('X-Forwarded-For') != "" &&
+            in_array($this->request->getClientAddress(), $trusted_proxy)
+        ) {
+            // use X-Forwarded-For header to determine real client
+            return $this->request->getHeader('X-Forwarded-For');
+        } else {
+            // client accesses the Api directly
+            return $this->request->getClientAddress();
+        }
     }
 
     /**
@@ -146,11 +148,13 @@ class AccessController extends ApiControllerBase
                         $backend = new Backend();
                         $CPsession = $backend->configdpRun(
                             "captiveportal allow",
-                            array((string)$cpZone->zoneid,
+                            array(
+                                (string)$cpZone->zoneid,
                                 $userName,
                                 $clientIp,
                                 $authServerName,
-                                'json')
+                                'json'
+                            )
                         );
                         $CPsession = json_decode($CPsession, true);
                         if ($CPsession != null) {
@@ -160,12 +164,12 @@ class AccessController extends ApiControllerBase
                         }
                     }
                 } else {
-                    return array("clientState" => 'NOT_AUTHORIZED',"ipAddress" => $clientIp);
+                    return array("clientState" => 'NOT_AUTHORIZED', "ipAddress" => $clientIp);
                 }
             }
         }
 
-        return array("clientState" => 'UNKNOWN',"ipAddress" => $clientIp);
+        return array("clientState" => 'UNKNOWN', "ipAddress" => $clientIp);
     }
 
 
@@ -187,7 +191,7 @@ class AccessController extends ApiControllerBase
                 $backend = new Backend();
                 $statusRAW = $backend->configdpRun(
                     "captiveportal disconnect",
-                    array($zoneid, $clientSession['sessionId'],  'json')
+                    array($zoneid, $clientSession['sessionId'], 'json')
                 );
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
