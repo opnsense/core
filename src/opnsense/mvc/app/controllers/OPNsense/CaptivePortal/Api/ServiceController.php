@@ -65,7 +65,7 @@ class ServiceController extends ApiControllerBase
                             $status = "error reloading captive portal";
                         }
                     } else {
-                        $backend->configdRun("captiveportal restart");
+                        $backend->configdRun("captiveportal stop");
                         $status = "ok";
                     }
                 } else {
