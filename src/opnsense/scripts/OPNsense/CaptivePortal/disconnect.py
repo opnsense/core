@@ -37,11 +37,10 @@ from lib.ipfw import IPFW
 parameters = {'sessionid': None, 'zoneid': None, 'output_type': 'plain'}
 current_param = None
 for param in sys.argv[1:]:
-    if len(param) > 1 and param[0] == '/':
+    if len(param) > 1 and param[0] == '/' and param[1:] in parameters:
         current_param = param[1:].lower()
     elif current_param is not None:
-        if current_param in parameters:
-            parameters[current_param] = param.strip()
+        parameters[current_param] = param.strip()
         current_param = None
 
 # disconnect client
