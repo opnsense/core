@@ -44,7 +44,6 @@ if (!is_array($config['staticroutes']['route'])) {
 
 $a_routes = &$config['staticroutes']['route'];
 $a_gateways = return_gateways_array(true, true, true);
-$changedesc_prefix = gettext("Static Routes") . ": ";
 
 if ($_POST) {
     $pconfig = $_POST;
@@ -75,7 +74,7 @@ if ($_POST) {
 
 function delete_static_route($id)
 {
-    global $config, $a_routes, $changedesc_prefix;
+    global $config, $a_routes;
 
     if (!isset($a_routes[$id])) {
         return;
@@ -108,10 +107,9 @@ function delete_static_route($id)
 
 if ($_GET['act'] == "del") {
     if ($a_routes[$_GET['id']]) {
-        $changedesc = $changedesc_prefix . gettext("removed route to") . " " . $a_routes[$_GET['id']]['network'];
         delete_static_route($_GET['id']);
         unset($a_routes[$_GET['id']]);
-        write_config($changedesc);
+        write_config();
         header("Location: system_routes.php");
         exit;
     }
@@ -120,13 +118,11 @@ if ($_GET['act'] == "del") {
 if (isset($_POST['del_x'])) {
     /* delete selected routes */
     if (is_array($_POST['route']) && count($_POST['route'])) {
-        $changedesc = $changedesc_prefix . gettext("removed route to");
         foreach ($_POST['route'] as $routei) {
-            $changedesc .= " " . $a_routes[$routei]['network'];
             delete_static_route($routei);
             unset($a_routes[$routei]);
         }
-        write_config($changedesc);
+        write_config();
         header("Location: system_routes.php");
         exit;
     }
@@ -135,16 +131,13 @@ if (isset($_POST['del_x'])) {
     if ($a_routes[$_GET['id']]) {
         if (isset($a_routes[$_GET['id']]['disabled'])) {
             unset($a_routes[$_GET['id']]['disabled']);
-            $changedesc = $changedesc_prefix . gettext("enabled route to") . " " . $a_routes[$id]['network'];
         } else {
             delete_static_route($_GET['id']);
             $a_routes[$_GET['id']]['disabled'] = true;
-            $changedesc = $changedesc_prefix . gettext("disabled route to") . " " . $a_routes[$id]['network'];
         }
 
-        if (write_config($changedesc)) {
-            mark_subsystem_dirty('staticroutes');
-        }
+        write_config();
+        mark_subsystem_dirty('staticroutes');
         header("Location: system_routes.php");
         exit;
     }

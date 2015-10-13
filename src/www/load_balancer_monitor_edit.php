@@ -127,8 +127,6 @@ if (isset($id) && $a_monitor[$id]) {
 	$pconfig['options']['code'] = 200;
 }
 
-$changedesc = gettext("Load Balancer: Monitor:") . " ";
-
 if ($_POST) {
 	unset($input_errors);
 	$pconfig = $_POST;
@@ -200,10 +198,10 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		$monent = array();
-		if(isset($id) && $a_monitor[$id])
+
+		if (isset($id) && $a_monitor[$id]) {
 			$monent = $a_monitor[$id];
-		if($monent['name'] != "")
-			$changedesc .= " " . sprintf(gettext("modified '%s' monitor:"), $monent['name']);
+		}
 
 		update_if_changed("name", $monent['name'], $pconfig['name']);
 		update_if_changed("type", $monent['type'], $pconfig['type']);
@@ -242,7 +240,7 @@ if ($_POST) {
 		}
 
 		mark_subsystem_dirty('loadbalancer');
-		write_config($changedesc);
+		write_config();
 		header("Location: load_balancer_monitor.php");
 		exit;
 	}

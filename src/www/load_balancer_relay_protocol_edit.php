@@ -53,8 +53,6 @@ if (isset($id) && $a_protocol[$id]) {
 	$pconfig['type'] = 'http';
 }
 
-$changedesc = gettext("Load Balancer: Relay Protocol:") . " ";
-
 if ($_POST) {
 	unset($input_errors);
 	$pconfig = $_POST;
@@ -85,10 +83,10 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		$protent = array();
-		if(isset($id) && $a_protocol[$id])
+
+		if(isset($id) && $a_protocol[$id]) {
 			$protent = $a_protocol[$id];
-		if($protent['name'] != "")
-			$changedesc .= " " . sprintf(gettext("modified '%s' load balancing protocol:"), $protent['name']);
+		}
 
 		update_if_changed(gettext("name"), $protent['name'], $pconfig['name']);
 		update_if_changed(gettext("type"), $protent['type'], $pconfig['type']);
@@ -110,7 +108,7 @@ if ($_POST) {
 		}
 
 		mark_subsystem_dirty('loadbalancer');
-		write_config($changedesc);
+		write_config();
 		header("Location: load_balancer_relay_protocol.php");
 		exit;
 	}
