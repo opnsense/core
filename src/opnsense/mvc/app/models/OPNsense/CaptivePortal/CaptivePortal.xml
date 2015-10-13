@@ -44,6 +44,10 @@
                     <MaximumValue>10080</MaximumValue>
                     <ValidationMessage>Hard timeout must be between 0(no timeout) and 10080 (a week)</ValidationMessage>
                 </hardtimeout>
+                <certificate type="CertificateField">
+                    <Required>N</Required>
+                    <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+                </certificate>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
