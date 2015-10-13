@@ -70,9 +70,17 @@
             </Servers>
             <Settings url="/system_usermanager_settings.php"/>
         </Users>
+        <Diagnostics order="900" cssClass="fa fa-medkit">
+            <Activity VisibleName="Activity Monitor" url="/diag_system_activity.php"/>
+            <Authentication VisibleName="Authentication" url="/diag_authentication.php"/>
+            <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
+            <Halt VisibleName="Halt System" url="/diag_halt.php"/>
+            <Reboot VisibleName="Reboot System" url="/diag_reboot.php"/>
+            <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
+        </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
-        <Assign VisibleName="(Assign)" order="999" url="/interfaces_assign.php">
+        <Assign VisibleName="(Assignments)" order="899" url="/interfaces_assign.php" cssClass="fa fa-pencil">
             <Bridge url="/interfaces_bridge.php"/>
             <BridgeEdit url="/interfaces_bridge_edit.php*"/>
             <GIF url="/interfaces_gif.php"/>
@@ -92,6 +100,16 @@
             <Wireless url="/interfaces_wireless.php"/>
             <WirelessEdit url="/interfaces_wireless_edit.php*"/>
         </Assign>
+        <Diagnostics VisibleName="(Diagnostics)" order="900" cssClass="fa fa-medkit">
+            <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
+            <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
+            <NDPTable VisibleName="NDP Table" url="/diag_ndp.php"/>
+            <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
+            <Ping url="/diag_ping.php"/>
+            <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
+            <Traceroute url="/diag_traceroute.php"/>
+        </Diagnostics>
+        <Status VisibleName="(Summary)" order="901" url="/status_interfaces.php" cssClass="glyphicon glyphicon-tasks"/>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases cssClass="fa fa-list-alt">
@@ -130,13 +148,18 @@
         <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
             <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
-        <Diagnostics order="900" VisibleName="Diagnostics" cssClass="glyphicon glyphicon-wrench">
+        <Diagnostics order="900" cssClass="fa fa-medkit">
+            <LimiterInfo VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
             <pfInfo url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop url="/diag_system_pftop.php" VisibleName="pfTop"/>
             <Tables url="/diag_tables.php">
                 <TablesDetails url="/diag_tables.php*"/>
             </Tables>
+            <Sockets url="/diag_sockets.php">
+                <SocketsDetails url="/diag_sockets.php?*"/>
+            </Sockets>
             <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
+            <StatesDump VisibleName="States Dump" url="/diag_dump_states.php"/>
         </Diagnostics>
     </Firewall>
     <Services order="4" cssClass="glyphicon glyphicon-cog">
@@ -232,7 +255,6 @@
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
-        <Interfaces url="/status_interfaces.php"/>
         <IPsec url="/diag_ipsec.php">
             <IPsecACT url="/diag_ipsec.php?*"/>
             <Leases url="/diag_ipsec_leases.php"/>
@@ -276,26 +298,6 @@
         </TrafficGraphs>
         <UPnP VisibleName="Universal Plug and Play" url="/status_upnp.php"/>
     </Status>
-    <Diagnostics order="7" cssClass="glyphicon glyphicon-stats">
-        <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
-        <Authentication url="/diag_authentication.php"/>
-        <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
-        <FactoryDefaults VisibleName="Factory Defaults" url="/diag_defaults.php"/>
-        <HaltSystem VisibleName="Halt System" url="/diag_halt.php"/>
-        <LimiterInfo VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
-        <NDPTable VisibleName="NDP Table" url="/diag_ndp.php"/>
-        <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
-        <Ping url="/diag_ping.php"/>
-        <Reboot url="/diag_reboot.php"/>
-        <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
-        <Sockets url="/diag_sockets.php">
-            <SocketsDetails url="/diag_sockets.php?*"/>
-        </Sockets>
-        <States url="/diag_dump_states.php"/>
-        <SystemActivity VisibleName="System Activity" url="/diag_system_activity.php"/>
-        <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
-        <Traceroute url="/diag_traceroute.php"/>
-    </Diagnostics>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
         <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
