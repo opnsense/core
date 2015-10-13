@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2006 Scott Ullrich (sullrich@gmail.com)
@@ -26,8 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("VPN"),gettext("L2TP"),gettext("User"),gettext("Edit"));
-$shortcut_section = "l2tps";
+$pgtitle = array(gettext('VPN'), gettext('L2TP'), gettext('Edit User'));
 
 function l2tpusercmp($a, $b)
 {
@@ -160,13 +160,6 @@ include("head.inc");
 
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_l2tp.php");
-                        $tab_array[1] = array(gettext("Users"), true, "vpn_l2tp_users.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
@@ -26,8 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("VPN"), gettext("L2TP"), gettext("L2TP"));
-$shortcut_section = "l2tps";
+$pgtitle = array(gettext('VPN'), gettext('L2TP'), gettext('Settings'));
 
 require_once("guiconfig.inc");
 require_once("vpn.inc");
@@ -294,13 +294,6 @@ function enable_change(enable_over) {
 
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Configuration"), true, "vpn_l2tp.php");
-                        $tab_array[1] = array(gettext("Users"), false, "vpn_l2tp_users.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 

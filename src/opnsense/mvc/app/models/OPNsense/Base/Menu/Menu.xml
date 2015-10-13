@@ -228,9 +228,11 @@
             <KeysEdit url="/vpn_ipsec_keys_edit.php"/>
             <AdvancedSettings url="/vpn_ipsec_settings.php"/>
         </IPsec>
-        <L2TP url="/vpn_l2tp.php">
-            <L2TPUsers url="/vpn_l2tp_users.php"/>
-            <L2TPUsersEdit url="/vpn_l2tp_users_edit.php*"/>
+        <L2TP cssClass="fa fa-road">
+            <Settings url="/vpn_l2tp.php"/>
+            <Users url="/vpn_l2tp_users.php">
+                <Edit url="/vpn_l2tp_users_edit.php*"/>
+            </Users>
         </L2TP>
         <OpenVPN url="/vpn_openvpn_server.php">
             <ServerEdit url="/vpn_openvpn_server.php?*"/>
