@@ -241,9 +241,11 @@
             <ClientExport url="/vpn_openvpn_export.php*"/>
             <SharedKeyExport url="/vpn_openvpn_export_shared.php"/>
         </OpenVPN>
-        <PPTP url="/vpn_pptp.php">
-            <PPTPUsers url="/vpn_pptp_users.php"/>
-            <PPTPUsersEdit url="/vpn_pptp_users_edit.php"/>
+        <PPTP cssClass="fa fa-road">
+            <Settings url="/vpn_pptp.php"/>
+            <Users url="/vpn_pptp_users.php">
+                <Edit url="/vpn_pptp_users_edit.php*"/>
+            </Users>
         </PPTP>
     </VPN>
     <Status order="6" cssClass="glyphicon glyphicon-tasks">
