@@ -5537,8 +5537,7 @@ body {
 
 .tab-content {
   border-top: 0px;
-  margin-bottom: 15px;
-  padding: 15px 0; }
+  padding: 0px 0; }
   .tab-content > .tab-content {
     margin-bottom: 0;
     padding: 0 15px; }
