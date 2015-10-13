@@ -136,6 +136,8 @@ if ($_POST) {
 		if (!$input_errors) {
 			write_config("DNS Resolver configured.");
 			mark_subsystem_dirty('unbound');
+			header("Location: services_unbound.php");
+			exit;
 		}
 	}
 }
