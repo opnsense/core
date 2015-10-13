@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2013	Dagorlad
@@ -155,12 +156,15 @@ if ($_POST) {
 }
 $closehead = false;
 $pconfig = &$config['ntpd'];
-if (empty($pconfig['interface']))
+if (empty($pconfig['interface'])) {
 	$pconfig['interface'] = array();
-else
+} else {
 	$pconfig['interface'] = explode(",", $pconfig['interface']);
-$pgtitle = array(gettext("Services"),gettext("NTP"));
-$shortcut_section = "ntp";
+}
+
+$shortcut_section = 'ntp';
+$pgtitle = array(gettext('Services'), gettext('Network Time Protocol'));
+
 include("head.inc");
 
 ?>
@@ -217,16 +221,7 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("NTP"), true, "services_ntpd.php");
-						$tab_array[] = array(gettext("Serial GPS"), false, "services_ntpd_gps.php");
-						$tab_array[] = array(gettext("PPS"), false, "services_ntpd_pps.php");
-						display_top_tabs($tab_array);
-					?>
-
 					<div class="tab-content content-box col-xs-12">
-
 
 					   <form action="services_ntpd.php" method="post" name="iform" id="iform" enctype="multipart/form-data" accept-charset="utf-8">
 

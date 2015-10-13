@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2013	Dagorlad
@@ -356,14 +357,6 @@ SureGPS =		#Sure Electronics SKG16B
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("NTP"), false, "services_ntpd.php");
-						$tab_array[] = array(gettext("Serial GPS"), true, "services_ntpd_gps.php");
-						$tab_array[] = array(gettext("PPS"), false, "services_ntpd_pps.php");
-						display_top_tabs($tab_array);
-					?>
 
 					<div class="tab-content content-box col-xs-12">
 

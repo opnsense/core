@@ -150,6 +150,7 @@
         </VirtualIPs>
         <Diagnostics order="900" cssClass="fa fa-medkit">
             <LimiterInfo VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
+            <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop url="/diag_system_pftop.php" VisibleName="pfTop"/>
             <pfTables url="/diag_tables.php">
@@ -207,9 +208,12 @@
             <Monitors url="/load_balancer_monitor.php"/>
             <Settings url="/load_balancer_setting.php"/>
         </LoadBalancer>
-        <NTP VisibleName="Network Time Protocol" url="/services_ntpd.php">
+        <NTP VisibleName="Network Time Protocol" cssClass="fa fa-clock-o">
+            <General url="/services_ntpd.php"/>
             <GPS url="/services_ntpd_gps.php"/>
             <PPS url="/services_ntpd_pps.php"/>
+            <Status url="/status_ntpd.php"/>
+            <Log url="/diag_logs_ntpd.php"/>
         </NTP>
         <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php">
             <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
@@ -281,11 +285,9 @@
         <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
-        <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
         <LoadBalancer VisibleName="Load Balancer" url="/status_lb_pool.php">
             <VirtualServers url="/status_lb_vs.php"/>
         </LoadBalancer>
-        <NTP url="/status_ntpd.php"/>
         <Services url="/status_services.php">
             <ServicesActions url="/status_services.php?*"/>
         </Services>
@@ -306,7 +308,6 @@
             <VPN url="/diag_logs_vpn.php*"/>
             <LoadBalancer url="/diag_logs_relayd.php"/>
             <OpenVPN url="/diag_logs_openvpn.php"/>
-            <NTP url="/diag_logs_ntpd.php"/>
             <Proxy url="/diag_logs_proxy.php">
                 <ProxyActions url="/diag_logs_proxy.php?*"/>
             </Proxy>

@@ -212,10 +212,7 @@ $shortcuts['wireless']['log'] = "diag_logs_wireless.php";
 $shortcuts['wireless']['status'] = "status_wireless.php";
 
 $shortcuts['ntp'] = array();
-$shortcuts['ntp']['main'] = "services_ntpd.php";
-$shortcuts['ntp']['log'] = "diag_logs_ntpd.php";
-$shortcuts['ntp']['status'] = "status_ntpd.php";
-$shortcuts['ntp']['service'] = "ntpd";
+$shortcuts['ntp']['service'] = "ntpd";	/* really, hook it all up through some weird hint? */
 
 $shortcuts['pppoes'] = array();
 $shortcuts['pppoes']['main'] = "vpn_pppoe.php";
