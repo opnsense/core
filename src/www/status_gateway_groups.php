@@ -29,8 +29,8 @@
 
 require_once("guiconfig.inc");
 
-function lookup_gateway_monitor_ip_by_name($name) {
-
+function lookup_gateway_monitor_ip_by_name($name)
+{
 	$gateways_arr = return_gateways_array(false, true);
 	if (!empty($gateways_arr[$name])) {
 		$gateway = $gateways_arr[$name];
@@ -53,7 +53,6 @@ if (!is_array($config['gateways']['gateway_group'])) {
 }
 
 $a_gateway_groups = &$config['gateways']['gateway_group'];
-$changedesc = gettext("Gateway Groups") . ": ";
 
 $gateways_status = return_gateways_status();
 

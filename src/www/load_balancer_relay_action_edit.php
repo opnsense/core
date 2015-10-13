@@ -54,8 +54,6 @@ if (isset($id) && $a_action[$id]) {
 	$pconfig['action'] = 'change';
 }
 
-$changedesc = gettext("Load Balancer: Relay Action:") . " ";
-
 $kv = array('key', 'value');
 $vk = array('value', 'key');
 $hr_actions = array();
@@ -117,10 +115,9 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		$actent = array();
-		if(isset($id) && $a_action[$id])
+		if (isset($id) && $a_action[$id]) {
 			$actent = $a_action[$id];
-		if($actent['name'] != "")
-			$changedesc .= " " . sprintf(gettext("modified '%s' action:"), $actent['name']);
+		}
 
 		update_if_changed("name", $actent['name'], $pconfig['name']);
 		update_if_changed("protocol", $actent['protocol'], $pconfig['protocol']);
@@ -157,7 +154,7 @@ if ($_POST) {
 		}
 
 		mark_subsystem_dirty('loadbalancer');
-		write_config($changedesc);
+		write_config();
 		header("Location: load_balancer_relay_action.php");
 		exit;
 	}

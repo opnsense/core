@@ -338,13 +338,6 @@ function gentitle($title) {
 		return join($navlevelsep, $title);
 }
 
-function update_changedesc($update)
-{
-	global $changedesc;
-
-	$changedesc .= " {$update}";
-}
-
 function clear_log($logfile, $restart_syslogd = true)
 {
 	if ($restart_syslogd) {
@@ -469,26 +462,20 @@ function dump_log($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert 
  * orig = original value
  * new = new value
  */
-function update_if_changed($varname, & $orig, $new) {
+function update_if_changed($varname, &$orig, $new)
+{
 	if (is_array($orig) && is_array($new)) {
 		$a_diff = array_diff($orig, $new);
-		foreach ($a_diff as $diff) {
-			update_changedesc("removed {$varname}: \"{$diff}\"");
-		}
 		$a_diff = array_diff($new, $orig);
-		foreach ($a_diff as $diff) {
-			update_changedesc("added {$varname}: \"{$diff}\"");
-		}
 		$orig = $new;
 		return true;
-
-	} else {
-		if ($orig != $new) {
-			update_changedesc("{$varname}: \"{$orig}\" -> \"{$new}\"");
-			$orig = $new;
-			return true;
-		}
 	}
+
+	if ($orig != $new) {
+		$orig = $new;
+		return true;
+	}
+
 	return false;
 }
 

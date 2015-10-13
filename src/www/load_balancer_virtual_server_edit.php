@@ -52,8 +52,6 @@ if (isset($id) && $a_vs[$id]) {
   $pconfig['mode'] = 'redirect';
 }
 
-$changedesc = gettext("Load Balancer: Virtual Server:") . " ";
-
 if ($_POST) {
 	unset($input_errors);
 	$pconfig = $_POST;
@@ -94,12 +92,10 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		$vsent = array();
-		if(isset($id) && $a_vs[$id])
+
+		if (isset($id) && $a_vs[$id]) {
 			$vsent = $a_vs[$id];
-		if($vsent['name'] != "")
-			$changedesc .= " " . sprintf(gettext("modified '%s' vs:"), $vsent['name']);
-		else
-			$changedesc .= " " . sprintf(gettext("created '%s' vs:"), $_POST['name']);
+		}
 
 		update_if_changed("name", $vsent['name'], $_POST['name']);
 		update_if_changed("descr", $vsent['descr'], $_POST['descr']);
@@ -124,7 +120,7 @@ if ($_POST) {
 		}
 
 		mark_subsystem_dirty('loadbalancer');
-		write_config($changedesc);
+		write_config();
 		header("Location: load_balancer_virtual_server.php");
 		exit;
 	}

@@ -54,8 +54,6 @@ if (isset($id) && $a_pool[$id]) {
 	$pconfig['monitor'] = $a_pool[$id]['monitor'];
 }
 
-$changedesc = gettext("Load Balancer: Pool:") . " ";
-
 if ($_POST) {
 	unset($input_errors);
 	$pconfig = $_POST;
@@ -116,10 +114,10 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		$poolent = array();
-		if(isset($id) && $a_pool[$id])
+
+		if (isset($id) && $a_pool[$id]) {
 			$poolent = $a_pool[$id];
-		if($poolent['name'] != "")
-			$changedesc .= sprintf(gettext(" modified '%s' pool:"), $poolent['name']);
+		}
 
 		update_if_changed("name", $poolent['name'], $_POST['name']);
 		update_if_changed("mode", $poolent['mode'], $_POST['mode']);
@@ -142,7 +140,7 @@ if ($_POST) {
 		}
 
 		mark_subsystem_dirty('loadbalancer');
-		write_config($changedesc);
+		write_config();
 		header("Location: load_balancer_pool.php");
 		exit;
 	}
