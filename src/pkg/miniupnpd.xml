@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <packagegui>
-	<title>Services: Universal Plug and Play</title>
+	<title>Services: Universal Plug and Play: Settings</title>
 	<name>miniupnpd</name>
 	<version>20100712</version>
 	<service>

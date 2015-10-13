@@ -220,8 +220,11 @@
         </PPPoEServer>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
-        <UPnP VisibleName="Universal Plug and Play" url="/services_upnp.php">
-            <UPnPEdit url="/services_upnp.php?*"/>
+        <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug">
+            <Settings url="/services_upnp.php">
+                <Edit url="/services_upnp.php?*"/>
+            </Settings>
+            <Status url="/status_upnp.php"/>
         </UPnP>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php">
             <WoLEdit url="/services_wol_edit.php*"/>
@@ -316,7 +319,6 @@
         <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php">
             <TrafficGraphsDetails url="/status_graph.php?*"/>
         </TrafficGraphs>
-        <UPnP VisibleName="Universal Plug and Play" url="/status_upnp.php"/>
     </Status>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>

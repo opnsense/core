@@ -43,7 +43,7 @@ exec("/sbin/pfctl -aminiupnpd -sn", $rdr_entries, $pf_ret);
 $now = time();
 $year = date("Y");
 
-$pgtitle = array(gettext('Status'), gettext('Universal Plug and Play'));
+$pgtitle = array(gettext('Services'), gettext('Universal Plug and Play'), gettext('Status'));
 $shortcut_section = "upnp";
 include("head.inc");
 ?>
