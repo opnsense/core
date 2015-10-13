@@ -40,15 +40,15 @@
     </field>
     <field>
         <id>zone.certificate</id>
-        <label>SSL certificate to use</label>
+        <label>SSL certificate</label>
         <type>dropdown</type>
         <help><![CDATA[If provided, all traffic will be transmitted over an HTTPS connection to protect against eavesdroppers.]]></help>
     </field>
     <field>
         <id>zone.servername</id>
-        <label>hostname to use</label>
+        <label>hostname</label>
         <type>text</type>
-        <help><![CDATA[Hostname to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
+        <help><![CDATA[Hostname (of this machine) to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
     </field>
     <field>
         <id>zone.description</id>
