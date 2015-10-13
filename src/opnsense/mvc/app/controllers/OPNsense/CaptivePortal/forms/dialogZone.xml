@@ -25,28 +25,30 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
-        <hint>Type or select server.</hint>
     </field>
     <field>
         <id>zone.idletimeout</id>
         <label>idle timeout (minutes)</label>
         <type>text</type>
         <help><![CDATA[Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Leave this field blank for no idle timeout.]]></help>
-        <hint>Type or select server.</hint>
     </field>
     <field>
         <id>zone.hardtimeout</id>
         <label>hard timeout (minutes)</label>
         <type>text</type>
         <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set).]]></help>
-        <hint>Type or select server.</hint>
     </field>
     <field>
         <id>zone.certificate</id>
         <label>SSL certificate to use</label>
         <type>dropdown</type>
         <help><![CDATA[If provided, all traffic will be transmitted over an HTTPS connection to protect against eavesdroppers.]]></help>
-        <hint>Type or select server.</hint>
+    </field>
+    <field>
+        <id>zone.servername</id>
+        <label>hostname to use</label>
+        <type>text</type>
+        <help><![CDATA[Hostname to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
     </field>
     <field>
         <id>zone.description</id>
