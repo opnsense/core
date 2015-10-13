@@ -57,6 +57,10 @@
                     <mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank</ValidationMessage>
                 </servername>
+                <allowedAddresses type="CSVListField">
+                    <Required>N</Required>
+                    <mask>/^([\/0-9.,])*/u</mask>
+                </allowedAddresses>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
