@@ -57,6 +57,15 @@
         <help><![CDATA[Hostname (of this machine) to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
     </field>
     <field>
+        <id>zone.allowedAddresses</id>
+        <label>allowed addresses</label>
+        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Avoid authentication for the addresses and subnets in this list]]></help>
+        <allownew>true</allownew>
+    </field>
+    <field>
         <id>zone.description</id>
         <label>description</label>
         <type>text</type>
