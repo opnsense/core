@@ -57,12 +57,18 @@ captiveportal_start()
         echo "Starting API dispatcher"
         /usr/local/sbin/lighttpd -f /var/etc/lighttpd-api-dispatcher.conf
 
+        # generate ssl certificates
+        /usr/local/opnsense/scripts/OPNsense/CaptivePortal/generate_certs.php
+
         # startup / bootstrap zones
         for zoneid in $CPZONES
         do
             # bootstrap captiveportal jail
             zonedirname="zone$zoneid"
             echo "Install : zone $zoneid"
+            if [ ! -d $CPWORKDIR/$zonedirname ]; then
+                mkdir $CPWORKDIR/$zonedirname
+            fi
             if [ -d $CPWORKDIR/$zonedirname/tmp ]; then
                 # remove temp (flush)
                 rm -rf $CPWORKDIR/$zonedirname/tmp
