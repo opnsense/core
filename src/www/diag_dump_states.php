@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005-2009 Scott Ullrich
@@ -109,19 +110,8 @@ include("head.inc");
 <section class="page-content-main">
 	<div class="container-fluid">
 		<div class="row">
-
 		      <section class="col-xs-12">
-
-					<?php
-							$tab_array = array();
-							$tab_array[0] = array(gettext("States"), true, "diag_dump_states.php");
-							$tab_array[1] = array(gettext("Reset states"), false, "diag_resetstate.php");
-							display_top_tabs($tab_array);
-					?>
-
-
-						<div class="tab-content content-box col-xs-12">
-
+					<div class="tab-content content-box col-xs-12">
 						<form action="<?=$_SERVER['SCRIPT_NAME'];?>" method="post" name="iform">
 							                <?php
 												$current_statecount=`pfctl -si | grep "current entries" | awk '{ print $3 }'`;

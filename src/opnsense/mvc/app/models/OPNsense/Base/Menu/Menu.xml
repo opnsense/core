@@ -152,14 +152,18 @@
             <LimiterInfo VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
             <pfInfo url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop url="/diag_system_pftop.php" VisibleName="pfTop"/>
-            <Tables url="/diag_tables.php">
-                <TablesDetails url="/diag_tables.php*"/>
-            </Tables>
+            <pfTables url="/diag_tables.php">
+                <Details url="/diag_tables.php*"/>
+            </pfTables>
             <Sockets url="/diag_sockets.php">
                 <SocketsDetails url="/diag_sockets.php?*"/>
             </Sockets>
-            <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
             <StatesDump VisibleName="States Dump" url="/diag_dump_states.php"/>
+            <StatesReset VisibleName="States Reset" url="/diag_resetstate.php"/>
+            <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
+            <StatesTrackSource VisibleName="Source Tracking" url="/diag_dump_states_sources.php">
+                <Filter url="/diag_dump_states_sources.php*"/>
+            </StatesTrackSource>
         </Diagnostics>
     </Firewall>
     <Services order="4" cssClass="glyphicon glyphicon-cog">

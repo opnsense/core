@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$pgtitle = array(gettext("Diagnostics"), gettext("Tables"));
+$pgtitle = array(gettext("Diagnostics"), gettext("pfTables"));
 $shortcut_section = "aliases";
 // fetch list of tables and content of selected table
 $tables = json_decode(configd_run("filter list tables json"));
