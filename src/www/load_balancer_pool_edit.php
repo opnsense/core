@@ -1,7 +1,7 @@
 <?php
 
 /*
-		Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2005-2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -55,11 +55,8 @@ if (isset($id) && $a_pool[$id]) {
 }
 
 $changedesc = gettext("Load Balancer: Pool:") . " ";
-$changecount = 0;
 
 if ($_POST) {
-	$changecount++;
-
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -140,15 +137,12 @@ if ($_POST) {
 					$config['load_balancer']['virtual_server'][$i]['lbpool'] = $poolent['name'];
 			}
 			$a_pool[$id] = $poolent;
-		} else
+		} else {
 			$a_pool[] = $poolent;
-
-		if ($changecount > 0) {
-			/* Mark pool dirty */
-			mark_subsystem_dirty('loadbalancer');
-			write_config($changedesc);
 		}
 
+		mark_subsystem_dirty('loadbalancer');
+		write_config($changedesc);
 		header("Location: load_balancer_pool.php");
 		exit;
 	}
