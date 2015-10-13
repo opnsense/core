@@ -40,7 +40,8 @@ from lib.ipfw import IPFW
 from lib.daemonize import Daemonize
 
 def main():
-    syslog.syslog(syslog.LOG_ERR, 'starting captiveportal background process')
+    syslog.openlog('captiveportal', logoption=syslog.LOG_DAEMON)
+    syslog.syslog(syslog.LOG_NOTICE, 'starting captiveportal background process')
     # handle to ipfw, arp and the config
     ipfw = IPFW()
     arp = ARP()
@@ -60,6 +61,8 @@ def main():
                 registered_addresses = ipfw.list_table(zoneid)
                 registered_add_accounting = ipfw.list_accounting_info()
                 expected_clients = db.list_clients(zoneid)
+                concurrent_users = db.find_concurrent_user_sessions(zoneid)
+
                 # handle connected clients, timeouts, address changes, etc.
                 for db_client in expected_clients:
                     # fetch ip address (or network) from database
@@ -67,25 +70,36 @@ def main():
 
                     # there are different reasons why a session should be removed, check for all reasons and
                     # use the same method for the actual removal
-                    drop_session = False
+                    drop_session_reason = None
 
-                    # todo, static ip and addresses shouldn't be affected by the timeout rules below.
-                    # check if hardtimeout is set and overrun for this session
-                    if 'hardtimeout' in cpzones[zoneid] and str(cpzones[zoneid]['hardtimeout']).isdigit():
-                        # hardtimeout should be set and we should have collected some session data from the client
-                        if int(cpzones[zoneid]['hardtimeout']) > 0  and float(db_client['startTime']) > 0:
-                            if (time.time() - float(db_client['startTime'])) / 60 > int(cpzones[zoneid]['hardtimeout']):
-                                drop_session = True
+                    # session cleanups, only for users not for static hosts/ranges.
+                    if db_client['userName'] != '':
+                        # check if hardtimeout is set and overrun for this session
+                        if 'hardtimeout' in cpzones[zoneid] and str(cpzones[zoneid]['hardtimeout']).isdigit():
+                            # hardtimeout should be set and we should have collected some session data from the client
+                            if int(cpzones[zoneid]['hardtimeout']) > 0  and float(db_client['startTime']) > 0:
+                                if (time.time() - float(db_client['startTime'])) / 60 > int(cpzones[zoneid]['hardtimeout']):
+                                    drop_session_reason = "session %s hit hardtimeout" % db_client['sessionId']
 
-                    # check if idletimeout is set and overrun for this session
-                    if 'idletimeout' in cpzones[zoneid] and str(cpzones[zoneid]['idletimeout']).isdigit():
-                        # idletimeout should be set and we should have collected some session data from the client
-                        if int(cpzones[zoneid]['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
-                            if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzones[zoneid]['idletimeout']):
-                                drop_session = True
+                        # check if idletimeout is set and overrun for this session
+                        if 'idletimeout' in cpzones[zoneid] and str(cpzones[zoneid]['idletimeout']).isdigit():
+                            # idletimeout should be set and we should have collected some session data from the client
+                            if int(cpzones[zoneid]['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
+                                if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzones[zoneid]['idletimeout']):
+                                    drop_session_reason = "session %s hit idletimeout" % db_client['sessionId']
+
+                        # cleanup concurrent users
+                        if 'concurrentlogins' in cpzones[zoneid] and int(cpzones[zoneid]['concurrentlogins']) == 0:
+                            if db_client['sessionId'] in concurrent_users:
+                                drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
+
+                        # if mac address changes, drop session. it's not the same client
+                        current_arp = arp.get_by_ipaddress(db_client['ipAddress'])
+                        if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
+                            drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
 
                     # check session, if it should be active, validate its properties
-                    if not drop_session:
+                    if drop_session_reason is None:
                         # registered client, but not active according to ipfw (after reboot)
                         if cpnet not in registered_addresses:
                             ipfw.add_to_table(zoneid, cpnet)
@@ -95,6 +109,7 @@ def main():
                             ipfw.add_accounting(cpnet)
                     else:
                         # remove session
+                        syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
                         db.del_client(zoneid, db_client['sessionId'])
                         ipfw.delete_from_table(zoneid, cpnet)
                         ipfw.del_accounting(cpnet)
@@ -110,6 +125,8 @@ def main():
             break
         except:
             syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
+            print(traceback.format_exc())
+            break
 
 # startup
 if len(sys.argv) > 1 and sys.argv[1].strip().lower() == 'run':
