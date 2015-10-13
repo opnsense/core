@@ -44,6 +44,10 @@
                     <MaximumValue>10080</MaximumValue>
                     <ValidationMessage>Hard timeout must be between 0(no timeout) and 10080 (a week)</ValidationMessage>
                 </hardtimeout>
+                <concurrentlogins type="BooleanField">
+                    <Required>Y</Required>
+                    <default>1</default>
+                </concurrentlogins>
                 <certificate type="CertificateField">
                     <Required>N</Required>
                     <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>

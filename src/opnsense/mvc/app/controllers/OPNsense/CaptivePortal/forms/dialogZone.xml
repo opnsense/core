@@ -39,6 +39,12 @@
         <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set).]]></help>
     </field>
     <field>
+        <id>zone.concurrentlogins</id>
+        <type>checkbox</type>
+        <label>Concurrent user logins</label>
+        <help><![CDATA[If this option is set, users can login on multiple machines at once. If disabled subsequent logins will cause machines previously logged in with the same username to be disconnected.]]></help>
+    </field>
+    <field>
         <id>zone.certificate</id>
         <label>SSL certificate</label>
         <type>dropdown</type>
