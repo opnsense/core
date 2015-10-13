@@ -234,12 +234,21 @@
                 <Edit url="/vpn_l2tp_users_edit.php*"/>
             </Users>
         </L2TP>
-        <OpenVPN url="/vpn_openvpn_server.php">
-            <ServerEdit url="/vpn_openvpn_server.php?*"/>
-            <Client url="/vpn_openvpn_client.php*"/>
-            <CSC url="/vpn_openvpn_csc.php*"/>
-            <ClientExport url="/vpn_openvpn_export.php*"/>
-            <SharedKeyExport url="/vpn_openvpn_export_shared.php"/>
+        <OpenVPN cssClass="fa fa-road">
+            <Client VisibleName="Client Settings" url="/vpn_openvpn_client.php">
+                <Edit url="/vpn_openvpn_client.php?*"/>
+            </Client>
+            <CSC VisibleName="Client Specific Overrides" url="/vpn_openvpn_csc.php">
+                <Edit url="/vpn_openvpn_csc.php?*"/>
+            </CSC>
+            <ClientExport VisibleName="Client Export" url="/vpn_openvpn_export.php">
+                <Edit url="/vpn_openvpn_export.php?*"/>
+            </ClientExport>
+            <ClientSharedKeyExport VisibleName="Shared Key Export" url="/vpn_openvpn_export_shared.php"/>
+            <Server VisibleName="Server Settings" url="/vpn_openvpn_server.php">
+                <Edit url="/vpn_openvpn_server.php?*"/>
+            </Server>
+            <Status VisibleName="Connection Status" url="/status_openvpn.php"/>
         </OpenVPN>
         <PPTP cssClass="fa fa-road">
             <Settings url="/vpn_pptp.php"/>
@@ -269,7 +278,6 @@
             <VirtualServers url="/status_lb_vs.php"/>
         </LoadBalancer>
         <NTP url="/status_ntpd.php"/>
-        <OpenVPN url="/status_openvpn.php"/>
         <Services url="/status_services.php">
             <ServicesActions url="/status_services.php?*"/>
         </Services>

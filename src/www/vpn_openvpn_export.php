@@ -1,7 +1,6 @@
 <?php
-/*
-	vpn_openvpn_export.php
 
+/*
 	Copyright (C) 2008 Shrew Soft Inc.
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
@@ -26,9 +25,8 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
-	DISABLE_PHP_LINT_CHECKING
 */
+
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("filter.inc");
@@ -38,7 +36,7 @@ require_once("openvpn-client-export.inc");
 
 global $current_openvpn_version, $current_openvpn_version_rev;
 
-$pgtitle = array("OpenVPN", "Client Export Utility");
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Client Export'));
 
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {
@@ -615,15 +613,6 @@ if (isset($savemsg)) {
   <div class="container-fluid">
     <div class="row">
       <section class="col-xs-12">
-        <?php
-                  $tab_array = array();
-                  $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-                  $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-                  $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                  $tab_array[] = array(gettext("Client Export"), true, "vpn_openvpn_export.php");
-                  $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
-                  display_top_tabs($tab_array);
-                ?>
         <div class="tab-content content-box col-xs-12">
           <div class="table-responsive">
             <table width="100%" border="0" class="table table-striped" cellpadding="0" cellspacing="0">

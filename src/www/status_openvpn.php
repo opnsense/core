@@ -66,9 +66,7 @@ function kill_client($port, $remipp) {
 	return $killed;
 }
 
-
-$pgtitle = array(gettext("Status"), gettext("OpenVPN"));
-$shortcut_section = "openvpn";
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Connection Status'));
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	$vpnid = 0;

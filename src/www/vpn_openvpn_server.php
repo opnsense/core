@@ -395,8 +395,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 }
-$pgtitle = array(gettext("OpenVPN"), gettext("Server"));
-$shortcut_section = "openvpn";
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Server'));
 
 include("head.inc");
 
@@ -706,16 +705,6 @@ function tuntap_change() {
                 ?>
 
           <section class="col-xs-12">
-
-        <?php
-                        $tab_array = array();
-                        $tab_array[] = array(gettext("Server"), true, "vpn_openvpn_server.php");
-                        $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-                        $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                        $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
-                                        $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
           <div class="tab-content content-box col-xs-12">
 

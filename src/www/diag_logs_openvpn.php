@@ -35,7 +35,6 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("OpenVPN"));
-$shortcut_section = "openvpn";
 
 $openvpn_logfile = '/var/log/openvpn.log';
 

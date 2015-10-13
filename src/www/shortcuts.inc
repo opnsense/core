@@ -70,12 +70,6 @@ function get_shortcut_main_link($shortcut_section, $addspace = true, $service = 
 		return "";
 	$space = ($addspace) ? "&nbsp;" : "" ;
 	switch ($shortcut_section) {
-		case "openvpn":
-			if (!empty($service['mode']) && is_numeric($service['id']))
-				$link = "vpn_openvpn_{$service['mode']}.php?act=edit&amp;id={$service['id']}";
-			else
-				$link = $shortcuts[$shortcut_section]['main'];
-			break;
 		case "captiveportal":
 			if (!empty($service['zone']))
 				$link = "services_captiveportal.php?zone={$service['zone']}";
@@ -183,12 +177,6 @@ $shortcuts['ipsec']['main'] = "vpn_ipsec.php";
 $shortcuts['ipsec']['log'] = "diag_logs_ipsec.php";
 $shortcuts['ipsec']['status'] = "diag_ipsec.php";
 $shortcuts['ipsec']['service'] = "ipsec";
-
-$shortcuts['openvpn'] = array();
-$shortcuts['openvpn']['main'] = "vpn_openvpn_server.php";
-$shortcuts['openvpn']['log'] = "diag_logs_openvpn.php";
-$shortcuts['openvpn']['status'] = "status_openvpn.php";
-$shortcuts['openvpn']['service'] = "openvpn";
 
 $shortcuts['firewall'] = array();
 $shortcuts['firewall']['main'] = "firewall_rules.php";
