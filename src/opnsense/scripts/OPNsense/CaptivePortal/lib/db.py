@@ -143,12 +143,18 @@ class DB(object):
                         ,       CASE WHEN si.packets_out IS NULL THEN 0 ELSE si.packets_out END packets_out
                         ,       CASE WHEN si.bytes_in IS NULL THEN 0 ELSE si.bytes_in END bytes_in
                         ,       CASE WHEN si.bytes_out IS NULL THEN 0 ELSE si.bytes_out END bytes_out
-                        ,       CASE WHEN si.last_accessed IS NULL THEN cc.created ELSE si.last_accessed END last_accessed
+                        ,       CASE WHEN si.last_accessed IS NULL OR si.last_accessed =0
+                                        THEN cc.created
+                                        ELSE si.last_accessed
+                                END last_accessed
                         FROM    cp_clients cc
                         LEFT JOIN session_info si ON si.zoneid = cc.zoneid AND si.sessionid = cc.sessionid
                         WHERE   cc.zoneid = :zoneid
                         AND     cc.deleted = 0
+                        order by case when cc.username is not null then cc.username else cc.ip_address end
+                        ,        cc.created desc
                         """, {'zoneid': zoneid})
+
         while True:
             # fetch field names
             if len(fieldnames) == 0:
@@ -162,8 +168,36 @@ class DB(object):
                 record = dict()
                 for idx in range(len(row)):
                     record[fieldnames[idx]] = row[idx]
-
                 result.append(record)
+        return result
+
+    def find_concurrent_user_sessions(self, zoneid):
+        """ query zone database for concurrent user sessions
+        :param zoneid: zone id
+        :return: dictionary containing duplicate sessions
+        """
+        result = dict()
+        cur = self._connection.cursor()
+        # rename fields for API
+        cur.execute(""" SELECT   cc.sessionid   sessionId
+                        ,        cc.username    userName
+                        FROM     cp_clients cc
+                        WHERE   cc.zoneid = :zoneid
+                        AND     cc.deleted = 0
+                        AND     cc.username is not null
+                        and     cc.username <> ""
+                        order by case when cc.username is not null then cc.username else cc.ip_address end
+                        ,        cc.created desc
+                        """, {'zoneid': zoneid})
+
+        prev_user = None
+        while True:
+            row = cur.fetchone()
+            if row is None:
+                break
+            elif prev_user is not None and prev_user == row[1]:
+                result[row[0]] = row[1]
+            prev_user = row[1]
         return result
 
     def update_accounting_info(self, details):
