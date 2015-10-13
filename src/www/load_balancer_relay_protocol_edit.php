@@ -1,6 +1,7 @@
 <?php
+
 /*
-		Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -26,10 +27,8 @@
         POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 require_once("guiconfig.inc");
 require_once("services.inc");
-
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/load_balancer_relay_protocol.php');
 
@@ -55,13 +54,8 @@ if (isset($id) && $a_protocol[$id]) {
 }
 
 $changedesc = gettext("Load Balancer: Relay Protocol:") . " ";
-$changecount = 0;
-
-
 
 if ($_POST) {
-	$changecount++;
-
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -113,14 +107,10 @@ if ($_POST) {
 			$a_protocol[$id] = $protent;
 		} else {
 			$a_protocol[] = $protent;
-    }
-
-		if ($changecount > 0) {
-			/* Mark config dirty */
-			mark_subsystem_dirty('loadbalancer');
-			write_config($changedesc);
 		}
 
+		mark_subsystem_dirty('loadbalancer');
+		write_config($changedesc);
 		header("Location: load_balancer_relay_protocol.php");
 		exit;
 	}

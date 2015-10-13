@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
@@ -54,7 +55,6 @@ if (isset($id) && $a_action[$id]) {
 }
 
 $changedesc = gettext("Load Balancer: Relay Action:") . " ";
-$changecount = 0;
 
 $kv = array('key', 'value');
 $vk = array('value', 'key');
@@ -92,8 +92,6 @@ $actions['direction']['response']['header'] = $hr_actions;
 
 
 if ($_POST) {
-	$changecount++;
-
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -157,12 +155,9 @@ if ($_POST) {
 		} else {
 			$a_action[] = $actent;
 		}
-		if ($changecount > 0) {
-			/* Mark config dirty */
-			mark_subsystem_dirty('loadbalancer');
-			write_config($changedesc);
-		}
 
+		mark_subsystem_dirty('loadbalancer');
+		write_config($changedesc);
 		header("Location: load_balancer_relay_action.php");
 		exit;
 	}

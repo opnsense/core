@@ -1,6 +1,7 @@
 <?php
+
 /*
-		Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -127,11 +128,8 @@ if (isset($id) && $a_monitor[$id]) {
 }
 
 $changedesc = gettext("Load Balancer: Monitor:") . " ";
-$changecount = 0;
 
 if ($_POST) {
-	$changecount++;
-
 	unset($input_errors);
 	$pconfig = $_POST;
 
@@ -239,15 +237,12 @@ if ($_POST) {
 					$config['load_balancer']['lbpool'][$i]['monitor'] = $monent['name'];
 			}
 			$a_monitor[$id] = $monent;
-		} else
+		} else {
 			$a_monitor[] = $monent;
-
-		if ($changecount > 0) {
-			/* Mark config dirty */
-			mark_subsystem_dirty('loadbalancer');
-			write_config($changedesc);
 		}
 
+		mark_subsystem_dirty('loadbalancer');
+		write_config($changedesc);
 		header("Location: load_balancer_monitor.php");
 		exit;
 	}

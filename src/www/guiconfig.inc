@@ -299,13 +299,11 @@ function gentitle($title) {
 		return join($navlevelsep, $title);
 }
 
-/* update the changedesc and changecount(er) variables */
-function update_changedesc($update) {
+function update_changedesc($update)
+{
 	global $changedesc;
-	global $changecount;
 
 	$changedesc .= " {$update}";
-	$changecount++;
 }
 
 function clear_log($logfile, $restart_syslogd = true)

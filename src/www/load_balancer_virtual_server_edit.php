@@ -1,6 +1,7 @@
 <?php
+
 /*
-		Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
         Copyright (C) 2005-2008 Bill Marquette <bill.marquette@gmail.com>.
         All rights reserved.
 
@@ -52,7 +53,6 @@ if (isset($id) && $a_vs[$id]) {
 }
 
 $changedesc = gettext("Load Balancer: Virtual Server:") . " ";
-$changecount = 0;
 
 if ($_POST) {
 	unset($input_errors);
@@ -119,15 +119,12 @@ if ($_POST) {
 				cleanup_lb_mark_anchor($a_vs[$id]['name']);
 			}
 			$a_vs[$id] = $vsent;
-		} else
+		} else {
 			$a_vs[] = $vsent;
-
-		if ($changecount > 0) {
-			/* Mark virtual server dirty */
-			mark_subsystem_dirty('loadbalancer');
-			write_config($changedesc);
 		}
 
+		mark_subsystem_dirty('loadbalancer');
+		write_config($changedesc);
 		header("Location: load_balancer_virtual_server.php");
 		exit;
 	}
