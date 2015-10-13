@@ -63,6 +63,23 @@ class DB(object):
             cur.executescript(open(init_script_filename, 'rb').read())
         cur.close()
 
+    def address_active(self, zoneid, ip_address):
+        """ check if address / network is active
+        :param zoneid: cp zone number
+        :param ip_address: ip address (to unlock)
+        :return: active status (boolean)
+        """
+        cur = self._connection.cursor()
+        request = {'zoneid':zoneid, 'ip_address': ip_address}
+        cur.execute("""select count(*)
+                       from cp_clients
+                       where deleted = 0 and zoneid = :zoneid and ip_address = :ip_address""", request)
+
+        if cur.fetchall()[0][0] > 0:
+            return True
+        else:
+            return False
+
     def add_client(self, zoneid, authenticated_via, username, ip_address, mac_address):
         """ add a new client to the captive portal administration
         :param zoneid: cp zone number
