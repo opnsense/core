@@ -106,7 +106,7 @@ captiveportal_start()
             fi
         done
         echo "start captiveportal background process"
-        /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py stop
+        /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py start
     else
         echo "already running"
     fi
