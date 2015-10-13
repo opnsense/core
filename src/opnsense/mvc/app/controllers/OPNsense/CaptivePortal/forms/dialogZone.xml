@@ -42,6 +42,13 @@
         <hint>Type or select server.</hint>
     </field>
     <field>
+        <id>zone.certificate</id>
+        <label>SSL certificate to use</label>
+        <type>dropdown</type>
+        <help><![CDATA[If provided, all traffic will be transmitted over an HTTPS connection to protect against eavesdroppers.]]></help>
+        <hint>Type or select server.</hint>
+    </field>
+    <field>
         <id>zone.description</id>
         <label>description</label>
         <type>text</type>
