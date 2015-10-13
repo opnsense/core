@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -32,9 +33,7 @@ require_once("vpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-
-$pgtitle = array(gettext("Status"),gettext("IPsec"),gettext("SAD"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Security Association Database'));
 include("head.inc");
 
 $sad = ipsec_dump_sad();
@@ -47,7 +46,6 @@ legacy_html_escape_form_data($sad);
 		<div class="container-fluid">
 			<div class="row">
 			  <section class="col-xs-12">
-				<? $active_tab = "/diag_ipsec_sad.php"; include('diag_ipsec_tabs.inc'); ?>
 					<div class="tab-content content-box col-xs-12">
 							<div class="table-responsive">
 								<table class="table table-striped">
@@ -79,12 +77,6 @@ legacy_html_escape_form_data($sad);
 										</td>
 									</tr>
 									<?php endif; ?>
-									<tr>
-										<td colspan="7">
-											<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-											<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
-										</td>
-									</tr>
 								</table>
 							</div>
             </div>

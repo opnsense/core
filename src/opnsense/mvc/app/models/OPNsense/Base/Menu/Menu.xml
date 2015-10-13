@@ -224,13 +224,23 @@
         </WoL>
     </Services>
     <VPN order="5" cssClass="glyphicon glyphicon-lock">
-        <IPsec url="/vpn_ipsec.php">
-            <IPsecPhase1Edit url="/vpn_ipsec_phase1.php*"/>
-            <IPsecPhase2Edit url="/vpn_ipsec_phase2.php*"/>
-            <MobileClients url="/vpn_ipsec_mobile.php"/>
-            <Keys url="/vpn_ipsec_keys.php"/>
-            <KeysEdit url="/vpn_ipsec_keys_edit.php"/>
-            <AdvancedSettings url="/vpn_ipsec_settings.php"/>
+        <IPsec cssClass="fa fa-road">
+            <Tunnels VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
+                <Phase1 url="/vpn_ipsec_phase1.php*"/>
+                <Phase2 url="/vpn_ipsec_phase2.php*"/>
+            </Tunnels>
+            <Mobile VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php"/>
+            <Keys VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
+                <Edit url="/vpn_ipsec_keys_edit.php*"/>
+            </Keys>
+            <Settings VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
+            <Status VisibleName="Status Overview" url="/diag_ipsec.php">
+                <Act url="/diag_ipsec.php?*"/>
+            </Status>
+            <Leases VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
+            <SAD VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
+            <SPD VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
+            <Log VisibleName="System Log" url="/diag_logs_ipsec.php"/>
         </IPsec>
         <L2TP cssClass="fa fa-road">
             <Settings url="/vpn_l2tp.php"/>
@@ -272,12 +282,6 @@
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
         <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
-        <IPsec url="/diag_ipsec.php">
-            <IPsecACT url="/diag_ipsec.php?*"/>
-            <Leases url="/diag_ipsec_leases.php"/>
-            <SAD url="/diag_ipsec_sad.php"/>
-            <SPD url="/diag_ipsec_spd.php"/>
-        </IPsec>
         <LoadBalancer VisibleName="Load Balancer" url="/status_lb_pool.php">
             <VirtualServers url="/status_lb_vs.php"/>
         </LoadBalancer>
@@ -298,7 +302,6 @@
             </Firewall>
             <DHCP url="/diag_logs_dhcp.php"/>
             <PortalAuth url="/diag_logs_auth.php"/>
-            <IPsec url="/diag_logs_ipsec.php"/>
             <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php*"/>
             <LoadBalancer url="/diag_logs_relayd.php"/>

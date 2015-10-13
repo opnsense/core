@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich
@@ -32,8 +33,7 @@ require_once("vpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext("Status"),gettext("IPsec"),gettext("SPD"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Security Policy Database'));
 include("head.inc");
 
 $spd = ipsec_dump_spd();
@@ -46,7 +46,6 @@ legacy_html_escape_form_data($spd);
 		<div class="container-fluid">
 			<div class="row">
 			  <section class="col-xs-12">
-					<? $active_tab = "/diag_ipsec_spd.php"; include('diag_ipsec_tabs.inc'); ?>
 					<div class="tab-content content-box col-xs-12">
 						<div class="table-responsive">
 							<table class="table table-striped">
@@ -70,10 +69,7 @@ legacy_html_escape_form_data($spd);
 								</tr>
 								<?php endforeach; ?>
 								<tr>
-									<td colspan="2">
-										<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
-										<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
-									</td>
+									<td colspan="2"></td>
 									<td colspan="3">
 										<span class="glyphicon glyphicon-arrow-right" aria-hidden="true" alt="in"></span>
 										<?= gettext("incoming (as seen by firewall)"); ?> <br/>
@@ -85,12 +81,6 @@ legacy_html_escape_form_data($spd);
 								<tr>
 									<td  colspan="5">
 										<p><strong><?= gettext("No IPsec security policies."); ?></strong></p>
-									</td>
-								</tr>
-								<tr>
-									<td colspan="5">
-										<span class="text-danger"><strong><?= gettext("Note:"); ?><br /></strong></span>
-										<?= gettext("You can configure your IPsec"); ?> <a href="vpn_ipsec.php"><?= gettext("here."); ?></a>
 									</td>
 								</tr>
 								<?php endif; ?>

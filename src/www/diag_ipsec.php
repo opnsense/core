@@ -121,8 +121,7 @@ $status = ipsec_smp_dump_status();
 $pconfig = $config['ipsec']['phase1'];
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($status);
-$pgtitle = array(gettext("Status"),gettext("IPsec"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Status Overview'));
 
 include("head.inc");
 ?>
@@ -143,9 +142,6 @@ include("head.inc");
 			<div class="row">
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 			    <section class="col-xs-12">
-<?				$active_tab = "/diag_ipsec.php";
-					include('diag_ipsec_tabs.inc');
-?>
 						<div class="tab-content content-box col-xs-12">
 							<div class="table-responsive">
 								<table class="table table-striped">
@@ -367,15 +363,6 @@ include("head.inc");
 <?php
 										endforeach;
 ?>
-											<tr>
-												<td colspan="8">
-													<span class="text-danger">
-														<strong><?php echo gettext("Note:");?><br /></strong>
-													</span>
-													<?php echo gettext("You can configure IPsec");?>
-													<a href="vpn_ipsec.php">here</a>.</p>
-												</td>
-											</tr>
 										</tbody>
 									</table>
 						</div>

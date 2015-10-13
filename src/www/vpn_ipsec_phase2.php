@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2014 Deciso B.V.
   Copyright (C) 2008 Shrew Soft Inc
@@ -431,7 +432,6 @@ if (!empty($pconfig['mobile'])) {
 } else {
     $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Edit Phase 2"));
 }
-$shortcut_section = "ipsec";
 
 legacy_html_escape_form_data($pconfig);
 
@@ -627,14 +627,6 @@ if (isset($input_errors) && count($input_errors) > 0) {
   <div class="container-fluid">
     <div class="row">
         <section class="col-xs-12">
-<?php
-                    $tab_array = array();
-                    $tab_array[0] = array(gettext("Tunnels"), true, "vpn_ipsec.php");
-                    $tab_array[1] = array(gettext("Mobile clients"), false, "vpn_ipsec_mobile.php");
-                    $tab_array[2] = array(gettext("Pre-Shared Keys"), false, "vpn_ipsec_keys.php");
-                    $tab_array[3] = array(gettext("Advanced Settings"), false, "vpn_ipsec_settings.php");
-                    display_top_tabs($tab_array);
-?>
         <div class="tab-content content-box col-xs-12">
           <form action="vpn_ipsec_phase2.php" method="post" name="iform" id="iform">
             <div class="table-responsive">

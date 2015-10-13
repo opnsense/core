@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2014 Ermal LUÇi
@@ -31,9 +32,7 @@ require_once("vpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-
-$pgtitle = array(gettext("Status"),gettext("IPsec"),gettext("Leases"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Lease Status'));
 include("head.inc");
 
 $mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();
@@ -50,9 +49,6 @@ $mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/cor
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
-
-				<? $active_tab = "/diag_ipsec_leases.php"; include('diag_ipsec_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
 				    <div class="container-fluid">
 
@@ -100,11 +96,6 @@ $mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/cor
 								<p><strong><?=gettext("No IPsec pools.");?></strong></p>
 							<?php endif; ?>
 						</div>
-
-						<p class="vexpl">
-						<span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-						<?=gettext("You can configure your IPsec");?> <a href="vpn_ipsec.php"><?=gettext("here.");?></a>
-						</p>
 				    </div>
 					</div>
 			    </section>

@@ -116,8 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 
-$pgtitle = gettext("VPN: IPsec: Edit Pre-Shared Key");
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Edit Pre-Shared Key'));
 
 legacy_html_escape_form_data($pconfig);
 
