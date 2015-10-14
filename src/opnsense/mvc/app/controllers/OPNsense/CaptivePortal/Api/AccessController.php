@@ -63,8 +63,17 @@ class AccessController extends ApiControllerBase
             }
         }
 
-        // return Unauthorized
-        return array('clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp());
+        // return Unauthorized including authentication requirements
+        $result = array('clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp());
+        $mdlCP = new CaptivePortal();
+        $cpZone = $mdlCP->getByZoneID($zoneid);
+        if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
+            // no authentication needed, logon without username/password
+            $result['authType'] = 'none';
+        } else {
+            $result['authType'] = 'normal';
+        }
+        return $result;
     }
 
     /**
@@ -109,32 +118,38 @@ class AccessController extends ApiControllerBase
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
             return array();
-        } elseif ($this->request->isPost() && $this->request->hasPost('user')) {
+        } elseif ($this->request->isPost()) {
             // close session for long running action
             $this->sessionClose();
 
             // get username from post
-            $userName = $this->request->getPost("user", "striptags");
+            $userName = $this->request->getPost("user", "striptags", null);
 
             // search zone info, to retrieve list of authenticators
             $mdlCP = new CaptivePortal();
             $cpZone = $mdlCP->getByZoneID($zoneid);
             if ($cpZone != null) {
-                // authenticate user
-                $isAuthenticated = false;
-                $authFactory = new AuthenticationFactory();
-                foreach (explode(',', (string)$cpZone->authservers) as $authServerName) {
-                    $authServer = $authFactory->get(trim($authServerName));
-                    // try this auth method
-                    $isAuthenticated = $authServer->authenticate(
-                        $userName,
-                        $this->request->getPost("password", "string")
-                    );
+                if (trim((string)$cpZone->authservers) != "") {
+                    // authenticate user
+                    $isAuthenticated = false;
+                    $authFactory = new AuthenticationFactory();
+                    foreach (explode(',', (string)$cpZone->authservers) as $authServerName) {
+                        $authServer = $authFactory->get(trim($authServerName));
+                        // try this auth method
+                        $isAuthenticated = $authServer->authenticate(
+                            $userName,
+                            $this->request->getPost("password", "string")
+                        );
 
-                    if ($isAuthenticated) {
-                        // stop trying, when authenticated
-                        break;
+                        if ($isAuthenticated) {
+                            // stop trying, when authenticated
+                            break;
+                        }
                     }
+                } else {
+                    // no authentication needed, set username to "anonymous@ip"
+                    $userName = "anonymous@" . $clientIp;
+                    $isAuthenticated = true;
                 }
 
                 if ($isAuthenticated) {
