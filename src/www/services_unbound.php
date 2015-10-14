@@ -84,6 +84,7 @@ if ($_POST) {
 		system_resolvconf_generate();
 	} else {
 		$pconfig = $_POST;
+
 		if (isset($_POST['enable']) && isset($config['dnsmasq']['enable']))
 			$input_errors[] = "The system dns-forwarder is still active. Disable it before enabling the DNS Resolver.";
 
@@ -136,8 +137,6 @@ if ($_POST) {
 		if (!$input_errors) {
 			write_config("DNS Resolver configured.");
 			mark_subsystem_dirty('unbound');
-			header("Location: services_unbound.php");
-			exit;
 		}
 	}
 }

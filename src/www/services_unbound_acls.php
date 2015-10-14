@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2011 Warren Baker <warren@decoy.co.za>
@@ -93,7 +94,6 @@ if ($act == "edit") {
 
 if ($_POST) {
 	$input_errors = array();
-	$pconfig = $_POST;
 
 	if ($_POST['apply']) {
 		$retval = services_unbound_configure();
@@ -101,6 +101,7 @@ if ($_POST) {
 		if ($retval == 0)
 			clear_subsystem_dirty('unbound');
 	} else {
+		$pconfig = $_POST;
 
 		// input validation - only allow 50 entries in a single ACL
 		for($x=0; $x<50; $x++) {
