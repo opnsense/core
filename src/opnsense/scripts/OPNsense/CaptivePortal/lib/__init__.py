@@ -59,7 +59,19 @@ class Config(object):
         if self._conf_handle != None:
             for section in self._conf_handle.sections():
                 if section.find('zone_') == 0:
-                    result[section.split('_')[1]] = dict()
+                    zoneid=section.split('_')[1]
+                    result[zoneid] = dict()
                     for item in self._conf_handle.items(section):
-                        result[section.split('_')[1]][item[0]] = item[1]
+                        result[zoneid][item[0]] = item[1]
+                    # convert allowed(MAC)addresses string to list
+                    if 'allowedaddresses' in result[zoneid] and result[zoneid]['allowedaddresses'].strip() != '':
+                        result[zoneid]['allowedaddresses'] = \
+                            map(lambda x: x.strip(), result[zoneid]['allowedaddresses'].split(','))
+                    else:
+                        result[zoneid]['allowedaddresses'] = list()
+                    if 'allowedmacaddresses' in result[zoneid] and result[zoneid]['allowedmacaddresses'].strip() != '':
+                        result[zoneid]['allowedmacaddresses'] = \
+                            map(lambda x: x.strip(), result[zoneid]['allowedmacaddresses'].split(','))
+                    else:
+                        result[zoneid]['allowedmacaddresses'] = list()
         return result
