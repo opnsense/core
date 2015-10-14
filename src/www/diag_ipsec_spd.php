@@ -34,6 +34,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Security Policy Database'));
+$shortcut_section = 'ipsec';
 include("head.inc");
 
 $spd = ipsec_dump_spd();

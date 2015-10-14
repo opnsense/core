@@ -122,6 +122,7 @@ $pconfig = $config['ipsec']['phase1'];
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($status);
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Status Overview'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>

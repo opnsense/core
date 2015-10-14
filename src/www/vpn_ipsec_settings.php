@@ -105,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Advanced Settings'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>

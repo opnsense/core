@@ -432,6 +432,7 @@ if (!empty($pconfig['mobile'])) {
 } else {
     $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Edit Phase 2"));
 }
+$shortcut_section = 'ipsec';
 
 legacy_html_escape_form_data($pconfig);
 

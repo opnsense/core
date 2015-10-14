@@ -47,6 +47,7 @@ if ($_POST['clear']) {
 }
 
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('System Log'));
+$shortcut_section = 'ipsec';
 include("head.inc");
 
 ?>

@@ -171,6 +171,9 @@ $shortcuts['dhcp6']['main'] = "services_dhcpv6.php";
 $shortcuts['dhcp6']['log'] = "diag_logs_dhcp.php";
 $shortcuts['dhcp6']['status'] = "status_dhcpv6_leases.php";
 
+$shortcuts['ipsec'] = array();
+$shortcuts['ipsec']['service'] = "ipsec";
+
 $shortcuts['firewall'] = array();
 $shortcuts['firewall']['main'] = "firewall_rules.php";
 $shortcuts['firewall']['log'] = "diag_logs_filter.php";

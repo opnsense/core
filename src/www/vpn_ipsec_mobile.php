@@ -195,6 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 legacy_html_escape_form_data($pconfig);
 
 $pgtitle = array(gettext('VPN'),gettext('IPsec'), gettext('Mobile Clients'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>

@@ -33,6 +33,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Lease Status'));
+$shortcut_section = 'ipsec';
 include("head.inc");
 
 $mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();

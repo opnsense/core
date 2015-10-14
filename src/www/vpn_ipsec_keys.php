@@ -71,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Pre-Shared Keys'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>

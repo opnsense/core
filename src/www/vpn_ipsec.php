@@ -237,6 +237,7 @@ $pconfig['enable'] = isset($config['ipsec']['enable']);
 legacy_html_escape_form_data($pconfig);
 
 $pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Tunnel Settings'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 
