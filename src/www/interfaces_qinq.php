@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
@@ -75,7 +76,7 @@ if ($_GET['act'] == "del") {
 }
 
 $pgtitle = array(gettext("Interfaces"),gettext("QinQ"));
-$shortcut_section = "interfaces";
+
 include("head.inc");
 
 $main_buttons = array(

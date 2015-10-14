@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2009 Ermal Luçi
@@ -31,7 +32,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Interfaces"),gettext("Groups"),gettext("Edit"));
-$shortcut_section = "interfaces";
 
 if (!isset($config['ifgroups']['ifgroupentry']) || !is_array($config['ifgroups']['ifgroupentry'])) {
 	$config['ifgroups']['ifgroupentry'] = array();

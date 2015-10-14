@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -68,8 +69,9 @@ if (!is_array($config['ppps']['ppp'])) {
 $a_ppps = $config['ppps']['ppp'];
 
 $pgtitle = gettext("Interfaces: PPPs");
-$shortcut_section = "interfaces";
+
 include("head.inc");
+
 $main_buttons = array(
 	array('href'=>'interfaces_ppps_edit.php', 'label'=>'Add'),
 );

@@ -204,10 +204,6 @@ $shortcuts['gateway-groups']['main'] = "system_gateway_groups.php";
 $shortcuts['gateway-groups']['log'] = "diag_logs_gateways.php";
 $shortcuts['gateway-groups']['status'] = "status_gateway_groups.php";
 
-$shortcuts['interfaces'] = array();
-$shortcuts['interfaces']['main'] = "interfaces_assign.php";
-$shortcuts['interfaces']['status'] = "status_interfaces.php";
-
 $shortcuts['forwarder'] = array();
 $shortcuts['forwarder']['main'] = "services_dnsmasq.php";
 $shortcuts['forwarder']['log'] = "diag_logs_resolver.php";
@@ -217,11 +213,6 @@ $shortcuts['resolver'] = array();
 $shortcuts['resolver']['main'] = "services_unbound.php";
 $shortcuts['resolver']['log'] = "diag_logs_resolver.php";
 $shortcuts['resolver']['service'] = "unbound";
-
-$shortcuts['wireless'] = array();
-$shortcuts['wireless']['main'] = "interfaces_wireless.php";
-$shortcuts['wireless']['log'] = "diag_logs_wireless.php";
-$shortcuts['wireless']['status'] = "status_wireless.php";
 
 $shortcuts['ntp'] = array();
 $shortcuts['ntp']['service'] = "ntpd";	/* really, hook it all up through some weird hint? */

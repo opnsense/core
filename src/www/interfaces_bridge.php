@@ -76,9 +76,8 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-
 $pgtitle = array(gettext("Interfaces"),gettext("Bridge"));
-$shortcut_section = "interfaces";
+
 include("head.inc");
 
 $main_buttons = array(

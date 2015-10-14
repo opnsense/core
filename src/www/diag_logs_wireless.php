@@ -46,7 +46,7 @@ if ($_POST['clear']) {
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Wireless"));
-$shortcut_section = "wireless";
+
 include("head.inc");
 
 ?>
