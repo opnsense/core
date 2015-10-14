@@ -173,3 +173,12 @@ class IPFW(object):
             devnull = open(os.devnull, 'w')
             subprocess.call(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])],
                             stdout=devnull, stderr=devnull)
+
+    def delete(self, table_number, address):
+        """ remove entry from both ipfw table and accounting rules
+        :param table_number: ipfw table number
+        :param address: ip address or net to add to table
+        :return:
+        """
+        self.delete_from_table(table_number, address)
+        self.del_accounting(address)
