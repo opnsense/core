@@ -52,13 +52,21 @@ class ARP(object):
             output_stream.seek(0)
             for line in output_stream.read().split('\n'):
                 if line.find('(') > -1 and line.find(')') > -1:
+                    if line.find('expires in') > -1:
+                        expires = line.split('expires in')[1:][0].strip().split(' ')[0]
+                        if expires.isdigit():
+                            expires = int(expires)
+                        else:
+                            expires = -1
+                    else:
+                        expires = -1
                     address = line.split(')')[0].split('(')[-1]
                     mac = line.split('at')[-1].split('on')[0].strip()
                     physical_intf = line.split('on')[-1].strip().split(' ')[0]
                     if address in self._arp_table:
                         self._arp_table[address]['intf'].append(physical_intf)
                     else:
-                        self._arp_table[address] = {'mac': mac, 'intf': [physical_intf]}
+                        self._arp_table[address] = {'mac': mac, 'intf': [physical_intf],'expires' : expires}
 
     def list_items(self):
         """ return parsed arp list
@@ -75,3 +83,17 @@ class ARP(object):
             return self._arp_table[address]
         else:
             return None
+
+    def get_address_by_mac(self, address):
+        """ search arp entry by mac address, most recent arp entry
+        :param address: ip address
+        :return: dict or None (if not found)
+        """
+        result = None
+        for item in self._arp_table:
+            if self._arp_table[item]['mac'] == address:
+                if result is None:
+                    result = item
+                elif self._arp_table[result]['expires'] < self._arp_table[item]['expires']:
+                    result = item
+        return result
