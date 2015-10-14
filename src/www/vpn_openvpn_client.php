@@ -33,6 +33,7 @@ require_once("services.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Client'));
+$shortcut_section = 'openvpn';
 
 if (!isset($config['openvpn']['openvpn-client'])) {
     $config['openvpn']['openvpn-client'] = array();

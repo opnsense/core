@@ -26,12 +26,14 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Client Specific Overrides'));
+$shortcut_section = 'openvpn';
 
 // define all fields used in this form
 $all_form_fields = "custom_options,disable,common_name,block,description

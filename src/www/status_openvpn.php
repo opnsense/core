@@ -28,6 +28,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
@@ -67,6 +68,7 @@ function kill_client($port, $remipp) {
 }
 
 $pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Connection Status'));
+$shortcut_section = 'openvpn';
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	$vpnid = 0;

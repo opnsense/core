@@ -26,6 +26,7 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
@@ -395,7 +396,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 }
+
 $pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Server'));
+$shortcut_section = 'openvpn';
 
 include("head.inc");
 
