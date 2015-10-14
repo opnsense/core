@@ -201,7 +201,10 @@ class AccessController extends ApiControllerBase
         } else {
             $this->sessionClose();
             $clientSession = $this->clientSession((string)$zoneid);
-            if ($clientSession['clientState'] == 'AUTHORIZED') {
+            if ($clientSession['clientState'] == 'AUTHORIZED' &&
+                $clientSession['authenticated_via'] != '---ip---' &&
+                $clientSession['authenticated_via'] != '---mac---'
+            ) {
                 // you can only disconnect a connected client
                 $backend = new Backend();
                 $statusRAW = $backend->configdpRun(
