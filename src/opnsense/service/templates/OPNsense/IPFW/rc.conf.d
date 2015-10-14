@@ -1,7 +1,7 @@
 {% set cp_zones = [] %}
-{% if helpers.exists('captiveportal') %}
-{%      for cp_key,cp_item in captiveportal.iteritems()  %}
-{%          if cp_item.enable|default("0") == '1' %}
+{% if helpers.exists('OPNsense.captiveportal.zones.zone') %}
+{%      for cp_item in helpers.toList('OPNsense.captiveportal.zones.zone')  %}
+{%          if cp_item.enabled|default("0") == '1' %}
 {%              do cp_zones.append(cp_key) %}
 {%          endif %}
 {%      endfor %}
