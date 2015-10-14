@@ -1,8 +1,9 @@
 <?php
+
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2011	Warren Baker (warren@pfsense.org)
-	All rights reserved.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2011 Warren Baker <warren@pfsense.org>
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -62,14 +63,14 @@ $pconfig['unwanted_reply_threshold'] = $config['unbound']['unwanted_reply_thresh
 $pconfig['log_verbosity'] = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : "1";
 
 if ($_POST) {
-	$pconfig = $_POST;
-
 	if ($_POST['apply']) {
 		$retval = services_unbound_configure();
 		$savemsg = get_std_save_message();
 		if ($retval == 0)
 			clear_subsystem_dirty('unbound');
 	} else {
+		$pconfig = $_POST;
+
 		if (isset($_POST['hideidentity']))
 			$config['unbound']['hideidentity'] = true;
 		else
@@ -108,7 +109,6 @@ if ($_POST) {
 		$config['unbound']['unwanted_reply_threshold'] = $_POST['unwanted_reply_threshold'];
 		$config['unbound']['log_verbosity'] = $_POST['log_verbosity'];
 		write_config("DNS Resolver configured.");
-
 		mark_subsystem_dirty('unbound');
 	}
 }
