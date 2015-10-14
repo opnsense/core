@@ -26,7 +26,7 @@
                     </filters>
                 </interfaces>
                 <authservers type="AuthenticationServerField">
-                    <Required>Y</Required>
+                    <Required>N</Required>
                     <multiple>Y</multiple>
                     <default>Local Database</default>
                 </authservers>

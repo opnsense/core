@@ -44,7 +44,7 @@ class CaptivePortal extends BaseModel
     public function getByZoneID($zoneid)
     {
         foreach ($this->zones->zone->__items as $zone) {
-            if ($zoneid == (string)$zone->zoneid) {
+            if ((string)$zoneid === (string)$zone->zoneid) {
                 return $zone;
             }
         }
