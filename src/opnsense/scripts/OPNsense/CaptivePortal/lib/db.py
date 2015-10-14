@@ -34,16 +34,26 @@ class DB(object):
     database_filename = '/var/captiveportal/captiveportal.sqlite'
 
     def __init__(self):
-        """ construct new database connection
+        """ construct new database connection, open and make sure the sqlite file exists
         :return:
         """
-        self._connection = sqlite3.connect(self.database_filename)
+        self.open()
         self.create()
 
     def __del__(self):
         """ destruct, close database handle
         """
+        self.close()
+
+    def close(self):
+        """ close database
+        """
         self._connection.close()
+
+    def open(self):
+        """ open database
+        """
+        self._connection = sqlite3.connect(self.database_filename)
 
     def create(self, force_recreate=False):
         """ create/initialize new database
@@ -63,26 +73,34 @@ class DB(object):
             cur.executescript(open(init_script_filename, 'rb').read())
         cur.close()
 
-    def address_active(self, zoneid, ip_address):
-        """ check if address / network is active
+    def sessions_per_address(self, zoneid, ip_address = None, mac_address = None):
+        """ fetch session(s) per (mac) address
         :param zoneid: cp zone number
-        :param ip_address: ip address (to unlock)
+        :param ip_address: ip address
         :return: active status (boolean)
         """
         cur = self._connection.cursor()
-        request = {'zoneid':zoneid, 'ip_address': ip_address}
-        cur.execute("""select count(*)
-                       from cp_clients
-                       where deleted = 0 and zoneid = :zoneid and ip_address = :ip_address""", request)
+        request = {'zoneid':zoneid, 'ip_address': ip_address, 'mac_address': mac_address}
+        cur.execute("""select   cc.sessionid         sessionId
+                        ,       cc.authenticated_via authenticated_via
+                       from     cp_clients cc
+                       where    cc.deleted = 0
+                       and      cc.zoneid = :zoneid
+                       and   (
+                                cc.ip_address = :ip_address
+                                or
+                                cc.mac_address = :mac_address
+                             )""", request)
 
-        if cur.fetchall()[0][0] > 0:
-            return True
-        else:
-            return False
+        result = []
+        for row in cur.fetchall():
+            result.append({'sessionId':row[0], 'authenticated_via': row[1]})
+        return result
 
     def add_client(self, zoneid, authenticated_via, username, ip_address, mac_address):
         """ add a new client to the captive portal administration
         :param zoneid: cp zone number
+        :param authenticated_via: name/id of the authenticator or ---ip--- / ---mac--- for authentication by address
         :param username: username, maybe empty
         :param ip_address: ip address (to unlock)
         :param mac_address: physical address of this ip
@@ -99,11 +117,12 @@ class DB(object):
 
         cur = self._connection.cursor()
         # set cp_client as deleted in case there's already a user logged-in at this ip address.
-        cur.execute("""UPDATE cp_clients
-                       SET    deleted = 1
-                       WHERE  zoneid = :zoneid
-                       AND    ip_address = :ipAddress
-                    """, response)
+        if ip_address is not None and ip_address != '':
+            cur.execute("""UPDATE cp_clients
+                           SET    deleted = 1
+                           WHERE  zoneid = :zoneid
+                           AND    ip_address = :ipAddress
+                        """, response)
 
         # add new session
         cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
@@ -112,6 +131,19 @@ class DB(object):
 
         self._connection.commit()
         return response
+
+    def update_client_ip(self, zoneid, sessionid, ip_address):
+        """ change client ip address
+        """
+        cur = self._connection.cursor()
+        cur.execute("""UPDATE cp_clients
+                       SET    ip_address = :ip_address
+                       WHERE  deleted = 0
+                       and    zoneid = :zoneid
+                       AND    sessionid = :sessionid
+                    """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
+        self._connection.commit()
+
 
     def del_client(self, zoneid, sessionid):
         """ mark (administrative) client for removal
