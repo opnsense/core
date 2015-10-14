@@ -66,6 +66,16 @@
         <allownew>true</allownew>
     </field>
     <field>
+        <id>zone.allowedMACAddresses</id>
+        <label>allowed MAC addresses</label>
+        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Avoid authentication for the physical addresses in this list]]></help>
+        <allownew>true</allownew>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>zone.description</id>
         <label>description</label>
         <type>text</type>
