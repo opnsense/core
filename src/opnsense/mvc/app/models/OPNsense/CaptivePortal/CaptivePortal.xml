@@ -60,7 +60,13 @@
                 <allowedAddresses type="CSVListField">
                     <Required>N</Required>
                     <mask>/^([\/0-9.,])*/u</mask>
+                    <ValidationMessage>Please enter valid addresses</ValidationMessage>
                 </allowedAddresses>
+                <allowedMACAddresses type="CSVListField">
+                    <Required>N</Required>
+                    <mask>/^([0-9a-fA-F:,])*/u</mask>
+                    <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
+                </allowedMACAddresses>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
