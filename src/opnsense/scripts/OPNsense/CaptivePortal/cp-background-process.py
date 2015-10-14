@@ -39,83 +39,172 @@ from lib.arp import ARP
 from lib.ipfw import IPFW
 from lib.daemonize import Daemonize
 
+class CPBackgroundProcess(object):
+    """ background process helper class
+    """
+    def __init__(self):
+        # open syslog and notice startup
+        syslog.openlog('captiveportal', logoption=syslog.LOG_DAEMON)
+        syslog.syslog(syslog.LOG_NOTICE, 'starting captiveportal background process')
+        # handles to ipfw, arp the config and the internal administration
+        self.ipfw = IPFW()
+        self.arp = ARP()
+        self.cnf = Config()
+        self.db = DB()
+        self._conf_zone_info = self.cnf.get_zones()
+
+    def list_zone_ids(self):
+        """ return zone numbers
+        """
+        return self._conf_zone_info.keys()
+
+    def initialize_fixed(self):
+        """ initialize fixed ip / hosts per zone
+        """
+        cpzones = self._conf_zone_info
+        for zoneid in cpzones:
+            for conf_section in ['allowedaddresses', 'allowedmacaddresses']:
+                for address in cpzones[zoneid][conf_section]:
+                    if conf_section.find('mac') == -1:
+                        sessions = self.db.sessions_per_address(zoneid, ip_address=address)
+                        ip_address = address
+                        mac_address = None
+                    else:
+                        sessions = self.db.sessions_per_address(zoneid, mac_address=address)
+                        ip_address = None
+                        mac_address = address
+                    sessions_deleted = 0
+                    for session in sessions:
+                        if session['authenticated_via'] not in ('---ip---', '---mac---'):
+                            sessions_deleted += 1
+                            self.db.del_client(zoneid, session['sessionId'])
+                    if sessions_deleted == len(sessions) or len(sessions) == 0:
+                        # when there's no session active, add a new one
+                        # (only administrative, the sync process will add it if neccesary)
+                        if ip_address is not None:
+                            self.db.add_client(zoneid, "---ip---", "", ip_address, "")
+                        else:
+                            self.db.add_client(zoneid, "---mac---", "", "", mac_address)
+
+            # cleanup removed static sessions
+            for dbclient in self.db.list_clients(zoneid):
+                if dbclient['authenticated_via'] == '---ip---' \
+                    and dbclient['ipAddress'] not in cpzones[zoneid]['allowedaddresses']:
+                        self.ipfw.delete(zoneid, dbclient['ipAddress'])
+                        self.db.del_client(zoneid, dbclient['sessionId'])
+                elif dbclient['authenticated_via'] == '---mac---' \
+                    and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
+                        if dbclient['ipAddress']  != '':
+                            self.ipfw.delete(zoneid, dbclient['ipAddress'])
+                        self.db.del_client(zoneid, dbclient['sessionId'])
+
+    def sync_zone(self, zoneid):
+        """ Synchronize captiveportal zone.
+            Handles timeouts and administrative changes to this zones sessions
+        """
+        if zoneid in self._conf_zone_info:
+            # fetch data for this zone
+            cpzone_info = self._conf_zone_info[zoneid]
+            registered_addresses = self.ipfw.list_table(zoneid)
+            registered_addr_accounting = self.ipfw.list_accounting_info()
+            expected_clients = self.db.list_clients(zoneid)
+            concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
+
+            # handle connected clients, timeouts, address changes, etc.
+            for db_client in expected_clients:
+                # fetch ip address (or network) from database
+                cpnet = db_client['ipAddress'].strip()
+
+                # there are different reasons why a session should be removed, check for all reasons and
+                # use the same method for the actual removal
+                drop_session_reason = None
+
+                # session cleanups, only for users not for static hosts/ranges.
+                if db_client['authenticated_via'] not in ('---ip---', '---mac---'):
+                    # check if hardtimeout is set and overrun for this session
+                    if 'hardtimeout' in cpzone_info and str(cpzone_info['hardtimeout']).isdigit():
+                        # hardtimeout should be set and we should have collected some session data from the client
+                        if int(cpzone_info['hardtimeout']) > 0  and float(db_client['startTime']) > 0:
+                            if (time.time() - float(db_client['startTime'])) / 60 > int(cpzone_info['hardtimeout']):
+                                drop_session_reason = "session %s hit hardtimeout" % db_client['sessionId']
+
+                    # check if idletimeout is set and overrun for this session
+                    if 'idletimeout' in cpzone_info and str(cpzone_info['idletimeout']).isdigit():
+                        # idletimeout should be set and we should have collected some session data from the client
+                        if int(cpzone_info['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
+                            if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzone_info['idletimeout']):
+                                drop_session_reason = "session %s hit idletimeout" % db_client['sessionId']
+
+                    # cleanup concurrent users
+                    if 'concurrentlogins' in cpzone_info and int(cpzone_info['concurrentlogins']) == 0:
+                        if db_client['sessionId'] in concurrent_users:
+                            drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
+
+                    # if mac address changes, drop session. it's not the same client
+                    current_arp = self.arp.get_by_ipaddress(cpnet)
+                    if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
+                        drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
+                elif db_client['authenticated_via'] == '---mac---':
+                    # detect mac changes
+                    current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
+                    if current_ip != None:
+                        if db_client['ipAddress'] != '':
+                            # remove old ip
+                            self.ipfw.delete(zoneid, db_client['ipAddress'])
+                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
+                        self.ipfw.add_to_table(zoneid, current_ip)
+                        self.ipfw.add_accounting(current_ip)
+
+                # check session, if it should be active, validate its properties
+                if drop_session_reason is None:
+                    # registered client, but not active according to ipfw (after reboot)
+                    if cpnet not in registered_addresses:
+                        self.ipfw.add_to_table(zoneid, cpnet)
+
+                    # is accounting rule still available? need to reapply after reload / reboot
+                    if cpnet not in registered_addr_accounting:
+                        self.ipfw.add_accounting(cpnet)
+                else:
+                    # remove session
+                    syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
+                    self.ipfw.delete(zoneid, cpnet)
+                    self.db.del_client(zoneid, db_client['sessionId'])
+
+            # if there are addresses/networks in the underlying ipfw table which are not in our administration,
+            # remove them from ipfw.
+            for registered_address in registered_addresses:
+                address_active = False
+                for db_client in expected_clients:
+                    if registered_address == db_client['ipAddress']:
+                        address_active = True
+                        break
+                if not address_active:
+                    self.ipfw.delete(zoneid, registered_address)
+
 def main():
-    syslog.openlog('captiveportal', logoption=syslog.LOG_DAEMON)
-    syslog.syslog(syslog.LOG_NOTICE, 'starting captiveportal background process')
-    # handle to ipfw, arp and the config
-    ipfw = IPFW()
-    arp = ARP()
-    cnf = Config()
+    """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.
+        The main job of this procedure is to sync the administration with the actual situation in the ipfw firewall.
+    """
+    bgprocess = CPBackgroundProcess()
+    bgprocess.initialize_fixed()
+
     while True:
         try:
-            # construct objects
-            db = DB()
+            # open database
+            bgprocess.db.open()
 
-            # update accounting info
-            db.update_accounting_info(ipfw.list_accounting_info())
+            # reload cached arp table contents
+            bgprocess.arp.reload()
+
+            # update accounting info, for all zones
+            bgprocess.db.update_accounting_info(bgprocess.ipfw.list_accounting_info())
 
             # process sessions per zone
-            arp.reload()
-            cpzones = cnf.get_zones()
-            for zoneid in cpzones:
-                registered_addresses = ipfw.list_table(zoneid)
-                registered_add_accounting = ipfw.list_accounting_info()
-                expected_clients = db.list_clients(zoneid)
-                concurrent_users = db.find_concurrent_user_sessions(zoneid)
+            for zoneid in bgprocess.list_zone_ids():
+                bgprocess.sync_zone(zoneid)
 
-                # handle connected clients, timeouts, address changes, etc.
-                for db_client in expected_clients:
-                    # fetch ip address (or network) from database
-                    cpnet = db_client['ipAddress'].strip()
-
-                    # there are different reasons why a session should be removed, check for all reasons and
-                    # use the same method for the actual removal
-                    drop_session_reason = None
-
-                    # session cleanups, only for users not for static hosts/ranges.
-                    if db_client['userName'] != '':
-                        # check if hardtimeout is set and overrun for this session
-                        if 'hardtimeout' in cpzones[zoneid] and str(cpzones[zoneid]['hardtimeout']).isdigit():
-                            # hardtimeout should be set and we should have collected some session data from the client
-                            if int(cpzones[zoneid]['hardtimeout']) > 0  and float(db_client['startTime']) > 0:
-                                if (time.time() - float(db_client['startTime'])) / 60 > int(cpzones[zoneid]['hardtimeout']):
-                                    drop_session_reason = "session %s hit hardtimeout" % db_client['sessionId']
-
-                        # check if idletimeout is set and overrun for this session
-                        if 'idletimeout' in cpzones[zoneid] and str(cpzones[zoneid]['idletimeout']).isdigit():
-                            # idletimeout should be set and we should have collected some session data from the client
-                            if int(cpzones[zoneid]['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
-                                if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzones[zoneid]['idletimeout']):
-                                    drop_session_reason = "session %s hit idletimeout" % db_client['sessionId']
-
-                        # cleanup concurrent users
-                        if 'concurrentlogins' in cpzones[zoneid] and int(cpzones[zoneid]['concurrentlogins']) == 0:
-                            if db_client['sessionId'] in concurrent_users:
-                                drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
-
-                        # if mac address changes, drop session. it's not the same client
-                        current_arp = arp.get_by_ipaddress(db_client['ipAddress'])
-                        if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
-                            drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
-
-                    # check session, if it should be active, validate its properties
-                    if drop_session_reason is None:
-                        # registered client, but not active according to ipfw (after reboot)
-                        if cpnet not in registered_addresses:
-                            ipfw.add_to_table(zoneid, cpnet)
-
-                        # is accounting rule still available? need to reapply after reload / reboot
-                        if cpnet not in registered_add_accounting and db_client['ipAddress'] not in registered_add_accounting:
-                            ipfw.add_accounting(cpnet)
-                    else:
-                        # remove session
-                        syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
-                        db.del_client(zoneid, db_client['sessionId'])
-                        ipfw.delete_from_table(zoneid, cpnet)
-                        ipfw.del_accounting(cpnet)
-
-            # cleanup, destruct
-            del db
+            # close the database handle while waiting for the next poll
+            bgprocess.db.close()
 
             # sleep
             time.sleep(5)
