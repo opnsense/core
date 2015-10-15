@@ -74,5 +74,24 @@
                 </description>
             </zone>
         </zones>
+        <templates>
+            <template type="ArrayField">
+                <fileid type="TextField">
+                    <Required>Y</Required>
+                    <mask>/[0-9a-zA-Z\-]{1,255}/u</mask>
+                    <ValidationMessage>Fileid should be an internally generated unique number</ValidationMessage>
+                </fileid>
+                <name type="TextField">
+                    <Required>Y</Required>
+                    <mask>/^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
+                    <ValidationMessage>Template name should be a string between 1 and 255 characters</ValidationMessage>
+                </name>
+                <content type="TextField">
+                    <Required>Y</Required>
+                    <mask>/[0-9a-zA-Z\+\=\/]{20,}/u</mask>
+                    <ValidationMessage>File content should be in (base64 encoded) zip format</ValidationMessage>
+                </content>
+            </template>
+        </templates>
     </items>
 </model>

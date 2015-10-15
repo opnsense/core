@@ -64,4 +64,22 @@ class CaptivePortal extends BaseModel
         }
         return false;
     }
+
+    /**
+     * find ttemplate by name or return a new object
+     * @param $name template name
+     * @return mixed
+     */
+    public function getTemplateByName($name)
+    {
+        foreach ($this->templates->template->__items as $template) {
+            if ((string)$template->name === $name) {
+                return $template;
+            }
+        }
+        $newItem = $this->templates->template->Add();
+        $newItem->name = $name;
+        $newItem->fileid = uniqid();
+        return $newItem;
+    }
 }
