@@ -31,6 +31,8 @@ namespace OPNsense\CaptivePortal\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\CaptivePortal\CaptivePortal;
+use \OPNsense\Core\Config;
+use \OPNsense\Base\UIModelGrid;
 use \Phalcon\Filter;
 
 /**
@@ -83,30 +85,30 @@ class ServiceController extends ApiControllerBase
     }
 
     /**
-     * @param null $name template name
+     * @param null $fileid unique template id (fileid field)
      * @return mixed
      * @throws \Exception
      */
-    public function getTemplateAction($name = null)
+    public function getTemplateAction($fileid = null)
     {
         // get template name
         $paramfilter = new Filter();
-        if ($name != null) {
-            $templatename = $paramfilter->sanitize($name, 'alphanum');
+        if ($fileid != null) {
+            $templateFileId = $paramfilter->sanitize($fileid, 'alphanum');
         } else {
-            $templatename = 'default';
+            $templateFileId = 'default';
         }
 
         // request template data and output result (zipfile)
         $backend = new Backend();
-        $response = $backend->configdpRun("captiveportal fetch_template", array($templatename));
+        $response = $backend->configdpRun("captiveportal fetch_template", array($templateFileId));
         $result = json_decode($response, true);
         if ($result != null) {
             $response = $result['payload'];
             $this->response->setContentType('application/octet-stream', 'UTF-8');
             $this->response->setHeader(
                 "Content-disposition:",
-                "attachment; filename=template_" . $templatename . ".zip"
+                "attachment; filename=template_" . $templateFileId . ".zip"
             );
             return base64_decode($response);
         } else {
@@ -115,4 +117,112 @@ class ServiceController extends ApiControllerBase
         }
     }
 
+
+    /**
+     * save template, updates existing or create new.
+     * @return string
+     */
+    public function saveTemplateAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost("name")) {
+            $this->sessionClose();
+            $templateName = $this->request->getPost("name", "striptags");
+            $mdlCP = new CaptivePortal();
+            if ($this->request->hasPost("uuid")) {
+                $uuid = $this->request->getPost("uuid", "striptags");
+                $template = $mdlCP->getNodeByReference('templates.template.'.$uuid);
+                if ($template == null) {
+                    return array("name" => $templateName, "error" => "node not found");
+                }
+            } else {
+                $template = $mdlCP->getTemplateByName($templateName);
+            }
+
+            // needs optimization, we don't want to store data in our config that's already in our standard system
+            // (like bootstrap code)
+            if (strlen($this->request->getPost("content", "striptags", "")) > 20
+                || strlen((string)$template->content) == 0
+            ) {
+                // only set data if new content is provided
+                $template->content = $this->request->getPost("content", "striptags", "");
+            }
+
+            $template->name = $templateName;
+            $valMsgs = $mdlCP->performValidation();
+            $errorMsg = "";
+            foreach ($valMsgs as $field => $msg) {
+                if ($errorMsg != "") {
+                    $errorMsg .= " , ";
+                }
+                $errorMsg .= $msg->getMessage();
+            }
+
+            if ($errorMsg != "") {
+                return array("name" => (string)$template->name, "error" => $errorMsg);
+            } else {
+                // data is valid, save and return.
+                $mdlCP->serializeToConfig();
+                Config::getInstance()->save();
+                return array("name" => (string)$template->name);
+            }
+        }
+    }
+
+    /**
+     * delete template by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
+    public function delTemplateAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            $mdlCP = new CaptivePortal();
+            if ($uuid != null) {
+                if ($mdlCP->templates->template->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlCP->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
+    }
+
+
+    /**
+     * search captive portal zones
+     * @return array
+     */
+    public function searchTemplatesAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            // fetch query parameters
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+            $sortBy = array("name");
+            $sortDescending = false;
+
+            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+                $sortBy = array_keys($this->request->getPost("sort"));
+                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
+                    $sortDescending = true;
+                }
+            }
+
+            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
+
+            // create model and fetch query resuls
+            $fields = array("name", "fileid");
+            $mdlCP = new CaptivePortal();
+            $grid = new UIModelGrid($mdlCP->templates->template);
+            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        } else {
+            return array();
+        }
+    }
 }
