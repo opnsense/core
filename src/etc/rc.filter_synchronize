@@ -355,10 +355,6 @@ if (is_array($config['hasync'])) {
 			$config['schedules'] = array();
 		$sections[] = 'schedules';
 	}
-	if (isset($hasync['synchronizecaptiveportal']) && isset($config['captiveportal']) && is_array($config['captiveportal']))
-		$sections[] = 'captiveportal';
-	if (isset($hasync['synchronizecaptiveportal']) && isset($config['vouchers']) &&  is_array($config['vouchers']))
-		$sections[] = 'vouchers';
 
 	if (count($sections) <= 0) {
 		log_error("Nothing has been configured to be synched. Skipping....");

@@ -168,15 +168,7 @@
         </Diagnostics>
     </Firewall>
     <Services order="4" cssClass="glyphicon glyphicon-cog">
-        <CaptivePortal VisibleName="Captive Portal" url="/services_captiveportal_zones.php">
-            <Edit url="/services_captiveportal.php?zone=*"/>
-            <IP url="/services_captiveportal_ip.php?zone=*"/>
-            <IP_edit url="/services_captiveportal_ip_edit.php?zone=*"/>
-            <MAC url="/services_captiveportal_mac.php?zone=*"/>
-            <MAC_edit url="/services_captiveportal_mac_edit.php?zone=*"/>
-            <Voucher url="/services_captiveportal_vouchers.php?zone=*"/>
-            <FileManager url="/services_captiveportal_filemanager.php?zone=*"/>
-        </CaptivePortal>
+        <CaptivePortal VisibleName="Captive Portal" url="/ui/captiveportal/" cssClass="fa fa-paper-plane-o"/>
         <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
         <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
             <DHCPServerTab url="/services_dhcp.php?if=*"/>
@@ -279,9 +271,6 @@
         </PPTP>
     </VPN>
     <Status order="6" cssClass="glyphicon glyphicon-tasks">
-        <CaptivePortal VisibleName="Captive Portal" url="/status_captiveportal.php">
-            <CaptivePortalDetails url="/status_captiveportal.php?*"/>
-        </CaptivePortal>
         <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php">
             <DHCPLeasesDetails url="/status_dhcp_leases.php?*"/>
         </DHCPLeases>

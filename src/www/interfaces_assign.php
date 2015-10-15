@@ -33,7 +33,6 @@ $pgtitle = array(gettext("Interfaces"),gettext("Assign network ports"));
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("vpn.inc");
-require_once("captiveportal.inc");
 require_once("rrd.inc");
 require_once("system.inc");
 require_once("interfaces.inc");

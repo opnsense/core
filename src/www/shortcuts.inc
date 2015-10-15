@@ -76,12 +76,6 @@ function get_shortcut_main_link($shortcut_section, $addspace = true, $service = 
 			else
 				$link = $shortcuts[$shortcut_section]['main'];
 			break;
-		case "captiveportal":
-			if (!empty($service['zone']))
-				$link = "services_captiveportal.php?zone={$service['zone']}";
-			else
-				$link = $shortcuts[$shortcut_section]['main'];
-			break;
 		default:
 			$link = $shortcuts[$shortcut_section]['main'];
 			break;
@@ -94,35 +88,29 @@ function get_shortcut_main_link($shortcut_section, $addspace = true, $service = 
 	}
 }
 
-function get_shortcut_status_link($shortcut_section, $addspace = true, $service = array()) {
-	global $g, $shortcuts, $cpzone;
-	if(empty($shortcut_section))
-		return "";
-	$space = ($addspace) ? "&nbsp;" : "" ;
-	if (!empty($cpzone))
-		$zone = $cpzone;
-	elseif (!empty($service['zone']))
-		$zone = $service['zone'];
-	switch ($shortcut_section) {
-		case "captiveportal":
-			if (!empty($zone))
-				$link = "status_captiveportal.php?zone={$zone}";
-			else
-				$link = $shortcuts[$shortcut_section]['status'];
-			break;
-		default:
-			if (isset($shortcuts[$shortcut_section]['status'])) {
-				$link = $shortcuts[$shortcut_section]['status'];
-			} else {
-				$link = null;
-			}
-			break;
+function get_shortcut_status_link($shortcut_section, $addspace = true, $service = array())
+{
+	global $g, $shortcuts;
+
+	if (empty($shortcut_section)) {
+		return '';
 	}
-	if(!empty($link))
-		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php")
+
+	$space = ($addspace) ? "&nbsp;" : "" ;
+
+	if (isset($shortcuts[$shortcut_section]['status'])) {
+		$link = $shortcuts[$shortcut_section]['status'];
+	} else {
+		$link = null;
+	}
+
+	if (!empty($link)) {
+		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php") {
 			return "{$space}<a href=\"{$link}\" title=\"" . gettext("Status of items on this page") . "\">Status</a>";
-		else
+		} else {
 			return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Status of items on this page") . "\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>";
+		}
+	}
 }
 
 function get_shortcut_log_link($shortcut_section, $addspace = true) {
@@ -154,17 +142,6 @@ $shortcuts['relayd-virtualservers']['main'] = "load_balancer_virtual_server.php"
 $shortcuts['relayd-virtualservers']['log'] = "diag_logs_relayd.php";
 $shortcuts['relayd-virtualservers']['status'] = "status_lb_vs.php";
 $shortcuts['relayd-virtualservers']['service'] = "relayd";
-
-$shortcuts['captiveportal'] = array();
-$shortcuts['captiveportal']['main'] = "services_captiveportal_zones.php";
-$shortcuts['captiveportal']['log'] = "diag_logs_auth.php";
-$shortcuts['captiveportal']['status'] = "status_captiveportal.php";
-$shortcuts['captiveportal']['service'] = "captiveportal";
-
-$shortcuts['captiveportal-vouchers'] = array();
-$shortcuts['captiveportal-vouchers']['log'] = "diag_logs_auth.php";
-$shortcuts['captiveportal-vouchers']['status'] = "status_captiveportal_vouchers.php";
-$shortcuts['captiveportal-vouchers']['service'] = "captiveportal";
 
 $shortcuts['dhcp'] = array();
 $shortcuts['dhcp']['main'] = "services_dhcp.php";

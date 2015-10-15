@@ -1025,32 +1025,13 @@ function system_generate_lighty_config(
 	$port = 80,
 	$document_root = '/usr/local/www/',
 	$cert_location = 'cert.pem',
-	$ca_location = 'ca.pem',
-	$captive_portal = false)
+	$ca_location = 'ca.pem')
 {
 	global $config;
 
 	@mkdir('/tmp/lighttpdcompress');
 
-	if ($captive_portal !== false)  {
-		$captiveportal = ',"mod_evasive"';
-		$http_rewrite_rules = "url.rewrite-once = ( \"(.*captiveportal.*)\" => \"$1\", \"(.*)\" => \"/index.php?zone={$captive_portal}&redirurl=$1\" )\n";
-
-		if (!isset($config['captiveportal'][$captive_portal]['maxprocperip']) || empty($config['captiveportal'][$captive_portal]['maxprocperip'])) {
-			$maxprocperip = 10;
-		} else {
-			$maxprocperip = $config['captiveportal'][$captive_portal]['maxprocperip'];
-		}
-
-		$captive_portal_mod_evasive = "evasive.max-conns-per-ip = {$maxprocperip}";
-
-		$server_upload_dirs = "server.upload-dirs = ( \"/tmp/captiveportal/\" )\n";
-		@mkdir('/tmp/captiveportal', 0555);
-		$server_max_request_size = "server.max-request-size    = 384";
-		$cgi_config = "";
-	} else {
-		$captiveportal = ",\"mod_cgi\"";
-		$http_rewrite_rules = <<<EOD
+	$http_rewrite_rules = <<<EOD
 # Phalcon ui and api routing
 alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
 alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
@@ -1059,11 +1040,9 @@ url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
 )
 
 EOD;
-		$captive_portal_mod_evasive = "";
-		$server_upload_dirs = "server.upload-dirs = ( \"/root/\", \"/tmp/\", \"/var/\" )\n";
-		$server_max_request_size = "server.max-request-size    = 2097152";
-		$cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
-	}
+	$server_upload_dirs = "server.upload-dirs = ( \"/root/\", \"/tmp/\", \"/var/\" )\n";
+	$server_max_request_size = "server.max-request-size    = 2097152";
+	$cgi_config = "cgi.assign                 = ( \".cgi\" => \"\" )";
 
 	if (empty($port))
 		$lighty_port = "80";
@@ -1079,26 +1058,10 @@ EOD;
 	else
 		$max_procs = ($config['system']['webgui']['max_procs']) ? $config['system']['webgui']['max_procs'] : 2;
 
-	// Ramp up captive portal max procs, assuming each PHP process can consume up to 64MB RAM
-	if ($captive_portal !== false)  {
-		if ($realmem > 135 and $realmem < 256) {
-			$max_procs += 1; // 2 worker processes
-		} else if ($realmem > 255 and $realmem < 513) {
-			$max_procs += 2; // 3 worker processes
-		} else if ($realmem > 512) {
-			$max_procs += 4; // 6 worker processes
-		}
-		if ($max_procs > 1)
-			$max_php_children = intval($max_procs/2);
-		else
-			$max_php_children = 1;
-
-	} else {
-		if ($realmem < 78)
-			$max_php_children = 0;
-		else
-			$max_php_children = 1;
-	}
+	if ($realmem < 78)
+		$max_php_children = 0;
+	else
+		$max_php_children = 1;
 
 	if(!isset($config['syslog']['nologlighttpd'])) {
 		$lighty_use_syslog = <<<EOD
@@ -1107,11 +1070,7 @@ server.errorlog-use-syslog="enable"
 EOD;
 	}
 
-        if ($captive_portal !== false) {
-                $fast_cgi_path = "/tmp/php-fastcgi-{$captive_portal}.socket";
-        } else {
-                $fast_cgi_path = "/tmp/php-fastcgi.socket";
-	}
+	$fast_cgi_path = "/tmp/php-fastcgi.socket";
 
 	$fastcgi_config = <<<EOD
 #### fastcgi module
@@ -1147,7 +1106,7 @@ server.network-backend	= "writev"
 
 ## modules to load
 server.modules              =   ( "mod_access", "mod_expire", "mod_compress", "mod_redirect",
-	{$captiveportal}, "mod_fastcgi","mod_alias", "mod_rewrite"
+	"mod_cgi", "mod_fastcgi","mod_alias", "mod_rewrite"
 )
 
 server.max-keep-alive-requests = 15
@@ -1285,8 +1244,6 @@ compress.filetype  = ("text/plain","text/css", "text/xml", "text/javascript" )
 
 {$cgi_config}
 
-{$captive_portal_mod_evasive}
-
 expire.url = (
 				"" => "access 50 hours",
         )
@@ -1337,7 +1294,7 @@ EOD;
 	}
 
 	// Add HTTP to HTTPS redirect
-	if ($captive_portal === false && $config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
+	if ($config['system']['webgui']['protocol'] == "https" && !isset($config['system']['webgui']['disablehttpredirect'])) {
 		if($lighty_port != "443") {
 			$redirectport = ":{$lighty_port}";
 		} else {

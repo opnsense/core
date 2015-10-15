@@ -29,7 +29,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("captiveportal.inc");
 
 function upload_crash_report($files, $agent)
 {

@@ -33,7 +33,6 @@ require_once("services.inc");
 require_once("vslb.inc");
 require_once("system.inc");
 require_once("unbound.inc");
-require_once("captiveportal.inc");
 require_once("pfsense-utils.inc");
 require_once("openvpn.inc");
 require_once("filter.inc");
@@ -72,9 +71,6 @@ function service_control_start($name, $extras) {
 	switch($name) {
 		case 'radvd':
 			services_radvd_configure();
-			break;
-		case 'captiveportal':
-			captiveportal_configure();
 			break;
 		case 'ntpd':
 			system_ntp_configure();
@@ -140,11 +136,6 @@ function service_control_stop($name, $extras) {
 	switch($name) {
 		case 'radvd':
 			killbypid("/var/run/radvd.pid");
-			break;
-		case 'captiveportal':
-			$zone = htmlspecialchars($extras['zone']);
-			killbypid("/var/run/lighty-{$zone}-CaptivePortal.pid");
-			killbypid("/var/run/lighty-{$zone}-CaptivePortal-SSL.pid");
 			break;
 		case 'ntpd':
 			killbyname("ntpd");
@@ -215,9 +206,6 @@ function service_control_restart($name, $extras) {
 	switch($name) {
 		case 'radvd':
 			services_radvd_configure();
-			break;
-		case 'captiveportal':
-			captiveportal_configure();
 			break;
 		case 'ntpd':
 			system_ntp_configure();

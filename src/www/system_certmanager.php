@@ -1311,11 +1311,6 @@ endif; ?>
 							IPsec Tunnel<br />
 							<?php
 endif; ?>
-                        <?php if (is_captiveportal_cert($cert['refid'])) :
-?>
-							Captive Portal<br />
-							<?php
-endif; ?>
 
 
                         <a href="system_certmanager.php?act=exp&amp;id=<?=$i;

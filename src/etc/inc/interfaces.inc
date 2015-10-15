@@ -3120,10 +3120,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
 			/* update dyndns */
 			configd_run("dyndns reload {$interface}");
-
-			/* XXX: which CPZONE? Needed? */
-			/* reload captive portal */
-			captiveportal_init_rules();
 		}
 	}
 
@@ -5411,4 +5407,22 @@ function get_ppp_uptime($port){
 		$total_time = gettext("No history data found!");
 		return $total_time;
 	}
+}
+
+/**
+ * Get the NAS-IP-Address based on the current wan address
+ *
+ * Use functions in interfaces.inc to find this out
+ *
+ */
+
+function getNasIP()
+{
+    $nasIp = get_interface_ip();
+
+    if (!is_ipaddr($nasIp)) {
+        $nasIp = '0.0.0.0';
+    }
+
+    return $nasIp;
 }

@@ -3,7 +3,6 @@
 
 require_once('config.inc');
 require_once('interfaces.inc');
-require_once('captiveportal.inc');
 require_once('rrd.inc');
 require_once('util.inc');
 require_once('system.inc');
@@ -31,7 +30,6 @@ while (is_process_running('lighttpd')) {
 }
 
 system_webgui_start();
-captiveportal_init_webgui();
 enable_rrd_graphing();
 
 echo 'done.' . PHP_EOL;

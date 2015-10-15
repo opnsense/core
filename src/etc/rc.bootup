@@ -137,8 +137,6 @@ require_once("vpn.inc");
 echo ".";
 require_once("openvpn.inc");
 echo ".";
-require_once("captiveportal.inc");
-echo ".";
 require_once("rrd.inc");
 echo ".";
 echo " done.\n";
@@ -305,12 +303,6 @@ filter_configure_sync();
 
 /* setup pppoe and pptp */
 vpn_setup();
-
-/* start the captive portal */
-captiveportal_configure();
-
-/* start Voucher support */
-echo 'Enabling voucher support...' . (voucher_configure(true) ? 'done.' : 'failed.') . PHP_EOL;
 
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = vpn_ipsec_configure();

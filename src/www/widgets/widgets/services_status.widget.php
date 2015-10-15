@@ -32,7 +32,6 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("captiveportal.inc");
 require_once("services.inc");
 require_once("vpn.inc");
 require_once("widgets/include/services_status.inc");

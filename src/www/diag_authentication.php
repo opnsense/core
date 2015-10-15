@@ -1,6 +1,7 @@
 <?php
+
 /*
-    Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
 
@@ -28,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("PEAR.inc");
+require_once("interfaces.inc");
 require_once("radius.inc");
 
 function getUserGroups($username, $authcfg)

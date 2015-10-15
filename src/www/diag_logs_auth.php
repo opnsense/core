@@ -45,7 +45,6 @@ if ($_POST['clear']) {
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Portal Auth"));
-$shortcut_section = "captiveportal";
 include("head.inc");
 
 ?>

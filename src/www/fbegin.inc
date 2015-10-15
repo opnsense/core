@@ -38,15 +38,6 @@ function find_service_by_name($name) {
 	return array();
 }
 
-function find_service_by_cp_zone($zone) {
-	$services = get_services();
-	foreach ($services as $service)
-		if (($service["name"] == "captiveportal") && isset($service["zone"]) && ($service["zone"] == $zone))
-			return $service;
-	return array();
-}
-
-
 /* Determine automated help URL. Should output the page name and
    parameters separately */
 $uri_split = "";
@@ -242,9 +233,6 @@ if($need_alert_display == true) {
 							switch ($shortcut_section) {
 								case "openvpn":
 									$ssvc = find_service_by_openvpn_vpnid($vpnid);
-									break;
-								case "captiveportal":
-									$ssvc = find_service_by_cp_zone($cpzone);
 									break;
 								default:
 									$ssvc = find_service_by_name($shortcuts[$shortcut_section]['service']);

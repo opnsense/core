@@ -1059,36 +1059,11 @@ function ip_in_subnet($addr,$subnet) {
 	}
 }
 
-
-
-function mac_format($clientmac) {
-	global $config, $cpzone;
-
-	$mac = explode(":", $clientmac);
-	$mac_format = $cpzone ? $config['captiveportal'][$cpzone]['radmac_format'] : false;
-
-	switch($mac_format) {
-	case 'singledash':
-		return "$mac[0]$mac[1]$mac[2]-$mac[3]$mac[4]$mac[5]";
-
-	case 'ietf':
-		return "$mac[0]-$mac[1]-$mac[2]-$mac[3]-$mac[4]-$mac[5]";
-
-	case 'cisco':
-		return "$mac[0]$mac[1].$mac[2]$mac[3].$mac[4]$mac[5]";
-
-	case 'unformatted':
-		return "$mac[0]$mac[1]$mac[2]$mac[3]$mac[4]$mac[5]";
-
-	default:
-		return $clientmac;
-	}
-}
-
-function resolve_retry($hostname, $retries = 5) {
-
-	if (is_ipaddr($hostname))
+function resolve_retry($hostname, $retries = 5)
+{
+	if (is_ipaddr($hostname)) {
 		return $hostname;
+	}
 
 	for ($i = 0; $i < $retries; $i++) {
 		// FIXME: gethostbyname does not work for AAAA hostnames, boo, hiss

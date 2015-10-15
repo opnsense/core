@@ -201,21 +201,6 @@ if (!function_exists("getNasID")) {
     }
 }
 
-/**
- * Get the NAS-IP-Address based on the current wan address
- *
- * Use functions in interfaces.inc to find this out
- *
- */
-if (!function_exists("getNasIP")) {
-    function getNasIP()
-    {
-        $nasIp = get_interface_ip();
-        if(!$nasIp)
-            $nasIp = "0.0.0.0";
-        return $nasIp;
-    }
-}
 /* setup syslog logging */
 openlog("charon", LOG_ODELAY, LOG_AUTH);
 

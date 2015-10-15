@@ -150,8 +150,6 @@ function spit_out_select_items($name, $showall) {
 	global $config;
 
 	$areas = array("aliases" => gettext("Aliases"),
-		       "captiveportal" => gettext("Captive Portal"),
-		       "voucher" => gettext("Captive Portal Vouchers"),
 		       "dnsmasq" => gettext("DNS Forwarder"),
 		       "dhcpd" => gettext("DHCP Server"),
 		       "dhcpdv6" => gettext("DHCPv6 Server"),
@@ -444,15 +442,6 @@ if ($_POST) {
 									convert_config();
 									$savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
 									mark_subsystem_dirty("restore");
-								}
-								if(is_array($config['captiveportal'])) {
-									foreach($config['captiveportal'] as $cp) {
-										if (isset($cp['enable'])) {
-											/* for some reason ipfw doesn't init correctly except on bootup sequence */
-											mark_subsystem_dirty("restore");
-											break;
-										}
-									}
 								}
 								setup_serial_port();
 							} else {

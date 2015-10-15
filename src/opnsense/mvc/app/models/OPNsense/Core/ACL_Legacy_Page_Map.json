@@ -3,10 +3,6 @@
         "name": "User - Config - Deny Config Write",
         "descr": "If present, ignores requests from this user to write config.xml."
     },
-    "user-services-captiveportal-login": {
-        "name": "User - Services - Captive portal login",
-        "descr": "Indicates whether the user is able to login on the captive portal."
-    },
     "user-shell-access": {
         "name": "User - System - Shell account access",
         "descr": "Indicates whether the user is able to login for example via SSH."
@@ -639,90 +635,6 @@
             "wizard.php*"
         ]
     },
-    "page-services-captiveportal": {
-        "name": "WebCfg - Services: Captive portal page",
-        "descr": "Allow access to the 'Services: Captive portal' page.",
-        "match": [
-            "services_captiveportal.php*"
-        ]
-    },
-    "page-services-captiveportal-allowedhostnames": {
-        "name": "WebCfg - Services: Captive portal: Allowed Hostnames page",
-        "descr": "Allow access to the 'Services: Captive portal: Allowed Hostnames' page.",
-        "match": [
-            "services_captiveportal_hostname.php*"
-        ]
-    },
-    "page-services-captiveportal-allowedips": {
-        "name": "WebCfg - Services: Captive portal: Allowed IPs page",
-        "descr": "Allow access to the 'Services: Captive portal: Allowed IPs' page.",
-        "match": [
-            "services_captiveportal_ip.php*"
-        ]
-    },
-    "page-services-captiveportal-editallowedhostnames": {
-        "name": "WebCfg - Services: Captive portal: Edit Allowed Hostnames page",
-        "descr": "Allow access to the 'Services: Captive portal: Allowed Hostnames' page.",
-        "match": [
-            "services_captiveportal_hostname_edit.php*"
-        ]
-    },
-    "page-services-captiveportal-editallowedips": {
-        "name": "WebCfg - Services: Captive portal: Edit Allowed IPs page",
-        "descr": "Allow access to the 'Services: Captive portal: Edit Allowed IPs' page.",
-        "match": [
-            "services_captiveportal_ip_edit.php*"
-        ]
-    },
-    "page-services-captiveportal-editmacaddresses": {
-        "name": "WebCfg - Services: Captive portal: Edit MAC Addresses page",
-        "descr": "Allow access to the 'Services: Captive portal: Edit MAC Addresses' page.",
-        "match": [
-            "services_captiveportal_mac_edit.php*"
-        ]
-    },
-    "page-services-captiveportal-voucher-edit": {
-        "name": "WebCfg - Services: Captive portal: Edit Voucher Rolls page",
-        "descr": "Allow access to the 'Services: Captive portal: Edit Voucher Rolls' page.",
-        "match": [
-            "services_captiveportal_vouchers_edit.php*"
-        ]
-    },
-    "page-services-captiveportal-editzones": {
-        "name": "WebCfg - Services: Captive portal: Edit Zones page",
-        "descr": "Allow access to the 'Services: Captive portal: Edit Zones' page.",
-        "match": [
-            "services_captiveportal_zones_edit.php*"
-        ]
-    },
-    "page-services-captiveportal-filemanager": {
-        "name": "WebCfg - Services: Captive portal: File Manager page",
-        "descr": "Allow access to the 'Services: Captive portal: File Manager' page.",
-        "match": [
-            "services_captiveportal_filemanager.php*"
-        ]
-    },
-    "page-services-captiveportal-macaddresses": {
-        "name": "WebCfg - Services: Captive portal: Mac Addresses page",
-        "descr": "Allow access to the 'Services: Captive portal: Mac Addresses' page.",
-        "match": [
-            "services_captiveportal_mac.php*"
-        ]
-    },
-    "page-services-captiveportal-vouchers": {
-        "name": "WebCfg - Services: Captive portal: Vouchers page",
-        "descr": "Allow access to the 'Services: Captive portal: Vouchers' page.",
-        "match": [
-            "services_captiveportal_vouchers.php*"
-        ]
-    },
-    "page-services-captiveportal-zones": {
-        "name": "WebCfg - Services: Captive portal: Zones page",
-        "descr": "Allow access to the 'Services: Captive portal: Zones' page.",
-        "match": [
-            "services_captiveportal_zones.php*"
-        ]
-    },
     "page-services-dhcprelay": {
         "name": "WebCfg - Services: DHCP Relay page",
         "descr": "Allow access to the 'Services: DHCP Relay' page.",
@@ -973,41 +885,6 @@
         "descr": "Allow access to the 'Services: Wake on LAN: Edit' page.",
         "match": [
             "services_wol_edit.php*"
-        ]
-    },
-    "page-status-captiveportal": {
-        "name": "WebCfg - Status: Captive portal page",
-        "descr": "Allow access to the 'Status: Captive portal' page.",
-        "match": [
-            "status_captiveportal.php*"
-        ]
-    },
-    "page-status-captiveportal-expire": {
-        "name": "WebCfg - Status: Captive portal: Expire Vouchers page",
-        "descr": "Allow access to the 'Status: Captive portal: Expire Vouchers' page.",
-        "match": [
-            "status_captiveportal_expire.php*"
-        ]
-    },
-    "page-status-captiveportal-test": {
-        "name": "WebCfg - Status: Captive portal: Test Vouchers page",
-        "descr": "Allow access to the 'Status: Captive portal: Test Vouchers' page.",
-        "match": [
-            "status_captiveportal_test.php*"
-        ]
-    },
-    "page-status-captiveportal-voucher-rolls": {
-        "name": "WebCfg - Status: Captive portal: Voucher Rolls page",
-        "descr": "Allow access to the 'Status: Captive portal: Voucher Rolls' page.",
-        "match": [
-            "status_captiveportal_voucher_rolls.php*"
-        ]
-    },
-    "page-status-captiveportal-vouchers": {
-        "name": "WebCfg - Status: Captive portal: Vouchers page",
-        "descr": "Allow access to the 'Status: Captive portal: Vouchers' page.",
-        "match": [
-            "status_captiveportal_vouchers.php*"
         ]
     },
     "page-status-carp": {
