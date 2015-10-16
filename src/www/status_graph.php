@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
@@ -92,7 +93,7 @@ if ($_GET['hostipformat']) {
 	$curhostipformat = "";
 }
 
-$pgtitle = array(gettext("Status"),gettext("Traffic Graph"));
+$pgtitle = array(gettext('Interfaces'), gettext('Traffic Graph'));
 
 include("head.inc");
 

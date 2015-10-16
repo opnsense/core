@@ -21,7 +21,7 @@
             </History>
             <Backups url="/diag_backup.php"/>
         </ConfigManager>
-        <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-ticket"/>
+        <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug"/>
         <Firmware url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
         <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh">
@@ -45,6 +45,28 @@
                 <Groups url="/status_gateway_groups.php"/>
             </Status>
         </Gateways>
+        <LogFiles VisibleName="Log Files" url="/diag_logs.php" cssClass="fa fa-eye">
+            <System url="/diag_logs.php">
+                <Gateways url="/diag_logs_gateways.php"/>
+                <Routing url="/diag_logs_routing.php"/>
+                <Resolver url="/diag_logs_resolver.php"/>
+                <Wireless url="/diag_logs_wireless.php"/>
+            </System>
+            <Firewall url="/diag_logs_filter.php">
+                <DynamicView url="/diag_logs_filter_dynamic.php"/>
+                <SummaryView url="/diag_logs_filter_summary.php"/>
+            </Firewall>
+            <DHCP url="/diag_logs_dhcp.php"/>
+            <PortalAuth url="/diag_logs_auth.php"/>
+            <PPP url="/diag_logs_ppp.php"/>
+            <VPN url="/diag_logs_vpn.php*"/>
+            <LoadBalancer url="/diag_logs_relayd.php"/>
+            <OpenVPN url="/diag_logs_openvpn.php"/>
+            <Proxy url="/diag_logs_proxy.php">
+                <ProxyActions url="/diag_logs_proxy.php?*"/>
+            </Proxy>
+            <Settings url="/diag_logs_settings.php"/>
+        </LogFiles>
         <Settings cssClass="fa fa-cogs">
             <General url="/system_general.php"/>
             <AdminAccess VisibleName="Admin Access" url="/system_advanced_admin.php"/>
@@ -110,6 +132,9 @@
             <Traceroute url="/diag_traceroute.php"/>
         </Diagnostics>
         <Status VisibleName="(Summary)" order="901" url="/status_interfaces.php" cssClass="glyphicon glyphicon-tasks"/>
+        <TrafficGraph VisibleName="(Traffic Graph)" order="902" url="/status_graph.php" cssClass="fa fa-line-chart">
+            <Details url="/status_graph.php?*"/>
+        </TrafficGraph>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases cssClass="fa fa-list-alt">
@@ -283,31 +308,6 @@
         <Services url="/status_services.php">
             <ServicesActions url="/status_services.php?*"/>
         </Services>
-        <SystemLogs VisibleName="System Logs" url="/diag_logs.php">
-            <System url="/diag_logs.php">
-                <Gateways url="/diag_logs_gateways.php"/>
-                <Routing url="/diag_logs_routing.php"/>
-                <Resolver url="/diag_logs_resolver.php"/>
-                <Wireless url="/diag_logs_wireless.php"/>
-            </System>
-            <Firewall url="/diag_logs_filter.php">
-                <DynamicView url="/diag_logs_filter_dynamic.php"/>
-                <SummaryView url="/diag_logs_filter_summary.php"/>
-            </Firewall>
-            <DHCP url="/diag_logs_dhcp.php"/>
-            <PortalAuth url="/diag_logs_auth.php"/>
-            <PPP url="/diag_logs_ppp.php"/>
-            <VPN url="/diag_logs_vpn.php*"/>
-            <LoadBalancer url="/diag_logs_relayd.php"/>
-            <OpenVPN url="/diag_logs_openvpn.php"/>
-            <Proxy url="/diag_logs_proxy.php">
-                <ProxyActions url="/diag_logs_proxy.php?*"/>
-            </Proxy>
-            <Settings url="/diag_logs_settings.php"/>
-        </SystemLogs>
-        <TrafficGraphs VisibleName="Traffic Graphs" url="/status_graph.php">
-            <TrafficGraphsDetails url="/status_graph.php?*"/>
-        </TrafficGraphs>
     </Status>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
