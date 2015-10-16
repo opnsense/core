@@ -62,7 +62,6 @@
             <Proxy url="/diag_logs_proxy.php">
                 <ProxyActions url="/diag_logs_proxy.php?*"/>
             </Proxy>
-            <Settings url="/diag_logs_settings.php"/>
         </LogFiles>
         <Settings cssClass="fa fa-cogs">
             <General url="/system_general.php"/>
@@ -73,6 +72,7 @@
             <Tunables VisibleName="Tunables" url="/system_advanced_sysctl.php"/>
             <Notifications url="/system_advanced_notifications.php"/>
             <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph_settings.php"/>
+            <LogFiles VisibleName="Log Files" url="/diag_logs_settings.php"/>
         </Settings>
         <Wizard url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>

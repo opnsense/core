@@ -214,7 +214,7 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 	}
 }
 
-$pgtitle = array(gettext("Status"), gettext("System logs"), gettext("Settings"));
+$pgtitle = array(gettext('System'), gettext('Settings'), gettext('Log Files'));
 $closehead = false;
 include("head.inc");
 
@@ -296,11 +296,7 @@ function check_everything() {
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-
-				<? $active_tab = "/diag_logs_settings.php"; include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
 
 
 
@@ -498,7 +494,6 @@ function check_everything() {
 									</table>
 								</div>
 							</form>
-						</div>
 					</div>
 				</section>
 			</div>
