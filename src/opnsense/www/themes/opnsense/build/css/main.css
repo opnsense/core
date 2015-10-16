@@ -3443,8 +3443,6 @@ tbody.collapse.in {
   float: left; }
   .nav-pills > li > a {
     border-radius: 0; }
-  .nav-pills > li + li {
-    margin-left: 2px; }
   .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
     color: #fff;
     background-color: #EA7105; }

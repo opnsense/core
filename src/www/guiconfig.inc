@@ -385,7 +385,9 @@ function print_dump($logarr, $withorig)
 	foreach ($logarr as $logent) {
 		$logent = preg_split("/\s+/", $logent, 6);
 		echo "<tr valign=\"top\">\n";
-		if ($withorig) {
+		if ($logent[0] === 'File') {
+			echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars(join(' ', $logent)) . "</td>\n";
+		} elseif ($withorig) {
 			$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
 			$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
 			$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
@@ -418,10 +420,12 @@ function dump_clog($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert
 		$logarr = array("File $logfile is a directory.");
 	} elseif (!file_exists($logfile)) {
 		$logarr = array("File $logfile doesn't exist.");
-	} elseif (filesize($logfile) == 0) {
-		$logarr = array("Log file started.");
 	} else {
 		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+	}
+
+	if (!count($logarr)) {
+		$logarr[] = sprintf(gettext('File %s is empty.'), $logfile);
 	}
 
 	print_dump($logarr, $withorig);
@@ -444,13 +448,15 @@ function dump_log($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert 
 	}
 
 	if (is_dir($logfile)) {
-		$logarr = array("File $logfile is a directory.");
+		$logarr = array(sprintf(gettext('File %s is a directory.'), $logfile));
 	} elseif (!file_exists($logfile)) {
-		$logarr = array("File $logfile doesn't exist.");
-	} elseif (filesize($logfile) == 0) {
-		$logarr = array("Log file started.");
+		$logarr = array(sprintf(gettext('File %s doesn\'t exist.'), $logfile));
 	} else {
 		exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+	}
+
+	if (!count($logarr)) {
+		$logarr[] = sprintf(gettext('File %s is empty.'), $logfile);
 	}
 
 	print_dump($logarr, $withorig);

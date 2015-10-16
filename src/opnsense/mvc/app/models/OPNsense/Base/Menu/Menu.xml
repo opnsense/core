@@ -59,9 +59,6 @@
             <DHCP url="/diag_logs_dhcp.php"/>
             <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php*"/>
-            <Proxy url="/diag_logs_proxy.php">
-                <ProxyActions url="/diag_logs_proxy.php?*"/>
-            </Proxy>
         </LogFiles>
         <Settings cssClass="fa fa-cogs">
             <General url="/system_general.php"/>
@@ -243,7 +240,12 @@
         <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php">
             <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
         </PPPoEServer>
-        <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
+        <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt">
+            <Administration url="/ui/proxy/"/>
+            <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
+                <More url="/diag_logs_proxy.php*"/>
+            </Log>
+        </Proxy>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
         <Status VisibleName="Status Overview" url="/status_services.php">
             <ServicesActions url="/status_services.php?*"/>

@@ -33,5 +33,4 @@ $tab_array[] = array(gettext("Firewall"), $active_tab == "/diag_logs_filter.php"
 $tab_array[] = array(gettext("DHCP"), $active_tab == "/diag_logs_dhcp.php", "diag_logs_dhcp.php");
 $tab_array[] = array(gettext("PPP"), $active_tab == "/diag_logs_ppp.php", "diag_logs_ppp.php");
 $tab_array[] = array(gettext("VPN"), $active_tab == "/diag_logs_vpn.php", "diag_logs_vpn.php");
-$tab_array[] = array(gettext("Proxy"), $active_tab == "/diag_logs_proxy.php", "diag_logs_proxy.php?type=cache");
 display_top_tabs($tab_array);
