@@ -66,7 +66,7 @@ include("head.inc");
 							<table class="table table-striped table-sort">
 								<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Portal Auth log entries'), $nentries); ?></strong></td></tr>
 								<?php dump_clog($portal_logfile, $nentries, true); ?>
-								<tr><td>
+								<tr><td colspan="2">
 									<form action="diag_logs_auth.php" method="post">
 										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 									</form>

@@ -70,7 +70,7 @@ include("head.inc");
 									<table class="table table-striped table-sort">
 										<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Load Balancer log entries'), $nentries);?></strong></td></tr>
 										 <?php dump_clog($relayd_logfile, $nentries); ?>
-										<tr><td>
+										<tr><td colspan="2">
 											<form action="diag_logs_relayd.php" method="post">
 												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 											</form>

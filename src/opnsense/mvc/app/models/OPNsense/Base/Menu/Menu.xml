@@ -59,7 +59,6 @@
             <DHCP url="/diag_logs_dhcp.php"/>
             <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php*"/>
-            <OpenVPN url="/diag_logs_openvpn.php"/>
             <Proxy url="/diag_logs_proxy.php">
                 <ProxyActions url="/diag_logs_proxy.php?*"/>
             </Proxy>
@@ -295,6 +294,7 @@
                 <Edit url="/vpn_openvpn_export.php?*"/>
             </ClientExport>
             <ClientSharedKeyExport VisibleName="Shared Key Export" url="/vpn_openvpn_export_shared.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_openvpn.php"/>
             <Server VisibleName="Server Settings" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*"/>
             </Server>

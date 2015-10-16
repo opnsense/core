@@ -69,7 +69,7 @@ include("head.inc");
 									<table class="table table-striped table-sort">
 										<tr><td colspan="2"><strong><?= sprintf(gettext("Last %s NTP log entries"), $nentries);?></strong></td></tr>
 										<?php dump_clog($ntpd_logfile, $nentries); ?>
-										<tr><td>
+										<tr><td colspan="2">
 											<form action="diag_logs_ntpd.php" method="post">
 												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 											</form>
