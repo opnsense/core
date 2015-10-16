@@ -1,7 +1,7 @@
 <menu>
     <User order="0" cssClass="glyphicon glyphicon-user">
         <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
-        <Logout VisibleName="Logout" url="/index.php?logout" cssClass="fa fa-sign-out"/>
+        <Logout url="/index.php?logout" cssClass="fa fa-sign-out"/>
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
         <CertificateManager VisibleName="Certificate Manager" cssClass="fa fa-certificate">
@@ -45,20 +45,12 @@
                 <Groups url="/status_gateway_groups.php"/>
             </Status>
         </Gateways>
-        <LogFiles VisibleName="Log Files" url="/diag_logs.php" cssClass="fa fa-eye">
-            <System url="/diag_logs.php">
-                <Gateways url="/diag_logs_gateways.php"/>
-                <Routing url="/diag_logs_routing.php"/>
-                <Resolver url="/diag_logs_resolver.php"/>
-                <Wireless url="/diag_logs_wireless.php"/>
-            </System>
-            <Firewall url="/diag_logs_filter.php">
-                <DynamicView url="/diag_logs_filter_dynamic.php"/>
-                <SummaryView url="/diag_logs_filter_summary.php"/>
-            </Firewall>
-            <DHCP url="/diag_logs_dhcp.php"/>
-            <PPP url="/diag_logs_ppp.php"/>
-            <VPN url="/diag_logs_vpn.php*"/>
+        <LogFiles VisibleName="Log Files" cssClass="fa fa-eye">
+            <General url="/diag_logs.php"/>
+            <Gateways url="/diag_logs_gateways.php"/>
+            <Routing url="/diag_logs_routing.php"/>
+            <Resolver url="/diag_logs_resolver.php"/>
+            <Wireless url="/diag_logs_wireless.php"/>
         </LogFiles>
         <Settings cssClass="fa fa-cogs">
             <General url="/system_general.php"/>
@@ -141,6 +133,11 @@
             <URLs  order="400"  url="/firewall_aliases.php?tab=url"/>
             <Import order="500" url="/firewall_aliases_import.php"/>
         </Aliases>
+        <LogFiles VisibleName="Log Files" cssClass="fa fa-eye">
+            <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
+            <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
+            <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
+        </LogFiles>
         <NAT cssClass="fa fa-exchange">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
               <NatEdit url="/firewall_nat_edit.php*"/>
@@ -316,6 +313,13 @@
         <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
+        <LogFiles VisibleName="Log Files" cssClass="fa fa-eye">
+            <DHCP url="/diag_logs_dhcp.php"/>
+            <PPP url="/diag_logs_ppp.php"/>
+            <VPN url="/diag_logs_vpn.php?vpntype=pptp">
+                <Type url="/diag_logs_vpn.php*"/>
+            </VPN>
+        </LogFiles>
     </Status>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>

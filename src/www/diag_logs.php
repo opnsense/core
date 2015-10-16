@@ -44,19 +44,11 @@ if (isset($_POST['clear'])) {
 	clear_clog($system_logfile);
 }
 
-if ($_GET['filtertext']) {
-	$filtertext = htmlspecialchars($_GET['filtertext']);
-}
-
-if ($_POST['filtertext']) {
+if (isset($_POST['filtertext'])) {
 	$filtertext = htmlspecialchars($_POST['filtertext']);
 }
 
-if ($filtertext) {
-	$filtertextmeta = "?filtertext={$filtertext}";
-}
-
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("General"));
+$pgtitle = array(gettext('System'), gettext('Log Files'), gettext('General'));
 include("head.inc");
 
 ?>
@@ -73,39 +65,31 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<? include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
 
-
-							<? include('diag_logs_pills.inc'); ?>
-				    </div>
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
+							<tr><td colspan="2">
+							<form id="clearform" name="clearform" action="diag_logs.php" method="post" class="__mt">
+					<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" />
+					<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+						    </form>
+							</td></tr>
 									<?php
-										if ($filtertext) {
+										if (isset($filtertext)) {
 											dump_clog($system_logfile, $nentries, true, array("$filtertext"), array("ppp"));
 										} else {
 											dump_clog($system_logfile, $nentries, true, array(), array("ppp"));
 										}
 									?>
-								</table>
-							 </div>
-
-							<div class="container-fluid">
-
+							<tr><td colspan="2">
 							<form action="diag_logs.php" method="post">
 								<input name="clear" type="submit" class="btn btn-default" value="<?= gettext("Clear log");?>" />
 							</form>
-
-							<form id="clearform" name="clearform" action="diag_logs.php" method="post" class="__mt">
-					<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" />
-					<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
-						    </form>
-
-							</div>
+							</td></tr>
+								</table>
+							 </div>
 
 						</div>
 				    </div>

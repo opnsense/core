@@ -590,7 +590,7 @@ if (isset($_POST['clear'])) {
 	clear_clog($filter_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Firewall"));
+$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Normal View'));
 $shortcut_section = "firewall";
 include("head.inc");
 
@@ -609,15 +609,7 @@ include("head.inc");
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
-
-				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
-
-
-							<? $tab_group = 'firewall'; include('diag_logs_pills.inc'); ?>
-
 							<form id="filterlogentries" name="filterlogentries" action="diag_logs_filter.php" method="post">
 							<?php
 								$Include_Act = explode(",", str_replace(" ", ",", $filterfieldsarray['act']));
@@ -671,21 +663,25 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td></td><td></td><td></td><td></td><td></td>
-					          <td><input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align:top;" value="<?=gettext("Filter");?>" /></td>
+                    <td colspan="6">
+						<span class="vexpl"><a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol">TCP Flags</a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, W - CWR</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="6">
+                      <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align:top;" value="<?=gettext("Filter");?>" />
+                    </td>
 					        </tr>
 					      </tbody>
 					    </table>
                             </div>
 
 							</form>
-				    </div>
 					</div>
 			    </section>
 			     <section class="col-xs-12">
 
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
 
 							<div class="table-responsive">
 								<table class="table table-striped table-sort">
@@ -703,11 +699,12 @@ include("head.inc");
 						?>
 									<tr>
 									  <td colspan="<?=isset($config['syslog']['filterdescriptions']) && $config['syslog']['filterdescriptions']==="1"?7:6?>" class="listtopic">
+										<strong>
 										<?php if ( (!$filtertext) && (!$filterfieldsarray) )
 											printf(gettext("Last %s firewall log entries."),count($filterlog));
 										else
-											echo count($filterlog). ' ' . gettext("matched log entries.");
-									    printf(gettext("Max(%s)"),$nentries);?>
+											echo sprintf(gettext('Showing %s matching log entries (maximum is %s).'), count($filterlog), $nentries);?>
+										</strong>
 									  </td>
 									</tr>
 									<tr class="sortableHeaderRowIdentifier">
@@ -810,7 +807,7 @@ include("head.inc");
 						<?php else: ?>
 								  <tr>
 									<td colspan="2" class="listtopic">
-									  <?php printf(gettext("Last %s firewall log entries"),$nentries);?></td>
+									  <strong><?php printf(gettext("Last %s firewall log entries"),$nentries);?></strong></td>
 								  </tr>
 								  <?php
 									if($filtertext)
@@ -818,6 +815,11 @@ include("head.inc");
 									else
 										dump_clog($filter_logfile, $nentries);
 								  ?>
+								<tr><td colspan="2">
+								<form id="clearform" name="clearform" action="diag_logs_filter.php" method="post" style="margin-top: 14px;">
+									<input id="submit" name="clear" type="submit" class="btn btn-primary" value="<?=gettext("Clear log");?>" />
+								</form>
+								</td></tr>
 						<?php endif; ?>
 
 								</table>
@@ -825,16 +827,6 @@ include("head.inc");
 							</td>
 						  </tr>
 						</table>
-
-
-						<form id="clearform" name="clearform" action="diag_logs_filter.php" method="post" style="margin-top: 14px;">
-							<input id="submit" name="clear" type="submit" class="btn btn-primary" value="<?=gettext("Clear log");?>" />
-						</form>
-
-						<p><span class="vexpl"><a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol">TCP Flags</a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, W - CWR</span></p>
-
-
-						</div>
 				    </div>
 			</section>
 			</div>

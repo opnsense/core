@@ -64,26 +64,18 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-
-					<? include('diag_logs_tabs.inc'); ?>
-
-
 						<div class="tab-content content-box col-xs-12">
-						<div class="container-fluid">
-							<?php printf(gettext('Last %s DHCP service log entries'), $nentries); ?>
-						</div>
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
+								<tr><td colspan="2"><?= sprintf(gettext('Last %s DHCP service log entries'), $nentries); ?></strong></td><tr>
 								<?php dump_clog($dhcpd_logfile, $nentries, true); ?>
+								<tr><td colspan="2">
+									<form action="diag_logs_dhcp.php" method="post">
+										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+									</form>
+								</td><tr>
+								<tr><td colspan="2">NOTE: Clearing the log file will restart the DHCP daemon.</td></tr>
 							</table>
-						</div>
-
-					    <div class="container-fluid">
-
-								<form action="diag_logs_dhcp.php" method="post">
-									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-								</form>
-								<p>NOTE: Clearing the log file will restart the DHCP daemon.</p>
 						</div>
 				    </div>
 			    </section>

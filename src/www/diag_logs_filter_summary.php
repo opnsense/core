@@ -27,8 +27,9 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = gettext("Status").": ".gettext("System logs").": ".gettext("Firewall Log Summary");
+$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Summary View'));
 $shortcut_section = "firewall";
+
 require_once("guiconfig.inc");
 require_once("filter_log.inc");
 require_once("interfaces.inc");
@@ -115,11 +116,14 @@ include("head.inc"); ?>
 			<div class="row">
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 			    <section class="col-xs-12">
-						<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.inc'); ?>
 						<div class="tab-content content-box col-xs-12">
-					<div class="container-fluid">
-								<? $tab_group = 'firewall'; include('diag_logs_pills.inc'); ?>
-								<p><?php printf (gettext('This is a firewall log summary, of the last %1$s lines of the firewall log (Max %2$s).'), $gotlines, $lines)?><br /></p>
+							<div class="table-responsive">
+								<table class="table table-striped table-sort">
+									<tr>
+										<td>
+								<strong><?= sprintf(gettext('The following summaries have been collected from the last %s lines of the firewall log (maximum is %s).'), $gotlines, $lines)?></strong>
+									</tr></td>
+								</table>
 							</div>
 						</div>
 					</section>

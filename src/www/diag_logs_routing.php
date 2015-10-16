@@ -43,7 +43,11 @@ if ($_POST['clear']) {
 	clear_clog($routing_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Routing"));
+if (isset($_POST['filtertext'])) {
+	$filtertext = htmlspecialchars($_POST['filtertext']);
+}
+
+$pgtitle = array(gettext('System'), gettext('Log Files'), gettext('Routing'));
 $shortcut_section = "routing";
 include("head.inc");
 
@@ -61,26 +65,31 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
 
-
-							<? include('diag_logs_pills.inc'); ?>
-				    </div>
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
-									<?php dump_clog($routing_logfile, $nentries); ?>
-								</table>
-							 </div>
-							<div class="container-fluid">
+							<tr><td colspan="2">
+							<form id="clearform" name="clearform" action="diag_logs_routing.php" method="post" class="__mt">
+					<input id="filtertext" name="filtertext" value="<?=$filtertext;?>"/>
+					<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+						</form>
+						</td></tr>
+									<?php
+										if (isset($filtertext))
+											dump_clog($routing_logfile, $nentries, true, array("$filtertext"));
+										else
+											dump_clog($routing_logfile, $nentries, true, array());
+									?>
+							<tr><td colspan="2">
 							<form action="diag_logs_routing.php" method="post">
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>
+							</td></tr>
+								</table>
+							 </div>
 
-						</div>
 				    </div>
 			</section>
 			</div>

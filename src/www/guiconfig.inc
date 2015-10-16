@@ -425,7 +425,7 @@ function dump_clog($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert
 	}
 
 	if (!count($logarr)) {
-		$logarr[] = sprintf(gettext('File %s is empty.'), $logfile);
+		$logarr[] = sprintf(gettext('File %s yielded no results.'), $logfile);
 	}
 
 	print_dump($logarr, $withorig);
@@ -456,7 +456,7 @@ function dump_log($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert 
 	}
 
 	if (!count($logarr)) {
-		$logarr[] = sprintf(gettext('File %s is empty.'), $logfile);
+		$logarr[] = sprintf(gettext('File %s yielded no results.'), $logfile);
 	}
 
 	print_dump($logarr, $withorig);

@@ -119,17 +119,12 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/diag_logs_vpn.php"; include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
-
-
-							<? $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?>
 
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
+									<tr><td colspan="4"><? $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?></td></tr>
 									 <?php if ($mode != "raw"): ?>
 										<tr>
 											<td class="listhdrr"><?=gettext("Time");?></td>
@@ -141,17 +136,17 @@ include("head.inc");
 										<?php else:
 											dump_clog("/var/log/{$logname}.log", $nentries);
 									  endif; ?>
-								</table>
-							 </div>
-
+							<tr><td colspan="4">
 							<form action="diag_logs_vpn.php" method="post">
 								<input type="hidden" name="vpntype" id="vpntype" value="<?=$vpntype;?>" />
 								<input type="hidden" name="mode" id="mode" value="<?=$mode;?>" />
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>
+							</td></tr>
+								</table>
+							 </div>
 
 
-						</div>
 				    </div>
 			</section>
 			</div>
