@@ -615,7 +615,7 @@ include("head.inc");
 								$Include_Act = explode(",", str_replace(" ", ",", $filterfieldsarray['act']));
 								if ($filterfieldsarray['interface'] == "All") $interface = "";
 							?>
-							<div class="table-responsive widgetconfigdiv" id="filterlogentries_show"  style="<?=(!isset($config['syslog']['rawfilter']))?"":"display:none"?>">
+							<div class="table-responsive widgetconfigdiv" id="filterlogentries_show">
                                 <table class="table table-striped">
 					      <thead>
 					        <tr>
@@ -687,7 +687,7 @@ include("head.inc");
 								<table class="table table-striped table-sort">
 
 
-						<?php if (!isset($config['syslog']['rawfilter'])):
+						<?php
 							$iflist = get_configured_interface_with_descr(false, true);
 							if (isset($iflist[$interfacefilter]))
 								$interfacefilter = $iflist[$interfacefilter];
@@ -804,23 +804,6 @@ include("head.inc");
 									<?php endif;
 									endforeach;
 									buffer_rules_clear(); ?>
-						<?php else: ?>
-								  <tr>
-									<td colspan="2" class="listtopic">
-									  <strong><?php printf(gettext("Last %s firewall log entries"),$nentries);?></strong></td>
-								  </tr>
-								  <?php
-									if($filtertext)
-										dump_clog($filter_logfile, $nentries, true, array("$filtertext"));
-									else
-										dump_clog($filter_logfile, $nentries);
-								  ?>
-								<tr><td colspan="2">
-								<form id="clearform" name="clearform" action="diag_logs_filter.php" method="post" style="margin-top: 14px;">
-									<input id="submit" name="clear" type="submit" class="btn btn-primary" value="<?=gettext("Clear log");?>" />
-								</form>
-								</td></tr>
-						<?php endif; ?>
 
 								</table>
 								</div>

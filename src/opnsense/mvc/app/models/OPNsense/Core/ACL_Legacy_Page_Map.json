@@ -137,13 +137,6 @@
             "diag_logs_dhcp.php*"
         ]
     },
-    "page-diagnostics-logs-firewall": {
-        "name": "WebCfg - Diagnostics: Logs: Firewall page",
-        "descr": "Allow access to the 'Diagnostics: Logs: Firewall' page.",
-        "match": [
-            "diag_logs_filter.php*"
-        ]
-    },
     "page-diagnostics-logs-gateways": {
         "name": "WebCfg - Diagnostics: Logs: Gateways page",
         "descr": "Allow access to the 'Diagnostics: Logs: System: Gateways' page.",
@@ -453,11 +446,32 @@
             "status.php*"
         ]
     },
-    "page-hidden-nolongerincluded": {
-        "name": "WebCfg - Hidden: No longer included page",
-        "descr": "Allow access to the 'Hidden: No longer included' page.",
+    "page-diagnostics-logs-firewall": {
+        "name": "WebCfg - Diagnostics: Logs: Firewall: Normal View page",
+        "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Normal View' page.",
+        "match": [
+            "diag_logs_filter.php*"
+        ]
+    },
+    "page-diagnostics-logs-firewall-plain": {
+        "name": "WebCfg - Diagnostics: Logs: Firewall: Plain View page",
+        "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Plain View' page.",
+        "match": [
+            "diag_logs_filter_plain.php*"
+        ]
+    },
+    "page-diagnostics-logs-firewall-dynamic": {
+        "name": "WebCfg - Diagnostics: Logs: Firewall: Dynamic View page",
+        "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Dynamic View' page.",
         "match": [
             "diag_logs_filter_dynamic.php*"
+        ]
+    },
+    "page-diagnostics-logs-firewall-summary": {
+        "name": "WebCfg - Diagnostics: Logs: Firewall: Summary View page",
+        "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Summary View' page.",
+        "match": [
+            "diag_logs_filter_summary.php*"
         ]
     },
     "page-interfaces-assignnetworkports": {

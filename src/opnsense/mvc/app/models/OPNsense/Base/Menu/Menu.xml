@@ -137,6 +137,7 @@
             <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
             <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
             <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
+            <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
         </LogFiles>
         <NAT cssClass="fa fa-exchange">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
