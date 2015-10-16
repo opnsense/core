@@ -143,6 +143,12 @@ class ServiceController extends ApiControllerBase
             if (strlen($this->request->getPost("content", "striptags", "")) > 20
                 || strlen((string)$template->content) == 0
             ) {
+                $temp_filename = 'cp_' . (string)$mdlCP->uuid . '.tmp';
+                file_put_contents('/tmp/'.$temp_filename, $this->request->getPost("content", "striptags", ""));
+                // strip defaults from template (standard js libs, etc)
+                $backend = new Backend();
+                $response = $backend->configdpRun("captiveportal strip_template", array($temp_filename));
+                // todo, handle response
                 // only set data if new content is provided
                 $template->content = $this->request->getPost("content", "striptags", "");
             }
