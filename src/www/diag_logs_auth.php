@@ -44,7 +44,7 @@ if ($_POST['clear']) {
 	clear_clog($portal_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Portal Auth"));
+$pgtitle = array(gettext('Services'), gettext('Captive Portal'), gettext('Log File'));
 include("head.inc");
 
 ?>
@@ -61,25 +61,17 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-
-					<? include('diag_logs_tabs.inc'); ?>
-
-
 						<div class="tab-content content-box col-xs-12">
-						<div class="container-fluid">
-							<?php printf(gettext('Last %s Portal Auth log entries'), $nentries); ?>
-						</div>
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
+								<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Portal Auth log entries'), $nentries); ?></strong></td></tr>
 								<?php dump_clog($portal_logfile, $nentries, true); ?>
+								<tr><td>
+									<form action="diag_logs_auth.php" method="post">
+										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+									</form>
+								</td></tr>
 							</table>
-						</div>
-
-					    <div class="container-fluid">
-								<form action="diag_logs_auth.php" method="post">
-									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-								</form>
-
 						</div>
 				    </div>
 			    </section>

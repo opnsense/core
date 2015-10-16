@@ -57,7 +57,6 @@
                 <SummaryView url="/diag_logs_filter_summary.php"/>
             </Firewall>
             <DHCP url="/diag_logs_dhcp.php"/>
-            <PortalAuth url="/diag_logs_auth.php"/>
             <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php*"/>
             <OpenVPN url="/diag_logs_openvpn.php"/>
@@ -192,7 +191,10 @@
         </Diagnostics>
     </Firewall>
     <Services order="4" cssClass="glyphicon glyphicon-cog">
-        <CaptivePortal VisibleName="Captive Portal" url="/ui/captiveportal/" cssClass="fa fa-paper-plane-o"/>
+        <CaptivePortal VisibleName="Captive Portal" cssClass="fa fa-paper-plane-o">
+            <Administration url="/ui/captiveportal/"/>
+            <Log VisibleName="Log File" url="/diag_logs_auth.php"/>
+        </CaptivePortal>
         <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
         <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
             <DHCPServerTab url="/services_dhcp.php?if=*"/>
@@ -237,7 +239,7 @@
             <GPS url="/services_ntpd_gps.php"/>
             <PPS url="/services_ntpd_pps.php"/>
             <Status url="/status_ntpd.php"/>
-            <Log url="/diag_logs_ntpd.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
         <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php">
             <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
@@ -274,7 +276,7 @@
             <Leases VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
             <SAD VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
             <SPD VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
-            <Log VisibleName="System Log" url="/diag_logs_ipsec.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
         <L2TP cssClass="fa fa-road">
             <Settings url="/vpn_l2tp.php"/>

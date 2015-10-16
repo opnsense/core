@@ -68,7 +68,7 @@ include("head.inc");
 						<div class="tab-content content-box col-xs-12">
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
-										<tr><td><strong><?= sprintf(gettext('Last %s Load Balancer log entries'), $nentries);?></strong></td></tr>
+										<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Load Balancer log entries'), $nentries);?></strong></td></tr>
 										 <?php dump_clog($relayd_logfile, $nentries); ?>
 										<tr><td>
 											<form action="diag_logs_relayd.php" method="post">

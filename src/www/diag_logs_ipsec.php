@@ -63,22 +63,19 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 						<div class="tab-content content-box col-xs-12">
-					    <div class="container-fluid">
-
-							<p>  <?php printf(gettext("Last %s  IPsec log entries"),$nentries);?></p>
 
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
+										<tr><td colspan="2"><strong><?= sprintf(gettext("Last %s IPsec log entries"),$nentries);?></strong></td></tr>
 										<?php dump_clog($ipsec_logfile, $nentries); ?>
+										<tr><td>
+											<form action="diag_logs_ipsec.php" method="post">
+												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+											</form>
+										</td></tr>
 									</table>
 								 </div>
-
-								<form action="diag_logs_ipsec.php" method="post">
-									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-								</form>
-
 						</div>
-				    </div>
 			    </section>
 			</div>
 		</div>
