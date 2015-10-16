@@ -838,7 +838,7 @@ if ($_POST['apply']) {
 			do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 			break;
 		case "none":
-			if(is_array($config['virtualip']['vip'])) {
+			if (isset($config['virtualip']['vip'])) {
 				foreach ($config['virtualip']['vip'] as $vip) {
 					if (is_ipaddrv6($vip['subnet']) && $vip['interface'] == $if)
 						$input_errors[] = gettext("This interface is referenced by IPv6 VIPs. Please delete those before setting the interface to 'none' configuration.");
