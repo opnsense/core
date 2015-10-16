@@ -5,6 +5,6 @@
 {%	do isEnabled.append(cpZone) %}
 {%     endif %}
 {%   endfor %}
-{% endif 
+{% endif
 %}
 captiveportal_enable="{% if isEnabled %}YES{% else %}NO{% endif %}"
