@@ -246,8 +246,8 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Load Balancer"),gettext("Monitor"),gettext("Edit"));
-$shortcut_section = "relayd";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Edit Monitor'));
+$shortcut_section = 'relayd';
 
 include("head.inc");
 $types = array("icmp" => gettext("ICMP"), "tcp" => gettext("TCP"), "http" => gettext("HTTP"), "https" => gettext("HTTPS"), "send" => gettext("Send/Expect"));

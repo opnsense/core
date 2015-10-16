@@ -29,9 +29,6 @@
 
 */
 
-// On the page, add in like so:
-//   $shortcut_section = "relayd";
-
 $shortcuts = array();
 
 /* Load and process custom shortcuts. */
@@ -132,16 +129,7 @@ $shortcuts['upnp']['service'] = "miniupnpd";
 
 
 $shortcuts['relayd'] = array();
-$shortcuts['relayd']['main'] = "load_balancer_pool.php";
-$shortcuts['relayd']['log'] = "diag_logs_relayd.php";
-$shortcuts['relayd']['status'] = "status_lb_pool.php";
 $shortcuts['relayd']['service'] = "relayd";
-
-$shortcuts['relayd-virtualservers'] = array();
-$shortcuts['relayd-virtualservers']['main'] = "load_balancer_virtual_server.php";
-$shortcuts['relayd-virtualservers']['log'] = "diag_logs_relayd.php";
-$shortcuts['relayd-virtualservers']['status'] = "status_lb_vs.php";
-$shortcuts['relayd-virtualservers']['service'] = "relayd";
 
 $shortcuts['dhcp'] = array();
 $shortcuts['dhcp']['main'] = "services_dhcp.php";

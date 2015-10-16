@@ -60,7 +60,6 @@
             <PortalAuth url="/diag_logs_auth.php"/>
             <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php*"/>
-            <LoadBalancer url="/diag_logs_relayd.php"/>
             <OpenVPN url="/diag_logs_openvpn.php"/>
             <Proxy url="/diag_logs_proxy.php">
                 <ProxyActions url="/diag_logs_proxy.php?*"/>
@@ -218,12 +217,20 @@
         <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php">
             <IGMPProxyEdit url="/services_igmpproxy_edit.php"/>
         </IGMPProxy>
-        <LoadBalancer VisibleName="Load Balancer" url="/load_balancer_pool.php">
-            <Edit url="/load_balancer_pool_edit.php"/>
-            <VirtualServer url="/load_balancer_virtual_server.php"/>
-            <VirtualServerEdit url="/load_balancer_virtual_server_edit.php"/>
-            <Monitors url="/load_balancer_monitor.php"/>
+        <LoadBalancer VisibleName="Load Balancer" cssClass="fa fa-truck">
+            <Monitors url="/load_balancer_monitor.php">
+                <Edit url="/load_balancer_monitor_edit.php*"/>
+            </Monitors>
+            <PoolSetup VisibleName="Pool Setup" url="/load_balancer_pool.php">
+                <Edit url="/load_balancer_pool_edit.php"/>
+            </PoolSetup>
+            <PoolStatus VisibleName="Pool Status" url="/status_lb_pool.php"/>
             <Settings url="/load_balancer_setting.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_relayd.php"/>
+            <VirtualServer VisibleName="Virtual Server Setup" url="/load_balancer_virtual_server.php">
+                <Edit url="/load_balancer_virtual_server_edit.php"/>
+            </VirtualServer>
+            <VirtualServerStatus VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time Protocol" cssClass="fa fa-clock-o">
             <General url="/services_ntpd.php"/>
@@ -237,6 +244,9 @@
         </PPPoEServer>
         <Proxy VisibleName="Proxy Server" url="/ui/proxy/"/>
         <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
+        <Status VisibleName="Status Overview" url="/status_services.php">
+            <ServicesActions url="/status_services.php?*"/>
+        </Status>
         <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug">
             <Settings url="/services_upnp.php">
                 <Edit url="/services_upnp.php?*"/>
@@ -302,12 +312,6 @@
         <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
-        <LoadBalancer VisibleName="Load Balancer" url="/status_lb_pool.php">
-            <VirtualServers url="/status_lb_vs.php"/>
-        </LoadBalancer>
-        <Services url="/status_services.php">
-            <ServicesActions url="/status_services.php?*"/>
-        </Services>
     </Status>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>

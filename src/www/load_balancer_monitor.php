@@ -74,8 +74,8 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Load Balancer"),gettext("Monitor"));
-$shortcut_section = "relayd";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Monitors'));
+$shortcut_section = 'relayd';
 
 include("head.inc");
 
@@ -98,16 +98,6 @@ $main_buttons = array(
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-				        /* active tabs */
-				        $tab_array = array();
-				        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
-				        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
-				        $tab_array[] = array(gettext("Monitors"), true, "load_balancer_monitor.php");
-				        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
-				        display_top_tabs($tab_array);
-					?>
 
 					<div class="tab-content content-box col-xs-12">
 

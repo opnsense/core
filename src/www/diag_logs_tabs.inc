@@ -34,7 +34,6 @@ $tab_array[] = array(gettext("DHCP"), $active_tab == "/diag_logs_dhcp.php", "dia
 $tab_array[] = array(gettext("Portal Auth"), $active_tab == "/diag_logs_auth.php", "diag_logs_auth.php");
 $tab_array[] = array(gettext("PPP"), $active_tab == "/diag_logs_ppp.php", "diag_logs_ppp.php");
 $tab_array[] = array(gettext("VPN"), $active_tab == "/diag_logs_vpn.php", "diag_logs_vpn.php");
-$tab_array[] = array(gettext("Load Balancer"), $active_tab == "/diag_logs_relayd.php", "diag_logs_relayd.php");
 $tab_array[] = array(gettext("OpenVPN"), $active_tab == "/diag_logs_openvpn.php", "diag_logs_openvpn.php");
 $tab_array[] = array(gettext("Proxy"), $active_tab == "/diag_logs_proxy.php", "diag_logs_proxy.php?type=cache");
 $tab_array[] = array(gettext("Settings"), $active_tab == "/diag_logs_settings.php", "diag_logs_settings.php");

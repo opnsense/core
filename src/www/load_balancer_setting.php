@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Bill Marquette <bill.marquette@gmail.com>.
@@ -82,8 +83,8 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Load Balancer"),gettext("Settings"));
-$shortcut_section = "relayd";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Settings'));
+$shortcut_section = 'relayd';
 
 include("head.inc");
 
@@ -104,16 +105,6 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<?php
-			        /* active tabs */
-			        $tab_array = array();
-			        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
-			        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
-			        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
-			        $tab_array[] = array(gettext("Settings"), true, "load_balancer_setting.php");
-			        display_top_tabs($tab_array);
-			       ?>
-
 					<div class="tab-content content-box col-xs-12">
 
 
@@ -123,7 +114,7 @@ include("head.inc");
 
 						            <table class="table table-striped table-sort">
 						              <tr>
-						                 <td colspan="2" valign="top" class="listtopic"><?=gettext("Relayd global settings"); ?></td>
+						                 <td colspan="2" valign="top" class="listtopic"><?=gettext("Global settings"); ?></td>
 						              </tr>
 							      <tr>
 							         <td width="22%" valign="top" class="vncell"><?=gettext("timeout") ; ?></td>
