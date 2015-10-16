@@ -99,7 +99,7 @@ function mapDataToFormUI(data_get_map) {
         ajaxGet(url=data_url,sendData={}, callback=function(data, status) {
             if (status == "success") {
                 $("form").each(function( index ) {
-                    if ( $(this).attr('id').split('-')[0] == data_index) {
+                    if ( $(this).attr('id') && $(this).attr('id').split('-')[0] == data_index) {
                         // related form found, load data
                         setFormData($(this).attr('id'), data);
                         collected_data[$(this).attr('id')] = data;
