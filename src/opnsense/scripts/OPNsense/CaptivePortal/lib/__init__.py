@@ -26,6 +26,7 @@
 """
 import os.path
 import stat
+import xml.etree.ElementTree
 from ConfigParser import ConfigParser
 
 class Config(object):
@@ -75,3 +76,29 @@ class Config(object):
                     else:
                         result[zoneid]['allowedmacaddresses'] = list()
         return result
+
+class OPNSenseConfig(object):
+    """ Read configuration data from config.xml
+    """
+    def __init__(self):
+        self.load_config()
+
+    def load_config(self):
+        """ load config.xml
+        """
+        tree = xml.etree.ElementTree.parse('/conf/config.xml')
+        self.rootNode = tree.getroot()
+
+    def get_template(self, fileid):
+        """ fetch template content from config.xml
+            :param fileid: internal fileid (field in template node)
+            :return: string, bse64 encoded data or None if not found
+        """
+        templates = self.rootNode.findall("./OPNsense/captiveportal/templates/template")
+        if templates is not None:
+            for template in templates:
+                if template.find('fileid') is not None and template.find('content') is not None :
+                    if template.find('fileid').text == fileid:
+                        return template.find('content').text
+
+        return None
