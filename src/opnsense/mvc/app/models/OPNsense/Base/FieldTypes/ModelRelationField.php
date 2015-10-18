@@ -111,6 +111,11 @@ class ModelRelationField extends BaseField
         $result = array ();
         if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
             is_array(self::$internalOptionList[$this->internalCacheKey])) {
+            // if relation is not required, add empty option
+            if (!$this->internalIsRequired) {
+                $result[""] = array("value"=>"none", "selected" => 0);
+            }
+
             foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
                 if ($optKey == $this->internalValue && $this->internalValue != null) {
                     $selected = 1;
