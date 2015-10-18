@@ -78,9 +78,10 @@ captiveportal_start()
             chown www:www $CPWORKDIR/$zonedirname/tmp
 
             # sync default template
-            /usr/local/bin/rsync -a $CPDEFAULTTEMPLATE/* $CPWORKDIR/$zonedirname/htdocs/
+            /usr/local/bin/rsync --delete -ar $CPDEFAULTTEMPLATE/ $CPWORKDIR/$zonedirname/htdocs/
 
-            # todo, overlay custom user layout if available
+            # overlay custom user layout if available.
+            /usr/local/opnsense/scripts/OPNsense/CaptivePortal/overlay_template.py $zoneid
 
             # start new instance
             echo "Start : zone $zoneid"
