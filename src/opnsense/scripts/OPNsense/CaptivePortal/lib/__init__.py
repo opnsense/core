@@ -77,6 +77,15 @@ class Config(object):
                         result[zoneid]['allowedmacaddresses'] = list()
         return result
 
+    def fetch_template_data(self, zoneid):
+        """ fetch template content from config
+        """
+        for section in self._conf_handle.sections():
+            if section.find('template_for_zone_') == 0 and section.split('_')[-1] == str(zoneid):
+                if self._conf_handle.has_option(section, 'content'):
+                    return self._conf_handle.get(section, 'content')
+        return None
+
 class OPNSenseConfig(object):
     """ Read configuration data from config.xml
     """
