@@ -76,6 +76,12 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>zone.template</id>
+        <label>custom template</label>
+        <type>dropdown</type>
+        <help>use custom template package for user login</help>
+    </field>
+    <field>
         <id>zone.description</id>
         <label>description</label>
         <type>text</type>
