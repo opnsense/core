@@ -45,7 +45,9 @@ with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as
     # overlay user template data
     user_filenames = list()
     if len(sys.argv) > 1:
-        # search for user template, using fileid
+        # Search for user template, using fileid
+        # In this case, we must use the config.xml to retrieve the latest content. 
+        # When using the generated config, the user experience will be a bit odd (old content after upload)
         cnf = OPNSenseConfig()
         template_content = cnf.get_template(sys.argv[1])
         if template_content is not None:
