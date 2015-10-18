@@ -147,7 +147,7 @@ class ServiceController extends ApiControllerBase
                 // strip defaults and unchanged files from template (standard js libs, etc)
                 $backend = new Backend();
                 $response = $backend->configdpRun("captiveportal strip_template", array($temp_filename));
-                unlink($temp_filename);
+                unlink('/tmp/'.$temp_filename);
                 $result = json_decode($response, true);
                 if ($result != null && !array_key_exists('error', $result)) {
                     $template->content = $result['payload'];
