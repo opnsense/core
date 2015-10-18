@@ -99,7 +99,7 @@ if 'error' not in response:
                                 # new file, always write
                                 zf_out.writestr(filename, file_data)
         if 'error' not in response:
-            response['payload'] = output_data.getvalue().encode('base64').strip()
+            response['payload'] = output_data.getvalue().encode('base64').strip().replace('\n' ,'')
             response['size'] = len(response['payload'])
 
 print(ujson.dumps(response))
