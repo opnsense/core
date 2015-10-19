@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-09 05:38+0000\n"
+"POT-Creation-Date: 2015-10-19 06:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 1653\n"
+"X-Pootle-Revision: 1832\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
@@ -2943,7 +2943,7 @@ msgstr ""
 
 # File: src/etc/inc/notices.smtp.inc, line: 801
 msgid "it was not previously established a SMTP connection"
-msgstr ""
+msgstr "es wurde zuvor keine SMTP Verbindung aufgebaut"
 
 msgid "No Preference"
 msgstr "Keine Einstellung"
@@ -3079,15 +3079,16 @@ msgid "Starting SNMP daemon... "
 msgstr "Starte SNMP Daemon... "
 
 msgid "Error: cannot open snmpd.conf in services_snmpd_configure().%s"
-msgstr ""
+msgstr "Fehler: Konnte snmpd.conf in services_snmpd_configure() nicht öffnen.%s"
 
 # File: src/etc/inc/services.inc, line: 2253
 msgid "Dynamic DNS updated IP Address (A) for %s on %s (%s) to %s"
-msgstr ""
+msgstr "Dynamisches DNS aktualisierte IP Adresse (A) für %s auf %s (%s) nach %s"
 
 # File: src/etc/inc/services.inc, line: 2268
 msgid "Dynamic DNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s"
 msgstr ""
+"Dynamisches DNS aktualisierte IPv6 Adresse (AAAA) für %s auf %s (%s) nach %s"
 
 msgid "Starting UPnP service... "
 msgstr "Starte UPnP Dienst..."
@@ -3139,7 +3140,7 @@ msgid "Proxy server"
 msgstr "Proxy Server"
 
 msgid "Running"
-msgstr "Läuft"
+msgstr "Aktiv"
 
 msgid "%s Service is"
 msgstr "%s Dienst ist"
@@ -3266,7 +3267,7 @@ msgid ""
 msgstr ""
 
 msgid "Indicates whether this user is able to login for example via SSH."
-msgstr ""
+msgstr "Gibt an, ob er Benutzer sich z.B. über SSH anmelden kann."
 
 msgid ""
 "Indicates whether this user is allowed to copy files onto the %s appliance "
@@ -3595,6 +3596,8 @@ msgid ""
 "You can now access the webConfigurator by opening the following URL in your "
 "web browser:"
 msgstr ""
+"Sie können nun den WebConfigurator erreichen indem Sie die folgende URL in "
+"Ihrem Browser öffnen:"
 
 msgid "Press <ENTER> to continue."
 msgstr "Drücken Sie <Enter> um fortzufahren."
@@ -3682,7 +3685,7 @@ msgstr ""
 
 # File: src/etc/rc.sshd, line: 139
 msgid "Completed creating your SSH keys. SSH will now be started."
-msgstr ""
+msgstr "SSH keys wurden erstellt. SSH wird nun gestartet."
 
 # File: src/etc/inc/pfsense-utils.inc, line: 1511
 msgid "Could not process aliases from alias: %s"
@@ -3721,7 +3724,7 @@ msgstr "Anwenden"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
 msgid "Fetching... (may take up to 30 seconds)"
-msgstr "Abholen... (könnte bis zu 30 Sekunden dauern)"
+msgstr "Aktualisiere... (kann bis zu 30 Sekunden dauern)"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 57
 msgid "Package Name"
@@ -4451,7 +4454,7 @@ msgid ""
 "By default this is 30."
 msgstr ""
 "Gib eine Anzahl an alten Konfigurationen ein, die im lokalen Sicherungscache "
-"gespeichert werden sollen.Standartwert beträgt 30."
+"gespeichert werden sollen. Standardwert beträgt 30."
 
 msgid "Save"
 msgstr "Speichern"
@@ -4814,7 +4817,7 @@ msgstr "System herunterfahren"
 
 # File: src/www/diag_halt.php, line: 48
 msgid "The system is halting now. This may take one minute."
-msgstr ""
+msgstr "Das System stoppt nun. Dies könnte eine Minute dauern."
 
 # File: src/www/diag_halt.php, line: 56
 msgid "Are you sure you want to halt the system?"
@@ -4860,7 +4863,7 @@ msgid "You can configure IPsec"
 msgstr "Sie können IPsec konfigurieren"
 
 msgid "Pool: "
-msgstr ""
+msgstr "Pool: "
 
 msgid "usage: "
 msgstr ""
@@ -5022,7 +5025,7 @@ msgstr "Die Regel die diese Aktion ausgelöst hat ist"
 
 # File: src/www/diag_logs_filter.php, line: 627
 msgid "Time and interface"
-msgstr ""
+msgstr "Zeit und Interface"
 
 # File: src/www/diag_logs_filter.php, line: 628
 msgid "Source and destination IP Address"
@@ -5030,14 +5033,14 @@ msgstr "Quell und Ziel IP-Adressen"
 
 # File: src/www/diag_logs_filter.php, line: 629
 msgid "Source and destination port"
-msgstr ""
+msgstr "Quell- und Zielport"
 
 msgid "Time"
 msgstr "Zeit"
 
 # File: src/www/diag_logs_filter.php, line: 642
 msgid "Source IP Address"
-msgstr ""
+msgstr "Quell-IP-Adresse"
 
 msgid "Source Port"
 msgstr "Quellport"
@@ -5143,7 +5146,7 @@ msgid "Last %s  IPsec log entries"
 msgstr "Letzte %s IPsec Protokolleinträge"
 
 msgid "Last %s NTP log entries"
-msgstr ""
+msgstr "Letzte %s NTP-Protokolleinträge"
 
 msgid "Last %s OpenVPN log entries"
 msgstr ""
@@ -5177,11 +5180,11 @@ msgstr "Zusammengefasste Ansicht"
 
 # File: src/www/diag_logs_pills.inc, line: 44
 msgid "Cache"
-msgstr ""
+msgstr "Zwischenspeicher"
 
 # File: src/www/diag_logs_pills.inc, line: 45
 msgid "Access"
-msgstr ""
+msgstr "Zugang"
 
 msgid "Last %s PPP log entries"
 msgstr ""
@@ -5220,9 +5223,12 @@ msgstr ""
 
 msgid "Log file size must be a positive integer greater than 5120."
 msgstr ""
+"Protokolldateigröße muss eine positive Zahl sein, die größer als 5120 ist."
 
 msgid "webConfigurator configuration has changed. Restarting webConfigurator."
 msgstr ""
+"Die Konfiguration des webConfigurator hat sich geändert. Der webConfigurator "
+"wird neugestartet."
 
 msgid "WebGUI process is restarting."
 msgstr "WebGUI Prozess startet neu."
@@ -6110,6 +6116,7 @@ msgid ""
 "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and "
 "_\"."
 msgstr ""
+"Der Name des Alias darf nur aus den Zeichen \"a-z, A-Z, 0-9 und _\" bestehen."
 
 msgid "You may enter a description here for your reference (not parsed)."
 msgstr "Beschreibung (wird nicht als Parameter verwendet)."
@@ -6247,7 +6254,7 @@ msgstr ""
 "Klicken Sie um zwischen dem Status aktiviert und deaktiviert umzuschalten"
 
 msgid "move selected rules before this rule"
-msgstr "Ausgewählte Regeln vor diese Regel verschieben"
+msgstr "Ausgewählte Regeln vor dieser Regel einordnen"
 
 msgid "edit this rule"
 msgstr "Diese Regel bearbeiten"
@@ -6259,7 +6266,7 @@ msgid "add new rule based on this one"
 msgstr "Eine neue Regel basierend auf dieser hinzufügen"
 
 msgid "move selected rules to end"
-msgstr ""
+msgstr "Ausgewählte Regeln am Ende einordnen"
 
 msgid "delete selected rules"
 msgstr "ausgewählte Regeln löschen"
@@ -6583,7 +6590,7 @@ msgid "Choose which IP protocol this rule should match."
 msgstr "Wählen Sie aus, für welches IP Protokoll diese Regel gelten soll."
 
 msgid "Hint: in most cases, you should specify"
-msgstr ""
+msgstr "Hinweis: In den meisten Fällen sollten Sie dies angeben"
 
 msgid "TCP"
 msgstr "TCP"
@@ -6646,7 +6653,7 @@ msgid "e.g."
 msgstr "z.B."
 
 msgid "Redirect target port"
-msgstr ""
+msgstr "Zielport weiterleiten"
 
 msgid ""
 "Specify the port on the machine with the IP address entered above. In case "
@@ -6692,7 +6699,7 @@ msgid ""
 msgstr ""
 
 msgid "Rule Information"
-msgstr ""
+msgstr "Regelinformation"
 
 msgid "Created"
 msgstr "Erstellt"
@@ -6902,11 +6909,11 @@ msgstr "Übersetzung / Ziel"
 
 # File: src/www/firewall_nat_out_edit.php, line: 572
 msgid "Interface address"
-msgstr ""
+msgstr "Interfaceadresse"
 
 # File: src/www/firewall_nat_out_edit.php, line: 582
 msgid "Translation address"
-msgstr ""
+msgstr "Übersetzungsadresse"
 
 msgid "Packets matching this rule will be mapped to the IP address given here."
 msgstr ""
@@ -6922,11 +6929,11 @@ msgstr ""
 
 # File: src/www/firewall_nat_out_edit.php, line: 602
 msgid "Pool Options:"
-msgstr ""
+msgstr "Pooloptionen:"
 
 # File: src/www/firewall_nat_out_edit.php, line: 609
 msgid "Round Robin"
-msgstr ""
+msgstr "Round Robin"
 
 # File: src/www/firewall_nat_out_edit.php, line: 612
 msgid "Round Robin with Sticky Address"
@@ -7180,7 +7187,7 @@ msgid "You can not use IPv6 addresses in IPv4 rules."
 msgstr ""
 
 msgid "You can not use IPv4 addresses in IPv6 rules."
-msgstr ""
+msgstr "Sie können keine IPv4-Adressen in IPv6-Regeln anwenden."
 
 # File: src/www/firewall_rules_edit.php, line: 312
 msgid "Invalid subnet mask on IPv4 source"
@@ -7192,6 +7199,8 @@ msgstr "Ungültige Subnetzmaske bei IPv4-Ziel"
 
 msgid "You can not use a IPv4 or IPv6 address in combined IPv4 + IPv6 rules."
 msgstr ""
+"Sie können keine IPv4- oder IPv6-Adresse in kombinierten IPv4 + IPv6 Regeln "
+"anwenden."
 
 msgid "OS detection is only valid with protocol tcp."
 msgstr ""
@@ -7374,6 +7383,8 @@ msgid ""
 "If you selected ICMP for the protocol above, you may specify an ICMP type "
 "here."
 msgstr ""
+"Falls Sie oben ICMP als Protokoll ausgewählt haben, können Sie hier einen "
+"ICMP-Typ angeben."
 
 msgid "Log"
 msgstr "Protokoll"
@@ -7530,7 +7541,7 @@ msgid "NO pfsync"
 msgstr ""
 
 msgid "State Type"
-msgstr ""
+msgstr "Statustyp"
 
 msgid ""
 "Hint: This prevents states created by this rule to be sync'ed over pfsync."
@@ -7569,7 +7580,7 @@ msgid "Fri"
 msgstr "Fr"
 
 msgid "Mon"
-msgstr "Montag"
+msgstr "Mo"
 
 msgid "Sat"
 msgstr "Sa"
@@ -7742,6 +7753,8 @@ msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
 "Gateway."
 msgstr ""
+"Dieser Eintrag kann nicht gelöscht werden, da er noch von mindestens einem "
+"Gateway referenziert wird."
 
 msgid ""
 "This entry cannot be deleted because it is still referenced by a CARP IP "
@@ -7761,7 +7774,7 @@ msgid "Do you really want to delete this entry?"
 msgstr "Wollen Sie diesen Eintrag wirklich löschen?"
 
 msgid "The VIP configuration has been changed."
-msgstr ""
+msgstr "Die VIP Konfiguration hat sich geändert."
 
 msgid "Virtual IP address"
 msgstr "Virtuelle IP-Adresse"
@@ -7776,7 +7789,7 @@ msgstr ""
 
 # File: src/www/firewall_virtual_ip.php, line: 317
 msgid "delete this virtual ip"
-msgstr ""
+msgstr "Lösche diese virtuelle IP"
 
 msgid "The virtual IP addresses defined on this page may be used in"
 msgstr ""
@@ -7794,7 +7807,7 @@ msgid "A valid IP address must be specified."
 msgstr "Eine gültige IP Adresse muss spezifiziert werden."
 
 msgid "This IP address is being used by another interface or VIP."
-msgstr ""
+msgstr "Diese IP Adresse ist von einem anderem Interface oder VIP in Benutzung."
 
 msgid ""
 "The interface chosen for the VIP has no IPv4 or IPv6 address configured so "
@@ -7802,7 +7815,7 @@ msgid ""
 msgstr ""
 
 msgid "You cannot use the network address for this VIP"
-msgstr ""
+msgstr "Sie können diese Netzwerkadresse nicht für diesen VIP nutzen."
 
 msgid "You cannot use the broadcast address for this VIP"
 msgstr ""
@@ -7831,7 +7844,7 @@ msgstr "virtuelle IP-Adresse"
 
 # File: src/www/firewall_virtual_ip_edit.php, line: 266
 msgid "Please provide a single IP address"
-msgstr ""
+msgstr "Bitte geben Sie eine einzelne IP-Adresse an"
 
 msgid ""
 "This must be the network's subnet mask. It does not specify a CIDR range."
@@ -7891,7 +7904,7 @@ msgstr ""
 
 # File: src/www/firewall_virtual_ip_edit.php, line: 433
 msgid "Base"
-msgstr ""
+msgstr "Basis"
 
 # File: src/www/firewall_virtual_ip_edit.php, line: 441
 msgid "Skew"
@@ -7940,7 +7953,7 @@ msgid "No URL for getURL"
 msgstr "Keine URL für getURL"
 
 msgid "No callback function for getURL"
-msgstr ""
+msgstr "Keine callback Funktion für getURL"
 
 msgid "Both getURL and XMLHttpRequest are undefined"
 msgstr "getURL und XMLHttpRequest sind nicht definiert"
@@ -8009,6 +8022,8 @@ msgstr "Aktuelle Ansicht: "
 # File: src/www/guiconfig.inc, line: 629
 msgid "A problem was detected. Click %shere%s for more information."
 msgstr ""
+"Ein Problem wurde gefunden. Klicken Sie auf %shere%s für weitere "
+"Informationen."
 
 msgid "Acknowledge All Notices"
 msgstr "Alle Meldungen bestätigen"
@@ -8151,7 +8166,7 @@ msgid "You can only have one interface configured as 6to4."
 msgstr ""
 
 msgid "You must enter a valid hexadecimal number for the IPv6 prefix ID."
-msgstr ""
+msgstr "Sie müssen eine valide dezimale Zahl für die IPv6 Präfix ID eingeben."
 
 msgid "You specified an IPv6 prefix ID that is out of range."
 msgstr ""
@@ -8255,7 +8270,7 @@ msgid ""
 msgstr ""
 
 msgid "The length of the passphrase should be between 8 and 63 characters."
-msgstr ""
+msgstr "Die Länge des Passworts muss zwischen 8 und 63 Zeichen lang sein."
 
 msgid ""
 "Unable to change mode to %s.  You may already have the maximum number of "
@@ -8290,7 +8305,7 @@ msgid "Don't forget to adjust the DHCP Server range if needed after applying."
 msgstr ""
 
 msgid "The %s configuration has been changed."
-msgstr ""
+msgstr "The %s Konfiguration hat sich geändert."
 
 msgid "General configuration"
 msgstr "Allgemeine Konfiguration"
@@ -8333,6 +8348,9 @@ msgid ""
 "If you leave this field blank, the adapter's default MTU will be used. This "
 "is typically 1500 bytes but can vary in some circumstances."
 msgstr ""
+"Falls Sie diese Feld frei lassen, wird der Standard MTU Wert vom Adapter "
+"benutzt. Dies ist normalerweise 1500 bytes kann aber in einigen Fällen "
+"abweichen."
 
 msgid "MSS"
 msgstr "MSS"
@@ -8359,7 +8377,7 @@ msgid "Static IPv4 configuration"
 msgstr "Statische IPv4 Konfiguration"
 
 msgid "IPv4 Upstream Gateway"
-msgstr ""
+msgstr "IPv4 Upstream Gateway"
 
 # Neues bezieht sich hier auf "das Gateway"
 msgid "add a new one."
@@ -8369,6 +8387,8 @@ msgid ""
 "If this interface is an Internet connection, select an existing Gateway from "
 "the list or add a new one using the link above."
 msgstr ""
+"Falls dieses Interface eine Internetverbindung hat, wähle ein existierendes "
+"Gateway aus der Liste aus oder füge mit dem oberen Link ein neues hinzu."
 
 msgid "On local LANs the upstream gateway should be \"none\"."
 msgstr ""
@@ -8578,7 +8598,7 @@ msgid ""
 msgstr ""
 
 msgid "The current DUID is: '%s'"
-msgstr ""
+msgstr "Die aktuelle DUID ist: '%s'"
 
 msgid "Use IPv4 connectivity as parent interface"
 msgstr ""
@@ -8615,10 +8635,10 @@ msgid ""
 msgstr ""
 
 msgid "Information Only"
-msgstr ""
+msgstr "Nur Information"
 
 msgid "Send Options"
-msgstr ""
+msgstr "Sendeoptionen"
 
 msgid ""
 "The values in this field are DHCP send options to be sent when requesting a "
@@ -8936,6 +8956,8 @@ msgid ""
 "for additional PPTP and L2TP configuration options. Save first if you made "
 "changes."
 msgstr ""
+"für zusätzliche PPTP- und L2TP-Konfigurationsoptionen. Falls Sie zuvor "
+"Änderungen vorgenommen haben, müssen Sie diese zuerst speichern."
 
 msgid "for advanced PPTP and L2TP configuration options"
 msgstr ""
@@ -9193,13 +9215,13 @@ msgid "Enable WPA"
 msgstr "Aktiviere WPA"
 
 msgid "WPA Pre-Shared Key"
-msgstr ""
+msgstr "WPA Pre-Shared Schlüssel"
 
 msgid "PSK:"
 msgstr "PSK:"
 
 msgid "Passphrase must be from 8 to 63 characters."
-msgstr ""
+msgstr "Das Passwort muss eine Länge von 8 bis 63 Zeichen haben."
 
 msgid "WPA Mode"
 msgstr "WPA Modus"
@@ -9325,6 +9347,9 @@ msgid ""
 "When set, this option blocks traffic from IP addresses that are reserved ("
 "but not RFC 1918) or not yet assigned by IANA."
 msgstr ""
+"Wenn diese Einstellung ausgewählt ist, blockiert es den Traffic von IP-"
+"Adressen die reserviert sind (aber nicht RFC 1918) oder noch nicht von IANA "
+"zugewiesenen."
 
 msgid ""
 "Bogons are prefixes that should never appear in the Internet routing table, "
@@ -9339,8 +9364,8 @@ msgid ""
 "Note: The update frequency can be changed under System->Advanced Firewall/"
 "NAT settings."
 msgstr ""
-"Hinweis: Die Aktualisierungsfrequenz kann unter System->Erweiterte Firewall/"
-"NAT Einstellungen geändert werden."
+"Hinweis: Die Aktualisierungsfrequenz kann unter System -> Einstellungen -> "
+"Firewall / NAT Einstellungen geändert werden."
 
 msgid "You can manage Gateways"
 msgstr "Sie können Gateways verwalten"
@@ -9652,7 +9677,7 @@ msgid "This will disable the autoedge status of interfaces."
 msgstr ""
 
 msgid "PTP ports"
-msgstr ""
+msgstr "PTP-Ports"
 
 msgid ""
 "Set the interface as a point-to-point link.  This is required for straight "
@@ -9929,6 +9954,7 @@ msgstr "LAGG Konfiguration"
 
 msgid "Choose the members that will be used for the link aggregation"
 msgstr ""
+"Wählen Sie die Elemente, die für die Link Aggregation genutzt werden sollen."
 
 msgid "Lag proto"
 msgstr ""
@@ -10049,7 +10075,7 @@ msgstr ""
 "Eine gültige Gateway IP-Adresse ODER Hostname muss für %s angegeben werden."
 
 msgid "The bandwidth value for %s must be an integer."
-msgstr ""
+msgstr "Der Brandbreitenwert für %s muss eine ganze Zahl sein."
 
 msgid "The MTU for %s must be greater than 576 bytes."
 msgstr "Der MTU für %s muss größer als 576 bytes sein."
@@ -10112,7 +10138,7 @@ msgid ""
 msgstr ""
 
 msgid "Connection Timeout"
-msgstr ""
+msgstr "Connection Timeout"
 
 msgid ""
 "Note: Enter timeout in seconds for connection to be established (sec.) "
@@ -10277,7 +10303,7 @@ msgid "QinQ interface does not exist"
 msgstr "QinQ Interface existiert nicht"
 
 msgid "Tag"
-msgstr ""
+msgstr "Tag"
 
 msgid "QinQ members"
 msgstr ""
@@ -10545,10 +10571,11 @@ msgid "The name '%s' is a reserved word and cannot be used."
 msgstr "Der Name '%s' ist eine reserviertes Wort und kann nicht benutzt werden."
 
 msgid "Sorry, an alias is already named %s."
-msgstr ""
+msgstr "Sorry, es gibt bereits einen Alias mit dem Namen %s."
 
 msgid "The port must be an integer between 1 and 65535, or a port alias."
 msgstr ""
+"Der Port muss eine ganze Zahl zwischen 1 und 65535 oder ein Portalias sein."
 
 msgid "The retry value must be an integer between 1 and 65535."
 msgstr "Der Wiederholungswert muss eine Zahl zwischen 1 und 65535 sein."
@@ -10709,7 +10736,7 @@ msgid "Enabled Actions"
 msgstr "Aktivierte Aktionen"
 
 msgid "Timeout must be a numeric value"
-msgstr ""
+msgstr "Timeout muss ein numerischer Wert sein"
 
 msgid "Interval must be a numeric value"
 msgstr ""
@@ -10787,7 +10814,7 @@ msgid "created '%s' vs:"
 msgstr "Erstellte %s vs:"
 
 msgid "Virtual Server"
-msgstr ""
+msgstr "Virtueller Server"
 
 msgid "Edit Load Balancer - Virtual Server entry"
 msgstr "Eintrag des Virtuellen Servers des Lastverteilers bearbeiten"
@@ -12358,7 +12385,7 @@ msgid "Static ARP is enabled.  You must specify an IP address."
 msgstr "Satisches ARP ist aktiviert.  Du musst eine IP-Adresse angeben."
 
 msgid "This Hostname, IP, MAC address or Client identifier already exists."
-msgstr ""
+msgstr "Dieser Hostname, IP, MAC Adresse oder Client-ID existiert bereits."
 
 msgid "The IP address must not be within the DHCP range for this interface."
 msgstr ""
@@ -12385,6 +12412,8 @@ msgstr "Client-Kennung"
 
 msgid "If an IPv4 address is entered, the address must be outside of the pool."
 msgstr ""
+"Wenn eine IPv4 Adresse eingegeben wird, muss die Adresse außerhalb des Pools "
+"liegen."
 
 msgid ""
 "If no IPv4 address is given, one will be dynamically allocated from the pool."
@@ -12454,6 +12483,8 @@ msgstr "Eine gültige IPv6 Adresse muss für den Gateway angegeben werden."
 msgid ""
 "A valid IPv6 address must be specified for the primary/secondary DNS servers."
 msgstr ""
+"Eine valide IPv6 Adresse muss für die primären/sekundären DNS Server "
+"angegeben werden."
 
 msgid ""
 "A valid primary domain name server IPv4 address must be specified for the "
@@ -12463,6 +12494,8 @@ msgstr ""
 msgid ""
 "A valid IPv6 address must be specified for the primary/secondary NTP servers."
 msgstr ""
+"Eine valide IPv6 Adresse muss für die primären/sekundären NTP Server "
+"angegeben werden."
 
 msgid "A valid IPv6 address or hostname must be specified for the TFTP server."
 msgstr ""
@@ -12789,7 +12822,7 @@ msgid "A valid domain must be specified in alias list."
 msgstr "Eine gültige Domain muss in der Aliasliste spezifiziert werden."
 
 msgid "This host/domain already exists."
-msgstr ""
+msgstr "Dieser Host/Domain existiert bereits."
 
 msgid "Edit host"
 msgstr "Host bearbeiten"
@@ -12887,11 +12920,15 @@ msgid ""
 "Note: With a dynamic DNS service you can only use a hostname, not an IP "
 "address."
 msgstr ""
+"Hinweis: Mit einem dynamischen DNS Service können Sie nur einen Hostname "
+"nutzen, keine IP Adresse."
 
 msgid ""
 "Set this option only if you need a special MX record. Not all services "
 "support this."
 msgstr ""
+"Sezen Sie diese Option nur wenn Sie einen speziellen MX Record benötigen. "
+"Nicht alle Services unterstützen dies."
 
 msgid "Wildcards"
 msgstr "Wildcards"
@@ -13198,7 +13235,7 @@ msgid "Or"
 msgstr "Oder"
 
 msgid "select a file to upload:"
-msgstr ""
+msgstr "Wählen Sie eine Datei aus:"
 
 msgid "NTP GPS"
 msgstr "NTP GPS"
@@ -13222,6 +13259,7 @@ msgstr ""
 
 msgid "This option allows you to select a predefined configuration."
 msgstr ""
+"Diese Option ermöglicht es Ihnen, eine vordefinierte Konfiguration auswählen."
 
 # File: src/www/services_ntpd_gps.php, line: 400
 msgid "Select Generic if your GPS is not listed."
@@ -13272,6 +13310,8 @@ msgstr ""
 msgid ""
 "Normally there should be no need to change these options from the defaults."
 msgstr ""
+"Normalerweise sollte es nicht notwendig sein, diese Option vom Standard zu "
+"ändern."
 
 msgid "NTP should prefer this clock (default: enabled)."
 msgstr ""
@@ -13389,7 +13429,7 @@ msgstr ""
 
 # File: src/www/services_opendns.php, line: 125
 msgid "OpenDNS Setup"
-msgstr ""
+msgstr "OpenDNS Setup"
 
 # File: src/www/services_opendns.php, line: 133
 msgid "Filter DNS requests using OpenDNS"
@@ -13411,7 +13451,7 @@ msgstr "Testergebnis"
 
 # File: src/www/services_opendns.php, line: 206
 msgid "Test/Update"
-msgstr ""
+msgstr "Test/Update"
 
 msgid "RFC 2136 clients"
 msgstr ""
@@ -14417,7 +14457,7 @@ msgstr "Satelliten"
 
 # File: src/www/status_openvpn.php, line: 131
 msgid "OpenVPN Status"
-msgstr ""
+msgstr "OpenVPN Status"
 
 msgid "Client connections"
 msgstr "Clientverbindungen"
@@ -14426,10 +14466,10 @@ msgid "Common Name"
 msgstr "Common Name"
 
 msgid "Real Address"
-msgstr ""
+msgstr "Reale Adresse"
 
 msgid "Virtual Address"
-msgstr ""
+msgstr "Virtuelle Adresse"
 
 msgid "Connected Since"
 msgstr "Verbunden seit"
@@ -14445,7 +14485,7 @@ msgstr ""
 
 # File: src/www/status_openvpn.php, line: 185
 msgid "Show/Hide Routing Table"
-msgstr ""
+msgstr "Routingtabelle anzeigen/ausblenden"
 
 msgid "Routing Table"
 msgstr "Routingtablelle"
@@ -14454,7 +14494,7 @@ msgid "Target Network"
 msgstr "Zielnetzwerk"
 
 msgid "Last Used"
-msgstr ""
+msgstr "Zuletzt benutzt"
 
 msgid ""
 "An IP address followed by C indicates a host currently connected through the "
@@ -14467,7 +14507,7 @@ msgid "Peer to Peer Server Instance Statistics"
 msgstr ""
 
 msgid "Remote Host"
-msgstr ""
+msgstr "Ferner Host"
 
 msgid "Virtual Addr"
 msgstr ""
@@ -14527,7 +14567,7 @@ msgid "Go"
 msgstr "Los"
 
 msgid "Image viewer"
-msgstr ""
+msgstr "Bildbetrachter"
 
 msgid "Sorry we do not have data to graph for %s"
 msgstr ""
@@ -14536,7 +14576,7 @@ msgid "Failed to create graph with error code %1$s, the error is: %2$s"
 msgstr ""
 
 msgid "Traffic"
-msgstr ""
+msgstr "Datenverkehr"
 
 msgid "Packets"
 msgstr "Pakete"
@@ -14602,7 +14642,7 @@ msgid "%s has been restarted."
 msgstr "%s wurde neugestartet."
 
 msgid "No services found"
-msgstr ""
+msgstr "Keine Dienste gefunden"
 
 msgid "Rules have been cleared and the daemon restarted"
 msgstr ""
@@ -15299,7 +15339,7 @@ msgid "Proxy password for allowing %s to use this proxy to connect outside"
 msgstr ""
 
 msgid "Load Balancing"
-msgstr ""
+msgstr "Last verteilen"
 
 msgid "Allow default gateway switching"
 msgstr ""
@@ -15558,6 +15598,8 @@ msgid ""
 "This will take effect after you reboot the machine or re-configure each "
 "interface."
 msgstr ""
+"Dies wird wirksam, nachdem Sie den Computer neu starten oder jedes Interface "
+"neukonfigurieren."
 
 msgid "Hardware TCP Segmentation Offloading"
 msgstr ""
@@ -16847,7 +16889,7 @@ msgid "Choose a language for the webConfigurator"
 msgstr "Wählen Sie eine Sprache für den Webkonfigurator"
 
 msgid "Theme"
-msgstr "Motiv"
+msgstr "Design"
 
 msgid "This will change the look and feel of"
 msgstr "Dies ändert das Aussehen von "
@@ -16906,7 +16948,7 @@ msgid "Not Members"
 msgstr "Keine Mitglieder"
 
 msgid "Hold down CTRL (pc)/COMMAND (mac) key to select multiple items"
-msgstr ""
+msgstr "Mehrauswahl durch STRG (PC) bzw. Command (MAC) Taste"
 
 msgid "Assigned Privileges"
 msgstr "Zugewiesene Berechtigungen"
@@ -17110,10 +17152,10 @@ msgstr ""
 "Ablaufdatum im folgenden Format ein: mm/tt/jjjj"
 
 msgid "Not Member Of"
-msgstr "Kein Mitglied Von"
+msgstr "Kein Mitglied von"
 
 msgid "Member Of"
-msgstr "Mitglied Von"
+msgstr "Mitglied von"
 
 msgid "Add Groups"
 msgstr "Gruppen hinzufügen"
@@ -17155,7 +17197,7 @@ msgid "Click to paste an authorized key."
 msgstr "Klicken Sie hier um einen autorisierten Schlüssel einzufügen."
 
 msgid "Paste an authorized keys file here."
-msgstr ""
+msgstr "Hier einfügen eines autorisierten Schlüssels."
 
 msgid "IPsec Pre-Shared Key"
 msgstr "IPsec Pre-Shared Schlüssel"
@@ -19783,11 +19825,11 @@ msgstr "Nach Aktualisierungen suchen"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 49
 msgid "Your system is up to date."
-msgstr "Ihr System ist aktuell."
+msgstr "Ihr System ist auf dem neusten Stand."
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 51
 msgid " update(s) available."
-msgstr "Aktualisierung(en) verfügbar."
+msgstr " Aktualisierung(en) verfügbar."
 
 msgid "Click to upgrade"
 msgstr "Für Aktualisierung klicken"

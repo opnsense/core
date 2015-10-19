@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-11 15:13+0000\n"
+"POT-Creation-Date: 2015-10-19 06:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 1755\n"
+"X-Pootle-Revision: 1813\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
@@ -1210,6 +1210,9 @@ msgid ""
 "interface (2).\n"
 "        "
 msgstr ""
+"interface secondaire, vérifie les paquets transitant de l'interface (1) à "
+"l'interface (2).\n"
+"        "
 
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
@@ -2818,7 +2821,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/models.php, line: 229
 msgid "The burst value is an integer and represent a number of bytes."
-msgstr ""
+msgstr "La valeur en rafale est un entier et représente un nombre d'octets."
 
 # File: lang/dynamic/helpers/models.php, line: 230
 msgid "queue size should be between 2...100"
@@ -3590,7 +3593,7 @@ msgstr "Impossible d’activer l’interface %s dans interface_dhcp_configure()"
 
 # File: src/etc/inc/pfsense-utils.inc, line: 1035
 msgid "device not present! Is the modem attached to the system?"
-msgstr ""
+msgstr "Périphérique non présent ! Un modem est-il raccordé au système ?"
 
 # File: src/etc/inc/pfsense-utils.inc, line: 1102
 msgid "running"
@@ -3647,6 +3650,8 @@ msgid ""
 "IPsec daemon seems to have issues or not running! Could not display mobile "
 "user stats!"
 msgstr ""
+"Le service IPSec parait avoir un problème ou n'est pas lancé ! Impossible "
+"d'afficher les statistiques de l'utilisateur mobile !"
 
 # File: src/etc/inc/notices.inc, line: 66
 msgid "Could not open %s for writing"
@@ -15115,7 +15120,7 @@ msgstr "Êtes vous sûr de vouloir redémarrer le système ?"
 # File: src/www/status_captiveportal_voucher_rolls.php, line: 50
 # File: src/www/status_captiveportal_vouchers.php, line: 50
 msgid "Captive portal"
-msgstr ""
+msgstr "Portail Captif"
 
 # File: src/www/services_captiveportal.php, line: 75
 msgid "Captive Portal: zone %s: Restore default portal page"
@@ -23823,27 +23828,27 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_mobile.php, line: 174
 msgid "A valid IP address for 'DNS Server #1' must be specified."
-msgstr ""
+msgstr "Un adresse IP valide doit être spécifié pour 'Serveur DNS 1'"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 177
 msgid "A valid IP address for 'DNS Server #2' must be specified."
-msgstr ""
+msgstr "Un adresse IP valide doit être spécifié pour 'Serveur DNS 2'"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 180
 msgid "A valid IP address for 'DNS Server #3' must be specified."
-msgstr ""
+msgstr "Un adresse IP valide doit être spécifié pour 'Serveur DNS 3'"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 183
 msgid "A valid IP address for 'DNS Server #4' must be specified."
-msgstr ""
+msgstr "Un adresse IP valide doit être spécifié pour 'Serveur DNS 4'"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 192
 msgid "A valid IP address for 'WINS Server #1' must be specified."
-msgstr ""
+msgstr "Un adresse IP valide doit être spécifié pour 'Serveur WINS 1'"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 195
 msgid "A valid IP address for 'WINS Server #2' must be specified."
-msgstr ""
+msgstr "Un adresse IP valide doit être spécifié pour 'Serveur WINS 2'"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 270
 msgid "Mobile"
@@ -23862,6 +23867,8 @@ msgid ""
 "Support for IPsec Mobile clients is enabled but a Phase1 definition was not "
 "found"
 msgstr ""
+"Le support des clients mobiles IPSec est actif mais la définition de la "
+"Phase 1 n'a pas été trouvé."
 
 # File: src/www/vpn_ipsec_mobile.php, line: 396
 msgid "IKE Extensions"
@@ -23927,7 +23934,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 539
 # File: src/www/vpn_openvpn_server.php, line: 1655
 msgid "DNS Default Domain"
-msgstr ""
+msgstr "Domaine DNS par défaut"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 548
 # File: src/www/vpn_openvpn_csc.php, line: 549
