@@ -79,10 +79,23 @@ if ($_POST) {
 		if ($refresh) {
 			if ($config['opendns']['enable']) {
 				unset($config['system']['dnsserver']);
-				$config['system']['dnsserver'][] = '208.67.222.222';
-				$config['system']['dnsserver'][] = '208.67.220.220';
-				$config['system']['dnsserver'][] = '2620:0:ccc::2';
-				$config['system']['dnsserver'][] = '2620:0:ccd::2';
+				$v4_server = array('208.67.222.222', '208.67.220.220');
+				$v6_server = array('2620:0:ccc::2', '2620:0:ccd::2');
+				if (isset($config['system']['prefer_ipv4'])) {
+					$config['system']['dnsserver'][] = $v4_server[0];
+					$config['system']['dnsserver'][] = $v4_server[1];
+					if (isset($config['system']['ipv6allow'])) {
+						$config['system']['dnsserver'][] = $v6_server[0];
+						$config['system']['dnsserver'][] = $v6_server[1];
+					}
+				} else {
+					if (isset($config['system']['ipv6allow'])) {
+						$config['system']['dnsserver'][] = $v6_server[0];
+						$config['system']['dnsserver'][] = $v6_server[1];
+					}
+					$config['system']['dnsserver'][] = $v4_server[0];
+					$config['system']['dnsserver'][] = $v4_server[1];
+				}
 				$config['system']['dnsallowoverride'] = false;
 			} else {
 				unset($config['system']['dnsserver']);
