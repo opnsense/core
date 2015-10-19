@@ -55,6 +55,7 @@ if len(sys.argv) > 1:
                         os.makedirs(file_target_directory)
                     with open(target_filename, 'wb') as f_out:
                         f_out.write(zf_in.read(zf_info.filename))
+                    os.chmod(target_filename, 0444)
     # write zone settings
     filename ='%sjs/zone.js' % target_directory
     with open(filename, 'wb') as f_out:
