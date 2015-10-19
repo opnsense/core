@@ -16,6 +16,7 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/signin.css" rel="stylesheet">
 
+        <!-- static zone info -->
         <script type="text/javascript" src="js/zone.js"></script>
 
         <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
@@ -64,11 +65,84 @@
                 });
 
                 /**
+                 * login anonymous, only applicable when server is configured without authentication
+                 */
+                $("#signin_anon").click(function (event) {
+                    event.preventDefault();
+                    // hide alerts
+                    $("#alertMSG").addClass("hidden");
+                    // try to login
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/captiveportal/access/logon/" + zoneid + "/",
+                        dataType:"json",
+                        data:{ user: '', password: '' }
+                    }).done(function(data) {
+                        // redirect on successful login
+                        if (data['clientState'] == 'AUTHORIZED') {
+                            window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
+                        } else {
+                            $("#inputUsername").val("");
+                            $("#inputPassword").val("");
+                            $("#errorMSGtext").html("login failed");
+                            $("#alertMSG").removeClass("hidden");
+                        }
+                    }).fail(function(){
+                        $("#errorMSGtext").html("unable to connect to authentication server");
+                        $("#alertMSG").removeClass("hidden");
+                    });
+                });
+
+                /**
+                 * logoff action
+                 */
+                $("#logoff").click(function (event) {
+                    event.preventDefault();
+                    // hide alerts
+                    $("#alertMSG").addClass("hidden");
+                    // try to login
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/captiveportal/access/logoff/" + zoneid + "/",
+                        dataType:"json",
+                        data:{ user: '', password: '' }
+                    }).done(function(data) {
+                        // refresh page
+                        window.location.reload();
+                    }).fail(function(){
+                        $("#errorMSGtext").html("unable to connect to authentication server");
+                        $("#alertMSG").removeClass("hidden");
+                    });
+                });
+
+                /**
                  * close / hide error message
                  */
                 $("#btnCloseError").click(function(){
                     $("#alertMSG").addClass("hidden");
                 });
+
+                /**
+                 * execute after pageload
+                 */
+                 $.ajax({
+                     type: "POST",
+                     url: "/api/captiveportal/access/status/" + zoneid + "/",
+                     dataType:"json",
+                     data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
+                 }).done(function(data) {
+                    if (data['clientState'] == 'AUTHORIZED') {
+                      $("#logout_frm").removeClass('hidden');
+                    } else if (data['authType'] == 'none') {
+                        $("#login_none").removeClass('hidden');
+                    } else {
+                        $("#login_password").removeClass('hidden');
+                    }
+                 }).fail(function(){
+                     $("#errorMSGtext").html("unable to connect to authentication server");
+                     $("#alertMSG").removeClass("hidden");
+                 });
+
             });
         </script>
     </head>
@@ -85,18 +159,33 @@
             </nav>
         </header>
         <main class="page-content col-sm-6 col-sm-push-3">
+          <!-- User option 1: login needed with name and password -->
+          <div id="login_password" class="hidden">
+              <form class="form-signin">
+                  <h2 class="form-signin-heading">Please sign in</h2>
+                  <label for="inputUsername" class="sr-only">Username</label>
+                  <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
+                  <label for="inputPassword" class="sr-only">Password</label>
+                  <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+                  <button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
+              </form>
+          </div>
+          <!-- User option 2: login needed, without username, password -->
+          <div id="login_none" class="hidden">
             <form class="form-signin">
-                <h2 class="form-signin-heading">Please sign in</h2>
-                <label for="inputUsername" class="sr-only">Username</label>
-                <input type="text" id="inputUsername" class="form-control" placeholder="Username" required autofocus>
-                <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-                <button class="btn btn-primary btn-block" id="signin" type="button">Sign in</button>
+                <button class="btn btn-primary btn-block" id="signin_anon" type="button">Sign in</button>
             </form>
-            <div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
-                <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <span id="errorMSGtext"></span>
-            </div>
+          </div>
+          <!-- User option 3: Already logged in, show logout button -->
+          <div id="logout_frm" class="hidden">
+            <form class="form-signin">
+                <button class="btn btn-primary btn-block" id="logoff" type="button">Logout</button>
+            </form>
+          </div>
+          <div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
+              <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <span id="errorMSGtext"></span>
+          </div>
         </main>
 
         <!-- bootstrap script -->
