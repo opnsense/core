@@ -16,6 +16,8 @@
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/signin.css" rel="stylesheet">
 
+        <script type="text/javascript" src="js/zone.js"></script>
+
         <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
         <script>
             function getURLparams()
@@ -42,7 +44,7 @@
                     // try to login
                     $.ajax({
                         type: "POST",
-                        url: "/api/captiveportal/access/logon",
+                        url: "/api/captiveportal/access/logon/" + zoneid + "/",
                         dataType:"json",
                         data:{ user: $("#inputUsername").val(), password: $("#inputPassword").val() }
                     }).done(function(data) {
