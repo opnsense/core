@@ -107,10 +107,12 @@ function lock($lock, $op = LOCK_SH)
 
 
 /* unlock configuration file */
-function unlock($cfglckkey = 0)
+function unlock($cfglckkey = null)
 {
-	flock($cfglckkey, LOCK_UN);
-	fclose($cfglckkey);
+	if ($cfglckkey) {
+		flock($cfglckkey, LOCK_UN);
+		fclose($cfglckkey);
+	}
 }
 
 function is_module_loaded($module_name) {
