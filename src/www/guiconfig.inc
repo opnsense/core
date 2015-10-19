@@ -416,11 +416,11 @@ function dump_clog($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert
 	$logarr = '';
 
 	if (is_array($grepfor)) {
-		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
+		$grepline .= " | /usr/bin/egrep -i " . escapeshellarg(implode("|", $grepfor));
 	}
 
 	if (is_array($grepinvert)) {
-		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
+		$grepline .= " | /usr/bin/egrep -iv " . escapeshellarg(implode("|", $grepinvert));
 	}
 
 	if (is_dir($logfile)) {
@@ -445,11 +445,11 @@ function dump_log($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert 
 	$logarr = '';
 
 	if (is_array($grepfor)) {
-		$grepline .= " | /usr/bin/egrep " . escapeshellarg(implode("|", $grepfor));
+		$grepline .= " | /usr/bin/egrep -i " . escapeshellarg(implode("|", $grepfor));
 	}
 
 	if (is_array($grepinvert)) {
-		$grepline .= " | /usr/bin/egrep -v " . escapeshellarg(implode("|", $grepinvert));
+		$grepline .= " | /usr/bin/egrep -iv " . escapeshellarg(implode("|", $grepinvert));
 	}
 
 	if (is_dir($logfile)) {
