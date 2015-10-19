@@ -51,7 +51,12 @@
                     }).done(function(data) {
                         // redirect on successful login
                         if (data['clientState'] == 'AUTHORIZED') {
-                            window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
+                            if (getURLparams()['redirurl'] != undefined) {
+                                window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
+                            } else {
+                                // no target, reload page
+                                window.location.reload();
+                            }
                         } else {
                             $("#inputUsername").val("");
                             $("#inputPassword").val("");
@@ -80,7 +85,11 @@
                     }).done(function(data) {
                         // redirect on successful login
                         if (data['clientState'] == 'AUTHORIZED') {
-                            window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
+                            if (getURLparams()['redirurl'] != undefined) {
+                                window.location = 'http://'+getURLparams()['redirurl']+'?refresh';
+                            } else {
+                                window.location.reload();
+                            }
                         } else {
                             $("#inputUsername").val("");
                             $("#inputPassword").val("");
@@ -182,6 +191,7 @@
                 <button class="btn btn-primary btn-block" id="logoff" type="button">Logout</button>
             </form>
           </div>
+          <!-- Message dialog -->
           <div class="alert alert-danger alert-dismissible hidden" role="alert" id="alertMSG">
               <button type="button" class="close" id="btnCloseError" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               <span id="errorMSGtext"></span>
