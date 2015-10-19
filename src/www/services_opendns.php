@@ -81,6 +81,8 @@ if ($_POST) {
 				unset($config['system']['dnsserver']);
 				$config['system']['dnsserver'][] = '208.67.222.222';
 				$config['system']['dnsserver'][] = '208.67.220.220';
+				$config['system']['dnsserver'][] = '2620:0:ccc::2';
+				$config['system']['dnsserver'][] = '2620:0:ccd::2';
 				$config['system']['dnsallowoverride'] = false;
 			} else {
 				unset($config['system']['dnsserver']);
