@@ -149,6 +149,7 @@ class AccessController extends ApiControllerBase
                 } else {
                     // no authentication needed, set username to "anonymous@ip"
                     $userName = "anonymous@" . $clientIp;
+                    $authServerName = "";
                     $isAuthenticated = true;
                 }
 
