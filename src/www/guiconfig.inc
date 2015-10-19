@@ -27,8 +27,9 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-require_once("config.inc");
+
 require_once("util.inc");
+require_once("config.inc");
 
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if (empty($nocsrf)) {
