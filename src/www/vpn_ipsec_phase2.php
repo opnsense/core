@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2014 Deciso B.V.
   Copyright (C) 2008 Shrew Soft Inc
@@ -875,7 +876,7 @@ endif; ?>
     <?php                    foreach ($p2_halgos as $algo => $algoname) :
     ?>
                     <input type="checkbox" name="hash-algorithm-option[]" value="<?=$algo;
-?>" <?=in_array($algo, $pconfig['hash-algorithm-option']) ?  "checked=\"checked\"" : "";?>/>
+?>" <?= isset($pconfig['hash-algorithm-option']) && in_array($algo, $pconfig['hash-algorithm-option']) ?  'checked="checked"' : '';?>/>
                     <?=$algoname;?>
                     </br>
     <?php

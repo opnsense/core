@@ -1098,7 +1098,7 @@ if(($graphcmdreturn <> 0) || (! $data)) {
 	header("Cache-Control: post-check=0, pre-check=0", false);
 	header("Pragma: no-cache");
 	$file= "/usr/local/www/themes/{$g['theme']}/images/misc/rrd_error.png";
-	readfile($file);
+	@readfile($file);
 } else {
 	$file = "$rrdtmppath$curdatabase-$curgraph.png";
 	if(file_exists("$file")) {
