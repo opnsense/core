@@ -2482,18 +2482,6 @@ function get_services() {
 	$pconfig['description'] = gettext("NTP clock sync");
 	$services[] = $pconfig;
 
-	if (isset($config['captiveportal']) && is_array($config['captiveportal'])) {
-		foreach ($config['captiveportal'] as $zone => $setting) {
-			if (isset($setting['enable'])) {
-				$pconfig = array();
-				$pconfig['name'] = "captiveportal";
-				$pconfig['zone'] = $zone;
-				$pconfig['description'] = gettext("Captive Portal") . ": ".htmlspecialchars($setting['zone']);
-				$services[] = $pconfig;
-			}
-		}
-	}
-
 	$iflist = array();
 	$ifdescrs = get_configured_interface_list();
 	foreach ($ifdescrs as $if) {
@@ -2621,12 +2609,6 @@ function get_service_status($service)
 		case 'openvpn':
 			$running = isvalidpid("/var/run/openvpn_{$service['mode']}{$service['vpnid']}.pid");
 			break;
-		case 'captiveportal':
-			$running = isvalidpid("/var/run/lighty-{$service['zone']}-CaptivePortal.pid");
-			if (isset($config['captiveportal'][$service['zone']]['httpslogin'])) {
-				$running = $running && isvalidpid("/var/run/lighty-{$service['zone']}-CaptivePortal-SSL.pid");
-			}
-			break;
 		case 'dhcrelay6':
 			$running = isvalidpid('/var/run/dhcrelay6.pid');
 			break;
@@ -2668,9 +2650,6 @@ function get_service_control_links($service, $addname = false) {
 			case "openvpn":
 				$output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
 				break;
-			case "captiveportal":
-				$output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}&amp;zone={$service['zone']}' class=\"btn btn-default\">";
-				break;
 			default:
 				$output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}' class=\"btn btn-default\">";
 		}
@@ -2678,9 +2657,6 @@ function get_service_control_links($service, $addname = false) {
 		switch ($service['name']) {
 			case "openvpn":
 				$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
-				break;
-			case "captiveportal":
-				$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}&amp;zone={$service['zone']}' class=\"btn btn-default\">";
 				break;
 			default:
 				$output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}' class=\"btn btn-default\">";
@@ -2692,9 +2668,6 @@ function get_service_control_links($service, $addname = false) {
 		switch ($service['name']) {
 			case "openvpn":
 				$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
-				break;
-			case "captiveportal":
-				$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}&amp;zone={$service['zone']}' class=\"btn btn-default\">";
 				break;
 			default:
 				$output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}' class=\"btn btn-default\">";
