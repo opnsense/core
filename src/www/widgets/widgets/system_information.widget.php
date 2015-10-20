@@ -156,7 +156,7 @@ endif; ?>
                     ?>
 			</td>
 		</tr>
-		<?php if ($config['revision']) :
+		<?php if (isset($config['revision']['time'])) :
 ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Last config change");?></td>

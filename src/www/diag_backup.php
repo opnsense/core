@@ -71,8 +71,8 @@ function rrd_data_xml() {
 		$basename = basename($rrd_file);
 		$xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
 		exec("$rrdtool dump '{$rrd_file}' '{$xml_file}'");
-		$xml_data = file_get_contents($xml_file);
-		unlink($xml_file);
+		$xml_data = @file_get_contents($xml_file);
+		@unlink($xml_file);
 		if ($xml_data !== false) {
 			$result .= "\t\t<rrddatafile>\n";
 			$result .= "\t\t\t<filename>{$basename}</filename>\n";
