@@ -210,9 +210,9 @@ class LDAP implements IAuthConnector
     {
         $this->closeLDAPHandle();
         $this->ldapHandle = @ldap_connect($bind_url);
-        ldap_set_option($this->ldapHandle, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
 
         if ($this->ldapHandle !== false) {
+            ldap_set_option($this->ldapHandle, LDAP_OPT_NETWORK_TIMEOUT, $timeout);
             ldap_set_option($this->ldapHandle, LDAP_OPT_REFERRALS, 0);
             ldap_set_option($this->ldapHandle, LDAP_OPT_DEREF, LDAP_DEREF_SEARCHING);
             ldap_set_option($this->ldapHandle, LDAP_OPT_PROTOCOL_VERSION, (int)$this->ldapVersion);
