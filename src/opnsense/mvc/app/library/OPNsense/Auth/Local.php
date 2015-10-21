@@ -77,7 +77,7 @@ class Local implements IAuthConnector
             }
             $passwd = crypt($password, (string)$userObject->password);
             if ($passwd == (string)$userObject->password) {
-                // password ok, return successfully authen
+                // password ok, return successfully authentication
                 return true;
             }
         }
