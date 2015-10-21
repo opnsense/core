@@ -98,6 +98,9 @@ class AuthenticationFactory
                     $authObject = new LDAP();
                     $localUserMap = $this->fetchUserDNs();
                     break;
+                case 'radius':
+                    $authObject = new Radius();
+                    break;
                 default:
                     $authObject = null;
             }
