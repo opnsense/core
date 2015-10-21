@@ -257,7 +257,7 @@ foreach ($authmodes as $authmode) {
 	if (!$authcfg && $authmode != "local")
 		continue;
 
-	$authenticated = authenticate_user($username, $password, $authcfg, $attributes);
+	$authenticated = authenticate_user($username, $password, $authcfg);
 	if ($authenticated == true) {
 		if (stristr($authmode, "local")) {
 			$user = getUserEntry($username);
