@@ -37,7 +37,6 @@
  */
 
 /* include globals from notices.inc /utility/XML parser files */
-require_once("radius.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
@@ -320,24 +319,6 @@ function userHasPrivilege($userent, $privid = false) {
         return true;
 }
 
-function local_backed($username, $passwd) {
-
-	$user = getUserEntry($username);
-	if (!$user)
-		return false;
-
-	if (is_account_disabled($username) || is_account_expired($username))
-		return false;
-
-	if ($user['password'])
-	{
-		$passwd = crypt($passwd, $user['password']);
-		if ($passwd == $user['password'])
-			return true;
-	}
-
-	return false;
-}
 
 function local_sync_accounts()
 {
@@ -656,115 +637,6 @@ function ldap_setup_caenv($authcfg)
 }
 
 
-
-/**
- * authenticate using ldap
- */
-function ldap_backed($username, $passwd, $authcfg)
-{
-		global $config;
-
-		if(!$username)
-			return;
-
-		if(!function_exists("ldap_connect"))
-			return;
-
-		// search user dn in config
-		$userDN = null;
-		foreach ($config['system']['user'] as $confUser) {
-				if (!empty($confUser['user_dn']) && $username == $confUser['name']) {
-					$userDN = $confUser['user_dn'];
-					break;
-				}
-		}
-
-		// backward compatibility, try to find this user dn to authenticate.
-		// --> this means the user can't have any roles on OPNsense!
-		if ($userDN == null) {
-			$ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn'], $authcfg['ldap_protver']);
-		  $ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url']
-		                      , $authcfg['ldap_binddn']
-		                      , $authcfg['ldap_bindpw']
-		                    );
-			if ($ldap_is_connected) {
-				$result = $ldap_auth->searchUsers($username
-		              , $authcfg['ldap_attr_user']
-		              , $authcfg['ldap_extended_query']
-		            );
-
-				if (count($result) > 0) {
-						$userDN = $result[0]['dn'];
-				}
-			} else {
-				log_error(sprintf(gettext("ERROR!  Could not connect to server %s."), $authcfg['ldap_full_url']));
-			}
-		}
-
-		if ( $userDN != null ) {
-				// setup peer ca
-				ldap_setup_caenv($authcfg);
-				// try connect to ldap server, connect tells if this user could authenticate
-				$ldap_auth = new OPNsense\Auth\LDAP($authcfg['ldap_basedn'], $authcfg['ldap_protver']);
-				$ldap_is_connected = $ldap_auth->connect($authcfg['ldap_full_url']
-				                    , $userDN
-				                    , $passwd
-				                  );
-
-				return $ldap_is_connected;
-		}
-
-		return false;
-}
-
-function radius_backed($username, $passwd, $authcfg, &$attributes = array())
-{
-	global $config;
-	$ret = false;
-
-	$rauth = new Auth_RADIUS_PAP($username, $passwd);
-	if ($authcfg) {
-		$radiusservers = array();
-		$radiusservers[0]['ipaddr'] = $authcfg['host'];
-		$radiusservers[0]['port'] = $authcfg['radius_auth_port'];
-		$radiusservers[0]['sharedsecret'] = $authcfg['radius_secret'];
-		$radiusservers[0]['timeout'] = $authcfg['radius_timeout'];
-	} else
-		return false;
-
-	/* Add a new servers to our instance */
-	foreach ($radiusservers as $radsrv) {
-		$timeout = (is_numeric($radsrv['timeout'])) ? $radsrv['timeout'] : 5;
-		$rauth->addServer($radsrv['ipaddr'], $radsrv['port'], $radsrv['sharedsecret'], $timeout);
-	}
-
-	if (PEAR::isError($rauth->start())) {
-		$retvalue['auth_val'] = 1;
-		$retvalue['error'] = $rauth->getError();
-	}
-
-	// XXX - billm - somewhere in here we need to handle securid challenge/response
-
-	/* Send request */
-	$result = $rauth->send();
-	if (PEAR::isError($result)) {
-		$retvalue['auth_val'] = 1;
-		$retvalue['error'] = $result->getMessage();
-	} else if ($result === true) {
-		if ($rauth->getAttributes())
-			$attributes = $rauth->listAttributes();
-		$retvalue['auth_val'] = 2;
-		$ret = true;
-	} else {
-		$retvalue['auth_val'] = 3;
-	}
-
-	// close OO RADIUS_AUTHENTICATION
-	$rauth->close();
-
-	return $ret;
-}
-
 function is_account_expired($username) {
 	$user = getUserEntry($username);
 	if (isset($user['expires']) && !empty($user['expires'])) {
@@ -842,26 +714,18 @@ function auth_get_authserver_list() {
 
 function authenticate_user($username, $password, $authcfg = NULL, &$attributes = array()) {
 
-	if (!$authcfg) {
-		return local_backed($username, $password);
+	if (empty($authcfg)) {
+		$authName = 'Local Database';
+	} else {
+		$authName = $authcfg['name'];
+		if ($authcfg['type'] == 'ldap') {
+				// temporary fix, ldap handler doesn't do this init yet.
+				ldap_setup_caenv($authcfg);
+		}
 	}
 
-	$authenticated = false;
-	switch($authcfg['type']) {
-        case 'ldap':
-                if (ldap_backed($username, $password, $authcfg))
-                        $authenticated = true;
-                break;
-        case 'radius':
-                if (radius_backed($username, $password, $authcfg, $attributes))
-                        $authenticated = true;
-                break;
-        default:
-                /* lookup user object by name */
-                if (local_backed($username, $password))
-                        $authenticated = true;
-                break;
-        }
+	$authFactory = new OPNsense\Auth\AuthenticationFactory;
+	$authenticator = $authFactory->get($authName);
 
-	return $authenticated;
+	return $authenticator->authenticate($username, $password) ;
 }
