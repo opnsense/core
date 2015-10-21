@@ -712,7 +712,7 @@ function auth_get_authserver_list() {
 	return $list;
 }
 
-function authenticate_user($username, $password, $authcfg = NULL, &$attributes = array()) {
+function authenticate_user($username, $password, $authcfg = NULL) {
 
 	if (empty($authcfg)) {
 		$authName = 'Local Database';
