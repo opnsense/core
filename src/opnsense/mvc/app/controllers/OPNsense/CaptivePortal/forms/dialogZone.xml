@@ -1,40 +1,40 @@
 <form>
     <field>
         <id>zone.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
-        <help>enable this zone</help>
+        <help>Enable this zone</help>
     </field>
     <field>
         <id>zone.zoneid</id>
-        <label>zone#</label>
+        <label>Zone number</label>
         <type>info</type>
-        <help>internal number used for this zone</help>
+        <help>Internal number used for this zone</help>
     </field>
     <field>
         <id>zone.interfaces</id>
-        <label>interfaces</label>
+        <label>Interfaces</label>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Select the interface(s) to enable for captive portal.]]></help>
+        <help><![CDATA[Select interface(s) to enable for captive portal.]]></help>
         <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>zone.authservers</id>
-        <label>authenticate using</label>
+        <label>Authenticate using</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <help><![CDATA[Select authentication methods to use, leave empty for no authentication needed.]]></help>
     </field>
     <field>
         <id>zone.idletimeout</id>
-        <label>idle timeout (minutes)</label>
+        <label>Idle timeout (minutes)</label>
         <type>text</type>
         <help><![CDATA[Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Leave this field blank for no idle timeout.]]></help>
     </field>
     <field>
         <id>zone.hardtimeout</id>
-        <label>hard timeout (minutes)</label>
+        <label>Hard timeout (minutes)</label>
         <type>text</type>
         <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set).]]></help>
     </field>
@@ -52,38 +52,38 @@
     </field>
     <field>
         <id>zone.servername</id>
-        <label>hostname</label>
+        <label>Hostname</label>
         <type>text</type>
         <help><![CDATA[Hostname (of this machine) to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
     </field>
     <field>
         <id>zone.allowedAddresses</id>
-        <label>allowed addresses</label>
+        <label>Allowed addresses</label>
         <type>text</type>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Avoid authentication for the addresses and subnets in this list]]></help>
+        <help><![CDATA[Avoid authentication for addresses and subnets in this list]]></help>
         <allownew>true</allownew>
     </field>
     <field>
         <id>zone.allowedMACAddresses</id>
-        <label>allowed MAC addresses</label>
+        <label>Allowed MAC addresses</label>
         <type>text</type>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Avoid authentication for the physical addresses in this list]]></help>
+        <help><![CDATA[Avoid authentication for physical addresses in this list]]></help>
         <allownew>true</allownew>
         <advanced>true</advanced>
     </field>
     <field>
         <id>zone.template</id>
-        <label>custom template</label>
+        <label>Custom template</label>
         <type>dropdown</type>
-        <help>use custom template package for user login</help>
+        <help>Use custom template package for user login</help>
     </field>
     <field>
         <id>zone.description</id>
-        <label>description</label>
+        <label>Description</label>
         <type>text</type>
         <help>Description to identify this zone.</help>
     </field>
