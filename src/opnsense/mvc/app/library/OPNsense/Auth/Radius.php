@@ -77,6 +77,10 @@ class Radius implements IAuthConnector
      */
     private $nasIdentifier = 'local';
 
+    /**
+     * @var array internal list of authentication properties (returned by radius auth)
+     */
+    private $lastAuthProperties = array();
 
     /**
      * set connector properties
@@ -103,6 +107,15 @@ class Radius implements IAuthConnector
     }
 
     /**
+     * unused
+     * @return array mixed named list of authentication properties
+     */
+    public function getLastAuthProperties()
+    {
+        return $this->lastAuthProperties;
+    }
+
+    /**
      * authenticate user against radius
      * @param $username username to authenticate
      * @param $password user password
@@ -110,6 +123,7 @@ class Radius implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
+        $this->lastAuthProperties = array() ;// reset auth properties
         $radius = radius_auth_open();
 
         $error = null;
@@ -154,11 +168,24 @@ class Radius implements IAuthConnector
             syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
         } else {
             $request = radius_send_request($radius);
-            if (!$request) {
+            if (!$radius) {
                 syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
             } else {
                 switch($request) {
                     case RADIUS_ACCESS_ACCEPT:
+                        while ($resa = radius_get_attr($radius)) {
+                            switch ($resa['attr']) {
+                                case RADIUS_SESSION_TIMEOUT:
+                                    $this->lastAuthProperties['session_timeout'] = radius_cvt_int($resa['data']);
+                                    break;
+                                case 85: // Acct-Interim-Interval
+                                    $this->lastAuthProperties['Acct-Interim-Interval'] =  radius_cvt_int($resa['data']);
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                        }
                         return true;
                         break;
                     case RADIUS_ACCESS_REJECT:

@@ -287,6 +287,15 @@ class LDAP implements IAuthConnector
     }
 
     /**
+     * unused
+     * @return array mixed named list of authentication properties
+     */
+    public function getLastAuthProperties()
+    {
+        return array();
+    }
+
+    /**
      * authenticate user against ldap server
      * @param $username username to authenticate
      * @param $password user password
