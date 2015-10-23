@@ -350,6 +350,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (strpos($pconfig['interface'], "|") !== false) {
                 list($server['interface'], $server['ipaddr']) = explode("|", $pconfig['interface']);
+            } else {
+                $server['interface'] = $pconfig['interface'];
             }
 
             $server['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
@@ -869,17 +871,13 @@ function tuntap_change() {
                                                         $interfaces['lo0'] = "Localhost";
                                                         $interfaces['any'] = "any";
                             foreach ($interfaces as $iface => $ifacename) :
-                                $selected = "";
+                                $selected = '';
                                 if ($iface == $pconfig['interface']) {
-                                    $selected = "selected=\"selected\"";
+                                    $selected = ' selected="selected"';
                                 }
                             ?>
-                            <option value="<?=$iface;
-?>" <?=$selected;?>>
-                                <?=htmlspecialchars($ifacename);?>
-                                                    </option>
-                            <?php
-                            endforeach; ?>
+                            <option value="<?=$iface; ?>"<?=$selected;?>><?=htmlspecialchars($ifacename);?></option>
+                            <?php endforeach; ?>
                         </select> <br />
                       </td>
                     </tr>
