@@ -394,26 +394,18 @@ function openvpn_reconfigure($mode, $settings)
 
 	$interface = get_failover_interface($settings['interface']);
 	$ipaddr = $settings['ipaddr'];
-	$ipaddrv6 = $settings['ipaddrv6'];
 
 	// If a specific ip address (VIP) is requested, use it.
 	// Otherwise, if a specific interface is requested, use it
 	// If "any" interface was selected, local directive will be ommited.
-	if (is_ipaddrv4($ipaddr)) {
+	if (is_ipaddr($ipaddr)) {
 		$iface_ip=$ipaddr;
-	} else {
-		if ((!empty($interface)) && (strcmp($interface, "any"))) {
-			$iface_ip=get_interface_ip($interface);
+	} elseif (!empty($interface) && $interface != "any") {
+		$iface_ip=get_interface_ip($interface);
+		if (empty($iface_ip)) {
+			$iface_ip = get_interface_ipv6($interface);
 		}
-	}
-	if (is_ipaddrv6($ipaddrv6)) {
-		$iface_ipv6=$ipaddrv6;
-	} else {
-		if ((!empty($interface)) && (strcmp($interface, "any"))) {
-			$iface_ipv6=get_interface_ipv6($interface);
-		}
-	}
-
+	} 
 
 	$conf = "dev {$devname}\n";
 	if (isset($settings['verbosity_level'])) {
@@ -453,11 +445,8 @@ function openvpn_reconfigure($mode, $settings)
 		}
 	}
 
-	/* Determine the local IP to use - and make sure it matches with the selected protocol. */
-	if (is_ipaddrv4($iface_ip) && (stristr($settings['protocol'], "6") === false)) {
+	if (!empty($iface_ip)) {
 		$conf .= "local {$iface_ip}\n";
-	} elseif (is_ipaddrv6($iface_ipv6) && (stristr($settings['protocol'], "6") !== false)) {
-		$conf .= "local {$iface_ipv6}\n";
 	}
 
 	if (openvpn_validate_engine($settings['engine']) && ($settings['engine'] != "none"))
