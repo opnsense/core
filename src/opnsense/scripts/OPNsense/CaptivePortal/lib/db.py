@@ -136,11 +136,11 @@ class DB(object):
         """ change client ip address
         """
         cur = self._connection.cursor()
-        cur.execute("""UPDATE cp_clients
-                       SET    ip_address = :ip_address
-                       WHERE  deleted = 0
+        cur.execute("""update cp_clients
+                       set    ip_address = :ip_address
+                       where  deleted = 0
                        and    zoneid = :zoneid
-                       AND    sessionid = :sessionid
+                       and    sessionid = :sessionid
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
@@ -152,11 +152,11 @@ class DB(object):
         :return: client info before removal or None if client not found
         """
         cur = self._connection.cursor()
-        cur.execute(""" SELECT  *
-                        FROM    cp_clients
-                        WHERE   sessionid = :sessionid
-                        AND     zoneid = :zoneid
-                        AND     deleted = 0
+        cur.execute(""" select  *
+                        from    cp_clients
+                        where   sessionid = :sessionid
+                        and     zoneid = :zoneid
+                        and     deleted = 0
                     """, {'zoneid': zoneid, 'sessionid': sessionid})
         data = cur.fetchall()
         if len(data) > 0:
@@ -164,7 +164,7 @@ class DB(object):
             for fields in cur.description:
                 session_info[fields[0]] = data[0][len(session_info)]
             # remove client
-            cur.execute("UPDATE cp_clients SET deleted = 1 WHERE sessionid = :sessionid AND zoneid = :zoneid",
+            cur.execute("update cp_clients set deleted = 1 where sessionid = :sessionid and zoneid = :zoneid",
                         {'zoneid': zoneid, 'sessionid': sessionid})
             self._connection.commit()
 
@@ -181,25 +181,27 @@ class DB(object):
         fieldnames = list()
         cur = self._connection.cursor()
         # rename fields for API
-        cur.execute(""" SELECT  cc.zoneid
+        cur.execute(""" select  cc.zoneid
                         ,       cc.sessionid   sessionId
                         ,       cc.authenticated_via authenticated_via
                         ,       cc.username    userName
                         ,       cc.created     startTime
                         ,       cc.ip_address  ipAddress
                         ,       cc.mac_address macAddress
-                        ,       CASE WHEN si.packets_in IS NULL THEN 0 ELSE si.packets_in END packets_in
-                        ,       CASE WHEN si.packets_out IS NULL THEN 0 ELSE si.packets_out END packets_out
-                        ,       CASE WHEN si.bytes_in IS NULL THEN 0 ELSE si.bytes_in END bytes_in
-                        ,       CASE WHEN si.bytes_out IS NULL THEN 0 ELSE si.bytes_out END bytes_out
-                        ,       CASE WHEN si.last_accessed IS NULL OR si.last_accessed =0
-                                        THEN cc.created
-                                        ELSE si.last_accessed
-                                END last_accessed
-                        FROM    cp_clients cc
-                        LEFT JOIN session_info si ON si.zoneid = cc.zoneid AND si.sessionid = cc.sessionid
-                        WHERE   cc.zoneid = :zoneid
-                        AND     cc.deleted = 0
+                        ,       case when si.packets_in is null then 0 else si.packets_in end packets_in
+                        ,       case when si.packets_out is null then 0 else si.packets_out end packets_out
+                        ,       case when si.bytes_in is null then 0 else si.bytes_in end bytes_in
+                        ,       case when si.bytes_out is null then 0 else si.bytes_out end bytes_out
+                        ,       case when si.last_accessed is null or si.last_accessed = 0
+                                        then cc.created
+                                        else si.last_accessed
+                                end last_accessed
+                        ,       sr.session_timeout acc_session_timeout
+                        from    cp_clients cc
+                        left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
+                        left join session_restrictions sr on sr.zoneid = cc.zoneid and sr.sessionid = cc.sessionid
+                        where   cc.zoneid = :zoneid
+                        and     cc.deleted = 0
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc
                         """, {'zoneid': zoneid})
@@ -228,12 +230,12 @@ class DB(object):
         result = dict()
         cur = self._connection.cursor()
         # rename fields for API
-        cur.execute(""" SELECT   cc.sessionid   sessionId
+        cur.execute(""" select   cc.sessionid   sessionId
                         ,        cc.username    userName
-                        FROM     cp_clients cc
-                        WHERE   cc.zoneid = :zoneid
-                        AND     cc.deleted = 0
-                        AND     cc.username is not null
+                        from     cp_clients cc
+                        where   cc.zoneid = :zoneid
+                        and     cc.deleted = 0
+                        and     cc.username is not null
                         and     cc.username <> ""
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc
@@ -329,3 +331,27 @@ class DB(object):
 
                 prev_record = record
             self._connection.commit()
+
+    def update_session_restrictions(self, zoneid, sessionid, session_timeout):
+        """ upsert session restrictions
+        :param zoneid: zone id
+        :param sessionid: session id
+        :param session_timeout: timeout in seconds
+        :return: string "add"/"update" to signal the performed action to the client
+        """
+        cur = self._connection.cursor()
+        qry_params = {'zoneid': zoneid, 'sessionid' : sessionid, 'session_timeout': session_timeout}
+        sql_update = """update session_restrictions
+                        set session_timeout = :session_timeout
+                        where zoneid = :zoneid and sessionid = :sessionid"""
+
+        cur.execute(sql_update, qry_params)
+        if cur.rowcount == 0:
+            sql_insert = """insert into session_restrictions(zoneid, sessionid, session_timeout)
+                            values (:zoneid, :sessionid, :session_timeout)"""
+            cur.execute(sql_insert, qry_params)
+            self._connection.commit()
+            return 'add'
+        else:
+            self._connection.commit()
+            return 'update'
