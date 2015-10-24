@@ -33,3 +33,19 @@ create table session_info (
 ,     last_accessed integer
 ,     primary key (zoneid, sessionid)
 );
+
+-- session (accounting) restrictions
+create table session_restrictions (
+      zoneid int
+,     sessionid varchar
+,     session_timeout int
+,     primary key (zoneid, sessionid)
+) ;
+
+--  accounting state, record the state of (radius) accounting messages
+create table accounting_state (
+      zoneid int
+,     sessionid varchar
+,     state varchar
+,     primary key (zoneid, sessionid)
+) ;
