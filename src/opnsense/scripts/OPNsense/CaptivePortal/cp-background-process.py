@@ -144,6 +144,11 @@ class CPBackgroundProcess(object):
                     current_arp = self.arp.get_by_ipaddress(cpnet)
                     if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
+
+                    # session accounting
+                    if db_client['acc_session_timeout'] is not None \
+                        and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout'] :
+                            drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                 elif db_client['authenticated_via'] == '---mac---':
                     # detect mac changes
                     current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
