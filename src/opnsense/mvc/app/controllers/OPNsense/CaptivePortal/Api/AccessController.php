@@ -121,6 +121,9 @@ class AccessController extends ApiControllerBase
         } elseif ($this->request->isPost()) {
             // close session for long running action
             $this->sessionClose();
+            // init variables for authserver object and name
+            $authServer = null;
+            $authServerName = "";
 
             // get username from post
             $userName = $this->request->getPost("user", "striptags", null);
@@ -149,7 +152,6 @@ class AccessController extends ApiControllerBase
                 } else {
                     // no authentication needed, set username to "anonymous@ip"
                     $userName = "anonymous@" . $clientIp;
-                    $authServerName = "";
                     $isAuthenticated = true;
                 }
 
@@ -172,6 +174,21 @@ class AccessController extends ApiControllerBase
                                 'json'
                             )
                         );
+                        // push session restrictions, if they apply
+                        if (array_key_exists('sessionId', $CPsession) && $authServer != null) {
+                            $authProps = $authServer->getLastAuthProperties();
+                            // when adding more client/session restrictions, extend next code
+                            // (currently only time is restricted)
+                            if (array_key_exists('session_timeout', $authProps)) {
+                                $backend->configdpRun(
+                                    "captiveportal set session_restrictions",
+                                    array((string)$cpZone->zoneid,
+                                        $CPsession['sessionId'],
+                                        $authProps['session_timeout']
+                                        )
+                                );
+                            }
+                        }
                         $CPsession = json_decode($CPsession, true);
                         if ($CPsession != null) {
                             // only return session if configd return a valid json response, otherwise fallback to
