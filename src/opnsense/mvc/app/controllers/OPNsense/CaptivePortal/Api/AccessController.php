@@ -174,8 +174,9 @@ class AccessController extends ApiControllerBase
                                 'json'
                             )
                         );
+                        $CPsession = json_decode($CPsession, true);
                         // push session restrictions, if they apply
-                        if (array_key_exists('sessionId', $CPsession) && $authServer != null) {
+                        if ($CPsession != null && array_key_exists('sessionId', $CPsession) && $authServer != null) {
                             $authProps = $authServer->getLastAuthProperties();
                             // when adding more client/session restrictions, extend next code
                             // (currently only time is restricted)
@@ -189,7 +190,6 @@ class AccessController extends ApiControllerBase
                                 );
                             }
                         }
-                        $CPsession = json_decode($CPsession, true);
                         if ($CPsession != null) {
                             // only return session if configd return a valid json response, otherwise fallback to
                             // returning "UNKNOWN"
