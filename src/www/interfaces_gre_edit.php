@@ -37,8 +37,9 @@ require_once("services.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_gre.php');
 
-if (!is_array($config['gres']['gre']))
+if (!isset($config['gres']['gre']) || !is_array($config['gres']['gre'])) {
 	$config['gres']['gre'] = array();
+}
 
 $a_gres = &$config['gres']['gre'];
 
