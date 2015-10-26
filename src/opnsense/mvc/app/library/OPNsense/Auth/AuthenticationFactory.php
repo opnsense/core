@@ -39,6 +39,8 @@ class AuthenticationFactory
 {
     /**
      * search already known local userDN's into simple mapping if auth method is current standard method
+     * @param string $authserver auth server name
+     * @return array list of dn's
      */
     private function fetchUserDNs($authserver = null)
     {
@@ -80,7 +82,7 @@ class AuthenticationFactory
 
     /**
      * get new authenticator
-     * @param $authserver authentication server name
+     * @param string $authserver authentication server name
      * @return IAuthConnector|null
      */
     public function get($authserver)
