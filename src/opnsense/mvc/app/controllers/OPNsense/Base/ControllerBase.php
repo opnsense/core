@@ -41,6 +41,7 @@ class ControllerBase extends ControllerRoot
 {
     /**
      * translate a text
+     * @param OPNsense\Core\Config $cnf config handle
      * @return Gettext
      */
     public function getTranslator($cnf)
