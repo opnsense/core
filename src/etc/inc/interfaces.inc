@@ -5220,10 +5220,12 @@ function get_interface_info($ifdescr)
 			}
 
 			if (preg_match("/status: (.*)$/", $ici, $matches)) {
-				if ($matches[1] != "active")
+				if ($matches[1] != 'active') {
 					$ifinfo['status'] = $matches[1];
-				if($ifinfo['status'] == gettext("running"))
-					$ifinfo['status'] = gettext("up");
+				}
+				if ($ifinfo['status'] == 'running') {
+					$ifinfo['status'] = 'up';
+				}
 			}
 			if (preg_match("/channel (\S*)/", $ici, $matches)) {
 				$ifinfo['channel'] = $matches[1];
