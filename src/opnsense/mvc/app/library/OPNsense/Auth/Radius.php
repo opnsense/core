@@ -48,7 +48,7 @@ class Radius implements IAuthConnector
     /**
      * @var null port to use for accounting
      */
-    private $acctPort = "1813";
+    private $acctPort = null;
 
     /**
      * @var null shared secret to use for this server
@@ -120,56 +120,60 @@ class Radius implements IAuthConnector
      */
     public function startAccounting($username, $sessionid)
     {
-        $radius = radius_auth_open();
+        // only send messages if target port specified
+        if ($this->acctPort != null) {
+            $radius = radius_auth_open();
 
-        $error = null;
-        if (!radius_add_server(
-            $radius,
-            $this->radiusHost,
-            $this->acctPort,
-            $this->sharedSecret,
-            $this->timeout,
-            $this->maxRetries
-        )) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_FRAMED)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_STATUS_TYPE, RADIUS_START)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_ACCT_SESSION_ID, $sessionid)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
-            $error = radius_strerror($radius);
-        }
+            $error = null;
+            if (!radius_add_server(
+                $radius,
+                $this->radiusHost,
+                $this->acctPort,
+                $this->sharedSecret,
+                $this->timeout,
+                $this->maxRetries
+            )
+            ) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_FRAMED)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_STATUS_TYPE, RADIUS_START)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_ACCT_SESSION_ID, $sessionid)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
+                $error = radius_strerror($radius);
+            }
 
-        if ($error != null) {
-            syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
-        } else {
-            $req = radius_send_request($radius);
-            if (!$req) {
+            if ($error != null) {
                 syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
-                exit;
-            }
-            switch($req) {
-                case RADIUS_ACCOUNTING_RESPONSE:
-                    break;
-                default:
-                    syslog(LOG_ERR, "Unexpected return value:$radius\n");
+            } else {
+                $req = radius_send_request($radius);
+                if (!$req) {
+                    syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                    exit;
+                }
+                switch ($req) {
+                    case RADIUS_ACCOUNTING_RESPONSE:
+                        break;
+                    default:
+                        syslog(LOG_ERR, "Unexpected return value:$radius\n");
 
+                }
+                radius_close($radius);
             }
-            radius_close($radius);
         }
     }
 
@@ -181,60 +185,64 @@ class Radius implements IAuthConnector
      */
     public function stopAccounting($username, $sessionid, $session_time)
     {
-        $radius = radius_auth_open();
+        // only send messages if target port specified
+        if ($this->acctPort != null) {
+            $radius = radius_auth_open();
 
-        $error = null;
-        if (!radius_add_server(
-            $radius,
-            $this->radiusHost,
-            $this->acctPort,
-            $this->sharedSecret,
-            $this->timeout,
-            $this->maxRetries
-        )) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_FRAMED)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_STATUS_TYPE, RADIUS_STOP)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_ACCT_SESSION_ID, $sessionid)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_SESSION_TIME, $session_time)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, RADIUS_TERM_USER_REQUEST)) {
-            $error = radius_strerror($radius);
-        }
+            $error = null;
+            if (!radius_add_server(
+                $radius,
+                $this->radiusHost,
+                $this->acctPort,
+                $this->sharedSecret,
+                $this->timeout,
+                $this->maxRetries
+            )
+            ) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_FRAMED)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_STATUS_TYPE, RADIUS_STOP)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_ACCT_SESSION_ID, $sessionid)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_SESSION_TIME, $session_time)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, RADIUS_TERM_USER_REQUEST)) {
+                $error = radius_strerror($radius);
+            }
 
-        if ($error != null) {
-            syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
-        } else {
-            $req = radius_send_request($radius);
-            if (!$req) {
+            if ($error != null) {
                 syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
-                exit;
-            }
-            switch($req) {
-                case RADIUS_ACCOUNTING_RESPONSE:
-                    break;
-                default:
-                    syslog(LOG_ERR, "Unexpected return value:$radius\n");
+            } else {
+                $req = radius_send_request($radius);
+                if (!$req) {
+                    syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                    exit;
+                }
+                switch ($req) {
+                    case RADIUS_ACCOUNTING_RESPONSE:
+                        break;
+                    default:
+                        syslog(LOG_ERR, "Unexpected return value:$radius\n");
 
+                }
+                radius_close($radius);
             }
-            radius_close($radius);
         }
     }
 
@@ -246,61 +254,65 @@ class Radius implements IAuthConnector
      */
     public function updateAccounting($username, $sessionid, $session_time)
     {
-        $radius = radius_auth_open();
-        if (!defined('RADIUS_UPDATE')) {
-            define('RADIUS_UPDATE', 3);
-        }
+        // only send messages if target port specified
+        if ($this->acctPort != null) {
+            $radius = radius_auth_open();
+            if (!defined('RADIUS_UPDATE')) {
+                define('RADIUS_UPDATE', 3);
+            }
 
-        $error = null;
-        if (!radius_add_server(
-            $radius,
-            $this->radiusHost,
-            $this->acctPort,
-            $this->sharedSecret,
-            $this->timeout,
-            $this->maxRetries
-        )) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_FRAMED)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_STATUS_TYPE, RADIUS_UPDATE)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_string($radius, RADIUS_ACCT_SESSION_ID, $sessionid)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
-            $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_ACCT_SESSION_TIME, $session_time)) {
-            $error = radius_strerror($radius);
-        }
+            $error = null;
+            if (!radius_add_server(
+                $radius,
+                $this->radiusHost,
+                $this->acctPort,
+                $this->sharedSecret,
+                $this->timeout,
+                $this->maxRetries
+            )
+            ) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_create_request($radius, RADIUS_ACCOUNTING_REQUEST)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_FRAMED)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_USER_NAME, $username)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_STATUS_TYPE, RADIUS_UPDATE)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_string($radius, RADIUS_ACCT_SESSION_ID, $sessionid)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_AUTHENTIC, RADIUS_AUTH_LOCAL)) {
+                $error = radius_strerror($radius);
+            } elseif (!radius_put_int($radius, RADIUS_ACCT_SESSION_TIME, $session_time)) {
+                $error = radius_strerror($radius);
+            }
 
-        if ($error != null) {
-            syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
-        } else {
-            $req = radius_send_request($radius);
-            if (!$req) {
+            if ($error != null) {
                 syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
-                exit;
-            }
-            switch($req) {
-                case RADIUS_ACCOUNTING_RESPONSE:
-                    break;
-                default:
-                    syslog(LOG_ERR, "Unexpected return value:$radius\n");
+            } else {
+                $req = radius_send_request($radius);
+                if (!$req) {
+                    syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                    exit;
+                }
+                switch ($req) {
+                    case RADIUS_ACCOUNTING_RESPONSE:
+                        break;
+                    default:
+                        syslog(LOG_ERR, "Unexpected return value:$radius\n");
 
+                }
+                radius_close($radius);
             }
-            radius_close($radius);
         }
     }
 
