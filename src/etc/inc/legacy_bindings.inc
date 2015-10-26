@@ -27,26 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
-// initialize transitional components
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Loader;
-
-$di = new FactoryDefault();
-$phalcon_config = include_once("/usr/local/opnsense/mvc/app/config/config.php");
-
-$loader = new Loader();
-$loader->registerDirs(
-    array(
-        $phalcon_config->application->controllersDir,
-        $phalcon_config->application->modelsDir,
-        $phalcon_config->application->libraryDir
-    )
-)->register();
-
-$di->set('config', $phalcon_config);
-
-unset($phalcon_config);
+require_once('script/load_phalcon.php');
 
 /**
  * wrap config run
