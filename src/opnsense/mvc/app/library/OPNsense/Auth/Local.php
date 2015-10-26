@@ -57,8 +57,8 @@ class Local implements IAuthConnector
 
     /**
      * authenticate user against local database (in config.xml)
-     * @param $username username to authenticate
-     * @param $password user password
+     * @param string $username username to authenticate
+     * @param string $password user password
      * @return bool authentication status
      */
     public function authenticate($username, $password)

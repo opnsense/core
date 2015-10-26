@@ -49,8 +49,8 @@ interface IAuthConnector
 
     /**
      * authenticate user
-     * @param $username username to authenticate
-     * @param $password user password
+     * @param string $username username to authenticate
+     * @param string $password user password
      * @return bool
      */
     public function authenticate($username, $password);
