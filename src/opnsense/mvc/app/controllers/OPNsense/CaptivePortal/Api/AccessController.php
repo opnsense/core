@@ -109,7 +109,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * logon client to zone, must use post type of request
-     * @param string zone id number
+     * @param int|string zone id number
      * @return array
      */
     public function logonAction($zoneid = 0)
@@ -208,7 +208,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * logoff client
-     * @param string zone id number
+     * @param int|string zone id number
      * @return array
      */
     public function logoffAction($zoneid = 0)
@@ -240,7 +240,7 @@ class AccessController extends ApiControllerBase
 
     /**
      * retrieve session info
-     * @param string zone id number
+     * @param int|string zone id number
      * @return array
      */
     public function statusAction($zoneid = 0)

@@ -175,6 +175,7 @@ class ServiceController extends ApiControllerBase
                 return array("name" => (string)$template->name);
             }
         }
+        return null;
     }
 
     /**
