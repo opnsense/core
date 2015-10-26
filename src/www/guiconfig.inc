@@ -201,7 +201,7 @@ function print_info_box_apply($msg)
 	$name= 'apply';
 
 	$savebutton = '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
-	$savebutton .= '<input name="' . $name . '" type="submit" class="btn btn-default" id="' . $name . '" value="' . $value . '" />';
+	$savebutton .= '<input name="' . $name . '" type="submit" class="btn btn-primary pull-right" id="' . $name . '" value="' . $value . '" />';
 	if (!empty($_POST['if'])) {
 		$savebutton .= '<input type="hidden" name="if" value="' . htmlspecialchars($_POST['if']) . '" />';
 	}
