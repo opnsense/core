@@ -33,6 +33,7 @@ import ujson
 import time
 import syslog
 import traceback
+import subprocess
 from lib import Config
 from lib.db import DB
 from lib.arp import ARP
@@ -190,6 +191,7 @@ def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.
         The main job of this procedure is to sync the administration with the actual situation in the ipfw firewall.
     """
+    last_cleanup_timestamp = 0
     bgprocess = CPBackgroundProcess()
     bgprocess.initialize_fixed()
 
@@ -197,6 +199,11 @@ def main():
         try:
             # open database
             bgprocess.db.open()
+
+            # cleanup old settings, every 5 minutes
+            if time.time() - last_cleanup_timestamp > 300:
+                bgprocess.db.cleanup_sessions()
+                last_cleanup_timestamp = time.time()
 
             # reload cached arp table contents
             bgprocess.arp.reload()
@@ -210,6 +217,9 @@ def main():
 
             # close the database handle while waiting for the next poll
             bgprocess.db.close()
+
+            # process accounting messages (uses php script, for reuse of Auth classes)
+            subprocess.call(['/usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php'])
 
             # sleep
             time.sleep(5)
