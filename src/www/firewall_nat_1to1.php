@@ -179,7 +179,7 @@ $main_buttons = array(
         if (isset($savemsg))
           print_info_box($savemsg);
         if (is_subsystem_dirty('natconf'))
-          print_info_box_np(gettext("The NAT configuration has been changed.") .
+          print_info_box_apply(gettext("The NAT configuration has been changed.") .
             "<br />" .
             gettext("You must apply the changes in order for them to take effect."));
 ?>

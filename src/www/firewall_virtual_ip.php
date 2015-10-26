@@ -260,7 +260,7 @@ $main_buttons = array(
             print_info_box($savemsg);
           else
           if (is_subsystem_dirty('vip'))
-            print_info_box_np(gettext("The VIP configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
+            print_info_box_apply(gettext("The VIP configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
         ?>
         <section class="col-xs-12">
             <div class="content-box-main content-box">

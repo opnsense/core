@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2014 Deciso B.V.
   Copyright (C) 2011 Seth Mos <seth.mos@dds.nl>
@@ -179,7 +180,7 @@ $main_buttons = array(
       <div class="row">
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('natconf')): ?>
-        <?php print_info_box_np(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+        <?php print_info_box_apply(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
           <div class="content-box">
