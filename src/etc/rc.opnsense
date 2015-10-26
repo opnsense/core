@@ -9,7 +9,7 @@ for RC_CONF in $(ls /etc/rc.conf.d); do
 done
 
 # probe all deamons in /usr/local/etc/rc.d/
-ls /usr/local/etc/rc.d/* | while read rc_filename; do
+ls /usr/local/etc/rc.d/* /etc/rc.d/* | while read rc_filename; do
 	# read rc scripts and parse name and rcvar variables
 	_file=`basename $rc_filename`
 	eval `/usr/bin/grep "name[[:blank:]]*=" $rc_filename | /usr/bin/head -n 1`
