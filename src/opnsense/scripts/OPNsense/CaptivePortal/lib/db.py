@@ -355,3 +355,49 @@ class DB(object):
         else:
             self._connection.commit()
             return 'update'
+
+    def cleanup_sessions(self):
+        """ cleanup removed sessions, but wait for accounting to finish when busy
+        """
+        cur = self._connection.cursor()
+        cur.execute(""" delete
+                        from cp_clients
+                        where cp_clients.deleted = 1
+                        and not exists (
+                            select  1
+                            from    accounting_state
+                            where   accounting_state.zoneid = cp_clients.zoneid
+                            and     accounting_state.sessionid = cp_clients.sessionid
+                            and     accounting_state.state <> 'STOPPED'
+                        )
+                        """)
+        cur.execute(""" delete
+                        from    accounting_state
+                        where   not exists (
+                            select  1
+                            from    cp_clients
+                            where   cp_clients.zoneid = accounting_state.zoneid
+                            and     cp_clients.sessionid = accounting_state.sessionid
+                        )
+                    """)
+        cur.execute(""" delete
+                        from    session_info
+                        where   not exists (
+                            select  1
+                            from    cp_clients
+                            where   session_info.zoneid = cp_clients.zoneid
+                            and     session_info.sessionid = cp_clients.sessionid
+                        )
+                    """)
+
+        cur.execute(""" delete
+                        from    session_restrictions
+                        where   not exists (
+                            select  1
+                            from    cp_clients
+                            where   session_restrictions.zoneid = cp_clients.zoneid
+                            and     session_restrictions.sessionid = cp_clients.sessionid
+                        )
+                    """)
+
+        self._connection.commit()
