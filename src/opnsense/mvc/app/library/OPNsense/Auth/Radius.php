@@ -29,8 +29,6 @@
 
 namespace OPNsense\Auth;
 
-use OPNsense\Core\Config;
-
 /**
  * Class Radius connector
  * @package OPNsense\Auth
@@ -117,8 +115,8 @@ class Radius implements IAuthConnector
 
     /**
      * send start accounting message to radius
-     * @param $username username
-     * @param $sessionid session id to pass through
+     * @param string $username username
+     * @param string $sessionid session id to pass through
      */
     public function startAccounting($username, $sessionid)
     {
@@ -249,6 +247,9 @@ class Radius implements IAuthConnector
     public function updateAccounting($username, $sessionid, $session_time)
     {
         $radius = radius_auth_open();
+        if (!defined('RADIUS_UPDATE')) {
+            define('RADIUS_UPDATE', 3);
+        }
 
         $error = null;
         if (!radius_add_server(
