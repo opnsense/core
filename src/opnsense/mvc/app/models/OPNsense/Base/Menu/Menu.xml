@@ -185,10 +185,6 @@
         </Diagnostics>
     </Firewall>
     <Services order="4" cssClass="glyphicon glyphicon-cog">
-        <CaptivePortal VisibleName="Captive Portal" cssClass="fa fa-paper-plane-o">
-            <Administration url="/ui/captiveportal/"/>
-            <Log VisibleName="Log File" url="/diag_logs_auth.php"/>
-        </CaptivePortal>
         <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
         <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
             <DHCPServerTab url="/services_dhcp.php?if=*"/>
