@@ -1,0 +1,11 @@
+<acl>
+    <!-- unique acl key, must be globally unique for all acl's  -->
+    <page-services-captiveportal>
+        <name>WebCfg - Services: Captive Portal</name>
+        <description>Allow access to the 'Services: Captive Portal' page'</description>
+        <patterns>
+            <pattern>ui/captiveportal/*</pattern>
+            <pattern>api/captiveportal/*</pattern>
+        </patterns>
+    </page-services-captiveportal>
+</acl>
