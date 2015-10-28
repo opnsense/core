@@ -56,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // input record id, if valid
     if (isset($_GET['id']) && isset($a_server[$_GET['id']])) {
         $id = $_GET['id'];
-        $configId = $id;
     }
     if (isset($_GET['act'])) {
         $act = $_GET['act'];
@@ -112,11 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
-    if (isset($_POST['id']) && isset($a_server[$_POST['id']])) {
-        $id = $_POST['id'];
+    if (isset($pconfig['id']) && isset($a_server[$pconfig['id']])) {
+        $id = $pconfig['id'];
     }
-    if (isset($_POST['act'])) {
-        $act = $_POST['act'];
+    if (isset($pconfig['act'])) {
+        $act = $pconfig['act'];
     }
     if (isset($pconfig['save'])) {
       /* input validation */
@@ -163,12 +162,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
       }
 
-      do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+      do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-      if (!empty($_POST['ldap_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['ldap_host'])) {
+      if (!empty($pconfig['ldap_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['ldap_host'])) {
           $input_errors[] = gettext("The host name contains invalid characters.");
       }
-      if (!empty($_POST['radius_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $_POST['radius_host'])) {
+      if (!empty($pconfig['radius_host']) && preg_match("/[^a-zA-Z0-9\.\-_]/", $pconfig['radius_host'])) {
           $input_errors[] = gettext("The host name contains invalid characters.");
       }
 
@@ -176,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $input_errors[] = gettext("An authentication server with the same name already exists.");
       }
 
-      if (($pconfig['type'] == "radius") && isset($_POST['radius_timeout']) && !empty($_POST['radius_timeout']) && (!is_numeric($_POST['radius_timeout']) || (is_numeric($_POST['radius_timeout']) && ($_POST['radius_timeout'] <= 0)))) {
+      if (($pconfig['type'] == "radius") && isset($pconfig['radius_timeout']) && !empty($pconfig['radius_timeout']) && (!is_numeric($pconfig['radius_timeout']) || (is_numeric($pconfig['radius_timeout']) && ($pconfig['radius_timeout'] <= 0)))) {
           $input_errors[] = gettext("RADIUS Timeout value must be numeric and positive.");
       }
       if (count($input_errors) == 0) {
@@ -184,10 +183,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $server['refid'] = uniqid();
           if (isset($id)) {
               $server = $a_server[$id];
+          } else {
+              $server['type'] = $pconfig['type'];
+              $server['name'] = $pconfig['name'];
           }
-
-          $server['type'] = $pconfig['type'];
-          $server['name'] = $pconfig['name'];
 
           if ($server['type'] == "ldap") {
               if (!empty($pconfig['ldap_caref'])) {
@@ -327,11 +326,12 @@ endif; ?>
 
 $( document ).ready(function() {
     $("#type").change(function(){
+        $(".auth_radius").addClass('hidden');
+        $(".auth_ldap").addClass('hidden');
+        $(".auth_voucher").addClass('hidden');
         if ($("#type").val() == 'ldap') {
             $(".auth_ldap").removeClass('hidden');
-            $(".auth_radius").addClass('hidden');
         } else if ($("#type").val() == 'radius') {
-            $(".auth_ldap").addClass('hidden');
             $(".auth_radius").removeClass('hidden');
         }
     });
@@ -424,6 +424,7 @@ $( document ).ready(function() {
 <?php else :
 ?>
                     <strong><?=$pconfig['name'];?></strong>
+                    <input name="name" type="hidden" value="<?=$pconfig['name'];?>"/>
 <?php
 endif; ?>
                   </td>
