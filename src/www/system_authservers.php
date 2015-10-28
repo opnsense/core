@@ -33,7 +33,8 @@ require_once("auth.inc");
 
 $auth_server_types = array(
     'ldap' => "LDAP",
-    'radius' => "Radius"
+    'radius' => "Radius",
+    'voucher' => "Voucher"
 );
 
 
@@ -388,7 +389,6 @@ $( document ).ready(function() {
     });
 
     // init
-    $("#type").change();
     $("#radius_srvcs").change();
     if ($("#ldap_port").val() == "") {
         $("#ldap_urltype").change();
@@ -396,6 +396,7 @@ $( document ).ready(function() {
     if ($("#ldap_attr_user").val() == "") {
         $("#ldap_tmpltype").change();
     }
+    $("#type").change();
 });
 //]]>
 </script>
