@@ -107,9 +107,10 @@ class ServiceController extends ApiControllerBase
             $response = $result['payload'];
             $this->response->setContentType('application/octet-stream', 'UTF-8');
             $this->response->setHeader(
-                "Content-disposition:",
-                "attachment; filename=template_" . $templateFileId . ".zip"
+                'Content-Disposition:',
+                "Attachment; filename=\"template_" . $templateFileId . ".zip\""
             );
+            $this->response->setHeader('Content-Type:', 'application/zip');
             return base64_decode($response);
         } else {
             // return empty response on error
