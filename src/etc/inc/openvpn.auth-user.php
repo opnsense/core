@@ -35,7 +35,6 @@
  */
 
 require_once("config.inc");
-require_once("radius.inc");
 require_once("auth.inc");
 require_once("util.inc");
 require_once("interfaces.inc");

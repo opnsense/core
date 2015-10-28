@@ -30,7 +30,6 @@
 require_once("guiconfig.inc");
 require_once("PEAR.inc");
 require_once("interfaces.inc");
-require_once("radius.inc");
 
 function getUserGroups($username, $authcfg)
 {
