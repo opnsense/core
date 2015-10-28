@@ -29,7 +29,6 @@
     update captive portal statistics
 """
 import sys
-import ujson
 import time
 import syslog
 import traceback
@@ -39,6 +38,7 @@ from lib.db import DB
 from lib.arp import ARP
 from lib.ipfw import IPFW
 from lib.daemonize import Daemonize
+
 
 class CPBackgroundProcess(object):
     """ background process helper class
@@ -90,12 +90,12 @@ class CPBackgroundProcess(object):
             # cleanup removed static sessions
             for dbclient in self.db.list_clients(zoneid):
                 if dbclient['authenticated_via'] == '---ip---' \
-                    and dbclient['ipAddress'] not in cpzones[zoneid]['allowedaddresses']:
+                        and dbclient['ipAddress'] not in cpzones[zoneid]['allowedaddresses']:
                         self.ipfw.delete(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'])
                 elif dbclient['authenticated_via'] == '---mac---' \
-                    and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
-                        if dbclient['ipAddress']  != '':
+                        and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
+                        if dbclient['ipAddress'] != '':
                             self.ipfw.delete(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'])
 
@@ -125,7 +125,7 @@ class CPBackgroundProcess(object):
                     # check if hardtimeout is set and overrun for this session
                     if 'hardtimeout' in cpzone_info and str(cpzone_info['hardtimeout']).isdigit():
                         # hardtimeout should be set and we should have collected some session data from the client
-                        if int(cpzone_info['hardtimeout']) > 0  and float(db_client['startTime']) > 0:
+                        if int(cpzone_info['hardtimeout']) > 0 and float(db_client['startTime']) > 0:
                             if (time.time() - float(db_client['startTime'])) / 60 > int(cpzone_info['hardtimeout']):
                                 drop_session_reason = "session %s hit hardtimeout" % db_client['sessionId']
 
@@ -148,12 +148,12 @@ class CPBackgroundProcess(object):
 
                     # session accounting
                     if db_client['acc_session_timeout'] is not None \
-                        and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout'] :
+                            and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                 elif db_client['authenticated_via'] == '---mac---':
                     # detect mac changes
                     current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
-                    if current_ip != None:
+                    if current_ip is not None:
                         if db_client['ipAddress'] != '':
                             # remove old ip
                             self.ipfw.delete(zoneid, db_client['ipAddress'])
@@ -186,6 +186,7 @@ class CPBackgroundProcess(object):
                         break
                 if not address_active:
                     self.ipfw.delete(zoneid, registered_address)
+
 
 def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.

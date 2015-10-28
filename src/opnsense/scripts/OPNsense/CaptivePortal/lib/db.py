@@ -37,6 +37,7 @@ class DB(object):
         """ construct new database connection, open and make sure the sqlite file exists
         :return:
         """
+        self._connection = None
         self.open()
         self.create()
 
@@ -73,14 +74,14 @@ class DB(object):
             cur.executescript(open(init_script_filename, 'rb').read())
         cur.close()
 
-    def sessions_per_address(self, zoneid, ip_address = None, mac_address = None):
+    def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
         """ fetch session(s) per (mac) address
         :param zoneid: cp zone number
         :param ip_address: ip address
         :return: active status (boolean)
         """
         cur = self._connection.cursor()
-        request = {'zoneid':zoneid, 'ip_address': ip_address, 'mac_address': mac_address}
+        request = {'zoneid': zoneid, 'ip_address': ip_address, 'mac_address': mac_address}
         cur.execute("""select   cc.sessionid         sessionId
                         ,       cc.authenticated_via authenticated_via
                        from     cp_clients cc
@@ -94,7 +95,7 @@ class DB(object):
 
         result = []
         for row in cur.fetchall():
-            result.append({'sessionId':row[0], 'authenticated_via': row[1]})
+            result.append({'sessionId': row[0], 'authenticated_via': row[1]})
         return result
 
     def add_client(self, zoneid, authenticated_via, username, ip_address, mac_address):
@@ -143,7 +144,6 @@ class DB(object):
                        and    sessionid = :sessionid
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
-
 
     def del_client(self, zoneid, sessionid):
         """ mark (administrative) client for removal
@@ -340,7 +340,7 @@ class DB(object):
         :return: string "add"/"update" to signal the performed action to the client
         """
         cur = self._connection.cursor()
-        qry_params = {'zoneid': zoneid, 'sessionid' : sessionid, 'session_timeout': session_timeout}
+        qry_params = {'zoneid': zoneid, 'sessionid': sessionid, 'session_timeout': session_timeout}
         sql_update = """update session_restrictions
                         set session_timeout = :session_timeout
                         where zoneid = :zoneid and sessionid = :sessionid"""

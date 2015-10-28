@@ -37,7 +37,7 @@ import StringIO
 from lib import OPNSenseConfig
 
 response = dict()
-source_directory  = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
+source_directory = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
 
 output_data = StringIO.StringIO()
 
@@ -67,10 +67,10 @@ with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as
     # read standard template from disk
     for root, dirs, files in os.walk(source_directory):
         for filename in files:
-            filename = '%s/%s' % (root,filename)
+            filename = '%s/%s' % (root, filename)
             output_filename = filename[len(source_directory)+1:]
             if output_filename not in user_filenames:
-                zf.writestr(output_filename, open(filename,'rb').read())
+                zf.writestr(output_filename, open(filename, 'rb').read())
 
 response['payload'] = output_data.getvalue().encode('base64')
 response['size'] = len(response['payload'])

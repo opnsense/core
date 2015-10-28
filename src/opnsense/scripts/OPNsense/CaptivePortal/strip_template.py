@@ -36,16 +36,17 @@ import binascii
 import StringIO
 import zipfile
 import ujson
-import md5
+from hashlib import md5
 
 htdocs_default_root = '/usr/local/opnsense/scripts/OPNsense/CaptivePortal/htdocs_default'
+
 
 def load_exclude_list():
     """ load exclude list, files that should be removed from the input stream
     """
     result = []
-    filename = '%s/exclude.list' % htdocs_default_root
-    for line in open(filename, 'r').read().split('\n'):
+    excl_filename = '%s/exclude.list' % htdocs_default_root
+    for line in open(excl_filename, 'r').read().split('\n'):
         line = line.strip()
         if len(line) > 1 and line[0] != '#':
             result.append(line)
@@ -53,12 +54,13 @@ def load_exclude_list():
 
 
 response = dict()
+zip_content = None
 if len(sys.argv) < 2:
     response['error'] = 'Filename parameter missing'
 else:
     input_filename = '/tmp/%s' % os.path.basename(sys.argv[1])
     try:
-        zip_content = open(input_filename,'r').read().decode('base64')
+        zip_content = open(input_filename, 'r').read().decode('base64')
     except binascii.Error:
         # not in base64
         response['error'] = 'Not a base64 encoded file'
@@ -81,17 +83,17 @@ if 'error' not in response:
             if index_location is not None:
                 for zf_info in zf_in.infolist():
                     if zf_info.filename[-1] != '/':
-                        filename = zf_info.filename.replace(index_location.replace('index.html',''),'')
+                        filename = zf_info.filename.replace(index_location.replace('index.html', ''), '')
                         # ignore internal osx metadata files, maybe we need to ignore some others (windows?) as well
                         # here.
-                        if filename.split('/')[0] in ('__MACOSX') or filename.split('/')[-1] == '.DS_Store':
+                        if filename.split('/')[0] == '__MACOSX' or filename.split('/')[-1] == '.DS_Store':
                             continue
                         if filename not in exclude_list:
                             file_data = zf_in.read(zf_info.filename)
                             src_filename = '%s/%s' % (htdocs_default_root, filename)
                             if os.path.isfile(src_filename):
-                                md5_src = md5.new(open(src_filename, 'rb').read()).hexdigest()
-                                md5_new = md5.new(file_data).hexdigest()
+                                md5_src = md5(open(src_filename, 'rb').read()).hexdigest()
+                                md5_new = md5(file_data).hexdigest()
                                 if md5_src != md5_new:
                                     # changed file
                                     zf_out.writestr(filename, file_data)
@@ -99,7 +101,7 @@ if 'error' not in response:
                                 # new file, always write
                                 zf_out.writestr(filename, file_data)
         if 'error' not in response:
-            response['payload'] = output_data.getvalue().encode('base64').strip().replace('\n' ,'')
+            response['payload'] = output_data.getvalue().encode('base64').strip().replace('\n', '')
             response['size'] = len(response['payload'])
 
 print(ujson.dumps(response))
