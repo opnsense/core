@@ -105,7 +105,7 @@ class Radius implements IAuthConnector
     }
 
     /**
-     * unused
+     * return session info
      * @return array mixed named list of authentication properties
      */
     public function getLastAuthProperties()
