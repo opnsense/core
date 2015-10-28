@@ -727,5 +727,10 @@ function authenticate_user($username, $password, $authcfg = NULL) {
 	$authFactory = new OPNsense\Auth\AuthenticationFactory;
 	$authenticator = $authFactory->get($authName);
 
-	return $authenticator->authenticate($username, $password) ;
+	if ($authenticator != null) {
+		return $authenticator->authenticate($username, $password) ;
+	} else {
+		log_error('Unable to retrieve authenticator for '. $authName);
+		return false;
+	}
 }
