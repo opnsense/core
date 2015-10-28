@@ -718,9 +718,12 @@ function authenticate_user($username, $password, $authcfg = NULL) {
 		$authName = 'Local Database';
 	} else {
 		$authName = $authcfg['name'];
-		if ($authcfg['type'] == 'ldap') {
-				// temporary fix, ldap handler doesn't do this init yet.
-				ldap_setup_caenv($authcfg);
+		if ($authcfg['type'] == 'local') {
+			// avoid gettext type issues on Local Database, authenticator should always be named "Local Database"
+			$authName = 'Local Database';
+		} elseif ($authcfg['type'] == 'ldap') {
+			// temporary fix, ldap handler doesn't do this init yet.
+			ldap_setup_caenv($authcfg);
 		}
 	}
 
