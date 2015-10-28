@@ -661,7 +661,7 @@ function auth_get_authserver($name) {
 	if ($name == "Local Database") {
 		return array(
 			"name" => gettext("Local Database"),
-			"type" => "Local Auth",
+			"type" => "local",
 			"host" => $config['system']['hostname']
 		);
 	}
@@ -708,7 +708,7 @@ function auth_get_authserver_list() {
                 }
         }
 
-	$list["Local Database"] = array( "name" => gettext("Local Database"), "type" => "Local Auth", "host" => $config['system']['hostname']);
+	$list["Local Database"] = array( "name" => gettext("Local Database"), "type" => "local", "host" => $config['system']['hostname']);
 	return $list;
 }
 
