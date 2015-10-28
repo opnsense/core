@@ -263,6 +263,7 @@ $( document ).ready(function() {
         switch ($(this).val()) {
             case "ipalias":
               $("#type").prop("selectedIndex",0);
+              $("#subnet_bits").attr('disabled', false);
               $("#typenote").html("<?=gettext("Please provide a single IP address");?>");
               break;
             case "carp":
