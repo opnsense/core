@@ -103,6 +103,9 @@ class AuthenticationFactory
                 case 'radius':
                     $authObject = new Radius();
                     break;
+                case 'voucher':
+                    $authObject = new Voucher();
+                    break;
                 default:
                     $authObject = null;
             }
