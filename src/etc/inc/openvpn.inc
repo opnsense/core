@@ -405,7 +405,7 @@ function openvpn_reconfigure($mode, $settings)
 		if (empty($iface_ip)) {
 			$iface_ip = get_interface_ipv6($interface);
 		}
-	} 
+	}
 
 	$conf = "dev {$devname}\n";
 	if (isset($settings['verbosity_level'])) {
