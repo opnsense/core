@@ -535,7 +535,7 @@ endif; ?>
                           <option value="one" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
                               <?=gettext('One Level');?>
                           </option>
-                          <option value="subtree" <?=$pconfig['ldap_scope'] == 'one' ?  "selected=\"selected\"" : "";?>>
+                          <option value="subtree" <?=$pconfig['ldap_scope'] == 'subtree' ?  "selected=\"selected\"" : "";?>>
                               <?=gettext('Entire Subtree');?>
                           </option>
                       </select>
