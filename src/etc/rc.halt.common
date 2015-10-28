@@ -3,6 +3,9 @@
 # run beep sequence if enabled
 /usr/local/sbin/beep.sh stop
 
+# shutdown syshook / plugin scripts
+/usr/local/etc/rc.syshook stop
+
 # shutdown rc scripts
 /usr/local/etc/rc.opnsense stop
 

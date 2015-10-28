@@ -219,6 +219,9 @@ echo "done."
 # startup configd
 /usr/local/etc/rc.d/configd start
 
+# Execute the early syshook / plugin commands
+/usr/local/etc/rc.syshook early
+
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
 rm -f /root/lighttpd*
@@ -232,6 +235,9 @@ if [ -f "/tmp/donotbootup" ]; then
 	echo "Dropping to recovery shell."
 	exit 0
 fi
+
+# Execute the normal syshook / plugin commands
+/usr/local/etc/rc.syshook start
 
 echo -n "Starting CRON... "
 cd /tmp && /usr/sbin/cron -s 2>/dev/null
