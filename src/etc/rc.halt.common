@@ -10,7 +10,6 @@
 /usr/local/etc/rc.opnsense stop
 
 # backup volatile internals
-/usr/local/etc/rc.backup_captiveportal
 /usr/local/etc/rc.backup_dhcpleases
 /usr/local/etc/rc.backup_rrd
 
