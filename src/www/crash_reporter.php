@@ -112,10 +112,15 @@ if (isset($_POST['Submit'])) {
         @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
         exec('/usr/bin/gzip /var/crash/*');
         $files_to_upload = glob('/var/crash/*');
-        $resp = upload_crash_report($files_to_upload, $user_agent);
-        array_map('unlink', $files_to_upload);
+        upload_crash_report($files_to_upload, $user_agent);
+        foreach ($files_to_upload as $file_to_upload) {
+            @unlink($file_to_upload);
+	}
     } elseif ($_POST['Submit'] == 'no') {
-        array_map('unlink', glob('/var/crash/*'));
+        $files_to_upload = glob('/var/crash/*');
+        foreach ($files_to_upload as $file_to_upload) {
+            @unlink($file_to_upload);
+        }
         @unlink('/tmp/PHP_errors.log');
     } elseif ($_POST['Submit'] == 'new') {
         /* force a crash report generation */
