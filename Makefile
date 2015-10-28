@@ -112,7 +112,6 @@ CORE_DEPENDS?=		apinger \
 			suricata \
 			syslogd \
 			unbound \
-			voucher \
 			wol \
 			zip
 
