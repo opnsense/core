@@ -66,7 +66,7 @@ class ARP(object):
                     if address in self._arp_table:
                         self._arp_table[address]['intf'].append(physical_intf)
                     else:
-                        self._arp_table[address] = {'mac': mac, 'intf': [physical_intf],'expires' : expires}
+                        self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
 
     def list_items(self):
         """ return parsed arp list

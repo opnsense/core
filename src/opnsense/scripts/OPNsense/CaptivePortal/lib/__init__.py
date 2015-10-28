@@ -29,6 +29,7 @@ import stat
 import xml.etree.ElementTree
 from ConfigParser import ConfigParser
 
+
 class Config(object):
     """ handle to captive portal config (/usr/local/etc/captiveportal.conf)
     """
@@ -50,17 +51,16 @@ class Config(object):
             self._conf_handle.read(self._cnf_filename)
             self.last_updated = mod_time
 
-
     def get_zones(self):
         """ return list of configured zones
             :return: dictionary index by zoneid, containing dictionaries with zone properties
         """
         result = dict()
         self._update()
-        if self._conf_handle != None:
+        if self._conf_handle is not None:
             for section in self._conf_handle.sections():
                 if section.find('zone_') == 0:
-                    zoneid=section.split('_')[1]
+                    zoneid = section.split('_')[1]
                     result[zoneid] = dict()
                     for item in self._conf_handle.items(section):
                         result[zoneid][item[0]] = item[1]
@@ -86,10 +86,12 @@ class Config(object):
                     return self._conf_handle.get(section, 'content')
         return None
 
+
 class OPNSenseConfig(object):
     """ Read configuration data from config.xml
     """
     def __init__(self):
+        self.rootNode = None
         self.load_config()
 
     def load_config(self):
@@ -106,7 +108,7 @@ class OPNSenseConfig(object):
         templates = self.rootNode.findall("./OPNsense/captiveportal/templates/template")
         if templates is not None:
             for template in templates:
-                if template.find('fileid') is not None and template.find('content') is not None :
+                if template.find('fileid') is not None and template.find('content') is not None:
                     if template.find('fileid').text == fileid:
                         return template.find('content').text
 
