@@ -458,6 +458,11 @@ $( document ).ready(function() {
   typesel_change_remote(<?=$pconfig['remoteid_netbits']?>);
     <?php
 endif; ?>
+
+  $( document ).ready(function() {
+      // hook in, ipv4/ipv6 selector events
+      hook_ipv4v6('ipv4v6net', 'network-id');
+  });
 });
 
 function change_mode() {
@@ -617,8 +622,6 @@ function change_protocol() {
 //]]>
 </script>
 
-
-
 <?php
 if (isset($input_errors) && count($input_errors) > 0) {
     print_input_errors($input_errors);
@@ -715,7 +718,7 @@ endforeach;
                   <td>
                     <input name="localid_address" type="text" id="localid_address" size="28" value="<?=$pconfig['localid_address'];?>" />
                     /
-                    <select name="localid_netbits" id="localid_netbits">
+                    <select name="localid_netbits" data-network-id="localid_address" class="ipv4v6net" id="localid_netbits">
 <?php              for ($i = 128; $i >= 0; $i--) :
 ?>
                       <option value="<?=$i;
@@ -754,7 +757,7 @@ endfor; ?>
                   <td>
                     <input name="natlocalid_address" type="text" class="formfld unknown ipv4v6" id="natlocalid_address" size="28" value="<?=isset($pconfig['natlocalid_address']) ? $pconfig['natlocalid_address'] : "";?>" />
                     /
-                    <select name="natlocalid_netbits" class="formselect ipv4v6" id="natlocalid_netbits">
+                    <select name="natlocalid_netbits"  data-network-id="natlocalid_address" class="formselect ipv4v6net" id="natlocalid_netbits">
                     <?php for ($i = 128; $i >= 0; $i--) :
 ?>
                       <option value="<?=$i;?>" <?php if (isset($pconfig['natlocalid_netbits']) && $i == $pconfig['natlocalid_netbits']) {
@@ -814,7 +817,7 @@ endif; ?>
                 <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td width="78%" class="vtable">
-                    <select name="protocol" class="formselect" onchange="change_protocol()">
+                    <select name="protocol" id="proto" class="formselect" onchange="change_protocol()">
     <?php
     foreach (array('esp' => 'ESP','ah' => 'AH') as $proto => $protoname) :
     ?>
