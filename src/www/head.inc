@@ -78,6 +78,9 @@ $pagetitle = gentitle( $pgtitle );
 		<!-- nvd3 -->
 		<script type="text/javascript" src="/ui/js/nv.d3.min.js"></script>
 
+		<!-- append some helper functions to integrate into the legacy code -->
+		<script type="text/javascript" src="/javascript/opnsense_legacy.js"></script>
+
 		<?php
 		/*
 		 *	Find all javascript files that need to be included
