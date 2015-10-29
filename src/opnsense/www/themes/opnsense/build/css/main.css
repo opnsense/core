@@ -4200,7 +4200,6 @@ a.thumbnail.active {
 .progress {
   overflow: hidden;
   height: 20px;
-  margin-bottom: 20px;
   background-color: #f5f5f5;
   border-radius: 3px;
   position: relative;
