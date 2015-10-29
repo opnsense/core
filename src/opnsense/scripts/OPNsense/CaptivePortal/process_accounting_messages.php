@@ -30,7 +30,6 @@
 
 require_once('script/load_phalcon.php');
 
-use OPNsense\Core\Config;
 use OPNsense\Auth\AuthenticationFactory;
 
 // open database
