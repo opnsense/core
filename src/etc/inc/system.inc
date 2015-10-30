@@ -1708,11 +1708,12 @@ function system_ntp_configure($start_ntpd = true)
 	/* if /var/empty does not exist, create it */
 	@mkdir('/var/empty', 0775, true);
 
-	/* start opentpd, set time now and use new config */
-	mwexecf(
-		'/usr/local/sbin/ntpd -g -c %s -p %s',
-		array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
-	);
+	mwexec_bg(sprintf(
+		/* XXX -n is --nofork due to crashing with 4.2.8p4 */
+		'/usr/local/sbin/ntpd -n -g -c %s -p %s',
+		'/var/etc/ntpd.conf',
+		'/var/run/ntpd.pid'
+	));
 
 	// Note that we are starting up
 	log_error("NTPD is starting up.");
