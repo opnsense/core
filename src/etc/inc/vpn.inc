@@ -576,7 +576,7 @@ EOD;
             }
 
             $rightsourceip = NULL;
-            if (!empty($a_client['pool_address'])) {
+            if (!empty($a_client['pool_address']) && isset($ph1ent['mobile']) ) {
                 $rightsourceip = "\trightsourceip = {$a_client['pool_address']}/{$a_client['pool_netbits']}\n";
             }
 
