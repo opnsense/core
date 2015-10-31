@@ -84,7 +84,7 @@ $main_buttons = array(
 } ?>
 				<?php if (is_subsystem_dirty('pptpusers')) :
 ?><br/>
-				<?php print_info_box_np(gettext("The PPTP user list has been modified").".<br />".gettext("You must apply the changes in order for them to take effect").".<br /></b><b>".gettext("Warning: this will terminate all current PPTP sessions")."!");?><br />
+				<?php print_info_box_apply(gettext("The PPTP user list has been modified").".<br />".gettext("You must apply the changes in order for them to take effect").".<br /></b><b>".gettext("Warning: this will terminate all current PPTP sessions")."!");?><br />
 				<?php
 endif; ?>
 

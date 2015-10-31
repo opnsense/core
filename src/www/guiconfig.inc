@@ -217,58 +217,18 @@ function print_info_box_apply($msg)
 EOFnp;
 }
 
-function print_info_box_np($msg, $name="apply",$value="", $showapply=false) {
-	if(empty($value)) {
-		$value = gettext("Apply changes");
-	}
-
-	if(stristr($msg, gettext("apply")) != false || stristr($msg, gettext("save")) != false || stristr($msg, gettext("create")) != false || $showapply) {
-		$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
-		$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
-		if(!empty($_POST['if']))
-			$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
-		$savebutton.="</form>";
-	} else {
-		$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
-	}
-
-	echo <<<EOFnp
-	    <div class="col-xs-12">
-		<div class="alert alert-info alert-dismissible" role="alert">
-			{$savebutton}
-            <p>{$msg}</p>
-		</div>
-		</div>
-EOFnp;
-
-}
-
-function print_info_box_apply_undo($msg, $undo)
-{
-	$value = gettext('Apply changes');
-	$name= 'apply';
-
-	$savebutton .= "<input class=\"btn btn-default\"  type=\"button\" value=\"". gettext("Undo") . "\" onclick=\"document.location='{$undo}'\" />";
-	$savebutton .= "<input class=\"btn btn-default\"  name=\"{$name}\" type=\"submit\" class=\"formbtn\" id=\"${name}\" value=\"{$value}\" />";
-
-	$url = $_SERVER['REQUEST_URI'];
-
-	echo <<<EOFnp
-	<div class="col-xs-12" id="redboxtable"><form action="{$url}" method="post">
-		<div class="alert alert-warning"  summary="red box table">
-			<p>{$msg}<br /><br /></p>
-			<div class="btn-group">
-				{$savebutton}
-				{$undobutton}
-			</div>
-		</div>
-	</form></div>
-EOFnp;
-}
-
 function print_info_box($msg)
 {
-	print_info_box_np($msg);
+	$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
+
+	echo <<<EOFnp
+<div class="col-xs-12">
+	<div class="alert alert-info alert-dismissible" role="alert">
+		{$savebutton}
+		<p>{$msg}</p>
+	</div>
+</div>
+EOFnp;
 }
 
 function get_std_save_message() {

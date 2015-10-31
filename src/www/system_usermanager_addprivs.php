@@ -105,7 +105,7 @@ if ($_POST) {
 
 /* if ajax is calling, give them an update message */
 if (isAjax()) {
-    print_info_box_np($savemsg);
+    print_info_box($savemsg);
 }
 
 include("head.inc");

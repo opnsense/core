@@ -106,7 +106,7 @@ $main_buttons = array(
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
-				<?php print_info_box_np(sprintf(gettext("The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."), "<br />"));?><br />
+				<?php print_info_box_apply(sprintf(gettext("The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."), "<br />"));?><br />
 				<?php endif; ?>
 
 			    <section class="col-xs-12">

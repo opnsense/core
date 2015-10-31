@@ -88,7 +88,7 @@ $main_buttons = array(
 } ?>
 				<?php if (is_subsystem_dirty('l2tpusers')) :
 ?><br/>
-				<?php print_info_box_np(gettext("The l2tp user list has been modified") . ".<br />" . gettext("You must apply the changes in order for them to take effect") . ".<br /><b>" . gettext("Warning: this will terminate all current l2tp sessions!") . "</b>");?>
+				<?php print_info_box_apply(gettext("The l2tp user list has been modified") . ".<br />" . gettext("You must apply the changes in order for them to take effect") . ".<br /><b>" . gettext("Warning: this will terminate all current l2tp sessions!") . "</b>");?>
 				<?php
 endif; ?>
 

@@ -123,7 +123,7 @@ $listtags = array_flip(array(
 
 $pkg = parse_xml_config_raw("/usr/local/wizard/{$xml}.xml", 'opnsensewizard', false);
 if (!is_array($pkg)) {
-	print_info_box_np(sprintf(gettext("ERROR: Could not parse %s wizard file."), $xml));
+	print_info_box(sprintf(gettext("ERROR: Could not parse %s wizard file."), $xml));
 	die;
 }
 

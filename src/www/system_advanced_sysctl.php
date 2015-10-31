@@ -138,7 +138,7 @@ include("head.inc");
                     print_info_box($savemsg);
                 }
                 if (is_subsystem_dirty('sysctl') && ($act != "edit" )) {
-                    print_info_box_np(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
+                    print_info_box_apply(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
                 }
                 ?>
 			</form>

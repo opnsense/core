@@ -325,7 +325,7 @@ if (isset($savemsg)) {
     print_info_box($savemsg);
 }
 if (isset($config['ipsec']['enable']) && is_subsystem_dirty('ipsec')) {
-    print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+    print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
 }
                 $ph1found = false;
 foreach ($config['ipsec']['phase1'] as $ph1ent) {
@@ -333,8 +333,28 @@ foreach ($config['ipsec']['phase1'] as $ph1ent) {
         $ph1found = true;
     }
 }
+
+function print_legacy_box($msg, $name, $value)
+{
+	$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
+	$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
+	if (!empty($_POST['if'])) {
+		$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
+	}
+	$savebutton .= '</form>';
+
+	echo <<<EOFnp
+<div class="col-xs-12">
+	<div class="alert alert-info alert-dismissible" role="alert">
+		{$savebutton}
+		<p>{$msg}</p>
+	</div>
+</div>
+EOFnp;
+}
+
 if (!empty($pconfig['enable']) && !$ph1found) {
-    print_info_box_np(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), gettext("create"), gettext("Create Phase1"));
+    print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), gettext("create"), gettext("Create Phase1"));
 }
 if (isset($input_errors) && count($input_errors) > 0) {
     print_input_errors($input_errors);
