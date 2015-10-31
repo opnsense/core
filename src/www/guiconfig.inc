@@ -664,14 +664,25 @@ function get_crash_report($pedantic = false)
 		'</a>'
 	);
 	$skip_files = array('.', '..', 'minfree', 'bounds', '');
+	$PHP_errors_log = '/tmp/PHP_errors.log';
+	$excludes = array();
 	$count = 0;
 
-	if (file_exists('/tmp/PHP_errors.log')) {
-		if ($pedantic) {
-			$total = `/usr/bin/wc -l /tmp/PHP_errors.log | /usr/bin/awk '{ print $1 }'`;
-		} else {
-			$total = `/usr/bin/grep -v 'PHP Notice:' /tmp/PHP_errors.log | /usr/bin/wc -l | /usr/bin/awk '{ print $1 }'`;
+	if (!$pedantic) {
+		$excludes[] = 'PHP Notice:';
+		$excludes[] = 'PHP Startup: Unable to load dynamic library \'/usr/local/lib/php/20131226/suhosin.so\' - /usr/local/lib/php/20131226/suhosin.so: Undefined symbol "ps_globals" in Unknown on line 0';
+	}
+
+	if (file_exists($PHP_errors_log)) {
+		$extra = '';
+		foreach ($excludes as $exclude) {
+			$extra .= sprintf('/usr/bin/grep -v %s | ', escapeshellarg($exclude));
 		}
+		$total = shell_exec(sprintf(
+			'/bin/cat %s | %s /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
+			$PHP_errors_log,
+			$extra
+		));
 		if ($total > 0) {
 			$count++;
 		}
