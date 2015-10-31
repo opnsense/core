@@ -704,7 +704,6 @@ function import_ldap_users() {
                 if (!$group) :
                 ?>
                     <button class="btn btn-default btn-xs" name="delpriv[]_x" width="17" height="17" border="0"
-                        src="/themes/<?=$g['theme'];?>/images/icons/icon_x.gif"
                         onclick="document.getElementById('privid').value='<?=$i;?>';
                             document.getElementById('userid').value='<?=$id;?>';
                             document.getElementById('act').value='<?php echo "delpriv";?>';

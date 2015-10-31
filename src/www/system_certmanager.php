@@ -1242,8 +1242,6 @@ else :
 				}
 			}
 
-                            // was: $certimg = "/themes/{$g['theme']}/images/icons/icon_frmfld_cert.png";
-
                             $certimg = '<span class="glyphicon glyphicon-certificate __iconspacer"></span>';
                         ?>
 						<tr>

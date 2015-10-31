@@ -787,11 +787,9 @@ else :
                         // TODO : Need gray certificate icon
 
                         if ($ca['prv']) {
-                            $caimg = "/themes/{$g['theme']}/images/icons/icon_frmfld_cert.png";
                             $internal = "YES";
 
                         } else {
-                            $caimg = "/themes/{$g['theme']}/images/icons/icon_frmfld_cert.png";
                             $internal = "NO";
                         }
                     ?>
