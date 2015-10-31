@@ -703,7 +703,7 @@ function tuntap_change() {
             print_input_errors($input_errors);
         }
         if (isset($savemsg)) {
-            print_info_box_np($savemsg);
+            print_info_box($savemsg);
         }
                 ?>
 

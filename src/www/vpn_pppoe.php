@@ -97,15 +97,10 @@ $main_buttons = array(
 		<div class="container-fluid">
 			<div class="row">
 
-				<?php if (isset($savemsg)) {
-                    print_info_box($savemsg);
-} ?>
-				<?php if (is_subsystem_dirty('vpnpppoe')) :
-?><br/>
-				<?php print_info_box_np(gettext("The PPPoE entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
-				<?php
-endif; ?>
-
+				<?php if (isset($savemsg)) { print_info_box($savemsg); } ?>
+				<?php if (is_subsystem_dirty('vpnpppoe')) : ?><br/>
+				<?php print_info_box_apply(gettext("The PPPoE entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
+				<?php endif; ?>
 
 
 			    <section class="col-xs-12">

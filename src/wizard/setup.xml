@@ -108,19 +108,19 @@
 	<stepsubmitphpaction>
 		<![CDATA[
 		if(empty($_POST['hostname']) || !is_hostname($_POST['hostname'])) {
-			print_info_box_np("Hostname is invalid. Please press back in your browser window and correct.");
+			print_info_box("Hostname is invalid. Please press back in your browser window and correct.");
 			die;
 		}
 		if(empty($_POST['domain']) || !is_domain($_POST['domain'])) {
-			print_info_box_np("Domain is invalid. Please press back in your browser window and correct.");
+			print_info_box("Domain is invalid. Please press back in your browser window and correct.");
 			die;
 		}
 		if(!empty($_POST['primarydnsserver']) && !is_ipaddr($_POST['primarydnsserver'])) {
-			print_info_box_np("Primary DNS server is invalid. Please press back in your browser window and correct.");
+			print_info_box("Primary DNS server is invalid. Please press back in your browser window and correct.");
 			die;
 		}
 		if(!empty($_POST['secondarydnsserver']) && !is_ipaddr($_POST['secondarydnsserver'])) {
-			print_info_box_np("Second DNS server is invalid. Please press back in your browser window and correct.");
+			print_info_box("Second DNS server is invalid. Please press back in your browser window and correct.");
 			die;
 		}
 		]]>
@@ -151,7 +151,7 @@
 		<![CDATA[
 		foreach (explode(' ', $_POST['timeserverhostname']) as $ts) {
 			if (!is_domain($ts)) {
-				print_info_box_np(gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces. Please press back in your browser window and correct."));
+				print_info_box(gettext("NTP Time Server names may only contain the characters a-z, 0-9, '-' and '.'. Entries may be separated by spaces. Please press back in your browser window and correct."));
 				die;
 			}
 		}
@@ -400,35 +400,35 @@
 	<stepsubmitphpaction>
 		<![CDATA[
 		if(!empty($_POST['mtu']) && ($_POST['mtu'] < 576)) {
-			print_info_box_np("MTU Must be at least 576 (Per RFC 791). Please press back in your browser window and correct.");
+			print_info_box("MTU Must be at least 576 (Per RFC 791). Please press back in your browser window and correct.");
 			die;
 		}
 		if(!empty($_POST['macaddress']) && !is_macaddr($_POST['macaddress'])) {
-			print_info_box_np("Invalid MAC Address. Please press back in your browser window and correct.");
+			print_info_box("Invalid MAC Address. Please press back in your browser window and correct.");
 			die;
 		}
 		if(!empty($_POST['ipaddress']) && ($_POST['selectedtype'] == "Static")) {
 			if (!is_ipaddr($_POST['ipaddress'])) {
-				print_info_box_np("Invalid WAN IP Address. Please press back in your browser window and correct.");
+				print_info_box("Invalid WAN IP Address. Please press back in your browser window and correct.");
 				die;
 			}
 			if ($_POST['subnetmask'] < 31 &&
 			    ($_POST['ipaddress'] == gen_subnet($_POST['ipaddress'], $_POST['subnetmask']) ||
 			     $_POST['ipaddress'] == gen_subnet_max($_POST['ipaddress'], $_POST['subnetmask']))) {
-				print_info_box_np("Invalid WAN IP Address. Please press back in your browser window and correct.");
+				print_info_box("Invalid WAN IP Address. Please press back in your browser window and correct.");
 				die;
 			}
 		}
 		if(!empty($_POST['dhcphostname']) && !is_hostname($_POST['dhcphostname'])) {
-			print_info_box_np("Invalid DHCP Hostname. Please press back in your browser window and correct.");
+			print_info_box("Invalid DHCP Hostname. Please press back in your browser window and correct.");
 			die;
 		}
 		if(!empty($_POST['pptplocalipaddress']) && !is_ipaddr($_POST['pptplocalipaddress'])) {
-			print_info_box_np("Invalid PPTP Local IP Address. Please press back in your browser window and correct.");
+			print_info_box("Invalid PPTP Local IP Address. Please press back in your browser window and correct.");
 			die;
 		}
 		if(!empty($_POST['pptpremoteipaddress']) && !is_ipaddr($_POST['pptpremoteipaddress'])) {
-			print_info_box_np("Invalid PPTP Remopte IP Address. Please press back in your browser window and correct.");
+			print_info_box("Invalid PPTP Remopte IP Address. Please press back in your browser window and correct.");
 			die;
 		}
 		$type = $_POST['selectedtype'];
@@ -511,14 +511,14 @@
 		<![CDATA[
 		if (!empty(trim($_POST['lanipaddress']))) {
 			if (!is_ipaddr($_POST['lanipaddress'])) {
-				print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
+				print_info_box("Invalid LAN IP Address. Please press back in your browser window and correct.");
 				die;
 			}
 
 			if ($_POST['subnetmask'] < 31 &&
 			    ($_POST['lanipaddress'] == gen_subnet($_POST['lanipaddress'], $_POST['subnetmask']) ||
 			     $_POST['lanipaddress'] == gen_subnet_max($_POST['lanipaddress'], $_POST['subnetmask']))) {
-				print_info_box_np("Invalid LAN IP Address. Please press back in your browser window and correct.");
+				print_info_box("Invalid LAN IP Address. Please press back in your browser window and correct.");
 				die;
 			}
 
@@ -563,7 +563,7 @@
 			local_user_set($admin_user);
 			write_config();
 		} else {
-			print_info_box_np("Passwords do not match!  Please press back in your browser window and correct.");
+			print_info_box("Passwords do not match!  Please press back in your browser window and correct.");
 			die;
 		}
 	}

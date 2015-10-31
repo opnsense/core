@@ -150,7 +150,7 @@ $main_buttons = array(
 } ?>
 				<?php if (is_subsystem_dirty('staticroutes')) :
 ?><br/>
-				<?php print_info_box_np(sprintf(gettext("The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));?><br /><br />
+				<?php print_info_box_apply(sprintf(gettext("The gateway configuration has been changed.%sYou must apply the changes in order for them to take effect."), "<br />"));?><br /><br />
 				<?php
 endif; ?>
 

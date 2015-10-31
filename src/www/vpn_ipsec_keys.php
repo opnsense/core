@@ -114,7 +114,7 @@ if (isset($savemsg)) {
     print_info_box($savemsg);
 }
 if (is_subsystem_dirty('ipsec')) {
-    print_info_box_np(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+    print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
 }
 
 ?>
