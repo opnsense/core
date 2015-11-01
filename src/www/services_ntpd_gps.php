@@ -584,13 +584,4 @@ SureGPS =		#Sure Electronics SKG16B
 	</section>
 
 
-<script type="text/javascript">
-//<![CDATA[
-jQuery(document).ready(function() {
-         setTimeout(function(){
-                 set_gps_default(this.form);
-         }, 1000);
-        });
-//]]>
-</script>
 <?php include("foot.inc"); ?>
