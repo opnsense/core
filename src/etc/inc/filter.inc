@@ -1650,7 +1650,7 @@ function filter_nat_rules_generate() {
 	if (isset($config['ipsec']) && is_array($config['ipsec']) && isset($config['ipsec']['enable'])) {
 		if (isset($config['ipsec']['phase2'])) {
 			foreach ($config['ipsec']['phase2'] as $ph2ent) {
-				if ($ph2ent['mode'] != 'transport' && !empty($ph2ent['natlocalid'])) {
+				if ($ph2ent['mode'] != 'transport' && !empty($ph2ent['natlocalid']) && !isset($ph2ent['disabled'])) {
 					if (!is_array($ph2ent['localid']))
 						$ph2ent['localid'] = array();
 					$ph2ent['localid']['mode'] = $ph2ent['mode'];
