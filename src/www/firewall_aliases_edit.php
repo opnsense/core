@@ -269,20 +269,16 @@ include("head.inc");
 
     function toggleType() {
       if ($("#typeSelect").val() == 'urltable' || $("#typeSelect").val() == 'urltable_ports'  ) {
-        $("#updatefreq").removeClass('show');
         $("#updatefreq").removeClass('hidden');
-        $("#updatefreqHeader").removeClass('show');
         $("#updatefreqHeader").removeClass('hidden');
         $("#addNew").addClass('hidden');
-        $("#addNew").addClass('show');
         $('#detailTable > tbody > tr:gt(0)').remove();
+        $('.act-removerow').addClass('hidden');
       } else {
         $("#updatefreq").addClass('hidden');
-        $("#updatefreq").addClass('show');
         $("#updatefreqHeader").addClass('hidden');
-        $("#updatefreqHeader").addClass('show');
-        $("#addNew").removeClass('show');
         $("#addNew").removeClass('hidden');
+        $('.act-removerow').removeClass('hidden');
       }
       switch($("#typeSelect").val()) {
           case 'urltable':
