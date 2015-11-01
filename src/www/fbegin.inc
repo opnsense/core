@@ -171,7 +171,7 @@ if($need_alert_display == true) {
                             foreach($topMenuItem->Children as $subMenuItem): ?>
 <?php
                               if ($subMenuItem->Url == '' ):?>
-                               <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : "";?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>">
+                               <a href="#<?=$topMenuItem->Id;?>_<?=$subMenuItem->Id;?>" class="list-group-item <?=$subMenuItem->Selected ? "active-menu-title" : "";?>" data-toggle="collapse" data-parent="#<?=$topMenuItem->Id;?>" aria-expanded="<?=$subMenuItem->Selected ? "true" : "false";?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=gettext($subMenuItem->VisibleName);?></div>
@@ -194,7 +194,7 @@ if($need_alert_display == true) {
                                 </div>
 <?php
                               elseif ($subMenuItem->IsExternal == "Y" ):?>
-                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>">
+                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>" aria-expanded="<?=$subMenuItem->Selected ? "true" : "false";?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=gettext($subMenuItem->VisibleName);?></div>
