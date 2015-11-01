@@ -70,7 +70,7 @@
                 // hide submenu items
                 $('#mainmenu .list-group-item').click(function(){
                     $('#mainmenu .list-group-item').each(function(){
-                        if ($(this).attr('aria-expanded') == 'true'  && $(this).data('parent') != '#mainmenu') {
+                        if ($(this).attr('aria-expanded') == 'true'  && $(this).data('parent') != '#mainmenu' && $(this).attr('href').substring(0,1) != '#') {
                             $("#"+$(this).attr('href').substring(1,999)).collapse('hide');
                         }
                     });
