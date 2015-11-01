@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-19 06:39+0000\n"
+"POT-Creation-Date: 2015-11-01 15:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 1813\n"
+"X-Pootle-Revision: 2033\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
@@ -53,7 +53,7 @@ msgstr "Autoriser l'accès à la page 'VPN: PPTP: Utilisateur: Éditer'."
 
 # File: lang/dynamic/helpers/acl.php, line: 44
 msgid "Show all items on help menu"
-msgstr "Montrer tous les items du menu aide"
+msgstr "Afficher tous les éléments du menu aide"
 
 # File: lang/dynamic/helpers/acl.php, line: 46
 msgid "Allow access to the 'System: Firmware: Settings' page."
@@ -91,7 +91,7 @@ msgstr "Autoriser l'accès à la page 'Statut: Portail captif: coupons'."
 
 # File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Create interface groups"
-msgstr "Créer groupes d'interface"
+msgstr "Créer un groupe d'interface"
 
 # File: lang/dynamic/helpers/acl.php, line: 55
 msgid "Allow access to the 'Firewall: Traffic Shaper' page."
@@ -1869,7 +1869,7 @@ msgstr "Planificateurs"
 
 # File: src/www/diag_backup.php, line: 157
 msgid "Traffic Shaper"
-msgstr ""
+msgstr "Régulation de flux"
 
 # File: lang/dynamic/helpers/models.php, line: 99
 msgid "VirtualIPEdit"
@@ -4706,7 +4706,7 @@ msgstr "n/j/y H:i:s"
 # File: src/www/diag_confbak.php, line: 305
 # File: src/www/widgets/widgets/gateways.widget.php, line: 124
 msgid "Unknown"
-msgstr "Inconnue"
+msgstr "Inconnu"
 
 # File: src/etc/rc.restore_config_backup, line: 21
 msgid "Unknown Page"
@@ -4810,7 +4810,7 @@ msgstr ""
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 86
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 409
 msgid "Enabled"
-msgstr ""
+msgstr "Activé"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 87
 msgid "Zoneid"
@@ -4959,11 +4959,11 @@ msgstr "Nom du paquet"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
 msgid "Current Version"
-msgstr "Version Actuelle"
+msgstr "Version actuelle"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
 msgid "New Version"
-msgstr "Nouvelle Version"
+msgstr "Nouvelle version"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 64
 msgid "NEW"
@@ -5068,7 +5068,7 @@ msgstr "Récupérer les mises à jours"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 209
 msgid "Click to check for updates."
-msgstr "Cliquer ici pour vérifier les mises à jours."
+msgstr "Cliquer pour vérifier les mises à jours."
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 215
 msgid "Packages"
@@ -5487,14 +5487,14 @@ msgstr "Hélas nous avons détecter au moins un problème de programmation."
 
 # File: src/www/crash_reporter.php, line: 150
 msgid "Would you like to submit this crash report to the developers?"
-msgstr "Souhaitez vous soumettre le rapport de ce problème aux dévelopeurs ?"
+msgstr "Souhaitez-vous soumettre le rapport de ce problème aux développeurs ?"
 
 # File: src/www/crash_reporter.php, line: 153
 msgid ""
 "You can help us further by optionally adding your contact information and a "
 "problem description."
 msgstr ""
-"Vous pouvez nous aider en ajoutant optionnelement une adresse email ainsi "
+"Vous pouvez nous aider en ajoutant optionnellement une adresse email ainsi "
 "qu'une description du problème."
 
 # File: src/www/crash_reporter.php, line: 156
@@ -5502,16 +5502,16 @@ msgid ""
 "Please double-check the following contents to ensure you are comfortable "
 "submitting the following information."
 msgstr ""
-"Merci de vérifier les informations ci dessous afin d'être sur que vous "
+"Merci de vérifier les informations ci dessous afin d'être sûr que vous "
 "souhaitez nous transmettre ces informations."
 
 # File: src/www/crash_reporter.php, line: 119
 msgid "Luckily we have not detected a programming bug."
-msgstr ""
+msgstr "Heureusement, nous n'avons pas détecté de problème de programmation."
 
 # File: src/www/crash_reporter.php, line: 115
 msgid "Thank you for submitting this crash report."
-msgstr ""
+msgstr "Merci d'avoir soumis ce rapport d'accident."
 
 # File: src/www/crash_reporter.php, line: 117
 msgid "Please consider submitting a crash report if the error persists."
@@ -5746,11 +5746,11 @@ msgstr "Serveur SNMP"
 
 # File: src/www/diag_backup.php, line: 158
 msgid "VLANS"
-msgstr "VLANS"
+msgstr "VLANs"
 
 # File: src/www/diag_backup.php, line: 163
 msgid "ALL"
-msgstr "TOUT"
+msgstr "TOUTES"
 
 # File: src/www/diag_backup.php, line: 202
 # File: src/www/diag_backup.php, line: 686
@@ -5868,7 +5868,7 @@ msgstr "Le pare-feu est en train de redémarrer"
 
 # File: src/www/diag_backup.php, line: 625
 msgid "Backup area:"
-msgstr "Sauvegarder les zones"
+msgstr "Sauvegarder les zones:"
 
 # File: src/www/diag_backup.php, line: 625
 msgid "Click this button to download the system configuration in XML format."
@@ -5885,7 +5885,7 @@ msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of "
 "config.xml space!)"
 msgstr ""
-"Ne pas sauvegarder les données RRD (NOTE: les Données RRD peuvent consommer "
+"Ne pas sauvegarder les données RRD (NOTE: les données RRD peuvent consommer "
 "plus de 4 megaoctets d'espace dans le fichier config.xml!)"
 
 # File: src/www/diag_backup.php, line: 660
@@ -5898,7 +5898,7 @@ msgstr "Télécharger la configuration"
 
 # File: src/www/diag_backup.php, line: 672
 msgid "Restore"
-msgstr ""
+msgstr "Restauration"
 
 # File: src/www/diag_backup.php, line: 694
 msgid "Open a"
@@ -5990,7 +5990,7 @@ msgstr "Le pare-feu redémarrera après la restauration de la configuration."
 
 # File: src/www/diag_backup.php, line: 734
 msgid "Google Drive"
-msgstr ""
+msgstr "Google Drive"
 
 # File: src/www/diag_backup.php, line: 759
 # File: src/www/diag_routes.php, line: 172
@@ -6033,7 +6033,7 @@ msgstr "ID du répertoire"
 # File: src/www/diag_backup.php, line: 763
 # File: src/www/diag_confbak.php, line: 246
 msgid "Backup Count"
-msgstr "Nombre de Sauvegarde"
+msgstr "Nombre de sauvegarde"
 
 # File: src/www/diag_backup.php, line: 764
 msgid "Password protect your data"
@@ -6045,7 +6045,7 @@ msgstr "Confirmer :"
 
 # File: src/www/diag_confbak.php, line: 74
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
-msgstr ""
+msgstr "Supprimer la sauvegarde à la date %1$s avec la description \"%2$s\"."
 
 # File: src/www/diag_backup.php, line: 600
 # File: src/www/diag_confbak.php, line: 145
@@ -6077,11 +6077,11 @@ msgstr "Action"
 
 # File: src/www/diag_confbak.php, line: 213
 msgid "Restore from Configuration Backup"
-msgstr "Restaurer la Sauvegarde de la Configuration"
+msgstr "Restaurer la sauvegarde de configuration"
 
 # File: src/www/diag_confbak.php, line: 217
 msgid "Remove Configuration Backup"
-msgstr "Supprimer la Sauvegarde de la Configuration"
+msgstr "Supprimer la sauvegarde de configuration"
 
 # File: src/www/diag_confbak.php, line: 221
 msgid "Target Configuration"
@@ -6218,6 +6218,9 @@ msgid ""
 "NOTE: Be aware of how much space is consumed by backups before adjusting "
 "this value. Current space used by backups: "
 msgstr ""
+"NOTE: Soyez conscient de l'espace nécessaire pour les sauvegardes avant de "
+"régler cette valeur. L'espace actuellement utilisé par les sauvegardes est "
+"de : "
 
 # File: src/www/diag_confbak.php, line: 162
 msgid "Configuration diff from"
@@ -6245,6 +6248,11 @@ msgid ""
 "options and select the newer configuration in the right column, then press "
 "the Diff button."
 msgstr ""
+"Pour voir les différences entre une ancienne configuration et une "
+"configuration plus récente, sélectionnez l'ancienne configuration en "
+"utilisant la colonne de gauche et sélectionner la nouvelle configuration "
+"dans la colonne de droite, appuyez ensuite sur le bouton \"Voir les "
+"différences\"."
 
 # File: src/www/diag_confbak.php, line: 279
 # File: src/www/diag_confbak.php, line: 336
@@ -6257,11 +6265,11 @@ msgstr "Date"
 
 # File: src/www/diag_confbak.php, line: 283
 msgid "Configuration Change"
-msgstr ""
+msgstr "Modification de la configuration"
 
 # File: src/www/diag_confbak.php, line: 297
 msgid "Current"
-msgstr "Courant"
+msgstr "Actuellement"
 
 # File: src/www/diag_confbak.php, line: 325
 msgid "Revert to this configuration"
@@ -7396,6 +7404,8 @@ msgstr ""
 # File: src/www/system_advanced_admin.php, line: 677
 msgid "webConfigurator configuration has changed. Restarting webConfigurator."
 msgstr ""
+"La configuration de l'interface d'administration a changée. Redémarrage de "
+"l'interface."
 
 # File: src/www/diag_logs_settings.php, line: 163
 msgid "WebGUI process is restarting."
@@ -7989,7 +7999,7 @@ msgstr ""
 
 # File: src/www/diag_routes.php, line: 177
 msgid "Number of rows"
-msgstr "Nombres de ligne"
+msgstr "Nombres de lignes"
 
 # File: src/www/diag_routes.php, line: 180
 # File: src/www/diag_tables.php, line: 170
@@ -8003,12 +8013,12 @@ msgstr "Sélectionnez le nombre de lignes à afficher."
 # File: src/www/diag_logs_filter.php, line: 234
 # File: src/www/diag_routes.php, line: 189
 msgid "Filter expression"
-msgstr "Expression filtre"
+msgstr "Expression de filtrage"
 
 # File: src/www/diag_routes.php, line: 192
 msgid "Use a regular expression to filter IP address or hostnames."
 msgstr ""
-"Utiliser une expression régulière pour filtrer l'adresse IP ou les noms "
+"Utilisez une expression régulière pour filtrer l'adresse IP ou les noms "
 "d'hôtes."
 
 # File: src/www/diag_routes.php, line: 198
@@ -8027,7 +8037,7 @@ msgstr ""
 # File: src/www/diag_routes.php, line: 221
 # File: src/www/diag_routes.php, line: 237
 msgid "Gathering data, please wait..."
-msgstr "Rassemblement des données, attendez s'il vous plait."
+msgstr "Rassemblement des données, attendez s'il vous plaît."
 
 # File: src/www/diag_smart.php, line: 32
 msgid "S.M.A.R.T. Monitor Tools"
@@ -8856,7 +8866,7 @@ msgstr ""
 # File: src/www/vpn_ipsec.php, line: 502
 # File: src/www/vpn_ipsec.php, line: 505
 msgid "click to toggle enabled/disabled status"
-msgstr ""
+msgstr "Cliquez pour sélectionner l'état activé/désactivé"
 
 # File: src/www/firewall_nat.php, line: 337
 # File: src/www/firewall_nat_out.php, line: 431
@@ -10239,6 +10249,7 @@ msgstr "La détection de l'OS est seulement valide avec le protocole tcp."
 # File: src/www/firewall_rules_edit.php, line: 462
 msgid "Invalid OS detection selection. Please select a valid OS."
 msgstr ""
+"Sélection de détection d'OS non valide. Merci de sélectionner un OS valide."
 
 # File: src/www/firewall_rules_edit.php, line: 466
 msgid ""
@@ -10411,7 +10422,7 @@ msgstr ""
 
 # File: src/www/firewall_rules_edit.php, line: 791
 msgid "This is associated to a NAT rule."
-msgstr ""
+msgstr "Ceci est associé a une règle NAT."
 
 # File: src/www/firewall_rules_edit.php, line: 792
 msgid ""
@@ -10421,7 +10432,7 @@ msgstr ""
 
 # File: src/www/firewall_rules_edit.php, line: 799
 msgid "View the NAT rule"
-msgstr ""
+msgstr "Visualiser la règle NAT"
 
 # File: src/www/firewall_rules_edit.php, line: 858
 msgid "Choose on which interface packets must come in to match this rule."
@@ -10468,7 +10479,7 @@ msgstr ""
 # File: src/www/services_captiveportal.php, line: 1034
 # File: src/www/system_advanced_firewall.php, line: 352
 msgid "page"
-msgstr ""
+msgstr "page"
 
 # File: src/www/firewall_rules_edit.php, line: 1156
 msgid "see the"
@@ -10481,11 +10492,11 @@ msgstr ""
 
 # File: src/www/firewall_rules_edit.php, line: 1189
 msgid "Source OS"
-msgstr ""
+msgstr "OS source"
 
 # File: src/www/firewall_rules_edit.php, line: 1195
 msgid "OS Type:"
-msgstr ""
+msgstr "Type d'OS :"
 
 # File: src/www/firewall_rules_edit.php, line: 1206
 msgid ""
@@ -11375,7 +11386,7 @@ msgstr ""
 
 # File: src/www/index.php, line: 577
 msgid "Loading selected widget"
-msgstr ""
+msgstr "Chargement des widgets sélectionnés"
 
 # File: src/etc/inc/xmlparse_attr.inc, line: 195
 msgid "XML error: %1$s at line %2$d"
@@ -14419,7 +14430,7 @@ msgstr ""
 # File: src/www/services_router_advertisements.php, line: 326
 # File: src/www/system_certmanager.php, line: 881
 msgid "add another entry"
-msgstr ""
+msgstr "ajouter une autre entrée"
 
 # File: src/www/interfaces_vlan.php, line: 61
 msgid ""
@@ -14543,7 +14554,7 @@ msgstr ""
 # File: src/www/status_gateways.php, line: 73
 # File: src/www/status_lb_pool.php, line: 138
 msgid "Monitor"
-msgstr ""
+msgstr "Moniteur"
 
 # File: src/www/load_balancer_monitor.php, line: 96
 # File: src/www/load_balancer_relay_protocol.php, line: 105
@@ -14695,7 +14706,7 @@ msgstr ""
 # File: src/www/system_gateway_groups.php, line: 49
 # File: src/www/system_gateway_groups.php, line: 97
 msgid "Gateway Groups"
-msgstr ""
+msgstr "Groupes de passerelles"
 
 # File: src/www/load_balancer_pool_edit.php, line: 57
 msgid "Load Balancer: Pool:"
@@ -14868,7 +14879,7 @@ msgstr ""
 # File: src/www/system_advanced_sysctl.php, line: 233
 # File: src/www/system_certmanager.php, line: 849
 msgid "Value"
-msgstr ""
+msgstr "Valeur"
 
 # File: src/www/load_balancer_relay_action_edit.php, line: 509
 # File: src/www/services_rfc2136_edit.php, line: 71
@@ -17428,7 +17439,7 @@ msgstr ""
 # File: src/www/services_dnsmasq.php, line: 79
 # File: src/www/system_advanced_admin.php, line: 96
 msgid "You must specify a valid port number"
-msgstr ""
+msgstr "Vous devez spécifier un numéro de port valide"
 
 # File: src/www/services_dnsmasq.php, line: 94
 msgid "Invalid custom options"
@@ -17780,7 +17791,7 @@ msgstr ""
 # File: src/www/services_router_advertisements.php, line: 309
 # File: src/www/system_certmanager.php, line: 870
 msgid "remove this entry"
-msgstr ""
+msgstr "supprimer cette entrée"
 
 # File: src/www/services_dyndns.php, line: 50
 msgid "Dynamic DNS clients"
@@ -19521,7 +19532,7 @@ msgstr ""
 # File: src/www/status_gateways.php, line: 135
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 60
 msgid "Online"
-msgstr ""
+msgstr "En ligne"
 
 # File: src/www/status_dhcp_leases.php, line: 342
 # File: src/www/status_dhcpv6_leases.php, line: 424
@@ -19590,25 +19601,25 @@ msgstr ""
 
 # File: src/www/status_gateway_groups.php, line: 60
 msgid "Group Status"
-msgstr ""
+msgstr "Statut du groupe"
 
 # File: src/www/status_gateway_groups.php, line: 109
 msgid "Tier %s"
-msgstr ""
+msgstr "Niveau %s"
 
 # File: src/www/status_gateway_groups.php, line: 135
 # File: src/www/status_gateways.php, line: 125
 msgid "Warning, Packetloss"
-msgstr ""
+msgstr "Alerte, perte de paquets"
 
 # File: src/www/status_gateway_groups.php, line: 138
 # File: src/www/status_gateways.php, line: 128
 msgid "Warning, Latency"
-msgstr ""
+msgstr "Alerte, latence"
 
 # File: src/www/status_gateway_groups.php, line: 144
 msgid "Gathering data"
-msgstr ""
+msgstr "Collecte des données"
 
 # File: src/www/status_gateways.php, line: 74
 # File: src/www/widgets/widgets/gateways.widget.php, line: 47
@@ -19618,7 +19629,7 @@ msgstr ""
 # File: src/www/status_gateways.php, line: 75
 # File: src/www/widgets/widgets/gateways.widget.php, line: 48
 msgid "Loss"
-msgstr ""
+msgstr "Perte"
 
 # File: src/www/status_gateways.php, line: 101
 # File: src/www/status_gateways.php, line: 109
@@ -19626,15 +19637,15 @@ msgstr ""
 # File: src/www/widgets/widgets/gateways.widget.php, line: 87
 # File: src/www/widgets/widgets/gateways.widget.php, line: 97
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 # File: src/www/status_gateways.php, line: 119
 msgid "Offline (forced)"
-msgstr ""
+msgstr "Hors-ligne (forcé)"
 
 # File: src/www/status_gateways.php, line: 144
 msgid "Last check:"
-msgstr ""
+msgstr "Dernière vérification :"
 
 # File: src/www/status_graph.php, line: 95
 msgid "Traffic Graph"
@@ -20160,6 +20171,8 @@ msgstr ""
 # File: src/www/system_advanced_admin.php, line: 75
 msgid "You must specify a valid webConfigurator port number"
 msgstr ""
+"Vous devez spécifier un numéro de port valide pour l'interface "
+"d'aministration"
 
 # File: src/www/system_advanced_admin.php, line: 81
 msgid "Max Processes must be a number 1 or greater"
@@ -20167,11 +20180,11 @@ msgstr ""
 
 # File: src/www/system_advanced_admin.php, line: 89
 msgid "Alternate hostname %s is not a valid hostname."
-msgstr ""
+msgstr "Le nom d'hôte alternatif %s n'est pas un nom d'hôte valide."
 
 # File: src/www/system_advanced_admin.php, line: 265
 msgid "One moment...redirecting to %s in 20 seconds."
-msgstr ""
+msgstr "Un moment...redirection vers %s dans 20 secondes."
 
 # File: src/www/system_advanced_admin.php, line: 318
 msgid "webConfigurator"
@@ -20179,7 +20192,7 @@ msgstr "webConfigurator"
 
 # File: src/www/system_advanced_admin.php, line: 345
 msgid "No Certificates have been defined. You must"
-msgstr ""
+msgstr "Pas de certificats définis. Vous devez"
 
 # File: src/www/system_advanced_admin.php, line: 346
 msgid "Create or Import"
@@ -20194,6 +20207,8 @@ msgid ""
 "The %sSSL certificate manager%s can be used to create or import certificates "
 "if required."
 msgstr ""
+"Le %sgestionnaire de certificats%s peut être utilisé pour créer ou importer "
+"des certificats si nécessaire."
 
 # File: src/www/system_advanced_admin.php, line: 376
 msgid "TCP port"
@@ -20205,6 +20220,10 @@ msgid ""
 "override the default (80 for HTTP, 443 for HTTPS). Changes will take effect "
 "immediately after save."
 msgstr ""
+"Entrez ci-dessus un numéro de port personnalisé pour l'accès à l'interface "
+"d'administration si vous voulez remplacer la valeur par défaut (80 pour "
+"HTTP, 443 pour HTTPS). Les changements prendront effet immédiatement après "
+"avoir sauvegardé."
 
 # File: src/www/system_advanced_admin.php, line: 388
 msgid "Max Processes"
@@ -20365,7 +20384,7 @@ msgstr "Shell Sécurisé"
 
 # File: src/www/system_advanced_admin.php, line: 522
 msgid "Secure Shell Server"
-msgstr "Serveur Shell Securisé"
+msgstr "Serveur Shell sécurisé"
 
 # File: src/www/system_advanced_admin.php, line: 527
 msgid "Enable Secure Shell"
@@ -20381,15 +20400,17 @@ msgstr "Autoriser la connexion de l'utilisateur root"
 
 # File: src/www/system_advanced_admin.php, line: 538
 msgid "Root login is generally discouraged. It is advised "
-msgstr ""
+msgstr "La connexion avec root est généralement déconseillée. Il est conseillé "
 
 # File: src/www/system_advanced_admin.php, line: 539
 msgid "to log in via another user and switch to root afterwards."
 msgstr ""
+"de vous connecter avec un autre utilisateur et de basculer en root par la "
+"suite."
 
 # File: src/www/system_advanced_admin.php, line: 543
 msgid "Authentication Method"
-msgstr ""
+msgstr "Méthode d'authentification"
 
 # File: src/www/system_advanced_admin.php, line: 548
 msgid "Permit password login"
@@ -20398,6 +20419,7 @@ msgstr "Autoriser les connexions avec mot de passe"
 # File: src/www/system_advanced_admin.php, line: 550
 msgid "When disabled, authorized keys need to be configured for each"
 msgstr ""
+"Quand désactivé, l'authentification par clé doit être configuré pour chaque"
 
 # File: src/www/system_advanced_admin.php, line: 551
 msgid "user"
@@ -20405,7 +20427,7 @@ msgstr "utilisateur"
 
 # File: src/www/system_advanced_admin.php, line: 552
 msgid "that has been granted secure shell access."
-msgstr ""
+msgstr "pour autoriser l'accès via le shell sécurisé."
 
 # File: src/www/system_advanced_admin.php, line: 556
 msgid "SSH port"
@@ -20413,7 +20435,7 @@ msgstr "Port SSH"
 
 # File: src/www/system_advanced_admin.php, line: 559
 msgid "Leave this blank for the default of 22."
-msgstr ""
+msgstr "Laisser vide pour utiliser le port 22 par défaut."
 
 # File: src/www/system_advanced_admin.php, line: 567
 msgid "Serial Communications"
@@ -21806,7 +21828,7 @@ msgstr ""
 # File: src/www/system_usermanager.php, line: 171
 # File: src/www/system_usermanager.php, line: 803
 msgid "Key length"
-msgstr ""
+msgstr "Longueur de la clé"
 
 # File: src/www/system_camanager.php, line: 184
 # File: src/www/system_camanager.php, line: 202
@@ -21819,7 +21841,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_phase1.php, line: 961
 # File: src/www/vpn_ipsec_phase2.php, line: 866
 msgid "Lifetime"
-msgstr ""
+msgstr "Durée de vie"
 
 # File: src/www/system_camanager.php, line: 185
 # File: src/www/system_camanager.php, line: 203
@@ -21872,7 +21894,7 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 318
 # File: src/www/system_certmanager.php, line: 325
 msgid "Please select a valid Key Length."
-msgstr ""
+msgstr "Veuillez sélectionner une longueur de clé valide."
 
 # File: src/www/system_camanager.php, line: 231
 # File: src/www/system_certmanager.php, line: 321
@@ -21888,7 +21910,7 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 637
 # File: src/www/system_crlmanager.php, line: 307
 msgid "Method"
-msgstr ""
+msgstr "Méthode"
 
 # File: src/www/system_camanager.php, line: 439
 msgid "Existing Certificate Authority"
@@ -22030,12 +22052,12 @@ msgstr ""
 # File: src/www/system_camanager.php, line: 672
 # File: src/www/system_certmanager.php, line: 1177
 msgid "self-signed"
-msgstr ""
+msgstr "auto-signé"
 
 # File: src/www/system_camanager.php, line: 674
 # File: src/www/system_certmanager.php, line: 1179
 msgid "external"
-msgstr ""
+msgstr "externe"
 
 # File: src/www/system_camanager.php, line: 717
 # File: src/www/system_certmanager.php, line: 1225
@@ -22073,11 +22095,11 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 34
 msgid "Import an existing Certificate"
-msgstr ""
+msgstr "Importer un certificat existant"
 
 # File: src/www/system_certmanager.php, line: 35
 msgid "Create an internal Certificate"
-msgstr ""
+msgstr "Créer un certificat interne"
 
 # File: src/www/system_certmanager.php, line: 36
 msgid "Create a Certificate Signing Request"
@@ -22085,7 +22107,7 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 54
 msgid "Choose an existing certificate"
-msgstr ""
+msgstr "Choisir un certificat existant"
 
 # File: src/www/system_certmanager.php, line: 101
 msgid "Certificate %s successfully deleted"
@@ -22100,7 +22122,7 @@ msgstr ""
 # File: src/www/system_usermanager.php, line: 170
 # File: src/www/system_usermanager.php, line: 780
 msgid "Certificate authority"
-msgstr ""
+msgstr "Autorité de certification"
 
 # File: src/www/system_certmanager.php, line: 246
 msgid "Existing Certificate Choice"
@@ -22116,11 +22138,11 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 493
 msgid "add or import certificate"
-msgstr ""
+msgstr "Ajouter ou importer un certificat"
 
 # File: src/www/system_certmanager.php, line: 673
 msgid "Import Certificate"
-msgstr ""
+msgstr "Importation de certificat"
 
 # File: src/www/system_certmanager.php, line: 687
 msgid "Private key data"
@@ -22132,7 +22154,7 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 700
 msgid "Internal Certificate"
-msgstr ""
+msgstr "Certificat interne"
 
 # File: src/www/system_certmanager.php, line: 710
 msgid "No internal Certificate Authorities have been defined. You must"
@@ -22145,12 +22167,12 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 824
 # File: src/www/system_certmanager.php, line: 1010
 msgid "webadmin@mycompany.com"
-msgstr ""
+msgstr "webadmin@mondomain.fr"
 
 # File: src/www/system_certmanager.php, line: 839
 # File: src/www/system_certmanager.php, line: 1020
 msgid "www.example.com"
-msgstr ""
+msgstr "www.exemple.fr"
 
 # File: src/www/system_certmanager.php, line: 843
 msgid "Alternative Names"
@@ -22162,7 +22184,7 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 1000
 msgid "My Company Inc."
-msgstr ""
+msgstr "Mon entreprise"
 
 # File: src/www/system_certmanager.php, line: 1032
 msgid "Choose an Existing Certificate"
@@ -22170,7 +22192,7 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 1037
 msgid "Existing Certificates"
-msgstr ""
+msgstr "Certificats existants"
 
 # File: src/www/system_certmanager.php, line: 1110
 msgid "Complete Signing Request"
@@ -22217,7 +22239,7 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 1291
 msgid "Do you really want to delete this Certificate?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer ce certificat ?"
 
 # File: src/www/system_certmanager.php, line: 1292
 # File: src/www/system_usermanager.php, line: 727
@@ -22402,11 +22424,11 @@ msgstr ""
 
 # File: src/www/system_gateway_groups.php, line: 83
 msgid "removed gateway group"
-msgstr ""
+msgstr "groupe de passerelle supprimée"
 
 # File: src/www/system_gateway_groups.php, line: 135
 msgid "Add group"
-msgstr ""
+msgstr "Ajouter un groupe"
 
 # File: src/www/system_gateway_groups.php, line: 121
 msgid ""
@@ -22416,7 +22438,7 @@ msgstr ""
 
 # File: src/www/system_gateway_groups.php, line: 182
 msgid "Do you really want to delete this gateway group?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer ce groupe de la passerelle ?"
 
 # File: src/www/system_gateway_groups.php, line: 199
 msgid ""
@@ -22448,7 +22470,7 @@ msgstr ""
 # File: src/www/system_gateway_groups_edit.php, line: 88
 # File: src/www/system_gateways_edit.php, line: 118
 msgid "The gateway name must not contain invalid characters."
-msgstr ""
+msgstr "Le nom de la passerelle ne doit pas contenir de caractères non valides."
 
 # File: src/www/system_gateway_groups_edit.php, line: 97
 msgid "Changing name on a gateway group is not allowed."
@@ -22539,15 +22561,19 @@ msgstr ""
 msgid ""
 "Gateway '%s' cannot be deleted because it is in use on Gateway Group '%s'"
 msgstr ""
+"La passerelle '%s' ne peut pas être supprimée car elle est utilisée sur le "
+"groupe de passerelle '%s'"
 
 # File: src/www/system_gateways.php, line: 92
 msgid ""
 "Gateway '%s' cannot be deleted because it is in use on Static Route '%s'"
 msgstr ""
+"La passerelle '%s' ne peut pas être supprimée car elle est utilisée sur la "
+"route statique '%s'"
 
 # File: src/www/system_gateways.php, line: 194
 msgid "Add gateway"
-msgstr ""
+msgstr "Ajouter une passerelle"
 
 # File: src/www/system_gateways.php, line: 214
 msgid "The gateway configuration has been changed."
@@ -22556,11 +22582,11 @@ msgstr ""
 # File: src/www/system_gateways.php, line: 234
 # File: src/www/system_gateways_edit.php, line: 774
 msgid "Monitor IP"
-msgstr ""
+msgstr "IP moniteur"
 
 # File: src/www/system_gateways.php, line: 276
 msgid "This gateway is inactive because interface is missing"
-msgstr ""
+msgstr "La passerelle est inactive car l'interface est introuvable"
 
 # File: src/www/system_gateways.php, line: 354
 msgid "Edit Gateway"
@@ -22576,7 +22602,7 @@ msgstr "Supprimer la passerelle"
 
 # File: src/www/system_gateways.php, line: 373
 msgid "Add Gateway based on this one"
-msgstr ""
+msgstr "Ajouter une passerelle basée sur celle-ci"
 
 # File: src/www/system_gateways.php, line: 392
 msgid "delete selected items"
@@ -22585,10 +22611,11 @@ msgstr "supprimer les éléments sélectionnés"
 # File: src/www/system_gateways.php, line: 393
 msgid "Do you really want to delete the selected gateway items?"
 msgstr ""
+"Voulez-vous vraiment supprimer les éléments sélectionnés de la passerelle ?"
 
 # File: src/www/system_gateways_edit.php, line: 122
 msgid "A valid gateway IP address must be specified."
-msgstr ""
+msgstr "Une adresse IP de la passerelle valide doit être spécifié."
 
 # File: src/www/system_gateways_edit.php, line: 130
 msgid ""
@@ -22627,61 +22654,63 @@ msgstr ""
 
 # File: src/www/system_gateways_edit.php, line: 227
 msgid "Changing name on a gateway is not allowed."
-msgstr ""
+msgstr "Changement de nom sur une passerelle est pas autorisé."
 
 # File: src/www/system_gateways_edit.php, line: 233
 msgid "The gateway name \"%s\" already exists."
-msgstr ""
+msgstr "Le nom de la passerelle \"%s\" existe déjà."
 
 # File: src/www/system_gateways_edit.php, line: 239
 msgid "The gateway IP address \"%s\" already exists."
-msgstr ""
+msgstr "L'adresse IP de la passerelle \"%s\" existe déjà."
 
 # File: src/www/system_gateways_edit.php, line: 245
 msgid ""
 "The monitor IP address \"%s\" is already in use. You must choose a different "
 "monitor IP."
 msgstr ""
+"L'adresse IP du moniteur \"%s\" est déjà en cours d'utilisation. Vous devez "
+"choisir une autre IP moniteur."
 
 # File: src/www/system_gateways_edit.php, line: 255
 msgid "The low latency threshold needs to be a numeric value."
-msgstr ""
+msgstr "Le seuil de latence faible doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 258
 msgid "The low latency threshold needs to be positive."
-msgstr ""
+msgstr "Le seuil de faible latence doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 265
 msgid "The high latency threshold needs to be a numeric value."
-msgstr ""
+msgstr "Le seuil de latence élevé doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 268
 msgid "The high latency threshold needs to be positive."
-msgstr ""
+msgstr "Le seuil de latence élevé doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 275
 msgid "The low Packet Loss threshold needs to be a numeric value."
-msgstr ""
+msgstr "Le seuil de faible perte de paquets doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 278
 msgid "The low Packet Loss threshold needs to be positive."
-msgstr ""
+msgstr "Le seuil de faible perte de paquets doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 281
 msgid "The low Packet Loss threshold needs to be less than 100."
-msgstr ""
+msgstr "Le seuil de faible perte de paquets doit être inférieur à 100."
 
 # File: src/www/system_gateways_edit.php, line: 288
 msgid "The high Packet Loss threshold needs to be a numeric value."
-msgstr ""
+msgstr "Le seuil de perte de paquets élevé doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 291
 msgid "The high Packet Loss threshold needs to be positive."
-msgstr ""
+msgstr "Le seuil de perte de paquets élevé doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 294
 msgid "The high Packet Loss threshold needs to be 100 or less."
-msgstr ""
+msgstr "Le seuil de perte de paquets élevé doit être 100 ou moins."
 
 # File: src/www/system_gateways_edit.php, line: 302
 msgid ""
@@ -22693,26 +22722,29 @@ msgid ""
 "The high Packet Loss threshold needs to be higher than the low Packet Loss "
 "threshold"
 msgstr ""
+"Le seuil de perte de paquets élevé doit être plus élevé que le seuil de "
+"faible perte de paquets"
 
 # File: src/www/system_gateways_edit.php, line: 347
 msgid "The probe interval needs to be a numeric value."
-msgstr ""
+msgstr "L'intervalle de la sonde doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 350
 msgid "The probe interval needs to be positive."
-msgstr ""
+msgstr "L'intervalle de la sonde doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 357
 msgid "The down time setting needs to be a numeric value."
-msgstr ""
+msgstr "Le réglage du temps d'arrêt doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 360
 msgid "The down time setting needs to be positive."
-msgstr ""
+msgstr "Le réglage du temps d'arrêt doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 368
 msgid "The probe interval needs to be less than the down time setting."
 msgstr ""
+"L'intervalle de la sonde doit être inférieure au réglage du temps d'arrêt."
 
 # File: src/www/system_gateways_edit.php, line: 390
 msgid "The average delay replies qty needs to be a numeric value."
@@ -22732,11 +22764,11 @@ msgstr ""
 
 # File: src/www/system_gateways_edit.php, line: 410
 msgid "The lost probe delay needs to be a numeric value."
-msgstr ""
+msgstr "Le délai de perte de la sonde doit être une valeur numérique."
 
 # File: src/www/system_gateways_edit.php, line: 413
 msgid "The lost probe delay needs to be positive."
-msgstr ""
+msgstr "Le délai de perte de la sonde doit être positif."
 
 # File: src/www/system_gateways_edit.php, line: 548
 # File: src/www/system_gateways_edit.php, line: 673
@@ -22751,14 +22783,16 @@ msgstr "Désactiver cette passerelle"
 msgid ""
 "Set this option to disable this gateway without removing it from the list."
 msgstr ""
+"Définissez cette option pour désactiver cette passerelle sans la retirer de "
+"la liste."
 
 # File: src/www/system_gateways_edit.php, line: 713
 msgid "Choose which interface this gateway applies to."
-msgstr ""
+msgstr "Choisissez l'interface qui s'applique à cette passerelle."
 
 # File: src/www/system_gateways_edit.php, line: 731
 msgid "Choose the Internet Protocol this gateway uses."
-msgstr ""
+msgstr "Choisissez le protocole Internet utilisé pour cette passerelle."
 
 # File: src/www/system_gateways_edit.php, line: 738
 msgid "Gateway name"
@@ -22776,19 +22810,21 @@ msgstr "Passerelle par défaut"
 # File: src/www/system_gateways_edit.php, line: 760
 msgid "This will select the above gateway as the default gateway"
 msgstr ""
+"Cela permet de sélectionner la passerelle au-dessus de la passerelle par "
+"défaut"
 
 # File: src/www/system_gateways_edit.php, line: 764
 # File: src/www/system_gateways_edit.php, line: 769
 msgid "Disable Gateway Monitoring"
-msgstr ""
+msgstr "Désactiver la surveillance de la passerelle"
 
 # File: src/www/system_gateways_edit.php, line: 770
 msgid "This will consider this gateway as always being up"
-msgstr ""
+msgstr "Considérer cette passerelle comme toujours active"
 
 # File: src/www/system_gateways_edit.php, line: 784
 msgid "Alternative monitor IP"
-msgstr ""
+msgstr "IP moniteur alternative"
 
 # File: src/www/system_gateways_edit.php, line: 785
 msgid ""
@@ -22800,11 +22836,11 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 792
 # File: src/www/system_gateways_edit.php, line: 797
 msgid "Mark Gateway as Down"
-msgstr ""
+msgstr "Marquez cette passerelle comme hors-service"
 
 # File: src/www/system_gateways_edit.php, line: 798
 msgid "This will force this gateway to be considered Down"
-msgstr ""
+msgstr "Cela va forcer la passerelle comme hors-service"
 
 # File: src/www/system_gateways_edit.php, line: 808
 msgid " - Show advanced option"
@@ -22812,15 +22848,17 @@ msgstr " - Afficher les options avancées"
 
 # File: src/www/system_gateways_edit.php, line: 815
 msgid "Weight"
-msgstr ""
+msgstr "poids"
 
 # File: src/www/system_gateways_edit.php, line: 828
 msgid "Weight for this gateway when used in a Gateway Group."
 msgstr ""
+"Poids pour cette passerelle lorsqu'elle est utilisée dans un groupe de "
+"passerelle."
 
 # File: src/www/system_gateways_edit.php, line: 832
 msgid "Latency thresholds"
-msgstr ""
+msgstr "Seuils de latence"
 
 # File: src/www/system_gateways_edit.php, line: 834
 # File: src/www/system_gateways_edit.php, line: 846
@@ -22834,11 +22872,11 @@ msgstr "Vers"
 
 # File: src/www/system_gateways_edit.php, line: 844
 msgid "Packet Loss thresholds"
-msgstr ""
+msgstr "Seuils de perte de paquets"
 
 # File: src/www/system_gateways_edit.php, line: 856
 msgid "Probe Interval"
-msgstr ""
+msgstr "Intervalle de la sonde"
 
 # File: src/www/system_gateways_edit.php, line: 862
 msgid ""
@@ -22848,7 +22886,7 @@ msgstr ""
 
 # File: src/www/system_gateways_edit.php, line: 867
 msgid "Down"
-msgstr ""
+msgstr "Hors-service"
 
 # File: src/www/system_gateways_edit.php, line: 875
 msgid "Average Delay Replies Qty"
@@ -22858,7 +22896,7 @@ msgstr ""
 # File: src/www/system_gateways_edit.php, line: 894
 # File: src/www/system_gateways_edit.php, line: 906
 msgid "Use calculated value."
-msgstr ""
+msgstr "Utiliser la valeur calculée."
 
 # File: src/www/system_gateways_edit.php, line: 887
 msgid "Average Packet Loss Probes Qty"
@@ -22895,7 +22933,7 @@ msgstr "Chinois (Simplifié)"
 
 # File: src/www/system_general.php, line: 45
 msgid "French"
-msgstr ""
+msgstr "Français"
 
 # File: src/www/system_general.php, line: 40
 msgid "German"
@@ -22915,11 +22953,12 @@ msgstr "Espagnol"
 
 # File: src/www/system_general.php, line: 118
 msgid "The hostname may only contain the characters a-z, 0-9 and '-'."
-msgstr ""
+msgstr "Le nom d'hôte ne peut contenir que les caractères a-z, 0-9 et \"-\"."
 
 # File: src/www/system_general.php, line: 121
 msgid "The domain may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
+"Le nom de domaine ne peut contenir que les caractères a-z, 0-9 et \".\"."
 
 # File: src/www/system_general.php, line: 157
 msgid ""
@@ -22936,10 +22975,12 @@ msgstr ""
 msgid ""
 "A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'."
 msgstr ""
+"Le serveur de temps NTP ne peut contenir que les caractères a-z, 0-9, \"-\" "
+"et \".\"."
 
 # File: src/www/system_general.php, line: 320
 msgid "Name of the firewall host, without domain part"
-msgstr "Nom d'hôte du firewall, sans la parti nom de domaine"
+msgstr "Nom d'hôte du firewall, sans le nom de domaine"
 
 # File: src/www/system_general.php, line: 331
 msgid ""
@@ -22949,7 +22990,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 333
 msgid "mycorp.com, home, office, private, etc."
-msgstr ""
+msgstr "monentreprise.fr, home, office, private, etc."
 
 # File: src/www/system_general.php, line: 344
 msgid "DNS Server"
@@ -22957,7 +22998,7 @@ msgstr "Serveur DNS"
 
 # File: src/www/system_general.php, line: 346
 msgid "Use gateway"
-msgstr ""
+msgstr "Utiliser la passerelle"
 
 # File: src/www/system_general.php, line: 396
 msgid ""
@@ -23019,15 +23060,15 @@ msgstr "Langue"
 
 # File: src/www/system_general.php, line: 485
 msgid "Choose a language for the webConfigurator"
-msgstr "Choisissez la langue pour le webConfigurator"
+msgstr "Choisissez la langue pour l'interface d'aministration"
 
 # File: src/www/system_general.php, line: 490
 msgid "Theme"
-msgstr "Theme"
+msgstr "Thème"
 
 # File: src/www/system_general.php, line: 507
 msgid "This will change the look and feel of"
-msgstr ""
+msgstr "Cela changera l'aspect de"
 
 # File: src/www/system_general.php, line: 565
 msgid "Firmware Mirror"
@@ -23035,7 +23076,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 579
 msgid "Select an alternate firmware mirror."
-msgstr ""
+msgstr "Sélectionnez un miroir de firmware alternatif."
 
 # File: src/www/system_general.php, line: 584
 msgid "Firmware Flavour"
@@ -23043,7 +23084,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 598
 msgid "Select the firmware cryptography flavour."
-msgstr ""
+msgstr "Sélectionnez un firmware alternatif pour la cryptographie."
 
 # File: src/www/system_groupmanager.php, line: 58
 # File: src/www/vpn_ipsec_mobile.php, line: 674
@@ -23055,7 +23096,7 @@ msgstr ""
 # File: src/www/system_usermanager.php, line: 79
 # File: src/www/system_usermanager.php, line: 92
 msgid "successfully deleted"
-msgstr ""
+msgstr "supprimé avec succès"
 
 # File: src/www/system_groupmanager.php, line: 82
 # File: src/www/system_usermanager.php, line: 91
@@ -23190,7 +23231,7 @@ msgstr ""
 
 # File: src/www/system_routes.php, line: 210
 msgid "Add route"
-msgstr ""
+msgstr "Ajouter une route"
 
 # File: src/www/system_routes.php, line: 227
 msgid ""
@@ -23203,7 +23244,7 @@ msgstr ""
 # File: src/www/firewall_rules.php, line: 767
 # File: src/www/system_routes.php, line: 332
 msgid "delete rule"
-msgstr ""
+msgstr "Supprimer la règle"
 
 # File: src/www/firewall_rules.php, line: 453
 # File: src/www/firewall_rules.php, line: 477
@@ -23211,12 +23252,12 @@ msgstr ""
 # File: src/www/firewall_rules.php, line: 768
 # File: src/www/system_routes.php, line: 337
 msgid "add a new rule based on this one"
-msgstr ""
+msgstr "ajouter une nouvelle règle basée sur celle-ci"
 
 # File: src/www/system_routes.php, line: 357
 # File: src/www/system_routes.php, line: 362
 msgid "move selected routes to end"
-msgstr ""
+msgstr "déplacer ces routes en bas"
 
 # File: src/www/system_routes.php, line: 383
 msgid "delete selected routes"
@@ -23326,13 +23367,13 @@ msgstr "Le nom d’utilisateur dépasse les 16 caractères."
 # File: src/www/vpn_l2tp_users_edit.php, line: 94
 # File: src/www/vpn_pptp_users_edit.php, line: 94
 msgid "The passwords do not match."
-msgstr ""
+msgstr "Les mots de passe ne correspondent pas."
 
 # File: src/www/system_usermanager.php, line: 199
 # File: src/www/vpn_l2tp_users_edit.php, line: 104
 # File: src/www/vpn_pptp_users_edit.php, line: 104
 msgid "Another entry with the same username already exists."
-msgstr ""
+msgstr "Une autre entrée avec le même nom d'utilisateur existe déjà."
 
 # File: src/www/system_usermanager.php, line: 210
 msgid "That username is reserved by the system."
@@ -23353,12 +23394,12 @@ msgstr ""
 
 # File: src/www/system_usermanager.php, line: 498
 msgid "(confirmation)"
-msgstr ""
+msgstr "(confirmation)"
 
 # File: src/www/system_usermanager.php, line: 502
 # File: src/www/system_usermanager.php, line: 895
 msgid "Full name"
-msgstr ""
+msgstr "Nom complet"
 
 # File: src/www/system_usermanager.php, line: 507
 msgid "User's full name, for your own information only"
@@ -23366,7 +23407,7 @@ msgstr ""
 
 # File: src/www/system_usermanager.php, line: 511
 msgid "Expiration date"
-msgstr ""
+msgstr "Date d'expiration"
 
 # File: src/www/system_usermanager.php, line: 515
 msgid ""
@@ -23376,19 +23417,19 @@ msgstr ""
 
 # File: src/www/system_usermanager.php, line: 525
 msgid "Not Member Of"
-msgstr ""
+msgstr "Non membre de"
 
 # File: src/www/system_usermanager.php, line: 527
 msgid "Member Of"
-msgstr ""
+msgstr "Membre de"
 
 # File: src/www/system_usermanager.php, line: 564
 msgid "Add Groups"
-msgstr ""
+msgstr "Ajouter groupes"
 
 # File: src/www/system_usermanager.php, line: 568
 msgid "Remove Groups"
-msgstr ""
+msgstr "Supprimer groupes"
 
 # File: src/www/system_usermanager.php, line: 611
 msgid "Effective Privileges"
@@ -23404,7 +23445,7 @@ msgstr "Certificats Utilisateur"
 
 # File: src/www/system_usermanager.php, line: 683
 msgid "CA"
-msgstr ""
+msgstr "CA"
 
 # File: src/www/system_usermanager.php, line: 714
 msgid "export private key"
@@ -23429,11 +23470,11 @@ msgstr "Cliquer pour créer un certificat utilisateur."
 # File: src/www/system_usermanager.php, line: 839
 # File: src/www/system_usermanager.php, line: 847
 msgid "Authorized keys"
-msgstr ""
+msgstr "Clés autorisées"
 
 # File: src/www/system_usermanager.php, line: 841
 msgid "Click to paste an authorized key."
-msgstr ""
+msgstr "Cliquez pour coller les clés autorisées."
 
 # File: src/www/system_usermanager.php, line: 858
 msgid "Paste an authorized keys file here."
@@ -23470,7 +23511,7 @@ msgstr ""
 
 # File: src/www/system_usermanager.php, line: 965
 msgid "edit user"
-msgstr ""
+msgstr "Éditer l'utilisateur"
 
 # File: src/www/system_usermanager.php, line: 975
 # File: src/www/vpn_l2tp_users.php, line: 134
