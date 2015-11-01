@@ -459,7 +459,9 @@ abstract class BaseField
             $subnode = $node ;
         } else {
             if ($this->internalValue != "") {
-                $subnode = $node->addChild($this->getInternalXMLTagName(), $this->internalValue);
+                $newNodeName = $this->getInternalXMLTagName();
+                $subnode = $node->addChild($newNodeName);
+                $node->$newNodeName = $this->internalValue;
             } else {
                 $subnode = $node->addChild($this->getInternalXMLTagName());
             }
