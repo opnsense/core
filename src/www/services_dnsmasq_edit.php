@@ -264,7 +264,9 @@ include("head.inc");
 					                            <input name="aliasdescription<?php echo $counter; ?>" type="text" class="formfld unknown" id="aliasdescription<?php echo $counter; ?>" size="20" value="<?=htmlspecialchars($description);?>" />
 					                          </td>
 					                          <td>
-					                            <a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="" title="<?=gettext("remove this entry"); ?>" /></a>
+					                            <a onclick="removeRow(this); return false;" href="#" title="<?=gettext("remove this entry"); ?>">
+					                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+					                            </a>
 					                          </td>
 					                        </tr>
 					                        <?php
