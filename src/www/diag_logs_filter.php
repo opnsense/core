@@ -885,11 +885,6 @@ function resolve_ip_callback(transport) {
 	var resolve_text = '<small><br />' + htmlspecialchars(response.resolve_text) + '<\/small>';
 
 	jQuery('span.RESOLVE-' + resolve_class).html(resolve_text);
-	jQuery('img.ICON-' + resolve_class).removeAttr('title');
-	jQuery('img.ICON-' + resolve_class).removeAttr('alt');
-	jQuery('img.ICON-' + resolve_class).attr('src', '/themes/<?= $g['theme']; ?>/images/icons/icon_log_d.gif');
-	jQuery('img.ICON-' + resolve_class).prop('onclick', null);
-	  // jQuery cautions that "removeAttr('onclick')" fails in some versions of IE
 }
 
 // From http://stackoverflow.com/questions/5499078/fastest-method-to-escape-html-tags-as-html-entities
