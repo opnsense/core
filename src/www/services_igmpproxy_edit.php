@@ -255,7 +255,9 @@ include("head.inc");
 											        </select>
 											      </td>
 								            <td>
-										<a onclick="removeRow(this); return false;" href="#"><img border="0" src="/themes/<?echo $g['theme'];?>/images/icons/icon_x.gif" alt="delete" /></a>
+										<a onclick="removeRow(this); return false;" href="#">
+										<div style="cursor:pointer;" class="btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+										</a>
 									      </td>
 								          </tr>
 								<?php
