@@ -67,6 +67,14 @@
                         $("#mainmenu").find('[href="#' + $(this).attr('id') + '"]').remove();
                     }
                 });
+                // hide submenu items
+                $('#mainmenu .list-group-item').click(function(){
+                    $('#mainmenu .list-group-item').each(function(){
+                        if ($(this).attr('aria-expanded') == 'true') {
+                            $("#"+$(this).attr('href').substring(1,999)).collapse('hide');
+                        }
+                    });
+                });
 
                 initFormHelpUI();
                 initFormAdvancedUI();
