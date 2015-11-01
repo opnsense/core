@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-19 06:39+0000\n"
+"POT-Creation-Date: 2015-11-01 15:02+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 1832\n"
+"X-Pootle-Revision: 2056\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
@@ -2027,11 +2027,11 @@ msgstr ""
 
 # File: lang/dynamic/helpers/models.php, line: 276
 msgid "Specify the maximum download size. (number of KBs)"
-msgstr ""
+msgstr "Geben Sie die maximale Downloadgröße an. (In KBs)"
 
 # File: lang/dynamic/helpers/models.php, line: 277
 msgid "Specify the maximum upload size. (number of KBs)"
-msgstr ""
+msgstr "Geben Sie die maximale Uploadgröße an. (In KBs)"
 
 # File: lang/dynamic/helpers/models.php, line: 218
 msgid "Specify the overall bandwidth for downloads in kilobits per second."
@@ -2102,7 +2102,7 @@ msgstr "Beschreibung sollte ein String zwischen 1 und 255 Zeichen enthalten"
 
 # File: lang/dynamic/helpers/models.php, line: 233
 msgid "Queue number must be between 1...65535"
-msgstr ""
+msgstr "Warteschlangennummer muss zwischen 1 und 65535 sein."
 
 # File: lang/dynamic/helpers/models.php, line: 234
 msgid "Related pipe not found"
@@ -2387,11 +2387,11 @@ msgstr "Konnte Daten nicht ver- bzw. entschlüsseln!"
 
 # File: src/etc/inc/dyndns.class, line: 1197
 msgid "Dynamic DNS updated IP Address on %s (%s) to %s"
-msgstr ""
+msgstr "Dynamisches DNS änderte IP Adresse von %s (%s) nach %s"
 
 # File: src/etc/inc/dyndns.class, line: 1204
 msgid "Dynamic DNS updated IPv6 Address on %s (%s) to %s"
-msgstr ""
+msgstr "Dynamisches DNS änderte IPv6 Adresse von %s (%s) nach %s"
 
 msgid "Initializing"
 msgstr "Initialisieren"
@@ -2509,7 +2509,7 @@ msgstr "Erstelle Filterregel %s ..."
 
 # File: src/etc/inc/filter.inc, line: 1990
 msgid "filter_generate_port: %s is not a valid %s port."
-msgstr ""
+msgstr "filter_generate_port: %s ist kein gültiger %s-Port."
 
 msgid "Setting up pass/block rules %s"
 msgstr "Konfiguriere Erlaubnis- und Blockierregeln %s"
@@ -2663,11 +2663,15 @@ msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IP address %s."
 msgstr ""
+"Entschuldigung, aber wir konnten keine erforderliche zugewiesene IP-Adresse "
+"auf der Schnittstelle für die virtuelle IP-Adresse %s finden."
 
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IPv6 address %s."
 msgstr ""
+"Entschuldigung, aber wir konnten keine erforderliche zugewiesene IP-Adresse "
+"auf der Schnittstelle für die virtuelle IPv6 Adresse finden."
 
 msgid "Interface %s changed to hostap mode"
 msgstr "Das Interface %s wechselte in den hostap-Modus"
@@ -3267,7 +3271,7 @@ msgid ""
 msgstr ""
 
 msgid "Indicates whether this user is able to login for example via SSH."
-msgstr "Gibt an, ob er Benutzer sich z.B. über SSH anmelden kann."
+msgstr "Gibt an, ob der Benutzer sich z.B. über SSH anmelden kann."
 
 msgid ""
 "Indicates whether this user is allowed to copy files onto the %s appliance "
@@ -3559,7 +3563,7 @@ msgid "not an %s IP address!"
 msgstr "keine %s IP-Adresse!"
 
 msgid "not in subnet!"
-msgstr "nicht im Subnetzwerk!"
+msgstr "nicht im Subnetz!"
 
 msgid "Enter the start address of the %s client address range:"
 msgstr ""
@@ -3680,12 +3684,12 @@ msgstr "beenden"
 # File: src/etc/rc.sshd, line: 132
 msgid "Started creating your SSH keys. SSH startup is being delayed a wee bit."
 msgstr ""
-"Die Erstellung von SSH Schlüsseln wurde gestartet. Der Start von von SSH "
+"Die Erstellung von SSH-Schlüsseln wurde gestartet. Der Start von von SSH "
 "verzögert sich dadurch."
 
 # File: src/etc/rc.sshd, line: 139
 msgid "Completed creating your SSH keys. SSH will now be started."
-msgstr "SSH keys wurden erstellt. SSH wird nun gestartet."
+msgstr "SSH-Schlüssel wurden erstellt. SSH wird nun gestartet."
 
 # File: src/etc/inc/pfsense-utils.inc, line: 1511
 msgid "Could not process aliases from alias: %s"
@@ -4270,6 +4274,8 @@ msgid ""
 "The uploaded file does not appear to contain an encrypted OPNsense "
 "configuration."
 msgstr ""
+"Die hochgeladene Datei scheint keine verschlüsselte OPNsense-Konfiguration "
+"zu beinhalten."
 
 msgid "Upgrading m0n0wall configuration to OPNsense."
 msgstr "Aktualisiere m0n0wall Konfiguration zu OPNsense."
@@ -4851,7 +4857,7 @@ msgid "Show child SA entries"
 msgstr ""
 
 msgid "Local subnets"
-msgstr "Lokale Subnetzwerke"
+msgstr "Lokale Subnetze"
 
 msgid "Local SPI(s)"
 msgstr "Lokaler SPI(s)"
@@ -5585,6 +5591,8 @@ msgid ""
 "This option does not affect the level of detail when downloading the packet "
 "capture."
 msgstr ""
+"Diese Option hat keinen Einfluss auf den Detailierungsgrad beim "
+"Herunterladen der Paketaufzeichnung."
 
 msgid "Reverse DNS Lookup"
 msgstr ""
@@ -6480,8 +6488,8 @@ msgid ""
 "Enter the internal (LAN) subnet for the 1:1 mapping. The subnet size "
 "specified for the internal subnet will be applied to the external subnet."
 msgstr ""
-"Geben Sie das interne (LAN) Subnetzwerk für die 1:1 zuweisung ein. Die Größe "
-"des internen Subnetzwerks wird für das externe Subnetzwerk angewandt."
+"Geben Sie das interne (LAN-) Subnetz für die 1:1-Zuweisung ein. Die Größe "
+"des internen Subnetzes wird auch für das externe Subnetz angewandt."
 
 msgid ""
 "The 1:1 mapping will only be used for connections to or from the specified "
@@ -6886,7 +6894,7 @@ msgid ""
 msgstr ""
 
 msgid "Hint: in most cases, you won't use this option."
-msgstr ""
+msgstr "Hinweis: Meistens werden Sie die Option nicht nutzen."
 
 msgid "This Firewall (self)"
 msgstr "Diese Firewall (selbst)"
@@ -6953,7 +6961,7 @@ msgstr ""
 
 # File: src/www/firewall_nat_out_edit.php, line: 624
 msgid "Bitmask"
-msgstr ""
+msgstr "Bitmaske"
 
 msgid ""
 "Only Round Robin types work with Host Aliases. Any type can be used with a "
@@ -6976,6 +6984,8 @@ msgid ""
 "Bitmask: Applies the subnet mask and keeps the last portion identical; "
 "10.0.1.50 -&gt; x.x.x.50."
 msgstr ""
+"Bitmaske: Wendet die Subnetzmaske an und lässt den letzten Teil identisch. "
+"10.0.1.50 -&gt; x.x.x.50"
 
 msgid ""
 "Sticky Address: The Sticky Address option can be used with the Random and "
@@ -7022,7 +7032,7 @@ msgid "Reserved/not assigned by IANA"
 msgstr ""
 
 msgid "Block bogon networks"
-msgstr "Blockiere Bogon-Netze"
+msgstr "Blockiere Bogon-Netzwerke"
 
 msgid "Echo request"
 msgstr "Echo request"
@@ -7058,7 +7068,7 @@ msgid "Timestamp reply"
 msgstr ""
 
 msgid "Information request"
-msgstr ""
+msgstr "Informationsanfrage"
 
 msgid "Information reply"
 msgstr ""
@@ -7073,7 +7083,7 @@ msgid "No floating rules are currently defined."
 msgstr ""
 
 msgid "No rules are currently defined for this interface"
-msgstr ""
+msgstr "Zur Zeit sind keine Regeln für dieses Interface definiert"
 
 msgid ""
 "All incoming connections on this interface will be blocked until you add "
@@ -7184,7 +7194,7 @@ msgid ""
 msgstr ""
 
 msgid "You can not use IPv6 addresses in IPv4 rules."
-msgstr ""
+msgstr "Sie können keine IPv6 Adressen in IPv4 Regeln verwenden."
 
 msgid "You can not use IPv4 addresses in IPv6 rules."
 msgstr "Sie können keine IPv4-Adressen in IPv6-Regeln anwenden."
@@ -7680,7 +7690,7 @@ msgid "A Schedule with this name already exists."
 msgstr ""
 
 msgid "Invalid start time - '%s'"
-msgstr ""
+msgstr "Ungültige Startzeit - '%s'"
 
 msgid "Invalid stop time - '%s'"
 msgstr ""
@@ -8022,8 +8032,7 @@ msgstr "Aktuelle Ansicht: "
 # File: src/www/guiconfig.inc, line: 629
 msgid "A problem was detected. Click %shere%s for more information."
 msgstr ""
-"Ein Problem wurde gefunden. Klicken Sie auf %shere%s für weitere "
-"Informationen."
+"Ein Problem wurde gefunden. Klicken Sie %shier%s für weitere Informationen."
 
 msgid "Acknowledge All Notices"
 msgstr "Alle Meldungen bestätigen"
@@ -8140,7 +8149,7 @@ msgid "PPTP remote IP address"
 msgstr "Ferne PPTP IP-Adresse"
 
 msgid "PPTP subnet"
-msgstr "PPTP Subnetzwerk"
+msgstr "PPTP Subnetz"
 
 msgid "PPTP username"
 msgstr "PPTP Benutzername"
@@ -9784,7 +9793,7 @@ msgid ""
 "Remote gif address endpoint. The subnet part is used for determining the "
 "network that is tunnelled."
 msgstr ""
-"Adresse des fernen GIF-Endpunkts. Der Subnetzwerkteil wird verwendet, um "
+"Adresse des fernen GIF-Endpunkts. Der Subnetzteil wird verwendet, um "
 "festzustellen, welches Netzwerk getunnelt wird."
 
 msgid "Route caching  "
@@ -10035,7 +10044,7 @@ msgid "Link Interface(s)"
 msgstr ""
 
 msgid "Subnet"
-msgstr "Subnetzwerk"
+msgstr "Subnetz"
 
 msgid "Please choose a Link Type."
 msgstr ""
@@ -10739,7 +10748,7 @@ msgid "Timeout must be a numeric value"
 msgstr "Timeout muss ein numerischer Wert sein"
 
 msgid "Interval must be a numeric value"
-msgstr ""
+msgstr "Intervall muss ein gültiger numerischer Wert sein"
 
 msgid "Prefork must be a numeric value"
 msgstr ""
@@ -13633,7 +13642,7 @@ msgid "Enter the SNMP trap string"
 msgstr ""
 
 msgid "Modules"
-msgstr ""
+msgstr "Module"
 
 msgid "SNMP Modules"
 msgstr "SNMP Module"
@@ -15180,7 +15189,7 @@ msgid ""
 msgstr ""
 
 msgid "Bogon Networks"
-msgstr "Bogon Netze"
+msgstr "Bogon Netzwerke"
 
 msgid "Update Frequency"
 msgstr "Aktualisierungshäufigkeit"
@@ -15526,7 +15535,7 @@ msgid "You must specify an IP address to NAT IPv6 packets."
 msgstr ""
 
 msgid "IPv6 Options"
-msgstr ""
+msgstr "IPv6-Optionen"
 
 msgid "Allow IPv6"
 msgstr "Erlaube IPv6"
@@ -15815,7 +15824,7 @@ msgid "Port value"
 msgstr "Port-Wert"
 
 msgid "Transport"
-msgstr ""
+msgstr "Transport"
 
 msgid "Protocol version"
 msgstr "Protokollversion"
@@ -16542,8 +16551,7 @@ msgid ""
 "The gateway address %1$s does not lie within one of the chosen interface's "
 "subnets."
 msgstr ""
-"Die Gatewayadresse %1$s liegt nicht im Subnetzwerk des ausgewählten "
-"Interfaces."
+"Die Gatewayadresse %1$s liegt nicht im Subnetz des ausgewählten Interfaces."
 
 msgid ""
 "Cannot add IPv6 Gateway Address because no IPv6 address could be found on "
@@ -16741,7 +16749,7 @@ msgid "Average Delay Replies Qty"
 msgstr ""
 
 msgid "Use calculated value."
-msgstr ""
+msgstr "Berechneten Wert verwenden."
 
 msgid "Average Packet Loss Probes Qty"
 msgstr ""
@@ -17100,7 +17108,7 @@ msgstr ""
 "von der Liste zu entfernen."
 
 msgid "You can manage Gateways %shere%s."
-msgstr "Sie können %shier%s Gateways verwalten."
+msgstr "Sie können Gateways %shier%s verwalten."
 
 msgid "Sorry, we could not create your gateway at this time."
 msgstr "Leider konnten wir Ihr Gateway zu diesem Zeitpunkt nicht erstellen."
@@ -17139,7 +17147,7 @@ msgid "Full name"
 msgstr "Voller Name"
 
 msgid "User's full name, for your own information only"
-msgstr ""
+msgstr "Kompletter Name des Users, nur zur eigenen Information."
 
 msgid "Expiration date"
 msgstr "Ablaufdatum"
@@ -17257,6 +17265,7 @@ msgstr "Benutzerpasswort"
 
 msgid "Sorry, you cannot change the password for a non-local user."
 msgstr ""
+"Sorry, Sie können das Passwort für einen nicht-lokalen Benutzer nicht ändern."
 
 msgid "Password successfully changed"
 msgstr "Passwort erfolgreich geändert"
@@ -17361,10 +17370,10 @@ msgid "Show %s Phase-2 entries"
 msgstr "Zeige %s Phase-2 Einträge"
 
 msgid "Local Subnet"
-msgstr "Lokales Subnetzwerk"
+msgstr "Lokales Subnetz"
 
 msgid "Remote Subnet"
-msgstr "Entferntes Subnetzwerk"
+msgstr "Fernes Subnetz"
 
 msgid "P2 Protocol"
 msgstr "Phase 2 Protokoll"
@@ -17898,11 +17907,15 @@ msgid ""
 "A valid local network IPv4 address must be specified or you need to change "
 "Mode to IPv6"
 msgstr ""
+"Eine valide IPv4 Adresse muss angegeben werden oder Sie ändern den Modus auf "
+"IPv6"
 
 msgid ""
 "A valid local network IPv6 address must be specified or you need to change "
 "Mode to IPv4"
 msgstr ""
+"Eine valide lokale IPv6 Adresse muss angegeben werden oder Sie ändern den "
+"Modus auf IPv4"
 
 msgid "Invalid Local Network."
 msgstr "Ungültiges lokales Netzwerk."
@@ -18029,7 +18042,7 @@ msgid "LAN security associsations"
 msgstr ""
 
 msgid "Do not install LAN SPD"
-msgstr ""
+msgstr "Installieren sie nicht LAN SPD"
 
 msgid ""
 "By default, if IPSec is enabled negating SPD are inserted to provide "
@@ -18475,7 +18488,7 @@ msgstr "(Benutzername und Passwort erforderlich)"
 # File: src/www/vpn_openvpn_client.php, line: 756
 # File: src/www/vpn_openvpn_client.php.orig, line: 756
 msgid "if one is required for this connection."
-msgstr ""
+msgstr "wenn eins für diese Verbindung benötigt wird."
 
 msgid "Shared Key"
 msgstr ""
@@ -18772,7 +18785,7 @@ msgstr ""
 "Einstellungen (einschließlich WINS) deaktiviert"
 
 msgid "Node Type"
-msgstr ""
+msgstr "Knotentyp"
 
 msgid ""
 "Possible options: b-node (broadcasts), p-node (point-to-point name queries "
@@ -18847,6 +18860,8 @@ msgid ""
 "Enter the hostname or IP address the client will use to connect to this "
 "server."
 msgstr ""
+"Geben Sie den Hostnamen oder die IP Adresse ein die der Client für die "
+"Verbindung zum Server benutzen wird."
 
 # File: src/www/vpn_openvpn_export.php, line: 686
 # File: src/www/vpn_openvpn_export.php.orig, line: 686
@@ -19089,7 +19104,7 @@ msgstr "Freier Client für OSX"
 
 # File: src/www/vpn_openvpn_export.php, line: 961
 msgid "Tunnelblick"
-msgstr ""
+msgstr "Tunnelblick"
 
 # File: src/www/vpn_openvpn_export.php, line: 948
 msgid ""
@@ -19409,7 +19424,7 @@ msgstr "Server löschen"
 # File: src/www/vpn_openvpn_server.php, line: 1749
 # File: src/www/vpn_openvpn_server.php.orig, line: 1749
 msgid "Use a wizard to setup a new server"
-msgstr ""
+msgstr "Verwenden Sie einen Assistenten für das Einrichten eines neuen Servers"
 
 msgid "add a new pppoe instance"
 msgstr "Eine neue PPPoE Instanz hinzufügen"
@@ -19760,7 +19775,7 @@ msgstr "Überprüfe Standort"
 
 # File: src/www/widgets/widgets/ntp_status.widget.php, line: 165
 msgid "in view "
-msgstr ""
+msgstr "in Ansicht "
 
 # File: src/www/widgets/widgets/ntp_status.widget.php, line: 171
 msgid "in use "
@@ -19868,7 +19883,7 @@ msgid "State table size"
 msgstr "Verbindungsstatustabellengröße"
 
 msgid "Show states"
-msgstr ""
+msgstr "Status anzeigen"
 
 msgid "MBUF Usage"
 msgstr "MBUF Auslastung"
