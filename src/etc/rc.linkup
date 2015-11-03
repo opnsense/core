@@ -39,78 +39,65 @@ require_once("unbound.inc");
 require_once("services.inc");
 
 function handle_argument_group($iface, $argument2) {
-	global $config;
+    global $config;
 
-	if (!is_array($config['interfaces'][$iface]))
-		return;
 
-	if (isset($config['interfaces'][$iface]['ipaddr'])) {
-		$ipaddr = $config['interfaces'][$iface]['ipaddr'];
-	} else {
-		$ipaddr = null ;
-	}
-	if (isset($config['interfaces'][$iface]['ipaddrv6'])) {
-		$ip6addr = $config['interfaces'][$iface]['ipaddrv6'];
-	} else {
-		$ip6addr = null;
-	}
-	$staticv4 = false;
-	if (empty($ipaddr))
-		$staticv4 = true;
-	else
-		$staticv4 = is_ipaddrv4($ipaddr);
-	$staticv6 = false;
-	if (empty($ip6addr))
-		$staticv6 = true;
-	else
-		$staticv6 = is_ipaddrv6($ip6addr);
-	if ($staticv4 === true && $staticv6 === true) {
-		$friendly = convert_friendly_interface_to_friendly_descr($iface);
-		log_error("Hotplug event detected for {$friendly}({$iface}) but ignoring since interface is configured with static IP ({$ipaddr} {$ip6addr})");
-		interfaces_staticarp_configure($iface);
-		$iface = get_real_interface($iface);
-		interfaces_bring_up($iface);
-		/* NOTE: Do not generate event for OpenVPN since the daemon does that for us. */
-		if (($argument2 == "start" || $argument2 == "up") && substr($iface, 0, 4) != "ovpn")
-			configd_run("interface newip {$iface}");
-	} else {
-		switch ($argument2) {
-		case "stop":
-		case "down":
-			log_error("DEVD Ethernet detached event for {$iface}");
-			interface_bring_down($iface);
-			break;
-		case "start":
-		case "up":
-			log_error("DEVD Ethernet attached event for {$iface}");
-			log_error("HOTPLUG: Configuring interface {$iface}");
-			require_once("vpn.inc");
-			require_once("captiveportal.inc");
-			// Do not try to readd to bridge otherwise em(4) has problems
-			interface_configure($iface, true, true);
-			break;
-		}
-	}
+    if (isset($config['interfaces'][$iface])) {
+        // set defaults
+        $ipaddr = null ;
+        $ip6addr = null;
+        if (isset($config['interfaces'][$iface]['ipaddr'])) {
+            $ipaddr = $config['interfaces'][$iface]['ipaddr'];
+        }
+        if (isset($config['interfaces'][$iface]['ipaddrv6'])) {
+            $ip6addr = $config['interfaces'][$iface]['ipaddrv6'];
+        }
+        if (is_ipaddrv4($ipaddr) && is_ipaddrv6($ip6addr)) {
+            $friendly = convert_friendly_interface_to_friendly_descr($iface);
+            log_error("Hotplug event detected for {$friendly}({$iface}) but ignoring since interface is configured with static IP ({$ipaddr} {$ip6addr})");
+            interfaces_staticarp_configure($iface);
+            /* NOTE: Do not generate event for OpenVPN since the daemon does that for us. */
+            if (substr($iface, 0, 4) != "ovpn") {
+                if ($argument2 == "start" || $argument2 == "up") {
+                    $iface = get_real_interface($iface);
+                    configd_run("interface newip {$iface}");
+                }
+            }
+        } else {
+            switch ($argument2) {
+                case "stop":
+                    log_error("DEVD Ethernet detached event for {$iface}");
+                    interface_bring_down($iface);
+                    break;
+                case "start":
+                    log_error("DEVD Ethernet attached event for {$iface}");
+                    log_error("HOTPLUG: Configuring interface {$iface}");
+                    require_once("vpn.inc");
+                    require_once("captiveportal.inc");
+                    // Do not try to readd to bridge otherwise em(4) has problems
+                    interface_configure($iface, true, true);
+                    break;
+            }
+        }
+    }
 }
 
 if (!file_exists("/var/run/booting")) {
-		if ($argc < 3) {
-			log_error("HOTPLUG event: The number of required parameters not passed!");
-			exit;
-		}
-		$action = $argv[1];
-		switch($action) {
-		case "start":
-		case "stop":
-			break;
-		default:
-			log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
-			exit;
-			/* NOTREACHED */
-			break;
-		}
-		$interface = convert_real_interface_to_friendly_interface_name($argv[2]);
-		if (!empty($interface)) {
-			handle_argument_group($interface, $action);
-		}
+    if ($argc < 3) {
+        log_error("HOTPLUG event: The number of required parameters not passed!");
+        exit;
+    }
+    $action = $argv[1];
+    switch($action) {
+      case "start":
+      case "stop":
+          $interface = convert_real_interface_to_friendly_interface_name($argv[2]);
+          if (!empty($interface)) {
+              handle_argument_group($interface, $action);
+          }
+          break;
+      default:
+          log_error("HOTPLUG event: The action parameter passed is wrong($action) only start/stop/up/down are allowed!");
+          break;
+    }
 }
