@@ -621,6 +621,11 @@ EOD;
                 $rekey = "rekey = yes";
             }
 
+            $forceencaps = 'forceencaps = no' ;
+            if (!empty($ph1ent['nat_traversal']) && $ph1ent['nat_traversal'] == 'force') {
+                $forceencaps = 'forceencaps = yes';
+            }
+
             $ipseclifetime = 0;
             $rightsubnet_spec = array();
             $leftsubnet_spec = array();
@@ -773,6 +778,7 @@ conn con<<connectionId>>
   keyexchange = {$keyexchange}
   {$reauth}
   {$rekey}
+  {$forceencaps}
   reqid = {$ikeid}
   installpolicy = yes
   {$tunneltype}
