@@ -431,8 +431,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 	$found_defaultv4 = 0;
 	$found_defaultv6 = 0;
 
-	// Ensure the interface cache is up to date first
-	$interfaces = get_interface_arr(true);
+	$interfaces = legacy_interface_listget();
 	$interfaces_v4 = array();
 	$interfaces_v6 = array();
 
