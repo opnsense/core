@@ -2839,7 +2839,6 @@ function interface_vlan_adapt_mtu($vlanifs, $mtu) {
 function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false)
 {
 	global $config;
-	global $interface_sn_arr_cache;
 	global $interface_snv6_arr_cache;
 
 	$wancfg = $config['interfaces'][$interface];
@@ -2956,7 +2955,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	}
 
 	/* invalidate interface/ip/sn cache */
-	unset($interface_sn_arr_cache[$realif]);
 	unset($interface_snv6_arr_cache[$realif]);
 
 	$tunnelif = substr($realif, 0, 3);
@@ -4544,27 +4542,15 @@ function find_interface_ipv6_ll($interface) {
 		return null;
 }
 
-function find_interface_subnet($interface, $flush = false) {
-	global $interface_sn_arr_cache;
-
-	if (!isset($interface_sn_arr_cache) || !is_array($interface_sn_arr_cache)){
-		$interface_sn_arr_cache = array();
-	}
-
-	$interface = str_replace("\n", "", $interface);
-	if (does_interface_exist($interface) == false)
-		return;
-
-	if (!isset($interface_sn_arr_cache[$interface]['subnetbits']) || $flush) {
-		$ifinfo = pfSense_get_interface_addresses($interface);
-		if (isset($ifinfo['subnetbits'])) {
-			$interface_sn_arr_cache[$interface] = $ifinfo['subnetbits'];
-		} else {
-			return null;
+function find_interface_subnet($interface) {
+		$interface = trim($interface);
+		if (does_interface_exist($interface)) {
+				$ifinfo = pfSense_get_interface_addresses($interface);
+				if (isset($ifinfo['subnetbits'])) {
+						return $ifinfo['subnetbits'];
+				}
 		}
-	}
-
-	return $interface_sn_arr_cache[$interface];
+		return null;
 }
 
 function find_interface_subnetv6($interface, $flush = false) {
