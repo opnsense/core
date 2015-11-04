@@ -51,9 +51,7 @@ function interfaces_carp_set_maintenancemode($carp_maintenancemode)
 }
 
 
-unset($interface_arr_cache);
 unset($carp_interface_count_cache);
-unset($interface_ip_arr_cache);
 
 $status = get_carp_status();
 if ($_POST['carp_maintenancemode'] <> "") {

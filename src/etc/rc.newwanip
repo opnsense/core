@@ -76,7 +76,7 @@ if (is_array($config['interfaces'][$interface]) && !isset($config['interfaces'][
 if (empty($argument)) {
     $curwanip = get_interface_ip();
 } else {
-    $curwanip = find_interface_ip($interface_real, true);
+    $curwanip = find_interface_ip($interface_real);
     if(empty($curwanip)) {
         $curwanip = get_interface_ip($interface);
     }
