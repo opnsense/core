@@ -2840,7 +2840,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 {
 	global $config;
 	global $interface_sn_arr_cache;
-	global $interface_snv6_arr_cache, $interface_ipv6_arr_cache;
+	global $interface_snv6_arr_cache;
 
 	$wancfg = $config['interfaces'][$interface];
 
@@ -2957,7 +2957,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
 	/* invalidate interface/ip/sn cache */
 	unset($interface_sn_arr_cache[$realif]);
-	unset($interface_ipv6_arr_cache[$realif]);
 	unset($interface_snv6_arr_cache[$realif]);
 
 	$tunnelif = substr($realif, 0, 3);
@@ -3154,7 +3153,6 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 {
 	global $config;
-	global $interface_ipv6_arr_cache;
 	global $interface_snv6_arr_cache;
 
 	if (!is_array($lancfg))
@@ -3205,7 +3203,6 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 	$oip = find_interface_ipv6($lanif);
 	if (is_ipaddrv6($oip))
 		mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
-	unset($interface_ipv6_arr_cache[$lanif]);
 	unset($interface_snv6_arr_cache[$lanif]);
 	log_error("rd6 {$interface} with ipv6 address {$rd6lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
 	mwexec("/sbin/ifconfig {$lanif} inet6 {$rd6lan} prefixlen 64");
@@ -3216,7 +3213,6 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
 	global $config;
-	global $interface_ipv6_arr_cache;
 	global $interface_snv6_arr_cache;
 
 	if (!is_array($lancfg))
@@ -3263,7 +3259,6 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 	$oip = find_interface_ipv6($lanif);
 	if (is_ipaddrv6($oip))
 		mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
-	unset($interface_ipv6_arr_cache[$lanif]);
 	unset($interface_snv6_arr_cache[$lanif]);
 	log_error("sixto4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
 	mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
@@ -4507,39 +4502,23 @@ function find_interface_ip($interface) {
 				if (isset($ifinfo['ipaddr'])) {
 						return $ifinfo['ipaddr'];
 				}
-		} else {
-				return null;
 		}
+		return null;
 }
 
 /*
  * find_interface_ipv6($interface): return the interface ip (first found)
  */
-function find_interface_ipv6($interface, $flush = false) {
-	global $interface_ipv6_arr_cache;
-	global $config;
-
-	if (!isset($interface_ipv6_arr_cache) || !is_array($interface_ipv6_arr_cache)) {
-		$interface_ipv6_arr_cache = array();
-	}
-
-	$interface = trim($interface);
-	$interface = get_real_interface($interface);
-
-	if (!does_interface_exist($interface))
-		return;
-
-	/* Setup IP cache */
-	if (!isset($interface_ipv6_arr_cache[$interface]) or $flush) {
-		$ifinfo = pfSense_get_interface_addresses($interface);
-		if (isset($ifinfo['ipaddr6'])) {
-			$interface_ipv6_arr_cache[$interface] = $ifinfo['ipaddr6'];
-		} else {
-			return null;
+function find_interface_ipv6($interface) {
+		// a bit obscure, why should this be different then find_interface_ip?
+		$interface = get_real_interface(trim($interface));
+		if (does_interface_exist($interface)) {
+				$ifinfo = pfSense_get_interface_addresses($interface);
+				if (isset($ifinfo['ipaddr6'])) {
+						return $ifinfo['ipaddr6'];
+				}
 		}
-	}
-
-	return $interface_ipv6_arr_cache[$interface];
+		return null;
 }
 
 /*
