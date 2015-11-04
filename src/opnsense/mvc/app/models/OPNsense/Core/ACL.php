@@ -153,22 +153,24 @@ class ACL
 
         // gather user / group data from config.xml
         $config = Config::getInstance()->object() ;
-        foreach ($config->system->children() as $key => $node) {
-            if ($key == 'user') {
-                $this->legacyUsers[$node->name->__toString()] = array() ;
-                $this->legacyUsers[$node->name->__toString()]['uid'] = $node->uid->__toString();
-                $this->legacyUsers[$node->name->__toString()]['groups'] = array();
-                $this->legacyUsers[$node->name->__toString()]['priv'] = array();
-                foreach ($node->priv as $priv) {
-                    if (substr($priv, 0, 5) == 'page-') {
-                        if (array_key_exists($priv->__toString(), $pageMap)) {
-                            $this->legacyUsers[$node->name->__toString()]['priv'][] =
-                                $pageMap[$priv->__toString()];
+        if ($config->system != null) {
+            foreach ($config->system->children() as $key => $node) {
+                if ($key == 'user') {
+                    $this->legacyUsers[$node->name->__toString()] = array() ;
+                    $this->legacyUsers[$node->name->__toString()]['uid'] = $node->uid->__toString();
+                    $this->legacyUsers[$node->name->__toString()]['groups'] = array();
+                    $this->legacyUsers[$node->name->__toString()]['priv'] = array();
+                    foreach ($node->priv as $priv) {
+                        if (substr($priv, 0, 5) == 'page-') {
+                            if (array_key_exists($priv->__toString(), $pageMap)) {
+                                $this->legacyUsers[$node->name->__toString()]['priv'][] =
+                                    $pageMap[$priv->__toString()];
+                            }
                         }
                     }
+                } elseif ($key == 'group') {
+                    $groupmap[$node->name->__toString()] = $node ;
                 }
-            } elseif ($key == 'group') {
-                $groupmap[$node->name->__toString()] = $node ;
             }
         }
 
