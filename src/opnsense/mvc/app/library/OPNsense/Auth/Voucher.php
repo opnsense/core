@@ -257,7 +257,7 @@ class Voucher implements IAuthConnector
 
             if (empty($row['starttime'])) {
                 $record['state'] = 'unused';
-            } elseif (time() > $row['endtime']) {
+            } elseif (time() < $record['endtime']) {
                 $record['state'] = 'valid';
             } else {
                 $record['state'] = 'expired';
