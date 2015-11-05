@@ -183,10 +183,10 @@ POSSIBILITY OF SUCH DAMAGE.
                         // convert json to csv data
                         var output_data = 'username,password,vouchergroup,validity\n';
                         $.each(data, function( key, value ) {
-                            output_data = output_data.concat('"', value['username'].replace(/"/g, '""'), '",');
-                            output_data = output_data.concat('"', value['password'].replace(/"/g, '""'), '",');
-                            output_data = output_data.concat('"', value['vouchergroup'].replace(/"/g, '""'), '",');
-                            output_data = output_data.concat('"', value['validity'].replace(/"/g, '""'), '"\n');
+                            output_data = output_data.concat('"', value['username'], '",');
+                            output_data = output_data.concat('"', value['password'], '",');
+                            output_data = output_data.concat('"', value['vouchergroup'], '",');
+                            output_data = output_data.concat('"', value['validity'], '"\n');
                         });
 
                         // generate download link and send data to the client
