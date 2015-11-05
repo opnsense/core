@@ -44,7 +44,7 @@ for conns in s.list_conns():
         result[connection_id]['local-class'] = []
         result[connection_id]['remote-id'] = ''
         result[connection_id]['remote-class'] = []        
-        result[connection_id]['children']= conns[connection_id]['children']
+        result[connection_id]['children'] = conns[connection_id]['children']
         result[connection_id]['sas'] = []
         
         # parse local-% and remote-% keys        
