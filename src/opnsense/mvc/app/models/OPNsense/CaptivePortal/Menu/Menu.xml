@@ -4,6 +4,7 @@
         <CaptivePortal VisibleName="Captive Portal" cssClass="fa fa-paper-plane-o">
             <Administration order="1"  url="/ui/captiveportal/"/>
             <Sessions order="2"  url="/ui/captiveportal/session/"/>
+            <Vouchers order="10" url="/ui/captiveportal/voucher/"/>
             <Log order="99"  VisibleName="Log File" url="/diag_logs_auth.php"/>
         </CaptivePortal>
     </Services>
