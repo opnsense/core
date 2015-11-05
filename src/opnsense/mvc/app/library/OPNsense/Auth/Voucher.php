@@ -147,7 +147,7 @@ class Voucher implements IAuthConnector
         $response = array();
         if ($this->dbHandle != null) {
             // list of characters to skip for random generator
-            $doNotUseChr = array('<', '>');
+            $doNotUseChr = array('<', '>', '&');
 
             // create map of random readable characters
             $characterMap = '';
