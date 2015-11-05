@@ -146,13 +146,16 @@ class Voucher implements IAuthConnector
     {
         $response = array();
         if ($this->dbHandle != null) {
+            // list of characters to skip for random generator
+            $doNotUseChr = array('<', '>');
+
             // create map of random readable characters
             $characterMap = '';
             while (strlen($characterMap) < 256) {
                 $random_bytes = openssl_random_pseudo_bytes(10000);
                 for ($i = 0; $i < strlen($random_bytes); $i++) {
                     $chr_ord = ord($random_bytes[$i]);
-                    if ($chr_ord >= 33 and $chr_ord <= 125) {
+                    if ($chr_ord >= 33 and $chr_ord <= 125 and !in_array($random_bytes[$i], $doNotUseChr)) {
                         $characterMap .= $random_bytes[$i] ;
                     }
                 }
@@ -248,9 +251,13 @@ class Voucher implements IAuthConnector
             $record = array();
             $record['username'] = $row['username'];
             $record['validity'] = $row['validity'];
-            $record['starttime'] = $row['starttime'];
+            # always calculate a starttime, if not registered yet, use now.
+            $record['starttime'] = empty($row['starttime']) ? time() : $row['starttime'] ;
+            $record['endtime'] = $record['starttime'] + $row['validity'];
 
-            if ($row['starttime'] == null || time() - $row['starttime'] < $row['validity']) {
+            if (empty($row['starttime'])) {
+                $record['state'] = 'unused';
+            } elseif (time() > $row['endtime']) {
                 $record['state'] = 'valid';
             } else {
                 $record['state'] = 'expired';
