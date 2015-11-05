@@ -40,6 +40,9 @@ require_once("captiveportal.radius_accounting.inc");
 require_once("captiveportal.radius_authentication.inc");
 require_once("voucher.inc");
 
+// temp fix (local_backed), this file is gone in 16.1
+require_once("auth.inc");
+
 function get_include_contents($filename) {
 	if (is_file($filename)) {
 		ob_start();
@@ -51,6 +54,23 @@ function get_include_contents($filename) {
 	return false;
 }
 
+/**
+ * temporary fix to keep legacy CP online
+ */
+function local_backed($username, $passwd) {
+	$user = getUserEntry($username);
+	if (!$user)
+		return false;
+	if (is_account_disabled($username) || is_account_expired($username))
+		return false;
+	if ($user['password'])
+	{
+		$passwd = crypt($passwd, $user['password']);
+		if ($passwd == $user['password'])
+			return true;
+	}
+	return false;
+}
 
 
 //
