@@ -40,12 +40,17 @@ POSSIBILITY OF SUCH DAMAGE.
                     $.each(data, function(key, value) {
                         $('#voucher-providers').append($("<option></option>").attr("value", value).text(value));
                     });
-                    // link on change event
-                    $('#voucher-providers').on('change', function(){
+                    if ($('#voucher-providers option').size() > 0) {
+                        // link on change event
+                        $('#voucher-providers').on('change', function(){
+                            updateVoucherGroupList();
+                        });
+                        // initial load voucher list
                         updateVoucherGroupList();
-                    });
-                    // initial load voucher list
-                    updateVoucherGroupList();
+                    } else {
+                        // A voucher server is needed before we can add vouchers, alert user
+                        BootstrapDialog.alert('{{ lang._('Please setup a voucher server first ') }} (<a href="/system_authservers.php">{{ lang._('goto auth servers') }}</a> )');
+                    }
                 }
             });
         }
