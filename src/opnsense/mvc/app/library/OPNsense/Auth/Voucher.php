@@ -67,7 +67,7 @@ class Voucher implements IAuthConnector
      */
     private function openDatabase()
     {
-        $db_path = '/tmp/vouchers_' . $this->refid . '.db';
+        $db_path = '/conf/vouchers_' . $this->refid . '.db';
         $this->dbHandle = new \SQLite3($db_path);
         $results = $this->dbHandle->query('select count(*) cnt from sqlite_master');
         $row = $results->fetchArray();
