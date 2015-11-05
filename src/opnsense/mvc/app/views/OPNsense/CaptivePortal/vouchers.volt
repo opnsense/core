@@ -119,7 +119,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             });
                         }
                         var grid_clients = $("#grid-vouchers").bootgrid(gridopt);
-
                     }
             );
         }
@@ -228,7 +227,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <hr/>
                 </div>
             </div>
-            <div>
+            <div  class="col-sm-12">
                 <table id="grid-vouchers" class="table table-condensed table-hover table-striped table-responsive">
                     <thead>
                     <tr>
