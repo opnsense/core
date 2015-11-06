@@ -285,7 +285,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (($pconfig['remoteid_netbits'] != 0 && !$pconfig['remoteid_netbits']) || !is_numeric($pconfig['remoteid_netbits'])) {
                     $input_errors[] = gettext("A valid remote network bit count must be specified.");
                 }
-                break;
             case "address":
                 if (!$pconfig['remoteid_address'] || !is_ipaddr($pconfig['remoteid_address'])) {
                     $input_errors[] = gettext("A valid remote network IP address must be specified.");
