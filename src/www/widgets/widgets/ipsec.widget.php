@@ -31,37 +31,33 @@
 $nocsrf = true;
 
 require_once("guiconfig.inc");
-require_once("interfaces.inc");
-require_once("vpn.inc");
 
 //function to create widget tabs when called
 function display_widget_tabs(& $tab_array) {
-	echo "<div id=\"tabs\">";
-	$tabscounter = 0;
-	foreach ($tab_array as $ta) {
-	$dashpos = strpos($ta[2],'-');
-	$tabname = $ta[2] . "-tab";
-	$tabclass = substr($ta[2],0,$dashpos);
-	$tabclass = $tabclass . "-class";
-		if ($ta[1] == true) {
-			$tabActive = "table-cell";
-			$tabNonActive = "none";
-		}
-		else {
-			$tabActive = "none";
-			$tabNonActive = "table-cell";
-		}
-		echo "<div id=\"{$ta[2]}-active\" class=\"{$tabclass}-tabactive\" style=\"display:{$tabActive}; background-color:#EEEEEE; color:black;\">";
-		echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
-		echo "&nbsp;&nbsp;&nbsp;</b>";
-		echo "</div>";
+    echo "<div id=\"tabs\">";
+    $tabscounter = 0;
+    foreach ($tab_array as $ta) {
+        $dashpos = strpos($ta[2],'-');
+        $tabname = $ta[2] . "-tab";
+        $tabclass = substr($ta[2],0,$dashpos);
+        $tabclass = $tabclass . "-class";
+        if ($ta[1] == true) {
+            $tabActive = "table-cell";
+            $tabNonActive = "none";
+        } else {
+            $tabActive = "none";
+            $tabNonActive = "table-cell";
+        }
+        echo "<div id=\"{$ta[2]}-active\" class=\"{$tabclass}-tabactive\" style=\"display:{$tabActive}; background-color:#EEEEEE; color:black;\">";
+        echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
+        echo "&nbsp;&nbsp;&nbsp;</b>";
+        echo "</div>";
 
-		echo "<div id=\"{$ta[2]}-deactive\" class=\"{$tabclass}-tabdeactive\" style=\"display:{$tabNonActive}; background-color:#777777; color:white; cursor: pointer;\" onclick=\"return changeTabDIV('{$ta[2]}')\">";
-		echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
-		echo "&nbsp;&nbsp;&nbsp;</b>";
-		echo "</div>";
-	}
-
+        echo "<div id=\"{$ta[2]}-deactive\" class=\"{$tabclass}-tabdeactive\" style=\"display:{$tabNonActive}; background-color:#777777; color:white; cursor: pointer;\" onclick=\"return changeTabDIV('{$ta[2]}')\">";
+        echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
+        echo "&nbsp;&nbsp;&nbsp;</b>";
+        echo "</div>";
+    }
 }
 
 $ipsec_detail_array = array();
@@ -73,49 +69,31 @@ if (isset($config['ipsec']['phase1'])) {
     $tab_array[1] = array(gettext("Tunnels"), false, "ipsec-tunnel");
     $tab_array[2] = array(gettext("Mobile"), false, "ipsec-mobile");
     display_widget_tabs($tab_array);
+    // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();
+    $mobile = array();
 
-    $spd = ipsec_dump_spd();
-    $sad = ipsec_dump_sad();
-    $mobile = array(); // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();
-    $ipsec_status = ipsec_smp_dump_status();
-
-    $activecounter = 0;
-    $inactivecounter = 0;
-
-    if (isset($config['ipsec']['phase2'])) {
-        foreach ($config['ipsec']['phase2'] as $ph2ent) {
-            if ($ph2ent['remoteid']['type'] == "mobile") {
-                continue;
+    // parse configured tunnels
+    $ipsec_status = json_decode(configd_run("ipsec list_status"), true);
+    $ipsec_tunnels = array();
+    $activetunnels = 0;
+    if ($ipsec_status != null) {
+        foreach ($ipsec_status as $status_key => $status_value) {
+            if (isset($status_value['children'])) {
+              foreach($status_value['children'] as $child_status_key => $child_status_value) {
+                  $ipsec_tunnels[$child_status_key] = array('active' => false,
+                                                            'local-addrs' => $status_value['local-addrs'],
+                                                            'remote-addrs' => $status_value['remote-addrs'],
+                                                          );
+                  $ipsec_tunnels[$child_status_key]['local-ts'] = implode(',', $child_status_value['local-ts']);
+                  $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(',', $child_status_value['remote-ts']);
+              }
             }
-            ipsec_lookup_phase1($ph2ent, $ph1ent);
-            $ipsecstatus = false;
-
-            $tun_disabled = "false";
-            $foundsrc = false;
-            $founddst = false;
-
-            if (isset($ph1ent['disabled']) || isset($ph2ent['disabled'])) {
-                $tun_disabled = "true";
-                continue;
+            foreach ($status_value['sas'] as $sas_key => $sas_value) {
+                foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
+                    $ipsec_tunnels[$child_sa_key]['active'] = true;
+                    $activetunnels++;
+                }
             }
-            if (isset($ipsec_status['query']['ikesalist']['ikesa']) && isset($ph1ent['ikeid']) &&  ipsec_phase1_status($ipsec_status['query']['ikesalist']['ikesa'], $ph1ent['ikeid'])) {
-                /* tunnel is up */
-                $iconfn = "true";
-                $activecounter++;
-            } else {
-                /* tunnel is down */
-                $iconfn = "false";
-                $inactivecounter++;
-            }
-
-            $ipsec_detail_array[] = array(
-                'src' => convert_friendly_interface_to_friendly_descr($ph1ent['interface']),
-                'dest' => $ph1ent['remote-gateway'],
-                'remote-subnet' => ipsec_idinfo_to_text($ph2ent['remoteid']),
-                'descr' => $ph2ent['descr'],
-                'status' => $iconfn,
-                'disabled' => $tun_disabled
-            );
         }
     }
 }
@@ -124,132 +102,93 @@ if (isset($config['ipsec']['phase2'])) {
 ?>
 
 <div id="ipsec-Overview" style="display:block;background-color:#EEEEEE;">
-	<div>
-	<table class="table table-striped" width="100%" border="0" cellpadding="6" cellspacing="0" summary="heading">
-	<tr>
-		<td class="nowrap"><?php echo gettext('Active Tunnels');?></td>
-		<td class="nowrap"><?php echo gettext('Inactive Tunnels');?></td>
-		<td class="nowrap"><?php echo gettext('Mobile Users');?></td>
-	</tr>
-	<tr>
-		<td><?php echo $activecounter; ?></td>
-		<td><?php echo $inactivecounter; ?></td>
-		<td><?php if (is_array($mobile['pool'])) {
-            echo htmlspecialchars($mobile['pool'][0]['usage']);
-
-} else {
-    echo 0;
-} ?></td>
-	</tr>
-	</table>
-	</div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><?= gettext('Active Tunnels');?></th>
+        <th><?= gettext('Inactive Tunnels');?></th>
+        <th><?= gettext('Mobile Users');?></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><?= $activetunnels; ?></td>
+        <td><?= (count($ipsec_tunnels) - $activetunnels); ?></td>
+        <td>0 <!-- todo: add count mobile leases --></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <div id="ipsec-tunnel" style="display:none;background-color:#EEEEEE;">
-	<div style="padding: 10px">
-		<div style="display:table-row;">
-			<div class="widgetsubheader" style="display:table-cell;width:40px">Source</div>
-			<div class="widgetsubheader" style="display:table-cell;width:100px">Destination</div>
-			<div class="widgetsubheader" style="display:table-cell;width:90px">Description</div>
-			<div class="widgetsubheader" style="display:table-cell;width:30px">Status</div>
-		</div>
-		<div style="max-height:105px;overflow:auto;">
-	<?php
-    foreach ($ipsec_detail_array as $ipsec) :
-        if ($ipsec['disabled'] == "true") {
-            $spans = "<span class=\"gray\">";
-            $spane = "</span>";
-        } else {
-            $spans = $spane = "";
-        }
-
-        ?>
-
-		<div style="display:table-row;">
-			<div style="display:table-cell;width:39px">
-				<?php echo $spans;?>
-					<?php echo htmlspecialchars($ipsec['src']);?>
-				<?php echo $spane;?>
-			</div>
-			<div style="display:table-cell;width:100px"><?php echo $spans;?>
-				<?php echo $ipsec['remote-subnet'];?>
-				<br />
-				(<?php echo htmlspecialchars($ipsec['dest']);?>)<?php echo $spane;?>
-			</div>
-			<div style="display:table-cell;width:90px"><?php echo $spans;?><?php echo htmlspecialchars($ipsec['descr']);?><?php echo $spane;?></div>
-			<div style="display:table-cell;width:37px" align="center"><?php echo $spans;?>
-			<?php
-
-            if ($ipsec['status'] == "true") {
-                /* tunnel is up */
-                $iconfn = "text-success";
-            } else {
-                /* tunnel is down */
-                $iconfn = "text-danger";
-            }
-
-            echo "<span class='glyphicon glyphicon-transfer ".$iconfn."' alt='Tunnel status'></span>";
-
-            ?><?php echo $spane;?></div>
-		</div>
-	<?php
-    endforeach; ?>
-	</div>
- </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><?= gettext('Connection');?></th>
+        <th><?= gettext('Source');?></th>
+        <th><?= gettext('Destination');?></th>
+        <th><?= gettext('Status');?></th>
+      </tr>
+    </thead>
+    <tbody>
+<?php foreach ($ipsec_tunnels as $ipsec_key => $ipsec) :
+?>
+      <tr>
+          <td>
+            <?=$ipsec['local-addrs'];?> <br/>
+            (<?=$ipsec['remote-addrs'];?>)
+          </td>
+          <td><?=$ipsec['local-ts'];?></td>
+          <td><?=$ipsec['remote-ts'];?></td>
+          <td>
+          <? if($ipsec['active']):
+?>
+              <span class='glyphicon glyphicon-transfer text-success' alt='Tunnel status'></span>
+          <? else:
+?>
+            <span class='glyphicon glyphicon-transfer text-danger' alt='Tunnel status'></span>
+          <? endif;
+?>
+          </td>
+      </tr>
+<?php endforeach;
+?>
+    </tbody>
+  </table>
 </div>
 <div id="ipsec-mobile" style="display:none;background-color:#EEEEEE;">
-	<div style="padding: 10px">
-		<div style="display:table-row;">
-    <div class="widgetsubheader" style="display:table-cell;width:140px"><?= gettext('User') ?></div>
-    <div class="widgetsubheader" style="display:table-cell;width:130px"><?= gettext('IP') ?></div>
-    <div class="widgetsubheader" style="display:table-cell;width:30px"><?= gettext('Status') ?></div>
-		</div>
-		<div style="max-height:105px;overflow:auto;">
-<?php
-if (is_array($mobile['pool'])) :
-    foreach ($mobile['pool'] as $pool) :
-        if (is_array($pool['lease'])) :
-            foreach ($pool['lease'] as $muser) :
-?>
-		<div style="display:table-row;">
-			<div class="listlr" style="display:table-cell;width:139px">
-				<?php echo htmlspecialchars($muser['id']);?><br />
-			</div>
-			<div class="listr"  style="display:table-cell;width:130px">
-				<?php echo htmlspecialchars($muser['host']);?><br />
-			</div>
-			<div class="listr"  style="display:table-cell;width:30px">
-				<?php echo htmlspecialchars($muser['status']);?><br/>
-			</div>
-		</div>
-<?php
-            endforeach;
-        endif;
-    endforeach;
-endif;
-?>
-    </div>
-</div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th><?= gettext('User');?></th>
+        <th><?= gettext('IP');?></th>
+        <th><?= gettext('Status');?></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- not implemented -->
+    </tbody>
+  </table>
 </div>
 <?php //end ipsec tunnel
 } //end if tunnels are configured, else show code below
 else {
 ?>
 <div style="display:block">
-	 <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="note">
-	  <tr>
-	    <td colspan="4">
-	        <span class="vexpl">
-	          <span class="red">
-	            <strong>
+   <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="note">
+    <tr>
+      <td colspan="4">
+          <span class="vexpl">
+            <span class="red">
+              <strong>
                 <?= gettext('Note: There are no configured IPsec Tunnels') ?><br />
-	            </strong>
-	          </span>
+              </strong>
+            </span>
             <?= sprintf(gettext('You can configure your IPsec %shere%s.'), '<a href="vpn_ipsec.php">', '</a>'); ?>
-	        </span>
-		</td>
-	  </tr>
-	</table>
+          </span>
+    </td>
+    </tr>
+  </table>
 </div>
 <?php
 }
