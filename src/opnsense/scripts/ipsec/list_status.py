@@ -39,11 +39,12 @@ for conns in s.list_conns():
     for connection_id in conns:
         result[connection_id] = dict()
         result[connection_id]['version'] = conns[connection_id]['version']
-        result[connection_id]['local_addrs'] = ','.join(conns[connection_id]['local_addrs'])
+        result[connection_id]['local-addrs'] = ','.join(conns[connection_id]['local_addrs'])
         result[connection_id]['local-id'] = ''
         result[connection_id]['local-class'] = []
         result[connection_id]['remote-id'] = ''
         result[connection_id]['remote-class'] = []
+        result[connection_id]['remote-addrs'] =  ','.join(conns[connection_id]['remote_addrs'])
         result[connection_id]['children'] = conns[connection_id]['children']
         result[connection_id]['sas'] = []
 
