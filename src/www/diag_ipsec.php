@@ -184,7 +184,6 @@ include("head.inc");
                       </tr>
                       <?php endif;
 ?>
-
                     <?php endforeach; ?>
                   </tbody>
                 </table>
