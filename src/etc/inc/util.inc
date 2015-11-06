@@ -978,8 +978,7 @@ function mwexec_bg($command, $mute = false)
 /* check if an alias exists */
 function is_alias($name) {
 	global $aliastable;
-
-	return isset($aliastable[$name]);
+	return array_key_exists($name, $aliastable);
 }
 
 function alias_get_type($name) {
