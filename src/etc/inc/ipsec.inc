@@ -245,43 +245,6 @@ function ipsec_phase1_status($ipsec_status, $ikeid) {
 	return false;
 }
 
-function ipsec_smp_dump_status() {
-	global $config, $g, $custom_listtags;
-
-	if (!file_exists("/var/run/charon.xml")) {
-		log_error("IPsec daemon seems to have issues or not running!");
-		return;
-	}
-
-	$fd = @fsockopen("unix:///var/run/charon.xml");
-	if (!$fd) {
-		log_error("Could not read status from ipsec");
-		return;
-	}
-	$query = '<?xml version="1.0"?><message xmlns="http://www.strongswan.org/smp/1.0" type="request" id="1">';
-	$query .= '<query><ikesalist/></query></message>';
-
-	@fwrite($fd, $query);
-	$response = "";
-	$sread = "";
-	while (!strstr($sread, "</message>")) {
-		$sread = fgets($fd);
-		$response .= $sread;
-	}
-	fclose($fd);
-
-	$smp_status_xml = '/tmp/smp_status.xml';
-	@file_put_contents($smp_status_xml, $response);
-	unset($response, $sread);
-
-	$custom_listtags = array('ikesa', 'childsa', 'network', 'auth');
-	$response = parse_xml_config($smp_status_xml, 'message');
-	@unlink($smp_status_xml);
-	unset($custom_listtags);
-
-	return $response;
-}
-
 /*
  * Return dump of SPD table
  */
