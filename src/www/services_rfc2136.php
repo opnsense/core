@@ -169,7 +169,7 @@ $main_buttons = array(
 										  </td>
 										  <td valign="middle" class="list nowrap">
 											<a href="services_rfc2136_edit.php?id=<?=$i;?>">
-											<button type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button> 
+											<button type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button>
 											</a>
 											<a href="services_rfc2136.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this client?");?>')">
 											<button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
