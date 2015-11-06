@@ -74,7 +74,7 @@ include("head.inc");
 										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 									</form>
 								</td><tr>
-								<tr><td colspan="2">NOTE: Clearing the log file will restart the DHCP daemon.</td></tr>
+								<tr><td colspan="2"><?=gettext('NOTE: Clearing the log file will restart the DHCP daemon.') ?></td></tr>
 							</table>
 						</div>
 				    </div>

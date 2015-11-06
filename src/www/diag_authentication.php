@@ -102,7 +102,7 @@ include("head.inc");
                 <div class="content-box">
 
 					<header class="content-box-head container-fluid">
-				   <h3>Test a server</h3>
+				   <h3><?= gettext('Test a server') ?></h3>
 				</header>
 
 				    <div class="content-box-main">

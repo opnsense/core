@@ -77,7 +77,7 @@ if(isset($_POST['create_alias']) && (is_hostname($host) || is_ipaddr($host))) {
 			$newalias['name'] = $aliasname;
 			$newalias['type'] = "network";
 			$newalias['address'] = $addresses;
-			$newalias['descr'] = "Created from Diagnostics-> DNS Lookup";
+			$newalias['descr'] = gettext('Created from Diagnostics-> DNS Lookup');
 			if($override)
 				$a_aliases[$id] = $newalias;
 			else
@@ -207,14 +207,14 @@ include("head.inc"); ?>
 							          <td>
 								      <? if($found > 0): ?>
 											  <?PHP	if($alias_exists): ?>
-												An alias already exists for the hostname <?= htmlspecialchars($host) ?>. <br />
+												<?= sprintf(gettext('An alias already exists for the hostname %s.'), htmlspecialchars($host)) ?>. <br />
 												<input type="hidden" name="override" value="true"/>
 												<input type="submit" class="btn btn-default" name="create_alias" value="Overwrite Alias"/>
 											  <?php else: ?>
 											  <?php if(!$createdalias): ?>
 												<input type="submit" class="btn btn-default" name="create_alias" value="Create Alias"/>
 											  <?php else: ?>
-											   Alias created with name <?= htmlspecialchars($newalias['name']) ?>
+											   <?= sprintf(gettext('Alias created with name %s.'), htmlspecialchars($newalias['name'])) ?>
 											  <? endif; endif; endif; ?>
 											  </td>
 							          <? else: ?>

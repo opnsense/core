@@ -260,7 +260,7 @@ include("fbegin.inc");
 					          <td><?=gettext("Address Family");?></td>
 					          <td>
 						          <select name="fam" class="form-control">
-											<option value="">Any</option>
+											<option value=""><?=gettext('Any') ?></option>
 											<option value="ip" <?php if ($fam == "ip") echo "selected=\"selected\""; ?>>IPv4 Only</option>
 											<option value="ip6" <?php if ($fam == "ip6") echo "selected=\"selected\""; ?>>IPv6 Only</option>
 										</select>
@@ -271,7 +271,7 @@ include("fbegin.inc");
 					          <td><?=gettext("Protocol");?></td>
 					          <td>
 						          <select name="proto" class="form-control">
-											<option value="">Any</option>
+											<option value=""><?=gettext('Any') ?></option>
 											<option value="icmp" <?php if ($proto == "icmp") echo "selected=\"selected\""; ?>>ICMP</option>
 											<option value="!icmp" <?php if ($proto == "!icmp") echo "selected=\"selected\""; ?>>Exclude ICMP</option>
 											<option value="icmp6" <?php if ($proto == "icmp6") echo "selected=\"selected\""; ?>>ICMPv6</option>
