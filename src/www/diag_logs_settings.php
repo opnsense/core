@@ -307,18 +307,18 @@ function check_everything() {
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("General Logging Options");?></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">Forward/Reverse Display</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('Forward/Reverse Display') ?></td>
 											<td width="78%" class="vtable"> <input name="reverse" type="checkbox" id="reverse" value="yes" <?php if ($pconfig['reverse']) echo "checked=\"checked\""; ?> />
 											<strong><?=gettext("Show log entries in reverse order (newest entries on top)");?></strong></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">GUI Log Entries to Display</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('GUI Log Entries to Display') ?></td>
 											<td width="78%" class="vtable">
 											<input name="nentries" id="nentries" type="text" class="formfld unknown" size="4" value="<?=htmlspecialchars($pconfig['nentries']);?>" /><br />
 											<?=gettext("Hint: This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files.") ?></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">Log File Size (Bytes)</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('Log File Size (Bytes)') ?></td>
 											<td width="78%" class="vtable">
 											<input name="logfilesize" id="logfilesize" type="text" class="formfld unknown" size="8" value="<?=htmlspecialchars($pconfig['logfilesize']);?>" /><br />
 											<?=gettext("Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files.") ?>
@@ -330,7 +330,7 @@ function check_everything() {
 											</td>
 										</tr>
 										<tr>
-											<td valign="top" class="vtable">Log Firewall Default Blocks</td>
+											<td valign="top" class="vtable"><?=gettext('Log Firewall Default Blocks') ?></td>
 											<td class="vtable">
 												<input name="logdefaultblock" type="checkbox" id="logdefaultblock" value="yes" <?php if ($pconfig['logdefaultblock']) echo "checked=\"checked\""; ?> />
 												<strong><?=gettext("Log packets matched from the default block rules put in the ruleset");?></strong><br />
@@ -348,18 +348,18 @@ function check_everything() {
 											</td>
 										</tr>
 										<tr>
-											<td valign="top" class="vtable">Web Server Log</td>
+											<td valign="top" class="vtable"><?=gettext('Web Server Log') ?></td>
 											<td class="vtable"> <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?php if ($pconfig['loglighttpd']) echo "checked=\"checked\""; ?> />
 											<strong><?=gettext("Log errors from the web server process.");?></strong><br />
 											<?=gettext("Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
 										</tr>
 										<tr>
-											<td valign="top" class="vtable">Filter descriptions</td>
+											<td valign="top" class="vtable"><?=gettext('Filter descriptions') ?></td>
 											<td class="vtable">
 												<select name="filterdescriptions" id="filterdescriptions" class="form-control">
-												  <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>>Omit descriptions</option>
-												  <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>>Display as column</option>
-												  <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>>Display as second row</option>
+												  <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>><?=gettext('Omit descriptions') ?></option>
+												  <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>><?=gettext('Display as column') ?></option>
+												  <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>><?=gettext('Display as second row') ?></option>
 												</select>
 												<strong><?=gettext("Show the applied rule description below or in the firewall log rows.");?></strong>
 												<br />
@@ -367,12 +367,12 @@ function check_everything() {
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">Local Logging</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('Local Logging') ?></td>
 											<td width="78%" class="vtable"> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?php if ($pconfig['disablelocallogging']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
 											<strong><?=gettext("Disable writing log files to the local disk");?></strong></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top">Reset Logs</td>
+											<td width="22%" valign="top"><?=gettext('Reset Logs') ?></td>
 											<td width="78%">
 												<input name="resetlogs" type="submit" class="btn btn-primary" value="<?=gettext("Reset Log Files"); ?>"  onclick="return confirm('<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>')" />
 												<br /><br />
@@ -389,7 +389,7 @@ function check_everything() {
 											<td width="22%" valign="top" class="vncell"><?=gettext("Source Address"); ?></td>
 											<td width="78%" class="vtable">
 												<select name="sourceip"  class="form-control">
-													<option value="">Default (any)</option>
+													<option value=""><?=gettext('Default (any)') ?></option>
 												<?php $sourceips = get_possible_traffic_source_addresses(false);
 													foreach ($sourceips as $sip):
 														$selected = "";

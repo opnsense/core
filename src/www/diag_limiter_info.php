@@ -34,7 +34,7 @@ $shortcut_section = "trafficshaper-limiters";
 if(isset($_POST['getactivity'])) {
 	$text = `/sbin/ipfw pipe show`;
 	if($text == "")
-		$text = "We could not find any limiters on this system.";
+		$text = gettext('We could not find any limiters on this system.');
 	echo "Limiters:\n";
 	echo $text;
 	$text = `/sbin/ipfw queue show`;
