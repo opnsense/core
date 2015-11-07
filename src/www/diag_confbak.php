@@ -39,7 +39,7 @@ if (isset($_POST['backupcount'])) {
 	} else {
 		unset($config['system']['backupcount']);
 	}
-	write_config('Changed backup revision count');
+	write_config(gettext('Changed backup revision count.'));
 } elseif (isset($_POST['newver']) && $_POST['newver'] != '') {
 	foreach ($confvers as $filename => $revision) {
 		if (isset($revision['time']) && $revision['time'] == $_POST['newver']) {
