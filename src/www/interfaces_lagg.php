@@ -77,7 +77,7 @@ $pgtitle = array(gettext("Interfaces"),gettext("LAGG"));
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_lagg_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_lagg_edit.php', 'label'=>gettext('Add')),
 );
 
 ?>
