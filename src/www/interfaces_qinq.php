@@ -80,7 +80,7 @@ $pgtitle = array(gettext("Interfaces"),gettext("QinQ"));
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_qinq_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_qinq_edit.php', 'label'=>gettext('Add')),
 );
 
 ?>

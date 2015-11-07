@@ -78,7 +78,7 @@ $pgtitle = array(gettext("Interfaces"),gettext("VLAN"));
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_vlan_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_vlan_edit.php', 'label'=>gettext('Add')),
 );
 
 

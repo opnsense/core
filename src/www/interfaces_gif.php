@@ -72,7 +72,7 @@ $pgtitle = array(gettext("Interfaces"),gettext("GIF"));
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_gif_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_gif_edit.php', 'label'=>gettext('Add')),
 );
 
 ?>
