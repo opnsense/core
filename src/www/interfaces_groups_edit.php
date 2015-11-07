@@ -68,7 +68,7 @@ if ($_POST) {
 
 	foreach ($iflist as $gif => $gdescr) {
 		if ($gdescr == $_POST['ifname'] || $gif == $_POST['ifname'])
-			$input_errors[] = "The specified group name is already used by an interface. Please choose another name.";
+			$input_errors[] = gettext("The specified group name is already used by an interface. Please choose another name.");
 	}
 	$members = "";
 	$isfirst = 0;

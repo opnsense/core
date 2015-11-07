@@ -312,7 +312,7 @@ if (isset($_POST['submit'])) {
 				if (empty($map['ipaddr']))
 					$noip = true;
 		if ($_POST['staticarp'] && $noip)
-			$input_errors[] = "Cannot enable static ARP when you have static map entries without IP addresses. Ensure all static maps have IP addresses and try again.";
+			$input_errors[] = gettext("Cannot enable static ARP when you have static map entries without IP addresses. Ensure all static maps have IP addresses and try again.");
 
 		if(is_array($pconfig['numberoptions']['item'])) {
 			foreach ($pconfig['numberoptions']['item'] as $numberoption) {

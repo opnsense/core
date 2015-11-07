@@ -86,13 +86,13 @@ if ($_POST) {
 		$pconfig = $_POST;
 
 		if (isset($_POST['enable']) && isset($config['dnsmasq']['enable']))
-			$input_errors[] = "The system dns-forwarder is still active. Disable it before enabling the DNS Resolver.";
+			$input_errors[] = gettext("The DNS Forwarder is still active. Disable it before enabling the DNS Resolver.");
 
 		if (empty($_POST['active_interface']))
-			$input_errors[] = "A single network interface needs to be selected for the DNS Resolver to bind to.";
+			$input_errors[] = gettext("A single network interface needs to be selected for the DNS Resolver to bind to.");
 
 		if (empty($_POST['outgoing_interface']))
-			$input_errors[] = "A single outgoing network interface needs to be selected for the DNS Resolver to use for outgoing DNS requests.";
+			$input_errors[] = gettext("A single outgoing network interface needs to be selected for the DNS Resolver to use for outgoing DNS requests.");
 
 		if ($_POST['port'])
 			if (is_port($_POST['port']))

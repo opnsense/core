@@ -260,7 +260,7 @@ if ($_POST) {
 			continue;
 
 		if ($ppp['serialport'] == $_POST['serialport']) {
-			$input_errors[] = "Serial port is in use";
+			$input_errors[] = gettext("Serial port is in use");
 			break;
 		}
 	}

@@ -74,7 +74,7 @@ if (isset($_GET['act'])) {
         }
 
         if (empty($_GET['useaddr'])) {
-            $input_errors[] = "You need to specify an IP or hostname.";
+            $input_errors[] = gettext("You need to specify an IP or hostname.");
         } else {
             $useaddr = $_GET['useaddr'];
         }
@@ -83,12 +83,12 @@ if (isset($_GET['act'])) {
         if (!empty($_GET['proxy_addr']) || !empty($_GET['proxy_port'])) {
             $proxy = array();
             if (empty($_GET['proxy_addr'])) {
-                $input_errors[] = "You need to specify an address for the proxy port.";
+                $input_errors[] = gettext("You need to specify an address for the proxy port.");
             } else {
                 $proxy['ip'] = $_GET['proxy_addr'];
             }
             if (empty($_GET['proxy_port'])) {
-                $input_errors[] = "You need to specify a port for the proxy ip.";
+                $input_errors[] = gettext("You need to specify a port for the proxy ip.");
             } else {
                 $proxy['port'] = $_GET['proxy_port'];
             }
@@ -96,12 +96,12 @@ if (isset($_GET['act'])) {
             $proxy['proxy_authtype'] = $_GET['proxy_authtype'];
             if ($_GET['proxy_authtype'] != "none") {
                 if (empty($_GET['proxy_user'])) {
-                    $input_errors[] = "You need to specify a username with the proxy config.";
+                    $input_errors[] = gettext("You need to specify a username with the proxy config.");
                 } else {
                     $proxy['user'] = $_GET['proxy_user'];
                 }
                 if (!empty($_GET['proxy_user']) && empty($_GET['proxy_password'])) {
-                    $input_errors[] = "You need to specify a password with the proxy user.";
+                    $input_errors[] = gettext("You need to specify a password with the proxy user.");
                 } else {
                     $proxy['password'] = $_GET['proxy_password'];
                 }
@@ -114,7 +114,7 @@ if (isset($_GET['act'])) {
         }
         $exp_data = openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipconf);
         if (!$exp_data) {
-            $input_errors[] = "Failed to export config files!";
+            $input_errors[] = gettext("Failed to export config files!");
         }
         if (count($input_errors) == 0) {
             if ($zipconf) {

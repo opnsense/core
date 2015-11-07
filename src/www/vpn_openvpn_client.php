@@ -176,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['local_port'])) {
             if (empty($pconfig['local_port']) || !is_numeric($pconfig['local_port']) || $pconfig['local_port'] < 0 || ($pconfig['local_port'] > 65535)) {
-                    $input_errors[] = "The field Local port must contain a valid port, ranging from 0 to 65535.";
+                    $input_errors[] = gettext("The field Local port must contain a valid port, ranging from 0 to 65535.");
             }
             $portused = openvpn_port_used($pconfig['protocol'], $pconfig['interface'], $pconfig['local_port'], $vpnid);
             if (($portused != $vpnid) && ($portused != 0)) {
@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (empty($pconfig['server_port']) || !is_numeric($pconfig['server_port']) || $pconfig['server_port'] < 0 || ($pconfig['server_port'] > 65535)) {
-                $input_errors[] = "The field Server port must contain a valid port, ranging from 0 to 65535.";
+                $input_errors[] = gettext("The field Server port must contain a valid port, ranging from 0 to 65535.");
         }
 
         if (!empty($pconfig['proxy_addr'])) {
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext("The field Proxy host or address must contain a valid IP address or domain name.") ;
             }
             if (empty($pconfig['proxy_port']) || !is_numeric($pconfig['proxy_port']) || $pconfig['proxy_port'] < 0 || ($pconfig['proxy_port'] > 65535)) {
-                    $input_errors[] = "The field Proxy port must contain a valid port, ranging from 0 to 65535.";
+                    $input_errors[] = gettext("The field Proxy port must contain a valid port, ranging from 0 to 65535.");
             }
             if (isset($pconfig['proxy_authtype']) && $pconfig['proxy_authtype'] != "none") {
                 if (empty($pconfig['proxy_user']) || empty($pconfig['proxy_passwd'])) {
