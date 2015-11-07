@@ -664,13 +664,13 @@ include("head.inc");
                     <td width="78%">
                       <select name="type" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
-                        $type_options = array('Pass', 'Block', 'Reject');
+                        $type_options = array('Pass' => gettext('Pass'), 'Block' => gettext('Block'), 'Reject' => gettext('Reject'));
                         if (!empty($pconfig['floating'])) {
-                            $type_options[] = 'Match';
+                            $type_options['Match'] = gettext('Match');
                         }
-                        foreach ($type_options as $type): ?>
+                        foreach ($type_options as $type => $type_translated): ?>
                         <option value="<?=strtolower($type);?>" <?= strtolower($type) == strtolower($pconfig['type']) ? "selected=\"selected\"" :""; ?>>
-                          <?=$type;?>
+                          <?=$type_translated;?>
                         </option>
 <?php
                         endforeach; ?>
@@ -1124,7 +1124,7 @@ include("head.inc");
                     <td><a id="help_for_sourceos" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source OS");?></td>
                     <td>
                         <select name="os" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                          <option value="" <?= empty($pconfig['os']) ? "selected=\"selected\"" : ""; ?>>Any</option>
+                        <option value="" <?= empty($pconfig['os']) ? "selected=\"selected\"" : ""; ?>><?= gettext('Any') ?></option>
 <?php
                           foreach ($ostypes as $ostype): ?>
                             <option value="<?=$ostype;?>" <?= $ostype == $pconfig['os'] ? "selected=\"selected\"" : ""; ?>>
