@@ -71,7 +71,7 @@ $pgtitle = gettext("Interfaces: PPPs");
 $shortcut_section = "interfaces";
 include("head.inc");
 $main_buttons = array(
-	array('href'=>'interfaces_ppps_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_ppps_edit.php', 'label'=>gettext('Add')),
 );
 
 ?>

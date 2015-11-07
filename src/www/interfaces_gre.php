@@ -71,7 +71,7 @@ $shortcut_section = "interfaces";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_gre_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_gre_edit.php', 'label'=>gettext('Add')),
 );
 
 ?>
