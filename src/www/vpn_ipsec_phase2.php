@@ -269,6 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if ($pconfig['localid_type'] == "address") {
                         $input_errors[] = gettext("You cannot configure a network type address for NAT while only an address type is selected for local source.");
                     }
+                    // address rules also apply to network type (hence, no break)
                 case "address":
                     if (!empty($pconfig['natlocalid_address']) && !is_ipaddr($pconfig['natlocalid_address'])) {
                         $input_errors[] = gettext("A valid NAT local network IP address must be specified.");
@@ -285,6 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (($pconfig['remoteid_netbits'] != 0 && !$pconfig['remoteid_netbits']) || !is_numeric($pconfig['remoteid_netbits'])) {
                     $input_errors[] = gettext("A valid remote network bit count must be specified.");
                 }
+                // address rules also apply to network type (hence, no break)
             case "address":
                 if (!$pconfig['remoteid_address'] || !is_ipaddr($pconfig['remoteid_address'])) {
                     $input_errors[] = gettext("A valid remote network IP address must be specified.");
