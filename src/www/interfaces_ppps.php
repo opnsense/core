@@ -67,8 +67,9 @@ if (!is_array($config['ppps']['ppp'])) {
 
 $a_ppps = $config['ppps']['ppp'];
 
-$pgtitle = gettext("Interfaces: PPPs");
+$pgtitle = array(gettext('Interfaces'), gettext('PPPs'));
 $shortcut_section = "interfaces";
+
 include("head.inc");
 $main_buttons = array(
 	array('href'=>'interfaces_ppps_edit.php', 'label'=>gettext('Add')),

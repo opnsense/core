@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_1to1[$id]['disabled'] = true;
         }
-        if (write_config("Firewall: NAT: Outbound, enable/disable NAT rule")) {
+        if (write_config(gettext('Toggled NAT rule'))) {
             mark_subsystem_dirty('natconf');
         }
         header("Location: firewall_nat_1to1.php");

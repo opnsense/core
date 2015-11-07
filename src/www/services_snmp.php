@@ -462,7 +462,7 @@ function enable_change(whichone) {
 									<td width="22%" valign="top" class="vncellreq"><?=gettext("Bind Interface"); ?></td>
 									<td width="78%" class="vtable">
 										<select name="bindip" class="formselect">
-											<option value="">All</option>
+											<option value=""><?= gettext('All') ?></option>
 										<?php  $listenips = get_possible_listen_ips();
 											foreach ($listenips as $lip):
 												$selected = "";

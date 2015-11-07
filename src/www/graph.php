@@ -76,7 +76,7 @@ $attribs['error']='fill="blue" font-family="Arial" font-size="4"';
 $attribs['collect_initial']='fill="gray" font-family="Tahoma, Verdana, Arial, Helvetica, sans-serif" font-size="4"';
 
 //Error text if we cannot fetch data : depends on which method is used
-$error_text = "Cannot get data about interface " . htmlspecialchars($ifnum);
+$error_text = sprintf(gettext('Cannot get data about interface %s'), htmlspecialchars($ifnum));
 
 $height=100;            //SVG internal height : do not modify
 $width=200;             //SVG internal width : do not modify
