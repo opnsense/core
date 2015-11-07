@@ -203,9 +203,9 @@ if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enabl
 					      <thead>
 					        <tr>
 					          <th><?=gettext("Interface"); ?></th>
-					          <th>Sort by</th>
-					          <th>Filter</th>
-					          <th>Display</th>
+                    <th><?= gettext('Sort by') ?></th>
+                    <th><?= gettext('Filter') ?></th>
+                    <th><?= gettext('Display') ?></th>
 					        </tr>
 					      </thead>
 					      <tbody>
@@ -220,18 +220,18 @@ if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enabl
 						?>
 						</select></td>
 					          <td><select id="sort" name="sort" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
-							<option value="">Bw In</option>
-							<option value="out"<?php if ($cursort == "out") echo " selected=\"selected\"";?>>Bw Out</option>
+              <option value=""><?= gettext('Bw In') ?></option>
+              <option value="out"<?php if ($cursort == "out") echo " selected=\"selected\"";?>><?= gettext('Bw Out') ?></option>
 						</select></td>
 					          <td><select id="filter" name="filter" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
-							<option value="local"<?php if ($curfilter == "local") echo " selected=\"selected\"";?>>Local</option>
-							<option value="remote"<?php if ($curfilter == "remote") echo " selected=\"selected\"";?>>Remote</option>
-							<option value="all"<?php if ($curfilter == "all") echo " selected=\"selected\"";?>>All</option>
+              <option value="local"<?php if ($curfilter == "local") echo " selected=\"selected\"";?>><?= gettext('Local') ?></option>
+              <option value="remote"<?php if ($curfilter == "remote") echo " selected=\"selected\"";?>><?= gettext('Remote') ?></option>
+              <option value="all"<?php if ($curfilter == "all") echo " selected=\"selected\"";?>><?= gettext('All') ?></option>
 						</select></td>
 					          <td><select id="hostipformat" name="hostipformat" class="form-control" style="z-index: -10;" onchange="document.form1.submit()">
-							<option value="">IP Address</option>
-							<option value="hostname"<?php if ($curhostipformat == "hostname") echo " selected";?>>Host Name</option>
-							<option value="fqdn"<?php if ($curhostipformat == "fqdn") echo " selected=\"selected\"";?>>FQDN</option>
+              <option value=""><?= gettext('IP Address') ?></option>
+              <option value="hostname"<?php if ($curhostipformat == "hostname") echo " selected";?>><?= gettext('Host Name') ?></option>
+              <option value="fqdn"<?php if ($curhostipformat == "fqdn") echo " selected=\"selected\"";?>><?= gettext('FQDN') ?></option>
 						</select></td>
 					        </tr>
 					      </tbody>
