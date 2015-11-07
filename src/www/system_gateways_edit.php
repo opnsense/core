@@ -115,7 +115,7 @@ if ($_POST) {
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
     if (! isset($_POST['name'])) {
-        $input_errors[] = "A valid gateway name must be specified.";
+        $input_errors[] = gettext("A valid gateway name must be specified.");
     }
     if (! is_validaliasname($_POST['name'])) {
         $input_errors[] = gettext("The gateway name must not contain invalid characters.");

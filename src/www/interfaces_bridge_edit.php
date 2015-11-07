@@ -139,13 +139,15 @@ if ($_POST) {
 	if ($_POST['holdcnt'] && !is_numeric($_POST['holdcnt']))
 		$input_errors[] = gettext("Transmit Hold Count for STP needs to be an integer between 1 and 10.");
 	foreach ($ifacelist as $ifn => $ifdescr) {
-		if ($_POST[$ifn] <> "" && !is_numeric($_POST[$ifn]))
-			$input_errors[] = "{$ifdescr} " . gettext("interface priority for STP needs to be an integer between 0 and 240.");
+		if ($_POST[$ifn] <> "" && !is_numeric($_POST[$ifn])) {
+			$input_errors[] = sprintf(gettext("%s interface priority for STP needs to be an integer between 0 and 240."), $ifdescr);
+		}
 	}
 	$i = 0;
 	foreach ($ifacelist as $ifn => $ifdescr) {
-		if ($_POST["{$ifn}{$i}"] <> "" && !is_numeric($_POST["{$ifn}{$i}"]))
-			$input_errors[] = "{$ifdescr} " . gettext("interface path cost for STP needs to be an integer between 1 and 200000000.");
+		if ($_POST["{$ifn}{$i}"] <> "" && !is_numeric($_POST["{$ifn}{$i}"])) {
+			$input_errors[] = sprintf(gettext("%s interface path cost for STP needs to be an integer between 1 and 200000000."), $ifdescr);
+		}
 		$i++;
 	}
 

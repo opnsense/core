@@ -312,21 +312,21 @@ if ($_POST) {
         for ($i = 0; $i < count($reqdfields); $i++) {
             if ($reqdfields[$i] == 'dn_email') {
                 if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $_POST["dn_email"])) {
-                    array_push($input_errors, "The field 'Distinguished name Email Address' contains invalid characters.");
+                    $input_errors[] = gettext("The field 'Distinguished name Email Address' contains invalid characters.");
                 }
             } elseif ($reqdfields[$i] == 'dn_commonname') {
                 if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $_POST["dn_commonname"])) {
-                    array_push($input_errors, "The field 'Distinguished name Common Name' contains invalid characters.");
+                    $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
                 }
             } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\.\"\']/", $_POST["$reqdfields[$i]"])) {
-                array_push($input_errors, "The field '" . $reqdfieldsn[$i] . "' contains invalid characters.");
+                $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
             }
         }
         if (!in_array($_POST["keylen"], $ca_keylens)) {
-            array_push($input_errors, gettext("Please select a valid Key Length."));
+            $input_errors[] = gettext("Please select a valid Key Length.");
         }
         if (!in_array($_POST["digest_alg"], $openssl_digest_algs)) {
-            array_push($input_errors, gettext("Please select a valid Digest Algorithm."));
+            $input_errors[] = gettext("Please select a valid Digest Algorithm.");
         }
     }
 
@@ -378,7 +378,7 @@ if ($_POST) {
                 if (!ca_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['digest_alg'])) {
                     $input_errors = array();
                     while ($ssl_err = openssl_error_string()) {
-                        array_push($input_errors, "openssl library returns: " . $ssl_err);
+                        $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                     }
                 }
             } elseif ($pconfig['method'] == "intermediate") {
@@ -392,7 +392,7 @@ if ($_POST) {
                 if (!ca_inter_create($ca, $pconfig['keylen'], $pconfig['lifetime'], $dn, $pconfig['caref'], $pconfig['digest_alg'])) {
                     $input_errors = array();
                     while ($ssl_err = openssl_error_string()) {
-                        array_push($input_errors, "openssl library returns: " . $ssl_err);
+                        $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                     }
                 }
             }

@@ -213,7 +213,7 @@ function step7_submitphpaction() {
 	} elseif (has_special_chars($_POST['country']) || has_special_chars($_POST['state']) ||
 	    has_special_chars($_POST['city']) || has_special_chars($_POST['organization'])) {
 		$stepid--;
-		$input_errors[] = "Please do not use special characters in Certificate field names.";
+		$input_errors[] = gettext("Please do not use special characters in Certificate field names.");
 	} elseif (in_array($_POST['descr'], $canames) || in_array($_POST['descr'], $cacns)) {
 		$stepid--;
 		$savemsg = "Please enter a different name for the Certicicate Authority. A Certificate Authority with that name already exists.";
@@ -312,7 +312,7 @@ function step9_submitphpaction() {
 	} elseif (has_special_chars($_POST['country']) || has_special_chars($_POST['state']) ||
 	    has_special_chars($_POST['city']) || has_special_chars($_POST['organization'])) {
 		$stepid--;
-		$input_errors[] = "Please do not use special characters in Certificate field names.";
+		$input_errors[] = gettext("Please do not use special characters in Certificate field names.");
 	} elseif (in_array($_POST['descr'], $certnames) || in_array($_POST['descr'], $certcns)) {
 		$stepid--;
 		$savemsg = "Please enter a different name for the Certicicate. A Certificate with that name/common name already exists.";
@@ -398,37 +398,37 @@ function step10_submitphpaction() {
 
 	$portused = openvpn_port_used($_POST['protocol'], $_POST['interface'], $_POST['localport']);
 	if ($portused != 0)
-		$input_errors[] = "The specified 'Local port' is in use. Please select another value";
+		$input_errors[] = gettext("The specified 'Local port' is in use. Please select another value.");
 
 	if (!isset($_POST['generatetlskey']) && isset($_POST['tlsauthentication']))
 		if (!strstr($_POST['tlssharedkey'], "-----BEGIN OpenVPN Static key V1-----") ||
 			!strstr($_POST['tlssharedkey'], "-----END OpenVPN Static key V1-----"))
-			$input_errors[] = "The field 'TLS Authentication Key' does not appear to be valid";
+			$input_errors[] = gettext("The field 'TLS Authentication Key' does not appear to be valid.");
 
 	if (!empty($_POST['dnsserver1']) && !is_ipaddr(trim($_POST['dnsserver1'])))
-		$input_errors[] = "The field 'DNS Server #1' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'DNS Server #1' must contain a valid IP address");
 	if (!empty($_POST['dnsserver2']) && !is_ipaddr(trim($_POST['dnsserver2'])))
-		$input_errors[] = "The field 'DNS Server #2' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'DNS Server #2' must contain a valid IP address");
 	if (!empty($_POST['dnsserver3']) && !is_ipaddr(trim($_POST['dnsserver3'])))
-		$input_errors[] = "The field 'DNS Server #3' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'DNS Server #3' must contain a valid IP address");
 	if (!empty($_POST['dnsserver4']) && !is_ipaddr(trim($_POST['dnsserver4'])))
-		$input_errors[] = "The field 'DNS Server #4' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'DNS Server #4' must contain a valid IP address");
 
 	if (!empty($_POST['ntpserver1']) && !is_ipaddr(trim($_POST['ntpserver1'])))
-		$input_errors[] = "The field 'NTP Server #1' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'NTP Server #1' must contain a valid IP address");
 	if (!empty($_POST['ntpserver2']) && !is_ipaddr(trim($_POST['ntpserver2'])))
-		$input_errors[] = "The field 'NTP Server #2' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'NTP Server #2' must contain a valid IP address");
 
 	if (!empty($_POST['winsserver1']) && !is_ipaddr(trim($_POST['winsserver1'])))
-		$input_errors[] = "The field 'WINS Server #1' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'WINS Server #1' must contain a valid IP address");
 	if (!empty($_POST['winsserver2']) && !is_ipaddr(trim($_POST['winsserver2'])))
-		$input_errors[] = "The field 'WINS Server #2' must contain a valid IP address";
+		$input_errors[] = gettext("The field 'WINS Server #2' must contain a valid IP address");
 
 	if ($_POST['concurrentcon'] && !is_numeric($_POST['concurrentcon']))
-		$input_errors[] = "The field 'Concurrent connections' must be numeric.";
+		$input_errors[] = gettext("The field 'Concurrent connections' must be numeric.");
 
 	if (empty($_POST['tunnelnet']))
-		$input_errors[] = "You must specify a 'Tunnel network'.";
+		$input_errors[] = gettext("You must specify a 'Tunnel network'.");
 
 	if (count($input_errors) > 0) {
 		$savemsg = $input_errors[0];

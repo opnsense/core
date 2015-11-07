@@ -326,30 +326,30 @@ if ($_POST) {
                 switch ($altname['type']) {
                     case "DNS":
                         if (!is_hostname($altname['value'])) {
-                            array_push($input_errors, "DNS subjectAltName values must be valid hostnames or FQDNs");
+                            $input_errors[] = gettext("DNS subjectAltName values must be valid hostnames or FQDNs");
                         }
                         break;
                     case "IP":
                         if (!is_ipaddr($altname['value'])) {
-                            array_push($input_errors, "IP subjectAltName values must be valid IP Addresses");
+                            $input_errors[] = gettext("IP subjectAltName values must be valid IP Addresses");
                         }
                         break;
                     case "email":
                         if (empty($altname['value'])) {
-                            array_push($input_errors, "You must provide an e-mail address for this type of subjectAltName");
+                            $input_errors[] = gettext("You must provide an e-mail address for this type of subjectAltName");
                         }
                         if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $altname['value'])) {
-                            array_push($input_errors, "The e-mail provided in a subjectAltName contains invalid characters.");
+                            $input_errors[] = gettext("The e-mail provided in a subjectAltName contains invalid characters.");
                         }
                         break;
                     case "URI":
                         /* Close enough? */
                         if (!is_URL($altname['value'])) {
-                            $input_errors[] = "URI subjectAltName types must be a valid URI";
+                            $input_errors[] = gettext("URI subjectAltName types must be a valid URI");
                         }
                         break;
                     default:
-                        $input_errors[] = "Unrecognized subjectAltName type.";
+                        $input_errors[] = gettext("Unrecognized subjectAltName type.");
                 }
             }
 
@@ -358,30 +358,30 @@ if ($_POST) {
                 if (preg_match('/email/', $reqdfields[$i])) {
 /* dn_email or csr_dn_name */
                     if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $_POST[$reqdfields[$i]])) {
-                        array_push($input_errors, "The field 'Distinguished name Email Address' contains invalid characters.");
+                        $input_errors[] = gettext("The field 'Distinguished name Email Address' contains invalid characters.");
                     }
                 } elseif (preg_match('/commonname/', $reqdfields[$i])) {
 /* dn_commonname or csr_dn_commonname */
                     if (preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $_POST[$reqdfields[$i]])) {
-                        array_push($input_errors, "The field 'Distinguished name Common Name' contains invalid characters.");
+                        $input_errors[] = gettext("The field 'Distinguished name Common Name' contains invalid characters.");
                     }
                 } elseif (($reqdfields[$i] != "descr") && preg_match("/[\!\@\#\$\%\^\(\)\~\?\>\<\&\/\\\,\.\"\']/", $_POST[$reqdfields[$i]])) {
-                    array_push($input_errors, "The field '" . $reqdfieldsn[$i] . "' contains invalid characters.");
+                    $input_errors[] = sprintf(gettext("The field '%s' contains invalid characters."), $reqdfieldsn[$i]);
                 }
             }
 
             if (($pconfig['method'] != "external") && isset($_POST["keylen"]) && !in_array($_POST["keylen"], $cert_keylens)) {
-                array_push($input_errors, gettext("Please select a valid Key Length."));
+                $input_errors[] = gettext("Please select a valid Key Length.");
             }
             if (($pconfig['method'] != "external") && !in_array($_POST["digest_alg"], $openssl_digest_algs)) {
-                array_push($input_errors, gettext("Please select a valid Digest Algorithm."));
+                $input_errors[] = gettext("Please select a valid Digest Algorithm.");
             }
 
             if (($pconfig['method'] == "external") && isset($_POST["csr_keylen"]) && !in_array($_POST["csr_keylen"], $cert_keylens)) {
-                array_push($input_errors, gettext("Please select a valid Key Length."));
+                $input_errors[] = gettext("Please select a valid Key Length.");
             }
             if (($pconfig['method'] == "external") && !in_array($_POST["csr_digest_alg"], $openssl_digest_algs)) {
-                array_push($input_errors, gettext("Please select a valid Digest Algorithm."));
+                $input_errors[] = gettext("Please select a valid Digest Algorithm.");
             }
         }
 
@@ -438,7 +438,7 @@ if ($_POST) {
                     )) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
-                            array_push($input_errors, "openssl library returns: " . $ssl_err);
+                            $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
                 }
@@ -461,7 +461,7 @@ if ($_POST) {
                     if (!csr_generate($cert, $pconfig['csr_keylen'], $dn, $pconfig['csr_digest_alg'])) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
-                            array_push($input_errors, "openssl library returns: " . $ssl_err);
+                            $input_errors[] = gettext("openssl library returns:") . " " . $ssl_err;
                         }
                     }
                 }
@@ -516,7 +516,7 @@ if ($_POST) {
 
         if (strcmp($mod_csr, $mod_cert)) {
             // simply: if the moduli don't match, then the private key and public key won't match
-            $input_errors[] = sprintf(gettext("The certificate modulus does not match the signing request modulus."), $subj_cert);
+            $input_errors[] = gettext("The certificate modulus does not match the signing request modulus.");
             $subject_mismatch = true;
         }
 

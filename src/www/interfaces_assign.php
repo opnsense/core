@@ -296,7 +296,7 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 	if (isset($config['vlans']['vlan'])) {
 		foreach ($config['vlans']['vlan'] as $vlan) {
 			if (does_interface_exist($vlan['if']) == false)
-				$input_errors[] = "Vlan parent interface {$vlan['if']} does not exist anymore so vlan id {$vlan['tag']} cannot be created please fix the issue before continuing.";
+				$input_errors[] = sprintf(gettext("VLAN parent interface %s does not exist."), $vlan['if']);
 		}
 	}
 

@@ -81,11 +81,11 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	// lookup server settings
 	$settings = $config['openvpn']['openvpn-server'][$srvid];
 	if (empty($settings)) {
-		$input_errors[] = "Could not locate server configuration.";
+		$input_errors[] = gettext("Could not locate server configuration.");
 		return false;
 	}
 	if (!empty($settings['disable'])) {
-		$input_errors[] = "You cannot export for disabled servers.";
+		$input_errors[] = gettext("You cannot export for disabled servers.");
 		return false;
 	}
 
@@ -93,11 +93,11 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	$server_cert = lookup_cert($settings['certref']);
 	if (!$server_cert)
 	{
-		$input_errors[] = "Could not locate server certificate.";
+		$input_errors[] = gettext("Could not locate server certificate.");
 	} else {
 		$server_ca = isset($server_cert['caref']) ? lookup_ca($server_cert['caref']) : null;
 		if (!$server_ca) {
-			$input_errors[] = "Could not locate the CA reference for the server certificate.";
+			$input_errors[] = gettext("Could not locate the CA reference for the server certificate.");
 		}
 		if (function_exists("cert_get_cn")) {
 			$servercn = cert_get_cn($server_cert['crt']);
@@ -108,7 +108,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	if (is_numeric($usrid)) {
 		$user = $config['system']['user'][$usrid];
 		if (!$user) {
-			$input_errors[] = "Could not find user settings.";
+			$input_errors[] = gettext("Could not find user settings.");
 		}
 	}
 
@@ -119,9 +119,8 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 		} else {
 			$cert = $config['cert'][$crtid];
 		}
-		if (!$cert)
-		{
-			$input_errors[] = "Could not find client certificate.";
+		if (!$cert) {
+			$input_errors[] = gettext("Could not find client certificate.");
 		} else {
 			// If $cert is not an array, it's a certref not a cert.
 			if (!is_array($cert))
@@ -130,7 +129,7 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	} elseif (($settings['mode'] == "server_tls") || (($settings['mode'] == "server_tls_user") && ($settings['authmode'] != "Local Database"))) {
 		$cert = $config['cert'][$crtid];
 		if (!$cert)
-			$input_errors[] = "Could not find client certificate.";
+			$input_errors[] = gettext("Could not find client certificate.");
 	} else
 		$nokeys = true;
 
@@ -207,7 +206,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 		if ($proxy['proxy_type'] == "http") {
 
 			if (strtoupper(substr($settings['protocol'], 0, 3)) == "UDP") {
-				$input_errors[] = "This server uses UDP protocol and cannot communicate with HTTP proxy.";
+				$input_errors[] = gettext("This server uses UDP protocol and cannot communicate with HTTP proxy.");
 				return;
 			}
 			$conf .= "http-proxy {$proxy['ip']} {$proxy['port']} ";
@@ -500,7 +499,7 @@ function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $veri
 	}
 	$conf = openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken,  $nokeys, $proxy, "", "baseconf", false, true, $openvpnmanager, $advancedoptions);
 	if (!$conf) {
-		$input_errors[] = "Could not create a config to export.";
+		$input_errors[] = gettext("Could not create a config to export.");
 		return false;
 	}
 
@@ -684,11 +683,11 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
 	// lookup server settings
 	$settings = $config['openvpn']['openvpn-server'][$srvid];
 	if (empty($settings)) {
-		$input_errors[] = "Could not locate server configuration.";
+		$input_errors[] = gettext("Could not locate server configuration.");
 		return false;
 	}
 	if ($settings['disable']) {
-		$input_errors[] = "You cannot export for disabled servers.";
+		$input_errors[] = gettext("You cannot export for disabled servers.");
 		return false;
 	}
 
@@ -752,7 +751,7 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
 	if (!empty($proxy)) {
 		if ($proxy['proxy_type'] == "http") {
 			if ($proto == "udp") {
-				$input_errors[] = "This server uses UDP protocol and cannot communicate with HTTP proxy.";
+				$input_errors[] = gettext("This server uses UDP protocol and cannot communicate with HTTP proxy.");
 				return;
 			}
 			$conf .= "http-proxy {$proxy['ip']} {$proxy['port']} ";
