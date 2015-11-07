@@ -68,7 +68,7 @@ $shortcut_section = "wireless";
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_wireless_edit.php', 'label'=>'Add'),
+	array('href'=>'interfaces_wireless_edit.php', 'label'=>gettext('Add')),
 );
 
 ?>
