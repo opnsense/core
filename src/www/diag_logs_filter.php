@@ -745,7 +745,7 @@ include("head.inc");
 									  <td class="listMRr nowrap"><?php echo htmlspecialchars($filterent['time']);?></td>
 									  <td class="listMRr nowrap">
 										<?php if ($filterent['direction'] == "out"): ?>
-										<span class="glyphicon glyphicon-cloud-download" alt="Direction=OUT" title="Direction=OUT"></span>
+                    <span class="glyphicon glyphicon-cloud-download" alt="<?= gettext('Direction=OUT') ?>" title="<?= gettext('Direction=OUT') ?>"></span>
 										<?php endif; ?>
 										<?php echo htmlspecialchars($filterent['interface']);?></td>
 									  <?php
@@ -787,7 +787,7 @@ include("head.inc");
 											<input type="hidden" value="<?= $int;?>" id="intf"/>
 											<input type="hidden" value="<?= $proto;?>" id="proto"/>
 											<input type="hidden" value="<?= $ipproto;?>" id="ipproto"/>
-										<span  class="glyphicon glyphicon-play" alt="Icon Easy Rule: Pass this traffic"></span></a>
+                      <span  class="glyphicon glyphicon-play" alt="<?= gettext('Icon Easy Rule: Pass this traffic') ?>"></span></a>
 										<?php echo $dststr . '<span class="RESOLVE-' . $dst_htmlclass . '"></span>';?>
 									  </td>
 									  <?php
@@ -834,7 +834,7 @@ $( document ).ready(function() {
 					intf:$(this).find('#intf').val()
 				},
 				complete: function(data,status) {
-					alert("added block rule");
+          alert("<?= gettext('added block rule') ?>");
 				},
 			});
 
@@ -856,7 +856,7 @@ $( document ).ready(function() {
 					intf:$(this).find('#intf').val()
 				},
 				complete: function(data,status) {
-					alert("added pass rule");
+          alert("<?= gettext('added pass rule') ?>");
 				},
 			});
 

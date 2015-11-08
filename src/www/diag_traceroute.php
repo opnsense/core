@@ -107,14 +107,14 @@ if (!isset($do_traceroute)) {
 						        <tr>
 						          <td><?=gettext("IP Protocol"); ?></td>
 						          <td><select name="ipproto" class="form-control">
-			<option value="ipv4" <?php if ($ipproto == "ipv4") echo "selected=\"selected\"" ?>>IPv4</option>
-			<option value="ipv6" <?php if ($ipproto == "ipv6") echo "selected=\"selected\"" ?>>IPv6</option>
+                      <option value="ipv4" <?php if ($ipproto == "ipv4") echo "selected=\"selected\"" ?>><?= gettext('IPv4') ?></option>
+                      <option value="ipv6" <?php if ($ipproto == "ipv6") echo "selected=\"selected\"" ?>><?= gettext('IPv6') ?></option>
 		</select></td>
 						        </tr>
 						        <tr>
 						          <td><?=gettext("Source Address"); ?></td>
 						          <td><select name="sourceip" class="form-control">
-											<option value="">Any</option>
+                      <option value=""><?= gettext('Any') ?></option>
 										<?php   $sourceips = get_possible_traffic_source_addresses(true);
 											foreach ($sourceips as $sip):
 												$selected = "";

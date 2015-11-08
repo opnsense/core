@@ -169,7 +169,7 @@ function update_description() {
 						<form action="system_groupmanager_addprivs.php" method="post" name="iform" id="iform">
 							<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="main area" class="table table-striped">
 								<tr>
-									<td width="22%" valign="top" class="vncellreq"><?=gettext("System Privileges");?><br /><a href='#' onClick="selectAll();">Select all</a></td>
+                  <td width="22%" valign="top" class="vncellreq"><?=gettext("System Privileges");?><br /><a href='#' onClick="selectAll();"><?= gettext('Select all') ?></a></td>
 									<td width="78%" class="vtable">
 										<select name="sysprivs[]" id="sysprivs" class="formselect" onchange="update_description();" multiple="multiple" size="35">
 											<?php

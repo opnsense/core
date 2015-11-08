@@ -99,7 +99,7 @@ function d3pie_data($summary, $num) {
 				}
 			}
 			if ($other > 0) {
-				$data[$stat][] = array('label' => "other", 'value' => $other);
+				$data[$stat][] = array('label' => gettext("other"), 'value' => $other);
 			}
 	}
 
