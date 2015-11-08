@@ -151,7 +151,7 @@ include("head.inc");
 legacy_html_escape_form_data($a_nat);
 
 $main_buttons = array(
-  array('label'=>'Add', 'href'=>'firewall_nat_edit.php'),
+  array('label'=>gettext('Add'), 'href'=>'firewall_nat_edit.php'),
 );
 ?>
 
