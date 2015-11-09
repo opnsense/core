@@ -46,8 +46,9 @@ function alias_make_table($config)
 
 	if (isset($config['aliases']['alias'])) {
 		foreach ($config['aliases']['alias'] as $alias) {
-			if ($alias['name'])
-				$aliastable[$alias['name']] = $alias['address'];
+			if ($alias['name']) {
+				$aliastable[$alias['name']] = isset($alias['address']) ? $alias['address'] : null;
+			}
 		}
 	}
 }
