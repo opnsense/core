@@ -68,6 +68,7 @@
         </Wizard>
         <Users cssClass="fa fa-users">
             <All url="/system_usermanager.php">
+                <All url="/system_usermanager.php*"/>
                 <Privileges url="/system_usermanager_addprivs.php*"/>
             </All>
             <Groups url="/system_groupmanager.php">
