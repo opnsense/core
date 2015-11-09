@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-01 15:02+0000\n"
+"POT-Creation-Date: 2015-11-09 06:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 2033\n"
+"X-Pootle-Revision: 2091\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
@@ -9706,7 +9706,7 @@ msgstr ""
 # File: src/www/firewall_nat_out.php, line: 312
 # File: src/www/firewall_nat_out.php, line: 499
 msgid "Static Port"
-msgstr ""
+msgstr "Port statique"
 
 # File: src/www/firewall_nat_out.php, line: 340
 msgid "This rule is being ignored"
@@ -9982,7 +9982,7 @@ msgstr "Passerelle"
 # File: src/www/firewall_rules.php, line: 765
 # File: src/www/system_routes.php, line: 324
 msgid "edit rule"
-msgstr ""
+msgstr "Éditer règle"
 
 # File: src/www/firewall_rules.php, line: 464
 msgid "RFC 1918 networks"
@@ -10232,15 +10232,17 @@ msgstr "Vous ne pouvez pas utiliser des adresse IPv4 dans règles IPv6."
 
 # File: src/www/firewall_rules_edit.php, line: 312
 msgid "Invalid subnet mask on IPv4 source"
-msgstr ""
+msgstr "Masque de sous-réseau non valide pour cette source IPv4"
 
 # File: src/www/firewall_rules_edit.php, line: 315
 msgid "Invalid subnet mask on IPv4 destination"
-msgstr ""
+msgstr "Masque de sous-réseau non valide pour cette destination IPv4"
 
 # File: src/www/firewall_rules_edit.php, line: 444
 msgid "You can not use a IPv4 or IPv6 address in combined IPv4 + IPv6 rules."
 msgstr ""
+"Vous ne pouvez pas utiliser une adresse IPv4 ou IPv6 en combinaison avec des "
+"règles IPv4 + IPv6."
 
 # File: src/www/firewall_rules_edit.php, line: 460
 msgid "OS detection is only valid with protocol tcp."
@@ -10255,6 +10257,8 @@ msgstr ""
 msgid ""
 "You can not use gateways in Floating rules without choosing a direction."
 msgstr ""
+"Vous ne pouvez pas utiliser des passerelles dans des règles flottantes sans "
+"choisir une direction."
 
 # File: src/www/firewall_rules_edit.php, line: 472
 msgid ""
@@ -12781,11 +12785,11 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 3052
 msgid "802.11g"
-msgstr ""
+msgstr "802.11g"
 
 # File: src/www/interfaces.php, line: 3054
 msgid "802.11n"
-msgstr ""
+msgstr "802.11n"
 
 # File: src/www/interfaces.php, line: 3057
 msgid ""
@@ -12796,7 +12800,7 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 3062
 msgid "802.11g only"
-msgstr ""
+msgstr "802.11g seulement"
 
 # File: src/www/interfaces.php, line: 3065
 msgid ""
@@ -12955,7 +12959,7 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 3207
 msgid "TKIP"
-msgstr ""
+msgstr "TKIP"
 
 # File: src/www/interfaces.php, line: 3212
 msgid "Key Rotation"
@@ -12998,7 +13002,7 @@ msgstr ""
 # File: src/www/load_balancer_pool_edit.php, line: 267
 # File: src/www/status_openvpn.php, line: 397
 msgid "NOTE"
-msgstr ""
+msgstr "NOTE"
 
 # File: src/www/interfaces.php, line: 3237
 msgid "this option requires checking the \"Enable WPA box\"."
@@ -20176,7 +20180,7 @@ msgstr ""
 
 # File: src/www/system_advanced_admin.php, line: 81
 msgid "Max Processes must be a number 1 or greater"
-msgstr ""
+msgstr "Le processus maximum doit être un nombre de 1 ou plus"
 
 # File: src/www/system_advanced_admin.php, line: 89
 msgid "Alternate hostname %s is not a valid hostname."
@@ -20227,7 +20231,7 @@ msgstr ""
 
 # File: src/www/system_advanced_admin.php, line: 388
 msgid "Max Processes"
-msgstr ""
+msgstr "Processus maximum"
 
 # File: src/www/system_advanced_admin.php, line: 393
 msgid ""
@@ -20238,11 +20242,11 @@ msgstr ""
 
 # File: src/www/system_advanced_admin.php, line: 400
 msgid "WebGUI redirect"
-msgstr ""
+msgstr "Redirection de l'interface"
 
 # File: src/www/system_advanced_admin.php, line: 405
 msgid "Disable webConfigurator redirect rule"
-msgstr ""
+msgstr "Désactiver la règle de redirection pour l'interface"
 
 # File: src/www/system_advanced_admin.php, line: 407
 msgid ""
@@ -22970,6 +22974,7 @@ msgstr ""
 msgid ""
 "The time update interval must be either 0 (disabled) or between 6 and 1440."
 msgstr ""
+"L'intervalle de mise à jour doit être soit 0 (désactivé) ou entre 6 et 1440."
 
 # File: src/www/system_general.php, line: 173
 msgid ""
@@ -22987,6 +22992,9 @@ msgid ""
 "Do not use 'local' as a domain name. It will cause local hosts running mDNS ("
 "avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."
 msgstr ""
+"Ne pas utiliser «local» comme un nom de domaine. Il provoquera des "
+"dysfonctionnements avec les hôtes locaux utilisant mDNS (avahi, bonjour, "
+"etc.)."
 
 # File: src/www/system_general.php, line: 333
 msgid "mycorp.com, home, office, private, etc."
@@ -23005,6 +23013,9 @@ msgid ""
 "Enter IP addresses to be used by the system for DNS resolution. These are "
 "also used for the DHCP service, DNS forwarder and for PPTP VPN clients."
 msgstr ""
+"Entrez les adresse IP utilisées par le système pour la résolution DNS. Elles "
+"sont également utilisées pour le service DHCP, DNS et pour les clients VPN "
+"PPTP."
 
 # File: src/www/system_general.php, line: 401
 msgid ""
@@ -23016,6 +23027,8 @@ msgstr ""
 # File: src/www/system_general.php, line: 408
 msgid "Allow DNS server list to be overridden by DHCP/PPP on WAN"
 msgstr ""
+"Autoriser le remplacement des serveurs DNS provenant d'une connexion DHCP/"
+"PPP sur WAN"
 
 # File: src/www/system_general.php, line: 411
 msgid ""
@@ -23026,7 +23039,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 420
 msgid "Do not use the DNS Forwarder as a DNS server for the firewall"
-msgstr ""
+msgstr "Ne pas utiliser le résolveur DNS comme serveur DNS pour le pare-feu"
 
 # File: src/www/system_general.php, line: 423
 msgid ""
@@ -23042,7 +23055,7 @@ msgstr "Fuseau horaire"
 
 # File: src/www/system_general.php, line: 442
 msgid "Select the location closest to you"
-msgstr ""
+msgstr "Sélectionnez l'emplacement le plus proche"
 
 # File: src/www/system_general.php, line: 460
 msgid "NTP time server"
@@ -23072,7 +23085,7 @@ msgstr "Cela changera l'aspect de"
 
 # File: src/www/system_general.php, line: 565
 msgid "Firmware Mirror"
-msgstr ""
+msgstr "Miroir du Fimware"
 
 # File: src/www/system_general.php, line: 579
 msgid "Select an alternate firmware mirror."
@@ -23080,7 +23093,7 @@ msgstr "Sélectionnez un miroir de firmware alternatif."
 
 # File: src/www/system_general.php, line: 584
 msgid "Firmware Flavour"
-msgstr ""
+msgstr "Saveur du Firmware"
 
 # File: src/www/system_general.php, line: 598
 msgid "Select the firmware cryptography flavour."
@@ -23404,6 +23417,7 @@ msgstr "Nom complet"
 # File: src/www/system_usermanager.php, line: 507
 msgid "User's full name, for your own information only"
 msgstr ""
+"Le nom complet de l'utilisateur, pour votre propre information seulement"
 
 # File: src/www/system_usermanager.php, line: 511
 msgid "Expiration date"
@@ -23478,11 +23492,11 @@ msgstr "Cliquez pour coller les clés autorisées."
 
 # File: src/www/system_usermanager.php, line: 858
 msgid "Paste an authorized keys file here."
-msgstr ""
+msgstr "Coller les clés autorisée ici."
 
 # File: src/www/system_usermanager.php, line: 862
 msgid "IPsec Pre-Shared Key"
-msgstr ""
+msgstr "Clé IPsec partagée"
 
 # File: src/www/system_usermanager.php, line: 907
 # File: src/www/vpn_l2tp_users.php, line: 71
