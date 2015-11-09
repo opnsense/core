@@ -66,6 +66,7 @@ class AuthenticationFactory
     {
         $servers = array();
         $servers['Local Database'] = array("name" => "Local Database", "type" => "local");
+        $servers['Local API'] = array("name" => "Local API Database", "type" => "api");
         $configObj = Config::getInstance()->object();
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'authserver' && !empty($value->type) && !empty($value->name)) {
@@ -105,6 +106,9 @@ class AuthenticationFactory
                     break;
                 case 'voucher':
                     $authObject = new Voucher();
+                    break;
+                case 'api':
+                    $authObject = new API();
                     break;
                 default:
                     $authObject = null;
