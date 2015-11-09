@@ -286,16 +286,17 @@ function &getGroupEntryByGID($gid)
 
 function get_user_privileges(&$user)
 {
-        $privs = $user['priv'];
-        if (!is_array($privs)) {
-                $privs = array();
+        if (!isset($user['priv']) || !is_array($user['priv'])) {
+             $privs = array();
+	} else {
+             $privs = $user['priv'];
 	}
 
         $names = local_user_get_groups($user, true);
 
         foreach ($names as $name) {
                 $group = getGroupEntry($name);
-                if (is_array($group['priv'])) {
+                if (isset($group['priv']) && is_array($group['priv'])) {
                         $privs = array_merge($privs, $group['priv']);
 		}
         }
