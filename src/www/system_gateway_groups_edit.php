@@ -251,10 +251,10 @@ jQuery(function ($) {
 									<td width="78%" class="vtable">
 												<table border="0" cellpadding="6" cellspacing="0" summary="gateway priority">
 													<tr>
-														<td class="listhdrr">Gateway</td>
-														<td class="listhdrr">Tier</td>
-														<td class="listhdrr">Virtual IP</td>
-														<td class="listhdrr">Description</td>
+                            <td class="listhdrr"><?= gettext('Gateway') ?></td>
+                            <td class="listhdrr"><?= gettext('Tier') ?></td>
+                            <td class="listhdrr"><?= gettext('Virtual IP') ?></td>
+                            <td class="listhdrr"><?= gettext('Description') ?></td>
 													</tr>
 													<?php
                                                     foreach ($a_gateways as $gwname => $gateway) {
