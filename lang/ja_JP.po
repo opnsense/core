@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OPNsense 15.1.10.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-27 17:28+0200\n"
+"POT-Creation-Date: 2015-11-09 08:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Chie Taguchi <taguchi.ch@gmail.com>\n"
 "Language-Team: https://github.com/dotike/opnsense.core.ja_JP.UTF8\n"
@@ -17,11 +17,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#, fuzzy
-msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
-msgstr ""
-"ステータス: キャプティブポータルバウチャーロール: ページへのアクセスを許可"
-
 msgid "Allow access to the 'Status: IPsec: SAD' page."
 msgstr "ステータス: IPsec SAD: ページへのアクセスを許可"
 
@@ -29,17 +24,11 @@ msgstr "ステータス: IPsec SAD: ページへのアクセスを許可"
 msgid "Allow access to the 'VPN: PPTP: Users' page."
 msgstr "VPN: VPN PPTP: ユーザ: ページへのアクセスを許可"
 
-msgid "Allow access to the 'VPN: IPsec: Pre-Shared Keys List' page."
-msgstr "VPN: IPsec: 事前共有鍵リスト: ページへのアクセスを許可"
-
 msgid "Allow access to the 'System: Authentication Servers' page."
 msgstr "システム: 認証サーバ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: States Summary' page."
 msgstr "診断: ステータス概要: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Services: Wake on LAN' page."
-msgstr "サービス: Wake-on-LAN: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: IPsec' page."
 msgstr "ステータス: IPsec: ページへのアクセスを許可"
@@ -77,9 +66,8 @@ msgstr "インタフェース: ネットワークポートの割り当て: ペ�
 msgid "Allow access to the 'Firewall: NAT: Port Forward' page."
 msgstr "ファイアウォール: NAT: ポートフォワード: ページへのアクセスを許可"
 
-#, fuzzy
-msgid "Allow access to the 'Status: Captive portal: Vouchers' page."
-msgstr "ステータス: キャプティブポータルバウチャー: ページへのアクセスを許可"
+msgid "Allow access to the 'VPN: IPsec: Pre-Shared Keys List' page."
+msgstr "VPN: IPsec: 事前共有鍵リスト: ページへのアクセスを許可"
 
 msgid "Create interface groups"
 msgstr "インタフェースグループの作成"
@@ -120,10 +108,6 @@ msgstr "ファイアウォール: スケジュール: ページへのアクセ�
 msgid "Allow access to the 'Diagnostics: Logs: Settings' page."
 msgstr "診断: ログ: 設定: ページへのアクセスを許可"
 
-#, fuzzy
-msgid "Allow access to the 'Services: Captive portal: Vouchers' page."
-msgstr "サービス: キャプティブポータルバウチャー: ページへのアクセスを許可"
-
 #
 # File: lang/dynamic/helpers/acl.php, line: 66
 msgid "Allow access to the 'Service: Universal Plug and Play' page."
@@ -134,10 +118,6 @@ msgstr "ファイアウォール: 仮想 IP アドレス: ページへのアク�
 
 msgid "Allow access to the 'System: Firmware: Manual Update' page."
 msgstr "システム: ファームウェア: 手動更新: ページへのアクセスを許可"
-
-#, fuzzy
-msgid "Allow access to the 'Status: System logs: System: Routing' page."
-msgstr "ステータス: システムログ: ポータル認証: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: Services' page."
 msgstr "ステータス: サービス: ページへのアクセスを許可"
@@ -175,16 +155,10 @@ msgstr "サービス: DHCP サーバ: 静的マッピングの編集: ページ�
 msgid "Allow access to the 'Services: DHCPv6 server' page."
 msgstr "サービス: DHCP サーバ: ページへのアクセスを許可"
 
-#, fuzzy
-msgid "Allow access to the 'Status: Captive portal: Test Vouchers' page."
+msgid ""
+"Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page."
 msgstr ""
-"ステータス: キャプティブポータルテストバウチャー: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Status: System logs: Load Balancer' page."
-msgstr "ステータス: システムログ: ロードバランサ: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Services: Captive portal' page."
-msgstr "サービス: キャプティブポータル: ページへのアクセスを許可"
+"サービス: ロードバランサ: リレープロトコル: 編集: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Lobby: Login / Logout/ Dashboard' page."
@@ -216,24 +190,14 @@ msgstr "このユーザが、例えば SSH 経由でログイン可能かどう�
 msgid "Allow access to the 'Status: Traffic Graph' page."
 msgstr "ステータス: トラフィックグラフ: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Diagnostics: Authentication' page."
-msgstr "診断: 認証: ページへのアクセスを許可"
+msgid "Allow access to the 'Firewall: Aliases' page."
+msgstr "ファイアウォール: エイリアス: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: Captive portal: Edit Allowed IPs' page."
-msgstr ""
-"サービス: キャプティブポータル: 許可済 IP の編集: ページへのアクセスを許可"
+msgid "Allow access to the 'Services: Load Balancer: Monitor: Edit' page."
+msgstr "サービス: ロードバランサ: 監視: 編集: ページへのアクセスを許可"
 
 msgid "Allow access to the 'System: CRL Manager' page."
 msgstr "システム: CRL 管理: ページへのアクセスを許可"
-
-#, fuzzy
-msgid "Allow access to the 'VPN: PPTP' page."
-msgstr "VPN: VPN PPTP: ページへのアクセスを許可"
-
-msgid ""
-"Allow access to the 'Services: Captive portal: Edit MAC Addresses' page."
-msgstr ""
-"サービス: キャプティブポータル: MAC アドレス: 編集: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Interface Traffic' page."
 msgstr "診断: インタフェーストラフィック: ページへのアクセスを許可"
@@ -283,10 +247,6 @@ msgstr "診断: ARP テーブル: ページへのアクセスを許可"
 msgid "Allow access to the 'VPN: IPsec' page."
 msgstr "VPN: IPsec: ページへのアクセスを許可"
 
-#, fuzzy
-msgid "Allow access to the 'VPN: L2TP : Users' page."
-msgstr "VPN: VPN L2TP: ユーザ: ページへのアクセスを許可"
-
 msgid "Allow access to the 'Load Balancer: Virtual Server: Edit' page."
 msgstr "ロードバランサ: 仮想サーバ: 編集: ページへのアクセスを許可"
 
@@ -296,19 +256,12 @@ msgstr "ステータス: システムログ: NTP ページへのアクセスを�
 msgid "Allow access to the 'Interfaces: GRE' page."
 msgstr "インタフェース: GRE: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: Captive portal: Allowed Hostnames' page."
-msgstr ""
-"サービス: キャプティブポータル: 許可済ホスト名: ページへのアクセスを許可"
-
 #, fuzzy
 msgid "Allow access to the 'Services: Router Advertisements' page."
 msgstr "サービス: PPPoE サーバ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'VPN: IPsec: Edit Phase 2' page."
 msgstr "VPN: IPsec: フェーズ 2 の編集: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Status: RRD Graphs' page."
-msgstr "ステータス: RRD グラフ: ページへのアクセスを許可"
 
 msgid "Allow access to the 'System: Advanced: Networking' page."
 msgstr "システム: 高度: ネットワーク: ページへのアクセスを許可"
@@ -326,6 +279,9 @@ msgstr ""
 msgid "Allow access to the 'Firewall: NAT: Port Forward: Edit' page."
 msgstr ""
 "ファイアウォール: NAT: ポートフォワード : 編集: ページへのアクセスを許可"
+
+msgid "Allow access to the 'Status: System logs: Load Balancer' page."
+msgstr "ステータス: システムログ: ロードバランサ: ページへのアクセスを許可"
 
 #, fuzzy
 msgid ""
@@ -351,8 +307,8 @@ msgid "Allow access to the 'System: Advanced: Admin Access' page."
 msgstr "システム: 高度: 管理者アクセス: ページへのアクセスを許可"
 
 #, fuzzy
-msgid "Allow access to the 'Status: Captive portal: Expire Vouchers' page."
-msgstr "ステータス: キャプティブポータルバウチャー: ページへのアクセスを許可"
+msgid "Allow access to the 'Status: System logs: System: Routing' page."
+msgstr "ステータス: システムログ: ポータル認証: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: Interfaces' page."
 msgstr "ステータス: インタフェース: ページへのアクセスを許可"
@@ -366,9 +322,6 @@ msgstr "ステータス: ゲートウェイ: ページへのアクセスを許�
 msgid "Allow access to the 'Status: DHCP leases' page."
 msgstr "ステータス: DHCP リース: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: Load Balancer: Monitor: Edit' page."
-msgstr "サービス: ロードバランサ: 監視: 編集: ページへのアクセスを許可"
-
 msgid "Allow access to the 'Hidden: Detailed Status' page."
 msgstr "非表示: ステータス詳細: ページへのアクセスを許可"
 
@@ -378,8 +331,10 @@ msgstr "システム: 高度: その他: ページへのアクセスを許可"
 msgid "Allow access to the 'AJAX: Service Providers' page."
 msgstr "AJAX: サービスプロバイダの取得: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Diagnostics: Backup/restore' page."
-msgstr "診断: バックアップ / 復元: ページへのアクセスを許可"
+#
+# File: lang/dynamic/helpers/acl.php, line: 127
+msgid "Allow access to the 'Diagnostics: Logs: Firewall: Normal View' page."
+msgstr ""
 
 msgid "Allow access to the 'Diagnostics: Halt system' page."
 msgstr "診断: システム停止: ページへのアクセスを許可"
@@ -400,6 +355,11 @@ msgstr "VPN: VPN L2TP: ページへのアクセスを許可"
 
 msgid "Allow access to the 'XMLRPC Library' page."
 msgstr "XMLRPC ライブラリ: ページへのアクセスを許可"
+
+#
+# File: lang/dynamic/helpers/acl.php, line: 134
+msgid "Allow access to the 'Diagnostics: Logs: Firewall: Summary View' page."
+msgstr ""
 
 msgid "Allow access to the 'Status: IPsec: SPD' page."
 msgstr "ステータス: IPsec SPD: ページへのアクセスを許可"
@@ -441,17 +401,21 @@ msgstr "診断: ステータスリセット: ページへのアクセスを許�
 msgid "Allow access to the 'Status: CARP' page."
 msgstr "ステータス: CARP: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Firewall: Aliases' page."
-msgstr "ファイアウォール: エイリアス: ページへのアクセスを許可"
+msgid "Allow access to the 'Diagnostics: Authentication' page."
+msgstr "診断: 認証: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: Captive portal: File Manager' page."
-msgstr "サービス: キャプティブポータル: ファイル管理: ページへのアクセスを許可"
+#, fuzzy
+msgid "Allow access to the 'VPN: PPTP' page."
+msgstr "VPN: VPN PPTP: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Firewall: Rules' page."
 msgstr "ファイアウォール: ルール: ページへのアクセスを許可"
 
 msgid "Allow access to the 'Diagnostics: Logs: System: Gateways' page."
 msgstr "診断: ログ: システム: ゲートウェイページへのアクセスを許可"
+
+msgid "Allow access to the 'Services: DHCPv6 Relay' page."
+msgstr "サービス: DHCPv6 リレー: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Services: DNS Resolver: Advanced' page."
@@ -464,24 +428,20 @@ msgstr "サービス: ロードバランサ: 仮想サーバ: ページへのア
 msgid "Allow access to the 'Status: NTP' page."
 msgstr "ステータス: CARP: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: Captive portal: Mac Addresses' page."
-msgstr "サービス: キャプティブポータル: MAC アドレス: ページへのアクセスを許可"
-
 #, fuzzy
 msgid "Allows access to the 'Diagnostics: Limiter Info' page"
 msgstr "診断: パターン: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: DHCPv6 Relay' page."
-msgstr "サービス: DHCPv6 リレー: ページへのアクセスを許可"
+#
+# File: lang/dynamic/helpers/acl.php, line: 155
+msgid "Allow access to the 'Diagnostics: Logs: Firewall: Plain View' page."
+msgstr ""
 
 msgid "Allow access to the 'Diagnostics: Logs: System: Resolver' page."
 msgstr "診断: ログ: システム: リゾルバページへのアクセスを許可"
 
 msgid "Allow access to the 'Status: Wireless' page."
 msgstr "ステータス: 無線: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Hidden: No longer included' page."
-msgstr "非表示: 現在含まれない: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Status: NTP PPS' page."
@@ -534,9 +494,8 @@ msgid "Allow access to the 'Diagnostics: Logs: System' page."
 msgstr "診断: ログ: システム: ページへのアクセスを許可"
 
 #, fuzzy
-msgid ""
-"Allow access to the 'Services: Captive portal: Edit Voucher Rolls' page."
-msgstr "サービス: キャプティブポータルバウチャー: ページへのアクセスを許可"
+msgid "Allow access to the 'VPN: L2TP : Users' page."
+msgstr "VPN: VPN L2TP: ユーザ: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 191
@@ -547,10 +506,10 @@ msgstr ""
 msgid "Allow access to the 'Interfaces: Groups: Edit' page."
 msgstr "インタフェース: GIF: 編集: ページへのアクセスを許可"
 
-msgid ""
-"Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page."
+#
+# File: lang/dynamic/helpers/acl.php, line: 177
+msgid "Allow access to the 'Diagnostics: Logs: Firewall: Dynamic View' page."
 msgstr ""
-"サービス: ロードバランサ: リレープロトコル: 編集: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allows access to the 'Diagnostics: pfInfo' page"
@@ -577,13 +536,8 @@ msgstr "VPN: IPsec: モバイル: ページへのアクセスを許可"
 msgid "Allow access to the 'System: Gateways: Edit Gateway' page."
 msgstr "システム: ゲートウェイ: 編集: ページへのアクセスを許可"
 
-#, fuzzy
-msgid "Allow access to the 'Services: Captive portal: Edit Zones' page."
-msgstr ""
-"サービス: キャプティブポータル: 許可済 IP の編集: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Diagnostics: Logs: Firewall' page."
-msgstr "診断: ログ: ファイアウォール: ページへのアクセスを許可"
+msgid "Allow access to the 'Diagnostics: Backup/restore' page."
+msgstr "診断: バックアップ / 復元: ページへのアクセスを許可"
 
 #
 # File: lang/dynamic/helpers/acl.php, line: 202
@@ -601,9 +555,6 @@ msgstr "診断: 構成履歴: ページへのアクセスを許可"
 msgid "Allow access to the 'Interfaces: GRE: Edit' page."
 msgstr "インタフェース: GRE: 編集: ページへのアクセスを許可"
 
-msgid "Allow access to the 'System: General Setup' page."
-msgstr "システム: 全般設定: ページへのアクセスを許可"
-
 msgid "Allow access to the 'Status: Gateway Groups' page."
 msgstr "ステータス: ゲートウェイグループ: ページへのアクセスを許可"
 
@@ -617,12 +568,8 @@ msgstr "サービス: DNS フォワーダ: ホスト編集: ページへのア�
 msgid "Allow access to the 'Status: System logs: Captive portal' page."
 msgstr "ステータス: キャプティブポータル: ページへのアクセスを許可"
 
-msgid "Indicates whether the user is able to login on the captive portal."
-msgstr "ユーザがキャプティブポータルにログイン可能かどうかを示します。"
-
-#, fuzzy
-msgid "Allow access to the 'Services: Captive portal: Zones' page."
-msgstr "サービス: キャプティブポータル: ページへのアクセスを許可"
+msgid "Allow access to the 'System: General Setup' page."
+msgstr "システム: 全般設定: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Allow access to the 'Services: DNS Resolver: Access Lists: Edit' page."
@@ -693,8 +640,8 @@ msgstr ""
 msgid "Allow access to the 'System: Static Routes: Edit route' page."
 msgstr "システム: 静的ルート: ルート編集: ページへのアクセスを許可"
 
-msgid "Allow access to the 'Services: Captive portal: Allowed IPs' page."
-msgstr "サービス: キャプティブポータル: 許可済 IP: ページへのアクセスを許可"
+msgid "Allow access to the 'Services: Wake on LAN' page."
+msgstr "サービス: Wake-on-LAN: ページへのアクセスを許可"
 
 msgid "Allow access to the 'System: License' page."
 msgstr "システム: ライセンス: ページへのアクセスを許可"
@@ -744,9 +691,6 @@ msgstr "システム: グループ管理: 権限追加: ページへのアクセ
 
 msgid "Allow access to the 'Services: Load Balancer: Monitors' page."
 msgstr "サービス: ロードバランサ: 監視: ページへのアクセスを許可"
-
-msgid "Allow access to the 'Status: Captive portal' page."
-msgstr "ステータス: キャプティブポータル: ページへのアクセスを許可"
 
 #, fuzzy
 msgid "Indicates whether the user is allowed to dial in via PPTP"
@@ -806,9 +750,9 @@ msgstr "IGMP プロキシサービスを起動しました"
 # File: lang/dynamic/helpers/controllers.php, line: 36
 msgid ""
 "The port number where Squid sends and receives ICP queries to\n"
-"                    and from neighbor caches. Leave blank to disable "
-"(default). The standard UDP port for ICP is 3130.\n"
-"                "
+"\t    and from neighbor caches. Leave blank to disable (default). The "
+"standard UDP port for ICP is 3130.\n"
+"\t"
 msgstr ""
 
 #, fuzzy
@@ -823,7 +767,7 @@ msgstr "リモートログを有効"
 # File: lang/dynamic/helpers/controllers.php, line: 41
 msgid ""
 "If set (default), Squid will include a Via header in requests and\n"
-"            replies as required by RFC2616."
+"    replies as required by RFC2616."
 msgstr ""
 
 #
@@ -842,19 +786,17 @@ msgid "Enter the storage size for the local cache (default is 100)."
 msgstr "トラップを送信するポートを入力してください ( デフォルト 162 )"
 
 #
-# File: lang/dynamic/helpers/controllers.php, line: 44
+# File: lang/dynamic/helpers/controllers.php, line: 46
 msgid ""
-"\n"
-"                    Enter the number of first-level subdirectories for the "
-"local cache (default is 16)."
+"Enter the number of first-level subdirectories for the local cache (default "
+"is 16)."
 msgstr ""
 
 #
-# File: lang/dynamic/helpers/controllers.php, line: 46
+# File: lang/dynamic/helpers/controllers.php, line: 47
 msgid ""
-"\n"
-"                    Enter the number of first-level subdirectories for the "
-"local cache (default is 256)."
+"Enter the number of first-level subdirectories for the local cache (default "
+"is 256)."
 msgstr ""
 
 #
@@ -877,17 +819,15 @@ msgstr ""
 #
 # File: lang/dynamic/helpers/controllers.php, line: 51
 msgid ""
-"\n"
-"                    Enter the allowed overall bandtwith in kilobits per "
-"second (leave empty to disable)."
+"Enter the allowed overall bandtwith in kilobits per second (leave empty to "
+"disable)."
 msgstr ""
 
 #
-# File: lang/dynamic/helpers/controllers.php, line: 53
+# File: lang/dynamic/helpers/controllers.php, line: 52
 msgid ""
-"\n"
-"                    Enter the allowed per host bandwidth in kilobits per "
-"second (leave empty to disable)."
+"Enter the allowed per host bandwidth in kilobits per second (leave empty to "
+"disable)."
 msgstr ""
 
 #, fuzzy
@@ -899,11 +839,10 @@ msgid "The port the proxy service will listen to."
 msgstr "サーバがリスンしているポートです。"
 
 #
-# File: lang/dynamic/helpers/controllers.php, line: 57
+# File: lang/dynamic/helpers/controllers.php, line: 55
 msgid ""
-"\n"
-"                    When enabled the subnets of the selected interfaces will "
-"be added to the allow access list."
+"When enabled the subnets of the selected interfaces will be added to the "
+"allow access list."
 msgstr ""
 
 #, fuzzy
@@ -917,6 +856,15 @@ msgstr "認証方法"
 #
 # File: lang/dynamic/helpers/controllers.php, line: 64
 msgid "The prompt will be displayed in the authentication request window."
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 60
+msgid ""
+"This specifies for how long (in hours) the proxy server assumes an "
+"externally validated username and password combination is valid (Time To "
+"Live).<br/>\n"
+"    When the TTL expires, the user will be prompted for credentials again."
 msgstr ""
 
 #
@@ -1078,6 +1026,90 @@ msgstr "許可ルールのパラメータが設定されていません"
 msgid "Enter a description to explain what this job is intended for."
 msgstr "ここにインタフェースの説明 ( 名前 ) を入力します。"
 
+#
+# File: lang/dynamic/helpers/controllers.php, line: 95
+msgid "Enable this zone"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 96
+msgid "Internal number used for this zone"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 97
+msgid "Select interface(s) to enable for captive portal."
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 98
+msgid ""
+"Select authentication methods to use, leave empty for no authentication "
+"needed."
+msgstr ""
+
+msgid ""
+"Clients will be disconnected after this amount of inactivity. They may log "
+"in again immediately, though. Leave this field blank for no idle timeout."
+msgstr ""
+"クライアントがこの時間非アクティブ状態であれば切断されます。しかし、すぐに再"
+"度ログインします。このフィールドを空白にすれば、アイドルタイムアウトは設定さ"
+"れません"
+
+msgid ""
+"Clients will be disconnected after this amount of time, regardless of "
+"activity. They may log in again immediately, though. Leave this field blank "
+"for no hard timeout (not recommended unless an idle timeout is set)."
+msgstr ""
+"クライアントは、アクティブ状態にかかわらず、この時間が経てば切断されます。し"
+"かし、すぐに再度ログインします。このフィールドを空白にすれば、ハードタイムア"
+"ウトは設定されません。( アイドルタイムアウトが設定されているのでなければ、非"
+"推奨です )"
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 101
+msgid ""
+"If this option is set, users can login on multiple machines at once. If "
+"disabled subsequent logins will cause machines previously logged in with the "
+"same username to be disconnected."
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 102
+msgid ""
+"If provided, all traffic will be transmitted over an HTTPS connection to "
+"protect against eavesdroppers."
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 103
+msgid ""
+"Hostname (of this machine) to redirect login page to, leave blank to use "
+"this interface IP address, otherwise make sure the client can access DNS to "
+"resolve this location. When using a SSL certificate, make sure both this "
+"name and the cert name are equal."
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 104
+msgid "Avoid authentication for addresses and subnets in this list"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 105
+msgid "Avoid authentication for physical addresses in this list"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 106
+msgid "Use custom template package for user login"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/controllers.php, line: 107
+msgid "Description to identify this zone."
+msgstr ""
+
 #, fuzzy
 msgid "Change password"
 msgstr "パスワードの同期"
@@ -1135,32 +1167,70 @@ msgstr "クラッシュ報告者"
 msgid "Firmware"
 msgstr "ファームウェア"
 
+msgid "Health"
+msgstr "健全性"
+
+#
+# File: src/www/system_hasync.php, line: 97
+msgid "Synchronization"
+msgstr ""
+
+#
+# File: src/www/carp_status.php, line: 99
+msgid "CARP Status"
+msgstr ""
+
 #, fuzzy
 msgid "High Availability"
 msgstr "高可用性同期"
 
+msgid "Edit"
+msgstr "編集"
+
+msgid "All"
+msgstr "全て"
+
+msgid "Status"
+msgstr "ステータス"
+
 msgid "Routes"
 msgstr "ルート"
 
-#
-# File: lang/dynamic/helpers/models.php, line: 46
-msgid "RoutesEdit"
-msgstr ""
+msgid "Groups"
+msgstr "グループ"
 
-#, fuzzy
-msgid "GatewayGroups"
-msgstr "ゲートウェイグループ"
+msgid "Gateways"
+msgstr "ゲートウェイ"
 
-#
-# File: lang/dynamic/helpers/models.php, line: 48
-msgid "GatewayGroupsEdit"
-msgstr ""
+msgid "General"
+msgstr "全般"
 
 msgid "Routing"
 msgstr "ルーティング"
 
-msgid "General"
-msgstr "全般"
+msgid "Resolver"
+msgstr "リゾルバ"
+
+msgid "Wireless"
+msgstr "無線"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 71
+# File: lang/dynamic/helpers/models.php, line: 80
+# File: lang/dynamic/helpers/models.php, line: 143
+# File: lang/dynamic/helpers/models.php, line: 272
+# File: src/www/diag_logs.php, line: 51
+# File: src/www/diag_logs_filter.php, line: 593
+# File: src/www/diag_logs_filter_dynamic.php, line: 50
+# File: src/www/diag_logs_filter_plain.php, line: 52
+# File: src/www/diag_logs_filter_summary.php, line: 30
+# File: src/www/diag_logs_gateways.php, line: 53
+# File: src/www/diag_logs_resolver.php, line: 53
+# File: src/www/diag_logs_routing.php, line: 50
+# File: src/www/diag_logs_settings.php, line: 215
+# File: src/www/diag_logs_wireless.php, line: 52
+msgid "Log Files"
+msgstr ""
 
 msgid "Admin Access"
 msgstr "管理者アクセス"
@@ -1175,29 +1245,64 @@ msgstr "ネットワーキング"
 msgid "Miscellaneous"
 msgstr "その他"
 
-msgid "System Tunables"
-msgstr "システム調整パラメータ"
+#
+# File: src/www/system_advanced_sysctl.php, line: 119
+msgid "Tunables"
+msgstr ""
 
 msgid "Notifications"
 msgstr "通知"
 
+msgid "RRD Graphs"
+msgstr "RRD グラフ"
+
 msgid "Settings"
 msgstr "設定"
 
-msgid "Setup Wizard"
-msgstr "設定ウィザード"
+#
+# File: lang/dynamic/helpers/models.php, line: 82
+msgid "Step"
+msgstr ""
 
-msgid "Users"
-msgstr "ユーザ"
+#
+# File: lang/dynamic/helpers/models.php, line: 83
+msgid "Wizard"
+msgstr ""
 
-msgid "Groups"
-msgstr "グループ"
+#
+# File: src/www/system_groupmanager_addprivs.php, line: 48
+# File: src/www/system_usermanager_addprivs.php, line: 48
+msgid "Privileges"
+msgstr ""
 
 msgid "Servers"
 msgstr "サーバ"
 
-msgid "User Manager"
-msgstr "ユーザ管理"
+msgid "Users"
+msgstr "ユーザ"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 92
+msgid "Activity Monitor"
+msgstr ""
+
+msgid "Authentication"
+msgstr "認証"
+
+msgid "Factory Defaults"
+msgstr "出荷時の規定値"
+
+msgid "Halt System"
+msgstr "システム停止"
+
+msgid "Reboot System"
+msgstr "システムの再起動"
+
+msgid "SMART Status"
+msgstr "SMART ステータス"
+
+msgid "Diagnostics"
+msgstr "診断"
 
 msgid "System"
 msgstr "システム"
@@ -1263,21 +1368,65 @@ msgstr "VLAN"
 msgid "VLANEdit"
 msgstr ""
 
-msgid "Wireless"
-msgstr "無線"
-
 #
 # File: lang/dynamic/helpers/models.php, line: 89
 msgid "WirelessEdit"
 msgstr ""
 
 #
-# File: lang/dynamic/helpers/models.php, line: 69
-msgid "(Assign)"
+# File: lang/dynamic/helpers/models.php, line: 118
+msgid "(Assignments)"
+msgstr ""
+
+msgid "ARP Table"
+msgstr "ARP テーブル"
+
+msgid "DNS Lookup"
+msgstr "DNS ルックアップ"
+
+msgid "NDP Table"
+msgstr "NDP テーブル"
+
+msgid "Packet Capture"
+msgstr "パケットキャプチャ"
+
+msgid "Ping"
+msgstr "Ping"
+
+msgid "Test Port"
+msgstr "ポートテスト"
+
+msgid "Traceroute"
+msgstr "Traceroute"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 126
+msgid "(Diagnostics)"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 127
+msgid "(Summary)"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 128
+# File: lang/dynamic/helpers/models.php, line: 166
+msgid "Details"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 129
+msgid "(Traffic Graph)"
 msgstr ""
 
 msgid "Interfaces"
 msgstr "インタフェース"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 77
+msgid "AliasesEdit"
+msgstr ""
 
 msgid "IP"
 msgstr "IP"
@@ -1292,20 +1441,27 @@ msgid "URLs"
 msgstr ""
 
 #
-# File: lang/dynamic/helpers/models.php, line: 77
-msgid "AliasesEdit"
-msgstr ""
-
-#
 # File: lang/dynamic/helpers/models.php, line: 97
 msgid "Import"
 msgstr ""
 
-msgid "All"
-msgstr "全て"
-
 msgid "Aliases"
 msgstr "エイリアス"
+
+msgid "Normal View"
+msgstr "通常表示"
+
+msgid "Dynamic View"
+msgstr "動的表示"
+
+msgid "Summary View"
+msgstr "概要表示"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 142
+# File: src/www/diag_logs_filter_plain.php, line: 52
+msgid "Plain View"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 83
@@ -1377,6 +1533,12 @@ msgstr ""
 msgid "Virtual IPs"
 msgstr "仮想 IP"
 
+msgid "Limiter Info"
+msgstr "リミッタ情報"
+
+msgid "Filter Reload"
+msgstr "フィルタの再読込"
+
 msgid "pfInfo"
 msgstr "pfInfo"
 
@@ -1384,54 +1546,40 @@ msgid "pfTop"
 msgstr "pfTop"
 
 #
-# File: lang/dynamic/helpers/models.php, line: 120
-msgid "TablesDetails"
+# File: lang/dynamic/helpers/models.php, line: 167
+# File: src/www/diag_tables.php, line: 76
+msgid "pfTables"
 msgstr ""
 
-msgid "Tables"
-msgstr "テーブル"
+#
+# File: lang/dynamic/helpers/models.php, line: 232
+msgid "SocketsDetails"
+msgstr ""
+
+msgid "Sockets"
+msgstr "ソケット"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 170
+msgid "States Dump"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 171
+msgid "States Reset"
+msgstr ""
 
 msgid "States Summary"
 msgstr "ステータス概要"
 
-msgid "Diagnostics"
-msgstr "診断"
+msgid "Filter"
+msgstr "フィルタ"
+
+msgid "Source Tracking"
+msgstr "送信元の追跡"
 
 msgid "Firewall"
 msgstr "ファイアウォール"
-
-msgid "Edit"
-msgstr "編集"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 104
-msgid "IP_edit"
-msgstr ""
-
-#
-# File: lang/dynamic/helpers/models.php, line: 89
-# File: src/www/services_captiveportal.php, line: 491
-# File: src/www/services_captiveportal_filemanager.php, line: 154
-# File: src/www/services_captiveportal_ip.php, line: 90
-# File: src/www/services_captiveportal_mac.php, line: 153
-# File: src/www/services_captiveportal_vouchers.php, line: 368
-msgid "MAC"
-msgstr ""
-
-#
-# File: lang/dynamic/helpers/models.php, line: 106
-msgid "MAC_edit"
-msgstr ""
-
-msgid "Voucher"
-msgstr "バウチャー"
-
-#, fuzzy
-msgid "FileManager"
-msgstr "ファイル管理"
-
-msgid "Captive Portal"
-msgstr "キャプティブポータル"
 
 msgid "DHCP Relay"
 msgstr "DHCP リレー"
@@ -1506,17 +1654,46 @@ msgstr ""
 msgid "IGMP Proxy"
 msgstr "IGMP プロキシ"
 
-#, fuzzy
-msgid "VirtualServer"
-msgstr "仮想サーバ"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 131
-msgid "VirtualServerEdit"
-msgstr ""
-
 msgid "Monitors"
 msgstr "監視"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 199
+# File: src/www/load_balancer_pool.php, line: 87
+msgid "Pool Setup"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 200
+# File: src/www/status_lb_pool.php, line: 56
+msgid "Pool Status"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 202
+# File: lang/dynamic/helpers/models.php, line: 211
+# File: lang/dynamic/helpers/models.php, line: 217
+# File: lang/dynamic/helpers/models.php, line: 241
+# File: lang/dynamic/helpers/models.php, line: 254
+# File: lang/dynamic/helpers/models.php, line: 285
+# File: src/www/diag_logs_auth.php, line: 47
+# File: src/www/diag_logs_openvpn.php, line: 37
+# File: src/www/diag_logs_proxy.php, line: 49
+# File: src/www/diag_logs_relayd.php, line: 48
+msgid "Log File"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 204
+# File: src/www/load_balancer_virtual_server.php, line: 125
+msgid "Virtual Server Setup"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 205
+# File: src/www/status_lb_vs.php, line: 44
+msgid "Virtual Server Status"
+msgstr ""
 
 msgid "Load Balancer"
 msgstr "ロードバランサ"
@@ -1540,6 +1717,17 @@ msgstr ""
 msgid "PPPoE Server"
 msgstr "PPPoE サーバ"
 
+#
+# File: lang/dynamic/helpers/models.php, line: 215
+# File: lang/dynamic/helpers/models.php, line: 282
+msgid "Administration"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 216
+msgid "More"
+msgstr ""
+
 #, fuzzy
 msgid "Proxy Server"
 msgstr "PPPoE サーバ"
@@ -1548,8 +1736,15 @@ msgid "SNMP"
 msgstr "SNMP"
 
 #
-# File: lang/dynamic/helpers/models.php, line: 143
-msgid "UPnPEdit"
+# File: lang/dynamic/helpers/models.php, line: 191
+msgid "ServicesActions"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 221
+# File: lang/dynamic/helpers/models.php, line: 237
+# File: src/www/diag_ipsec.php, line: 64
+msgid "Status Overview"
 msgstr ""
 
 #
@@ -1571,97 +1766,91 @@ msgid "Services"
 msgstr "サービス"
 
 #
-# File: lang/dynamic/helpers/models.php, line: 148
-msgid "IPsecPhase1Edit"
+# File: lang/dynamic/helpers/models.php, line: 229
+msgid "Phase1"
 msgstr ""
 
 #
-# File: lang/dynamic/helpers/models.php, line: 149
-msgid "IPsecPhase2Edit"
+# File: lang/dynamic/helpers/models.php, line: 230
+msgid "Phase2"
 msgstr ""
+
+msgid "Tunnel Settings"
+msgstr "トンネル設定"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 232
+# File: src/www/vpn_ipsec_mobile.php, line: 197
+msgid "Mobile Clients"
+msgstr ""
+
+msgid "Pre-Shared Keys"
+msgstr "事前共有鍵"
 
 #, fuzzy
-msgid "MobileClients"
-msgstr "モバイルクライアント"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 120
-msgid "Keys"
-msgstr ""
-
-#
-# File: lang/dynamic/helpers/models.php, line: 152
-msgid "KeysEdit"
-msgstr ""
-
-#, fuzzy
-msgid "AdvancedSettings"
+msgid "Advanced Settings"
 msgstr "高度な設定"
+
+msgid "Act"
+msgstr "動作"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 238
+# File: src/www/diag_ipsec_leases.php, line: 35
+msgid "Lease Status"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 239
+# File: src/www/diag_ipsec_sad.php, line: 36
+msgid "Security Association Database"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 240
+# File: src/www/diag_ipsec_spd.php, line: 36
+msgid "Security Policy Database"
+msgstr ""
 
 msgid "IPsec"
 msgstr "IPsec"
 
-#, fuzzy
-msgid "L2TPUsers"
-msgstr "ユーザ"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 156
-msgid "L2TPUsersEdit"
-msgstr ""
-
 msgid "L2TP"
 msgstr "L2TP"
 
-#
-# File: lang/dynamic/helpers/models.php, line: 158
-msgid "ServerEdit"
-msgstr ""
+msgid "Client Settings"
+msgstr "クライアント設定"
 
-msgid "Client"
-msgstr "クライアント"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 126
-msgid "CSC"
-msgstr ""
-
-msgid "Wizards"
-msgstr "ウィザード"
+msgid "Client Specific Overrides"
+msgstr "クライアント固有の上書き"
 
 #, fuzzy
-msgid "ClientExport"
+msgid "Client Export"
 msgstr "クライアント"
 
 #, fuzzy
-msgid "SharedKeyExport"
+msgid "Shared Key Export"
 msgstr "共有鍵"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 256
+msgid "Server Settings"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 257
+# File: src/www/status_openvpn.php, line: 70
+msgid "Connection Status"
+msgstr ""
 
 msgid "OpenVPN"
 msgstr "OpenVPN"
-
-#, fuzzy
-msgid "PPTPUsers"
-msgstr "ユーザ"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 166
-msgid "PPTPUsersEdit"
-msgstr ""
 
 msgid "PPTP"
 msgstr "PPTP"
 
 msgid "VPN"
 msgstr "VPN"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 169
-msgid "CaptivePortalDetails"
-msgstr ""
-
-msgid "CARP"
-msgstr "CARP"
 
 #
 # File: lang/dynamic/helpers/models.php, line: 172
@@ -1681,135 +1870,11 @@ msgstr ""
 msgid "DHCP IPv6 Leases"
 msgstr "DHCPv6 リース"
 
-msgid "Filter Reload"
-msgstr "フィルタの再読込"
-
-msgid "Gateways"
-msgstr "ゲートウェイ"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 180
-msgid "IPsecACT"
-msgstr ""
-
-#, fuzzy
-msgid "Leases"
-msgstr "DHCP リース"
-
-msgid "SAD"
-msgstr "SAD"
-
-msgid "SPD"
-msgstr "SPD"
-
-#, fuzzy
-msgid "VirtualServers"
-msgstr "仮想サーバ"
-
-msgid "NTP"
-msgstr "NTP"
-
-msgid "RRD Graphs"
-msgstr "RRD グラフ"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 191
-msgid "ServicesActions"
-msgstr ""
-
-msgid "Resolver"
-msgstr "リゾルバ"
-
-#, fuzzy
-msgid "DynamicView"
-msgstr "動的表示"
-
-#, fuzzy
-msgid "SummaryView"
-msgstr "概要表示"
-
 msgid "DHCP"
 msgstr "DHCP"
 
-#, fuzzy
-msgid "PortalAuth"
-msgstr "ポータル認証"
-
-#, fuzzy
-msgid "LoadBalancer"
-msgstr "ロードバランサ"
-
-#, fuzzy
-msgid "Proxy"
-msgstr "プロキシ ARP"
-
-msgid "System Logs"
-msgstr "システムログ"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 212
-msgid "TrafficGraphsDetails"
-msgstr ""
-
-#, fuzzy
-msgid "Traffic Graphs"
-msgstr "トラフィックグラフ"
-
-msgid "Status"
-msgstr "ステータス"
-
-msgid "ARP Table"
-msgstr "ARP テーブル"
-
-msgid "Authentication"
-msgstr "認証"
-
-msgid "DNS Lookup"
-msgstr "DNS ルックアップ"
-
-msgid "Factory Defaults"
-msgstr "出荷時の規定値"
-
-msgid "Halt System"
-msgstr "システム停止"
-
-msgid "Limiter Info"
-msgstr "リミッタ情報"
-
-msgid "NDP Table"
-msgstr "NDP テーブル"
-
-msgid "Packet Capture"
-msgstr "パケットキャプチャ"
-
-msgid "Ping"
-msgstr "Ping"
-
-msgid "Reboot"
-msgstr "再起動"
-
-msgid "SMART Status"
-msgstr "SMART ステータス"
-
-#
-# File: lang/dynamic/helpers/models.php, line: 232
-msgid "SocketsDetails"
-msgstr ""
-
-msgid "Sockets"
-msgstr "ソケット"
-
-msgid "States"
-msgstr "ステータス"
-
-msgid "System Activity"
-msgstr "システム稼働状況"
-
-msgid "Test Port"
-msgstr "ポートテスト"
-
-msgid "Traceroute"
-msgstr "Traceroute"
+msgid "Type"
+msgstr "タイプ"
 
 msgid "About this Page"
 msgstr "このページについて"
@@ -1839,12 +1904,75 @@ msgstr "ヘルプ"
 msgid "menu"
 msgstr ""
 
-msgid "test"
-msgstr "テスト"
+#
+# File: lang/dynamic/helpers/models.php, line: 283
+msgid "Sessions"
+msgstr ""
+
+msgid "Vouchers"
+msgstr "バウチャー"
+
+msgid "Captive Portal"
+msgstr "キャプティブポータル"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 289
+msgid "Maximum number of zones reached"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 290
+msgid "Idle timeout must be between 0(no timeout) and 10080 (a week)"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 291
+msgid "Hard timeout must be between 0(no timeout) and 10080 (a week)"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 292
+msgid "Please select a valid certificate from the list"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 293
+msgid "Please enter a valid servername, ip address or leave this option blank"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 294
+msgid "Please enter valid addresses"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 295
+msgid "Please enter valid mac addresses"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 296
+msgid "Related template not found"
+msgstr ""
 
 #, fuzzy
-msgid "you should input a valid email address"
-msgstr "%s は有効な内部 IP アドレスではありません"
+msgid "Description should be a string between 1 and 255 characters"
+msgstr "優先度は 1 - 255 の整数です"
+
+#
+# File: lang/dynamic/helpers/models.php, line: 298
+msgid "Fileid should be an internally generated unique number"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 299
+msgid "Template name should be a string between 1 and 255 characters"
+msgstr ""
+
+#
+# File: lang/dynamic/helpers/models.php, line: 300
+msgid "File content should be in (base64 encoded) zip format"
+msgstr ""
 
 #
 # File: lang/dynamic/helpers/models.php, line: 117
@@ -1957,10 +2085,6 @@ msgid "origin should be regular text of max 30 characters"
 msgstr ""
 
 #, fuzzy
-msgid "Description should be a string between 1 and 255 characters"
-msgstr "優先度は 1 - 255 の整数です"
-
-#, fuzzy
 msgid "Queue number must be between 1...65535"
 msgstr "ホップの最大数は 1 - %s です"
 
@@ -2064,10 +2188,6 @@ msgstr ""
 msgid "LDAP: Could not lookup CA by reference for host %s."
 msgstr "LDAP：ホスト %s を参照しましたが、CA を検索できませんでした"
 
-#, php-format
-msgid "ERROR!  Could not connect to server %s."
-msgstr "エラー！ %s サーバに接続できません"
-
 msgid "Local Database"
 msgstr "ローカルデータベース"
 
@@ -2117,10 +2237,6 @@ msgstr "パスワード: "
 
 msgid "Your browser must support cookies to login."
 msgstr "ログインには Cookie 機能があるブラウザが必要です"
-
-#, php-format
-msgid "Error: cannot open '%s' in captiveportal_write_elements()%s"
-msgstr "エラー: captiveportal_write_elements(): %s を開けません%s"
 
 #
 # File: src/etc/inc/config.console.inc, line: 42
@@ -2636,12 +2752,6 @@ msgstr "interface_dhcp_configure(): %s インタフェースをアップでき�
 msgid "device not present! Is the modem attached to the system?"
 msgstr "デバイスが存在しません！モデムはシステムに接続されていますか？"
 
-msgid "running"
-msgstr "実行中"
-
-msgid "up"
-msgstr "アップ"
-
 msgid "blocking"
 msgstr "ブロッキング"
 
@@ -2837,6 +2947,50 @@ msgid "it was not previously established a SMTP connection"
 msgstr "前回確立した SMTP 接続ではありません"
 
 #
+# File: src/etc/inc/openvpn-client-export.inc, line: 84
+# File: src/etc/inc/openvpn-client-export.inc, line: 686
+msgid "Could not locate server configuration."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 88
+# File: src/etc/inc/openvpn-client-export.inc, line: 690
+msgid "You cannot export for disabled servers."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 96
+msgid "Could not locate server certificate."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 100
+msgid "Could not locate the CA reference for the server certificate."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 111
+msgid "Could not find user settings."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 123
+# File: src/etc/inc/openvpn-client-export.inc, line: 132
+msgid "Could not find client certificate."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 209
+# File: src/etc/inc/openvpn-client-export.inc, line: 754
+msgid "This server uses UDP protocol and cannot communicate with HTTP proxy."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn-client-export.inc, line: 502
+msgid "Could not create a config to export."
+msgstr ""
+
+#
 # File: src/etc/inc/openvpn.inc, line: 101
 msgid "No Preference"
 msgstr ""
@@ -2878,6 +3032,54 @@ msgid ""
 msgstr ""
 "フィールド %s は、カンマで区切られた、有効な %s CIDR 範囲である必要がありま"
 "す。"
+
+#
+# File: src/etc/inc/openvpn_wizard.inc, line: 216
+# File: src/etc/inc/openvpn_wizard.inc, line: 315
+msgid "Please do not use special characters in Certificate field names."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn_wizard.inc, line: 401
+msgid "The specified 'Local port' is in use. Please select another value."
+msgstr ""
+
+#
+# File: src/etc/inc/openvpn_wizard.inc, line: 406
+msgid "The field 'TLS Authentication Key' does not appear to be valid."
+msgstr ""
+
+msgid "The field 'DNS Server #1' must contain a valid IP address"
+msgstr "「DNS サーバ #1」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'DNS Server #2' must contain a valid IP address"
+msgstr "「DNS サーバ #2」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'DNS Server #3' must contain a valid IP address"
+msgstr "「DNS サーバ #3」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'DNS Server #4' must contain a valid IP address"
+msgstr "「DNS サーバ #4」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'NTP Server #1' must contain a valid IP address"
+msgstr "「NTP サーバ #1」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'NTP Server #2' must contain a valid IP address"
+msgstr "「NTP サーバ #2」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'WINS Server #1' must contain a valid IP address"
+msgstr "「WINS サーバ #1」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'WINS Server #2' must contain a valid IP address"
+msgstr "「WINS サーバ #2」フィールドには、有効な IP アドレスが必要です"
+
+msgid "The field 'Concurrent connections' must be numeric."
+msgstr "「同時接続」フィールドは数値です"
+
+#
+# File: src/etc/inc/openvpn_wizard.inc, line: 431
+msgid "You must specify a 'Tunnel network'."
+msgstr ""
 
 #, php-format
 msgid "OpenVPN %s wizard"
@@ -2924,19 +3126,6 @@ msgid ""
 "Alias archive is a .tar/tgz file which cannot be decompressed because "
 "utility is missing!"
 msgstr ""
-
-msgid "Error sending request:"
-msgstr "リクエスト送信エラー: "
-
-msgid "RADIUS_ACCESS_ACCEPT is unexpected for accounting"
-msgstr "RADIUS_ACCESS_ACCEPT: アカウンティングで予期せぬエラーが発生しました"
-
-msgid "RADIUS_ACCOUNTING_RESPONSE is unexpected for authentication"
-msgstr "RADIUS_ACCOUNTING_RESPONSE: 認証で予期せぬエラーが発生しました"
-
-#, php-format
-msgid "Unexpected return value: %s"
-msgstr "予期せぬ戻り値です: %s"
 
 #, php-format
 msgid "RRD create failed exited with %1$s, the error is: %2$s"
@@ -3348,32 +3537,6 @@ msgstr "警告: 関数 lock() のパラメータとして「名前」が必要�
 msgid "The command '%s' returned exit code '%d', the output was '%s'"
 msgstr "コマンド %1$s は終了コード %2$d を返しました。出力は %3$s です"
 
-#, php-format
-msgid "%1$s (%2$s/%3$s) active and good for %4$d Minutes"
-msgstr "%1$s (%2$s/%3$s) は %4$d 分間、アクティブで良好です"
-
-msgid "Access denied!"
-msgstr "アクセスを拒否！"
-
-#, php-format
-msgid "Access granted for %d Minutes in total."
-msgstr "アクセスが許可されたのは、合計 %d 分間です。"
-
-msgid "Error: cannot write voucher.cfg"
-msgstr "エラー: voucher.cfg に書き込めません"
-
-#, fuzzy, php-format
-msgid "Can't write %s"
-msgstr "ルール %s を作成"
-
-#, fuzzy, php-format
-msgid "Can't read %s"
-msgstr "%s を読み取れません\n"
-
-#, php-format
-msgid "Voucher: %s"
-msgstr "バウチャー: %s"
-
 msgid "Configuring IPsec VPN... "
 msgstr "IPsec VPN を構成しています... "
 
@@ -3752,12 +3915,52 @@ msgid "Could not process aliases from alias: %s"
 msgstr "リストからエイリアスを一括インポート"
 
 #
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 98
+msgid "Disconnect selected client?"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 131
+msgid "Session"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 132
+msgid "userName"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 133
+msgid "macAddress"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 134
+msgid "ipAddress"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 135
+msgid "connected since"
+msgstr ""
+
+#
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 63
 msgid "Error reconfiguring captiveportal"
 msgstr ""
 
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 167
+msgid "Error uploading template"
+msgstr ""
+
 msgid "Zones"
 msgstr "ゾーン"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 181
+msgid "Templates"
+msgstr ""
 
 #
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 86
@@ -3782,10 +3985,156 @@ msgid "ID"
 msgstr "ID"
 
 #
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 214
+msgid "Fileid"
+msgstr ""
+
+msgid "Name"
+msgstr "名前"
+
+#
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 111
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 505
 msgid "Apply"
 msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 251
+msgid "Upload file"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 257
+msgid "Template name"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 261
+msgid "File input"
+msgstr ""
+
+msgid "Upload"
+msgstr "アップロード"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 52
+msgid "Please setup a voucher server first "
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 52
+msgid "goto auth servers"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 139
+msgid "Remove voucher group"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 140
+msgid "All vouchers within this group will be deleted"
+msgstr ""
+
+msgid "Yes"
+msgstr "はい"
+
+msgid "Voucher"
+msgstr "バウチャー"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 240
+msgid "Valid from"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 241
+msgid "Valid to"
+msgstr ""
+
+msgid "State"
+msgstr "ステータス"
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 256
+msgid "Create vouchers"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 276
+msgid "Generate vouchers"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 282
+msgid "Validity"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 283
+msgid "Number of vouchers"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 284
+msgid "Groupname"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 291
+msgid "4 hours"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 292
+msgid "8 hours"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 293
+msgid "1 day"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 294
+msgid "2 days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 295
+msgid "3 days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 296
+msgid "4 days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 297
+msgid "5 days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 298
+msgid "6 days"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 299
+msgid "1 week"
+msgstr ""
+
+#
+# File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 300
+msgid "2 weeks"
+msgstr ""
+
+msgid "Generate"
+msgstr "新規鍵を生成"
+
+msgid "Close"
+msgstr "閉じる"
 
 #
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
@@ -3838,9 +4187,6 @@ msgid ""
 "The upgrade has finished and your device is being rebooted at the moment, "
 "please wait..."
 msgstr ""
-
-msgid "Name"
-msgstr "名前"
 
 msgid "Size"
 msgstr "サイズ"
@@ -4152,27 +4498,17 @@ msgid "advanced mode"
 msgstr ""
 
 #
-# File: src/sbin/gmirror_status_check.php, line: 51
-#, php-format
-msgid "List of mirrors changed. Old: (%s) New: (%s)"
+# File: src/opnsense/mvc/app/views/layout_partials/form_input_tr.volt, line: 61
+msgid "Clear All"
 msgstr ""
 
-#
-# File: src/sbin/gmirror_status_check.php, line: 58
-#, php-format
-msgid "Mirror %s status changed from %s to %s."
-msgstr ""
+msgid "Help for items on this page"
+msgstr "このページ項目のヘルプ"
 
 #
-# File: src/sbin/gmirror_status_check.php, line: 63
-#, php-format
-msgid "Mirror %s consumer count changed from %d to %d."
-msgstr ""
-
-#
-# File: src/sbin/gmirror_status_check.php, line: 70
-#, php-format
-msgid "Mirror %s drive status changed. Old: (%s) New: (%s)"
+# File: src/opnsense/mvc/app/views/layouts/default.volt, line: 172
+# File: src/www/foot.inc, line: 6
+msgid "view license"
 msgstr ""
 
 msgid "Wrong Interface"
@@ -4191,11 +4527,6 @@ msgstr ""
 
 msgid "CARP has been enabled."
 msgstr "CARP は有効になりました"
-
-#
-# File: src/www/carp_status.php, line: 99
-msgid "CARP Status"
-msgstr ""
 
 #
 # File: src/www/carp_status.php, line: 95
@@ -4259,10 +4590,21 @@ msgid "Would you like to submit this crash report to the developers?"
 msgstr ""
 
 #
-# File: src/www/crash_reporter.php, line: 153
+# File: src/www/crash_reporter.php, line: 174
 msgid ""
-"You can help us further by optionally adding your contact information and a "
-"problem description."
+"You can help us further by adding your contact information and a problem "
+"description. Please note that providing your contact information greatly "
+"improves the chances of bugs being fixed."
+msgstr ""
+
+#
+# File: src/www/crash_reporter.php, line: 176
+msgid "your@email.com"
+msgstr ""
+
+#
+# File: src/www/crash_reporter.php, line: 177
+msgid "A short problem description or steps to reproduce."
 msgstr ""
 
 #
@@ -4324,6 +4666,11 @@ msgstr "このユーザはこれらのグループのメンバーです"
 msgid "Authentication failed."
 msgstr "認証に失敗しました"
 
+#
+# File: src/www/diag_authentication.php, line: 105
+msgid "Test a server"
+msgstr ""
+
 msgid "Authentication Server"
 msgstr "認証サーバ"
 
@@ -4335,9 +4682,6 @@ msgstr "パスワード"
 
 msgid "Test"
 msgstr "テスト"
-
-msgid "Captive Portal Vouchers"
-msgstr "キャプティブポータルバウチャー"
 
 msgid "DHCPv6 Server"
 msgstr "DHCPv6 サーバ"
@@ -4380,9 +4724,6 @@ msgstr "構成の復元"
 
 msgid "Download"
 msgstr "ダウンロード"
-
-msgid "Restore version"
-msgstr "バージョンの復元"
 
 #
 # File: src/www/diag_backup.php, line: 207
@@ -4436,15 +4777,6 @@ msgstr "構成は復元できませんでした"
 
 msgid "The configuration could not be restored (file upload error)."
 msgstr "構成は復元できませんでした ( ファイルアップロードエラー )"
-
-msgid ""
-"XXX - this feature may hose your config (do NOT backrev configs!) - billm"
-msgstr ""
-"XXX - この機能は構成を騙っている可能性があります ( 構成を戻してはいけませ"
-"ん！) - billm"
-
-msgid "No version selected."
-msgstr "バージョンが選択されていません"
 
 #, fuzzy
 msgid "Google Drive communication failure"
@@ -4563,9 +4895,19 @@ msgstr "コンソールメニューをパスワードで保護"
 msgid "Confirm :"
 msgstr "確認 : "
 
+#
+# File: src/www/diag_confbak.php, line: 42
+msgid "Changed backup revision count."
+msgstr ""
+
 #, php-format
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
 msgstr "タイムスタンプ: %1$s 説明: %2$s のバックアップを削除しました"
+
+#
+# File: src/www/diag_confbak.php, line: 61
+msgid "Unable to delete the selected configuration."
+msgstr ""
 
 msgid "Config History"
 msgstr "構成履歴"
@@ -4632,12 +4974,12 @@ msgid "View differences"
 msgstr ""
 
 #
-# File: src/www/diag_confbak.php, line: 271
+# File: src/www/diag_confbak.php, line: 266
 msgid ""
 "To view the differences between an older configuration and a newer "
 "configuration, select the older configuration using the left column of radio "
 "options and select the newer configuration in the right column, then press "
-"the Diff button."
+"the button."
 msgstr ""
 
 msgid "Diff"
@@ -4663,9 +5005,6 @@ msgstr "このバックアップをダウンロード"
 
 msgid "Factory defaults"
 msgstr "出荷時の規定値"
-
-msgid "Yes"
-msgstr "はい"
 
 msgid ""
 "The system has been reset to factory defaults and is now rebooting. This may "
@@ -4710,6 +5049,11 @@ msgstr "続行してもよろしいですか？"
 msgid "No"
 msgstr "いいえ"
 
+#
+# File: src/www/diag_dns.php, line: 80
+msgid "Created from Diagnostics-> DNS Lookup"
+msgstr ""
+
 msgid "Host must be a valid hostname or IP address."
 msgstr "ホストには、有効なホスト名または IP アドレスが必要です"
 
@@ -4736,6 +5080,18 @@ msgstr "DNS ホスト名または IP アドレスを名前解決"
 
 msgid "Hostname or IP"
 msgstr "ホスト名または IP"
+
+#
+# File: src/www/diag_dns.php, line: 210
+#, php-format
+msgid "An alias already exists for the hostname %s."
+msgstr ""
+
+#
+# File: src/www/diag_dns.php, line: 217
+#, php-format
+msgid "Alias created with name %s."
+msgstr ""
 
 msgid "Resolution time per server"
 msgstr "サーバあたりの名前解決時間"
@@ -4767,18 +5123,11 @@ msgstr "ステータス表示"
 msgid "An error occurred."
 msgstr "エラーが発生しました"
 
-#, fuzzy
-msgid "Reset states"
-msgstr "リセットステータス"
-
 msgid "Current total state count"
 msgstr "現在の合計ステータス数"
 
 msgid "Filter expression:"
 msgstr "フィルタ式: "
-
-msgid "Filter"
-msgstr "フィルタ"
 
 msgid "Kill"
 msgstr "Kill"
@@ -4793,9 +5142,6 @@ msgstr "プロトコル"
 msgid "Source -> Router -> Destination"
 msgstr "発信元 -> ルータ -> 発信先"
 
-msgid "State"
-msgstr "ステータス"
-
 msgid "Remove all state entries from"
 msgstr "全ステータスエントリを削除: "
 
@@ -4807,12 +5153,6 @@ msgstr "現在のフィルタに一致するステータス"
 
 msgid "Show Source Tracking"
 msgstr "送信元追跡を表示"
-
-msgid "Source Tracking"
-msgstr "送信元の追跡"
-
-msgid "Reset States"
-msgstr "ステータスをリセット"
 
 msgid "Source -> Destination"
 msgstr "送信元 -> 送信先"
@@ -4832,195 +5172,6 @@ msgstr "全ての送信元追跡エントリを削除: "
 msgid "No source tracking entries were found."
 msgstr "送信元追跡エントリがありません。"
 
-#
-# File: src/www/diag_gmirror.php, line: 33
-msgid "GEOM Mirrors"
-msgstr ""
-
-#, fuzzy
-msgid "Forget all formerly connected consumers"
-msgstr "現在接続している全てのセッション"
-
-#
-# File: src/www/diag_gmirror.php, line: 46
-# File: src/www/diag_gmirror.php, line: 302
-msgid "Remove metadata from disk"
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 47
-msgid "Insert consumer into mirror"
-msgstr ""
-
-#, fuzzy
-msgid "Remove consumer from mirror"
-msgstr "%s の cron ジョブが削除されました"
-
-#
-# File: src/www/diag_gmirror.php, line: 49
-msgid "Reactivate consumer on mirror"
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 50
-msgid "Deactivate consumer from mirror"
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 51
-msgid "Force rebuild of mirror consumer"
-msgstr ""
-
-#, fuzzy
-msgid "You must supply a valid mirror name."
-msgstr "有効なポート番号を指定してください"
-
-#, fuzzy
-msgid "You must supply a valid consumer name"
-msgstr "有効なポート番号を指定してください"
-
-#
-# File: src/www/diag_gmirror.php, line: 77
-msgid ""
-"Consumer is already in use and cannot be inserted. Remove consumer from "
-"existing mirror first."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 79
-msgid ""
-"Consumer has metadata from an existing mirror. Clear metadata before "
-"inserting consumer."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 82
-msgid ""
-"Mirror is not in a COMPLETE state, cannot insert consumer. Forget "
-"disconnected disks or wait for rebuild to finish."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 86
-msgid "Consumer is in use and cannot be cleared. Deactivate disk first."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 88
-msgid "Consumer has no metadata to clear."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 92
-msgid "Consumer is already present on specified mirror."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 94
-msgid "Consumer has no metadata and cannot be reactivated."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 101
-msgid "Consumer must be present on the specified mirror."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 163
-msgid ""
-"There was an error performing the chosen mirror operation. Check the System "
-"Log for details."
-msgstr ""
-
-msgid "NOTE:"
-msgstr "注意: "
-
-#, fuzzy
-msgid ""
-"The options on this page are intended for use by advanced users only. This "
-"page is for managing existing mirrors, not creating new mirrors."
-msgstr "このページのオプションは、上級ユーザが対象です"
-
-#, fuzzy
-msgid "Mirror"
-msgstr "エラー"
-
-#, fuzzy
-msgid "Consumer"
-msgstr "コンソールメニュー"
-
-#, fuzzy
-msgid "GEOM Mirror information"
-msgstr "その他の情報: "
-
-#, fuzzy
-msgid "Mirror Status"
-msgstr "SMART ステータス"
-
-#, fuzzy
-msgid "Component"
-msgstr "完了しました"
-
-#, fuzzy
-msgid "Forget Disconnected Disks"
-msgstr "切断済ユーザ"
-
-#, fuzzy
-msgid "Rebuild"
-msgstr "CD-ROM ビルド"
-
-#, fuzzy
-msgid "Deactivate"
-msgstr "有効化"
-
-msgid "Remove"
-msgstr "削除"
-
-#, fuzzy
-msgid "No Mirrors Found"
-msgstr "レコードがありません"
-
-#
-# File: src/www/diag_gmirror.php, line: 272
-msgid ""
-"Some disk operations may only be performed when there are multiple consumers "
-"present in a mirror."
-msgstr ""
-
-#, fuzzy
-msgid "Consumer information"
-msgstr "全般情報"
-
-#, fuzzy
-msgid "Available Consumers"
-msgstr "使用可能な動作"
-
-#, fuzzy
-msgid "Add to Mirror"
-msgstr "プールに追加"
-
-#, fuzzy
-msgid "Reactivate on:"
-msgstr "有効化: "
-
-#, fuzzy
-msgid "No unused consumers found"
-msgstr "サービスがありません"
-
-#
-# File: src/www/diag_gmirror.php, line: 321
-msgid ""
-"Consumers may only be added to a mirror if they are larger than the size of "
-"the mirror."
-msgstr ""
-
-#
-# File: src/www/diag_gmirror.php, line: 328
-msgid ""
-"To repair a failed mirror, first perform a 'Forget' command on the mirror, "
-"followed by an 'insert' action on the new consumer."
-msgstr ""
-
 msgid "Halt system"
 msgstr "システム停止"
 
@@ -5029,6 +5180,12 @@ msgstr "システムは停止中です。1 分程かかります"
 
 msgid "Are you sure you want to halt the system?"
 msgstr "本当にシステムを停止してもよろしいですか？"
+
+#
+# File: src/www/diag_ipsec.php, line: 91
+# File: src/www/widgets/widgets/ipsec.widget.php, line: 127
+msgid "Connection"
+msgstr ""
 
 #, fuzzy
 msgid "Local ID"
@@ -5045,39 +5202,55 @@ msgid "Remote IP"
 msgstr "リモート IP"
 
 #
-# File: src/www/diag_ipsec.php, line: 100
-msgid "Role"
+# File: src/www/diag_ipsec.php, line: 97
+msgid "Local Auth"
 msgstr ""
 
 #
-# File: src/www/diag_ipsec.php, line: 216
-msgid "Connect VPN"
-msgstr ""
-
-#
-# File: src/www/diag_ipsec.php, line: 220
-msgid "Disconnect VPN"
-msgstr ""
-
-#
-# File: src/www/diag_ipsec.php, line: 235
-msgid "Show child SA entries"
+# File: src/www/diag_ipsec.php, line: 98
+msgid "Remote Auth"
 msgstr ""
 
 #, fuzzy
 msgid "Local subnets"
 msgstr "ローカルサブネット"
 
-#, fuzzy
-msgid "Local SPI(s)"
-msgstr "ローカル IP"
+#
+# File: src/www/diag_ipsec.php, line: 148
+msgid "SPI(s)"
+msgstr ""
 
 #, fuzzy
 msgid "Remote subnets"
 msgstr "リモートサブネット"
 
-msgid "You can configure IPsec"
-msgstr "IPsec を構成できます"
+#
+# File: src/www/diag_ipsec.php, line: 151
+msgid "Stats"
+msgstr ""
+
+#
+# File: src/www/diag_ipsec.php, line: 162
+msgid "in"
+msgstr ""
+
+#
+# File: src/www/diag_ipsec.php, line: 163
+msgid "out"
+msgstr ""
+
+msgid "Time"
+msgstr "時間"
+
+#
+# File: src/www/diag_ipsec.php, line: 174
+msgid "Bytes in"
+msgstr ""
+
+#
+# File: src/www/diag_ipsec.php, line: 175
+msgid "Bytes out"
+msgstr ""
 
 #, fuzzy
 msgid "Pool: "
@@ -5102,12 +5275,6 @@ msgstr ""
 #, fuzzy
 msgid "No IPsec pools."
 msgstr "IPsec セキュリティポリシはありません"
-
-msgid "You can configure your IPsec"
-msgstr "IPsec を構成できます"
-
-msgid "here."
-msgstr " "
 
 msgid "Protocol"
 msgstr "プロトコル"
@@ -5142,34 +5309,35 @@ msgstr "発信 ( ファイアウォール基準 )"
 msgid "No IPsec security policies."
 msgstr "IPsec セキュリティポリシはありません"
 
-msgid "Overview"
-msgstr "概要"
-
-msgid "Logs"
-msgstr "ログ"
-
 msgid "Diagnostics: Limiter Info"
 msgstr "診断: リミッタ情報"
+
+#
+# File: src/www/diag_limiter_info.php, line: 37
+msgid "We could not find any limiters on this system."
+msgstr ""
 
 msgid "Gathering Limiter information, please wait..."
 msgstr "リミッタ情報を収集しています。しばらくお待ちください..."
 
-msgid "System logs"
-msgstr "システムログ"
-
 msgid "Clear log"
 msgstr "ログの消去"
-
-msgid "Portal Auth"
-msgstr "ポータル認証"
 
 #, php-format
 msgid "Last %s Portal Auth log entries"
 msgstr "最新 %s ポータル認証ログエントリ"
 
+msgid "System logs"
+msgstr "システムログ"
+
 #, php-format
 msgid "Last %s DHCP service log entries"
 msgstr "最新 %s DHCP サービスログエントリ"
+
+#
+# File: src/www/diag_logs_dhcp.php, line: 77
+msgid "NOTE: Clearing the log file will restart the DHCP daemon."
+msgstr ""
 
 msgid "Easy Rule: Blocked from Firewall Log View"
 msgstr "簡易ルール: ファイアウォールログ表示から拒否"
@@ -5261,9 +5429,6 @@ msgstr ""
 msgid "Source and destination port"
 msgstr ""
 
-msgid "Time"
-msgstr "時間"
-
 #
 # File: src/www/diag_logs_filter.php, line: 642
 msgid "Source IP Address"
@@ -5301,15 +5466,11 @@ msgstr "IPv6"
 msgid "Last %s firewall log entries."
 msgstr "最新 %s ファイアウォールログエントリ"
 
-msgid "matched log entries."
-msgstr "一致したログエントリ"
-
+#
+# File: src/www/diag_logs_filter.php, line: 706
 #, php-format
-msgid "Max(%s)"
-msgstr "最大 ( %s )"
-
-msgid "Act"
-msgstr "動作"
+msgid "Showing %s matching log entries (maximum is %s)."
+msgstr ""
 
 msgid "If"
 msgstr "IF"
@@ -5327,26 +5488,19 @@ msgstr "簡易ルール: 拒否リストに追加"
 msgid "Easy Rule: Pass this traffic"
 msgstr "簡易ルール: このトラフィックを許可"
 
+#
+# File: src/www/diag_logs_filter_dynamic.php, line: 101
 #, php-format
-msgid "Last %s firewall log entries"
-msgstr "最新 %s ファイアウォールログエントリ"
-
-msgid "Firewall (Dynamic View)"
-msgstr "ファイアウォール ( 動的表示 )"
-
-#, php-format
-msgid "Last %s records"
-msgstr "最新 %s レコード"
+msgid "Showing last %s records."
+msgstr ""
 
 #, fuzzy
 msgid "Pause"
 msgstr "一時停止: "
 
-msgid "TCP Flags"
-msgstr "TCP フラグ"
-
-msgid "Firewall Log Summary"
-msgstr "ファイアウォールログ概要"
+#, php-format
+msgid "Last %s firewall log entries"
+msgstr "最新 %s ファイアウォールログエントリ"
 
 msgid "Actions"
 msgstr "動作"
@@ -5366,20 +5520,30 @@ msgstr "送信元ポート"
 msgid "Destination Ports"
 msgstr "送信先ポート"
 
+#
+# File: src/www/diag_logs_filter_summary.php, line: 124
 #, php-format
 msgid ""
-"This is a firewall log summary, of the last %1$s lines of the firewall log "
-"(Max %2$s)."
+"The following summaries have been collected from the last %s lines of the "
+"firewall log (maximum is %s)."
 msgstr ""
-"ファイアウォールログ概要です。ファイアウォールログの最新 %1$s 行 ( 最大 "
-"%2$s ) が対象です。"
 
 msgid "Count"
 msgstr "合計"
 
+#
+# File: src/www/diag_logs_ipsec.php, line: 49
+msgid "System Log"
+msgstr ""
+
+#
+# File: src/www/diag_logs_ipsec.php, line: 69
 #, php-format
-msgid "Last %s  IPsec log entries"
-msgstr "最新 %s IPsec ログエントリ"
+msgid "Last %s IPsec log entries"
+msgstr ""
+
+msgid "NTP"
+msgstr "NTP"
 
 #, php-format
 msgid "Last %s NTP log entries"
@@ -5406,15 +5570,6 @@ msgstr "L2TP ログイン"
 
 msgid "L2TP Raw"
 msgstr "L2TP 生"
-
-msgid "Normal View"
-msgstr "通常表示"
-
-msgid "Dynamic View"
-msgstr "動的表示"
-
-msgid "Summary View"
-msgstr "概要表示"
 
 #
 # File: src/www/diag_logs_pills.inc, line: 44
@@ -5493,8 +5648,18 @@ msgstr ""
 msgid "General Logging Options"
 msgstr "全般ログオプション"
 
+#
+# File: src/www/diag_logs_settings.php, line: 310
+msgid "Forward/Reverse Display"
+msgstr ""
+
 msgid "Show log entries in reverse order (newest entries on top)"
 msgstr "ログエントリを逆順に表示 ( 最新エントリを一番上にする )"
+
+#
+# File: src/www/diag_logs_settings.php, line: 315
+msgid "GUI Log Entries to Display"
+msgstr ""
 
 msgid ""
 "Hint: This is only the number of log entries displayed in the GUI. It does "
@@ -5502,6 +5667,11 @@ msgid ""
 msgstr ""
 "ヒント: GUI で表示されるログエントリの数としてのみ使用されます。実際のログ"
 "ファイルに含めるエントリの数には影響しません。"
+
+#
+# File: src/www/diag_logs_settings.php, line: 321
+msgid "Log File Size (Bytes)"
+msgstr ""
 
 #
 # File: src/www/diag_logs_settings.php, line: 283
@@ -5536,6 +5706,11 @@ msgstr ""
 #
 # File: src/www/diag_logs_settings.php, line: 288
 msgid "Remaining disk space for log files: "
+msgstr ""
+
+#
+# File: src/www/diag_logs_settings.php, line: 333
+msgid "Log Firewall Default Blocks"
 msgstr ""
 
 #, fuzzy
@@ -5574,6 +5749,11 @@ msgid "Log packets blocked by 'Block Private Networks' rules"
 msgstr "デフォルトルールで拒否されたパケットをログに記録"
 
 #
+# File: src/www/diag_logs_settings.php, line: 351
+msgid "Web Server Log"
+msgstr ""
+
+#
 # File: src/www/diag_logs_settings.php, line: 312
 msgid "Log errors from the web server process."
 msgstr ""
@@ -5585,17 +5765,25 @@ msgid ""
 "the GUI or Captive Portal will appear in the main system log."
 msgstr ""
 
-msgid "Show raw filter logs"
-msgstr "生のフィルタログを表示"
-
-msgid ""
-"Hint: If this is checked, filter logs are shown as generated by the packet "
-"filter, without any formatting. This will reveal more detailed information, "
-"but it is more difficult to read."
+#
+# File: src/www/diag_logs_settings.php, line: 357
+msgid "Filter descriptions"
 msgstr ""
-"ヒント: これをチェックすると、パケットフィルタが生成した整形されていないフィ"
-"ルタログを表示します。より詳細な情報を見ることができますが、非常に読みにくい"
-"です。"
+
+#
+# File: src/www/diag_logs_settings.php, line: 360
+msgid "Omit descriptions"
+msgstr ""
+
+#
+# File: src/www/diag_logs_settings.php, line: 361
+msgid "Display as column"
+msgstr ""
+
+#
+# File: src/www/diag_logs_settings.php, line: 362
+msgid "Display as second row"
+msgstr ""
 
 msgid "Show the applied rule description below or in the firewall log rows."
 msgstr ""
@@ -5609,8 +5797,18 @@ msgstr ""
 "ルールの説明をログの全ての行に表示すると、大きいルールセットのパフォーマンス"
 "に影響する可能性があります。"
 
+#
+# File: src/www/diag_logs_settings.php, line: 370
+msgid "Local Logging"
+msgstr ""
+
 msgid "Disable writing log files to the local disk"
 msgstr "ローカルディスクへのログファイルの書き込みを無効"
+
+#
+# File: src/www/diag_logs_settings.php, line: 375
+msgid "Reset Logs"
+msgstr ""
 
 #, fuzzy
 msgid ""
@@ -5632,6 +5830,11 @@ msgstr "リモートログオプション"
 
 msgid "Source Address"
 msgstr "送信元アドレス"
+
+#
+# File: src/www/diag_logs_settings.php, line: 392
+msgid "Default (any)"
+msgstr ""
 
 #
 # File: src/www/diag_logs_settings.php, line: 370
@@ -5931,8 +6134,10 @@ msgstr "ステータステーブルは正常に書き込みされました"
 msgid "The source tracking table has been flushed successfully."
 msgstr "送信元追跡テーブルは正常に書き込みされました"
 
-msgid "Reset state"
-msgstr "リセットステータス"
+#
+# File: src/www/diag_resetstate.php, line: 56
+msgid "State Reset"
+msgstr ""
 
 msgid "Firewall state table"
 msgstr "ファイアウォールステータステーブル"
@@ -6065,9 +6270,6 @@ msgstr "送信"
 msgid "Info type"
 msgstr "情報タイプ"
 
-msgid "Health"
-msgstr "健全性"
-
 msgid "SMART Capabilities"
 msgstr "SMART 機能"
 
@@ -6118,6 +6320,9 @@ msgstr "本当にテストを中止しますか？"
 
 msgid "Back"
 msgstr "戻る"
+
+msgid "States"
+msgstr "ステータス"
 
 msgid "Src Ports"
 msgstr "送信元ポート"
@@ -6195,6 +6400,9 @@ msgstr ""
 
 msgid "The bogons database has been updated."
 msgstr "bogon データベースが更新されました。"
+
+msgid "Tables"
+msgstr "テーブル"
 
 #
 # File: src/www/diag_tables.php, line: 130
@@ -6327,11 +6535,13 @@ msgstr ""
 msgid "Traceroute output"
 msgstr "traceroute の出力: "
 
-msgid "Help for items on this page"
-msgstr "このページ項目のヘルプ"
-
 msgid "Save Settings"
 msgstr "設定を保存"
+
+#
+# File: src/www/fbegin.inc, line: 258
+msgid "Add widget"
+msgstr ""
 
 #, php-format
 msgid "Cannot delete alias. Currently in use by %s"
@@ -6339,11 +6549,6 @@ msgstr "エイリアスを削除できません。%s で現在使用されてい
 
 msgid "Add a new alias"
 msgstr "新規エイリアスの追加"
-
-#
-# File: src/www/firewall_aliases.php, line: 157
-msgid "Aliasses"
-msgstr ""
 
 msgid ""
 "Do you really want to delete this alias? All elements that still use it will "
@@ -6440,9 +6645,6 @@ msgstr "エイリアス名に使用できる文字は、a-z、A-Z、0-9、_ の�
 
 msgid "You may enter a description here for your reference (not parsed)."
 msgstr "自分用のメモを入力できます ( 自由形式 )"
-
-msgid "Type"
-msgstr "タイプ"
 
 #
 # File: src/www/firewall_aliases_edit.php, line: 467
@@ -6643,6 +6845,11 @@ msgstr "リンクしたルール"
 msgid "Alias (click to view/edit)"
 msgstr ""
 
+#
+# File: src/www/firewall_nat_1to1.php, line: 90
+msgid "Toggled NAT rule"
+msgstr ""
+
 msgid "add rule"
 msgstr "ルールを追加"
 
@@ -6821,21 +7028,6 @@ msgstr "このオプションを使用すると、一致する意味が逆にな
 msgid "Single host or Network"
 msgstr ""
 
-#
-# File: src/www/firewall_nat_1to1_edit.php, line: 350
-# File: src/www/firewall_nat_1to1_edit.php, line: 401
-# File: src/www/firewall_nat_edit.php, line: 595
-# File: src/www/firewall_nat_edit.php, line: 641
-# File: src/www/firewall_nat_edit.php, line: 658
-# File: src/www/firewall_nat_edit.php, line: 709
-# File: src/www/firewall_nat_edit.php, line: 755
-# File: src/www/firewall_nat_edit.php, line: 772
-# File: src/www/firewall_nat_edit.php, line: 822
-# File: src/www/firewall_nat_out_edit.php, line: 468
-# File: src/www/firewall_nat_out_edit.php, line: 523
-msgid "aliasses"
-msgstr ""
-
 msgid ""
 "Enter the internal (LAN) subnet for the 1:1 mapping. The subnet size "
 "specified for the internal subnet will be applied to the external subnet."
@@ -6963,6 +7155,9 @@ msgstr "ヒント: 通常は、次を指定してください: "
 msgid "TCP"
 msgstr "TCP"
 
+msgid "here."
+msgstr " "
+
 msgid "Show source address and port range"
 msgstr "送信元アドレスおよびポート範囲を表示"
 
@@ -6979,12 +7174,16 @@ msgid "other"
 msgstr "その他"
 
 #
-# File: src/www/firewall_nat_edit.php, line: 647
-# File: src/www/firewall_nat_edit.php, line: 664
-# File: src/www/firewall_nat_edit.php, line: 761
-# File: src/www/firewall_nat_edit.php, line: 778
-# File: src/www/firewall_nat_edit.php, line: 828
-msgid "well known ports"
+# File: src/www/firewall_nat_edit.php, line: 646
+# File: src/www/firewall_nat_edit.php, line: 663
+# File: src/www/firewall_nat_edit.php, line: 790
+# File: src/www/firewall_nat_edit.php, line: 807
+# File: src/www/firewall_nat_edit.php, line: 857
+# File: src/www/firewall_rules_edit.php, line: 938
+# File: src/www/firewall_rules_edit.php, line: 955
+# File: src/www/firewall_rules_edit.php, line: 1060
+# File: src/www/firewall_rules_edit.php, line: 1077
+msgid "Well-known ports"
 msgstr ""
 
 msgid "Specify the source port or port range for this rule"
@@ -7001,11 +7200,6 @@ msgid ""
 "'any')"
 msgstr ""
 "及び、送信先ポート範囲と等しくなることはまずありません ( 通常は「任意」です )"
-
-#
-# File: src/www/firewall_nat_edit.php, line: 721
-msgid "virtualip"
-msgstr ""
 
 msgid "Destination port range"
 msgstr "送信先ポート範囲"
@@ -7822,6 +8016,21 @@ msgstr ""
 msgid "Edit Firewall rule"
 msgstr "ファイアウォールルールの編集"
 
+#
+# File: src/www/firewall_rules_edit.php, line: 667
+msgid "Block"
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 667
+msgid "Reject"
+msgstr ""
+
+#
+# File: src/www/firewall_rules_edit.php, line: 669
+msgid "Match"
+msgstr ""
+
 msgid "Choose what to do with packets that match the criteria specified below."
 msgstr ""
 "下記で指定された条件に一致するパケットに対して、実行する内容を選択します"
@@ -8500,6 +8709,12 @@ msgstr "CARP 及び上記の値の詳細については OpenBSD を参照して�
 msgid "Available Widgets"
 msgstr "利用可能なウィジェット"
 
+#
+# File: src/www/graph.php, line: 79
+#, php-format
+msgid "Cannot get data about interface %s"
+msgstr ""
+
 msgid "In"
 msgstr "内"
 
@@ -8532,6 +8747,9 @@ msgstr "切替: "
 
 msgid "follow"
 msgstr "追従"
+
+msgid "up"
+msgstr "アップ"
 
 msgid "Kbps"
 msgstr "Kbps"
@@ -8567,20 +8785,6 @@ msgstr ""
 msgid "Apply changes"
 msgstr "変更を適用"
 
-msgid "apply"
-msgstr "適用"
-
-msgid "create"
-msgstr "作成"
-
-msgid "save"
-msgstr "保存"
-
-#
-# File: src/www/guiconfig.inc, line: 324
-msgid "Undo"
-msgstr ""
-
 #, fuzzy
 msgid "The changes have been applied successfully."
 msgstr "ステータステーブルは正常に書き込みされました"
@@ -8590,6 +8794,25 @@ msgstr "ステータステーブルは正常に書き込みされました"
 msgid ""
 "You can also <a href=\"status_filter_reload.php\">monitor</a> the filter "
 "reload progress."
+msgstr ""
+
+#
+# File: src/www/guiconfig.inc, line: 389
+# File: src/www/guiconfig.inc, line: 420
+#, php-format
+msgid "File %s yielded no results."
+msgstr ""
+
+#
+# File: src/www/guiconfig.inc, line: 412
+#, php-format
+msgid "File %s is a directory."
+msgstr ""
+
+#
+# File: src/www/guiconfig.inc, line: 414
+#, php-format
+msgid "File %s doesn't exist."
 msgstr ""
 
 #, fuzzy
@@ -10114,6 +10337,9 @@ msgid ""
 msgstr ""
 "更新頻度は、システム - 高度なファイアウォール - NAT 設定、で変更できます。"
 
+msgid "NOTE:"
+msgstr "注意: "
+
 msgid "You can manage Gateways"
 msgstr "ゲートウェイ管理は"
 
@@ -10144,6 +10370,12 @@ msgid ""
 msgstr ""
 "%s ポートを %s インタフェースに設定できません。このインタフェースは %s のメン"
 "バです。"
+
+#
+# File: src/www/interfaces_assign.php, line: 299
+#, php-format
+msgid "VLAN parent interface %s does not exist."
+msgstr ""
 
 msgid ""
 "The interface is part of a group. Please remove it from the group to continue"
@@ -10213,6 +10445,24 @@ msgstr ""
 "lagg(4) インタフェースのメンバとして構成されているインタフェースは、表示され"
 "ません。"
 
+#
+# File: src/www/interfaces_bridge.php, line: 57
+# File: src/www/interfaces_gif.php, line: 53
+# File: src/www/interfaces_gre.php, line: 53
+# File: src/www/interfaces_lagg.php, line: 58
+# File: src/www/interfaces_vlan.php, line: 57
+msgid "Wrong parameters supplied"
+msgstr ""
+
+#
+# File: src/www/interfaces_bridge.php, line: 59
+# File: src/www/interfaces_gif.php, line: 55
+# File: src/www/interfaces_gre.php, line: 55
+# File: src/www/interfaces_lagg.php, line: 60
+# File: src/www/interfaces_vlan.php, line: 59
+msgid "Wrong index supplied"
+msgstr ""
+
 msgid "This bridge cannot be deleted because it is assigned as an interface."
 msgstr "このブリッジは削除できません。インタフェースとして割当てされています。"
 
@@ -10255,12 +10505,19 @@ msgstr "STP の優先度は 0 - 61440 の整数です。"
 msgid "Transmit Hold Count for STP needs to be an integer between 1 and 10."
 msgstr "STP の転送保留カウント値は 1 - 10 の整数です。"
 
-msgid "interface priority for STP needs to be an integer between 0 and 240."
-msgstr "STP のインタフェース優先度は 0 - 240 の整数です。"
+#
+# File: src/www/interfaces_bridge_edit.php, line: 143
+#, php-format
+msgid "%s interface priority for STP needs to be an integer between 0 and 240."
+msgstr ""
 
+#
+# File: src/www/interfaces_bridge_edit.php, line: 149
+#, php-format
 msgid ""
-"interface path cost for STP needs to be an integer between 1 and 200000000."
-msgstr "STP のインタフェースパスコストは 1 - 200000000 の整数です。"
+"%s interface path cost for STP needs to be an integer between 1 and "
+"200000000."
+msgstr ""
 
 msgid "You must select at least 2 member interfaces for a bridge."
 msgstr "ブリッジには最低でも 2 つのメンバインタフェースを選択してください。"
@@ -10735,6 +10992,13 @@ msgstr "グループ名は既に存在します！"
 msgid "Only letters A-Z are allowed as the group name."
 msgstr "グループ名に使用可能な文字は A - Z のみです"
 
+#
+# File: src/www/interfaces_groups_edit.php, line: 71
+msgid ""
+"The specified group name is already used by an interface. Please choose "
+"another name."
+msgstr ""
+
 msgid "Interface Groups Edit"
 msgstr "インタフェースグループの編集"
 
@@ -10873,9 +11137,6 @@ msgid ""
 msgstr ""
 "このポイントツーポイントリンクは削除できません。インタフェースとして使用され"
 "ています。"
-
-msgid "Interfaces: PPPs"
-msgstr "インタフェース: PPP"
 
 msgid "Interface(s)/Port(s)"
 msgstr "インタフェース / ポート"
@@ -11405,20 +11666,8 @@ msgid ""
 "pool."
 msgstr "このエントリは削除できません。1 つ以上のプールから参照されています"
 
-msgid "Monitor"
-msgstr "監視"
-
 msgid "The load balancer configuration has been changed"
 msgstr "ロードバランサ構成が変更されました"
-
-msgid "Pools"
-msgstr "プール"
-
-msgid "Virtual Servers"
-msgstr "仮想サーバ"
-
-msgid "Load Balancer: Monitor:"
-msgstr "ロードバランサ: 監視: "
 
 msgid "This monitor name has already been used.  Monitor names must be unique."
 msgstr "この監視名は既に使用されています。監視名は固有です。"
@@ -11435,9 +11684,10 @@ msgstr "HTTP(S) のコードは RFC2616 に従ってください"
 msgid "The path to monitor must be set."
 msgstr "監視するパスを設定してください"
 
-#, php-format
-msgid "modified '%s' monitor:"
-msgstr "%s 監視が変更されました: "
+#
+# File: src/www/load_balancer_monitor_edit.php, line: 249
+msgid "Edit Monitor"
+msgstr ""
 
 msgid "HTTP"
 msgstr "HTTP"
@@ -11476,9 +11726,6 @@ msgstr ""
 "このエントリは削除できませんでした。1 つ以上の仮想サーバから参照されていま"
 "す。"
 
-msgid "Pool"
-msgstr "プール"
-
 #, php-format
 msgid ""
 "The load balancer configuration has been changed%sYou must apply the changes "
@@ -11487,19 +11734,16 @@ msgstr ""
 "ロードバランサの構成は変更されました%s有効にするには、変更を適用してくださ"
 "い。"
 
-#, fuzzy, php-format
+msgid "Monitor"
+msgstr "監視"
+
+#
+# File: src/www/load_balancer_pool.php, line: 139
+#, php-format
 msgid ""
-"The Load Balancer in %s is for server load balancing, not Multi-WAN. For "
-"load balancing or failover for multiple WANs, use "
+"This feature is intended for server load balancing, not multi-WAN. For load "
+"balancing or failover for multiple WANs, use %sGateway Groups%s."
 msgstr ""
-"%s 2.0 のロードバランサはサーバの負荷分散用で、マルチ WAN 用ではありません。"
-"マルチ WAN の負荷分散やフェールオーバには、次を使用してください: "
-
-msgid "Gateway Groups"
-msgstr "ゲートウェイグループ"
-
-msgid "Load Balancer: Pool:"
-msgstr "ロードバランサ: プール: "
 
 msgid "Server List"
 msgstr "サーバリスト"
@@ -11552,9 +11796,8 @@ msgstr ""
 msgid "Invalid monitor chosen."
 msgstr "無効な監視が選択されました"
 
-#, php-format
-msgid " modified '%s' pool:"
-msgstr "%s プールが修正されました: "
+msgid "Pool"
+msgstr "プール"
 
 msgid "Add/edit Load Balancer - Pool entry"
 msgstr "ロードバランサの追加 / 編集 - プールエントリ"
@@ -11606,6 +11849,9 @@ msgstr "現在のプールメンバ"
 msgid "Pool Disabled"
 msgstr "プール: 無効"
 
+msgid "Remove"
+msgstr "削除"
+
 msgid "Enabled (default)"
 msgstr "有効 ( デフォルト )"
 
@@ -11627,21 +11873,20 @@ msgstr ""
 "ロードバランサの構成が変更されました<br>有効にするには、変更を適用してくださ"
 "い。"
 
+msgid "Pools"
+msgstr "プール"
+
+msgid "Virtual Servers"
+msgstr "仮想サーバ"
+
 msgid "Relay Actions"
 msgstr "リレーの動作"
 
 msgid "Relay Protocols"
 msgstr "リレープロトコル"
 
-msgid "Load Balancer: Relay Action:"
-msgstr "ロードバランサ: リレー動作: "
-
 msgid "This action name has already been used.  Action names must be unique."
 msgstr "この動作名は既に使用されています。固有の動作名を指定してください。"
-
-#, php-format
-msgid "modified '%s' action:"
-msgstr "変更された %s 動作: "
 
 msgid "DNS"
 msgstr "DNS"
@@ -11661,18 +11906,11 @@ msgstr "TODO"
 msgid "Relay Protocol"
 msgstr "リレープロトコル"
 
-msgid "Load Balancer: Relay Protocol:"
-msgstr "ロードバランサ: リレープロトコル: "
-
 msgid ""
 "This protocol name has already been used.  Protocol names must be unique."
 msgstr ""
 "このプロトコル名は既に使用されています。固有のプロトコル名を指定してくださ"
 "い。"
-
-#, php-format
-msgid "modified '%s' load balancing protocol:"
-msgstr "変更された %s ロードバランシングプロトコル: "
 
 msgid "name"
 msgstr "名前"
@@ -11710,8 +11948,10 @@ msgstr "prefork は数値です"
 msgid "Prefork value must be between 1 and 32"
 msgstr "prefork 値は 1 - 32 です"
 
-msgid "Relayd global settings"
-msgstr "Relayd 全般設定"
+#
+# File: src/www/load_balancer_setting.php, line: 117
+msgid "Global settings"
+msgstr ""
 
 msgid "timeout"
 msgstr "タイムアウト"
@@ -11750,9 +11990,6 @@ msgstr "仮想サーバの構成が変更されました"
 msgid "Fall Back Pool"
 msgstr "プールのフォールバック"
 
-msgid "Load Balancer: Virtual Server:"
-msgstr "ロードバランサ: 仮想サーバ: "
-
 msgid ""
 "This virtual server name has already been used.  Virtual server names must "
 "be unique."
@@ -11778,14 +12015,6 @@ msgstr "%s は IP アドレスが 64 個以上含まれるサブネットです"
 # File: src/www/load_balancer_virtual_server_edit.php, line: 89
 msgid "You cannot select a Fall Back Pool when using the DNS relay protocol."
 msgstr ""
-
-#, php-format
-msgid "modified '%s' vs:"
-msgstr "%s 仮想サーバを変更しました: "
-
-#, php-format
-msgid "created '%s' vs:"
-msgstr "%s 仮想サーバを作成しました: "
 
 msgid "Virtual Server"
 msgstr "仮想サーバ"
@@ -11846,1152 +12075,11 @@ msgstr ""
 "設定を終了したら、その仮想サーバやプールに対して、ファイアウォールのルールを"
 "追加するのを忘れないで下さい。"
 
-msgid "Reboot System"
-msgstr "システムの再起動"
-
 msgid "The system is rebooting now. This may take one minute."
 msgstr "システムを再起動しています。1 分程かかります"
 
 msgid "Are you sure you want to reboot the system?"
 msgstr "システムを再起動してもよろしいですか？"
-
-msgid "Captive portal"
-msgstr "キャプティブポータル"
-
-#
-# File: src/www/services_captiveportal.php, line: 75
-#, php-format
-msgid "Captive Portal: zone %s: Restore default portal page"
-msgstr ""
-
-#
-# File: src/www/services_captiveportal.php, line: 94
-#, php-format
-msgid "Captive Portal: zone %s: Restore default error page"
-msgstr ""
-
-#
-# File: src/www/services_captiveportal.php, line: 113
-#, php-format
-msgid "Captive Portal: zone %s: Restore default logout page"
-msgstr ""
-
-msgid "Zone name"
-msgstr "ゾーン名"
-
-#, php-format
-msgid ""
-"The captive portal cannot be used on interface %s since it is part of a "
-"bridge."
-msgstr ""
-"%s インタフェースでキャプティブポータルは使用できません。ブリッジの一部になっ"
-"ています"
-
-#, php-format
-msgid ""
-"The captive portal cannot be used on interface %s since it is used already "
-"on %s instance."
-msgstr ""
-"%s インタフェースでキャプティブポータルは使用できません。%s インスタンスで既"
-"に使用されています"
-
-msgid "Certificate must be specified for HTTPS login."
-msgstr "HTTPS ログインには、証明書を指定する必要があります。"
-
-msgid "The HTTPS server name must be specified for HTTPS login."
-msgstr "HTTPS ログインでは、HTTPS サーバ名を指定してください"
-
-msgid "The timeout must be at least 1 minute."
-msgstr "タイムアウトは 1 分以上に設定してください"
-
-msgid ""
-"Hard timeout must be less or equal Default lease time set on DHCP Server"
-msgstr ""
-"ハードタイムアウトは、DHCP サーバに設定するデフォルトリース時間と同じか、それ"
-"以下である必要があります。"
-
-msgid "The idle timeout must be at least 1 minute."
-msgstr "アイドルタイムアウトは 1 分以上に設定してください"
-
-msgid "The pass-through credit count must be a number or left blank."
-msgstr "パススルークレジット数は、数字もしくは空白です"
-
-msgid ""
-"The waiting period to restore pass-through credits must be above 0 hours."
-msgstr "パススルークレジットの復元待機時間は、0 時間以上です"
-
-#, php-format
-msgid "A valid IP address must be specified. [%s]"
-msgstr "有効な IP アドレスを指定してください: [%s]"
-
-#, php-format
-msgid "A valid port number must be specified. [%s]"
-msgstr "有効なポート番号を指定してください: [%s]"
-
-msgid ""
-"The maximum number of concurrent connections per client IP address may not "
-"be larger than the global maximum."
-msgstr ""
-"クライアント IP アドレス毎の同時接続の最大数は、全体の最大数よりも小さくする"
-"必要があります"
-
-msgid ""
-"The NAS-Identifier must be 3-253 characters long and should only contain "
-"ASCII characters."
-msgstr "NAS 識別子は、3-253 の文字長で、使用可能な文字は ASCII のみです。"
-
-msgid "Captive portal(s)"
-msgstr "キャプティブポータル"
-
-msgid "Allowed IP addresses"
-msgstr "許可済 IP アドレス"
-
-msgid "Vouchers"
-msgstr "バウチャー"
-
-msgid "File Manager"
-msgstr "ファイル管理"
-
-msgid "Enable captive portal"
-msgstr "キャプティブポータルを有効"
-
-msgid "Select the interface(s) to enable for captive portal."
-msgstr "キャプティブポータルを有効にするインタフェースを選択してください。"
-
-msgid "Maximum concurrent connections"
-msgstr "同時接続の最大数"
-
-msgid "per client IP address (0 = no limit)"
-msgstr "クライアント IP アドレス毎（ 0 = 制限なし )"
-
-msgid ""
-"This setting limits the number of concurrent connections to the captive "
-"portal HTTP(S) server. This does not set how many users can be logged in to "
-"the captive portal, but rather how many users can load the portal page or "
-"authenticate at the same time! Possible setting allowed is: minimum 4 "
-"connections per client IP address, with a total maximum of 100 connections."
-msgstr ""
-"この設定は、キャプティブポータル HTTP(S) サーバに対する同時接続数を制限しま"
-"す。キャプティブポータルにログインできるユーザ数の設定ではありません。どちら"
-"かと言えば、ポータルページの読み込みや認証を、ユーザが同時に実行できる数で"
-"す！設定可能な値は、クライアント IP アドレス毎に、最小 4 接続、合計で最大 "
-"100 接続までです。"
-
-msgid ""
-"Clients will be disconnected after this amount of inactivity. They may log "
-"in again immediately, though. Leave this field blank for no idle timeout."
-msgstr ""
-"クライアントがこの時間非アクティブ状態であれば切断されます。しかし、すぐに再"
-"度ログインします。このフィールドを空白にすれば、アイドルタイムアウトは設定さ"
-"れません"
-
-msgid "Hard timeout"
-msgstr "ハードタイムアウト"
-
-msgid ""
-"Clients will be disconnected after this amount of time, regardless of "
-"activity. They may log in again immediately, though. Leave this field blank "
-"for no hard timeout (not recommended unless an idle timeout is set)."
-msgstr ""
-"クライアントは、アクティブ状態にかかわらず、この時間が経てば切断されます。し"
-"かし、すぐに再度ログインします。このフィールドを空白にすれば、ハードタイムア"
-"ウトは設定されません。( アイドルタイムアウトが設定されているのでなければ、非"
-"推奨です )"
-
-msgid "Pass-through credits allowed per MAC address"
-msgstr "MAC アドレス毎に許可されるパススルークレジット"
-
-msgid "per client MAC address (0 or blank = none)"
-msgstr "クライアントの MAC アドレス毎 ( 0 または空白 = なし )"
-
-msgid ""
-"This setting allows passing through the captive portal without "
-"authentication a limited number of times per MAC address. Once used up, the "
-"client can only log in with valid credentials until the waiting period "
-"specified below has expired. Recommended to set a hard timeout and/or idle "
-"timeout when using this for it to be effective."
-msgstr ""
-"この設定は、MAC アドレス毎で回数を制限した、認証なしでのキャプティブポータル"
-"へのパススルーを許可します。回数制限を使い切ると、クライアントは、下記で指定"
-"する待ち時間の期限が切れるまで、有効な資格情報でしかログインできません。これ"
-"を効果的に使用するには、ハードタイムアウトとアイドルタイムアウトの両方、もし"
-"くはどちらかを設定することを推奨します。"
-
-msgid "Waiting period to restore pass-through credits"
-msgstr "パススルークレジットを復元する待ち時間"
-
-msgid ""
-"Clients will have their available pass-through credits restored to the "
-"original count after this amount of time since using the first one. This "
-"must be above 0 hours if pass-through credits are enabled."
-msgstr ""
-"クライアントは自分自身が利用可能なパススルークレジットを持っています。最初の"
-"クレジットが使用されてから、この時間が経過すると、元々持っていた数に復元され"
-"ます。パススルークレジットが有効な場合は、0 時間以上に設定してください。"
-
-msgid "Reset waiting period on attempted access"
-msgstr "アクセス試行による待ち時間リセット"
-
-msgid "Enable waiting period reset on attempted access"
-msgstr "アクセス試行による待ち時間リセットを有効"
-
-msgid ""
-"If enabled, the waiting period is reset to the original duration if access "
-"is attempted when all pass-through credits have already been exhausted."
-msgstr ""
-"有効な場合は、全てのパススルークレジットを使い切っている状態でアクセスが試み"
-"られると、待ち時間は、元の時間にリセットされます。"
-
-msgid "Logout popup window"
-msgstr "ログアウトポップアップウィンドウ"
-
-msgid "Enable logout popup window"
-msgstr "ログアウトポップアップウィンドウを有効"
-
-msgid ""
-"If enabled, a popup window will appear when clients are allowed through the "
-"captive portal. This allows clients to explicitly disconnect themselves "
-"before the idle or hard timeout occurs."
-msgstr ""
-"有効な場合は、クライアントがキャプティブポータルの通過を許可された場合にポッ"
-"プアップウィンドウが表示されます。アイドルタイムアウトやハードタイムアウトが"
-"発生する前に、クライアントが明示的に切断することができます。"
-
-msgid "Pre-authentication redirect URL"
-msgstr "事前認証リダイレクト URL"
-
-#, php-format
-msgid ""
-"Use this field to set $PORTAL_REDIRURL$ variable which can be accessed using "
-"your custom captive portal index.php page or error pages."
-msgstr ""
-"このフィールドは、$PORTAL_REDIRURL$ 変数に設定されます。アクセスするのに、カ"
-"スタムキャピタルポータルの index.php ページやエラーページを使用できるようにな"
-"ります。"
-
-msgid "After authentication Redirection URL"
-msgstr "認証後リダイレクト URL"
-
-msgid ""
-"If you provide a URL here, clients will be redirected to that URL instead of "
-"the one they initially tried to access after they've authenticated."
-msgstr ""
-"ここに URL を入力すると、クライアントの認証後に、最初にアクセスを試みた URL "
-"ではなく、入力された URL にリダイレクトされます。"
-
-#
-# File: src/www/services_captiveportal.php, line: 602
-msgid "Blocked MAC address redirect URL"
-msgstr ""
-
-#, fuzzy, php-format
-msgid ""
-"If you provide a URL here, MAC addresses set to be blocked will be redirect "
-"to that URL when attempt to access anything."
-msgstr ""
-"ここに URL を入力すると、クライアントの認証後に、最初にアクセスを試みた URL "
-"ではなく、入力された URL にリダイレクトされます。"
-
-msgid "Concurrent user logins"
-msgstr "ユーザ同時ログイン"
-
-msgid "Disable concurrent logins"
-msgstr "同時ログインを無効"
-
-msgid ""
-"If this option is set, only the most recent login per username will be "
-"active. Subsequent logins will cause machines previously logged in with the "
-"same username to be disconnected."
-msgstr ""
-"このオプションが設定されると、ユーザ名単位で、直近のログインのみがアクティブ"
-"になります。同じユーザ名で再度ログインすると、前回のログインは切断されます。"
-
-msgid "Per-user bandwidth restriction"
-msgstr "ユーザ単位の帯域幅制限"
-
-msgid "Enable per-user bandwidth restriction"
-msgstr "ユーザ単位の帯域幅制限を有効"
-
-msgid "Default download"
-msgstr "デフォルトダウンロード"
-
-msgid "Kbit/s"
-msgstr "Kbit/s"
-
-msgid "Default upload"
-msgstr "デフォルトアップロード"
-
-msgid ""
-"If this option is set, the captive portal will restrict each user who logs "
-"in to the specified default bandwidth. RADIUS can override the default "
-"settings. Leave empty or set to 0 for no limit."
-msgstr ""
-"このオプションが設定されると、キャプティブポータルはログインするユーザ毎に、"
-"デフォルトで指定された帯域幅を制限します。RADIUS はデフォルト設定を上書きでき"
-"ます。空白にするか、0 を設定すると、制限は行いません。"
-
-msgid "No Authentication"
-msgstr "認証なし"
-
-msgid "Local"
-msgstr "ローカル"
-
-msgid "Allow only users/groups with 'Captive portal login' privilege set"
-msgstr ""
-"「キャプティブポータルログイン」権限が設定されたユーザ / グループのみを許可"
-
-msgid "RADIUS Authentication"
-msgstr "RADIUS 認証"
-
-msgid "Radius Protocol"
-msgstr "RADIUS プロトコル"
-
-msgid "PAP"
-msgstr "PAP"
-
-msgid "CHAP_MD5"
-msgstr "CHAP_MD5"
-
-msgid "MSCHAPv1"
-msgstr "MSCHAPv1"
-
-msgid "MSCHAPv2"
-msgstr "MSCHAPv2"
-
-msgid "Primary RADIUS server"
-msgstr "プライマリ RADIUS サーバ"
-
-msgid ""
-"Enter the IP address of the RADIUS server which users of the captive portal "
-"have to authenticate against."
-msgstr ""
-"キャプティブポータルのユーザに対して認証を行う RADIUS サーバの IP アドレスを"
-"入力してください。"
-
-msgid "Leave this field blank to use the default port (1812)."
-msgstr "このフィールドが空白であれば、デフォルトポート (1812) を使用します。"
-
-msgid "Shared secret"
-msgstr "共有秘密鍵"
-
-msgid ""
-"Leave this field blank to not use a RADIUS shared secret (not recommended)."
-msgstr ""
-"このフィールドが空白であれば RADIUS 共有秘密鍵を使用しません ( 非推奨 )"
-
-msgid "Secondary RADIUS server"
-msgstr "セカンダリ RADIUS サーバ"
-
-msgid ""
-"If you have a second RADIUS server, you can activate it by entering its IP "
-"address here."
-msgstr ""
-"2 台目の RADIUS サーバがある場合は、ここで IP アドレスを入力することで有効化"
-"できます。"
-
-msgid ""
-"If you have a third RADIUS server, you can activate it by entering its IP "
-"address here."
-msgstr ""
-"3 台目の RADIUS サーバがある場合は、ここで IP アドレスを入力することで有効化"
-"できます。"
-
-msgid ""
-"If you have a fourth RADIUS server, you can activate it by entering its IP "
-"address here."
-msgstr ""
-"4 台目の RADIUS サーバがある場合は、ここで IP アドレスを入力することで有効化"
-"できます。"
-
-msgid "Accounting"
-msgstr "アカウンティング"
-
-msgid "send RADIUS accounting packets"
-msgstr "RADIUS アカウンティングパケットを送信"
-
-msgid ""
-"If this is enabled, RADIUS accounting packets will be sent to the primary "
-"RADIUS server."
-msgstr ""
-"これが有効な場合は、RADIUS アカウンティングパケットがプライマリ RADIUS サーバ"
-"に送信されます。"
-
-msgid "Accounting port"
-msgstr "アカウンティングポート"
-
-msgid "Leave blank to use the default port (1813)."
-msgstr "このフィールドが空白であればデフォルトポート (1813) を使用します。"
-
-msgid "Accounting updates"
-msgstr "アカウンティング更新"
-
-msgid "no accounting updates"
-msgstr "アカウンティング更新しない"
-
-msgid "stop/start accounting"
-msgstr "アカウンティング停止 / 開始"
-
-msgid "interim update"
-msgstr "中間更新"
-
-msgid "RADIUS options"
-msgstr "RADIUS オプション"
-
-msgid "Reauthentication"
-msgstr "再認証"
-
-msgid "Reauthenticate connected users every minute"
-msgstr "接続中のユーザを 1 分毎に再認証"
-
-msgid ""
-"If reauthentication is enabled, Access-Requests will be sent to the RADIUS "
-"server for each user that is logged in every minute. If an Access-Reject is "
-"received for a user, that user is disconnected from the captive portal "
-"immediately."
-msgstr ""
-"再認証が有効な場合、1 分毎にログインしているユーザ毎に、Access-Requests が "
-"RADIUS サーバに送信されます。あるユーザに対して Access-Reject を受信したら、"
-"そのユーザは即座にキャプティブポータルから切断されます。"
-
-msgid "RADIUS MAC authentication"
-msgstr "RADIUS MAC 認証"
-
-msgid "Enable RADIUS MAC authentication"
-msgstr "RADIUS MAC 認証を有効"
-
-msgid ""
-"If this option is enabled, the captive portal will try to authenticate users "
-"by sending their MAC address as the username and the password entered below "
-"to the RADIUS server."
-msgstr ""
-"このオプションが有効な場合、キャプティブポータルは RADIUS サーバに対して、下"
-"記で入力されたユーザ名とパスワードとして、ユーザの MAC アドレスを送信すること"
-"で、ユーザを認証しようとします。"
-
-msgid "MAC authentication secret"
-msgstr "MAC 認証秘密鍵"
-
-msgid "RADIUS NAS IP attribute"
-msgstr "RADIUS NAS IP アトリビュート"
-
-msgid "Choose the IP to use for calling station attribute."
-msgstr "calling station 属性に使用する IP を選択してください"
-
-msgid "Session-Timeout"
-msgstr "セッションタイムアウト"
-
-msgid "Use RADIUS Session-Timeout attributes"
-msgstr "RADIUS セッションタイムアウト属性を使用"
-
-msgid ""
-"When this is enabled, clients will be disconnected after the amount of time "
-"retrieved from the RADIUS Session-Timeout attribute."
-msgstr ""
-"これが有効な場合は、RADIUS セッションタイムアウト属性から取得した時間が経過す"
-"ると、クライアントは切断されます。"
-
-#, php-format
-msgid ""
-"If RADIUS type is set to Cisco, in Access-Requests the value of Calling-"
-"Station-Id will be set to the client's IP address and the Called-Station-Id "
-"to the client's MAC address. Default behavior is Calling-Station-Id = "
-"client's MAC address and Called-Station-Id = %s's WAN IP address."
-msgstr ""
-"RADIUS タイプに Cisco が設定されると、Access-Requests で Calling-Station-Id "
-"の値にクライアントの IP アドレス、Called-Station-Id の値にクライアントの MAC "
-"アドレス、が設定されます。デフォルトの動作は、Calling-Station-Id = クライアン"
-"ト MAC address、Called-Station-Id = %s WAN IP アドレス、です。"
-
-msgid "Accounting Style"
-msgstr "アカウント形式"
-
-msgid "Invert Acct-Input-Octets and Acct-Output-Octets"
-msgstr "Acct-Input-Octets と Acct-Output-Octets を反転"
-
-msgid ""
-"When this is enabled, data counts for RADIUS accounting packets will be "
-"taken from the client perspective, not the NAS. Acct-Input-Octets will "
-"represent download, and Acct-Output-Octets will represent upload."
-msgstr ""
-"これを有効にすると、RADIUS アカウンティングパケットのデータ数は、NAS ではなく"
-"クライアント基準で取得されます。Acct-Input-Octets はダウンロード、Acct-"
-"Output-Octets はアップロードを意味します。"
-
-msgid "NAS Identifier"
-msgstr "NAS 識別子"
-
-msgid "Specify a NAS identifier to override the default value"
-msgstr "デフォルト値を上書きする NAS 識別子を指定してください。"
-
-msgid "MAC address format"
-msgstr "MAC アドレス形式"
-
-msgid ""
-"This option changes the MAC address format used in the whole RADIUS system. "
-"Change this if you also"
-msgstr ""
-"このオプションは、RADIUS システム全体で使用される MAC アドレス形式を変更しま"
-"す。もし、"
-
-msgid "need to change the username format for RADIUS MAC authentication."
-msgstr ""
-"RADIUS MAC 認証でユーザ名の形式を変更する必要がある場合も、これを変更してくだ"
-"さい。"
-
-msgid "default:"
-msgstr "デフォルト: "
-
-msgid "singledash:"
-msgstr "singledash: "
-
-msgid "ietf:"
-msgstr "ietf: "
-
-msgid "cisco:"
-msgstr "cisco: "
-
-msgid "unformatted:"
-msgstr "形式なし: "
-
-msgid "HTTPS login"
-msgstr "HTTPS ログイン"
-
-msgid "Enable HTTPS login"
-msgstr "HTTPS ログインを有効"
-
-msgid ""
-"If enabled, the username and password will be transmitted over an HTTPS "
-"connection to protect against eavesdroppers. A server name and certificate "
-"must also be specified below."
-msgstr ""
-"有効な場合は、ユーザ名とパスワードは、盗聴から保護するために HTTPS 接続上を送"
-"信されます。サーバ名と証明書は、下記で指定する必要があります。"
-
-msgid "HTTPS server name"
-msgstr "HTTPS サーバ名"
-
-#, php-format
-msgid ""
-"This name will be used in the form action for the HTTPS POST and should "
-"match the Common Name (CN) in your certificate (otherwise, the client "
-"browser will most likely display a security warning). Make sure captive "
-"portal clients can resolve this name in DNS and verify on the client that "
-"the IP resolves to the correct interface IP on %s."
-msgstr ""
-"この名前は、HTTPS POST をするフォームの action で使用されるもので、証明書のコ"
-"モンネーム(CN)と一致する必要があります。( そうでなければ、クライアントのブラ"
-"ウザは通常セキュリティ警告を表示します )キャプティブポータルクライアントが "
-"DNS でこの名前を解決でき、その IP が %s のインタフェース IP に正しく名前解決"
-"されているかを、クライアントで確認して下さい。"
-
-msgid "SSL Certificate"
-msgstr "SSL 証明書"
-
-msgid "No Certificates defined."
-msgstr "定義された証明書はありません。"
-
-#, fuzzy
-msgid "Disable HTTPS forwards"
-msgstr "DNS フォワーダを有効"
-
-#
-# File: src/www/services_captiveportal.php, line: 961
-msgid ""
-"If this option is set, attempts to connect to SSL/HTTPS (Port 443) sites "
-"will not be forwarded to the captive portal.  This prevents certificate "
-"errors from being presented to the user even if HTTPS logins are enabled.  "
-"Users must attempt a connecton to an HTTP (Port 80) site to get forwarded to "
-"the captive portal. If HTTPS logins are enabled, the user will be redirected "
-"to the HTTPS login page."
-msgstr ""
-
-msgid "Portal page contents"
-msgstr "ポータルページコンテンツ"
-
-msgid "View current page"
-msgstr "現在のページを表示"
-
-#, fuzzy
-msgid "Download current page"
-msgstr "現在のページを表示"
-
-#, fuzzy
-msgid "Restore default portal page"
-msgstr "フルバックアップを復元"
-
-#, php-format
-msgid ""
-"Upload an HTML/PHP file for the portal page here (leave blank to keep the "
-"current one). Make sure to include a form (POST to %1$s) with a submit "
-"button (%2$s) and a hidden field with %3$s and %4$s. Include the %5$s and "
-"%6$s and/or %7$s input fields if authentication is enabled, otherwise it "
-"will always fail."
-msgstr ""
-"ポータルページの HTML/PHP ファイルをここにアップロードしてください ( 空白にす"
-"ると現状のままになります)。送信ボタン ( %2$s ) と、%3$s 及び %4$s の非表示"
-"フィールドがあるフォーム ( POST 先は %1$s ) が含まれていることを確認して下さ"
-"い。認証が有効な場合は、%5$s 及び、%6$s と %7$s の両方もしくはどちらかの入力"
-"フィールドを含めてください。そうしないと、認証は、通常失敗します。"
-
-msgid "Example code for the form:"
-msgstr "フォームのサンプルコード: "
-
-msgid "error page"
-msgstr "エラーページ"
-
-msgid "contents"
-msgstr "コンテンツ"
-
-#
-# File: src/www/services_captiveportal.php, line: 1024
-msgid "Restore default error page"
-msgstr ""
-
-msgid ""
-"The contents of the HTML/PHP file that you upload here are displayed when an "
-"authentication error occurs. You may include"
-msgstr ""
-"認証エラーが発生した場合は、ここにアップロードした HTML/PHP ファイルの内容を"
-"表示します。"
-
-msgid ""
-"which will be replaced by the error or reply messages from the RADIUS "
-"server, if any."
-msgstr ""
-"RADIUS サーバからのエラーや応答メッセージの代わりに表示するものがあれば、入れ"
-"ておくとよいでしょう。"
-
-#, fuzzy
-msgid "Restore default logout page"
-msgstr "フルバックアップを復元"
-
-msgid ""
-"The contents of the HTML/PHP file that you upload here are displayed on "
-"authentication success when the logout popup is enabled."
-msgstr ""
-"ログアウトポップアップが有効な場合は、認証に成功すると、ここにアップロードし"
-"た HTML/PHP ファイルの内容を表示します。"
-
-msgid ""
-"Changing any settings on this page will disconnect all clients! Don't forget "
-"to enable the DHCP server on your captive portal interface! Make sure that "
-"the default/maximum DHCP lease time is higher than the timeout entered on "
-"this page. Also, the DNS forwarder needs to be enabled for DNS lookups by "
-"unauthenticated clients to work."
-msgstr ""
-"このページの設定を変更すると、全てのクライアントが切断します！キャプティブ"
-"ポータルインタフェースの DHCP サーバを有効にするのを忘れないで下さい！DHCP "
-"リース期間のデフォルト及び最大値が、このページで入力されたタイムアウト値より"
-"も大きいことを確認して下さい。また、未認証クライアントを動作させるのに DNS "
-"ルックアップを有効にするには、DNS フォワーダが必要です。"
-
-#, php-format
-msgid "A file with the name '%s' already exists."
-msgstr "%s という名前のファイルは既に存在しています"
-
-msgid "The total size of all files uploaded may not exceed "
-msgstr "アップロードした全ファイルの合計サイズが、次の値を超えてはいけません: "
-
-msgid "add file"
-msgstr "ファイルを追加"
-
-msgid "Upload"
-msgstr "アップロード"
-
-msgid "Do you really want to delete this file?"
-msgstr "本当にこのファイルを削除しますか？"
-
-msgid "delete file"
-msgstr "ファイルを削除"
-
-msgid "TOTAL"
-msgstr "合計"
-
-msgid ""
-"Any files that you upload here with the filename prefix of captiveportal- "
-"will be made available in the root directory of the captive portal HTTP(S) "
-"server. You may reference them directly from your portal page HTML code "
-"using relative paths. Example: you've uploaded an image with the name "
-"'captiveportal-test.jpg' using the file manager. Then you can include it in "
-"your portal page like this:"
-msgstr ""
-"ここにアップロードされた、captiveportal- から始まるファイル名のファイルは、"
-"キャピタルポータル HTTP(S) サーバのルートディレクトリで利用可能になります。"
-"ポータルページの HTML コードで、相対パスを使用して、ファイルを直接参照できま"
-"す。例: ファイル管理を使用してアップロードした画像 'captiveportal-test.jpg' "
-"は、ポータルページで以下のようにインクルードできます: "
-
-msgid ""
-"In addition, you can also upload .php files for execution.  You can pass the "
-"filename to your custom page from the initial page by using text similar to:"
-msgstr ""
-"さらに .php ファイルを実行用にアップロードすることもできます。ファイル名を初"
-"期ページからカスタムページへ渡すには、以下のようなテキストを使用します: "
-
-msgid "Acceptable usage policy"
-msgstr "利用規程 (AUP)"
-
-#, php-format
-msgid "The total size limit for all files is %s."
-msgstr "全ファイルの合計サイズの上限は %s です"
-
-msgid "Do you really want to delete this address?"
-msgstr "本当にこのアドレスを削除しますか？"
-
-#, fuzzy
-msgid ""
-"Adding allowed IP addresses will allow IP access to/from these addresses "
-"through the captive portal without being taken to the portal page. This can "
-"be used for a web server serving images for the portal page or a DNS server "
-"on another network, for example."
-msgstr ""
-"許可された IP アドレスとして追加されると、ポータルページに行かなくても、その"
-"アドレスから、もしくはそのアドレスへのキャプティブポータルを経由した IP アク"
-"セスが許可されます。この機能は、例えば、ポータルページヘ画像を送信する Web "
-"サーバや、他のネットワークの DNS サーバに使用できます。<em>from</em> アドレス"
-"を指定することで、キャプティブポータルの背後にあるクライアントからのアクセス"
-"を、常にパススルーするのに、使用できます。"
-
-msgid "Edit allowed IP address"
-msgstr "許可済 IP アドレスを編集"
-
-msgid "Allowed IP address"
-msgstr "許可済 IP アドレス"
-
-msgid "Subnet mask"
-msgstr "サブネットマスク"
-
-msgid "A valid subnet mask must be specified"
-msgstr "有効なサブネットマスクを指定してください"
-
-msgid "Upload speed needs to be an integer"
-msgstr "アップロード速度は整数です"
-
-msgid "Download speed needs to be an integer"
-msgstr "ダウンロード速度は整数です"
-
-msgid "already allowed"
-msgstr "既に許可されています"
-
-msgid "Edit allowed ip rule"
-msgstr "許可済 IP ルールを編集"
-
-msgid "IP address and subnet mask. Use /32 for a single IP"
-msgstr "IP アドレスとサブネットマスク。単一 IP には /32 を使用してください"
-
-msgid "Bandwidth up"
-msgstr "上り帯域幅"
-
-msgid "Enter a upload limit to be enforced on this IP address in Kbit/s"
-msgstr "この IP アドレスに適用する上り帯域幅制限を Kbit/s で入力してください"
-
-msgid "Bandwidth down"
-msgstr "下り帯域幅"
-
-msgid "Enter a download limit to be enforced on this IP address in Kbit/s"
-msgstr "この IP アドレスに適用する下り帯域幅制限を Kbit/s で入力してください"
-
-msgid "No entry exists yet!"
-msgstr "エントリはまだありません！"
-
-msgid "Please set the zone on which the operation should be allowed"
-msgstr "操作を許可するゾーンを設定してください"
-
-msgid "No entry exists for this username:"
-msgstr "このユーザ名のエントリはありません: "
-
-msgid "The entry was sucessfully deleted"
-msgstr "エントリは正常に削除されました"
-
-msgid "No entry exists for this mac address:"
-msgstr "この MAC アドレスのエントリはありません: "
-
-msgid "add host"
-msgstr "ホストの追加"
-
-#, fuzzy
-msgid ""
-"The captive portal MAC address configuration has been changed.<br />You must "
-"apply the changes in order for them to take effect."
-msgstr ""
-"キャプティブポータル MAC アドレス構成は変更されました。<br>有効にするには、変"
-"更を適用してください。"
-
-msgid "Do you really want to delete this host?"
-msgstr "本当にこのホストを削除しますか？"
-
-#, fuzzy
-msgid ""
-"Adding MAC addresses as 'pass' MACs allows them access through the captive "
-"portal automatically without being taken to the portal page."
-msgstr ""
-"パススルー MAC として追加された MAC アドレスは、ポータルページに行かなくて"
-"も、キャプティブポータルを経由したアクセスが、自動的に許可されます。"
-
-#, fuzzy
-msgid "Edit MAC address rules"
-msgstr "MAC アドレスを次の形式で入力してください: "
-
-#
-# File: src/www/services_captiveportal_mac_edit.php, line: 106
-#, php-format
-msgid ""
-"The MAC address %s belongs to a local interface, you cannot use it here."
-msgstr ""
-
-msgid "A valid MAC address must be specified"
-msgstr "有効な MAC アドレスを指定してください"
-
-msgid "already exists"
-msgstr "既に存在しています"
-
-#, fuzzy
-msgid "Choose what to do with packets coming from this MAC address"
-msgstr "この MAC アドレスに Wake-on-LAN パケットを送信"
-
-msgid "Copy my MAC address"
-msgstr "自分の MAC アドレスを複写"
-
-msgid "MAC address (6 hex octets separated by colons)"
-msgstr "MAC アドレス（ 16 進数 6 オクテット、コロン区切り ）"
-
-msgid "Enter a upload limit to be enforced on this MAC address in Kbit/s"
-msgstr "この MAC アドレスに適用する上り帯域幅制限を Kbit/s で入力してください"
-
-msgid "Enter a download limit to be enforced on this MAC address in Kbit/s"
-msgstr "この MAC アドレスに適用する下り帯域幅制限を Kbit/s で入力してください"
-
-msgid ""
-"You will need to recreate any existing Voucher Rolls due to the public and "
-"private key changes. Click cancel if you do not wish to recreate the "
-"vouchers."
-msgstr ""
-"公開鍵と秘密鍵を変更したため、既存のバウチャーロールを再作成する必要がありま"
-"す。バウチャーの再作成を希望しない場合は、キャンセルをクリックしてください。"
-
-msgid "Voucher invalid"
-msgstr "無効なバウチャーです"
-
-msgid "Voucher expired"
-msgstr "失効したバウチャーです"
-
-msgid "Cannot write private key file"
-msgstr "秘密鍵ファイルを書き込めません"
-
-msgid "Need private RSA key to print vouchers"
-msgstr "バウチャーを発行する RSA 秘密鍵が必要です"
-
-msgid "charset"
-msgstr "文字セット"
-
-msgid "checksumbits"
-msgstr "チェックサムビット"
-
-msgid "magic"
-msgstr "マジック"
-
-msgid "publickey"
-msgstr "公開鍵"
-
-msgid "rollbits"
-msgstr "ロールビット"
-
-msgid "ticketbits"
-msgstr "チケットビット"
-
-msgid "Need at least 2 characters to create vouchers."
-msgstr "バウチャーを作成するには、2 文字以上必要です"
-
-msgid "Double quotes aren't allowed."
-msgstr "ダブルクォートは使用できません"
-
-msgid "aren't allowed."
-msgstr "は使用できません"
-
-msgid "# of Bits to store Roll Id needs to be between 1..31."
-msgstr "ロール ID を保存する番号ビットは 1 - 31 です。"
-
-msgid "# of Bits to store Ticket Id needs to be between 1..16."
-msgstr "チケット ID を保存する番号ビットは 1 - 16 です。"
-
-msgid "# of Bits to store checksum needs to be between 1..31."
-msgstr "チェックサムを保存する番号ビットは 1 - 31 です。"
-
-msgid "This doesn't look like an RSA Public key."
-msgstr "これは RSA 公開鍵ではないようです"
-
-msgid "This doesn't look like an RSA Private key."
-msgstr "これは RSA 秘密鍵ではないようです"
-
-msgid "You cannot sync the voucher database to this host (itself)."
-msgstr "このホスト自体にバウチャーデータベースを同期できません"
-
-msgid "add voucher"
-msgstr "バウチャーの追加"
-
-msgid "Enable Vouchers"
-msgstr "バウチャーを有効"
-
-msgid "Voucher Rolls"
-msgstr "バウチャーロール"
-
-msgid "Roll"
-msgstr "ロール"
-
-msgid "Minutes/Ticket"
-msgstr "分 / チケット"
-
-msgid "of Tickets"
-msgstr "チケット番号"
-
-msgid "edit voucher"
-msgstr "バウチャーの編集"
-
-msgid ""
-"Do you really want to delete this voucher? This makes all vouchers from this "
-"roll invalid"
-msgstr ""
-"本当にこのバウチャーを削除しますか？このロールからから作成された全てのバウ"
-"チャーが無効になります"
-
-msgid "delete vouchers"
-msgstr "バウチャーの削除"
-
-msgid "generate vouchers for this roll to CSV file"
-msgstr "このロールのバウチャーを CSV ファイルに生成"
-
-msgid ""
-"Create, generate and activate Rolls with Vouchers that allow access through "
-"the captive portal for the configured time. Once a voucher is activated, its "
-"clock is started and runs uninterrupted until it expires. During that time, "
-"the voucher can be re-used from the same or a different computer. If the "
-"voucher is used again from another computer, the previous session is stopped."
-msgstr ""
-"作成、生成、有効化したバウチャーのロールは、構成された期間、キャプティブポー"
-"タルを経由したアクセスを許可されます。一旦バウチャーが有効化すると、時計が動"
-"き出し、有効期間が切れるまで、実行は中断されません。その期間は、バウチャーは"
-"同じコンピュータからでも、違うコンピュータからでも再利用することができます。"
-"バウチャーが他のコンピュータから再度使用されたら、以前のセッションは停止しま"
-"す。"
-
-msgid ""
-"Enable Voucher support first using the checkbox above and hit Save at the "
-"bottom."
-msgstr ""
-"バウチャーサポートを初めて有効にする場合は、上のチェックボックスをチェック"
-"し、一番下にある保存ボタンを押してください。"
-
-msgid "Voucher public key"
-msgstr "バウチャー公開鍵"
-
-msgid ""
-"Paste an RSA public key (64 Bit or smaller) in PEM format here. This key is "
-"used to decrypt vouchers."
-msgstr ""
-"PEM 形式の RSA 公開鍵 ( 64 ビット以下 ) をここに貼り付けてください。この鍵は"
-"バウチャーの復号に使用されます。"
-
-msgid "Generate"
-msgstr "新規鍵を生成"
-
-msgid "new key"
-msgstr " "
-
-msgid "Voucher private key"
-msgstr "バウチャー秘密鍵"
-
-msgid ""
-"Paste an RSA private key (64 Bit or smaller) in PEM format here. This key is "
-"only used to generate encrypted vouchers and doesn't need to be available if "
-"the vouchers have been generated offline."
-msgstr ""
-"PEM 形式の RSA 秘密鍵 ( 64 ビット以下 ) をここに貼り付けてください。この鍵は"
-"暗号化されたバウチャーの生成にのみ使用されます。オフラインでバウチャーを生成"
-"する場合は、使用可能である必要はありません。"
-
-msgid "Character set"
-msgstr "文字セット"
-
-msgid ""
-"Tickets are generated with the specified character set. It should contain "
-"printable characters (numbers, lower case and upper case letters) that are "
-"hard to confuse with others. Avoid e.g. 0/O and l/1."
-msgstr ""
-"チケットは指定された文字セットで生成されます。印刷可能 ( 数字、大文字と小文字"
-"のアルファベット ) で、他の文字と混同しにくい文字で構成されている必要がありま"
-"す。0/O と l/1 等は使用しないでください。"
-
-msgid "of Roll Bits"
-msgstr "ロールビット番号"
-
-msgid ""
-"Reserves a range in each voucher to store the Roll # it belongs to. Allowed "
-"range: 1..31. Sum of Roll+Ticket+Checksum bits must be one Bit less than the "
-"RSA key size."
-msgstr ""
-"バウチャー毎に属するロール番号を格納する範囲を予約してください。使用可能な範"
-"囲は 1 - 31 です。ロール + チケット + チェックサムビットの合計は RSA 鍵サイズ"
-"よりも 1 ビット以上小さい必要があります。"
-
-msgid "of Ticket Bits"
-msgstr "チケットビット番号"
-
-msgid ""
-"Reserves a range in each voucher to store the Ticket# it belongs to. Allowed "
-"range: 1..16. Using 16 bits allows a roll to have up to 65535 vouchers. A "
-"bit array, stored in RAM and in the config, is used to mark if a voucher has "
-"been used. A bit array for 65535 vouchers requires 8 KB of storage."
-msgstr ""
-"バウチャー毎に属するチケット番号を格納する範囲を予約してください。使用可能な"
-"範囲は、1 - 16 です。16 ビット使用すると、65535 バウチャーまでのロールを持つ"
-"ことができるようになります。ビット配列は、RAM と構成に格納され、バウチャーが"
-"使用されているかどうかのマークに使用されます。65535 バウチャーに対するビット"
-"配列には 8 KB のストレージが必要です。"
-
-msgid "of Checksum Bits"
-msgstr "チェックサムビット番号"
-
-msgid ""
-"Reserves a range in each voucher to store a simple checksum over Roll # and "
-"Ticket#. Allowed range is 0..31."
-msgstr ""
-"バウチャー毎に、ロール番号及びチケット番号の、単純なチェックサムを格納する範"
-"囲を予約してください。使用可能な範囲は 0 - 31 です。"
-
-msgid "Magic Number"
-msgstr "マジックナンバー"
-
-msgid ""
-"Magic number stored in every voucher. Verified during voucher check. Size "
-"depends on how many bits are left by Roll+Ticket+Checksum bits. If all bits "
-"are used, no magic number will be used and checked."
-msgstr ""
-"バウチャー毎にマジックナンバーが格納されます。バウチャーチェック中に検証され"
-"ます。サイズは、ロール + チケット + チェックサムビットの合計で何ビット残って"
-"いるかに依存します。全てのビットを使用している場合は、マジックナンバーを使用"
-"した確認は行われません。"
-
-msgid "Invalid Voucher Message"
-msgstr "無効バウチャーメッセージ"
-
-msgid ""
-"Error message displayed for invalid vouchers on captive portal error page"
-msgstr ""
-"キャプティブポータルエラーページに表示する、無効なバウチャーに対するエラー"
-"メッセージ。"
-
-msgid "Expired Voucher Message"
-msgstr "失効バウチャーメッセージ"
-
-msgid ""
-"Error message displayed for expired vouchers on captive portal error page"
-msgstr ""
-"キャプティブポータルエラーページに表示する、失効したバウチャーに対するエラー"
-"メッセージ。"
-
-msgid ""
-"Changing any Voucher parameter (apart from managing the list of Rolls) on "
-"this page will render existing vouchers useless if they were generated with "
-"different settings."
-msgstr ""
-"このページでバウチャーのパラメータを変更をすると ( ロールリストの管理を除"
-"く )、異なる設定で生成された、不要な既存のバウチャーを表示します。"
-
-msgid ""
-"Specifying the Voucher Database Synchronization options will not record any "
-"other value from the other options. They will be retrieved/synced from the "
-"master."
-msgstr ""
-"バウチャーデータベース同期オプションを指定すると、他のオプションが設定した他"
-"の値は記録しないで、マスタから取得 / 同期されます。"
-
-msgid "Edit Voucher Rolls"
-msgstr "バウチャーロールの編集"
-
-msgid "Number"
-msgstr "数"
-
-#, php-format
-msgid "Roll number %s already exists."
-msgstr "ロール番号 %s は既に存在します"
-
-#, php-format
-msgid "Roll number must be numeric and less than %s"
-msgstr "ロール番号は、数値で、かつ %s 未満です"
-
-#, php-format
-msgid "A roll has at least one voucher and less than %s."
-msgstr "ロールは、1 つ以上 %s 未満のバウチャーを持ちます"
-
-msgid "Each voucher must be good for at least 1 minute."
-msgstr "全てのバウチャーは 1 分以上有効である必要があります"
-
-#, php-format
-msgid "All %1$s vouchers from Roll %2$s marked unused"
-msgstr "ロール %2$s からの全ての %1$s バウチャーは未使用とマークされています"
-
-msgid "Enter the Roll"
-msgstr "生成 / 発行されたバウチャーの一番上にあるロールの"
-
-msgid "found on top of the generated/printed vouchers"
-msgstr "を入力してください"
-
-msgid "Minutes per Ticket"
-msgstr "分 / チケット"
-
-msgid ""
-"Defines the time in minutes that a user is allowed access. The clock starts "
-"ticking the first time a voucher is used for authentication"
-msgstr ""
-"ユーザがアクセス可能な時間を分単位で定義してください。バウチャーが認証に使用"
-"された最初の時間から、時計はカウントを開始します。"
-
-msgid "Enter the number of vouchers"
-msgstr "生成 / 発行されたバウチャーの一番上にあるバウチャー番号の"
-
-msgid ""
-"found on top of the generated/printed vouchers. WARNING: Changing this "
-"number for an existing Roll will mark all vouchers as unused again"
-msgstr ""
-"を入力してください。警告: この番号を変更すると、既存のロールは全てのバウ"
-"チャーを、再度未使用としてマークします。"
-
-msgid "Can be used to further identify this roll. Ignored by the system"
-msgstr "このロールを追加識別子として使用できます。システムには無視されます。"
-
-msgid "Captiveportal"
-msgstr "キャプティブポータル"
-
-msgid "add a new captiveportal instance"
-msgstr "新規キャプティブポータルインスタンスの追加"
-
-msgid "The CaptivePortal entry list has been changed"
-msgstr "キャプティブポータルエントリリストが変更されました"
-
-msgid "Zone"
-msgstr "ゾーン"
-
-msgid "edit captiveportal instance"
-msgstr "キャプティブポータルインスタンスの編集"
-
-msgid "delete captiveportal instance"
-msgstr "キャプティブポータルインスタンスの削除"
-
-msgid "Edit Zones"
-msgstr "ゾーンの編集"
-
-msgid "The zone name can only contain letters, digits, and underscores (_)."
-msgstr ""
-"ゾーン名には、文字、数字、アンダースコア（ _ ）を含めることができます。"
-
-msgid "Edit Captiveportal Zones"
-msgstr "キャプティブポータルゾーンの編集"
-
-msgid "Zone name. Can only contain letters, digits, and underscores (_)."
-msgstr "ゾーン名です。文字、数字、アンダーバー ( _ ) のみが使用できます。"
-
-msgid "Continue"
-msgstr "継続"
 
 msgid "Only interfaces configured with a static IP will be shown"
 msgstr "静的 IP で構成されたインタフェースのみが表示されます"
@@ -13031,14 +12119,6 @@ msgstr ""
 
 msgid "The default lease time must be at least 60 seconds."
 msgstr "デフォルトリース期間は 60 秒以上です"
-
-#, php-format
-msgid ""
-"The Captive Portal zone '%s' has Hard Timeout parameter set to a value "
-"bigger than Default lease time (%s)."
-msgstr ""
-"キャプティブポータルのゾーン %s のハードタイムアウトパラメータには、デフォル"
-"トリースタイム (%s) よりも大きい値が設定されます。"
 
 msgid ""
 "The maximum lease time must be at least 60 seconds and higher than the "
@@ -13101,6 +12181,13 @@ msgstr ""
 #, php-format
 msgid "The subnet range cannot overlap with virtual IP address %s."
 msgstr "サブネット範囲は、仮想 IP アドレス %s と重複できません"
+
+#
+# File: src/www/services_dhcp.php, line: 296
+msgid ""
+"Cannot enable static ARP when you have static map entries without IP "
+"addresses. Ensure all static maps have IP addresses and try again."
+msgstr ""
 
 msgid "Text type cannot include quotation marks."
 msgstr "text 型には、クォーテーションマークは使用できません"
@@ -13237,6 +12324,9 @@ msgstr ""
 
 msgid "Pool Description"
 msgstr "プールの説明"
+
+msgid "Subnet mask"
+msgstr "サブネットマスク"
 
 msgid "Available range"
 msgstr "利用可能な範囲"
@@ -13537,6 +12627,9 @@ msgstr ""
 msgid "URL"
 msgstr "URL"
 
+msgid "Number"
+msgstr "数"
+
 msgid "System: General setup"
 msgstr "システム: 全般設定"
 
@@ -13608,6 +12701,9 @@ msgstr "静的マッピングを編集"
 
 msgid "Static DHCP Mapping"
 msgstr "静的 DHCP マッピング"
+
+msgid "Copy my MAC address"
+msgstr "自分の MAC アドレスを複写"
 
 msgid "Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx"
 msgstr "次の形式で MAC アドレスを入力してください: xx:xx:xx:xx:xx:xx"
@@ -14042,6 +13138,9 @@ msgstr ""
 msgid "Domain"
 msgstr "ドメイン"
 
+msgid "Do you really want to delete this host?"
+msgstr "本当にこのホストを削除しますか？"
+
 msgid "Domain Overrides"
 msgstr "ドメインオーバーライド"
 
@@ -14081,6 +13180,9 @@ msgstr "上書きするドメイン ( 注意: 有効な TLD である必要は�
 
 msgid "or"
 msgstr " または "
+
+msgid "test"
+msgstr "テスト"
 
 msgid "IP address of the authoritative DNS server for this domain"
 msgstr "このドメインの権威 DNS サーバの IP アドレス"
@@ -14451,10 +13553,6 @@ msgstr "CIDR"
 #, fuzzy
 msgid "Add another Time server"
 msgstr "他のスケジュールを追加"
-
-#, fuzzy
-msgid "Serial GPS"
-msgstr "シリアル"
 
 msgid "NTP Server Configuration"
 msgstr "NTP サーバ構成"
@@ -14963,11 +14061,19 @@ msgstr "新規 / 編集された RFC2136 DNS 更新エントリが投稿され�
 msgid "RFC 2136 client"
 msgstr "RFC 2136 クライアント"
 
+#
+# File: src/www/services_rfc2136_edit.php, line: 169
+msgid "Fully qualified hostname of the host to be updated."
+msgstr ""
+
 msgid "This must match the setting on the DNS server."
 msgstr "DNS サーバの設定と一致する必要があります"
 
 msgid "Key type"
 msgstr "鍵タイプ"
+
+msgid "Zone"
+msgstr "ゾーン"
 
 msgid " User"
 msgstr "ユーザ"
@@ -15180,6 +14286,27 @@ msgstr "インタフェースバインティング"
 
 msgid "Bind Interface"
 msgstr "インタフェースのバインド"
+
+#
+# File: src/www/services_unbound.php, line: 89
+msgid ""
+"The DNS Forwarder is still active. Disable it before enabling the DNS "
+"Resolver."
+msgstr ""
+
+#
+# File: src/www/services_unbound.php, line: 92
+msgid ""
+"A single network interface needs to be selected for the DNS Resolver to bind "
+"to."
+msgstr ""
+
+#
+# File: src/www/services_unbound.php, line: 95
+msgid ""
+"A single outgoing network interface needs to be selected for the DNS "
+"Resolver to use for outgoing DNS requests."
+msgstr ""
 
 #, fuzzy
 msgid "You must specify a valid port number."
@@ -15619,6 +14746,77 @@ msgstr ""
 msgid "Edit DNS Resolver entry"
 msgstr "DNS フォワーダエントリの編集"
 
+#
+# File: src/www/services_upnp.php, line: 70
+msgid "At least one of 'UPnP' or 'NAT-PMP' must be allowed"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 74
+msgid "It is a security risk to specify WAN in the 'Interface' field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 76
+msgid "You cannot select the external interface as an internal interface."
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 79
+msgid "You must specify a valid ip address in the 'Override WAN address' field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 81
+msgid ""
+"You must fill in both 'Maximum Download Speed' and 'Maximum Upload Speed' "
+"fields"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 83
+msgid ""
+"You must specify a value greater than 0 in the 'Maximum Download Speed' field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 85
+msgid ""
+"You must specify a value greater than 0 in the 'Maximum Upload Speed' field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 93
+#, php-format
+msgid ""
+"You must follow the specified format in the 'User specified permissions %s' "
+"field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 97
+#, php-format
+msgid ""
+"You must begin with allow or deny in the 'User specified permissions %s' "
+"field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 100
+#, php-format
+msgid ""
+"You must specify a port or port range between 0 and 65535 in the 'User "
+"specified permissions %s' field"
+msgstr ""
+
+#
+# File: src/www/services_upnp.php, line: 103
+#, php-format
+msgid ""
+"You must specify a valid ip address in the 'User specified permissions %s' "
+"field"
+msgstr ""
+
 #, php-format
 msgid "Sent magic packet to %1$s (%2$s)%3$s"
 msgstr "マジックパケットを送信:  %1$s (%2$s)%3$s"
@@ -15713,89 +14911,6 @@ msgstr ""
 msgid "Passwords in config.xml have been automatically removed"
 msgstr "config.xml のパスワードは自動的に削除されました"
 
-msgid "Status: Captive portal"
-msgstr "ステータス: キャプティブポータル"
-
-msgid "Active Users"
-msgstr "アクティブユーザ"
-
-msgid "Active Vouchers"
-msgstr "アクティブバウチャー"
-
-msgid "Test Vouchers"
-msgstr "テストバウチャー"
-
-msgid "Expire Vouchers"
-msgstr "バウチャーの失効"
-
-msgid "Captive Portal Zone"
-msgstr "キャプティブポータルゾーン"
-
-msgid "Captiveportal status"
-msgstr "キャプティブポータルステータス"
-
-msgid "Session start"
-msgstr "セッション開始"
-
-msgid "Last activity"
-msgstr "最新稼働状況"
-
-msgid "Disconnect"
-msgstr "切断"
-
-msgid "Do you really want to disconnect this client?"
-msgstr "本当にこのクライアントを切断しますか？"
-
-msgid "Don't show last activity"
-msgstr "最新稼働状況を表示しない"
-
-msgid "Show last activity"
-msgstr "最新稼働状況を表示"
-
-msgid "Voucher(s)"
-msgstr "バウチャー"
-
-msgid ""
-"Enter multiple vouchers separated by space or newline. All valid vouchers "
-"will be marked as expired"
-msgstr ""
-"複数のバウチャーを入力できます。区切り文字は、空白、または改行です。有効なバ"
-"ウチャーは、全て失効とマークされます。"
-
-msgid ""
-"Enter multiple vouchers separated by space or newline. The remaining time, "
-"if valid, will be shown for each voucher"
-msgstr ""
-"複数のバウチャーを入力する際は、空白か改行で区切ってください。有効な場合は、"
-"バウチャー毎に残り時間が表示されます。"
-
-msgid "Roll#"
-msgstr "ロール番号"
-
-msgid "# of Tickets"
-msgstr "チケット番号"
-
-msgid "used"
-msgstr "使用済"
-
-msgid "active"
-msgstr "有効化"
-
-msgid "ready"
-msgstr "準備完了"
-
-msgid "Activated at"
-msgstr "有効化: "
-
-msgid "Expires in"
-msgstr "有効期限: "
-
-msgid "Expires at"
-msgstr "有効期限満了: "
-
-msgid "min"
-msgstr "分"
-
 msgid "DHCP leases"
 msgstr "DHCP リース"
 
@@ -15868,6 +14983,9 @@ msgstr ""
 msgid "Group Status"
 msgstr ""
 
+msgid "Gateway Groups"
+msgstr "ゲートウェイグループ"
+
 #, php-format
 msgid "Tier %s"
 msgstr "ティア %s"
@@ -15900,6 +15018,39 @@ msgstr "最新チェック: "
 msgid "Traffic Graph"
 msgstr "トラフィックグラフ"
 
+#
+# File: src/www/status_graph.php, line: 207
+msgid "Sort by"
+msgstr ""
+
+#
+# File: src/www/status_graph.php, line: 209
+msgid "Display"
+msgstr ""
+
+#
+# File: src/www/status_graph.php, line: 224
+msgid "Bw In"
+msgstr ""
+
+#
+# File: src/www/status_graph.php, line: 225
+msgid "Bw Out"
+msgstr ""
+
+msgid "Local"
+msgstr "ローカル"
+
+#
+# File: src/www/status_graph.php, line: 229
+msgid "Remote"
+msgstr ""
+
+#
+# File: src/www/status_graph.php, line: 235
+msgid "FQDN"
+msgstr ""
+
 msgid "Host IP"
 msgstr "ホスト IP"
 
@@ -15923,6 +15074,11 @@ msgstr " Firefox 1.5 以降、または SVG 対応のブラウザでグラフが
 msgid "the"
 msgstr " "
 
+#
+# File: src/www/status_interfaces.php, line: 51
+msgid "Summary"
+msgstr ""
+
 msgid "interface"
 msgstr "インタフェース"
 
@@ -15934,6 +15090,9 @@ msgstr "更新"
 
 msgid "Connect"
 msgstr "接続"
+
+msgid "Disconnect"
+msgstr "切断"
 
 msgid "Uptime "
 msgstr "稼働時間"
@@ -16142,89 +15301,13 @@ msgstr "受信バイト"
 msgid "No OpenVPN instance defined"
 msgstr "定義済みの OpenVPN インスタンスはありません"
 
-msgid "Invalid start date/time:"
-msgstr "無効な開始日 / 時間: "
-
-msgid "Invalid end date/time:"
-msgstr "無効な終了日 / 時間: "
-
-msgid "Absolute"
-msgstr "絶対"
-
-msgid "Absolute Timespans"
-msgstr "絶対タイムスパン"
-
-msgid "Current Period"
-msgstr "当期"
-
-msgid "Previous Period"
-msgstr "前期"
-
-msgid ""
-"Note: Change of color and/or style may not take effect until the next refresh"
-msgstr "注意: 色やスタイルの変更は、次に更新されるまで有効になりません"
-
-msgid "Graphs:"
-msgstr "グラフ: "
-
-msgid "Style:"
-msgstr "スタイル: "
-
-msgid "Period:"
-msgstr "期間: "
-
-msgid "Enter date and/or time. Current timezone:"
-msgstr "日付及び時刻、もしくはどちらかを入力してください。現在のタイムゾーン: "
-
-msgid "Start:"
-msgstr "開始: "
-
-msgid "End:"
-msgstr "終了: "
-
-msgid "Go"
-msgstr "実行"
-
-msgid "Image viewer"
-msgstr "画像ビューア"
-
-#, php-format
-msgid "Sorry we do not have data to graph for %s"
-msgstr "%s グラフのデータがありません"
-
-#, php-format
-msgid "Failed to create graph with error code %1$s, the error is: %2$s"
-msgstr "グラフ作成に失敗しました。エラーコード: %1$s エラー: %2$s"
-
-msgid "Traffic"
-msgstr "トラフィック"
-
-msgid "Packets"
-msgstr "パケット"
-
-msgid "Quality"
-msgstr "品質"
+#
+# File: src/www/status_rrd_graph_settings.php, line: 40
+msgid "RRD data has been cleared."
+msgstr ""
 
 msgid "Enables the RRD graphing backend."
 msgstr "RRD グラフバックエンドを有効"
-
-msgid "Default category"
-msgstr "デフォルトカテゴリ"
-
-msgid "This selects default category."
-msgstr "デフォルトカテゴリを選択します。"
-
-msgid "Default style"
-msgstr "デフォルトスタイル"
-
-msgid "This selects the default style."
-msgstr "デフォルトスタイルを選択します。"
-
-msgid "Default period"
-msgstr "デフォルト期間"
-
-msgid "This selects the default period."
-msgstr "デフォルト期間を選択します。"
 
 msgid ""
 "Do you really want to reset the RRD graphs? This will erase all graph data."
@@ -16240,9 +15323,6 @@ msgid ""
 msgstr ""
 "グラフは 1 分以内に再作成することはできません。スタイルの変更後は、この点を忘"
 "れないで下さい。"
-
-msgid "Cellular"
-msgstr "セル"
 
 #
 # File: src/etc/inc/service-utils.inc, line: 410
@@ -16329,6 +15409,9 @@ msgstr "作成またはインポート"
 
 msgid "a Certificate before SSL can be enabled."
 msgstr "を実行してください。"
+
+msgid "SSL Certificate"
+msgstr "SSL 証明書"
 
 #
 # File: src/www/system_advanced_admin.php, line: 379
@@ -17671,11 +16754,6 @@ msgstr "起動 / シャットダウンビープ音を無効"
 msgid "When this is checked, startup and shutdown sounds will no longer play."
 msgstr "これをチェックすると、起動とシャットダウンの音が鳴らなくなります。"
 
-#
-# File: src/www/system_advanced_sysctl.php, line: 119
-msgid "Tunables"
-msgstr ""
-
 msgid ""
 "The firewall tunables have changed.  You must apply the configuration to "
 "take affect."
@@ -17699,9 +16777,6 @@ msgstr "システム調整パラメータの編集"
 
 msgid "Tunable"
 msgstr "調整パラメータ"
-
-msgid "deleted"
-msgstr "削除済"
 
 msgid "Descriptive name"
 msgstr "説明名"
@@ -17733,9 +16808,6 @@ msgstr "バインドパスワード"
 msgid "Authentication port value"
 msgstr "認証ポート値"
 
-msgid "Accounting port value"
-msgstr "アカウンティングポート値"
-
 msgid "Shared Secret"
 msgstr "共有秘密鍵"
 
@@ -17748,17 +16820,17 @@ msgstr "同じ名前の認証サーバが既に存在しています"
 msgid "RADIUS Timeout value must be numeric and positive."
 msgstr "RADIUS タイムアウト値は、正の数値です。"
 
+msgid "deleted"
+msgstr "削除済"
+
 msgid "Please fill the required values."
 msgstr "必要な値を入力してください"
-
-msgid "Please fill the bind username/password."
-msgstr "バインドユーザ名 / パスワードを入力してください"
 
 msgid "Popup blocker detected.  Action aborted."
 msgstr "ポップアップブロッカーが検出されました。動作を中止しました。"
 
-msgid "LDAP Server Settings"
-msgstr "LDAP サーバ設定"
+msgid "Do you really want to delete this Server?"
+msgstr "本当にこのサーバを削除しますか？"
 
 msgid "Hostname or IP address"
 msgstr "ホスト名または IP アドレス"
@@ -17768,6 +16840,16 @@ msgstr "ホスト名または IP アドレス"
 msgid ""
 "NOTE: When using SSL, this hostname MUST match the Common Name (CN) of the "
 "LDAP server's SSL Certificate."
+msgstr ""
+
+#
+# File: src/www/system_authservers.php, line: 476
+msgid "TCP - Standard"
+msgstr ""
+
+#
+# File: src/www/system_authservers.php, line: 479
+msgid "SSL - Encrypted"
 msgstr ""
 
 msgid "Peer Certificate Authority"
@@ -17781,14 +16863,52 @@ msgstr ""
 msgid "It must match with the CA in the AD otherwise problems will arise."
 msgstr "AD の CA と一致する必要があります。そうでない場合は問題が発生します。"
 
+#
+# File: src/www/vpn_openvpn_client.php, line: 718
+# File: src/www/vpn_openvpn_client.php, line: 756
+# File: src/www/vpn_openvpn_client.php.orig, line: 718
+# File: src/www/vpn_openvpn_client.php.orig, line: 756
+# File: src/www/vpn_openvpn_server.php, line: 958
+# File: src/www/vpn_openvpn_server.php, line: 991
+# File: src/www/vpn_openvpn_server.php, line: 1031
+# File: src/www/vpn_openvpn_server.php.orig, line: 958
+# File: src/www/vpn_openvpn_server.php.orig, line: 991
+# File: src/www/vpn_openvpn_server.php.orig, line: 1031
+msgid "Create one under"
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_client.php, line: 718
+# File: src/www/vpn_openvpn_client.php.orig, line: 718
+# File: src/www/vpn_openvpn_server.php, line: 958
+# File: src/www/vpn_openvpn_server.php.orig, line: 958
+msgid "No Certificate Authorities defined."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_client.php, line: 718
+# File: src/www/vpn_openvpn_client.php, line: 756
+# File: src/www/vpn_openvpn_client.php.orig, line: 718
+# File: src/www/vpn_openvpn_client.php.orig, line: 756
+# File: src/www/vpn_openvpn_server.php, line: 958
+# File: src/www/vpn_openvpn_server.php, line: 991
+# File: src/www/vpn_openvpn_server.php, line: 1031
+# File: src/www/vpn_openvpn_server.php.orig, line: 958
+# File: src/www/vpn_openvpn_server.php.orig, line: 991
+# File: src/www/vpn_openvpn_server.php.orig, line: 1031
+msgid "System: Certificates"
+msgstr ""
+
 msgid "Bind credentials"
 msgstr "資格情報をバインド"
 
-msgid "Use anonymous binds to resolve distinguished names"
-msgstr "識別名の名前解決に匿名バインドを使用"
-
 msgid "User DN:"
 msgstr "ユーザ DN: "
+
+#
+# File: src/www/system_authservers.php, line: 525
+msgid "Leave empty to use anonymous binds to resolve distinguished names"
+msgstr ""
 
 msgid "Search scope"
 msgstr "検索範囲"
@@ -17796,14 +16916,21 @@ msgstr "検索範囲"
 msgid "Level:"
 msgstr "レベル: "
 
+#
+# File: src/www/system_authservers.php, line: 536
+msgid "One Level"
+msgstr ""
+
+#
+# File: src/www/system_authservers.php, line: 539
+msgid "Entire Subtree"
+msgstr ""
+
 msgid "Base DN:"
 msgstr "ベース DN: "
 
 msgid "Authentication containers"
 msgstr "認証コンテナ"
-
-msgid "Containers:"
-msgstr "コンテナ: "
 
 #, fuzzy
 msgid ""
@@ -17823,14 +16950,34 @@ msgstr "拡張クエリ"
 msgid "Initial Template"
 msgstr "初期テンプレート"
 
+#
+# File: src/www/system_authservers.php, line: 579
+msgid "OpenLDAP"
+msgstr ""
+
+#
+# File: src/www/system_authservers.php, line: 580
+msgid "Microsoft AD"
+msgstr ""
+
+#
+# File: src/www/system_authservers.php, line: 581
+msgid "Novell eDirectory"
+msgstr ""
+
 msgid "User naming attribute"
 msgstr "ユーザネーミング属性"
 
-msgid "Radius Server Settings"
-msgstr "RADIUS サーバ設定"
-
 msgid "Services offered"
 msgstr "提供するサービス"
+
+#
+# File: src/www/system_authservers.php, line: 611
+msgid "Authentication and Accounting"
+msgstr ""
+
+msgid "Accounting port value"
+msgstr "アカウンティングポート値"
 
 msgid "Authentication Timeout"
 msgstr "認証タイムアウト"
@@ -17858,8 +17005,10 @@ msgstr "サーバ名"
 msgid "Additional authentication servers can be added here."
 msgstr "認証サーバは、ここで追加できます。"
 
-msgid "Do you really want to delete this Server?"
-msgstr "本当にこのサーバを削除しますか？"
+#
+# File: src/www/system_authservers.php, line: 695
+msgid "delete this server"
+msgstr ""
 
 msgid "Import an existing Certificate Authority"
 msgstr "既存の認証局をインポート"
@@ -17913,11 +17062,39 @@ msgstr "識別名コモンネーム"
 msgid "Signing Certificate Authority"
 msgstr "認証局の署名"
 
+#
+# File: src/www/system_camanager.php, line: 315
+# File: src/www/system_certmanager.php, line: 361
+msgid ""
+"The field 'Distinguished name Email Address' contains invalid characters."
+msgstr ""
+
+#
+# File: src/www/system_camanager.php, line: 319
+# File: src/www/system_certmanager.php, line: 366
+msgid "The field 'Distinguished name Common Name' contains invalid characters."
+msgstr ""
+
+#
+# File: src/www/system_camanager.php, line: 322
+# File: src/www/system_certmanager.php, line: 369
+#, php-format
+msgid "The field '%s' contains invalid characters."
+msgstr ""
+
 msgid "Please select a valid Key Length."
 msgstr "有効な鍵長を選択してください。"
 
 msgid "Please select a valid Digest Algorithm."
 msgstr "有効なダイジェストアルゴリズムを選択してください。"
+
+#
+# File: src/www/system_camanager.php, line: 381
+# File: src/www/system_camanager.php, line: 395
+# File: src/www/system_certmanager.php, line: 441
+# File: src/www/system_certmanager.php, line: 464
+msgid "openssl library returns:"
+msgstr ""
 
 msgid "add or import ca"
 msgstr "CA の追加またはインポート"
@@ -18074,10 +17251,39 @@ msgstr "認証局"
 msgid "Existing Certificate Choice"
 msgstr "既存の証明書の選択"
 
+#
+# File: src/www/system_certmanager.php, line: 329
+msgid "DNS subjectAltName values must be valid hostnames or FQDNs"
+msgstr ""
+
+#
+# File: src/www/system_certmanager.php, line: 334
+msgid "IP subjectAltName values must be valid IP Addresses"
+msgstr ""
+
+#
+# File: src/www/system_certmanager.php, line: 339
+msgid "You must provide an e-mail address for this type of subjectAltName"
+msgstr ""
+
+#
+# File: src/www/system_certmanager.php, line: 342
+msgid "The e-mail provided in a subjectAltName contains invalid characters."
+msgstr ""
+
+#
+# File: src/www/system_certmanager.php, line: 348
+msgid "URI subjectAltName types must be a valid URI"
+msgstr ""
+
+#
+# File: src/www/system_certmanager.php, line: 352
+msgid "Unrecognized subjectAltName type."
+msgstr ""
+
 msgid "Final Certificate data"
 msgstr "最終的な証明書データ"
 
-#, php-format
 msgid "The certificate modulus does not match the signing request modulus."
 msgstr "証明書モジュールは、署名要求モジュールと一致しません"
 
@@ -18099,6 +17305,9 @@ msgstr "内部証明書"
 
 msgid "No internal Certificate Authorities have been defined. You must"
 msgstr "内部認証局が定義されていません。内部証明書を作成する前に、内部 CA を"
+
+msgid "create"
+msgstr "作成"
 
 msgid "an internal CA before creating an internal certificate."
 msgstr "する必要があります。"
@@ -18293,9 +17502,6 @@ msgstr "本当にこの証明書失効リストを削除しますか？"
 msgid "Delete CRL"
 msgstr "CRL の削除"
 
-msgid "removed gateway group"
-msgstr "ゲートウェイグループを削除しました"
-
 #
 # File: src/www/system_gateway_groups.php, line: 135
 msgid "Add group"
@@ -18467,6 +17673,11 @@ msgstr "選択したルールを削除"
 #, fuzzy
 msgid "Do you really want to delete the selected gateway items?"
 msgstr "本当に選択したルールを削除しますか？"
+
+#
+# File: src/www/system_gateways_edit.php, line: 118
+msgid "A valid gateway name must be specified."
+msgstr ""
 
 msgid "A valid gateway IP address must be specified."
 msgstr "有効なゲートウェイ IP アドレスを指定してください"
@@ -18982,12 +18193,6 @@ msgstr ""
 msgid "Do you really want to delete this group?"
 msgstr "本当にこのグループを削除しますか？"
 
-#
-# File: src/www/system_groupmanager_addprivs.php, line: 48
-# File: src/www/system_usermanager_addprivs.php, line: 48
-msgid "Privileges"
-msgstr ""
-
 msgid "Selected priveleges"
 msgstr "選択した権限"
 
@@ -18996,25 +18201,6 @@ msgstr "システム権限"
 
 msgid "Select a privilege from the list above for a description"
 msgstr "説明する権限を、上記のリストから選択してください"
-
-#
-# File: src/www/system_hasync.php, line: 97
-msgid "Synchronization"
-msgstr ""
-
-msgid "Static Routes"
-msgstr "静的ルート"
-
-msgid "removed route to"
-msgstr "次へのルートを削除: "
-
-#, fuzzy
-msgid "enabled route to"
-msgstr "次へのルートを削除: "
-
-#, fuzzy
-msgid "disabled route to"
-msgstr "次へのルートを削除: "
 
 #
 # File: src/www/system_routes.php, line: 210
@@ -19248,12 +18434,24 @@ msgstr "本当にこのユーザを削除しますか？"
 msgid "delete user"
 msgstr "ユーザの削除"
 
+#
+# File: src/www/system_usermanager.php, line: 1053
+msgid "System Admininistrator"
+msgstr ""
+
+#
+# File: src/www/system_usermanager.php, line: 1055
+msgid "Disabled User"
+msgstr ""
+
+#
+# File: src/www/system_usermanager.php, line: 1057
+msgid "Normal User"
+msgstr ""
+
 msgid ""
 "Could not connect to the LDAP server. Please check your LDAP configuration."
 msgstr "LDAP サーバに接続できません。LDAP 構成を確認して下さい。"
-
-msgid "Close"
-msgstr "閉じる"
 
 #
 # File: src/www/system_usermanager_import_ldap.php, line: 150
@@ -19436,30 +18634,11 @@ msgstr "選択したルールを削除"
 msgid "Do you really want to delete the selected phase1 entries?"
 msgstr "本当に選択したルールを削除しますか？"
 
-msgid "You can check your IPsec status at"
-msgstr "IPsec ステータスを確認: "
-
-msgid "Status:IPsec"
-msgstr "ステータス: IPsec"
-
-msgid "IPsec Debug Mode can be enabled at"
-msgstr "IPsec デバッグモードを有効: "
-
-#, fuzzy
-msgid "VPN:IPsec:Advanced Settings"
-msgstr "高度な設定"
-
-msgid "IPsec can be set to prefer older SAs at"
-msgstr "IPsec に古い SA を優先するよう設定: "
-
 msgid "Enable IPsec"
 msgstr "IPsec を有効"
 
 msgid "Deleted IPsec Pre-Shared Key"
 msgstr "削除された IPsec 事前共有鍵"
-
-msgid "VPN: IPsec: Keys"
-msgstr "VPN: IPsec: 鍵"
 
 msgid "Do you really want to delete this Pre-Shared Key?"
 msgstr "本当にこの事前共有鍵を削除しますか？"
@@ -19503,8 +18682,10 @@ msgstr "編集済"
 msgid "Added"
 msgstr "追加済"
 
-msgid "VPN: IPsec: Edit Pre-Shared Key"
-msgstr "VPN: IPsec: 事前共有鍵の編集"
+#
+# File: src/www/vpn_ipsec_keys_edit.php, line: 119
+msgid "Edit Pre-Shared Key"
+msgstr ""
 
 msgid ""
 "This can be either an IP address, fully qualified domain name or an e-mail "
@@ -19547,9 +18728,6 @@ msgstr "「WINS サーバ #1」に有効な IP アドレスを指定してくだ
 
 msgid "A valid IP address for 'WINS Server #2' must be specified."
 msgstr "「WINS サーバ #2」に有効な IP アドレスを指定してください"
-
-msgid "Mobile"
-msgstr "モバイル"
 
 msgid "Create Phase1"
 msgstr "フェーズ 1 の新規作成"
@@ -19770,25 +18948,12 @@ msgid "A numeric value must be specified for DPD retries."
 msgstr "DPD 再試行 には数値を指定してください"
 
 #
-# File: src/www/vpn_ipsec_phase1.php, line: 352
-msgid "Valid arguments for IKE type is v1 or v2"
+# File: src/www/vpn_ipsec_phase1.php, line: 345
+msgid "Invalid argument for key exchange protocol version."
 msgstr ""
 
 msgid "Edit Phase 1"
 msgstr "フェーズ 1 を編集"
-
-msgid "Tunnels"
-msgstr "トンネル"
-
-msgid "Mobile clients"
-msgstr "モバイルクライアント"
-
-msgid "Pre-Shared Keys"
-msgstr "事前共有鍵"
-
-#, fuzzy
-msgid "Advanced Settings"
-msgstr "高度な設定"
 
 msgid "General information"
 msgstr "全般情報"
@@ -20238,9 +19403,6 @@ msgstr "指定されたサーバアドレスはリモートサブネットにあ
 msgid "The specified server address is equal to the LAN interface address."
 msgstr "指定されたサーバアドレスは LAN インタフェースのアドレスと同じです"
 
-msgid "Configuration"
-msgstr "構成"
-
 msgid "Enable L2TP server"
 msgstr "L2TP サーバを有効"
 
@@ -20294,6 +19456,9 @@ msgstr "認証タイプ"
 
 msgid "CHAP"
 msgstr "CHAP"
+
+msgid "PAP"
+msgstr "PAP"
 
 msgid "Specifies which protocol to use for authentication."
 msgstr "認証に使用するプロトコルを指定してください。"
@@ -20366,6 +19531,12 @@ msgstr "警告: 現在の L2TP セッションは、全て終了します！"
 msgid "You must apply the changes in order for them to take effect"
 msgstr "有効にするには、変更を適用してください。"
 
+#
+# File: src/www/vpn_l2tp_users_edit.php, line: 30
+# File: src/www/vpn_pptp_users_edit.php, line: 137
+msgid "Edit User"
+msgstr ""
+
 msgid "The password contains invalid characters."
 msgstr "パスワードに無効な文字が含まれています"
 
@@ -20381,6 +19552,9 @@ msgstr "ユーザパスワードを変更する場合は、ここに 2 回入力
 msgid ""
 "If you want the user to be assigned a specific IP address, enter it here."
 msgstr "ユーザに特定の IP アドレスを割当てる場合は、ここに入力してください。"
+
+msgid "Client"
+msgstr "クライアント"
 
 msgid ""
 "Protocol and IP address families do not match. You cannot select an IPv6 "
@@ -20410,6 +19584,12 @@ msgstr ""
 "IPv6 プロトコルが選択されましたが、選択したインタフェースは IPv6 アドレスでは"
 "ありません。"
 
+#
+# File: src/www/vpn_openvpn_client.php, line: 178
+msgid ""
+"The field Local port must contain a valid port, ranging from 0 to 65535."
+msgstr ""
+
 msgid "The specified 'Local port' is in use. Please select another value"
 msgstr ""
 "指定された「ローカルポート」は使用されています。別の値を選択してください"
@@ -20423,11 +19603,23 @@ msgid ""
 msgstr ""
 
 #
+# File: src/www/vpn_openvpn_client.php, line: 190
+msgid ""
+"The field Server port must contain a valid port, ranging from 0 to 65535."
+msgstr ""
+
+#
 # File: src/www/vpn_openvpn_client.php, line: 195
 # File: src/www/vpn_openvpn_client.php.orig, line: 195
 msgid ""
 "The field Proxy host or address must contain a valid IP address or domain "
 "name."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_client.php, line: 198
+msgid ""
+"The field Proxy port must contain a valid port, ranging from 0 to 65535."
 msgstr ""
 
 msgid "User name and password are required for proxy with authentication."
@@ -20454,17 +19646,6 @@ msgstr ""
 
 msgid "add client"
 msgstr "クライアントの追加"
-
-msgid "Client Specific Overrides"
-msgstr "クライアント固有の上書き"
-
-#, fuzzy
-msgid "Client Export"
-msgstr "クライアント"
-
-#, fuzzy
-msgid "Shared Key Export"
-msgstr "共有鍵"
 
 msgid ""
 "Set this option to disable this client without removing it from the list"
@@ -20555,42 +19736,6 @@ msgstr "自動的に共有 TLS 認証鍵を生成"
 msgid "Paste your shared key here"
 msgstr "ここに自分の共有鍵を貼り付けてください"
 
-#
-# File: src/www/vpn_openvpn_client.php, line: 718
-# File: src/www/vpn_openvpn_client.php.orig, line: 718
-# File: src/www/vpn_openvpn_server.php, line: 958
-# File: src/www/vpn_openvpn_server.php.orig, line: 958
-msgid "No Certificate Authorities defined."
-msgstr ""
-
-#
-# File: src/www/vpn_openvpn_client.php, line: 718
-# File: src/www/vpn_openvpn_client.php, line: 756
-# File: src/www/vpn_openvpn_client.php.orig, line: 718
-# File: src/www/vpn_openvpn_client.php.orig, line: 756
-# File: src/www/vpn_openvpn_server.php, line: 958
-# File: src/www/vpn_openvpn_server.php, line: 991
-# File: src/www/vpn_openvpn_server.php, line: 1031
-# File: src/www/vpn_openvpn_server.php.orig, line: 958
-# File: src/www/vpn_openvpn_server.php.orig, line: 991
-# File: src/www/vpn_openvpn_server.php.orig, line: 1031
-msgid "Create one under"
-msgstr ""
-
-#
-# File: src/www/vpn_openvpn_client.php, line: 718
-# File: src/www/vpn_openvpn_client.php, line: 756
-# File: src/www/vpn_openvpn_client.php.orig, line: 718
-# File: src/www/vpn_openvpn_client.php.orig, line: 756
-# File: src/www/vpn_openvpn_server.php, line: 958
-# File: src/www/vpn_openvpn_server.php, line: 991
-# File: src/www/vpn_openvpn_server.php, line: 1031
-# File: src/www/vpn_openvpn_server.php.orig, line: 958
-# File: src/www/vpn_openvpn_server.php.orig, line: 991
-# File: src/www/vpn_openvpn_server.php.orig, line: 1031
-msgid "System: Certificates"
-msgstr ""
-
 msgid "Client Certificate"
 msgstr "クライアント証明書"
 
@@ -20599,6 +19744,9 @@ msgstr "クライアント証明書"
 # File: src/www/vpn_openvpn_client.php.orig, line: 752
 msgid "(Username and Password required)"
 msgstr ""
+
+msgid "No Certificates defined."
+msgstr "定義された証明書はありません。"
 
 #
 # File: src/www/vpn_openvpn_client.php, line: 756
@@ -20625,9 +19773,6 @@ msgstr ""
 
 msgid "Hardware Crypto"
 msgstr "ハードウェア暗号"
-
-msgid "Tunnel Settings"
-msgstr "トンネル設定"
 
 msgid "IPv4 Tunnel Network"
 msgstr "IPv4 トンネルネットワーク"
@@ -20810,38 +19955,11 @@ msgstr ""
 msgid "delete client"
 msgstr "クライアントの削除"
 
-msgid "Client Specific Override"
-msgstr "クライアント固有の上書き"
-
-msgid "The field 'DNS Server #1' must contain a valid IP address"
-msgstr "「DNS サーバ #1」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'DNS Server #2' must contain a valid IP address"
-msgstr "「DNS サーバ #2」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'DNS Server #3' must contain a valid IP address"
-msgstr "「DNS サーバ #3」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'DNS Server #4' must contain a valid IP address"
-msgstr "「DNS サーバ #4」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'NTP Server #1' must contain a valid IP address"
-msgstr "「NTP サーバ #1」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'NTP Server #2' must contain a valid IP address"
-msgstr "「NTP サーバ #2」フィールドには、有効な IP アドレスが必要です"
-
 msgid "The field 'NTP Server #3' must contain a valid IP address"
 msgstr "「NTP サーバ #3」フィールドには、有効な IP アドレスが必要です"
 
 msgid "The field 'NTP Server #4' must contain a valid IP address"
 msgstr "「NTP サーバ #4」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'WINS Server #1' must contain a valid IP address"
-msgstr "「WINS サーバ #1」フィールドには、有効な IP アドレスが必要です"
-
-msgid "The field 'WINS Server #2' must contain a valid IP address"
-msgstr "「WINS サーバ #2」フィールドには、有効な IP アドレスが必要です"
 
 msgid "Do you really want to delete this csc?"
 msgstr "本当にこの CSC を削除しますか？"
@@ -20957,9 +20075,6 @@ msgstr "リダイレクトゲートウェイ"
 msgid "Force all client generated traffic through the tunnel"
 msgstr "トンネル経由のトラフィックを生成する、全てのクライアントに強制"
 
-msgid "Client Settings"
-msgstr "クライアント設定"
-
 msgid "Server Definitions"
 msgstr "サーバ定義"
 
@@ -21021,6 +20136,55 @@ msgstr "CSC の削除"
 
 msgid "Additional OpenVPN client specific overrides can be added here."
 msgstr "OpenVPN クライアント固有の上書きは、ここで追加できます。"
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 139
+# File: src/www/vpn_openvpn_export_shared.php, line: 79
+msgid "You need to specify an IP or hostname."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 149
+msgid ""
+"You cannot use Microsoft Certificate Storage with an Inline configuration."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 152
+msgid ""
+"You cannot use Microsoft Certificate Storage with a Yealink or SNOM "
+"configuration."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 163
+# File: src/www/vpn_openvpn_export_shared.php, line: 88
+msgid "You need to specify an address for the proxy port."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 168
+# File: src/www/vpn_openvpn_export_shared.php, line: 93
+msgid "You need to specify a port for the proxy ip."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 179
+# File: src/www/vpn_openvpn_export_shared.php, line: 101
+msgid "You need to specify a username with the proxy config."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 184
+# File: src/www/vpn_openvpn_export_shared.php, line: 106
+msgid "You need to specify a password with the proxy user."
+msgstr ""
+
+#
+# File: src/www/vpn_openvpn_export.php, line: 246
+# File: src/www/vpn_openvpn_export_shared.php, line: 119
+msgid "Failed to export config files!"
+msgstr ""
 
 #
 # File: src/www/vpn_openvpn_export.php, line: 638
@@ -21388,9 +20552,6 @@ msgid ""
 msgstr ""
 "サーバモードでユーザ認証を必要な場合は、認証用バックエンドを選択する必要があ"
 "ります。"
-
-msgid "The field 'Concurrent connections' must be numeric."
-msgstr "「同時接続」フィールドは数値です"
 
 msgid "Tunnel network"
 msgstr "トンネルネットワーク"
@@ -21896,9 +21057,6 @@ msgstr "PPTP リダイレクトターゲットアドレス"
 msgid "A valid target address must be specified."
 msgstr "有効なターゲットアドレスを指定してください"
 
-msgid "VPN PPTP"
-msgstr "VPN PPTP"
-
 #, fuzzy
 msgid ""
 "PPTP is no longer considered a secure VPN technology because it relies upon "
@@ -21972,6 +21130,9 @@ msgid ""
 msgstr ""
 "RADIUS サーバの IP アドレス、RADIUS ポート、RADIUS アカウンティングポートを入"
 "力してください"
+
+msgid "Secondary RADIUS server"
+msgstr "セカンダリ RADIUS サーバ"
 
 msgid "Secondary RADIUS shared secret"
 msgstr "セカンダリ RADIUS 共有秘密鍵"
@@ -22068,6 +21229,15 @@ msgstr "エラー"
 #, fuzzy
 msgid "Errors Out"
 msgstr "エラー"
+
+msgid "Overview"
+msgstr "概要"
+
+msgid "Tunnels"
+msgstr "トンネル"
+
+msgid "Mobile"
+msgstr "モバイル"
 
 #, fuzzy
 msgid "Active Tunnels"
