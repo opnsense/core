@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $a_npt[$id]['disabled'] = true;
             }
-            if (write_config("Firewall: NAT: NPT, enable/disable NAT rule")) {
+            if (write_config(gettext("Firewall: NAT: NPT, enable/disable NAT rule"))) {
                 mark_subsystem_dirty('natconf');
             }
             header("Location: firewall_nat_npt.php");
@@ -103,7 +103,7 @@ $pgtitle = array(gettext('Firewall'), gettext('NAT'), gettext('NPT'));
 include("head.inc");
 
 $main_buttons = array(
-  array('label'=>'Add rule', 'href'=>'firewall_nat_npt_edit.php'),
+  array('label'=>gettext('Add rule'), 'href'=>'firewall_nat_npt_edit.php'),
 );
 ?>
 
