@@ -222,7 +222,7 @@ include("head.inc");
 
 ?>
 <body>
-<? include("fbegin.inc"); ?>
+<?php include("fbegin.inc"); ?>
 
 <?php if($pkg['step'][$stepid]['fields']['field'] <> "") { ?>
 <script type="text/javascript">
@@ -381,7 +381,7 @@ function showchange() {
 						<header class="content-box-head container-fluid">
 						<h3><?= fixup_string($title) ?></h3>
 					</header>
-					<? endif; ?>
+					<?php endif; ?>
 
 						<div class="content-box-main">
 							<div style="padding:20px !important;">
@@ -1031,4 +1031,4 @@ function is_timezone($elt) {
 
 ?>
 
-<? include('foot.inc'); ?>
+<?php include('foot.inc'); ?>

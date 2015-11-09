@@ -64,23 +64,17 @@ $filesystems = get_mounted_filesystems();
 		jQuery("#cpuPB").css( { width:0 } );
 		jQuery("#memUsagePB").css( { width: '<?php echo mem_usage(); ?>%' } );
 
-<?PHP $d = 0; ?>
-<?PHP foreach ($filesystems as $fs) :
-?>
+<?php $d = 0; ?>
+<?php foreach ($filesystems as $fs) : ?>
 		jQuery("#diskUsagePB<?php echo $d++; ?>").css( { width: '<?php echo $fs['percent_used']; ?>%' } );
-<?PHP
-endforeach; ?>
+<?php endforeach; ?>
 
-		<?php if ($showswap == true) :
-?>
+		<?php if ($showswap == true) : ?>
 			jQuery("#swapUsagePB").css( { width: '<?php echo swap_usage(); ?>%' } );
-		<?php
-endif; ?>
-		<?php if (get_temp() != "") :
-?>
+		<?php endif; ?>
+		<?php if (get_temp() != "") : ?>
 			jQuery("#tempPB").css( { width: '<?php echo get_temp(); ?>%' } );
-		<?php
-endif; ?>
+		<?php endif; ?>
 	});
 //]]>
 </script>
@@ -114,17 +108,14 @@ endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("CPU Type");?></td>
 			<td width="75%" class="listr">
-			<?php
-                echo (htmlspecialchars(get_single_sysctl("hw.model")));
-            ?>
+			<?php echo (htmlspecialchars(get_single_sysctl("hw.model"))); ?>
 			<div id="cpufreq"><?= get_cpufreq(); ?></div>
 		<?php	$cpucount = get_cpu_count();
         if ($cpucount > 1) :
 ?>
 			<div id="cpucount">
 				<?= htmlspecialchars($cpucount) ?> CPUs: <?= htmlspecialchars(get_cpu_count(true)); ?></div>
-		<?php
-        endif; ?>
+		<?php endif; ?>
 			</td>
 		</tr>
 		<?php if (isset($hwcrypto)) :
@@ -133,8 +124,7 @@ endif; ?>
 			<td width="25%" class="vncellt"><?=gettext("Hardware crypto");?></td>
 			<td width="75%" class="listr"><?=htmlspecialchars($hwcrypto);?></td>
 		</tr>
-		<?php
-endif; ?>
+		<?php endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Uptime");?></td>
 			<td width="75%" class="listr" id="uptime"><?= htmlspecialchars(get_uptime()); ?></td>
@@ -162,8 +152,7 @@ endif; ?>
 			<td width="25%" class="vncellt"><?=gettext("Last config change");?></td>
 			<td width="75%" class="listr"><?= htmlspecialchars(date("D M j G:i:s T Y", intval($config['revision']['time'])));?></td>
 		</tr>
-		<?php
-endif; ?>
+		<?php endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("State table size");?></td>
 			<td width="75%" class="listr">
@@ -213,8 +202,7 @@ endif; ?>
 				<span id="tempmeter"><?= $temp."&#176;C"; ?></span>
 			</td>
                 </tr>
-                <?php
-endif; ?>
+                <?php endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Load average");?></td>
 			<td width="75%" class="listr">
@@ -259,23 +247,21 @@ endif; ?>
 				<span id="swapusagemeter"><?= $swapusage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $3;}'`, `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
 			</td>
 		</tr>
-		<?php
-endif; ?>
+		<?php endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Disk usage");?></td>
 			<td width="75%" class="listr">
-<?PHP $d = 0; ?>
-<?PHP foreach ($filesystems as $fs) :
-?>
+<?php $d = 0; ?>
+<?php foreach ($filesystems as $fs) : ?>
 				<div class="progress">
 				  <div id="diskUsagePB<?php echo $d; ?>" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
 				    <span class="sr-only"></span>
 				  </div>
 				</div>
-				<?PHP if (substr(basename($fs['device']), 0, 5) == "tmpfs") {
+				<?php if (substr(basename($fs['device']), 0, 5) == "tmpfs") {
                     $fs['type'] .= " in RAM";
 } ?>
-				<?PHP echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?PHP echo $fs['used_size'] ."/". $fs['total_size'];
+				<?php echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?php echo $fs['used_size'] ."/". $fs['total_size'];
 				if ($d != count($filesystems)) {
 					echo '<br/><br/>';
 				}

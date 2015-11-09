@@ -55,7 +55,7 @@ include("head.inc");
 
 				<?php if (is_subsystem_dirty('loadbalancer')): ?><br/>
 				<?php print_info_box_apply(sprintf(gettext("The load balancer configuration has been changed%sYou must apply the changes in order for them to take effect."), "<br />"));?>
-				<? endif; ?>
+				<?php endif; ?>
 
 			    <section class="col-xs-12">
 

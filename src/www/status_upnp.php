@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
@@ -67,7 +68,7 @@ include("head.inc");
 				        <h3><?php echo gettext("UPnP is currently disabled."); ?></h3>
 				    </header>
 
-	                <? else: ?>
+	                <?php else: ?>
 
                     <div class="table-responsive">
 
@@ -111,7 +112,7 @@ include("head.inc");
 					<form action="status_upnp.php" method="post">
 					  <input type="submit" name="clear" id="clear" class="btn btn-primary" value="<?=gettext("Clear");?>" /> <?=gettext("all currently connected sessions");?>.
 					</form>
-					<? endif; ?>
+					<?php endif; ?>
 
                 </div>
             </section>

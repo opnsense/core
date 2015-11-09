@@ -205,7 +205,7 @@ function backup_config_section($section_name) {
 	return $xmlconfig;
 }
 
-/* KEEP THIS: unbreaks syntax highlighting <? */
+/* KEEP THIS: unbreaks syntax highlighting <?php */
 
 /*
  *  restore_config_section($section_name, new_contents): restore a configuration section,

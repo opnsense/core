@@ -321,10 +321,8 @@ servers[<?=$sindex;
 servers[<?=$sindex;
 ?>][3][<?=$c;
 ?>][1] = '<?=str_replace("'", "\\'", $cert['certname']);?>';
-<?      $c++;
-endforeach; ?>
-<?
-endforeach; ?>
+<?php $c++; endforeach; ?>
+<?php endforeach; ?>
 
 function download_begin(act, i, j) {
 
