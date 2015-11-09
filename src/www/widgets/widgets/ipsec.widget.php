@@ -141,13 +141,13 @@ if (isset($config['ipsec']['phase2'])) {
           <td><?=$ipsec['local-ts'];?></td>
           <td><?=$ipsec['remote-ts'];?></td>
           <td>
-          <? if($ipsec['active']):
+          <?php if($ipsec['active']):
 ?>
               <span class='glyphicon glyphicon-transfer text-success' alt='Tunnel status'></span>
-          <? else:
+          <?php else:
 ?>
             <span class='glyphicon glyphicon-transfer text-danger' alt='Tunnel status'></span>
-          <? endif;
+          <?php endif;
 ?>
           </td>
       </tr>
