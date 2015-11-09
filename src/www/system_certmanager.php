@@ -482,7 +482,7 @@ if ($_POST) {
             }
 
             if (isset($userid)) {
-                post_redirect("system_usermanager.php", array('act' => 'edit', 'userid' => $userid));
+                redirectHeader("system_usermanager.php?act=edit&userid=".$userid);
                 exit;
             }
         }
