@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-01 15:02+0000\n"
+"POT-Creation-Date: 2015-11-09 07:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 2056\n"
+"X-Pootle-Revision: 2100\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 35
 msgid "Allow access to the 'Status: Captive portal: Voucher Rolls' page."
@@ -846,7 +846,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 229
 msgid "Allow access to the 'Firewall: Schedules: Edit' page."
-msgstr ""
+msgstr "Den Zugriff zur Seite 'Firewall: Zeitpläne: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 230
 msgid "Allow access to the 'Diagnostics: Ping' page."
@@ -2664,14 +2664,14 @@ msgid ""
 "for the virtual IP address %s."
 msgstr ""
 "Entschuldigung, aber wir konnten keine erforderliche zugewiesene IP-Adresse "
-"auf der Schnittstelle für die virtuelle IP-Adresse %s finden."
+"auf dem Interface für die virtuelle IP-Adresse %s finden."
 
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IPv6 address %s."
 msgstr ""
 "Entschuldigung, aber wir konnten keine erforderliche zugewiesene IP-Adresse "
-"auf der Schnittstelle für die virtuelle IPv6 Adresse finden."
+"auf dem Interface für die virtuelle IPv6 Adresse finden."
 
 msgid "Interface %s changed to hostap mode"
 msgstr "Das Interface %s wechselte in den hostap-Modus"
@@ -3566,10 +3566,10 @@ msgid "not in subnet!"
 msgstr "nicht im Subnetz!"
 
 msgid "Enter the start address of the %s client address range:"
-msgstr ""
+msgstr "Geben Sie die Startadresse des %s Clientadressbereichs ein:"
 
 msgid "This IP address must be in the interface's subnet"
-msgstr ""
+msgstr "Diese IP-Adresse muss im Subnetz des Interfaces liegen"
 
 msgid "Enter the end address of the %s client address range:"
 msgstr ""
@@ -3684,7 +3684,7 @@ msgstr "beenden"
 # File: src/etc/rc.sshd, line: 132
 msgid "Started creating your SSH keys. SSH startup is being delayed a wee bit."
 msgstr ""
-"Die Erstellung von SSH-Schlüsseln wurde gestartet. Der Start von von SSH "
+"Die Erstellung von SSH-Schlüsseln wurde gestartet. Der Start von SSH "
 "verzögert sich dadurch."
 
 # File: src/etc/rc.sshd, line: 139
@@ -3769,8 +3769,8 @@ msgid ""
 "The upgrade has finished and your device is being rebooted at the moment, "
 "please wait..."
 msgstr ""
-"Die aktualisierung wurde abgeschlossen und ihr Gerät startet gerade neu. "
-"Bitte warten Sie..."
+"Die Aktualisierung wurde abgeschlossen und ihr Gerät startet nun neu, bitte "
+"warten..."
 
 msgid "Name"
 msgstr "Name"
@@ -6307,7 +6307,7 @@ msgstr "verlinkte Regel"
 # File: src/www/firewall_nat_1to1.php, line: 314
 # File: src/www/firewall_rules.php, line: 579
 msgid "Alias (click to view/edit)"
-msgstr "Alies (klicke um anzuschauen/bearbeiten)"
+msgstr "Alias (zur Betrachtung/Bearbeitung klicken)"
 
 msgid "add rule"
 msgstr "Regel hinzufügen"
@@ -7032,7 +7032,7 @@ msgid "Reserved/not assigned by IANA"
 msgstr ""
 
 msgid "Block bogon networks"
-msgstr "Blockiere Bogon-Netzwerke"
+msgstr "Blockiere Bogon-Netze"
 
 msgid "Echo request"
 msgstr "Echo request"
@@ -7678,7 +7678,7 @@ msgid "Schedule may not be named WAN."
 msgstr ""
 
 msgid "Schedule name cannot be blank."
-msgstr ""
+msgstr "Name des Zeitplans kann nicht leer sein."
 
 msgid "Reserved word used for schedule name."
 msgstr ""
@@ -7828,7 +7828,7 @@ msgid "You cannot use the network address for this VIP"
 msgstr "Sie können diese Netzwerkadresse nicht für diesen VIP nutzen."
 
 msgid "You cannot use the broadcast address for this VIP"
-msgstr ""
+msgstr "Sie können die Broadcastadresse nicht für dieses VIP benutzen"
 
 msgid ""
 "VHID %s is already in use on interface %s. Pick a unique number on this "
@@ -8149,7 +8149,7 @@ msgid "PPTP remote IP address"
 msgstr "Ferne PPTP IP-Adresse"
 
 msgid "PPTP subnet"
-msgstr "PPTP Subnetz"
+msgstr "PPTP-Subnetz"
 
 msgid "PPTP username"
 msgstr "PPTP Benutzername"
@@ -15189,7 +15189,7 @@ msgid ""
 msgstr ""
 
 msgid "Bogon Networks"
-msgstr "Bogon Netzwerke"
+msgstr "Bogon-Netze"
 
 msgid "Update Frequency"
 msgstr "Aktualisierungshäufigkeit"
@@ -16438,6 +16438,8 @@ msgstr ""
 
 msgid "No gateway(s) have been selected to be used in this group"
 msgstr ""
+"Es wurden kein(e) Gateway(s) ausgewählt um in dieser Gruppe verwendet zu "
+"werden"
 
 # File: src/www/system_gateway_groups_edit.php, line: 152
 msgid "Edit Group"
