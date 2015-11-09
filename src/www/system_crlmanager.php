@@ -721,9 +721,9 @@ endif; ?>
                         ?>
 					<tr>
 						<td class="listlr"><?php echo $tmpcrl['descr']; ?></td>
-						<td class="listr"><?php echo ($internal) ? "YES" : "NO"; ?></td>
-						<td class="listr"><?php echo ($internal) ? (isset($tmpcrl['cert']) && count($tmpcrl['cert'])) : "Unknown (imported)"; ?></td>
-						<td class="listr"><?php echo ($inuse) ? "YES" : "NO"; ?></td>
+						<td class="listr"><?php echo ($internal) ? gettext("YES") : gettext("NO"); ?></td>
+						<td class="listr"><?php echo ($internal) ? (isset($tmpcrl['cert']) && count($tmpcrl['cert'])) : gettext("Unknown (imported)"); ?></td>
+						<td class="listr"><?php echo ($inuse) ? gettext("YES") : gettext("NO"); ?></td>
 						<td valign="middle" class="list nowrap">
                         <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-export" data-toggle="tooltip" data-placement="left" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
