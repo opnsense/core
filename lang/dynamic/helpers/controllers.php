@@ -34,34 +34,31 @@
  */
 echo gettext('Enable or disable the proxy service.');
 echo gettext('The port number where Squid sends and receives ICP queries to
-                    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.
-                ');
+	    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.
+	');
 echo gettext('Enable access logging.');
 echo gettext('Enable store logging.');
 echo gettext('If set (default), Squid will include a Via header in requests and
-            replies as required by RFC2616.');
+    replies as required by RFC2616.');
 echo gettext('Select what to do with X-Forwarded for header.');
 echo gettext('Suppress Squid version string info in HTTP headers and HTML error pages.');
 echo gettext('Enter the storage size for the local cache (default is 100).');
-echo gettext('
-                    Enter the number of first-level subdirectories for the local cache (default is 16).');
-echo gettext('
-                    Enter the number of first-level subdirectories for the local cache (default is 256).');
+echo gettext('Enter the number of first-level subdirectories for the local cache (default is 16).');
+echo gettext('Enter the number of first-level subdirectories for the local cache (default is 256).');
 echo gettext('Enable or disable traffic management.');
 echo gettext('Enter the maxium size for downloads in kilobytes (leave empty to disable).');
 echo gettext('Enter the maxium size for uploads in kilobytes (leave empty to disable).');
-echo gettext('
-                    Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).');
-echo gettext('
-                    Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).');
+echo gettext('Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).');
+echo gettext('Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).');
 echo gettext('Select interface(s) the proxy will bind to.');
 echo gettext('The port the proxy service will listen to.');
-echo gettext('
-                    When enabled the subnets of the selected interfaces will be added to the allow access list.');
+echo gettext('When enabled the subnets of the selected interfaces will be added to the allow access list.');
 echo gettext('Select interface(s) the ftp proxy will bind to.');
 echo gettext('The port the proxy service will listen to.');
 echo gettext('Select Authentication method');
 echo gettext('The prompt will be displayed in the authentication request window.');
+echo gettext('This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
+    When the TTL expires, the user will be prompted for credentials again.');
 echo gettext('The total number of authenticator processes to spawn.');
 echo gettext('Select if job is enabled or not');
 echo gettext('Enter a filename for storing the blacklist.');
@@ -95,3 +92,16 @@ echo gettext('Enter the days of the week for the job to act, can also be a comma
 echo gettext('Select the command that needs to be executed at given time frame.');
 echo gettext('Enter parameters for this job if required.');
 echo gettext('Enter a description to explain what this job is intended for.');
+echo gettext('Enable this zone');
+echo gettext('Internal number used for this zone');
+echo gettext('Select interface(s) to enable for captive portal.');
+echo gettext('Select authentication methods to use, leave empty for no authentication needed.');
+echo gettext('Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Leave this field blank for no idle timeout.');
+echo gettext('Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set).');
+echo gettext('If this option is set, users can login on multiple machines at once. If disabled subsequent logins will cause machines previously logged in with the same username to be disconnected.');
+echo gettext('If provided, all traffic will be transmitted over an HTTPS connection to protect against eavesdroppers.');
+echo gettext('Hostname (of this machine) to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.');
+echo gettext('Avoid authentication for addresses and subnets in this list');
+echo gettext('Avoid authentication for physical addresses in this list');
+echo gettext('Use custom template package for user login');
+echo gettext('Description to identify this zone.');
