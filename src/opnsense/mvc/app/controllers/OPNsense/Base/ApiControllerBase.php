@@ -62,7 +62,10 @@ class ApiControllerBase extends ControllerRoot
 
 
     /**
-     * before routing event
+     * before routing event.
+     * Handles authentication and authentication of user requests
+     * In case of API calls, also prevalidates if request can be executed to return a more readable response
+     * to the user.
      * @param Dispatcher $dispatcher
      * @return null|bool
      */
@@ -79,7 +82,7 @@ class ApiControllerBase extends ControllerRoot
                     $apiKey = $key_secret[0];
                     $apiSecret = $key_secret[1];
 
-                    $authFactory = new AuthenticationFactory;
+                    $authFactory = new AuthenticationFactory();
                     $authenticator = $authFactory->get("Local API");
                     if ($authenticator->authenticate($apiKey, $apiSecret)) {
                         $authResult = $authenticator->getLastAuthProperties();
@@ -91,7 +94,33 @@ class ApiControllerBase extends ControllerRoot
                                     $apiKey
                                 );
                             } else {
-                                // authentication + authorization successful, pass
+                                // authentication + authorization successful.
+                                // pre validate request and communicate back to the user on errors
+                                $callMethodName = $dispatcher->getActionName().'Action';
+                                $dispatchError = null;
+                                if (!method_exists($this, $callMethodName)) {
+                                    // can not execute, method not found
+                                    $dispatchError = 'action ' . $dispatcher->getActionName() . ' not found';
+                                } else {
+                                    // check number of parameters using reflection
+                                    $object_info = new \ReflectionObject($this);
+                                    $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
+                                    if ($req_c > count($dispatcher->getParams())) {
+                                        $dispatchError = 'action ' . $dispatcher->getActionName() .
+                                          ' expects at least '. $req_c . ' parameter(s)';
+                                    }
+                                }
+                                if ($dispatchError != null) {
+                                    $this->response->setStatusCode(400, "Bad Request");
+                                    $this->response->setContentType('application/json', 'UTF-8');
+                                    $this->response->setJsonContent(
+                                        array('message' => $dispatchError,
+                                              'status'  => 400
+                                    ));
+                                    $this->response->send();
+                                    return false;
+                                }
+
                                 return true;
                             }
                         }
@@ -109,7 +138,7 @@ class ApiControllerBase extends ControllerRoot
             return false;
         } else {
             // handle UI ajax reuests
-            // use authentication of legacy OPNsense to validate user.
+            // use session data and ACL to validate request.
             if (!$this->doAuth()) {
                 return false;
             }
