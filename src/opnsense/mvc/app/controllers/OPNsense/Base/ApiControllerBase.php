@@ -28,6 +28,8 @@
  */
 namespace OPNsense\Base;
 
+use OPNsense\Core\ACL;
+use OPNsense\Auth\AuthenticationFactory;
 /**
  * Class ApiControllerBase, inherit this class to implement API calls
  * @package OPNsense\Base
@@ -66,28 +68,67 @@ class ApiControllerBase extends ControllerRoot
      */
     public function beforeExecuteRoute($dispatcher)
     {
-        // TODO: implement authentication for api calls, at this moment you need a valid session on the web interface
+        // handle authentication / authorization
+        if (!empty($this->request->getHeader('Authorization'))) {
+            // Authorization header send, handle API request
+            $authHeader = explode(' ', $this->request->getHeader('Authorization'));
+            if (count($authHeader) > 1) {
+                $key_secret_hash = $authHeader[1];
+                $key_secret = explode(':', base64_decode($key_secret_hash));
+                if (count($key_secret) > 1) {
+                    $apiKey = $key_secret[0];
+                    $apiSecret = $key_secret[1];
 
-        // use authentication of legacy OPNsense to validate user.
-        if (!$this->doAuth()) {
+                    $authFactory = new AuthenticationFactory;
+                    $authenticator = $authFactory->get("Local API");
+                    if ($authenticator->authenticate($apiKey, $apiSecret)) {
+                        $authResult = $authenticator->getLastAuthProperties();
+                        if (array_key_exists('username', $authResult)) {
+                            $acl = new ACL();
+                            if (!$acl->isPageAccessible($authResult['username'], $_SERVER['REQUEST_URI'])) {
+                                $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
+                                    " not accessible for user ".$authResult['username'] . " using api key ".
+                                    $apiKey
+                                );
+                            } else {
+                                // authentication + authorization successful, pass
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            // not authenticated
+            $this->response->setStatusCode(401, "Unauthorized");
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setJsonContent(array(
+                'status'  => 401,
+                'message' => 'Authentication Failed',
+            ));
+            $this->response->send();
             return false;
+        } else {
+            // handle UI ajax reuests
+            // use authentication of legacy OPNsense to validate user.
+            if (!$this->doAuth()) {
+                return false;
+            }
+
+            // check for valid csrf on post requests
+            $csrf_tokenkey = $this->request->getHeader('X_CSRFTOKENKEY');
+            $csrf_token =   $this->request->getHeader('X_CSRFTOKEN');
+            $csrf_valid = $this->security->checkToken($csrf_tokenkey, $csrf_token, false);
+
+            if (($this->request->isPost() ||
+                    $this->request->isPut() ||
+                    $this->request->isDelete()
+                ) && !$csrf_valid
+            ) {
+                // missing csrf, exit.
+                $this->getLogger()->error("no matching csrf found for request");
+                return false;
+            }
         }
-
-        // check for valid csrf on post requests
-        $csrf_tokenkey = $this->request->getHeader('X_CSRFTOKENKEY');
-        $csrf_token =   $this->request->getHeader('X_CSRFTOKEN');
-        $csrf_valid = $this->security->checkToken($csrf_tokenkey, $csrf_token, false);
-
-        if (($this->request->isPost() ||
-                $this->request->isPut() ||
-                $this->request->isDelete()
-            ) && !$csrf_valid
-        ) {
-            // missing csrf, exit.
-            $this->getLogger()->error("no matching csrf found for request");
-            return false;
-        }
-
     }
 
     /**
