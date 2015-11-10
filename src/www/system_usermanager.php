@@ -926,6 +926,7 @@ $( document ).ready(function() {
                               </tfoot>
                           </table>
                           <div class="hidden" for="help_for_apikeys">
+                              <hr/>
                               <?=gettext('manage API keys here for machine to machine interaction using this users credentials');?>
                           </div>
                       </td>
