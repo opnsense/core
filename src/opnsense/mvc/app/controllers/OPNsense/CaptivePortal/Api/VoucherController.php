@@ -127,5 +127,4 @@ class VoucherController extends ApiControllerBase
         }
         return array();
     }
-
 }
