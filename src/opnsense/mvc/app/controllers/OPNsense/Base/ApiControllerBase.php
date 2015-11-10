@@ -60,7 +60,6 @@ class ApiControllerBase extends ControllerRoot
         $this->view->disable();
     }
 
-
     /**
      * before routing event.
      * Handles authentication and authentication of user requests
@@ -97,20 +96,12 @@ class ApiControllerBase extends ControllerRoot
                                 // authentication + authorization successful.
                                 // pre validate request and communicate back to the user on errors
                                 $callMethodName = $dispatcher->getActionName().'Action';
-                                $dispatchError = null;
-                                if (!method_exists($this, $callMethodName)) {
-                                    // can not execute, method not found
-                                    $dispatchError = 'action ' . $dispatcher->getActionName() . ' not found';
-                                } else {
-                                    // check number of parameters using reflection
-                                    $object_info = new \ReflectionObject($this);
-                                    $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
-                                    if ($req_c > count($dispatcher->getParams())) {
-                                        $dispatchError = 'action ' . $dispatcher->getActionName() .
-                                          ' expects at least '. $req_c . ' parameter(s)';
-                                    }
-                                }
-                                if ($dispatchError != null) {
+                                // check number of parameters using reflection
+                                $object_info = new \ReflectionObject($this);
+                                $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
+                                if ($req_c > count($dispatcher->getParams())) {
+                                    $dispatchError = 'action ' . $dispatcher->getActionName() .
+                                      ' expects at least '. $req_c . ' parameter(s)';
                                     $this->response->setStatusCode(400, "Bad Request");
                                     $this->response->setContentType('application/json', 'UTF-8');
                                     $this->response->setJsonContent(

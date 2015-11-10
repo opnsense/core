@@ -79,7 +79,7 @@ $di->set('router', function () {
 
     $router->setDefaultController('index');
     $router->setDefaultAction('index');
-    $router->setDefaultNamespace('OPNsense\Sample\Api');
+    $router->setDefaultNamespace('OPNsense\Base');
 
     $router->add('/', array(
         "controller" => 'index',
@@ -142,3 +142,34 @@ $di->set('router', function () {
     return $router;
 
 });
+
+// exception handling
+$di->get('eventsManager')->attach("dispatch:beforeException", function($event, $dispatcher, $exception) {
+    switch ($exception->getCode()) {
+        case Phalcon\Dispatcher::EXCEPTION_HANDLER_NOT_FOUND:
+            // send to error action on default index controller
+            $dispatcher->forward(array(
+                'controller' => 'index',
+                'namespace' => '\OPNsense\Base',
+                'action' => 'handleError',
+                'params'     => array(
+                    'message' =>  'controller ' . $dispatcher->getControllerClass() . ' not found',
+                    'sender' => 'API'
+                )
+            ));
+            return false;
+        case Phalcon\Dispatcher::EXCEPTION_ACTION_NOT_FOUND:
+            // send to error action on default index controller
+            $dispatcher->forward(array(
+                'controller' => 'index',
+                'namespace' => '\OPNsense\Base',
+                'action' => 'handleError',
+                'params'     => array(
+                    'message' => 'action ' . $dispatcher->getActionName() . ' not found',
+                    'sender' => 'API'
+                )
+            ));
+            return false;
+    }
+});
+$di->get('dispatcher')->setEventsManager($di->get('eventsManager'));
