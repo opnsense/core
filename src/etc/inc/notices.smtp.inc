@@ -277,7 +277,7 @@ class smtp_class
 			case SASL_NOMECH:
 				if(strlen($this->authentication_mechanism))
 				{
-					$this->error=printf(gettext('authenticated mechanism %1$s may not be used: %2$s'), $this->authentication_mechanism, $sasl->error);
+					$this->error=sprintf(gettext('Authentication mechanism %s may not be used: %s'), $this->authentication_mechanism, $sasl->error);
 					return(0);
 				}
 				break;
