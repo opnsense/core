@@ -41,4 +41,25 @@ class IndexController extends ControllerBase
     public function indexAction()
     {
     }
+
+    /**
+     * log or send error message
+     * @param string $message error message
+     */
+    public function handleErrorAction($message = null, $sender = null)
+    {
+        // API call, send error to user
+        if ($sender == 'API') {
+            $this->response->setStatusCode(400, "Bad Request");
+            $this->response->setContentType('application/json', 'UTF-8');
+            $this->response->setJsonContent(
+                array('message' => $message,
+                      'status'  => 400
+            ));
+        } else {
+            $this->getLogger()->error($message);
+            $this->response->redirect("/", true);
+        }
+        return false;
+    }
 }
