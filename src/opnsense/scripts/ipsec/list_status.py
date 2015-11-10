@@ -43,11 +43,11 @@ for conns in s.list_conns():
         result[connection_id]['local-id'] = ''
         result[connection_id]['local-class'] = []
         result[connection_id]['remote-id'] = ''
-        result[connection_id]['remote-class'] = []        
+        result[connection_id]['remote-class'] = []
         result[connection_id]['children'] = conns[connection_id]['children']
         result[connection_id]['sas'] = []
-        
-        # parse local-% and remote-% keys        
+
+        # parse local-% and remote-% keys
         for connKey in conns[connection_id].keys():
             if connKey.find('local-') == 0:
                 if 'id' in conns[connection_id][connKey]:
@@ -57,9 +57,9 @@ for conns in s.list_conns():
                 if 'id' in conns[connection_id][connKey]:
                     result[connection_id]['remote-id'] = conns[connection_id][connKey]['id']
                 result[connection_id]['remote-class'].append(conns[connection_id][connKey]['class'])
-        
+
         result[connection_id]['local-class'] = '+'.join(result[connection_id]['local-class'])
-        result[connection_id]['remote-class'] = '+'.join(result[connection_id]['remote-class'])        
+        result[connection_id]['remote-class'] = '+'.join(result[connection_id]['remote-class'])
 
 # attach Security Associations
 for sas in s.list_sas():
@@ -68,4 +68,3 @@ for sas in s.list_sas():
             result[sa]['sas'].append(sas[sa])
 
 print(ujson.dumps(result))
-
