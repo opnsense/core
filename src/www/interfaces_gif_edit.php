@@ -223,14 +223,14 @@ include("head.inc");
 										<tr>
 						                  <td valign="top" class="vncell"><?=gettext("Route caching  "); ?></td>
 						                  <td class="vtable">
-						                    <input name="link0" type="checkbox" id="link0" <?if ($pconfig['link0']) echo "checked=\"checked\"";?> />
+						                    <input name="link0" type="checkbox" id="link0" <?php if ($pconfig['link0']) echo "checked=\"checked\"";?> />
 						                    <br />
 						                    <span class="vexpl"><?=gettext("Specify if route caching can be enabled. Be careful with these settings on dynamic networks. "); ?></span></td>
 									    </tr>
 										<tr>
 						                  <td valign="top" class="vncell"><?=gettext("ECN friendly behavior"); ?></td>
 						                  <td class="vtable">
-						                    <input name="link1" type="checkbox" id="link1" <?if ($pconfig['link1']) echo "checked=\"checked\"";?> />
+						                    <input name="link1" type="checkbox" id="link1" <?php if ($pconfig['link1']) echo "checked=\"checked\"";?> />
 						                    <br />
 						                    <span class="vexpl">
 						     <?=gettext("Note that the ECN friendly behavior violates RFC2893.  This should be " .

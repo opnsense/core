@@ -124,7 +124,7 @@ include("head.inc");
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
-									<tr><td colspan="4"><? $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?></td></tr>
+									<tr><td colspan="4"><?php $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?></td></tr>
 									 <?php if ($mode != "raw"): ?>
 										<tr>
 											<td class="listhdrr"><?=gettext("Time");?></td>

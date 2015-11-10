@@ -214,7 +214,7 @@ $main_buttons = array(
                         <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>">
 <?php                     if(isset($natent['disabled'])):?>
                           <span class="glyphicon glyphicon-play text-muted"></span>
-<?                        else:?>
+<?php                        else:?>
                           <span class="glyphicon glyphicon-play text-success"></span>
 <?php                     endif; ?>
                         </a>

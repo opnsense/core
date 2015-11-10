@@ -218,14 +218,14 @@ include("head.inc");
 										<tr>
 						                  <td valign="top" class="vncell"><?=gettext("Mobile tunnel");?></td>
 						                  <td class="vtable">
-						                    <input name="link0" type="checkbox" id="link0" <?if ($pconfig['link0']) echo "checked=\"checked\"";?> />
+						                    <input name="link0" type="checkbox" id="link0" <?php if ($pconfig['link0']) echo "checked=\"checked\"";?> />
 						                    <br />
 						                    <span class="vexpl"><?=gettext("Specify which encapsulation method the tunnel should use. ");?></span></td>
 									    </tr>
 										<tr>
 						                  <td valign="top" class="vncell"><?=gettext("Route search type");?></td>
 						                  <td class="vtable">
-						                    <input name="link1" type="checkbox" id="link1" <?if ($pconfig['link1']) echo "checked=\"checked\"";?> />
+						                    <input name="link1" type="checkbox" id="link1" <?php if ($pconfig['link1']) echo "checked=\"checked\"";?> />
 						                    <br />
 						                    <span class="vexpl">
 						     <?=gettext("For correct operation, the GRE device needs a route to the destination".
@@ -237,7 +237,7 @@ include("head.inc");
 										<tr>
 						                  <td valign="top" class="vncell"><?=gettext("WCCP version");?></td>
 						                  <td class="vtable">
-						                    <input name="link2" type="checkbox" id="link2" <?if ($pconfig['link2']) echo "checked=\"checked\"";?> />
+						                    <input name="link2" type="checkbox" id="link2" <?php if ($pconfig['link2']) echo "checked=\"checked\"";?> />
 						                    <br />
 						                    <span class="vexpl"><?=gettext("Check this box for WCCP encapsulation version 2, or leave unchecked for version 1.");?></span></td>
 									    </tr>

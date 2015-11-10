@@ -284,7 +284,7 @@ include("head.inc"); ?>
 					</div>
 				</div>
 			</section>
-			<? endif; ?>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>

@@ -192,29 +192,29 @@ include("head.inc");
 									<tr align="left">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16" />
+											<input name="name" type="text" <?php if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16" />
 										</td>
 									</tr>
 									<tr align="left">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Mode"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
 											<select id="mode" name="mode" onchange="enforceFailover(); checkPoolControls();">
-												<option value="loadbalance" <?if(!isset($pconfig['mode']) || ($pconfig['mode'] == "loadbalance")) echo "selected=\"selected\"";?>><?=gettext("Load Balance");?></option>
-												<option value="failover"  <?if($pconfig['mode'] == "failover") echo "selected=\"selected\"";?>><?=gettext("Manual Failover");?></option>
+												<option value="loadbalance" <?php if(!isset($pconfig['mode']) || ($pconfig['mode'] == "loadbalance")) echo "selected=\"selected\"";?>><?=gettext("Load Balance");?></option>
+												<option value="failover"  <?php if($pconfig['mode'] == "failover") echo "selected=\"selected\"";?>><?=gettext("Manual Failover");?></option>
 											</select>
 										</td>
 									</tr>
 									<tr align="left">
 										<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?> size="64" />
+											<input name="descr" type="text" <?php if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?> size="64" />
 										</td>
 									</tr>
 
 									<tr align="left">
 										<td width="22%" valign="top" id="monitorport_text" class="vncellreq"><?=gettext("Port"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input class="formfldalias" id="port" name="port" type="text" <?if(isset($pconfig['port'])) echo "value=\"{$pconfig['port']}\"";?> size="16" maxlength="16" /><br />
+											<input class="formfldalias" id="port" name="port" type="text" <?php if(isset($pconfig['port'])) echo "value=\"{$pconfig['port']}\"";?> size="16" maxlength="16" /><br />
 											<div id="monitorport_desc">
 												<?=gettext("This is the port your servers are listening on."); ?><br />
 												<?=gettext("You may also specify a port alias listed in Firewall -&gt; Aliases here."); ?>
@@ -230,7 +230,7 @@ include("head.inc");
 									<tr align="left">
 										<td width="22%" valign="top" id="retry_text" class="vncell"><?=gettext("Retry"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="retry" type="text" <?if(isset($pconfig['retry'])) echo "value=\"{$pconfig['retry']}\"";?> size="16" maxlength="16" /><br />
+											<input name="retry" type="text" <?php if(isset($pconfig['retry'])) echo "value=\"{$pconfig['retry']}\"";?> size="16" maxlength="16" /><br />
 											<div id="retry_desc"><?=gettext("Optionally specify how many times to retry checking a server before declaring it down."); ?></div>
 										</td>
 									</tr>

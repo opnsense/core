@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Justin Ellison <justin@techadvise.com>.
@@ -133,7 +134,7 @@ function enable_change(enable_over) {
 
 				<?php if ($dhcpd_enabled): ?>
 								<p>DHCPv6 Server is currently enabled.  Cannot enable the DHCPv6 Relay service while the DHCPv6 Server is enabled on any interface.</p>
-							<? else: ?>
+							<?php else: ?>
 
 							<header class="content-box-head container-fluid">
 					        <h3><?=gettext("DHCPv6 Relay configuration"); ?></h3>
@@ -192,7 +193,7 @@ function enable_change(enable_over) {
 								</table>
 								</div>
 					    </div>
-					    <? endif; ?>
+					    <?php endif; ?>
                         </form>
 				</div>
 			    </section>

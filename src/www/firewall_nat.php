@@ -304,12 +304,12 @@ $( document ).ready(function() {
 <?php                     if (!empty($natent['associated-rule-id'])): ?>
 <?php                     if(isset($natent['disabled'])):?>
                           <span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
-<?                        else:?>
+<?php                        else:?>
                           <span class="glyphicon glyphicon-resize-horizontal text-success"></span>
 <?php                     endif; ?>
-<?                        elseif(isset($natent['disabled'])):?>
+<?php                        elseif(isset($natent['disabled'])):?>
                           <span class="glyphicon glyphicon-play text-muted"></span>
-<?                        else:?>
+<?php                        else:?>
                           <span class="glyphicon glyphicon-play text-success"></span>
 <?php                     endif; ?>
                         </a>

@@ -572,13 +572,11 @@ include("head.inc");
                             <select name="targetip" id="targetip" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
                                 <option data-other=true value="" <?= empty($pconfig['targetip']) ? "selected=\"selected\"" : "";?> > <?=gettext("Interface address");?> </option>
                                 <option data-other=true value="<?=$pconfig['targetip'];?>" <?= !empty($pconfig['target']) && !array_key_exists($pconfig['targetip'], formTranslateAddresses() ) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
-<?                              foreach (formTranslateAddresses() as $optKey => $optValue):
-?>
+<?php                              foreach (formTranslateAddresses() as $optKey => $optValue): ?>
                                     <option value="<?=$optKey;?>" <?= $pconfig['target'] == $optKey ? "selected=\"selected\"" : ""; ?>>
                                       <?=$optValue;?>
                                     </option>
-<?                              endforeach;
-?>
+<?php                              endforeach; ?>
                             </select>
                           </td>
                         </tr>

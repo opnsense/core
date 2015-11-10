@@ -84,7 +84,7 @@
             <Authentication VisibleName="Authentication" url="/diag_authentication.php"/>
             <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
             <Halt VisibleName="Halt System" url="/diag_halt.php"/>
-            <Reboot VisibleName="Reboot System" url="/diag_reboot.php"/>
+            <Reboot VisibleName="Reboot System" url="/reboot.php"/>
             <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
         </Diagnostics>
     </System>

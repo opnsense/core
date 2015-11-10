@@ -324,8 +324,8 @@ function removeRow(el) {
 												</a>
 									      </a>
 											<br /><br />
-											<strong><?PHP echo gettext("NOTE:");?></strong>
-											<?PHP echo gettext("Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.");?>
+											<strong><?= gettext('NOTE:') ?></strong>
+											<?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
 											</td>
 									  </tr>
 									  <tr>
