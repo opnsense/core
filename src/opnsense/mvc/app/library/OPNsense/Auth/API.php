@@ -92,6 +92,33 @@ class API implements IAuthConnector
     }
 
     /**
+     * remove user api key
+     * @param string $username username
+     * @param string $apikey api key
+     * @return bool key found
+     */
+    public function dropKey($username, $apikey)
+    {
+        $configObj = Config::getInstance()->object();
+        foreach ($configObj->system->children() as $key => $value) {
+            if ($key == 'user' && (string)$username == (string)$value->name) {
+                if (isset($value->apikeys)) {
+                    $indx=0;
+                    foreach ($value->apikeys->children() as $apiNodeId => $apiNode) {
+                        if ($apiNodeId == 'item' && (string)$apiNode->key == $apikey) {
+                            unset($value->apikeys->item[$indx]);
+                            Config::getInstance()->save();
+                            return true;
+                        }
+                        $indx++;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * authenticate user against local database (in config.xml)
      * @param string $username username to authenticate
      * @param string $password user password
