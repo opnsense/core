@@ -49,7 +49,7 @@ $showAllOption = $showAll ? "" : "?showAll";
 
 			<section class="col-xs-12">
 
-      <p><?= sprintf(gettext('Information about listening sockets for both %s and %s.'), sprintf('<a href="#IPv4">%s</a>', gettext('IPv4')),sprintf('<a href="#IPv6">%s</a>', gettext('IPv6'))) ?></p>
+      <p><?= sprintf(gettext('Information about listening sockets for both %sIPv4%s and %sIPv6%s.'), '<a href="#IPv4">','</a>','<a href="#IPv6">','</a>') ?></p>
       <p><?= sprintf(gettext('For explanation about the meaning of the information listed for each socket click %shere%s.'),'<a href="#about">','</a>') ?></p>
       <p><input type="button" class="btn btn-default" value="<?=$showAllText?>" onclick="window.location.href='diag_sockets.php<?=$showAllOption?>'"/><br/><?= gettext('To show information about both listening and connected sockets click this.') ?></p>
 
@@ -126,14 +126,14 @@ $showAllOption = $showAll ? "" : "?showAll";
 				    </div>
 
 					<table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
-          <tr><td class="listlr">USER	      </td><td class="listr"><?= gettext('The user who owns the socket.') ?></td></tr>
-          <tr><td class="listlr">COMMAND	      </td><td class="listr"><?= gettext('The command which holds the socket.') ?></td></tr>
-          <tr><td class="listlr">PID	      </td><td class="listr"><?= gettext('The process ID of the command which holds the socket.') ?></td></tr>
-          <tr><td class="listlr">FD	      </td><td class="listr"><?= gettext('The file descriptor number of the socket.') ?></td></tr>
-          <tr><td class="listlr">PROTO	      </td><td class="listr"><?= gettext('The transport protocol associated with the socket for Internet sockets, or the type of socket (stream or data-gram) for UNIX sockets.') ?></td></tr>
-          <tr><td class="listlr">ADDRESS	      </td><td class="listr"><?= sprintf(gettext("(UNIX sockets only) For bound sockets, this is the file-name of the socket. %sFor other sockets, it is the name, PID and file descriptor number of the peer, or ``(none)'' if the socket is neither bound nor connected."),'<br />') ?></td></tr>
-          <tr><td class="listlr">LOCAL ADDRESS    </td><td class="listr"><?= gettext('(Internet sockets only) The address the local end of the socket is bound to (see getsockname(2)).') ?></td></tr>
-          <tr><td class="listlr">FOREIGN ADDRESS  </td><td class="listr"><?= gettext('(Internet sockets only) The address the foreign end of the socket is bound to (see getpeername(2)).') ?></td></tr>
+          <tr><td class="listlr">USER</td><td class="listr"><?= gettext('The user who owns the socket.') ?></td></tr>
+          <tr><td class="listlr">COMMAND</td><td class="listr"><?= gettext('The command which holds the socket.') ?></td></tr>
+          <tr><td class="listlr">PID</td><td class="listr"><?= gettext('The process ID of the command which holds the socket.') ?></td></tr>
+          <tr><td class="listlr">FD</td><td class="listr"><?= gettext('The file descriptor number of the socket.') ?></td></tr>
+          <tr><td class="listlr">PROTO</td><td class="listr"><?= gettext('The transport protocol associated with the socket for Internet sockets, or the type of socket (stream or data-gram) for UNIX sockets.') ?></td></tr>
+          <tr><td class="listlr">ADDRESS</td><td class="listr"><?= sprintf(gettext("(UNIX sockets only) For bound sockets, this is the file-name of the socket. %sFor other sockets, it is the name, PID and file descriptor number of the peer, or ``(none)'' if the socket is neither bound nor connected."),'<br />') ?></td></tr>
+          <tr><td class="listlr">LOCAL ADDRESS</td><td class="listr"><?= gettext('(Internet sockets only) The address the local end of the socket is bound to (see getsockname(2)).') ?></td></tr>
+          <tr><td class="listlr">FOREIGN ADDRESS</td><td class="listr"><?= gettext('(Internet sockets only) The address the foreign end of the socket is bound to (see getpeername(2)).') ?></td></tr>
 					</table>
 
                 </div>

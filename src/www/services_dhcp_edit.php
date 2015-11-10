@@ -406,7 +406,7 @@ include("head.inc");
                     <td width="22%" valign="top" class="vncell"><?= gettext('Root Path') ?></td>
 									  <td width="78%" class="vtable">
 										<input name="rootpath" type="text" class="formfld unknown" id="rootpath" size="90" value="<?=htmlspecialchars($pconfig['rootpath']);?>" />
-                      <br /> <span class="vexpl"><?=sprintf(gettext("Enter the %sroot-path%s-string, overrides setting on main page."), '<b>','</b>') ?></span></td>
+                      <br /> <span class="vexpl"><?= gettext("Enter the root-path-string, overrides setting on main page.") ?></span></td>
 									</tr>
 									<?php } ?>
 							                <tr>

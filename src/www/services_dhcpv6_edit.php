@@ -198,7 +198,7 @@ include("head.inc");
 					                    <input name="duid" type="text" class="formfld unknown" id="duid" size="40" value="<?=htmlspecialchars($pconfig['duid']);?>" />
 					                    <br />
 					                    <span class="vexpl"><?=gettext("Enter a DUID Identifier in the following format: ");?><br />
-          "<?= gettext('DUID-LLT - ETH -- TIME --- ---- address ----') ?>" <br />
+          "<?= gettext('DUID-LLT - ETH -- TIME --- ---- ADDR ----') ?>" <br />
 					"xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx:xx"</span></td>
 					                </tr>
 					                <tr>
@@ -228,7 +228,7 @@ include("head.inc");
                 <td width="22%" valign="top" class="vncell"><?= gettext('Root Path') ?></td>
 							  <td width="78%" class="vtable">
 								<input name="rootpath" type="text" class="formfld unknown" id="rootpath" size="90" value="<?=htmlspecialchars($pconfig['rootpath']);?>" />
-                  <br /> <span class="vexpl"><?= sprintf(gettext('Enter the %sroot-path%s-string, overrides setting on main page.'),'<b>','</b>') ?></span></td>
+                  <br /> <span class="vexpl"><?= gettext('Enter the root-path-string, overrides setting on main page.') ?></span></td>
 							</tr>
 							<?php } ?>
 					                <tr>
