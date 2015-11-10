@@ -47,10 +47,7 @@ for sas in s.list_sas():
         if sa == conn_id:
             conn_found = True
 
-# terminate connection if found        
+# terminate connection if found
 if conn_found:
     devnull = open(os.devnull, 'w')
     subprocess.call(['/usr/local/sbin/ipsec', 'down', conn_id], stdin=devnull, stdout=devnull, stderr=devnull)
-
-
-

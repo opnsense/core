@@ -51,10 +51,7 @@ for conns in s.list_conns():
                 if child not in conns_found:
                     conns_found.append(child)
 
-# setup connection if found        
+# setup connection if found
 for conn_id in conns_found:
     devnull = open(os.devnull, 'w')
     subprocess.call(['/usr/local/sbin/ipsec', 'up', conn_id], stdin=devnull, stdout=devnull, stderr=devnull)
-
-
-

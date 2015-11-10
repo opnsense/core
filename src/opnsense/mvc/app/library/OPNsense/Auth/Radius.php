@@ -374,7 +374,7 @@ class Radius implements IAuthConnector
             if (!$radius) {
                 syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
             } else {
-                switch($request) {
+                switch ($request) {
                     case RADIUS_ACCESS_ACCEPT:
                         while ($resa = radius_get_attr($radius)) {
                             switch ($resa['attr']) {
