@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -50,10 +51,11 @@ if($_GET['wakeall'] <> "") {
 			continue;
 		$bcip = gen_subnet_max($ipaddr, get_interface_subnet($if));
 		/* Execute wol command and check return code. */
-		if (!mwexec("/usr/local/bin/wol -i {$bcip} {$mac}"))
-			$savemsg .= sprintf(gettext('Sent magic packet to %1$s (%2$s)%3$s'),$mac, $description, ".<br />");
-		else
-			$savemsg .= sprintf(gettext('Please check the %1$ssystem log%2$s, the wol command for %3$s (%4$s) did not complete successfully%5$s'),'<a href="/diag_logs.php">','</a>',$description,$mac,".<br />");
+		if (!mwexec("/usr/local/bin/wol -i {$bcip} {$mac}")) {
+			$savemsg = sprintf(gettext('Sent magic packet to %s (%s).'), $mac, $description);
+		} else {
+			$savemsg = sprintf(gettext('Please check the %ssystem log%s, the wol command for %s (%s) did not complete successfully.'), '<a href="/diag_logs.php">', '</a>', $description, $mac);
+		}
 	}
 }
 
@@ -86,10 +88,11 @@ if ($_POST || $_GET['mac']) {
 		else {
 			$bcip = gen_subnet_max($ipaddr, get_interface_subnet($if));
 			/* Execute wol command and check return code. */
-			if(!mwexec("/usr/local/bin/wol -i {$bcip} " . escapeshellarg($mac)))
-				$savemsg .= sprintf(gettext("Sent magic packet to %s."),$mac);
-			else
-				$savemsg .= sprintf(gettext('Please check the %1$ssystem log%2$s, the wol command for %3$s did not complete successfully%4$s'),'<a href="/diag_logs.php">', '</a>', $mac, ".<br />");
+			if(!mwexec("/usr/local/bin/wol -i {$bcip} " . escapeshellarg($mac))) {
+				$savemsg = sprintf(gettext('Sent magic packet to %s.'), $mac);
+			} else {
+				$savemsg = sprintf(gettext('Please check the %ssystem log%s, the wol command for %s did not complete successfully.'), '<a href="/diag_logs.php">', '</a>', $mac);
+			}
 		}
 	}
 }

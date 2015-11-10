@@ -608,7 +608,7 @@ function compare_hostname_to_dnscache($hostname) {
         }
 
         if(trim($oldcontents) != trim($contents)) {
-                log_error(sprintf(gettext('DNSCACHE: Found old IP %1$s and new IP %2$s'), $oldcontents, $contents));
+                log_error(sprintf(gettext('DNSCACHE: Found old IP %s and new IP %s'), $oldcontents, $contents));
                 return ($oldcontents);
         } else {
                 return false;

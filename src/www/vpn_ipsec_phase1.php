@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($a_phase1 as $ph1tmp) {
             if ($p1index <> $t) {
                 if (isset($ph1tmp['remote-gateway']) && $ph1tmp['remote-gateway'] == $pconfig['remote-gateway'] && !isset($ph1tmp['disabled'])) {
-                    $input_errors[] = sprintf(gettext('The remote gateway "%1$s" is already used by phase1 "%2$s".'), $pconfig['remote-gateway'], $ph1tmp['descr']);
+                    $input_errors[] = sprintf(gettext('The remote gateway "%s" is already used by phase1 "%s".'), $pconfig['remote-gateway'], $ph1tmp['descr']);
                 }
             }
             $t++;

@@ -37,7 +37,7 @@ function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
 	exec("$rrdtool dump " . escapeshellarg($rrddatabase) . " {$xmldumpfile} 2>&1", $dumpout, $dumpret);
 	if ($dumpret <> 0) {
 		$dumpout = implode(" ", $dumpout);
-		log_error(sprintf(gettext('RRD dump failed exited with %1$s, the error is: %2$s'), $dumpret, $dumpout));
+		log_error(sprintf(gettext('RRD dump failed exited with %s, the error is: %s'), $dumpret, $dumpout));
 	}
 
 	return($dumpret);
@@ -53,7 +53,7 @@ function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
 	$numrranew = count($rrdnewxml['rra']);
 	$numdsold = count($rrdoldxml['ds']);
 	$numdsnew = count($rrdnewxml['ds']);
-	log_error(sprintf(gettext('Import RRD has %1$s DS values and %2$s RRA databases, new format RRD has %3$s DS values and %4$s RRA databases'), $numdsold, $numrraold, $numdsnew ,$numrranew));
+	log_error(sprintf(gettext('Import RRD has %s DS values and %s RRA databases, new format RRD has %s DS values and %s RRA databases'), $numdsold, $numrraold, $numdsnew ,$numrranew));
 
 	/* add data sources not found in the old array from the new array */
 	$i = 0;
@@ -137,7 +137,7 @@ function migrate_rrd_format($rrdoldxml, $rrdnewxml) {
 
 	$numrranew = count($rrdoldxml['rra']);
 	$numdsnew = count($rrdoldxml['ds']);
-	log_error(sprintf(gettext('The new RRD now has %1$s DS values and %2$s RRA databases'), $numdsnew, $numrranew));
+	log_error(sprintf(gettext('The new RRD now has %s DS values and %s RRA databases'), $numdsnew, $numrranew));
 	return $rrdoldxml;
 }
 

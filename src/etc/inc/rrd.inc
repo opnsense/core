@@ -71,7 +71,7 @@ function create_new_rrd($rrdcreatecmd) {
 	$_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
 	if ($rrdcreatereturn <> 0) {
 		$rrdcreateoutput = implode(" ", $rrdcreateoutput);
-		log_error(sprintf(gettext('RRD create failed exited with %1$s, the error is: %2$s'), $rrdcreatereturn, $rrdcreateoutput));
+		log_error(sprintf(gettext('RRD create failed exited with %s, the error is: %s'), $rrdcreatereturn, $rrdcreateoutput));
 	}
 	unset($rrdcreateoutput);
 	return $rrdcreatereturn;

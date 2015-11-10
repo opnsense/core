@@ -43,7 +43,7 @@ require_once("unbound.inc");
 
 function interface_assign_description($portinfo, $portname) {
 	if ($portinfo['isvlan']) {
-		$descr = sprintf(gettext('VLAN %1$s on %2$s'),$portinfo['tag'],$portinfo['if']);
+		$descr = sprintf(gettext('VLAN %s on %s'),$portinfo['tag'],$portinfo['if']);
 		if ($portinfo['descr'])
 			$descr .= " (" . $portinfo['descr'] . ")";
 	} elseif ($portinfo['iswlclone']) {
@@ -268,9 +268,7 @@ if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
 	/* Deliver error message for any port with more than one assignment */
 	foreach ($portifmap as $portname => $ifnames) {
 		if (count($ifnames) > 1) {
-			$errstr = sprintf(gettext('Port %1$s '.
-				' was assigned to %2$s' .
-				' interfaces:'), $portname, count($ifnames));
+			$errstr = sprintf(gettext('Port %s was assigned to %d interfaces:'), $portname, count($ifnames));
 
 			foreach ($portifmap[$portname] as $ifn)
 				$errstr .= " " . $ifn;
