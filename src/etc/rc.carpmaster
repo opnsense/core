@@ -42,7 +42,7 @@ list($vhid, $iface) = explode("@", $argument);
 $friendly = convert_real_interface_to_friendly_interface_name($iface);
 $carp_iface = "{$friendly}_vip${vhid}";
 $friendly_descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-$notificationmsg = sprintf('Carp cluster member "%2$s (%1$s)" has resumed the state "MASTER" for vhid %s', $argument, $friendly_descr, $vhid);
+$notificationmsg = sprintf('Carp cluster member "%s (%s)" has resumed the state "MASTER" for vhid %s', $friendly_descr, $argument, $vhid);
 
 notify_via_smtp($notificationmsg);
 notify_via_growl($notificationmsg);

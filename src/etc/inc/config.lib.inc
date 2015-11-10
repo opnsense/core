@@ -141,7 +141,7 @@ function convert_config()
 	}
 
 	if ($prev_version != $config['version']) {
-		write_config(sprintf(gettext('Upgraded config version level from %1$s to %2$s'), $prev_version, $config['version']));
+		write_config(sprintf(gettext('Upgraded config version level from %s to %s'), $prev_version, $config['version']));
 	}
 }
 

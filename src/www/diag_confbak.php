@@ -44,7 +44,7 @@ if (isset($_POST['backupcount'])) {
 	foreach ($confvers as $filename => $revision) {
 		if (isset($revision['time']) && $revision['time'] == $_POST['newver']) {
 			if (config_restore($filename)== 0) {
-				$savemsg = sprintf(gettext('Successfully reverted to timestamp %1$s with description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $revision['description']);
+				$savemsg = sprintf(gettext('Successfully reverted to timestamp %s with description "%s".'), date(gettext("n/j/y H:i:s"), $_POST['newver']), $revision['description']);
 			} else {
 				$savemsg = gettext("Unable to revert to the selected configuration.");
 			}
@@ -56,7 +56,7 @@ if (isset($_POST['backupcount'])) {
 		if (isset($revision['time']) && $revision['time'] == $_POST['rmver']) {
 			if (file_exists($filename)) {
 				@unlink($filename);
-				$savemsg = sprintf(gettext('Deleted backup with timestamp %1$s and description "%2$s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$revision['description']);
+				$savemsg = sprintf(gettext('Deleted backup with timestamp %s and description "%s".'), date(gettext("n/j/y H:i:s"), $_POST['rmver']),$revision['description']);
 			} else {
 				$savemsg = gettext("Unable to delete the selected configuration.");
 			}
@@ -182,7 +182,7 @@ include("head.inc");
 												<input type="hidden" name="rmver" value="<?= htmlspecialchars($_GET['rmver']) ?>" />
 											<?php } ?>
 												<br /><strong><?= gettext('Target Configuration') ?>:</strong>
-												<?= sprintf(gettext('Timestamp %1$s'), date(gettext('n/j/y H:i:s'), $target_config)) ?>
+												<?= sprintf(gettext('Timestamp %s'), date(gettext('n/j/y H:i:s'), $target_config)) ?>
 												<br /><input type="submit" name="confirm" class="btn btn-primary" value="<?= gettext('Confirm') ?>" />
 
 									    </div>

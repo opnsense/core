@@ -227,7 +227,7 @@ class smtp_class
 		&& !strcmp(@gethostbyname($this->exclude_address),$ip))
 			return(sprintf(gettext("domain \"%s\" resolved to an address excluded to be valid"), $domain));
 		if($this->debug)
-			$this->OutputDebug(sprintf(gettext('Connecting to host address "%1$s" port %2$s...'), $ip, $port));
+			$this->OutputDebug(sprintf(gettext('Connecting to host address "%s" port %s...'), $ip, $port));
 		if(($this->connection=($this->timeout ? @fsockopen(($this->ssl ? "ssl://" : "").$ip,$port,$errno,$error,$this->timeout) : @fsockopen(($this->ssl ? "ssl://" : "").$ip,$port))))
 			return("");
 		$error=($this->timeout ? strval($error) : "??");
@@ -244,7 +244,7 @@ class smtp_class
 			case "-7":
 				return(gettext("-7 setvbuf() call failed"));
 		}
-		return(sprintf(gettext('could not connect to the host "%1$s": %2$s'), $domain, $error));
+		return(sprintf(gettext('could not connect to the host "%s": %s'), $domain, $error));
 	}
 
 	Function SASLAuthenticate($mechanisms, $credentials, &$authenticated, &$mechanism)

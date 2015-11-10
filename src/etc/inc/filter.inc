@@ -297,7 +297,7 @@ function filter_configure_sync($delete_states_if_needed = true)
             $line_number = $line_error[1];
             $line_split = file('/tmp/rules.debug');
             if(is_array($line_split)) {
-                $line_error = sprintf(gettext('The line in question reads [%1$d]: %2$s'), $line_number, $line_split[$line_number-1]);
+                $line_error = sprintf(gettext('The line in question reads [%d]: %s'), $line_number, $line_split[$line_number-1]);
             }
             unset($line_split);
         } else {
@@ -315,8 +315,8 @@ function filter_configure_sync($delete_states_if_needed = true)
         unset($rules_loading, $rules_error);
 
         if ($line_error and $line_number) {
-            file_notice("filter_load", sprintf(gettext('There were error(s) loading the rules: %1$s - %2$s'), $saved_line_error, $line_error), "Filter Reload", "");
-            update_filter_reload_status(sprintf(gettext('There were error(s) loading the rules: %1$s - %2$s'), $saved_line_error, $line_error));
+            file_notice("filter_load", sprintf(gettext('There were error(s) loading the rules: %s - %s'), $saved_line_error, $line_error), "Filter Reload", "");
+            update_filter_reload_status(sprintf(gettext('There were error(s) loading the rules: %s - %s'), $saved_line_error, $line_error));
             unlock($filterlck);
             return;
         }
