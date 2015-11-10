@@ -1196,7 +1196,7 @@ include("head.inc");
 									</table>
 									<?php endif; ?>
 								</div>
-								<? endif; ?>
+								<?php endif; ?>
 		                        </form>
 
 						</div>

@@ -509,11 +509,11 @@ include("head.inc");
 
 							<?php if ($dhcrelay_enabled): ?>
 								<p>DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.</p>
-							<? else: ?>
+							<?php else: ?>
 
-						    <!--<ul class="nav nav-pills" role="tablist"><? foreach ($tab_array as $tab): ?>
-									<li role="presentation" <? if ($tab[1]):?>class="active"<? endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
-								<? endforeach; ?></ul><br />-->
+						    <!--<ul class="nav nav-pills" role="tablist"><?php foreach ($tab_array as $tab): ?>
+									<li role="presentation" <?php if ($tab[1]):?>class="active"<?php endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
+								<?php endforeach; ?></ul><br />-->
 
 						    <div class="table-responsive">
 									<table class="table table-striped table-sort">
@@ -887,7 +887,7 @@ include("head.inc");
 										</tr>
 										</table>
 									</div>
-					    <? endif; ?>
+					    <?php endif; ?>
                         </form>
 				</div>
 			    </section>

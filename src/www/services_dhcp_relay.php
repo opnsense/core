@@ -138,7 +138,7 @@ function enable_change(enable_over) {
 
 				<?php if ($dhcpd_enabled): ?>
 								<p>DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.</p>
-							<? else: ?>
+							<?php else: ?>
 
 							<header class="content-box-head container-fluid">
 					        <h3><?=gettext("DHCP Relay configuration"); ?></h3>
@@ -196,7 +196,7 @@ function enable_change(enable_over) {
 								</table>
 						  </div>
 					    </div>
-					    <? endif; ?>
+					    <?php endif; ?>
                         </form>
 				</div>
 			    </section>

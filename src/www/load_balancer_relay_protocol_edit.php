@@ -198,7 +198,7 @@ jQuery(document).ready(function(){
 									<tr align="left">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
+											<input name="name" type="text" <?php if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
 										</td>
 									</tr>
 									<tr align="left">
@@ -221,7 +221,7 @@ jQuery(document).ready(function(){
 									<tr align="left">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
+											<input name="descr" type="text" <?php if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
 										</td>
 									</tr>
 									<tr>

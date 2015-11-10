@@ -412,13 +412,13 @@ jQuery(document).ready(function() {
 									<tr align="left" id="name">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Name"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="name" type="text" <?if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
+											<input name="name" type="text" <?php if(isset($pconfig['name'])) echo "value=\"{$pconfig['name']}\"";?> size="16" maxlength="16">
 										</td>
 									</tr>
 									<tr align="left">
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Description"); ?></td>
 										<td width="78%" class="vtable" colspan="2">
-											<input name="descr" type="text" <?if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
+											<input name="descr" type="text" <?php if(isset($pconfig['descr'])) echo "value=\"{$pconfig['descr']}\"";?>size="64">
 										</td>
 									</tr>
 							<!-- Protocol -->
@@ -505,11 +505,11 @@ jQuery(document).ready(function() {
 											</select>
 							<br />
 							<table><tr>
-							<td><div id="input_action_value"><?=gettext("Value"); ?>&nbsp;<input id="option_action_value" name="option_action_value" type="text" <?if(isset($pconfig['options']['value'])) echo "value=\"{$pconfig['options']['value']}\"";?>size="20"></div></td>
+							<td><div id="input_action_value"><?=gettext("Value"); ?>&nbsp;<input id="option_action_value" name="option_action_value" type="text" <?php if(isset($pconfig['options']['value'])) echo "value=\"{$pconfig['options']['value']}\"";?>size="20"></div></td>
 							<td><div id="action_action_value"></div></td>
-							<td><div id="input_action_key"><?=gettext("Key"); ?>&nbsp;<input id="option_action_key" name="option_action_key" type="text" <?if(isset($pconfig['options']['akey'])) echo "value=\"{$pconfig['options']['akey']}\"";?>size="20"></div></td>
+							<td><div id="input_action_key"><?=gettext("Key"); ?>&nbsp;<input id="option_action_key" name="option_action_key" type="text" <?php if(isset($pconfig['options']['akey'])) echo "value=\"{$pconfig['options']['akey']}\"";?>size="20"></div></td>
 							<td><div id="action_action_id"></div></td>
-							<td><div id="input_action_id"><?=gettext("ID"); ?>&nbsp;<input id="option_action_id" name="option_action_id" type="text" <?if(isset($pconfig['options']['id'])) echo "value=\"{$pconfig['options']['id']}\"";?>size="20"></div></td>
+							<td><div id="input_action_id"><?=gettext("ID"); ?>&nbsp;<input id="option_action_id" name="option_action_id" type="text" <?php if(isset($pconfig['options']['id'])) echo "value=\"{$pconfig['options']['id']}\"";?>size="20"></div></td>
 							</tr></table>
 										</td>
 									</tr>

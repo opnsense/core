@@ -258,17 +258,17 @@ if($need_alert_display == true) {
 
 						?>
 
-						<? if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
+						<?php if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
 							<a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>
-						<? endforeach; endif; ?>
+						<?php endforeach; endif; ?>
 
-						<? if (isset($widgetfiles)): ?>
+						<?php if (isset($widgetfiles)): ?>
 
 
 							<a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
 
 							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?= gettext('Add widget') ?></button>
-						<? endif; ?>
+						<?php endif; ?>
 					</li>
 				</ul>
 			    </form>

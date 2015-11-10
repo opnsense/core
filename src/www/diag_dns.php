@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2009 Jim Pingle (jpingle@gmail.com)
@@ -205,8 +206,8 @@ include("head.inc"); ?>
 											  ?>
 							          </td>
 							          <td>
-								      <? if($found > 0): ?>
-											  <?PHP	if($alias_exists): ?>
+								      <?php if($found > 0): ?>
+											  <?php	if($alias_exists): ?>
 												An alias already exists for the hostname <?= htmlspecialchars($host) ?>. <br />
 												<input type="hidden" name="override" value="true"/>
 												<input type="submit" class="btn btn-default" name="create_alias" value="Overwrite Alias"/>
@@ -215,11 +216,11 @@ include("head.inc"); ?>
 												<input type="submit" class="btn btn-default" name="create_alias" value="Create Alias"/>
 											  <?php else: ?>
 											   Alias created with name <?= htmlspecialchars($newalias['name']) ?>
-											  <? endif; endif; endif; ?>
+											  <?php endif; endif; endif; ?>
 											  </td>
-							          <? else: ?>
+							          <?php else: ?>
 							          <td></td><td></td>
-							          <? endif; ?>
+							          <?php endif; ?>
 							        </tr>
 							        <?php if (!empty($_POST)): ?>
 							        <tr>

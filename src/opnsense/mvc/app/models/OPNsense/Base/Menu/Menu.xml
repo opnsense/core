@@ -258,7 +258,7 @@
         <pfInfo url="/diag_pf_info.php"/>
         <pfTop url="/diag_system_pftop.php"/>
         <Ping url="/diag_ping.php"/>
-        <Reboot url="/diag_reboot.php"/>
+        <Reboot url="/reboot.php"/>
         <Routes url="/diag_routes.php"/>
         <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
         <Sockets url="/diag_sockets.php">

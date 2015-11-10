@@ -158,39 +158,39 @@ include("head.inc");
 					    <div class="container-fluid tab-content">
 
 							<div class="tab-pane active" id="system">
-									<?PHP if ($_GET["newver"] || $_GET["rmver"]): ?>
+									<?php if ($_GET["newver"] || $_GET["rmver"]): ?>
 									<form action="<?=explode("?", $_SERVER['REQUEST_URI'])[0];?>" method="post">
 									<section>
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
-									        <h3><?PHP echo gettext("Confirm Action"); ?></h3>
+									        <h3><?= gettext('Confirm Action') ?></h3>
 									    </header>
 
 									    <div class="content-box-main col-xs-12">
 
-										    <strong><?PHP echo gettext("Please confirm the selected action"); ?></strong>:
+										    <strong><?= gettext('Please confirm the selected action') ?></strong>:
 												<br />
-												<br /><strong><?PHP echo gettext("Action"); ?>:</strong>
-											<?PHP	if (!empty($_GET["newver"])) {
+												<br /><strong><?= gettext('Action') ?>:</strong>
+											<?php if (!empty($_GET["newver"])) {
 												echo gettext("Restore from Configuration Backup");
 												$target_config = $_GET["newver"]; ?>
-												<input type="hidden" name="newver" value="<?PHP echo htmlspecialchars($_GET["newver"]); ?>" />
-											<?PHP	} elseif (!empty($_GET["rmver"])) {
+												<input type="hidden" name="newver" value="<?= htmlspecialchars($_GET['newver']) ?>" />
+											<?php } elseif (!empty($_GET["rmver"])) {
 												echo gettext("Remove Configuration Backup");
 												$target_config = $_GET["rmver"]; ?>
-												<input type="hidden" name="rmver" value="<?PHP echo htmlspecialchars($_GET["rmver"]); ?>" />
-											<?PHP	} ?>
-												<br /><strong><?PHP echo gettext("Target Configuration"); ?>:</strong>
-												<?PHP echo sprintf(gettext('Timestamp %1$s'), date(gettext("n/j/y H:i:s"), $target_config)); ?>
-												<br /><input type="submit" name="confirm" class="btn btn-primary" value="<?PHP echo gettext("Confirm"); ?>" />
+												<input type="hidden" name="rmver" value="<?= htmlspecialchars($_GET['rmver']) ?>" />
+											<?php } ?>
+												<br /><strong><?= gettext('Target Configuration') ?>:</strong>
+												<?= sprintf(gettext('Timestamp %1$s'), date(gettext('n/j/y H:i:s'), $target_config)) ?>
+												<br /><input type="submit" name="confirm" class="btn btn-primary" value="<?= gettext('Confirm') ?>" />
 
 									    </div>
 				                        </div>
 									</section>
 									</form>
 
-									<? else: ?>
+									<?php else: ?>
 
 									<form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 									<section style="margin-bottom:15px;">
@@ -337,7 +337,7 @@ include("head.inc");
 										</div>
 									</section>
 									</form>
-									<? endif; endif; ?>
+									<?php endif; endif; ?>
 
 
 

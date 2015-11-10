@@ -210,7 +210,7 @@ if (!isset($do_traceroute)) {
 					</div>
 				</div>
 			</section>
-			<? endif; ?>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>

@@ -160,7 +160,7 @@ $pagetitle = gentitle( $pgtitle );
 		//]]>
 		</script>
 
-		<? endif; ?>
+		<?php endif; ?>
 
 
-<?php if (!isset($closehead) || !$closehead):?></head><? endif;?>
+<?php if (!isset($closehead) || !$closehead):?></head><?php endif;?>

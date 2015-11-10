@@ -445,7 +445,7 @@ if (!empty($title)): ?>
 	                <header class="content-box-head container-fluid">
 				        <h3><?=$title; ?></h3>
 				    </header>
-				    <? if (!empty($show_data)): ?>
+				    <?php if (!empty($show_data)): ?>
 				    <div class="content-box-main col-xs-12">
 
 						<script type="text/javascript">
@@ -479,11 +479,11 @@ if (!empty($title)): ?>
 
 
 			</div>
-			<? endif; ?>
+			<?php endif; ?>
                 </div>
 			</section>
 
-<? endif; ?>
+<?php endif; ?>
 		</div>
 
 	</div>
