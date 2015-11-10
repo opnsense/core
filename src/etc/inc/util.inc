@@ -25,6 +25,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("IPv6.inc");
 
 function killbyname($procname, $sig = 'TERM')
@@ -563,11 +564,6 @@ function group_ports($ports) {
 	}
 
 	return $result;
-}
-
-/* returns true if $val is a valid shaper bandwidth value */
-function is_valid_shaperbw($val) {
-	return (preg_match("/^(\d+(?:\.\d+)?)([MKG]?b|%)$/", $val));
 }
 
 /* returns true if $test is in the range between $start and $end */
@@ -1380,17 +1376,4 @@ function prefer_ipv4_or_ipv6() {
 		mwexec("/etc/rc.d/ip6addrctl prefer_ipv4");
 	else
 		mwexec("/etc/rc.d/ip6addrctl prefer_ipv6");
-}
-
-/* Redirect to page passing parameters via POST */
-function post_redirect($page, $params) {
-	if (!is_array($params))
-		return;
-
-	print "<html><body><form action=\"{$page}\" name=\"formredir\" method=\"post\">\n";
-	foreach ($params as $key => $value) {
-		print "<input type=\"hidden\" name=\"{$key}\" value=\"{$value}\" />\n";
-	}
-	print "</form><script type=\"text/javascript\">document.formredir.submit();</script>\n";
-	print "</body></html>\n";
 }
