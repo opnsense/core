@@ -30,6 +30,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
 use OPNsense\Auth\AuthenticationFactory;
+
 /**
  * Class ApiControllerBase, inherit this class to implement API calls
  * @package OPNsense\Base
@@ -111,8 +112,7 @@ class ApiControllerBase extends ControllerRoot
                             if (!$acl->isPageAccessible($authResult['username'], $_SERVER['REQUEST_URI'])) {
                                 $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
                                     " not accessible for user ".$authResult['username'] . " using api key ".
-                                    $apiKey
-                                );
+                                    $apiKey);
                             } else {
                                 // authentication + authorization successful.
                                 // pre validate request and communicate back to the user on errors
@@ -134,8 +134,8 @@ class ApiControllerBase extends ControllerRoot
                                     $this->response->setContentType('application/json', 'UTF-8');
                                     $this->response->setJsonContent(
                                         array('message' => $dispatchError,
-                                              'status'  => 400
-                                    ));
+                                              'status'  => 400)
+                                    );
                                     $this->response->send();
                                     return false;
                                 }
