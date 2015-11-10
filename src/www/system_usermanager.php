@@ -205,6 +205,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     gettext("association removed.");
         redirectHeader("system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
         exit;
+    } elseif ($act == "newApiKey" && isset($id)) {
+        // every action is using the sequence of the user, to keep it understandable, we will use
+        // the same strategy here (although we need a username to work with)
+        //
+        // the client side is (jquery) generates the actual download file.
+        $username = $a_user[$id]['name'];
+        $authFactory = new \OPNsense\Auth\AuthenticationFactory;
+        $authenticator = $authFactory->get("Local API");
+        $keyData = $authenticator->createKey($username);
+        if ($keyData != null) {
+            echo json_encode($keyData);
+        }
+        exit;
+    } elseif ($act =='delApiKey'  && isset($id)) {
+        $username = $a_user[$id]['name'];
+        if (!empty($pconfig['api_delete'])) {
+            $authFactory = new \OPNsense\Auth\AuthenticationFactory;
+            $authenticator = $authFactory->get("Local API");
+            $authenticator->dropKey($username, $pconfig['api_delete']);
+            $savemsg = gettext("API key")." {$pconfig['api_delete']} ".
+                        gettext("removed.");
+        } else {
+            $savemsg = gettext('No API key found');
+        }
+        // redirect
+        redirectHeader("system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
+        exit;
     } elseif (isset($pconfig['save'])) {
         // save user
         /* input validation */
@@ -509,11 +536,12 @@ $( document ).ready(function() {
     // remove user
     $(".act-del-user").click(function(event){
       var userid = $(this).data('userid');
+      var username = $(this).data('username');
       event.preventDefault();
       BootstrapDialog.show({
           type:BootstrapDialog.TYPE_INFO,
           title: "<?= gettext("User");?>",
-          message: '<?=gettext("Do you really want to delete this user?");?>' + '<br/>('+userid+")",
+          message: '<?=gettext("Do you really want to delete this user?");?>' + '<br/>('+username+")",
           buttons: [{
                   label: "<?= gettext("No");?>",
                   action: function(dialogRef) {
@@ -521,7 +549,7 @@ $( document ).ready(function() {
                   }}, {
                     label: "<?= gettext("Yes");?>",
                     action: function(dialogRef) {
-                      $("#username").val(userid);
+                      $("#userid").val(userid);
                       $("#act2").val("deluser");
                       $("#iform2").submit();
                   }
@@ -549,6 +577,53 @@ $( document ).ready(function() {
       }
     });
 
+
+    // generate a new API key for this user
+    $("#newApiKey").click(function(event){
+        event.preventDefault();
+        $.post(window.location, {act: 'newApiKey', userid: $("#userid").val() }, function(data) {
+            if (data['key'] != undefined) {
+                // only generate a key file if there's data
+                output_data = 'key='+data['key'] +'\n' + 'secret='+data['secret'] +'\n';
+                // create link, click and send to client
+                $('<a></a>')
+                        .attr('id','downloadFile')
+                        .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
+                        .attr('download','apikey.ini')
+                        .appendTo('body');
+
+                $('#downloadFile').ready(function() {
+                    $('#downloadFile').get(0).click();
+                });
+                // reload form
+                location.reload();
+            }
+        },'json');
+    });
+
+    // delete API key
+    $(".act-del-api-key").click(function(event){
+        event.preventDefault();
+        var apiKey = $(this).data('key');
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_INFO,
+            title: "<?= gettext("User");?>",
+            message: '<?=gettext("Do you really want to delete this API key?");?>' + '<br/><small>('+apiKey.substring(0,40)+"...)</small>",
+            buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                      dialogRef.close();
+                    }}, {
+                      label: "<?= gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#act").val("delApiKey");
+                        $("#api_delete").val(apiKey);
+                        $("#iform").submit();
+                    }
+            }]
+        });
+    });
+
 });
 </script>
 
@@ -572,6 +647,7 @@ $( document ).ready(function() {
                 <input type="hidden" id="act" name="act" value="<?=$act;?>" />
                 <input type="hidden" id="userid" name="userid" value="<?=(isset($id) ? $id : '');?>" />
                 <input type="hidden" id="priv_delete" name="priv_delete" value="" /> <!-- delete priv action -->
+                <input type="hidden" id="api_delete" name="api_delete" value="" /> <!-- delete api ke action -->
                 <input type="hidden" id="certid" name="certid" value="" /> <!-- remove cert association action -->
                 <table class="table table-striped">
                   <tr>
@@ -800,6 +876,60 @@ $( document ).ready(function() {
                       </table>
                     </td>
                   </tr>
+                  <tr>
+                      <td><a id="help_for_apikeys" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("API keys");?> </td>
+                      <td>
+                          <!-- -->
+                          <table class="table table-condensed">
+                              <thead>
+                                  <tr>
+                                    <th>
+                                        <?=gettext('key');?>
+                                    </th>
+                                    <th>
+                                    </th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+<?php
+                                  if (isset($a_user[$id]['apikeys']['item'])):
+                                    foreach ($a_user[$id]['apikeys']['item'] as $userApiKey):?>
+                                  <tr>
+                                      <td>
+                                        <small>
+                                          <?php // listtags always changes our key item to an array.. ?>
+                                          <?php // don't want to change "key" to something less sane. ?>
+                                          <?=$userApiKey['key'][0];?>
+                                        <small>
+                                      </td>
+                                      <td>
+                                        <button data-key="<?=$userApiKey['key'][0];?>" type="button" class="btn btn-default btn-xs act-del-api-key"
+                                            title="<?=gettext("delete API key");?>" data-toggle="tooltip" data-placement="left" >
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                      </td>
+                                  </tr>
+<?php
+                                    endforeach;
+                                  endif;?>
+                              </tbody>
+                              <tfoot>
+                                  <tr>
+                                    <td></td>
+                                    <td>
+                                      <button type="button" class="btn btn-default btn-xs" id="newApiKey"
+                                          title="<?=gettext("create API key");?>" data-toggle="tooltip" data-placement="left" >
+                                          <span class="glyphicon glyphicon-plus"></span>
+                                      </button>
+                                    </td>
+                                  </tr>
+                              </tfoot>
+                          </table>
+                          <div class="hidden" for="help_for_apikeys">
+                              <?=gettext('manage API keys here for machine to machine interaction using this users credentials');?>
+                          </div>
+                      </td>
+                  </tr>
 <?php
                 else :
                   if (is_array($config['ca']) && count($config['ca']) > 0) :
@@ -943,7 +1073,8 @@ $( document ).ready(function() {
 <?php
                         if ($userent['scope'] != "system") :?>
                         <button type="button" class="btn btn-default btn-xs act-del-user"
-                            data-userid="<?=$userent['name'];?>" title="<?=gettext("delete user");?>" data-toggle="tooltip"
+                            data-username="<?=$userent['name'];?>"
+                            data-userid="<?=$i?>" title="<?=gettext("delete user");?>" data-toggle="tooltip"
                             data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
                         </button>
 <?php
