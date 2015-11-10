@@ -52,6 +52,26 @@ class ApiControllerBase extends ControllerRoot
     }
 
     /**
+     * parse raw json type content to POST data depending on content type
+     * (only for api calls)
+     * @return string
+     */
+    private function parseJsonBodyData()
+    {
+        switch ($this->request->getHeader('CONTENT_TYPE')) {
+            case 'application/json':
+            case 'application/json;charset=UTF-8':
+                $jsonRawBody = $this->request->getJsonRawBody(true);
+                if (empty($this->request->getRawBody()) && empty($jsonRawBody)) {
+                    return "Invalid JSON syntax";
+                }
+                $_POST = $jsonRawBody;
+                break;
+        }
+        return null;
+    }
+
+    /**
      * Initialize API controller
      */
     public function initialize()
@@ -86,6 +106,7 @@ class ApiControllerBase extends ControllerRoot
                     if ($authenticator->authenticate($apiKey, $apiSecret)) {
                         $authResult = $authenticator->getLastAuthProperties();
                         if (array_key_exists('username', $authResult)) {
+                            // check ACL if user is returned by the Authenticator object
                             $acl = new ACL();
                             if (!$acl->isPageAccessible($authResult['username'], $_SERVER['REQUEST_URI'])) {
                                 $this->getLogger()->error("uri ".$_SERVER['REQUEST_URI'].
@@ -96,12 +117,19 @@ class ApiControllerBase extends ControllerRoot
                                 // authentication + authorization successful.
                                 // pre validate request and communicate back to the user on errors
                                 $callMethodName = $dispatcher->getActionName().'Action';
+                                $dispatchError = null;
                                 // check number of parameters using reflection
                                 $object_info = new \ReflectionObject($this);
                                 $req_c = $object_info->getMethod($callMethodName)->getNumberOfRequiredParameters();
                                 if ($req_c > count($dispatcher->getParams())) {
                                     $dispatchError = 'action ' . $dispatcher->getActionName() .
                                       ' expects at least '. $req_c . ' parameter(s)';
+                                } else {
+                                    // if body is send as json data, parse to $_POST first
+                                    $dispatchError = $this->parseJsonBodyData();
+                                }
+                                if ($dispatchError != null) {
+                                    // send error to client
                                     $this->response->setStatusCode(400, "Bad Request");
                                     $this->response->setContentType('application/json', 'UTF-8');
                                     $this->response->setJsonContent(
