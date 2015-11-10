@@ -128,7 +128,7 @@ class ApiControllerBase extends ControllerRoot
             $this->response->send();
             return false;
         } else {
-            // handle UI ajax reuests
+            // handle UI ajax requests
             // use session data and ACL to validate request.
             if (!$this->doAuth()) {
                 return false;
