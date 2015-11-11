@@ -34,6 +34,7 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $dhcpd_logfile = '/var/log/dhcpd.log';
+$filtertext = '';
 $nentries = 50;
 
 if (isset($config['syslog']['nentries'])) {
@@ -44,6 +45,10 @@ if ($_POST['clear']) {
 	clear_clog($dhcpd_logfile);
 	killbyname("dhcpd");
 	services_dhcpd_configure();
+}
+
+if (isset($_POST['filtertext'])) {
+	$filtertext = htmlspecialchars($_POST['filtertext']);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("DHCP"));
@@ -66,8 +71,13 @@ include("head.inc");
 						<div class="tab-content content-box col-xs-12">
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
-								<tr><td colspan="2"><?= sprintf(gettext('Last %s DHCP service log entries'), $nentries); ?></strong></td><tr>
-								<?php dump_clog($dhcpd_logfile, $nentries); ?>
+								<tr><td colspan="2">
+									<form id="clearform" name="clearform" action="diag_logs_dhcp.php" method="post" class="__mt">
+										<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" />
+										<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+									</form>
+								</td></tr>
+								<?php dump_clog($dhcpd_logfile, $nentries, $filtertext); ?>
 								<tr><td colspan="2">
 									<form action="diag_logs_dhcp.php" method="post">
 										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />

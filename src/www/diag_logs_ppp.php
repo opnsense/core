@@ -33,15 +33,19 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $ppps_logfile = '/var/log/ppps.log';
+$filtertext = '';
+$nentries = 50;
 
-if (empty($config['syslog']['nentries'])) {
-        $nentries = 50;
-} else {
+if (isset($config['syslog']['nentries'])) {
         $nentries = $config['syslog']['nentries'];
 }
 
 if ($_POST['clear']) {
 	clear_clog($ppps_logfile);
+}
+
+if (isset($_POST['filtertext'])) {
+	$filtertext = htmlspecialchars($_POST['filtertext']);
 }
 
 $pgtitle = array(gettext("Status"),gettext("System logs"),gettext("PPP"));
@@ -64,8 +68,13 @@ include("head.inc");
 
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
-										<tr><td colspan="2"><?= sprintf(gettext("Last %s PPP log entries"),$nentries);?></strong></td></tr>
-										<?php dump_clog($ppps_logfile, $nentries); ?>
+										<tr><td colspan="2">
+											<form id="clearform" name="clearform" action="diag_logs_ppp.php" method="post" class="__mt">
+												<input id="filtertext" name="filtertext" value="<?=$filtertext;?>" />
+												<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+											</form>
+										</td></tr>
+										<?php dump_clog($ppps_logfile, $nentries, $filtertext); ?>
 										<tr><td colspan="2">
 											<form action="diag_logs_ppp.php" method="post">
 												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />

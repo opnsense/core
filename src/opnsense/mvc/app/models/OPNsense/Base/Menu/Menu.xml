@@ -51,6 +51,11 @@
             <Routing url="/diag_logs_routing.php"/>
             <Resolver url="/diag_logs_resolver.php"/>
             <Wireless url="/diag_logs_wireless.php"/>
+            <DHCP url="/diag_logs_dhcp.php"/>
+            <PPP url="/diag_logs_ppp.php"/>
+            <VPN url="/diag_logs_vpn.php?vpntype=pptp">
+                <Type url="/diag_logs_vpn.php*"/>
+            </VPN>
         </LogFiles>
         <Settings cssClass="fa fa-cogs">
             <General url="/system_general.php"/>
@@ -311,13 +316,6 @@
         <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
             <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
         </DHCPv6Leases>
-        <LogFiles VisibleName="Log Files" cssClass="fa fa-eye">
-            <DHCP url="/diag_logs_dhcp.php"/>
-            <PPP url="/diag_logs_ppp.php"/>
-            <VPN url="/diag_logs_vpn.php?vpntype=pptp">
-                <Type url="/diag_logs_vpn.php*"/>
-            </VPN>
-        </LogFiles>
     </Status>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
