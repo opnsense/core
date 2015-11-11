@@ -33,10 +33,10 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $system_logfile = '/var/log/system.log';
+$filtertext = '';
+$nentries = 50;
 
-if (empty($config['syslog']['nentries'])) {
-	$nentries = 50;
-} else {
+if (isset($config['syslog']['nentries'])) {
 	$nentries = $config['syslog']['nentries'];
 }
 
@@ -76,13 +76,7 @@ include("head.inc");
 					<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
 						    </form>
 							</td></tr>
-									<?php
-										if (isset($filtertext)) {
-											dump_clog($system_logfile, $nentries, true, array("$filtertext"), array("ppp"));
-										} else {
-											dump_clog($system_logfile, $nentries, true, array(), array("ppp"));
-										}
-									?>
+							<?php dump_clog($system_logfile, $nentries, $filtertext); ?>
 							<tr><td colspan="2">
 							<form action="diag_logs.php" method="post">
 								<input name="clear" type="submit" class="btn btn-default" value="<?= gettext("Clear log");?>" />

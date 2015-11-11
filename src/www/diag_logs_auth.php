@@ -33,10 +33,9 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $portal_logfile = '/var/log/portalauth.log';
+$nentries = 50;
 
-if (empty($config['syslog']['nentries'])) {
-        $nentries = 50;
-} else {
+if (isset($config['syslog']['nentries'])) {
         $nentries = $config['syslog']['nentries'];
 }
 
@@ -65,7 +64,7 @@ include("head.inc");
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
 								<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Portal Auth log entries'), $nentries); ?></strong></td></tr>
-								<?php dump_clog($portal_logfile, $nentries, true); ?>
+								<?php dump_clog($portal_logfile, $nentries); ?>
 								<tr><td colspan="2">
 									<form action="diag_logs_auth.php" method="post">
 										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
