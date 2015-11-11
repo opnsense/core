@@ -25,6 +25,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("IPv6.inc");
 
 function killbyname($procname, $sig = 'TERM')
@@ -563,11 +564,6 @@ function group_ports($ports) {
 	}
 
 	return $result;
-}
-
-/* returns true if $val is a valid shaper bandwidth value */
-function is_valid_shaperbw($val) {
-	return (preg_match("/^(\d+(?:\.\d+)?)([MKG]?b|%)$/", $val));
 }
 
 /* returns true if $test is in the range between $start and $end */
