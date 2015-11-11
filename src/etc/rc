@@ -79,20 +79,6 @@ fi
 /usr/local/etc/rc.crashdump
 swapon -a
 
-# Remove symlinks that are no longer needed
-if [ -L /etc/dhclient.conf ]; then rm /etc/dhclient.conf; fi
-if [ -L /etc/syslog.conf ]; then rm /etc/syslog.conf; fi
-if [ -L /etc/resolv.conf ]; then rm /etc/resolv.conf; fi
-if [ -L /etc/hosts ]; then rm /etc/hosts; fi
-
-# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
-if [ -d "/cf/conf" ]; then
-	rm -f /conf
-	mv /cf/conf /conf
-	rm -rf /cf
-fi
-# !!! migration code for OPNsense <= 15.1.7, do not remove !!!
-
 # set up config directory structure
 mkdir -p /conf/backup
 mkdir -p /conf/sshd
@@ -185,9 +171,6 @@ DEFAULT_LOG_FILE_SIZE=`/usr/local/bin/xmllint --xpath 'string(//opnsense/syslog/
 if [ ! ${DEFAULT_LOG_FILE_SIZE} ]; then
 	DEFAULT_LOG_FILE_SIZE=511488
 fi
-
-# purge the old ppp.log and rotated descendants (15.7 migration code)
-rm -f /var/log/ppp.log*
 
 for logfile in $LOG_FILES; do
 	if [ ! -f /var/log/$logfile.log ]; then
