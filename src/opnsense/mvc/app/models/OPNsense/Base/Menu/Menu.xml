@@ -37,7 +37,7 @@
             <Step url="/wizard.php*"/>
         </SetupWizard>
         <UserManager VisibleName="User Manager" url="/system_usermanager.php">
-            <Users url="/system_usermanager.php"/>
+            <Users url="/system_usermanager.php*"/>
             <Groups url="/system_groupmanager.php"/>
             <Settings url="/system_usermanager_settings.php"/>
             <Servers url="/system_authservers.php*"/>
