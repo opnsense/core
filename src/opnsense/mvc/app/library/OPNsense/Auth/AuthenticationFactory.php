@@ -66,7 +66,6 @@ class AuthenticationFactory
     {
         $servers = array();
         $servers['Local Database'] = array("name" => "Local Database", "type" => "local");
-        $servers['Local API'] = array("name" => "Local API Database", "type" => "api");
         $configObj = Config::getInstance()->object();
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'authserver' && !empty($value->type) && !empty($value->name)) {
@@ -90,6 +89,7 @@ class AuthenticationFactory
     {
         $localUserMap = array();
         $servers = $this->listServers();
+        $servers['Local API'] = array("name" => "Local API Database", "type" => "api");
 
         // create a new auth connector
         if (isset($servers[$authserver]['type'])) {
