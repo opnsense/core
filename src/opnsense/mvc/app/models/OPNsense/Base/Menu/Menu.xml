@@ -190,7 +190,7 @@
             </StatesTrackSource>
         </Diagnostics>
     </Firewall>
-    <Services order="4" cssClass="glyphicon glyphicon-cog">
+    <Services order="5" cssClass="glyphicon glyphicon-cog">
         <DHCP cssClass="fa fa-bullseye">
             <Server order="100" url="/services_dhcp.php">
                 <Tab url="/services_dhcp.php?if=*"/>
@@ -240,7 +240,7 @@
             </VirtualServer>
             <VirtualServerStatus VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
         </LoadBalancer>
-        <NTP VisibleName="Network Time Protocol" cssClass="fa fa-clock-o">
+        <NTP VisibleName="Network Time" cssClass="fa fa-clock-o">
             <General url="/services_ntpd.php"/>
             <GPS url="/services_ntpd_gps.php"/>
             <PPS url="/services_ntpd_pps.php"/>
@@ -270,7 +270,7 @@
             <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
     </Services>
-    <VPN order="5" cssClass="glyphicon glyphicon-lock">
+    <VPN order="4" cssClass="glyphicon glyphicon-lock">
         <IPsec cssClass="fa fa-road">
             <Tunnels VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
@@ -319,7 +319,7 @@
             </Users>
         </PPTP>
     </VPN>
-    <Help order="8" cssClass="glyphicon glyphicon-question-sign">
+    <Help order="6" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
         <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
                         IsExternal="Y"/>

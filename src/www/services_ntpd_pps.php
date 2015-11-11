@@ -89,7 +89,7 @@ if ($_POST) {
 }
 $pconfig = &$config['ntpd']['pps'];
 
-$pgtitle = array(gettext("Services"),gettext("NTP PPS"));
+$pgtitle = array(gettext('Services'), gettext('Network Time'), gettext('PPS'));
 $shortcut_section = "ntp";
 include("head.inc");
 ?>

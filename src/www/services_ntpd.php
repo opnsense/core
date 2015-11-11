@@ -163,7 +163,7 @@ if (empty($pconfig['interface'])) {
 }
 
 $shortcut_section = 'ntp';
-$pgtitle = array(gettext('Services'), gettext('Network Time Protocol'));
+$pgtitle = array(gettext('Services'), gettext('Network Time'));
 
 include("head.inc");
 
