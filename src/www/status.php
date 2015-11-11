@@ -119,7 +119,11 @@ defCmdT("top | head -n5", "/usr/bin/top | /usr/bin/head -n5");
 
 defCmdT("sysctl hw.physmem","/sbin/sysctl hw.physmem");
 
-defCmdT("ipfw show", "/sbin/ipfw show");
+if (is_module_loaded('ipfw')) {
+	defCmdT('ipfw queue show', '/sbin/ipfw queue show');
+	defCmdT('ipfw pipe show', '/sbin/ipfw pipe show');
+	defCmdT('ipfw show', '/sbin/ipfw show');
+}
 
 defCmdT("pfctl -sn", "/sbin/pfctl -sn");
 defCmdT("pfctl -sr", "/sbin/pfctl -sr");
@@ -131,7 +135,6 @@ defCmdT("pfctl -s queue -v","/sbin/pfctl -s queue -v");
 defCmdT("pfctl -s nat -v","/sbin/pfctl -s nat -v");
 
 defCmdT("PF OSFP","/sbin/pfctl -s osfp");
-
 
 defCmdT("netstat -s -ppfsync","netstat -s -ppfsync");
 
