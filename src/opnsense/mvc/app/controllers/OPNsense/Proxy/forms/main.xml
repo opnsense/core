@@ -11,9 +11,7 @@
                 <id>proxy.general.icpPort</id>
                 <label>ICP port</label>
                 <type>text</type>
-                <help>The port number where Squid sends and receives ICP queries to
-                    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.
-                </help>
+                <help>The port number where Squid sends and receives ICP queries to and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.</help>
                 <advanced>true</advanced>
             </field>
             <field>
