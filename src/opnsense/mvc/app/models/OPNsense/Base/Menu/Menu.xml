@@ -191,16 +191,26 @@
         </Diagnostics>
     </Firewall>
     <Services order="4" cssClass="glyphicon glyphicon-cog">
-        <DHCPRelay VisibleName="DHCP Relay" url="/services_dhcp_relay.php"/>
-        <DHCPServer VisibleName="DHCP Server" url="/services_dhcp.php">
-            <DHCPServerTab url="/services_dhcp.php?if=*"/>
-            <DHCPServerEdit url="/services_dhcp_edit.php?*"/>
-        </DHCPServer>
-        <DHCPv6Relay VisibleName="DHCPv6 Relay" url="/services_dhcpv6_relay.php"/>
-        <DHCPv6ServerRA VisibleName="DHCPv6 Server/RA" url="/services_dhcpv6.php">
-            <EditStaticMap url="/services_dhcpv6_edit.php?*"/>
-            <RouterAdvertisement url="/services_router_advertisements.php?*"/>
-        </DHCPv6ServerRA>
+        <DHCP cssClass="fa fa-bullseye">
+            <Server order="100" url="/services_dhcp.php">
+                <Tab url="/services_dhcp.php?if=*"/>
+                <Edit url="/services_dhcp_edit.php?*"/>
+            </Server>
+            <Relay order="200" url="/services_dhcp_relay.php"/>
+            <Leases order="300" url="/status_dhcp_leases.php">
+                <Details url="/status_dhcp_leases.php?*"/>
+            </Leases>
+        </DHCP>
+        <DHCPv6 cssClass="fa fa-bullseye">
+            <Server order="100" url="/services_dhcpv6.php">
+                <Edit url="/services_dhcpv6_edit.php?*"/>
+                <RA url="/services_router_advertisements.php?*"/>
+            </Server>
+            <Relay order="300" url="/services_dhcpv6_relay.php"/>
+            <Leases order="400" url="/status_dhcpv6_leases.php">
+                <Details url="/status_dhcpv6_leases.php?*"/>
+            </Leases>
+        </DHCPv6>
         <DNSFilter VisibleName="DNS Filter" url="/services_opendns.php"/>
         <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php"/>
         <DNSResolver VisibleName="DNS Resolver" url="/services_unbound.php">
@@ -309,14 +319,6 @@
             </Users>
         </PPTP>
     </VPN>
-    <Status order="6" cssClass="glyphicon glyphicon-tasks">
-        <DHCPLeases VisibleName="DHCP IPv4 Leases" url="/status_dhcp_leases.php">
-            <DHCPLeasesDetails url="/status_dhcp_leases.php?*"/>
-        </DHCPLeases>
-        <DHCPv6Leases VisibleName="DHCP IPv6 Leases" url="/status_dhcpv6_leases.php">
-            <DHCPv6LeasesDetails url="/status_dhcpv6_leases.php?*"/>
-        </DHCPv6Leases>
-    </Status>
     <Help order="8" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
         <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
