@@ -119,9 +119,7 @@ defCmdT("top | head -n5", "/usr/bin/top | /usr/bin/head -n5");
 
 defCmdT("sysctl hw.physmem","/sbin/sysctl hw.physmem");
 
-if (isset($config['captiveportal'])) {
-	defCmdT("ipfw show", "/sbin/ipfw show");
-}
+defCmdT("ipfw show", "/sbin/ipfw show");
 
 defCmdT("pfctl -sn", "/sbin/pfctl -sn");
 defCmdT("pfctl -sr", "/sbin/pfctl -sr");
