@@ -58,15 +58,14 @@
             </VPN>
         </LogFiles>
         <Settings cssClass="fa fa-cogs">
-            <General url="/system_general.php"/>
-            <AdminAccess VisibleName="Admin Access" url="/system_advanced_admin.php"/>
-            <FirewallNAT VisibleName="Firewall/NAT" url="/system_advanced_firewall.php"/>
-            <Networking url="/system_advanced_network.php"/>
-            <Miscellaneous url="/system_advanced_misc.php"/>
-            <Tunables VisibleName="Tunables" url="/system_advanced_sysctl.php"/>
-            <Notifications url="/system_advanced_notifications.php"/>
-            <RRDGraphs VisibleName="RRD Graphs" url="/status_rrd_graph_settings.php"/>
-            <LogFiles VisibleName="Log Files" url="/diag_logs_settings.php"/>
+            <General order="100" url="/system_general.php"/>
+            <AdminAccess VisibleName="Admin Access" order="200" url="/system_advanced_admin.php"/>
+            <Networking order="300" url="/system_advanced_network.php"/>
+            <FirewallNAT VisibleName="Firewall/NAT" order="400" url="/system_advanced_firewall.php"/>
+            <Notifications order="500" url="/system_advanced_notifications.php"/>
+            <LogFiles VisibleName="Logs/Reports" order="600" url="/diag_logs_settings.php"/>
+            <Miscellaneous order="700" url="/system_advanced_misc.php"/>
+            <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php"/>
         </Settings>
         <Wizard url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>

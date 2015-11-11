@@ -1,9 +1,10 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2007 Seth Mos <seth.mos@dds.nl>
 	Copyright (C) 2004-2009 Scott Ullrich
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,10 +31,13 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("rrd.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
+
+$pconfig['rrdenable'] = isset($config['rrd']['enable']);
 
 function clear_all_log_files()
 {
@@ -114,9 +118,14 @@ function is_valid_syslog_server($target) {
 		|| is_hostnamewithport($target));
 }
 
-if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
+if ($_POST['resetlogs'] == 'Reset Log Files') {
 	clear_all_log_files();
-	$savemsg .= gettext("The log files have been reset.");
+	$savemsg = gettext("The log files have been reset.");
+} elseif ($_POST['ResetRRD']) {
+	$savemsg = gettext('RRD data has been cleared.');
+	mwexec('/bin/rm /var/db/rrd/*');
+	enable_rrd_graphing();
+	setup_gateways_monitor();
 } elseif ($_POST) {
 
 	unset($input_errors);
@@ -188,6 +197,8 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 			unset($config['syslog']['remoteserver3']);
 		}
 
+		$config['rrd']['enable'] = $_POST['rrdenable'] ? true : false;
+
 		write_config();
 
 		$retval = 0;
@@ -209,6 +220,8 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 		}
 
 		filter_pflog_start();
+		enable_rrd_graphing();
+		setup_gateways_monitor();
 	}
 }
 
@@ -294,17 +307,43 @@ function check_everything() {
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-					<div class="tab-content content-box col-xs-12">
-
-
-
-							<form action="diag_logs_settings.php" method="post" name="iform" id="iform">
-
-
+					<form action="diag_logs_settings.php" method="post" name="iform" id="iform">
+					<div class="tab-content content-box col-xs-12 __mb">
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><strong><?=gettext('Reporting Database Options');?></strong></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vtable"><?=gettext("Round-Robin-Database");?></td>
+										<td width="78%" class="vtable">
+											<label>
+												<input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?php if ($pconfig['rrdenable']) echo "checked=\"checked\"" ?> onclick="enable_change(false)" />
+												&nbsp;<?=gettext("Enables the RRD graphing backend.");?>
+											</label>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
+											<input name="ResetRRD" type="submit" class="btn btn-default" value="<?=gettext("Reset RRD Data");?>" onclick="return confirm('<?=gettext('Do you really want to reset the RRD graphs? This will erase all graph data.');?>')" />
+										</td>
+									</tr>
+								</table>
+							 </div>
+							 <div class="container-fluid">
+							 <p><strong><span class="text-danger"><?=gettext("Note:");?></span></strong><br />
+											<?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
+											"take this into account after changing the style.");?>
+							 </p>
+							</div>
+					</div>
+					<div class="tab-content content-box col-xs-12 __mb">
 								<div class="table-responsive">
 									<table class="table table-striped">
 										<tr>
-											<td colspan="2" valign="top" class="listtopic"><?=gettext("General Logging Options");?></td>
+											<td colspan="2" valign="top" class="listtopic"><strong><?=gettext("Local Logging Options");?></strong></td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vtable"><?=gettext('Forward/Reverse Display') ?></td>
@@ -374,16 +413,20 @@ function check_everything() {
 										<tr>
 											<td width="22%" valign="top"><?=gettext('Reset Logs') ?></td>
 											<td width="78%">
-												<input name="resetlogs" type="submit" class="btn btn-primary" value="<?=gettext("Reset Log Files"); ?>"  onclick="return confirm('<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>')" />
-												<br /><br />
+												<input name="resetlogs" type="submit" class="btn btn-default" value="<?=gettext("Reset Log Files"); ?>"  onclick="return confirm('<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>')" />
+												<br/><br/>
 												<?= gettext("Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
 											</td>
 										</tr>
+									</table>
+								</div>
+							</div>
+
+							<div class="tab-content content-box col-xs-12 __mb">
+								<div class="table-responsive">
+									<table class="table table-striped">
 										<tr>
-											<td colspan="2" valign="top">&nbsp;</td>
-										</tr>
-										<tr>
-											<td colspan="2" valign="top" class="listtopic"><?=gettext("Remote Logging Options");?></td>
+											<td colspan="2" valign="top" class="listtopic"><strong><?=gettext("Remote Logging Options");?></strong></td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("Source Address"); ?></td>
@@ -485,8 +528,8 @@ function check_everything() {
 										</tr>
 									</table>
 								</div>
-							</form>
-					</div>
+						</div>
+					</form>
 				</section>
 			</div>
 		</div>
