@@ -189,11 +189,11 @@ include("head.inc");
 								<tbody>
 								<?php if (isset($config['ntpd']['noquery'])): ?>
 								<tr><td class="listlr" colspan="11" align="center">
-									Statistics unavailable because ntpq and ntpdc queries are disabled in the <a href="services_ntpd.php">NTP service settings</a>.
+									<?=gettext('Statistics unavailable because ntpq and ntpdc queries are disabled in the') ?> <a href="services_ntpd.php"><?=gettext('NTP service settings') ?></a>.
 								</td></tr>
 								<?php elseif (count($ntpq_servers) == 0): ?>
 								<tr><td class="listlr" colspan="11" align="center">
-									No peers found, <a href="status_services.php">is the ntp service running?</a>.
+									<?=gettext('No peers found,') ?> <a href="status_services.php"><?=gettext('is the ntp service running?') ?></a>.
 								</td></tr>
 								<?php else: ?>
 								<?php $i = 0; foreach ($ntpq_servers as $server): ?>
