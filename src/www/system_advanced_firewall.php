@@ -430,7 +430,7 @@ endif; ?>
 									</td>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell">Disable Auto-added VPN rules</td>
+									<td width="22%" valign="top" class="vncell"><?=gettext('Disable Auto-added VPN rules') ?></td>
 									<td width="78%" class="vtable">
 										<input name="disablevpnrules" type="checkbox" id="disablevpnrules" value="yes" <?php if (isset($config['system']['disablevpnrules'])) {
                                             echo "checked=\"checked\"";
@@ -442,7 +442,7 @@ endif; ?>
 									</td>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell">Disable reply-to</td>
+									<td width="22%" valign="top" class="vncell"><?=gettext('Disable reply-to') ?></td>
 									<td width="78%" class="vtable">
 										<input name="disablereplyto" type="checkbox" id="disablereplyto" value="yes" <?php if ($pconfig['disablereplyto']) {
                                             echo "checked=\"checked\"";
@@ -455,7 +455,7 @@ endif; ?>
 									</td>
 								</tr>
 								<tr>
-									<td width="22%" valign="top" class="vncell">Disable Negate rules</td>
+									<td width="22%" valign="top" class="vncell"><?=gettext('Disable Negate rules') ?></td>
 									<td width="78%" class="vtable">
 										<input name="disablenegate" type="checkbox" id="disablenegate" value="yes" <?php if ($pconfig['disablenegate']) {
                                             echo "checked=\"checked\"";
