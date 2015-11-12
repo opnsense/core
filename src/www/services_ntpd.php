@@ -237,7 +237,7 @@ include("head.inc");
 											<td colspan="2" valign="top" class="listtopic"><?=gettext("NTP Server Configuration"); ?></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Interface(s)</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Interface(s)') ?></td>
 											<td width="78%" class="vtable">
 							<?php
 								$interfaces = get_configured_interface_with_descr();
@@ -268,7 +268,7 @@ include("head.inc");
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Time servers</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Time servers') ?></td>
 											<td width="78%" class="vtable">
 												<?php
 												$timeservers = explode( ' ', $config['system']['timeservers']);
@@ -306,21 +306,21 @@ include("head.inc");
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Orphan mode</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Orphan mode') ?></td>
 											<td width="78%" class="vtable">
 												<input name="ntporphan" type="text" class="formfld unknown" id="ntporphan" min="1" max="16" size="20" value="<?=htmlspecialchars(isset($pconfig['orphan']) ? $pconfig['orphan']:"");?>" /><?php echo gettext("(0-15)");?><br />
 												<?php echo gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."); ?>
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">NTP graphs</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('NTP graphs') ?></td>
 											<td width="78%" class="vtable">
 												<input name="statsgraph" type="checkbox" class="formcheckbox" id="statsgraph" <?php if(!empty($pconfig['statsgraph'])) echo " checked=\"checked\""; ?> />
 												<?php echo gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Syslog logging</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Syslog logging') ?></td>
 											<td width="78%" class="vtable">
 												<?php echo gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?php echo gettext("Status > System Logs > NTP"); ?></a>).
 												<br /><br />
@@ -332,7 +332,7 @@ include("head.inc");
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Statistics logging</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Statistics logging') ?></td>
 											<td width="78%" class="vtable">
 												<div id="showstatisticsbox">
 												<input class="btn btn-default btn-xs" type="button" onclick="show_advanced('showstatisticsbox', 'showstatistics')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
@@ -352,7 +352,7 @@ include("head.inc");
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Access restrictions</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Access restrictions') ?></td>
 											<td width="78%" class="vtable">
 												<div id="showrestrictbox">
 												<input type="button" class="btn btn-default btn-xs" onclick="show_advanced('showrestrictbox', 'showrestrict')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show access restriction options");?>
@@ -381,7 +381,7 @@ include("head.inc");
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Leap seconds</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Leap seconds') ?></td>
 											<td width="78%" class="vtable">
 												<div id="showleapsecbox">
 												<input type="button" class="btn btn-default btn-xs" onclick="show_advanced('showleapsecbox', 'showleapsec')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Leap second configuration");?>

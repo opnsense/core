@@ -337,11 +337,11 @@ include_once("head.inc");
 												<td width="78%" class="vtable">
 													<p>
 														<select id="infra_host_ttl" name="infra_host_ttl" class="selectpicker">
-															<option value="60"  <?php if ($pconfig['infra_host_ttl'] == "60")  echo "selected=\"selected\""; ?>>1 minute</option>
-															<option value="120" <?php if ($pconfig['infra_host_ttl'] == "120") echo "selected=\"selected\""; ?>>2 minutes</option>
-															<option value="300" <?php if ($pconfig['infra_host_ttl'] == "300") echo "selected=\"selected\""; ?>>5 minutes</option>
-															<option value="600" <?php if ($pconfig['infra_host_ttl'] == "600") echo "selected=\"selected\""; ?>>10 minutes</option>
-															<option value="900" <?php if ($pconfig['infra_host_ttl'] == "900") echo "selected=\"selected\""; ?>>15 minutes</option>
+															<option value="60"  <?php if ($pconfig['infra_host_ttl'] == "60")  echo "selected=\"selected\""; ?>><?=gettext('1 minute') ?></option>
+															<option value="120" <?php if ($pconfig['infra_host_ttl'] == "120") echo "selected=\"selected\""; ?>><?=gettext('2 minutes') ?></option>
+															<option value="300" <?php if ($pconfig['infra_host_ttl'] == "300") echo "selected=\"selected\""; ?>><?=gettext('5 minutes') ?></option>
+															<option value="600" <?php if ($pconfig['infra_host_ttl'] == "600") echo "selected=\"selected\""; ?>><?=gettext('10 minutes') ?></option>
+															<option value="900" <?php if ($pconfig['infra_host_ttl'] == "900") echo "selected=\"selected\""; ?>><?=gettext('15 minutes') ?></option>
 														</select><br />
 														<?=gettext("Time to live for entries in the host cache. The host cache contains roundtrip timing and EDNS support information. The default is 15 minutes.");?>
 													</p>
@@ -352,11 +352,11 @@ include_once("head.inc");
 												<td width="78%" class="vtable">
 													<p>
 														<select id="infra_lame_ttl" name="infra_lame_ttl" class="selectpicker">
-															<option value="60"  <?php if ($pconfig['infra_lame_ttl'] == "60")  echo "selected=\"selected\""; ?>>1 minute</option>
-															<option value="120" <?php if ($pconfig['infra_lame_ttl'] == "120") echo "selected=\"selected\""; ?>>2 minutes</option>
-															<option value="300" <?php if ($pconfig['infra_lame_ttl'] == "300") echo "selected=\"selected\""; ?>>5 minutes</option>
-															<option value="600" <?php if ($pconfig['infra_lame_ttl'] == "600") echo "selected=\"selected\""; ?>>10 minutes</option>
-															<option value="900" <?php if ($pconfig['infra_lame_ttl'] == "900") echo "selected=\"selected\""; ?>>15 minutes</option>
+															<option value="60"  <?php if ($pconfig['infra_lame_ttl'] == "60")  echo "selected=\"selected\""; ?>><?=gettext('1 minute') ?></option>
+															<option value="120" <?php if ($pconfig['infra_lame_ttl'] == "120") echo "selected=\"selected\""; ?>><?=gettext('2 minutes') ?></option>
+															<option value="300" <?php if ($pconfig['infra_lame_ttl'] == "300") echo "selected=\"selected\""; ?>><?=gettext('5 minutes') ?></option>
+															<option value="600" <?php if ($pconfig['infra_lame_ttl'] == "600") echo "selected=\"selected\""; ?>><?=gettext('10 minutes') ?></option>
+															<option value="900" <?php if ($pconfig['infra_lame_ttl'] == "900") echo "selected=\"selected\""; ?>><?=gettext('15 minutes') ?></option>
 														</select><br />
 														<?=gettext("Time to live for when a delegation is considered to be lame. The default is 15 minutes.");?>
 													</p>
@@ -367,11 +367,11 @@ include_once("head.inc");
 												<td width="78%" class="vtable">
 													<p>
 														<select id="infra_cache_numhosts" name="infra_cache_numhosts" class="selectpicker">
-															<option value="1000"  <?php if ($pconfig['infra_cache_numhosts'] == "1000")  echo "selected=\"selected\""; ?>>1000</option>
-															<option value="5000"  <?php if ($pconfig['infra_cache_numhosts'] == "5000")  echo "selected=\"selected\""; ?>>5000</option>
-															<option value="10000" <?php if ($pconfig['infra_cache_numhosts'] == "10000") echo "selected=\"selected\""; ?>>10 000</option>
-															<option value="20000" <?php if ($pconfig['infra_cache_numhosts'] == "20000") echo "selected=\"selected\""; ?>>20 000</option>
-															<option value="50000" <?php if ($pconfig['infra_cache_numhosts'] == "50000") echo "selected=\"selected\""; ?>>50 000</option>
+															<option value="1000"  <?php if ($pconfig['infra_cache_numhosts'] == "1000")  echo "selected=\"selected\""; ?>><?=gettext('1000') ?></option>
+															<option value="5000"  <?php if ($pconfig['infra_cache_numhosts'] == "5000")  echo "selected=\"selected\""; ?>><?=gettext('5000') ?></option>
+															<option value="10000" <?php if ($pconfig['infra_cache_numhosts'] == "10000") echo "selected=\"selected\""; ?>><?=gettext('10 000') ?></option>
+															<option value="20000" <?php if ($pconfig['infra_cache_numhosts'] == "20000") echo "selected=\"selected\""; ?>><?=gettext('20 000') ?></option>
+															<option value="50000" <?php if ($pconfig['infra_cache_numhosts'] == "50000") echo "selected=\"selected\""; ?>><?=gettext('50 000') ?></option>
 														</select><br />
 														<?=gettext("Number of hosts for which information is cached. The default is 10,000.");?>
 													</p>
@@ -382,12 +382,12 @@ include_once("head.inc");
 												<td width="78%" class="vtable">
 													<p>
 														<select id="unwanted_reply_threshold" name="unwanted_reply_threshold" class="selectpicker">
-															<option value="disabled" <?php if ($pconfig['unwanted_reply_threshold'] == "disabled") echo "selected=\"selected\""; ?>>disabled</option>
-															<option value="5000000"  <?php if ($pconfig['unwanted_reply_threshold'] == "5000000")  echo "selected=\"selected\""; ?>>5 million</option>
-															<option value="10000000" <?php if ($pconfig['unwanted_reply_threshold'] == "10000000") echo "selected=\"selected\""; ?>>10 million</option>
-															<option value="20000000" <?php if ($pconfig['unwanted_reply_threshold'] == "20000000") echo "selected=\"selected\""; ?>>20 million</option>
-															<option value="40000000" <?php if ($pconfig['unwanted_reply_threshold'] == "40000000") echo "selected=\"selected\""; ?>>40 million</option>
-															<option value="50000000" <?php if ($pconfig['unwanted_reply_threshold'] == "50000000") echo "selected=\"selected\""; ?>>50 million</option>
+															<option value="disabled" <?php if ($pconfig['unwanted_reply_threshold'] == "disabled") echo "selected=\"selected\""; ?>><?=gettext('disabled') ?></option>
+															<option value="5000000"  <?php if ($pconfig['unwanted_reply_threshold'] == "5000000")  echo "selected=\"selected\""; ?>><?=gettext('5 million') ?></option>
+															<option value="10000000" <?php if ($pconfig['unwanted_reply_threshold'] == "10000000") echo "selected=\"selected\""; ?>><?=gettext('10 million') ?></option>
+															<option value="20000000" <?php if ($pconfig['unwanted_reply_threshold'] == "20000000") echo "selected=\"selected\""; ?>><?=gettext('20 million') ?></option>
+															<option value="40000000" <?php if ($pconfig['unwanted_reply_threshold'] == "40000000") echo "selected=\"selected\""; ?>><?=gettext('40 million') ?></option>
+															<option value="50000000" <?php if ($pconfig['unwanted_reply_threshold'] == "50000000") echo "selected=\"selected\""; ?>><?=gettext('50 million') ?></option>
 														</select><br />
 														<?=gettext("If enabled, a total number of unwanted replies is kept track of in every thread. When it reaches the threshold, a defensive action is taken and a warning is printed to the log file. This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison. The default is disabled, but if enabled a value of 10 million is suggested.");?>
 													</p>

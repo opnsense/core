@@ -136,7 +136,7 @@ include("head.inc");
 								<?php $serialports = glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE); ?>
 								<?php if (!empty($serialports)): ?>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Serial port</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Serial port') ?></td>
 											<td width="78%" class="vtable">
 												<select name="ppsport" class="formselect">
 													<option value="">none</option>
@@ -151,19 +151,19 @@ include("head.inc");
 										</tr>
 								<?php endif; ?>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Fudge time</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Fudge time') ?></td>
 											<td width="78%" class="vtable">
 												<input name="ppsfudge1" type="text" class="formfld unknown" id="ppsfudge1" min="-1" max="1" size="20" value="<?=htmlspecialchars(isset($pconfig['fudge1'])?$pconfig['fudge1']:"");?>" />(<?php echo gettext("seconds");?>)<br />
 												<?php echo gettext("Fudge time is used to specify the PPS signal offset from the actual second such as the transmission delay between the transmitter and the receiver.");?> (<?php echo gettext("default");?>: 0.0).</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Stratum</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Stratum') ?></td>
 											<td width="78%" class="vtable">
 												<input name="ppsstratum" type="text" class="formfld unknown" id="ppsstratum" max="16" size="20" value="<?=htmlspecialchars(isset($pconfig['stratum'])?$pconfig['stratum']:"");?>" /><?php echo gettext("(0-16)");?><br />
 												<?php echo gettext("This may be used to change the PPS Clock stratum");?> (<?php echo gettext("default");?>: 0). <?php echo gettext("This may be useful if, for some reason, you want ntpd to prefer a different clock and just monitor this source."); ?></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Flags</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Flags') ?></td>
 											<td width="78%" class="vtable">
 												<table summary="flags">
 													<tr>
@@ -201,7 +201,7 @@ include("head.inc");
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vncellreq">Clock ID</td>
+											<td width="22%" valign="top" class="vncellreq"><?=gettext('Clock ID') ?></td>
 											<td width="78%" class="vtable">
 												<input name="ppsrefid" type="text" class="formfld unknown" id="ppsrefid" maxlength= "4" size="20" value="<?php htmlspecialchars(isset($pconfig['refid'])?$pconfig['refid']:"");?>" /><?php echo gettext("(1 to 4 charactors)");?><br />
 												<?php echo gettext("This may be used to change the PPS Clock ID");?> (<?php echo gettext("default");?>: PPS).</td>

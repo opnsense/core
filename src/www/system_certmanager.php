@@ -931,7 +931,7 @@ else :
 													loaded = <?php echo $counter; ?>;
 												//]]>
 												</script>
-												<br />NOTE: Type must be one of DNS (FQDN or Hostname), IP (IP address), URI, or email.
+												<br /><?=gettext('NOTE: Type must be one of DNS (FQDN or Hostname), IP (IP address), URI, or email.') ?>
 											</td>
 										</tr>
 									</table>
@@ -1259,8 +1259,8 @@ else :
                                 <?php if (is_array($purpose)) :
 ?>
 									<tr><td colspan="2">
-										CA: <?php echo $purpose['ca']; ?>,
-										Server: <?php echo $purpose['server']; ?>
+										<?=gettext('CA:') ?> <?php echo $purpose['ca']; ?>,
+										<?=gettext('Server:') ?> <?php echo $purpose['server']; ?>
 									</td></tr>
 									<?php
 endif; ?>
@@ -1284,32 +1284,32 @@ endif; ?>
 						<td class="listr">
                         <?php if (is_cert_revoked($cert)) :
 ?>
-							<b>Revoked</b><br />
+							<b><?=gettext('Revoked') ?></b><br />
 							<?php
 endif; ?>
                         <?php if (is_webgui_cert($cert['refid'])) :
 ?>
-							webConfigurator<br />
+							<?=gettext('webConfigurator') ?><br />
 							<?php
 endif; ?>
                         <?php if (is_user_cert($cert['refid'])) :
 ?>
-							User Cert<br />
+							<?=gettext('User Cert') ?><br />
 							<?php
 endif; ?>
                         <?php if (is_openvpn_server_cert($cert['refid'])) :
 ?>
-							OpenVPN Server<br />
+							<?=gettext('OpenVPN Server') ?><br />
 							<?php
 endif; ?>
                         <?php if (is_openvpn_client_cert($cert['refid'])) :
 ?>
-							OpenVPN Client<br />
+							<?=gettext('OpenVPN Client') ?><br />
 							<?php
 endif; ?>
                         <?php if (is_ipsec_cert($cert['refid'])) :
 ?>
-							IPsec Tunnel<br />
+							<?=gettext('IPsec Tunnel') ?><br />
 							<?php
 endif; ?>
                         <?php if (is_captiveportal_cert($cert['refid'])) :
