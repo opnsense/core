@@ -72,7 +72,7 @@ if(is_numeric($_POST['logfiltercount'])) {
 
 <div id="system_log-widgets" class="content-box" style="overflow:scroll;">
 	<table class="table table-striped" cellspacing="0" cellpadding="0">
-		<?php dump_clog($system_logfile, $syslogEntriesToFetch, true, array(), array("ppp")); ?>
+		<?php dump_clog($system_logfile, $syslogEntriesToFetch); ?>
 	</table>
 </div>
 

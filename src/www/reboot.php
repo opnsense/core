@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -27,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("captiveportal.inc");
 require_once("system.inc");
 
 $pgtitle = array(gettext("Diagnostics"),gettext("Reboot System"));

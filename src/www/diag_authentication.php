@@ -1,6 +1,7 @@
 <?php
+
 /*
-    Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Ermal Luçi
 	All rights reserved.
 
@@ -28,7 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("PEAR.inc");
-require_once("radius.inc");
+require_once("interfaces.inc");
 
 function getUserGroups($username, $authcfg)
 {
@@ -101,7 +102,7 @@ include("head.inc");
                 <div class="content-box">
 
 					<header class="content-box-head container-fluid">
-				   <h3>Test a server</h3>
+				   <h3><?= gettext('Test a server') ?></h3>
 				</header>
 
 				    <div class="content-box-main">

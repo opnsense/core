@@ -131,7 +131,7 @@ include("head.inc"); ?>
 						        <tr>
 						          <td><?=gettext("Source Address"); ?></td>
 						          <td><select name="sourceip" class="form-control">
-											<option value="">Any</option>
+                      <option value=""><?= gettext('Any') ?></option>
 										<?php   $sourceips = get_possible_traffic_source_addresses(true);
 											foreach ($sourceips as $sip):
 												$selected = "";
@@ -150,7 +150,7 @@ include("head.inc"); ?>
 						          <td>
 							          <select name="ipprotocol" class="form-control">
 											<option value="any" <?php if ("any" == $ipprotocol) echo "selected=\"selected\""; ?>>
-												Any
+                        <?= gettext('Any') ?>
 											</option>
 											<option value="ipv4" <?php if ($ipprotocol == "ipv4") echo "selected=\"selected\""; ?>>
 												<?=gettext("IPv4");?>

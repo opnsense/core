@@ -508,7 +508,7 @@ include("head.inc");
                         <form action="services_dhcpv6.php" method="post" name="iform" id="iform">
 
 							<?php if ($dhcrelay_enabled): ?>
-								<p>DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.</p>
+              <p><?= gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.') ?></p>
 							<?php else: ?>
 
 						    <!--<ul class="nav nav-pills" role="tablist"><?php foreach ($tab_array as $tab): ?>

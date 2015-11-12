@@ -133,7 +133,7 @@ function enable_change(enable_over) {
                         <form action="services_dhcpv6_relay.php" method="post" name="iform" id="iform">
 
 				<?php if ($dhcpd_enabled): ?>
-								<p>DHCPv6 Server is currently enabled.  Cannot enable the DHCPv6 Relay service while the DHCPv6 Server is enabled on any interface.</p>
+                <p><?= gettext('DHCPv6 Server is currently enabled.  Cannot enable the DHCPv6 Relay service while the DHCPv6 Server is enabled on any interface.') ?></p>
 							<?php else: ?>
 
 							<header class="content-box-head container-fluid">
@@ -145,14 +145,14 @@ function enable_change(enable_over) {
 					<table class="table table-striped table-sort">
 
 									<tr>
-							                        <td width="22%" valign="top" class="vncellreq">Enable</td>
+                                      <td width="22%" valign="top" class="vncellreq"><?= gettext('Enable') ?></td>
 							                        <td width="78%" class="vtable">
 										<input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
 							                          <strong><?php printf(gettext("Enable DHCPv6 relay on interface"));?></strong>
 										</td>
 									</tr>
 									<tr>
-							                        <td width="22%" valign="top" class="vncellreq">Interface(s)</td>
+                                      <td width="22%" valign="top" class="vncellreq"><?= gettext('Interface(s)') ?></td>
 							                        <td width="78%" class="vtable">
 											<select id="interface" name="interface[]" multiple="multiple" class="formselect" size="3">
 										<?php

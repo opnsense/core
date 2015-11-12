@@ -260,9 +260,9 @@ include("fbegin.inc");
 					          <td><?=gettext("Address Family");?></td>
 					          <td>
 						          <select name="fam" class="form-control">
-											<option value="">Any</option>
-											<option value="ip" <?php if ($fam == "ip") echo "selected=\"selected\""; ?>>IPv4 Only</option>
-											<option value="ip6" <?php if ($fam == "ip6") echo "selected=\"selected\""; ?>>IPv6 Only</option>
+											<option value=""><?=gettext('Any') ?></option>
+                      <option value="ip" <?php if ($fam == "ip") echo "selected=\"selected\""; ?>><?= gettext('IPv4 Only') ?></option>
+                      <option value="ip6" <?php if ($fam == "ip6") echo "selected=\"selected\""; ?>><?= gettext('IPv6 Only') ?></option>
 										</select>
 										<p class="text-muted"><em><small><?=gettext("Select the type of traffic to be captured, either Any, IPv4 only or IPv6 only.");?></small></em></p>
 									</td>
@@ -271,20 +271,20 @@ include("fbegin.inc");
 					          <td><?=gettext("Protocol");?></td>
 					          <td>
 						          <select name="proto" class="form-control">
-											<option value="">Any</option>
-											<option value="icmp" <?php if ($proto == "icmp") echo "selected=\"selected\""; ?>>ICMP</option>
-											<option value="!icmp" <?php if ($proto == "!icmp") echo "selected=\"selected\""; ?>>Exclude ICMP</option>
-											<option value="icmp6" <?php if ($proto == "icmp6") echo "selected=\"selected\""; ?>>ICMPv6</option>
-											<option value="!icmp6" <?php if ($proto == "!icmp6") echo "selected=\"selected\""; ?>>Exclude ICMPv6</option>
-											<option value="tcp" <?php if ($proto == "tcp") echo "selected=\"selected\""; ?>>TCP</option>
-											<option value="!tcp" <?php if ($proto == "!tcp") echo "selected=\"selected\""; ?>>Exclude TCP</option>
-											<option value="udp" <?php if ($proto == "udp") echo "selected=\"selected\""; ?>>UDP</option>
-											<option value="!udp" <?php if ($proto == "!udp") echo "selected=\"selected\""; ?>>Exclude UDP</option>
-											<option value="arp" <?php if ($proto == "arp") echo "selected=\"selected\""; ?>>ARP</option>
-											<option value="!arp" <?php if ($proto == "!arp") echo "selected=\"selected\""; ?>>Exclude ARP</option>
-											<option value="carp" <?php if ($proto == "carp") echo "selected=\"selected\""; ?>>CARP (VRRP)</option>
-											<option value="!carp" <?php if ($proto == "!carp") echo "selected=\"selected\""; ?>>Exclude CARP (VRRP)</option>
-											<option value="esp" <?php if ($proto == "esp") echo "selected=\"selected\""; ?>>ESP</option>
+											<option value=""><?=gettext('Any') ?></option>
+                      <option value="icmp" <?php if ($proto == "icmp") echo "selected=\"selected\""; ?>><?= gettext('ICMP') ?></option>
+                      <option value="!icmp" <?php if ($proto == "!icmp") echo "selected=\"selected\""; ?>><?= gettext('Exclude ICMP') ?></option>
+                      <option value="icmp6" <?php if ($proto == "icmp6") echo "selected=\"selected\""; ?>><?= gettext('ICMPv6') ?></option>
+                      <option value="!icmp6" <?php if ($proto == "!icmp6") echo "selected=\"selected\""; ?>><?= gettext('Exclude ICMPv6') ?></option>
+                      <option value="tcp" <?php if ($proto == "tcp") echo "selected=\"selected\""; ?>><?= gettext('TCP') ?></option>
+                      <option value="!tcp" <?php if ($proto == "!tcp") echo "selected=\"selected\""; ?>><?= gettext('Exclude TCP') ?></option>
+                      <option value="udp" <?php if ($proto == "udp") echo "selected=\"selected\""; ?>><?= gettext('UDP') ?></option>
+                      <option value="!udp" <?php if ($proto == "!udp") echo "selected=\"selected\""; ?>><?= gettext('Exclude UDP') ?></option>
+                      <option value="arp" <?php if ($proto == "arp") echo "selected=\"selected\""; ?>><?= gettext('ARP') ?></option>
+                      <option value="!arp" <?php if ($proto == "!arp") echo "selected=\"selected\""; ?>><?= gettext('Exclude ARP') ?></option>
+                      <option value="carp" <?php if ($proto == "carp") echo "selected=\"selected\""; ?>><?= gettext('CARP (VRRP)') ?></option>
+                      <option value="!carp" <?php if ($proto == "!carp") echo "selected=\"selected\""; ?>><?= gettext('Exclude CARP (VRRP)') ?></option>
+                      <option value="esp" <?php if ($proto == "esp") echo "selected=\"selected\""; ?>><?= gettext('ESP') ?></option>
 										</select>
 										<p class="text-muted"><em><small><?=gettext("Select the protocol to capture, or Any.");?></small></em></p>
 					          </td>

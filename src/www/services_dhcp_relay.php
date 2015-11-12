@@ -137,7 +137,7 @@ function enable_change(enable_over) {
                         <form action="services_dhcp_relay.php" method="post" name="iform" id="iform">
 
 				<?php if ($dhcpd_enabled): ?>
-								<p>DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.</p>
+                <p><?= gettext('DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.') ?></p>
 							<?php else: ?>
 
 							<header class="content-box-head container-fluid">
@@ -148,14 +148,14 @@ function enable_change(enable_over) {
 						  <div class="table-responsive">
 					<table class="table table-striped table-sort">
 									<tr>
-							                        <td width="22%" valign="top" class="vncellreq">Enable</td>
+                                      <td width="22%" valign="top" class="vncellreq"><?= gettext('Enable') ?></td>
 							                        <td width="78%" class="vtable">
 										<input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
 							                          <strong><?php printf(gettext("Enable DHCP relay on interface"));?></strong>
 										</td>
 									</tr>
 									<tr>
-							                        <td width="22%" valign="top" class="vncellreq">Interface(s)</td>
+                                      <td width="22%" valign="top" class="vncellreq"><?= gettext('Interface(s)') ?></td>
 							                        <td width="78%" class="vtable">
 											<select id="interface" name="interface[]" multiple="multiple" class="formselect" size="3">
 										<?php
@@ -169,7 +169,7 @@ function enable_change(enable_over) {
 											}
 										?>
 							                                </select>
-											<br />Interfaces without an IP address will not be shown.
+                      <br /><?= gettext('Interfaces without an IP address will not be shown.') ?>
 										</td>
 									</tr>
 									<tr>
