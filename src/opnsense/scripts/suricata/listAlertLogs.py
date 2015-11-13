@@ -50,7 +50,10 @@ if __name__ == '__main__':
             # try to find actual timestamp from file
             for line in reverse_log_reader(filename=filename):
                 if line['line'] != '':
-                    record = ujson.loads(line['line'])
+                    try:
+                        record = ujson.loads(line['line'])
+                    except ValueError:
+                        continue
                     if 'timestamp' in record:
                         row['modified'] = int(time.mktime(datetime.datetime.strptime(record['timestamp'].split('.')[0],
                                                                                      "%Y-%m-%dT%H:%M:%S").timetuple()))
