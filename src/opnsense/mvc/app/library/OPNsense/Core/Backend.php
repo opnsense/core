@@ -29,6 +29,8 @@
  */
 namespace OPNsense\Core;
 
+use Phalcon\Logger\Adapter\Syslog;
+
 /**
  * Class Backend
  * @package OPNsense\Core
@@ -46,6 +48,21 @@ class Backend
      */
     public function __construct()
     {
+    }
+
+    /**
+     * get system logger
+     * @param string $ident syslog identifier
+     * @return Syslog log handler
+     */
+    protected function getLogger($ident = "configd")
+    {
+        $logger = new Syslog($ident, array(
+            'option' => LOG_PID,
+            'facility' => LOG_LOCAL4
+        ));
+
+        return $logger;
     }
 
     /**
@@ -67,14 +84,16 @@ class Backend
             sleep(1);
             $timeout_wait -= 1;
             if ($timeout_wait <= 0) {
-                throw new \Exception("failed waiting for configd (doesn't seem to be running)");
+                $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
+                return null;
             }
         }
 
         $resp = "";
         $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
         if ($stream === false) {
-            throw new \Exception("Failed to connect: $errorMessage");
+            $this->getLogger()->error("Failed to connect to configd socket: $errorMessage");
+            return null;
         }
 
         stream_set_timeout($stream, $poll_timeout);
@@ -97,7 +116,8 @@ class Backend
 
             // handle timeouts
             if ((time() - $starttime) > $timeout) {
-                throw new \Exception("Timeout (".$timeout.") executing :".$event);
+                $this->getLogger()->error("Timeout (".$timeout.") executing : ".$event);
+                return null;
             }
 
         }

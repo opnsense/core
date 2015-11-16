@@ -65,41 +65,19 @@ function cmp_page_matches($page, & $matches, $fullwc = true) {
 	return false;
 }
 
-
-function isAllowed($username, $page)
-{
-	global $_SESSION;
-
-	if (!isset($username)) {
-		return false;
-	}
-
-	/* root access check */
-	$user = getUserEntry($username);
-	if (isset($user)) {
-		if (isset($user['uid'])) {
-			if ($user['uid'] == 0) {
-				return true;
-			}
-		}
-	}
-
-	/* user privelege access check */
-	if (cmp_page_matches($page, $_SESSION['page-match'])) {
-		return true;
-	}
-
-	return false;
-}
-
 function isAllowedPage($page)
 {
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
 	if (!isset($_SESSION['Username'])) {
+		session_write_close();
 		return false;
 	}
 
 	/* root access check */
 	$user = getUserEntry($_SESSION['Username']);
+	session_write_close();
 	if (isset($user)) {
 		if (isset($user['uid'])) {
 			if ($user['uid'] == 0) {
@@ -109,7 +87,8 @@ function isAllowedPage($page)
 	}
 
 	/* user privelege access check */
-	return cmp_page_matches($page, $_SESSION['page-match']);
+	$allowedpages = getAllowedPages();
+	return cmp_page_matches($page, $allowedpages);
 }
 
 
@@ -136,7 +115,7 @@ function getPrivPages(& $entry, & $allowed_pages) {
 
 
 function getAllowedPages($username) {
-	global $config, $_SESSION;
+	global $config;
 
 	$allowed_pages = array();
 	$allowed_groups = array();
@@ -158,8 +137,6 @@ function getAllowedPages($username) {
 			}
 		}
 	}
-
-	$_SESSION['page-match'] = $allowed_pages;
 
 	return $allowed_pages;
 }
@@ -183,8 +160,10 @@ function session_auth() {
 	}
 
 	// Detect protocol change
-	if (!isset($_POST['login']) && !empty($_SESSION['Logged_In']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol'])
+	if (!isset($_POST['login']) && !empty($_SESSION['Logged_In']) && $_SESSION['protocol'] != $config['system']['webgui']['protocol']) {
+		session_write_close();
 		return false;
+	}
 
 	/* Validate incoming login request */
 	if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
@@ -205,26 +184,20 @@ function session_auth() {
 			if (!isset($config['system']['webgui']['quietlogin'])) {
 				log_error(sprintf(gettext("Successful login for user '%1\$s' from: %2\$s"), $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
 			}
-			if (isset($_POST['postafterlogin']))
-				return true;
-			else {
-				header("Location: {$_SERVER['REQUEST_URI']}");
-			}
+			header("Location: {$_SERVER['REQUEST_URI']}");
 			exit;
 		} else {
 			/* give the user an error message */
 			$_SESSION['Login_Error'] = gettext('Wrong username or password.');
 			log_error("webConfigurator authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
-			if (isAjax()) {
-				echo "showajaxmessage('{$_SESSION['Login_Error']}');";
-				return;
-			}
 		}
 	}
 
 	/* Show login page if they aren't logged in */
-	if (empty($_SESSION['Logged_In']))
-		return false;
+	if (empty($_SESSION['Logged_In'])) {
+			session_write_close();
+			return false;
+	}
 
 	/* If session timeout isn't set, we don't mark sessions stale */
 	if (!isset($config['system']['webgui']['session_timeout'])) {
@@ -232,11 +205,10 @@ function session_auth() {
 		if ($_SESSION['last_access'] < (time() - 14400)) {
 			$_GET['logout'] = true;
 			$_SESSION['Logout'] = true;
-		} else
+		} else {
 			$_SESSION['last_access'] = time();
+		}
 	} else if (intval($config['system']['webgui']['session_timeout']) == 0) {
-		/* only update if it wasn't ajax */
-		if (!isAjax())
 			$_SESSION['last_access'] = time();
 	} else {
 		/* Check for stale session */
@@ -244,25 +216,24 @@ function session_auth() {
 			$_GET['logout'] = true;
 			$_SESSION['Logout'] = true;
 		} else {
-			/* only update if it wasn't ajax */
-			if (!isAjax())
-				$_SESSION['last_access'] = time();
+			$_SESSION['last_access'] = time();
 		}
 	}
 
 	/* user hit the logout button */
 	if (isset($_GET['logout'])) {
-
-		if (isset($_SESSION['Logout']))
-			log_error(sprintf(gettext("Session timed out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
-		else
-			log_error(sprintf(gettext("User logged out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+		if (isset($_SESSION['Logout'])) {
+				log_error(sprintf(gettext("Session timed out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+		} else {
+				log_error(sprintf(gettext("User logged out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+		}
 
 		/* wipe out $_SESSION */
 		$_SESSION = array();
 
-		if (isset($_COOKIE[session_name()]))
-			setcookie(session_name(), '', time()-42000, '/');
+		if (isset($_COOKIE[session_name()])) {
+				setcookie(session_name(), '', time()-42000, '/');
+		}
 
 		/* and destroy it */
 		session_destroy();
@@ -271,15 +242,12 @@ function session_auth() {
 		$scriptElms = count($scriptName);
 		$scriptName = $scriptName[$scriptElms-1];
 
-		if (isAjax())
-			return false;
-
 		/* redirect to page the user is on, it'll prompt them to login again */
 		header("Location: {$scriptName}");
-
-		return false;
+		exit;
 	}
 
+	session_write_close();
 	return true;
 }
 
@@ -291,26 +259,22 @@ if (!session_auth()) {
 }
 
 /*
- * Once here, the user has authenticated with the web server.
- * We give them access only to the appropriate pages based on
- * the user or group privileges.
- */
-$allowedpages = getAllowedPages($_SESSION['Username']);
-
-/*
  * redirect to first allowed page if requesting a wrong url
  */
 if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    $allowedpages = getAllowedPages($_SESSION['Username']);
     if (count($allowedpages) > 0) {
         $page = str_replace('*', '', $allowedpages[0]);
-	header("Location: /{$page}");
-
         $username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $username .= '@' . $_SERVER['REMOTE_ADDR'];
         }
         log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
 
+        header("Location: /{$page}");
         exit;
     } else {
         display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
@@ -318,11 +282,6 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
     }
 }
 
-/*
- * Close session data to allow other scripts from same host to come in.
- * A session can be reactivated from calling session_start again
- */
-session_write_close();
 
 /*
  * determine if the user is allowed access to the requested page

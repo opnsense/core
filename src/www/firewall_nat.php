@@ -68,7 +68,7 @@ function delete_id($id, &$array){
     }
 }
 
-if (!is_array($config['nat']['rule'])) {
+if (!isset($config['nat']['rule']) || !is_array($config['nat']['rule'])) {
     $config['nat']['rule'] = array();
 }
 
