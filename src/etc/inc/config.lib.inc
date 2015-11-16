@@ -175,9 +175,6 @@ function write_config($desc = 'Unknown', $backup = true)
 				return false;
 			}
 		}
-	}
-
-	if (!isset($argc)) {
 		session_write_close();
 	}
 
