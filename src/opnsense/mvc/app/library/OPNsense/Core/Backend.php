@@ -92,7 +92,7 @@ class Backend
         $resp = "";
         $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
         if ($stream === false) {
-            $this->getLogger()->error("Failed to connect: $errorMessage");
+            $this->getLogger()->error("Failed to connect to configd socket: $errorMessage");
             return null;
         }
 
@@ -116,7 +116,7 @@ class Backend
 
             // handle timeouts
             if ((time() - $starttime) > $timeout) {
-                $this->getLogger()->error("Failed to connect: $errorMessage");
+                $this->getLogger()->error("Timeout (".$timeout.") executing : ".$event);
                 return null;
             }
 
