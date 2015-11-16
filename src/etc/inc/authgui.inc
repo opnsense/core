@@ -82,7 +82,8 @@ function isAllowedPage($page)
 	}
 
 	/* user privelege access check */
-	return cmp_page_matches($page, $_SESSION['page-match']);
+	$allowedpages = getAllowedPages();
+	return cmp_page_matches($page, $allowedpages);
 }
 
 
@@ -131,8 +132,6 @@ function getAllowedPages($username) {
 			}
 		}
 	}
-
-	$_SESSION['page-match'] = $allowed_pages;
 
 	return $allowed_pages;
 }
@@ -268,12 +267,12 @@ if (!session_auth()) {
  * We give them access only to the appropriate pages based on
  * the user or group privileges.
  */
-$allowedpages = getAllowedPages($_SESSION['Username']);
 
 /*
  * redirect to first allowed page if requesting a wrong url
  */
 if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
+    $allowedpages = getAllowedPages($_SESSION['Username']);
     if (count($allowedpages) > 0) {
         $page = str_replace('*', '', $allowedpages[0]);
 	header("Location: /{$page}");
