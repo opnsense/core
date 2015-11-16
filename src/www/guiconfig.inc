@@ -40,6 +40,11 @@ if (empty($nocsrf)) {
 		csrf_conf('expires', $timeout_minutes * 60);
 	}
 	require_once('csrf/csrf-magic.php');
+
+        // make sure the session is closed after executing csrf-magic
+        if (session_status() != PHP_SESSION_NONE) {
+            session_write_close();
+        }
 }
 
 function set_language($lang)
