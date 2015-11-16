@@ -1,30 +1,42 @@
 all:
 
-install:
-.for TREE in ${TREES}
-	@mkdir -p ${DESTDIR}${ROOT}
-	@cp -vr ${TREE} ${DESTDIR}${ROOT}
+TREES_=${TREES}
+ROOT_=${ROOT}
+
+.for TARGET in _ ${EXTRA:C/.*/_&/g}
+
+install${TARGET}: force
+.for TREE in ${TREES${TARGET}}
+	@mkdir -p ${DESTDIR}${ROOT${TARGET}}
+	REALTARGET=/$$(dirname ${TREE}); \
+	cp -vr ${TREE} ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
 		if [ $${FILE%%.in} != $${FILE} ]; then \
 			sed -i '' \
 			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
 			    -e "s=%%CORE_REPOSITORY%%=${CORE_REPOSITORY}=g" \
-			    ${DESTDIR}${ROOT}/${TREE}/$${FILE}; \
-			mv -v ${DESTDIR}${ROOT}/${TREE}/$${FILE} \
-			    ${DESTDIR}${ROOT}/${TREE}/$${FILE%%.in}; \
+			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}; \
+			mv -v ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE} \
+			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.in}; \
 		fi \
 	done
 .endfor
 
-plist:
-.for TREE in ${TREES}
+plist${TARGET}: force
+.for TREE in ${TREES${TARGET}}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ $${FILE%%.sample} != $${FILE} ]; then \
 			PREFIX="@sample "; \
 		fi; \
-		echo "$${PREFIX}${ROOT}/${TREE}/$${FILE}"; \
+		echo "$${PREFIX}${ROOT${TARGET}}/${TREE}/$${FILE}"; \
 	done
 .endfor
 
-.PHONY: install plist
+.endfor
+
+install: install_
+plist: plist_
+force:
+
+.PHONY: force
