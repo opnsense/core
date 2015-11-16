@@ -65,33 +65,6 @@ function cmp_page_matches($page, & $matches, $fullwc = true) {
 	return false;
 }
 
-
-function isAllowed($username, $page)
-{
-	global $_SESSION;
-
-	if (!isset($username)) {
-		return false;
-	}
-
-	/* root access check */
-	$user = getUserEntry($username);
-	if (isset($user)) {
-		if (isset($user['uid'])) {
-			if ($user['uid'] == 0) {
-				return true;
-			}
-		}
-	}
-
-	/* user privelege access check */
-	if (cmp_page_matches($page, $_SESSION['page-match'])) {
-		return true;
-	}
-
-	return false;
-}
-
 function isAllowedPage($page)
 {
 	if (!isset($_SESSION['Username'])) {
