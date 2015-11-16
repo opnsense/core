@@ -224,7 +224,7 @@ $( document ).ready(function() {
 
            if (isset($config['pppoes']['pppoe'])) {
              foreach ($config['pppoes']['pppoe'] as $pppoes) {
-               if (($pppoes['mode'] == 'server') && have_ruleint_access('pppoe')) {
+               if (($pppoes['mode'] == 'server')) {
                  $iflist_tabs['pppoe'] = "PPPoE Server";
                }
              }
