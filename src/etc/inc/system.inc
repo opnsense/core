@@ -1061,7 +1061,7 @@ EOD;
 	if ($realmem < 78)
 		$max_php_children = 0;
 	else
-		$max_php_children = 1;
+		$max_php_children = 5;
 
 	if(!isset($config['syslog']['nologlighttpd'])) {
 		$lighty_use_syslog = <<<EOD
@@ -1082,7 +1082,7 @@ fastcgi.server = ( ".php" =>
 			"max-procs" => {$max_procs},
 			"bin-environment" => (
 				"PHP_FCGI_CHILDREN" => "{$max_php_children}",
-				"PHP_FCGI_MAX_REQUESTS" => "500"
+				"PHP_FCGI_MAX_REQUESTS" => "100"
 			),
 			"bin-path" => "/usr/local/bin/php-cgi"
 		)
