@@ -18,7 +18,12 @@ install${TARGET}: force
 			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}; \
 			mv -v ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE} \
 			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.in}; \
-		fi \
+		fi; \
+		FILE="$${FILE%%.in}"; \
+		if [ -n "${NO_SAMPLE}" -a $${FILE%%.sample} != $${FILE} ]; then \
+			mv -v ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE} \
+			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.sample}; \
+		fi; \
 	done
 .endfor
 
@@ -26,8 +31,11 @@ plist${TARGET}: force
 .for TREE in ${TREES${TARGET}}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
-		if [ $${FILE%%.sample} != $${FILE} ]; then \
+		if [ -z "${NO_SAMPLE}" -a $${FILE%%.sample} != $${FILE} ]; then \
 			PREFIX="@sample "; \
+		fi; \
+		if [ -n "${NO_SAMPLE}" ]; then \
+			FILE="$${FILE%%.sample}"; \
 		fi; \
 		echo "$${PREFIX}${ROOT${TARGET}}/${TREE}/$${FILE}"; \
 	done
