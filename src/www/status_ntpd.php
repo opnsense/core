@@ -193,7 +193,7 @@ include("head.inc");
 								</td></tr>
 								<?php elseif (count($ntpq_servers) == 0): ?>
 								<tr><td class="listlr" colspan="11" align="center">
-									<?= sprintf(gettext('No peers found %sis the ntp service running?%s'), '<a href="status_services.php">','</a>') ?>
+									<?= sprintf(gettext('No peers found, %sis the ntp service running%s?'), '<a href="status_services.php">','</a>') ?>
 								</td></tr>
 								<?php else: ?>
 								<?php $i = 0; foreach ($ntpq_servers as $server): ?>
