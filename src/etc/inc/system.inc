@@ -1049,20 +1049,6 @@ EOD;
 	else
 		$lighty_port = $port;
 
-	$memory = get_memory();
-	$realmem = $memory[1];
-
-	// Determine web GUI process settings and take into account low memory systems
-	if ($realmem < 255)
-		$max_procs = 1;
-	else
-		$max_procs = ($config['system']['webgui']['max_procs']) ? $config['system']['webgui']['max_procs'] : 2;
-
-	if ($realmem < 78)
-		$max_php_children = 0;
-	else
-		$max_php_children = 5;
-
 	if(!isset($config['syslog']['nologlighttpd'])) {
 		$lighty_use_syslog = <<<EOD
 ## where to send error-messages to
@@ -1079,9 +1065,9 @@ fastcgi.server = ( ".php" =>
 	( "localhost" =>
 		(
 			"socket" => "{$fast_cgi_path}",
-			"max-procs" => {$max_procs},
+			"max-procs" => 2,
 			"bin-environment" => (
-				"PHP_FCGI_CHILDREN" => "{$max_php_children}",
+				"PHP_FCGI_CHILDREN" => "3",
 				"PHP_FCGI_MAX_REQUESTS" => "100"
 			),
 			"bin-path" => "/usr/local/bin/php-cgi"
