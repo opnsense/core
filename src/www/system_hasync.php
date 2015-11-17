@@ -129,10 +129,10 @@ include("head.inc");
 							<input id='pfsyncenabled' type='checkbox' name='pfsyncenabled' value='on' <?php if ($pconfig['pfsyncenabled'] === "on") {
                                 echo "checked='checked'";
 } ?> />
-							<?=gettext('pfsync transfers state insertion, update, and deletion messages between firewalls.') ?><br/>
-							<?=gettext('Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol') ?> <a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank"><?=gettext('(IP Protocol 240)') ?></a>.
-							<br/><?=gettext('It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.') ?>
-							<br/><?=gettext('This setting should be enabled on all members of a failover group.') ?>
+							<?= sprintf(gettext('pfsync transfers state insertion, update, and deletion messages between firewalls.%s' .
+                'Each firewall sends these messages out via multicast on a specified interface, using the PFSYNC protocol (%sIP Protocol 240%s).%s' .
+							  'It also listens on that interface for similar messages from other firewalls, and imports them into the local state table.%s' .
+                'This setting should be enabled on all members of a failover group.'), '<br/>','<a href="http://www.openbsd.org/faq/pf/carp.html" target="_blank">','</a>','<br/>','<br/>') ?>
 							<div class="well well-sm" ><b><?=gettext('Clicking save will force a configuration sync if it is enabled! (see Configuration Synchronization Settings below)') ?></b></div>
 						</td>
 					</tr>
