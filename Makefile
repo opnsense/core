@@ -1,4 +1,5 @@
 PKG!=		which pkg || echo true
+GIT!=		which git || echo true
 PAGER?=		less
 
 all:
@@ -18,9 +19,11 @@ umount: force
 
 remount: umount mount
 
+.if ${GIT} != true
 CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
 CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
+.endif
 
 .if "${FLAVOUR}" == LibreSSL
 CORE_REPOSITORY?=	libressl
@@ -197,6 +200,6 @@ health: force
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
 clean:
-	git reset --hard HEAD && git clean -xdqf .
+	${GIT} reset --hard HEAD && ${GIT} clean -xdqf .
 
 .PHONY: force
