@@ -7,8 +7,8 @@ ROOT_=${ROOT}
 
 install${TARGET}: force
 .for TREE in ${TREES${TARGET}}
-	@mkdir -p ${DESTDIR}${ROOT${TARGET}}
-	REALTARGET=/$$(dirname ${TREE}); \
+	@REALTARGET=/$$(dirname ${TREE}); \
+	mkdir -p ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}; \
 	cp -vr ${TREE} ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
 		if [ $${FILE%%.in} != $${FILE} ]; then \

@@ -157,6 +157,11 @@ install: force
 	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
+bootstrap: force
+	@${MAKE} -C ${.CURDIR}/src install_bootstrap DESTDIR=${DESTDIR} \
+	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
+	    CORE_REPOSITORY=${CORE_REPOSITORY}
+
 plist: force
 	@${MAKE} -C ${.CURDIR}/contrib plist
 	@${MAKE} -C ${.CURDIR}/lang plist
