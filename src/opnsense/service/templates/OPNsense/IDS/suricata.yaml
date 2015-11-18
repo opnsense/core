@@ -311,7 +311,7 @@ netmap:
   - interface: default
     threads: auto
     copy-mode: ips
-    disable-promisc: no
+    disable-promisc: yes
     checksum-checks: auto
 
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
