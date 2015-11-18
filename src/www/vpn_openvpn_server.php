@@ -786,7 +786,7 @@ function tuntap_change() {
                                                         $auth_servers = auth_get_authserver_list();
                                                         foreach ($auth_servers as $auth_key => $auth_server) :
                                                                 $selected = "";
-                                                            if (in_array($auth_server['name'], $authmodes)) {
+                                                            if (in_array($auth_key, $authmodes)) {
                                                                     $selected = "selected=\"selected\"";
                                                             }
                                                         ?>
