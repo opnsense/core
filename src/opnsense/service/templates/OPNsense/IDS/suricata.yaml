@@ -18,7 +18,7 @@
 # Runmode the engine should use. Please check --list-runmodes to get the available
 # runmodes for each packet acquisition method. Defaults to "autofp" (auto flow pinned
 # load balancing).
-#runmode: autofp
+runmode: workers
 
 # Specifies the kind of flow load balancer used by the flow pinned autofp mode.
 #
@@ -37,7 +37,7 @@
 # If set to auto, the variable is internally switch to 'router' in IPS mode
 # and 'sniffer-only' in IDS mode.
 # This feature is currently only used by the reject* keywords.
-host-mode: sniffer-only
+#host-mode: sniffer-only
 
 # Run suricata as user and group.
 #run-as:
@@ -306,6 +306,22 @@ nflog:
     qtimeout: 100
     # netlink max buffer size
     max-size: 20000
+
+netmap:
+  - interface: default
+    threads: auto
+    copy-mode: ips
+    disable-promisc: no
+    checksum-checks: auto
+
+    {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
+
+  - interface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}
+    copy-iface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}+
+
+  - interface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}+
+    copy-iface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}
+    {% endfor %}
 
 legacy:
   uricontent: enabled
@@ -902,6 +918,24 @@ app-layer:
       enabled: yes
       detection-ports:
         dp: 139
+    # Note: Modbus probe parser is minimalist due to the poor significant field
+    # Only Modbus message length (greater than Modbus header length)
+    # And Protocol ID (equal to 0) are checked in probing parser
+    # It is important to enable detection port and define Modbus port
+    # to avoid false positive
+    modbus:
+      # How many unreplied Modbus requests are considered a flood.
+      # If the limit is reached, app-layer-event:modbus.flooded; will match.
+      #request-flood: 500
+
+      enabled: yes
+      detection-ports:
+        dp: 502
+      # According to MODBUS Messaging on TCP/IP Implementation Guide V1.0b, it
+      # is recommended to keep the TCP connection opened with a remote device
+      # and not to open and close it for each MODBUS/TCP transaction. In that
+      # case, it is important to set the depth of the stream reassembling as
+      # unlimited (stream.reassembly.depth: 0)
     # smb2 detection is disabled internally inside the engine.
     #smb2:
     #  enabled: yes
