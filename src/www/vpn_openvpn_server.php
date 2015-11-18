@@ -784,17 +784,14 @@ function tuntap_change() {
                                                             $authmodes = array();
                                                         }
                                                         $auth_servers = auth_get_authserver_list();
-                                                        foreach ($auth_servers as $auth_server) :
+                                                        foreach ($auth_servers as $auth_key => $auth_server) :
                                                                 $selected = "";
                                                             if (in_array($auth_server['name'], $authmodes)) {
                                                                     $selected = "selected=\"selected\"";
                                                             }
                                                         ?>
-                                                        <option value="<?=htmlspecialchars($auth_server['name']);
-?>" <?=$selected;
-?>><?=htmlspecialchars($auth_server['name']);?></option>
-                                                        <?php
-                                                        endforeach; ?>
+                                                        <option value="<?=htmlspecialchars($auth_key); ?>" <?=$selected; ?>><?=htmlspecialchars($auth_server['name']);?></option>
+                                                        <?php endforeach; ?>
                                                         </select>
        </td>
                     </tr>
