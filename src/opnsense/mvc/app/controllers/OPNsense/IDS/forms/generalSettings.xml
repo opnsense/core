@@ -6,6 +6,12 @@
         <help>enable IDS</help>
     </field>
     <field>
+        <id>ids.general.ips</id>
+        <label>IPS mode</label>
+        <type>checkbox</type>
+        <help>enable protection mode (block traffic)</help>
+    </field>
+    <field>
         <id>ids.general.interfaces</id>
         <label>interfaces</label>
         <type>select_multiple</type>

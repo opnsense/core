@@ -33,6 +33,10 @@
                 <default>0</default>
                 <Required>Y</Required>
             </enabled>
+            <ips type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </ips>
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
                 <default>wan</default>
