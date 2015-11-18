@@ -36,7 +36,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 $type = 'cache';
-if (isset($_GET['type']) && $_GET['type'] === 'access') {
+if (isset($_GET['type']) && ($_GET['type'] === 'access' || $_GET['type'] === 'store')) {
 	$type = $_GET['type'];
 }
 

@@ -39,6 +39,7 @@ if ($tab_group == 'vpn') {
 } else {
 	$tab_array[] = array(gettext('Cache'), true, '/diag_logs_proxy.php?type=cache');
 	$tab_array[] = array(gettext('Access'), false, '/diag_logs_proxy.php?type=access');
+	$tab_array[] = array(gettext('Store'), false, '/diag_logs_proxy.php?type=store');
 }
 
 ?><ul class="nav nav-pills" role="tablist">

@@ -71,6 +71,7 @@ function clear_all_log_files()
 	$log_files = array(
 		'squid/access',
 		'squid/cache',
+		'squid/store',
 	);
 
 	foreach ($log_files as $lfile) {
