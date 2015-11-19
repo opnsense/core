@@ -1,4 +1,5 @@
 <?php
+
 /*
         Copyright (C) 2014 Deciso B.V.
         Copyright (C) 2007 Scott Dale
@@ -32,9 +33,20 @@ $nocsrf = true;
 
 require_once("guiconfig.inc");
 
-//function to create widget tabs when called
-function display_widget_tabs(& $tab_array) {
+$ipsec_detail_array = array();
+$ipsec_tunnels = array();
+$mobile = array();
+
+if (isset($config['ipsec']['phase1'])) {
+    echo "<div>&nbsp;</div>\n";
+
+    $tab_array = array();
+    $tab_array[] = array(gettext("Overview"), true, "ipsec-Overview");
+    $tab_array[] = array(gettext("Tunnels"), false, "ipsec-tunnel");
+    $tab_array[] = array(gettext("Mobile"), false, "ipsec-mobile");
+
     echo "<div id=\"tabs\">";
+
     $tabscounter = 0;
     foreach ($tab_array as $ta) {
         $dashpos = strpos($ta[2],'-');
@@ -58,23 +70,12 @@ function display_widget_tabs(& $tab_array) {
         echo "&nbsp;&nbsp;&nbsp;</b>";
         echo "</div>";
     }
-}
 
-$ipsec_detail_array = array();
-
-if (isset($config['ipsec']['phase1'])) {
-    echo "<div>&nbsp;</div>\n";
-    $tab_array = array();
-    $tab_array[0] = array(gettext("Overview"), true, "ipsec-Overview");
-    $tab_array[1] = array(gettext("Tunnels"), false, "ipsec-tunnel");
-    $tab_array[2] = array(gettext("Mobile"), false, "ipsec-mobile");
-    display_widget_tabs($tab_array);
-    // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )  ipsec_dump_mobile();
-    $mobile = array();
+    // TODO: temporary disabled ( https://github.com/opnsense/core/issues/139 )
+    //$mobile = ipsec_dump_mobile();
 
     // parse configured tunnels
     $ipsec_status = json_decode(configd_run("ipsec list_status"), true);
-    $ipsec_tunnels = array();
     $activetunnels = 0;
     if ($ipsec_status != null) {
         foreach ($ipsec_status as $status_key => $status_value) {
