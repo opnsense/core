@@ -55,7 +55,8 @@ class IndexController extends ControllerBase
             $this->response->setJsonContent(
                 array('message' => $message,
                       'status'  => 400
-            ));
+                )
+            );
         } else {
             $this->getLogger()->error($message);
             $this->response->redirect("/", true);
