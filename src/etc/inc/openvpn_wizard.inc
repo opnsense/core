@@ -61,13 +61,14 @@ function step2_stepbeforeformdisplay() {
 	$found = false;
 	$authlist = auth_get_authserver_list();
 	$fields[1]['options']['option'] = array();
-	foreach ($authlist as $i => $auth) {
-		if ($auth['type'] != "ldap")
+	foreach ($authlist as $key => $auth) {
+		if ($auth['type'] != 'ldap') {
 			continue;
+		}
 		$found = true;
 		$opts = array();
 		$opts['name'] = $auth['name'];
-		$opts['value'] = $auth['name'];
+		$opts['value'] = $key;
 		$fields[1]['options']['option'][] = $opts;
 	}
 	if ($found == false) {
@@ -123,13 +124,14 @@ function step4_stepbeforeformdisplay() {
 	$found = false;
 	$authlist = auth_get_authserver_list();
 	$fields[1]['options']['option'] = array();
-	foreach ($authlist as $i => $auth) {
-		if ($auth['type'] != "radius")
+	foreach ($authlist as $key => $auth) {
+		if ($auth['type'] != 'radius') {
 			continue;
+		}
 		$found = true;
 		$opts = array();
 		$opts['name'] = $auth['name'];
-		$opts['value'] = $auth['name'];
+		$opts['value'] = $key;
 		$fields[1]['options']['option'][] = $opts;
 	}
 	if ($found == false)
