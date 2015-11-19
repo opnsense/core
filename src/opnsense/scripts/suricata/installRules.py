@@ -74,10 +74,18 @@ if __name__ == '__main__':
 
                 # generate altered rule
                 if 'enabled' in rule_updates[rule_info_record['metadata']['sid']]:
+                    # enabled / disabled in configuration
                     if (rule_updates[rule_info_record['metadata']['sid']]['enabled']) == '0':
                         rule = ('#%s' % rule[i:])
                     else:
                         rule = rule[i:]
+                if 'action' in rule_updates[rule_info_record['metadata']['sid']]:
+                    # (new) action in configuration
+                    new_action = rule_updates[rule_info_record['metadata']['sid']]['action']
+                    if rule[0] == '#':
+                        rule = '#%s %s' % (new_action, ' '.join(rule.split(' ')[1:]))
+                    else:
+                        rule = '%s %s' % (new_action, ' '.join(rule.split(' ')[1:]))
 
             output_data.append(rule)
 
