@@ -33,7 +33,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 
-
 /****f* itemid/delete_id (duplicate to remove itemid.inc)
  * NAME
  *   delete_id - delete an item with ['id'] = $id from $array
@@ -43,12 +42,14 @@ require_once("filter.inc");
  * RESULT
  *   boolean   - true if item was found and deleted
  ******/
-function delete_id($id, &$array){
+function delete_id($id, &$array)
+{
     // Index to delete
     $delete_index = NULL;
 
-    if (!is_array($array))
+    if (!isset($array)) {
         return false;
+    }
 
     // Search for the item in the array
     foreach ($array as $key => $item){
