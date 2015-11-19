@@ -59,6 +59,16 @@ class ArrayField extends BaseField
     }
 
     /**
+     * retrieve read only template with defaults (copy of internal structure)
+     * @return null|BaseField template node
+     */
+    public function getTemplateNode()
+    {
+        $result = clone $this->internalTemplateNode;
+        return $result;
+    }
+
+    /**
      * add new node containing the types from the first node (copy)
      * @return ContainerField created node
      * @throws \Exception
