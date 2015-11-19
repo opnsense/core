@@ -43,7 +43,7 @@ class RuleCache(object):
     def __init__(self):
         # suricata rule settings, source directory and cache json file to use
         self.cachefile = '%srules.sqlite' % rule_source_directory
-        self._rule_fields = ['sid', 'msg', 'classtype', 'rev', 'gid', 'source', 'enabled', 'reference']
+        self._rule_fields = ['sid', 'msg', 'classtype', 'rev', 'gid', 'source', 'enabled', 'reference', 'action']
         self._rule_defaults = {'classtype': '##none##'}
 
     @staticmethod
@@ -67,6 +67,9 @@ class RuleCache(object):
                 record = {'enabled': True, 'source': filename.split('/')[-1]}
                 if rule.strip()[0] == '#':
                     record['enabled'] = False
+                    record['action'] = rule.strip()[1:].split(' ')[0].replace('#', '')
+                else:
+                    record['action'] = rule.strip().split(' ')[0]
 
                 rule_metadata = rule[rule.find('msg:'):-1]
                 for field in rule_metadata.split(';'):
@@ -137,8 +140,8 @@ class RuleCache(object):
         cur = db.cursor()
         cur.execute('CREATE TABLE stats (timestamp number, files number)')
         cur.execute("""CREATE TABLE rules (sid number, msg TEXT, classtype TEXT,
-                                           rev INTEGER, gid INTEGER,reference TEXT,
-                                           enabled BOOLEAN,source TEXT)""")
+                                           rev INTEGER, gid INTEGER, reference TEXT,
+                                           enabled BOOLEAN, action text, source TEXT)""")
 
         last_mtime = 0
         all_rule_files = self.list_local()
