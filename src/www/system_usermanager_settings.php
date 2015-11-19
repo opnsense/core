@@ -144,21 +144,17 @@ if ($save_and_test) {
 													<select name='authmode' id='authmode' class="selectpicker" data-style="btn-default" >
 				<?php
                                                     $auth_servers = auth_get_authserver_list();
-                foreach ($auth_servers as $auth_server) :
-                    $selected = "";
-                    if ($auth_server['name'] == $pconfig['authmode']) {
-                        $selected = "selected=\"selected\"";
+                foreach ($auth_servers as $auth_key => $auth_server) :
+                    $selected = '';
+                    if ($auth_key == $pconfig['authmode']) {
+                        $selected = 'selected="selected"';
                     }
-                    if (!isset($pconfig['authmode']) && $auth_server['name'] == "Local Database") {
-                        $selected = "selected=\"selected\"";
+                    if (!isset($pconfig['authmode']) && $auth_key == 'Local Database') {
+                        $selected = 'selected="selected"';
                     }
                 ?>
-                    <option value="<?=$auth_server['name'];
-?>" <?=$selected;
-?>><?=$auth_server['name'];?></option>
-				<?php
-                endforeach;
-                ?>
+                    <option value="<?=$auth_key; ?>" <?=$selected; ?>><?=$auth_server['name'];?></option>
+				<?php endforeach; ?>
 													</select>
 												</td>
 											</tr>
