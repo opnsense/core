@@ -14,6 +14,14 @@
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
+                <action type="OptionField">
+                    <Required>Y</Required>
+                    <default>alert</default>
+                    <OptionValues>
+                        <alert>Alert</alert>
+                        <drop>Drop</drop>
+                    </OptionValues>
+                </action>
             </rule>
         </rules>
         <files>

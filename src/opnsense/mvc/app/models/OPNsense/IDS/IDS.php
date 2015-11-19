@@ -42,7 +42,12 @@ class IDS extends BaseModel
     private $sid_list = array();
 
     /**
-     * update internal cache of sid's
+     * @var array internal list of all known actions (key/value)
+     */
+    private $action_list = array();
+
+    /**
+     * update internal cache of sid's and actions
      */
     private function updateSIDlist()
     {
@@ -50,12 +55,14 @@ class IDS extends BaseModel
             foreach ($this->rules->rule->__items as $NodeKey => $NodeValue) {
                 $this->sid_list[$NodeValue->sid->__toString()] = $NodeValue;
             }
+            // list of known actions and defaults
+            $this->action_list = $this->rules->rule->getTemplateNode()->action->getNodeData();
         }
     }
 
     /**
      * get new or existing rule
-     * @param $sid
+     * @param string $sid unique id
      * @return mixed
      */
     private function getRule($sid)
@@ -71,7 +78,7 @@ class IDS extends BaseModel
 
     /**
      * enable rule
-     * @param $sid
+     * @param string $sid unique id
      */
     public function enableRule($sid)
     {
@@ -81,7 +88,7 @@ class IDS extends BaseModel
 
     /**
      * disable rule
-     * @param $sid
+     * @param string $sid unique id
      */
     public function disableRule($sid)
     {
@@ -90,8 +97,18 @@ class IDS extends BaseModel
     }
 
     /**
+     * set new action for selected rule
+     * @param string $sid  unique id
+     */
+    public function setAction($sid, $action)
+    {
+        $rule = $this->getRule($sid);
+        $rule->action = $action;
+    }
+
+    /**
      * remove rule by sid
-     * @param $sid
+     * @param string $sid unique id
      */
     public function removeRule($sid)
     {
@@ -107,8 +124,8 @@ class IDS extends BaseModel
 
     /**
      * retrieve current altered rule status
-     * @param $sid
-     * @param $default default value
+     * @param string $sid unique id
+     * @param string $default default value
      * @return default, 0, 1 ( default, true, false)
      */
     public function getRuleStatus($sid, $default)
@@ -119,7 +136,51 @@ class IDS extends BaseModel
         } else {
             return $default;
         }
+    }
 
+    /**
+     * retrieve current (altered) rule action
+     * @param string $sid unique id
+     * @param string $default default value
+     * @param bool $response_plain response as text ot model (select list)
+     * @return default, <action value> ( default, true, false)
+     */
+    public function getRuleAction($sid, $default, $response_plain = false)
+    {
+        $this->updateSIDlist();
+        if (array_key_exists($sid, $this->sid_list)) {
+            if (!$response_plain) {
+                return $this->sid_list[$sid]->action->getNodeData();
+            } else {
+                $act = (string)$this->sid_list[$sid]->action;
+                if (array_key_exists($act, $this->action_list)) {
+                    return $this->action_list[$act]['value'];
+                } else {
+                    return $act;
+                }
+            }
+        } elseif (!$response_plain) {
+            // generate selection for new field
+            $default_types = $this->action_list ;
+            if ( array_key_exists($default, $default_types)) {
+                foreach ($default_types as $key => $value) {
+                    if ($key ==  $default) {
+                        $default_types[$key]['selected'] = 1;
+                    } else {
+                        $default_types[$key]['selected'] = 0;
+                    }
+                }
+            }
+            // select default
+            return $default_types;
+        } else {
+            // return plaintext default
+            if (array_key_exists($default, $this->action_list)) {
+                return $this->action_list[$default]['value'];
+            } else {
+                return $default;
+            }
+        }
     }
 
     /**
