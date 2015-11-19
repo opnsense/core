@@ -210,6 +210,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/getRuleInfo/',
+                            set:'/api/ids/settings/setRule/',
                             options:{
                                 requestHandler:addRuleFilters,
                                 rowCount:[10, 25, 50,100,500,1000] ,
@@ -441,6 +442,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="sid" data-type="numeric" data-visible="true" data-identifier="true" data-width="6em">{{ lang._('sid') }}</th>
+                <th data-column-id="action" data-type="string">{{ lang._('Action') }}</th>
                 <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                 <th data-column-id="classtype" data-type="string">{{ lang._('ClassType') }}</th>
                 <th data-column-id="msg" data-type="string">{{ lang._('Message') }}</th>
@@ -523,5 +525,5 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'false','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'true','msgzone_width':1])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':'Alert details','hasSaveBtn':'false','msgzone_width':1])}}

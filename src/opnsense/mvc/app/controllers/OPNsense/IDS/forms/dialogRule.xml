@@ -29,4 +29,10 @@
         <label>Reference</label>
         <type>info</type>
     </field>
+    <field>
+        <id>action</id>
+        <label>Action</label>
+        <type>dropdown</type>
+        <help>set action to perform here, only used when in IPS mode</help>
+    </field>
 </form>
