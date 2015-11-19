@@ -122,6 +122,7 @@ class SettingsController extends ApiControllerBase
                 foreach ($result['rows'] as &$row) {
                     $row['enabled_default'] = $row['enabled'];
                     $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
+                    $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action'], true);
                 }
 
                 $result['rowCount'] = count($result['rows']);
@@ -155,7 +156,9 @@ class SettingsController extends ApiControllerBase
             $row = $data['rows'][0];
             // set current enable status (default + registered offset)
             $row['enabled_default'] = $row['enabled'];
+            $row['action_default'] = $row['action'];
             $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
+            $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action']);
             //
             if (isset($row['reference']) && $row['reference'] != '') {
                 // browser friendly reference data
@@ -297,8 +300,8 @@ class SettingsController extends ApiControllerBase
 
     /**
      * toggle rule enable status
-     * @param $sids
-     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @param string $sids unique id
+     * @param string|int $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array empty
      */
     public function toggleRuleAction($sids, $enabled = null)
@@ -321,7 +324,10 @@ class SettingsController extends ApiControllerBase
                         $new_state = 0;
                     }
 
-                    if ($ruleinfo['enabled_default'] == $new_state) {
+                    if ($ruleinfo['enabled_default'] == $new_state &&
+                        array_key_exists($ruleinfo['action_default'], $ruleinfo['action']) &&
+                        $ruleinfo['action'][$ruleinfo['action_default']]['selected'] == 1
+                        ) {
                         // if we're switching back to default, remove alter rule
                         $this->getModel()->removeRule($sid);
                     } elseif ($new_state == 1) {
@@ -338,6 +344,47 @@ class SettingsController extends ApiControllerBase
             }
         }
         return array();
+    }
+
+    /**
+     * set rule action
+     * @param $sid item unique id
+     * @return array
+     */
+    public function setRuleAction($sid)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost() && $this->request->hasPost("action")) {
+            $ruleinfo = $this->getRuleInfoAction($sid);
+            $newAction = $this->request->getPost("action", "striptags", null);
+            if (count($ruleinfo) > 0) {
+                $mdlIDS = $this->getModel();
+                if ($ruleinfo['enabled_default'] == $ruleinfo['enabled'] &&
+                    $ruleinfo['action_default'] == $newAction
+                    ) {
+                    // if we're switching back to default, remove alter rule
+                    $mdlIDS->removeRule($sid);
+                } else {
+                    $mdlIDS->setAction($sid, $newAction);
+                }
+                // perform validation
+                $valMsgs = $mdlIDS->performValidation();
+                foreach ($valMsgs as $field => $msg) {
+                    if (!array_key_exists("validations", $result)) {
+                        $result["validations"] = array();
+                    }
+                    $result["validations"]["ids.".$msg->getField()] = $msg->getMessage();
+                }
+
+                // serialize model to config and save
+                if ($valMsgs->count() == 0) {
+                    $mdlIDS->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result["result"] = "saved";
+                }
+            }
+        }
+        return $result;
     }
 
     /**
