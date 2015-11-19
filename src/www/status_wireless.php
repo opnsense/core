@@ -187,9 +187,8 @@ if(empty($if)) {
 								</table>
 				</div>
 
-				<b>Flags:</b> A = authorized, E = Extended Rate (802.11g), P = Power save mode<br />
-	<b>Capabilities:</b> E = ESS (infrastructure mode), I = IBSS (ad-hoc mode), P = privacy (WEP/TKIP/AES),
-		S = Short preamble, s = Short slot time
+				<b><?=gettext('Flags:') ?></b> <?= sprintf(gettext('A = authorized, E = Extended Rate (802.11g), P = Power save mode%s'),'<br />') ?>
+				<b><?=gettext('Capabilities:') ?></b> <?=gettext('E = ESS (infrastructure mode), I = IBSS (ad-hoc mode), P = privacy (WEP/TKIP/AES), S = Short preamble, s = Short slot time') ?>
                         </form>
 				</div>
 			    </section>
