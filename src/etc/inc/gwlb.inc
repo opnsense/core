@@ -899,7 +899,8 @@ function return_gateway_groups_array()
 
 function lookup_gateway_ip_by_name($name) {
 
-	$gateways_arr = return_gateways_array(false, true);
+	$gateways_arr = return_gateways_array(true, true);
+
 	foreach ($gateways_arr as $gname => $gw) {
 		if ($gw['name'] === $name || $gname === $name)
 			return $gw['gateway'];
