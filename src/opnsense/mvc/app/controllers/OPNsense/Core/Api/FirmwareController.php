@@ -51,21 +51,21 @@ class FirmwareController extends ApiControllerBase
 
         if ($response != null) {
             if (array_key_exists('connection', $response) && $response['connection'] == 'error') {
-                $response['status_msg'] = 'Connection error.';
+                $response['status_msg'] = gettext('Connection error.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
-                $response['status_msg'] = 'Repository problem.';
+                $response['status_msg'] = gettext('Repository problem.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
-                $response['status_msg'] = 'There are no updates available.';
+                $response['status_msg'] = gettext('There are no updates available.');
                 $response['status'] = 'none';
             } elseif (array_key_exists(0, $response['upgrade_packages']) &&
                 $response['upgrade_packages'][0]['name'] == 'pkg') {
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] =
-                    'There is a mandatory update for the package manager available. ' .
-                    'Please install and fetch updates again.';
+                    gettext('There is a mandatory update for the package manager available. ') .
+                    gettext('Please install and fetch updates again.');
             } elseif (array_key_exists('updates', $response)) {
                 $response['status_upgrade_action'] = 'all';
                 $response['status'] = 'ok';
@@ -79,12 +79,12 @@ class FirmwareController extends ApiControllerBase
                     $response['status_msg'] = sprintf(
                         '%s %s',
                         $response['status_msg'],
-                        'This update requires a reboot.'
+                        gettext('This update requires a reboot.')
                     );
                 }
             }
         } else {
-            $response = array('status' => 'unknown', 'status_msg' => 'Current status is unknown.');
+            $response = array('status' => 'unknown', 'status_msg' => gettext('Current status is unknown.'));
         }
 
         return $response;
