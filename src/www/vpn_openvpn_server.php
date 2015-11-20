@@ -1165,14 +1165,14 @@ endif; ?>
                         <table border="0" cellpadding="2" cellspacing="0" summary="certificate depth">
                         <tr><td>
                         <select name="cert_depth" class="form-control">
-                          <option value="">Do Not Check</option>
+                          <option value=""><?=gettext('Do Not Check') ?></option>
                             <?php
                                                     $openvpn_cert_depths = array(
-                                                      1 => "One (Client+Server)",
-                                                      2 => "Two (Client+Intermediate+Server)",
-                                                      3 => "Three (Client+2xIntermediate+Server)",
-                                                      4 => "Four (Client+3xIntermediate+Server)",
-                                                      5 => "Five (Client+4xIntermediate+Server)"
+                                                      1 => gettext('One (Client+Server)'),
+                                                      2 => gettext('Two (Client+Intermediate+Server)'),
+                                                      3 => gettext('Three (Client+2xIntermediate+Server)'),
+                                                      4 => gettext('Four (Client+3xIntermediate+Server)'),
+                                                      5 => gettext('Five (Client+4xIntermediate+Server)')
                                                     );
                                                     foreach ($openvpn_cert_depths as $depth => $depthdesc) :
                                                         $selected = "";
