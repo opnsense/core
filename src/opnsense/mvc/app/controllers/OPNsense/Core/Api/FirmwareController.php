@@ -64,8 +64,10 @@ class FirmwareController extends ApiControllerBase
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
                 $response['status_msg'] =
-                    gettext('There is a mandatory update for the package manager available. ') .
-                    gettext('Please install and fetch updates again.');
+                    gettext(
+                      'There is a mandatory update for the package manager available. ' .
+                      'Please install and fetch updates again.'
+                    );
             } elseif (array_key_exists('updates', $response)) {
                 $response['status_upgrade_action'] = 'all';
                 $response['status'] = 'ok';
