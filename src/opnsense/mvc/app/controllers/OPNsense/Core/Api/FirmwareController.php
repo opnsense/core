@@ -73,9 +73,9 @@ class FirmwareController extends ApiControllerBase
                 $response['status'] = 'ok';
                 if ($response['updates'] == 1) {
                     /* keep this dynamic for template translation even though %s is always '1' */
-                    $response['status_msg'] = sprintf('There is %s update available.', $response['updates']);
+                    $response['status_msg'] = sprintf(gettext('There is %s update available.'), $response['updates']);
                 } else {
-                    $response['status_msg'] = sprintf('There are %s updates available.', $response['updates']);
+                    $response['status_msg'] = sprintf(gettext('There are %s updates available.'), $response['updates']);
                 }
                 if ($response['upgrade_needs_reboot'] == 1) {
                     $response['status_msg'] = sprintf(
