@@ -335,7 +335,7 @@ function download_begin(act, i, j) {
 
 	if (document.getElementById("useaddr").value == "other") {
 		if (document.getElementById("useaddr_hostname").value == "") {
-			alert("Please specify an IP address or hostname.");
+			alert("<?=gettext('Please specify an IP address or hostname.') ?>'");
 			return;
 		}
 		useaddr = document.getElementById("useaddr_hostname").value;
@@ -364,11 +364,11 @@ function download_begin(act, i, j) {
 	var conf = document.getElementById("conf").value;
 	if (usepass && (act.substring(0,4) == "inst")) {
 		if (!pass || !conf) {
-			alert("The password or confirm field is empty");
+			alert("<?=gettext('The password or confirm field is empty') ?>");
 			return;
 		}
 		if (pass != conf) {
-			alert("The password and confirm fields must match");
+			alert("<?=gettext('The password and confirm fields must match') ?>");
 			return;
 		}
 	}
@@ -382,7 +382,7 @@ function download_begin(act, i, j) {
 	var proxyport = document.getElementById("proxyport").value;
 	if (useproxy) {
 		if (!proxyaddr || !proxyport) {
-			alert("The proxy ip and port cannot be empty");
+			alert("<?=gettext('The proxy ip and port cannot be empty') ?>");
 			return;
 		}
 
@@ -397,15 +397,15 @@ function download_begin(act, i, j) {
 		var proxyconf = document.getElementById("proxyconf").value;
 		if (useproxypass) {
 			if (!proxyuser) {
-				alert("Please fill the proxy username and password.");
+				alert("<?=gettext('Please fill the proxy username and password.') ?>");
 				return;
 			}
 			if (!proxypass || !proxyconf) {
-				alert("The proxy password or confirm field is empty");
+				alert("<?=gettext('The proxy password or confirm field is empty') ?>");
 				return;
 			}
 			if (proxypass != proxyconf) {
-				alert("The proxy password and confirm fields must match");
+				alert("<?=gettext('The proxy password and confirm fields must match') ?>");
 				return;
 			}
 		}
