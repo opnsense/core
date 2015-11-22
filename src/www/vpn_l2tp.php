@@ -88,12 +88,6 @@ if ($_POST) {
             $input_errors[] = gettext("A valid RADIUS server address must be specified.");
         }
 
-        /* if this is an AJAX caller then handle via JSON */
-        if (isAjax() && is_array($input_errors)) {
-            input_errors2Ajax($input_errors);
-            exit;
-        }
-
         if (!$input_errors) {
             $_POST['remoteip'] = $pconfig['remoteip'] = gen_subnet($_POST['remoteip'], $_POST['l2tp_subnet']);
             $subnet_start = ip2ulong($_POST['remoteip']);
@@ -107,12 +101,6 @@ if ($_POST) {
                 $input_errors[] = gettext("The specified server address is equal to the LAN interface address.");
             }
         }
-    }
-
-    /* if this is an AJAX caller then handle via JSON */
-    if (isAjax() && is_array($input_errors)) {
-        input_errors2Ajax($input_errors);
-        exit;
     }
 
     if (!$input_errors) {
@@ -175,11 +163,6 @@ if ($_POST) {
         $retval = 0;
         $retval = vpn_l2tp_configure();
         $savemsg = get_std_save_message();
-
-        /* if ajax is calling, give them an update message */
-        if (isAjax()) {
-            print_info_box($savemsg);
-        }
     }
 }
 
