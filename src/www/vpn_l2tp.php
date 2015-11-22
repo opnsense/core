@@ -103,12 +103,6 @@ if ($_POST) {
         }
     }
 
-    /* if this is an AJAX caller then handle via JSON */
-    if (isAjax() && is_array($input_errors)) {
-        input_errors2Ajax($input_errors);
-        exit;
-    }
-
     if (!$input_errors) {
         $l2tpcfg['remoteip'] = $_POST['remoteip'];
         $l2tpcfg['localip'] = $_POST['localip'];
@@ -169,11 +163,6 @@ if ($_POST) {
         $retval = 0;
         $retval = vpn_l2tp_configure();
         $savemsg = get_std_save_message();
-
-        /* if ajax is calling, give them an update message */
-        if (isAjax()) {
-            print_info_box($savemsg);
-        }
     }
 }
 
