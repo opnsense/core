@@ -290,10 +290,6 @@ function display_error_form($http_code, $desc)
 {
     global $config, $g;
     $g['theme'] = get_current_theme();
-    if (isAjax()) {
-        printf(gettext('Error: %s, Description: %s'), $http_code, $desc);
-        return;
-    }
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
@@ -338,11 +334,6 @@ function display_login_form()
     $g['theme'] = get_current_theme();
 
     unset($input_errors);
-
-
-    if (isAjax()) {
-        exit;
-    }
 
     /* Check against locally configured IP addresses, which will catch when someone
        port forwards WebGUI access from WAN to an internal IP on the router. */
