@@ -1231,18 +1231,6 @@ function unmute_kernel_msgs()
 	exec('/sbin/conscontrol mute off');
 }
 
-/****f* util/isAjax
- * NAME
- *   isAjax - reports if the request is driven from prototype
- * INPUTS
- *   none
- * RESULT
- *   true/false
- ******/
-function isAjax() {
-	return isset ($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest';
-}
-
 /****f* util/msort
  * NAME
  *   msort - sort array
