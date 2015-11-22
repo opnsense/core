@@ -88,12 +88,6 @@ if ($_POST) {
             $input_errors[] = gettext("A valid RADIUS server address must be specified.");
         }
 
-        /* if this is an AJAX caller then handle via JSON */
-        if (isAjax() && is_array($input_errors)) {
-            input_errors2Ajax($input_errors);
-            exit;
-        }
-
         if (!$input_errors) {
             $_POST['remoteip'] = $pconfig['remoteip'] = gen_subnet($_POST['remoteip'], $_POST['l2tp_subnet']);
             $subnet_start = ip2ulong($_POST['remoteip']);
