@@ -658,28 +658,7 @@ function get_crash_report($pedantic = false)
 
 function redirectHeader($text)
 {
-        global $_SERVER;
-
-	if (isAjax()) {
-                if ($_SERVER['HTTPS'] == 'on') {
-                        $protocol = 'https';
-                } else {
-                        $protocol = 'http';
-		}
-
-		$port = '';
-
-		if (
-			!($_SERVER['SERVER_PORT'] == '80' && $protocol == 'http') &&
-			!($_SERVER['SERVER_PORT'] == '443' && $protocol == 'https')
-		) {
-			$port = ":{$_SERVER['SERVER_PORT']}";
-		}
-
-		echo "\ndocument.location.href = '{$protocol}://{$_SERVER['SERVER_NAME']}{$port}/{$text}';\n";
-	} else {
-		header("Location: $text");
-	}
+	header("Location: $text");
 }
 
 
