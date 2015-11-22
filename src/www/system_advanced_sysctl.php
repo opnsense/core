@@ -76,12 +76,6 @@ if ($_POST) {
     unset($input_errors);
     $pconfig = $_POST;
 
-    /* if this is an AJAX caller then handle via JSON */
-    if (isAjax() && is_array($input_errors)) {
-        input_errors2Ajax($input_errors);
-        exit;
-    }
-
     if ($_POST['apply']) {
         $retval = 0;
         system_setup_sysctl();
