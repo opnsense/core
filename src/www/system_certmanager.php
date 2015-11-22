@@ -514,12 +514,6 @@ if ($_POST) {
             $subject_mismatch = true;
         }
 
-        /* if this is an AJAX caller then handle via JSON */
-        if (isAjax() && is_array($input_errors)) {
-            input_errors2Ajax($input_errors);
-            exit;
-        }
-
         /* save modifications */
         if (!$input_errors) {
             $cert = $a_cert[$id];
