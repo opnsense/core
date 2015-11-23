@@ -251,8 +251,12 @@ function prefill_provider() {
 				jQuery('#phone').val('*99#');
 				jQuery('#apn').val(provider.getElementsByTagName('apn')[0].firstChild.data);
 			}
-			jQuery('#username').val(provider.getElementsByTagName('username')[0].firstChild.data);
-			jQuery('#password').val(provider.getElementsByTagName('password')[0].firstChild.data);
+			if (provider.getElementsByTagName('username')[0].firstChild != null) {
+				jQuery('#username').val(provider.getElementsByTagName('username')[0].firstChild.data);
+			}
+			if (provider.getElementsByTagName('password')[0].firstChild != null) {
+				jQuery('#password').val(provider.getElementsByTagName('password')[0].firstChild.data);
+			}
 		}
 	});
 }

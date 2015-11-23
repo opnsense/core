@@ -1743,12 +1743,9 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 			success: function(response) {
 				var responseTextArr = response.split("\n");
 				responseTextArr.sort();
-				responseTextArr.each( function(value) {
-					var option = new Element('option');
-					country = value.split(":");
-					option.text = country[0];
-					option.value = country[1];
-					jQuery('#country').append(option);
+				jQuery.each(responseTextArr, function(index, value) {
+					country = value.split(':');
+					jQuery('#country').append(new Option(country[0], country[1]));
 				});
 			}
 		});
@@ -1764,11 +1761,8 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 			success: function(response) {
 				var responseTextArr = response.split("\n");
 				responseTextArr.sort();
-				responseTextArr.each( function(value) {
-					var option = new Element('option');
-					option.text = value;
-					option.value = value;
-					jQuery('#provider_list').append(option);
+				jQuery.each(responseTextArr, function(index, value) {
+					jQuery('#provider_list').append(new Option(value, value));
 				});
 			}
 		});
@@ -1778,21 +1772,20 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 
 	function providerplan_list() {
 		jQuery('#providerplan').children().remove();
-		jQuery('#providerplan').append( new Element('option') );
-		jQuery.ajax("getserviceproviders.php",{
+		jQuery('#providerplan').append(new Option('', ''));
+		jQuery.ajax('getserviceproviders.php', {
 			type: 'post',
 			data: {country : jQuery('#country').val(), provider : jQuery('#provider_list').val()},
 			success: function(response) {
 				var responseTextArr = response.split("\n");
 				responseTextArr.sort();
-				responseTextArr.each( function(value) {
-					if(value != "") {
-						providerplan = value.split(":");
-
-						var option = new Element('option');
-						option.text = providerplan[0] + " - " + providerplan[1];
-						option.value = providerplan[1];
-						jQuery('#providerplan').append(option);
+				jQuery.each(responseTextArr, function(index, value) {
+					if (value != '') {
+						providerplan = value.split(':');
+						jQuery('#providerplan').append(new Option(
+							providerplan[0] + ' - ' + providerplan[1],
+							providerplan[1]
+						));
 					}
 				});
 			}
@@ -1816,10 +1809,12 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 					jQuery('#phone').val('*99#');
 					jQuery('#apn').val(provider.getElementsByTagName('apn')[0].firstChild.data);
 				}
-				username = provider.getElementsByTagName('username')[0].firstChild.data;
-				password = provider.getElementsByTagName('password')[0].firstChild.data;
-				jQuery('#username').val(username);
-				jQuery('#password').val(password);
+				if (provider.getElementsByTagName('username')[0].firstChild != null) {
+					jQuery('#username').val(provider.getElementsByTagName('username')[0].firstChild.data);
+				}
+				if (provider.getElementsByTagName('password')[0].firstChild != null) {
+					jQuery('#password').val(provider.getElementsByTagName('password')[0].firstChild.data);
+				}
 			}
 		});
 	}
@@ -2816,7 +2811,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr id="trcountry">
 																		<td><?=gettext("Country:"); ?> </td>
 																		<td>
-																			<select class="selectpicker" data-style="btn-default" name="country" id="country" onchange="providers_list()">
+																			<select class="form-control" name="country" id="country" onchange="providers_list()">
 																				<option></option>
 																			</select>
 																		</td>
@@ -2824,7 +2819,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr id="trprovider" style="display:none">
 																		<td><?=gettext("Provider:"); ?> &nbsp;&nbsp;</td>
 																		<td>
-																			<select class="selectpicker" data-style="btn-default" name="provider_list" id="provider_list" onchange="providerplan_list()">
+																			<select class="form-control" name="provider_list" id="provider_list" onchange="providerplan_list()">
 																				<option></option>
 																			</select>
 																		</td>
@@ -2832,7 +2827,7 @@ $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"),
 																	<tr id="trproviderplan" style="display:none">
 																		<td><?=gettext("Plan:"); ?> &nbsp;&nbsp;</td>
 																		<td>
-																			<select class="selectpicker" data-style="btn-default" name="providerplan" id="providerplan" onchange="prefill_provider()">
+																			<select class="form-control" name="providerplan" id="providerplan" onchange="prefill_provider()">
 																				<option></option>
 																			</select>
 																		</td>
