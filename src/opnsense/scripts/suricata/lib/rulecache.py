@@ -138,7 +138,13 @@ class RuleCache(object):
 
         db = sqlite3.connect(self.cachefile)
         cur = db.cursor()
-        cur.execute('CREATE TABLE stats (timestamp number, files number)')
+
+        # if another process created the file, exit.
+        cur.execute("select count(*) from sqlite_master where name = 'stats'")
+        if cur.fetchall()[0][0] > 0:
+            return None
+
+        cur.execute("CREATE TABLE stats (timestamp number, files number)")
         cur.execute("""CREATE TABLE rules (sid number, msg TEXT, classtype TEXT,
                                            rev INTEGER, gid INTEGER, reference TEXT,
                                            enabled BOOLEAN, action text, source TEXT)""")
