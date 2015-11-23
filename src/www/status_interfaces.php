@@ -119,7 +119,7 @@ include("head.inc");
 										<input type="hidden" name="status" value="<?php echo $ifinfo['dhcp6link']; ?>" />
 										<?=htmlspecialchars($ifinfo['dhcp6link']);?>&nbsp;&nbsp;
 										<?php $action = ($ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew")); ?>
-										<input type="submit" name="submit" class="formbtn" value="<?php echo $action; ?>" />
+										<input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?php echo $action; ?>" />
 									</form>
 								</td>
 							</tr>
@@ -132,7 +132,7 @@ include("head.inc");
 										<input type="hidden" name="status" value="<?php echo $ifinfo['pppoelink']; ?>" />
 										<?=htmlspecialchars($ifinfo['pppoelink']);?>&nbsp;&nbsp;
 										<?php $action = ($ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect")); ?>
-										<input type="submit" name="submit" class="formbtn" value="<?php echo $action; ?>" />
+										<input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?php echo $action; ?>" />
 									</form>
 								</td>
 							</tr>
@@ -145,7 +145,7 @@ include("head.inc");
 										<input type="hidden" name="status" value="<?php echo $ifinfo['pptplink']; ?>" />
 										<?=htmlspecialchars($ifinfo['pptplink']);?>&nbsp;&nbsp;
 										<?php $action = ($ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect")); ?>
-										<input type="submit" name="submit" class="formbtn" value="<?php echo $action; ?>" />
+										<input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?php echo $action; ?>" />
 									</form>
 								</td>
 							</tr>
@@ -158,7 +158,7 @@ include("head.inc");
 										<input type="hidden" name="status" value="<?php echo $ifinfo['l2tplink']; ?>" />
 										<?=htmlspecialchars($ifinfo['l2tplink']);?>&nbsp;&nbsp;
 										<?php $action = ($ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect")); ?>
-										<input type="submit" name="submit" class="formbtn" value="<?php echo $action; ?>" />
+										<input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?php echo $action; ?>" />
 									</form>
 								</td>
 							</tr>
@@ -171,10 +171,10 @@ include("head.inc");
 										<input type="hidden" name="status" value="<?php echo $ifinfo['ppplink']; ?>" />
 										<?=htmlspecialchars($ifinfo['pppinfo']);?>
 										<?php if ($ifinfo['ppplink'] == "up"): ?>
-											<input type="submit" name="submit" class="formbtn" value="<?php echo gettext("Disconnect"); ?>" />
+											<input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?php echo gettext("Disconnect"); ?>" />
 										<?php else: ?>
 											<?php if (!$ifinfo['nodevice']): ?>
-												<input type="submit" name="submit" class="formbtn" value="<?php echo gettext("Connect"); ?>" />
+												<input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?php echo gettext("Connect"); ?>" />
 											<?php endif; ?>
 										<?php endif; ?>
 									</form>
