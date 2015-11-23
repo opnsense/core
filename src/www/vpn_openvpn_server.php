@@ -1675,16 +1675,13 @@ endif; ?>
                         <select name="verbosity_level" class="form-control">
                         <?php
                         foreach ($openvpn_verbosity_level as $verb_value => $verb_desc) :
-                            $selected = "";
+                            $selected = '';
                             if ($pconfig['verbosity_level'] == $verb_value) {
-                                $selected = "selected=\"selected\"";
+                                $selected = 'selected="selected"';
                             }
                         ?>
-                        <option value="<?=$verb_value;
-?>" <?=$selected;
-?>><?=$verb_desc;?></option>
-                        <?php
-                        endforeach; ?>
+                        <option value="<?=$verb_value; ?>" <?=$selected; ?>><?=$verb_desc;?></option>
+                        <?php endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_verbosity_level">
                             <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output"); ?>.<br /> <br />
