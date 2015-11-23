@@ -249,6 +249,12 @@
         <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php">
             <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
         </PPPoEServer>
+        <PPTP cssClass="fa fa-unlock">
+            <Settings url="/vpn_pptp.php"/>
+            <Users url="/vpn_pptp_users.php">
+                <Edit url="/vpn_pptp_users_edit.php*"/>
+            </Users>
+        </PPTP>
         <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt">
             <Administration url="/ui/proxy/"/>
             <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
@@ -311,12 +317,6 @@
             </Server>
             <Status VisibleName="Connection Status" url="/status_openvpn.php"/>
         </OpenVPN>
-        <PPTP cssClass="fa fa-road">
-            <Settings url="/vpn_pptp.php"/>
-            <Users url="/vpn_pptp_users.php">
-                <Edit url="/vpn_pptp_users_edit.php*"/>
-            </Users>
-        </PPTP>
     </VPN>
     <Help order="6" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
