@@ -31,18 +31,18 @@
 
 global $openvpn_verbosity_level;
 $openvpn_verbosity_level = array(
-	0 =>	"none",
-	1 =>	"default",
-	2 =>	"2",
-	3 =>	"3 (recommended)",
-	4 =>	"4",
-	5 =>	"5",
-	6 =>	"6",
-	7 =>	"7",
-	8 =>	"8",
-	9 =>	"9",
-	10 =>	"10",
-	11 =>	"11"
+	0 => gettext('0 (none)'),
+	1 => gettext('1 (default)'),
+	2 => gettext('2'),
+	3 => gettext('3 (recommended)'),
+	4 => gettext('4'),
+	5 => gettext('5'),
+	6 => gettext('6'),
+	7 => gettext('7'),
+	8 => gettext('8'),
+	9 => gettext('9'),
+	10 => gettext('10'),
+	11 => gettext('11'),
 );
 
 /*
