@@ -109,8 +109,13 @@ require_once("interfaces.inc");
 ?><?=htmlspecialchars($ifinfo['status']);
 }?>
 							<td class="listr">
-								<div id="<?php echo $ifname;
-?>" style="display:inline"><?=htmlspecialchars($ifinfo['media']);?></div>
+								<div id="<?php echo $ifname; ?>" style="display:inline"><?php
+									$media = $ifinfo['media'];
+									if (empty($media)) {
+										$media = $ifinfo['cell_mode'];
+									}
+									echo htmlspecialchars($media);
+								?></div>
 							</td>
 							<td class="vncellt">
 								<?php if ($ifinfo['ipaddr'] != "") {
