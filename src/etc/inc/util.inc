@@ -1115,9 +1115,19 @@ function format_bytes($bytes) {
 	}
 }
 
-function update_filter_reload_status($text)
+function update_filter_reload_status($text, $first = false)
 {
-	file_put_contents('/var/run/filter_reload_status', $text);
+	$filter_reload_status = '/var/run/filter_reload_status';
+
+	if ($first) {
+		@unlink($filter_reload_status);
+	}
+
+	file_put_contents(
+		$filter_reload_status,
+		sprintf("%s: %s\n", microtime(true), $text),
+		FILE_APPEND
+	);
 }
 
 /****** util/return_dir_as_array
