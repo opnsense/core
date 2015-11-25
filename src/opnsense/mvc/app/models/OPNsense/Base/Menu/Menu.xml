@@ -4,7 +4,7 @@
         <Logout url="/index.php?logout" cssClass="fa fa-sign-out"/>
     </User>
     <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
-        <CertificateManager VisibleName="Certificate Manager" cssClass="fa fa-certificate">
+        <CertificateManager order="120" VisibleName="Certificate Manager" cssClass="fa fa-certificate">
             <Certificates url="/system_certmanager.php">
                 <workAround url="/system_certmanager.php*"/>
             </Certificates>
@@ -15,26 +15,26 @@
                 <workAround url="/system_crlmanager.php*"/>
             </Revocation>
         </CertificateManager>
-        <ConfigManager VisibleName="Config Manager" cssClass="fa fa-book">
+        <ConfigManager order="80" VisibleName="Config Manager" cssClass="fa fa-book">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*"/>
             </History>
             <Backups url="/diag_backup.php"/>
         </ConfigManager>
-        <CrashReporter VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug"/>
-        <Firmware url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
-        <Health url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
-        <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh">
+        <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug"/>
+        <Firmware order="5" url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
+        <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
+        <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh">
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
         </HighAvailability>
-        <Routes cssClass="fa fa-wrench">
+        <Routes order="40" cssClass="fa fa-wrench">
             <All url="/system_routes.php">
                 <Edit url="/system_routes_edit.php*"/>
             </All>
             <Status url="/diag_routes.php"/>
         </Routes>
-        <Gateways cssClass="fa fa-location-arrow">
+        <Gateways order="30" cssClass="fa fa-location-arrow">
             <All url="/system_gateways.php">
                 <Edit url="/system_gateways_edit.php*"/>
             </All>
@@ -45,7 +45,7 @@
                 <Groups url="/status_gateway_groups.php"/>
             </Status>
         </Gateways>
-        <LogFiles VisibleName="Log Files" cssClass="fa fa-eye">
+        <LogFiles order="160" VisibleName="Log Files" cssClass="fa fa-eye">
             <General url="/diag_logs.php"/>
             <Gateways url="/diag_logs_gateways.php"/>
             <Routing url="/diag_logs_routing.php"/>
@@ -57,7 +57,7 @@
                 <Type url="/diag_logs_vpn.php*"/>
             </VPN>
         </LogFiles>
-        <Settings cssClass="fa fa-cogs">
+        <Settings order="20" cssClass="fa fa-cogs">
             <General order="100" url="/system_general.php"/>
             <AdminAccess VisibleName="Admin Access" order="200" url="/system_advanced_admin.php"/>
             <Networking order="300" url="/system_advanced_network.php"/>
@@ -67,10 +67,10 @@
             <Miscellaneous order="700" url="/system_advanced_misc.php"/>
             <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php"/>
         </Settings>
-        <Wizard url="/wizard.php" cssClass="fa fa-magic">
+        <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>
         </Wizard>
-        <Users cssClass="fa fa-users">
+        <Users order="10" cssClass="fa fa-users">
             <All url="/system_usermanager.php">
                 <All url="/system_usermanager.php*"/>
                 <Privileges url="/system_usermanager_addprivs.php*"/>
@@ -83,7 +83,7 @@
             </Servers>
             <Settings url="/system_usermanager_settings.php"/>
         </Users>
-        <Diagnostics order="900" cssClass="fa fa-medkit">
+        <Diagnostics order="150" cssClass="fa fa-medkit">
             <Activity VisibleName="Activity Monitor" url="/diag_system_activity.php"/>
             <Authentication VisibleName="Authentication" url="/diag_authentication.php"/>
             <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
