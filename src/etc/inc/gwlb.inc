@@ -190,7 +190,7 @@ EOD;
 				if (is_linklocal($gateway['gateway'])) {
 					$gwifip = find_interface_ipv6_ll($gateway['interface'], true);
 				} else {
-					$gwifip = find_interface_ipv6($gateway['interface']);
+					$gwifip = find_interface_ipv6($gateway['interface'], true);
 				}
 			} else {
 				/* 'monitor' has been set, so makes sure it has precedence over
@@ -198,14 +198,14 @@ EOD;
 				 * is a local link and 'monitor' is global routable then the
 				 * ICMP6 response would not find its way back home...
 				 */
-				$gwifip = find_interface_ipv6($gateway['interface']);
+				$gwifip = find_interface_ipv6($gateway['interface'], true);
 				if (is_linklocal($gateway['monitor'])) {
 					if (!strstr($gateway['monitor'], '%')) {
 						$gateway['monitor'] .= "%{$gateway['interface']}";
 					}
 				} else {
 					// Monitor is a routable address, so use a routable address for the "src" part
-					$gwifip = find_interface_ipv6($gateway['interface']);
+					$gwifip = find_interface_ipv6($gateway['interface'], true);
 				}
 			}
 
