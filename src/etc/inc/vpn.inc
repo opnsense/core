@@ -779,7 +779,6 @@ conn con<<connectionId>>
   {$reauth}
   {$rekey}
   {$forceencaps}
-  reqid = {$ikeid}
   installpolicy = yes
   {$tunneltype}
   {$dpdline}
