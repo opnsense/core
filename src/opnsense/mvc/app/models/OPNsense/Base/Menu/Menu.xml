@@ -277,45 +277,45 @@
     </Services>
     <VPN order="4" cssClass="glyphicon glyphicon-lock">
         <IPsec cssClass="fa fa-road">
-            <Tunnels VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
+            <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*"/>
             </Tunnels>
-            <Mobile VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php"/>
-            <Keys VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
+            <Mobile order="20" VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php"/>
+            <Keys order="30" VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
                 <Edit url="/vpn_ipsec_keys_edit.php*"/>
             </Keys>
-            <Settings VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
-            <Status VisibleName="Status Overview" url="/diag_ipsec.php">
+            <Settings order="40" VisibleName="Advanced Settings" url="/vpn_ipsec_settings.php"/>
+            <Status order="50" VisibleName="Status Overview" url="/diag_ipsec.php">
                 <Act url="/diag_ipsec.php?*"/>
             </Status>
-            <Leases VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
-            <SAD VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
-            <SPD VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
-            <Log VisibleName="Log File" url="/diag_logs_ipsec.php"/>
+            <Leases order="60" VisibleName="Lease Status" url="/diag_ipsec_leases.php"/>
+            <SAD order="70" VisibleName="Security Association Database" url="/diag_ipsec_sad.php"/>
+            <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
+            <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
         <L2TP cssClass="fa fa-road">
-            <Settings url="/vpn_l2tp.php"/>
-            <Users url="/vpn_l2tp_users.php">
+            <Settings order="10" url="/vpn_l2tp.php"/>
+            <Users order="20"  url="/vpn_l2tp_users.php">
                 <Edit url="/vpn_l2tp_users_edit.php*"/>
             </Users>
         </L2TP>
         <OpenVPN cssClass="fa fa-road">
-            <Client VisibleName="Client Settings" url="/vpn_openvpn_client.php">
-                <Edit url="/vpn_openvpn_client.php?*"/>
-            </Client>
-            <CSC VisibleName="Client Specific Overrides" url="/vpn_openvpn_csc.php">
-                <Edit url="/vpn_openvpn_csc.php?*"/>
-            </CSC>
-            <ClientExport VisibleName="Client Export" url="/vpn_openvpn_export.php">
-                <Edit url="/vpn_openvpn_export.php?*"/>
-            </ClientExport>
-            <ClientSharedKeyExport VisibleName="Shared Key Export" url="/vpn_openvpn_export_shared.php"/>
-            <Log VisibleName="Log File" url="/diag_logs_openvpn.php"/>
-            <Server VisibleName="Server Settings" url="/vpn_openvpn_server.php">
+            <Server order="10" VisibleName="Server Settings" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*"/>
             </Server>
-            <Status VisibleName="Connection Status" url="/status_openvpn.php"/>
+            <Client order="20" VisibleName="Client Settings" url="/vpn_openvpn_client.php">
+                <Edit url="/vpn_openvpn_client.php?*"/>
+            </Client>
+            <CSC order="30" VisibleName="Client Specific Overrides" url="/vpn_openvpn_csc.php">
+                <Edit url="/vpn_openvpn_csc.php?*"/>
+            </CSC>
+            <ClientExport order="40" VisibleName="Client Export" url="/vpn_openvpn_export.php">
+                <Edit url="/vpn_openvpn_export.php?*"/>
+            </ClientExport>
+            <ClientSharedKeyExport order="50" VisibleName="Shared Key Export" url="/vpn_openvpn_export_shared.php"/>
+            <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
+            <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
     </VPN>
     <Help order="6" cssClass="glyphicon glyphicon-question-sign">
