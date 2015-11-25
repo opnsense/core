@@ -2839,6 +2839,7 @@ function interface_vlan_adapt_mtu($vlanifs, $mtu) {
 function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false)
 {
 	global $config;
+	global $interface_snv6_arr_cache;
 
 	$wancfg = $config['interfaces'][$interface];
 
@@ -2952,6 +2953,9 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	if (!stristr($realif, "_vlan") && is_array($options)) {
 		legacy_interface_flags($realhwif, interface_override_flags());
 	}
+
+	/* invalidate interface/ip/sn cache */
+	unset($interface_snv6_arr_cache[$realif]);
 
 	$tunnelif = substr($realif, 0, 3);
 	switch ($wancfg['ipaddr']) {
@@ -3151,6 +3155,7 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
 function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 {
 	global $config;
+	global $interface_snv6_arr_cache;
 
 	if (!is_array($lancfg))
 		return;
@@ -3200,6 +3205,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 	$oip = find_interface_ipv6($lanif);
 	if (is_ipaddrv6($oip))
 		mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
+	unset($interface_snv6_arr_cache[$lanif]);
 	log_error("rd6 {$interface} with ipv6 address {$rd6lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
 	mwexec("/sbin/ifconfig {$lanif} inet6 {$rd6lan} prefixlen 64");
 
@@ -3209,6 +3215,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
 	global $config;
+	global $interface_snv6_arr_cache;
 
 	if (!is_array($lancfg))
 		return;
@@ -3254,6 +3261,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 	$oip = find_interface_ipv6($lanif);
 	if (is_ipaddrv6($oip))
 		mwexec("/sbin/ifconfig {$lanif} inet6 {$oip} delete");
+	unset($interface_snv6_arr_cache[$lanif]);
 	log_error("sixto4 {$interface} with ipv6 address {$sixto4lan} based on {$lancfg['track6-interface']} ipv4 {$ip4address}");
 	mwexec("/sbin/ifconfig {$lanif} inet6 {$sixto4lan} prefixlen 64");
 
@@ -4545,15 +4553,27 @@ function find_interface_subnet($interface) {
 		return null;
 }
 
-function find_interface_subnetv6($interface) {
-		$interface = trim($interface);
-		if (does_interface_exist($interface)) {
-				$ifinfo = pfSense_get_interface_addresses($interface);
-				if (isset($ifinfo['subnetbits6'])) {
-						return $ifinfo['subnetbits6'];
-				}
+function find_interface_subnetv6($interface, $flush = false) {
+	global $interface_snv6_arr_cache;
+
+	if (!isset($interface_snv6_arr_cache) || !is_array($interface_snv6_arr_cache)) {
+		$interface_snv6_arr_cache = array();
+	}
+
+	$interface = str_replace("\n", "", $interface);
+	if (does_interface_exist($interface) == false)
+		return;
+
+	if (!isset($interface_snv6_arr_cache[$interface]['subnetbits6']) || $flush) {
+		$ifinfo = pfSense_get_interface_addresses($interface);
+		if (isset($ifinfo['subnetbits6'])) {
+			$interface_snv6_arr_cache[$interface] = $ifinfo['subnetbits6'];
+		} else {
+			return null ;
 		}
-		return null;
+	}
+
+	return $interface_snv6_arr_cache[$interface];
 }
 
 function ip_in_interface_alias_subnet($interface, $ipalias) {
