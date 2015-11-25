@@ -434,9 +434,9 @@ include("head.inc");
 <?php
     /* determine if we should init the key length */
     $keyset = '';
-    if (isset($pconfig['ealgo']['keylen'])) {
-        if (is_numeric($pconfig['ealgo']['keylen'])) {
-            $keyset = $pconfig['ealgo']['keylen'];
+    if (isset($pconfig['encryption-algorithm']['keylen'])) {
+        if (is_numeric($pconfig['encryption-algorithm']['keylen'])) {
+            $keyset = $pconfig['encryption-algorithm']['keylen'];
         }
     }
 ?>
@@ -900,6 +900,7 @@ endforeach; ?>
                       endforeach;
 ?>
                       </select>
+
                       <select name="ealgo_keylen" width="30" class="formselect">
                       </select>
                     </td>
