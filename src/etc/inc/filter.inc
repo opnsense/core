@@ -171,6 +171,9 @@ function filter_configure_sync($delete_states_if_needed = true)
     filter_pflog_start();
     update_filter_reload_status(gettext("Initializing"), true);
 
+    /* invalidate interface cache */
+    get_interface_arr(true);
+
     /* Get interface list to work with. */
     filter_generate_optcfg_array();
     if(file_exists("/var/run/booting")) {

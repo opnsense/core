@@ -97,6 +97,21 @@ function interfaces_bring_up($interface)
 	legacy_interface_flags($interface, 'up');
 }
 
+/*
+ * Return the interface array
+ */
+function get_interface_arr($flush = false)
+{
+	global $interface_arr_cache;
+
+	/* If the cache doesn't exist, build it */
+	if (!isset($interface_arr_cache) or $flush) {
+		$interface_arr_cache = legacy_interface_listget();
+	}
+
+	return $interface_arr_cache;
+}
+
 function interface_override_flags()
 {
 	global $config;
@@ -111,14 +126,24 @@ function interface_override_flags()
 	);
 }
 
-function does_interface_exist($interface)
+function does_interface_exist($interface, $flush = true)
 {
-	$ints = legacy_interface_listget();
-	if (empty($interface) || $ints == null || !in_array($interface, $ints)) {
+	global $config;
+
+	if(!$interface) {
 		return false;
-	} else {
-		return true;
 	}
+
+	$ints = get_interface_arr($flush);
+	if ($ints == null) {
+		return false;
+	}
+
+	if (!in_array($interface, $ints)) {
+		return false;
+	}
+
+	return true;
 }
 
 
@@ -285,6 +310,9 @@ function interface_vlan_configure(&$vlan)
 
 	interfaces_bring_up($vlanif);
 
+	/* invalidate interface cache */
+	get_interface_arr(true);
+
 	/* XXX: ermal -- for now leave it here at the moment it does not hurt. */
 	interfaces_bring_up($if);
 
@@ -337,6 +365,9 @@ function interface_qinq_configure(&$vlan, $fd = NULL) {
 		fwrite($fd, "name {$qinqif}:lower {$vlanif}qinq\n");
 		fwrite($fd, "connect {$qinqif}: {$vlanif}qinq: upper nomatch\n");
 	}
+
+	/* invalidate interface cache */
+	get_interface_arr(true);
 
 	if (!stristr($qinqif, "_vlan"))
 		mwexec("/sbin/ifconfig {$qinqif} promisc\n");
@@ -402,6 +433,9 @@ function interface_qinq2_configure(&$qinq, $fd, $macaddr) {
 	fwrite($fd, "msg {$if}qinq: addfilter { vlan={$tag} hook=\"{$if}{$tag}\" }\n");
 	fwrite($fd, "msg {$if}h{$tag}: setifname \"{$vlanif}\"\n");
 	fwrite($fd, "msg {$if}h{$tag}: set {$macaddr}\n");
+
+	/* invalidate interface cache */
+	get_interface_arr(true);
 
 	return $vlanif;
 }
@@ -2956,6 +2990,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	}
 
 	/* invalidate interface/ip/sn cache */
+	get_interface_arr(true);
 	unset($interface_ip_arr_cache[$realif]);
 	unset($interface_sn_arr_cache[$realif]);
 	unset($interface_ipv6_arr_cache[$realif]);
