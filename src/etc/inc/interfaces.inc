@@ -4528,20 +4528,29 @@ function find_interface_ipv6($interface) {
 /*
  * find_interface_ipv6_ll($interface): return the interface ipv6 link local (first found)
  */
-function find_interface_ipv6_ll($interface) {
-		$interface = trim($interface);
-		if (does_interface_exist($interface)) {
-				$ifinfo = pfSense_getall_interface_addresses($interface);
-				foreach($ifinfo as $line) {
-						if (strstr($line, ":")) {
-								$parts = explode("/", $line);
-								if(is_linklocal($parts[0])) {
-										return $parts[0];
-								}
-						}
+function find_interface_ipv6_ll($interface, $flush = false) {
+	global $interface_llv6_arr_cache;
+	global $config;
+
+	$interface = str_replace("\n", "", $interface);
+
+	if (!does_interface_exist($interface))
+		return;
+
+	/* Setup IP cache */
+	if (!isset($interface_llv6_arr_cache[$interface]) or $flush) {
+		$ifinfo = pfSense_getall_interface_addresses($interface);
+		foreach($ifinfo as $line) {
+			if (strstr($line, ":")) {
+				$parts = explode("/", $line);
+				if(is_linklocal($parts[0])) {
+					$ifinfo['linklocal'] = $parts[0];
 				}
+			}
 		}
-		return null;
+		$interface_llv6_arr_cache[$interface] = $ifinfo['linklocal'];
+	}
+	return $interface_llv6_arr_cache[$interface];
 }
 
 function find_interface_subnet($interface, $flush = false) {
