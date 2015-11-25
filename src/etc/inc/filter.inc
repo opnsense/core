@@ -870,6 +870,12 @@ function filter_generate_optcfg_array()
 {
     global $config, $FilterIflist;
 
+    // Nasty hack to avoid unkown status of $FilterIflist, every piece of code using $FilterIflist should use
+    // this function to retrieve it's content.
+    if (isset($FilterIflist) && is_array($FilterIflist) && count($FilterIflist) > 0) {
+        return $FilterIflist;
+    }
+
     $FilterIflist = array();
 
     /* if list */
