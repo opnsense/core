@@ -689,6 +689,7 @@ EOD;
                         $ph2ent['pfsgroup'] = $a_client['pfs_group'];
                     }
                     if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'esp') {
+                        $ealgoESPsp2arr_details = array();
                         if (is_array($ph2ent['encryption-algorithm-option'])) {
                             foreach ($ph2ent['encryption-algorithm-option'] as $ealg) {
                                 $ealg_id = $ealg['name'];
@@ -715,7 +716,7 @@ EOD;
                                                     if (!empty($modp)) {
                                                         $tmpealgo .= "-{$modp}";
                                                     }
-                                                    $ealgoESPsp2arr[] = $tmpealgo;
+                                                    $ealgoESPsp2arr_details[] = $tmpealgo;
                                                 }
                                             } else {
                                                 $tmpealgo = "{$ealg_id}{$keylen}";
@@ -723,7 +724,7 @@ EOD;
                                                 if (!empty($modp)) {
                                                     $tmpealgo .= "-{$modp}";
                                                 }
-                                                $ealgoESPsp2arr[] = $tmpealgo;
+                                                $ealgoESPsp2arr_details[] = $tmpealgo;
                                             }
                                         }
                                     }
@@ -736,7 +737,7 @@ EOD;
                                             if (!empty($modp)) {
                                                 $tmpealgo .= "-{$modp}";
                                             }
-                                            $ealgoESPsp2arr[] = $tmpealgo;
+                                            $ealgoESPsp2arr_details[] = $tmpealgo;
                                         }
                                     } else {
                                         $tmpealgo = "{$ealg_id}{$ealg_kl}";
@@ -744,12 +745,14 @@ EOD;
                                         if (!empty($modp)) {
                                             $tmpealgo .= "-{$modp}";
                                         }
-                                        $ealgoESPsp2arr[] = $tmpealgo;
+                                        $ealgoESPsp2arr_details[] = $tmpealgo;
                                     }
                                 }
                             }
                         }
+                        $ealgoESPsp2arr[] = $ealgoESPsp2arr_details;
                     } else if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'ah') {
+                        $ealgoAHsp2arr_details = array();
                         if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
                             $modp = vpn_ipsec_convert_to_modp($ph2ent['pfsgroup']);
                             foreach ($ph2ent['hash-algorithm-option'] as $tmpAHalgo) {
@@ -757,9 +760,10 @@ EOD;
                                 if (!empty($modp)) {
                                     $tmpAHalgo = "-{$modp}";
                                 }
-                                $ealgoAHsp2arr[] = $tmpAHalgo;
+                                $ealgoAHsp2arr_details[] = $tmpAHalgo;
                             }
                         }
+                        $ealgoAHsp2arr[] = $ealgoAHsp2arr_details;
                     }
 
                     if (!empty($ph2ent['lifetime'])) {
@@ -799,12 +803,6 @@ EOD;
             if (!empty($ealgosp1)) {
                 $connEntry .= "\t{$ealgosp1}\n";
             }
-            if (!empty($ealgoAHsp2arr)) {
-                $connEntry .= "\tah = " . join(',', $ealgoAHsp2arr) . "!\n";
-            }
-            if (!empty($ealgoESPsp2arr)) {
-                $connEntry .= "\tesp = " . join(',', $ealgoESPsp2arr) . "!\n";
-            }
             if (!empty($authentication)) {
                 $connEntry .= "\t{$authentication}\n";
             }
@@ -824,6 +822,12 @@ EOD;
                     }
                     $tmpconf .= "\trightsubnet =" . $rightsubnet_spec[$idx]. "\n" ;
                     $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
+                    if (!empty($ealgoESPsp2arr[$idx])) {
+                        $tmpconf .= "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . "!\n";
+                    }
+                    if (!empty($ealgoAHsp2arr[$idx])) {
+                        $connEntry .= "\tah = " . join(',', $ealgoAHsp2arr[$idx]) . "!\n";
+                    }
                     $ipsecconf .= $tmpconf;
                 }
             } else {
@@ -834,6 +838,30 @@ EOD;
                 }
                 if (!empty($leftsubnet_spec)) {
                     $tmpconf .= "\tleftsubnet = " . join(",", $leftsubnet_spec) . "\n";
+                }
+                // merge esp phase 2 arrays.
+                $esp_content = array();
+                foreach ($ealgoESPsp2arr as $ealgoESPsp2arr_details) {
+                    foreach ($ealgoESPsp2arr_details as $esp_item) {
+                        if (!in_array($esp_item, $esp_content)) {
+                            $esp_content[] = $esp_item;
+                        }
+                    }
+                }
+                // merge ah phase 2 arrays.
+                $ah_content = array();
+                foreach ($ealgoAHsp2arr as $ealgoAHsp2arr_details) {
+                    foreach ($ealgoAHsp2arr_details as $ah_item) {
+                        if (!in_array($ah_item, $ah_content)) {
+                            $ah_content[] = $ah_item;
+                        }
+                    }
+                }
+                if (!empty($esp_content)) {
+                    $tmpconf .= "\tesp = " . join(',', $esp_content) . "!\n";
+                }
+                if (!empty($ah_content)) {
+                    $tmpconf .= "\tah = " . join(',', $ah_content) . "!\n";
                 }
                 $ipsecconf .= $tmpconf;
             }
