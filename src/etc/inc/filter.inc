@@ -868,7 +868,7 @@ function filter_get_direct_networks_list($returnsubnetsonly = true) {
 
 function filter_generate_optcfg_array()
 {
-    global $config;
+    global $config, $FilterIflist;
 
     $FilterIflist = array();
 
