@@ -772,7 +772,7 @@ $( document ).ready(function() {
                 <tr class="advanced hidden">
                   <td><a id="help_for_avg_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Delay Replies Qty");?></td>
                   <td>
-                    <input name="avg_delay_samples" id="avg_delay_samples" type="text" value="<?=$pconfig['avg_delay_samples'];?>" onclick="calculated_change()"  />
+                    <input name="avg_delay_samples" id="avg_delay_samples" type="text" value="<?=$pconfig['avg_delay_samples'];?>" onchange="calculated_change()"  />
                     <input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?=!empty($pconfig['avg_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
                     <?=gettext("Use calculated value."); ?>
                     <div class="hidden" for="help_for_avg_delay_samples">
@@ -783,7 +783,7 @@ $( document ).ready(function() {
                 <tr class="advanced hidden">
                   <td><a id="help_for_avg_loss_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Avg Packet Loss Probes Qty");?></td>
                   <td>
-                    <input name="avg_loss_samples" type="text" id="avg_loss_samples" value="<?=$pconfig['avg_loss_samples'];?>" onclick="calculated_change()" />
+                    <input name="avg_loss_samples" type="text" id="avg_loss_samples" value="<?=$pconfig['avg_loss_samples'];?>" onchange="calculated_change()" />
                     <input name="avg_loss_samples_calculated" type="checkbox" id="avg_loss_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
                     <?=gettext("Use calculated value."); ?>
 
@@ -795,7 +795,7 @@ $( document ).ready(function() {
                 <tr class="advanced hidden">
                   <td><a id="help_for_avg_loss_delay_samples" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lost Probe Delay");?></td>
                   <td>
-                    <input name="avg_loss_delay_samples" type="text" id="avg_loss_delay_samples" value="<?=$pconfig['avg_loss_delay_samples'];?>" onclick="calculated_change()"  />
+                    <input name="avg_loss_delay_samples" type="text" id="avg_loss_delay_samples" value="<?=$pconfig['avg_loss_delay_samples'];?>" onchange="calculated_change()"  />
                     <input name="avg_loss_delay_samples_calculated" type="checkbox" id="avg_loss_delay_samples_calculated" value="yes" <?= !empty($pconfig['avg_loss_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
                     <?=gettext("Use calculated value."); ?>
 
