@@ -87,7 +87,7 @@ function isAllowedPage($page)
 	}
 
 	/* user privelege access check */
-	$allowedpages = getAllowedPages();
+	$allowedpages = getAllowedPages($user);
 	return cmp_page_matches($page, $allowedpages);
 }
 
