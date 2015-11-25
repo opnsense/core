@@ -157,8 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize form data
     $pconfig = array();
 
-    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option
-    ,pfsgroup,pfsgroup,lifetime,pinghost";
+    $phase2_fields = "ikeid,mode,descr,uniqid,proto,hash-algorithm-option,pfsgroup,pfsgroup,lifetime,pinghost,protocol";
     if ($p2index !== null) {
         // 1-on-1 copy
         foreach (explode(",", $phase2_fields) as $fieldname) {
@@ -378,8 +377,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (count($input_errors) == 0) {
         $ph2ent = array();
-        $copy_fields = "ikeid,uniqid,mode,pfsgroup,lifetime,pinghost,descr
-        ,protocol";
+        $copy_fields = "ikeid,uniqid,mode,pfsgroup,lifetime,pinghost,descr,protocol";
 
         // 1-on-1 copy
         foreach (explode(",", $copy_fields) as $fieldname) {
@@ -822,8 +820,7 @@ endif; ?>
     <?php
     foreach (array('esp' => 'ESP','ah' => 'AH') as $proto => $protoname) :
     ?>
-    <option value="<?=$proto;
-?>" <?= $proto == $pconfig['protocol'] ? "selected=\"selected\"" : "";?>>
+    <option value="<?=$proto;?>" <?= $proto == $pconfig['protocol'] ? "selected=\"selected\"" : "";?>>
         <?=$protoname;?>
     </option>
     <?php
