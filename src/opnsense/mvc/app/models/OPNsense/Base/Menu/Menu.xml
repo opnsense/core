@@ -128,7 +128,7 @@
         </TrafficGraph>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
-        <Aliases cssClass="fa fa-list-alt">
+        <Aliases order="10" cssClass="fa fa-list-alt">
             <All order="100"  url="/firewall_aliases.php?tab=all">
               <AliasesEdit url="/firewall_aliases_edit.php*"/>
               <none url="/firewall_aliases.php"/>
@@ -138,13 +138,12 @@
             <URLs  order="400"  url="/firewall_aliases.php?tab=url"/>
             <Import order="500" url="/firewall_aliases_import.php"/>
         </Aliases>
-        <LogFiles VisibleName="Log Files" cssClass="fa fa-eye">
-            <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
-            <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
-            <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
-            <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
-        </LogFiles>
-        <NAT cssClass="fa fa-exchange">
+        <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check">
+            <RulesEdit url="/firewall_rules_edit.php*"/>
+            <Floating url="/firewall_rules.php?if=FloatingRules"/>
+            <Interface url="/firewall_rules.php?if=*"/>
+        </Rules>
+        <NAT order="30" cssClass="fa fa-exchange">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
               <NatEdit url="/firewall_nat_edit.php*"/>
             </PortForward>
@@ -158,36 +157,37 @@
                 <NPTEdit url="/firewall_nat_npt_edit.php*"/>
             </NPT>
         </NAT>
-        <Rules url="/firewall_rules.php" cssClass="fa fa-check">
-            <RulesEdit url="/firewall_rules_edit.php*"/>
-            <Floating url="/firewall_rules.php?if=FloatingRules"/>
-            <Interface url="/firewall_rules.php?if=*"/>
-        </Rules>
-        <Schedules url="/firewall_schedule.php" cssClass="fa fa-calendar">
-            <SchedulesEdit url="/firewall_schedule_edit.php*"/>
-        </Schedules>
-        <TrafficShaper url="/ui/trafficshaper/" VisibleName="Traffic Shaper" cssClass="fa fa-filter"/>
-        <VirtualIPs VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
+        <TrafficShaper order="40" url="/ui/trafficshaper/" VisibleName="Traffic Shaper" cssClass="fa fa-filter"/>
+        <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
             <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
-        <Diagnostics order="900" cssClass="fa fa-medkit">
-            <LimiterInfo VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
-            <FilterReload VisibleName="Filter Reload" url="/status_filter_reload.php"/>
-            <pfInfo url="/diag_pf_info.php" VisibleName="pfInfo"/>
-            <pfTop url="/diag_system_pftop.php" VisibleName="pfTop"/>
-            <pfTables url="/diag_tables.php">
+        <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar">
+            <SchedulesEdit url="/firewall_schedule_edit.php*"/>
+        </Schedules>
+        <Diagnostics order="400" cssClass="fa fa-medkit">
+            <LimiterInfo order="10" VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
+            <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
+            <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
+            <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
+            <pfTables order="50" url="/diag_tables.php">
                 <Details url="/diag_tables.php*"/>
             </pfTables>
-            <Sockets url="/diag_sockets.php">
+            <Sockets order="60" url="/diag_sockets.php">
                 <SocketsDetails url="/diag_sockets.php?*"/>
             </Sockets>
-            <StatesDump VisibleName="States Dump" url="/diag_dump_states.php"/>
-            <StatesReset VisibleName="States Reset" url="/diag_resetstate.php"/>
-            <StatesSummary VisibleName="States Summary" url="/diag_states_summary.php"/>
-            <StatesTrackSource VisibleName="Source Tracking" url="/diag_dump_states_sources.php">
+            <StatesDump order="70" VisibleName="States Dump" url="/diag_dump_states.php"/>
+            <StatesReset order="80" VisibleName="States Reset" url="/diag_resetstate.php"/>
+            <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>
+            <StatesTrackSource order="100" VisibleName="Source Tracking" url="/diag_dump_states_sources.php">
                 <Filter url="/diag_dump_states_sources.php*"/>
             </StatesTrackSource>
         </Diagnostics>
+        <LogFiles order="500" VisibleName="Log Files" cssClass="fa fa-eye">
+            <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
+            <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
+            <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
+            <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
+        </LogFiles>
     </Firewall>
     <Services order="5" cssClass="glyphicon glyphicon-cog">
         <DHCP cssClass="fa fa-bullseye">
