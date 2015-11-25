@@ -29,9 +29,16 @@
     list ipsec status, using vici interface
 """
 
+import sys
+import socket
 import ujson
 import vici
-s = vici.Session()
+try:
+    s = vici.Session()
+except socket.error:
+    # cannot connect to session, strongswan not running?
+    print ('ipsec not active')
+    sys.exit(0)
 
 result = dict()
 # parse connections
