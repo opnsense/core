@@ -2839,7 +2839,7 @@ function interface_vlan_adapt_mtu($vlanifs, $mtu) {
 function interface_configure($interface = 'wan', $reloadall = false, $linkupevent = false)
 {
 	global $config;
-	global $interface_sn_arr_cache;
+	global $interface_sn_arr_cache, $interface_ip_arr_cache;
 	global $interface_snv6_arr_cache, $interface_ipv6_arr_cache;
 
 	$wancfg = $config['interfaces'][$interface];
@@ -2956,6 +2956,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 	}
 
 	/* invalidate interface/ip/sn cache */
+	unset($interface_ip_arr_cache[$realif]);
 	unset($interface_sn_arr_cache[$realif]);
 	unset($interface_ipv6_arr_cache[$realif]);
 	unset($interface_snv6_arr_cache[$realif]);
@@ -4504,16 +4505,29 @@ function link_interface_to_gif($interface)
 /*
  * find_interface_ip($interface): return the interface ip (first found)
  */
-function find_interface_ip($interface) {
-		$interface = trim($interface);
-		if (does_interface_exist($interface)) {
-				$ifinfo = pfSense_get_interface_addresses($interface);
-				if (isset($ifinfo['ipaddr'])) {
-						return $ifinfo['ipaddr'];
-				}
-		} else {
-				return null;
+function find_interface_ip($interface, $flush = false) {
+	global $interface_ip_arr_cache;
+
+	if (!isset($interface_ip_arr_cache) || !is_array($interface_ip_arr_cache)) {
+		$interface_ip_arr_cache = array() ;
+	}
+
+	$interface = str_replace("\n", "", $interface);
+
+	if (!does_interface_exist($interface))
+		return;
+
+	/* Setup IP cache */
+	if (!isset($interface_ip_arr_cache[$interface]) or $flush) {
+		$ifinfo = pfSense_get_interface_addresses($interface);
+		if (isset($ifinfo['ipaddr'])) {
+			$interface_ip_arr_cache[$interface] = $ifinfo['ipaddr'];
+		} else  {
+			return null;
 		}
+	}
+
+	return $interface_ip_arr_cache[$interface];
 }
 
 /*

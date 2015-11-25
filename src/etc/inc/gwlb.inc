@@ -168,7 +168,7 @@ EOD;
 		 * the if block. So using $gateway['ipprotocol'] is the better option.
 		 */
 		if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-			$gwifip = find_interface_ip($gateway['interface']);
+			$gwifip = find_interface_ip($gateway['interface'], true);
 			if (!is_ipaddrv4($gwifip))
 				continue; //Skip this target
 
