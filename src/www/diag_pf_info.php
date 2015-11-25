@@ -85,11 +85,13 @@ $( document ).ready(function() {
 <?php
              foreach($data_tabs as $i => $tabname):?>
             <div id="<?=$tabname;?>" class="tab-pane fade in <?= $i == 0 ? 'active' : '';?>">
+              <br/>
               <div class="container-fluid">
                 <pre id="data_<?=$tabname;?>" class="pre-scrollable" >
                 <?=gettext("Gathering PF information, please wait...");?>
                 </pre>
               </div>
+              </br>
             </div>
 <?php
             endforeach;?>

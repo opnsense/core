@@ -40,10 +40,6 @@ CsrfMagic.prototype = {
     send: function(data) {
         if (!this.csrf_isPost) return this.csrf_send(data);
         prepend = csrfMagicName + '=' + csrfMagicToken + '&';
-        if (this.csrf_purportedLength === undefined) {
-            this.csrf_setRequestHeader("Content-length", this.csrf_purportedLength + prepend.length);
-            delete this.csrf_purportedLength;
-        }
         delete this.csrf_isPost;
         return this.csrf_send(prepend + data);
     },
@@ -52,12 +48,6 @@ CsrfMagic.prototype = {
     },
 
     setRequestHeader: function(header, value) {
-        // We have to auto-set this at the end, since we don't know how long the
-        // nonce is when added to the data.
-        if (this.csrf_isPost && header == "Content-length") {
-            this.csrf_purportedLength = value;
-            return;
-        }
         return this.csrf_setRequestHeader(header, value);
     },
     csrf_setRequestHeader: function(header, value) {

@@ -776,8 +776,36 @@ function system_syslogd_start()
 	$syslogd_extra = '';
 
 	if (isset($syslogcfg)) {
-		$separatelogfacilities = array('ntp','ntpd','ntpdate','charon','openvpn','pptps','poes','l2tps','relayd','hostapd','dnsmasq','filterdns','unbound','dhcpd','dhcrelay','dhclient','dhcp6c','apinger','radvd','routed','olsrd','zebra','ospfd','bgpd','miniupnpd','filterlog');
-		$syslogconf = "";
+		$separatelogfacilities = array(
+			'apinger',
+			'bgpd',
+			'charon',
+			'dhclient',
+			'dhcp6c',
+			'dhcpd',
+			'dhcrelay',
+			'dnsmasq',
+			'filterdns',
+			'filterlog',
+			'hostapd',
+			'l2tps',
+			'miniupnpd',
+			'ntp',
+			'ntpd',
+			'ntpdate',
+			'olsrd',
+			'openvpn',
+			'ospfd',
+			'poes',
+			'ppp',
+			'pptps',
+			'radvd',
+			'relayd',
+			'routed',
+			'unbound',
+			'zebra',
+		);
+		$syslogconf = '';
 
 		$facilitylist = implode(',', array_unique($separatelogfacilities));
 		$syslogconf .= "!radvd,routed,olsrd,zebra,ospfd,bgpd,miniupnpd\n";

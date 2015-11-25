@@ -60,7 +60,7 @@ if ($_GET['act'] == "del") {
     }
 }
 
-$pgtitle = array(gettext('VPN'), gettext('PPTP'), gettext('Users'));
+$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Users'));
 include("head.inc");
 
 $main_buttons = array(

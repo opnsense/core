@@ -298,7 +298,7 @@ $( document ).ready(function() {
               <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>&nbsp;</th>
+                    <th colspan="2">&nbsp;</th>
                     <th><?=gettext("Name"); ?></th>
                     <th><?=gettext("Interface"); ?></th>
                     <th><?=gettext("Gateway"); ?></th>

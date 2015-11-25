@@ -169,7 +169,7 @@ function filter_configure_sync($delete_states_if_needed = true)
 
 
     filter_pflog_start();
-    update_filter_reload_status(gettext("Initializing"));
+    update_filter_reload_status(gettext("Initializing"), true);
 
     /* Get interface list to work with. */
     filter_generate_optcfg_array();

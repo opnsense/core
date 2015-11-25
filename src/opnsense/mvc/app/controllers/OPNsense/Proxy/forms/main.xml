@@ -143,13 +143,13 @@
             </field>
             <field>
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
-                <label>Overall bandwidth throtteling (Kbps)</label>
+                <label>Overall bandwidth throttling (Kbps)</label>
                 <type>text</type>
                 <help><![CDATA[Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.perHostTrotteling</id>
-                <label>Per host bandwidth throtteling (Kbps)</label>
+                <label>Per host bandwidth throttling (Kbps)</label>
                 <type>text</type>
                 <help><![CDATA[Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).]]></help>
             </field>
