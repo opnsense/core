@@ -36,6 +36,7 @@
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow">
             <All url="/system_gateways.php">
+                <All url="/system_gateways.php*"/>
                 <Edit url="/system_gateways_edit.php*"/>
             </All>
             <Groups url="/system_gateway_groups.php">
