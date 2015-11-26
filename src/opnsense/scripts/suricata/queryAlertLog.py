@@ -99,6 +99,7 @@ if __name__ == '__main__':
                 record['fileid'] = parameters['fileid']
                 # flatten structure
                 record['alert_sid'] = record['alert']['signature_id']
+                record['alert_action'] = record['alert']['action']
                 record['alert'] = record['alert']['signature']
 
                 # use filters on data (using regular expressions)
