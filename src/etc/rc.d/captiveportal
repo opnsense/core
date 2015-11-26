@@ -75,10 +75,12 @@ captiveportal_start()
             fi
             mkdir $CPWORKDIR/$zonedirname/tmp
             chmod 770 $CPWORKDIR/$zonedirname/tmp
-            chown www:www $CPWORKDIR/$zonedirname/tmp
 
             # sync default template
-            /usr/local/bin/rsync --delete -ar $CPDEFAULTTEMPLATE/ $CPWORKDIR/$zonedirname/htdocs/
+            cp -a $CPDEFAULTTEMPLATE/ $CPWORKDIR/$zonedirname/htdocs/
+
+            # chown zone files to chroot user
+            chown -R www:www $CPWORKDIR/$zonedirname
 
             # overlay custom user layout if available.
             /usr/local/opnsense/scripts/OPNsense/CaptivePortal/overlay_template.py $zoneid
