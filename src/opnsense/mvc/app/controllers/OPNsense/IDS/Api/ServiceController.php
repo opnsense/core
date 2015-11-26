@@ -223,7 +223,7 @@ class ServiceController extends ApiControllerBase
 
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                 $filterTag = $filter->sanitize($this->request->getPost('searchPhrase'), "query");
-                $searchPhrase = 'alert,src_ip/"*'.$filterTag .'*"';
+                $searchPhrase = 'alert,alert_action,src_ip/"*'.$filterTag .'*"';
             } else {
                 $searchPhrase = '';
             }

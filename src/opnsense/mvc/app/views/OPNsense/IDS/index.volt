@@ -468,8 +468,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
                     <select id="alert-logfile-max" class="selectpicker" data-width="80px">
-                        <option value="5">5</option>
-                        <option value="6">6</option>
                         <option value="7">7</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
@@ -492,6 +490,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <thead>
             <tr>
                 <th data-column-id="timestamp" data-type="string" data-sortable="false">{{ lang._('Timestamp') }}</th>
+                <th data-column-id="alert_action" data-type="string" data-sortable="false">{{ lang._('Action') }}</th>
                 <th data-column-id="src_ip" data-type="string" data-sortable="false"  data-width="10em">{{ lang._('Source') }}</th>
                 <th data-column-id="dest_ip" data-type="string"  data-sortable="false"  data-width="10em">{{ lang._('Destination') }}</th>
                 <th data-column-id="alert" data-type="string" data-sortable="false" >{{ lang._('Alert') }}</th>
