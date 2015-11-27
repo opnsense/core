@@ -1051,26 +1051,27 @@ function filter_generate_optcfg_array()
 }
 
 
-function filter_get_reflection_interfaces($natif = "") {
-    $FilterIflist = filter_generate_optcfg_array() ;
-
+function filter_get_reflection_interfaces(&$FilterIflist, $natif = '')
+{
     $nat_if_list = array();
 
     foreach ($FilterIflist as $ifent => $ifname) {
-      if($ifname['if'] == $natif)
-        continue;
+        if ($ifname['if'] == $natif) {
+            continue;
+	}
 
-      /* Do not add reflection redirects for interfaces with gateways */
-      if(interface_has_gateway($ifent))
-        continue;
+        /* Do not add reflection redirects for interfaces with gateways */
+        if (interface_has_gateway($ifent)) {
+            continue;
+	}
 
-      $nat_if_list[] = $ifname['if'];
+        $nat_if_list[] = $ifname['if'];
     }
 
     return $nat_if_list;
-  }
+}
 
-  function filter_generate_reflection_nat($rule, &$route_table, $nat_ifs, $protocol, $target, $target_ip, $target_subnet = "") {
+function filter_generate_reflection_nat($rule, &$route_table, $nat_ifs, $protocol, $target, $target_ip, $target_subnet = "") {
     global $config;
     $FilterIflist = filter_generate_optcfg_array() ;
 
@@ -1696,7 +1697,7 @@ function filter_nat_rules_generate(&$FilterIflist)
              */
             if ((isset($config['system']['enablebinatreflection']) || $rule['natreflection'] == "enable")
                && $rule['natreflection'] != "disable") {
-                 $nat_if_list = filter_get_reflection_interfaces($natif);
+                 $nat_if_list = filter_get_reflection_interfaces($FilterIflist, $natif);
             } else {
                 $nat_if_list = array();
             }
@@ -2062,7 +2063,7 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
 
             if($reflection_type != "none") {
-                $nat_if_list = filter_get_reflection_interfaces($natif);
+                $nat_if_list = filter_get_reflection_interfaces($FilterIflist, $natif);
             } else {
                 $nat_if_list = array();
             }
