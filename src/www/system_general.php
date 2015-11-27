@@ -171,8 +171,7 @@ if ($_POST) {
 			}
 		}
 	}
-
-	$direct_networks_list = explode(" ", filter_get_direct_networks_list());
+	$direct_networks_list = explode(' ', filter_get_direct_networks_list(filter_generate_optcfg_array()));
 	for ($dnscounter=1; $dnscounter<5; $dnscounter++) {
 		$dnsitem = "dns{$dnscounter}";
 		$dnsgwitem = "dns{$dnscounter}gw";

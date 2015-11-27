@@ -801,9 +801,10 @@ function filter_get_vpns_list() {
 /* returns space separated list of directly connected networks
  * optionally returns an array instead, including friendly interface and gateway (if applicable)
  */
-function filter_get_direct_networks_list($returnsubnetsonly = true) {
+function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = true)
+{
     global $config, $GatewaysList;
-    $FilterIflist = filter_generate_optcfg_array() ;
+
     /* build list of directly connected interfaces and networks */
     $networks = "";
     $networks_arr = array();
@@ -1094,7 +1095,7 @@ function filter_generate_reflection_nat(&$FilterIflist, $rule, &$route_table, $n
 
     if(!is_array($route_table)) {
         /* get a simulated IPv4-only route table based on the config */
-        $route_table = filter_get_direct_networks_list(false);
+        $route_table = filter_get_direct_networks_list($FilterIflist, false);
         foreach($route_table as $rt_key => $rt_ent) {
             if(!is_subnetv4($rt_ent['subnet'])) {
                 unset($route_table[$rt_key]);
