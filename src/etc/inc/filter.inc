@@ -2184,9 +2184,8 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
     return $src;
 }
 
-function filter_address_add_vips_subnets(&$subnets, $if, $not) {
-    $FilterIflist = filter_generate_optcfg_array() ;
-
+function filter_address_add_vips_subnets(&$FilterIflist, &$subnets, $if, $not)
+{
     $if_subnets = array($subnets);
 
     if ($not == true) {
@@ -2383,7 +2382,7 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
             }
         }
         if (is_subnet($src)) {
-            filter_address_add_vips_subnets($src, $rule[$target]['network'], isset($rule[$target]['not']));
+            filter_address_add_vips_subnets($FilterIflist, $src, $rule[$target]['network'], isset($rule[$target]['not']));
         }
     } else if($rule[$target]['address']) {
         $expsrc = alias_expand($rule[$target]['address']);
