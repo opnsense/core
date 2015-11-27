@@ -335,10 +335,11 @@ function display_login_form()
 
     unset($input_errors);
 
-    /* Check against locally configured IP addresses, which will catch when someone
-       port forwards WebGUI access from WAN to an internal IP on the router. */
-    // fix, local ip check was previously done using "filter_generate_optcfg_array" which basically includes alomst everything here.
-    // this should do the trick as well.
+    /*
+     * Check against locally configured IP addresses, which will catch when
+     * someone port-forwards WebGUI access from WAN to an internal IP on the
+     * router.
+     */
     $local_ip = isAuthLocalIP($http_host);
 
     if (isset($config['openvpn']['openvpn-server'])) {
