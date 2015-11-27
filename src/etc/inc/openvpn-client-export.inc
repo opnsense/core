@@ -839,13 +839,16 @@ function openvpn_client_export_build_remote_lines($settings, $useaddr, $interfac
 	return implode($nl, $remotes);
 }
 
-function openvpn_client_export_find_port_forwards($targetip, $targetport, $targetproto, $skipprivate, $findhostname=false) {
+function openvpn_client_export_find_port_forwards($targetip, $targetport, $targetproto, $skipprivate, $findhostname = false)
+{
 	global $config;
-	$FilterIflist = filter_generate_optcfg_array() ;
+
+	$FilterIflist = filter_generate_optcfg_array();
 	$destinations = array();
 
-	if (!is_array($config['nat']) || !is_array($config['nat']['rule']))
+	if (!isset($config['nat']['rule'])) {
 		return $destinations;
+	}
 
 	foreach ($config['nat']['rule'] as $natent) {
 		$dest = array();
@@ -862,12 +865,14 @@ function openvpn_client_export_find_port_forwards($targetip, $targetport, $targe
 			// Could be network or address ...
 			$natif = (!$natent['interface']) ? "wan" : $natent['interface'];
 
-			if (!isset($FilterIflist[$natif]))
+			if (!isset($FilterIflist[$natif])) {
 				continue; // Skip if there is no interface
+			}
 
 			$dstaddr = trim(filter_generate_address($natent, 'destination', true));
-			if(!$dstaddr)
+			if (!$dstaddr) {
 				$dstaddr = $FilterIflist[$natif]['ip'];
+			}
 
 			$dstaddr_port = explode(" ", $dstaddr);
 
