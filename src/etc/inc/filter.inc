@@ -3365,7 +3365,7 @@ EOD;
     }
 
     update_filter_reload_status(gettext("Creating IPsec rules..."));
-    $ipfrules .= filter_generate_ipsec_rules($log);
+    $ipfrules .= filter_generate_ipsec_rules($FilterIflist, $log);
 
     update_filter_reload_status("Creating uPNP rules...");
     if (isset($config['installedpackages']['miniupnpd']['config'][0])) {
@@ -3623,10 +3623,9 @@ function filter_process_carp_rules($log)
 }
 
 /* Generate IPsec Filter Items */
-function filter_generate_ipsec_rules($log = array())
+function filter_generate_ipsec_rules(&$FilterIflist, $log = array())
 {
     global $config, $g;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     if (isset($config['system']['disablevpnrules'])) {
         return "\n# VPN Rules not added disabled in System->Advanced.\n";
