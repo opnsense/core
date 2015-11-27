@@ -555,7 +555,7 @@ $( document ).ready(function() {
     print_input_errors($input_errors);
 } ?>
       <section class="col-xs-12">
-        <div class="content-box">
+        <div class="content-box  table-responsive">
             <form action="system_gateways_edit.php" method="post" name="iform" id="iform">
 <?php
             if ($pconfig['attribute'] == "system" || is_numeric($pconfig['attribute'])):?>
