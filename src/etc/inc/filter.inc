@@ -194,7 +194,7 @@ function filter_configure_sync($delete_states_if_needed = true)
     }
     update_filter_reload_status(gettext("Generating filter rules"));
     /* generate pfctl rules */
-    $pfrules = filter_rules_generate();
+    $pfrules = filter_rules_generate($FilterIflist);
     if(file_exists("/var/run/booting")) {
         echo ".";
     }
@@ -2771,10 +2771,9 @@ function filter_generate_user_rule($rule)
     return $line;
 }
 
-function filter_rules_generate()
+function filter_rules_generate(&$FilterIflist)
 {
     global $config, $g, $time_based_rules, $GatewaysList;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     $fix_rule_label = 'fix_rule_label';
 
