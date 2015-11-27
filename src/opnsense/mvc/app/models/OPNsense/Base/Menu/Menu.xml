@@ -77,6 +77,7 @@
                 <Privileges url="/system_usermanager_addprivs.php*"/>
             </All>
             <Groups url="/system_groupmanager.php">
+                <All url="/system_groupmanager.php*"/>
                 <Privileges url="/system_groupmanager_addprivs.php*"/>
             </Groups>
             <Servers url="/system_authservers.php">
