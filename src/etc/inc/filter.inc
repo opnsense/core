@@ -2131,11 +2131,14 @@ function filter_nat_rules_generate(&$FilterIflist)
     return $natrules;
 }
 
-function filter_generate_user_rule_arr($rule) {
+function filter_generate_user_rule_arr(&$FilterIflist, $rule)
+{
     global $config;
+
     update_filter_reload_status(sprintf(gettext("Creating filter rule %s ..."), $rule['descr']));
+
     $ret = array();
-    $line = filter_generate_user_rule($rule);
+    $line = filter_generate_user_rule($FilterIflist, $rule);
     $ret['rule'] = $line;
     $ret['interface'] = $rule['interface'];
     if($rule['descr'] != "" and $line != "") {
@@ -2143,6 +2146,7 @@ function filter_generate_user_rule_arr($rule) {
     } else {
         $ret['descr'] = "label \"USER_RULE\"";
     }
+
     return $ret;
 }
 
@@ -2395,10 +2399,9 @@ function filter_generate_address(& $rule, $target = "source", $isnat = false) {
     return $src;
 }
 
-function filter_generate_user_rule($rule)
+function filter_generate_user_rule(&$FilterIflist, $rule)
 {
     global $config, $g, $GatewaysList;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     /* don't include disabled rules */
     if(isset($rule['disabled'])) {
@@ -3261,28 +3264,28 @@ EOD;
             if (!empty($rule['ipprotocol']) && $rule['ipprotocol'] == "inet46") {
                 if (isset($rule['floating'])) {
                     $rule['ipprotocol'] = "inet";
-                    $rule_arr1[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr1[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                     $rule['ipprotocol'] = "inet6";
-                    $rule_arr1[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr1[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 } else if (is_interface_group($rule['interface']) || in_array($rule['interface'], $vpn_and_ppp_ifs)) {
                     $rule['ipprotocol'] = "inet";
-                    $rule_arr2[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr2[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                     $rule['ipprotocol'] = "inet6";
-                    $rule_arr2[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr2[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 } else {
                     $rule['ipprotocol'] = "inet";
-                    $rule_arr3[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr3[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                     $rule['ipprotocol'] = "inet6";
-                    $rule_arr3[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr3[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 }
                 $rule['ipprotocol'] = "inet46";
             } else {
                 if (isset($rule['floating'])) {
-                    $rule_arr1[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr1[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], $vpn_and_ppp_ifs)) {
-                    $rule_arr2[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr2[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 } else {
-                    $rule_arr3[] = filter_generate_user_rule_arr($rule);
+                    $rule_arr3[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 }
             }
             if (isset($rule['sched']) && !empty($rule['sched'])) {
