@@ -869,7 +869,7 @@ function openvpn_client_export_find_port_forwards($targetip, $targetport, $targe
 				continue; // Skip if there is no interface
 			}
 
-			$dstaddr = trim(filter_generate_address($natent, 'destination', true));
+			$dstaddr = trim(filter_generate_address($FilterIflist, $natent, 'destination', true));
 			if (!$dstaddr) {
 				$dstaddr = $FilterIflist[$natif]['ip'];
 			}

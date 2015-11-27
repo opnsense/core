@@ -1673,8 +1673,8 @@ function filter_nat_rules_generate(&$FilterIflist)
             if (!isset($FilterIflist[$natif])) {
                 continue;
             }
-            $srcaddr = filter_generate_address($rule, 'source');
-            $dstaddr = filter_generate_address($rule, 'destination');
+            $srcaddr = filter_generate_address($FilterIflist, $rule, 'source');
+            $dstaddr = filter_generate_address($FilterIflist, $rule, 'destination');
             if(!$dstaddr) {
                 $dstaddr = $FilterIflist[$natif]['ip'];
             }
@@ -1728,8 +1728,8 @@ function filter_nat_rules_generate(&$FilterIflist)
             if (!isset($FilterIflist[$natif])) {
                 continue;
             }
-            $srcaddr = filter_generate_address($rule, 'source');
-            $dstaddr = filter_generate_address($rule, 'destination');
+            $srcaddr = filter_generate_address($FilterIflist, $rule, 'source');
+            $dstaddr = filter_generate_address($FilterIflist, $rule, 'destination');
             $srcaddr = trim($srcaddr);
             $dstaddr = trim($dstaddr);
 
@@ -2019,8 +2019,8 @@ function filter_nat_rules_generate(&$FilterIflist)
             if (!isset($FilterIflist[$natif])) {
                 continue;
             }
-            $srcaddr = filter_generate_address($rule, 'source', true);
-            $dstaddr = filter_generate_address($rule, 'destination', true);
+            $srcaddr = filter_generate_address($FilterIflist, $rule, 'source', true);
+            $dstaddr = filter_generate_address($FilterIflist, $rule, 'destination', true);
             $srcaddr = trim($srcaddr);
             $dstaddr = trim($dstaddr);
 
@@ -2249,10 +2249,11 @@ function filter_address_add_vips_subnets(&$subnets, $if, $not) {
     }
 }
 
-function filter_generate_address(& $rule, $target = "source", $isnat = false) {
+function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $isnat = false)
+{
     global $config;
-    $FilterIflist = filter_generate_optcfg_array() ;
-    $src = "";
+
+    $src = '';
 
     if(isset($rule[$target]['any'])) {
         $src = "any";
@@ -2578,7 +2579,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     update_filter_reload_status(sprintf(gettext("Creating rule %s"), $rule['descr']));
 
     /* source address */
-    $src = trim(filter_generate_address($rule, "source"));
+    $src = trim(filter_generate_address($FilterIflist, $rule, "source"));
     if (empty($src) || ($src == "/")) {
         return "# at the break!";
     }
@@ -2590,7 +2591,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     }
 
     /* destination address */
-    $dst = trim(filter_generate_address($rule, "destination"));
+    $dst = trim(filter_generate_address($FilterIflist, $rule, "destination"));
     if (empty($dst) || ($dst == "/")) {
         return "# returning at dst $dst == \"/\"";
     }
