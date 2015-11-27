@@ -516,7 +516,7 @@ function filter_expand_alias_array($alias_name) {
     return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases($FilterIflist)
+function filter_generate_aliases(&$FilterIflist)
 {
     global $config, $after_filter_configure_run;
 
