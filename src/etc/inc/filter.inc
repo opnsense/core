@@ -162,11 +162,10 @@ function filter_configure_sync($delete_states_if_needed = true)
     global $config, $g, $after_filter_configure_run;
     global $time_based_rules, $filterdns, $aliases;
 
-    $FilterIflist = filter_generate_optcfg_array() ;
+    $FilterIflist = filter_generate_optcfg_array();
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
-
 
     filter_pflog_start();
     update_filter_reload_status(gettext("Initializing"), true);
@@ -175,7 +174,6 @@ function filter_configure_sync($delete_states_if_needed = true)
     get_interface_arr(true);
 
     /* Get interface list to work with. */
-    filter_generate_optcfg_array();
     if(file_exists("/var/run/booting")) {
         echo gettext("Configuring firewall");
     }
@@ -185,7 +183,7 @@ function filter_configure_sync($delete_states_if_needed = true)
         echo ".";
     }
     update_filter_reload_status(gettext("Creating aliases"));
-    $aliases = filter_generate_aliases();
+    $aliases = filter_generate_aliases($FilterIflist);
     $gateways = filter_generate_gateways();
     if(file_exists("/var/run/booting")) {
         echo ".";
@@ -518,10 +516,9 @@ function filter_expand_alias_array($alias_name) {
     return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases()
+function filter_generate_aliases($FilterIflist)
 {
     global $config, $after_filter_configure_run;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     $alias = "#System aliases\n ";
     $aliases = "loopback = \"{ lo0 }\"\n";
