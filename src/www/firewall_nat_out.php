@@ -74,9 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(empty($GatewaysList)) {
                 filter_generate_gateways();
             }
+
             /* XXX cranky low-level call, please refactor */
-            $tonathosts = filter_nat_rules_automatic_tonathosts(filter_generate_optcfg_array(), true);
-            $automatic_rules = filter_nat_rules_outbound_automatic("");
+            $FilterIflist = filter_generate_optcfg_array();
+            $tonathosts = filter_nat_rules_automatic_tonathosts($FilterIflist, true);
+            $automatic_rules = filter_nat_rules_outbound_automatic($FilterIflist, '');
 
             foreach ($tonathosts as $tonathost) {
                 foreach ($automatic_rules as $natent) {
@@ -481,7 +483,10 @@ include("head.inc");
         if(empty($GatewaysList))
           filter_generate_gateways();
         /* XXX cranky low-level call, please refactor */
-        $automatic_rules = filter_nat_rules_outbound_automatic(implode(" ", filter_nat_rules_automatic_tonathosts(filter_generate_optcfg_array())));
+        $FilterIflist = filter_generate_optcfg_array();
+        $automatic_rules = filter_nat_rules_outbound_automatic(
+          $FilterIflist, implode(' ', filter_nat_rules_automatic_tonathosts($FilterIflist))
+        );
         unset($GatewaysList);
 ?>
         <section class="col-xs-12">
