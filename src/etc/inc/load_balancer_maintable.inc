@@ -147,7 +147,7 @@ class MainTable {
 
 		switch ($button) {
 			case "move": {
-				echo "<button name=\"move_{$row}\" type=\"submit\" title=\"Move selected entries before this entry\" onmouseover=\"fr_insline({$row}, true)\" onmouseout=\"fr_insline({$row}, false)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-left\"></span></button>";
+				echo "<button name=\"move_{$row}\" type=\"submit\" title=\"".gettext('Move selected entries before this entry')."\" onmouseover=\"fr_insline({$row}, true)\" onmouseout=\"fr_insline({$row}, false)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-left\"></span></button>";
 				break;
 			}
 			case "edit": {
@@ -155,11 +155,11 @@ class MainTable {
 				break;
 			}
 			case "del": {
-				echo "<a href=\"{$this->my_uri}?act=del&amp;id={$row}\" onclick=\"return confirm('Do you really want to delete this entry?')\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
+				echo "<a href=\"{$this->my_uri}?act=del&amp;id={$row}\" onclick=\"return confirm('".gettext('Do you really want to delete this entry?')."')\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
 				break;
 			}
 			case "dup": {
-				echo "<a href=\"{$this->edit_uri}?act=dup&amp;id={$row}\" class=\"btn btn-default btn-xs\" title=\"Duplicate entry\" alt=\"duplicate\" /><span class=\"glyphicon glyphicon-plus\"></span></a>";
+				echo "<a href=\"{$this->edit_uri}?act=dup&amp;id={$row}\" class=\"btn btn-default btn-xs\" title=\"".gettext('Duplicate entry')."\" /><span class=\"glyphicon glyphicon-plus\"></span></a>";
 				break;
 			}
 		}
