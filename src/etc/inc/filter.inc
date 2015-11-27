@@ -1359,7 +1359,7 @@ function filter_generate_reflection_proxy(&$FilterIflist, $rule, $nordr, $rdr_if
     return $natrules;
 }
 
-function filter_nat_rules_automatic_tonathosts(&$filterIflist, $with_descr = false)
+function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = false)
 {
     global $config, $GatewaysList;
 
