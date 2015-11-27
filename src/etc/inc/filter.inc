@@ -256,12 +256,12 @@ function filter_configure_sync($delete_states_if_needed = true)
     $rules .= "{$aliases} \n";
     $rules .= "{$gateways} \n";
     update_filter_reload_status(gettext("Setting up logging information"));
-    $rules .= filter_setup_logging_interfaces();
+    $rules .= filter_setup_logging_interfaces($FilterIflist);
     $rules .= "\n";
     $rules .= "set skip on pfsync0\n";
     $rules .= "\n";
     update_filter_reload_status(gettext("Setting up SCRUB information"));
-    $rules .= filter_generate_scrubing();
+    $rules .= filter_generate_scrubing($FilterIflist);
     $rules .= "\n";
     $rules .= "{$natrules}\n";
     $rules .= "{$pfrules}\n";
@@ -392,10 +392,11 @@ function filter_configure_sync($delete_states_if_needed = true)
     return 0;
 }
 
-function filter_generate_scrubing() {
+function filter_generate_scrubing(&$FilterIflist)
+{
     global $config;
-    $FilterIflist = filter_generate_optcfg_array() ;
-    $scrubrules = "";
+
+    $scrubrules = '';
 
     if (isset($config['system']['maxmss_enable'])) {
         $maxmss = 1400;
@@ -3613,10 +3614,9 @@ function filter_tdr_month($schedule) {
     return false;
 }
 
-function filter_setup_logging_interfaces()
+function filter_setup_logging_interfaces(&$FilterIflist)
 {
     global $config;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     $rules = '';
     if (isset($FilterIflist['lan'])) {
