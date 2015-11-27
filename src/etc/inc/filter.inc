@@ -191,7 +191,7 @@ function filter_configure_sync($delete_states_if_needed = true)
     update_filter_reload_status(gettext("Generating Limiter rules"));
     update_filter_reload_status(gettext("Generating NAT rules"));
     /* generate nat rules */
-    $natrules = filter_nat_rules_generate();
+    $natrules = filter_nat_rules_generate($FilterIflist);
     if(file_exists("/var/run/booting")) {
         echo ".";
     }
@@ -1635,9 +1635,9 @@ function filter_nat_rules_generate_if($if, $src = "any", $srcport = "", $dst = "
     return $natrule;
 }
 
-function filter_nat_rules_generate() {
+function filter_nat_rules_generate(&$FilterIflist)
+{
     global $config, $g, $after_filter_configure_run, $GatewaysList, $aliases;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";
