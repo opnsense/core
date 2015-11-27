@@ -1499,10 +1499,9 @@ function filter_nat_rules_automatic_tonathosts(&$filterIflist, $with_descr = fal
     }
 }
 
-function filter_nat_rules_outbound_automatic($src)
+function filter_nat_rules_outbound_automatic(&$FilterIflist, $src)
 {
     global $config ;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     $rules = array();
 
@@ -1871,7 +1870,7 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $macroortable = "\$tonatsubnets";
             }
 
-            $a_outs = filter_nat_rules_outbound_automatic($macroortable);
+            $a_outs = filter_nat_rules_outbound_automatic($FilterIflist, $macroortable);
             foreach ($a_outs as $a_out) {
                 $natrules .= filter_nat_rules_generate_if(
                     $a_out['interface'],
