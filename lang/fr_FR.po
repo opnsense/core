@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-19 22:27+0000\n"
+"POT-Creation-Date: 2015-11-27 20:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 2384\n"
+"X-Pootle-Revision: 2387\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -5373,7 +5373,7 @@ msgstr "Paquets"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 108
 msgid "Updates"
-msgstr "Mises à jour"
+msgstr "Mises à jours"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 217
 msgid "Progress"
@@ -25524,7 +25524,7 @@ msgstr "Problème de dépôt"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 112
 msgid "Click to check for updates"
-msgstr "Cliquer pour vérifier les mises à jour"
+msgstr "Cliquer pour vérifier les mises à jours"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 49
 msgid "Your system is up to date."
@@ -25532,7 +25532,7 @@ msgstr "Votre système est à jour."
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 51
 msgid " update(s) available."
-msgstr " mise à jours disponibles."
+msgstr " mise(s) à jour(s) disponible(s)."
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 51
 msgid "Click to upgrade"

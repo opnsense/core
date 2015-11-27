@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-19 22:26+0000\n"
+"POT-Creation-Date: 2015-11-27 20:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 2367\n"
+"X-Pootle-Revision: 2438\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -957,6 +957,8 @@ msgid ""
 "If set (default), Squid will include a Via header in requests and\n"
 "    replies as required by RFC2616."
 msgstr ""
+"Wenn aktiviert (Standard) wird Squid in Anfragen und Antworten eine Via-"
+"Kopfzeile einfügen, wie von RFC2616 vorgeschrieben."
 
 # File: lang/dynamic/helpers/controllers.php, line: 41
 msgid "Select what to do with X-Forwarded for header."
@@ -978,12 +980,16 @@ msgid ""
 "Enter the number of first-level subdirectories for the local cache (default "
 "is 16)."
 msgstr ""
+"Geben Sie die Zahl von Untervezcihnissen in erster Ebene für den lokalen "
+"Zwischenspeicher ein (Standard sind 16)."
 
 # File: lang/dynamic/helpers/controllers.php, line: 47
 msgid ""
 "Enter the number of first-level subdirectories for the local cache (default "
 "is 256)."
 msgstr ""
+"Geben Sie die Zahl von Unterverzeichnissen in erster Ebene für den lokalen "
+"Zwischenspeicher ein (Standard sind 256)."
 
 # File: lang/dynamic/helpers/controllers.php, line: 48
 msgid "Enable or disable traffic management."
@@ -1008,12 +1014,16 @@ msgid ""
 "Enter the allowed overall bandtwith in kilobits per second (leave empty to "
 "disable)."
 msgstr ""
+"Geben Sie die erlaubte Gesamtbandbreite in Kilobit pro Sekunde ein (oder "
+"leer lassen zur Deaktivierung)."
 
 # File: lang/dynamic/helpers/controllers.php, line: 52
 msgid ""
 "Enter the allowed per host bandwidth in kilobits per second (leave empty to "
 "disable)."
 msgstr ""
+"Geben Sie die erlaubte Bandbreite je Host in Kilobit pro Sekunde ein (oder "
+"leer lassen zur Deaktivierung)."
 
 # File: lang/dynamic/helpers/controllers.php, line: 55
 msgid "Select interface(s) the proxy will bind to."
@@ -1031,6 +1041,8 @@ msgid ""
 "When enabled the subnets of the selected interfaces will be added to the "
 "allow access list."
 msgstr ""
+"Falls aktiviert, werden die Subnetze der ausgewählten Interfaces zur "
+"erlaubenden Zugriffsliste hinzugefügt."
 
 # File: lang/dynamic/helpers/controllers.php, line: 59
 msgid "Select interface(s) the ftp proxy will bind to."
@@ -1264,6 +1276,8 @@ msgid ""
 "If provided, all traffic will be transmitted over an HTTPS connection to "
 "protect against eavesdroppers."
 msgstr ""
+"Wenn vorhanden, wird der gesamte Traffic über eine HTTPS-verbindung "
+"übertragen um vor Abhören zu schützen."
 
 # File: lang/dynamic/helpers/controllers.php, line: 103
 msgid ""
@@ -1272,10 +1286,15 @@ msgid ""
 "resolve this location. When using a SSL certificate, make sure both this "
 "name and the cert name are equal."
 msgstr ""
+"Hostname (dieses Rechners) auf den die Anmeldeseite weitergeleitet werden "
+"soll, leer lassen um die IP-Adresse dieser Netzwerkschnittstelle zu nutzen, "
+"andernfalls muss sichergestellt sein, dass Clients DNS-Zugriff haben um den "
+"Namen aufzulösen. Bei Nutzung eines SSL-Zertifikats stellen Sie sicher, dass "
+"diese Angabe und der Name des Zertifikats übereinstimmen. "
 
 # File: lang/dynamic/helpers/controllers.php, line: 104
 msgid "Avoid authentication for addresses and subnets in this list"
-msgstr ""
+msgstr "Umgehe Authentifizierung für Adressen und Subnetze in dieser Liste"
 
 # File: lang/dynamic/helpers/controllers.php, line: 105
 msgid "Avoid authentication for physical addresses in this list"
@@ -1283,7 +1302,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/controllers.php, line: 106
 msgid "Use custom template package for user login"
-msgstr ""
+msgstr "Benutzerdefiniertes Vorlagenpaket für die Benutzeranmeldung verwenden"
 
 # File: lang/dynamic/helpers/controllers.php, line: 107
 msgid "Description to identify this zone."
@@ -1466,7 +1485,7 @@ msgid "Halt System"
 msgstr "System herunterfahren"
 
 msgid "Reboot System"
-msgstr "System Neustarten"
+msgstr "System neustarten"
 
 msgid "SMART Status"
 msgstr "SMART Status"
@@ -1622,7 +1641,7 @@ msgstr "Portweiterleitung"
 
 # File: lang/dynamic/helpers/models.php, line: 86
 msgid "OneOnOneEdit"
-msgstr ""
+msgstr "EinsZuEinsBearbeitung"
 
 msgid "1:1"
 msgstr "1:1"
@@ -1798,7 +1817,7 @@ msgstr "Monitore"
 # File: lang/dynamic/helpers/models.php, line: 199
 # File: src/www/load_balancer_pool.php, line: 87
 msgid "Pool Setup"
-msgstr ""
+msgstr "Pooleinrichtung"
 
 # File: lang/dynamic/helpers/models.php, line: 200
 # File: src/www/status_lb_pool.php, line: 56
@@ -1821,12 +1840,12 @@ msgstr "Protokolldatei"
 # File: lang/dynamic/helpers/models.php, line: 204
 # File: src/www/load_balancer_virtual_server.php, line: 125
 msgid "Virtual Server Setup"
-msgstr ""
+msgstr "Einrichtung virtueller Server"
 
 # File: lang/dynamic/helpers/models.php, line: 205
 # File: src/www/status_lb_vs.php, line: 44
 msgid "Virtual Server Status"
-msgstr ""
+msgstr "Status virtueller Server"
 
 msgid "Load Balancer"
 msgstr "Lastverteiler"
@@ -1839,7 +1858,7 @@ msgstr "PPS"
 
 # File: lang/dynamic/helpers/models.php, line: 111
 msgid "Network Time Protocol"
-msgstr ""
+msgstr "Network Time Protocol"
 
 # File: lang/dynamic/helpers/models.php, line: 138
 msgid "PPPoeServerEdit"
@@ -1851,7 +1870,7 @@ msgstr "PPPoE-Server"
 # File: lang/dynamic/helpers/models.php, line: 215
 # File: lang/dynamic/helpers/models.php, line: 282
 msgid "Administration"
-msgstr ""
+msgstr "Verwaltung"
 
 # File: lang/dynamic/helpers/models.php, line: 216
 msgid "More"
@@ -1882,7 +1901,7 @@ msgstr "Universal Plug and Play"
 
 # File: lang/dynamic/helpers/models.php, line: 145
 msgid "WoLEdit"
-msgstr ""
+msgstr "WoLBearbeitung"
 
 msgid "Wake on LAN"
 msgstr "Wake on LAN"
@@ -1892,11 +1911,11 @@ msgstr "Dienste"
 
 # File: lang/dynamic/helpers/models.php, line: 229
 msgid "Phase1"
-msgstr ""
+msgstr "Phase1"
 
 # File: lang/dynamic/helpers/models.php, line: 230
 msgid "Phase2"
-msgstr ""
+msgstr "Phase2"
 
 msgid "Tunnel Settings"
 msgstr "Tunnel Einstellungen"
@@ -1904,7 +1923,7 @@ msgstr "Tunnel Einstellungen"
 # File: lang/dynamic/helpers/models.php, line: 232
 # File: src/www/vpn_ipsec_mobile.php, line: 197
 msgid "Mobile Clients"
-msgstr ""
+msgstr "Mobile Clients"
 
 msgid "Pre-Shared Keys"
 msgstr "Pre-Shared Schlüssel"
@@ -1918,7 +1937,7 @@ msgstr "Reagieren"
 # File: lang/dynamic/helpers/models.php, line: 238
 # File: src/www/diag_ipsec_leases.php, line: 35
 msgid "Lease Status"
-msgstr ""
+msgstr "Lease Status"
 
 # File: lang/dynamic/helpers/models.php, line: 239
 # File: src/www/diag_ipsec_sad.php, line: 36
@@ -1940,7 +1959,7 @@ msgid "Client Settings"
 msgstr "Client Einstellungen"
 
 msgid "Client Specific Overrides"
-msgstr ""
+msgstr "Client-spezifische Konfiguration"
 
 # File: src/www/vpn_openvpn_client.php, line: 491
 # File: src/www/vpn_openvpn_csc.php, line: 357
@@ -2032,7 +2051,7 @@ msgstr "Menü"
 
 # File: lang/dynamic/helpers/models.php, line: 283
 msgid "Sessions"
-msgstr ""
+msgstr "Sitzungen"
 
 msgid "Vouchers"
 msgstr "Voucher"
@@ -2226,18 +2245,25 @@ msgid ""
 "Value needs to be between 0 and 59, multiple values, ranges and * are "
 "supported (ex. 1,10,20,30 or 1-30  )"
 msgstr ""
+"Der Wert muss zwischen 0 und 59 liegen; mehrere Werte, Bereiche und * werden "
+"unterstützt (z.B. 1,10,20,30 oder 1-30 )"
 
 # File: lang/dynamic/helpers/models.php, line: 243
 msgid ""
 "Value needs to be between 0 and 23, multiple values, ranges and * are "
 "supported (ex. 1,2,8 or 0-8 )"
 msgstr ""
+"Der Wert muss zwischen 0 und 23 liegen; mehrere Werte, Wertebereiche und der "
+"*-Platzhalter sind erlaubt (z.B. 1,2,8 oder 0-8)"
 
 # File: lang/dynamic/helpers/models.php, line: 244
 msgid ""
 "Value needs to be between 1 and 31, multiple values, ranges, L (last day of "
 "month) and * are supported (ex. 1,2,8 or 1-28  )"
 msgstr ""
+"Der Wert muss zwischen 1 und 31 liegen; mehrere Werte, Wertebereiche, L ("
+"letzter Tag des Monats) und der *-Platzhalter sind erlaubt (z.B. 1,2,8 oder "
+"1-28)"
 
 # File: lang/dynamic/helpers/models.php, line: 245
 msgid ""
@@ -2252,6 +2278,8 @@ msgid ""
 "Value needs to be between 0 and 6 ( Sunday to Saturday), multiple values, "
 "ranges and * are supported (ex. 1,2,4 or 0-4  ) "
 msgstr ""
+"Der Wert muss zwischen 0 und 6 liegen (Sonntag bis Samstag), mehrere Werte, "
+"Wertebereiche und der *-Platzhalter sind erlaubt (z.B. 1,2,4 oder 0-4)"
 
 # File: lang/dynamic/helpers/models.php, line: 247
 msgid "Select a command from the list."
@@ -2273,6 +2301,9 @@ msgid ""
 "http://en.wikipedia.org/wiki/DNS_rebinding<br />Try accessing the router by "
 "IP address instead of by hostname."
 msgstr ""
+"Potentiellen DNS-Rebind Angriff erkannt, siehe https://en.wikipedia.org/wiki/"
+"DNS_rebinding. Versuchen Sie den Router über die IP-Adresse anstelle des "
+"Hostnamens zu erreichen."
 
 msgid "Redirecting to the dashboard..."
 msgstr "Leite weiter zum Dashboard..."
@@ -2287,8 +2318,9 @@ msgstr ""
 "Mit Ihrer Konfiguration stimmt etwas nicht, da das Passwort des Benutzers %s "
 "fehlt!"
 
+# Gibt es eine bessere Formulierung?
 msgid "LDAP: Could not lookup CA by reference for host %s."
-msgstr ""
+msgstr "LDAP: Konnte CA mit Bezug zu Host %s nicht nachschlagen."
 
 msgid "Local Database"
 msgstr "Lokale Datenbank"
@@ -2426,10 +2458,11 @@ msgstr ""
 "zurückzusetzen."
 
 msgid "Updated bogon update frequency to 3am"
-msgstr ""
+msgstr "Bogon Aktualisierungshäufigkeit auf 3 Uhr eingestellt"
 
+# Bessere Übersetzung? Hier fehlt mir der Kontext.
 msgid "Upgraded config version level from %1$s to %2$s"
-msgstr ""
+msgstr "Level der Konfigurationsversion von %1$s auf %2$s aktualisiert"
 
 # TODO: These lines need clarification in the source:
 # src/www/interfaces.php:1931
@@ -2515,7 +2548,7 @@ msgid "done."
 msgstr "erledigt."
 
 msgid "Setting up logging information"
-msgstr ""
+msgstr "Richte Protokollinformationen ein"
 
 msgid "Setting up SCRUB information"
 msgstr "Konfiguriere SCRUB-Information"
@@ -2524,7 +2557,7 @@ msgid "The line in question reads [%1$d]: %2$s"
 msgstr ""
 
 msgid "PF was wedged/busy and has been reset."
-msgstr ""
+msgstr "PF hing fest oder war ausgelastet und wurde zurückgesetzt."
 
 msgid "There were error(s) loading the rules: %1$s - %2$s"
 msgstr ""
@@ -2681,6 +2714,8 @@ msgstr ""
 
 msgid "QinQ compat VLAN: called with wrong options. Problems with config!%s"
 msgstr ""
+"QinQ compat VLAN: mit falschen Optionen aufgerufen. Probleme mit der "
+"Konfiguration!%s"
 
 msgid "interface_qinq_configure called with if undefined.%s"
 msgstr ""
@@ -2799,7 +2834,7 @@ msgstr ""
 "Schreiben öffnen.%s"
 
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
-msgstr ""
+msgstr "Ungültiges Interface \"%s\" in interface_dhcp_configure()"
 
 msgid "Could not bring up %s interface in interface_dhcp_configure()"
 msgstr ""
@@ -2943,7 +2978,7 @@ msgstr ""
 
 # File: src/etc/inc/notices.smtp.inc, line: 342
 msgid "Could not process the SASL authentication step:"
-msgstr ""
+msgstr "Konnte SASL-Authentifizierungsschritt nicht ausführen:"
 
 # File: src/etc/inc/notices.smtp.inc, line: 356
 msgid "connection is already established"
@@ -3037,7 +3072,7 @@ msgstr "es wurde zuvor keine SMTP Verbindung aufgebaut"
 # File: src/etc/inc/openvpn-client-export.inc, line: 84
 # File: src/etc/inc/openvpn-client-export.inc, line: 686
 msgid "Could not locate server configuration."
-msgstr ""
+msgstr "Konnte Serverkonfiguration nicht finden."
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 88
 # File: src/etc/inc/openvpn-client-export.inc, line: 690
@@ -3436,6 +3471,9 @@ msgid ""
 "via SCP/SFTP. If you are going to use this privilege, you must install "
 "scponly on the appliance (Hint: pkg_add -r scponly)."
 msgstr ""
+"Zeigt an, ob dieser Benutzer Dateien mittels SCP/SFTP auf die %s-Appliance "
+"kopieren darf. Falls Sie diese Berechtigung verwenden möchten, müssen Sie "
+"zuerst scponly auf der Appliance installieren (Hinweis: pkg_add -r scponly)."
 
 msgid ""
 "This user is associated with the UNIX root user (you should associate this "
@@ -3444,9 +3482,11 @@ msgstr ""
 
 msgid "Drop packets to closed TCP ports without returning a RST"
 msgstr ""
+"Verwerfe Pakete an geschlossene TCP-Ports, ohne mit einem RST zu antworten"
 
 msgid "Do not send ICMP port unreachable messages for closed UDP ports"
 msgstr ""
+"Sende keine ICMP-\"Port unreachable\"-Nachrichten bei geschlossenen UDP-Ports"
 
 msgid "Randomize the ID field in IP packets (default is 0: sequential IP IDs)"
 msgstr ""
@@ -3463,7 +3503,7 @@ msgid "Sending of IPv6 ICMP redirects"
 msgstr "Senden von IPv6 ICMP Weiterleitungen"
 
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
-msgstr ""
+msgstr "Generiere SYN-Cookies für ausgehende SYN-ACK-Pakete"
 
 msgid "Maximum incoming TCP datagram size"
 msgstr "Maximale Größe eines eingehenden TCP Segments"
@@ -3677,7 +3717,7 @@ msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
 msgstr ""
 
 msgid "Enter the new %s %s subnet bit count (1 to %s):"
-msgstr ""
+msgstr "Geben Sie die neue %s %s Subnetbitzahl ein (1 bis %s):"
 
 msgid "You cannot set network address to an interface"
 msgstr "Sie können die Netzwerkadresse einem Interface nicht zuweisen"
@@ -8502,7 +8542,7 @@ msgid "Don't forget to adjust the DHCP Server range if needed after applying."
 msgstr ""
 
 msgid "The %s configuration has been changed."
-msgstr "The %s Konfiguration hat sich geändert."
+msgstr "Die Konfiguration von %s hat sich geändert."
 
 msgid "General configuration"
 msgstr "Allgemeine Konfiguration"
@@ -13570,7 +13610,7 @@ msgid "Renew"
 msgstr "Erneuern"
 
 msgid "Connect"
-msgstr "verbinde"
+msgstr "Verbinden"
 
 msgid "Disconnect"
 msgstr "Trennen"
