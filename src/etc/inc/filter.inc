@@ -1059,12 +1059,12 @@ function filter_get_reflection_interfaces(&$FilterIflist, $natif = '')
     foreach ($FilterIflist as $ifent => $ifname) {
         if ($ifname['if'] == $natif) {
             continue;
-	}
+        }
 
         /* Do not add reflection redirects for interfaces with gateways */
         if (interface_has_gateway($ifent)) {
             continue;
-	}
+        }
 
         $nat_if_list[] = $ifname['if'];
     }
@@ -1541,9 +1541,10 @@ function filter_nat_rules_outbound_automatic(&$FilterIflist, $src)
 }
 
 /* Generate a 'nat on' or 'no nat on' rule for given interface */
-function filter_nat_rules_generate_if($if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "") {
+function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "")
+{
     global $config;
-    $FilterIflist = filter_generate_optcfg_array() ;
+
     /* XXX: billm - any idea if this code is needed? */
     if($src == "/32" || $src{0} == "/") {
         return "# src incorrectly specified\n";
@@ -1830,7 +1831,9 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $obtarget = ($obent['target'] == "other-subnet") ? $obent['targetip'] . '/' . $obent['targetip_subnet']: $obent['target'];
                 $poolopts = (is_subnet($obtarget) || is_alias($obtarget)) ? $obent['poolopts'] : "";
 
-                $natrules .= filter_nat_rules_generate_if($obent['interface'],
+                $natrules .= filter_nat_rules_generate_if(
+                  $FilterIflist,
+                  $obent['interface'],
                   $src,
                   $obent['sourceport'],
                   $dst,
@@ -1872,6 +1875,7 @@ function filter_nat_rules_generate(&$FilterIflist)
             $a_outs = filter_nat_rules_outbound_automatic($FilterIflist, $macroortable);
             foreach ($a_outs as $a_out) {
                 $natrules .= filter_nat_rules_generate_if(
+                    $FilterIflist,
                     $a_out['interface'],
                     $a_out['source']['network'],
                     isset($a_out['sourceport']) ? $a_out['sourceport'] : null,
