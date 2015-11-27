@@ -1165,13 +1165,12 @@ function filter_generate_reflection_nat(&$FilterIflist, $rule, &$route_table, $n
     return $natrules;
 }
 
-function filter_generate_reflection_proxy($rule, $nordr, $rdr_ifs, $srcaddr, $dstaddr_port, &$starting_localhost_port, &$reflection_txt) {
+function filter_generate_reflection_proxy(&$FilterIflist, $rule, $nordr, $rdr_ifs, $srcaddr, $dstaddr_port, &$starting_localhost_port, &$reflection_txt)
+{
     global $config;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
-    // Initialize natrules holder string
-    $natrules = "";
     $reflection_txt = array();
+    $natrules = '';
 
     if(!empty($rdr_ifs)) {
         if($config['system']['reflectiontimeout']) {
@@ -2095,7 +2094,7 @@ function filter_nat_rules_generate(&$FilterIflist)
 
                 if ($reflection_type != "none") {
                     if($reflection_type == "proxy" && !isset($rule['nordr'])) {
-                        $natrules .= filter_generate_reflection_proxy($rule, $nordr, $nat_if_list, $srcaddr, $dstaddr, $starting_localhost_port, $reflection_rules);
+                        $natrules .= filter_generate_reflection_proxy($FilterIflist, $rule, $nordr, $nat_if_list, $srcaddr, $dstaddr, $starting_localhost_port, $reflection_rules);
                         $nat_if_list = array($natif);
                         foreach ($reflection_rules as $txtline) {
                             fwrite($inetd_fd, $txtline);
