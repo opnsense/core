@@ -335,7 +335,7 @@ function download_begin(act, i, j) {
 
 	if (document.getElementById("useaddr").value == "other") {
 		if (document.getElementById("useaddr_hostname").value == "") {
-			alert("<?=gettext('Please specify an IP address or hostname.') ?>'");
+			alert("<?=gettext('Please specify an IP address or hostname.') ?>");
 			return;
 		}
 		useaddr = document.getElementById("useaddr_hostname").value;
