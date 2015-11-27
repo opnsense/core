@@ -74,7 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(empty($GatewaysList)) {
                 filter_generate_gateways();
             }
-            $tonathosts = filter_nat_rules_automatic_tonathosts(true);
+            /* XXX cranky low-level call, please refactor */
+            $tonathosts = filter_nat_rules_automatic_tonathosts(filter_generate_optcfg_array(), true);
             $automatic_rules = filter_nat_rules_outbound_automatic("");
 
             foreach ($tonathosts as $tonathost) {
@@ -479,7 +480,8 @@ include("head.inc");
       if ($mode == "automatic" || $mode == "hybrid"):
         if(empty($GatewaysList))
           filter_generate_gateways();
-        $automatic_rules = filter_nat_rules_outbound_automatic(implode(" ", filter_nat_rules_automatic_tonathosts()));
+        /* XXX cranky low-level call, please refactor */
+        $automatic_rules = filter_nat_rules_outbound_automatic(implode(" ", filter_nat_rules_automatic_tonathosts(filter_generate_optcfg_array())));
         unset($GatewaysList);
 ?>
         <section class="col-xs-12">

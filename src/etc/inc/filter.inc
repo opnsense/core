@@ -1363,9 +1363,9 @@ function filter_generate_reflection_proxy($rule, $nordr, $rdr_ifs, $srcaddr, $ds
     return $natrules;
 }
 
-function filter_nat_rules_automatic_tonathosts($with_descr = false) {
+function filter_nat_rules_automatic_tonathosts(&$filterIflist, $with_descr = false)
+{
     global $config, $GatewaysList;
-    $FilterIflist = filter_generate_optcfg_array() ;
 
     $tonathosts = array("127.0.0.0/8");
     $descriptions = array(gettext("localhost"));
@@ -1835,7 +1835,7 @@ function filter_nat_rules_generate(&$FilterIflist)
         $natrules .= "\n# Outbound NAT rules (automatic)\n";
         /* standard outbound rules (one for each interface) */
         update_filter_reload_status(gettext("Creating outbound NAT rules"));
-        $tonathosts_array = filter_nat_rules_automatic_tonathosts();
+        $tonathosts_array = filter_nat_rules_automatic_tonathosts($FilterIflist);
         $tonathosts = implode(" ", $tonathosts_array);
         $numberofnathosts = count($tonathosts_array);
 
