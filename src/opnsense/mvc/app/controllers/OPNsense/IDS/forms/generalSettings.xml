@@ -10,7 +10,7 @@
         <label>IPS mode</label>
         <type>checkbox</type>
         <help><![CDATA[enable protection mode (block traffic).
-        before enabling, please disable all hardware ofloading first. <br><a href="/system_advanced_network.php">in advanced network</a>
+        before enabling, please disable all hardware offloading first. <br><a href="/system_advanced_network.php">in advanced network</a>
         ]]></help>
     </field>
     <field>
