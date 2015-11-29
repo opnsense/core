@@ -228,8 +228,6 @@ endif; ?>
 
 					<div class="tab-content content-box col-xs-12">
 
-				    <div class="container-fluid">
-
 	                        <form action="system_routes.php" method="post" name="iform" id="iform">
 
 
@@ -384,13 +382,14 @@ endforeach; ?>
 											</table>
 										</td>
 									</tr>
+									<tr><td colspan="7">
+	                        <?= gettext('Note:') ?>
+				<?=gettext("Do not enter static routes for networks assigned on any interface of this firewall.  Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?>
+									</td></tr>
 								</table>
 	                        </div>
-	                        <p><b><?=gettext("Note:");
-?></b>  <?=gettext("Do not enter static routes for networks assigned on any interface of this firewall.  Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?></p>
 
 	                        </form>
-				    </div>
 					</div>
 			    </section>
 			</div>

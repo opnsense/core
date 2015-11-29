@@ -81,7 +81,8 @@ foreach ($ifarr as $key => $node) {
     $menu->appendItem('Interfaces', $key, array(
         'url' => '/interfaces.php?if=' . $key,
         'order' => ($ordid++),
-        'visiblename' => $node->descr ? $node->descr : strtoupper($key)
+        'visiblename' => $node->descr ? $node->descr : strtoupper($key),
+        'cssclass' => 'fa fa-sitemap',
     ));
 }
 unset($ifarr);
