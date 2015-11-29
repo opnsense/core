@@ -69,8 +69,7 @@ if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways'
     $a_gateway_groups = &$config['gateways']['gateway_group'];
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {
         if (!empty($a_gateway_groups[$_POST['id']])) {
             foreach ($config['filter']['rule'] as $idx => $rule) {
