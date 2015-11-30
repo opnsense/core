@@ -1776,10 +1776,21 @@ function filter_nat_rules_generate() {
                   if ($remote_subnet == "0.0.0.0/0") {
                       $remote_subnet = "any";
                   }
-                  if (is_ipaddr($natlocal_subnet) && !is_ipaddr($local_subnet)) {
-                      $nattype = "nat";
-                  } else {
-                      $nattype = "binat";
+                  /* Try to enforce a specific NAT type or choose automatically. */
+                  switch(isset($ph2ent['natlocalid']['nattype']) ? $ph2ent['natlocalid']['nattype'] : null) {
+                      case "binat":
+                          $nattype = "binat";
+                          break;
+                      case "nat":
+                          $nattype = "nat";
+                          break;
+                      default:
+                          if (is_ipaddr($natlocal_subnet) && !is_ipaddr($local_subnet)) {
+                              $nattype = "nat";
+                          } else {
+                              $nattype = "binat";
+                          }
+                          break;
                   }
                   $natrules .= "{$nattype} on enc0 from {$local_subnet} to {$remote_subnet} -> {$natlocal_subnet}\n";
                 }
