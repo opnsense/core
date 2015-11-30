@@ -148,6 +148,21 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 ?>
 
+
+<script type="text/javascript">
+$( document ).ready(function() {
+    // force protocol on initial selection (only relevant for new items)
+    $(".act-tier-change").change(function(){
+      var proto = $(this).data('proto');
+      $(".act-tier-change").each(function(){
+            if ($(this).data('proto') != proto) {
+                $(this).val('0');
+            }
+      });
+      $('.selectpicker').selectpicker('refresh');
+    });
+});
+</script>
 <body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
@@ -197,7 +212,7 @@ include("head.inc");
                         <tr>
                           <td><strong><?=$gateway['name'];?></strong></td>
                           <td>
-                            <select name="<?=$gwname;?>" class="selectpicker" data-width='auto'>
+                            <select name="<?=$gwname;?>" class="selectpicker act-tier-change" data-width='auto' data-proto="<?=$gateway['ipprotocol'];?>">
 <?php
                               for ($tierId = 0 ; $tierId < 6 ; ++$tierId):
                                 $is_selected = false;
