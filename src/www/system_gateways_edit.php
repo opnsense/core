@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $input_errors[] = gettext("The gateway name must not contain invalid characters.");
     }
     /* skip system gateways which have been automatically added */
-    if ((!empty($pconfig['gateway']) && (!is_ipaddr($pconfig['gateway'])) &&
-        ($pconfig['attribute'] !== "system")) && ($pconfig['gateway'] != "dynamic")
+    if (!empty($pconfig['gateway']) && !is_ipaddr($pconfig['gateway']) &&
+        $pconfig['attribute'] !== "system" && $pconfig['gateway'] != "dynamic"
         ) {
         $input_errors[] = gettext("A valid gateway IP address must be specified.");
     }
@@ -438,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        if (empty($pconfig['friendlyiface'])) {
+        if (!empty($pconfig['interface'])) {
             $pconfig['friendlyiface'] = $_POST['interface'];
         }
     }
