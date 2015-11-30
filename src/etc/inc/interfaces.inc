@@ -3995,34 +3995,38 @@ function convert_friendly_interface_to_real_interface_name($interface) {
 	return get_real_interface($interface);
 }
 
-/*
- * convert_real_interface_to_friendly_interface_name($interface): convert fxp0 -> wan, etc.
- */
-function convert_real_interface_to_friendly_interface_name($interface = "wan") {
+/* convert fxp0 -> wan, etc. */
+function convert_real_interface_to_friendly_interface_name($interface = 'wan')
+{
 	global $config;
 
-	/* XXX: For speed reasons reference directly the interface array */
-	$ifdescrs = &$config['interfaces'];
-	//$ifdescrs = get_configured_interface_list(false, true);
+	if (!isset($config['interfaces'])) {
+		/* some people do trigger this, I don't know why :) */
+		return NULL;
+	}
 
-	foreach ($ifdescrs as $if => $ifname) {
-		if ($if == $interface || $ifname['if'] == $interface)
+	foreach ($config['interfaces'] as $if => $ifname) {
+		if ($if == $interface || $ifname['if'] == $interface) {
 			return $if;
+		}
 
-		if (get_real_interface($if) == $interface)
+		if (get_real_interface($if) == $interface) {
 			return $if;
+		}
 
 		$int = get_parent_interface($if, true);
 		if (is_array($int)) {
 			foreach ($int as $iface) {
-				if ($iface == $interface)
+				if ($iface == $interface) {
 					return $if;
+				}
 			}
 		}
 	}
 
-	if ($interface == "enc0")
+	if ($interface == 'enc0') {
 		return 'IPsec';
+	}
 
 	return NULL;
 }
