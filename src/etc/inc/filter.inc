@@ -920,7 +920,7 @@ function filter_generate_optcfg_array()
         if (isset($oc['alias-subnet'])) {
             $oic['alias-subnet'] = $oc['alias-subnet'];
         } else {
-            $oc['alias-subnet'] = null;
+            $oic['alias-subnet'] = null;
         }
         if (isset($oc['gateway'])) {
             $oic['gateway'] = $oc['gateway'];
