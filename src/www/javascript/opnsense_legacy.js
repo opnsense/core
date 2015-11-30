@@ -41,7 +41,7 @@ function hook_ipv4v6(classname, data_id, callback) {
         $("#"+$(this).data(data_id)).change(function(){
           var itemValue = $(this).val();
           $("#"+selectlist_id+" > option").each(function() {
-              if (parseInt($(this).val()) > 24 && itemValue.indexOf(":") == -1 ) {
+              if (parseInt($(this).val()) > 32 && itemValue.indexOf(":") == -1 ) {
                   $(this).addClass('hidden');
               } else {
                   $(this).removeClass('hidden');
