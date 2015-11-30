@@ -4040,14 +4040,10 @@ function is_interface_group($if)
 	return false;
 }
 
-function interface_group_add_member($interface, $groupname) {
+function interface_group_add_member($interface, $groupname)
+{
 	$interface = get_real_interface($interface);
 	mwexec("/sbin/ifconfig {$interface} group " . escapeshellarg($groupname), true);
-}
-
-/* COMPAT Function */
-function convert_friendly_interface_to_real_interface_name($interface) {
-	return get_real_interface($interface);
 }
 
 /* convert fxp0 -> wan, etc. */
