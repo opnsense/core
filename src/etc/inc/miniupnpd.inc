@@ -36,13 +36,13 @@ function sync_package_miniupnpd() {
 	$upnp_config = $config['installedpackages']['miniupnpd']['config'][0];
 	$config_file = '/var/etc/miniupnpd.conf';
 
-	if (!isset($upnp_config['ext_iface']) || empty($upnp_config['ext_iface']))
+	if (!isset($upnp_config['ext_iface']) || empty($upnp_config['ext_iface'])) {
 		$ext_ifname = get_real_interface();
-	else {
-		$if = convert_friendly_interface_to_real_interface_name($upnp_config['ext_iface']);
-		if ($if != $upnp_config['ext_iface'])
+	} else {
+		$if = get_real_interface($upnp_config['ext_iface']);
+		if ($if != $upnp_config['ext_iface']) {
 			$ext_ifname = $if;
-		else {
+		} else {
 			$ext_ifname = get_real_interface();
 			upnp_warn("Could not resolve real interface for {$upnp_config['ext_iface']}, defaulting to WAN");
 		}
@@ -59,9 +59,10 @@ function sync_package_miniupnpd() {
 
 		foreach($iface_array as $iface) {
 			/* Setting the same internal and external interface is not allowed. */
-			if ($iface == $upnp_config['ext_iface'])
+			if ($iface == $upnp_config['ext_iface']) {
 				continue;
-			$if = convert_friendly_interface_to_real_interface_name($iface);
+			}
+			$if = get_real_interface($iface);
 			/* above function returns iface if fail */
 			if($if!=$iface) {
 				$addr = find_interface_ip($if);

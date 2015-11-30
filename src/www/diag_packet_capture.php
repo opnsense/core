@@ -421,7 +421,7 @@ if ($do_tcpdump) {
 		$searchcount = "";
 	}
 
-	$selectedif = convert_friendly_interface_to_real_interface_name($selectedif);
+	$selectedif = get_real_interface($selectedif);
 
 	if ($action == gettext("Start")) {
 		$matchstr = implode($matches, " and ");

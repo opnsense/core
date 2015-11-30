@@ -210,9 +210,10 @@ $i = 0;
 $ifdescrs = get_configured_interface_with_descr();
 
 foreach ($ifdescrs as $key => $interface) {
-	$thisif = convert_friendly_interface_to_real_interface_name($key);
-	if (!empty($thisif))
+	$thisif = get_real_interface($key);
+	if (!empty($thisif)) {
 		$hwif[$thisif] = $interface;
+	}
 }
 
 $data = array();
