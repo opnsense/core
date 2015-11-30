@@ -158,13 +158,13 @@ $( document ).ready(function() {
       }
 ?>
       <section class="col-xs-12">
-        <div class="tab-content content-box col-xs-12">
-          <div class="container-fluid">
+        <div class="container-fluid">
+          <div class="tab-content content-box">
             <form action="system_gateway_groups.php" method="post" name="iform" id="iform">
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">
-                <table class="table table-striped table-sort">
+                <table class="table table-striped">
                   <thead>
                     <tr>
                       <td><?=gettext("Group Name");?></td>
@@ -208,11 +208,15 @@ $( document ).ready(function() {
 <?php $i++;
                     endforeach; ?>
                   </tbody>
+                  <tfoot>
+                    <tr class="hidden-xs">
+                      <td colspan="5">
+                        <b><?=gettext("Note:");?></b>
+                        <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?>
+                      </td>
+                    </tr>
+                  </tfoot>
                 </table>
-                </div>
-                <div class="hidden-xs">
-                  <b><?=gettext("Note:");?></b>
-                  <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?>
                 </div>
               </form>
             </div>
