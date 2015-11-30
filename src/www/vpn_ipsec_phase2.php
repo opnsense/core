@@ -82,12 +82,21 @@ function pconfig_to_idinfo($prefix, $pconfig)
     $type = $pconfig[$prefix."id_type"];
     $address = isset($pconfig[$prefix."id_address"]) ? $pconfig[$prefix."id_address"] : null;
     $netbits = isset($pconfig[$prefix."id_netbits"]) ? $pconfig[$prefix."id_netbits"] : null;
+    $nattype = $pconfig[$prefix."id_nattype"];
 
     switch ($type) {
         case "address":
-            return array('type' => $type, 'address' => $address);
+            if (!empty($nattype)) {
+                return array('type' => $type, 'address' => $address, 'nattype' => $nattype);
+            } else {
+                return array('type' => $type, 'address' => $address);
+            }
         case "network":
-            return array('type' => $type, 'address' => $address, 'netbits' => $netbits);
+            if (!empty($nattype)) {
+                return array('type' => $type, 'address' => $address, 'netbits' => $netbits, 'nattype' => $nattype);
+            } else {
+                return array('type' => $type, 'address' => $address, 'netbits' => $netbits);
+            }
         default:
             return array('type' => $type );
     }
@@ -98,16 +107,21 @@ function pconfig_to_idinfo($prefix, $pconfig)
  */
 function idinfo_to_pconfig($prefix, $idinfo, & $pconfig)
 {
-
     switch ($idinfo['type']) {
         case "address":
             $pconfig[$prefix."id_type"] = $idinfo['type'];
             $pconfig[$prefix."id_address"] = $idinfo['address'];
+            if (isset($idinfo['nattype'])) {
+                $pconfig[$prefix."id_nattype"] = $idinfo['nattype'];
+            }
             break;
         case "network":
             $pconfig[$prefix."id_type"] = $idinfo['type'];
             $pconfig[$prefix."id_address"] = $idinfo['address'];
             $pconfig[$prefix."id_netbits"] = $idinfo['netbits'];
+            if (isset($idinfo['nattype'])) {
+                $pconfig[$prefix."id_nattype"] = $idinfo['nattype'];
+            }
             break;
         default:
             $pconfig[$prefix."id_type"] = $idinfo['type'];
@@ -272,11 +286,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case "address":
                     if (!empty($pconfig['natlocalid_address']) && !is_ipaddr($pconfig['natlocalid_address'])) {
                         $input_errors[] = gettext("A valid NAT local network IP address must be specified.");
-                    } elseif (is_ipaddrv4($pconfig['natlocalid_address']) && ($pconfig['mode'] != "tunnel"))
-                    $input_errors[] = gettext("A valid NAT local network IPv4 address must be specified or you need to change Mode to IPv6");
-                    elseif (is_ipaddrv6($pconfig['natlocalid_address']) && ($pconfig['mode'] != "tunnel6"))
-                    $input_errors[] = gettext("A valid NAT local network IPv6 address must be specified or you need to change Mode to IPv4");
+                    } elseif (is_ipaddrv4($pconfig['natlocalid_address']) && ($pconfig['mode'] != "tunnel")) {
+                        $input_errors[] = gettext("A valid NAT local network IPv4 address must be specified or you need to change Mode to IPv6");
+                    } elseif (is_ipaddrv6($pconfig['natlocalid_address']) && ($pconfig['mode'] != "tunnel6")) {
+                        $input_errors[] = gettext("A valid NAT local network IPv6 address must be specified or you need to change Mode to IPv4");
+                    }
                     break;
+            }
+            switch ($pconfig['natlocalid_nattype']) {
+                case "binat":
+                    if ($pconfig['natlocalid_netbits'] != $pconfig['localid_netbits']) {
+                        $input_errors[] = gettext("BINAT requires that the netmask of the local network matches the one of the NAT/BINAT network.");
+                    }
             }
         }
 
@@ -720,6 +741,25 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 </tr>
                 <tr>
                   <td colspan="2"><b><?=gettext("NAT/BINAT");?></b></td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_natlocalid_nattype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NAT Type"); ?></td>
+                  <td>
+                    <select name="natlocalid_nattype" class="formselect">
+                      <option value="auto" <?=empty($pconfig['natlocalid_nattype']) || $pconfig['natlocalid_nattype'] == "auto" ? "selected=\"selected\"" : "";?> >
+                        <?=gettext("Auto"); ?>
+                      </option>
+                      <option value="nat"  <?=!empty($pconfig['natlocalid_nattype']) && $pconfig['natlocalid_nattype'] == "nat" ? "selected=\"selected\"" : "";?>>
+                        <?=gettext("NAT"); ?>
+                      </option>
+                      <option value="binat" <?=!empty($pconfig['natlocalid_nattype']) && $pconfig['natlocalid_nattype'] == "binat" ? "selected=\"selected\"" : "";?>>
+                        <?=gettext("BINAT"); ?>
+                      </option>
+                    </select>
+                    <div class="hidden" for="help_for_natlocalid_nattype">
+                        <?php echo gettext("Enforce the type of NAT by choosing either NAT or BINAT. Leave it to Auto to let OPNsense automatically choose the best NAT option."); ?>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_natlocalid_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
