@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // move selected rules
         if (!isset($id)) {
             // if rule not set/found, move to end
-            $id = count($a_nat);
+            $id = count($a_filter);
         }
         $a_filter = legacy_move_config_list_items($a_filter, $id,  $pconfig['rule']);
         if (write_config()) {
