@@ -1,37 +1,35 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
-	All rights reserved.
+  Copyright (C) 2014-2015 Deciso B.V.
+  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 require_once("vpn.inc");
 require_once("interfaces.inc");
-
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateway_groups.php');
 
 if (!is_array($config['gateways'])) {
     $config['gateways'] = array();
@@ -40,68 +38,61 @@ if (!is_array($config['gateways'])) {
 if (!is_array($config['gateways']['gateway_group'])) {
     $config['gateways']['gateway_group'] = array();
 }
-
 $a_gateway_groups = &$config['gateways']['gateway_group'];
 $a_gateways = return_gateways_array();
-$carplist = get_configured_carp_interface_list();
 
-$categories = array('down' => gettext("Member Down"),
-                    'downloss' => gettext("Packet Loss"),
-                    'downlatency' => gettext("High Latency"),
-                    'downlosslatency' => gettext("Packet Loss or High Latency"));
-
-if (is_numericint($_GET['id'])) {
-    $id = $_GET['id'];
-}
-if (isset($_POST['id']) && is_numericint($_POST['id'])) {
-    $id = $_POST['id'];
-}
-
-if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
-    $id = $_GET['dup'];
-}
-
-if (isset($id) && $a_gateway_groups[$id]) {
-    $pconfig['name'] = $a_gateway_groups[$id]['name'];
-    $pconfig['item'] = &$a_gateway_groups[$id]['item'];
-    $pconfig['descr'] = $a_gateway_groups[$id]['descr'];
-    $pconfig['trigger'] = $a_gateway_groups[$id]['trigger'];
-}
-
-if (isset($_GET['dup']) && is_numericint($_GET['dup'])) {
-    unset($id);
-}
-
-if ($_POST) {
-    unset($input_errors);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['id']) && isset($a_gateway_groups[$_GET['id']])) {
+        $id = $_GET['id'];
+        $configId = $id;
+    } elseif (isset($_GET['dup']) && isset($a_gateway_groups[$_GET['dup']])) {
+        $configId = $_GET['dup'];
+    }
+    $pconfig=array();
+    if (isset($configId)) {
+        $pconfig['name'] = $a_gateway_groups[$configId]['name'];
+        $pconfig['item'] = &$a_gateway_groups[$configId]['item'];
+        $pconfig['descr'] = $a_gateway_groups[$configId]['descr'];
+        $pconfig['trigger'] = $a_gateway_groups[$configId]['trigger'];
+    } else {
+        $pconfig['name'] = null;
+        $pconfig['descr'] = null;
+        $pconfig['trigger'] = null;
+        $pconfig['item'] = array();
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
+    if (isset($_POST['id']) && isset($a_gateway_groups[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
 
+    $input_errors = array();
     /* input validation */
     $reqdfields = explode(" ", "name");
     $reqdfieldsn = explode(",", "Name");
 
     do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (! isset($_POST['name'])) {
+    if (empty($pconfig['name'])) {
         $input_errors[] = gettext("A valid gateway group name must be specified.");
     }
-    if (! is_validaliasname($_POST['name'])) {
+    if (!is_validaliasname($pconfig['name'])) {
         $input_errors[] = gettext("The gateway name must not contain invalid characters.");
     }
 
-    if (isset($_POST['name'])) {
+    if (!empty($pconfig['name'])) {
         /* check for overlaps */
         if (is_array($a_gateway_groups)) {
             foreach ($a_gateway_groups as $gateway_group) {
                 if (isset($id) && ($a_gateway_groups[$id]) && ($a_gateway_groups[$id] === $gateway_group)) {
-                    if ($gateway_group['name'] != $_POST['name']) {
+                    if ($gateway_group['name'] != $pconfig['name']) {
                         $input_errors[] = gettext("Changing name on a gateway group is not allowed.");
                     }
                     continue;
                 }
 
-                if ($gateway_group['name'] == $_POST['name']) {
-                    $input_errors[] = sprintf(gettext('A gateway group with this name "%s" already exists.'), $_POST['name']);
+                if ($gateway_group['name'] == $pconfig['name']) {
+                    $input_errors[] = sprintf(gettext('A gateway group with this name "%s" already exists.'), $pconfig['name']);
                     break;
                 }
             }
@@ -111,14 +102,14 @@ if ($_POST) {
     /* Build list of items in group with priority */
     $pconfig['item'] = array();
     foreach ($a_gateways as $gwname => $gateway) {
-        if ($_POST[$gwname] > 0) {
+        if (isset($pconfig[$gwname]) && $pconfig[$gwname] > 0) {
             $vipname = "{$gwname}_vip";
             /* we have a priority above 0 (disabled), add item to list */
-            $pconfig['item'][] = "{$gwname}|{$_POST[$gwname]}|{$_POST[$vipname]}";
+            $pconfig['item'][] = "{$gwname}|{$pconfig[$gwname]}|{$pconfig[$vipname]}";
         }
         /* check for overlaps */
-        if ($_POST['name'] == $gwname) {
-            $input_errors[] = sprintf(gettext('A gateway group cannot have the same name with a gateway "%s" please choose another name.'), $_POST['name']);
+        if ($pconfig['name'] == $gwname) {
+            $input_errors[] = sprintf(gettext('A gateway group cannot have the same name with a gateway "%s" please choose another name.'), $pconfig['name']);
         }
 
     }
@@ -126,14 +117,14 @@ if ($_POST) {
         $input_errors[] = gettext("No gateway(s) have been selected to be used in this group");
     }
 
-    if (!$input_errors) {
+    if (count($input_errors) == 0) {
         $gateway_group = array();
-        $gateway_group['name'] = $_POST['name'];
+        $gateway_group['name'] = $pconfig['name'];
         $gateway_group['item'] = $pconfig['item'];
-        $gateway_group['trigger'] = $_POST['trigger'];
-        $gateway_group['descr'] = $_POST['descr'];
+        $gateway_group['trigger'] = $pconfig['trigger'];
+        $gateway_group['descr'] = $pconfig['descr'];
 
-        if (isset($id) && $a_gateway_groups[$id]) {
+        if (isset($id)) {
             $a_gateway_groups[$id] = $gateway_group;
         } else {
             $a_gateway_groups[] = $gateway_group;
@@ -152,233 +143,170 @@ if ($_POST) {
 $pgtitle = array(gettext('System'),gettext('Gateways'), gettext('Edit Group'));
 $shortcut_section = "gateway-groups";
 
-function build_gateway_protocol_map (&$a_gateways)
-{
-    $result = array();
-    foreach ($a_gateways as $gwname => $gateway) {
-        $result[$gwname] = $gateway['ipprotocol'];
-    }
-    return $result;
-}
-
+legacy_html_escape_form_data($a_gateways);
+legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
 
 <body>
 <?php include("fbegin.inc"); ?>
-<?php
-$gateway_protocol = build_gateway_protocol_map($a_gateways);
-$gateway_array    = array_keys($a_gateways);
-$protocol_array   = array_values($gateway_protocol);
-$protocol_array   = array_values(array_unique($gateway_protocol));
-?>
-<script type="text/javascript">
-//<![CDATA[
-jQuery(function ($) {
-	var gateway_protocol = <?= json_encode($gateway_protocol) ?>;
-	var gateways         = <?= json_encode($gateway_array) ?>;
-	var protocols        = <?= json_encode($protocol_array) ?>;
-	if (protocols.length <= 1) { return; }
-
-	var update_gateway_visibilities = function () {
-		var which_protocol_to_show = undefined;
-		$.each(gateways, function (i, gateway) {
-			var $select = $("#" + gateway);
-			var value = $select.val();
-			var protocol = gateway_protocol[gateway];
-			if (value !== '0' /* i.e., an option is selected */) {
-				if (which_protocol_to_show === undefined) {
-					which_protocol_to_show = protocol;
-				}
-				else if (which_protocol_to_show !== protocol) {
-					which_protocol_to_show = 'ALL OF THEM'; // this shouldn't happen
-				}
-			}
-		});
-		if (which_protocol_to_show !== undefined && which_protocol_to_show !== 'ALL OF THEM') {
-			$.each(gateways, function (i, gateway) {
-				var protocol = gateway_protocol[gateway];
-				var $row = $("tr.gateway_row#" + gateway + "_row");
-				if (protocol === which_protocol_to_show) {
-					if ($row.is(":hidden")) {
-						$row.fadeIn('slow');
-					}
-				} else {
-					if (!$row.is(":hidden")) {
-						$row.fadeOut('slow');
-					}
-				}
-			});
-		} else {
-			$("tr.gateway_row").each(function () {
-				if ($(this).is(":hidden")) {
-					$(this).fadeIn('slow');
-				}
-			});
-		}
-	};
-	$("select.gateway_tier_selector").change(update_gateway_visibilities);
-	update_gateway_visibilities();
-});
-//]]>
-</script>
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-				<?php if (isset($input_errors) && count($input_errors) > 0) {
-                    print_input_errors($input_errors);
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+<?php if (isset($input_errors) && count($input_errors) > 0) {
+        print_input_errors($input_errors);
 } ?>
-				<div id="inputerrors"></div>
-			    <section class="col-xs-12">
-
-					<div class="content-box">
-						<header class="content-box-head container-fluid">
-						<h3><?=gettext("Edit gateway group entry");?></h3>
-					</header>
-						<div class="content-box-main col-xs-12">
-
-					<form action="system_gateway_groups_edit.php" method="post" name="iform" id="iform">
-							<table class="table table-striped" summary="system groups edit">
-								<tr>
-								<td width="22%" valign="top" class="vncellreq"><?=gettext("Group Name"); ?></td>
-								<td width="78%" class="vtable">
-								<input name="name" type="text" class="formfld unknown" id="name" size="20" value="<?=htmlspecialchars($pconfig['name']);?>" />
-								<br /> <span class="vexpl"><?=gettext("Group Name"); ?></span></td>
-								</tr>
-										<tr>
-									<td width="22%" valign="top" class="vncellreq"><?=gettext("Gateway Priority"); ?></td>
-									<td width="78%" class="vtable">
-												<table border="0" cellpadding="6" cellspacing="0" summary="gateway priority">
-													<tr>
-                            <td class="listhdrr"><?= gettext('Gateway') ?></td>
-                            <td class="listhdrr"><?= gettext('Tier') ?></td>
-                            <td class="listhdrr"><?= gettext('Virtual IP') ?></td>
-                            <td class="listhdrr"><?= gettext('Description') ?></td>
-													</tr>
-													<?php
-                                                    foreach ($a_gateways as $gwname => $gateway) {
-                                                        if (!empty($pconfig['item'])) {
-                                                            $af = explode("|", $pconfig['item'][0]);
-                                                            $family = $a_gateways[$af[0]]['ipprotocol'];
-                                                            if ($gateway['ipprotocol'] != $family) {
-                                                                continue;
-                                                            }
-                                                        }
-                                                        $interface = $gateway['friendlyiface'];
-                                                        $selected = array();
-                                                        foreach ((array)$pconfig['item'] as $item) {
-                                                            $itemsplit = explode("|", $item);
-                                                            if ($itemsplit[0] == $gwname) {
-                                                                $selected[$itemsplit[1]] = "selected=\"selected\"";
-                                                                break;
-                                                            } else {
-                                                                $selected[0] = "selected=\"selected\"";
-                                                            }
-                                                        }
-                                                        $tr_id = $gwname . "_row";
-                                                        echo "<tr class='gateway_row' id='{$tr_id}'>\n";
-                                                        echo "<td class='listlr'>";
-                                                        echo "<strong>{$gateway['name']} </strong>";
-                                                        echo "</td><td class='listr'>";
-                                                        echo "<select name='{$gwname}' class='gateway_tier_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}'>\n";
-                                                        echo "<option value='0' $selected[0] >" . gettext("Never") . "</option>\n";
-                                                        echo "<option value='1' $selected[1] >" . gettext("Tier 1") . "</option>\n";
-                                                        echo "<option value='2' $selected[2] >" . gettext("Tier 2") . "</option>\n";
-                                                        echo "<option value='3' $selected[3] >" . gettext("Tier 3") . "</option>\n";
-                                                        echo "<option value='4' $selected[4] >" . gettext("Tier 4") . "</option>\n";
-                                                        echo "<option value='5' $selected[5] >" . gettext("Tier 5") . "</option>\n";
-                                                        echo "</select>\n";
-                                                        echo "</td>";
-
-                                                        $selected = array();
-                                                        foreach ((array)$pconfig['item'] as $item) {
-                                                            $itemsplit = explode("|", $item);
-                                                            if ($itemsplit[0] == $gwname) {
-                                                                $selected[$itemsplit[2]] = "selected=\"selected\"";
-                                                                break;
-                                                            } else {
-                                                                $selected['address'] = "selected=\"selected\"";
-                                                            }
-                                                        }
-                                                        echo "<td class='listr'>";
-                                                        echo "<select name='{$gwname}_vip' class='gateway_vip_selector formfldselect selectpicker' data-style='btn-default' data-width='auto' id='{$gwname}_vip'>\n";
-                                                        echo "<option value='address' {$selected['address']} >" . gettext("Interface Address") . "</option>\n";
-                                                        foreach ($carplist as $vip => $address) {
-                                                            echo "<!-- $vip - $address - $interface -->\n";
-                                                            if (!preg_match("/^{$interface}_/i", $vip)) {
-                                                                continue;
-                                                            }
-                                                            if (($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address))) {
-                                                                continue;
-                                                            }
-                                                            if (($gateway['ipprotocol'] == "inet6") && (!is_ipaddrv6($address))) {
-                                                                continue;
-                                                            }
-                                                            echo "<option value='{$vip}' $selected[$vip] >$vip - $address</option>\n";
-                                                        }
-                                                        echo "</select></td>";
-                                                        echo "<td class='listr'><strong>{$gateway['descr']}&nbsp;</strong>";
-                                                        echo "</td></tr>";
-                                                    }
-                                                    ?>
-												</table>
-												<br /><span class="vexpl">
-												<strong><?=gettext("Link Priority"); ?></strong> <br />
-												<?=gettext("The priority selected here defines in what order failover and balancing of links will be done. " .
-                                                "Multiple links of the same priority will balance connections until all links in the priority will be exhausted. " .
-                                                "If all links in a priority level are exhausted we will use the next available link(s) in the next priority level.") ?>
-												<br />
-												<strong><?=gettext("Virtual IP"); ?></strong> <br />
-												<?=gettext("The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint") ?>
-												</span><br />
-											</td>
-									    </tr>
-									    <tr>
-									        <td width="22%" valign="top" class="vncellreq"><?=gettext("Trigger Level"); ?></td>
-									        <td width="78%" class="vtable">
-												<select name='trigger' class='formfldselect trigger_level_selector selectpicker' id='trigger' data-style='btn-default'>
-												<?php
-                                                foreach ($categories as $category => $categoryd) {
-                                                    echo "<option value=\"$category\"";
-                                                    if ($category == $pconfig['trigger']) {
-                                                        echo " selected=\"selected\"";
-                                                    }
-                                                        echo ">" . htmlspecialchars($categoryd) . "</option>\n";
-                                                }
-                                                ?>
-												</select>
-							                    <br /> <span class="vexpl"><?=gettext("When to trigger exclusion of a member"); ?></span>
-									        </td>
-									    </tr>
-										<tr>
-											<td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-											<td width="78%" class="vtable">
-							                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-							                    <br /> <span class="vexpl"><?=gettext("You may enter a description here for your reference (not parsed)."); ?></span>
-							                </td>
-						                </tr>
-						                <tr>
-											<td width="22%" valign="top">&nbsp;</td>
-											<td width="78%">
-							                    <input name="Submit" type="submit" class="btn btn-primary formbtn" value="<?=gettext("Save");?>" />
-							                    <input type="button" class="btn btn-default formbtn" value="<?=gettext("Cancel");
-?>" onclick="window.location.href='<?=$referer;?>'" />
-							                    <?php if (isset($id) && $a_gateway_groups[$id]) :
+        <section class="col-xs-12">
+          <div class="tab-content content-box col-xs-12">
+            <div class="table-responsive">
+              <form action="system_gateway_groups_edit.php" method="post" name="iform" id="iform">
+                <table class="table table-striped" summary="system groups edit">
+                  <tr>
+                    <td width="22%"></td>
+                    <td width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group Name"); ?></td>
+                    <td>
+                      <input name="name" type="text" size="20" value="<?=$pconfig['name'];?>" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_gatewayprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway Priority"); ?></td>
+                    <td>
+                      <table class="table table-condensed">
+                        <tr>
+                          <td><?= gettext('Gateway') ?></td>
+                          <td><?= gettext('Tier') ?></td>
+                          <td><?= gettext('Virtual IP') ?></td>
+                          <td><?= gettext('Description') ?></td>
+                        </tr>
+<?php
+                        foreach ($a_gateways as $gwname => $gateway):
+                        if (!empty($pconfig['item'])) {
+                            $af = explode("|", $pconfig['item'][0]);
+                            $family = $a_gateways[$af[0]]['ipprotocol'];
+                            if ($gateway['ipprotocol'] != $family) {
+                                continue;
+                            }
+                        }
 ?>
-								                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-							                    <?php
-endif; ?>
-											</td>
-										</tr>
-									</table>
-							</form>
-						</div>
-					</div>
-				</section>
-			</div>
-		</div>
-	</section>
+                        <tr>
+                          <td><strong><?=$gateway['name'];?></strong></td>
+                          <td>
+                            <select name="<?=$gwname;?>" class="selectpicker" data-width='auto'>
+<?php
+                              for ($tierId = 0 ; $tierId < 6 ; ++$tierId):
+                                $is_selected = false;
+                                foreach ((array)$pconfig['item'] as $item) {
+                                    $itemsplit = explode("|", $item);
+                                    if ($itemsplit[0] == $gwname && $itemsplit[1] == $tierId) {
+                                        $is_selected = true;
+                                    }
+                                }
+?>
+                                <option value="<?=$tierId;?>" <?=$is_selected ? "selected=\"selected\"" : "";?>>
+                                    <?=$tierId == 0 ? gettext("Never") : sprintf(gettext("Tier %d"), $tierId) ;?>
+                                </option>
+<?php
+                              endfor;?>
+                            </select>
+                          </td>
+                          <td>
+                            <select name="<?=$gwname;?>_vip" class="selectpicker" data-width="auto">
+<?php
+                              $selected_key = 'address';
+                              foreach ((array)$pconfig['item'] as $item) {
+                                  $itemsplit = explode("|", $item);
+                                  if ($itemsplit[0] == $gwname) {
+                                      $selected_key = $itemsplit[2];
+                                      break;
+                                  }
+                              }?>
+                              <option value="address" <?=$selected_key == "address" ? "selected=\"selected\"" :"";?> >
+                                <?=gettext("Interface Address");?>
+                              </option>
+<?php
+                              foreach (get_configured_carp_interface_list() as $vip => $address):
+                                  if (!preg_match("/^{$gateway['friendlyiface']}_/i", $vip)) {
+                                      continue;
+                                  }
+                                  if (($gateway['ipprotocol'] == "inet") && (!is_ipaddrv4($address))) {
+                                      continue;
+                                  }
+                                  if (($gateway['ipprotocol'] == "inet6") && (!is_ipaddrv6($address))) {
+                                      continue;
+                                  }?>
+                                  <option value="<?=$vip;?>" <?=$selected_key == $vip ? "selected=\"selected\"" :"";?> >
+                                    <?=$vip;?> - <?=$address;?>
+                                  </option>
+<?php
+                              endforeach;?>
+
+                            </select>
+                          </td>
+                          <td><strong><?=$gateway['descr'];?></strong></td>
+                        </tr>
+<?php
+                        endforeach;?>
+                      </table>
+                      <div for="help_for_gatewayprio" class="hidden">
+                          <br>
+                          <strong><?=gettext("Link Priority"); ?></strong> <br />
+                          <?=gettext("The priority selected here defines in what order failover and balancing of links will be done. " .
+                                                  "Multiple links of the same priority will balance connections until all links in the priority will be exhausted. " .
+                                                  "If all links in a priority level are exhausted we will use the next available link(s) in the next priority level.") ?>
+
+                          <br />
+                          <strong><?=gettext("Virtual IP"); ?></strong> <br />
+                          <?=gettext("The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint") ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_triggerlvl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Trigger Level"); ?></td>
+                    <td>
+                      <select name='trigger' class='selectpicker'>
+                        <option value="down" <?=$pconfig['trigger'] == "down" ? "selected=\"selected\"" :"";?> ><?=gettext("Member Down");?></option>
+                        <option value="downloss" <?=$pconfig['trigger'] == "downloss" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss");?></option>
+                        <option value="downlatency" <?=$pconfig['trigger'] == "downlatency" ? "selected=\"selected\"" :"";?> ><?=gettext("High Latency");?></option>
+                        <option value="downlosslatency" <?=$pconfig['trigger'] == "downlosslatency" ? "selected=\"selected\"" :"";?> ><?=gettext("Packet Loss or High Latency");?></option>
+                      </select>
+                      <div for="help_for_triggerlvl" class="hidden">
+                        <?=gettext("When to trigger exclusion of a member"); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td>
+                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                      <div for="help_for_descr" class="hidden">
+                        <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_gateway_groups.php');?>'" />
+<?php
+                      if (isset($id)) :?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
+<?php
+                      endif; ?>
+                    </td>
+                  </tr>
+                </table>
+              </form>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
-</body>
-</html>
