@@ -1,8 +1,8 @@
 <?php
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2013	Dagorlad
-	Copyright (C) 2012	Jim Pingle
+	Copyright (C) 2013 Dagorlad
+	Copyright (C) 2012 Jim Pingle
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,38 +32,24 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-function set_default_gps() {
-	global $config;
-
-	if (!isset($config['ntpd']) || !is_array($config['ntpd']))
-		$config['ntpd'] = array();
-
+if (!isset($config['ntpd']['gps'])) {
 	$config['ntpd']['gps'] = array();
-	$config['ntpd']['gps']['type'] = 'Generic';
-	/* copy an existing configured GPS port if it exists, the unset may be uncommented post production */
-	if (!empty($config['ntpd']['gpsport']) && empty($config['ntpd']['gps']['port'])) {
-		$config['ntpd']['gps']['port'] = $config['ntpd']['gpsport'];
-		unset($config['ntpd']['gpsport']); /* this removes the original port config from config.xml */
-		$config['ntpd']['gps']['speed'] = 0;
-		$config['ntpd']['gps']['nmea'] = 0;
-	}
-
-	write_config("Setting default NTPd settings");
 }
 
 if ($_POST) {
-
 	unset($input_errors);
 
-	if (!empty($_POST['gpsport']) && file_exists('/dev/'.$_POST['gpsport']))
+	if (!empty($_POST['gpsport']) && file_exists('/dev/'.$_POST['gpsport'])) {
 		$config['ntpd']['gps']['port'] = $_POST['gpsport'];
-	/* if port is not set, remove all the gps config */
-	else unset($config['ntpd']['gps']);
+	} else if (isset($config['ntpd']['gps']['port'])) {
+		unset($config['ntpd']['gps']['port']);
+	}
 
-	if (!empty($_POST['gpstype']))
+	if (!empty($_POST['gpstype'])) {
 		$config['ntpd']['gps']['type'] = $_POST['gpstype'];
-	elseif (isset($config['ntpd']['gps']['type']))
+	} elseif (isset($config['ntpd']['gps']['type'])) {
 		unset($config['ntpd']['gps']['type']);
+	}
 
 	if (!empty($_POST['gpsspeed']))
 		$config['ntpd']['gps']['speed'] = $_POST['gpsspeed'];
@@ -140,16 +126,13 @@ if ($_POST) {
 
 	$retval = system_ntp_configure();
 	$savemsg = get_std_save_message();
-} else {
-	/* set defaults if they do not already exist */
-	if (empty($config['ntpd']['gps']['type'])) {
-		set_default_gps();
-	}
 }
+
 $closehead = false;
 $pconfig = &$config['ntpd']['gps'];
 $pgtitle = array(gettext("Services"),gettext("NTP GPS"));
 $shortcut_section = "ntp";
+
 include("head.inc");
 ?>
 
@@ -249,7 +232,7 @@ SureGPS =		#Sure Electronics SKG16B
 		var gpsdef = new Object();
 		//get the text description of the selected type
 		var e = document.getElementById("gpstype");
-		var type = e.options[e.selectedIndex].text;
+		var type = e.options[e.selectedIndex].value;
 
 		//stuff the JS object as needed for each type
 		switch(type) {
@@ -387,14 +370,14 @@ SureGPS =		#Sure Electronics SKG16B
 											<td width="78%" valign="top" class="vtable">
 												<!-- Start with the original "Default", list a "Generic" and then specific configs alphabetically -->
 												<select id="gpstype" name="gpstype" class="formselect" onchange="set_gps_default(this.form)">
-													<option value="Custom"<?php if($pconfig['type'] == 'Custom') echo " selected=\"selected\""; ?>><?=gettext('Custom') ?></option>
+													<option value="Generic" title="Generic"<?php if (empty($pconfig['type']) || $pconfig['type'] == 'Generic' ) echo " selected=\"selected\"";?>><?=gettext('Generic') ?></option>
 													<option value="Default"<?php if($pconfig['type'] == 'Default') echo " selected=\"selected\""; ?>><?=gettext('Default') ?></option>
-													<option value="Generic" title="Generic"<?php if($pconfig['type'] == 'Generic' ) echo " selected=\"selected\"";?>><?=gettext('Generic') ?></option>
 													<option value="Garmin" title="$PGRM... Most Garmin"<?php if($pconfig['type'] == 'Garmin') echo " selected=\"selected\"";?>><?=gettext('Garmin') ?></option>
 													<option value="MediaTek" title="$PMTK... Adafruit, Fastrax, some Garmin and others"<?php if($pconfig['type'] == 'MediaTek') echo " selected=\"selected\"";?>>MediaTek</option>
 													<option value="SiRF" title="$PSRF... Used by many devices"<?php if($pconfig['type'] == 'sirf') echo " selected=\"selected\"";?>><?=gettext('SiRF') ?></option>
 													<option value="U-Blox" title="$PUBX... U-Blox 5, 6 and probably 7"<?php if($pconfig['type'] == 'U-Blox') echo " selected=\"selected\"";?>><?=gettext('U-Blox') ?></option>
 													<option value="SureGPS" title="$PMTK... Sure Electronics SKG16B"<?php if($pconfig['type'] == 'SureGPS') echo " selected=\"selected\"";?>><?=gettext('SureGPS') ?></option>
+													<option value="Custom"<?php if($pconfig['type'] == 'Custom') echo " selected=\"selected\""; ?>><?=gettext('Custom') ?></option>
 												</select> <?php echo gettext("This option allows you to select a predefined configuration.");?>
 												<br />
 												<br />
@@ -416,12 +399,13 @@ SureGPS =		#Sure Electronics SKG16B
 								<?php
 												foreach ($serialports as $port):
 													$shortport = substr($port,5);
-													$selected = ($shortport == isset($pconfig['port'])?$pconfig['port']:null) ? " selected=\"selected\"" : "";
+													$selected = '';
+													if (isset($pconfig['port']) && $shortport === $pconfig['port']) {
+														$selected = 'selected="selected"';
+													}
 								?>
 													<option value="<?php echo $shortport;?>"<?php echo $selected;?>><?php echo $shortport;?></option>
-								<?php
-												endforeach;
-								?>
+								<?php endforeach; ?>
 												</select>&nbsp;
 												<?php echo gettext("All serial ports are listed, be sure to pick the port with the GPS attached."); ?>
 												<br /><br />
@@ -583,5 +567,10 @@ SureGPS =		#Sure Electronics SKG16B
 		</div>
 	</section>
 
+<script type="text/javascript">
+//<![CDATA[
+set_gps_default(document.getElementById('iform'));
+//]]>
+</script>
 
 <?php include("foot.inc"); ?>
