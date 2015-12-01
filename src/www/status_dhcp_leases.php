@@ -273,8 +273,7 @@ if(count($pools) > 0) {
 }
 
 foreach($config['interfaces'] as $ifname => $ifarr) {
-	if (is_array($config['dhcpd'][$ifname]) &&
-		is_array($config['dhcpd'][$ifname]['staticmap'])) {
+	if (isset($config['dhcpd'][$ifname]['staticmap'])) {
 		foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
 			$slease = array();
 			$slease['ip'] = $static['ipaddr'];
