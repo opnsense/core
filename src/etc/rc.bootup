@@ -364,4 +364,7 @@ if ($ipsec_dynamic_hosts) {
 	filter_configure();
 }
 
+// generate configuration data for all installed templates
+configd_run('template reload *');
+
 led_normalize();
