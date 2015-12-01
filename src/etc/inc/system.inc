@@ -1405,9 +1405,9 @@ function system_ntp_setup_gps($serialport)
 	symlink($serialport, $gps_device);
 
 	/* Send the following to the GPS port to initialize the GPS */
-	if (is_array($config['ntpd']) && is_array($config['ntpd']['gps']) && !empty($config['ntpd']['gps']['type'])) {
+	if (isset($config['ntpd']['gps'])) {
 		$gps_init = base64_decode($config['ntpd']['gps']['initcmd']);
-	}else{
+	} else {
 		$gps_init = base64_decode('JFBVQlgsNDAsR1NWLDAsMCwwLDAqNTkNCiRQVUJYLDQwLEdMTCwwLDAsMCwwKjVDDQokUFVCWCw0MCxaREEsMCwwLDAsMCo0NA0KJFBVQlgsNDAsVlRHLDAsMCwwLDAqNUUNCiRQVUJYLDQwLEdTViwwLDAsMCwwKjU5DQokUFVCWCw0MCxHU0EsMCwwLDAsMCo0RQ0KJFBVQlgsNDAsR0dBLDAsMCwwLDANCiRQVUJYLDQwLFRYVCwwLDAsMCwwDQokUFVCWCw0MCxSTUMsMCwwLDAsMCo0Ng0KJFBVQlgsNDEsMSwwMDA3LDAwMDMsNDgwMCwwDQokUFVCWCw0MCxaREEsMSwxLDEsMQ==');
 	}
 
@@ -1586,16 +1586,6 @@ function system_ntp_configure($start_ntpd = true)
 			$ntpcfg .= $config['ntpd']['gps']['refid'];
 		}
 		$ntpcfg .= "\n";
-	}elseif (!empty($config['ntpd']['gpsport'])
-		&& file_exists('/dev/'.$config['ntpd']['gpsport'])
-		&& system_ntp_setup_gps($config['ntpd']['gpsport'])) {
-		/* This handles a 2.1 and earlier config */
-		$ntpcfg .= "# GPS Setup\n";
-		$ntpcfg .= "server 127.127.20.0 mode 0 minpoll 4 maxpoll 4 prefer\n";
-		$ntpcfg .= "fudge 127.127.20.0 time1 0.155 time2 0.000 flag1 1 flag2 0 flag3 1\n";
-		// Fall back to local clock if GPS is out of sync?
-		$ntpcfg .= "server 127.127.1.0\n";
-		$ntpcfg .= "fudge 127.127.1.0 stratum 12\n";
 	}
 	/* End GPS configuration */
 
