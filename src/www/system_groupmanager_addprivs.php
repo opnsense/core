@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $groupid = $_GET['groupid'];
         $a_group = & $config['system']['group'][$groupid];
     } else {
-        redirectHeader("system_groupmanager.php");
+        header("Location: system_groupmanager.php");
         exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -82,11 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             write_config();
-            redirectHeader("system_groupmanager.php?act=edit&groupid={$groupid}");
+            header("Location: system_groupmanager.php?act=edit&groupid={$groupid}");
             exit;
         }
     } else {
-        redirectHeader("system_groupmanager.php");
+        header("Location: system_groupmanager.php");
         exit;
     }
 }

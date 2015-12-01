@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($a_group[$id]);
         write_config();
         // reload page
-        redirectHeader("system_groupmanager.php");
+        header("Location: system_groupmanager.php");
         exit;
     } elseif (isset($id) && $act == "delpriv" && isset($a_group[$id]['priv']) && is_array($a_group[$id]['priv'])) {
         // remove by privid
@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         write_config();
         // reload page
-        redirectHeader("system_groupmanager.php?act=edit&groupid={$id}");
+        header("Location: system_groupmanager.php?act=edit&groupid={$id}");
         exit;
     } elseif (isset($pconfig['save'])) {
         $input_errors = array();
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         // POST without a valid action, redirect to overview
-        redirectHeader("system_groupmanager.php");
+        header("Location: system_groupmanager.php");
         exit;
     }
 }

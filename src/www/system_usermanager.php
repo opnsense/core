@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($a_user[$id]);
         write_config();
         $savemsg = gettext("User")." {$userdeleted} ". gettext("successfully deleted");
-        redirectHeader("system_usermanager.php?savemsg=".$savemsg);
+        header("Location: system_usermanager.php?savemsg=".$savemsg);
         exit;
     } elseif ($act == "delpriv" && !empty($pconfig['priv_delete']) && isset($id)) {
         // drop privilege from user
@@ -190,9 +190,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             $savemsg = gettext("Privilege")." {$privdeleted} ".
                         gettext("successfully deleted");
-            redirectHeader("system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
+            header("Location: system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
         } else {
-            redirectHeader("system_usermanager.php?act=edit&userid=".$id);
+            header("Location: system_usermanager.php?act=edit&userid=".$id);
         }
         exit;
     } elseif ($act == "delcert" && isset($id)) {
@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         $savemsg = gettext("Certificate")." {$certdeleted} ".
                     gettext("association removed.");
-        redirectHeader("system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
+        header("Location: system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
         exit;
     } elseif ($act == "newApiKey" && isset($id)) {
         // every action is using the sequence of the user, to keep it understandable, we will use
@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg = gettext('No API key found');
         }
         // redirect
-        redirectHeader("system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
+        header("Location: system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
         exit;
     } elseif (isset($pconfig['save'])) {
         // save user
@@ -404,14 +404,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             local_user_set_groups($userent, $pconfig['groups']);
             write_config();
 
-            redirectHeader("system_usermanager.php");
+            header("Location: system_usermanager.php");
             exit;
         }
     } elseif (isset($id)) {
-        redirectHeader("system_usermanager.php?userid=".$id);
+        header("Location: system_usermanager.php?userid=".$id);
         exit;
     } else {
-        redirectHeader("system_usermanager.php");
+        header("Location: system_usermanager.php");
         exit;
     }
 }

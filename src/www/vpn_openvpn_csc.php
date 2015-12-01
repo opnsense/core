@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         if (!isset($a_csc[$id])) {
-            redirectHeader("vpn_openvpn_csc.php");
+            header("Location: vpn_openvpn_csc.php");
             exit;
         }
 

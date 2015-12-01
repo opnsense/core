@@ -71,7 +71,7 @@ if (isset($_POST['act']))
 
 if ($act == "del") {
 	if (!$a_acls[$id]) {
-		redirectHeader("services_unbound_acls.php");
+		header("Location: services_unbound_acls.php");
 		exit;
 	}
 
@@ -148,7 +148,7 @@ if ($_POST) {
 				mark_subsystem_dirty("unbound");
 				write_config();
 
-				redirectHeader("/services_unbound_acls.php");
+				header("Location: /services_unbound_acls.php");
 				exit;
 			}
 

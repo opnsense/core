@@ -143,7 +143,7 @@ if (isset($_GET['act'])) {
 
 if ($act == "del") {
     if (!isset($a_cert[$id])) {
-        redirectHeader("system_certmanager.php");
+        header("Location: system_certmanager.php");
         exit;
     }
 
@@ -151,7 +151,7 @@ if ($act == "del") {
     unset($a_cert[$id]);
     write_config();
     $savemsg = sprintf(gettext("Certificate %s successfully deleted"), $name) . "<br />";
-    redirectHeader("system_certmanager.php");
+    header("Location: system_certmanager.php");
     exit;
 }
 
@@ -170,7 +170,7 @@ if ($act == "new") {
 
 if ($act == "exp") {
     if (!$a_cert[$id]) {
-        redirectHeader("system_certmanager.php");
+        header("Location: system_certmanager.php");
         exit;
     }
 
@@ -187,7 +187,7 @@ if ($act == "exp") {
 
 if ($act == "key") {
     if (!$a_cert[$id]) {
-        redirectHeader("system_certmanager.php");
+        header("Location: system_certmanager.php");
         exit;
     }
 
@@ -204,7 +204,7 @@ if ($act == "key") {
 
 if ($act == "p12") {
     if (!$a_cert[$id]) {
-        redirectHeader("system_certmanager.php");
+        header("Location: system_certmanager.php");
         exit;
     }
 
@@ -233,7 +233,7 @@ if ($act == "p12") {
 
 if ($act == "csr") {
     if (!$a_cert[$id]) {
-        redirectHeader("system_certmanager.php");
+        header("Location: system_certmanager.php");
         exit;
     }
 
@@ -476,7 +476,7 @@ if ($_POST) {
             }
 
             if (isset($userid)) {
-                redirectHeader("system_usermanager.php?act=edit&userid=".$userid);
+                header("Location: system_usermanager.php?act=edit&userid=".$userid);
                 exit;
             }
         }
@@ -526,7 +526,7 @@ if ($_POST) {
 
             write_config();
 
-            redirectHeader("system_certmanager.php");
+            header("Location: system_certmanager.php");
         }
     }
 }

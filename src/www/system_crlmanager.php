@@ -139,7 +139,7 @@ if (!empty($id)) {
 
 // If we were given an invalid crlref in the id, no sense in continuing as it would only cause errors.
 if (!isset($thiscrl) && (($act != "") && ($act != "new"))) {
-    redirectHeader("system_crlmanager.php");
+    header("Location: system_crlmanager.php");
     $act="";
     $savemsg = gettext("Invalid CRL reference.");
 }
@@ -193,7 +193,7 @@ if ($act == "addcert") {
         $pconfig = $_POST;
 
         if (!$pconfig['crlref'] || !$pconfig['certref']) {
-            redirectHeader("system_crlmanager.php");
+            header("Location: system_crlmanager.php");
             exit;
         }
 
@@ -217,7 +217,7 @@ if ($act == "addcert") {
             cert_revoke($cert, $crl, $reason);
             openvpn_refresh_crls();
             write_config("Revoked cert {$cert['descr']} in CRL {$crl['descr']}.");
-            redirectHeader("system_crlmanager.php");
+            header("Location: system_crlmanager.php");
             exit;
         }
     }
@@ -225,7 +225,7 @@ if ($act == "addcert") {
 
 if ($act == "delcert") {
     if (!is_array($thiscrl['cert'])) {
-        redirectHeader("system_crlmanager.php");
+        header("Location: system_crlmanager.php");
         exit;
     }
     $found = false;
@@ -236,7 +236,7 @@ if ($act == "delcert") {
         }
     }
     if (!$found) {
-        redirectHeader("system_crlmanager.php");
+        header("Location: system_crlmanager.php");
         exit;
     }
     $name = $thiscert['descr'];
@@ -306,7 +306,7 @@ if ($_POST) {
 
         write_config("Saved CRL {$crl['descr']}");
         openvpn_refresh_crls();
-        redirectHeader("system_crlmanager.php");
+        header("Location: system_crlmanager.php");
     }
 }
 

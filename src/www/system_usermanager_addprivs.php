@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['userid']) && isset($config['system']['user'][$_GET['userid']]['name'])) {
         $userid = $_GET['userid'];
     } else {
-        redirectHeader("system_usermanager.php");
+        header("Location: system_usermanager.php");
         exit;
     }
     $a_user = & $config['system']['user'][$userid];
@@ -83,11 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $retval = write_config();
             $savemsg = get_std_save_message();
 
-            redirectHeader("system_usermanager.php?act=edit&userid=".$userid."&savemsg=".$savemsg);
+            header("Location: system_usermanager.php?act=edit&userid=".$userid."&savemsg=".$savemsg);
             exit;
         }
     } else {
-        redirectHeader("system_usermanager.php");
+        header("Location: system_usermanager.php");
         exit;
     }
 }

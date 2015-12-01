@@ -130,7 +130,7 @@ if ($_POST) {
 
         $retval = vpn_l2tp_configure();
 
-        redirectHeader("vpn_l2tp_users.php");
+        header("Location: vpn_l2tp_users.php");
 
         exit;
     }

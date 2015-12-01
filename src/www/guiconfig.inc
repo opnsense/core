@@ -656,12 +656,6 @@ function get_crash_report($pedantic = false)
 	return $savemsg;
 }
 
-function redirectHeader($text)
-{
-	header("Location: $text");
-}
-
-
 function get_menu_messages()
 {
 	global $config;

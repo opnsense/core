@@ -138,7 +138,7 @@ if ($_POST) {
         }
 
         write_config();
-        redirectHeader("system_advanced_notifications.php");
+        header("Location: system_advanced_notifications.php");
         return;
 
     }

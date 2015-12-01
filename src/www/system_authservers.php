@@ -244,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
 
           write_config();
-          redirectHeader("system_authservers.php");
+          header("Location: system_authservers.php");
       } else {
           $act = "edit";
       }
@@ -259,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = gettext("Authentication Server")." {$serverdeleted} ".
                     gettext("deleted")."<br />";
         write_config($savemsg);
-        redirectHeader("system_authservers.php");
+        header("Location: system_authservers.php");
     }
 
 }

@@ -263,11 +263,11 @@ if ($_POST) {
 			    exec($pkg['restart_command'] . ">/dev/null 2&>1");
 
 			if(!empty($pkg['aftersaveredirect'])) {
-			    redirectHeader($pkg['aftersaveredirect']);
+			    header("Location: ".$pkg['aftersaveredirect']);
 			} elseif(empty($pkg['adddeleteeditpagefields'])) {
-			    redirectHeader("services_upnp.php?id=0");
+			    header("Location: services_upnp.php?id=0");
 			} elseif(empty($pkg['preoutput'])) {
-			    redirectHeader("services_upnp.php");
+			    header("Location: services_upnp.php");
 			}
 			exit;
 		} else {

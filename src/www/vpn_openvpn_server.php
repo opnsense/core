@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($act == "del") {
         // action delete
         if (!isset($a_server[$id])) {
-            redirectHeader("vpn_openvpn_server.php");
+            header("Location: vpn_openvpn_server.php");
             exit;
         }
         if (!empty($a_server[$id])) {

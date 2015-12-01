@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($act == "del") {
             // remove client
         if (!isset($id) || !isset($a_client[$id])) {
-                redirectHeader("vpn_openvpn_client.php");
+                header("Location: vpn_openvpn_client.php");
                 exit;
         }
         if (!empty($a_client[$id])) {

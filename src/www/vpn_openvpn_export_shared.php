@@ -71,7 +71,7 @@ if (isset($_GET['act'])) {
         $srvid = isset($_GET['srvid']) ? $_GET['srvid'] : false;
         if ($srvid === false || !isset($config['openvpn']['openvpn-server'][$srvid]['mode']) ||
               $config['openvpn']['openvpn-server'][$srvid]['mode'] != "p2p_shared_key") {
-                redirectHeader("vpn_openvpn_export.php");
+                header("Location: vpn_openvpn_export.php");
                 exit;
         }
 

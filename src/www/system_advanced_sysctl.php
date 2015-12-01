@@ -66,7 +66,7 @@ if ($act == "del") {
             unset($a_tunable[$id]);
             write_config();
             mark_subsystem_dirty('sysctl');
-            redirectHeader("system_advanced_sysctl.php");
+            header("Location: system_advanced_sysctl.php");
             exit;
         }
     }
@@ -100,7 +100,7 @@ if ($_POST) {
 
         write_config();
 
-        redirectHeader("system_advanced_sysctl.php");
+        header("Location: system_advanced_sysctl.php");
         exit;
     }
 }
