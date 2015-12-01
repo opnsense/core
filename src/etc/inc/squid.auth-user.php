@@ -33,21 +33,48 @@ require_once("auth.inc");
 
 openlog("squid", LOG_ODELAY, LOG_AUTH);
 
+$authFactory = new \OPNsense\Auth\AuthenticationFactory();
+
 $f = fopen("php://stdin", "r");
 while ($line = fgets($f)) {
     $fields = explode(' ', trim($line));
     $username = rawurldecode($fields[0]);
     $password = rawurldecode($fields[1]);
 
-    if (authenticate_user($username, $password)) {
-        $user = getUserEntry($username);
-        if (is_array($user) && userHasPrivilege($user, "user-proxy-auth")) {
-            syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
-            fwrite(STDOUT, "OK\n");
-        } else {
-            syslog(LOG_WARNING, "user '{$username}' cannot authenticate for squid because of missing user-proxy-auth role");
-            fwrite(STDOUT, "ERR\n");
+    $isAuthenticated = false;
+    if (isset($config['OPNsense']['proxy']['forward']['authentication']['method'])) {
+        foreach (explode(',',$config['OPNsense']['proxy']['forward']['authentication']['method']) as $authServerName) {
+            $authServer = $authFactory->get(trim($authServerName));
+            if ($authsrv == null) {
+                // authenticator not found, use local
+                $authServer = $authFactory->get('Local Database');
+            }
+            $isAuthenticated = $authServer->authenticate($username, $password);
+            if ($isAuthenticated) {
+                if (get_class($authServer) == "OPNsense\Auth\Local") {
+                    // todo: user priv check needs a reload of squid, maybe it's better to move the token check to
+                    //       the auth object.
+                    //
+                    // when using local authentication, check if user has role user-proxy-auth
+                    $user = getUserEntry($username);
+                    if (is_array($user) && userHasPrivilege($user, "user-proxy-auth")) {
+                        break;
+                    } else {
+                        // log user auth failure
+                        syslog(LOG_WARNING, "user '{$username}' cannot authenticate for squid because of missing user-proxy-auth role");
+                        fwrite(STDOUT, "ERR\n");
+                        $isAuthenticated = false;
+                    }
+                } else {
+                    break;
+                }
+            }
         }
+    }
+
+    if ($isAuthenticated) {
+        syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
+        fwrite(STDOUT, "OK\n");
     } else {
         syslog(LOG_WARNING, "user '{$username}' could not authenticate.\n");
         fwrite(STDOUT, "ERR\n");
