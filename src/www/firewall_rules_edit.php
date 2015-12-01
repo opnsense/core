@@ -744,7 +744,7 @@ include("head.inc");
 <?php
                     endif;
                     foreach (formInterfaces() as $iface => $ifacename): ?>
-                        <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && ($iface == $pconfig['interface'] || (strpos($pconfig['interface'], ',') !== false && in_array($iface, explode(',', $pconfig['interface'])))) ? 'selected="selected"' : ''; ?>>
+                        <option value="<?=$iface;?>" <?= !empty($pconfig['interface']) && ($iface == $pconfig['interface'] || (!is_array($pconfig['interface']) && strpos($pconfig['interface'], ',') !== false && in_array($iface, explode(',', $pconfig['interface'])))) ? 'selected="selected"' : ''; ?>>
                           <?=htmlspecialchars($ifacename);?>
                         </option>
 <?php
