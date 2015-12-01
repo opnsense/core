@@ -211,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         //
         // the client side is (jquery) generates the actual download file.
         $username = $a_user[$id]['name'];
-        $authFactory = new \OPNsense\Auth\AuthenticationFactory;
+        $authFactory = new \OPNsense\Auth\AuthenticationFactory();
         $authenticator = $authFactory->get("Local API");
         $keyData = $authenticator->createKey($username);
         if ($keyData != null) {
@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($act =='delApiKey'  && isset($id)) {
         $username = $a_user[$id]['name'];
         if (!empty($pconfig['api_delete'])) {
-            $authFactory = new \OPNsense\Auth\AuthenticationFactory;
+            $authFactory = new \OPNsense\Auth\AuthenticationFactory();
             $authenticator = $authFactory->get("Local API");
             $authenticator->dropKey($username, $pconfig['api_delete']);
             $savemsg = gettext("API key")." {$pconfig['api_delete']} ".
