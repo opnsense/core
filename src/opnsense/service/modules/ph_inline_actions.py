@@ -51,14 +51,16 @@ def execute(action, parameters):
         tmpl.setConfig(conf.get())
         filenames = tmpl.generate(parameters)
 
-        # send generated filenames to syslog
-        for filename in filenames:
-            syslog.syslog(syslog.LOG_DEBUG, ' %s generated %s' % (parameters, filename))
-
         del conf
         del tmpl
 
-        return 'OK'
+        # send generated filenames to syslog
+        if filenames is not None:
+            for filename in filenames:
+                syslog.syslog(syslog.LOG_DEBUG, ' %s generated %s' % (parameters, filename))
+            return 'OK'
+        else:
+            return 'ERR'
     elif action.command == 'template.list':
         # traverse all installed templates and return list
         # the number of registered targets is returned between []
