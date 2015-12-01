@@ -52,7 +52,7 @@ if ($_POST) {
                 if (!is_numeric($pppoeid)) {
                     continue;
                 }
-                if (is_array($config['pppoes']['pppoe'])) {
+                if (isset($config['pppoes']['pppoe'])) {
                     foreach ($config['pppoes']['pppoe'] as $pppoe) {
                         if ($pppoe['pppoeid'] == $pppoeid) {
                             vpn_pppoe_configure($pppoe);
