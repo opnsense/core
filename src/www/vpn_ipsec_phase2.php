@@ -79,10 +79,10 @@ function ealgos_to_pconfig(& $ealgos, & $pconfig)
  */
 function pconfig_to_idinfo($prefix, $pconfig)
 {
-    $type = $pconfig[$prefix."id_type"];
+    $type = isset($pconfig[$prefix."id_type"]) ? $pconfig[$prefix."id_type"] : null;
     $address = isset($pconfig[$prefix."id_address"]) ? $pconfig[$prefix."id_address"] : null;
     $netbits = isset($pconfig[$prefix."id_netbits"]) ? $pconfig[$prefix."id_netbits"] : null;
-    $nattype = $pconfig[$prefix."id_nattype"];
+    $nattype = isset($pconfig[$prefix."id_nattype"]) ? $pconfig[$prefix."id_nattype"] : null;
 
     switch ($type) {
         case "address":
