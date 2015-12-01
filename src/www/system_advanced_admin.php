@@ -93,18 +93,6 @@ if ($_POST) {
         }
     }
 
-    if ($_POST['passwordauth'] == 'yes') {
-        $config['system']['ssh']['passwordauth'] = 'enabled';
-    } elseif (isset($config['system']['ssh']['passwordauth'])) {
-        unset($config['system']['ssh']['passwordauth']);
-    }
-
-    if ($_POST['sshdpermitrootlogin'] == "yes") {
-        $config['system']['ssh']['permitrootlogin'] = "enabled";
-    } elseif (isset($config['system']['ssh']['permitrootlogin'])) {
-        unset($config['system']['ssh']['permitrootlogin']);
-    }
-
     ob_flush();
     flush();
 
@@ -213,14 +201,17 @@ if ($_POST) {
             unset($config['system']['ssh']['port']);
         }
 
-        if (!isset($_POST['sshdpermitrootlogin']) && isset($config['system']['ssh']['permitrootlogin'])) {
+        $sshd_permitrootlogin = isset($config['system']['ssh']['permitrootlogin']);
+        if ($_POST['sshdpermitrootlogin']) {
+            $config['system']['ssh']['permitrootlogin'] = true;
+        } elseif (isset($config['system']['ssh']['permitrootlogin'])) {
             unset($config['system']['ssh']['permitrootlogin']);
         }
 
         if (($sshd_enabled != $config['system']['ssh']['enabled']) ||
-            ($sshd_passwordauth != $config['system']['ssh']['passwordauth']) ||
+            ($sshd_passwordauth != isset($config['system']['ssh']['passwordauth'])) ||
             ($sshd_port != $config['system']['ssh']['port']) ||
-            ($pconfig['system']['ssh']['permitrootlogin'] != isset($config['system']['ssh']['permitrootlogin'])) ) {
+            ($sshd_permitrootlogin != isset($config['system']['ssh']['permitrootlogin']))) {
             $restart_sshd = true;
         }
 
@@ -522,8 +513,10 @@ endif; ?>
 } ?> />
 										<strong><?=gettext("Permit root user login"); ?></strong>
 										<br />
-										<?=gettext("Root login is generally discouraged. It is advised "); ?>
-										<?=gettext("to log in via another user and switch to root afterwards."); ?>
+										<?= gettext(
+											'Root login is generally discouraged. It is advised ' .
+											'to log in via another user and switch to root afterwards.'
+										) ?>
 									</td>
 								</tr>
 								<tr>
