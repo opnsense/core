@@ -471,7 +471,7 @@ include("head.inc");
 						}
 						/* tack on PPPoE or PPtP servers here */
 						/* pppoe server */
-						if (is_array($config['pppoes']['pppoe'])) {
+						if (isset($config['pppoes']['pppoe'])) {
 							foreach($config['pppoes']['pppoe'] as $pppoe) {
 								if ($pppoe['mode'] == "server") {
 									$ifent = "poes". $pppoe['pppoeid'];
