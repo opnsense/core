@@ -30,7 +30,7 @@
 
 require_once('script/load_phalcon.php');
 
-use OPNsense\Auth\AuthenticationFactory;
+use OPNsense\Auth\AuthenticationFactory();
 
 // open database
 $database_filename = '/var/captiveportal/captiveportal.sqlite';
@@ -54,7 +54,7 @@ $result = $db->query('
 
 // process all sessions
 while($row = $result->fetchArray(SQLITE3_ASSOC) ){
-    $authFactory = new OPNsense\Auth\AuthenticationFactory;
+    $authFactory = new OPNsense\Auth\AuthenticationFactory();
     $authenticator = $authFactory->get($row['authenticated_via']);
     if ($authenticator != null) {
         if ($row['state'] == null) {
