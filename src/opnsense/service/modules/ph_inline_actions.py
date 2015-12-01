@@ -1,5 +1,6 @@
 """
     Copyright (c) 2014 Ad Schellevis
+
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,14 +25,16 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-
     package : configd
-    function: unix domain socket process worker process
+    function: configd inline actions
+
+
 """
+import syslog
+import template
+import config
 
 __author__ = 'Ad Schellevis'
-
-import syslog
 
 
 def execute(action, parameters):
@@ -42,8 +45,7 @@ def execute(action, parameters):
     :return: status ( string )
     """
     if action.command == 'template.reload':
-        import template
-        import config
+        # generate template
         tmpl = template.Template(action.root_dir)
         conf = config.Config(action.config)
         tmpl.setConfig(conf.get())
@@ -57,12 +59,24 @@ def execute(action, parameters):
         del tmpl
 
         return 'OK'
+    elif action.command == 'template.list':
+        # traverse all installed templates and return list
+        # the number of registered targets is returned between []
+        tmpl = template.Template(action.root_dir)
+        all_templates = tmpl.list_modules()
+        retval = []
+        for tag in sorted(all_templates.keys()):
+            template_name = '%s [%d]' % (tag, len(all_templates[tag]['+TARGETS']))
+            retval.append(template_name)
+
+        del tmpl
+
+        return '\n'.join(retval)
     elif action.command == 'configd.actions':
         # list all available configd actions
         from processhandler import ActionHandler
-
-        actHandler = ActionHandler()
-        actions = actHandler.listActions(['message', 'description'])
+        act_handler = ActionHandler()
+        actions = act_handler.listActions(['message', 'description'])
 
         if unicode(parameters).lower() == 'json':
             import json
@@ -70,7 +84,7 @@ def execute(action, parameters):
         else:
             result = []
             for action in actions:
-                result.append('%s [ %s ]'%(action,actions[action]['description']))
+                result.append('%s [ %s ]' % (action, actions[action]['description']))
 
             return '\n'.join(result)
 

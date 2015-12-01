@@ -33,6 +33,7 @@ __author__ = 'Ad Schellevis'
 
 import os
 import os.path
+import syslog
 import collections
 import copy
 import jinja2
@@ -56,7 +57,7 @@ class Template(object):
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
                                           extensions=["jinja2.ext.do",])
 
-    def _readManifest(self, filename):
+    def _read_manifest(self, filename):
         """
 
         :param filename: manifest filename (path/+MANIFEST)
@@ -70,7 +71,7 @@ class Template(object):
 
         return result
 
-    def _readTargets(self, filename):
+    def _read_targets(self, filename):
         """ read raw target filename masks
 
         :param filename: targets filename (path/+TARGETS)
@@ -93,9 +94,9 @@ class Template(object):
         result = {}
         file_path = '%s/%s' % (self._template_dir, module_name.replace('.', '/'))
         if os.path.exists('%s/+MANIFEST' % file_path) and read_manifest:
-            result['+MANIFEST'] = self._readManifest('%s/+MANIFEST' % file_path)
+            result['+MANIFEST'] = self._read_manifest('%s/+MANIFEST' % file_path)
         if os.path.exists('%s/+TARGETS' % file_path):
-            result['+TARGETS'] = self._readTargets('%s/+TARGETS' % file_path)
+            result['+TARGETS'] = self._read_targets('%s/+TARGETS' % file_path)
         else:
             result['+TARGETS'] = {}
 
@@ -110,7 +111,7 @@ class Template(object):
         result = {}
         for root, dirs, files in os.walk(self._template_dir):
             if len(root) > len(self._template_dir):
-                module_name = '.'.join(root.replace(self._template_dir, '').split('/')[:2])
+                module_name = '.'.join(root.replace(self._template_dir, '').split('/'))
                 if module_name not in result:
                     result[module_name] = self.list_module(module_name)
 
@@ -127,7 +128,7 @@ class Template(object):
             # no data given, reset
             self._config = {}
 
-    def __findStringTags(self, instr):
+    def __find_string_tags(self, instr):
         """
         :param instr: string with optional tags [field.$$]
         :return:
@@ -139,7 +140,7 @@ class Template(object):
 
         return retval
 
-    def __findFilters(self, tags):
+    def __find_filters(self, tags):
         """ match tags to config and construct a dictionary which we can use to construct the output filenames
         :param tags: list of tags [xmlnode.xmlnode.%.xmlnode,xmlnode]
         :return: dictionary containing key (tagname) value {existing node key, value}
@@ -203,8 +204,8 @@ class Template(object):
                 if not os.path.exists('/'.join(fparts)):
                     os.mkdir('/'.join(fparts))
 
-    def generate(self, module_name, create_directory=True):
-        """ generate configuration files using bound config and template data
+    def _generate(self, module_name, create_directory=True):
+        """ generate configuration files for one section using bound config and template data
 
         :param module_name: module name in dot notation ( company.module )
         :param create_directory: automatically create directories to place template output in ( if not existing )
@@ -215,8 +216,8 @@ class Template(object):
         for src_template in module_data['+TARGETS'].keys():
             target = module_data['+TARGETS'][src_template]
 
-            target_filename_tags = self.__findStringTags(target)
-            target_filters = self.__findFilters(target_filename_tags)
+            target_filename_tags = self.__find_string_tags(target)
+            target_filters = self.__find_filters(target_filename_tags)
             result_filenames = {target: {}}
             for target_filter in target_filters.keys():
                 for key in target_filters[target_filter].keys():
@@ -264,5 +265,33 @@ class Template(object):
                         f_out.close()
 
                         result.append(filename)
+
+        return result
+
+    def generate(self, module_name, create_directory=True):
+        """
+        :param module_name: module name in dot notation ( company.module ), may use wildcards
+        :param create_directory: automatically create directories to place template output in ( if not existing )
+        :return: list of generated output files
+        """
+        result = []
+        for template_name in sorted(self.list_modules().keys()):
+            wildcard_pos = module_name.find('*')
+            do_generate = False
+            if wildcard_pos > -1 and module_name[:wildcard_pos] == template_name[:wildcard_pos]:
+                # wildcard match
+                do_generate = True
+            elif wildcard_pos == -1 and module_name == template_name:
+                # direct match
+                do_generate = True
+            elif wildcard_pos == -1 and len(module_name) < len(template_name) \
+                    and '%s.'%module_name == template_name[0:len(module_name)+1]:
+                # match child item
+                do_generate = True
+
+            if do_generate:
+                syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
+                for filename in self._generate(template_name, create_directory):
+                    result.append(filename)
 
         return result
