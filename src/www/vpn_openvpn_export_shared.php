@@ -353,7 +353,7 @@ endif; ?>
                         <?=gettext("Type");?> :
                       <select name="useproxytype" id="useproxytype" class="formselect">
                         <option value="http"><?=gettext("HTTP");?></option>
-                        <option value="socks"><?=gettext("Socks");?></option>
+                        <option value="socks"><?=gettext("SOCKS");?></option>
                       </select>
 
                         <?=gettext("IP Address")?> :
