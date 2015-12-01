@@ -141,15 +141,17 @@ class AccessController extends ApiControllerBase
                     $authFactory = new AuthenticationFactory();
                     foreach (explode(',', (string)$cpZone->authservers) as $authServerName) {
                         $authServer = $authFactory->get(trim($authServerName));
-                        // try this auth method
-                        $isAuthenticated = $authServer->authenticate(
-                            $userName,
-                            $this->request->getPost("password", "string")
-                        );
+                        if ($authServer != null) {
+                            // try this auth method
+                            $isAuthenticated = $authServer->authenticate(
+                                $userName,
+                                $this->request->getPost("password", "string")
+                            );
 
-                        if ($isAuthenticated) {
-                            // stop trying, when authenticated
-                            break;
+                            if ($isAuthenticated) {
+                                // stop trying, when authenticated
+                                break;
+                            }
                         }
                     }
                 } else {
