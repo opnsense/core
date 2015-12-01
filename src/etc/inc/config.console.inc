@@ -318,7 +318,7 @@ EOD;
 				$config['interfaces']['lan']['subnetv6'] = '64';
 			}
 
-			if (!is_array($config['dhcpd']['lan'])) {
+			if (!isset($config['dhcpd']['lan'])) {
 				$config['dhcpd']['lan'] = array();
 				$config['dhcpd']['lan']['range'] = array();
 			}
