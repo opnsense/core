@@ -272,9 +272,9 @@ class Template(object):
         """
         :param module_name: module name in dot notation ( company.module ), may use wildcards
         :param create_directory: automatically create directories to place template output in ( if not existing )
-        :return: list of generated output files
+        :return: list of generated output files or None if template not found
         """
-        result = []
+        result = None
         for template_name in sorted(self.list_modules().keys()):
             wildcard_pos = module_name.find('*')
             do_generate = False
@@ -290,6 +290,8 @@ class Template(object):
                 do_generate = True
 
             if do_generate:
+                if result is None:
+                    result = list()
                 syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
                 for filename in self._generate(template_name, create_directory):
                     result.append(filename)
