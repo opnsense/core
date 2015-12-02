@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($pconfig['updatefreq']) && !is_numericint($pconfig['updatefreq'])) {
-            $input_errors[] = gettext("Update Frequency should by a number");
+            $input_errors[] = gettext("Update Frequency should be a number");
         }
 
         /* check for name conflicts */

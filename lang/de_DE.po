@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-27 20:24+0000\n"
+"POT-Creation-Date: 2015-12-02 20:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 2438\n"
+"X-Pootle-Revision: 2486\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -1717,7 +1717,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/models.php, line: 232
 msgid "SocketsDetails"
-msgstr ""
+msgstr "Socketdetails"
 
 msgid "Sockets"
 msgstr "Sockets"
@@ -3014,7 +3014,7 @@ msgstr ""
 
 # File: src/etc/inc/notices.smtp.inc, line: 442
 msgid "Resolving SMTP server domain \"%s\"..."
-msgstr ""
+msgstr "Löse SMTP Serverdomain \"%s\" auf..."
 
 # File: src/etc/inc/notices.smtp.inc, line: 454
 msgid "Connected to SMTP server \"%s\"."
@@ -3041,7 +3041,7 @@ msgstr "Die Verbindung ist nicht im initialen Status"
 
 # File: src/etc/inc/notices.smtp.inc, line: 659
 msgid "it was not specified a valid direct recipient"
-msgstr ""
+msgstr "es wurde kein gültiger direkter Empfänger angegeben"
 
 # File: src/etc/inc/notices.smtp.inc, line: 678
 msgid ""
@@ -3151,6 +3151,7 @@ msgstr ""
 # File: src/etc/inc/openvpn_wizard.inc, line: 406
 msgid "The field 'TLS Authentication Key' does not appear to be valid."
 msgstr ""
+"Das Feld \"TLS-Authentifizierungsschlüssel' scheint nicht gültig zu sein."
 
 msgid "The field 'DNS Server #1' must contain a valid IP address"
 msgstr "Das Feld 'DNS-Server #1' muss eine gültige IP-Adresse enthalten"
@@ -6209,7 +6210,7 @@ msgid "Connection failed (Refused/Timeout)"
 msgstr "Verbindung fehlgeschlagen (Abgelehnt/Zeitüberschreitung)"
 
 msgid "ttl"
-msgstr ""
+msgstr "TTL"
 
 msgid "Maximum number of hops must be between 1 and %s"
 msgstr "Die maximale Anzahl an Hops muss zwischen 1 und %s liegen"
@@ -6311,7 +6312,7 @@ msgstr ""
 
 # File: src/www/firewall_aliases_edit.php, line: 141
 msgid "Update Frequency should by a number"
-msgstr ""
+msgstr "Aktualisierungshäufigkeit sollte eine Zahl sein"
 
 msgid "An alias with this name already exists."
 msgstr "Ein Alias mit diesem Namen existiert bereits."
@@ -6665,6 +6666,8 @@ msgid ""
 "Hint: this is generally an address owned by the router itself on the "
 "selected interface."
 msgstr ""
+"Hinweis: Dies ist generell eine Adresse des Routers des ausgewählten "
+"Interfaces."
 
 # File: src/www/firewall_nat_1to1_edit.php, line: 334
 # File: src/www/firewall_nat_1to1_edit.php, line: 385
@@ -7061,7 +7064,7 @@ msgid "Destination bit count"
 msgstr "Zielbitanzahl"
 
 msgid "Source bit count"
-msgstr ""
+msgstr "Quellbitanzahl"
 
 msgid ""
 "You must supply either a valid port or port alias for the source port entry."
@@ -7237,7 +7240,7 @@ msgid "Block private networks"
 msgstr "Blockiere private Netze"
 
 msgid "Reserved/not assigned by IANA"
-msgstr ""
+msgstr "Reserviert / nicht durch die IANA zugewiesen"
 
 msgid "Block bogon networks"
 msgstr "Blockiere Bogon-Netze"
@@ -9821,7 +9824,7 @@ msgstr ""
 "verwendet um Loops in der Netzwerktopologie zu erkennen und zu entfernen."
 
 msgid "Valid time"
-msgstr ""
+msgstr "Gültige Zeit"
 
 msgid ""
 "Set the time that a Spanning Tree Protocol configuration is valid.  The "
@@ -10179,6 +10182,8 @@ msgid ""
 "The specified group name is already used by an interface. Please choose "
 "another name."
 msgstr ""
+"Der ausgewählte Gruppenname wird schon von einem andere Interface verwendet. "
+"Bitte wählen Sie einen anderen Namen."
 
 msgid "Interface Groups Edit"
 msgstr "Interfacegruppen bearbeiten"
@@ -10753,11 +10758,11 @@ msgid "HTTP(s) codes must be from RFC2616."
 msgstr ""
 
 msgid "The path to monitor must be set."
-msgstr ""
+msgstr "Der Pfad zum Monitor muss angegeben werden."
 
 # File: src/www/load_balancer_monitor_edit.php, line: 249
 msgid "Edit Monitor"
-msgstr ""
+msgstr "Monitor bearbeiten"
 
 msgid "HTTP"
 msgstr "HTTP"
@@ -10850,7 +10855,7 @@ msgstr ""
 "deaktiviert\"-Liste)."
 
 msgid "Invalid monitor chosen."
-msgstr ""
+msgstr "Ungültiger Monitor ausgewählt."
 
 msgid "Pool"
 msgstr "Pool"
@@ -10988,14 +10993,14 @@ msgid "Interval must be a numeric value"
 msgstr "Intervall muss ein gültiger numerischer Wert sein"
 
 msgid "Prefork must be a numeric value"
-msgstr ""
+msgstr "Prefork muss ein numerischer Wert sein"
 
 msgid "Prefork value must be between 1 and 32"
-msgstr ""
+msgstr "Der Perfork Wert muss zwischen 1 und 32 sein"
 
 # File: src/www/load_balancer_setting.php, line: 117
 msgid "Global settings"
-msgstr ""
+msgstr "Globale Einstellungen"
 
 msgid "timeout"
 msgstr "Zeitüberschreitung"
@@ -11014,7 +11019,7 @@ msgid ""
 msgstr ""
 
 msgid "prefork"
-msgstr ""
+msgstr "prefork"
 
 msgid ""
 "Number of processes used by relayd for dns protocol. Leave blank to use the "
@@ -11076,7 +11081,7 @@ msgid "If left blank, listening ports from the pool will be used."
 msgstr ""
 
 msgid "Virtual Server Pool"
-msgstr ""
+msgstr "Pool virtueller Server"
 
 msgid "Please add a pool on the Pools tab to use this feature."
 msgstr ""
@@ -11220,6 +11225,7 @@ msgstr ""
 
 msgid "Unsigned 8-bit integer type must be a number in the range 0 to 255."
 msgstr ""
+"Der vorzeichenlose 8-Bit Zahlentyp muss eine Zahl zwischen 0 und 255 sein."
 
 msgid "Unsigned 16-bit integer type must be a number in the range 0 to 65535."
 msgstr ""
@@ -11279,25 +11285,25 @@ msgid "Text"
 msgstr "Text"
 
 msgid "Unsigned 16-bit integer"
-msgstr ""
+msgstr "Unsignierte 16-bit Ganzzahl"
 
 msgid "Unsigned 32-bit integer"
-msgstr ""
+msgstr "Unsignierte 32-bit Ganzzahl"
 
 msgid "Unsigned 8-bit integer"
-msgstr ""
+msgstr "Unsignierte 8-bit Ganzzahl"
 
 msgid "IP address or host"
 msgstr "IP-Adresse oder Host"
 
 msgid "Signed 16-bit integer"
-msgstr ""
+msgstr "Signierte 16-bit Ganzzahl"
 
 msgid "Signed 32-bit integer"
-msgstr ""
+msgstr "Signierte 32-bit Ganzzahl"
 
 msgid "Signed 8-bit integer"
-msgstr ""
+msgstr "Signierte 8-bit Ganzzahl"
 
 msgid "The static mapping configuration has been changed"
 msgstr ""
@@ -11552,7 +11558,7 @@ msgid "Enter the"
 msgstr "Gib die"
 
 msgid "root-path"
-msgstr ""
+msgstr "root-Pfad"
 
 msgid "string"
 msgstr "Zeichenkette"
@@ -11565,7 +11571,7 @@ msgid "Additional BOOTP/DHCP Options"
 msgstr "Zusätzliche BOOTP/DHCP Optionen"
 
 msgid "Show Additional BOOTP/DHCP Options"
-msgstr ""
+msgstr "Zeige zusätzliche BOOTP/DHCP Einstellungen"
 
 msgid ""
 "Enter the DHCP option number and the value for each item you would like to "
@@ -11694,7 +11700,7 @@ msgid "DHCP Relay configuration"
 msgstr "DHCP Relay Konfiguration"
 
 msgid "Enable DHCP relay on interface"
-msgstr ""
+msgstr "Aktiviere DHCP-Relay auf dem Interface"
 
 msgid "Append circuit ID and agent ID to requests"
 msgstr ""
@@ -12734,7 +12740,7 @@ msgid "This must match the setting on the DNS server."
 msgstr ""
 
 msgid "Key type"
-msgstr ""
+msgstr "Schlüsseltyp"
 
 msgid "Zone"
 msgstr "Zone"
@@ -12800,7 +12806,7 @@ msgid ""
 msgstr ""
 
 msgid "Router Priority"
-msgstr ""
+msgstr "Routerpriorität"
 
 msgid "Select the Priority for the Router Advertisement (RA) Daemon."
 msgstr ""
@@ -16326,8 +16332,8 @@ msgid ""
 "The static route configuration has been changed.%sYou must apply the changes "
 "in order for them to take effect."
 msgstr ""
-"Die staische Routen Konfiguration wurde geändert.%sSie müssen die Änderungen "
-"anwenden um diese wirksam zu machen."
+"Die statische Routen Konfiguration wurde geändert.%sSie müssen die "
+"Änderungen anwenden, um diese wirksam zu machen."
 
 msgid "delete rule"
 msgstr "Regel löschen"
@@ -18072,7 +18078,7 @@ msgstr "Exportieren der Konfigurationsdateien fehlgeschlagen!"
 # File: src/www/vpn_openvpn_export.php, line: 638
 # File: src/www/vpn_openvpn_export.php.orig, line: 638
 msgid "Remote Access Server"
-msgstr ""
+msgstr "Ferner Zugriffsserver"
 
 # File: src/www/vpn_openvpn_export.php, line: 650
 # File: src/www/vpn_openvpn_export.php.orig, line: 650
@@ -18102,7 +18108,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_export_shared.php, line: 333
 # File: src/www/vpn_openvpn_export_shared.php.orig, line: 333
 msgid "Installation hostname"
-msgstr ""
+msgstr "Installationshostname"
 
 # File: src/www/vpn_openvpn_export.php, line: 679
 # File: src/www/vpn_openvpn_export.php.orig, line: 679
@@ -18118,7 +18124,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_export.php, line: 686
 # File: src/www/vpn_openvpn_export.php.orig, line: 686
 msgid "Verify Server CN"
-msgstr ""
+msgstr "Servernamen überprüfen"
 
 # File: src/www/vpn_openvpn_export.php, line: 689
 # File: src/www/vpn_openvpn_export.php.orig, line: 689
@@ -18138,7 +18144,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_export.php, line: 692
 # File: src/www/vpn_openvpn_export.php.orig, line: 692
 msgid "Do not verify the server CN"
-msgstr ""
+msgstr "Den Servernamen nicht überprüfen"
 
 # File: src/www/vpn_openvpn_export.php, line: 695
 # File: src/www/vpn_openvpn_export.php.orig, line: 695
@@ -18648,7 +18654,7 @@ msgid ""
 msgstr ""
 
 msgid "Client Management Port"
-msgstr ""
+msgstr "Clientverwaltungsport"
 
 msgid ""
 "Use a different management port on clients. The default port is 166. Specify "
@@ -18817,6 +18823,8 @@ msgstr "Benutzer"
 msgid ""
 "don't forget to add a firewall rule to permit traffic from PPPoE clients"
 msgstr ""
+"vergessen Sie nicht, Firewallregeln zu erstellen, welche Datenverkehr von "
+"PPPoE-Clients erlauben"
 
 msgid "PPTP redirection target address"
 msgstr ""
@@ -18864,7 +18872,7 @@ msgid ""
 msgstr ""
 
 msgid "Specify the starting address for the client IP subnet"
-msgstr ""
+msgstr "Geben Sie die Startadresse für das Client-IP-Subnetz an"
 
 msgid "PPTP DNS Servers"
 msgstr "PPTP DNS Server"
@@ -18918,7 +18926,7 @@ msgid "add a firewall rule"
 msgstr "eine Firewallregel hinzufügen"
 
 msgid "to permit traffic from PPTP clients"
-msgstr ""
+msgstr "um Datenverkehr von PPTP-Clients zu erlauben"
 
 msgid "The PPTP user list has been modified"
 msgstr "Die PPTP Benutzerliste wurde geändert"
@@ -18940,6 +18948,8 @@ msgstr "DEAKTIVIERT"
 # File: src/www/widgets/widgets/carp_status.widget.php, line: 84
 msgid "No CARP Interfaces Defined. Click %shere%s to configure CARP."
 msgstr ""
+"Keine CARP-Interfaces definiert. Klicken Sie %shier%s um CARP zu "
+"konfigurieren."
 
 # File: src/www/widgets/widgets/dyn_dns_status.widget.php, line: 68
 msgid "N/A "
