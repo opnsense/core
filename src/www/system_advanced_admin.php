@@ -58,194 +58,209 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $input_errors = array();
-  $pconfig = $_POST;
+    $input_errors = array();
+    $pconfig = $_POST;
 
-  /* input validation */
-  if (!empty($pconfig['webguiport'])) {
-      if (!is_port($pconfig['webguiport'])) {
-          $input_errors[] = gettext("You must specify a valid webConfigurator port number");
-      }
-  }
+    /* input validation */
+    if (!empty($pconfig['webguiport'])) {
+        if (!is_port($pconfig['webguiport'])) {
+            $input_errors[] = gettext("You must specify a valid webConfigurator port number");
+        }
+    }
 
-  if (!empty($pconfig['althostnames'])) {
-      $althosts = explode(" ", $pconfig['althostnames']);
-      foreach ($althosts as $ah) {
-          if (!is_hostname($ah)) {
-              $input_errors[] = sprintf(gettext("Alternate hostname %s is not a valid hostname."), htmlspecialchars($ah));
-          }
-      }
-  }
+    if (!empty($pconfig['althostnames'])) {
+        $althosts = explode(" ", $pconfig['althostnames']);
+        foreach ($althosts as $ah) {
+            if (!is_hostname($ah)) {
+                $input_errors[] = sprintf(gettext("Alternate hostname %s is not a valid hostname."), htmlspecialchars($ah));
+            }
+        }
+    }
 
-  if (!empty($pconfig['sshport'])) {
-      if (!is_port($pconfig['sshport'])) {
-          $input_errors[] = gettext("You must specify a valid port number");
-      }
-  }
+    if (!empty($pconfig['sshport'])) {
+        if (!is_port($pconfig['sshport'])) {
+            $input_errors[] = gettext("You must specify a valid port number");
+        }
+    }
 
-  if (count($input_errors) ==0) {
-      // flag web ui for restart
-      if ($config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
-          $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
-          $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
-          ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect'])
-          ) {
-          $restart_webgui = true;
-      } else {
-          $restart_webgui = false;
-      }
+    if (count($input_errors) ==0) {
+        // flag web ui for restart
+        if ($config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
+            $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
+            $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
+            ($pconfig['disablehttpredirect'] == "yes") != !empty($config['system']['webgui']['disablehttpredirect'])
+            ) {
+            $restart_webgui = true;
+        } else {
+            $restart_webgui = false;
+        }
 
-      $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
-      $config['system']['webgui']['port'] = $pconfig['webguiport'];
-      $config['system']['webgui']['ssl-certref'] = $pconfig['ssl-certref'];
+        $config['system']['webgui']['protocol'] = $pconfig['webguiproto'];
+        $config['system']['webgui']['port'] = $pconfig['webguiport'];
+        $config['system']['webgui']['ssl-certref'] = $pconfig['ssl-certref'];
 
-      if ($pconfig['disablehttpredirect'] == "yes") {
-          $config['system']['webgui']['disablehttpredirect'] = true;
-      } elseif (isset($config['system']['webgui']['disablehttpredirect'])) {
-          unset($config['system']['webgui']['disablehttpredirect']);
-      }
-      if ($pconfig['quietlogin'] == "yes") {
-          $config['system']['webgui']['quietlogin'] = true;
-      } elseif (isset($config['system']['webgui']['quietlogin'])) {
-          unset($config['system']['webgui']['quietlogin']);
-      }
+        if ($pconfig['disablehttpredirect'] == "yes") {
+            $config['system']['webgui']['disablehttpredirect'] = true;
+        } elseif (isset($config['system']['webgui']['disablehttpredirect'])) {
+            unset($config['system']['webgui']['disablehttpredirect']);
+        }
+        if ($pconfig['quietlogin'] == "yes") {
+            $config['system']['webgui']['quietlogin'] = true;
+        } elseif (isset($config['system']['webgui']['quietlogin'])) {
+            unset($config['system']['webgui']['quietlogin']);
+        }
 
-      if ($pconfig['disableconsolemenu'] == "yes") {
-          $config['system']['disableconsolemenu'] = true;
-      } elseif (isset($config['system']['disableconsolemenu'])) {
-          unset($config['system']['disableconsolemenu']);
-      }
+        if ($pconfig['disableconsolemenu'] == "yes") {
+            $config['system']['disableconsolemenu'] = true;
+        } elseif (isset($config['system']['disableconsolemenu'])) {
+            unset($config['system']['disableconsolemenu']);
+        }
 
-      if ($pconfig['noantilockout'] == "yes") {
-          $config['system']['webgui']['noantilockout'] = true;
-      } elseif (isset($config['system']['webgui']['noantilockout'])) {
-          unset($config['system']['webgui']['noantilockout']);
-      }
+        if ($pconfig['noantilockout'] == "yes") {
+            $config['system']['webgui']['noantilockout'] = true;
+        } elseif (isset($config['system']['webgui']['noantilockout'])) {
+            unset($config['system']['webgui']['noantilockout']);
+        }
 
-      if ($pconfig['enableserial'] == "yes") {
-          $config['system']['enableserial'] = true;
-      } elseif (isset($config['system']['enableserial'])) {
-          unset($config['system']['enableserial']);
-      }
+        if ($pconfig['enableserial'] == "yes") {
+            $config['system']['enableserial'] = true;
+        } elseif (isset($config['system']['enableserial'])) {
+            unset($config['system']['enableserial']);
+        }
 
-      if (is_numeric($pconfig['serialspeed'])) {
-          $config['system']['serialspeed'] = $pconfig['serialspeed'];
-      } elseif (isset($config['system']['serialspeed'])) {
-          unset($config['system']['serialspeed']);
-      }
+        if (is_numeric($pconfig['serialspeed'])) {
+            $config['system']['serialspeed'] = $pconfig['serialspeed'];
+        } elseif (isset($config['system']['serialspeed'])) {
+            unset($config['system']['serialspeed']);
+        }
 
-      if (!empty($pconfig['primaryconsole'])) {
-          $config['system']['primaryconsole'] = $pconfig['primaryconsole'];
-      } elseif (isset($config['system']['primaryconsole'])) {
-          unset($config['system']['primaryconsole']);
-      }
+        if (!empty($pconfig['primaryconsole'])) {
+            $config['system']['primaryconsole'] = $pconfig['primaryconsole'];
+        } elseif (isset($config['system']['primaryconsole'])) {
+            unset($config['system']['primaryconsole']);
+        }
 
-      if ($pconfig['nodnsrebindcheck'] == "yes") {
-          $config['system']['webgui']['nodnsrebindcheck'] = true;
-      } elseif (isset($config['system']['webgui']['nodnsrebindcheck'])) {
-          unset($config['system']['webgui']['nodnsrebindcheck']);
-      }
+        if ($pconfig['nodnsrebindcheck'] == "yes") {
+            $config['system']['webgui']['nodnsrebindcheck'] = true;
+        } elseif (isset($config['system']['webgui']['nodnsrebindcheck'])) {
+            unset($config['system']['webgui']['nodnsrebindcheck']);
+        }
 
-      if ($pconfig['nohttpreferercheck'] == "yes") {
-          $config['system']['webgui']['nohttpreferercheck'] = true;
-      } elseif (isset($config['system']['webgui']['nohttpreferercheck'])) {
-          unset($config['system']['webgui']['nohttpreferercheck']);
-      }
+        if ($pconfig['nohttpreferercheck'] == "yes") {
+            $config['system']['webgui']['nohttpreferercheck'] = true;
+        } elseif (isset($config['system']['webgui']['nohttpreferercheck'])) {
+            unset($config['system']['webgui']['nohttpreferercheck']);
+        }
 
-      if ($pconfig['enable_xdebug'] == "yes") {
-          $config['system']['webgui']['enable_xdebug'] = true;
-      } elseif (isset($config['system']['webgui']['enable_xdebug'])) {
-          unset($config['system']['webgui']['enable_xdebug']);
-      }
+        if ($pconfig['enable_xdebug'] == "yes") {
+            $config['system']['webgui']['enable_xdebug'] = true;
+        } elseif (isset($config['system']['webgui']['enable_xdebug'])) {
+            unset($config['system']['webgui']['enable_xdebug']);
+        }
 
-      if ($pconfig['loginautocomplete'] == "yes") {
-          $config['system']['webgui']['loginautocomplete'] = true;
-      } elseif (isset($config['system']['webgui']['loginautocomplete'])) {
-          unset($config['system']['webgui']['loginautocomplete']);
-      }
+        if ($pconfig['loginautocomplete'] == "yes") {
+            $config['system']['webgui']['loginautocomplete'] = true;
+        } elseif (isset($config['system']['webgui']['loginautocomplete'])) {
+            unset($config['system']['webgui']['loginautocomplete']);
+        }
 
-      if (!empty($pconfig['althostnames'])) {
-          $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
-      } elseif (isset($config['system']['webgui']['althostnames'])) {
-          unset($config['system']['webgui']['althostnames']);
-      }
+        if (!empty($pconfig['althostnames'])) {
+            $config['system']['webgui']['althostnames'] = $pconfig['althostnames'];
+        } elseif (isset($config['system']['webgui']['althostnames'])) {
+            unset($config['system']['webgui']['althostnames']);
+        }
 
-      if (empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
-          empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
-          $config['system']['ssh']['port'] != $pconfig['sshport'] ||
-          empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin'])
-          ) {
-            $restart_sshd = true;
-      } else {
-          $restart_sshd = false;
-      }
+        if (empty($config['system']['ssh']['enabled']) != empty($pconfig['enablesshd']) ||
+            empty($config['system']['ssh']['passwordauth']) != empty($pconfig['passwordauth']) ||
+            $config['system']['ssh']['port'] != $pconfig['sshport'] ||
+            empty($config['system']['ssh']['permitrootlogin']) != empty($pconfig['sshdpermitrootlogin'])
+            ) {
+              $restart_sshd = true;
+        } else {
+            $restart_sshd = false;
+        }
 
-      if (!empty($pconfig['enablesshd'])) {
-          $config['system']['ssh']['enabled'] = 'enabled';
-      } elseif (isset($config['system']['ssh']['enabled'])) {
-          unset($config['system']['ssh']['enabled']);
-      }
+        if (!empty($pconfig['enablesshd'])) {
+            $config['system']['ssh']['enabled'] = 'enabled';
+        } elseif (isset($config['system']['ssh']['enabled'])) {
+            unset($config['system']['ssh']['enabled']);
+        }
 
-      if (!empty($pconfig['passwordauth'])) {
-          $config['system']['ssh']['passwordauth'] = true;
-      } elseif (isset($config['system']['ssh']['passwordauth'])) {
-          unset($config['system']['ssh']['passwordauth']);
-      }
+        if (!empty($pconfig['passwordauth'])) {
+            $config['system']['ssh']['passwordauth'] = true;
+        } elseif (isset($config['system']['ssh']['passwordauth'])) {
+            unset($config['system']['ssh']['passwordauth']);
+        }
 
-      if (!empty($pconfig['sshport'])) {
-          $config['system']['ssh']['port'] = $_POST['sshport'];
-      } elseif (isset($config['system']['ssh']['port'])) {
-          unset($config['system']['ssh']['port']);
-      }
+        if (!empty($pconfig['sshport'])) {
+            $config['system']['ssh']['port'] = $_POST['sshport'];
+        } elseif (isset($config['system']['ssh']['port'])) {
+            unset($config['system']['ssh']['port']);
+        }
 
-      if (!empty($pconfig['sshdpermitrootlogin'])) {
-          $config['system']['ssh']['permitrootlogin'] = true;
-      } elseif (isset($config['system']['ssh']['permitrootlogin'])) {
-          unset($config['system']['ssh']['permitrootlogin']);
-      }
+        if (!empty($pconfig['sshdpermitrootlogin'])) {
+            $config['system']['ssh']['permitrootlogin'] = true;
+        } elseif (isset($config['system']['ssh']['permitrootlogin'])) {
+            unset($config['system']['ssh']['permitrootlogin']);
+        }
 
-      if ($restart_webgui) {
-          global $_SERVER;
-          $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
-          /* IPv6 address check */
-          if (strstr($_SERVER['HTTP_HOST'], "]")) {
-              if (count($http_host_port) > 1) {
-                  array_pop($http_host_port);
-                  $host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
-                  $host = "[{$host}]";
-              } else {
-                  $host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
-                  $host = "[{$host}]";
-              }
-          } else {
-              list($host) = explode(":", $_SERVER['HTTP_HOST']);
-          }
-          $prot = $config['system']['webgui']['protocol'];
-          $port = $config['system']['webgui']['port'];
-          if ($port) {
-              $url = "{$prot}://{$host}:{$port}/system_advanced_admin.php";
-          } else {
-              $url = "{$prot}://{$host}/system_advanced_admin.php";
-          }
-      }
+        if ($restart_webgui) {
+            global $_SERVER;
+            $http_host_port = explode("]", $_SERVER['HTTP_HOST']);
+            /* IPv6 address check */
+            if (strstr($_SERVER['HTTP_HOST'], "]")) {
+                if (count($http_host_port) > 1) {
+                    array_pop($http_host_port);
+                    $host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
+                    $host = "[{$host}]";
+                } else {
+                    $host = str_replace(array("[", "]"), "", implode(":", $http_host_port));
+                    $host = "[{$host}]";
+                }
+            } else {
+                list($host) = explode(":", $_SERVER['HTTP_HOST']);
+            }
+            $prot = $config['system']['webgui']['protocol'];
+            $port = $config['system']['webgui']['port'];
+            if ($port) {
+                $url = "{$prot}://{$host}:{$port}/system_advanced_admin.php";
+            } else {
+                $url = "{$prot}://{$host}/system_advanced_admin.php";
+            }
+        }
 
-      write_config();
+        write_config();
 
-      $retval = filter_configure();
-      $savemsg = get_std_save_message();
+        filter_configure();
+        $savemsg = get_std_save_message();
 
-      if ($restart_webgui) {
-          $savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."), $url);
-      }
+        if ($restart_webgui) {
+            $savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."), $url);
+        }
 
-      setup_serial_port();
-      system_hosts_generate();
-      // Restart DNS in case dns rebinding toggled
-      if (isset($config['dnsmasq']['enable'])) {
-          services_dnsmasq_configure();
-      } elseif (isset($config['unbound']['enable']))
-          services_unbound_configure();
-  }
+        setup_serial_port();
+        system_hosts_generate();
+        // Restart DNS in case dns rebinding toggled
+        if (isset($config['dnsmasq']['enable'])) {
+            services_dnsmasq_configure();
+        } elseif (isset($config['unbound']['enable'])) {
+            services_unbound_configure();
+        }
+
+        if ($restart_sshd) {
+            killbyname("sshd");
+            log_error(gettext("secure shell configuration has changed. Stopping sshd."));
+
+            if ($config['system']['ssh']['enabled']) {
+                log_error(gettext("secure shell configuration has changed. Restarting sshd."));
+                configd_run("sshd restart");
+            }
+        }
+        if ($restart_webgui) {
+            log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
+            mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
+        }
+    }
 }
 
 
@@ -277,6 +292,19 @@ include("head.inc");
           document.getElementById("ssl_opts").style.display="none";
       }
   }
+
+  $( document ).ready(function() {
+      prot_change();
+
+ <?php
+    // reload page after 20 seconds if webserver is restarted
+    if ( isset($restart_webgui) && $restart_webgui):?>
+       setTimeout(function(){
+         window.location.assign("<?=$url;?>");
+       }, 20000);
+  });
+ <?php
+    endif;?>
 //]]>
 </script>
 
@@ -292,7 +320,7 @@ include("head.inc");
     }
 ?>
       <section class="col-xs-12">
-        <div class="content-box tab-content">
+        <div class="content-box tab-content table-responsive">
           <form action="system_advanced_admin.php" method="post" name="iform" id="iform">
             <table class="table table-striped">
               <tr>
@@ -570,34 +598,4 @@ include("head.inc");
         </div>
   </div>
 </section>
-
-<script type="text/javascript">
-//<![CDATA[
-  prot_change();
-//]]>
-</script>
-
-<?php
-if ($restart_webgui) {
-    echo "<meta http-equiv=\"refresh\" content=\"20;url={$url}\" />";
-}
-?>
-
 <?php include("foot.inc"); ?>
-
-<?php
-if ($restart_sshd) {
-    killbyname("sshd");
-    log_error(gettext("secure shell configuration has changed. Stopping sshd."));
-
-    if ($config['system']['ssh']['enabled']) {
-        log_error(gettext("secure shell configuration has changed. Restarting sshd."));
-        configd_run("sshd restart");
-    }
-}
-if ($restart_webgui) {
-    ob_flush();
-    flush();
-    log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-    mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
-}
