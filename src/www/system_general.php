@@ -518,7 +518,7 @@ include("head.inc");
                 <select name="flavour" class="selectpicker" data-style="btn-default" data-width="auto">
 <?php
                 foreach (get_firmware_flavours() as $fcode => $fdesc):?>
-                  <option value="<?=$fcode;?>" <?=$fcode != $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
+                  <option value="<?=$fcode;?>" <?=$fcode == $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
                     <?=$fdesc;?>
                   </option>
 <?php
