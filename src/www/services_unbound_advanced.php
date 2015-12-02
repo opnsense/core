@@ -114,7 +114,7 @@ if ($_POST) {
 }
 
 $closehead = false;
-$pgtitle = array(gettext("Services"),gettext("DNS Resolver"),gettext("Advanced"));
+$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Advanced'));
 include_once("head.inc");
 
 ?>
@@ -138,16 +138,7 @@ include_once("head.inc");
 
 			    <section class="col-xs-12">
 
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("General settings"), false, "services_unbound.php");
-						$tab_array[] = array(gettext("Advanced settings"), true, "services_unbound_advanced.php");
-						$tab_array[] = array(gettext("Access Lists"), false, "/services_unbound_acls.php");
-						display_top_tabs($tab_array, true);
-					?>
-
 					<div class="tab-content content-box col-xs-12">
-
 
 							<form action="services_unbound_advanced.php" method="post" name="iform" id="iform">
 
@@ -156,7 +147,7 @@ include_once("head.inc");
 
 										<tbody>
 											<tr>
-												<td colspan="2" valign="top" class="listtopic"><?=gettext("Advanced Resolver Options");?></td>
+												<td colspan="2" valign="top" class="listtopic"><strong><?=gettext("Advanced Resolver Options");?></strong></td>
 											</tr>
 											<tr>
 												<td width="22%" valign="top" class="vncell"><?=gettext("Hide Identity");?></td>
@@ -411,9 +402,6 @@ include_once("head.inc");
 														<?=gettext("Select the log verbosity.");?>
 													</p>
 												</td>
-											</tr>
-											<tr>
-												<td colspan="2">&nbsp;</td>
 											</tr>
 											<tr>
 												<td width="22%"></td>

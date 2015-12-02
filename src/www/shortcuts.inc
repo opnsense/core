@@ -169,16 +169,6 @@ $shortcuts['gateway-groups']['main'] = "system_gateway_groups.php";
 $shortcuts['gateway-groups']['log'] = "diag_logs_gateways.php";
 $shortcuts['gateway-groups']['status'] = "status_gateway_groups.php";
 
-$shortcuts['forwarder'] = array();
-$shortcuts['forwarder']['main'] = "services_dnsmasq.php";
-$shortcuts['forwarder']['log'] = "diag_logs_resolver.php";
-$shortcuts['forwarder']['service'] = "dnsmasq";
-
-$shortcuts['resolver'] = array();
-$shortcuts['resolver']['main'] = "services_unbound.php";
-$shortcuts['resolver']['log'] = "diag_logs_resolver.php";
-$shortcuts['resolver']['service'] = "unbound";
-
 $shortcuts['ntp'] = array();
 $shortcuts['ntp']['service'] = "ntpd";	/* really, hook it all up through some weird hint? */
 
@@ -201,5 +191,4 @@ $shortcuts['aliases']['status'] = "diag_tables.php";
 $shortcuts['squid'] = array();
 $shortcuts['squid']['main'] = "ui/proxy/";
 $shortcuts['squid']['log'] = "diag_logs_proxy.php";
-//TODO: $shortcuts['squid']['status'] = "";
 $shortcuts['squid']['service'] = "squid";

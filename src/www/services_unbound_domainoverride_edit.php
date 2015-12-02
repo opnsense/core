@@ -100,8 +100,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("Services"),gettext("DNS Resolver"),gettext("Edit Domain Override"));
-$shortcut_section = "resolver";
+$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Edit Domain Override'));
 include("head.inc");
 
 ?>

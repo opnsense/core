@@ -28,7 +28,7 @@
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
         </HighAvailability>
-        <Routes order="40" cssClass="fa fa-wrench">
+        <Routes order="40" cssClass="fa fa-map-signs">
             <All url="/system_routes.php">
                 <Edit url="/system_routes_edit.php*"/>
             </All>
@@ -50,8 +50,8 @@
             <General url="/diag_logs.php"/>
             <Gateways url="/diag_logs_gateways.php"/>
             <Routing url="/diag_logs_routing.php"/>
-            <Resolver url="/diag_logs_resolver.php"/>
             <Wireless url="/diag_logs_wireless.php"/>
+            <DNS url="/diag_logs_resolver.php"/>
             <DHCP url="/diag_logs_dhcp.php"/>
             <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php?vpntype=pptp">
@@ -92,6 +92,9 @@
             <Halt VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot VisibleName="Reboot System" url="/reboot.php"/>
             <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
+            <Services url="/status_services.php">
+                <All url="/status_services.php?*"/>
+            </Services>
         </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
@@ -212,18 +215,27 @@
                 <Details url="/status_dhcpv6_leases.php?*"/>
             </Leases>
         </DHCPv6>
-        <DNSFilter VisibleName="DNS Filter" url="/services_opendns.php"/>
-        <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php"/>
-        <DNSResolver VisibleName="DNS Resolver" url="/services_unbound.php">
-            <Advanced url="/services_unbound_advanced.php"/>
-            <ACLs url="/services_unbound_acls.php*"/>
+        <DNSFilter VisibleName="DNS Filter" url="/services_opendns.php" cssClass="fa fa-tags"/>
+        <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php" cssClass="fa fa-tags">
+            <Hosts url="/services_dnsmasq_edit.php*"/>
+            <Domains url="/services_dnsmasq_domainoverride_edit.php*"/>
+        </DNSForwarder>
+        <DNSResolver VisibleName="DNS Resolver" cssClass="fa fa-tags">
+            <General order="10" url="/services_unbound.php">
+                <Hosts url="/services_unbound_host_edit.php*"/>
+                <Domains url="/services_unbound_domainoverride_edit.php*"/>
+            </General>
+            <Advanced order="20" url="/services_unbound_advanced.php"/>
+            <ACL VisibleName="Access Lists" order="30" url="/services_unbound_acls.php">
+                <All url="/services_unbound_acls.php*"/>
+            </ACL>
         </DNSResolver>
-        <DynamicDNS VisibleName="Dynamic DNS" url="/services_dyndns.php">
+        <DynamicDNS VisibleName="Dynamic DNS" url="/services_dyndns.php" cssClass="fa fa-tags">
             <DynamicDNSRFC2136Clients url="/services_rfc2136.php"/>
             <DynamicDNSRFC2136ClientsEdit url="/services_rfc2136_edit.php"/>
             <DynamicDNSEdit url="/services_dyndns_edit.php"/>
         </DynamicDNS>
-        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php">
+        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs">
             <IGMPProxyEdit url="/services_igmpproxy_edit.php"/>
         </IGMPProxy>
         <LoadBalancer VisibleName="Load Balancer" cssClass="fa fa-truck">
@@ -248,7 +260,7 @@
             <Status url="/status_ntpd.php"/>
             <Log VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php">
+        <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php" cssClass="fa fa-tty">
             <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
         </PPPoEServer>
         <PPTP cssClass="fa fa-unlock">
@@ -263,17 +275,14 @@
                 <More url="/diag_logs_proxy.php*"/>
             </Log>
         </Proxy>
-        <SNMP VisibleName="SNMP" url="/services_snmp.php"/>
-        <Status VisibleName="Status Overview" url="/status_services.php">
-            <ServicesActions url="/status_services.php?*"/>
-        </Status>
+        <SNMP VisibleName="SNMP" url="/services_snmp.php" cssClass="fa fa-database"/>
         <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug">
             <Settings url="/services_upnp.php">
                 <Edit url="/services_upnp.php?*"/>
             </Settings>
             <Status url="/status_upnp.php"/>
         </UPnP>
-        <WoL VisibleName="Wake on LAN" url="/services_wol.php">
+        <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off">
             <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
     </Services>

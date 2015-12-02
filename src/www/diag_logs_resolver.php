@@ -50,8 +50,7 @@ if (isset($_POST['filtertext'])) {
 	$filtertext = htmlspecialchars($_POST['filtertext']);
 }
 
-$pgtitle = array(gettext('System'), gettext('Log Files'), gettext('Resolver'));
-$shortcut_section = "resolver";
+$pgtitle = array(gettext('System'), gettext('Log Files'), gettext('DNS'));
 include("head.inc");
 
 ?>
