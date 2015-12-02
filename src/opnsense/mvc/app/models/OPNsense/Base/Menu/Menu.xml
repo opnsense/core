@@ -287,7 +287,7 @@
         </WoL>
     </Services>
     <VPN order="4" cssClass="glyphicon glyphicon-lock">
-        <IPsec cssClass="glyphicon glyphicon-lock">
+        <IPsec cssClass="fa fa-lock">
             <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*"/>
@@ -305,13 +305,13 @@
             <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
             <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
-        <L2TP cssClass="glyphicon glyphicon-lock">
+        <L2TP cssClass="fa fa-lock">
             <Settings order="10" url="/vpn_l2tp.php"/>
             <Users order="20"  url="/vpn_l2tp_users.php">
                 <Edit url="/vpn_l2tp_users_edit.php*"/>
             </Users>
         </L2TP>
-        <OpenVPN cssClass="glyphicon glyphicon-lock">
+        <OpenVPN cssClass="fa fa-lock">
             <Server order="10" VisibleName="Server Settings" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*"/>
             </Server>
