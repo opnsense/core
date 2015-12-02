@@ -133,40 +133,13 @@ function get_pkg_interfaces_select_source($include_localhost=false) {
 	return $ssifs;
 }
 
-function domTT_title($title_msg){
-	if (!empty($title_msg)){
-		$title_msg=preg_replace("/\s+/"," ",$title_msg);
-        $title_msg=preg_replace("/'/","\'",$title_msg);
-		return "onmouseout=\"this.style.color = ''; domTT_mouseout(this, event);\" onmouseover=\"domTT_activate(this, event, 'content', '{$title_msg}', 'trail', true, 'delay', 0, 'fade', 'both', 'fadeMax', 93, 'delay',300,'styleClass', 'niceTitle');\"";
-	}
-}
-
 global $listtags;
-$listtags = array_flip(array('build_port_path', 'depends_on_package', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'template', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
+$listtags = array_flip(array('build_port_path', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
 $pkg = parse_xml_config_raw('/usr/local/pkg/miniupnpd.xml', 'packagegui', false);
-
 
 $name         = $pkg['name'];
 $title        = $pkg['title'];
 $pgtitle      = $title;
-
-if (isset($_GET['id'])) {
-	$id = $_GET['id'];
-} elseif (isset($_POST['id'])) {
-	$id = htmlspecialchars($_POST['id']);
-} else {
-	$id = null;
-}
-
-// Not posting?  Then user is editing a record. There must be a valid id
-// when editing a record.
-if(!$id && !$_POST)
-	$id = "0";
-
-if(!is_numeric($id)) {
-	header("Location: /");
-	exit;
-}
 
 if($config['installedpackages'] && !is_array($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']))
 	$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'] = array();
@@ -180,101 +153,58 @@ $a_pkg = &$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config
 global $config;
 
 if ($_POST) {
-	$firstfield = "";
+	$firstfield = '';
 	$rows = 0;
 
 	$input_errors = array();
 	$reqfields = array();
 	$reqfieldsn = array();
+
 	foreach ($pkg['fields']['field'] as $field) {
 		if (($field['type'] == 'input') && isset($field['required'])) {
-			if($field['fieldname'])
+			if ($field['fieldname']) {
 				$reqfields[] = $field['fieldname'];
-			if($field['fielddescr'])
+			}
+			if ($field['fielddescr']) {
 				$reqfieldsn[] = $field['fielddescr'];
+			}
 		}
 	}
+
 	do_input_validation($_POST, $reqfields, $reqfieldsn, $input_errors);
 	validate_form_miniupnpd($_POST, $input_errors);
 
-	if(isset($_POST['act']) && $_POST['act'] == "del") {
-		write_config($pkg['delete_string']);
-		sync_package_miniupnpd();
-	}
+	if (!$input_errors) {
+		$pkgarr = array();
+		foreach ($pkg['fields']['field'] as $fields) {
+			$fieldvalue = null;
+			$fieldname = null;
 
-	// donotsave is enabled.  lets simply exit.
-	if(empty($pkg['donotsave'])) {
-
-		// store values in xml configration file.
-		if (!$input_errors) {
-			$pkgarr = array();
-			foreach ($pkg['fields']['field'] as $fields) {
-				switch($fields['type']){
-					case "rowhelper":
-						// save rowhelper items.
-						#$rowhelpername=($fields['fieldname'] ? $fields['fieldname'] : "row");
-						$rowhelpername="row";
-						foreach($fields['rowhelper']['rowhelperfield'] as $rowhelperfield)
-							foreach($_POST as $key => $value){
-								if (preg_match("/^{$rowhelperfield['fieldname']}(\d+)$/",$key,$matches))
-									$pkgarr[$rowhelpername][$matches[1]][$rowhelperfield['fieldname']]=$value;
-							}
-						break;
-					default:
-						if (isset($fields['fieldname'])) {
-							$fieldname  = $fields['fieldname'];
-						} else {
-							$fieldname  = null ;
-						}
-						if ($fieldname == "interface_array") {
-							$fieldvalue = $_POST[$fieldname];
-						} elseif (isset($_POST[$fieldname]) && is_array($_POST[$fieldname])) {
-							$fieldvalue = implode(',', $_POST[$fieldname]);
-						} else {
-							if (isset($_POST[$fieldname])) {
-								$fieldvalue = trim($_POST[$fieldname]);
-							} else {
-								$fieldvalue = null;
-							}
-							if (isset($fields['encoding']) && $fields['encoding'] == 'base64')
-								$fieldvalue = base64_encode($fieldvalue);
-						}
-						if($fieldname)
-							$pkgarr[$fieldname] = $fieldvalue;
-					}
+			if (isset($fields['fieldname'])) {
+				$fieldname = $fields['fieldname'];
 			}
 
-			if (isset($id) && $a_pkg[$id])
-				$a_pkg[$id] = $pkgarr;
-			else
-				$a_pkg[] = $pkgarr;
-
-			write_config(isset($pkg['addedit_string'])?$pkg['addedit_string']:"");
-
-			sync_package_miniupnpd();
-			parse_package_templates();
-
-			/* if start_command is defined, restart w/ this */
-			if(!empty($pkg['start_command']))
-			    exec($pkg['start_command'] . ">/dev/null 2&>1");
-
-			/* if restart_command is defined, restart w/ this */
-			if(!empty($pkg['restart_command']))
-			    exec($pkg['restart_command'] . ">/dev/null 2&>1");
-
-			if(!empty($pkg['aftersaveredirect'])) {
-			    redirectHeader($pkg['aftersaveredirect']);
-			} elseif(empty($pkg['adddeleteeditpagefields'])) {
-			    redirectHeader("services_upnp.php?id=0");
-			} elseif(empty($pkg['preoutput'])) {
-			    redirectHeader("services_upnp.php");
+			if ($fieldname == 'interface_array') {
+				$fieldvalue = $_POST[$fieldname];
+			} elseif (isset($_POST[$fieldname]) && is_array($_POST[$fieldname])) {
+				$fieldvalue = implode(',', $_POST[$fieldname]);
+			} else {
+				if (isset($_POST[$fieldname])) {
+					$fieldvalue = trim($_POST[$fieldname]);
+				}
 			}
-			exit;
-		} else {
-			$get_from_post = true;
+
+			if ($fieldname) {
+				$pkgarr[$fieldname] = $fieldvalue;
+			}
 		}
-	} elseif (!$input_errors) {
-		exit;
+
+		$a_pkg[] = $pkgarr;
+
+		write_config(gettext('Modified Universal Plug and Play settings.'));
+		sync_package_miniupnpd();
+	} else {
+		$get_from_post = true;
 	}
 }
 
@@ -428,8 +358,7 @@ include("head.inc");
 			continue;
 
 		if ($pkga['type'] == "listtopic") {
-			$input = "<tr id='td_{$fieldname}'><td colspan=\"2\">&nbsp;</td></tr>";
-			$input .= "<tr id='tr_{$fieldname}'><td colspan=\"2\" class=\"listtopic\">{$pkga['name']}<br /></td></tr>\n";
+			$input .= "<tr id='tr_{$fieldname}'><td colspan=\"2\" class=\"listtopic\"><strong>{$pkga['name']}</strong></td></tr>\n";
 			echo $input;
 			continue;
 		}
@@ -481,10 +410,7 @@ include("head.inc");
 			$value = $_POST[$fieldname];
 			if (is_array($value)) $value = implode(',', $value);
 		} else {
-			if (isset($id) && $a_pkg[$id])
-				$value = $a_pkg[$id][$fieldname];
-			else
-				$value = $pkga['default_value'];
+			$value = $pkga['default_value'];
 		}
 		switch($pkga['type']){
 			case "input":
@@ -557,20 +483,10 @@ include("head.inc");
 
 	?>
   <tr>
-	<td colspan="2">&nbsp;</td>
-  </tr>
-  <tr>
     <td width="22%" valign="top">&nbsp;</td>
     <td width="78%">
     <div id="buttons">
-		<?php
-		if(!empty($pkg['note'])){
-			echo "<p><span class=\"red\"><strong>" . gettext("Note") . ":</strong></span> {$pkg['note']}</p>";
-			}
-		//if (isset($id) && $a_pkg[$id]) // We'll always have a valid ID in our hands
-		echo "<input name='id' type='hidden' value=\"" . htmlspecialchars($id) . "\" />";
-		echo "<input name='Submit' type='submit' class='btn btn-primary formbtn' value=\"" . htmlspecialchars($savevalue) . "\" />\n{$pkg_buttons}\n";
-		?>
+		<?php echo "<input name='Submit' type='submit' class='btn btn-primary formbtn' value=\"" . htmlspecialchars($savevalue) . "\" />\n{$pkg_buttons}\n"; ?>
 	</div>
     </td>
   </tr>
@@ -684,60 +600,6 @@ function fixup_string($string) {
 	$string = $newstring;
 	// fixup #4: fix'r'up here.
 	return $newstring;
-}
-
-/*
- *  Parse templates if they are defined
- */
-function parse_package_templates() {
-	global $pkg, $config;
-	$rows = 0;
-	if(!empty($pkg['templates']['template']))
-	    foreach($pkg['templates']['template'] as $pkg_template_row) {
-			$filename = $pkg_template_row['filename'];
-			$template_text = $pkg_template_row['templatecontents'];
-			$firstfield = "";
-			/* calculate total row helpers count and */
-			/* change fields defined as fieldname_fieldvalue to their value */
-			foreach ($pkg['fields']['field'] as $fields) {
-				switch($fields['type']){
-					case "rowhelper":
-					// save rowhelper items.
-					$row_helper_total_rows = 0;
-					$row_helper_data = "";
-					foreach($fields['rowhelper']['rowhelperfield'] as $rowhelperfield)
-						foreach($_POST as $key => $value){
-							if (preg_match("/^{$rowhelperfield['fieldname']}(\d+)$/",$key,$matches)){
-								$row_helper_total_rows++;
-								$row_helper_data .= $value;
-								$sep = "";
-								ereg($rowhelperfield['fieldname'] . "_fieldvalue\[(.*)\]", $template_text, $sep);
-								foreach ($sep as $se) $separator = $se;
-								if($separator <> "") {
-								$row_helper_data = ereg_replace("  ", $separator, $row_helper_data);
-								$template_text = ereg_replace("\[{$separator}\]", "", $template_text);
-									}
-								$template_text = str_replace($rowhelperfield['fieldname'] . "_fieldvalue", $row_helper_data, $template_text);
-								}
-							}
-					break;
-				default:
-					$fieldname  = $fields['fieldname'];
-					$fieldvalue = $_POST[$fieldname];
-					$template_text = str_replace($fieldname . "_fieldvalue", $fieldvalue, $template_text);
-				}
-			}
-		/* replace $domain_total_rows with total rows */
-		$template_text = str_replace("$domain_total_rows", $row_helper_total_rows, $template_text);
-
-		/* replace cr's */
-		$template_text = str_replace("\\n", "\n", $template_text);
-
-		/* write out new template file */
-		$fout = fopen($filename,"w");
-		fwrite($fout, $template_text);
-		fclose($fout);
-	    }
 }
 
 /* Return html div fields */
