@@ -240,6 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         setup_serial_port();
         system_hosts_generate();
+
         // Restart DNS in case dns rebinding toggled
         if (isset($config['dnsmasq']['enable'])) {
             services_dnsmasq_configure();
@@ -248,17 +249,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($restart_sshd) {
-            configd_run("sshd stop");
-            log_error(gettext("secure shell configuration has changed. Stopping sshd."));
-
-            if ($config['system']['ssh']['enabled']) {
-                log_error(gettext("secure shell configuration has changed. Restarting sshd."));
-                mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
-            }
+            log_error(gettext('Secure Shell configuration has changed. Applying now...'));
+            configd_run('sshd restart', true);
         }
+
         if ($restart_webgui) {
-            log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-            configd_run("webgui restart 2", true);
+            log_error(gettext('webConfigurator configuration has changed. Applying now...'));
+            mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
         }
     }
 }
