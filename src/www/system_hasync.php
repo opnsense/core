@@ -38,7 +38,8 @@ if (!isset($config['hasync']) || !is_array($config['hasync'])) {
 
 $a_hasync = &$config['hasync'];
 
-$checkbox_names = array('pfsyncenabled',
+$checkbox_names = array(
+            'pfsyncenabled',
             'synchronizeusers',
             'synchronizeauthservers',
             'synchronizecerts',
@@ -54,7 +55,8 @@ $checkbox_names = array('pfsyncenabled',
             'synchronizelb',
             'synchronizevirtualip',
             'synchronizednsforwarder',
-            'synchronizecaptiveportal');
+            'synchronizecaptiveportal',
+);
 
 if ($_POST) {
     $pconfig = $_POST;
@@ -94,8 +96,7 @@ foreach (array('pfsyncpeerip','pfsyncinterface','synchronizetoip','username','pa
 $ifaces = get_configured_interface_with_descr();
 $ifaces["lo0"] = "loopback";
 
-$pgtitle = array(gettext("System"),gettext("High Availability"));
-$shortcut_section = "carp";
+$pgtitle = array(gettext('System'), gettext('High Availability'), gettext('Synchronization'));
 include("head.inc");
 ?>
 
@@ -348,15 +349,6 @@ include("head.inc");
                                 echo "checked='checked'";
 } ?> />
 							<?=gettext('Automatically sync the DNS Forwarder configuration to the other HA host when changes are made.') ?>
-						</td>
-					</tr>
-					<tr valign="top">
-						<td width="22%" class="vncell">Synchronize Captive Portal</td>
-						<td class="vtable">
-							<input id='synchronizecaptiveportal' type='checkbox' name='synchronizecaptiveportal' value='on' <?php if ($pconfig['synchronizecaptiveportal'] === "on") {
-                                echo "checked='checked'";
-} ?> />
-							Automatically sync the Captive Portal configuration to the other HA host when changes are made.
 						</td>
 					</tr>
 					<tr>

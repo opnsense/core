@@ -152,7 +152,7 @@ include("head.inc");
 legacy_html_escape_form_data($a_nat);
 
 $main_buttons = array(
-  array('label'=>'Add', 'href'=>'firewall_nat_edit.php'),
+  array('label'=>gettext('Add'), 'href'=>'firewall_nat_edit.php'),
 );
 ?>
 
@@ -230,14 +230,6 @@ $( document ).ready(function() {
 <?php     print_info_box_apply(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 <?php   endif; ?>
         <section class="col-xs-12">
-<?php
-$tab_array = array();
-$tab_array[] = array(gettext("Port Forward"), true, "firewall_nat.php");
-$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
-$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-$tab_array[] = array(gettext("NPT"), false, "firewall_nat_npt.php");
-display_top_tabs($tab_array);
-?>
           <div class="content-box">
             <form action="firewall_nat.php" method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />

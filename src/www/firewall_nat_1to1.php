@@ -1,5 +1,4 @@
 <?php
-
 /*
   Copyright (C) 2014 Deciso B.V.
   Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -175,14 +174,6 @@ $main_buttons = array(
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
-<?php
-$tab_array = array();
-$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
-$tab_array[] = array(gettext("1:1"), true, "firewall_nat_1to1.php");
-$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-$tab_array[] = array(gettext("NPT"), false, "firewall_nat_npt.php");
-display_top_tabs($tab_array);
-?>
       <div class="row">
 <?php
         if (isset($savemsg))

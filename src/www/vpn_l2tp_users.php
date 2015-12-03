@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
@@ -26,12 +27,10 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("VPN"),gettext("L2TP"),gettext("Users"));
-$shortcut_section = "l2tps";
+$pgtitle = array(gettext('VPN'),gettext('L2TP'),gettext('Users'));
 
 require_once("guiconfig.inc");
 require_once("vpn.inc");
-
 
 if (!isset($config['l2tp']['user'])) {
     $config['l2tp']['user'] = array();
@@ -60,7 +59,7 @@ if ($_GET['act'] == "del") {
         unset($a_secret[$_GET['id']]);
         write_config();
         mark_subsystem_dirty('l2tpusers');
-        redirectHeader("vpn_l2tp_users.php");
+        header("Location: vpn_l2tp_users.php");
         exit;
     }
 }
@@ -97,13 +96,6 @@ endif; ?>
 
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_l2tp.php");
-                        $tab_array[1] = array(gettext("Users"), true, "vpn_l2tp_users.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 

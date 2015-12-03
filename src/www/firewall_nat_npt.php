@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $a_npt[$id]['disabled'] = true;
             }
-            if (write_config("Firewall: NAT: NPT, enable/disable NAT rule")) {
+            if (write_config(gettext("Firewall: NAT: NPT, enable/disable NAT rule"))) {
                 mark_subsystem_dirty('natconf');
             }
             header("Location: firewall_nat_npt.php");
@@ -103,7 +103,7 @@ $pgtitle = array(gettext('Firewall'), gettext('NAT'), gettext('NPT'));
 include("head.inc");
 
 $main_buttons = array(
-  array('label'=>'Add rule', 'href'=>'firewall_nat_npt_edit.php'),
+  array('label'=>gettext('Add rule'), 'href'=>'firewall_nat_npt_edit.php'),
 );
 ?>
 
@@ -183,14 +183,6 @@ $main_buttons = array(
         <?php print_info_box_apply(gettext("The NAT configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
-<?php
-$tab_array = array();
-$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
-$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
-$tab_array[] = array(gettext("Outbound"), false, "firewall_nat_out.php");
-$tab_array[] = array(gettext("NPT"), true, "firewall_nat_npt.php");
-display_top_tabs($tab_array);
-?>
           <div class="content-box">
             <form action="firewall_nat_npt.php" method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />

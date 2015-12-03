@@ -84,8 +84,8 @@ for ($i = 0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
 	$a_pool[$i]['monitor'] = "<a href=\"/load_balancer_monitor_edit.php?id={$mondex[$a_pool[$i]['monitor']]}\">{$a_pool[$i]['monitor']}</a>";
 }
 
-$pgtitle = array(gettext("Services"), gettext("Load Balancer"),gettext("Pool"));
-$shortcut_section = "relayd";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'),gettext('Pool Setup'));
+$shortcut_section = 'relayd';
 
 include("head.inc");
 
@@ -111,16 +111,6 @@ $main_buttons = array(
 
 			    <section class="col-xs-12">
 
-				<?php
-				        /* active tabs */
-				        $tab_array = array();
-				        $tab_array[] = array(gettext("Pools"), true, "load_balancer_pool.php");
-				        $tab_array[] = array(gettext("Virtual Servers"), false, "load_balancer_virtual_server.php");
-				        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
-				        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
-				        display_top_tabs($tab_array);
-					?>
-
 					<div class="tab-content content-box col-xs-12">
 
 					  <form action="load_balancer_pool.php" method="post" name="iform" id="iform">
@@ -145,11 +135,9 @@ $main_buttons = array(
 											$t->display();
 								?>
 								</div>
-								<div class="container-fluid">
-								<br /><span class="red"><strong><?=gettext("Hint:");?></strong></span><br />
-	<?= sprintf(gettext("The Load Balancer in %s is for server load balancing, not Multi-WAN. For load balancing or failover for multiple WANs, use "), $g['product_name']);?>
-	<a href="/system_gateway_groups.php"><?= gettext("Gateway Groups"); ?></a>
-								</div>
+						<table class="table table-striped table-sort "><tbody><tr><td>
+	<?= sprintf(gettext('This feature is intended for server load balancing, not multi-WAN. For load balancing or failover for multiple WANs, use %sGateway Groups%s.'), '<a href="/system_gateway_groups.php">', '</a>'); ?>
+						</td></tr></tbody></table>
 					  </form>
 					</div>
 			    </section>

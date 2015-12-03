@@ -1,4 +1,5 @@
 <?php
+
 /*
   Copyright (C) 2014-2015 Deciso B.V.
   Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
@@ -69,8 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pgtitle = gettext("VPN: IPsec: Keys");
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Pre-Shared Keys'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>
@@ -119,10 +120,6 @@ if (is_subsystem_dirty('ipsec')) {
 
 ?>
       <section class="col-xs-12">
-<?php
-        $active_tab = "/vpn_ipsec_settings.php";
-        include('vpn_ipsec_tabs.inc');
-?>
         <div class="tab-content content-box col-xs-12">
           <form action="vpn_ipsec_keys.php" method="post">
             <div class="table-responsive">

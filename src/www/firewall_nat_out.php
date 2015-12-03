@@ -242,14 +242,6 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
-<?php
-$tab_array = array();
-$tab_array[] = array(gettext("Port Forward"), false, "firewall_nat.php");
-$tab_array[] = array(gettext("1:1"), false, "firewall_nat_1to1.php");
-$tab_array[] = array(gettext("Outbound"), true, "firewall_nat_out.php");
-$tab_array[] = array(gettext("NPT"), false, "firewall_nat_npt.php");
-display_top_tabs($tab_array);
-?>
       <div class="row">
 <?php
         if (isset($savemsg))

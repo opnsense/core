@@ -36,22 +36,13 @@ if ($tab_group == 'vpn') {
 	$tab_array[] = array(gettext("PPPoE Raw"), (($vpntype == "poes") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=poes&amp;mode=raw");
 	$tab_array[] = array(gettext("L2TP Logins"), (($vpntype == "l2tp") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=l2tp");
 	$tab_array[] = array(gettext("L2TP Raw"), (($vpntype == "l2tp") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=l2tp&amp;mode=raw");
-} elseif ($tab_group == 'firewall') {
-	$tab_array[] = array(gettext("Normal View"), true, "/diag_logs_filter.php");
-	$tab_array[] = array(gettext("Dynamic View"), false, "/diag_logs_filter_dynamic.php");
-	$tab_array[] = array(gettext("Summary View"), false, "/diag_logs_filter_summary.php");
-} elseif ($tab_group == 'proxy') {
+} else {
 	$tab_array[] = array(gettext('Cache'), true, '/diag_logs_proxy.php?type=cache');
 	$tab_array[] = array(gettext('Access'), false, '/diag_logs_proxy.php?type=access');
-} else {
-	$tab_array[] = array(gettext("General"), true, "/diag_logs.php");
-	$tab_array[] = array(gettext("Gateways"), false, "/diag_logs_gateways.php");
-	$tab_array[] = array(gettext("Routing"), false, "/diag_logs_routing.php");
-	$tab_array[] = array(gettext("Resolver"), false, "/diag_logs_resolver.php");
-	$tab_array[] = array(gettext("Wireless"), false, "/diag_logs_wireless.php");
+	$tab_array[] = array(gettext('Store'), false, '/diag_logs_proxy.php?type=store');
 }
 
-?><ul class="nav nav-pills __mb" role="tablist">
+?><ul class="nav nav-pills" role="tablist">
 <?php foreach ($tab_array as $tab): ?>
 	<li role="presentation" <?php if (str_replace('amp;','', $tab[2]) == $_SERVER['REQUEST_URI']):?>class="active"<?php endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
 <?php endforeach; ?>

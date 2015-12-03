@@ -73,9 +73,8 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-
 $pgtitle = array(gettext("Interfaces"),gettext("VLAN"));
-$shortcut_section = "interfaces";
+
 include("head.inc");
 
 $main_buttons = array(

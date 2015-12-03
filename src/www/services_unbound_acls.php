@@ -71,7 +71,7 @@ if (isset($_POST['act']))
 
 if ($act == "del") {
 	if (!$a_acls[$id]) {
-		redirectHeader("services_unbound_acls.php");
+		header("Location: services_unbound_acls.php");
 		exit;
 	}
 
@@ -148,7 +148,7 @@ if ($_POST) {
 				mark_subsystem_dirty("unbound");
 				write_config();
 
-				redirectHeader("/services_unbound_acls.php");
+				header("Location: /services_unbound_acls.php");
 				exit;
 			}
 
@@ -157,7 +157,7 @@ if ($_POST) {
 }
 
 $closehead = false;
-$pgtitle = "Services: DNS Resolver: Access Lists";
+$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Access Lists'));
 include("head.inc");
 
 ?>
@@ -202,14 +202,6 @@ include("head.inc");
 
 
 			    <section class="col-xs-12">
-
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("General Settings"), false, "/services_unbound.php");
-						$tab_array[] = array(gettext("Advanced settings"), false, "services_unbound_advanced.php");
-						$tab_array[] = array(gettext("Access Lists"), true, "/services_unbound_acls.php");
-						display_top_tabs($tab_array, true);
-					?>
 
 					<div class="tab-content content-box col-xs-12">
 					    <form action="services_unbound_acls.php" method="post" name="iform" id="iform">

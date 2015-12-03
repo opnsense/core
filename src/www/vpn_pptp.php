@@ -196,8 +196,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("VPN"),gettext("VPN PPTP"));
-$shortcut_section = "pptps";
+$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Settings'));
 include("head.inc");
 
 ?>
@@ -309,16 +308,17 @@ function enable_change(enable_over) {
 				<?php if (isset($savemsg)) {
                     print_info_box($savemsg);
 } ?>
-				<?php print_info_box(gettext("PPTP is no longer considered a secure VPN technology because it relies upon MS-CHAPv2 which has been compromised. If you continue to use PPTP be aware that intercepted traffic can be decrypted by a third party, so it should be considered unencrypted. We advise migrating to another VPN type such as OpenVPN or IPsec.<br /><br /><a href=\"https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807\">Read More</a>")); ?>
+				<?php print_info_box(
+					gettext(
+						'PPTP is not considered a VPN technology, because it relies upon the ' .
+						'compromised MS-CHAPv2 protocol. If you choose to use PPTP, be aware ' .
+						'that your traffic can be decrypted by virtually any third party. ' .
+						'It should be considered an unencrypted tunneling protocol.'
+					) .  ' <a href="https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807">' .
+					gettext('Read more') . '</a>.'
+				); ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Configuration"), true, "vpn_pptp.php");
-                        $tab_array[1] = array(gettext("Users"), false, "vpn_pptp_users.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 

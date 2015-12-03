@@ -144,7 +144,7 @@ if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 
 	}
 }
 
-$pgtitle = array(gettext("Status"),gettext("NTP"));
+$pgtitle = array(gettext('Services'), gettext('Network Time'), gettext('Status'));
 $shortcut_section = "ntp";
 include("head.inc");
 ?>

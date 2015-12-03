@@ -1143,21 +1143,6 @@
             "status_openvpn.php*"
         ]
     },
-    "page-status-rrdgraphs": {
-        "name": "WebCfg - Status: RRD Graphs page",
-        "descr": "Allow access to the 'Status: RRD Graphs' page.",
-        "match": [
-            "status_rrd_graph.php*",
-            "status_rrd_graph_img.php*"
-        ]
-    },
-    "page-status-rrdgraph-settings": {
-        "name": "WebCfg - Status: RRD Graphs settings page",
-        "descr": "Allow access to the 'Status: RRD Graphs: settings' page.",
-        "match": [
-            "status_rrd_graph_settings.php*"
-        ]
-    },
     "page-status-services": {
         "name": "WebCfg - Status: Services page",
         "descr": "Allow access to the 'Status: Services' page.",

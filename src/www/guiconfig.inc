@@ -1,6 +1,7 @@
 <?php
 
 /*
+	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -344,88 +345,85 @@ function clear_clog($logfile, $restart_syslogd = true)
 	}
 }
 
-function print_dump($logarr, $withorig)
+function print_dump($logarr)
 {
 	global $config;
+
+	if (!is_array($logarr)) {
+		echo "<tr valign=\"top\">\n";
+		echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logarr) . "</td>\n";
+		echo "</tr>\n";
+		return;
+	}
 
 	foreach ($logarr as $logent) {
 		$logent = preg_split("/\s+/", $logent, 6);
 		echo "<tr valign=\"top\">\n";
-		if ($logent[0] === 'File') {
-			echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars(join(' ', $logent)) . "</td>\n";
-		} elseif ($withorig) {
-			$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-			$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
-			$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
-			echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
-			echo "<td class=\"listr\">{$entry_text}</td>\n";
-		} else {
-			echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logent[5]) . "</td>\n";
-		}
+		$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
+		$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
+		$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
+		echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
+		echo "<td class=\"listr\">{$entry_text}</td>\n";
 		echo "</tr>\n";
 	}
 }
 
-function dump_clog($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert = '')
+function dump_clog($logfile, $tail, $grepfor = '')
 {
 	global $config;
 
 	$sor = isset($config['syslog']['reverse']) ? '-r' : '';
-	$grepline = '  ';
-	$logarr = '';
+	$logarr = array();
+	$grepline = '';
 
-	if (is_array($grepfor)) {
-		$grepline .= " | /usr/bin/egrep -i " . escapeshellarg(implode("|", $grepfor));
-	}
+	$grepfor = preg_split('/\s+/', trim($grepfor));
 
-	if (is_array($grepinvert)) {
-		$grepline .= " | /usr/bin/egrep -iv " . escapeshellarg(implode("|", $grepinvert));
+	foreach ($grepfor as $pattern) {
+		$grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
 	}
 
 	if (is_dir($logfile)) {
-		$logarr = array("File $logfile is a directory.");
+		$logarr = sprintf(gettext('File %s is a directory.'), $logfile);
 	} elseif (!file_exists($logfile)) {
-		$logarr = array("File $logfile doesn't exist.");
+		$logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
 	} else {
-		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . "{$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " {$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
 	}
 
-	if (!count($logarr)) {
-		$logarr[] = sprintf(gettext('File %s yielded no results.'), $logfile);
+	if (is_array($logarr) && !count($logarr)) {
+		$logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
 	}
 
-	print_dump($logarr, $withorig);
+	print_dump($logarr);
 }
 
-function dump_log($logfile, $tail, $withorig = true, $grepfor = '', $grepinvert = '')
+function dump_log($logfile, $tail, $grepfor = '')
 {
 	global $config;
 
 	$sor = isset($config['syslog']['reverse']) ? '-r' : '';
-	$grepline = '  ';
-	$logarr = '';
+	$logarr = array();
+	$grepline = '';
 
-	if (is_array($grepfor)) {
-		$grepline .= " | /usr/bin/egrep -i " . escapeshellarg(implode("|", $grepfor));
-	}
+	$grepfor = preg_split('/\s+/', trim($grepfor));
 
-	if (is_array($grepinvert)) {
-		$grepline .= " | /usr/bin/egrep -iv " . escapeshellarg(implode("|", $grepinvert));
+	foreach ($grepfor as $pattern) {
+		$grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
 	}
 
 	if (is_dir($logfile)) {
-		$logarr = array(sprintf(gettext('File %s is a directory.'), $logfile));
+		$logarr = sprintf(gettext('File %s is a directory.'), $logfile);
 	} elseif (!file_exists($logfile)) {
-		$logarr = array(sprintf(gettext('File %s doesn\'t exist.'), $logfile));
+		$logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
 	} else {
-		exec("cat " . escapeshellarg($logfile) . "{$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+		exec("cat " . escapeshellarg($logfile) . " {$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
 	}
 
-	if (!count($logarr)) {
-		$logarr[] = sprintf(gettext('File %s yielded no results.'), $logfile);
+	if (is_array($logarr) && !count($logarr)) {
+		$logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
 	}
 
-	print_dump($logarr, $withorig);
+	print_dump($logarr);
 }
 
 /* Check if variable has changed, update and log if it has
@@ -657,12 +655,6 @@ function get_crash_report($pedantic = false)
 
 	return $savemsg;
 }
-
-function redirectHeader($text)
-{
-	header("Location: $text");
-}
-
 
 function get_menu_messages()
 {

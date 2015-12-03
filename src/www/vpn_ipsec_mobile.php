@@ -194,8 +194,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($pconfig);
 
-$pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Mobile"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'),gettext('IPsec'), gettext('Mobile Clients'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>
@@ -361,10 +361,6 @@ if (isset($input_errors) && count($input_errors) > 0) {
 }
 ?>
 			    <section class="col-xs-12">
-
-<? $active_tab = "/vpn_ipsec_mobile.php";
-                include('vpn_ipsec_tabs.inc');
-?>
 					 <div class="tab-content content-box col-xs-12">
 							 <form action="vpn_ipsec_mobile.php" method="post" name="iform" id="iform">
 							 <div class="table-responsive">

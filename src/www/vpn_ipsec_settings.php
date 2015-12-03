@@ -104,8 +104,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     vpn_ipsec_configure();
 }
 
-$pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Settings"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Advanced Settings'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 ?>
@@ -147,8 +147,6 @@ if (isset($input_errors) && count($input_errors) > 0) {
 }
 ?>
         <section class="col-xs-12">
-        <? $active_tab = "/vpn_ipsec_settings.php";
-                include('vpn_ipsec_tabs.inc'); ?>
           <div class="tab-content content-box col-xs-12">
               <form action="vpn_ipsec_settings.php" method="post" name="iform" id="iform">
                 <div class="table-responsive">

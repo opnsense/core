@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Shrew Soft Inc.
@@ -25,14 +26,14 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-
-$pgtitle = array(gettext("OpenVPN"), gettext("Client Specific Override"));
-$shortcut_section = "openvpn";
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Client Specific Overrides'));
+$shortcut_section = 'openvpn';
 
 // define all fields used in this form
 $all_form_fields = "custom_options,disable,common_name,block,description
@@ -91,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         if (!isset($a_csc[$id])) {
-            redirectHeader("vpn_openvpn_csc.php");
+            header("Location: vpn_openvpn_csc.php");
             exit;
         }
 
@@ -316,17 +317,6 @@ if ($act!="new" && $act!="edit") {
 
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-                        $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-                        $tab_array[] = array(gettext("Client Specific Overrides"), true, "vpn_openvpn_csc.php");
-                        $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
-                        $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
-                        display_top_tabs($tab_array);
-                    ?>
-
 					<div class="tab-content content-box col-xs-12">
 
 							<?php if ($act=="new" || $act=="edit") :

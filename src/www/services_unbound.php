@@ -162,8 +162,7 @@ if ($_GET['act'] == "del") {
 }
 
 $closehead = false;
-$pgtitle = array(gettext("Services"),gettext("DNS Resolver"));
-$shortcut_section = "resolver";
+$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('General'));
 include_once("head.inc");
 
 ?>
@@ -200,14 +199,6 @@ function show_advanced_dns() {
 
 			    <section class="col-xs-12">
 
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("General settings"), true, "services_unbound.php");
-						$tab_array[] = array(gettext("Advanced settings"), false, "services_unbound_advanced.php");
-						$tab_array[] = array(gettext("Access Lists"), false, "/services_unbound_acls.php");
-						display_top_tabs($tab_array, true);
-					?>
-
 					<div class="tab-content content-box col-xs-12">
 
 								<div class="table-responsive">
@@ -215,7 +206,7 @@ function show_advanced_dns() {
 
 										<tbody>
 											<tr>
-												<td colspan="2" valign="top" class="listtopic"><?=gettext("General DNS Resolver Options");?></td>
+												<td colspan="2" valign="top" class="listtopic"><strong><?=gettext("General DNS Resolver Options");?></strong></td>
 											</tr>
 											<tr>
 												<td width="22%" valign="top" class="vncellreq"><?=gettext("Enable");?></td>

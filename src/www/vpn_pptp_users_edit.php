@@ -134,8 +134,7 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("VPN"),gettext("VPN PPTP"),gettext("User"),gettext("Edit"));
-$shortcut_section = "pptps";
+$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Edit User'));
 include("head.inc");
 
 ?>
@@ -153,14 +152,6 @@ include("head.inc");
 } ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
-                        $tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
-                        display_top_tabs($tab_array);
-                    ?>
-
 					<div class="tab-content content-box col-xs-12">
 
 							<form action="vpn_pptp_users_edit.php" method="post" name="iform" id="iform">

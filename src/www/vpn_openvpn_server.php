@@ -26,6 +26,7 @@
   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
@@ -135,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($act == "del") {
         // action delete
         if (!isset($a_server[$id])) {
-            redirectHeader("vpn_openvpn_server.php");
+            header("Location: vpn_openvpn_server.php");
             exit;
         }
         if (!empty($a_server[$id])) {
@@ -397,8 +398,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 }
-$pgtitle = array(gettext("OpenVPN"), gettext("Server"));
-$shortcut_section = "openvpn";
+
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Server'));
+$shortcut_section = 'openvpn';
 
 include("head.inc");
 
@@ -708,16 +710,6 @@ function tuntap_change() {
                 ?>
 
           <section class="col-xs-12">
-
-        <?php
-                        $tab_array = array();
-                        $tab_array[] = array(gettext("Server"), true, "vpn_openvpn_server.php");
-                        $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-                        $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                        $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
-                                        $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
           <div class="tab-content content-box col-xs-12">
 

@@ -29,9 +29,6 @@
 
 */
 
-// On the page, add in like so:
-//   $shortcut_section = "relayd";
-
 $shortcuts = array();
 
 /* Load and process custom shortcuts. */
@@ -177,18 +174,20 @@ $shortcuts['dhcp6']['main'] = "services_dhcpv6.php";
 $shortcuts['dhcp6']['log'] = "diag_logs_dhcp.php";
 $shortcuts['dhcp6']['status'] = "status_dhcpv6_leases.php";
 
-
 $shortcuts['ipsec'] = array();
-$shortcuts['ipsec']['main'] = "vpn_ipsec.php";
-$shortcuts['ipsec']['log'] = "diag_logs_ipsec.php";
-$shortcuts['ipsec']['status'] = "diag_ipsec.php";
 $shortcuts['ipsec']['service'] = "ipsec";
 
 $shortcuts['openvpn'] = array();
-$shortcuts['openvpn']['main'] = "vpn_openvpn_server.php";
-$shortcuts['openvpn']['log'] = "diag_logs_openvpn.php";
-$shortcuts['openvpn']['status'] = "status_openvpn.php";
 $shortcuts['openvpn']['service'] = "openvpn";
+
+$shortcuts['forwarder'] = array();
+$shortcuts['forwarder']['service'] = 'dnsmasq';
+
+$shortcuts['resolver'] = array();
+$shortcuts['resolver']['service'] = 'unbound';
+
+$shortcuts['ntp'] = array();
+$shortcuts['ntp']['service'] = 'ntpd';
 
 $shortcuts['firewall'] = array();
 $shortcuts['firewall']['main'] = "firewall_rules.php";
@@ -215,26 +214,10 @@ $shortcuts['interfaces'] = array();
 $shortcuts['interfaces']['main'] = "interfaces_assign.php";
 $shortcuts['interfaces']['status'] = "status_interfaces.php";
 
-$shortcuts['forwarder'] = array();
-$shortcuts['forwarder']['main'] = "services_dnsmasq.php";
-$shortcuts['forwarder']['log'] = "diag_logs_resolver.php";
-$shortcuts['forwarder']['service'] = "dnsmasq";
-
-$shortcuts['resolver'] = array();
-$shortcuts['resolver']['main'] = "services_unbound.php";
-$shortcuts['resolver']['log'] = "diag_logs_resolver.php";
-$shortcuts['resolver']['service'] = "unbound";
-
 $shortcuts['wireless'] = array();
 $shortcuts['wireless']['main'] = "interfaces_wireless.php";
 $shortcuts['wireless']['log'] = "diag_logs_wireless.php";
 $shortcuts['wireless']['status'] = "status_wireless.php";
-
-$shortcuts['ntp'] = array();
-$shortcuts['ntp']['main'] = "services_ntpd.php";
-$shortcuts['ntp']['log'] = "diag_logs_ntpd.php";
-$shortcuts['ntp']['status'] = "status_ntpd.php";
-$shortcuts['ntp']['service'] = "ntpd";
 
 $shortcuts['pptps'] = array();
 $shortcuts['pptps']['main'] = "vpn_pptp.php";
@@ -247,10 +230,6 @@ $shortcuts['pppoes']['log'] = "diag_logs_vpn.php?vpntype=poes";
 $shortcuts['l2tps'] = array();
 $shortcuts['l2tps']['main'] = "vpn_l2tp.php";
 $shortcuts['l2tps']['log'] = "diag_logs_vpn.php?vpntype=l2tp";
-
-$shortcuts['carp'] = array();
-$shortcuts['carp']['main'] = "system_hasync.php";
-$shortcuts['carp']['status'] = "carp_status.php";
 
 $shortcuts['snmp'] = array();
 $shortcuts['snmp']['main'] = "services_snmp.php";
@@ -267,5 +246,4 @@ $shortcuts['aliases']['status'] = "diag_tables.php";
 $shortcuts['squid'] = array();
 $shortcuts['squid']['main'] = "ui/proxy/";
 $shortcuts['squid']['log'] = "diag_logs_proxy.php";
-//TODO: $shortcuts['squid']['status'] = "";
 $shortcuts['squid']['service'] = "squid";

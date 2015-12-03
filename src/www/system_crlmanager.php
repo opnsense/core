@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
@@ -138,7 +139,7 @@ if (!empty($id)) {
 
 // If we were given an invalid crlref in the id, no sense in continuing as it would only cause errors.
 if (!isset($thiscrl) && (($act != "") && ($act != "new"))) {
-    redirectHeader("system_crlmanager.php");
+    header("Location: system_crlmanager.php");
     $act="";
     $savemsg = gettext("Invalid CRL reference.");
 }
@@ -192,7 +193,7 @@ if ($act == "addcert") {
         $pconfig = $_POST;
 
         if (!$pconfig['crlref'] || !$pconfig['certref']) {
-            redirectHeader("system_crlmanager.php");
+            header("Location: system_crlmanager.php");
             exit;
         }
 
@@ -216,7 +217,7 @@ if ($act == "addcert") {
             cert_revoke($cert, $crl, $reason);
             openvpn_refresh_crls();
             write_config("Revoked cert {$cert['descr']} in CRL {$crl['descr']}.");
-            redirectHeader("system_crlmanager.php");
+            header("Location: system_crlmanager.php");
             exit;
         }
     }
@@ -224,7 +225,7 @@ if ($act == "addcert") {
 
 if ($act == "delcert") {
     if (!is_array($thiscrl['cert'])) {
-        redirectHeader("system_crlmanager.php");
+        header("Location: system_crlmanager.php");
         exit;
     }
     $found = false;
@@ -235,7 +236,7 @@ if ($act == "delcert") {
         }
     }
     if (!$found) {
-        redirectHeader("system_crlmanager.php");
+        header("Location: system_crlmanager.php");
         exit;
     }
     $name = $thiscert['descr'];
@@ -305,7 +306,7 @@ if ($_POST) {
 
         write_config("Saved CRL {$crl['descr']}");
         openvpn_refresh_crls();
-        redirectHeader("system_crlmanager.php");
+        header("Location: system_crlmanager.php");
     }
 }
 
@@ -351,9 +352,6 @@ include("head.inc");
             }
             ?>
             <section class="col-xs-12">
-
-                <? include('system_certificates_tabs.inc'); ?>
-
                 <div class="content-box tab-content">
 
 				<?php if ($act == "new" || $act == gettext("Save") || (isset($input_errors) && count($input_errors)) ) :
@@ -717,9 +715,9 @@ endif; ?>
                         ?>
 					<tr>
 						<td class="listlr"><?php echo $tmpcrl['descr']; ?></td>
-						<td class="listr"><?php echo ($internal) ? "YES" : "NO"; ?></td>
-						<td class="listr"><?php echo ($internal) ? (isset($tmpcrl['cert']) && count($tmpcrl['cert'])) : "Unknown (imported)"; ?></td>
-						<td class="listr"><?php echo ($inuse) ? "YES" : "NO"; ?></td>
+						<td class="listr"><?php echo ($internal) ? gettext("YES") : gettext("NO"); ?></td>
+						<td class="listr"><?php echo ($internal) ? (isset($tmpcrl['cert']) && count($tmpcrl['cert'])) : gettext("Unknown (imported)"); ?></td>
+						<td class="listr"><?php echo ($inuse) ? gettext("YES") : gettext("NO"); ?></td>
 						<td valign="middle" class="list nowrap">
                         <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-export" data-toggle="tooltip" data-placement="left" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>

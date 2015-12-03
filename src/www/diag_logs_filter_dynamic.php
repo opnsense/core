@@ -47,7 +47,7 @@ if (isset($_POST['clear'])) {
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Firewall (Dynamic View)"));
+$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Dynamic View'));
 $shortcut_section = "firewall";
 include("head.inc");
 
@@ -91,22 +91,19 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-				<? $active_tab = "/diag_logs_filter.php"; include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
-
-
-							<? $tab_group = 'firewall'; include('diag_logs_pills.inc'); ?>
-
-
 
 							<div class="table-responsive">
 								<table class="table table-striped table-sort">
 									<thead>
 									<tr>
 										<td colspan="6" class="listtopic">
-										<?php printf(gettext("Last %s records"),$nentries);?>.   &nbsp;&nbsp;&nbsp;<input type="checkbox" onclick="javascript:toggle_pause();" />&nbsp;<?=gettext("Pause");?>
+										<strong><?php printf(gettext("Showing last %s records."),$nentries);?></strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="6" class="listtopic">
+										<input type="checkbox" onclick="javascript:toggle_pause();" />&nbsp;<?=gettext("Pause");?>
 										</td>
 									</tr>
 									<tr>
@@ -156,9 +153,6 @@ include("head.inc");
 									<tr style="display:none;"><td></td></tr>
 									</tbody>
 								</table>
-							</div>
-
-							<p><span class="vexpl"><a href="http://en.wikipedia.org/wiki/Transmission_Control_Protocol"><?=gettext("TCP Flags"); ?></a>: F - FIN, S - SYN, A or . - ACK, R - RST, P - PSH, U - URG, E - ECE, C - CWR</span></p></div>
 				    </div>
 			</section>
 			</div>

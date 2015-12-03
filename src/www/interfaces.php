@@ -1618,7 +1618,6 @@ foreach ($mediaopts as $mediaopt){
 }
 
 $pgtitle = array(gettext("Interfaces"), $pconfig['descr']);
-$shortcut_section = "interfaces";
 
 $closehead = false;
 include("head.inc");

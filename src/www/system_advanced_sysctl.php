@@ -66,7 +66,7 @@ if ($act == "del") {
             unset($a_tunable[$id]);
             write_config();
             mark_subsystem_dirty('sysctl');
-            redirectHeader("system_advanced_sysctl.php");
+            header("Location: system_advanced_sysctl.php");
             exit;
         }
     }
@@ -100,12 +100,12 @@ if ($_POST) {
 
         write_config();
 
-        redirectHeader("system_advanced_sysctl.php");
+        header("Location: system_advanced_sysctl.php");
         exit;
     }
 }
 
-$pgtitle = array(gettext("System"),gettext("Settings"),gettext("System Tunables"));
+$pgtitle = array(gettext('System'), gettext('Settings'), gettext('Tunables'));
 include("head.inc");
 
 ?>
@@ -133,7 +133,6 @@ include("head.inc");
 			</form>
 
             <section class="col-xs-12">
-                <? include('system_advanced_tabs.inc'); ?>
                 <div class="table-responsive content-box tab-content" style="overflow: auto;">
                     <?php if ($act != "edit") :
 ?>

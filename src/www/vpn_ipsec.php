@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
@@ -26,6 +27,7 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("vpn.inc");
@@ -234,8 +236,8 @@ $pconfig = $config['ipsec'];
 $pconfig['enable'] = isset($config['ipsec']['enable']);
 legacy_html_escape_form_data($pconfig);
 
-$pgtitle = array(gettext("VPN"),gettext("IPsec"));
-$shortcut_section = "ipsec";
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Tunnel Settings'));
+$shortcut_section = 'ipsec';
 
 include("head.inc");
 
@@ -269,10 +271,6 @@ function show_phase2(id, buttonid) {
                 }
                 ?>
 			    <section class="col-xs-12">
-<?        $active_tab = "/vpn_ipsec.php";
-          include('vpn_ipsec_tabs.inc');
-?>
-
 					 <div class="tab-content content-box col-xs-12">
 							<div class="table-responsive">
 							  <table class="table table-striped">
@@ -574,17 +572,6 @@ endforeach;  // $a_phase1 as $ph1ent
 											class="btn btn-default btn-xs">
 											<span class="glyphicon glyphicon-remove"></span>
 										</button>
-                    </td>
-                  </tr>
-					        <tr>
-                    <td colspan="9">
-                      <strong><?=gettext("Note"); ?>:<br /></strong>
-                        <?=gettext("You can check your IPsec status at");
-?> <a href="diag_ipsec.php"><?=gettext("Status:IPsec"); ?></a>.<br />
-                        <?=gettext("IPsec Debug Mode can be enabled at");
-?> <a href="vpn_ipsec_settings.php"><?=gettext("VPN:IPsec:Advanced Settings"); ?></a>.<br />
-                        <?=gettext("IPsec can be set to prefer older SAs at");
-?> <a href="vpn_ipsec_settings.php"><?=gettext("VPN:IPsec:Advanced Settings"); ?></a>.
                     </td>
                   </tr>
                   <tr>

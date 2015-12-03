@@ -122,13 +122,13 @@ for ($i = 0; isset($config['load_balancer']['virtual_server'][$i]); $i++) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Load Balancer"),gettext("Virtual Servers"));
-$shortcut_section = "relayd-virtualservers";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Virtual Server Setup'));
+$shortcut_section = 'relayd';
 
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>'Add', 'href'=>'load_balancer_virtual_server_edit.php'),
+	array('label'=>gettext('Add'), 'href'=>'load_balancer_virtual_server_edit.php'),
 );
 
 ?>
@@ -147,16 +147,6 @@ $main_buttons = array(
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-				        /* active tabs */
-				        $tab_array = array();
-				        $tab_array[] = array(gettext("Pools"), false, "load_balancer_pool.php");
-				        $tab_array[] = array(gettext("Virtual Servers"), true, "load_balancer_virtual_server.php");
-				        $tab_array[] = array(gettext("Monitors"), false, "load_balancer_monitor.php");
-				        $tab_array[] = array(gettext("Settings"), false, "load_balancer_setting.php");
-				        display_top_tabs($tab_array);
-					?>
 
 					<div class="tab-content content-box col-xs-12">
 					  <form action="load_balancer_virtual_server.php" method="post" name="iform" id="iform">

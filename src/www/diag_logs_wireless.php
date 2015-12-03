@@ -34,10 +34,10 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $wireless_logfile = '/var/log/wireless.log';
+$filtertext = '';
+$nentries = 50;
 
-if (empty($config['syslog']['nentries'])) {
-        $nentries = 50;
-} else {
+if (isset($config['syslog']['nentries'])) {
         $nentries = $config['syslog']['nentries'];
 }
 
@@ -45,8 +45,12 @@ if ($_POST['clear']) {
 	clear_clog($wireless_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Wireless"));
-$shortcut_section = "wireless";
+if (isset($_POST['filtertext'])) {
+	$filtertext = htmlspecialchars($_POST['filtertext']);
+}
+
+$pgtitle = array(gettext('System'),gettext('Log Files'),gettext('Wireless'));
+
 include("head.inc");
 
 ?>
@@ -62,28 +66,25 @@ include("head.inc");
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 
 			    <section class="col-xs-12">
-
-				<? $active_tab = "/diag_logs.php"; include('diag_logs_tabs.inc'); ?>
-
 					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
-
-
-							<? include('diag_logs_pills.inc'); ?>
 
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
-									 <?php dump_clog($wireless_logfile, $nentries); ?>
+						<tr><td colspan="2">
+							<form id="clearform" name="clearform" action="diag_logs_wireless.php" method="post" class="__mt">
+					<input id="filtertext" name="filtertext" value="<?=$filtertext;?>"/>
+					<input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
+						</form>
+						</td></tr>
+									<?php dump_clog($wireless_logfile, $nentries, $filtertext); ?>
+									<tr><td colspan="2">
+										<form action="diag_logs_wireless.php" method="post">
+											<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+										</form>
+									</td></tr>
 								</table>
 							 </div>
-
-							<form action="diag_logs_wireless.php" method="post">
-								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-							</form>
-
-
-						</div>
 				    </div>
 			</section>
 			</div>

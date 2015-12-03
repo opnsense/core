@@ -60,8 +60,7 @@ if ($_GET['act'] == "del") {
     }
 }
 
-$pgtitle = array(gettext("VPN"),gettext("VPN PPTP"),gettext("Users"));
-$shortcut_section = "pptps";
+$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Users'));
 include("head.inc");
 
 $main_buttons = array(
@@ -90,13 +89,6 @@ $main_buttons = array(
 endif; ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Configuration"), false, "vpn_pptp.php");
-                        $tab_array[1] = array(gettext("Users"), true, "vpn_pptp_users.php");
-                        display_top_tabs($tab_array);
-                    ?>
 
 					<div class="tab-content content-box col-xs-12">
 

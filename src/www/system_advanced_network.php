@@ -159,7 +159,6 @@ include("head.inc");
             }
             ?>
             <section class="col-xs-12">
-                <? include('system_advanced_tabs.inc'); ?>
                 <div class="content-box tab-content">
 					<form action="system_advanced_network.php" method="post" name="iform" id="iform">
 

@@ -418,7 +418,7 @@ if (!empty($pconfig['mobile'])) {
 } else {
     $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Edit Phase 1"));
 }
-$shortcut_section = "ipsec";
+$shortcut_section = 'ipsec';
 
 legacy_html_escape_form_data($pconfig);
 
@@ -584,15 +584,6 @@ function dpdchkbox_change() {
 ?>
 
       <section class="col-xs-12">
-<?php
-                        $tab_array = array();
-                        $tab_array[0] = array(gettext("Tunnels"), true, "vpn_ipsec.php");
-                        $tab_array[1] = array(gettext("Mobile clients"), false, "vpn_ipsec_mobile.php");
-                        $tab_array[2] = array(gettext("Pre-Shared Keys"), false, "vpn_ipsec_keys.php");
-                        $tab_array[3] = array(gettext("Advanced Settings"), false, "vpn_ipsec_settings.php");
-                        display_top_tabs($tab_array);
-?>
-
         <div class="tab-content content-box col-xs-12">
           <form action="vpn_ipsec_phase1.php" method="post" name="iform" id="iform">
             <div class="table-responsive">

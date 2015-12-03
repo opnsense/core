@@ -29,12 +29,14 @@
 
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
+require_once("services.inc");
 require_once("filter.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("openvpn-client-export.inc");
 
-$pgtitle = array("OpenVPN", "Client Export Utility");
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Shared Key Export'));
+$shortcut_section = 'openvpn';
 
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {
@@ -69,7 +71,7 @@ if (isset($_GET['act'])) {
         $srvid = isset($_GET['srvid']) ? $_GET['srvid'] : false;
         if ($srvid === false || !isset($config['openvpn']['openvpn-server'][$srvid]['mode']) ||
               $config['openvpn']['openvpn-server'][$srvid]['mode'] != "p2p_shared_key") {
-                redirectHeader("vpn_openvpn_export.php");
+                header("Location: vpn_openvpn_export.php");
                 exit;
         }
 
@@ -294,15 +296,6 @@ if (isset($savemsg)) {
   <div class="container-fluid">
     <div class="row">
       <section class="col-xs-12">
-        <?php
-                  $tab_array = array();
-                  $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-                  $tab_array[] = array(gettext("Client"), false, "vpn_openvpn_client.php");
-                  $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                  $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
-                  $tab_array[] = array(gettext("Shared Key Export"), true, "vpn_openvpn_export_shared.php");
-                  display_top_tabs($tab_array);
-                ?>
         <div class="tab-content content-box col-xs-12">
           <div class="table-responsive">
             <table width="100%" border="0" class="table table-striped" cellpadding="0" cellspacing="0">

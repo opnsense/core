@@ -216,13 +216,8 @@ if ($_POST) {
 		$mode = "restore";
 	else if (stristr($_POST['Submit'], gettext("Download")))
 		$mode = "download";
-	else if (stristr($_POST['Submit'], gettext("Restore version")))
-		$mode = "restore_ver";
         else if (stristr($_POST['Submit'], gettext("Setup/Test Google Drive")))
                 $mode = "setup_gdrive";
-
-	if ($_POST["ver"] <> "")
-		$ver2restore = $_POST["ver"];
 
 	if ($mode) {
 
@@ -464,19 +459,6 @@ if ($_POST) {
 					$input_errors[] = gettext("The configuration could not be restored (file upload error).");
 				}
 			}
-		} elseif ($mode == "restore_ver") {
-			$input_errors[] = gettext("XXX - this feature may hose your config (do NOT backrev configs!) - billm");
-			if ($ver2restore <> "") {
-				$conf_file = '/conf/backup/config-' . strtotime($ver2restore) . '.xml';
-				$cnf = OPNsense\Core\Config::getInstance();
-				if ($cnf->restoreBackup($conf_file)) {
-					mark_subsystem_dirty("restore");
-				} else {
-					$input_errors[] = gettext("The configuration could not be restored.");
-				}
-			} else {
-				$input_errors[] = gettext("No version selected.");
-			}
 		} elseif ( $mode == "setup_gdrive" ){
 		      global $config;
 		      if (!isset($config['system']['remotebackup'])) {
@@ -591,29 +573,14 @@ function backuparea_change(obj) {
 
 			    <section class="col-xs-12">
 
-
-					<?php
-								$tab_array = array();
-								$tab_array[0] = array(gettext("History"), false, "diag_confbak.php");
-								$tab_array[1] = array(gettext("Backups"), true, "diag_backup.php");
-								display_top_tabs($tab_array);
-						?>
-
-
-						<div class="tab-content content-box col-xs-12">
-
-					    <div class="container-fluid tab-content">
-
-							<div class="tab-pane active" id="system">
-
-									<section class="__mb">
+						<section class="__mb">
 				                        <div class="content-box">
 
 				                            <header class="content-box-head container-fluid">
 									        <h3><?=gettext('Download')?></h3>
 									    </header>
 
-									    <div class="content-box-main ">
+									    <div class="content-box-main">
 									    <div class="table-responsive">
 
 									        <table class="table table-striped __nomb">
@@ -662,7 +629,7 @@ function backuparea_change(obj) {
 																		</tr>
 																	</table>
 
-																	<input name="Submit" type="submit" class="btn btn-default __mt" id="download" value="<?=gettext("Download configuration"); ?>" />
+																	<input name="Submit" type="submit" class="btn btn-primary __mt" id="download" value="<?=gettext("Download configuration"); ?>" />
 
 
 										          </td>
@@ -724,8 +691,8 @@ function backuparea_change(obj) {
 																		</td>
 																	</tr>
 																</table>
-																<p><input name="Submit" type="submit" class="btn btn-default" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
-																<p><strong><span class="red"><?=gettext("Note:"); ?></span></strong><br /><?=gettext("The firewall will reboot after restoring the configuration."); ?><br /></p>
+																<p><input name="Submit" type="submit" class="btn btn-primary" id="restore" value="<?=gettext("Restore configuration"); ?>" /></p>
+																<p><strong><span class="text-danger"><?=gettext("Note:"); ?> <?=gettext("The firewall will reboot after restoring the configuration."); ?></span></strong></p>
 
 
 										          </td>
@@ -759,25 +726,15 @@ function backuparea_change(obj) {
                                                                                              <tr><td><?=gettext("Folder ID"); ?> </td><td> <input name="GDriveFolderID" class="formbtn" id="GDriveFolderID" value="<?= $config['system']['remotebackup']['GDriveFolderID'] ?>" size="40" type="text"></td> </tr>
                                                                                              <tr><td><?=gettext("Backup Count"); ?> </td><td> <input name="GDriveBackupCount" class="formbtn" id="GDriveBackupCount" value="<?= $config['system']['remotebackup']['GDriveBackupCount'] ?>" size="40" type="text"></td> </tr>
                                                                                              <tr><td colspan=2><?=gettext("Password protect your data"); ?> :</td></tr>
-                                                                                             <tr><td><?=gettext("Password :"); ?></td> <td> <input name="GDrivePassword" type="password" class="formfld pwd" size="20" value="<?php echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
-                                                                                             <tr><td><?=gettext("Confirm :"); ?></td> <td> <input name="GDrivePasswordConfirm" type="password" class="formfld pwd" size="20" value="<?php echo $config['system']['remotebackup']['GDrivePassword'] ;?>" /> </td></tr>
-                                                                                             <tr><td><input name="Submit" class="btn btn-default" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit"></td><td></td></tr>
+                                                                                             <tr><td><?=gettext("Password :"); ?></td> <td> <input name="GDrivePassword" type="password" class="formfld pwd" size="20" value="<?= $config['system']['remotebackup']['GDrivePassword'] ?>" /> </td></tr>
+                                                                                             <tr><td><?=gettext("Confirm :"); ?></td> <td> <input name="GDrivePasswordConfirm" type="password" class="formfld pwd" size="20" value="<?= $config['system']['remotebackup']['GDrivePassword'] ?>" /> </td></tr>
+                                                                                             <tr><td><input name="Submit" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit"></td><td></td></tr>
                                                                                           </tbody>
                                                                                     </table>
                                                                               </div>
                                                                             </div>
 									</div>
                                                                 </section>
-
-
-						</div>
-						</div>
-
-					</div>
-
-
-
-
 
 				</section>
 

@@ -1,9 +1,10 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2007 Seth Mos <seth.mos@dds.nl>
 	Copyright (C) 2004-2009 Scott Ullrich
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -30,10 +31,13 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("rrd.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
+
+$pconfig['rrdenable'] = isset($config['rrd']['enable']);
 
 function clear_all_log_files()
 {
@@ -67,6 +71,7 @@ function clear_all_log_files()
 	$log_files = array(
 		'squid/access',
 		'squid/cache',
+		'squid/store',
 	);
 
 	foreach ($log_files as $lfile) {
@@ -100,7 +105,6 @@ $pconfig['logdefaultpass'] = isset($config['syslog']['nologdefaultpass']);
 $pconfig['logbogons'] = !isset($config['syslog']['nologbogons']);
 $pconfig['logprivatenets'] = !isset($config['syslog']['nologprivatenets']);
 $pconfig['loglighttpd'] = !isset($config['syslog']['nologlighttpd']);
-$pconfig['rawfilter'] = isset($config['syslog']['rawfilter']);
 $pconfig['filterdescriptions'] = $config['syslog']['filterdescriptions'];
 $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
 $pconfig['logfilesize'] = $config['syslog']['logfilesize'];
@@ -115,9 +119,14 @@ function is_valid_syslog_server($target) {
 		|| is_hostnamewithport($target));
 }
 
-if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
+if ($_POST['resetlogs'] == 'Reset Log Files') {
 	clear_all_log_files();
-	$savemsg .= gettext("The log files have been reset.");
+	$savemsg = gettext("The log files have been reset.");
+} elseif ($_POST['ResetRRD']) {
+	$savemsg = gettext('RRD data has been cleared.');
+	mwexec('/bin/rm /var/db/rrd/*');
+	enable_rrd_graphing();
+	setup_gateways_monitor();
 } elseif ($_POST) {
 
 	unset($input_errors);
@@ -179,7 +188,6 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 		$config['syslog']['nologbogons'] = $_POST['logbogons'] ? false : true;
 		$config['syslog']['nologprivatenets'] = $_POST['logprivatenets'] ? false : true;
 		$config['syslog']['nologlighttpd'] = $_POST['loglighttpd'] ? false : true;
-		$config['syslog']['rawfilter'] = $_POST['rawfilter'] ? true : false;
 		if (is_numeric($_POST['filterdescriptions']) && $_POST['filterdescriptions'] > 0)
 			$config['syslog']['filterdescriptions'] = $_POST['filterdescriptions'];
 		else
@@ -189,6 +197,8 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 			unset($config['syslog']['remoteserver2']);
 			unset($config['syslog']['remoteserver3']);
 		}
+
+		$config['rrd']['enable'] = $_POST['rrdenable'] ? true : false;
 
 		write_config();
 
@@ -211,10 +221,12 @@ if ($_POST['resetlogs'] == gettext("Reset Log Files")) {
 		}
 
 		filter_pflog_start();
+		enable_rrd_graphing();
+		setup_gateways_monitor();
 	}
 }
 
-$pgtitle = array(gettext("Status"), gettext("System logs"), gettext("Settings"));
+$pgtitle = array(gettext('System'), gettext('Settings'), gettext('Log Files'));
 $closehead = false;
 include("head.inc");
 
@@ -296,35 +308,57 @@ function check_everything() {
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 
 			    <section class="col-xs-12">
-
-				<? $active_tab = "/diag_logs_settings.php"; include('diag_logs_tabs.inc'); ?>
-
-					<div class="tab-content content-box col-xs-12">
-				    <div class="container-fluid">
-
-
-
-							<form action="diag_logs_settings.php" method="post" name="iform" id="iform">
-
-
+					<form action="diag_logs_settings.php" method="post" name="iform" id="iform">
+					<div class="tab-content content-box col-xs-12 __mb">
+							<div class="table-responsive">
+								<table class="table table-striped">
+									<tr>
+										<td colspan="2" valign="top" class="listtopic"><strong><?=gettext('Reporting Database Options');?></strong></td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vtable"><?=gettext("Round-Robin-Database");?></td>
+										<td width="78%" class="vtable">
+											<label>
+												<input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?php if ($pconfig['rrdenable']) echo "checked=\"checked\"" ?> onclick="enable_change(false)" />
+												&nbsp;<?=gettext("Enables the RRD graphing backend.");?>
+											</label>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top">&nbsp;</td>
+										<td width="78%">
+											<input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
+											<input name="ResetRRD" type="submit" class="btn btn-default" value="<?=gettext("Reset RRD Data");?>" onclick="return confirm('<?=gettext('Do you really want to reset the RRD graphs? This will erase all graph data.');?>')" />
+										</td>
+									</tr>
+								</table>
+							 </div>
+							 <div class="container-fluid">
+							 <p><strong><span class="text-danger"><?=gettext("Note:");?></span></strong><br />
+											<?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
+											"take this into account after changing the style.");?>
+							 </p>
+							</div>
+					</div>
+					<div class="tab-content content-box col-xs-12 __mb">
 								<div class="table-responsive">
 									<table class="table table-striped">
 										<tr>
-											<td colspan="2" valign="top" class="listtopic"><?=gettext("General Logging Options");?></td>
+											<td colspan="2" valign="top" class="listtopic"><strong><?=gettext("Local Logging Options");?></strong></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">Forward/Reverse Display</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('Forward/Reverse Display') ?></td>
 											<td width="78%" class="vtable"> <input name="reverse" type="checkbox" id="reverse" value="yes" <?php if ($pconfig['reverse']) echo "checked=\"checked\""; ?> />
 											<strong><?=gettext("Show log entries in reverse order (newest entries on top)");?></strong></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">GUI Log Entries to Display</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('GUI Log Entries to Display') ?></td>
 											<td width="78%" class="vtable">
 											<input name="nentries" id="nentries" type="text" class="formfld unknown" size="4" value="<?=htmlspecialchars($pconfig['nentries']);?>" /><br />
 											<?=gettext("Hint: This is only the number of log entries displayed in the GUI. It does not affect how many entries are contained in the actual log files.") ?></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">Log File Size (Bytes)</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('Log File Size (Bytes)') ?></td>
 											<td width="78%" class="vtable">
 											<input name="logfilesize" id="logfilesize" type="text" class="formfld unknown" size="8" value="<?=htmlspecialchars($pconfig['logfilesize']);?>" /><br />
 											<?=gettext("Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files.") ?>
@@ -336,7 +370,7 @@ function check_everything() {
 											</td>
 										</tr>
 										<tr>
-											<td valign="top" class="vtable">Log Firewall Default Blocks</td>
+											<td valign="top" class="vtable"><?=gettext('Log Firewall Default Blocks') ?></td>
 											<td class="vtable">
 												<input name="logdefaultblock" type="checkbox" id="logdefaultblock" value="yes" <?php if ($pconfig['logdefaultblock']) echo "checked=\"checked\""; ?> />
 												<strong><?=gettext("Log packets matched from the default block rules put in the ruleset");?></strong><br />
@@ -354,24 +388,18 @@ function check_everything() {
 											</td>
 										</tr>
 										<tr>
-											<td valign="top" class="vtable">Web Server Log</td>
+											<td valign="top" class="vtable"><?=gettext('Web Server Log') ?></td>
 											<td class="vtable"> <input name="loglighttpd" type="checkbox" id="loglighttpd" value="yes" <?php if ($pconfig['loglighttpd']) echo "checked=\"checked\""; ?> />
 											<strong><?=gettext("Log errors from the web server process.");?></strong><br />
 											<?=gettext("Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.");?></td>
 										</tr>
 										<tr>
-											<td valign="top" class="vtable">Raw Logs</td>
-											<td class="vtable"> <input name="rawfilter" type="checkbox" id="rawfilter" value="yes" <?php if ($pconfig['rawfilter']) echo "checked=\"checked\""; ?> />
-											<strong><?=gettext("Show raw filter logs");?></strong><br />
-											<?=gettext("Hint: If this is checked, filter logs are shown as generated by the packet filter, without any formatting. This will reveal more detailed information, but it is more difficult to read.");?></td>
-										</tr>
-										<tr>
-											<td valign="top" class="vtable">Filter descriptions</td>
+											<td valign="top" class="vtable"><?=gettext('Filter descriptions') ?></td>
 											<td class="vtable">
 												<select name="filterdescriptions" id="filterdescriptions" class="form-control">
-												  <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>>Omit descriptions</option>
-												  <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>>Display as column</option>
-												  <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>>Display as second row</option>
+												  <option value="0"<?=!isset($pconfig['filterdescriptions'])?" selected=\"selected\"":""?>><?=gettext('Omit descriptions') ?></option>
+												  <option value="1"<?=($pconfig['filterdescriptions'])==="1"?" selected=\"selected\"":""?>><?=gettext('Display as column') ?></option>
+												  <option value="2"<?=($pconfig['filterdescriptions'])==="2"?" selected=\"selected\"":""?>><?=gettext('Display as second row') ?></option>
 												</select>
 												<strong><?=gettext("Show the applied rule description below or in the firewall log rows.");?></strong>
 												<br />
@@ -379,29 +407,33 @@ function check_everything() {
 											</td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top" class="vtable">Local Logging</td>
+											<td width="22%" valign="top" class="vtable"><?=gettext('Local Logging') ?></td>
 											<td width="78%" class="vtable"> <input name="disablelocallogging" type="checkbox" id="disablelocallogging" value="yes" <?php if ($pconfig['disablelocallogging']) echo "checked=\"checked\""; ?> onclick="enable_change(false)" />
 											<strong><?=gettext("Disable writing log files to the local disk");?></strong></td>
 										</tr>
 										<tr>
-											<td width="22%" valign="top">Reset Logs</td>
+											<td width="22%" valign="top"><?=gettext('Reset Logs') ?></td>
 											<td width="78%">
-												<input name="resetlogs" type="submit" class="btn btn-primary" value="<?=gettext("Reset Log Files"); ?>"  onclick="return confirm('<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>')" />
-												<br /><br />
+												<input name="resetlogs" type="submit" class="btn btn-default" value="<?=gettext("Reset Log Files"); ?>"  onclick="return confirm('<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>')" />
+												<br/><br/>
 												<?= gettext("Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
 											</td>
 										</tr>
+									</table>
+								</div>
+							</div>
+
+							<div class="tab-content content-box col-xs-12 __mb">
+								<div class="table-responsive">
+									<table class="table table-striped">
 										<tr>
-											<td colspan="2" valign="top">&nbsp;</td>
-										</tr>
-										<tr>
-											<td colspan="2" valign="top" class="listtopic"><?=gettext("Remote Logging Options");?></td>
+											<td colspan="2" valign="top" class="listtopic"><strong><?=gettext("Remote Logging Options");?></strong></td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncell"><?=gettext("Source Address"); ?></td>
 											<td width="78%" class="vtable">
 												<select name="sourceip"  class="form-control">
-													<option value="">Default (any)</option>
+													<option value=""><?=gettext('Default (any)') ?></option>
 												<?php $sourceips = get_possible_traffic_source_addresses(false);
 													foreach ($sourceips as $sip):
 														$selected = "";
@@ -497,9 +529,8 @@ function check_everything() {
 										</tr>
 									</table>
 								</div>
-							</form>
 						</div>
-					</div>
+					</form>
 				</section>
 			</div>
 		</div>

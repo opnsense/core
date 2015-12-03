@@ -166,7 +166,7 @@ if (isset($_GET['act'])) {
 
 if ($act == "del") {
     if (!isset($a_ca[$id])) {
-        redirectHeader("system_camanager.php");
+        header("Location: system_camanager.php");
         exit;
     }
 
@@ -188,13 +188,13 @@ if ($act == "del") {
     unset($a_ca[$id]);
     write_config();
     $savemsg = sprintf(gettext("Certificate Authority %s and its CRLs (if any) successfully deleted"), $name) . "<br />";
-    redirectHeader("system_camanager.php");
+    header("Location: system_camanager.php");
     exit;
 }
 
 if ($act == "edit") {
     if (!isset($a_ca[$id])) {
-        redirectHeader("system_camanager.php");
+        header("Location: system_camanager.php");
         exit;
     }
     $pconfig['descr']  = $a_ca[$id]['descr'];
@@ -220,7 +220,7 @@ if ($act == "new") {
 
 if ($act == "exp") {
     if (!$a_ca[$id]) {
-        redirectHeader("system_camanager.php");
+        header("Location: system_camanager.php");
         exit;
     }
 
@@ -237,7 +237,7 @@ if ($act == "exp") {
 
 if ($act == "expkey") {
     if (!$a_ca[$id]) {
-        redirectHeader("system_camanager.php");
+        header("Location: system_camanager.php");
         exit;
     }
 
@@ -404,7 +404,7 @@ if ($_POST) {
             unset($input_errors);
         }
 
-//		redirectHeader("system_camanager.php");
+//		header("Location: system_camanager.php");
     }
 }
 include("head.inc");
@@ -464,9 +464,6 @@ function method_change() {
             ?>
 
             <section class="col-xs-12">
-
-                <? include('system_certificates_tabs.inc'); ?>
-
                 <div class="content-box tab-content table-responsive" style="overflow: auto;">
 
 				<?php if ($act == "new" || $act == "edit" || $act == gettext("Save") || isset($input_errors)) :

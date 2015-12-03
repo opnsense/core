@@ -61,7 +61,7 @@ $ipsec_status = json_decode(configd_run("ipsec list_status"), true);
 if ($ipsec_status == null) {
     $ipsec_status = array();
 }
-$pgtitle = array(gettext("Status"),gettext("IPsec"));
+$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Status Overview'));
 $shortcut_section = 'ipsec';
 
 include("head.inc");
@@ -83,7 +83,6 @@ include("head.inc");
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
-          <?php /* backported tabs */ $active_tab = '/diag_ipsec.php'; include('diag_ipsec_tabs.inc'); ?>
             <div class="tab-content content-box">
               <div class="table-responsive">
                 <table class="table table-striped">

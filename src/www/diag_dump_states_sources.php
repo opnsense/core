@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005-2009 Scott Ullrich
@@ -92,17 +93,6 @@ include("head.inc");
 </script>
 
 <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td>
-		<?php
-			$tab_array = array();
-			$tab_array[] = array(gettext("States"), false, "diag_dump_states.php");
-			$tab_array[] = array(gettext("Source Tracking"), true, "diag_dump_states_sources.php");
-			$tab_array[] = array(gettext("Reset States"), false, "diag_resetstate.php");
-			display_top_tabs($tab_array);
-		?>
-		</td>
-	</tr>
 	<tr>
 		<td>
 			<div id="mainarea">

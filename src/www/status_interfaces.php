@@ -39,16 +39,16 @@ require_once("services.inc");
 
 if ($_POST['if'] && $_POST['submit']) {
 	$interface = $_POST['if'];
-	if ($_POST['status'] == "up")
+	if ($_POST['status'] == 'up') {
 		interface_bring_down($interface);
-	else
+	} else {
 		interface_configure($interface);
+	}
 	header("Location: status_interfaces.php");
 	exit;
 }
 
-$pgtitle = array(gettext("Status"),gettext("Interfaces"));
-$shortcut_section = "interfaces";
+$pgtitle = array(gettext('Interfaces'), gettext('Summary'));
 include("head.inc");
 
 ?>

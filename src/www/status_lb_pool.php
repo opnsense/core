@@ -53,8 +53,9 @@ if (!$nentries) {
 $now = time();
 $year = date("Y");
 
-$pgtitle = array(gettext("Status"),gettext("Load Balancer"),gettext("Pool"));
-$shortcut_section = "relayd";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Pool Status'));
+$shortcut_section = 'relayd';
+
 include("head.inc");
 
 $relay_hosts = get_lb_summary();
@@ -114,14 +115,6 @@ if ($_POST) {
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
-
-				<?php
-						/* active tabs */
-						$tab_array = array();
-						$tab_array[] = array(gettext("Pools"), true, "status_lb_pool.php");
-						$tab_array[] = array(gettext("Virtual Servers"), false, "status_lb_vs.php");
-						display_top_tabs($tab_array);
-					?>
 
 					<div class="tab-content content-box col-xs-12">
 
@@ -222,15 +215,14 @@ if ($_POST) {
 								</td>
 								</tr>
 								<?php endforeach; ?>
-								</tbody>
-									</table>
-								   <div class="container-fluid">
+								<tr><td colspan="5">
 									<input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save"); ?>" />
 									<input name="Reset"  type="reset"  class="btn btn-default" value="<?= gettext("Reset"); ?>" />
-
-							</div>
+								</td></tr>
+								</tbody>
+								</table>
 							</form>
-				    </div>
+					    </div>
 					</div>
 			    </section>
 			</div>

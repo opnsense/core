@@ -144,19 +144,7 @@ include("head.inc");
 			<div class="row">
 
 			    <section class="col-xs-12">
-
-					<?php
-							$tab_array = array();
-							$tab_array[0] = array(gettext("History"), true, "diag_confbak.php");
-							$tab_array[1] = array(gettext("Backups"), false, "diag_backup.php");
-							display_top_tabs($tab_array);
-					?>
-
-
-						<div class="tab-content content-box col-xs-12">
-
 					    <div class="container-fluid tab-content">
-
 							<div class="tab-pane active" id="system">
 									<?php if ($_GET["newver"] || $_GET["rmver"]): ?>
 									<form action="<?=explode("?", $_SERVER['REQUEST_URI'])[0];?>" method="post">
@@ -338,16 +326,8 @@ include("head.inc");
 									</section>
 									</form>
 									<?php endif; endif; ?>
-
-
-
-					    </div>
-
 					</div>
 				</section>
-
-
-
 			</div>
 		</div>
 	</section>

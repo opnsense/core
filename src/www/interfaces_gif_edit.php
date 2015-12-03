@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2008 Ermal Luçi
@@ -128,7 +129,7 @@ if ($_POST) {
 }
 
 $pgtitle = array(gettext("Interfaces"),gettext("GIF"),gettext("Edit"));
-$shortcut_section = "interfaces";
+
 include("head.inc");
 
 ?>

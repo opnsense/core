@@ -45,8 +45,9 @@ if ($_POST['clear']) {
 	clear_clog($relayd_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Load Balancer"));
-$shortcut_section = "relayd";
+$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Log File'));
+$shortcut_section = 'relayd';
+
 include("head.inc");
 
 ?>
@@ -64,26 +65,18 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-
-					<? include('diag_logs_tabs.inc'); ?>
-
-
 						<div class="tab-content content-box col-xs-12">
-					    <div class="container-fluid">
-
-							<p> <?php printf(gettext("Last %s Load Balancer log entries"),$nentries);?></p>
-
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
+										<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Load Balancer log entries'), $nentries);?></strong></td></tr>
 										 <?php dump_clog($relayd_logfile, $nentries); ?>
+										<tr><td colspan="2">
+											<form action="diag_logs_relayd.php" method="post">
+												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+											</form>
+										</td></tr>
 									</table>
 								 </div>
-
-								<form action="diag_logs_relayd.php" method="post">
-									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-								</form>
-
-						</div>
 				    </div>
 			    </section>
 			</div>

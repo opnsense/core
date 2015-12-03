@@ -33,7 +33,6 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-
 $ntpd_logfile = '/var/log/ntpd.log';
 
 if (empty($config['syslog']['nentries'])) {
@@ -64,27 +63,22 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-
-					<? include('diag_logs_tabs.inc'); ?>
-
-
 						<div class="tab-content content-box col-xs-12">
-					    <div class="container-fluid">
-
-							<p><?php printf(gettext("Last %s NTP log entries"), $nentries);?></p>
 
 								 <div class="table-responsive">
 									<table class="table table-striped table-sort">
-										  <?php dump_clog($ntpd_logfile, $nentries); ?>
+										<tr><td colspan="2"><strong><?= sprintf(gettext("Last %s NTP log entries"), $nentries);?></strong></td></tr>
+										<?php dump_clog($ntpd_logfile, $nentries); ?>
+										<tr><td colspan="2">
+											<form action="diag_logs_ntpd.php" method="post">
+												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+											</form>
+										<tr></td>
 									</table>
 								 </div>
 
-								<form action="diag_logs_ntpd.php" method="post">
-									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-								</form>
 
 						</div>
-				    </div>
 			    </section>
 			</div>
 		</div>

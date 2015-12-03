@@ -1,7 +1,8 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
+	Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
 	Copyright (C) 2003-2004 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
 
@@ -154,8 +155,7 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("DNS Resolver"),gettext("Edit host"));
-$shortcut_section = "resolver";
+$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Edit host'));
 include("head.inc");
 
 ?>

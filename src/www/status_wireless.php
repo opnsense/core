@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 $pgtitle = array(gettext("Status"),gettext("Wireless"));
-$shortcut_section = "wireless";
+
 include("head.inc");
 
 $if = $_POST['if'];

@@ -32,9 +32,8 @@ require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-
-$pgtitle = array(gettext("OpenVPN"), gettext("Client"));
-$shortcut_section = "openvpn";
+$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Client'));
+$shortcut_section = 'openvpn';
 
 if (!isset($config['openvpn']['openvpn-client'])) {
     $config['openvpn']['openvpn-client'] = array();
@@ -130,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($act == "del") {
             // remove client
         if (!isset($id) || !isset($a_client[$id])) {
-                redirectHeader("vpn_openvpn_client.php");
+                header("Location: vpn_openvpn_client.php");
                 exit;
         }
         if (!empty($a_client[$id])) {
@@ -459,16 +458,6 @@ if (isset($savemsg)) {
 
 
 			    <section class="col-xs-12">
-<?php
-                        $tab_array = array();
-                        $tab_array[] = array(gettext("Server"), false, "vpn_openvpn_server.php");
-                        $tab_array[] = array(gettext("Client"), true, "vpn_openvpn_client.php");
-                        $tab_array[] = array(gettext("Client Specific Overrides"), false, "vpn_openvpn_csc.php");
-                        $tab_array[] = array(gettext("Client Export"), false, "vpn_openvpn_export.php");
-                        $tab_array[] = array(gettext("Shared Key Export"), false, "vpn_openvpn_export_shared.php");
-                        display_top_tabs($tab_array);
-?>
-
 					<div class="tab-content content-box col-xs-12">
 							<?php if ($act=="new" || $act=="edit") :
 ?>

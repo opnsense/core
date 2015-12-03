@@ -33,10 +33,9 @@ require_once("system.inc");
 require_once("interfaces.inc");
 
 $portal_logfile = '/var/log/portalauth.log';
+$nentries = 50;
 
-if (empty($config['syslog']['nentries'])) {
-        $nentries = 50;
-} else {
+if (isset($config['syslog']['nentries'])) {
         $nentries = $config['syslog']['nentries'];
 }
 
@@ -44,8 +43,7 @@ if ($_POST['clear']) {
 	clear_clog($portal_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("Portal Auth"));
-$shortcut_section = "captiveportal";
+$pgtitle = array(gettext('Services'), gettext('Captive Portal'), gettext('Log File'));
 include("head.inc");
 
 ?>
@@ -62,25 +60,17 @@ include("head.inc");
 
 			    <section class="col-xs-12">
 
-
-					<? include('diag_logs_tabs.inc'); ?>
-
-
 						<div class="tab-content content-box col-xs-12">
-						<div class="container-fluid">
-							<?php printf(gettext('Last %s Portal Auth log entries'), $nentries); ?>
-						</div>
 						<div class="table-responsive">
 							<table class="table table-striped table-sort">
-								<?php dump_clog($portal_logfile, $nentries, true); ?>
+								<tr><td colspan="2"><strong><?= sprintf(gettext('Last %s Portal Auth log entries'), $nentries); ?></strong></td></tr>
+								<?php dump_clog($portal_logfile, $nentries); ?>
+								<tr><td colspan="2">
+									<form action="diag_logs_auth.php" method="post">
+										<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+									</form>
+								</td></tr>
 							</table>
-						</div>
-
-					    <div class="container-fluid">
-								<form action="diag_logs_auth.php" method="post">
-									<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
-								</form>
-
 						</div>
 				    </div>
 			    </section>

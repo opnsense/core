@@ -206,15 +206,16 @@ class ControllerBase extends ControllerRoot
 
         $ifarr = array();
         foreach ($cnf->object()->interfaces->children() as $key => $node) {
-            $ifarr[$key] = $node;
+            $ifarr[$key] = $node->descr ? $node->descr->__toString() : strtoupper($key);
         }
-        ksort($ifarr);
+        natcasesort($ifarr);
         $ordid = 0;
-        foreach ($ifarr as $key => $node) {
+        foreach ($ifarr as $key => $descr) {
             $menu->appendItem('Interfaces', $key, array(
                 'url' => '/interfaces.php?if='. $key,
-                'order' => ($ordid++),
-                'visiblename' => $node->descr ? $node->descr : strtoupper($key)
+                'visiblename' => '[' . $descr . ']',
+                'cssclass' => 'fa fa-sitemap',
+                'order' => $ordid++,
             ));
         }
         unset($ifarr);
