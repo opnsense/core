@@ -148,6 +148,15 @@ $shortcuts['ipsec']['service'] = "ipsec";
 $shortcuts['openvpn'] = array();
 $shortcuts['openvpn']['service'] = "openvpn";
 
+$shortcuts['forwarder'] = array();
+$shortcuts['forwarder']['service'] = 'dnsmasq';
+
+$shortcuts['resolver'] = array();
+$shortcuts['resolver']['service'] = 'unbound';
+
+$shortcuts['ntp'] = array();
+$shortcuts['ntp']['service'] = 'ntpd';
+
 $shortcuts['firewall'] = array();
 $shortcuts['firewall']['main'] = "firewall_rules.php";
 $shortcuts['firewall']['log'] = "diag_logs_filter.php";
@@ -168,9 +177,6 @@ $shortcuts['gateway-groups'] = array();
 $shortcuts['gateway-groups']['main'] = "system_gateway_groups.php";
 $shortcuts['gateway-groups']['log'] = "diag_logs_gateways.php";
 $shortcuts['gateway-groups']['status'] = "status_gateway_groups.php";
-
-$shortcuts['ntp'] = array();
-$shortcuts['ntp']['service'] = "ntpd";	/* really, hook it all up through some weird hint? */
 
 $shortcuts['pppoes'] = array();
 $shortcuts['pppoes']['main'] = "vpn_pppoe.php";
