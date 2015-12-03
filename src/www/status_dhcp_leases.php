@@ -282,6 +282,7 @@ foreach($config['interfaces'] as $ifname => $ifarr) {
 			$slease['start'] = "";
 			$slease['end'] = "";
 			$slease['hostname'] = htmlentities($static['hostname']);
+			$slease['descr'] = htmlentities($static['descr']);
 			$slease['act'] = "static";
 			$slease['online'] = in_array(strtolower($slease['mac']), $arpdata_mac) ? 'online' : 'offline';
 			$leases[] = $slease;
@@ -338,6 +339,7 @@ if(count($pools) > 0) {
 							    <td class="listhdrr"><?=gettext("IP address"); ?></td>
 							    <td class="listhdrr"><?=gettext("MAC address"); ?></td>
 							    <td class="listhdrr"><?=gettext("Hostname"); ?></td>
+							    <td class="listhdrr"><?=gettext("Description"); ?></td>
 							    <td class="listhdrr"><?=gettext("Start"); ?></td>
 							    <td class="listhdrr"><?=gettext("End"); ?></td>
 							    <td class="listhdrr"><?=gettext("Online"); ?></td>
@@ -404,6 +406,11 @@ if(count($pools) > 0) {
 										}
 							                }
 							                echo "<td class=\"listr\">{$fspans}"  . htmlentities($data['hostname']) . "{$fspane}</td>\n";
+									if (isset($data['descr'])) {
+										echo "<td class=\"listr\">{$fspans}"  . htmlentities($data['descr']) . "{$fspane}</td>\n";
+									} else {
+										echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
+									}
 											if ($data['type'] != "static") {
 												echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['start']) . "{$fspane}</td>\n";
 												echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['end']) . "{$fspane}</td>\n";
