@@ -30,7 +30,7 @@
 
 require_once('script/load_phalcon.php');
 
-use OPNsense\Auth\AuthenticationFactory();
+use OPNsense\Auth\AuthenticationFactory;
 
 // open database
 $database_filename = '/var/captiveportal/captiveportal.sqlite';
