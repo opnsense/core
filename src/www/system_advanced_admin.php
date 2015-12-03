@@ -248,17 +248,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($restart_sshd) {
-            killbyname("sshd");
+            configd_run("sshd stop");
             log_error(gettext("secure shell configuration has changed. Stopping sshd."));
 
             if ($config['system']['ssh']['enabled']) {
                 log_error(gettext("secure shell configuration has changed. Restarting sshd."));
-                configd_run("sshd restart");
+                configd_run("sshd restart", true);
             }
         }
         if ($restart_webgui) {
             log_error(gettext("webConfigurator configuration has changed. Restarting webConfigurator."));
-            mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
+            configd_run("webgui restart 2", true);
         }
     }
 }
