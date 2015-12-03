@@ -390,18 +390,18 @@ if(count($pools) > 0) {
 							                }
 									echo "<tr>\n";
 							                echo "<td class=\"listlr\">{$fspans}{$data['ip']}{$fspane}</td>\n";
-									$mac=$data['mac'];
+									$mac = $data['mac'];
 									$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
 							                if ($data['online'] != "online") {
-										if(isset($mac_man[$mac_hi])){ // Manufacturer for this MAC is defined
+										if (isset($mac_man[$mac_hi])) { // Manufacturer for this MAC is defined
 								                        echo "<td class=\"listr\">{$fspans}<a href=\"services_wol.php?if={$data['if']}&amp;mac=$mac\" title=\"" . gettext("$mac - send Wake on LAN packet to this MAC address") ."\">{$mac}</a><br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>{$fspane}</td>\n";
-										}else{
+										} else {
 											echo "<td class=\"listr\">{$fspans}<a href=\"services_wol.php?if={$data['if']}&amp;mac={$data['mac']}\" title=\"" . gettext("send Wake on LAN packet to this MAC address") ."\">{$data['mac']}</a>{$fspane}</td>\n";
 										}
-							                }else{
-										if(isset($mac_man[$mac_hi])){ // Manufacturer for this MAC is defined
+							                } else {
+										if (isset($mac_man[$mac_hi])) { // Manufacturer for this MAC is defined
 											echo "<td class=\"listr\">{$fspans}{$mac}<br /><font size=\"-2\"><i>{$mac_man[$mac_hi]}</i></font>{$fspane}</td>\n";
-								                }else{
+								                } else {
 											echo "<td class=\"listr\">{$fspans}{$data['mac']}{$fspane}</td>\n";
 										}
 							                }
@@ -411,13 +411,13 @@ if(count($pools) > 0) {
 									} else {
 										echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
 									}
-											if ($data['type'] != "static") {
-												echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['start']) . "{$fspane}</td>\n";
-												echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['end']) . "{$fspane}</td>\n";
-											} else {
-												echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
-												echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
-											}
+									if ($data['type'] != "static") {
+										echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['start']) . "{$fspane}</td>\n";
+										echo "<td class=\"listr\">{$fspans}" . adjust_gmt($data['end']) . "{$fspane}</td>\n";
+									} else {
+										echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
+										echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
+									}
 							                echo "<td class=\"listr\">{$fspans}{$data['online']}{$fspane}</td>\n";
 							                echo "<td class=\"listr\">{$fspans}{$data['act']}{$fspane}</td>\n";
 							                echo "<td valign=\"middle\">&nbsp;";
