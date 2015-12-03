@@ -253,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if ($config['system']['ssh']['enabled']) {
                 log_error(gettext("secure shell configuration has changed. Restarting sshd."));
-                configd_run("sshd restart", true);
+                mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
             }
         }
         if ($restart_webgui) {
