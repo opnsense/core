@@ -247,13 +247,10 @@
                 </remoteACLs>
             </acl>
             <authentication>
-                <method type="OptionField">
-                    <default>none</default>
+                <method type="AuthenticationServerField">
                     <Required>N</Required>
-                    <OptionValues>
-                        <none>No Authentication</none>
-                        <local>Local User Authentication</local>
-                    </OptionValues>
+                    <multiple>Y</multiple>
+                    <default>Local Database</default>
                 </method>
                 <realm type="TextField">
                     <default>OPNsense proxy authentication</default>

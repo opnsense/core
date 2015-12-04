@@ -339,7 +339,8 @@
             <field>
                 <id>proxy.forward.authentication.method</id>
                 <label>Authentication method</label>
-                <type>dropdown</type>
+                <type>select_multiple</type>
+                <style>tokenize</style>
                 <help><![CDATA[Select Authentication method]]></help>
             </field>
             <field>
