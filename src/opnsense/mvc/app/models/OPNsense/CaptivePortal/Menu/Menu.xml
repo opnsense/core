@@ -1,0 +1,24 @@
+<menu>
+    <!-- Plugin Captiveportal menu -->
+    <Services order="4" cssClass="glyphicon glyphicon-cog">
+        <CaptivePortal VisibleName="Captive Portal" cssClass="fa fa-paper-plane-o">
+            <Settings url="/services_captiveportal_zones.php">
+                <Edit url="/services_captiveportal.php?zone=*"/>
+                <Edit2 url="/services_captiveportal_zones_edit.php*"/>
+                <IP url="/services_captiveportal_ip.php?zone=*"/>
+                <IP_edit url="/services_captiveportal_ip_edit.php?zone=*"/>
+                <MAC url="/services_captiveportal_mac.php?zone=*"/>
+                <MAC_edit url="/services_captiveportal_mac_edit.php?zone=*"/>
+                <Voucher url="/services_captiveportal_vouchers.php?zone=*"/>
+                <FileManager url="/services_captiveportal_filemanager.php?zone=*"/>
+                </Settings>
+            <Status url="/status_captiveportal.php">
+                <All url="/status_captiveportal.php*"/>
+		<Voucher url="/status_captiveportal_vouchers.php*"/>
+		<Rolls url="/status_captiveportal_voucher_rolls.php*"/>
+		<Test url="/status_captiveportal_test.php*"/>
+		<Expire url="/status_captiveportal_expire.php*"/>
+            </Status>
+        </CaptivePortal>
+    </Services>
+</menu>

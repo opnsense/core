@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -111,12 +112,12 @@ $mac_man = load_mac_manufacturer_table();
 
 					<?php if (!empty($cpzone) && isset($config['voucher'][$cpzone]['enable'])): ?>
 					<?php
-							$tab_array = array();
+						$tab_array = array();
 					        $tab_array[] = array(gettext("Active Users"), true, "status_captiveportal.php?zone={$cpzone}");
 					        $tab_array[] = array(gettext("Active Vouchers"), false, "status_captiveportal_vouchers.php?zone={$cpzone}");
 					        $tab_array[] = array(gettext("Voucher Rolls"), false, "status_captiveportal_voucher_rolls.php?zone={$cpzone}");
 					        $tab_array[] = array(gettext("Test Vouchers"), false, "status_captiveportal_test.php?zone={$cpzone}");
-							$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
+						$tab_array[] = array(gettext("Expire Vouchers"), false, "status_captiveportal_expire.php?zone={$cpzone}");
 					        display_top_tabs($tab_array);
 					?>
 					<?php endif; ?>
@@ -135,8 +136,8 @@ $mac_man = load_mac_manufacturer_table();
 									</td>
 									<td class="vncell" width="30%" align="center">
 									<?php if (count($a_cp) >  1) { ?>
-									<form action="status_captiveportal.php" method="post" enctype="multipart/form-data" name="form1" id="form1">
-										<select name="zone" class="formselect" onchange="document.form1.submit()">
+									<form action="status_captiveportal.php" method="post" enctype="multipart/form-data">
+										<select name="zone" class="formselect" onchange="this.form.submit()">
 										<option value="">none</option>
 										<?php foreach ($a_cp as $cpkey => $cp) {
 										       echo "<option value=\"{$cpkey}\" ";
@@ -148,7 +149,9 @@ $mac_man = load_mac_manufacturer_table();
 								               </select>
 										<br />
 									</form>
-									<?php } else echo $a_cp[$cpzone]['zone']; ?>
+									<?php } elseif (count($a_cp) == 1) {
+										echo $a_cp[$cpzone]['zone'];
+									} ?>
 									</td>
 									<td colspan="6" width="50%"></td>
 								  </tr>

@@ -195,18 +195,6 @@
         </LogFiles>
     </Firewall>
     <Services order="5" cssClass="glyphicon glyphicon-cog">
-        <CaptivePortal1 VisibleName="Captive Portal Settings" url="/services_captiveportal_zones.php" cssClass="fa fa-paper-plane-o">
-            <Edit url="/services_captiveportal.php?zone=*"/>
-            <IP url="/services_captiveportal_ip.php?zone=*"/>
-            <IP_edit url="/services_captiveportal_ip_edit.php?zone=*"/>
-            <MAC url="/services_captiveportal_mac.php?zone=*"/>
-            <MAC_edit url="/services_captiveportal_mac_edit.php?zone=*"/>
-            <Voucher url="/services_captiveportal_vouchers.php?zone=*"/>
-            <FileManager url="/services_captiveportal_filemanager.php?zone=*"/>
-        </CaptivePortal1>
-        <CaptivePortal2 VisibleName="Captive Portal Status" url="/status_captiveportal.php" cssClass="fa fa-paper-plane-o">
-            <CaptivePortalDetails url="/status_captiveportal.php?*"/>
-        </CaptivePortal2>
         <DHCP cssClass="fa fa-bullseye">
             <Server order="100" url="/services_dhcp.php">
                 <Tab url="/services_dhcp.php?if=*"/>
