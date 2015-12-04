@@ -19,6 +19,7 @@
 		<Test url="/status_captiveportal_test.php*"/>
 		<Expire url="/status_captiveportal_expire.php*"/>
             </Status>
+            <Log order="99"  VisibleName="Log File" url="/diag_logs_auth.php"/>
         </CaptivePortal>
     </Services>
 </menu>
