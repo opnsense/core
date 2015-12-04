@@ -301,7 +301,14 @@ $( document ).ready(function() {
                 if (isset($config['interfaces'][$selected_if]['blockpriv'])): ?>
                   <tr>
                     <td>&nbsp;</td>
-                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>
+                      <span class="glyphicon glyphicon-remove text-danger"></span>
+<?php
+                      if (!isset($config['syslog']['nologprivatenets'])):?>
+                      <span class="glyphicon glyphicon-info-sign"></span>
+<?php
+                      endif; ?>
+                    </td>
                     <td>*</td>
                     <td><?=gettext("RFC 1918 networks");?></td>
                     <td>*</td>
@@ -319,7 +326,14 @@ $( document ).ready(function() {
               if (isset($config['interfaces'][$selected_if]['blockbogons'])): ?>
                   <tr valign="top" id="frrfc1918">
                     <td>&nbsp;</td>
-                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>
+                      <span class="glyphicon glyphicon-remove text-danger"></span>
+<?php
+                      if (!isset($config['syslog']['nologbogons'])):?>
+                      <span class="glyphicon glyphicon-info-sign"></span>
+<?php
+                      endif; ?>
+                    </td>
                     <td>*</td>
                     <td><?=gettext("Reserved/not assigned by IANA");?></td>
                     <td class="hidden-xs hidden-sm">*</td>
