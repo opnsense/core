@@ -465,7 +465,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($copy_fields as $fieldname) {
         if (isset($configId) && isset($a_gateways[$configId][$fieldname])) {
             $pconfig[$fieldname] = $a_gateways[$configId][$fieldname];
-        } else {
+        } elseif (empty($pconfig[$fieldname]) || isset($configId)) {
             $pconfig[$fieldname] = null;
         }
     }
