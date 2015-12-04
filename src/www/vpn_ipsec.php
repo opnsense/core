@@ -357,7 +357,7 @@ if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
 ?>
     </td>
     <td>
-        <?=$p1_halgos[$ph1ent['hash-algorithm']];?>
+        <?=strtoupper($ph1ent['hash-algorithm']);?>
     </td>
     <td>
         <?=$ph1ent['descr'];?>&nbsp;
