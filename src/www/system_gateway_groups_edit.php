@@ -141,7 +141,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $pgtitle = array(gettext('System'),gettext('Gateways'), gettext('Edit Group'));
-$shortcut_section = "gateway-groups";
 
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
