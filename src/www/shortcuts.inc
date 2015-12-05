@@ -200,28 +200,7 @@ $shortcuts['routing']['log'] = "diag_logs_routing.php";
 $shortcuts['routing']['status'] = "diag_routes.php";
 
 $shortcuts['gateways'] = array();
-$shortcuts['gateways']['main'] = "system_gateways.php";
-$shortcuts['gateways']['log'] = "diag_logs_gateways.php";
-$shortcuts['gateways']['status'] = "status_gateways.php";
 $shortcuts['gateways']['service'] = "apinger";
-
-$shortcuts['gateway-groups'] = array();
-$shortcuts['gateway-groups']['main'] = "system_gateway_groups.php";
-$shortcuts['gateway-groups']['log'] = "diag_logs_gateways.php";
-$shortcuts['gateway-groups']['status'] = "status_gateway_groups.php";
-
-$shortcuts['interfaces'] = array();
-$shortcuts['interfaces']['main'] = "interfaces_assign.php";
-$shortcuts['interfaces']['status'] = "status_interfaces.php";
-
-$shortcuts['wireless'] = array();
-$shortcuts['wireless']['main'] = "interfaces_wireless.php";
-$shortcuts['wireless']['log'] = "diag_logs_wireless.php";
-$shortcuts['wireless']['status'] = "status_wireless.php";
-
-$shortcuts['pptps'] = array();
-$shortcuts['pptps']['main'] = "vpn_pptp.php";
-$shortcuts['pptps']['log'] = "diag_logs_vpn.php";
 
 $shortcuts['pppoes'] = array();
 $shortcuts['pppoes']['main'] = "vpn_pppoe.php";

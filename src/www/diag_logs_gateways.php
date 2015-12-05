@@ -51,7 +51,6 @@ if (isset($_POST['filtertext'])) {
 }
 
 $pgtitle = array(gettext('System'), gettext('Log Files'), gettext('Gateways'));
-$shortcut_section = "gateways";
 include("head.inc");
 
 ?>

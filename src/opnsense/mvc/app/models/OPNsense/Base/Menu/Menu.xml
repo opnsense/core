@@ -33,24 +33,22 @@
                 <Edit url="/system_routes_edit.php*"/>
             </All>
             <Status url="/diag_routes.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow">
             <All url="/system_gateways.php">
                 <All url="/system_gateways.php*"/>
                 <Edit url="/system_gateways_edit.php*"/>
             </All>
-            <Groups url="/system_gateway_groups.php">
+            <AllStatus VisibleName="Status" url="/status_gateways.php"/>
+            <Group url="/system_gateway_groups.php">
                 <Edit url="/system_gateway_groups_edit.php*"/>
-            </Groups>
-            <Status url="/status_gateways.php">
-                <Groups url="/status_gateway_groups.php"/>
-            </Status>
+            </Group>
+            <GroupStatus VisibleName="Group Status" url="/status_gateway_groups.php"/>
+            <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
         </Gateways>
         <LogFiles order="160" VisibleName="Log Files" cssClass="fa fa-eye">
             <General url="/diag_logs.php"/>
-            <Gateways url="/diag_logs_gateways.php"/>
-            <Routing url="/diag_logs_routing.php"/>
-            <Wireless url="/diag_logs_wireless.php"/>
             <DNS url="/diag_logs_resolver.php"/>
             <DHCP url="/diag_logs_dhcp.php"/>
             <PPP url="/diag_logs_ppp.php"/>
@@ -66,7 +64,9 @@
             <Notifications order="500" url="/system_advanced_notifications.php"/>
             <LogFiles VisibleName="Logs/Reports" order="600" url="/diag_logs_settings.php"/>
             <Miscellaneous order="700" url="/system_advanced_misc.php"/>
-            <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php"/>
+            <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php">
+                <Edit url="/system_advanced_sysctl.php*"/>
+            </Tunables>
         </Settings>
         <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>
@@ -98,7 +98,8 @@
         </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
-        <Assignments order="899" url="/interfaces_assign.php" cssClass="fa fa-pencil">
+        <Overview order="900" url="/status_interfaces.php" cssClass="glyphicon glyphicon-tasks"/>
+        <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil">
             <Bridge url="/interfaces_bridge.php"/>
             <BridgeEdit url="/interfaces_bridge_edit.php*"/>
             <GIF url="/interfaces_gif.php"/>
@@ -118,7 +119,11 @@
             <Wireless url="/interfaces_wireless.php"/>
             <WirelessEdit url="/interfaces_wireless_edit.php*"/>
         </Assignments>
-        <Diagnostics order="900" cssClass="fa fa-medkit">
+        <Wireless order="920" cssClass="fa fa-wifi">
+            <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
+            <Status url="/status_wireless.php"/>
+        </Wireless>
+        <Diagnostics order="940" cssClass="fa fa-medkit">
             <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
             <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
             <NDPTable VisibleName="NDP Table" url="/diag_ndp.php"/>
@@ -126,11 +131,10 @@
             <Ping url="/diag_ping.php"/>
             <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
             <Traceroute url="/diag_traceroute.php"/>
+            <Traffic VisibleName="Traffic Graph" url="/status_graph.php">
+                <Details url="/status_graph.php?*"/>
+            </Traffic>
         </Diagnostics>
-        <Summary order="901" url="/status_interfaces.php" cssClass="glyphicon glyphicon-tasks"/>
-        <TrafficGraph VisibleName="Traffic Graph" order="902" url="/status_graph.php" cssClass="fa fa-line-chart">
-            <Details url="/status_graph.php?*"/>
-        </TrafficGraph>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" cssClass="fa fa-list-alt">

@@ -106,6 +106,11 @@ if ($_POST) {
 }
 
 $pgtitle = array(gettext('System'), gettext('Settings'), gettext('Tunables'));
+if ($act != 'edit') {
+	$main_buttons = array(
+		array('href' => 'system_advanced_sysctl.php?act=edit', 'label' => gettext('Add a new tunable')),
+	);
+}
 include("head.inc");
 
 ?>
@@ -182,22 +187,10 @@ include("head.inc");
 									</table>
 								</td>
 							</tr>
-							<?php $i++;
-
-endforeach; ?>
-							<tr>
-								<td colspan="4">
-									<a href="system_advanced_sysctl.php?act=edit" class="btn btn-primary pull-right">
-											<span class="glyphicon glyphicon-plus"></span>
-											</a>
-								</td>
-							</tr>
-
+							<?php $i++; endforeach; ?>
 							</tbody>
 						</table>
-			        <?php
-else :
-?>
+			        <?php else : ?>
 						<form action="system_advanced_sysctl.php" method="post" name="iform" id="iform">
 							<table width="100%" border="0" cellpadding="6" cellspacing="0" summary="edit system tunable" class="table table-striped">
 								<thead>
