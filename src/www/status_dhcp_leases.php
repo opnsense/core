@@ -344,6 +344,7 @@ if(count($pools) > 0) {
 							    <td class="listhdrr"><?=gettext("End"); ?></td>
 							    <td class="listhdrr"><?=gettext("Online"); ?></td>
 							    <td class="listhdrr"><?=gettext("Lease Type"); ?></td>
+							    <td class="listhdrr">&nbsp;</td>
 							</tr>
 							<?php
 							// Load MAC-Manufacturer table
