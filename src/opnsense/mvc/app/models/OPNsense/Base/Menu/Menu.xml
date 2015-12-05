@@ -49,9 +49,7 @@
         </Gateways>
         <LogFiles order="160" VisibleName="Log Files" cssClass="fa fa-eye">
             <General url="/diag_logs.php"/>
-            <DNS url="/diag_logs_resolver.php"/>
             <DHCP url="/diag_logs_dhcp.php"/>
-            <PPP url="/diag_logs_ppp.php"/>
             <VPN url="/diag_logs_vpn.php?vpntype=pptp">
                 <Type url="/diag_logs_vpn.php*"/>
             </VPN>
@@ -100,7 +98,7 @@
     <Interfaces order="2" cssClass="fa fa-sitemap">
         <Overview order="900" url="/status_interfaces.php" cssClass="glyphicon glyphicon-tasks"/>
         <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil"/>
-        <Types order="920" cssClass="fa fa-cog">
+        <Types VisibleName="Other Types" order="929" cssClass="fa fa-cog">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*"/>
             </Bridge>
@@ -116,20 +114,23 @@
             <LAGG url="/interfaces_lagg.php">
                 <Edit url="/interfaces_lagg_edit.php*"/>
             </LAGG>
-            <PPP url="/interfaces_ppps.php">
-                <Edit url="/interfaces_ppps_edit.php*"/>
-            </PPP>
             <QinQ url="/interfaces_qinq.php">
                 <Edit url="/interfaces_qinq_edit.php*"/>
             </QinQ>
             <VLAN url="/interfaces_vlan.php">
                 <Edit url="/interfaces_vlan_edit.php*"/>
             </VLAN>
-            <Wireless url="/interfaces_wireless.php">
-                <Edit url="/interfaces_wireless_edit.php*"/>
-            </Wireless>
         </Types>
+        <PPP order="926" VisibleName="Point-to-Point" cssClass="fa fa-tty">
+            <Devices url="/interfaces_ppps.php">
+                <Edit url="/interfaces_ppps_edit.php*"/>
+            </Devices>
+            <LogFile VisibleName="Log File"  url="/diag_logs_ppp.php"/>
+        </PPP>
         <Wireless order="925" cssClass="fa fa-wifi">
+            <Devices url="/interfaces_wireless.php">
+                <Edit url="/interfaces_wireless_edit.php*"/>
+            </Devices>
             <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
             <Status url="/status_wireless.php"/>
         </Wireless>
@@ -248,6 +249,7 @@
                 <Edit url="/services_dyndns_edit.php*"/>
             </DynDNS>
             <Filter url="/services_opendns.php"/>
+            <LogFile VisibleName="Log File" url="/diag_logs_resolver.php"/>
             <RFC2136 VisibleName="RFC 2136" url="/services_rfc2136.php">
                 <Edit url="/services_rfc2136_edit.php*"/>
             </RFC2136>
