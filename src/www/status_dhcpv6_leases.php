@@ -352,6 +352,7 @@ foreach($config['interfaces'] as $ifname => $ifarr) {
 			$slease['start'] = "";
 			$slease['end'] = "";
 			$slease['hostname'] = htmlentities($static['hostname']);
+			$slease['descr'] = htmlentities($static['descr']);
 			$slease['act'] = "static";
 			if (in_array($slease['ip'], array_keys($ndpdata))) {
 				$slease['online'] = 'online';
@@ -419,6 +420,7 @@ if(count($pools) > 0) {
 							    <td class="listhdrr"><?=gettext("IAID"); ?></td>
 							    <td class="listhdrr"><?=gettext("DUID"); ?></td>
 							    <td class="listhdrr"><?=gettext("Hostname/MAC"); ?></td>
+							    <td class="listhdrr"><?=gettext("Description"); ?></td>
 							    <td class="listhdrr"><?=gettext("Start"); ?></td>
 							    <td class="listhdrr"><?=gettext("End"); ?></td>
 							    <td class="listhdrr"><?=gettext("Online"); ?></td>
@@ -460,8 +462,13 @@ if(count($pools) > 0) {
 									if (!empty($data['hostname'])) {
 										echo htmlentities($data['hostname']) . "<br />";
 									}
+									if (isset($data['descr'])) {
+										echo "<td class=\"listr\">{$fspans}"  . htmlentities($data['descr']) . "{$fspane}</td>\n";
+									} else {
+										echo "<td class=\"listr\">{$fspans} n/a {$fspane}</td>\n";
+									}
 
-									$mac=trim($ndpdata[$data['ip']]['mac']);
+									$mac = trim($ndpdata[$data['ip']]['mac']);
 									if (!empty($mac)) {
 										$mac_hi = strtoupper($mac[0] . $mac[1] . $mac[3] . $mac[4] . $mac[6] . $mac[7]);
 										print htmlentities($mac);
