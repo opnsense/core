@@ -66,15 +66,7 @@ $main_buttons = array(
 
 			    <section class="col-xs-12">
 
-				<?php
-						$tab_array = array();
-						$tab_array[] = array(gettext("DynDns"), false, "services_dyndns.php");
-						$tab_array[] = array(gettext("RFC 2136"), true, "services_rfc2136.php");
-						display_top_tabs($tab_array);
-					?>
-
 					<div class="tab-content content-box col-xs-12">
-
 
 					  <form action="services_rfc2136.php" method="post" name="iform" id="iform">
 
