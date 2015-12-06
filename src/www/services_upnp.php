@@ -176,6 +176,7 @@ if ($_POST) {
 
 	if (!$input_errors) {
 		$pkgarr = array();
+
 		foreach ($pkg['fields']['field'] as $fields) {
 			$fieldvalue = null;
 			$fieldname = null;
@@ -197,6 +198,11 @@ if ($_POST) {
 			if ($fieldname) {
 				$pkgarr[$fieldname] = $fieldvalue;
 			}
+		}
+
+		if (count($a_pkg)) {
+			/* we are going to overwrite anyway */
+			$a_pkg = array();
 		}
 
 		$a_pkg[] = $pkgarr;
@@ -408,7 +414,11 @@ include("head.inc");
 		// if user is editing a record, load in the data.
 		if (isset($get_from_post)) {
 			$value = $_POST[$fieldname];
-			if (is_array($value)) $value = implode(',', $value);
+			if (is_array($value)) {
+				$value = implode(',', $value);
+			}
+		} elseif ($a_pkg[0]) {
+			$value = $a_pkg[0][$fieldname];
 		} else {
 			$value = $pkga['default_value'];
 		}
