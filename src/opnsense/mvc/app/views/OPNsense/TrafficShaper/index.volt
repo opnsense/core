@@ -85,7 +85,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 if (status != "success" || data['status'] != 'ok') {
                     BootstrapDialog.show({
                         type: BootstrapDialog.TYPE_WARNING,
-                        title: "Error reconfiguring trafficshaper",
+                        title: "{{ lang._('Error reconfiguring trafficshaper') }}",
                         message: data['status'],
                         draggable: true
                     });
@@ -109,16 +109,16 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-pipes" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogPipe">
             <thead>
             <tr>
-                <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">Enabled</th>
-                <th data-column-id="number" data-type="number"  data-visible="false">Number</th>
-                <th data-column-id="bandwidth" data-type="number">Bandwidth</th>
-                <th data-column-id="bandwidthMetric" data-type="string">Metric</th>
-                <!--<th data-column-id="burst" data-type="number">Burst</th>--> <!-- disabled, burst does not work -->
-                <th data-column-id="mask" data-type="string">Mask</th>
-                <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+                <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="number" data-type="number"  data-visible="false">{{ lang._('Number') }}</th>
+                <th data-column-id="bandwidth" data-type="number">{{ lang._('Bandwidth') }}</th>
+                <th data-column-id="bandwidthMetric" data-type="string">{{ lang._('Metric') }}</th>
+                <!--<th data-column-id="burst" data-type="number">{{ lang._('Burst') }}</th>--> <!-- disabled, burst does not work -->
+                <th data-column-id="mask" data-type="string">{{ lang._('Mask') }}</th>
+                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -139,14 +139,14 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-queues" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogQueue">
             <thead>
             <tr>
-                <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">Enabled</th>
-                <th data-column-id="number" data-type="number" data-visible="false">Number</th>
-                <th data-column-id="pipe" data-type="string">Pipe</th>
-                <th data-column-id="weight" data-type="string">Weight</th>
-                <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+                <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="number" data-type="number" data-visible="false">{{ lang._('Number') }}</th>
+                <th data-column-id="pipe" data-type="string">{{ lang._('Pipe') }}</th>
+                <th data-column-id="weight" data-type="string">{{ lang._('Weight') }}</th>
+                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -167,16 +167,16 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-rules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
             <thead>
             <tr>
-                <th data-column-id="sequence" data-type="number">#</th>
-                <th data-column-id="origin" data-type="string"  data-visible="false">Origin</th>
-                <th data-column-id="interface" data-type="string">Interface</th>
-                <th data-column-id="proto" data-type="string">Protocol</th>
-                <th data-column-id="source" data-type="string">Source</th>
-                <th data-column-id="destination" data-type="string">Destination</th>
-                <th data-column-id="target" data-type="string">Target</th>
-                <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Commands</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+                <th data-column-id="sequence" data-type="number">{{ lang._('#') }}</th>
+                <th data-column-id="origin" data-type="string"  data-visible="false">{{ lang._('Origin') }}</th>
+                <th data-column-id="interface" data-type="string">{{ lang._('Interface') }}</th>
+                <th data-column-id="proto" data-type="string">{{ lang._('Protocol') }}</th>
+                <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
+                <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
+                <th data-column-id="target" data-type="string">{{ lang._('Target') }}</th>
+                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -194,7 +194,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div class="col-md-12">
         <hr/>
-        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
+        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
     </div>
 </div>
 
