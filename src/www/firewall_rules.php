@@ -274,6 +274,28 @@ $( document ).ready(function() {
                 </thead>
                 <tbody>
 <?php
+                // Show floating block IPv6 rule if IPv6 is globally disabled in system settings
+                if (!isset($config['system']['ipv6allow']) &&
+                        ($selected_if == 'FloatingRules')):
+?>
+                  <tr valign="top">
+                    <td>&nbsp;</td>
+                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>IPv6 *</td>
+                    <td>*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">*</td>
+                    <td class="hidden-xs hidden-sm">&nbsp;</td>
+                    <td><?=gettext("Block all IPv6 traffic");?></td>
+                    <td>
+                      <a href="system_advanced_network.php" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    </td>
+                  </tr>
+<?php
+                endif; ?>
+<?php
                 // Show the anti-lockout rule if it's enabled, and we are on LAN with an if count > 1, or WAN with an if count of 1.
                 if (!isset($config['system']['webgui']['noantilockout']) &&
                         (((count($config['interfaces']) > 1) && ($selected_if == 'lan'))
