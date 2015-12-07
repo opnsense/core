@@ -67,7 +67,6 @@ function is_valid_syslog_server($target) {
       || is_hostnamewithport($target));
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['rrdenable'] = isset($config['rrd']['enable']);
@@ -96,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['filterdescriptions'] = $config['syslog']['filterdescriptions'];
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
     $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
         clear_all_log_files();
