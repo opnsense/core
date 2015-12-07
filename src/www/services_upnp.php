@@ -137,9 +137,7 @@ global $listtags;
 $listtags = array_flip(array('build_port_path', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
 $pkg = parse_xml_config_raw('/usr/local/pkg/miniupnpd.xml', 'packagegui', false);
 
-$name         = $pkg['name'];
-$title        = $pkg['title'];
-$pgtitle      = $title;
+$pgtitle = array(gettext('Services'), gettext('Universal Plug and Play'), gettext('Settings'));
 
 if($config['installedpackages'] && !is_array($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']))
 	$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'] = array();
@@ -513,73 +511,6 @@ include("head.inc");
 <?php include("foot.inc"); ?>
 
 <?php
-/*
- * ROW Helpers function
- */
-function display_row($trc, $value, $fieldname, $type, $rowhelper, $size) {
-	global $text, $config;
-	echo "<td>\n";
-	switch($type){
-		case "input":
-			echo "<input size='{$size}' name='{$fieldname}{$trc}' id='{$fieldname}{$trc}' class='formfld unknown' type='text' value=\"" . htmlspecialchars($value) . "\" />\n";
-			break;
-		case "checkbox":
-			echo "<input size='{$size}' type='checkbox' id='{$fieldname}{$trc}' name='{$fieldname}{$trc}' value='ON' ".($value?"CHECKED":"")." />\n";
-			break;
-		case "password":
-			echo "<input size='{$size}' type='password' id='{$fieldname}{$trc}' name='{$fieldname}{$trc}' class='formfld pwd' value=\"" . htmlspecialchars($value) . "\" />\n";
-			break;
-		case "textarea":
-			echo "<textarea rows='2' cols='12' id='{$fieldname}{$trc}' class='formfld unknown' name='{$fieldname}{$trc}'>{$value}</textarea>\n";
-		case "select":
-			echo "<select style='height:22px;'  id='{$fieldname}{$trc}' name='{$fieldname}{$trc}' {$title}>\n";
-			foreach($rowhelper['options']['option'] as $rowopt) {
-				$text .= "<option value='{$rowopt['value']}'>{$rowopt['name']}</option>";
-				echo "<option value='{$rowopt['value']}'".($rowopt['value'] == $value?" selected=\"selected\"":"").">{$rowopt['name']}</option>\n";
-				}
-			echo "</select>\n";
-			break;
-		case "interfaces_selection":
-			$size = ($size ? "size=\"{$size}\"" : '');
-			$multiple = '';
-			if (isset($rowhelper['multiple'])) {
-				$fieldname .= '[]';
-				$multiple = "multiple=\"multiple\"";
-			}
-			echo "<select style='height:22px;' id='{$fieldname}{$trc}' name='{$fieldname}{$trc}' {$size} {$multiple}>\n";
-			$ifaces = get_configured_interface_with_descr();
-			$additional_ifaces = $rowhelper['add_to_interfaces_selection'];
-			if (!empty($additional_ifaces))
-				$ifaces = array_merge($ifaces, explode(',', $additional_ifaces));
-			if(is_array($value))
-				$values = $value;
-			else
-				$values  =  explode(',',  $value);
-			$ifaces["lo0"] = "loopback";
-			echo "<option><name></name><value></value></option>/n";
-			foreach($ifaces as $ifname => $iface) {
-				$text .="<option value=\"{$ifname}\">$iface</option>";
-				echo "<option value=\"{$ifname}\" ".(in_array($ifname, $values) ? 'selected="selected"' : '').">{$iface}</option>\n";
-				}
-			echo "</select>\n";
-			break;
-		case "select_source":
-			echo "<select style='height:22px;' id='{$fieldname}{$trc}' name='{$fieldname}{$trc}'>\n";
-			if(isset($rowhelper['show_disable_value']))
-				echo "<option value='{$rowhelper['show_disable_value']}'>{$rowhelper['show_disable_value']}</option>\n";
-			$source_url = $rowhelper['source'];
-			eval("\$pkg_source_txt = &$source_url;");
-			foreach($pkg_source_txt as $opt) {
-				$source_name = ($rowhelper['source_name'] ? $opt[$rowhelper['source_name']] : $opt[$rowhelper['name']]);
-				$source_value = ($rowhelper['source_value'] ? $opt[$rowhelper['source_value']] : $opt[$rowhelper['value']]);
-				$text .= "<option value='{$source_value}'>{$source_name}</option>";
-				echo "<option value='{$source_value}'".($source_value == $value?" selected=\"selected\"":"").">{$source_name}</option>\n";
-				}
-			echo "</select>\n";
-			break;
-		}
-	echo "</td>\n";
-}
 
 function fixup_string($string) {
 	global $config;

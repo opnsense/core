@@ -16,7 +16,7 @@ function system_get_language_code() {
 
 $g['theme'] = get_current_theme();
 
-$pagetitle = gentitle( $pgtitle );
+$pagetitle = gentitle( $pgtitle ); /* XXX zap me */
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="<?=system_get_language_code();?>" class="ie ie8 lte9 lte8 no-js"><![endif]-->

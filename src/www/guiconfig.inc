@@ -297,12 +297,19 @@ function pprint_port($port) {
 	return $pport;
 }
 
-function gentitle($title) {
-	$navlevelsep = ": ";	/* navigation level separator string */
-	if(!is_array($title))
-		return $title;
-	else
-		return join($navlevelsep, $title);
+function gentitle($breadcrumbs)
+{
+	$navlevelsep = ': ';
+	$output = $breadcrumbs;
+
+	if (isset($breadcrumbs[0]['name'])) {
+		$output = array();
+		foreach ($breadcrumbs as $crumb) {
+			$output[] = gettext($crumb['name']);
+		}
+	}
+
+	return join($navlevelsep, $output);
 }
 
 function clear_log($logfile, $restart_syslogd = true)

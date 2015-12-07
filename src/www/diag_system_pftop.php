@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-$pgtitle = gettext("Diagnostics: pfTop");
+$pgtitle = array(gettext('Diagnostics'), gettext('pfTop'));
 include("head.inc");
 ?>
 <body>
