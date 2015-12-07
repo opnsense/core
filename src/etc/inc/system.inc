@@ -747,12 +747,15 @@ function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
 	$remote_servers = "";
 	$pad_to  = 56;
 	$padding = ceil(($pad_to - strlen($facility))/8)+1;
-	if($syslogcfg['remoteserver'])
-		$remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
-	if($syslogcfg['remoteserver2'])
-		$remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
-	if($syslogcfg['remoteserver3'])
-		$remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
+	if(!empty($syslogcfg['remoteserver'])) {
+			$remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
+	}
+	if(!empty($syslogcfg['remoteserver2'])) {
+			$remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
+	}
+	if(!empty($syslogcfg['remoteserver3'])) {
+			$remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
+	}
 	return $remote_servers;
 }
 
@@ -807,76 +810,35 @@ function system_syslogd_start()
 		);
 		$syslogconf = '';
 
+		// create structure with log section definitions and config tags for remote usage
+		$syslogconfs = array();
+		$syslogconfs['routing'] = array("conf" => "!radvd,routed,olsrd,zebra,ospfd,bgpd,miniupnpd" , "remote" => null);
+		$syslogconfs['ntpd'] = array("conf" => "!ntp,ntpd,ntpdate", "remote" => null);
+		$syslogconfs['ppps'] = array("conf" => "!ppp", "remote" => null);
+		$syslogconfs['pptps'] = array("conf" => "!pptps", "remote" => null);
+		$syslogconfs['poes'] = array("conf" => "!poes", "remote" => null);
+		$syslogconfs['l2tps'] = array("conf" => "!l2tps", "remote" => null);
+		$syslogconfs['ipsec'] = array("conf" => "!charon", "remote" => null);
+		$syslogconfs['openvpn'] = array("conf" => "!openvpn", "remote" => "vpn");
+		$syslogconfs['gateways'] = array("conf" => "!apinger", "remote" => "apinger");
+		$syslogconfs['resolver'] = array("conf" => "!dnsmasq,filterdns,unbound", "remote" => null);
+		$syslogconfs['dhcpd'] = array("conf" => "!dhcpd,dhcrelay,dhclient,dhcp6c", "remote" => "dhcp");
+		$syslogconfs['relayd'] = array("conf" => "!relayd", "remote" => "relayd");
+		$syslogconfs['wireless'] = array("conf" => "!hostapd", "remote" => "hostapd");
+		$syslogconfs['filter'] = array("conf" => "!filterlog", "remote" => "filter");
+
+		foreach ($syslogconfs as $logTopic => $logConfig) {
+				$syslogconf .= "{$logConfig['conf']}\n";
+				if (!isset($syslogcfg['disablelocallogging'])) {
+						$syslogconf .= "*.*								{$log_directive}/var/log/{$logTopic}.log\n";
+				}
+				if ($logConfig['remote'] != null && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
+				}
+		}
+
+
 		$facilitylist = implode(',', array_unique($separatelogfacilities));
-		$syslogconf .= "!radvd,routed,olsrd,zebra,ospfd,bgpd,miniupnpd\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/routing.log\n";
-
-		$syslogconf .= "!ntp,ntpd,ntpdate\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/ntpd.log\n";
-
-		$syslogconf .= "!ppp\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/ppps.log\n";
-
-		$syslogconf .= "!pptps\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/pptps.log\n";
-
-		$syslogconf .= "!poes\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/poes.log\n";
-
-		$syslogconf .= "!l2tps\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/l2tps.log\n";
-
-		$syslogconf .= "!charon\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/ipsec.log\n";
-		if (isset($syslogcfg['vpn']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
-		$syslogconf .= "!openvpn\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/openvpn.log\n";
-		if (isset($syslogcfg['vpn']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
-		$syslogconf .= "!apinger\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/gateways.log\n";
-		if (isset($syslogcfg['apinger']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
-		$syslogconf .= "!dnsmasq,filterdns,unbound\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/resolver.log\n";
-
-		$syslogconf .= "!dhcpd,dhcrelay,dhclient,dhcp6c\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/dhcpd.log\n";
-		if (isset($syslogcfg['dhcp']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
-		$syslogconf .= "!relayd\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/relayd.log\n";
-		if (isset($syslogcfg['relayd']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
-		$syslogconf .= "!hostapd\n";
-		if (!isset($syslogcfg['disablelocallogging']))
-			$syslogconf .= "*.*								{$log_directive}/var/log/wireless.log\n";
-		if (isset($syslogcfg['hostapd']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
-		$syslogconf .= "!filterlog\n";
-		$syslogconf .= "*.*								{$log_directive}/var/log/filter.log\n";
-		if (isset($syslogcfg['filter']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-
 		$syslogconf .= "!-{$facilitylist}\n";
 		if (!isset($syslogcfg['disablelocallogging']))
 			$syslogconf .= <<<EOD
@@ -892,23 +854,30 @@ auth.info;authpriv.info						|exec /usr/local/sbin/sshlockout_pf 15
 *.emerg								*
 
 EOD;
-		if (isset($syslogcfg['vpn']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
-		if (isset($syslogcfg['portalauth']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
-		if (isset($syslogcfg['dhcp']))
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local7.*");
-		if (isset($syslogcfg['system'])) {
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.notice;kern.debug;lpr.info;mail.crit;");
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "news.err;local0.none;local3.none;local7.none");
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "security.*");
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "auth.info;authpriv.info;daemon.info");
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.emerg");
-		}
-		if (isset($syslogcfg['logall'])) {
-			// Make everything mean everything, including facilities excluded above.
-			$syslogconf .= "!*\n";
-			$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
+		if (!empty($syslogcfg['enable'])) {
+				if (isset($syslogcfg['vpn'])) {
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
+				}
+				if (isset($syslogcfg['portalauth'])) {
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
+				}
+
+				if (isset($syslogcfg['dhcp'])) {
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local7.*");
+				}
+
+				if (isset($syslogcfg['system'])) {
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.notice;kern.debug;lpr.info;mail.crit;");
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "news.err;local0.none;local3.none;local7.none");
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "security.*");
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "auth.info;authpriv.info;daemon.info");
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.emerg");
+				}
+				if (isset($syslogcfg['logall'])) {
+						// Make everything mean everything, including facilities excluded above.
+						$syslogconf .= "!*\n";
+						$syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
+				}
 		}
 
 		/* write syslog.conf */
