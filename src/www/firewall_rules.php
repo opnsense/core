@@ -200,6 +200,9 @@ $( document ).ready(function() {
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
+        <?php if (isset($config['system']['disablefilter'])): ?>
+        <?php print_warning_box(gettext("The firewall has globally been disabled. Configured rules are currently not enforced."));?>
+        <?php endif; ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('filter')): ?><p>
         <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>

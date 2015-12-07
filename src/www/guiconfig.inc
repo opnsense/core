@@ -237,6 +237,17 @@ function print_info_box($msg)
 EOFnp;
 }
 
+function print_warning_box($msg)
+{
+	echo <<<EOFnp
+<div class="col-xs-12">
+	<div class="alert alert-warning alert-dismissible" role="alert">
+		<p>{$msg}</p>
+	</div>
+</div>
+EOFnp;
+}
+
 function get_std_save_message() {
 	global $d_sysrebootreqd_path;
 	$filter_related = false;
