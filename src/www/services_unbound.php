@@ -175,6 +175,7 @@ function enable_change(enable_over) {
 	var endis;
 	endis = !(jQuery('#enable').is(":checked") || enable_over);
 	jQuery("#active_interface,#outgoing_interface,#dnssec,#forwarding,#regdhcp,#regdhcpstatic,#dhcpfirst,#port,#txtsupport,#custom_options").prop('disabled', endis);
+	jQuery("#active_interface,#outgoing_interface").selectpicker("refresh");
 }
 function show_advanced_dns() {
 	jQuery("#showadv").show();
