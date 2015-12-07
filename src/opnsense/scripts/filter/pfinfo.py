@@ -37,7 +37,7 @@ import ujson
 
 if __name__ == '__main__':
     result = collections.OrderedDict()
-    for stattype in ['info', 'memory', 'timeouts', 'Interfaces']:
+    for stattype in ['info', 'memory', 'timeouts', 'Interfaces', 'rules']:
         with tempfile.NamedTemporaryFile() as output_stream:
             subprocess.call(['/sbin/pfctl', '-vvs'+stattype], stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
