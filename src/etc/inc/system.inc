@@ -1775,34 +1775,6 @@ function system_console_configure()
 	setup_serial_port();
 }
 
-function system_set_harddisk_standby()
-{
-	global $config;
-
-	if (isset($config['system']['harddiskstandby'])) {
-		if (file_exists("/var/run/booting")) {
-			echo gettext('Setting hard disk standby... ');
-		}
-
-		$standby = $config['system']['harddiskstandby'];
-		// Check for a numeric value
-		if (is_numeric($standby)) {
-			mwexec('/bin/sync');
-			if (set_single_sysctl('hw.ata.standby', (int)$standby)) {
-				// Reinitialize ATA-drives
-				mwexec('/usr/local/sbin/atareinit');
-				if (file_exists("/var/run/booting")) {
-					echo gettext("done.") . "\n";
-				}
-			} else if (file_exists("/var/run/booting")) {
-				echo gettext("failed!") . "\n";
-			}
-		} else if (file_exists("/var/run/booting")) {
-			echo gettext("failed!") . "\n";
-		}
-	}
-}
-
 function system_setup_sysctl()
 {
 	global $config;
