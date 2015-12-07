@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -113,5 +114,30 @@ class MenuSystem
         $menu = $this->root->getChildren();
 
         return $menu;
+    }
+
+    /**
+     * return the currently selected page's breadcrumbs
+     * @return array
+     */
+    public function getBreadcrumbs()
+    {
+	$nodes = $this->root->getChildren();
+        $breadcrumbs = array();
+
+	while ($nodes != null) {
+            $next = null;
+            foreach ($nodes as $node) {
+                if ($node->Selected) {
+                   $breadcrumbs[] = array('name' => $node->VisibleName);
+                   /* only go as far as the first reachable URL */
+                   $next = empty($node->Url) ? $node->Children : null;
+                   break;
+                }
+            }
+            $nodes = $next;
+        }
+
+        return $breadcrumbs;
     }
 }

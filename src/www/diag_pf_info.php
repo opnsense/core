@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2010 Scott Ullrich
@@ -28,7 +29,7 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = gettext("Diagnostics: pfInfo");
+$pgtitle = array(gettext('Diagnostics'), gettext('pfInfo'));
 $data_tabs = array("info", "memory", "timeouts", "interfaces", "rules");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

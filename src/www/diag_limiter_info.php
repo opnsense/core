@@ -28,7 +28,7 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = gettext("Diagnostics: Limiter Info");
+$pgtitle = array(gettext('Diagnostics'), gettext('Limiter Info'));
 $shortcut_section = "trafficshaper-limiters";
 
 if(isset($_POST['getactivity'])) {
