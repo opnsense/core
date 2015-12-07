@@ -310,9 +310,6 @@ $ipsec_dynamic_hosts = vpn_ipsec_configure();
 /* start SNMP service */
 services_snmpd_configure();
 
-/* power down hard drive if needed/set */
-system_set_harddisk_standby();
-
 /* lock down console if necessary */
 reload_ttys();
 
