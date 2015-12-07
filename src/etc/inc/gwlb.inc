@@ -168,7 +168,7 @@ EOD;
 		 * the if block. So using $gateway['ipprotocol'] is the better option.
 		 */
 		if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
-			$gwifip = find_interface_ip($gateway['interface'], true);
+			$gwifip = find_interface_ip($gateway['interface']);
 			if (!is_ipaddrv4($gwifip))
 				continue; //Skip this target
 
@@ -188,9 +188,9 @@ EOD;
 			if ($gateway['monitor'] == $gateway['gateway']) {
 				/* link locals really need a different src ip */
 				if (is_linklocal($gateway['gateway'])) {
-					$gwifip = find_interface_ipv6_ll($gateway['interface'], true);
+					$gwifip = find_interface_ipv6_ll($gateway['interface']);
 				} else {
-					$gwifip = find_interface_ipv6($gateway['interface'], true);
+					$gwifip = find_interface_ipv6($gateway['interface']);
 				}
 			} else {
 				/* 'monitor' has been set, so makes sure it has precedence over
@@ -198,14 +198,14 @@ EOD;
 				 * is a local link and 'monitor' is global routable then the
 				 * ICMP6 response would not find its way back home...
 				 */
-				$gwifip = find_interface_ipv6($gateway['interface'], true);
+				$gwifip = find_interface_ipv6($gateway['interface']);
 				if (is_linklocal($gateway['monitor'])) {
 					if (!strstr($gateway['monitor'], '%')) {
 						$gateway['monitor'] .= "%{$gateway['interface']}";
 					}
 				} else {
 					// Monitor is a routable address, so use a routable address for the "src" part
-					$gwifip = find_interface_ipv6($gateway['interface'], true);
+					$gwifip = find_interface_ipv6($gateway['interface']);
 				}
 			}
 
@@ -431,8 +431,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 	$found_defaultv4 = 0;
 	$found_defaultv6 = 0;
 
-	// Ensure the interface cache is up to date first
-	$interfaces = get_interface_arr(true);
+	$interfaces = legacy_interface_listget();
 	$interfaces_v4 = array();
 	$interfaces_v6 = array();
 

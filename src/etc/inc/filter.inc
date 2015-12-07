@@ -169,9 +169,6 @@ function filter_configure_sync()
     filter_pflog_start();
     update_filter_reload_status(gettext("Initializing"), true);
 
-    /* invalidate interface cache */
-    get_interface_arr(true);
-
     /* Get interface list to work with. */
     if(file_exists("/var/run/booting")) {
         echo gettext("Configuring firewall");
@@ -864,13 +861,7 @@ function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = tr
 
 function filter_generate_optcfg_array()
 {
-    global $config, $FilterIflist;
-
-    // Nasty hack to avoid unkown status of $FilterIflist, every piece of code using $FilterIflist should use
-    // this function to retrieve it's content.
-    if (isset($FilterIflist) && is_array($FilterIflist) && count($FilterIflist) > 0) {
-        return $FilterIflist;
-    }
+    global $config;
 
     $FilterIflist = array();
 

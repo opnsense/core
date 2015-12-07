@@ -136,10 +136,11 @@ function setup_polling()
 function setup_microcode() {
 
 	/* if list */
-	$ifs = get_interface_arr();
+	$ifs = legacy_interface_listget();
 
-	foreach($ifs as $if)
+	foreach($ifs as $if) {
 		enable_hardware_offloading($if);
+	}
 }
 
 /****f* legacy/get_carp_status
