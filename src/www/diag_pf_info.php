@@ -29,7 +29,7 @@
 require_once("guiconfig.inc");
 
 $pgtitle = gettext("Diagnostics: pfInfo");
-$data_tabs = array("info", "memory", "timeouts", "interfaces");
+$data_tabs = array("info", "memory", "timeouts", "interfaces", "rules");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['getactivity'])) {
