@@ -66,29 +66,6 @@ if ($pagename == 'wizard.php') {
 	}
 }
 
-// link menu system
-$menu = new OPNsense\Base\Menu\MenuSystem();
-
-// add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
-$cnf = OPNsense\Core\Config::getInstance();
-$ifarr = array();
-foreach ($cnf->object()->interfaces->children() as $key => $node) {
-    $ifarr[$key] = $node->descr ? $node->descr->__toString() : strtoupper($key);
-}
-natcasesort($ifarr);
-$ordid = 0;
-foreach ($ifarr as $key => $descr) {
-    $menu->appendItem('Interfaces', $key, array(
-        'url' => '/interfaces.php?if=' . $key,
-        'visiblename' => '[' . $descr . ']',
-        'cssclass' => 'fa fa-sitemap',
-        'order' => $ordid++,
-    ));
-}
-unset($ifarr);
-$menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
-$menuBreadcrumbs = $menu->getBreadcrumbs();
-
 $aclObj = new \OPNsense\Core\ACL();
 
 /* display a top alert bar if need be */

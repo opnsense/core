@@ -297,9 +297,8 @@ function pprint_port($port) {
 	return $pport;
 }
 
-function gentitle($breadcrumbs)
+function gentitle($breadcrumbs, $navlevelsep = ': ')
 {
-	$navlevelsep = ': ';
 	$output = $breadcrumbs;
 
 	if (isset($breadcrumbs[0]['name'])) {
