@@ -55,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['proxyport'] = !empty($config['system']['proxyport']) ? $config['system']['proxyport'] : null;
     $pconfig['proxyuser'] = !empty($config['system']['proxyuser']) ? $config['system']['proxyuser'] : null;
     $pconfig['proxypass'] = !empty($config['system']['proxypass']) ? $config['system']['proxypass'] : null;
-    $pconfig['harddiskstandby'] = !empty($config['system']['harddiskstandby']) ? $config['system']['harddiskstandby'] : null;
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
@@ -67,6 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
     $pconfig['powerd_ac_mode'] = "hadp";
+    $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
+    $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     if (!empty($config['system']['powerd_ac_mode'])) {
         $pconfig['powerd_ac_mode'] = $config['system']['powerd_ac_mode'];
     }
@@ -79,118 +80,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    if (!empty($_POST['crypto_hardware']) && !array_key_exists($_POST['crypto_hardware'], $crypto_modules)) {
+    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], $crypto_modules)) {
         $input_errors[] = gettext("Please select a valid Cryptographic Accelerator.");
     }
 
-    if (!empty($_POST['thermal_hardware']) && !array_key_exists($_POST['thermal_hardware'], $thermal_hardware_modules)) {
+    if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], $thermal_hardware_modules)) {
         $input_errors[] = gettext("Please select a valid Thermal Hardware Sensor.");
     }
 
     if (count($input_errors) == 0) {
-        if ($_POST['harddiskstandby'] <> "") {
-            $config['system']['harddiskstandby'] = $_POST['harddiskstandby'];
-            system_set_harddisk_standby();
-        } else {
-            unset($config['system']['harddiskstandby']);
-        }
-
-        if ($_POST['proxyurl'] <> "") {
+        if (!empty($pconfig['proxyurl'])) {
             $config['system']['proxyurl'] = $_POST['proxyurl'];
-        } else {
+        } elseif (isset($config['system']['proxyurl'])) {
             unset($config['system']['proxyurl']);
         }
 
-        if ($_POST['proxyport'] <> "") {
-            $config['system']['proxyport'] = $_POST['proxyport'];
-        } else {
+        if (!empty($pconfig['proxyport'])) {
+            $config['system']['proxyport'] = $pconfig['proxyport'];
+        } elseif (isset($config['system']['proxyport'])) {
             unset($config['system']['proxyport']);
         }
 
-        if ($_POST['proxyuser'] <> "") {
-            $config['system']['proxyuser'] = $_POST['proxyuser'];
-        } else {
+        if (!empty($pconfig['proxyuser'])) {
+            $config['system']['proxyuser'] = $pconfig['proxyuser'];
+        } elseif (isset($config['system']['proxyuser'])) {
             unset($config['system']['proxyuser']);
         }
 
-        if ($_POST['proxypass'] <> "") {
-            $config['system']['proxypass'] = $_POST['proxypass'];
-        } else {
+        if (!empty($pconfig['proxypass'])) {
+            $config['system']['proxypass'] = $pconfig['proxypass'];
+        } elseif (isset($config['system']['proxypass'])) {
             unset($config['system']['proxypass']);
         }
 
         $need_relayd_restart = false;
-        if ($_POST['lb_use_sticky'] == "yes") {
+        if (!empty($pconfig['lb_use_sticky'])) {
             if (!isset($config['system']['lb_use_sticky'])) {
                 $config['system']['lb_use_sticky'] = true;
-                $config['system']['srctrack'] = $_POST['srctrack'];
                 $need_relayd_restart = true;
             }
-        } else {
-            if (isset($config['system']['lb_use_sticky'])) {
-                unset($config['system']['lb_use_sticky']);
-                $need_relayd_restart = true;
-            }
+        } elseif (isset($config['system']['lb_use_sticky'])) {
+            unset($config['system']['lb_use_sticky']);
+            $need_relayd_restart = true;
+        }
+        if (!empty($pconfig['srctrack'])) {
+            $config['system']['srctrack'] = $pconfig['srctrack'];
+        } elseif (isset($config['system']['srctrack'])) {
+            unset($config['system']['srctrack']);
         }
 
-        if ($_POST['gw_switch_default'] == "yes") {
+
+        if (!empty($pconfig['gw_switch_default'])) {
             $config['system']['gw_switch_default'] = true;
-        } else {
+        } elseif (isset($config['system']['gw_switch_default'])) {
             unset($config['system']['gw_switch_default']);
         }
 
-        if ($_POST['powerd_enable'] == "yes") {
+        if (!empty($pconfig['powerd_enable'])) {
             $config['system']['powerd_enable'] = true;
-        } else {
+        } elseif (isset($config['system']['powerd_enable'])) {
             unset($config['system']['powerd_enable']);
         }
 
-        $config['system']['powerd_ac_mode'] = $_POST['powerd_ac_mode'];
-        $config['system']['powerd_battery_mode'] = $_POST['powerd_battery_mode'];
+        $config['system']['powerd_ac_mode'] = $pconfig['powerd_ac_mode'];
+        $config['system']['powerd_battery_mode'] = $pconfig['powerd_battery_mode'];
 
-        if ($_POST['crypto_hardware']) {
-            $config['system']['crypto_hardware'] = $_POST['crypto_hardware'];
-        } else {
+        if ($pconfig['crypto_hardware']) {
+            $config['system']['crypto_hardware'] = $pconfig['crypto_hardware'];
+        } elseif (isset($config['system']['crypto_hardware'])) {
             unset($config['system']['crypto_hardware']);
         }
 
-        if ($_POST['thermal_hardware']) {
-            $config['system']['thermal_hardware'] = $_POST['thermal_hardware'];
-        } else {
+        if (!empty($pconfig['thermal_hardware'])) {
+            $config['system']['thermal_hardware'] = $pconfig['thermal_hardware'];
+        } elseif (isset($config['system']['thermal_hardware'])) {
             unset($config['system']['thermal_hardware']);
         }
 
-        if ($_POST['schedule_states'] == "yes") {
+        if (!empty($pconfig['schedule_states'])) {
             $config['system']['schedule_states'] = true;
-        } else {
+        } elseif (isset($config['system']['schedule_states'])) {
             unset($config['system']['schedule_states']);
         }
 
-        if ($_POST['kill_states'] == "yes") {
+        if (!empty($pconfig['kill_states'])) {
             $config['system']['kill_states'] = true;
-        } else {
+        } elseif (isset($config['system']['kill_states'])) {
             unset($config['system']['kill_states']);
         }
 
-        if ($_POST['skip_rules_gw_down'] == "yes") {
+        if (!empty($pconfig['skip_rules_gw_down'])) {
             $config['system']['skip_rules_gw_down'] = true;
-        } else {
+        } elseif (isset($config['system']['skip_rules_gw_down'])) {
             unset($config['system']['skip_rules_gw_down']);
         }
 
-        if ($_POST['use_mfs_tmpvar'] == "yes") {
+        if (!empty($pconfig['use_mfs_tmpvar'])) {
             $config['system']['use_mfs_tmpvar'] = true;
-        } else {
+        } elseif (isset($config['system']['use_mfs_tmpvar'])) {
             unset($config['system']['use_mfs_tmpvar']);
         }
 
-        if (isset($_POST['rrdbackup'])) {
+        if (!empty($pconfig['rrdbackup'])) {
             $config['system']['rrdbackup'] = $_POST['rrdbackup'];
             install_cron_job("/usr/local/etc/rc.backup_rrd", ($config['system']['rrdbackup'] > 0), $minute = "0", "*/{$config['system']['rrdbackup']}");
+        } elseif (isset($config['system']['rrdbackup'])) {
+            install_cron_job("/usr/local/etc/rc.backup_rrd", false, $minute = "0", "*/{$config['system']['rrdbackup']}");
+            unset($config['system']['rrdbackup']);
         }
-        if (isset($_POST['dhcpbackup'])) {
-            $config['system']['dhcpbackup'] = $_POST['dhcpbackup'];
+        if (!empty($pconfig['dhcpbackup'])) {
+            $config['system']['dhcpbackup'] = $pconfig['dhcpbackup'];
             install_cron_job("/usr/local/etc/rc.backup_dhcpleases", ($config['system']['dhcpbackup'] > 0), $minute = "0", "*/{$config['system']['dhcpbackup']}");
+        } elseif (isset($config['system']['dhcpbackup'])) {
+            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", false, $minute = "0", "*/{$config['system']['dhcpbackup']}");
+            unset($config['system']['dhcpbackup']);
         }
 
         write_config();
@@ -242,7 +245,6 @@ include("head.inc");
 //]]>
 </script>
 
-<!-- row -->
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
@@ -519,12 +521,12 @@ include("head.inc");
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
                   <td>
                     <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup" <?=empty($pconfig['use_mfs_tmpvar']) ? "disabled=\"disabled\"" : "";?> >
-                      <option value='0' <?=!isset($config['system']['rrdbackup']) || $config['system']['rrdbackup'] == 0 ? "selected='selected'" : "";?>>
+                      <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? "selected='selected'" : "";?>>
                         <?=gettext("Disable"); ?>
                       </option>
 <?php
                       for ($x=1; $x<=24; $x++):?>
-                      <option value='<?= $x ?>' <?= $config['system']['rrdbackup'] == $x ? "selected='selected'" : "";?>>
+                      <option value='<?= $x ?>' <?= $pconfig['rrdbackup'] == $x ? "selected='selected'" : "";?>>
                         <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
                       </option>
 <?php
@@ -540,10 +542,10 @@ include("head.inc");
                 <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
                 <td>
                   <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup" <?=empty($pconfig['use_mfs_tmpvar']) ? "disabled=\"disabled\"" : "";?> >
-                    <option value='0' <?= !isset($config['system']['dhcpbackup']) || ($config['system']['dhcpbackup'] == 0) ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
+                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
 <?php
                     for ($x=1; $x<=24; $x++):?>
-                    <option value='<?= $x ?>' <?= $config['system']['dhcpbackup'] == $x ? "selected='selected'" : "";?>>
+                    <option value='<?= $x ?>' <?= $pconfig['dhcpbackup'] == $x ? "selected='selected'" : "";?>>
                       <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
                     </option>
 <?php
