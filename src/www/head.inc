@@ -13,10 +13,33 @@ function system_get_language_code() {
 	return $code;
 }
 
+// link menu system
+$menu = new OPNsense\Base\Menu\MenuSystem();
+
+// add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
+$cnf = OPNsense\Core\Config::getInstance();
+$ifarr = array();
+foreach ($cnf->object()->interfaces->children() as $key => $node) {
+    $ifarr[$key] = $node->descr ? $node->descr->__toString() : strtoupper($key);
+}
+natcasesort($ifarr);
+$ordid = 0;
+foreach ($ifarr as $key => $descr) {
+    $menu->appendItem('Interfaces', $key, array(
+        'url' => '/interfaces.php?if=' . $key,
+        'visiblename' => '[' . $descr . ']',
+        'cssclass' => 'fa fa-sitemap',
+        'order' => $ordid++,
+    ));
+}
+unset($ifarr);
+$menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
+$menuBreadcrumbs = $menu->getBreadcrumbs();
 
 $g['theme'] = get_current_theme();
 
-$pagetitle = gentitle( $pgtitle ); /* XXX zap me */
+$pagetitle = gentitle(array_reverse(count($menuBreadcrumbs) ? $menuBreadcrumbs : $pgtitle), ' | ');
+$pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']);
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="<?=system_get_language_code();?>" class="ie ie8 lte9 lte8 no-js"><![endif]-->
@@ -33,7 +56,7 @@ $pagetitle = gentitle( $pgtitle ); /* XXX zap me */
 		<meta name="copyright" content="" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-		<title><?php echo($config['system']['hostname'] . "." . $config['system']['domain'] . " - " . $pagetitle); ?></title>
+		<title><?= $pagetitle ?></title>
 
 		<!-- include (theme) style -->
 		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
