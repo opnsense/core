@@ -38,7 +38,14 @@ $menuBreadcrumbs = $menu->getBreadcrumbs();
 
 $g['theme'] = get_current_theme();
 
-$pagetitle = gentitle(array_reverse(count($menuBreadcrumbs) ? $menuBreadcrumbs : $pgtitle), ' | ');
+if (count($menuBreadcrumbs)) {
+    $menuBreadcrumbs_parts = array_reverse($menuBreadcrumbs);
+} elseif (!empty($pgtitle)) {
+    $menuBreadcrumbs_parts = $pgtitle;
+} else {
+    $menuBreadcrumbs_parts = array();
+}
+$pagetitle = gentitle($menuBreadcrumbs_parts, ' | ');
 $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']);
 
 ?><!doctype html>
