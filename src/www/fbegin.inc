@@ -201,7 +201,7 @@ if($need_alert_display == true) {
 			<div class="container-fluid">
 			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 				<ul class="list-inline">
-					<li class="__mb"><h1><?= gentitle(count($menuBreadcrumbs) ? $menuBreadcrumbs : $pgtitle) ?></h1></li>
+					<li class="__mb"><h1><?= gentitle($menuBreadcrumbs) ?></h1></li>
 
 					<li class="btn-group-container">
 

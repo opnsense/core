@@ -35,7 +35,6 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("openvpn-client-export.inc");
 
-$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Shared Key Export'));
 $shortcut_section = 'openvpn';
 
 $ras_server = array();

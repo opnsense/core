@@ -72,8 +72,6 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("LAGG"));
-
 include("head.inc");
 
 $main_buttons = array(

@@ -87,7 +87,6 @@ if ($_GET['act'] == "del") {
 }
 */
 
-$pgtitle = array(gettext("Services"), gettext("Load Balancer"),gettext("Relay Protocol"));
 $shortcut_section = "relayd";
 
 include("head.inc");

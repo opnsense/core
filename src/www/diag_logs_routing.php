@@ -48,6 +48,7 @@ if (isset($_POST['filtertext'])) {
 }
 
 $shortcut_section = "routing";
+
 include("head.inc");
 ?>
 

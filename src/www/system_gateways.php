@@ -203,16 +203,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
 legacy_html_escape_form_data($a_gateways);
-$pgtitle = array(gettext('System'), gettext('Gateways'));
+
 include("head.inc");
 
 $main_buttons = array(
     array('label'=> gettext('Add gateway'), 'href'=>'system_gateways_edit.php'),
 );
-?>
 
+?>
 
 <script type="text/javascript">
 $( document ).ready(function() {

@@ -2,11 +2,10 @@
 
 /*
 	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) Jim Pingle jim@pingle.org
+	Copyright (C) 2009-2010 Jim Pingle <jim@pingle.org>
 	Copyright (C) 2004-2009 Scott Ullrich
-	Copyright (C) 2003-2009 Manuel Kasper <mk@neon1.net>,
-	(origin easyrule.inc/php) Copyright (C) 2009-2010 Jim Pingle (jpingle@gmail.com)
-	(origin easyrule.inc/php) Originally Sponsored By Anathematic @ pfSense Forums
+	Copyright (C) 2003-2009 Manuel Kasper <mk@neon1.net>
+	Originally Sponsored By Anathematic @ pfSense Forums
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -590,8 +589,6 @@ if (isset($_POST['clear'])) {
 	clear_clog($filter_logfile);
 }
 
-$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Normal View'));
-$shortcut_section = "firewall";
 include("head.inc");
 
 ?>

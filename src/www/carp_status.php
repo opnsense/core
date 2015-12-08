@@ -94,7 +94,6 @@ $status = get_carp_status();
 
 $carp_detected_problems = (array_pop(get_sysctl("net.inet.carp.demotion")) > 0);
 
-$pgtitle = array(gettext('System'), gettext('High Availability'), gettext('CARP Status'));
 include("head.inc");
 
 ?>

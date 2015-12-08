@@ -28,8 +28,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("Interfaces"),gettext("Assign network ports"));
-
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("vpn.inc");

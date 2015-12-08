@@ -26,7 +26,6 @@
 	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
-
 */
 
 $shortcuts = array();
@@ -157,11 +156,6 @@ $shortcuts['resolver']['service'] = 'unbound';
 $shortcuts['ntp'] = array();
 $shortcuts['ntp']['service'] = 'ntpd';
 
-$shortcuts['firewall'] = array();
-$shortcuts['firewall']['main'] = "firewall_rules.php";
-$shortcuts['firewall']['log'] = "diag_logs_filter.php";
-$shortcuts['firewall']['status'] = "status_filter_reload.php";
-
 $shortcuts['routing'] = array();
 $shortcuts['routing']['main'] = "system_routes.php";
 $shortcuts['routing']['log'] = "diag_logs_routing.php";
@@ -181,10 +175,6 @@ $shortcuts['snmp']['service'] = "bsnmpd";
 $shortcuts['authentication'] = array();
 $shortcuts['authentication']['main'] = "system_authservers.php";
 $shortcuts['authentication']['status'] = "diag_authentication.php";
-
-$shortcuts['aliases'] = array();
-$shortcuts['aliases']['main'] = "firewall_aliases.php";
-$shortcuts['aliases']['status'] = "diag_tables.php";
 
 $shortcuts['squid'] = array();
 $shortcuts['squid']['main'] = "ui/proxy/";

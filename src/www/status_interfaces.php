@@ -48,7 +48,6 @@ if ($_POST['if'] && $_POST['submit']) {
 	exit;
 }
 
-$pgtitle = array(gettext('Interfaces'), gettext('Overview'));
 include("head.inc");
 
 ?>

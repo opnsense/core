@@ -111,8 +111,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array('Services', 'DNS Filter');
-
 include 'head.inc';
 
 ?>

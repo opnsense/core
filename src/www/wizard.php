@@ -217,7 +217,7 @@ do {
 } while ($oldstepid != $stepid);
 
 $closehead = false;
-$pgtitle = array($title);
+
 include("head.inc");
 
 ?>

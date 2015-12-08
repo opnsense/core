@@ -52,8 +52,6 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("Groups"));
-
 include("head.inc");
 
 $main_buttons = array(

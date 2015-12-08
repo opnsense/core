@@ -40,8 +40,9 @@ $a_gateways = return_gateways_array();
 
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($a_gateway_groups);
-$pgtitle = array(gettext('System'), gettext('Gateways'), gettext('Group Status'));
+
 include("head.inc");
+
 ?>
 
 <body>

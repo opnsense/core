@@ -160,7 +160,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"), gettext("Load Balancer"),gettext("Relay Action"),gettext("Edit"));
 $shortcut_section = "relayd";
 
 include("head.inc");

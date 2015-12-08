@@ -28,9 +28,6 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("Status"),gettext("Filter Reload Status"));
-$shortcut_section = "firewall";
-
 if($_GET['getstatus']) {
 	$status = '';
 	if (file_exists('/var/run/filter_reload_status')) {

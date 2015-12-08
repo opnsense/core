@@ -33,12 +33,13 @@ require_once("vpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Security Association Database'));
 $shortcut_section = 'ipsec';
+
 include("head.inc");
 
 $sad = ipsec_dump_sad();
 legacy_html_escape_form_data($sad);
+
 ?>
 
 <body>

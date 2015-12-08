@@ -53,7 +53,6 @@ if (!$nentries) {
 $now = time();
 $year = date("Y");
 
-$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Pool Status'));
 $shortcut_section = 'relayd';
 
 include("head.inc");

@@ -2,7 +2,7 @@
 
 /*
 	Copyright (C) 2014-2015 Deciso B.V. - J. Schellevis
-	Copyright (C) 2009 Jim Pingle (jpingle@gmail.com)
+	Copyright (C) 2009 Jim Pingle <jpingle@gmail.com>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -26,9 +26,6 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
-
-$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Summary View'));
-$shortcut_section = "firewall";
 
 require_once("guiconfig.inc");
 require_once("filter_log.inc");

@@ -156,7 +156,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("DNS forwarder"),gettext("Edit host"));
 include("head.inc");
 
 ?>

@@ -171,7 +171,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Dynamic DNS client"));
 include("head.inc");
 
 ?>

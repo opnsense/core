@@ -68,8 +68,6 @@ if (!is_array($config['ppps']['ppp'])) {
 
 $a_ppps = $config['ppps']['ppp'];
 
-$pgtitle = array(gettext('Interfaces'), gettext('PPPs'));
-
 include("head.inc");
 
 $main_buttons = array(

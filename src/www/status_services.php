@@ -272,16 +272,12 @@ function service_control_restart($name, $extras) {
 	return sprintf(gettext("%s has been restarted."),htmlspecialchars($name));
 }
 
-
-$pgtitle = array(gettext("Status"),gettext("Services"));
 include("head.inc");
 
 ?>
 
 <body>
-<?php
-include("fbegin.inc");
-?>
+<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
 		<div class="container-fluid">

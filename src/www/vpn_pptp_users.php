@@ -60,12 +60,12 @@ if ($_GET['act'] == "del") {
     }
 }
 
-$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Users'));
 include("head.inc");
 
 $main_buttons = array(
     array('label'=>gettext("add user"), 'href'=>'vpn_pptp_users_edit.php'),
 );
+
 ?>
 
 <body>

@@ -129,8 +129,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("LAGG"),gettext("Edit"));
-
 include("head.inc");
 
 ?>

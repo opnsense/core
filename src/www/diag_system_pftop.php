@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2008-2009 Scott Ullrich
@@ -52,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-$pgtitle = array(gettext('Diagnostics'), gettext('pfTop'));
 include("head.inc");
+
 ?>
 <body>
 <?php include("fbegin.inc"); ?>

@@ -51,7 +51,6 @@ if ($_GET['act'] == "del") {
 	exit;
 }
 
-$pgtitle = array(gettext("Services"), gettext("Dynamic DNS clients"));
 include("head.inc");
 
 $main_buttons = array(

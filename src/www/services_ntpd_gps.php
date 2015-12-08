@@ -129,12 +129,12 @@ if ($_POST) {
 	$savemsg = get_std_save_message();
 }
 
-$closehead = false;
 $pconfig = &$config['ntpd']['gps'];
-$pgtitle = array(gettext('Services'), gettext('Network Time'), gettext('GPS'));
 $shortcut_section = "ntp";
+$closehead = false;
 
 include("head.inc");
+
 ?>
 
 <body>

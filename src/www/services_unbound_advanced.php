@@ -114,7 +114,7 @@ if ($_POST) {
 }
 
 $closehead = false;
-$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Advanced'));
+
 include_once("head.inc");
 
 ?>
