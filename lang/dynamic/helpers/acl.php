@@ -217,7 +217,6 @@ echo gettext('Allow access to the \'System: License\' page.');
 echo gettext('Allow access to the \'Services: DNS Filter\' page.');
 echo gettext('Allow access to the \'Services: DNS Resolver\' page.');
 echo gettext('Allows access to the \'Diagnostics: pfTop\' page');
-echo gettext('Allow access to the \'Status: RRD Graphs: settings\' page.');
 echo gettext('Allow access to the \'Interfaces: GIF\' page.');
 echo gettext('Allow access to the \'VPN: IPsec: Edit Pre-Shared Keys\' page.');
 echo gettext('Allow access to the \'Services: Dynamic DNS client\' page.');

@@ -33,13 +33,11 @@
  *
  */
 echo gettext('Enable or disable the proxy service.');
-echo gettext('The port number where Squid sends and receives ICP queries to
-	    and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.
-	');
+echo gettext('The port number where Squid sends and receives ICP queries to and from neighbor caches. Leave blank to disable (default). The standard UDP port for ICP is 3130.');
 echo gettext('Enable access logging.');
 echo gettext('Enable store logging.');
 echo gettext('If set (default), Squid will include a Via header in requests and
-    replies as required by RFC2616.');
+            replies as required by RFC2616.');
 echo gettext('Select what to do with X-Forwarded for header.');
 echo gettext('Suppress Squid version string info in HTTP headers and HTML error pages.');
 echo gettext('Enter the storage size for the local cache (default is 100).');
@@ -57,13 +55,12 @@ echo gettext('Select interface(s) the ftp proxy will bind to.');
 echo gettext('The port the proxy service will listen to.');
 echo gettext('Select Authentication method');
 echo gettext('The prompt will be displayed in the authentication request window.');
-echo gettext('This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live).<br/>
-    When the TTL expires, the user will be prompted for credentials again.');
 echo gettext('The total number of authenticator processes to spawn.');
 echo gettext('Select if job is enabled or not');
 echo gettext('Enter a filename for storing the blacklist.');
 echo gettext('Enter an url to fetch the blacklist from.');
 echo gettext('Enter a description to explain what this blacklist is intended for.');
+echo gettext('set action to perform here, only used when in IPS mode');
 echo gettext('enable IDS');
 echo gettext('Select interface(s) to use.');
 echo gettext('enable this pipe and it\'s related queues and rules');
