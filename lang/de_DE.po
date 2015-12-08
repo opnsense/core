@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-02 20:48+0000\n"
+"POT-Creation-Date: 2015-12-08 07:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 2486\n"
+"X-Pootle-Revision: 2622\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -1339,7 +1339,7 @@ msgid "Certificate Manager"
 msgstr "Zertifikatsmanager"
 
 msgid "none"
-msgstr "keiner"
+msgstr "keines"
 
 # File: lang/dynamic/helpers/models.php, line: 177
 msgid "History"
@@ -3010,11 +3010,11 @@ msgstr "Das POP3 Passwort wurde nicht akzeptiert:"
 
 # File: src/etc/inc/notices.smtp.inc, line: 436
 msgid "could not determine the SMTP to connect"
-msgstr ""
+msgstr "konnte SMTP nicht bestimmen zum Verbinden"
 
 # File: src/etc/inc/notices.smtp.inc, line: 442
 msgid "Resolving SMTP server domain \"%s\"..."
-msgstr "Löse SMTP Serverdomain \"%s\" auf..."
+msgstr "Löse SMTP-Serverdomain \"%s\" auf..."
 
 # File: src/etc/inc/notices.smtp.inc, line: 454
 msgid "Connected to SMTP server \"%s\"."
@@ -3034,6 +3034,8 @@ msgstr ""
 msgid ""
 "direct delivery connection is already established and sender is already set"
 msgstr ""
+"direkte Zustellverbindung ist bereits aufgebaut und der Absender wurde "
+"bereits gesetzt"
 
 # File: src/etc/inc/notices.smtp.inc, line: 637
 msgid "connection is not in the initial state"
@@ -3047,10 +3049,11 @@ msgstr "es wurde kein gültiger direkter Empfänger angegeben"
 msgid ""
 "it is not possible to deliver directly to recipients of different domains"
 msgstr ""
+"es ist nicht möglich, an Empfänger unterschiedlicher Domains zuzustellen"
 
 # File: src/etc/inc/notices.smtp.inc, line: 683
 msgid "connection is already established and the recipient is already set"
-msgstr ""
+msgstr "Verbindung ist bereits aufgebaut und der Empfänger ist bereits gesetzt"
 
 # File: src/etc/inc/notices.smtp.inc, line: 695
 msgid "connection is not in the recipient setting state"
@@ -3077,7 +3080,7 @@ msgstr "Konnte Serverkonfiguration nicht finden."
 # File: src/etc/inc/openvpn-client-export.inc, line: 88
 # File: src/etc/inc/openvpn-client-export.inc, line: 690
 msgid "You cannot export for disabled servers."
-msgstr ""
+msgstr "Sie können keinen deaktivierten Server exportieren."
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 96
 msgid "Could not locate server certificate."
@@ -3100,6 +3103,8 @@ msgstr "Konnte Client-Zertifikat nicht finden."
 # File: src/etc/inc/openvpn-client-export.inc, line: 754
 msgid "This server uses UDP protocol and cannot communicate with HTTP proxy."
 msgstr ""
+"Dieser Server verwendet das UDP Protokoll und kann deshalb nicht mit einem "
+"HTTP Proxy kommunizieren."
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 502
 msgid "Could not create a config to export."
@@ -3185,7 +3190,7 @@ msgid "You must specify a 'Tunnel network'."
 msgstr "Sie müssen ein 'Tunnelnetzwerk' angeben."
 
 msgid "OpenVPN %s wizard"
-msgstr ""
+msgstr "OpenVPN %s Assistent"
 
 msgid "OpenVPN Wizard"
 msgstr "OpenVPN Assistent"
@@ -3201,6 +3206,8 @@ msgstr "INIT"
 
 msgid "Restored %s of config file (maybe from CARP partner)"
 msgstr ""
+"%s der Konfigurationsdatei wurde wiederhergestellt (möglicherweise von einem "
+"CARP Partner)"
 
 msgid ""
 "Alias archive is a .zip file which cannot be decompressed because utility is "
@@ -3237,12 +3244,16 @@ msgstr "Erstelle rrd Updateskript"
 
 msgid "DHCP leases restore failed exited with %1$s, the error is: %2$s%3$s"
 msgstr ""
+"Wiederherstellung der DHCP-Leases fehlgeschlagen, wurde beendet mit %1$s, "
+"Fehler: %2$s%3$s"
 
 msgid "Starting DHCP service..."
 msgstr "Starte DHCP Dienst..."
 
 msgid "Warning!  DHCP Failover setup and no CARP virtual IPs defined!"
 msgstr ""
+"Warnung! DHCP Failover konfiguriert, aber keine CARP virtuellen IPs "
+"definiert!"
 
 msgid "Error: cannot open dhcpd.conf in services_dhcpdv4_configure().%s"
 msgstr ""
@@ -3262,7 +3273,7 @@ msgstr "DHCPv6 relay service wird gestartet..."
 
 # File: src/etc/inc/services.inc, line: 1739
 msgid "Starting dynamic DNS clients..."
-msgstr ""
+msgstr "Starte dynamische DNS Clients..."
 
 msgid "Starting DNS forwarder..."
 msgstr "Starte DNS-Forwarder..."
@@ -3298,10 +3309,10 @@ msgid "Removed cron job for %s"
 msgstr "Cronjob für %s entfernt"
 
 msgid "Router Advertisement Daemon"
-msgstr ""
+msgstr "Router Advertisement Daemon"
 
 msgid "Unbound DNS Forwarder"
-msgstr ""
+msgstr "Unbound DNS Forwarder"
 
 msgid "NTP clock sync"
 msgstr "NTP Zeitsynchronisation"
@@ -3356,7 +3367,7 @@ msgid "DNSCACHE: Found old IP %1$s and new IP %2$s"
 msgstr "DNSCACHE: Alte IP %1$s und neue IP %2$s gefunden"
 
 msgid "Static Routes: Gateway IP could not be found for %s"
-msgstr ""
+msgstr "Statische Route: Gateway IP wurde nicht gefunden für %s"
 
 msgid "Starting syslog..."
 msgstr "Starte Systemprotokoll..."
@@ -3365,7 +3376,7 @@ msgid "Error: cannot open syslog.conf in system_syslogd_start().%s"
 msgstr "Fehler: Konnte syslog.conf in system_syslogd_start() nicht öffnen.%s"
 
 msgid "webConfigurator default"
-msgstr ""
+msgstr "webConfigurator Standard"
 
 msgid "Importing HTTPS certificate"
 msgstr "Importiere HTTPS Zertifikat"
@@ -3551,10 +3562,10 @@ msgid "TCP Offload engine"
 msgstr ""
 
 msgid "Interface %s Static Gateway"
-msgstr ""
+msgstr "Interface %s statisches Gateway"
 
 msgid "Interface %s Dynamic Gateway"
-msgstr ""
+msgstr "Interface %s dynamisches Gateway"
 
 msgid "Upgraded static route for %s"
 msgstr "Aktualisierte statische Route für %s"
@@ -3613,7 +3624,7 @@ msgstr ""
 "s gibt."
 
 msgid "Forcefully reloading IPsec"
-msgstr ""
+msgstr "Erzwinge erneutes Laden von IPsec"
 
 msgid "Configuring PPTP VPN service... "
 msgstr "Konfiguriere PPTP VPN Dienst... "
@@ -3670,7 +3681,7 @@ msgid "XML error: no %s object found!"
 msgstr "XML Fehler: keine %s Objekte gefunden!"
 
 msgid "Merged in config (%s sections) from XMLRPC client."
-msgstr ""
+msgstr "Konfiguration (%s Abschnitte) von XMLRPC Client hinzugefügt."
 
 # File: src/etc/rc.bootup, line: 143
 msgid "Default interfaces not found -- Running interface assignment option."
@@ -3688,6 +3699,7 @@ msgstr "Möchten Sie fortfahren [j|n]? "
 # File: src/etc/rc.initial.password, line: 48
 msgid "The User manager authentication server is set to \"%s\"."
 msgstr ""
+"Der Anmeldeserver für die Benutzerverwaltung ist auf \"%s\" eingestellt."
 
 # File: src/etc/rc.initial.password, line: 50
 msgid "Do you want to set it back to Local Database [y|n]? "
@@ -3716,6 +3728,8 @@ msgstr ""
 
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
 msgstr ""
+"Subnetzmasken müssen als Bitwerte (in CIDR-Notation) eingegeben werden bei "
+"%s."
 
 msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr "Geben Sie die neue %s %s Subnetbitzahl ein (1 bis %s):"
@@ -3727,7 +3741,7 @@ msgid "You cannot set broadcast address to an interface"
 msgstr "Sie können die Broadcastadresse einem Interface nicht zuweisen"
 
 msgid "For a WAN, enter the new %s %s upstream gateway address."
-msgstr ""
+msgstr "Für ein WAN, geben Sie die neue %s %s Upstream Gateway Adresse ein."
 
 msgid "For a LAN, press <ENTER> for none:"
 msgstr "Für ein LAN, drücke <ENTER> für nichts:"
@@ -3745,7 +3759,7 @@ msgid "This IP address must be in the interface's subnet"
 msgstr "Diese IP-Adresse muss im Subnetz des Interfaces liegen"
 
 msgid "Enter the end address of the %s client address range:"
-msgstr ""
+msgstr "Geben Sie die letzte Adresse des %s Client Adressbereichs an:"
 
 msgid "The end address of the DHCP range must be >= the start address"
 msgstr ""
@@ -3755,10 +3769,10 @@ msgid "Disabling %s DHCPD..."
 msgstr "Deaktiviere %s DHCPD..."
 
 msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
-msgstr ""
+msgstr "Möchten Sie den webConfigurator auf das HTTP-Protokoll zurücksetzen?"
 
 msgid "Note: the anti-lockout rule on %s has been re-enabled."
-msgstr ""
+msgstr "Hinweis: die Anti-Lockout Regel für %s wurde wieder aktiviert."
 
 msgid "%s IP configuration from console menu"
 msgstr "%s IP Konfiguration aus dem Konsolenmenü"
@@ -3788,6 +3802,8 @@ msgid ""
 "Could not obtain openvpn lock for executing rc.openvpn for more than 10 "
 "seconds continuing..."
 msgstr ""
+"Konnte über 10 Sekunden lang keinen openvpn Lock erhalten um rc.openvpn "
+"auszuführen..."
 
 msgid "n/j/y H:i:s"
 msgstr "n/j/y H:i:s"
@@ -3948,7 +3964,7 @@ msgstr "Vorlagenname"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 261
 msgid "File input"
-msgstr ""
+msgstr "Dateieingabe"
 
 msgid "Upload"
 msgstr "Upload"
@@ -4186,7 +4202,7 @@ msgid "Inverse"
 msgstr "Umgekehrt"
 
 msgid "Off"
-msgstr "Aus"
+msgstr "Deaktiviert"
 
 msgid "On"
 msgstr "Ein"
@@ -4256,7 +4272,7 @@ msgstr "Zeitplan"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 399
 msgid "rulesets"
-msgstr ""
+msgstr "Regelwerk"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 408
 msgid "Last updated"
@@ -4403,9 +4419,13 @@ msgstr "CARP wurde aktiviert"
 msgid ""
 "CARP has detected a problem and this unit has been demoted to BACKUP status."
 msgstr ""
+"CARP hat ein Problem erkannt und diese Einheit wurde auf den BACKUP Status "
+"herabgestuft."
 
 msgid "Check link status on all interfaces with configured CARP VIPs."
 msgstr ""
+"Überprüfen Sie den Link Status aller Schnittstellen mit CARP VIP "
+"Konfiguration."
 
 msgid "Enable CARP"
 msgstr "Aktiviere CARP"
@@ -4750,7 +4770,7 @@ msgstr "Bestätigen:"
 
 # File: src/www/diag_confbak.php, line: 42
 msgid "Changed backup revision count."
-msgstr ""
+msgstr "Zähler der Backup Revision geändert."
 
 msgid "Deleted backup with timestamp %1$s and description \"%2$s\"."
 msgstr ""
@@ -4823,6 +4843,10 @@ msgid ""
 "options and select the newer configuration in the right column, then press "
 "the button."
 msgstr ""
+"Um die Unterschiede zwischen einer alten und einer neueren Konfiguration "
+"anzuzeigen, wählen Sie die alte Konfiguration anhand der Auswahlfelder in "
+"der linken Spalte und eine neuere Konfiguration in der rechten Spalte aus. "
+"Drücken Sie anschließend den Button."
 
 msgid "Diff"
 msgstr "Unterschied"
@@ -4869,6 +4893,8 @@ msgstr "LAN IP-Adresse wird auf 192.168.1.1 zurückgesetzt"
 
 msgid "System will be configured as a DHCP server on the default LAN interface"
 msgstr ""
+"Das System wird als DHCP Server auf der Standard LAN Schnittstelle "
+"eingerichtet "
 
 msgid "Reboot after changes are installed"
 msgstr "Neustarten nachdem die Änderungen installiert wurden"
@@ -4877,6 +4903,8 @@ msgid ""
 "WAN interface will be set to obtain an address automatically from a DHCP "
 "server"
 msgstr ""
+"Die WAN Schnittstelle wird so konfiguriert, dass sie automatisch eine "
+"Adresse vom DHCP Server erhält."
 
 msgid "webConfigurator admin username will be reset to 'root'"
 msgstr ""
@@ -4924,17 +4952,17 @@ msgstr "Hostname oder IP"
 
 # File: src/www/diag_dns.php, line: 210
 msgid "An alias already exists for the hostname %s."
-msgstr ""
+msgstr "Ein Alias extestiert bereits für den Hostname %s."
 
 # File: src/www/diag_dns.php, line: 217
 msgid "Alias created with name %s."
-msgstr ""
+msgstr "Ein Alias mit dem Namen %s wurde erstellt."
 
 msgid "Resolution time per server"
 msgstr ""
 
 msgid "Query time"
-msgstr ""
+msgstr "Abfragezeit"
 
 msgid "More Information:"
 msgstr "Mehr Information"
@@ -4943,6 +4971,8 @@ msgid ""
 "NOTE: The following links are to external services, so their reliability "
 "cannot be guaranteed."
 msgstr ""
+"Hinweis: Die folgenden Links führen zu externen Dienstleistungen, ihre "
+"Zuverlässigkeit kann nicht garantiert werden."
 
 msgid "IP WHOIS @ DNS Stuff"
 msgstr ""
@@ -5022,7 +5052,7 @@ msgstr "Sind Sie sicher, dass Sie das System herunterfahren möchten?"
 # File: src/www/diag_ipsec.php, line: 91
 # File: src/www/widgets/widgets/ipsec.widget.php, line: 127
 msgid "Connection"
-msgstr ""
+msgstr "Verbindung"
 
 msgid "Local ID"
 msgstr "Lokale ID"
@@ -5038,11 +5068,11 @@ msgstr "Ferne IP"
 
 # File: src/www/diag_ipsec.php, line: 97
 msgid "Local Auth"
-msgstr ""
+msgstr "Lokale Authentifizierung"
 
 # File: src/www/diag_ipsec.php, line: 98
 msgid "Remote Auth"
-msgstr ""
+msgstr "Ferne Authentifizierung"
 
 msgid "Local subnets"
 msgstr "Lokale Subnetze"
@@ -5052,7 +5082,7 @@ msgid "SPI(s)"
 msgstr ""
 
 msgid "Remote subnets"
-msgstr ""
+msgstr "Ferne Subnetze"
 
 # File: src/www/diag_ipsec.php, line: 151
 msgid "Stats"
@@ -5060,28 +5090,28 @@ msgstr ""
 
 # File: src/www/diag_ipsec.php, line: 162
 msgid "in"
-msgstr ""
+msgstr "ein"
 
 # File: src/www/diag_ipsec.php, line: 163
 msgid "out"
-msgstr ""
+msgstr "aus"
 
 msgid "Time"
 msgstr "Zeit"
 
 # File: src/www/diag_ipsec.php, line: 174
 msgid "Bytes in"
-msgstr ""
+msgstr "Byte eingehend"
 
 # File: src/www/diag_ipsec.php, line: 175
 msgid "Bytes out"
-msgstr ""
+msgstr "Byte ausgehend"
 
 msgid "Pool: "
 msgstr "Pool: "
 
 msgid "usage: "
-msgstr ""
+msgstr "Verbrauch: "
 
 msgid "online: "
 msgstr "online: "
@@ -5152,7 +5182,7 @@ msgstr "Letzte %s Protokolleinträge des DHCP Dienstes"
 
 # File: src/www/diag_logs_dhcp.php, line: 77
 msgid "NOTE: Clearing the log file will restart the DHCP daemon."
-msgstr ""
+msgstr "Hinweis: Löschen der Protokoll-Datei wird den DHCP-Daemon neu starten."
 
 msgid "Easy Rule: Blocked from Firewall Log View"
 msgstr "Einfache Regel: Blockiert aus der Firewalllogansicht"
@@ -5333,11 +5363,11 @@ msgstr "Anzahl"
 
 # File: src/www/diag_logs_ipsec.php, line: 49
 msgid "System Log"
-msgstr ""
+msgstr "Systemprotokoll"
 
 # File: src/www/diag_logs_ipsec.php, line: 69
 msgid "Last %s IPsec log entries"
-msgstr ""
+msgstr "Letzte %s IPsec Protokolleinträge"
 
 msgid "NTP"
 msgstr "NTP"
@@ -5346,7 +5376,7 @@ msgid "Last %s NTP log entries"
 msgstr "Letzte %s NTP-Protokolleinträge"
 
 msgid "Last %s OpenVPN log entries"
-msgstr ""
+msgstr "Letzte %s OpenVPN Protokolleinträge"
 
 msgid "PPTP Logins"
 msgstr "PPTP Anmeldungen"
@@ -5375,11 +5405,11 @@ msgid "Access"
 msgstr "Zugang"
 
 msgid "Last %s PPP log entries"
-msgstr ""
+msgstr "Letzte %s PPP Protokolleinträge"
 
 # File: src/www/diag_logs_proxy.php, line: 65
 msgid "Last %s Proxy log entries"
-msgstr ""
+msgstr "Letzte %s Proxy Protokolleinträge"
 
 msgid "Last %s Load Balancer log entries"
 msgstr "Die letzten %s Einträge des Lastverteilerprotokolls"
@@ -5434,16 +5464,19 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 315
 msgid "GUI Log Entries to Display"
-msgstr ""
+msgstr "Anzeige von Protokolleinträgen"
 
 msgid ""
 "Hint: This is only the number of log entries displayed in the GUI. It does "
 "not affect how many entries are contained in the actual log files."
 msgstr ""
+"Hinweis: Dies ist nur die Anzahl der Protokolleinträge die in der GUI "
+"angzeigt werden. Dies hat keinen Einfluss wieviele Einträge in der aktuellen "
+"Protokolldatei enthalten sind."
 
 # File: src/www/diag_logs_settings.php, line: 321
 msgid "Log File Size (Bytes)"
-msgstr ""
+msgstr "Protokolldateigröße (Byte)"
 
 # Rechtschreibfehler behoben
 msgid ""
@@ -5510,7 +5543,7 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 351
 msgid "Web Server Log"
-msgstr ""
+msgstr "Webserver-Protokoll"
 
 msgid "Log errors from the web server process."
 msgstr "Protokolliere Fehler des Webserverprozesses."
@@ -5522,7 +5555,7 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 357
 msgid "Filter descriptions"
-msgstr ""
+msgstr "Filterbeschreibung"
 
 # File: src/www/diag_logs_settings.php, line: 360
 msgid "Omit descriptions"
@@ -5530,11 +5563,11 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 361
 msgid "Display as column"
-msgstr ""
+msgstr "Als Spalte anzeigen"
 
 # File: src/www/diag_logs_settings.php, line: 362
 msgid "Display as second row"
-msgstr ""
+msgstr "Als zweite Zeile anzeigen"
 
 msgid "Show the applied rule description below or in the firewall log rows."
 msgstr ""
@@ -5550,7 +5583,7 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 370
 msgid "Local Logging"
-msgstr ""
+msgstr "Lokale Aufzeichnung"
 
 msgid "Disable writing log files to the local disk"
 msgstr ""
@@ -5581,7 +5614,7 @@ msgstr "Quelladresse"
 
 # File: src/www/diag_logs_settings.php, line: 392
 msgid "Default (any)"
-msgstr ""
+msgstr "Standard (jegliche)"
 
 msgid ""
 "This option will allow the logging daemon to bind to a single IP address, "
@@ -5961,7 +5994,7 @@ msgid "S.M.A.R.T. Monitor Tools"
 msgstr "S.M.A.R.T. Überwachungswerkzeuge"
 
 msgid "PASSED"
-msgstr ""
+msgstr "GENEHMIGT"
 
 msgid "FAILED"
 msgstr "Fehlgeschlagen"
@@ -6072,7 +6105,7 @@ msgid "Diagnostics: System Activity"
 msgstr "Diagnose: Systemaktivität"
 
 msgid "Gathering CPU activity, please wait..."
-msgstr ""
+msgstr "CPU-Aktivität sammlen, bitte warten..."
 
 msgid "Diagnostics: pfTop"
 msgstr "Diagnose: pfTop"
@@ -6346,7 +6379,7 @@ msgstr ""
 "Der Name des Alias darf nur aus den Zeichen \"a-z, A-Z, 0-9 und _\" bestehen."
 
 msgid "You may enter a description here for your reference (not parsed)."
-msgstr "Beschreibung (wird nicht als Parameter verwendet)."
+msgstr "Die Beschreibung wird nicht als Parameter verwendet."
 
 msgid "URL (IPs)"
 msgstr "URL (IPs)"
@@ -6440,7 +6473,7 @@ msgid ""
 msgstr "Der Name des Alias darf nur aus den Zeichen a-z, A-Z und 0-9 bestehen."
 
 msgid "You may enter a description here for your reference (not parsed)"
-msgstr "Erklärungen (wird nicht als Parameter verwendet)"
+msgstr "Dies Beschreibung wird nicht als Parameter verwendet"
 
 msgid "Aliases to import"
 msgstr "Aliase zum Importieren"
@@ -6839,7 +6872,7 @@ msgstr "andere(r|s)"
 # File: src/www/firewall_rules_edit.php, line: 1060
 # File: src/www/firewall_rules_edit.php, line: 1077
 msgid "Well-known ports"
-msgstr ""
+msgstr "Bekannte Ports"
 
 msgid "Specify the source port or port range for this rule"
 msgstr "Gebe den Quellport oder den Quellportbereich für diese Regel an"
@@ -7551,11 +7584,11 @@ msgstr "Firewallregel bearbeiten"
 
 # File: src/www/firewall_rules_edit.php, line: 667
 msgid "Block"
-msgstr ""
+msgstr "Blockieren"
 
 # File: src/www/firewall_rules_edit.php, line: 667
 msgid "Reject"
-msgstr ""
+msgstr "Ablehnen"
 
 # File: src/www/firewall_rules_edit.php, line: 669
 msgid "Match"
@@ -7895,10 +7928,10 @@ msgid ""
 msgstr ""
 
 msgid "Schedule may not be named LAN."
-msgstr ""
+msgstr "Zeitplan kann nicht \"LAN\" genannt werden."
 
 msgid "Schedule may not be named WAN."
-msgstr ""
+msgstr "Zeitplan kann nicht \"WAN\" genannt werden."
 
 msgid "Schedule name cannot be blank."
 msgstr "Name des Zeitplans kann nicht leer sein."
@@ -7925,7 +7958,7 @@ msgid "Schedule information"
 msgstr ""
 
 msgid "Schedule Name"
-msgstr ""
+msgstr "Name des Zeitplans"
 
 msgid "NOTE: This schedule is in use so the name may not be modified!"
 msgstr ""
@@ -8018,7 +8051,7 @@ msgstr ""
 
 # File: src/www/firewall_virtual_ip.php, line: 314
 msgid "edit this virtual ip"
-msgstr ""
+msgstr "diese virtuelle IP bearbeiten"
 
 # File: src/www/firewall_virtual_ip.php, line: 317
 msgid "delete this virtual ip"
@@ -10182,8 +10215,8 @@ msgid ""
 "The specified group name is already used by an interface. Please choose "
 "another name."
 msgstr ""
-"Der ausgewählte Gruppenname wird schon von einem andere Interface verwendet. "
-"Bitte wählen Sie einen anderen Namen."
+"Der ausgewählte Gruppenname wird schon von einem anderen Interface "
+"verwendet. Bitte wählen Sie einen anderen Namen."
 
 msgid "Interface Groups Edit"
 msgstr "Interfacegruppen bearbeiten"
@@ -10373,7 +10406,7 @@ msgid ""
 "You may enter a description here for your reference. Description will appear "
 "in the \"Interfaces Assign\" select lists."
 msgstr ""
-"Beschreibung (wird nicht als Parameter verwendet). Text erscheint in der \""
+"Die Beschreibung wird nicht als Parameter verwendet. Text erscheint in der \""
 "Interface Anwahl\" Selektionsliste."
 
 msgid "Note: Typically *99# for GSM networks and #777 for CDMA networks"
@@ -11285,13 +11318,13 @@ msgid "Text"
 msgstr "Text"
 
 msgid "Unsigned 16-bit integer"
-msgstr "Unsignierte 16-bit Ganzzahl"
+msgstr "Vorzeichenlose 16-Bit Ganzzahl"
 
 msgid "Unsigned 32-bit integer"
-msgstr "Unsignierte 32-bit Ganzzahl"
+msgstr "Vorzeichenlose 32-Bit Ganzzahl"
 
 msgid "Unsigned 8-bit integer"
-msgstr "Unsignierte 8-bit Ganzzahl"
+msgstr "Vorzeichenlose 8-Bit Ganzzahl"
 
 msgid "IP address or host"
 msgstr "IP-Adresse oder Host"
@@ -12989,7 +13022,7 @@ msgid "Enable DNSSEC Support"
 msgstr "Aktiviere DNSSEC Unterstützung"
 
 msgid "Enable Forwarding Mode"
-msgstr ""
+msgstr "Weiterleitungs-Modus aktivieren"
 
 msgid "Register DHCP leases in the DNS Resolver"
 msgstr ""
@@ -13095,7 +13128,7 @@ msgstr ""
 "Host konfiguriert werden."
 
 msgid "You may enter a description here for your reference."
-msgstr "Beschreibung (wird nicht als Parameter verwendet)."
+msgstr "Die Beschreibung wird nicht als Parameter verwendet."
 
 msgid "Access List Name"
 msgstr "Zugriffslistenname"
@@ -13392,10 +13425,10 @@ msgid "Choose which interface the host to be woken up is connected to."
 msgstr ""
 
 msgid "Enter a MAC address "
-msgstr "Geben Sie eine MAC-Adresse ein "
+msgstr "Geben Sie eine MAC-Adresse"
 
 msgid "in the following format: xx:xx:xx:xx:xx:xx"
-msgstr "im folgenden Format: xx:xx:xx:xx:xx:xx"
+msgstr "folgenden Format ein: xx:xx:xx:xx:xx:xx"
 
 msgid "Or Click the MAC address to wake up an individual device:"
 msgstr ""
@@ -14081,7 +14114,7 @@ msgid "Permit root user login"
 msgstr "Erlaube Anmeldung mit dem root-Benutzer"
 
 msgid "Root login is generally discouraged. It is advised "
-msgstr ""
+msgstr "Von der root-Anmeldung wird generell abgeraten. Empfohlen wird "
 
 msgid "to log in via another user and switch to root afterwards."
 msgstr ""
@@ -14270,7 +14303,7 @@ msgstr ""
 
 # File: src/www/system_advanced_firewall.php, line: 358
 msgid "Warning: This will also turn off NAT!"
-msgstr ""
+msgstr "Warnung: Dies wird ebenfalls NAT deaktivieren!"
 
 # File: src/www/system_advanced_firewall.php, line: 360
 msgid ""
@@ -14323,7 +14356,7 @@ msgstr ""
 "beträgt die Standardgröße:"
 
 msgid "Firewall Maximum Table Entries"
-msgstr ""
+msgstr "Maximale Firewalltabelleneinträge"
 
 msgid ""
 "Maximum number of table entries for systems such as aliases, sshlockout, "
@@ -14334,7 +14367,7 @@ msgid "Note:  Leave this blank for the default."
 msgstr ""
 
 msgid "On your system the default size is:"
-msgstr ""
+msgstr "Auf Ihrem Sytem ist die Standardgröße:"
 
 msgid "Static route filtering"
 msgstr "Filterung statischer Routen"
@@ -14589,10 +14622,10 @@ msgid ""
 msgstr ""
 
 msgid "Power savings"
-msgstr ""
+msgstr "Energieoptionen"
 
 msgid "Use PowerD"
-msgstr ""
+msgstr "Benutze PowerD"
 
 msgid "On AC Power Mode"
 msgstr ""
@@ -14610,7 +14643,7 @@ msgid "Maximum"
 msgstr "Maximum"
 
 msgid "On Battery Power Mode"
-msgstr ""
+msgstr "Im Batterie-Modus"
 
 msgid ""
 "The powerd utility monitors the system state and sets various power control "
@@ -14659,7 +14692,7 @@ msgid "Thermal Sensors"
 msgstr ""
 
 msgid "None/ACPI"
-msgstr ""
+msgstr "Keine/ACPI"
 
 msgid ""
 "If you have a supported CPU, selecting a themal sensor will load the "
@@ -14721,7 +14754,7 @@ msgid ""
 msgstr ""
 
 msgid "Periodic RRD Backup"
-msgstr ""
+msgstr "Periodische RRD-Sicherung"
 
 msgid "hour"
 msgstr "Stunde"
@@ -14731,6 +14764,10 @@ msgid ""
 "automatically on the next boot. Keep in mind that the more frequent the "
 "backup, the more writes will happen to your media."
 msgstr ""
+"Dies wird in regelmäßigen Abständen eine Sicherung der RRD-Daten machen, "
+"damit diese automatisch beim nächsten Start wieder hergestellt werden "
+"können. Beachten Sie, je häufiger eine Sicherungung erfolgt, umso mehr "
+"Schreibvorgänge werden auf Ihrem Medium erfolgen."
 
 msgid "Periodic DHCP Leases Backup"
 msgstr ""
@@ -14790,7 +14827,7 @@ msgid "Device polling"
 msgstr "Device polling"
 
 msgid "Enable device polling"
-msgstr ""
+msgstr "Aktiviere Geräte-Polling"
 
 msgid ""
 "Device polling is a technique that lets the system periodically poll network "
@@ -14860,10 +14897,10 @@ msgid ""
 msgstr ""
 
 msgid "ARP Handling"
-msgstr "ARP Handling"
+msgstr "ARP Handhabung"
 
 msgid "Suppress ARP messages"
-msgstr ""
+msgstr "ARP-Nachrichten unterdrücken"
 
 msgid ""
 "This option will suppress ARP log messages when multiple interfaces reside "
@@ -14943,6 +14980,8 @@ msgid ""
 "This is the port of the SMTP E-Mail server, typically 25, 587 (submission) "
 "or 465 (smtps)"
 msgstr ""
+"Dies ist der Port vom SMTP E-Mail Server, typischerweiße 25, 587 (submission)"
+" oder 465 (SMTPS)"
 
 msgid "Secure SMTP Connection"
 msgstr "Sichere SMTP Verbindung"
@@ -14959,7 +14998,7 @@ msgid "From e-mail address"
 msgstr "Von E-mail Adresse"
 
 msgid "This is the e-mail address that will appear in the from field."
-msgstr ""
+msgstr "Dies ist die e-Mail Adresse die im Von-Feld erscheint."
 
 msgid "Notification E-Mail address"
 msgstr "Benachrichtigungs E-Mail Adresse"
@@ -15033,7 +15072,7 @@ msgid "Protocol version"
 msgstr "Protokollversion"
 
 msgid "Search level"
-msgstr ""
+msgstr "Suchlevel"
 
 msgid "User naming Attribute"
 msgstr ""
@@ -15086,11 +15125,11 @@ msgstr ""
 
 # File: src/www/system_authservers.php, line: 476
 msgid "TCP - Standard"
-msgstr ""
+msgstr "TCP - Standard"
 
 # File: src/www/system_authservers.php, line: 479
 msgid "SSL - Encrypted"
-msgstr ""
+msgstr "SSL - Verschlüsselt"
 
 msgid "Peer Certificate Authority"
 msgstr ""
@@ -15182,7 +15221,7 @@ msgstr "Initiale Vorlage"
 
 # File: src/www/system_authservers.php, line: 579
 msgid "OpenLDAP"
-msgstr ""
+msgstr "OpenLDAP"
 
 # File: src/www/system_authservers.php, line: 580
 msgid "Microsoft AD"
@@ -15200,10 +15239,10 @@ msgstr "Angebotene Dienste"
 
 # File: src/www/system_authservers.php, line: 611
 msgid "Authentication and Accounting"
-msgstr ""
+msgstr "Authentifizierung und Verrechnung"
 
 msgid "Accounting port value"
-msgstr "Accounting Portnummer"
+msgstr "Verrechnungsportnummer"
 
 msgid "Authentication Timeout"
 msgstr "Authentifiktionstimeout"
@@ -15230,7 +15269,7 @@ msgstr "Zusätzliche Authentifizierungsserver können hier hinzugefügt werden."
 
 # File: src/www/system_authservers.php, line: 695
 msgid "delete this server"
-msgstr ""
+msgstr "diesen Server löschen"
 
 msgid "Import an existing Certificate Authority"
 msgstr "Eine existierende Zertifizierungsstelle importieren"
@@ -15347,7 +15386,7 @@ msgid ""
 msgstr ""
 
 msgid "Internal Certificate Authority"
-msgstr ""
+msgstr "Interne Zertifizierungsstelle"
 
 msgid "bits"
 msgstr "Bits"
@@ -15390,7 +15429,7 @@ msgid "admin@mycompany.com"
 msgstr "admin@mycompany.com"
 
 msgid "internal-ca"
-msgstr ""
+msgstr "interne CA"
 
 msgid "Internal"
 msgstr "Intern"
@@ -15573,7 +15612,7 @@ msgid "delete cert"
 msgstr "Zertifikat löschen"
 
 msgid "update csr"
-msgstr ""
+msgstr "CSR aktualisieren"
 
 msgid "Note: You can only delete a certificate if it is not currently in use."
 msgstr ""
@@ -15993,7 +16032,7 @@ msgstr ""
 "Liste zu entfernen."
 
 msgid "Choose which interface this gateway applies to."
-msgstr ""
+msgstr "Wählen Sie aus, welches Interface diesem Gateway zugeteilt werden soll."
 
 msgid "Choose the Internet Protocol this gateway uses."
 msgstr ""
@@ -16009,7 +16048,7 @@ msgid "Default Gateway"
 msgstr "Default Gateway"
 
 msgid "This will select the above gateway as the default gateway"
-msgstr ""
+msgstr "Dies wählt das obere Gateway als Standardgateway aus"
 
 msgid "Disable Gateway Monitoring"
 msgstr "Deaktiviere Gatewayüberwachung"
@@ -16030,7 +16069,7 @@ msgid "Mark Gateway as Down"
 msgstr "Markiere Gateway als inaktiv"
 
 msgid "This will force this gateway to be considered Down"
-msgstr ""
+msgstr "Dies wird das Gateway als inaktiv erzwingen"
 
 msgid " - Show advanced option"
 msgstr " - zeige fortgeschrittene Optionen"
@@ -16040,6 +16079,7 @@ msgstr "Last"
 
 msgid "Weight for this gateway when used in a Gateway Group."
 msgstr ""
+"Bedeutung für dieses Gateway wenn es in einer Gatewaygruppe verwendet wird."
 
 msgid "Latency thresholds"
 msgstr ""
@@ -17486,10 +17526,10 @@ msgstr ""
 "Server authentifizieren. Die lokale Benutzerdatenbank wird nicht verwendet."
 
 msgid "Enable RADIUS accounting"
-msgstr "Aktiviere RADIUS Accounting"
+msgstr "Aktiviere RADIUS-Verrechnung"
 
 msgid "Sends accounting packets to the RADIUS server."
-msgstr ""
+msgstr "Sendet Verrechnungspakete an den RADIUS-Server."
 
 msgid "RADIUS Server"
 msgstr "RADIUS Server"
@@ -18729,7 +18769,7 @@ msgid "Hint"
 msgstr "Hinweis"
 
 msgid "No. PPPoE users"
-msgstr "Keine. PPPoE Benutzer"
+msgstr "Anzahl PPPoE Benutzer"
 
 msgid "Hint: 10 is ten PPPoE clients"
 msgstr "Hinweis: 10 ist zehn PPPoE Clients"
@@ -18758,7 +18798,7 @@ msgid ""
 msgstr ""
 
 msgid "Sends accounting packets to the RADIUS server"
-msgstr ""
+msgstr "Sendet Verrechnungspakete an den RADIUS-Server"
 
 msgid "Use Backup RADIUS Server"
 msgstr "Benutze Ersatz RADIUS-Server"
@@ -18774,10 +18814,10 @@ msgid "RADIUS server NAS IP Address"
 msgstr ""
 
 msgid "RADIUS Accounting Update"
-msgstr "RADIUS Accounting Aktualisierung"
+msgstr "RADIUS-Verrechnungsaktualisierung"
 
 msgid "RADIUS accounting update period in seconds"
-msgstr ""
+msgstr "RADIUS-Verrechnungsaktualisierungsperiode in Sekunden"
 
 msgid "RADIUS issued IPs"
 msgstr ""
@@ -18792,9 +18832,11 @@ msgid ""
 "Enter the IP address, authentication port and accounting port (optional) of "
 "the RADIUS server."
 msgstr ""
+"Geben Sie die IP-Adresse, Authentifizierungsport und den Verrechnungsport "
+"(optional) des RADIUS-Servers ein."
 
 msgid "standard port 1812 and 1813 accounting"
-msgstr "Standardport 1812 und 1813 Accounting"
+msgstr "Standardport 1812 und 1813 Verrechnung"
 
 msgid "RADIUS primary shared secret"
 msgstr ""
@@ -18861,7 +18903,7 @@ msgstr "PPTP Server aktivieren"
 # No = Nein
 # ?
 msgid "No. PPTP users"
-msgstr "Keine. PPTP Benutzer"
+msgstr "Anzahl PPTP Benutzer"
 
 msgid "Hint: 10 is ten PPTP clients"
 msgstr "Hinweis: 10 sind zehn PPTP Clients"
@@ -18897,6 +18939,8 @@ msgid ""
 "Enter the IP address, RADIUS port, and RADIUS accounting port of the RADIUS "
 "server"
 msgstr ""
+"Geben Sie die IP-Adresse, RADIUS-Port und den Verrechnungsport des RADIUS-"
+"Servers ein"
 
 msgid "Secondary RADIUS server"
 msgstr "Sekundären RADIUS-Server"
@@ -18920,7 +18964,7 @@ msgid ""
 msgstr ""
 
 msgid "don't forget to "
-msgstr "nicht vergessen auf"
+msgstr "nicht vergessen auf "
 
 msgid "add a firewall rule"
 msgstr "eine Firewallregel hinzufügen"
