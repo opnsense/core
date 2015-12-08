@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2008-2009 Scott Ullrich
@@ -27,8 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-
-$pgtitle = array(gettext('Diagnostics'), gettext('System Activity'));
 
 if($_REQUEST['getactivity']) {
 	$text = `/usr/bin/top -aHS | /usr/bin/cut -c1-105`;

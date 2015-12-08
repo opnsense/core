@@ -140,17 +140,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-
 $a_gateways = return_gateways_array(true, true, true);
 legacy_html_escape_form_data($a_routes);
 legacy_html_escape_form_data($a_gateways);
-$pgtitle = array(gettext('System'), gettext('Routes'));
+
 $shortcut_section = "routing";
+
 $main_buttons = array(
     array('label'=> gettext('Add route'), 'href'=>'system_routes_edit.php'),
 );
 
 include("head.inc");
+
 ?>
 
 

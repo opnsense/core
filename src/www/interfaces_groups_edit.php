@@ -31,8 +31,6 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext("Interfaces"),gettext("Groups"),gettext("Edit"));
-
 if (!isset($config['ifgroups']['ifgroupentry']) || !is_array($config['ifgroups']['ifgroupentry'])) {
 	$config['ifgroups']['ifgroupentry'] = array();
 }

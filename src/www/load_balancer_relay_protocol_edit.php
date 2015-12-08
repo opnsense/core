@@ -114,7 +114,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"), gettext("Load Balancer"),gettext("Relay Protocol"),gettext("Edit"));
 $shortcut_section = "relayd";
 
 include("head.inc");

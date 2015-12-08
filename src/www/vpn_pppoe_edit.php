@@ -253,8 +253,8 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext("Services"),gettext("PPPoE Server"), gettext("Edit"));
 $shortcut_section = "pppoes";
+
 include("head.inc");
 
 ?>

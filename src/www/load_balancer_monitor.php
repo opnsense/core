@@ -74,7 +74,6 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Monitors'));
 $shortcut_section = 'relayd';
 
 include("head.inc");
@@ -82,6 +81,7 @@ include("head.inc");
 $main_buttons = array(
 	array('label'=>'Add', 'href'=>'load_balancer_monitor_edit.php'),
 );
+
 ?>
 
 <body>

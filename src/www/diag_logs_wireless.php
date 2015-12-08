@@ -49,8 +49,6 @@ if (isset($_POST['filtertext'])) {
 	$filtertext = htmlspecialchars($_POST['filtertext']);
 }
 
-$pgtitle = array(gettext('System'),gettext('Log Files'),gettext('Wireless'));
-
 include("head.inc");
 
 ?>

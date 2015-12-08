@@ -137,7 +137,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("Wireless"),gettext("Edit"));
 include("head.inc");
 
 ?>

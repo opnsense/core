@@ -91,13 +91,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$pgtitle = array(gettext('System'), gettext('Groups'), gettext('Privileges'));
-
 if (!isset($a_group['priv']) || !is_array($a_group['priv'])) {
     $a_group['priv'] = array();
 }
 
 include("head.inc");
+
 ?>
 
 

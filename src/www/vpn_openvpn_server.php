@@ -399,7 +399,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Server'));
 $shortcut_section = 'openvpn';
 
 include("head.inc");
@@ -409,6 +408,7 @@ $main_buttons = array(
 );
 
 legacy_html_escape_form_data($pconfig);
+
 ?>
 
 <body>

@@ -27,9 +27,13 @@
 
 require_once("guiconfig.inc");
 
-include("head.inc");
+/* XXX how about a better place in the menu? */
+$menuBreadcrumbs = array(
+	array('name' => gettext('Lobby')),
+	array('name' => gettext('License')),
+);
 
-$pgtitle = array(gettext('Lobby'), gettext('License'));
+include("head.inc");
 
 ?>
 

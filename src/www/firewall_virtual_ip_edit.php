@@ -237,8 +237,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 legacy_html_escape_form_data($pconfig);
-$pgtitle = array(gettext("Firewall"),gettext("Virtual IP Address"),gettext("Edit"));
+
 include("head.inc");
+
 ?>
 
 <body>

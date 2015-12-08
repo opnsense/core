@@ -110,9 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
-$pgtitle = array(gettext('System'), gettext('Gateways'), gettext('Groups'));
 legacy_html_escape_form_data($a_gateway_groups);
+
 include("head.inc");
 
 $main_buttons = array(

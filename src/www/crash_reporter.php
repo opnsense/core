@@ -61,7 +61,6 @@ function upload_crash_report($files, $agent)
     return !$response;
 }
 
-$pgtitle = array(gettext('System'), gettext('Crash Reporter'));
 include('head.inc');
 
 $last_version = '/usr/local/opnsense/version/opnsense.last';

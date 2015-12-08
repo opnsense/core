@@ -162,7 +162,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("DHCPv6"),gettext("Edit static mapping"));
 $shortcut_section = "dhcp6";
 
 include("head.inc");

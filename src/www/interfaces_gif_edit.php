@@ -128,8 +128,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("GIF"),gettext("Edit"));
-
 include("head.inc");
 
 ?>

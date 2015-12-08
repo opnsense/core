@@ -176,12 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$pgtitle = array(gettext('System'), gettext('Groups'));
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_group);
 
-
 include("head.inc");
+
 ?>
 
 <body>

@@ -219,15 +219,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
-
-$pgtitle = array(gettext('System'), gettext('Routes'), gettext('Edit'));
 $shortcut_section = "routing";
+
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 
 <body>
   <script type="text/javascript">

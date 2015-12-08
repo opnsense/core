@@ -286,9 +286,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     unset($ignore_posted_dnsgw);
 }
 
-
 legacy_html_escape_form_data($pconfig);
-$pgtitle = array(gettext("System"),gettext("Settings"),gettext("General"));
+
 include("head.inc");
 
 ?>

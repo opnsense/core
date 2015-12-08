@@ -126,7 +126,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Load Balancer"),gettext("Virtual Server"),gettext("Edit"));
 $shortcut_section = "relayd-virtualservers";
 
 include("head.inc");

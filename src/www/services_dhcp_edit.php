@@ -306,9 +306,8 @@ if ($_POST) {
 	}
 }
 
-$closehead = false;
-$pgtitle = array(gettext("Services"),gettext("DHCP"),gettext("Edit static mapping"));
 $shortcut_section = "dhcp";
+$closehead = false;
 
 include("head.inc");
 

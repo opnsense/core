@@ -32,7 +32,6 @@ require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext('VPN'), gettext('OpenVPN'), gettext('Client Specific Overrides'));
 $shortcut_section = 'openvpn';
 
 // define all fields used in this form

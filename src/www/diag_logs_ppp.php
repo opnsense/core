@@ -48,7 +48,6 @@ if (isset($_POST['filtertext'])) {
 	$filtertext = htmlspecialchars($_POST['filtertext']);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("PPP"));
 include("head.inc");
 
 ?>

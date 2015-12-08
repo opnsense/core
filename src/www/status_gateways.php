@@ -35,8 +35,8 @@ $a_gateways = return_gateways_array();
 $gateways_status = return_gateways_status(true);
 legacy_html_escape_form_data($a_gateways);
 
-$pgtitle = array(gettext('System'), gettext('Gateways'), gettext('Status'));
 include("head.inc");
+
 ?>
 <body>
 <?php include("fbegin.inc"); ?>

@@ -47,12 +47,12 @@ if ($_GET['act'] == "del") {
 	exit;
 }
 
-$pgtitle = array(gettext("Services"), gettext("RFC 2136 clients"));
 include("head.inc");
 
 $main_buttons = array(
 	array('label' => gettext('Add'), 'href' => 'services_rfc2136_edit.php'),
 );
+
 ?>
 
 <body>

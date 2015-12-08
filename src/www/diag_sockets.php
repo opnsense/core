@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2012
@@ -28,8 +29,6 @@
 */
 
 include('guiconfig.inc');
-
-$pgtitle = array(gettext("Diagnostics"),gettext("Sockets"));
 
 include('head.inc');
 

@@ -29,8 +29,6 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("System"), gettext("User Password"));
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }

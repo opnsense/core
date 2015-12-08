@@ -87,10 +87,7 @@ function crl_in_use($crlref) {
 	return (is_openvpn_server_crl($crlref));
 }
 
-
 global $openssl_crl_status;
-
-$pgtitle = array(gettext("System"), gettext("Certificate Revocation List Manager"));
 
 $crl_methods = array(
     "internal" => gettext("Create an internal Certificate Revocation List"),

@@ -49,8 +49,6 @@ if (isset($_POST['clear'])) {
 	clear_clog($filter_logfile);
 }
 
-$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Plain View'));
-$shortcut_section = "firewall";
 include("head.inc");
 
 ?>

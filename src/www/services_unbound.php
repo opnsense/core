@@ -162,7 +162,7 @@ if ($_GET['act'] == "del") {
 }
 
 $closehead = false;
-$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('General'));
+
 include_once("head.inc");
 
 ?>

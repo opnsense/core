@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2010 Jim Pingle
@@ -29,7 +30,6 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext("Diagnostics"), gettext("S.M.A.R.T. Monitor Tools"));
 $smartctl = "/usr/local/sbin/smartctl";
 $smartd = "/usr/local/sbin/smartd";
 $start_script = "/usr/local/etc/rc.d/smartd.sh";

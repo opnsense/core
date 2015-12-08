@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2003-2005 Bob Zoller (bob@kludgebox.com) and Manuel Kasper <mk@neon1.net>.
@@ -26,7 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("Diagnostics"), gettext("Ping"));
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");

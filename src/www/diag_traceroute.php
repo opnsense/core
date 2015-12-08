@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2005 Paul Taylor (paultaylor@winndixie.com) and Manuel Kasper <mk@neon1.net>.
@@ -30,7 +31,6 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Traceroute"));
 include("head.inc");
 
 ?>

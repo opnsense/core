@@ -30,7 +30,6 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Reboot System"));
 include("head.inc");
 
 ?>

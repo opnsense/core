@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014 Deciso B.V.
     Copyright (C) 2010 Scott Ullrich
@@ -27,9 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-
-$pgtitle = array(gettext('Diagnostics'), gettext('Limiter Info'));
-$shortcut_section = "trafficshaper-limiters";
 
 if(isset($_POST['getactivity'])) {
 	$text = `/sbin/ipfw pipe show`;

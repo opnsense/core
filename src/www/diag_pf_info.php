@@ -29,7 +29,6 @@
 
 require_once("guiconfig.inc");
 
-$pgtitle = array(gettext('Diagnostics'), gettext('pfInfo'));
 $data_tabs = array("info", "memory", "timeouts", "interfaces", "rules");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -41,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 include("head.inc");
+
 ?>
 <body>
 <?php include("fbegin.inc"); ?>

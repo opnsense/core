@@ -122,7 +122,6 @@ for ($i = 0; isset($config['load_balancer']['virtual_server'][$i]); $i++) {
 	}
 }
 
-$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Virtual Server Setup'));
 $shortcut_section = 'relayd';
 
 include("head.inc");

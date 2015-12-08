@@ -121,8 +121,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("GRE"),gettext("Edit"));
-
 include("head.inc");
 
 ?>

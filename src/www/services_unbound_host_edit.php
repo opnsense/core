@@ -155,7 +155,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Edit host'));
 include("head.inc");
 
 ?>

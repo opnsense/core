@@ -51,7 +51,6 @@ else {
 	exec("/sbin/pfctl -s Sources", $sources);
 }
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Show Source Tracking"));
 include("head.inc");
 
 ?>

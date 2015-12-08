@@ -127,7 +127,6 @@ if (($_GET['diff'] == 'Diff') && isset($_GET['oldtime']) && isset($_GET['newtime
 	}
 }
 
-$pgtitle = array(gettext('System'), gettext('Config History'));
 include("head.inc");
 
 ?>

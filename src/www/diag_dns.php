@@ -27,7 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("Diagnostics"),gettext("DNS Lookup"));
 require_once("guiconfig.inc");
 
 $host = trim($_REQUEST['host'], " \t\n\r\0\x0B[];\"'");

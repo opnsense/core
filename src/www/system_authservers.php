@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
 }
-$pgtitle = array(gettext('System'), gettext('Users'), gettext('Servers'));
+
 $shortcut_section = "authentication";
 
 // list of all possible fields for auth item (used for form init)

@@ -196,7 +196,6 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Settings'));
 include("head.inc");
 
 ?>

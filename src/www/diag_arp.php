@@ -1,6 +1,7 @@
 <?php
+
 /*
-    Copyright (C) 2014 Deciso B.V.
+	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2005 Paul Taylor (paultaylor@winndixie.com) and Manuel Kasper <mk@neon1.net>.
 	All rights reserved.
@@ -245,8 +246,6 @@ function _getHostName($mac,$ip) {
 	}
 	return "";
 }
-
-$pgtitle = array(gettext("Diagnostics"),gettext("ARP Table"));
 
 include("head.inc");
 

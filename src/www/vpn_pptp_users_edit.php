@@ -134,7 +134,6 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext('Services'), gettext('PPTP'), gettext('Edit User'));
 include("head.inc");
 
 ?>

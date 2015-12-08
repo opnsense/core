@@ -27,8 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext('VPN'),gettext('L2TP'),gettext('Users'));
-
 require_once("guiconfig.inc");
 require_once("vpn.inc");
 

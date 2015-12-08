@@ -111,7 +111,6 @@ if ($_POST) {
        }
 }
 
-$pgtitle = array(gettext("Services"),gettext("DNS forwarder"),gettext("Edit Domain Override"));
 include("head.inc");
 
 ?>

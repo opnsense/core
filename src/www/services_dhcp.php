@@ -554,9 +554,8 @@ if ($act == "del") {
 	}
 }
 
-$closehead = false;
-$pgtitle = array(gettext("Services"),gettext("DHCP server"));
 $shortcut_section = "dhcp";
+$closehead = false;
 
 include("head.inc");
 

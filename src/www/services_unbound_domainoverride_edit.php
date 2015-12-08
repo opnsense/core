@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
@@ -100,7 +101,6 @@ if ($_POST) {
     }
 }
 
-$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Edit Domain Override'));
 include("head.inc");
 
 ?>
