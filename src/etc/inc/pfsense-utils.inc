@@ -143,18 +143,6 @@ function setup_microcode() {
 	}
 }
 
-/****f* legacy/get_carp_status
- * NAME
- *   get_carp_status - Return whether CARP is enabled or disabled.
- * RESULT
- *   boolean	- true if CARP is enabled, false if otherwise.
- ******/
-function get_carp_status() {
-	/* grab the current status of carp */
-	$status = get_single_sysctl('net.inet.carp.allow');
-	return (intval($status) > 0);
-}
-
 /*
  * get_carp_interface_status($carpinterface): returns the status of a carp ip
  */
