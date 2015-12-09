@@ -481,15 +481,6 @@ $( document ).ready(function() {
     });
 
 });
-
-
-function decrypt_change() {
-    if (!document.iform.decrypt.checked) {
-        document.getElementById("decrypt_opts").style.display="none";
-    } else {
-        document.getElementById("decrypt_opts").style.display="";
-    }
-}
 //]]>
 </script>
 
