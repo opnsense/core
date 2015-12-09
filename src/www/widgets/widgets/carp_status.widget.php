@@ -34,7 +34,7 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("widgets/include/carp_status.inc");
 
-$carp_enabled = get_carp_status();
+$carp_enabled = (get_single_sysctl('net.inet.carp.allow') > 0);
 
 ?>
 <table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="carp status">
