@@ -56,8 +56,7 @@ if ( !isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'
 }
 $a_vip = &$config['virtualip']['vip'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['carp_maintenancemode'])) {
         interfaces_carp_set_maintenancemode(!isset($config["virtualip_carp_maintenancemode"]));
     } elseif (!empty($_POST['disablecarp'])) {
