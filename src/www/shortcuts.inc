@@ -30,87 +30,23 @@
 
 $shortcuts = array();
 
-/* Load and process custom shortcuts. */
-function get_shortcut_files($directory)
+function get_shortcut_by_service_name($servicename)
 {
-	$dir_array = array();
-
-	if ($dh = @opendir($directory)) {
-		while (($file = readdir($dh)) !== false) {
-			$canadd = 0;
-			if($file == ".")
-				$canadd = 1;
-			if($file == "..")
-				$canadd = 1;
-			if($canadd == 0)
-				array_push($dir_array, $file);
-		}
-		closedir($dh);
-	}
-
-	return $dir_array;
-}
-
-function get_shortcut_by_service_name($servicename) {
 	global $shortcuts;
+
 	foreach ($shortcuts as $name => $shortcut) {
-		if (!empty($shortcut['service']) && ($shortcut['service'] == $servicename))
+		if (!empty($shortcut['service']) && ($shortcut['service'] == $servicename)) {
 			return $name;
+		}
 	}
+
 	return null;
 }
 
-function get_shortcut_main_link($shortcut_section, $addspace = true, $service = array()) {
-	global $g, $shortcuts;
-	if(empty($shortcut_section))
-		return "";
-	$space = ($addspace) ? "&nbsp;" : "" ;
-	switch ($shortcut_section) {
-		case "openvpn":
-			if (!empty($service['mode']) && is_numeric($service['id']))
-				$link = "vpn_openvpn_{$service['mode']}.php?act=edit&amp;id={$service['id']}";
-			else
-				$link = $shortcuts[$shortcut_section]['main'];
-			break;
-		default:
-			$link = $shortcuts[$shortcut_section]['main'];
-			break;
-	}
-	if (!empty($link)) {
-		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php")
-			return "{$space}<a href=\"{$link}\" title=\"" . gettext("Main page for this section") . "\">Main page</a>";
-		else
-			return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Main page for this section") . "\"><span class=\"glyphicon glyphicon-home\"></span></a>";
-	}
-}
-
-function get_shortcut_status_link($shortcut_section, $addspace = true, $service = array())
+function get_shortcut_log_link($shortcut_section, $addspace = true)
 {
 	global $g, $shortcuts;
 
-	if (empty($shortcut_section)) {
-		return '';
-	}
-
-	$space = ($addspace) ? "&nbsp;" : "" ;
-
-	if (isset($shortcuts[$shortcut_section]['status'])) {
-		$link = $shortcuts[$shortcut_section]['status'];
-	} else {
-		$link = null;
-	}
-
-	if (!empty($link)) {
-		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php") {
-			return "{$space}<a href=\"{$link}\" title=\"" . gettext("Status of items on this page") . "\">Status</a>";
-		} else {
-			return "{$space}<a href=\"{$link}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Status of items on this page") . "\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>";
-		}
-	}
-}
-
-function get_shortcut_log_link($shortcut_section, $addspace = true) {
-	global $g, $shortcuts;
 	$space = ($addspace) ? "&nbsp;" : "" ;
 	if(!empty($shortcut_section) && !empty($shortcuts[$shortcut_section]['log'])) {
 		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php")
@@ -124,7 +60,6 @@ $shortcuts['upnp'] = array();
 $shortcuts['upnp']['log'] = "diag_logs_routing.php";
 $shortcuts['upnp']['service'] = "miniupnpd";
 
-
 $shortcuts['relayd'] = array();
 $shortcuts['relayd']['service'] = "relayd";
 
@@ -134,7 +69,6 @@ $shortcuts['dhcp']['service'] = "dhcpd";
 
 $shortcuts['dhcp6'] = array();
 $shortcuts['dhcp6']['log'] = "diag_logs_dhcp.php";
-$shortcuts['dhcp6']['status'] = "status_dhcpv6_leases.php";
 
 $shortcuts['ipsec'] = array();
 $shortcuts['ipsec']['service'] = "ipsec";
@@ -155,18 +89,10 @@ $shortcuts['gateways'] = array();
 $shortcuts['gateways']['service'] = "apinger";
 
 $shortcuts['pppoes'] = array();
-$shortcuts['pppoes']['main'] = "vpn_pppoe.php";
 $shortcuts['pppoes']['log'] = "diag_logs_vpn.php?vpntype=poes";
 
 $shortcuts['snmp'] = array();
-$shortcuts['snmp']['main'] = "services_snmp.php";
 $shortcuts['snmp']['service'] = "bsnmpd";
 
-$shortcuts['authentication'] = array();
-$shortcuts['authentication']['main'] = "system_authservers.php";
-$shortcuts['authentication']['status'] = "diag_authentication.php";
-
 $shortcuts['squid'] = array();
-$shortcuts['squid']['main'] = "ui/proxy/";
-$shortcuts['squid']['log'] = "diag_logs_proxy.php";
 $shortcuts['squid']['service'] = "squid";

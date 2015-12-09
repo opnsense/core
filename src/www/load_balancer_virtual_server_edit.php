@@ -126,7 +126,7 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = "relayd-virtualservers";
+$shortcut_section = 'relayd';
 
 include("head.inc");
 

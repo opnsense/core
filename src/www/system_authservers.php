@@ -264,8 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 }
 
-$shortcut_section = "authentication";
-
 // list of all possible fields for auth item (used for form init)
 $all_authfields = array('type','name','ldap_caref','ldap_host','ldap_port','ldap_urltype','ldap_protver','ldap_scope',
         'ldap_basedn','ldap_authcn','ldap_extended_query','ldap_binddn','ldap_bindpw','ldap_attr_user','radius_host',

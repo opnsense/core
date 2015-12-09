@@ -79,8 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 }
 
-$shortcut_section = "authentication";
-
 include("head.inc");
 
 ?>

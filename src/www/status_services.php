@@ -321,8 +321,6 @@ include("head.inc");
 								echo "<td valign=\"middle\" class=\"list nowrap\">" . get_service_control_links($service);
 								$scut = get_shortcut_by_service_name($service['name']);
 								if (!empty($scut)) {
-									echo get_shortcut_main_link($scut, true, $service);
-									echo get_shortcut_status_link($scut, true, $service);
 									echo get_shortcut_log_link($scut, true);
 								}
 								echo "</td></tr>\n";

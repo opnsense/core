@@ -111,8 +111,6 @@ if($need_alert_display == true) {
 					</li>
 					<?php
 						if (isset($shortcut_section)) {
-							echo '<li>'.get_shortcut_main_link($shortcut_section, false).'</li>';
-							echo '<li>'.get_shortcut_status_link($shortcut_section, false).'</li>';
 							echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
 						}
 					?>
