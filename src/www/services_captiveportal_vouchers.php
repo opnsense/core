@@ -90,8 +90,6 @@ if (empty($a_cp[$cpzone])) {
     exit;
 }
 
-
-$pgtitle = array(gettext("Services"), gettext("Captive portal"), gettext("Vouchers"), $a_cp[$cpzone]['zone']);
 $shortcut_section = "captiveportal-vouchers";
 
 if (!is_array($config['voucher'][$cpzone]['roll'])) {

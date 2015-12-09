@@ -45,7 +45,6 @@ function allowedips_sort()
     usort($config['captiveportal'][$cpzone]['allowedip'], "allowedipscmp");
 }
 
-$pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit allowed IP address"));
 $shortcut_section = "captiveportal";
 
 $cpzone = $_GET['zone'];

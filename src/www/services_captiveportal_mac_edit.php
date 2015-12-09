@@ -46,7 +46,6 @@ function passthrumacs_sort()
 global $cpzone;
 global $cpzoneid;
 
-$pgtitle = array(gettext("Services"),gettext("Captive portal"),gettext("Edit MAC address rules"));
 $shortcut_section = "captiveportal";
 
 $cpzone = $_GET['zone'];
