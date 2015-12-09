@@ -81,17 +81,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $cnf = OPNsense\Core\Config::getInstance();
     $confvers = $cnf->getBackups(true);
-    if (!empty($_POST['backupcount'])) {
+    if (!empty($_POST['save'])) {
         if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
             $config['system']['backupcount'] = $_POST['backupcount'];
-        } else {
+        } elseif (isset($config['system']['backupcount'])) {
             unset($config['system']['backupcount']);
         }
         write_config(gettext('Changed backup revision count.'));
     } elseif (!empty($_POST['act']) && $_POST['act'] == "revert") {
         foreach ($confvers as $filename => $revision) {
             if (isset($revision['time']) && $revision['time'] == $_POST['time']) {
-                if (config_restore($filename)== 0) {
+                if (config_restore($filename) == 0) {
                     $savemsg = sprintf(gettext('Successfully reverted to timestamp %s with description "%s".'), date(gettext("n/j/y H:i:s"), $_POST['id']), $revision['description']);
                 } else {
                     $savemsg = gettext("Unable to revert to the selected configuration.");
