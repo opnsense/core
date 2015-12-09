@@ -69,23 +69,23 @@
         <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>
         </Wizard>
-        <Users order="10" cssClass="fa fa-users">
-            <All url="/system_usermanager.php">
+        <Access VisibleName="Access Control" order="10" cssClass="fa fa-users">
+            <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*"/>
                 <Privileges url="/system_usermanager_addprivs.php*"/>
-            </All>
-            <Groups url="/system_groupmanager.php">
+            </Users>
+            <Groups order="20" url="/system_groupmanager.php">
                 <All url="/system_groupmanager.php*"/>
                 <Privileges url="/system_groupmanager_addprivs.php*"/>
             </Groups>
-            <Servers url="/system_authservers.php">
+            <Settings order="30" url="/system_usermanager_settings.php"/>
+            <Servers order="40" url="/system_authservers.php">
                 <Edit url="/system_authservers.php*"/>
             </Servers>
-            <Settings url="/system_usermanager_settings.php"/>
-        </Users>
+            <Tester order="50" url="/diag_authentication.php"/>
+        </Access>
         <Diagnostics order="150" cssClass="fa fa-medkit">
             <Activity VisibleName="Activity Monitor" url="/diag_system_activity.php"/>
-            <Authentication VisibleName="Authentication" url="/diag_authentication.php"/>
             <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
             <Halt VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot VisibleName="Reboot System" url="/reboot.php"/>
@@ -150,12 +150,19 @@
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" cssClass="fa fa-list-alt">
             <All order="100"  url="/firewall_aliases.php?tab=all">
-              <AliasesEdit url="/firewall_aliases_edit.php*"/>
-              <none url="/firewall_aliases.php"/>
+                <Edit url="/firewall_aliases_edit.php?tab=all"/>
+                <NoneEdit url="/firewall_aliases_edit.php?id=*"/>
+                <None url="/firewall_aliases.php"/>
             </All>
-            <IP order="200" url="/firewall_aliases.php?tab=ip"/>
-            <Ports order="300"  url="/firewall_aliases.php?tab=port"/>
-            <URLs  order="400"  url="/firewall_aliases.php?tab=url"/>
+            <IPs order="200" url="/firewall_aliases.php?tab=ip">
+                <Edit url="/firewall_aliases_edit.php?tab=ip"/>
+            </IPs>
+            <Ports order="300" url="/firewall_aliases.php?tab=port">
+                <Edit url="/firewall_aliases_edit.php?tab=port"/>
+            </Ports>
+            <URLs order="400"  url="/firewall_aliases.php?tab=url">
+                <Edit url="/firewall_aliases_edit.php?tab=url"/>
+            </URLs>
             <Import order="500" url="/firewall_aliases_import.php"/>
         </Aliases>
         <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check">
@@ -177,7 +184,10 @@
                 <NPTEdit url="/firewall_nat_npt_edit.php*"/>
             </NPT>
         </NAT>
-        <TrafficShaper order="40" url="/ui/trafficshaper/" VisibleName="Traffic Shaper" cssClass="fa fa-filter"/>
+        <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter">
+            <Settings url="/ui/trafficshaper/"/>
+            <Status url="/diag_limiter_info.php"/>
+        </TrafficShaper>
         <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
             <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
@@ -185,7 +195,6 @@
             <SchedulesEdit url="/firewall_schedule_edit.php*"/>
         </Schedules>
         <Diagnostics order="400" cssClass="fa fa-medkit">
-            <LimiterInfo order="10" VisibleName="Limiter Info" url="/diag_limiter_info.php"/>
             <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
