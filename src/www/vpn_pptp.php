@@ -309,8 +309,8 @@ function enable_change(enable_over) {
 } ?>
 				<?php print_info_box(
 					gettext(
-						'PPTP is not considered a VPN technology, because it relies upon the ' .
-						'compromised MS-CHAPv2 protocol. If you choose to use PPTP, be aware ' .
+						'PPTP is not considered a secure VPN technology, because it relies upon ' .
+						'the compromised MS-CHAPv2 protocol. If you choose to use PPTP, be aware ' .
 						'that your traffic can be decrypted by virtually any third party. ' .
 						'It should be considered an unencrypted tunneling protocol.'
 					) .  ' <a href="https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807">' .
