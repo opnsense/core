@@ -133,9 +133,7 @@ function get_shortcut_log_link($shortcut_section, $addspace = true) {
 }
 
 $shortcuts['upnp'] = array();
-$shortcuts['upnp']['main'] = "services_upnp.php";
 $shortcuts['upnp']['log'] = "diag_logs_routing.php";
-$shortcuts['upnp']['status'] = "status_upnp.php";
 $shortcuts['upnp']['service'] = "miniupnpd";
 
 
@@ -163,13 +161,10 @@ $shortcuts['captiveportal-vouchers']['status'] = "status_captiveportal_vouchers.
 $shortcuts['captiveportal-vouchers']['service'] = "captiveportal";
 
 $shortcuts['dhcp'] = array();
-$shortcuts['dhcp']['main'] = "services_dhcp.php";
 $shortcuts['dhcp']['log'] = "diag_logs_dhcp.php";
-$shortcuts['dhcp']['status'] = "status_dhcp_leases.php";
 $shortcuts['dhcp']['service'] = "dhcpd";
 
 $shortcuts['dhcp6'] = array();
-$shortcuts['dhcp6']['main'] = "services_dhcpv6.php";
 $shortcuts['dhcp6']['log'] = "diag_logs_dhcp.php";
 $shortcuts['dhcp6']['status'] = "status_dhcpv6_leases.php";
 
@@ -187,11 +182,6 @@ $shortcuts['resolver']['service'] = 'unbound';
 
 $shortcuts['ntp'] = array();
 $shortcuts['ntp']['service'] = 'ntpd';
-
-$shortcuts['routing'] = array();
-$shortcuts['routing']['main'] = "system_routes.php";
-$shortcuts['routing']['log'] = "diag_logs_routing.php";
-$shortcuts['routing']['status'] = "diag_routes.php";
 
 $shortcuts['gateways'] = array();
 $shortcuts['gateways']['service'] = "apinger";

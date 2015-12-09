@@ -55,8 +55,6 @@ if (isset($_REQUEST['isAjax'])) {
 	exit;
 }
 
-$shortcut_section = "routing";
-
 include('head.inc');
 
 ?>
