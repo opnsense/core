@@ -235,10 +235,11 @@
             <Domains url="/services_dnsmasq_domainoverride_edit.php*"/>
         </DNSForwarder>
         <DNSResolver VisibleName="DNS Resolver" cssClass="fa fa-tags">
-            <General order="10" url="/services_unbound.php">
+            <General order="10" url="/services_unbound.php"/>
+            <Overrides order="15" url="/services_unbound_overrides.php">
                 <Hosts url="/services_unbound_host_edit.php*"/>
                 <Domains url="/services_unbound_domainoverride_edit.php*"/>
-            </General>
+            </Overrides>
             <Advanced order="20" url="/services_unbound_advanced.php"/>
             <ACL VisibleName="Access Lists" order="30" url="/services_unbound_acls.php">
                 <All url="/services_unbound_acls.php*"/>
