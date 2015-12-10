@@ -200,13 +200,13 @@ include_once("head.inc");
 								<tbody>
 								<?php $i = 0; foreach ($a_domainOverrides as $doment): ?>
 								<tr>
-									<td class="listlr">
+									<td class="listlr" ondblclick="document.location='services_unbound_domainoverride_edit.php?id=<?=$i;?>';">
 										<?=strtolower($doment['domain']);?>&nbsp;
 									</td>
-									<td class="listr">
+									<td class="listr" ondblclick="document.location='services_unbound_domainoverride_edit.php?id=<?=$i;?>';">
 										<?=$doment['ip'];?>&nbsp;
 									</td>
-									<td class="listbg">
+									<td class="listbg" ondblclick="document.location='services_unbound_domainoverride_edit.php?id=<?=$i;?>';">
 										<?=htmlspecialchars($doment['descr']);?>&nbsp;
 									</td>
 									<td valign="middle" class="list nowrap">
