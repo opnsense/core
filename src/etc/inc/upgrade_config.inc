@@ -2547,20 +2547,25 @@ function upgrade_071_to_072() {
 		rename_field($config['sysctl']['item'], 'desc', 'descr');
 }
 
-function upgrade_072_to_073() {
+function upgrade_072_to_073()
+{
 	global $config;
-	if (!is_array($config['load_balancer']))
+
+	if (!isset($config['load_balancer'])) {
 		return;
-	if (is_array($config['load_balancer']['monitor_type']))
+	}
+
+	if (isset($config['load_balancer']['monitor_type'])) {
 		rename_field($config['load_balancer']['monitor_type'], 'desc', 'descr');
-	if (is_array($config['load_balancer']['lbpool']))
+	}
+
+	if (isset($config['load_balancer']['lbpool'])) {
 		rename_field($config['load_balancer']['lbpool'], 'desc', 'descr');
-	if (is_array($config['load_balancer']['lbaction']))
-		rename_field($config['load_balancer']['lbaction'], 'desc', 'descr');
-	if (is_array($config['load_balancer']['lbprotocol']))
-		rename_field($config['load_balancer']['lbprotocol'], 'desc', 'descr');
-	if (is_array($config['load_balancer']['virtual_server']))
+	}
+
+	if (isset($config['load_balancer']['virtual_server'])) {
 		rename_field($config['load_balancer']['virtual_server'], 'desc', 'descr');
+	}
 }
 
 function upgrade_073_to_074() {
