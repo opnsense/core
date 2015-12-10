@@ -383,7 +383,6 @@ if ($_POST) {
 } // end if($_POST)
 
 $closehead = false;
-$pgtitle = array(gettext("Interfaces"),gettext("PPPs"),gettext("Edit"));
 
 include("head.inc");
 

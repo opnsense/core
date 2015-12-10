@@ -73,7 +73,6 @@ $data = msort($data, "dnsresolve");
 // Load MAC-Manufacturer table
 $mac_man = load_mac_manufacturer_table();
 
-$pgtitle = array(gettext("Diagnostics"),gettext("NDP Table"));
 include("head.inc");
 
 ?>

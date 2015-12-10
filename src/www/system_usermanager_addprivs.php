@@ -92,9 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$pgtitle = array(gettext('System'), gettext('Users'),gettext('Privileges'));
-
 include("head.inc");
+
 ?>
 
 <body link="#0000CC" vlink="#0000CC" alink="#0000CC" >

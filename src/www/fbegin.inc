@@ -111,8 +111,6 @@ if($need_alert_display == true) {
 					</li>
 					<?php
 						if (isset($shortcut_section)) {
-							echo '<li>'.get_shortcut_main_link($shortcut_section, false).'</li>';
-							echo '<li>'.get_shortcut_status_link($shortcut_section, false).'</li>';
 							echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
 						}
 					?>
@@ -201,7 +199,7 @@ if($need_alert_display == true) {
 			<div class="container-fluid">
 			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
 				<ul class="list-inline">
-					<li class="__mb"><h1><?= gentitle(count($menuBreadcrumbs) ? $menuBreadcrumbs : $pgtitle) ?></h1></li>
+					<li class="__mb"><h1><?= gentitle($menuBreadcrumbs) ?></h1></li>
 
 					<li class="btn-group-container">
 

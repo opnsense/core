@@ -34,8 +34,6 @@ require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext('Services'), gettext('OpenVPN'), gettext('Log File'));
-
 $openvpn_logfile = '/var/log/openvpn.log';
 
 if (empty($config['syslog']['nentries'])) {

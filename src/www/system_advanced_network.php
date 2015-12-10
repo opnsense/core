@@ -136,7 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($pconfig);
 
-$pgtitle = array(gettext("System"),gettext("Settings"),gettext("Networking"));
 include("head.inc");
 
 ?>

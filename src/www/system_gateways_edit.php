@@ -474,10 +474,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
-$pgtitle = array(gettext('System'), gettext('Gateway'), gettext('Edit'));
 
 include("head.inc");
 

@@ -93,8 +93,6 @@ if ($_GET['hostipformat']) {
 	$curhostipformat = "";
 }
 
-$pgtitle = array(gettext('Interfaces'), gettext('Traffic Graph'));
-
 include("head.inc");
 
 ?>

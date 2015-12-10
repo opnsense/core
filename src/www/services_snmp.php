@@ -152,9 +152,9 @@ if ($_POST) {
 	}
 }
 
-$closehead = false;
-$pgtitle = array(gettext("Services"),gettext("SNMP"));
 $shortcut_section = "snmp";
+$closehead = false;
+
 include("head.inc");
 
 ?>

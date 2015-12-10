@@ -46,8 +46,6 @@ if (isset($_GET['clear'])) {
 	clear_log($logfile);
 }
 
-$pgtitle = array(gettext('Services'), gettext('Proxy Server'), gettext('Log File'));
-
 include("head.inc");
 
 ?>

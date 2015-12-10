@@ -140,13 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$pgtitle = array(gettext('System'),gettext('Gateways'), gettext('Edit Group'));
-
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 
 <script type="text/javascript">
 $( document ).ready(function() {

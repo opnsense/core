@@ -27,8 +27,6 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-$pgtitle = array(gettext("Interfaces"),gettext("QinQ"), gettext("Edit"));
-
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 

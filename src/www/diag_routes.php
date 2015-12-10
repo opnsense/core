@@ -55,9 +55,6 @@ if (isset($_REQUEST['isAjax'])) {
 	exit;
 }
 
-$pgtitle = array(gettext('System'), gettext('Routes'), gettext('Status'));
-$shortcut_section = "routing";
-
 include('head.inc');
 
 ?>

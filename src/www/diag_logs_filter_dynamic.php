@@ -47,8 +47,6 @@ if (isset($_POST['clear'])) {
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);
 
-$pgtitle = array(gettext('Firewall'), gettext('Log Files'), gettext('Dynamic View'));
-$shortcut_section = "firewall";
 include("head.inc");
 
 ?>

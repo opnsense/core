@@ -157,7 +157,7 @@ if ($_POST) {
 }
 
 $closehead = false;
-$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Access Lists'));
+
 include("head.inc");
 
 ?>

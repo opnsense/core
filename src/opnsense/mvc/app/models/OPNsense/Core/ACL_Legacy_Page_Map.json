@@ -803,34 +803,6 @@
             "load_balancer_monitor.php*"
         ]
     },
-    "page-services-loadbalancer-relay-action-edit": {
-        "name": "WebCfg - Services: Load Balancer: Relay Action: Edit page",
-        "descr": "Allow access to the 'Services: Load Balancer: Relay Action: Edit' page.",
-        "match": [
-            "load_balancer_relay_action_edit.php*"
-        ]
-    },
-    "page-services-loadbalancer-relay-action": {
-        "name": "WebCfg - Services: Load Balancer: Relay Actions page",
-        "descr": "Allow access to the 'Services: Load Balancer: Relay Actions' page.",
-        "match": [
-            "load_balancer_relay_action.php*"
-        ]
-    },
-    "page-services-loadbalancer-relay-protocol-edit": {
-        "name": "WebCfg - Services: Load Balancer: Relay Protocol: Edit page",
-        "descr": "Allow access to the 'Services: Load Balancer: Relay Protocol: Edit' page.",
-        "match": [
-            "load_balancer_relay_protocol_edit.php*"
-        ]
-    },
-    "page-services-loadbalancer-relay-protocol": {
-        "name": "WebCfg - Services: Load Balancer: Relay Protocols page",
-        "descr": "Allow access to the 'Services: Load Balancer: Relay Protocols' page.",
-        "match": [
-            "load_balancer_relay_protocol.php*"
-        ]
-    },
     "page-services-loadbalancer-setting": {
         "name": "WebCfg - Services: Load Balancer: setting page",
         "descr": "Allow access to the 'Settings: Load Balancer: Settings' page.",

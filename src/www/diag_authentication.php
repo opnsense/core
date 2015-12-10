@@ -78,8 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 	}
 }
-$pgtitle = array(gettext("Diagnostics"),gettext("Authentication"));
-$shortcut_section = "authentication";
 
 include("head.inc");
 

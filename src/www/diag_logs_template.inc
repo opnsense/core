@@ -1,8 +1,10 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
-    Copyright (C) 2012 Jim Pingle <jimp@pfsense.org>.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2012 Seth Mos
+    Copyright (C) 2004-2009 Scott Ullrich
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,7 +33,9 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$routing_logfile = '/var/log/routing.log';
+/* expects $logfile to point to the system path */
+/* expects $logclog to be true or false */
+
 $filtertext = '';
 $nentries = 50;
 
@@ -40,7 +44,11 @@ if (isset($config['syslog']['nentries'])) {
 }
 
 if (!empty($_POST['clear'])) {
-    clear_clog($routing_logfile);
+    if ($logclog) {
+        clear_clog($logfile);
+    } else {
+        clear_log($logfile);
+    }
 }
 
 if (isset($_POST['filtertext'])) {
@@ -56,23 +64,28 @@ include("head.inc");
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-          <section class="col-xs-12">
+        <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
             <div class="table-responsive">
               <table class="table table-striped table-sort">
                 <tr>
                   <td colspan="2">
-                    <form id="clearform" name="clearform" action="diag_logs_routing.php" method="post" class="__mt">
+                    <form id="clearform" name="clearform" action="<? $_SERVER['REQUEST_URI'] ?>" method="post" class="__mt">
                       <input id="filtertext" name="filtertext" value="<?=$filtertext;?>"/>
                       <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
                     </form>
                   </td>
                 </tr>
-                <?php dump_clog($routing_logfile, $nentries, $filtertext); ?>
+                <?php
+                  if ($logclog) {
+                      dump_clog($logfile, $nentries, $filtertext);
+                  } else {
+                      dump_log($logfile, $nentries, $filtertext);
+                  }
+                ?>
                 <tr>
                   <td colspan="2">
-                    <form action="diag_logs_routing.php" method="post">
+                    <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
                       <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
                     </form>
                   </td>

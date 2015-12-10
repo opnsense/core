@@ -91,8 +91,6 @@ $cert_keylens = array( "512", "1024", "2048", "4096");
 $altname_types = array("DNS", "IP", "email", "URI");
 $openssl_digest_algs = array("sha1", "sha224", "sha256", "sha384", "sha512");
 
-$pgtitle = array(gettext("System"), gettext("Certificate Manager"));
-
 if (isset($_GET['userid']) && is_numericint($_GET['userid'])) {
     $userid = $_GET['userid'];
 }

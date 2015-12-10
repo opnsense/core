@@ -413,11 +413,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-if (!empty($pconfig['mobile'])) {
-    $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Edit Phase 1"), gettext("Mobile Client"));
-} else {
-    $pgtitle = array(gettext("VPN"),gettext("IPsec"),gettext("Edit Phase 1"));
-}
 $shortcut_section = 'ipsec';
 
 legacy_html_escape_form_data($pconfig);

@@ -152,8 +152,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Router advertisements"));
-
 include("head.inc");
 
 ?>

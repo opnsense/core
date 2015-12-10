@@ -106,7 +106,6 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$pgtitle = array(gettext("Services"),gettext("Wake on LAN"));
 include("head.inc");
 
 ?>

@@ -43,7 +43,6 @@ if ($_POST['clear']) {
 	clear_clog($portal_logfile);
 }
 
-$pgtitle = array(gettext('Services'), gettext('Captive Portal'), gettext('Log File'));
 include("head.inc");
 
 ?>

@@ -40,7 +40,7 @@ function listtags()
 		'hash-algorithm-option', 'hosts',
 		'ifgroupentry', 'igmpentry', 'interface_array', 'item',
 		'key',
-		'lagg', 'lbaction', 'lbpool', 'l7rules', 'lbprotocol',
+		'lagg', 'lbpool',
 		'member', 'menu', 'mobilekey', 'monitor_type', 'mount',
 		'npt', 'ntpserver',
 		'onetoone', 'openvpn-server', 'openvpn-client', 'openvpn-csc', 'option',

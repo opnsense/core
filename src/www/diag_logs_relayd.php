@@ -45,7 +45,6 @@ if ($_POST['clear']) {
 	clear_clog($relayd_logfile);
 }
 
-$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Log File'));
 $shortcut_section = 'relayd';
 
 include("head.inc");

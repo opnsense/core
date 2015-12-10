@@ -34,11 +34,16 @@ foreach ($ifarr as $key => $descr) {
 }
 unset($ifarr);
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
-$menuBreadcrumbs = $menu->getBreadcrumbs();
+
+/* XXX workaround for dashboard */
+if (!isset($menuBreadcrumbs)) {
+	/* XXX generating breadcrumbs requires getItems() call */
+	$menuBreadcrumbs = $menu->getBreadcrumbs();
+}
 
 $g['theme'] = get_current_theme();
 
-$pagetitle = gentitle(array_reverse(count($menuBreadcrumbs) ? $menuBreadcrumbs : $pgtitle), ' | ');
+$pagetitle = gentitle(array_reverse($menuBreadcrumbs), ' | ');
 $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']);
 
 ?><!doctype html>

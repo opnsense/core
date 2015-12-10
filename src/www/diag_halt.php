@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2004 Scott Ullrich
@@ -30,9 +31,8 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-
-$pgtitle = array(gettext("Diagnostics"),gettext("Halt system"));
 include('head.inc');
+
 ?>
 
 <body>

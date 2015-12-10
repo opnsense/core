@@ -45,8 +45,8 @@ if ($_POST['clear']) {
 	clear_clog($ntpd_logfile);
 }
 
-$pgtitle = array(gettext("Status"),gettext("System logs"),gettext("NTP"));
 $shortcut_section = "ntp";
+
 include("head.inc");
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014-2015 Deciso B.V.
 	Copyright (C) 2013 Dagorlad
@@ -144,11 +145,11 @@ if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 
 	}
 }
 
-$pgtitle = array(gettext('Services'), gettext('Network Time'), gettext('Status'));
 $shortcut_section = "ntp";
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 
 <body>
 <?php include("fbegin.inc"); ?>

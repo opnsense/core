@@ -137,8 +137,6 @@ global $listtags;
 $listtags = array_flip(array('build_port_path', 'onetoone', 'queue', 'rule', 'servernat', 'alias', 'additional_files_needed', 'tab', 'menu', 'rowhelperfield', 'service', 'step', 'package', 'columnitem', 'option', 'item', 'field', 'package', 'file'));
 $pkg = parse_xml_config_raw('/usr/local/pkg/miniupnpd.xml', 'packagegui', false);
 
-$pgtitle = array(gettext('Services'), gettext('Universal Plug and Play'), gettext('Settings'));
-
 if($config['installedpackages'] && !is_array($config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config']))
 	$config['installedpackages'][xml_safe_fieldname($pkg['name'])]['config'] = array();
 

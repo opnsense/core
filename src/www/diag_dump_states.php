@@ -57,7 +57,6 @@ if (isset($_POST['filter']) && isset($_POST['killfilter'])) {
 	}
 }
 
-$pgtitle = array(gettext("Diagnostics"),gettext("Show States"));
 include("head.inc");
 
 ?>

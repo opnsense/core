@@ -53,7 +53,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext('Diagnostics'), gettext('State Reset'));
 include("head.inc");
 
 ?>

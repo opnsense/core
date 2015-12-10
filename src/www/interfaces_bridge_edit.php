@@ -239,8 +239,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext("Interfaces"),gettext("Bridge"),gettext("Edit"));
-
 include("head.inc");
 
 ?>

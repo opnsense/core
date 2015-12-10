@@ -345,9 +345,8 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$closehead = false;
-$pgtitle = array(gettext("Services"),gettext("DHCPv6 server"));
 $shortcut_section = "dhcp6";
+$closehead = false;
 
 include("head.inc");
 

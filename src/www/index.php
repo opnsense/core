@@ -340,9 +340,12 @@ function changeTabDIV(selectedDiv){
 </script>
 EOD;
 
+/* XXX overwrite breadcrumb for now, not in menu */
+$menuBreadcrumbs = array(
+	array('name' => gettext('Lobby')),
+	array('name' => gettext('Dashboard')),
+);
 
-## Set Page Title and Include Header
-$pgtitle = array(gettext('Lobby'), gettext('Dashboard'));
 include("head.inc");
 
 ?>

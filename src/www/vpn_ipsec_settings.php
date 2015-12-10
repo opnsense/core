@@ -104,10 +104,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     vpn_ipsec_configure();
 }
 
-$pgtitle = array(gettext('VPN'), gettext('IPsec'), gettext('Advanced Settings'));
 $shortcut_section = 'ipsec';
 
 include("head.inc");
+
 ?>
 
 <body>

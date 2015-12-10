@@ -184,7 +184,11 @@ defCmdT("vmstat -z","vmstat -z");
 exec("/bin/date", $dateOutput, $dateStatus);
 $currentDate = $dateOutput[0];
 
-$pgtitle = array("{$g['product_name']}","status");
+$menuBreadcrumbs = array(
+	array('name' => gettext('Lobby')),
+	array('name' => gettext('Status')),
+);
+
 include("head.inc");
 
 ?>

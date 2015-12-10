@@ -140,7 +140,7 @@ if ($_GET['act'] == "del") {
 }
 
 $closehead = false;
-$pgtitle = array(gettext("Services"),gettext("DNS Forwarder"));
+
 include("head.inc");
 
 ?>

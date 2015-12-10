@@ -1,4 +1,5 @@
 <?php
+
 /*
 	Copyright (C) 2014 Deciso B.V.
 	Copyright (C) 2004-2009 Scott Ullrich <sullrich@gmail.com>
@@ -33,7 +34,6 @@ require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
-$pgtitle = array(gettext("Status"),gettext("DHCP leases"));
 $shortcut_section = "dhcp";
 
 $leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases";

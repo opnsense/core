@@ -83,7 +83,6 @@ if ($_POST) {
 	}
 }
 
-$pgtitle = array(gettext('Services'), gettext('Load Balancer'), gettext('Settings'));
 $shortcut_section = 'relayd';
 
 include("head.inc");

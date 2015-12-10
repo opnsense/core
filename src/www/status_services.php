@@ -272,16 +272,12 @@ function service_control_restart($name, $extras) {
 	return sprintf(gettext("%s has been restarted."),htmlspecialchars($name));
 }
 
-
-$pgtitle = array(gettext("Status"),gettext("Services"));
 include("head.inc");
 
 ?>
 
 <body>
-<?php
-include("fbegin.inc");
-?>
+<?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">
 		<div class="container-fluid">
@@ -325,8 +321,6 @@ include("fbegin.inc");
 								echo "<td valign=\"middle\" class=\"list nowrap\">" . get_service_control_links($service);
 								$scut = get_shortcut_by_service_name($service['name']);
 								if (!empty($scut)) {
-									echo get_shortcut_main_link($scut, true, $service);
-									echo get_shortcut_status_link($scut, true, $service);
 									echo get_shortcut_log_link($scut, true);
 								}
 								echo "</td></tr>\n";

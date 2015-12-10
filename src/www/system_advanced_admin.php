@@ -273,8 +273,8 @@ if (empty($pconfig['webguiproto']) || !$certs_available) {
 }
 legacy_html_escape_form_data($pconfig);
 
-$pgtitle = array(gettext("System"),gettext("Settings"),gettext("Admin Access"));
 include("head.inc");
+
 ?>
 
 <body>
