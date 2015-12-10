@@ -139,11 +139,6 @@ function relayd_configure($kill_first=false) {
 	} else {
 		$pool_a = null;
 	}
-	if (isset($config['load_balancer']['lbprotocol'])) {
-		$protocol_a = $config['load_balancer']['lbprotocol'];
-	} else {
-		$protocol_a = null;
-	}
 	if (isset($config['load_balancer']['setting'])) {
 		$setting = $config['load_balancer']['setting'];
 	} else {
