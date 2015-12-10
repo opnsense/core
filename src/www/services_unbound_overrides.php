@@ -41,6 +41,13 @@ if (!is_array($config['unbound']['hosts']))
 	$config['unbound']['hosts'] = array();
 $a_hosts =& $config['unbound']['hosts'];
 
+/* Backwards compatibility for records created before introducing RR types. */
+foreach ($a_hosts as $i => $hostent) {
+    if (!isset($hostent['rr'])) {
+        $a_hosts[$i]['rr'] = (is_ipaddrv6($hostent['ip'])) ? 'AAAA' : 'A';
+    }
+}
+
 if (!is_array($config['unbound']['domainoverrides']))
 	$config['unbound']['domainoverrides'] = array();
 $a_domainOverrides = &$config['unbound']['domainoverrides'];
@@ -112,6 +119,7 @@ include_once("head.inc");
 					<div class="content-box-main col-xs-12">
 						<?=gettext("Entries in this section override individual results from the forwarders.");?>
 	<?=gettext("Use these for changing DNS results or for adding custom DNS records.");?>
+	<?=gettext("Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.");?>
 					</div>
 					    <div class="content-box-main col-xs-12">
 					    <div class="table-responsive">
@@ -119,8 +127,9 @@ include_once("head.inc");
 								<thead>
 								<tr>
 									<td width="20%" class="listhdrr"><?=gettext("Host");?></td>
-									<td width="25%" class="listhdrr"><?=gettext("Domain");?></td>
-									<td width="20%" class="listhdrr"><?=gettext("IP");?></td>
+									<td width="20%" class="listhdrr"><?=gettext("Domain");?></td>
+									<td width="5%" class="listhdrr"><?=gettext("Type");?></td>
+									<td width="20%" class="listhdrr"><?=gettext("Value");?></td>
 									<td width="30%" class="listhdr"><?=gettext("Description");?></td>
 									<td width="5%" class="list">
 										<table border="0" cellspacing="0" cellpadding="1" summary="add">
@@ -142,7 +151,24 @@ include_once("head.inc");
 										<?=strtolower($hostent['domain']);?>&nbsp;
 									</td>
 									<td class="listr" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
-										<?=$hostent['ip'];?>&nbsp;
+										<?=strtoupper($hostent['rr']);?>&nbsp;
+									</td>
+									<td class="listr" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
+                                        <?php
+                                            /* Presentation of DNS value differs between chosen RR type. */
+                                            switch ($hostent['rr']) {
+                                                case 'A':
+                                                case 'AAAA':
+                                                    print $hostent['ip'];
+                                                    break;
+                                                case 'MX':
+                                                    print $hostent['mxprio'] . " " . $hostent['mx'];
+                                                    break;
+                                                default:
+                                                    print '&nbsp;';
+                                                    break;
+                                            }
+                                        ?>
 									</td>
 									<td class="listbg" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
 										<?=htmlspecialchars($hostent['descr']);?>&nbsp;

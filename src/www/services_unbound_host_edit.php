@@ -58,9 +58,17 @@ if (isset($_POST['id']) && is_numericint($_POST['id']))
 	$id = $_POST['id'];
 
 if (isset($id) && $a_hosts[$id]) {
+/* Backwards compatibility for records created before introducing different RR types. */
+	if (!isset($a_hosts[$id]['rr'])) {
+		$a_hosts[$id]['rr'] = 'A';
+	}
+
 	$pconfig['host'] = $a_hosts[$id]['host'];
 	$pconfig['domain'] = $a_hosts[$id]['domain'];
+	$pconfig['rr'] = $a_hosts[$id]['rr'];
 	$pconfig['ip'] = $a_hosts[$id]['ip'];
+	$pconfig['mxprio'] = $a_hosts[$id]['mxprio'];
+	$pconfig['mx'] = $a_hosts[$id]['mx'];
 	$pconfig['descr'] = $a_hosts[$id]['descr'];
 	$pconfig['aliases'] = $a_hosts[$id]['aliases'];
 }
@@ -71,19 +79,48 @@ if ($_POST) {
 	$pconfig = $_POST;
 
 	/* input validation */
-	$reqdfields = explode(" ", "domain ip");
-	$reqdfieldsn = array(gettext("Domain"),gettext("IP address"));
+	$reqdfields = explode(" ", "domain rr");
+	$reqdfieldsn = array(gettext("Domain"),gettext("Type"));
 
 	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-	if (($_POST['host'] && !is_hostname($_POST['host'])))
+	if (($_POST['host'] && !is_hostname($_POST['host']))) {
 		$input_errors[] = gettext("The hostname can only contain the characters A-Z, 0-9 and '-'.");
+	}
 
-	if (($_POST['domain'] && !is_domain($_POST['domain'])))
+	if (($_POST['domain'] && !is_domain($_POST['domain']))) {
 		$input_errors[] = gettext("A valid domain must be specified.");
+	}
 
-	if (($_POST['ip'] && !is_ipaddr($_POST['ip'])))
-		$input_errors[] = gettext("A valid IP address must be specified.");
+	switch ($_POST['rr']) {
+		case 'A': /* also: AAAA */
+			$reqdfields = explode(" ", "ip");
+			$reqdfieldsn = array(gettext("IP address"));
+
+			do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+			if (($_POST['ip'] && !is_ipaddr($_POST['ip']))) {
+				$input_errors[] = gettext("A valid IP address must be specified.");
+			}
+			break;
+        case 'MX':
+			$reqdfields = explode(" ", "mxprio mx");
+			$reqdfieldsn = array(gettext("MX Priority"), gettext("MX Host"));
+
+			do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+			if (($_POST['mxprio'] && !is_numericint($_POST['mxprio']))) {
+				$input_errors[] = gettext("A valid MX priority must be specified.");
+			}
+
+			if (($_POST['mx'] && !is_domain($_POST['mx']))) {
+				$input_errors[] = gettext("A valid MX host must be specified.");
+			}
+			break;
+		default:
+			$input_errors[] = gettext("A valid resource record type must be specified.");
+			break;
+	}
 
 	/* collect aliases */
 	$aliases = array();
@@ -136,9 +173,19 @@ if ($_POST) {
 		$hostent = array();
 		$hostent['host'] = $_POST['host'];
 		$hostent['domain'] = $_POST['domain'];
+		$hostent['rr'] = $_POST['rr'];
 		$hostent['ip'] = $_POST['ip'];
+		$hostent['mxprio'] = $_POST['mxprio'];
+		$hostent['mx'] = $_POST['mx'];
 		$hostent['descr'] = $_POST['descr'];
 		$hostent['aliases']['item'] = $aliases;
+
+		/* Destinguish between A and AAAA by parsing the passed IP address */
+		if ($_POST['rr'] == 'A') {
+			if (is_ipaddrv6($_POST['ip'])) {
+				$hostent['rr'] = 'AAAA';
+			}
+		}
 
 		if (isset($id) && $a_hosts[$id])
 			$a_hosts[$id] = $hostent;
@@ -175,6 +222,25 @@ include("head.inc");
 		rowname[2] = "aliasdescription";
 		rowtype[2] = "textbox";
 		rowsize[2] = "20";
+
+		function type_change() {
+			switch (jQuery('#rr').val()) {
+				case 'A':
+					jQuery('#ip').prop('disabled', false);
+					jQuery('#mxprio').prop('disabled', true);
+					jQuery('#mx').prop('disabled', true);
+					break;
+				case 'MX':
+					jQuery('#ip').prop('disabled', true);
+					jQuery('#mxprio').prop('disabled', false);
+					jQuery('#mx').prop('disabled', false);
+					break;
+				default:
+					jQuery('#ip').prop('disabled', false);
+					jQuery('#mxprio').prop('disabled', false);
+					jQuery('#mx').prop('disabled', false);
+			}
+		}
 	//]]>
 	</script>
 
@@ -216,11 +282,44 @@ include("head.inc");
 										</td>
 									</tr>
 									<tr>
-										<td width="22%" valign="top" class="vncellreq"><?=gettext("IP address");?></td>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("Type");?></td>
+										<td width="78%" class="vtable">
+											<select name="rr" id="rr" class="formselect" onchange="type_change()">
+											<?php
+												 $rrs = array("A" => gettext("A or AAAA (IPv4 or IPv6 address)"), "MX" => gettext("MX (Mail server)"));
+												 foreach ($rrs as $rr => $name) :
+											?>
+											<option value="<?=$rr;?>" <?=($rr == $pconfig['rr'] || ($rr == 'A' && $pconfig['rr'] == 'AAAA')) ? "selected=\"selected\"" : "";?> >
+												<?=$name;?>
+											</option>
+											<?php endforeach; ?>
+											</select>
+											<span class="vexpl"><?=gettext("Type of resource record"); ?><br />
+												<?=gettext("e.g."); ?> <em>A</em> <?=gettext("or"); ?> <em>AAAA</em> <?=gettext("for IPv4 or IPv6 addresses"); ?></span>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("IP");?></td>
 										<td width="78%" class="vtable">
 											<input name="ip" type="text" class="formfld" id="ip" size="40" value="<?=htmlspecialchars($pconfig['ip']);?>" /><br />
 											<span class="vexpl"><?=gettext("IP address of the host"); ?><br />
 												<?=gettext("e.g."); ?> <em>192.168.100.100</em> <?=gettext("or"); ?> <em>fd00:abcd::1</em></span>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("MX Priority");?></td>
+										<td width="78%" class="vtable">
+											<input name="mxprio" type="text" class="formfld" id="mxprio" size="6" value="<?=htmlspecialchars($pconfig['mxprio']);?>" /><br />
+											<span class="vexpl"><?=gettext("Priority of MX record"); ?><br />
+												<?=gettext("e.g."); ?> <em>10</em></span>
+										</td>
+									</tr>
+									<tr>
+										<td width="22%" valign="top" class="vncellreq"><?=gettext("MX Host");?></td>
+										<td width="78%" class="vtable">
+											<input name="mx" type="text" class="formfld" id="mx" size="6" value="<?=htmlspecialchars($pconfig['mx']);?>" /><br />
+											<span class="vexpl"><?=gettext("Host name of MX host"); ?><br />
+                                                <?=gettext("e.g."); ?> <em>mail.example.com</em></span>
 										</td>
 									</tr>
 									<tr>
@@ -306,4 +405,9 @@ include("head.inc");
 		</div>
 	</section>
 
+<script type="text/javascript">
+//<![CDATA[
+type_change();
+//]]>
+</script>
 <?php include("foot.inc"); ?>
