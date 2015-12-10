@@ -32,8 +32,6 @@ require_once("guiconfig.inc");
 
 function upload_crash_report($files, $agent)
 {
-    global $g;
-
     $post = array();
     $counter = 0;
 
@@ -113,7 +111,7 @@ if (isset($_POST['Submit'])) {
         upload_crash_report($files_to_upload, $user_agent);
         foreach ($files_to_upload as $file_to_upload) {
             @unlink($file_to_upload);
-	}
+	      }
     } elseif ($_POST['Submit'] == 'no') {
         $files_to_upload = glob('/var/crash/*');
         foreach ($files_to_upload as $file_to_upload) {
@@ -121,8 +119,8 @@ if (isset($_POST['Submit'])) {
         }
         @unlink('/tmp/PHP_errors.log');
     } elseif ($_POST['Submit'] == 'new') {
-        /* force a crash report generation */
-        $has_crashed = true;
+          /* force a crash report generation */
+          $has_crashed = true;
     }
 } else {
     /* if there is no user activity probe for a crash report */
@@ -149,6 +147,14 @@ if ($has_crashed) {
     }
 }
 
+$message = gettext('Luckily we have not detected a programming bug.');
+if (isset($_POST['Submit'])) {
+    if ($_POST['Submit'] == 'yes') {
+        $message = gettext('Thank you for submitting this crash report.');
+    } elseif ($_POST['Submit'] == 'no') {
+        $message = gettext('Please consider submitting a crash report if the error persists.');
+    }
+}
 ?>
 
 <body>
@@ -156,50 +162,43 @@ if ($has_crashed) {
 <?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
-    <div class="container-fluid">
-        <div class="row">
-            <section class="col-xs-12">
-                <div class="content-box">
-                    <form action="/crash_reporter.php" method="post">
-                        <div class="col-xs-12">
-
+  <div class="container-fluid">
+    <div class="row">
+      <section class="col-xs-12">
+        <div class="content-box">
+          <form action="/crash_reporter.php" method="post">
+            <div class="col-xs-12">
 <?php
+            if ($has_crashed):?>
+              <br/><button name="Submit" type="submit" class="btn btn-default pull-right" value="no"><?=gettext('Dismiss this report');?></button>
+              <button name="Submit" type="submit" class="btn btn-primary pull-right" style="margin-right: 8px;" value="yes"><?=gettext('Submit this report');?></button>
+              <p><strong><?=gettext("Unfortunately we have detected at least one programming bug.");?></strong></p>
+              <p><?=gettext("Would you like to submit this crash report to the developers?");?></p>
+              <hr><p><?=gettext('You can help us further by adding your contact information and a problem description. ' .
+                  'Please note that providing your contact information greatly improves the chances of bugs being fixed.');?></p>
+              <p><input type="text" placeholder="<?=gettext('your@email.com');?>" name="Email" value="<?=$email;?>"></p>
+              <p><textarea rows="5" placeholder="<?=gettext('A short problem description or steps to reproduce.');?>" name="Desc"></textarea></p>
+              <hr><p><?=gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.");?></p>
+<?php
+              foreach ($crash_reports as $report => $content):?>
+                  <p>
+                    <?=$report;?>:<br/>
+                    <pre><?=$content;?></pre>
+                  </p>
+<?php
+              endforeach;
+            else:?>
 
-if ($has_crashed) {
-    echo "<br/><button name=\"Submit\" type=\"submit\" class=\"btn btn-default pull-right\" value=\"no\">" . gettext('Dismiss this report') . "</button>";
-    echo "<button name=\"Submit\" type=\"submit\" class=\"btn btn-primary pull-right\" style=\"margin-right: 8px;\" value=\"yes\">" . gettext('Submit this report') . "</button>";
-    echo "<p><strong>" . gettext("Unfortunately we have detected at least one programming bug.") . "</strong></p>";
-    echo "<p>" . gettext("Would you like to submit this crash report to the developers?") . "</p>";
-    echo '<hr><p>' . gettext('You can help us further by adding your contact information and a problem description. ' .
-        'Please note that providing your contact information greatly improves the chances of bugs being fixed.') . '</p>';
-    echo sprintf('<p><input type="text" placeholder="%s" name="Email" value="%s"></p>', gettext('your@email.com'), $email);
-    echo sprintf('<p><textarea rows="5" placeholder="%s" name="Desc"></textarea></p>', gettext('A short problem description or steps to reproduce.'));
-    echo "<hr><p>" . gettext("Please double-check the following contents to ensure you are comfortable submitting the following information.") . "</p>";
-    foreach ($crash_reports as $report => $content) {
-        echo "<p>{$report}:<br/><pre>{$content}</pre></p>";
-    }
-} else {
-    $message = gettext('Luckily we have not detected a programming bug.');
-    if (isset($_POST['Submit'])) {
-        if ($_POST['Submit'] == 'yes') {
-            $message = gettext('Thank you for submitting this crash report.');
-        } elseif ($_POST['Submit'] == 'no') {
-            $message = gettext('Please consider submitting a crash report if the error persists.');
-        }
-    }
-
-    echo '<br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new">' . gettext('Report an issue') . '</button>';
-    echo '<p><strong>' . $message . '</strong></p><br/>';
-}
-
-?>
-
-                        </div>
-                    </form>
-                </div>
-            </section>
+              <br/><button name="Submit" type="submit" class="btn btn-primary pull-right" value="new"><?=gettext('Report an issue');?></button>
+              <p><strong><?=$message;?></strong></p><br/>
+<?php
+            endif;?>
+            </div>
+          </form>
         </div>
+      </section>
     </div>
+  </div>
 </section>
 
 <?php include("foot.inc");
