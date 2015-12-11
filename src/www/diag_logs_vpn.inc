@@ -2,7 +2,7 @@
 
 /*
 	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -32,56 +32,19 @@ require_once("vpn.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
-$tab_array = array();
-$tab_array[] = array(gettext("PPTP Logins"), (($vpntype == "pptp") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=pptp");
-$tab_array[] = array(gettext("PPTP Raw"), (($vpntype == "pptp") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=pptp&amp;mode=raw");
-$tab_array[] = array(gettext("PPPoE Logins"), (($vpntype == "poes") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=poes");
-$tab_array[] = array(gettext("PPPoE Raw"), (($vpntype == "poes") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=poes&amp;mode=raw");
-$tab_array[] = array(gettext("L2TP Logins"), (($vpntype == "l2tp") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=l2tp");
-$tab_array[] = array(gettext("L2TP Raw"), (($vpntype == "l2tp") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=l2tp&amp;mode=raw");
-
 if (empty($config['syslog']['nentries'])) {
         $nentries = 50;
 } else {
         $nentries = $config['syslog']['nentries'];
 }
 
-if (htmlspecialchars($_POST['vpntype']))
-	$vpntype = htmlspecialchars($_POST['vpntype']);
-elseif (htmlspecialchars($_GET['vpntype']))
-	$vpntype = htmlspecialchars($_GET['vpntype']);
-else
-	$vpntype = "pptp";
-
-if (htmlspecialchars($_POST['mode']))
-	$mode = htmlspecialchars($_POST['mode']);
-elseif (htmlspecialchars($_GET['mode']))
-	$mode = htmlspecialchars($_GET['mode']);
-else
-	$mode = "login";
-
-switch ($vpntype) {
-	case 'pptp':
-		$logname = "pptps";
-		break;
-	case 'poes':
-		$logname = "poes";
-		break;
-	case 'l2tp':
-		$logname = "l2tps";
-		break;
-}
-
 if ($_POST['clear']) {
-	if ($mode != "raw") {
-		clear_clog("/var/log/vpn.log");
-	} else {
-		clear_clog("/var/log/{$logname}.log");
-	}
+	clear_clog($logfile);
 }
 
-function dump_clog_vpn($logfile, $tail) {
-	global $g, $config, $vpntype;
+function dump_clog_vpn($logfile, $tail, $logtype)
+{
+	global $config;
 
 	$sor = isset($config['syslog']['reverse']) ? "-r" : "";
 
@@ -93,8 +56,9 @@ function dump_clog_vpn($logfile, $tail) {
 		$logent = preg_split("/\s+/", $logent, 6);
 		$llent = explode(",", $logent[5]);
 		$iftype = substr($llent[1], 0, 4);
-		if ($iftype != $vpntype)
+		if ($iftype != $logtype) {
 			continue;
+		}
 		echo "<tr>\n";
 		echo "<td class=\"listlr nowrap\">" . htmlspecialchars(join(" ", array_slice($logent, 0, 3))) . "</td>\n";
 
@@ -145,13 +109,12 @@ include("head.inc");
 											<td class="listhdrr"><?=gettext("User");?></td>
 											<td class="listhdrr"><?=gettext("IP address");?></td>
 										</tr>
-											<?php dump_clog_vpn("/var/log/vpn.log", $nentries); ?>
+										<?php dump_clog_vpn($logfile, $nentries, $logname); ?>
 										<?php else:
-											dump_clog("/var/log/{$logname}.log", $nentries);
+											dump_clog($logfile, $nentries);
 									  endif; ?>
 							<tr><td colspan="4">
-							<form action="diag_logs_vpn.php" method="post">
-								<input type="hidden" name="vpntype" id="vpntype" value="<?=$vpntype;?>" />
+							<form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
 								<input type="hidden" name="mode" id="mode" value="<?=$mode;?>" />
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>

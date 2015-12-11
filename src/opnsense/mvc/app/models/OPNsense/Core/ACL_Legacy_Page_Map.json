@@ -165,11 +165,25 @@
             "diag_logs.php*"
         ]
     },
-    "page-diagnostics-logs-pptpvpn": {
-        "name": "WebCfg - Diagnostics: Logs: VPN page",
-        "descr": "Allow access to the 'Diagnostics: Logs: VPN' page.",
+    "page-diagnostics-logs-pptp": {
+        "name": "WebCfg - Diagnostics: Logs: PPTP page",
+        "descr": "Allow access to the 'Diagnostics: Logs: PPTP' page.",
         "match": [
-            "diag_logs_vpn.php*"
+            "diag_logs_pptp.php*"
+        ]
+    },
+    "page-diagnostics-logs-poes": {
+        "name": "WebCfg - Diagnostics: Logs: PPPoE page",
+        "descr": "Allow access to the 'Diagnostics: Logs: PPPoE' page.",
+        "match": [
+            "diag_logs_poes.php*"
+        ]
+    },
+    "page-diagnostics-logs-l2tp": {
+        "name": "WebCfg - Diagnostics: Logs: L2TP page",
+        "descr": "Allow access to the 'Diagnostics: Logs: L2TP' page.",
+        "match": [
+            "diag_logs_l2tp.php*"
         ]
     },
     "page-diagnostics-nanobsd": {
