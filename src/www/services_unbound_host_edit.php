@@ -104,7 +104,7 @@ if ($_POST) {
 				$input_errors[] = gettext("A valid IP address must be specified.");
 			}
 			break;
-        case 'MX':
+		case 'MX':
 			$reqdfields = explode(" ", "mxprio mx");
 			$reqdfieldsn = array(gettext("MX Priority"), gettext("MX Host"));
 
