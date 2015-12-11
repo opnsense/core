@@ -69,6 +69,7 @@ $( document ).ready(function() {
 <section class="page-content-main">
   <div class="container-fluid col-xs-12">
     <div class="row">
+        <?php print_service_disabled_banner('firewall'); ?>
         <section class="col-xs-12">
           <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
 <?php

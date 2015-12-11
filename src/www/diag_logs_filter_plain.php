@@ -63,10 +63,7 @@ include("head.inc");
 		<div class="container-fluid">
 			<div class="row">
 
-                                <?php if (isset($config['system']['disablefilter'])): ?>
-                                <?php print_warning_box(gettext("The firewall has globally been disabled. Configured rules are currently not enforced."));?>
-                                <?php endif; ?>
-
+				<?php print_service_disabled_banner('firewall'); ?>
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 
 			     <section class="col-xs-12">
