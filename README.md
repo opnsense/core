@@ -1,7 +1,7 @@
 OPNsense GUI and system management
 ==================================
 
-The OPNsense project invites developers to startcontributing to
+The OPNsense project invites developers to start contributing to
 the code base.  For your own purpose or even better to join us in
 creating the best open source firewall available.
 
