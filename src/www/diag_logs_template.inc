@@ -49,6 +49,9 @@ if (!empty($_POST['clear'])) {
     } else {
         clear_log($logfile);
     }
+    if (function_exists(clear_hook)) {
+        clear_hook();
+    }
 }
 
 if (isset($_POST['filtertext'])) {
@@ -68,9 +71,20 @@ include("head.inc");
           <div class="tab-content content-box col-xs-12">
             <div class="table-responsive">
               <table class="table table-striped table-sort">
+                <?php if (isset($logpills)): ?>
                 <tr>
                   <td colspan="2">
-                    <form id="clearform" name="clearform" action="<? $_SERVER['REQUEST_URI'] ?>" method="post" class="__mt">
+                    <ul class="nav nav-pills" role="tablist">
+                      <?php foreach ($logpills as $pill): ?>
+                      <li role="presentation" <?php if (str_replace('amp;','', $pill[2]) == $_SERVER['REQUEST_URI']):?>class="active"<?php endif; ?>><a href="<?=$pill[2];?>"><?=$pill[0];?></a></li>
+                      <?php endforeach; ?>
+                    </ul>
+                  </td>
+                </tr>
+                <?php endif; ?>
+                <tr>
+                  <td colspan="2">
+                    <form id="clearform" name="clearform" action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
                       <input id="filtertext" name="filtertext" value="<?=$filtertext;?>"/>
                       <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
                     </form>

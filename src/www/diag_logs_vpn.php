@@ -32,6 +32,14 @@ require_once("vpn.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 
+$tab_array = array();
+$tab_array[] = array(gettext("PPTP Logins"), (($vpntype == "pptp") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=pptp");
+$tab_array[] = array(gettext("PPTP Raw"), (($vpntype == "pptp") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=pptp&amp;mode=raw");
+$tab_array[] = array(gettext("PPPoE Logins"), (($vpntype == "poes") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=poes");
+$tab_array[] = array(gettext("PPPoE Raw"), (($vpntype == "poes") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=poes&amp;mode=raw");
+$tab_array[] = array(gettext("L2TP Logins"), (($vpntype == "l2tp") && ($mode != "raw")), "/diag_logs_vpn.php?vpntype=l2tp");
+$tab_array[] = array(gettext("L2TP Raw"), (($vpntype == "l2tp") && ($mode == "raw")), "/diag_logs_vpn.php?vpntype=l2tp&amp;mode=raw");
+
 if (empty($config['syslog']['nentries'])) {
         $nentries = 50;
 } else {
@@ -123,7 +131,13 @@ include("head.inc");
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
-									<tr><td colspan="4"><?php $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?></td></tr>
+									<tr><td colspan="4">
+										<ul class="nav nav-pills" role="tablist">
+										<?php foreach ($tab_array as $tab): ?>
+											<li role="presentation" <?php if (str_replace('amp;','', $tab[2]) == $_SERVER['REQUEST_URI']):?>class="active"<?php endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
+										<?php endforeach; ?>
+										</ul>
+									</td></tr>
 									 <?php if ($mode != "raw"): ?>
 										<tr>
 											<td class="listhdrr"><?=gettext("Time");?></td>
