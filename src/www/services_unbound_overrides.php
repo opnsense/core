@@ -1,7 +1,9 @@
 <?php
 
 /*
+	Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
 	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2014 Warren Baker <warren@pfsense.org>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

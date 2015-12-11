@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     All rights reserved.
 
