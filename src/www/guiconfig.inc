@@ -237,8 +237,7 @@ function print_info_box($msg)
 EOFnp;
 }
 
-function print_warning_box($msg)
-{
+function print_warning_box($msg) {
 	echo <<<EOFnp
 <div class="col-xs-12">
 	<div class="alert alert-warning alert-dismissible" role="alert">
@@ -246,6 +245,29 @@ function print_warning_box($msg)
 	</div>
 </div>
 EOFnp;
+}
+
+function is_service_enabled($service) {
+	global $config;
+
+	switch ($service) {
+		case 'firewall':
+		case 'filter':
+			return !isset($config['system']['disablefilter']);
+		default:
+			return false;
+	}
+}
+
+function print_service_disabled_banner($service) {
+	if (!is_service_enabled($service)) {
+		switch ($service) {
+			case 'firewall':
+			case 'filter':
+				print_warning_box(gettext("The firewall has globally been disabled. Configured rules are currently not enforced."));
+				break;
+		}
+	}
 }
 
 function get_std_save_message() {
