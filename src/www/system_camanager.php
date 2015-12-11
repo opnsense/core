@@ -486,8 +486,15 @@ $main_buttons = array(
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
           <table class="table table-striped">
             <tr>
-              <td width="22%"><?=gettext("Descriptive name");?></td>
-              <td width="78%">
+              <td width="22%"></td>
+              <td  width="78%" align="right">
+                <small><?=gettext("full help"); ?> </small>
+                <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+              </td>
+            </tr>
+            <tr>
+              <td><?=gettext("Descriptive name");?></td>
+              <td>
                 <input name="descr" type="text" id="descr" size="20" value="<?=$pconfig['descr'];?>"/>
               </td>
             </tr>
