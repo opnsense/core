@@ -264,7 +264,10 @@ function print_service_disabled_banner($service) {
 		switch ($service) {
 			case 'firewall':
 			case 'filter':
-				print_warning_box(gettext("The firewall has globally been disabled. Configured rules are currently not enforced."));
+				print_warning_box(gettext(
+					"The firewall has globally been disabled and configured rules are currently not enforced. " .
+					"It can be enabled in the <a href=\"system_advanced_firewall.php\">Firewall and NAT settings</a> page."
+				));
 				break;
 		}
 	}
