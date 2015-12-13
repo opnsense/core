@@ -63,6 +63,8 @@ allownew    :   allow new items (for list) if applicable
             <select {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" class="{{style|default('selectpicker')}}"  data-width="{{width|default("348px")}}"></select>
         {% elseif type == "password" %}
             <input type="password" class="form-control" size="{{size|default("50")}}" id="{{ id }}" >
+        {% elseif type == "textbox" %}
+            <textarea rows="{{height|default("5")}}" id="{{ id }}"></textarea>
         {% elseif type == "info" %}
             <span id="{{ id }}" ></span>
         {% endif %}
