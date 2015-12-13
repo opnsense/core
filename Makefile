@@ -85,7 +85,6 @@ CORE_DEPENDS?=		apinger \
 			php56-hash \
 			php56-json \
 			php56-ldap \
-			php56-mbstring \
 			php56-mcrypt \
 			php56-mysql \
 			php56-openssl \
