@@ -61,6 +61,10 @@ allownew    :   allow new items (for list) if applicable
             <br/><a href="#" class="text-danger" id="clear-options" for="{{id}}"><i class="fa fa-times-circle"></i></a> <small>{{ lang._('Clear All') }}</small>
         {% elseif type == "dropdown" %}
             <select {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" class="{{style|default('selectpicker')}}"  data-width="{{width|default("348px")}}"></select>
+        {% elseif type == "password" %}
+            <input type="password" class="form-control" size="{{size|default("50")}}" id="{{ id }}" >
+        {% elseif type == "textbox" %}
+            <textarea rows="{{height|default("5")}}" id="{{ id }}"></textarea>
         {% elseif type == "info" %}
             <span id="{{ id }}" ></span>
         {% endif %}
