@@ -196,6 +196,13 @@ function addMultiSelectClearUI() {
                             $('select[id="' + id + '"]').find('option').prop('selected',false);
                         }
                     }
+                    // In case this modal was triggered from another modal, fix focus issues
+                    $('.modal').on("hidden.bs.modal", function (e) {
+                        if($('.modal:visible').length)
+                        {
+                            $('body').addClass('modal-open');
+                        }
+                    });
                 }
             });
         });
