@@ -50,8 +50,6 @@ PHPMODULES="$PHPMODULES session"
 PHPMODULES="$PHPMODULES suhosin"
 # Firewall rules edit
 PHPMODULES="$PHPMODULES ctype"
-# firewall_rules_edit.php
-PHPMODULES="$PHPMODULES mbstring"
 # Page compression
 PHPMODULES="$PHPMODULES zlib"
 # SQLlite & Database
