@@ -55,7 +55,7 @@ if ($_GET['act'] == "del") {
 include("head.inc");
 
 $main_buttons = array(
-	array('href'=>'interfaces_groups_edit.php', 'label'=>gettext("Add a new group")),
+	array('href' => 'interfaces_groups_edit.php', 'label' => gettext('Add')),
 );
 
 
