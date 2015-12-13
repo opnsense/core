@@ -66,6 +66,6 @@
 	<!-- Fancy select with search options -->
 	<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
 	<!-- bootstrap dialog -->
-	<script src="/ui/js/bootstrap-dialog.js"></script>
+	<script src="/ui/js/bootstrap-dialog.min.js"></script>
 	</body>
 </html>
