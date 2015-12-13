@@ -510,7 +510,7 @@ include("head.inc");
 															<button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?=gettext("add selected interface");?>"><span class="glyphicon glyphicon-plus"></span></button>
 														</td>
 													</tr>
-								<tr><td colspan="2"><?= gettext('Interfaces that are configured as members of a LAGG interface will not be shown.') ?></td></tr>
+								<tr><td colspan="3"><?= gettext('Interfaces that are configured as members of a LAGG interface will not be shown.') ?></td></tr>
 									<?php endif; ?>
 									</tbody>
 								</table>
