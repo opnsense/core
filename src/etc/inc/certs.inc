@@ -186,6 +186,8 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 	if (!$ca) {
 		return false;
 	}
+	// define temp filename to use for openssl.cnf
+	$config_filename = tempnam(sys_get_temp_dir(), 'ssl');
 
 	$ca_str_crt = base64_decode($ca['crt']);
 	$ca_str_key = base64_decode($ca['prv']);
@@ -196,16 +198,20 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 	}
 	$ca_serial = ++$ca['serial'];
 
-	/* subjectAltName can be set _only_ via configuration file */
-	if ($dn['subjectAltName']) {
-		/* TODO: currently disabled */
-		putenv("SAN={$dn['subjectAltName']}");
-		$cert_type .= '_san';
-		unset($dn['subjectAltName']);
+	$template = file_get_contents('/usr/local/etc/ssl/opnsense.cnf');
+	// handle parameters which can only be set via the configuration file
+	$template_dn = "";
+	foreach (array("subjectAltName") as $dnTag) {
+			if (isset($dn[$dnTag])) {
+					$template_dn .= $dnTag . "=" . $dn[$dnTag] . "\n";
+					unset($dn[$dnTag]);
+			}
 	}
+	$template = str_replace("###OPNsense:usr_cert###", $template_dn, $template);
+	file_put_contents($config_filename, $template);
 
 	$args = array(
-		'config' => '/usr/local/etc/ssl/opnsense.cnf',
+		'config' => $config_filename,
 		'private_key_type' => OPENSSL_KEYTYPE_RSA,
 		'private_key_bits' => (int)$keylen,
 		'x509_extensions' => 'usr_cert',
@@ -235,6 +241,9 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 	$cert['caref'] = $caref;
 	$cert['crt'] = base64_encode($str_crt);
 	$cert['prv'] = base64_encode($str_key);
+
+	// remove tempfile (template)
+	unlink($config_filename);
 
 	return true;
 }
