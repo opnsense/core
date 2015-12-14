@@ -73,8 +73,8 @@ function cert_unrevoke($cert, & $crl) {
             if (count($crl['cert']) == 0) {
                 // Protect against accidentally switching the type to imported, for older CRLs
                 if (!isset($crl['method'])) {
-										$crl['method'] = "internal";
-								}
+                    $crl['method'] = "internal";
+                }
                 crl_update($crl);
             } else {
                 crl_update($crl);
@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['serial'] = "0";
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$pconfig = $_POST;
+    $pconfig = $_POST;
     // locate cert by refid, returns false when not found
     if (isset($_POST['id'])) {
         $thiscrl =& lookup_crl($_POST['id']);
@@ -188,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $act="edit";
     } elseif ($act == "addcert") {
-				$input_errors = array();
+        $input_errors = array();
         if (!isset($id)) {
             header("Location: system_crlmanager.php");
             exit;
@@ -335,16 +335,16 @@ include("head.inc");
       });
     });
 
-		$("#crlmethod").change(function(){
-				$("#existing").addClass("hidden");
-				$("#internal").addClass("hidden");
-				if ($("#crlmethod").val() == "internal") {
-						$("#internal").removeClass("hidden");
-				} else {
-						$("#existing").removeClass("hidden");
-				};
-		});
-		$("#crlmethod").change();
+    $("#crlmethod").change(function(){
+        $("#existing").addClass("hidden");
+        $("#internal").addClass("hidden");
+        if ($("#crlmethod").val() == "internal") {
+            $("#internal").removeClass("hidden");
+        } else {
+            $("#existing").removeClass("hidden");
+        };
+    });
+    $("#crlmethod").change();
   });
   </script>
 
@@ -499,11 +499,11 @@ include("head.inc");
           </form>
 <?php
           elseif ($act == "edit") :?>
-					<form method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <input type="hidden" name="id" id="id" value=""/>
             <input type="hidden" name="certref" id="certref" value=""/>
             <input type="hidden" name="act" id="action" value=""/>
-					</form>
+          </form>
           <form method="post">
             <table class="table table-striped">
               <thead>
