@@ -69,7 +69,7 @@ cert_opt	= ca_default		# Certificate field options
 # Extensions to add to a CRL. Note: Netscape communicator chokes on V2 CRLs
 # so this is commented out by default to leave a V1 CRL.
 # crlnumber must also be commented out to leave a V1 CRL.
-# crl_extensions	= crl_ext
+crl_extensions	= crl_ext
 
 default_days	= 365			# how long to certify for
 default_crl_days= 30			# how long before next CRL
@@ -186,14 +186,15 @@ basicConstraints=CA:FALSE
 # nsCertType = client, email, objsign
 
 # This is typical in keyUsage for a client certificate.
-# keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
 
 # This will be displayed in Netscape's comment listbox.
 nsComment			= "OpenSSL Generated Certificate"
 
 # PKIX recommendations harmless if included in all certificates.
 subjectKeyIdentifier=hash
-authorityKeyIdentifier=keyid,issuer
+authorityKeyIdentifier=keyid,issuer:always
+extendedKeyUsage=clientAuth
 
 # This stuff is for subjectAltName and issuerAltname.
 # Import the email address.
@@ -214,6 +215,8 @@ authorityKeyIdentifier=keyid,issuer
 
 # This is required for TSA certificates.
 # extendedKeyUsage = critical,timeStamping
+
+###OPNsense:usr_cert###
 
 [ v3_req ]
 
