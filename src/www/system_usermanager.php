@@ -161,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig = $_POST;
 
-
     if ($act == "deluser" && isset($id)) {
         // drop user
         local_user_del($a_user[$id]);
@@ -239,21 +238,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfields = explode(" ", "usernamefld");
             $reqdfieldsn = array(gettext("Username"));
         } else {
-            if (empty($pconfig['name'])) {
-                $reqdfields = explode(" ", "usernamefld passwordfld1");
-                $reqdfieldsn = array(
-                    gettext("Username"),
-                    gettext("Password"));
-            } else {
-                $reqdfields = explode(" ", "usernamefld passwordfld1 name caref keylen lifetime");
-                $reqdfieldsn = array(
-                    gettext("Username"),
-                    gettext("Password"),
-                    gettext("Descriptive name"),
-                    gettext("Certificate authority"),
-                    gettext("Key length"),
-                    gettext("Lifetime"));
-            }
+            $reqdfields = explode(" ", "usernamefld passwordfld1");
+            $reqdfieldsn = array(
+                gettext("Username"),
+                gettext("Password"));
         }
 
         do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
@@ -354,37 +342,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (isset($id)) {
                 $a_user[$id] = $userent;
             } else {
-                if (!empty($pconfig['name'])) {
-                    $cert = array();
-                    $cert['refid'] = uniqid();
-                    $userent['cert'] = array();
-
-                    $cert['descr'] = $pconfig['name'];
-
-                    $subject = cert_get_subject_array($ca['crt']);
-
-                    $dn = array(
-                        'countryName' => $subject[0]['v'],
-                        'stateOrProvinceName' => $subject[1]['v'],
-                        'localityName' => $subject[2]['v'],
-                        'organizationName' => $subject[3]['v'],
-                        'emailAddress' => $subject[4]['v'],
-                        'commonName' => $userent['name']);
-
-                    cert_create(
-                        $cert,
-                        $pconfig['caref'],
-                        $pconfig['keylen'],
-                        (int)$pconfig['lifetime'],
-                        $dn
-                    );
-
-                    if (!is_array($config['cert'])) {
-                        $config['cert'] = array();
-                    }
-                    $config['cert'][] = $cert;
-                    $userent['cert'][] = $cert['refid'];
-                }
                 $userent['uid'] = $config['system']['nextuid']++;
                 /* Add the user to All Users group. */
                 foreach ($config['system']['group'] as $gidx => $group) {
@@ -404,8 +361,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             local_user_set_groups($userent, $pconfig['groups']);
             write_config();
 
-            header("Location: system_usermanager.php");
-            exit;
+            if (!empty($pconfig['chkNewCert'])) {
+                // redirect to cert manager when a new cert is requested for this user
+                header("Location: system_certmanager.php?act=new&userid=".(count($a_user)-1));
+            } else {
+                header("Location: system_usermanager.php");
+                exit;
+            }
         }
     } elseif (isset($id)) {
         header("Location: system_usermanager.php?userid=".$id);
@@ -556,12 +518,6 @@ $( document ).ready(function() {
                   }
           }]
       });
-    });
-
-    // checkbox, add new cert for new user
-    $("#chkNewCert").click(function(){
-        $("#usercertchck").toggleClass('hidden visible');
-        $("#usercert").toggleClass('hidden visible');
     });
 
     // expand ssh key section on click
@@ -933,76 +889,14 @@ $( document ).ready(function() {
                       </td>
                   </tr>
 <?php
-                else :
-                  if (is_array($config['ca']) && count($config['ca']) > 0) :
-                      $i = 0;
-                      foreach ($config['ca'] as $ca) {
-                          if (!$ca['prv']) {
-                              continue;
-                          }
-                          $i++;
-                      }
-?>
+                else :?>
                   <tr id="usercertchck">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate");?></td>
                     <td>
-                      <input type="checkbox" id="chkNewCert" /> <?=gettext("Click to create a user certificate."); ?>
-                    </td>
-                  </tr>
-                  <tr class="hidden"><td colspan=2><td></tr>
-
-<?php
-                  if ($i > 0) :?>
-                  <tr id="usercert" class="hidden">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate");?></td>
-                    <td>
-                      <table class="table table-condensed">
-                        <tr>
-                          <td><?=gettext("Descriptive name");?></td>
-                          <td>
-                            <input name="name" type="text" id="name" size="20" value="<?=$pconfig['usernamefld'];?>" />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("Certificate authority");?></td>
-                          <td>
-                            <select name='caref' id='caref'>
-<?php
-                            foreach ($config['ca'] as $ca) :
-                              if (empty($ca['prv'])) {
-                                continue;
-                              }
-?>
-                              <option value="<?=$ca['refid']?>"><?=htmlspecialchars($ca['descr']);?></option>
-<?php
-                          endforeach;?>
-                            </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
-                          <td>
-                            <select name='keylen'>
-<?php
-                          foreach (array( "2048", "512", "1024", "4096") as $len) :?>
-                              <option value="<?=$len;?>"><?=$len;?></option>
-<?php
-                          endforeach;?>
-                          </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td><?=gettext("Lifetime");?> (<?=gettext("days");?>)</td>
-                          <td>
-                            <input name="lifetime" class="form-control" type="text" id="lifetime" size="5" value="<?=$pconfig['lifetime'];?>" />
-                          </td>
-                        </tr>
-                      </table>
+                      <input type="checkbox" id="chkNewCert" name="chkNewCert" /> <?=gettext("Click to create a user certificate."); ?> (<?=gettext("Redirects on save"); ?>)
                     </td>
                   </tr>
 <?php
-                  endif;
-                  endif;
                 endif;?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
