@@ -150,61 +150,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
     } elseif ($act == "exp") {
-        if (!isset($id)) {
-            header("Location: system_certmanager.php");
-            exit;
+        // export cert
+        if (isset($id)) {
+            $exp_name = urlencode("{$a_cert[$id]['descr']}.crt");
+            $exp_data = base64_decode($a_cert[$id]['crt']);
+            $exp_size = strlen($exp_data);
+
+            header("Content-Type: application/octet-stream");
+            header("Content-Disposition: attachment; filename={$exp_name}");
+            header("Content-Length: $exp_size");
+            echo $exp_data;
         }
-
-        $exp_name = urlencode("{$a_cert[$id]['descr']}.crt");
-        $exp_data = base64_decode($a_cert[$id]['crt']);
-        $exp_size = strlen($exp_data);
-
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename={$exp_name}");
-        header("Content-Length: $exp_size");
-        echo $exp_data;
         exit;
     } elseif ($act == "key") {
-        if (!isset($id)) {
-            header("Location: system_certmanager.php");
-            exit;
+        // export key
+        if (isset($id)) {
+            $exp_name = urlencode("{$a_cert[$id]['descr']}.key");
+            $exp_data = base64_decode($a_cert[$id]['prv']);
+            $exp_size = strlen($exp_data);
+
+            header("Content-Type: application/octet-stream");
+            header("Content-Disposition: attachment; filename={$exp_name}");
+            header("Content-Length: $exp_size");
+            echo $exp_data;
         }
-
-        $exp_name = urlencode("{$a_cert[$id]['descr']}.key");
-        $exp_data = base64_decode($a_cert[$id]['prv']);
-        $exp_size = strlen($exp_data);
-
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename={$exp_name}");
-        header("Content-Length: $exp_size");
-        echo $exp_data;
         exit;
     } elseif ($act == "p12") {
-        if (!isset($id)) {
-            header("Location: system_certmanager.php");
-            exit;
+        // export cert+key in p12 format
+        if (isset($id)) {
+            $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
+            $args = array();
+            $args['friendly_name'] = $a_cert[$id]['descr'];
+
+            $ca = lookup_ca($a_cert[$id]['caref']);
+            if ($ca) {
+                $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
+            }
+
+            $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
+            $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ""));
+
+            $exp_data = "";
+            openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
+            $exp_size = strlen($exp_data);
+
+            header("Content-Type: application/octet-stream");
+            header("Content-Disposition: attachment; filename={$exp_name}");
+            header("Content-Length: $exp_size");
+            echo $exp_data;
         }
-
-        $exp_name = urlencode("{$a_cert[$id]['descr']}.p12");
-        $args = array();
-        $args['friendly_name'] = $a_cert[$id]['descr'];
-
-        $ca = lookup_ca($a_cert[$id]['caref']);
-        if ($ca) {
-            $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
-        }
-
-        $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
-        $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ""));
-
-        $exp_data = "";
-        openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
-        $exp_size = strlen($exp_data);
-
-        header("Content-Type: application/octet-stream");
-        header("Content-Disposition: attachment; filename={$exp_name}");
-        header("Content-Length: $exp_size");
-        echo $exp_data;
         exit;
     } elseif ($act == "csr") {
         if (!isset($id)) {
@@ -214,6 +208,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['descr'] = $a_cert[$id]['descr'];
         $pconfig['csr'] = base64_decode($a_cert[$id]['csr']);
         $pconfig['cert'] = null;
+    } elseif ($act == "info") {
+      if (isset($id)) {
+          // use openssl to dump cert in readable format
+          $process = proc_open('/usr/bin/openssl x509 -text', array(array("pipe", "r"), array("pipe", "w")), $pipes);
+          if (is_resource($process)) {
+             fwrite($pipes[0], base64_decode($a_cert[$id]['crt']));
+             fclose($pipes[0]);
+
+             $result = stream_get_contents($pipes[1]);
+             fclose($pipes[1]);
+             proc_close($process);
+             echo $result;
+          }
+      }
+      exit;
     }
 
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -504,6 +513,21 @@ if (empty($act)) {
 ?>
 
 <body>
+  <style>
+    .monospace-dialog {
+      font-family: monospace;;
+      white-space: pre;
+    }
+
+    .monospace-dialog > .modal-dialog {
+      width:70% !important;
+    }
+
+    .modal-body {
+      max-height: calc(100vh - 210px);
+      overflow-y: auto;
+    }
+  </style>
   <script type="text/javascript">
   $( document ).ready(function() {
     // delete entry
@@ -527,6 +551,25 @@ if (empty($act)) {
                 }
               }]
       });
+    });
+
+    $(".act_info").click(function(event){
+        event.preventDefault();
+        var id = $(this).data('id');
+        $.ajax({
+                url:"system_certmanager.php",
+                type: 'get',
+                data: {'act' : 'info', 'id' :id},
+                success: function(data){
+                  BootstrapDialog.show({
+                              title: '<?=gettext("Certificate");?>',
+                              type:BootstrapDialog.TYPE_INFO,
+                              message: data,
+                              cssClass: 'monospace-dialog',
+                          });
+                }
+        });
+
     });
 
     /**
@@ -1217,6 +1260,9 @@ $( document ).ready(function() {
 <?php
                 endif; ?>
 
+                  <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("show certificate info");?>">
+                    <span class="glyphicon glyphicon-info-sign"></span>
+                  </a>
 
                   <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
                       <span class="glyphicon glyphicon-download"></span>
