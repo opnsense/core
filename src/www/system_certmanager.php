@@ -844,7 +844,7 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
-                <td><?=gettext("Alternative Names");?></td>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Alternative Names");?></td>
                 <td>
                   <table class="table table-condensed" id="altNametable">
                     <thead>
