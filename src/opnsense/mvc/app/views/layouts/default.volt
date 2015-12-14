@@ -122,9 +122,7 @@
 						<li id="menu_messages">
 							<a href="#">{{title|default("OPNsense") }}</a>					</li>
 						<li></li><li></li><li></li>
-
-
-						<li><a href="/help.php?page=firewall_virtual_ip.php" target="_blank" title="{{ lang._('Help for items on this page') }}">{{ lang._('Help') }}</a></li>
+						<li></li>
 						<li class="active"><a href="/index.php?logout">{{ lang._('Logout') }}</a></li>
 					</ul>
 
@@ -179,6 +177,6 @@
 	<script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
     <!-- bootstrap dialog -->
-    <script src="/ui/js/bootstrap-dialog.min.js"></script>
+    <script src="/ui/js/bootstrap-dialog.js"></script>
     </body>
 </html>
