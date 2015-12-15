@@ -180,7 +180,7 @@ function cert_import(& $cert, $crt_str, $key_str) {
 	return true;
 }
 
-function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256')
+function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha256', $x509_extensions = 'usr_cert')
 {
 	$ca = &lookup_ca($caref);
 	if (!$ca) {
@@ -207,35 +207,42 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
 					unset($dn[$dnTag]);
 			}
 	}
-	$template = str_replace("###OPNsense:usr_cert###", $template_dn, $template);
+	$template = str_replace("###OPNsense:".$x509_extensions."###", $template_dn, $template);
 	file_put_contents($config_filename, $template);
 
 	$args = array(
 		'config' => $config_filename,
 		'private_key_type' => OPENSSL_KEYTYPE_RSA,
 		'private_key_bits' => (int)$keylen,
-		'x509_extensions' => 'usr_cert',
+		'x509_extensions' => $x509_extensions,
 		'digest_alg' => $digest_alg,
 		'encrypt_key' => false
 	);
 
 	// generate a new key pair
 	$res_key = openssl_pkey_new($args);
-	if(!$res_key) return false;
+	if(!$res_key) {
+			return false;
+	}
 
 	// generate a certificate signing request
 	$res_csr = openssl_csr_new($dn, $res_key, $args);
-	if(!$res_csr) return false;
+	if(!$res_csr) {
+			return false;
+	}
 
 	// self sign the certificate
 	$res_crt = openssl_csr_sign($res_csr, $ca_res_crt, $ca_res_key, $lifetime,
 				 $args, $ca_serial);
-	if(!$res_crt) return false;
+	if(!$res_crt) {
+			return false;
+	}
 
 	// export our certificate data
 	if (!openssl_pkey_export($res_key, $str_key) ||
-	    !openssl_x509_export($res_crt, $str_crt))
-		return false;
+	    !openssl_x509_export($res_crt, $str_crt)) {
+			return false;
+	}
 
 	// return our certificate information
 	$cert['caref'] = $caref;
