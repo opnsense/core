@@ -133,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['csr_keylen'] = "2048";
         $pconfig['csr_digest_alg'] = "sha256";
         $pconfig['lifetime'] = "365";
+        $pconfig['cert_type'] = "usr_cert";
         $pconfig['cert'] = null;
         $pconfig['key'] = null;
         $pconfig['dn_country'] = null;
@@ -445,7 +446,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $pconfig['keylen'],
                         $pconfig['lifetime'],
                         $dn,
-                        $pconfig['digest_alg']
+                        $pconfig['digest_alg'],
+                        $pconfig['cert_type']
                     )) {
                         $input_errors = array();
                         while ($ssl_err = openssl_error_string()) {
@@ -781,9 +783,22 @@ $( document ).ready(function() {
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_digest_cert_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type");?> </td>
+                <td>
+                    <select name="cert_type">
+                        <option value="usr_cert" <?=$pconfig['cert_type'] == 'usr_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Client Certificate");?> </option>
+                        <option value="server_cert" <?=$pconfig['cert_type'] == 'server_cert' ? "selected=\"selected\"" : "";?>> <?=gettext("Server Certificate");?> </option>
+                        <option value="v3_ca" <?=$pconfig['cert_type'] == 'v3_ca' ? "selected=\"selected\"" : "";?>> <?=gettext("Certificate Authority");?> </option>
+                    </select>
+                    <div class="hidden" for="help_for_digest_cert_type">
+                      <?=gettext("Choose the type of certificate to generate here, the type defines it's constraints");?>
+                    </div>
+                </td>
+              </tr>
+              <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Key length");?> (<?=gettext("bits");?>)</td>
                 <td>
-                  <select name='keylen' class="formselect">
+                  <select name='keylen'>
 <?php
                   foreach ($cert_keylens as $len) :?>
                     <option value="<?=$len;?>" <?=$pconfig['keylen'] == $len ? "selected=\"selected\"" : "";?>><?=$len;?></option>
@@ -795,7 +810,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
-                  <select name='digest_alg' id='digest_alg' class="formselect">
+                  <select name='digest_alg' id='digest_alg'>
 <?php
                   foreach ($openssl_digest_algs as $digest_alg) :?>
                     <option value="<?=$digest_alg;?>" <?=$pconfig['digest_alg'] == $digest_alg ? "selected=\"selected\"" : "";?>>
@@ -979,7 +994,7 @@ $( document ).ready(function() {
               <tr>
                 <td><a id="help_for_csr_digest_alg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Digest Algorithm");?></td>
                 <td>
-                  <select name='csr_digest_alg' class="formselect">
+                  <select name='csr_digest_alg'>
 <?php
                   foreach ($openssl_digest_algs as $csr_digest_alg) :?>
                     <option value="<?=$csr_digest_alg;?>" <?=$pconfig['csr_digest_alg'] == $csr_digest_alg ? $pconfig['csr_digest_alg'] == $csr_digest_alg : "";?>>
@@ -1078,7 +1093,7 @@ $( document ).ready(function() {
               <tr>
                 <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Existing Certificates");?></td>
                 <td width="78%">
-                  <select name='certref' class="formselect">
+                  <select name='certref'>
 <?php
                   foreach ($config['cert'] as $cert) :
                       $caname = "";
