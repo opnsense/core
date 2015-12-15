@@ -122,17 +122,17 @@ class MenuSystem
      */
     public function getBreadcrumbs()
     {
-	$nodes = $this->root->getChildren();
+        $nodes = $this->root->getChildren();
         $breadcrumbs = array();
 
-	while ($nodes != null) {
+        while ($nodes != null) {
             $next = null;
             foreach ($nodes as $node) {
                 if ($node->Selected) {
-                   $breadcrumbs[] = array('name' => $node->VisibleName);
-                   /* only go as far as the first reachable URL */
-                   $next = empty($node->Url) ? $node->Children : null;
-                   break;
+                    $breadcrumbs[] = array('name' => $node->VisibleName);
+                    /* only go as far as the first reachable URL */
+                    $next = empty($node->Url) ? $node->Children : null;
+                    break;
                 }
             }
             $nodes = $next;
