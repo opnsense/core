@@ -295,7 +295,8 @@
         "name": "WebCfg - Diagnostics: System Activity",
         "descr": "Allows access to the 'Diagnostics: System Activity' page",
         "match": [
-            "diag_system_activity.php*"
+            "ui/diagnostics/activity/*",
+            "api/diagnostics/activity/*"
         ]
     },
     "page-diagnostics-testport": {

@@ -79,7 +79,7 @@
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
         <Diagnostics order="160" cssClass="fa fa-medkit">
-            <Activity VisibleName="Activity Monitor" url="/diag_system_activity.php"/>
+            <Activity VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
             <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
             <Halt VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot VisibleName="Reboot System" url="/reboot.php"/>
