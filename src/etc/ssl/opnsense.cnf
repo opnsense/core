@@ -262,6 +262,8 @@ basicConstraints = CA:true
 # You can even override a supported extension:
 # basicConstraints= critical, DER:30:03:01:01:FF
 
+###OPNsense:v3_ca###
+
 [ crl_ext ]
 
 # CRL extensions.
