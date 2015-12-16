@@ -427,6 +427,17 @@ $( document ).ready(function() {
                         <span class="glyphicon <?=$iconfn;?>"></span>
                       </a>
 <?php
+                      if (!empty($filterent['direction']) && $filterent['direction'] == "in"):?>
+                        <i class="fa fa-long-arrow-right" data-toggle="tooltip" data-placement="left" title="<?=gettext("in");?>"></i>
+<?php
+                      elseif (!empty($filterent['direction']) && $filterent['direction'] == "out"):?>
+                        <i class="fa fa-long-arrow-left" data-toggle="tooltip" data-placement="left" title="<?=gettext("out");?>"></i>
+<?php
+                      elseif (!empty($filterent['direction']) && $filterent['direction'] == "any"):?>
+                        <i class="fa fa-arrows-h" data-toggle="tooltip" data-placement="left" title="<?=gettext("any");?>"></i>
+<?php
+                      endif;?>
+<?php
                       if (isset($filterent['log'])):?>
                       <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? "text-muted" :""?>"></span>
 <?php
@@ -585,6 +596,8 @@ $( document ).ready(function() {
                           <td width="14"></td>
                           <td width="16"><span class="glyphicon glyphicon-info-sign"></span></td>
                           <td width="100"><?=gettext("log");?></td>
+                          <td width="16"><span class="fa fa-long-arrow-right"></span></td>
+                          <td width="100"><?=gettext("in");?></td>
                         </tr>
                         <tr>
                           <td><span class="glyphicon glyphicon-play text-muted"></span></td>
@@ -601,6 +614,8 @@ $( document ).ready(function() {
                           <td>&nbsp;</td>
                           <td width="16"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
+                          <td width="16"><span class="fa fa-long-arrow-left"></span></td>
+                          <td width="100"><?=gettext("out");?></td>
                         </tr>
                       </table>
                     </td>
