@@ -905,7 +905,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr id="ipsecpskrow">
-                    <td><?=gettext("IPsec Pre-Shared Key");?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPsec Pre-Shared Key");?></td>
                     <td>
                       <input name="ipsecpsk" type="text" size="65" value="<?=$pconfig['ipsecpsk'];?>" />
                     </td>
