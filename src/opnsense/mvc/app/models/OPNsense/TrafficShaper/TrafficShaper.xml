@@ -146,6 +146,8 @@
                         <ip6>ipv6</ip6>
                         <udp>udp</udp>
                         <tcp>tcp</tcp>
+                        <tcp_ack>tcp (ACK packets only)</tcp_ack>
+                        <tcp_ack_not>tcp (non-ACK packages)</tcp_ack_not>
                         <icmp>icmp</icmp>
                         <igmp>igmp</igmp>
                         <esp>esp</esp>
