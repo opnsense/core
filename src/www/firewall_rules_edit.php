@@ -581,6 +581,24 @@ include("head.inc");
           } else {
               $("#icmpbox").addClass("hidden");
           }
+          // lock src/dst ports on other then tcp/udp
+          if ($("#proto").val() == 'tcp' || $("#proto").val() == 'udp' || $("#proto").val() == 'tcp/udp') {
+              port_disabled = false;
+          } else {
+              $("#dstbeginport optgroup:last option:first").prop('selected', true);
+              $("#dstendport optgroup:last option:first").prop('selected', true);
+              $("#srcbeginport optgroup:last option:first").prop('selected', true);
+              $("#srcendport optgroup:last option:first").prop('selected', true);
+              port_disabled = true;
+          }
+          $("#srcbeginport").prop('disabled', port_disabled);
+          $("#srcendport").prop('disabled', port_disabled);
+          $("#dstbeginport").prop('disabled', port_disabled);
+          $("#dstendport").prop('disabled', port_disabled);
+          $("#srcbeginport").selectpicker('refresh');
+          $("#srcendport").selectpicker('refresh');
+          $("#dstbeginport").selectpicker('refresh');
+          $("#dstendport").selectpicker('refresh');
       });
 
       // IPv4 address, fix dstmask
@@ -792,7 +810,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
                     <td>
-                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="protocol" class="selectpicker" data-live-search="true" data-size="5" >
+                      <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="protocol" id="proto" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
                       $protocols = explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IPV6 IGMP PIM OSPF any carp pfsync");
                       foreach ($protocols as $proto): ?>
