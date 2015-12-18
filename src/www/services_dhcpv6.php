@@ -458,7 +458,7 @@ include("head.inc");
 						$i = 0;
 						foreach ($iflist as $ifent => $ifname) {
 							$oc = $config['interfaces'][$ifent];
-							if ((is_array($config['dhcpdv6'][$ifent]) && !isset($config['dhcpdv6'][$ifent]['enable']) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))) ||
+							if ((!isset($config['dhcpdv6'][$ifent]['enable']) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))) ||
 								(empty($config['dhcpdv6'][$ifent]) && !(is_ipaddrv6($oc['ipaddrv6']) && (!is_linklocal($oc['ipaddrv6'])))))
 								continue;
 							if ($ifent == $if)
