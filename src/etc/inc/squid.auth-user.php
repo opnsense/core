@@ -43,9 +43,9 @@ while ($line = fgets($f)) {
 
     $isAuthenticated = false;
     if (isset($config['OPNsense']['proxy']['forward']['authentication']['method'])) {
-        foreach (explode(',',$config['OPNsense']['proxy']['forward']['authentication']['method']) as $authServerName) {
+        foreach (explode(',', $config['OPNsense']['proxy']['forward']['authentication']['method']) as $authServerName) {
             $authServer = $authFactory->get(trim($authServerName));
-            if ($authsrv == null) {
+            if ($authServer == null) {
                 // authenticator not found, use local
                 $authServer = $authFactory->get('Local Database');
             }
