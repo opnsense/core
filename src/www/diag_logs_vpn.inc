@@ -2,7 +2,7 @@
 
 /*
 	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2003-2006 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
@@ -38,42 +38,13 @@ if (empty($config['syslog']['nentries'])) {
         $nentries = $config['syslog']['nentries'];
 }
 
-if (htmlspecialchars($_POST['vpntype']))
-	$vpntype = htmlspecialchars($_POST['vpntype']);
-elseif (htmlspecialchars($_GET['vpntype']))
-	$vpntype = htmlspecialchars($_GET['vpntype']);
-else
-	$vpntype = "pptp";
-
-if (htmlspecialchars($_POST['mode']))
-	$mode = htmlspecialchars($_POST['mode']);
-elseif (htmlspecialchars($_GET['mode']))
-	$mode = htmlspecialchars($_GET['mode']);
-else
-	$mode = "login";
-
-switch ($vpntype) {
-	case 'pptp':
-		$logname = "pptps";
-		break;
-	case 'poes':
-		$logname = "poes";
-		break;
-	case 'l2tp':
-		$logname = "l2tps";
-		break;
-}
-
 if ($_POST['clear']) {
-	if ($mode != "raw") {
-		clear_clog("/var/log/vpn.log");
-	} else {
-		clear_clog("/var/log/{$logname}.log");
-	}
+	clear_clog($logfile);
 }
 
-function dump_clog_vpn($logfile, $tail) {
-	global $g, $config, $vpntype;
+function dump_clog_vpn($logfile, $tail, $logtype)
+{
+	global $config;
 
 	$sor = isset($config['syslog']['reverse']) ? "-r" : "";
 
@@ -85,8 +56,9 @@ function dump_clog_vpn($logfile, $tail) {
 		$logent = preg_split("/\s+/", $logent, 6);
 		$llent = explode(",", $logent[5]);
 		$iftype = substr($llent[1], 0, 4);
-		if ($iftype != $vpntype)
+		if ($iftype != $logtype) {
 			continue;
+		}
 		echo "<tr>\n";
 		echo "<td class=\"listlr nowrap\">" . htmlspecialchars(join(" ", array_slice($logent, 0, 3))) . "</td>\n";
 
@@ -123,7 +95,13 @@ include("head.inc");
 
 							 <div class="table-responsive">
 								<table class="table table-striped table-sort">
-									<tr><td colspan="4"><?php $tab_group = 'vpn'; include('diag_logs_pills.inc'); ?></td></tr>
+									<tr><td colspan="4">
+										<ul class="nav nav-pills" role="tablist">
+										<?php foreach ($tab_array as $tab): ?>
+											<li role="presentation" <?php if (str_replace('amp;','', $tab[2]) == $_SERVER['REQUEST_URI']):?>class="active"<?php endif; ?>><a href="<?=$tab[2];?>"><?=$tab[0];?></a></li>
+										<?php endforeach; ?>
+										</ul>
+									</td></tr>
 									 <?php if ($mode != "raw"): ?>
 										<tr>
 											<td class="listhdrr"><?=gettext("Time");?></td>
@@ -131,13 +109,12 @@ include("head.inc");
 											<td class="listhdrr"><?=gettext("User");?></td>
 											<td class="listhdrr"><?=gettext("IP address");?></td>
 										</tr>
-											<?php dump_clog_vpn("/var/log/vpn.log", $nentries); ?>
+										<?php dump_clog_vpn($logfile, $nentries, $logname); ?>
 										<?php else:
-											dump_clog("/var/log/{$logname}.log", $nentries);
+											dump_clog($logfile, $nentries);
 									  endif; ?>
 							<tr><td colspan="4">
-							<form action="diag_logs_vpn.php" method="post">
-								<input type="hidden" name="vpntype" id="vpntype" value="<?=$vpntype;?>" />
+							<form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
 								<input type="hidden" name="mode" id="mode" value="<?=$mode;?>" />
 								<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
 							</form>

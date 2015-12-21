@@ -47,13 +47,6 @@
             <GroupStatus VisibleName="Group Status" url="/status_gateway_groups.php"/>
             <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
         </Gateways>
-        <LogFiles order="160" VisibleName="Log Files" cssClass="fa fa-eye">
-            <General url="/diag_logs.php"/>
-            <DHCP url="/diag_logs_dhcp.php"/>
-            <VPN url="/diag_logs_vpn.php?vpntype=pptp">
-                <Type url="/diag_logs_vpn.php*"/>
-            </VPN>
-        </LogFiles>
         <Settings order="20" cssClass="fa fa-cogs">
             <General order="100" url="/system_general.php"/>
             <AdminAccess VisibleName="Admin Access" order="200" url="/system_advanced_admin.php"/>
@@ -66,6 +59,7 @@
                 <Edit url="/system_advanced_sysctl.php*"/>
             </Tunables>
         </Settings>
+        <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye"/>
         <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>
         </Wizard>
@@ -84,8 +78,8 @@
             </Servers>
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
-        <Diagnostics order="150" cssClass="fa fa-medkit">
-            <Activity VisibleName="Activity Monitor" url="/diag_system_activity.php"/>
+        <Diagnostics order="160" cssClass="fa fa-medkit">
+            <Activity VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
             <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
             <Halt VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot VisibleName="Reboot System" url="/reboot.php"/>
@@ -228,6 +222,7 @@
             <Leases order="300" url="/status_dhcp_leases.php">
                 <Details url="/status_dhcp_leases.php?*"/>
             </Leases>
+            <LogFile VisibleName="Log File" order="400" url="/diag_logs_dhcp.php"/>
         </DHCP>
         <DHCPv6 cssClass="fa fa-bullseye">
             <Server order="100" url="/services_dhcpv6.php">
@@ -288,15 +283,14 @@
             <Status url="/status_ntpd.php"/>
             <Log VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <PPPoEServer VisibleName="PPPoE Server" url="/vpn_pppoe.php" cssClass="fa fa-tty">
-            <PPPoeServerEdit url="/vpn_pppoe_edit.php"/>
+        <PPPoEServer VisibleName="PPPoE Server" cssClass="fa fa-tty">
+            <Settings order="10" url="/vpn_pppoe.php">
+                <Edit url="/vpn_pppoe_edit.php*"/>
+            </Settings>
+            <LogFile order="20" VisibleName="Log File" url="/diag_logs_poes.php">
+                <Type url="/diag_logs_poes.php*"/>
+            </LogFile>
         </PPPoEServer>
-        <PPTP cssClass="fa fa-unlock">
-            <Settings url="/vpn_pptp.php"/>
-            <Users url="/vpn_pptp_users.php">
-                <Edit url="/vpn_pptp_users_edit.php*"/>
-            </Users>
-        </PPTP>
         <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt">
             <Administration url="/ui/proxy/"/>
             <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
@@ -314,7 +308,7 @@
             <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
     </Services>
-    <VPN order="4" cssClass="glyphicon glyphicon-lock">
+    <VPN order="4" cssClass="fa fa-globe">
         <IPsec cssClass="fa fa-lock">
             <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
@@ -333,11 +327,14 @@
             <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
             <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
-        <L2TP cssClass="fa fa-lock">
+        <L2TP cssClass="fa fa-unlock">
             <Settings order="10" url="/vpn_l2tp.php"/>
-            <Users order="20"  url="/vpn_l2tp_users.php">
+            <Users order="20" url="/vpn_l2tp_users.php">
                 <Edit url="/vpn_l2tp_users_edit.php*"/>
             </Users>
+            <LogFile order="30" VisibleName="Log File" url="/diag_logs_l2tp.php">
+                <Type url="/diag_logs_l2tp.php*"/>
+            </LogFile>
         </L2TP>
         <OpenVPN cssClass="fa fa-lock">
             <Server order="10" VisibleName="Server Settings" url="/vpn_openvpn_server.php">
@@ -356,6 +353,15 @@
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
             <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
+        <PPTP cssClass="fa fa-unlock">
+            <Settings order="10" url="/vpn_pptp.php"/>
+            <Users order="20" url="/vpn_pptp_users.php">
+                <Edit url="/vpn_pptp_users_edit.php*"/>
+            </Users>
+            <LogFile order="30" VisibleName="Log File" url="/diag_logs_pptp.php">
+                <Type url="/diag_logs_pptp.php*"/>
+            </LogFile>
+        </PPTP>
     </VPN>
     <Help order="6" cssClass="glyphicon glyphicon-question-sign">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
