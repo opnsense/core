@@ -667,7 +667,6 @@ $( document ).ready(function() {
                     <td><a id="help_for_expires" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expiration date"); ?></td>
                     <td>
                       <input name="expires" type="text" id="expires" size="10" value="<?=$pconfig['expires'];?>" />
-                      <br />
                       <div class="hidden" for="help_for_expires">
                           <?=gettext("Leave blank if the account shouldn't expire, otherwise enter the expiration date in the following format: mm/dd/yyyy"); ?>
                       </div>
