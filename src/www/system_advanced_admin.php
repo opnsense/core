@@ -455,7 +455,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Browser HTTP_REFERER enforcement"); ?></td>
+                  <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP_REFERER enforcement"); ?></td>
                   <td>
                     <input name="nohttpreferercheck" type="checkbox" value="yes" <?= !empty($pconfig['nohttpreferercheck']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Disable HTTP_REFERER enforcement check"); ?></strong>
