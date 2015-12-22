@@ -2879,7 +2879,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_txpower" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transmit power"); ?></td>
                           <td>
-                            <select name="txpower" class="selectpicker" data-style="btn-default" id="txpower">
+                            <select name="txpower" class="selectpicker" data-size="10" data-style="btn-default" id="txpower">
 <?php
                             for($x = 99; $x > 0; $x--):?>
                               <option value="<?=$x;?>" <?=$pconfig["txpower"] == $x ? "selected=\"selected\"" : "";?> ><?=$x;?></option>
@@ -2894,7 +2894,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_channel" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Channel"); ?></td>
                           <td>
-                            <select name="channel" class="selectpicker" data-style="btn-default" id="channel">
+                            <select name="channel" class="selectpicker" data-size="10" data-style="btn-default" id="channel">
                               <option <?= $pconfig['channel'] == 0 ? "selected=\"selected\"" : ""; ?> value="0"><?=gettext("Auto"); ?></option>
 <?php
                               $wl_chaninfo = get_wireless_channel_info($if);
@@ -3002,7 +3002,7 @@ include("head.inc");
 
                             <br /><br />
                             <?=gettext("Country (listed with country code and regulatory domain)"); ?><br />
-                            <select name="regcountry" class="selectpicker" data-style="btn-default" id="regcountry">
+                            <select name="regcountry" class="selectpicker" data-size="10" data-style="btn-default" id="regcountry">
                               <option <?=empty($pconfig['regcountry']) ? "selected=\"selected\"" : ""; ?> value=""><?=gettext("Default"); ?></option>
 <?php
                             foreach($wl_countries as $wl_country_key => $wl_country):?>
