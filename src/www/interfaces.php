@@ -498,7 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               'debug_mode', 'macaddr_acl', 'auth_algs', 'wpa_mode', 'wpa_key_mgmt', 'wpa_pairwise',
               'wpa_group_rekey', 'wpa_gmk_rekey', 'passphrase', 'ext_wpa_sw'
             );
-            foreach ($std_wl_copy_fieldnames as $fieldname) {
+            foreach ($std_wl_wpa_copy_fieldnames as $fieldname) {
                 $pconfig[$fieldname] = isset($a_interfaces[$if]['wireless']['wpa'][$fieldname]) ? $a_interfaces[$if]['wireless']['wpa'][$fieldname] : null;
             }
             $pconfig['ieee8021x'] = isset($a_interfaces[$if]['wireless']['wpa']['ieee8021x']['enable']);
