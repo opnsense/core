@@ -307,7 +307,7 @@ include("head.inc");
                   </tr>
                   <tr>
                     <td colspan="4">
-                      <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <button name="save" type="submit" class="btn btn-primary" value="Save"><?= gettext('Save') ?></button>
                     </td>
                   </tr>
                 </tbody>
