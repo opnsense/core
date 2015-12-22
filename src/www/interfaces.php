@@ -2312,7 +2312,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_advanced">
-                          <td><i class="fa fa-info-circle text-muted"></i><?=gettext("Authentication");?></td>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication");?></td>
                           <td>
                             <?=gettext("<i>authname</i>"); ?>
                             <input name="adv_dhcp6_authentication_statement_authname" type="text" id="adv_dhcp6_authentication_statement_authname" value="<?=$pconfig['adv_dhcp6_authentication_statement_authname'];?>" />
