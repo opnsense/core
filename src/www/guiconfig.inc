@@ -210,6 +210,8 @@ function print_info_box_apply($msg)
 	$savebutton .= '<input name="' . $name . '" type="submit" class="btn btn-primary pull-right" id="' . $name . '" value="' . $value . '" />';
 	if (!empty($_POST['if'])) {
 		$savebutton .= '<input type="hidden" name="if" value="' . htmlspecialchars($_POST['if']) . '" />';
+	} elseif (!empty($_GET['if'])) {
+		$savebutton .= '<input type="hidden" name="if" value="' . htmlspecialchars($_GET['if']) . '" />';
 	}
 	$savebutton .= '</form>';
 
