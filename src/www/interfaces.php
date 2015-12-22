@@ -322,30 +322,30 @@ $ifdescrs = get_configured_interface_with_descr(false, true);
 
 // reference to interface section
 if (empty($config['interfaces']) || !is_array($config['interfaces'])) {
-		$config['interfaces'] = array();
+    $config['interfaces'] = array();
 }
 $a_interfaces = &$config['interfaces'];
 
 if (empty($config['ppps']['ppp']) || !is_array($config['ppps']['ppp'])) {
     $config['ppps'] = array();
-  	$config['ppps']['ppp'] = array();
+    $config['ppps']['ppp'] = array();
 }
 $a_ppps = &$config['ppps']['ppp'];
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-		if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
-				$if = $_GET['if'];
-		} else {
-				// no interface provided, redirect to interface assignments
-				header("Location: interfaces_assign.php");
-			  exit;
-		}
+    if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
+        $if = $_GET['if'];
+    } else {
+        // no interface provided, redirect to interface assignments
+        header("Location: interfaces_assign.php");
+        exit;
+    }
 
-		$pconfig = array();
+    $pconfig = array();
     $std_copy_fieldnames = array(
       "if", "descr", "dhcphostname", "alias-address", "alias-subnet", "dhcprejectfrom", "ipaddr", "subnet", "gateway",
-      "ipaddrv6",
+      "ipaddrv6", "media", "mediaopt",
       "adv_dhcp_pt_timeout", "adv_dhcp_pt_retry", "adv_dhcp_pt_select_timeout", "adv_dhcp_pt_reboot",
       "adv_dhcp_pt_backoff_cutoff", "adv_dhcp_pt_initial_interval", "adv_dhcp_pt_values",
       "adv_dhcp_send_options", "adv_dhcp_request_options", "adv_dhcp_required_options", "adv_dhcp_option_modifiers",
@@ -522,13 +522,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-		$pconfig = $_POST;
+    $pconfig = $_POST;
     $input_errors = array();
-		if (!empty($_POST['if']) && !empty($a_interfaces[$_POST['if']])) {
-				$if = $_POST['if'];
+    if (!empty($_POST['if']) && !empty($a_interfaces[$_POST['if']])) {
+        $if = $_POST['if'];
         // read physcial interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
-		}
+    }
 
     if (!empty($pconfig['apply'])) {
         if (!is_subsystem_dirty('interfaces')) {
@@ -1095,7 +1095,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dhcp6-ia-pd-send-hint'])) {
                         $new_config['dhcp6-ia-pd-send-hint'] = true;
                     }
-                    if (!empty($new_config['dhcp6prefixonly'])) {
+                    if (!empty($pconfig['dhcp6prefixonly'])) {
                         $new_config['dhcp6prefixonly'] = true;
                     }
                     if (!empty($pconfig['dhcp6usev4iface'])) {
@@ -1645,134 +1645,151 @@ include("head.inc");
       }
 ?>
         <section class="col-xs-12">
-          <div class="content-box">
-            <div class="content-box-main">
-              <form method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
+              <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                   <table class="table table-striped">
-                    <tr>
-                      <td width="22%"><strong><?=gettext("General configuration"); ?></strong></td>
-                      <td width="78%" align="right">
-                        <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable"); ?></td>
-                      <td>
-                        <input id="enable" name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
-                        <strong><?=gettext("Enable Interface"); ?></strong>
-                      </td>
-                    </tr>
+                    <thead>
+                      <tr>
+                        <td width="22%"><strong><?=gettext("General configuration"); ?></strong></td>
+                        <td width="78%" align="right">
+                          <small><?=gettext("full help"); ?> </small>
+                          <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                          &nbsp;
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable"); ?></td>
+                        <td>
+                          <input id="enable" name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
+                          <strong><?=gettext("Enable Interface"); ?></strong>
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
-                <div class="table-responsive">
-                  <div id="allcfg">
+              </div>
+              <div id="allcfg">
+                <div class="tab-content content-box col-xs-12 __mb">
+                  <div class="table-responsive">
                     <!-- Section : All -->
                     <table class="table table-striped">
-                      <tr>
-                        <td width="22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                        <td width="78%">
-                          <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
-                          <div class="hidden" for="help_for_descr">
-                            <?= gettext("Enter a description (name) for the interface here."); ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
-                        <td>
-                        <select name="type" <?= substr($pconfig['if'], 0, 3) == 'gre' ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type">
-<?php
-                          $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
-                          foreach ($types4 as $key => $opt):?>
-                          <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
-<?php
-                          endforeach;?>
-                          </select>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 Configuration Type"); ?></td>
-                        <td>
-                          <select name="type6" <?php echo (substr($pconfig['if'], 0, 3) == 'gre') ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type6">
-<?php
-                          $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
-                          foreach ($types6 as $key => $opt):?>
-                            <option value="<?=$key;?>" <?=$key == $pconfig['type6'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
-<?php
-                          endforeach;?>
-                          </select>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><a id="help_for_spoofmac" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MAC address"); ?></td>
-                        <td>
-                          <input name="spoofmac" type="text" id="spoofmac" value="<?=htmlspecialchars($pconfig['spoofmac']);?>" />
-                          <div class="hidden" for="help_for_spoofmac">
-<?php
-                            $ip = getenv('REMOTE_ADDR');
-                            $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
-                            $mac = str_replace("\n","",$mac);
-                            if (!empty($mac)):
-?>
-                            <a onclick="document.getElementById('spoofmac').value='<?=$mac?>';" href="#"><?=gettext("Insert my local MAC address"); ?></a><br />
-<?php
-                            endif; ?>
-                            <?=gettext("This field can be used to modify (\"spoof\") the MAC " .
-                            "address of this interface"); ?><br />
-                            <?=gettext("(may be required with some cable connections)"); ?><br />
-                            <?=gettext("Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx " .
-                            "or leave blank"); ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
-                        <td>
-                          <input name="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
-                          <div class="hidden" for="help_for_mtu">
-                            <?= gettext("If you leave this field blank, the adapter's default MTU will " .
-                              "be used. This is typically 1500 bytes but can vary in some circumstances.");?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><a id="help_for_mss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MSS"); ?></td>
-                        <td>
-                          <input name="mss" type="text" id="mss" value="<?=$pconfig['mss'];?>" />
-                          <div class="hidden" for="help_for_mss">
-                            <?=gettext("If you enter a value in this field, then MSS clamping for " .
-                            "TCP connections to the value entered above minus 40 (TCP/IP " .
-                            "header size) will be in effect."); ?>
-                          </div>
-                        </td>
-                      </tr>
-<?php
-                      if (count($mediaopts_list) > 0):?>
-                      <tr>
-                          <td><a id="help_for_mediaopt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Speed and duplex");?>  </td>
-                          <td>
-                              <select name="mediaopt" class="selectpicker" data-style="btn-default" id="mediaopt">
-                                <option value=""><?=gettext('Default (no preference, typically autoselect)');?></option>
-<?php
-                                foreach($mediaopts_list as $mediaopt):?>
-                                  <option value="<?=$mediaopt;?>" <?=$mediaopt == $pconfig['mediaopt'] ? "selected=\"selected\"" : "";?> >
-                                    <?=$mediaopt;?>
-                                  </option>
-<?php
-                                endforeach;?>
-                              </select>
-                              <div class="hidden" for="help_for_mediaopt">
-                                <?=gettext("Here you can explicitly set speed and duplex mode for this interface. WARNING: You MUST leave this set to autoselect (automatically negotiate speed) unless the port this interface connects to has its speed and duplex forced.");?>
-                              </div>
+                      <thead>
+                        <tr>
+                          <th colspan="2"><?=gettext("General configuration"); ?></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td width="22%"><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                          <td width="78%">
+                            <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
+                            <div class="hidden" for="help_for_descr">
+                              <?= gettext("Enter a description (name) for the interface here."); ?>
+                            </div>
                           </td>
-                      </tr>
+                        </tr>
+                        <tr>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv4 Configuration Type"); ?></td>
+                          <td>
+                          <select name="type" <?= substr($pconfig['if'], 0, 3) == 'gre' ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type">
 <?php
-                      endif;?>
+                            $types4 = array("none" => gettext("None"), "staticv4" => gettext("Static IPv4"), "dhcp" => gettext("DHCP"), "ppp" => gettext("PPP"), "pppoe" => gettext("PPPoE"), "pptp" => gettext("PPTP"), "l2tp" => gettext("L2TP"));
+                            foreach ($types4 as $key => $opt):?>
+                            <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
+<?php
+                            endforeach;?>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 Configuration Type"); ?></td>
+                          <td>
+                            <select name="type6" <?php echo (substr($pconfig['if'], 0, 3) == 'gre') ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type6">
+<?php
+                            $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
+                            foreach ($types6 as $key => $opt):?>
+                              <option value="<?=$key;?>" <?=$key == $pconfig['type6'] ? "selected=\"selected\"" : "";?> ><?=$opt;?></option>
+<?php
+                            endforeach;?>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_spoofmac" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MAC address"); ?></td>
+                          <td>
+                            <input name="spoofmac" type="text" id="spoofmac" value="<?=htmlspecialchars($pconfig['spoofmac']);?>" />
+                            <div class="hidden" for="help_for_spoofmac">
+<?php
+                              $ip = getenv('REMOTE_ADDR');
+                              $mac = `/usr/sbin/arp -an | grep {$ip} | cut -d" " -f4`;
+                              $mac = str_replace("\n","",$mac);
+                              if (!empty($mac)):
+?>
+                              <a onclick="document.getElementById('spoofmac').value='<?=$mac?>';" href="#"><?=gettext("Insert my local MAC address"); ?></a><br />
+<?php
+                              endif; ?>
+                              <?=gettext("This field can be used to modify (\"spoof\") the MAC " .
+                              "address of this interface"); ?><br />
+                              <?=gettext("(may be required with some cable connections)"); ?><br />
+                              <?=gettext("Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx " .
+                              "or leave blank"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
+                          <td>
+                            <input name="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
+                            <div class="hidden" for="help_for_mtu">
+                              <?= gettext("If you leave this field blank, the adapter's default MTU will " .
+                                "be used. This is typically 1500 bytes but can vary in some circumstances.");?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_mss" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MSS"); ?></td>
+                          <td>
+                            <input name="mss" type="text" id="mss" value="<?=$pconfig['mss'];?>" />
+                            <div class="hidden" for="help_for_mss">
+                              <?=gettext("If you enter a value in this field, then MSS clamping for " .
+                              "TCP connections to the value entered above minus 40 (TCP/IP " .
+                              "header size) will be in effect."); ?>
+                            </div>
+                          </td>
+                        </tr>
+<?php
+                        if (count($mediaopts_list) > 0):?>
+                        <tr>
+                            <td><a id="help_for_mediaopt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Speed and duplex");?>  </td>
+                            <td>
+                                <select name="mediaopt" class="selectpicker" data-style="btn-default" id="mediaopt">
+                                  <option value=""><?=gettext('Default (no preference, typically autoselect)');?></option>
+<?php
+                                  foreach($mediaopts_list as $mediaopt):?>
+                                    <option value="<?=$mediaopt;?>" <?=$mediaopt == trim($pconfig['media'] . " ". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
+                                      <?=$mediaopt;?>
+                                    </option>
+<?php
+                                  endforeach;?>
+                                </select>
+                                <div class="hidden" for="help_for_mediaopt">
+                                  <?=gettext("Here you can explicitly set speed and duplex mode for this interface. WARNING: You MUST leave this set to autoselect (automatically negotiate speed) unless the port this interface connects to has its speed and duplex forced.");?>
+                                </div>
+                            </td>
+                        </tr>
+<?php
+                        endif;?>
+                      </tbody>
                     </table>
-                    <!-- static IPv4 -->
-                    <table id="staticv4" class="table table-striped">
+                  </div>
+                </div>
+                <!-- static IPv4 -->
+                <div class="tab-content content-box col-xs-12 __mb" id="staticv4">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("Static IPv4 configuration"); ?></th>
@@ -1866,8 +1883,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : static IPv6 -->
-                    <table id="staticv6" class="table table-striped">
+                  </div>
+                </div>
+                <!-- Section : static IPv6 -->
+                <div class="tab-content content-box col-xs-12 __mb" id="staticv6">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("Static IPv6 configuration"); ?></th>
@@ -1960,8 +1981,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : dhcp v4 -->
-                    <table class="table table-striped"  id="dhcp">
+                  </div>
+                </div>
+                <!-- Section : dhcp v4 -->
+                <div class="tab-content content-box col-xs-12 __mb" id="dhcp">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("DHCP client configuration");?></th>
@@ -2018,13 +2043,13 @@ include("head.inc");
                                       endif;
                                     endfor;?>
                                   </select>
-                                  <div class="hidden" for="help_for_alias_address">
-                                    <?=gettext("The value in this field is used as a fixed alias IPv4 address by the " .
-                                    "DHCP client."); ?>
-                                  </div>
                                 </td>
                               </tr>
                             </table>
+                            <div class="hidden" for="help_for_alias_address">
+                              <?=gettext("The value in this field is used as a fixed alias IPv4 address by the " .
+                              "DHCP client."); ?>
+                            </div>
                           </td>
                         </tr>
                         <tr class="dhcp_basic">
@@ -2124,8 +2149,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : dhcp v6 -->
-                    <table class="table table-striped" id="dhcp6">
+                  </div>
+                </div>
+                <!-- Section : dhcp v6 -->
+                <div class="tab-content content-box col-xs-12 __mb" id="dhcp6">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("DHCPv6 client configuration");?></th>
@@ -2144,7 +2173,7 @@ include("head.inc");
                                 <input name="adv_dhcp6_config_advanced" type="radio" value="advanced" <?=!empty($pconfig['adv_dhcp6_config_advanced']) ? "checked=\"\"" : "";?>/>
                                 <?=gettext("Advanced");?>
                               </label>
-                              <label class="btn btn-default <?=!empty($pconfig['adv_dhcp_config_file_override']) ? "active" : "";?>">
+                              <label class="btn btn-default <?=!empty($pconfig['adv_dhcp6_config_file_override']) ? "active" : "";?>">
                                 <input name="adv_dhcp6_config_file_override" type="radio" value="file" <?=!empty($pconfig['adv_dhcp6_config_file_override']) ? "checked=\"\"" : "";?> />
                                 <?=gettext("Config File Override");?>
                               </label>
@@ -2201,10 +2230,10 @@ include("head.inc");
                             <input name="adv_dhcp6_interface_statement_information_only_enable" type="checkbox" id="adv_dhcp6_interface_statement_information_only_enable" <?=!empty($pconfig['adv_dhcp6_interface_statement_information_only_enable']) ? "checked=\"checked\"" : "";?> />
                             <strong><?=gettext("Information Only"); ?></strong><br/>
                             <div class="hidden" for="help_for_dhcp6_intf_stmt">
-                              <?=gettext("This statement specifies dhcp6c to	only exchange informational configuration parameters with servers. ".
-                              "A list of DNS server	addresses is an	example	of such	parameters. ".
+                              <?=gettext("This statement specifies dhcp6c to  only exchange informational configuration parameters with servers. ".
+                              "A list of DNS server  addresses is an  example  of such  parameters. ".
                               "This statement is useful when the client does not need ".
-                              "stateful configuration parameters such as IPv6 addresses or	prefixes.");?><br/>
+                              "stateful configuration parameters such as IPv6 addresses or  prefixes.");?><br/>
                               <small>
                                 <?=gettext("source: FreeBSD man page");?>
                               </small>
@@ -2312,7 +2341,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_file_override">
-                          <td><a id="help_for_adv_dhcp6_config_file_override_path" href="#" class="showhelp"><i class="fa fa-info-circle"></i> <?=gettext("Configuration File Override");?></a></td>
+                          <td><a id="help_for_adv_dhcp6_config_file_override_path" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration File Override");?></td>
                           <td>
                             <input name="adv_dhcp6_config_file_override_path" type="text" id="adv_dhcp6_config_file_override_path"  value="<?=$pconfig['adv_dhcp6_config_file_override_path'];?>" />
                             <div class="hidden" for="help_for_adv_dhcp6_config_file_override_path">
@@ -2325,8 +2354,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : 6RD-->
-                    <table class="table table-striped"  id="6rd">
+                  </div>
+                </div>
+                <!-- Section : 6RD-->
+                <div class="tab-content content-box col-xs-12 __mb" id="6rd">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("6RD Rapid Deployment"); ?></th>
@@ -2371,8 +2404,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : Track 6 -->
-                    <table class="table table-striped" id="track6">
+                  </div>
+                </div>
+                <!-- Section : Track 6 -->
+                <div class="tab-content content-box col-xs-12 __mb" id="track6">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("Track IPv6 Interface"); ?></th>
@@ -2420,8 +2457,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : PPP -->
-                    <table class="table table-striped" id="ppp">
+                  </div>
+                </div>
+                <!-- Section : PPP -->
+                <div class="tab-content content-box col-xs-12 __mb" id="ppp">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("PPP configuration"); ?></th>
@@ -2522,8 +2563,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : PPPOE -->
-                    <table class="table table-striped"  id="pppoe">
+                  </div>
+                </div>
+                <!-- Section : PPPOE -->
+                <div class="tab-content content-box col-xs-12 __mb" id="pppoe">
+                  <div class="table-responsive">
+                    <table class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("PPPoE configuration"); ?></th>
@@ -2656,8 +2701,12 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-                    <!-- Section : PPTP / L2TP -->
-                    <table  class="table table-striped" id="pptp">
+                  </div>
+                </div>
+                <!-- Section : PPTP / L2TP -->
+                <div class="tab-content content-box col-xs-12 __mb" id="pptp">
+                  <div class="table-responsive">
+                    <table  class="table table-striped">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("PPTP/L2TP configuration"); ?></th>
@@ -2735,13 +2784,14 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
-
-
-
+                  </div>
+                </div>
 <?php
-                    /* Wireless interface? */
-                    if (isset($a_interfaces[$if]['wireless'])):?>
-                    <!-- Section : Wireless -->
+                /* Wireless interface? */
+                if (isset($a_interfaces[$if]['wireless'])):?>
+                <!-- Section : Wireless -->
+                <div class="tab-content content-box col-xs-12 __mb">
+                  <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
                         <tr>
@@ -3249,9 +3299,13 @@ include("head.inc");
                         </tr>
                       </tbody>
                     </table>
+                  </div>
+                </div>
 <?php
-                        endif; ?>
-                    <!-- Section : Private networks -->
+                endif; ?>
+                <!-- Section : Private networks -->
+                <div class="tab-content content-box col-xs-12 __mb">
+                  <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
                         <tr>
@@ -3287,11 +3341,14 @@ include("head.inc");
                           </td>
                         </tr>
                     </table>
-                  <!-- End "allcfg" div -->
                   </div>
+                </div>
+              <!-- End "allcfg" div -->
+              </div>
 
 
-                  <div>
+              <div class="tab-content content-box col-xs-12 __mb">
+                <div class="table-responsive">
                     <table class="table table-striped">
                       <tr>
                         <td width="22%"></td>
@@ -3308,7 +3365,7 @@ include("head.inc");
                         </td>
                       </tr>
                     </table>
-                  <div>
+                  </div>
                 </div>
               </form>
             </div>
