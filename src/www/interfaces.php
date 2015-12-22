@@ -2873,7 +2873,7 @@ include("head.inc");
                             <select name="txpower" class="selectpicker" data-style="btn-default" id="txpower">
 <?php
                             for($x = 99; $x > 0; $x--):?>
-                              <option value="$x" <?=$pconfig["txpower"] == $x ? "selected=\"selected\"" : "";?> ><?=$x;?></option>
+                              <option value="<?=$x;?>" <?=$pconfig["txpower"] == $x ? "selected=\"selected\"" : "";?> ><?=$x;?></option>
 <?php
                               endfor;?>
                             </select>
