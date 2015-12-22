@@ -1624,8 +1624,6 @@ include("head.inc");
         }
       });
       $("#reset_type").change();
-
-      //event.preventDefault();
   });
 </script>
 
@@ -3345,8 +3343,6 @@ include("head.inc");
                 </div>
               <!-- End "allcfg" div -->
               </div>
-
-
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                     <table class="table table-striped">
@@ -3374,5 +3370,4 @@ include("head.inc");
       </div>
     </div>
   </section>
-
   <?php include("foot.inc"); ?>
