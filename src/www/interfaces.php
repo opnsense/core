@@ -460,17 +460,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             interface_wireless_clone($wlanif, $a_interfaces[$if]);
         }
         $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
-        preg_match("/^(.*?)([0-9]*)$/", $wlanbaseif, $wlanbaseif_split);
-        $wl_modes = get_wireless_modes($if);
-        $wl_sysctl_prefix = 'dev.' . $wlanbaseif_split[1] . '.' . $wlanbaseif_split[2];
-        $wl_sysctl = get_sysctl(array("{$wl_sysctl_prefix}.diversity", "{$wl_sysctl_prefix}.txantenna", "{$wl_sysctl_prefix}.rxantenna",
-                    "{$wl_sysctl_prefix}.slottime", "{$wl_sysctl_prefix}.acktimeout", "{$wl_sysctl_prefix}.ctstimeout"));
-        $wl_regdomain_xml_attr = array();
-        $wl_regdomain_xml = parse_xml_regdomain($wl_regdomain_xml_attr);
-        $wl_regdomains = &$wl_regdomain_xml['regulatory-domains']['rd'];
-        $wl_regdomains_attr = &$wl_regdomain_xml_attr['regulatory-domains']['rd'];
-        $wl_countries = &$wl_regdomain_xml['country-codes']['country'];
-        $wl_countries_attr = &$wl_regdomain_xml_attr['country-codes']['country'];
         $std_wl_copy_fieldnames = array(
           'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna', 'distance',
           'regdomain', 'regcountry', 'reglocation', 'authmode', 'auth_server_addr', 'auth_server_port', 'auth_server_shared_secret',
@@ -1157,6 +1146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['wireless']['hidessid'] = array();
                 $new_config['wireless']['pureg'] = array();
                 $new_config['wireless']['puren'] = array();
+                $new_config['wireless']['ieee8021x'] = array();
                 $new_config['wireless']['standard'] = $pconfig['standard'];
                 $new_config['wireless']['mode'] = $pconfig['mode'];
                 $new_config['wireless']['protmode'] = $pconfig['protmode'];
@@ -1170,6 +1160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['wireless']['regcountry'] = $pconfig['regcountry'];
                 $new_config['wireless']['reglocation'] = $pconfig['reglocation'];
                 if (!empty($pconfig['regcountry']) && !empty($pconfig['reglocation'])) {
+                    $wl_regdomain_xml_attr = array();
+                    $wl_regdomain_xml = parse_xml_regdomain($wl_regdomain_xml_attr);
+                    $wl_countries_attr = &$wl_regdomain_xml_attr['country-codes']['country'];
+
                     foreach($wl_countries_attr as $wl_country) {
                         if ($pconfig['regcountry'] == $wl_country['ID']) {
                             $new_config['wireless']['regdomain'] = $wl_country['rd'][0]['REF'];
@@ -1311,6 +1305,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($pconfig);
 
+// some wireless settings require additional details to build the listbox
+if (isset($a_interfaces[$if]['wireless'])) {
+    $wl_modes = get_wireless_modes($if);
+    $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
+    preg_match("/^(.*?)([0-9]*)$/", $wlanbaseif, $wlanbaseif_split);
+    $wl_sysctl_prefix = 'dev.' . $wlanbaseif_split[1] . '.' . $wlanbaseif_split[2];
+    $wl_sysctl = get_sysctl(array("{$wl_sysctl_prefix}.diversity", "{$wl_sysctl_prefix}.txantenna", "{$wl_sysctl_prefix}.rxantenna",
+                "{$wl_sysctl_prefix}.slottime", "{$wl_sysctl_prefix}.acktimeout", "{$wl_sysctl_prefix}.ctstimeout"));
+    $wl_regdomain_xml_attr = array();
+    $wl_regdomain_xml = parse_xml_regdomain($wl_regdomain_xml_attr);
+    $wl_regdomains = &$wl_regdomain_xml['regulatory-domains']['rd'];
+    $wl_regdomains_attr = &$wl_regdomain_xml_attr['regulatory-domains']['rd'];
+    $wl_countries = &$wl_regdomain_xml['country-codes']['country'];
+    $wl_countries_attr = &$wl_regdomain_xml_attr['country-codes']['country'];
+}
 
 // Find all possible media options for the interface
 $mediaopts_list = array();
