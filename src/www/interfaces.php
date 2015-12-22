@@ -603,10 +603,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         /* description unique? */
         foreach ($ifdescrs as $ifent => $ifdescr) {
-          if ($if != $ifent && $ifdescr == $pconfig['descr']) {
-            $input_errors[] = gettext("An interface with the specified description already exists.");
-            break;
-          }
+            if ($if != $ifent && $ifdescr == $pconfig['descr']) {
+                $input_errors[] = gettext("An interface with the specified description already exists.");
+                break;
+            }
         }
         /* input validation */
         if (isset($config['dhcpd']) && isset($config['dhcpd'][$if]['enable']) && (! preg_match("/^staticv4/", $pconfig['type']))) {
