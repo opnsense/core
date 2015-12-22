@@ -1821,7 +1821,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- static IPv4 -->
-                <div class="tab-content content-box col-xs-12 __mb" id="staticv4">
+                <div class="tab-content content-box col-xs-12 __mb" id="staticv4" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -1920,7 +1920,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : dhcp v4 -->
-                <div class="tab-content content-box col-xs-12 __mb" id="dhcp">
+                <div class="tab-content content-box col-xs-12 __mb" id="dhcp" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -2088,7 +2088,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : PPP -->
-                <div class="tab-content content-box col-xs-12 __mb" id="ppp">
+                <div class="tab-content content-box col-xs-12 __mb" id="ppp" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -2194,7 +2194,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : PPPOE -->
-                <div class="tab-content content-box col-xs-12 __mb" id="pppoe">
+                <div class="tab-content content-box col-xs-12 __mb" id="pppoe" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -2332,7 +2332,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : PPTP / L2TP -->
-                <div class="tab-content content-box col-xs-12 __mb" id="pptp">
+                <div class="tab-content content-box col-xs-12 __mb" id="pptp" style="display:none">
                   <div class="table-responsive">
                     <table  class="table table-striped">
                       <thead>
@@ -2415,7 +2415,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : static IPv6 -->
-                <div class="tab-content content-box col-xs-12 __mb" id="staticv6">
+                <div class="tab-content content-box col-xs-12 __mb" id="staticv6" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -2513,7 +2513,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : dhcp v6 -->
-                <div class="tab-content content-box col-xs-12 __mb" id="dhcp6">
+                <div class="tab-content content-box col-xs-12 __mb" id="dhcp6" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -2718,7 +2718,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : 6RD-->
-                <div class="tab-content content-box col-xs-12 __mb" id="6rd">
+                <div class="tab-content content-box col-xs-12 __mb" id="6rd" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
@@ -2768,7 +2768,7 @@ include("head.inc");
                   </div>
                 </div>
                 <!-- Section : Track 6 -->
-                <div class="tab-content content-box col-xs-12 __mb" id="track6">
+                <div class="tab-content content-box col-xs-12 __mb" id="track6" style="display:none">
                   <div class="table-responsive">
                     <table class="table table-striped">
                       <thead>
