@@ -361,7 +361,7 @@ include("head.inc");
                         <input name="dns<?=$dnscounter;?>" type="text" value="<?=$pconfig['dns'.$dnscounter];?>" />
                       </td>
                       <td>
-                        <select name='<?="dns{$dnscounter}gw";?>' class='selectpicker' data-width="200px">
+                        <select name='<?="dns{$dnscounter}gw";?>' class='selectpicker' data-size="10" data-width="200px">
                           <option value="none" <?=$pconfig[$dnsgw] == "none" ? "selected=\"selected\"" :"";?>>
                             <?=gettext("none");?>
                           </option>
@@ -424,7 +424,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_timezone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time zone"); ?></td>
               <td>
-                <select name="timezone" id="timezone" class="selectpicker" data-style="btn-default" data-live-search="true">
+                <select name="timezone" id="timezone" data-size="10" class="selectpicker" data-style="btn-default" data-live-search="true">
 <?php
                   foreach (get_zoneinfo() as $value):
                     if(strstr($value, "GMT")) {
@@ -455,7 +455,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
               <td>
-                <select name="language" class="selectpicker" data-style="btn-default" data-width="auto">
+                <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
 <?php
                   foreach (get_locale_list() as $lcode => $ldesc):?>
                   <option value="<?=$lcode;?>" <?=$lcode == $pconfig['language'] ? "selected=\"selected\"" : "";?>>
@@ -474,7 +474,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_theme" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Theme"); ?></td>
               <td>
-                <select name="theme" class="selectpicker" data-width="auto">
+                <select name="theme" class="selectpicker" data-size="10" data-width="auto">
 <?php
                   $curtheme = get_current_theme();
                   foreach (return_dir_as_array('/usr/local/opnsense/www/themes/') as $file):?>
@@ -495,7 +495,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Mirror"); ?></td>
               <td>
-                <select name="mirror" class="selectpicker" data-width="auto">
+                <select name="mirror" class="selectpicker" data-size="10" data-width="auto">
 <?php
                 foreach (get_firmware_mirrors() as $mcode => $mdesc):?>
                   <option value="<?=$mcode;?>" <?=$mcode == $pconfig['mirror'] ? "selected=\"selected\"":"";?>>
@@ -514,7 +514,7 @@ include("head.inc");
             <tr>
               <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Flavour"); ?></td>
               <td width="78%" class="vtable">
-                <select name="flavour" class="selectpicker" data-style="btn-default" data-width="auto">
+                <select name="flavour" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
 <?php
                 foreach (get_firmware_flavours() as $fcode => $fdesc):?>
                   <option value="<?=$fcode;?>" <?=$fcode == $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
