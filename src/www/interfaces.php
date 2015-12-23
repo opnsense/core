@@ -1678,7 +1678,7 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-              <div id="allcfg">
+              <div id="allcfg" style="display:none">
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
                     <!-- Section : All -->
