@@ -299,9 +299,9 @@ include("head.inc");
        setTimeout(function(){
          window.location.assign("<?=$url;?>");
        }, 20000);
-  });
  <?php
     endif;?>
+  });
 //]]>
 </script>
 
