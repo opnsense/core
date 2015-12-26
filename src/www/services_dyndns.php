@@ -54,7 +54,7 @@ if ($_GET['act'] == "del") {
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>'Add', 'href'=>'services_dyndns_edit.php'),
+	array('label'=>gettext('Add'), 'href'=>'services_dyndns_edit.php'),
 );
 
 ?>
