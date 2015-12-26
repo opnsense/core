@@ -354,7 +354,7 @@ EOFnp;
 }
 
 if (!empty($pconfig['enable']) && !$ph1found) {
-    print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), gettext("create"), gettext("Create Phase1"));
+    print_legacy_box(gettext("Support for IPsec Mobile clients is enabled but a Phase1 definition was not found") . ".<br />" . gettext("Please click Create to define one."), "create", gettext("Create Phase1"));
 }
 if (isset($input_errors) && count($input_errors) > 0) {
     print_input_errors($input_errors);
