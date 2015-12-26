@@ -83,7 +83,7 @@ $( document ).ready(function() {
   $(".act_delete").click(function(){
     var id = $(this).attr("id").split('_').pop(-1);
     BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("IPsec");?>",
         message: "<?= gettext("Do you really want to delete this Pre-Shared Key?");?>",
         buttons: [{
