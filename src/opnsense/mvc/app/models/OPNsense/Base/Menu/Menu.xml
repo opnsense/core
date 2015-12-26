@@ -1,9 +1,12 @@
 <menu>
-    <User order="0" cssClass="glyphicon glyphicon-user">
-        <ChangePassword VisibleName="Change password" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
-        <Logout url="/index.php?logout" cssClass="fa fa-sign-out"/>
-    </User>
-    <System order="1" VisibleName="System" cssClass="glyphicon glyphicon-dashboard">
+    <Lobby order="0" cssClass="fa fa-laptop">
+        <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard">
+            <Root url="/"/>
+	</Dashboard>
+        <ChangePassword order="1" VisibleName="Change password" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
+        <Logout order="2" url="/index.php?logout" cssClass="fa fa-sign-out"/>
+    </Lobby>
+    <System order="1" VisibleName="System" cssClass="fa fa-server">
         <CertificateManager order="120" VisibleName="Certificate Manager" cssClass="fa fa-certificate">
             <Certificates url="/system_certmanager.php">
                 <workAround url="/system_certmanager.php*"/>
@@ -63,7 +66,7 @@
         <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic">
             <Step url="/wizard.php*"/>
         </Wizard>
-        <Access VisibleName="Access Control" order="10" cssClass="fa fa-users">
+        <Access order="10" cssClass="fa fa-users">
             <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*"/>
                 <Privileges url="/system_usermanager_addprivs.php*"/>
@@ -90,7 +93,7 @@
         </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
-        <Overview order="900" url="/status_interfaces.php" cssClass="glyphicon glyphicon-tasks"/>
+        <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks"/>
         <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil"/>
         <Types VisibleName="Other Types" order="929" cssClass="fa fa-cog">
             <Bridge url="/interfaces_bridge.php">
@@ -212,7 +215,7 @@
             <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
         </LogFiles>
     </Firewall>
-    <Services order="5" cssClass="glyphicon glyphicon-cog">
+    <Services order="5" cssClass="fa fa-cog">
         <DHCP cssClass="fa fa-bullseye">
             <Server order="100" url="/services_dhcp.php">
                 <Tab url="/services_dhcp.php?if=*"/>
@@ -363,7 +366,7 @@
             </LogFile>
         </PPTP>
     </VPN>
-    <Help order="6" cssClass="glyphicon glyphicon-question-sign">
+    <Help order="6" cssClass="fa fa-support">
         <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
         <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
                         IsExternal="Y"/>
