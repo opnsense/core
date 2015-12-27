@@ -349,11 +349,7 @@ $( document ).ready(function() {
                         <?=$gateway['monitor'];?>
                       </td>
                       <td>
-<?php
-                      if (!is_numeric($gateway['attribute'])) :?>
                         <?=$gateway['descr'];?>
-<?php
-                      endif;?>
                       </td>
                       <td>
                         <a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
