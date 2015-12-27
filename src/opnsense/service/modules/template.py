@@ -161,8 +161,10 @@ class Template(object):
                     else:
                         target_keys = map(lambda x: str(x), range(len(config_ptr)))
                 else:
+                    # config pointer is reused when the match is exact, so we need to reset it here
+                    # if the tag was not found.
+                    config_ptr = None
                     break
-
             if len(target_keys) == 0:
                 # single node, only used for string replacement in output name.
                 result[tag] = {tag: config_ptr}
@@ -222,8 +224,10 @@ class Template(object):
             for target_filter in target_filters.keys():
                 for key in target_filters[target_filter].keys():
                     for filename in result_filenames.keys():
-                        if filename.find('[%s]' % target_filter) > -1:
+                        if target_filters[target_filter][key] is not None \
+                                and filename.find('[%s]' % target_filter) > -1:
                             new_filename = filename.replace('[%s]' % target_filter, target_filters[target_filter][key])
+                            new_filename = new_filename.replace('//', '/')
                             result_filenames[new_filename] = copy.deepcopy(result_filenames[filename])
                             result_filenames[new_filename][key] = target_filters[target_filter][key]
 
