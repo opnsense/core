@@ -128,7 +128,7 @@ include("head.inc");
                   <select name="sysprivs[]" id="sysprivs" class="formselect" multiple="multiple" size="35">
 <?php
                   foreach ($priv_list as $pname => $pdata) :
-                      if (in_array($pname, $a_user['priv'])) {
+                      if (in_array($pname, $a_group['priv'])) {
                           continue;
                       }
 ?>
