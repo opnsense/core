@@ -135,6 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+legacy_html_escape_form_data($a_aliases);
 $main_buttons = array(
     array('href'=>'firewall_aliases_edit.php?tab='.$selected_tab, 'label'=>gettext("Add a new alias")),
 );
@@ -190,7 +191,9 @@ $( document ).ready(function() {
                       <td>&nbsp;</td>
                     </tr>
 <?php
-                    asort($a_aliases);
+                    usort($a_aliases, function($a, $b){
+                        return strnatcmp($a['name'], $b['name']);
+                    });
                     foreach ($a_aliases as $i=> $alias){
                       $show_alias = false;
                       switch ($selected_tab){
@@ -216,7 +219,7 @@ $( document ).ready(function() {
                     ?>
                     <tr>
                       <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
-                        <?=htmlspecialchars($alias['name']);?>
+                        <?=$alias['name'];?>
                       </td>
 <?php
                         $alias_values = '';
@@ -235,10 +238,10 @@ $( document ).ready(function() {
                       }
 ?>
                       <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
-                        <?= htmlspecialchars($alias_values); ?>
+                        <?=$alias_values; ?>
                       </td>
                       <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
-                        <?=htmlspecialchars($alias['descr']);?>
+                        <?=$alias['descr'];?>
                       </td>
                       <td>
                         <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
