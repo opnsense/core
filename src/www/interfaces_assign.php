@@ -268,53 +268,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (count($input_errors) == 0) {
           /* No errors detected, so update the config */
+          $changes = 0;
           foreach ($_POST as $ifname => $ifport) {
-              if ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt') {
-                  if (!is_array($ifport)) {
-                      $reloadif = false;
-                      if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] <> $ifport) {
-                          interface_bring_down($ifname);
-                          /* Mark this to be reconfigured in any case. */
-                          $reloadif = true;
-                      }
-                      $config['interfaces'][$ifname]['if'] = $ifport;
-                      if ($interfaces[$ifport]['section'] == 'ppps.ppp') {
-                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
-                      }
+              if (!is_array($ifport) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
+                  $reloadif = false;
+                  if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] <> $ifport) {
+                      interface_bring_down($ifname);
+                      /* Mark this to be reconfigured in any case. */
+                      $reloadif = true;
+                  }
+                  $config['interfaces'][$ifname]['if'] = $ifport;
+                  if ($interfaces[$ifport]['section'] == 'ppps.ppp') {
+                      $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifport]['type'];
+                  }
 
-                      if (substr($ifport, 0, 3) == 'gre' || substr($ifport, 0, 3) == 'gif') {
-                          unset($config['interfaces'][$ifname]['ipaddr']);
-                          unset($config['interfaces'][$ifname]['subnet']);
-                          unset($config['interfaces'][$ifname]['ipaddrv6']);
-                          unset($config['interfaces'][$ifname]['subnetv6']);
-                      }
+                  if (substr($ifport, 0, 3) == 'gre' || substr($ifport, 0, 3) == 'gif') {
+                      unset($config['interfaces'][$ifname]['ipaddr']);
+                      unset($config['interfaces'][$ifname]['subnet']);
+                      unset($config['interfaces'][$ifname]['ipaddrv6']);
+                      unset($config['interfaces'][$ifname]['subnetv6']);
+                  }
 
-                      /* check for wireless interfaces, set or clear ['wireless'] */
+                  /* check for wireless interfaces, set or clear ['wireless'] */
+                  if (match_wireless_interface($ifport)) {
+                      if (empty($config['interfaces'][$ifname]['wireless'])) {
+                          $config['interfaces'][$ifname]['wireless'] = array();
+                      }
+                  } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
+                      unset($config['interfaces'][$ifname]['wireless']);
+                  }
+
+                  /* make sure there is a descr for all interfaces */
+                  if (!isset($config['interfaces'][$ifname]['descr'])) {
+                      $config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
+                  }
+
+
+                  if ($reloadif) {
                       if (match_wireless_interface($ifport)) {
-                          if (empty($config['interfaces'][$ifname]['wireless'])) {
-                              $config['interfaces'][$ifname]['wireless'] = array();
-                          }
-                      } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
-                          unset($config['interfaces'][$ifname]['wireless']);
+                          interface_sync_wireless_clones($config['interfaces'][$ifname], false);
                       }
-
-                      /* make sure there is a descr for all interfaces */
-                      if (!isset($config['interfaces'][$ifname]['descr'])) {
-                          $config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
-                      }
-
-
-                      if ($reloadif) {
-                          if (match_wireless_interface($ifport)) {
-                              interface_sync_wireless_clones($config['interfaces'][$ifname], false);
-                          }
-                          /* Reload all for the interface. */
-                          interface_configure($ifname, true);
-                          // reload filter (original from apply action)
-                          filter_configure();
-                      }
+                      /* Reload all for the interface. */
+                      interface_configure($ifname, true);
+                      // count changes
+                      $changes++;
                   }
               }
+          }
+          if ($changes > 0) {
+              // reload filter when interfaces have changed (original from apply action)
+              filter_configure();
           }
 
           write_config();
