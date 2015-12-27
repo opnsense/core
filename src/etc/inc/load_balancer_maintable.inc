@@ -115,7 +115,7 @@ class MainTable {
 				echo "  </td>\n";
 			}
 			echo "  <td class=\"listbg\" onclick=\"fr_toggle({$cur_row})\" id=\"frd{$cur_row}\" ondblclick=\"document.location='{$this->edit_uri}?id={$cur_row}'\">\n";
-			echo "    <font color=\"#FFFFFF\">{$row[$this->cname[$this->columns - 1]]}</font>\n";
+			echo "    {$row[$this->cname[$this->columns - 1]]}\n";
 			echo "  </td>\n";
 			echo "  <td class=\"list nowrap\">\n";
 			$this->display_buttons($cur_row);
