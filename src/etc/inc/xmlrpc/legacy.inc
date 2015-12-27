@@ -197,6 +197,7 @@ function filter_configure_xmlrpc()
     require_once("openvpn.inc");
     require_once("services.inc");
     require_once("rrd.inc");
+    require_once('pfsense-utils.inc');
 
     filter_configure();
     system_routing_configure();
