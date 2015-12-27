@@ -29,6 +29,8 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
+require_once('pfsense-utils.inc');
+
 global $openvpn_verbosity_level;
 $openvpn_verbosity_level = array(
 	0 => gettext('0 (none)'),
