@@ -281,9 +281,11 @@ legacy_html_escape_form_data($a_server);
 
 include("head.inc");
 
-$main_buttons = array(
-    array('label'=>'Add server', 'href'=>'system_authservers.php?act=new'),
-);
+$main_buttons = array();
+if (!isset($_GET['act']) || $_GET['act'] != 'new')
+{
+    $main_buttons[] = array('label'=>gettext('Add server'), 'href'=>'system_authservers.php?act=new');
+}
 
 ?>
 
@@ -414,6 +416,13 @@ $( document ).ready(function() {
 ?>
             <form id="iform" name="iform" action="system_authservers.php" method="post">
               <table class="table table-striped">
+                <tr>
+                  <td width="22%"></td>
+                  <td  width="78%" align="right">
+                    <small><?=gettext("full help"); ?> </small>
+                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                  </td>
+                </tr>
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Descriptive name"); ?></td>
                   <td>
