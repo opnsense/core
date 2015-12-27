@@ -5295,21 +5295,3 @@ function get_ppp_uptime($port){
 		return $total_time;
 	}
 }
-
-/**
- * Get the NAS-IP-Address based on the current wan address
- *
- * Use functions in interfaces.inc to find this out
- *
- */
-
-function getNasIP()
-{
-    $nasIp = get_interface_ip();
-
-    if (!is_ipaddr($nasIp)) {
-        $nasIp = '0.0.0.0';
-    }
-
-    return $nasIp;
-}
