@@ -191,7 +191,7 @@ $( document ).ready(function() {
                       <td>&nbsp;</td>
                     </tr>
 <?php
-                    usort($a_aliases, function($a, $b){
+                    uasort($a_aliases, function($a, $b){
                         return strnatcmp($a['name'], $b['name']);
                     });
                     foreach ($a_aliases as $i=> $alias){
