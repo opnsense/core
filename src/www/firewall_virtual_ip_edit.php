@@ -185,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // 1-on-1 copy attributes
         foreach (array('mode', 'interface', 'descr', 'type', 'subnet_bits', 'subnet', 'vhid'
                       ,'advskew','advbase','password') as $fieldname) {
-            if (!empty($pconfig[$fieldname])) {
+            if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != "") {
                 $vipent[$fieldname] = $pconfig[$fieldname];
             }
         }
