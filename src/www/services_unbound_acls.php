@@ -56,7 +56,7 @@ function unbound_get_next_id() {
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound_acls.php');
 
-if (!is_array($config['unbound']['acls']))
+if (empty($config['unbound']['acls']) || !is_array($config['unbound']['acls']))
 	$config['unbound']['acls'] = array();
 
 $a_acls = &$config['unbound']['acls'];
