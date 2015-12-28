@@ -50,13 +50,13 @@ function legacy_interface_listget($flag = '')
 	return ($ifs);
 }
 
-function legacy_interface_flags($ifs, $flag)
+function legacy_interface_flags($ifs, $flag, $report_errors=true)
 {
 	/* $flags isn't escaped because it can be an argument list */
 	$cmd = '/sbin/ifconfig ' . escapeshellarg($ifs) . ' ' . $flag;
 
 	exec($cmd . ' 2>&1', $out, $ret);
-	if ($ret) {
+	if (!empty($ret) && $report_errors) {
 		log_error('The command `' . $cmd . '\' failed to execute');
 	}
 }
