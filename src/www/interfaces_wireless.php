@@ -1,141 +1,159 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2010 Erik Fonnesbeck
-	All rights reserved.
+  Copyright (C) 2014-2015 Deciso B.V.
+  Copyright (C) 2010 Erik Fonnesbeck
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 
-if (!is_array($config['wireless']))
-	$config['wireless'] = array();
-if (!is_array($config['wireless']['clone']))
-	$config['wireless']['clone'] = array();
-
-$a_clones = &$config['wireless']['clone'];
-
-function clone_inuse($num) {
-	global $config, $a_clones;
-
-	$iflist = get_configured_interface_list(false, true);
-	foreach ($iflist as $if) {
-		if ($config['interfaces'][$if]['if'] == $a_clones[$num]['cloneif'])
-			return true;
-	}
-
-	return false;
+function clone_inuse($cloneif) {
+    global $config;
+    $iflist = get_configured_interface_list(false, true);
+    foreach ($iflist as $if) {
+        if ($config['interfaces'][$if]['if'] == $cloneif) {
+            return true;
+        }
+    }
+    return false;
 }
 
-if ($_GET['act'] == "del") {
-	/* check if still in use */
-	if (clone_inuse($_GET['id'])) {
-		$input_errors[] = gettext("This wireless clone cannot be deleted because it is assigned as an interface.");
-	} else {
-		mwexec("/sbin/ifconfig " . $a_clones[$_GET['id']]['cloneif'] . " destroy");
-		unset($a_clones[$_GET['id']]);
-
-		write_config();
-
-		header("Location: interfaces_wireless.php");
-		exit;
-	}
+if (!isset($config['wireless']['clone']) || !is_array($config['wireless']['clone'])) {
+    $a_clones = array();
+} else {
+    $a_clones = &$config['wireless']['clone'];
 }
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['action']) && $_POST['action'] == "del" && !empty($a_clones[$_POST['id']])) {
+        if (clone_inuse($a_clones[$_POST['id']]['cloneif'])) {
+            /* check if still in use */
+            $input_errors[] = gettext("This wireless clone cannot be deleted because it is assigned as an interface.");
+        } else {
+            mwexec("/sbin/ifconfig " . escapeshellarg($a_clones[$_POST['id']]['cloneif']) . " destroy");
+            unset($a_clones[$_POST['id']]);
+            write_config();
+
+            header("Location: interfaces_wireless.php");
+            exit;
+        }
+    }
+}
+
 
 include("head.inc");
-
+legacy_html_escape_form_data($a_clones);
 $main_buttons = array(
-	array('href'=>'interfaces_wireless_edit.php', 'label'=>gettext('Add')),
+  array('href'=>'interfaces_wireless_edit.php', 'label'=>gettext('Add')),
 );
-
 ?>
 
-
 <body>
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    // link delete buttons
+    $(".act_delete").click(function(event){
+      event.preventDefault();
+      var id = $(this).data("id");
+      // delete single
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_INFO,
+        title: "<?= gettext("Wireless");?>",
+        message: "<?=gettext("Do you really want to delete this wireless clone?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val(id);
+                    $("#action").val("del");
+                    $("#iform").submit()
+                }
+              }]
+      });
+    });
+
+  });
+  </script>
 <?php include("fbegin.inc"); ?>
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-
-			    <section class="col-xs-12">
-
-						<div class="tab-content content-box col-xs-12">
-
-		                        <form action="interfaces_assign.php" method="post" name="iform" id="iform">
-
-		                        <div class="table-responsive">
-			                        <table class="table table-striped table-sort">
-
-			                         <thead>
-                                            <tr>
-								<th width="20%" class="listtopic"><?=gettext("Interface");?></th>
-								<th width="20%" class="listtopic"><?=gettext("Mode");?></th>
-								<th width="50%" class="listtopic"><?=gettext("Description");?></th>
-								<th width="10%" class="listtopic">&nbsp;</th>
-                                            </tr>
-                                        </thead>
-
-									<tbody>
-
-									  <?php $i = 0;
-											foreach ($a_clones as $clone): ?>
-						                <tr ondblclick="document.location='interfaces_wireless_edit.php?id=<?=$i;?>'">
-						                  <td class="listlr">
-											<?=htmlspecialchars($clone['cloneif']);?>
-						                  </td>
-						                  <td class="listr">
-											<?= $wlan_modes[$clone['mode']]; ?>
-						                  </td>
-						                  <td class="listbg">
-						                    <?=htmlspecialchars($clone['descr']);?>&nbsp;
-						                  </td>
-						                  <td valign="middle" class="list nowrap">
-							                   <a href="interfaces_wireless_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span></a>
-
-											   <a href="interfaces_wireless.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"  onclick="return confirm('<?=gettext("Do you really want to delete this wireless clone?");?>')"><span class="glyphicon glyphicon-remove"></span></a>
-							                </td>
-										</tr>
-									  <?php $i++; endforeach; ?>
-									</tbody>
-						              </table>
-							      </div>
-
-							       <div class="container-fluid">
-							        <p><span class="text-danger"><strong><?=gettext("Note");?>:<br />
-										  </strong></span>
-										  <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?></p>
-							       </div>
-
-		                        </form>
-
-						</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <section class="col-xs-12">
+          <div class="tab-content content-box">
+            <form method="post" name="iform" id="iform">
+              <input type="hidden" id="action" name="action" value="">
+              <input type="hidden" id="id" name="id" value="">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th><?=gettext("Interface");?></th>
+                      <th><?=gettext("Mode");?></th>
+                      <th><?=gettext("Description");?></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+<?php
+                  $i = 0;
+                  foreach ($a_clones as $clone):?>
+                    <tr>
+                      <td><?=$clone['cloneif'];?></td>
+                      <td><?=$wlan_modes[$clone['mode']];?></td>
+                      <td><?=$clone['descr'];?></td>
+                      <td>
+                        <a href="interfaces_wireless_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default">
+                          <span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span>
+                        </a>
+                        <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                          <span class=" glyphicon glyphicon-remove"></span>
+                        </button>
+                      </td>
+                    </tr>
+<?php
+                    $i++;
+                  endforeach;?>
+                  </tbody>
+                </table>
+              </div>
+              <div class="container-fluid">
+                <p>
+                  <span class="text-danger"><strong><?=gettext("Note");?>:<br /></strong></span>
+                  <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?>
+                </p>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
