@@ -172,3 +172,30 @@ function legacy_interface_stats($ifs)
 
     return $stats;
 }
+
+/**
+ * detect interface capabilities using ifconfig -m
+ * @param $intf interface name
+ * @return array list of interface capabilities (in lowercase)
+ */
+function legacy_interface_details($intf)
+{
+    $result = array();
+    $result["capabilities"] = array();
+    $process = proc_open('/sbin/ifconfig -m ' . escapeshellarg($intf), array(array("pipe", "r"), array("pipe", "w")), $pipes);
+    if (is_resource($process)) {
+        $ifconfig_data = stream_get_contents($pipes[1]);
+        foreach (explode("\n", $ifconfig_data) as $line) {
+            if (strpos(trim($line), 'capabilities=') !== false) {
+                // parse capabilities
+                $capabilities = substr($line, strpos($line, '<') + 1, -1);
+                foreach (explode(',', $capabilities) as $capability) {
+                    $result["capabilities"][] = strtolower(trim($capability));
+                }
+            }
+        }
+        fclose($pipes[1]);
+        proc_close($process);
+    }
+    return $result;
+}
