@@ -129,7 +129,9 @@
                 <Edit url="/interfaces_wireless_edit.php*"/>
             </Devices>
             <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
-            <Status url="/status_wireless.php"/>
+            <Status url="/status_wireless.php">
+            	<Status url="/status_wireless.php*"/>
+            </Status>
         </Wireless>
         <Diagnostics order="940" cssClass="fa fa-medkit">
             <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
