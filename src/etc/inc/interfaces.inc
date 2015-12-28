@@ -182,8 +182,8 @@ function interface_netgraph_needed($interface = "wan")
                         break;
                     }
                     /* Find the parent interfaces of the vlans in the MLPPP configs
-          * there should be only one element in the array here
-          * -- this could be better . . . */
+                     * there should be only one element in the array here
+                     * -- this could be better . . . */
                     $parent_if = get_parent_interface($port);
                     if ($realif == $parent_if[0]) {
                         $found = true;
@@ -199,10 +199,10 @@ function interface_netgraph_needed($interface = "wan")
         pfSense_ngctl_detach("{$realif}:", $realif);
     }
     /* NOTE: We make sure for this on interface_ppps_configure()
-   *  no need to do it here agan.
-   *  else
-   *    pfSense_ngctl_attach(".", $realif);
-   */
+     *  no need to do it here agan.
+     *  else
+     *    pfSense_ngctl_attach(".", $realif);
+     */
 }
 
 function interfaces_loopback_configure()
@@ -1233,10 +1233,10 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
     }
 
     /*
-   * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
-   * In this case the real $realif of v4 is different from that of v6 for operation.
-   * Keep this in mind while doing changes here!
-   */
+     * NOTE: The $realifv6 is needed when WANv4 is type PPP and v6 is DHCP and the option v6 from v4 is used.
+     * In this case the real $realif of v4 is different from that of v6 for operation.
+     * Keep this in mind while doing changes here!
+     */
     if ($ifacecfg === false) {
         $ifcfg = $config['interfaces'][$interface];
         $ppps = array();
@@ -1399,7 +1399,7 @@ function interface_bring_down($interface = "wan", $destroy = false, $ifacecfg = 
     @unlink("/tmp/{$realif}_routerv6");
 
     /* hostapd and wpa_supplicant do not need to be running when the interface is down.
-   * They will also use 100% CPU if running after the wireless clone gets deleted. */
+     * They will also use 100% CPU if running after the wireless clone gets deleted. */
     if (isset($ifcfg['wireless']) && is_array($ifcfg['wireless'])) {
         kill_hostapd($realif);
         mwexec(kill_wpasupplicant($realif));
@@ -1608,8 +1608,8 @@ function interface_ppps_configure($interface)
     $subnets = explode(',', $ppp['subnet']);
 
     /* We bring up the parent interface first because if DHCP is configured on the parent we need
-   * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
-   */
+     * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
+     */
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case "pppoe":
@@ -2313,8 +2313,8 @@ function interface_wireless_clone($realif, $wlcfg)
     global $config;
 
     /*   Check to see if interface has been cloned as of yet.
-   *   If it has not been cloned then go ahead and clone it.
-   */
+     *   If it has not been cloned then go ahead and clone it.
+     */
     $needs_clone = false;
     if (isset($wlcfg['wireless']) && is_array($wlcfg['wireless'])){
         $wlcfg_mode = $wlcfg['wireless']['mode'];
@@ -2870,7 +2870,7 @@ EOD;
     }
 
     /* The mode must be specified in a separate command before ifconfig
-   * will allow the mode and channel at the same time in the next. */
+     * will allow the mode and channel at the same time in the next. */
     mwexec("/sbin/ifconfig " . escapeshellarg($if) . " mode " . escapeshellarg($standard));
 
     /* configure wireless */
@@ -3096,9 +3096,9 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             " link " . escapeshellarg($wancfg['spoofmac']));
 
         /*
-     * All vlans need to spoof their parent mac address, too.  see
-     * ticket #1514: http://cvstrac.pfsense.com/tktview?tn=1514,33
-     */
+         * All vlans need to spoof their parent mac address, too.  see
+         * ticket #1514: http://cvstrac.pfsense.com/tktview?tn=1514,33
+         */
         if (isset($config['vlans']['vlan']) && is_array($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 if ($vlan['if'] == $realhwif) {
@@ -3466,7 +3466,6 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 
     /* because this is a tunnel interface we can only function
      *  with a public IPv4 address on the interface */
-
     if (!is_array($wancfg)) {
         return;
     }
@@ -3551,7 +3550,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     global $config;
 
     /* because this is a tunnel interface we can only function
-   *  with a public IPv4 address on the interface */
+     *  with a public IPv4 address on the interface */
 
     if (!is_array($wancfg)) {
         return;
@@ -4884,9 +4883,9 @@ function get_interface_ipv6($interface = "wan", $flush = false) {
     }
 
     /*
-   * NOTE: On the case when only the prefix is requested,
-   * the communication on WAN will be done over link-local.
-   */
+     * NOTE: On the case when only the prefix is requested,
+     * the communication on WAN will be done over link-local.
+     */
     if (is_array($config['interfaces'][$interface])) {
         switch ($config['interfaces'][$interface]['ipaddr']) {
             case 'pppoe':
