@@ -315,13 +315,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   }
               }
           }
-          if ($changes > 0) {
-              // reload filter when interfaces have changed (original from apply action)
-              filter_configure();
-          }
-
           write_config();
-          enable_rrd_graphing();
+          if ($changes > 0) {
+              // reload filter, rrd when interfaces have changed (original from apply action)
+              filter_configure();
+              enable_rrd_graphing();
+          }
           // redirect
           header("Location: interfaces_assign.php");
           exit;
