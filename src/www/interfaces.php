@@ -2098,7 +2098,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"><a id="help_for_track6-prefix-id" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
+                          <td width="22%"><a id="help_for_country" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Service Provider"); ?></td>
                           <td width="78%">
                             <table class="table table-condensed">
                               <tr id="trcountry" class="hidden">
@@ -2126,7 +2126,7 @@ include("head.inc");
                                 </td>
                               </tr>
                             </table>
-                            <div class="hidden" for="help_for_track6-prefix-id">
+                            <div class="hidden" for="help_for_country">
                               <?=gettext("Select to fill in data for your service provider."); ?>
                             </div>
                           </td>
