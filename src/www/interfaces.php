@@ -1839,7 +1839,7 @@ include("head.inc");
                                   <input name="ipaddr" type="text" id="ipaddr" value="<?=$pconfig['ipaddr'];?>" />
                                 </td>
                                 <td>
-                                  <select name="subnet" class="selectpicker" data-style="btn-default" data-width="auto"  data-id="subnet">
+                                  <select name="subnet" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnet">
 
 <?php
                                     for ($i = 32; $i > 0; $i--):
@@ -1857,7 +1857,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_gateway" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Upstream Gateway"); ?></td>
                           <td>
-                            <select name="gateway" class="selectpicker" data-style="btn-default" id="gateway">
+                            <select name="gateway" class="selectpicker" data-style="btn-default" data-size="10" id="gateway">
                               <option value="none"><?=gettext("None"); ?></option>
 <?php
                               if (!empty($config['gateways']['gateway_item'])):
@@ -2362,7 +2362,7 @@ include("head.inc");
                                   <input name="localip" type="text" id="localip"  value="<?=$pconfig['localip'];?>" />
                                 </td>
                                 <td>
-                                  <select name="pptp_subnet" class="selectpicker" data-width="auto" data-style="btn-default" id="pptp_subnet">
+                                  <select name="pptp_subnet" class="selectpicker" data-width="auto" data-style="btn-default" data-size="10" id="pptp_subnet">
                                     <?php for ($i = 31; $i > 0; $i--): ?>
                                       <option value="<?=$i;?>" <?= $i == $pconfig['pptp_subnet'] ? "selected=\"selected\"" : ""; ?>>
                                         <?=$i;?>
@@ -2433,7 +2433,7 @@ include("head.inc");
                                   <input name="ipaddrv6" type="text" id="ipaddrv6" size="28" value="<?=htmlspecialchars($pconfig['ipaddrv6']);?>" />
                                 </td>
                                 <td>
-                                  <select name="subnetv6" class="selectpicker" data-style="btn-default" data-width="auto"  data-id="subnetv6">
+                                  <select name="subnetv6" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnetv6">
 <?php
                                     for ($i = 128; $i > 0; $i--):
                                       if ($i <> 127):?>
@@ -2450,7 +2450,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_gatewayv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Upstream Gateway"); ?></td>
                           <td>
-                            <select name="gatewayv6" class="selectpicker" data-style="btn-default" id="gatewayv6">
+                            <select name="gatewayv6" class="selectpicker" data-size="10" data-style="btn-default" id="gatewayv6">
                               <option value="none" selected="selected"><?=gettext("None"); ?></option>
 <?php
                               if (!empty($config['gateways']['gateway_item'])):
