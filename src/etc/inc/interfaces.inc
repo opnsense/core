@@ -3139,7 +3139,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
     /* skip vlans for checksumming and polling */
     if (!stristr($realif, "_vlan") && is_array($options)) {
-        legacy_interface_flags($realhwif, interface_override_flags());
+        legacy_interface_flags($realhwif, interface_override_flags(), false);
     }
 
     $tunnelif = substr($realif, 0, 3);
@@ -5126,14 +5126,12 @@ function generate_random_mac_address()
  ******/
 function is_jumbo_capable($iface)
 {
-    $iface = trim($iface);
-    $capable = pfSense_get_interface_addresses($iface);
-
-    if (isset($capable['caps']['vlanmtu'])) {
+    $intf_details = legacy_interface_details(trim($iface));
+    if (in_array('vlan_mtu', $intf_details['capabilities'])) {
         return true;
+    } else {
+        return false;
     }
-
-    return false;
 }
 
 function interface_setup_pppoe_reset_file($pppif, $iface = '')
