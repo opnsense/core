@@ -1603,9 +1603,9 @@ function interface_ppps_configure($interface)
             }
         }
     }
-    $localips = explode(',', $ppp['localip']);
-    $gateways = explode(',', $ppp['gateway']);
-    $subnets = explode(',', $ppp['subnet']);
+    $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : array();
+    $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : array();
+    $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : array();
 
     /* We bring up the parent interface first because if DHCP is configured on the parent we need
      * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
