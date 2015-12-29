@@ -243,7 +243,6 @@ include("head.inc");
 ?>
 
 <body>
-  <script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js"></script>
 
 <?php include("fbegin.inc");?>
 
@@ -295,16 +294,11 @@ $( document ).ready(function() {
           }, 100);
     });
 
-    // IPv4 address, fix dstmask
-    $("#subnet").change(function(){
-      if ( $(this).val().indexOf('.') > -1 && $("#subnet_bits").val() > 32) {
-          $("#subnet_bits").val("32");
-          $('#subnet_bits').selectpicker('refresh');
-      }
-    });
-
     // toggle initial mode change
     $("#mode").change();
+
+    // IPv4/IPv6 select
+    hook_ipv4v6('ipv4v6net', 'network-id');
 });
 
 </script>
@@ -380,10 +374,11 @@ $( document ).ready(function() {
                                 <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
                               </td>
                               <td >
-                                <select name="subnet_bits"  class="selectpicker" data-size="10"  data-width="auto" id="subnet_bits">
+                                <select name="subnet_bits" data-network-id="subnet" class="selectpicker ipv4v6net" data-size="10"  data-width="auto" id="subnet_bits">
+                                  <option disabled="disabled"></option> <!-- workaround for selectpicker -->
 <?php
                                   for ($i = 128; $i >= 1; $i--): ?>
-                                    <option value="<?=$i;?>" <?php if ($i == $pconfig['subnet_bits']) echo "selected=\"selected\""; ?>>
+                                    <option value="<?=$i;?>" <?= $i == $pconfig['subnet_bits'] ? "selected=\"selected\"" :""; ?>>
                                       <?=$i;?>
                                     </option>
 <?php
