@@ -32,9 +32,8 @@
  * hook on change events to network inputs, to maximize the subnet to 24 on ipv4 addresses
  * @param classname: classname to hook on to, select list of netmasks
  * @param data_id: data field reference to network input field
- * @param callback: callback function if any
  */
-function hook_ipv4v6(classname, data_id, callback) {
+function hook_ipv4v6(classname, data_id) {
   $("."+classname).each(function(){
       var selectlist_id = $(this).attr('id');
       if ($(this).data(data_id) != undefined) {
@@ -46,10 +45,12 @@ function hook_ipv4v6(classname, data_id, callback) {
               } else {
                   $(this).removeClass('hidden');
               }
+          }).promise().done(function(){
+            // when select list uses selectpicker, refresh
+            if ($("#"+selectlist_id).hasClass('selectpicker')) {
+                $("#"+selectlist_id).selectpicker('refresh');
+            }
           });
-          if (callback != undefined) {
-              callback();
-          }
         });
       }
       // trigger initial onChange event
