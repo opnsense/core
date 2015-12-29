@@ -71,18 +71,28 @@ $shortcuts['dhcp6'] = array();
 $shortcuts['dhcp6']['log'] = "diag_logs_dhcp.php";
 
 $shortcuts['ipsec'] = array();
+$shortcuts['ipsec']['main'] = "vpn_ipsec.php";
+$shortcuts['ipsec']['log'] = "diag_logs_ipsec.php";
+$shortcuts['ipsec']['status'] = "diag_ipsec.php";
 $shortcuts['ipsec']['service'] = "ipsec";
 
 $shortcuts['openvpn'] = array();
+$shortcuts['openvpn']['log'] = "diag_logs_openvpn.php";
+$shortcuts['openvpn']['status'] = "status_openvpn.php";
 $shortcuts['openvpn']['service'] = "openvpn";
 
 $shortcuts['forwarder'] = array();
+$shortcuts['forwarder']['main'] = 'services_dnsmasq.php';
 $shortcuts['forwarder']['service'] = 'dnsmasq';
 
 $shortcuts['resolver'] = array();
+$shortcuts['resolver']['main'] = "services_unbound.php";
 $shortcuts['resolver']['service'] = 'unbound';
 
 $shortcuts['ntp'] = array();
+$shortcuts['ntp']['main'] = "services_ntpd.php";
+$shortcuts['ntp']['status'] = "status_ntpd.php";
+$shortcuts['ntp']['log'] = "diag_logs_ntpd.php";
 $shortcuts['ntp']['service'] = 'ntpd';
 
 $shortcuts['gateways'] = array();
@@ -96,3 +106,11 @@ $shortcuts['snmp']['service'] = "bsnmpd";
 
 $shortcuts['squid'] = array();
 $shortcuts['squid']['service'] = "squid";
+
+$shortcuts['sshd'] = array();
+$shortcuts['sshd']['main'] = 'system_advanced_admin.php';
+$shortcuts['sshd']['service'] = 'sshd';
+
+$shortcuts['radvd'] = array();
+$shortcuts['radvd']['main'] = 'services_dhcpv6.php';
+$shortcuts['radvd']['service'] = 'radvd';
