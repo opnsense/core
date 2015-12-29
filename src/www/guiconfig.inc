@@ -239,6 +239,42 @@ function print_info_box($msg)
 EOFnp;
 }
 
+function print_warning_box($msg) {
+	echo <<<EOFnp
+<div class="col-xs-12">
+	<div class="alert alert-warning alert-dismissible" role="alert">
+		<p>{$msg}</p>
+	</div>
+</div>
+EOFnp;
+}
+
+function is_service_enabled($service) {
+	global $config;
+
+	switch ($service) {
+		case 'firewall':
+		case 'filter':
+			return !isset($config['system']['disablefilter']);
+		default:
+			return false;
+	}
+}
+
+function print_service_disabled_banner($service) {
+	if (!is_service_enabled($service)) {
+		switch ($service) {
+			case 'firewall':
+			case 'filter':
+				print_warning_box(gettext(
+					"The firewall has globally been disabled and configured rules are currently not enforced. " .
+					"It can be enabled in the <a href=\"system_advanced_firewall.php\">Firewall and NAT settings</a> page."
+				));
+				break;
+		}
+	}
+}
+
 function get_std_save_message() {
 	global $d_sysrebootreqd_path;
 	$filter_related = false;
