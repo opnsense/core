@@ -2265,7 +2265,7 @@ include("head.inc");
                                     <input type="text" name="pppoe_resetminute" maxlength="2" id="pppoe_resetminute" value="<?= $pconfig['pppoe_resetminute']; ?>" />
                                     <?=gettext("minute (0-59)"); ?><br />
                                     <?php
-                                    if ($pconfig['pppoe_resetmday'] <> "*" && $pconfig['pppoe_resetmonth'] <> "*") {
+                                    if (!empty($pconfig['pppoe_resetmday']) && $pconfig['pppoe_resetmday'] <> "*" && $pconfig['pppoe_resetmonth'] <> "*") {
                                         $pconfig['pppoe_resetdate'] = "{$pconfig['pppoe_resetmonth']}/{$pconfig['pppoe_resetmday']}/" . date("Y");
                                     }
                                     ?>
