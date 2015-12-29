@@ -866,7 +866,7 @@ function get_interface_list($only_active = false)
 
 		$toput = array(
 			'up' => in_array($ifname, $ifnames_up),
-			'ipaddr' => $ifdata['ipaddr'],
+			'ipaddr' => !empty($ifdata['ipaddr']) ? $ifdata['ipaddr'] : null,
 			'mac' => $ifdata['macaddr']
 		);
 
