@@ -42,10 +42,12 @@ $a_ppps = &$config['ppps']['ppp'];
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // read form data
     $pconfig = array();
     if (isset($_GET['id']) && !empty($a_ppps[$_GET['id']])) {
         $id = $_GET['id'];
     }
+    // plain 1-on-1 copy
     $copy_fields = array('ptpid', 'type', 'username', 'idletimeout', 'uptime', 'descr', 'simpin', 'pin-wait',
                         'apn', 'apnum', 'phone', 'connect-timeout', 'provider', 'pppoe-reset-type');
     foreach ($copy_fields as $fieldname) {
@@ -55,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+    // fields containing array data (comma seperated)
     $explode_fields = array('mtu', 'mru', 'mrru', 'bandwidth', 'localip', 'gateway', 'localip', 'subnet', 'ports');
     foreach ($explode_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {
@@ -64,14 +67,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    // boolean fields
     $bool_fields = array('ondemand', 'shortseq', 'acfcomp', 'protocomp', 'vjcomp', 'tcpmssfix');
     foreach ($bool_fields as $fieldname) {
         $pconfig[$fieldname] = isset($a_ppps[$id][$fieldname]);
     }
+    // special cases
     $pconfig['password'] = isset($a_ppps[$id]['password']) ? base64_decode($a_ppps[$id]['password']) : null;
     $pconfig['initstr'] = isset($a_ppps[$id]['initstr']) ? base64_decode($a_ppps[$id]['initstr']) : null;
     $pconfig['null_service'] = (isset($a_ppps[$id]['provider']) && empty($a_ppps[$id]['provider']));
 
+    // init resetpppoe_reset vars
+    $pconfig['pppoe_resetminute'] = null;
+    $pconfig['pppoe_resethour'] = null;
+    $pconfig['pppoe_resetmday'] = null;
+    $pconfig['pppoe_resetmonth'] = null;
+    $pconfig['pppoe_resetwday'] = null;
+    // read resetpppoe_reset vars
     if (!empty($a_ppps[$id]['pppoe-reset-type'])) {
         $itemhash = getMPDCRONSettings($a_ppps[$id]['if']);
         if (!empty($itemhash)) {
@@ -87,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['ptpid'] = interfaces_ptpid_next();
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // save form data
     if (isset($_POST['id']) && !empty($a_ppps[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -101,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
             break;
         case "pppoe":
-            if ($_POST['ondemand']) {
+            if (!empty($pconfig['ondemand'])) {
                 $reqdfields = explode(" ", "ports username password ondemand idletimeout");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Dial on demand"),gettext("Idle timeout value"));
             } else {
@@ -112,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             break;
         case "l2tp":
         case "pptp":
-            if ($pconfig['ondemand']) {
+            if (!empty($pconfig['ondemand'])) {
                 $reqdfields = explode(" ", "ports username password localip subnet gateway ondemand idletimeout");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Local IP address"),gettext("Subnet"),gettext("Remote IP address"),gettext("Dial on demand"),gettext("Idle timeout value"));
             } else {
@@ -162,10 +175,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("The bandwidth value for %s must be an integer."),$iface);
         }
 
-        if (!empty($pconfig['mtu'][$iface_idx]) && ($pconfig['mtu'][$iface_idx] < 576)) {
+        if (!empty($pconfig['mtu'][$iface_idx]) && $pconfig['mtu'][$iface_idx] < 576) {
             $input_errors[] = sprintf(gettext("The MTU for %s must be greater than 576 bytes."),$iface);
         }
-        if (!empty($pconfig['mru'][$iface_idx]) && ($pconfig['mru'][$iface_idx] < 576)) {
+        if (!empty($pconfig['mru'][$iface_idx]) && $pconfig['mru'][$iface_idx] < 576) {
             $input_errors[] = sprintf(gettext("The MRU for %s must be greater than 576 bytes."),$iface);
         }
     }
@@ -191,8 +204,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $port_fields = array("localip", "gateway", "subnet", "bandwidth", "mtu", "mru", "mrru");
         $port_data = array();
         foreach($pconfig['ports'] as $iface_idx => $iface){
-            $port_data[$field_label] = array();
             foreach($port_fields as $field_label){
+                if (!isset($port_data[$field_label])) {
+                    $port_data[$field_label] = array();
+                }
                 if (isset($pconfig[$field_label][$iface_idx])) {
                     $port_data[$field_label][] = $pconfig[$field_label][$iface_idx];
                 }
@@ -654,6 +669,8 @@ include("head.inc");
                               <?php
                               if (!empty($pconfig['pppoe_resetmday']) && $pconfig['pppoe_resetmday'] <> "*" && $pconfig['pppoe_resetmonth'] <> "*") {
                                   $pconfig['pppoe_resetdate'] = "{$pconfig['pppoe_resetmonth']}/{$pconfig['pppoe_resetmday']}/" . date("Y");
+                              } elseif (!isset($pconfig['pppoe_resetdate'])) {
+                                  $pconfig['pppoe_resetdate'] = null;
                               }
                               ?>
                               <input name="pppoe_resetdate" type="text"  id="pppoe_resetdate" value="<?=$pconfig['pppoe_resetdate'];?>" />
