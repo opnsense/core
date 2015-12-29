@@ -858,7 +858,8 @@ function get_interface_list($only_active = false)
 	}
 
 	foreach ($ifnames as $ifname) {
-		if (in_array(array_shift(preg_split('/\d/', $ifname)), $vfaces)) {
+		$tmp_ifnames = preg_split('/\d/', $ifname);
+		if (in_array(array_shift($tmp_ifnames), $vfaces)) {
 			continue;
 		}
 
