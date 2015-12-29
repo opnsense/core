@@ -176,10 +176,8 @@ $main_buttons = array(
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (isset($config['system']['disablefilter'])): ?>
-        <?php print_warning_box(gettext("The firewall has globally been disabled. Configured rules are currently not enforced."));?>
-        <?php endif; ?>
 <?php
+        print_service_banner('firewall');
         if (isset($savemsg))
           print_info_box($savemsg);
         if (is_subsystem_dirty('natconf'))
