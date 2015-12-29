@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['pppoe_resetwday'] = $cronitem['wday'];
         }
     }
-    if (empty($pconfig['ptpid'])) {
+    if ($pconfig['ptpid'] == null) {
         $pconfig['ptpid'] = interfaces_ptpid_next();
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
