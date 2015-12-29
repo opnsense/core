@@ -189,8 +189,9 @@ function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_error
 	}
 }
 
-function print_input_errors($input_errors) {
-	echo '<div class="col-xs-12"><div class="alert alert-danger alert-dismissible" role="alert">
+function print_input_errors($input_errors)
+{
+	echo '<div class="col-xs-12"><div class="alert alert-danger" role="alert">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	';
 
@@ -199,6 +200,18 @@ function print_input_errors($input_errors) {
 		echo "<li>" . htmlspecialchars($ierr) . "</li>";
 	}
 	echo "</ul></div></div>";
+}
+
+function print_alert_box($msg, $alert = 'warning', $button = '')
+{
+	echo <<<EOFnp
+<div class="col-xs-12">
+	<div class="alert alert-{$alert}" role="alert">
+		{$button}
+		<p>{$msg}</p>
+	</div>
+</div>
+EOFnp;
 }
 
 function print_info_box_apply($msg)
@@ -215,63 +228,35 @@ function print_info_box_apply($msg)
 	}
 	$savebutton .= '</form>';
 
-	echo <<<EOFnp
-	    <div class="col-xs-12">
-		<div class="alert alert-info alert-dismissible" role="alert">
-			{$savebutton}
-            <p>{$msg}</p>
-		</div>
-		</div>
-EOFnp;
+	print_alert_box($msg, 'info', $savebutton);
 }
 
 function print_info_box($msg)
 {
-	$savebutton = '<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>';
-
-	echo <<<EOFnp
-<div class="col-xs-12">
-	<div class="alert alert-info alert-dismissible" role="alert">
-		{$savebutton}
-		<p>{$msg}</p>
-	</div>
-</div>
-EOFnp;
+	print_alert_box($msg, 'info');
 }
 
-function print_warning_box($msg) {
-	echo <<<EOFnp
-<div class="col-xs-12">
-	<div class="alert alert-warning alert-dismissible" role="alert">
-		<p>{$msg}</p>
-	</div>
-</div>
-EOFnp;
-}
-
-function is_service_enabled($service) {
+function print_service_banner($service)
+{
 	global $config;
 
 	switch ($service) {
 		case 'firewall':
-		case 'filter':
-			return !isset($config['system']['disablefilter']);
-		default:
-			return false;
-	}
-}
-
-function print_service_disabled_banner($service) {
-	if (!is_service_enabled($service)) {
-		switch ($service) {
-			case 'firewall':
-			case 'filter':
-				print_warning_box(gettext(
-					"The firewall has globally been disabled and configured rules are currently not enforced. " .
-					"It can be enabled in the <a href=\"system_advanced_firewall.php\">Firewall and NAT settings</a> page."
-				));
+			if (!isset($config['system']['disablefilter'])) {
 				break;
-		}
+			}
+			print_alert_box(sprintf(
+				gettext(
+					'The firewall has globally been disabled and configured rules are ' .
+					'currently not enforced. It can be enabled in the %sFirewall/NAT%s ' .
+					'settings.'
+				),
+				'<a href="/system_advanced_firewall.php">',
+				'</a>'
+			));
+			break;
+		default:
+			break;
 	}
 }
 
