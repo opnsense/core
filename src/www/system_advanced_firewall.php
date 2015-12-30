@@ -68,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['reflectiontimeout'] = !empty($config['system']['reflectiontimeout']) ? $config['system']['reflectiontimeout'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['disablescrub'] = isset($config['system']['disablescrub']);
-    $pconfig['ftp-proxy-client'] = isset($config['system']['ftp-proxy']['client']);
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -192,12 +191,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disablescrub'] = $pconfig['disablescrub'];
         } elseif (isset($config['system']['disablescrub'])) {
             unset($config['system']['disablescrub']);
-        }
-
-        if (!empty($pconfig['ftp-proxy-client'])) {
-            $config['system']['ftp-proxy']['client'] = true;
-        } elseif (isset($config['system']['ftp-proxy']['client'])) {
-            unset($config['system']['ftp-proxy']['client']);
         }
 
         if ($pconfig['bogonsinterval'] != $config['system']['bogons']['interval']) {
@@ -506,8 +499,7 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
-<?php
-                if (count($config['interfaces']) > 1) :?>
+<?php           if (count($config['interfaces']) > 1): ?>
                 <tr>
                   <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Address Translation");?></th>
                 </tr>
@@ -573,20 +565,7 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <td><a id="help_for_ftp_proxy_client" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("FTP Proxy");?></td>
-                  <td>
-                    <input name="ftp-proxy-client" type="checkbox" value="yes" <?= !empty($pconfig['ftp-proxy-client']) ? "checked=\"checked\"" : "";?> />
-                    <div class="hidden" for="help_for_ftp_proxy_client">
-                      <strong><?=gettext("Enable FTP proxy for clients");?></strong>
-                      <br />
-                      <?=gettext("Configures the FTP proxy to allow for client connections behind the firewall using active file transfer mode.");?>
-                    </div>
-                  </td>
-                </tr>
-
-                  <?php
-endif; ?>
+<?php           endif; ?>
                 <tr>
                   <td></td>
                   <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
