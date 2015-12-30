@@ -175,13 +175,14 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('Comment') }}</th></tr>");
+            "<th>{{ lang._('Comment') }}</th><th>{{ lang._('Action') }}</th></tr>");
             $.each(data['local'], function(index, row) {
                 $('#packageslist').append('<tr>' +
                 '<td>' + row['name'] + '</td>' +
                 '<td>' + row['version'] + '</td>' +
                 '<td>' + row['flatsize'] + '</td>' +
                 '<td>' + row['comment'] + '</td>' +
+                '<td>reinstall</td>' +
             '</tr>');
             });
         });

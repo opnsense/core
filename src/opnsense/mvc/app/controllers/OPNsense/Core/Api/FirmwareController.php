@@ -122,19 +122,18 @@ class FirmwareController extends ApiControllerBase
     public function upgradestatusAction()
     {
         $backend = new Backend();
-        $result = array("status"=>"running");
-        $cmd_result = trim($backend->configdRun("firmware upgrade_status"));
+        $result = array('status' => 'running');
+        $cmd_result = trim($backend->configdRun('firmware status'));
 
         $result['log'] = $cmd_result;
 
-        if (trim($cmd_result) == "Execute error") {
-            $result["status"] = "error";
+        if (trim($cmd_result) == 'Execute error') {
+            $result['status'] = 'error';
         } elseif (strpos($cmd_result, '***DONE***') !== false) {
-            $result["status"] = "done";
+            $result['status'] = 'done';
         } elseif (strpos($cmd_result, '***REBOOT***') !== false) {
-            $result["status"] = "reboot";
+            $result['status'] = 'reboot';
         }
-
 
         return $result;
     }

@@ -5,10 +5,10 @@ upgrade to the new 16.1 series is seamless, except for the following
 points:</p>
 <p><ul><li>The FreeBSD version changes from 10.1 to 10.2, mainly for driver
 updates and general sanity. <strong>If you're running Hyper-V, your installed
-disk will change from <em>/dev/ada0</em> to <em>/dev/da0</em> and the system
+disk may change from <em>/dev/ada0</em> to <em>/dev/da0</em> and the system
 will not boot as a consequence</strong>. You can fix this by manually editing
-<em>/etc/fstab</em>. A reinstall using the import configuration and quick/easy
-install will work just as well.</li>
+<em>/etc/fstab</em> before performing the major upgrade. A reinstall using the
+import configuration and quick/easy install will work just as well.</li>
 <li>The captive portal implementation has been completely rewritten.
 <strong>Your old setup won't be converted and thus will not come back
 up</strong>. Reconfiguring the captive portal, however, will be relatively
