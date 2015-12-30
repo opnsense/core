@@ -146,7 +146,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $keys = array('name', 'version', 'comment', 'flatsize');
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked');
         $backend = new Backend();
         $response = array();
 
