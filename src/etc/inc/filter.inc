@@ -1882,14 +1882,6 @@ function filter_nat_rules_generate(&$FilterIflist)
     $natrules .= "\n# Load balancing\n";
     $natrules .= "rdr-anchor \"relayd/*\"\n";
 
-    if (isset($config['system']['ftp-proxy']['client'])) {
-        $natrules .= "\n# FTP proxy\n";
-        $natrules .= "nat-anchor \"ftp-proxy/*\"\n";
-        $natrules .= "rdr-anchor \"ftp-proxy/*\"\n";
-        $natrules .= "rdr pass proto tcp to port ftp -> 127.0.0.1 port 8021\n";
-        mwexec('service ftp-proxy onerestart');
-    }
-
     /* DIAG: add ipv6 NAT, if requested */
     if(isset($config['diag']['ipv6nat']['enable']) &&
       is_ipaddr($config['diag']['ipv6nat']['ipaddr']) &&
@@ -2805,11 +2797,6 @@ function filter_rules_generate(&$FilterIflist)
     $ipfrules .= "anchor \"openvpn/*\"\n";
     /* IPsec user rules from radius */
     $ipfrules .= "anchor \"ipsec/*\"\n";
-
-    if (isset($config['system']['ftp-proxy']['client'])) {
-        $ipfrules .= "\nanchor \"ftp-proxy/*\"\n";
-        $ipfrules .= "pass out quick proto tcp from 127.0.0.1 to port ftp\n";
-    }
 
     # BEGIN OF firewall rules
     /* default block logging? */
