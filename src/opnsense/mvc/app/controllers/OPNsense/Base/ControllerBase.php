@@ -206,7 +206,7 @@ class ControllerBase extends ControllerRoot
 
         $ifarr = array();
         foreach ($cnf->object()->interfaces->children() as $key => $node) {
-            $ifarr[$key] = $node->descr ? $node->descr->__toString() : strtoupper($key);
+            $ifarr[$key] = !empty($node->descr) ? $node->descr->__toString() : strtoupper($key);
         }
         natcasesort($ifarr);
         $ordid = 0;
