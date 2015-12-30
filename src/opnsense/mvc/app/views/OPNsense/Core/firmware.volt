@@ -203,6 +203,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
 <div class="container-fluid">
     <div class="row">
+<?php   $message = @file_get_contents('/usr/local/opnsense/firmware-message');
+        if (!empty($message)): ?>
+        <div class="alert alert-warning" role="alert"><?= $message ?></div>
+<?php   endif; ?>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
