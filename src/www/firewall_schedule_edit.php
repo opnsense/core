@@ -218,8 +218,8 @@ include("head.inc");
 <script type="text/javascript">
 //<![CDATA[
 var daysSelected = "";
-var month_array = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-var day_array = ['Mon','Tues','Wed','Thur','Fri','Sat','Sun'];
+var month_array = <?= json_encode($monthArray) ?>;
+var day_array = <?= json_encode($dayArray) ?>;
 var schCounter = 0;
 
 function rgb2hex(rgb) {

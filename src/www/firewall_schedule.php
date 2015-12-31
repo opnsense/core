@@ -76,7 +76,7 @@ include("head.inc");
 legacy_html_escape_form_data($a_schedules);
 
 $main_buttons = array(
-    array('label'=>'Add a new schedule', 'href'=>'firewall_schedule_edit.php'),
+    array('label'=>gettext('Add a new schedule'), 'href'=>'firewall_schedule_edit.php'),
 );
 
 ?>
