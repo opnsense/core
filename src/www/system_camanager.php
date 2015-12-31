@@ -426,7 +426,7 @@ $main_buttons = array(
       event.preventDefault();
       var id = $(this).data('id');
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Authorities");?>",
         message: "<?=gettext("Do you really want to delete this Certificate Authority and its CRLs, and unreference any associated certificates?");?>",
         buttons: [{

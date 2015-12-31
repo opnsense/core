@@ -150,7 +150,7 @@ $( document ).ready(function() {
     $(".act_delete").click(function(){
         var id = $(this).data('id');
         BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Action");?>",
           message: "<?=gettext("Remove Configuration Backup");?> <br/> <?=gettext('Version');?>: " + id,
           buttons: [{

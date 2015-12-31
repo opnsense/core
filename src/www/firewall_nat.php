@@ -166,7 +166,7 @@ $( document ).ready(function() {
     if (id != 'x') {
       // delete single
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Port Forward");?>",
         message: "<?=gettext("Do you really want to delete this rule?");?>",
         buttons: [{
@@ -185,7 +185,7 @@ $( document ).ready(function() {
     } else {
       // delete selected
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Port Forward");?>",
         message: "<?=gettext("Do you really want to delete the selected rules?");?>",
         buttons: [{

@@ -160,7 +160,7 @@ $( document ).ready(function() {
         var id = $(this).data('id');
         event.preventDefault();
         BootstrapDialog.show({
-            type:BootstrapDialog.TYPE_INFO,
+            type:BootstrapDialog.TYPE_DANGER,
             title: "<?= gettext("Route");?>",
             message: '<?=gettext("Do you really want to delete this route?");?>',
             buttons: [{
@@ -182,7 +182,7 @@ $( document ).ready(function() {
     $("#del_x").click(function(event){
       event.preventDefault();
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Route");?>",
           message: '<?=gettext("Do you really want to delete the selected routes?");?>',
           buttons: [{

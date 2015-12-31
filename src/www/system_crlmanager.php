@@ -292,7 +292,7 @@ include("head.inc");
       var id = $(this).data('id');
       var descr = $(this).data('descr');
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?=gettext("Certificates");?>",
         message: "<?=gettext("Do you really want to delete this Certificate Revocation List?");?> (" + descr + ")" ,
         buttons: [{
@@ -316,7 +316,7 @@ include("head.inc");
       var id = $(this).data('id');
       var certref = $(this).data('certref');
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?=gettext("Certificates");?>",
         message: "<?=gettext("Delete this certificate from the CRL ");?>",
         buttons: [{

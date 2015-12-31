@@ -116,7 +116,7 @@ $main_buttons = array(
       if (id != 'x') {
         // delete single
         BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?=gettext("NPT");?>",
           message: "<?=gettext("Do you really want to delete this rule?");?>",
           buttons: [{
@@ -135,7 +135,7 @@ $main_buttons = array(
       } else {
         // delete selected
         BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("NPT");?>",
           message: "<?=gettext("Do you really want to delete the selected rules?");?>",
           buttons: [{

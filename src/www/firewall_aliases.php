@@ -150,7 +150,7 @@ $( document ).ready(function() {
   $(".act_delete").click(function(){
     var id = $(this).attr("id").split('_').pop(-1);
     BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Aliases");?>",
         message: "<?=gettext("Do you really want to delete this alias? All elements that still use it will become invalid (e.g. filter rules)!");?>",
         buttons: [{

@@ -183,7 +183,7 @@ include("head.inc");
       if (id != 'x') {
         // delete single
         BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Nat")." ".gettext("Outbound");?>",
           message: "<?=gettext("Do you really want to delete this rule?");?>",
           buttons: [{
@@ -203,7 +203,7 @@ include("head.inc");
       } else {
         // delete selected
         BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?=gettext("Nat")." ".gettext("Outbound");?>",
           message: "<?=gettext("Do you really want to delete the selected rules?");?>",
           buttons: [{

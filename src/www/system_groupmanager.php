@@ -251,7 +251,7 @@ $( document ).ready(function() {
       var priv_name = $(this).data('privname');
       var privid = $(this).data('privid');
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Group");?>",
           message: "<?=gettext("Do you really want to delete this privilege?");?> " + "<br/>("+priv_name+")",
           buttons: [{
@@ -275,7 +275,7 @@ $( document ).ready(function() {
       var groupname = $(this).data('groupname');
       event.preventDefault();
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Group");?>",
           message: '<?=gettext("Do you really want to delete this group?");?>' + '<br/>('+groupname+")",
           buttons: [{
