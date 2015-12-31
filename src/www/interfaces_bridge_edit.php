@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2008 Ermal Luçi
-	All rights reserved.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2008 Ermal Luçi
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
@@ -36,608 +36,611 @@ require_once("unbound.inc");
 require_once("services.inc");
 
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_bridge.php');
-
-if (!is_array($config['bridges'])) {
-	$config['bridges'] = array();
+if (!isset($config['bridges']) || !is_array($config['bridges'])) {
+    $config['bridges'] = array();
 }
-
-if (!is_array($config['bridges']['bridged'])) {
-	$config['bridges']['bridged'] = array();
+if (!isset($config['bridges']['bridged']) || !is_array($config['bridges']['bridged'])) {
+    $config['bridges']['bridged'] = array();
 }
 
 $a_bridges = &$config['bridges']['bridged'];
 
-$ifacelist = get_configured_interface_with_descr();
-foreach ($ifacelist as $bif => $bdescr) {
-	if (substr(get_real_interface($bif), 0, 3) == "gre")
-		unset($ifacelist[$bif]);
+// interface list
+$ifacelist = array();
+foreach (get_configured_interface_with_descr() as $bif => $bdescr) {
+    if (substr(get_real_interface($bif), 0, 3) != "gre") {
+        $ifacelist[$bif] = $bdescr;
+    }
 }
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
 
-if (isset($id) && $a_bridges[$id]) {
-	$pconfig['enablestp'] = isset($a_bridges[$id]['enablestp']);
-	$pconfig['descr'] = $a_bridges[$id]['descr'];
-	$pconfig['bridgeif'] = $a_bridges[$id]['bridgeif'];
-	$pconfig['members'] = $a_bridges[$id]['members'];
-	$pconfig['maxaddr'] = $a_bridges[$id]['maxaddr'];
-	$pconfig['timeout'] = $a_bridges[$id]['timeout'];
-	if ($a_bridges[$id]['static'])
-		$pconfig['static'] = $a_bridges[$id]['static'];
-	if ($a_bridges[$id]['private'])
-		$pconfig['private'] = $a_bridges[$id]['private'];
-	if (isset($a_bridges[$id]['stp']))
-		$pconfig['stp'] = $a_bridges[$id]['stp'];
-	$pconfig['maxage'] = $a_bridges[$id]['maxage'];
-	$pconfig['fwdelay'] = $a_bridges[$id]['fwdelay'];
-	$pconfig['hellotime'] = $a_bridges[$id]['hellotime'];
-	$pconfig['priority'] = $a_bridges[$id]['priority'];
-	$pconfig['proto'] = $a_bridges[$id]['proto'];
-	$pconfig['holdcnt'] = $a_bridges[$id]['holdcnt'];
-	if (!empty($a_bridges[$id]['ifpriority'])) {
-		$pconfig['ifpriority'] = explode(",", $a_bridges[$id]['ifpriority']);
-		$ifpriority = array();
-		foreach ($pconfig['ifpriority'] as $cfg) {
-			list ($key, $value)  = explode(":", $cfg);
-			$embprioritycfg[$key] = $value;
-			foreach ($embprioritycfg as $key => $value) {
-				$ifpriority[$key] = $value;
-			}
-		}
-		$pconfig['ifpriority'] = $ifpriority;
-	}
-	if (!empty($a_bridges[$id]['ifpathcost'])) {
-		$pconfig['ifpathcost'] = explode(",", $a_bridges[$id]['ifpathcost']);
-		$ifpathcost = array();
-		foreach ($pconfig['ifpathcost'] as $cfg) {
-			list ($key, $value)  = explode(":", $cfg);
-			$embpathcfg[$key] = $value;
-			foreach ($embpathcfg as $key => $value) {
-				$ifpathcost[$key] = $value;
-			}
-		}
-		$pconfig['ifpathcost'] = $ifpathcost;
-	}
-	$pconfig['span'] = $a_bridges[$id]['span'];
-	if (isset($a_bridges[$id]['edge']))
-		$pconfig['edge'] = $a_bridges[$id]['edge'];
-	if (isset($a_bridges[$id]['autoedge']))
-		$pconfig['autoedge'] = $a_bridges[$id]['autoedge'];
-	if (isset($a_bridges[$id]['ptp']))
-		$pconfig['ptp'] = $a_bridges[$id]['ptp'];
-	if (isset($a_bridges[$id]['autoptp']))
-		$pconfig['autoptp'] = $a_bridges[$id]['autoptp'];
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // read form data
+    if (!empty($a_bridges[$_GET['id']])) {
+        $id = $_GET['id'];
+    }
+    // copy fields 1-on-1
+    $copy_fields = array('descr', 'bridgeif', 'maxaddr', 'timeout', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt', 'span');
+    foreach ($copy_fields as $fieldname) {
+        if (isset($a_bridges[$id][$fieldname])) {
+            $pconfig[$fieldname] = $a_bridges[$id][$fieldname];
+        } else {
+            $pconfig[$fieldname] = null;
+        }
+    }
+    // bool fields
+    $pconfig['enablestp'] = isset($a_bridges[$id]['enablestp']);
+
+    // simple array fields
+    $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
+    foreach ($array_fields as $fieldname) {
+        if (!empty($a_bridges[$id][$fieldname])) {
+            $pconfig[$fieldname] = explode(',', $a_bridges[$id][$fieldname]);
+        } else {
+            $pconfig[$fieldname] = array();
+        }
+    }
+
+    // array key/value sets
+    if (!empty($a_bridges[$id]['ifpriority'])) {
+        foreach (explode(",", $a_bridges[$id]['ifpriority']) as $cfg) {
+            list ($key, $value)  = explode(":", $cfg);
+            $pconfig['ifpriority_'.$key] = $value;
+        }
+    }
+    if (!empty($a_bridges[$id]['ifpathcost'])) {
+        foreach (explode(",", $a_bridges[$id]['ifpathcost']) as $cfg) {
+            list ($key, $value)  = explode(":", $cfg);
+            $pconfig['ifpathcost_'.$key] = $value;
+        }
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // save / validate formdata
+    if (!empty($a_bridges[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
+
+    $input_errors = array();
+    $pconfig = $_POST;
+
+    /* input validation */
+    $reqdfields = explode(" ", "members");
+    $reqdfieldsn = array(gettext("Member Interfaces"));
+
+    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+    if (!empty($pconfig['maxage']) && !is_numeric($pconfig['maxage'])) {
+        $input_errors[] = gettext("Maxage needs to be an integer between 6 and 40.");
+    }
+    if (!empty($pconfig['maxaddr']) && !is_numeric($pconfig['maxaddr'])) {
+        $input_errors[] = gettext("Maxaddr needs to be an integer.");
+    }
+    if (!empty($pconfig['timeout']) && !is_numeric($pconfig['timeout'])) {
+        $input_errors[] = gettext("Timeout needs to be an integer.");
+    }
+    if (!empty($pconfig['fwdelay']) && !is_numeric($pconfig['fwdelay'])) {
+        $input_errors[] = gettext("Forward Delay needs to be an integer between 4 and 30.");
+    }
+    if (!empty($pconfig['hellotime']) && !is_numeric($pconfig['hellotime'])) {
+        $input_errors[] = gettext("Hello time for STP needs to be an integer between 1 and 2.");
+    }
+    if (!empty($pconfig['priority']) && !is_numeric($pconfig['priority'])) {
+        $input_errors[] = gettext("Priority for STP needs to be an integer between 0 and 61440.");
+    }
+    if (!empty($pconfig['holdcnt']) && !is_numeric($pconfig['holdcnt'])) {
+        $input_errors[] = gettext("Transmit Hold Count for STP needs to be an integer between 1 and 10.");
+    }
+    foreach ($ifacelist as $ifn => $ifdescr) {
+        if (!empty($pconfig['ifpriority_'.$ifn]) && !is_numeric($pconfig['ifpriority_'.$ifn])) {
+            $input_errors[] = sprintf(gettext("%s interface priority for STP needs to be an integer between 0 and 240."), $ifdescr);
+        }
+        if (!empty($pconfig['ifpathcost_'.$ifn]) && !is_numeric($pconfig['ifpathcost_'.$ifn])) {
+            $input_errors[] = sprintf(gettext("%s interface path cost for STP needs to be an integer between 1 and 200000000."), $ifdescr);
+        }
+    }
+
+    if (!is_array($pconfig['members']) || count($_POST['members']) < 2) {
+        $input_errors[] = gettext("You must select at least 2 member interfaces for a bridge.");
+    }
+
+    if (is_array($pconfig['members'])) {
+        foreach($pconfig['members'] as $ifmembers) {
+            if (empty($config['interfaces'][$ifmembers])) {
+                $input_errors[] = gettext("A member interface passed does not exist in configuration");
+            }
+            if (!empty($config['interfaces'][$ifmembers]['wireless']['mode']) && $config['interfaces'][$ifmembers]['wireless']['mode'] != "hostap") {
+                $input_errors[] = gettext("Bridging a wireless interface is only possible in hostap mode.");
+            }
+            if ($pconfig['span'] != "none" && $pconfig['span'] == $ifmembers) {
+                $input_errors[] = gettext("Span interface cannot be part of the bridge. Remove the span interface from bridge members to continue.");
+            }
+        }
+    }
+
+    if (count($input_errors) == 0) {
+        $bridge = array();
+        $bridge['enablestp'] = !empty($pconfig['enablestp']);
+        // 1 on 1 copy
+        $copy_fields = array('descr', 'maxaddr', 'timeout', 'bridgeif', 'maxage','fwdelay', 'hellotime', 'priority', 'proto', 'holdcnt');
+        foreach ($copy_fields as $fieldname) {
+            if (isset($pconfig[$fieldname]) && $pconfig[$fieldname] != "") {
+                $bridge[$fieldname] = $pconfig[$fieldname];
+            } else {
+                $bridge[$fieldname] = null;
+            }
+        }
+        if ($pconfig['span'] != "none") {
+            $bridge['span'] = $pconfig['span'];
+        }
+        // simple array fields
+        $array_fields = array('members', 'stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private');
+        foreach ($array_fields as $fieldname) {
+            if(!empty($pconfig[$fieldname])) {
+                $bridge[$fieldname] = implode(',', $pconfig[$fieldname]);
+            }
+        }
+        // array key/value sets
+        $bridge['ifpriority'] = "";
+        $bridge['ifpathcost'] = "";
+        foreach ($ifacelist as $ifn => $ifdescr) {
+          if (isset($pconfig['ifpriority_'.$ifn]) && $pconfig['ifpriority_'.$ifn] != "") {
+              if (!empty($bridge['ifpriority'])) {
+                  $bridge['ifpriority'] .= ',';
+              }
+              $bridge['ifpriority'] .= $ifn.":".$pconfig['ifpriority_'.$ifn];
+          }
+          if (isset($pconfig['ifpathcost_'.$ifn]) && $pconfig['ifpathcost_'.$ifn] != "") {
+              if (!empty($bridge['ifpathcost'])) {
+                  $bridge['ifpathcost'] .= ',';
+              }
+              $bridge['ifpathcost'] .= $ifn.":".$pconfig['ifpathcost_'.$ifn];
+          }
+        }
+
+        interface_bridge_configure($bridge);
+        if ($bridge['bridgeif'] == "" || !stristr($bridge['bridgeif'], "bridge")) {
+            $input_errors[] = gettext("Error occurred creating interface, please retry.");
+        } else {
+            if (isset($id)) {
+                $a_bridges[$id] = $bridge;
+            } else {
+                $a_bridges[] = $bridge;
+            }
+            write_config();
+            $confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
+            if ($confif <> "") {
+                interface_configure($confif);
+            }
+            header("Location: interfaces_bridge.php");
+            exit;
+        }
+    }
 }
 
-if ($_POST) {
-
-	unset($input_errors);
-	$pconfig = $_POST;
-
-	/* input validation */
-	$reqdfields = explode(" ", "members");
-	$reqdfieldsn = array(gettext("Member Interfaces"));
-
-	do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-
-	if ($_POST['maxage'] && !is_numeric($_POST['maxage']))
-		$input_errors[] = gettext("Maxage needs to be an integer between 6 and 40.");
-	if ($_POST['maxaddr'] && !is_numeric($_POST['maxaddr']))
-		$input_errors[] = gettext("Maxaddr needs to be an integer.");
-	if ($_POST['timeout'] && !is_numeric($_POST['timeout']))
-		$input_errors[] = gettext("Timeout needs to be an integer.");
-	if ($_POST['fwdelay'] && !is_numeric($_POST['fwdelay']))
-		$input_errors[] = gettext("Forward Delay needs to be an integer between 4 and 30.");
-	if ($_POST['hellotime'] && !is_numeric($_POST['hellotime']))
-		$input_errors[] = gettext("Hello time for STP needs to be an integer between 1 and 2.");
-	if ($_POST['priority'] && !is_numeric($_POST['priority']))
-		$input_errors[] = gettext("Priority for STP needs to be an integer between 0 and 61440.");
-	if ($_POST['holdcnt'] && !is_numeric($_POST['holdcnt']))
-		$input_errors[] = gettext("Transmit Hold Count for STP needs to be an integer between 1 and 10.");
-	foreach ($ifacelist as $ifn => $ifdescr) {
-		if ($_POST[$ifn] <> "" && !is_numeric($_POST[$ifn])) {
-			$input_errors[] = sprintf(gettext("%s interface priority for STP needs to be an integer between 0 and 240."), $ifdescr);
-		}
-	}
-	$i = 0;
-	foreach ($ifacelist as $ifn => $ifdescr) {
-		if ($_POST["{$ifn}{$i}"] <> "" && !is_numeric($_POST["{$ifn}{$i}"])) {
-			$input_errors[] = sprintf(gettext("%s interface path cost for STP needs to be an integer between 1 and 200000000."), $ifdescr);
-		}
-		$i++;
-	}
-
-	if (!is_array($_POST['members']) || count($_POST['members']) < 2)
-		$input_errors[] = gettext("You must select at least 2 member interfaces for a bridge.");
-
-	if (is_array($_POST['members'])) {
-		foreach($_POST['members'] as $ifmembers) {
-			if (empty($config['interfaces'][$ifmembers]))
-				$input_errors[] = gettext("A member interface passed does not exist in configuration");
-			if (is_array($config['interfaces'][$ifmembers]['wireless']) &&
-				$config['interfaces'][$ifmembers]['wireless']['mode'] != "hostap")
-				$input_errors[] = gettext("Bridging a wireless interface is only possible in hostap mode.");
-			if ($_POST['span'] != "none" && $_POST['span'] == $ifmembers)
-				$input_errors[] = gettext("Span interface cannot be part of the bridge. Remove the span interface from bridge members to continue.");
-		}
-	}
-
-	if (!$input_errors) {
-		$bridge = array();
-		$bridge['members'] = implode(',', $_POST['members']);
-		$bridge['enablestp'] = $_POST['enablestp'] ? true : false;
-		$bridge['descr'] = $_POST['descr'];
-		$bridge['maxaddr'] = $_POST['maxaddr'];
-		$bridge['timeout'] = $_POST['timeout'];
-		if ($_POST['static'])
-			$bridge['static'] = implode(',', $_POST['static']);
-		if ($_POST['private'])
-			$bridge['private'] = implode(',', $_POST['private']);
-		if (isset($_POST['stp']))
-			$bridge['stp'] = implode(',', $_POST['stp']);
-		$bridge['maxage'] = $_POST['maxage'];
-		$bridge['fwdelay'] = $_POST['fwdelay'];
-		$bridge['hellotime'] = $_POST['hellotime'];
-		$bridge['priority'] = $_POST['priority'];
-		$bridge['proto'] = $_POST['proto'];
-		$bridge['holdcnt'] = $_POST['holdcnt'];
-		$i = 0;
-		$ifpriority = "";
-		$ifpathcost = "";
-		foreach ($ifacelist as $ifn => $ifdescr) {
-			if ($_POST[$ifn] <> "") {
-				if ($i > 0)
-					$ifpriority .= ",";
-				$ifpriority .= $ifn.":".$_POST[$ifn];
-			}
-			if ($_POST["{$ifn}0"] <> "") {
-				if ($i > 0)
-					$ifpathcost .= ",";
-				$ifpathcost .= $ifn.":".$_POST["{$ifn}0"];
-			}
-			$i++;
-		}
-		$bridge['ifpriority'] = $ifpriority;
-		$bridge['ifpathcost'] = $ifpathcost;
-
-		if ($_POST['span'] != "none")
-			$bridge['span'] = $_POST['span'];
-		else
-			unset($bridge['span']);
-		if (isset($_POST['edge']))
-			$bridge['edge'] = implode(',', $_POST['edge']);
-		if (isset($_POST['autoedge']))
-			$bridge['autoedge'] = implode(',', $_POST['autoedge']);
-		if (isset($_POST['ptp']))
-			$bridge['ptp'] = implode(',', $_POST['ptp']);
-		if (isset($_POST['autoptp']))
-			$bridge['autoptp'] = implode(',', $_POST['autoptp']);
-
-		$bridge['bridgeif'] = $_POST['bridgeif'];
-		interface_bridge_configure($bridge);
-		if ($bridge['bridgeif'] == "" || !stristr($bridge['bridgeif'], "bridge"))
-			$input_errors[] = gettext("Error occurred creating interface, please retry.");
-		else {
-			if (isset($id) && $a_bridges[$id])
-				$a_bridges[$id] = $bridge;
-			else
-				$a_bridges[] = $bridge;
-
-			write_config();
-
-			$confif = convert_real_interface_to_friendly_interface_name($bridge['bridgeif']);
-			if ($confif <> "")
-				interface_configure($confif);
-
-			header("Location: interfaces_bridge.php");
-			exit;
-		}
-	}
-}
-
+legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
 
 <body>
 <script type="text/javascript">
-//<![CDATA[
-function show_source_port_range() {
-        document.getElementById("sprtable").style.display = 'none';
-        document.getElementById("sprtable1").style.display = '';
-        document.getElementById("sprtable2").style.display = '';
-        document.getElementById("sprtable3").style.display = '';
-        document.getElementById("sprtable4").style.display = '';
-        document.getElementById("sprtable5").style.display = '';
-        document.getElementById("sprtable6").style.display = '';
-        document.getElementById("sprtable7").style.display = '';
-        document.getElementById("sprtable8").style.display = '';
-        document.getElementById("sprtable9").style.display = '';
-        document.getElementById("sprtable10").style.display = '';
-}
-//]]>
+$(document).ready(function() {
+  // advanced options
+  $("#show_advanced").click(function(){
+      $(".act_show_advanced").show();
+      $("#show_advanced_opt").hide();
+  });
+});
 </script>
 
 <?php include("fbegin.inc"); ?>
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-				<div id="inputerrors"></div>
-
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-					 <header class="content-box-head container-fluid">
-				        <h3><?=gettext("Bridge configuration");?></h3>
-				    </header>
-
-				    <div class="content-box-main">
-
-						<form action="interfaces_bridge_edit.php" method="post" name="iform" id="iform">
-			                        <table class="table table-striped table-sort">
-										<tr>
-						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Member interfaces"); ?></td>
-						                  <td width="78%" class="vtable">
-										  <select name="members[]" multiple="multiple" class="selectpicker" size="3" data-live-search="true">
-						                      <?php
-												// let's fix this for now in the template, although it should be fixed at the top of the page
-												// $pconfig['members'] can be of different type now.
-												if ( isset($pconfig['members']) && is_array($pconfig['members'])) {
-													$members_array = $pconfig['members'];
-												} elseif (!empty($pconfig['members'])) {
-													$members_array = explode(',', $pconfig['members']);
-												} else {
-													$members_array = array();
-												}
-												foreach ($ifacelist as $ifn => $ifinfo) {
-													echo "<option value=\"{$ifn}\"";
-													if (in_array($ifn, $members_array))
-														echo " selected=\"selected\"";
-													echo ">{$ifinfo}</option>";
-												}
-												unset($members_array);
-										?>
-						                    </select>
-									<br />
-									<span class="vexpl"><?=gettext("Interfaces participating in the bridge."); ?></span>
-									</td>
-						            </tr>
-									<tr>
-						                  <td width="22%" valign="top" class="vncell"><?=gettext("Description"); ?></td>
-						                  <td width="78%" class="vtable">
-										  <input type="text" name="descr" id="descr" class="form-control unknown" size="50" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-											</td>
-										</tr>
-						            <tr id="sprtable">
-						                <td></td>
-						                <td>
-						                <p><input type="button" class="btn btn-xs btn-default" onclick="show_source_port_range()" value="<?=gettext("Show advanced options"); ?>" /></p>
-						                </td>
-									</tr>
-						                <tr style="display:none" id="sprtable1">
-						                  <td valign="top" class="vncell"><?=gettext("RSTP/STP"); ?>  </td>
-						                  <td class="vtable">
-											<input type="checkbox" name="enablestp" id="enablestp" <?php if ($pconfig['enablestp']) echo "checked=\"checked\"";?> />
-											<span class="vexpl"><strong><?=gettext("Enable spanning tree options for this bridge."); ?> </strong></span>
-											<br /><br />
-											<table id="stpoptions" border="0" cellpadding="6" cellspacing="0" summary="protocol" class="table table-striped">
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Protocol"); ?></td>
-											<td class="vtable" width="80%">
-											<select name="proto" id="proto" class="selectpicker">
-												<?php
-													foreach (array("rstp", "stp") as $proto) {
-														echo "<option value=\"{$proto}\"";
-														if ($pconfig['proto'] == $proto)
-															echo " selected=\"selected\"";
-														echo ">".strtoupper($proto)."</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl"><?=gettext("Protocol used for spanning tree."); ?> </span></td>
-											</tr>
-											<tr> <td valign="top" class="vncell" width="20%"><?=gettext("STP interfaces"); ?></td>
-											<td class="vtable" width="80%">
-											<select name="stp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['stp'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-											<br />
-											<span class="vexpl" >
-							     <?=gettext("Enable Spanning Tree Protocol on interface.  The if_bridge(4) " .
-							     "driver has support for the IEEE 802.1D Spanning Tree Protocol " .
-							     "(STP).  STP is used to detect and remove loops in a " .
-							     "network topology."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Valid time"); ?></td>
-											<td class="vtable" width="80%">
-											<input name="maxage" type="text" class="form-control unkown" id="maxage" size="8" value="<?=htmlspecialchars($pconfig['maxage']);?>" /> <?=gettext("seconds"); ?>
-											<br />
-											<span class="vexpl">
-							     <?=gettext("Set the time that a Spanning Tree Protocol configuration is " .
-							     "valid.  The default is 20 seconds.  The minimum is 6 seconds and " .
-							     "the maximum is 40 seconds."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Forward time"); ?> </td>
-											<td class="vtable" width="80%">
-											<input name="fwdelay" type="text" class="form-control unkown" id="fwdelay" size="8" value="<?=htmlspecialchars($pconfig['fwdelay']);?>" /> <?=gettext("seconds"); ?>
-											<br />
-											<span class="vexpl">
-							     <?=gettext("Set the time that must pass before an interface begins forwarding " .
-							     "packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and the maximum is 30 seconds."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Hello time"); ?></td>
-											<td class="vtable" width="80%">
-											<input name="hellotime" type="text" class="form-control unkown" size="8" id="hellotime" value="<?=htmlspecialchars($pconfig['hellotime']);?>" /> <?=gettext("seconds"); ?>
-											<br />
-											<span class="vexpl">
-							     <?=gettext("Set the time between broadcasting of Spanning Tree Protocol configuration messages.  The hello time may only be changed when " .
-							     "operating in legacy STP mode.  The default is 2 seconds.  The minimum is 1 second and the maximum is 2 seconds."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Priority"); ?></td>
-											<td class="vtable" width="80%">
-											<input name="priority" type="text" class="form-control unkown" id="priority" value="<?=htmlspecialchars($pconfig['priority']);?>" />
-											<br />
-											<span class="vexpl">
-							     <?=gettext("Set the bridge priority for Spanning Tree.  The default is 32768. " .
-							     "The minimum is 0 and the maximum is 61440."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Hold count"); ?></td>
-											<td class="vtable" width="80%">
-											<input name="holdcnt" type="text" class="form-control unkown" id="holdcnt" value="<?=htmlspecialchars($pconfig['holdcnt']);?>" />
-											<br />
-											<span class="vexpl">
-							     <?=gettext("Set the transmit hold count for Spanning Tree.  This is the number" .
-							     " of packets transmitted before being rate limited.  The " .
-							     "default is 6.  The minimum is 1 and the maximum is 10."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Priority"); ?></td>
-											<td class="vtable" width="80%">
-											<table summary="priority" class="table table-striped">
-											<?php foreach ($ifacelist as $ifn => $ifdescr)
-													echo "<tr><td>{$ifdescr}</td><td><input size=\"5\" name=\"{$ifn}\" type=\"text\" class=\"form-control unkown\" id=\"{$ifn}\" value=\"{$ifpriority[$ifn]}\" /></td></tr>";
-											?>
-											<tr><td></td></tr>
-											</table>
-											<br />
-											<span class="vexpl" >
-							     <?=gettext("Set the Spanning Tree priority of interface to value.  The " .
-							     "default is 128.  The minimum is 0 and the maximum is 240.  Increments of 16."); ?>
-											</span>
-											</td></tr>
-											<tr><td valign="top" class="vncell" width="20%"><?=gettext("Path cost"); ?></td>
-											<td class="vtable" width="80%">
-											<table summary="path cost" class="table table-striped">
-											<?php $i = 0; foreach ($ifacelist as $ifn => $ifdescr)
-													echo "<tr><td>{$ifdescr}</td><td><input size=\"8\" name=\"{$ifn}{$i}\" type=\"text\" class=\"form-control unkown\" id=\"{$ifn}{$i}\" value=\"{$ifpathcost[$ifn]}\" /></td></tr>";
-											?>
-											<tr><td></td></tr>
-											</table>
-											<br />
-											<span class="vexpl" >
-							     <?=gettext("Set the Spanning Tree path cost of interface to value.  The " .
-							     "default is calculated from the link speed.  To change a previously selected path cost back to automatic, set the cost to 0. ".
-							     "The minimum is 1 and the maximum is 200000000."); ?>
-											</span>
-											</td></tr>
-
-									    </table>
-										</td></tr>
-						                <tr style="display:none" id="sprtable2">
-						                  <td valign="top" class="vncell"><?=gettext("Cache size"); ?></td>
-											<td class="vtable">
-												<input name="maxaddr" size="10" type="text" class="form-control unkown" id="maxaddr" value="<?=htmlspecialchars($pconfig['maxaddr']);?>" /> <?=gettext("entries"); ?>
-											<br /><span class="vexpl">
-						<?=gettext("Set the size of the bridge address cache to size.	The default is " .
-							     ".100 entries."); ?>
-											</span>
-											</td>
-										</tr>
-						                <tr style="display:none" id="sprtable3">
-						                  <td valign="top" class="vncell"><?=gettext("Cache entry expire time"); ?></td>
-										  <td>
-											<input name="timeout" type="text" class="form-control unkown" id="timeout" size="10" value="<?=htmlspecialchars($pconfig['timeout']);?>" /> <?=gettext("seconds"); ?>
-											<br /><span class="vexpl">
-							     <?=gettext("Set the timeout of address cache entries to this number of seconds.  If " .
-							     "seconds is zero, then address cache entries will not be expired. " .
-							     "The default is 240 seconds."); ?>
-											</span>
-											</td>
-										</tr>
-						                <tr style="display:none" id="sprtable4">
-						                  <td valign="top" class="vncell"><?=gettext("Span port"); ?></td>
-											<td class="vtable">
-											<select name="span" class="selectpicker" id="span" data-live-search="true">
-												<option value="none" selected="selected"><?=gettext("None"); ?></option>
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if ($ifn == $pconfig['span'])
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-											<br /><span class="vexpl">
-							     <?=gettext("Add the interface named by interface as a span port on the " .
-							     "bridge.  Span ports transmit a copy of every frame received by " .
-							     "the bridge.  This is most useful for snooping a bridged network " .
-							     "passively on another host connected to one of the span ports of " .
-							     "the bridge."); ?>
-											</span>
-								<p class="vexpl"><span class="red"><strong>
-											 <?=gettext("Note:"); ?><br />
-						                                  </strong></span>
-						                 <?=gettext("The span interface cannot be part of the bridge member interfaces."); ?>
-						                                        </p>
-											</td>
-										</tr>
-						                <tr style="display:none" id="sprtable5">
-						                  <td valign="top" class="vncell"><?=gettext("Edge ports"); ?></td>
-						                  <td class="vtable">
-											<select name="edge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['edge'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl">
-							     <?=gettext("Set interface as an edge port.  An edge port connects directly to " .
-							     "end stations and cannot create bridging loops in the network; this " .
-							     "allows it to transition straight to forwarding."); ?>
-											</span></td>
-									    </tr>
-						                <tr style="display:none" id="sprtable6">
-						                  <td valign="top" class="vncell"><?=gettext("Auto Edge ports"); ?></td>
-						                  <td class="vtable">
-											<select name="autoedge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['autoedge'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl">
-							     <?=gettext("Allow interface to automatically detect edge status.  This is the " .
-							     "default for all interfaces added to a bridge."); ?></span>
-								 <p class="vexpl"><span class="red"><strong>
-										  <?=gettext("Note:"); ?><br />
-										  </strong></span>
-								 <?=gettext("This will disable the autoedge status of interfaces."); ?>
-											</p></td>
-									    </tr>
-						                <tr style="display:none" id="sprtable7">
-						                  <td valign="top" class="vncell"><?=gettext("PTP ports"); ?></td>
-						                  <td class="vtable">
-											<select name="ptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['ptp'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl">
-							     <?=gettext("Set the interface as a point-to-point link.  This is required for " .
-							     "straight transitions to forwarding and should be enabled on a " .
-							     "direct link to another RSTP-capable switch."); ?>
-											</span></td>
-									    </tr>
-						                <tr style="display:none" id="sprtable8">
-						                  <td valign="top" class="vncell"><?=gettext("Auto PTP ports"); ?></td>
-						                  <td class="vtable">
-											<select name="autoptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['autoptp'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl">
-							     <?=gettext("Automatically detect the point-to-point status on interface by " .
-							     "checking the full duplex link status.  This is the default for " .
-							     "interfaces added to the bridge."); ?></span>
-										 <p class="vexpl"><span class="red"><strong>
-										  <?=gettext("Note:"); ?><br />
-										  </strong></span>
-								 <?=gettext("The interfaces selected here will be removed from default autoedge status."); ?>
-											</p></td>
-									    </tr>
-						                <tr style="display:none" id="sprtable9">
-						                  <td valign="top" class="vncell"><?=gettext("Sticky ports"); ?></td>
-						                  <td class="vtable">
-											<select name="static[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['static'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl">
-							     <?=gettext("Mark an interface as a \"sticky\" interface.  Dynamically learned " .
-							     "address entries are treated as static once entered into the " .
-							     "cache.  Sticky entries are never aged out of the cache or " .
-							     "replaced, even if the address is seen on a different interface."); ?>
-											</span></td>
-									    </tr>
-						                <tr style="display:none" id="sprtable10">
-						                  <td valign="top" class="vncell"><?=gettext("Private ports"); ?></td>
-						                  <td class="vtable">
-											<select name="private[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
-												<?php
-													foreach ($ifacelist as $ifn => $ifdescr) {
-														echo "<option value=\"{$ifn}\"";
-														if (stristr($pconfig['private'], $ifn))
-															echo " selected=\"selected\"";
-														echo ">{$ifdescr}</option>";
-													}
-												?>
-											</select>
-						                    <br />
-						                    <span class="vexpl">
-							     <?=gettext("Mark an interface as a \"private\" interface.  A private interface does not forward any traffic to any other port that is also " .
-							     "a private interface."); ?>
-											</span></td>
-									    </tr>
-						                <tr>
-						                  <td width="22%" valign="top">&nbsp;</td>
-						                  <td width="78%">
-								    <input type="hidden" name="bridgeif" value="<?=htmlspecialchars($pconfig['bridgeif']); ?>" />
-						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-						                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-						                    <?php if (isset($id) && $a_bridges[$id]): ?>
-						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-						                    <?php endif; ?>
-						                  </td>
-						                </tr>
-						              </table>
-						</form>
-				    </div>
-				</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <section class="col-xs-12">
+          <form method="post" name="iform" id="iform">
+            <div class="tab-content content-box col-xs-12 __mb">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <td width="22%"><strong><?=gettext("Bridge configuration");?></strong></td>
+                      <td width="78%" align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                        &nbsp;
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><a id="help_for_members" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Member interfaces"); ?></td>
+                      <td>
+                        <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
+<?php
+                        foreach ($ifacelist as $ifn => $ifinfo):?>
+                            <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
+                                <?=$ifinfo;?>
+                            </option>
+<?php
+                        endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_members">
+                          <?=gettext("Interfaces participating in the bridge."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                      <td>
+                        <input type="text" name="descr" value="<?=$pconfig['descr'];?>" />
+                        <div class="hidden" for="help_for_descr">
+                          <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr id="show_advanced_opt">
+                      <td></td>
+                      <td>
+                        <input type="button" id="show_advanced" class="btn btn-xs btn-default" value="<?=gettext("Show advanced options"); ?>" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Advanced / RSTP/STP -->
+            <div class="tab-content content-box col-xs-12 __mb act_show_advanced" style="display:none">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <td colspan="2"><strong><?=gettext("Spanning Tree Protocol");?> (<?=gettext("RSTP/STP"); ?>)</strong></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="22%"><a id="help_for_enablestp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable");?></td>
+                      <td width="78%">
+                        <input type="checkbox" name="enablestp" <?= !empty($pconfig['enablestp']) ? "checked=\"checked\"" : "";?> />
+                        <div class="hidden" for="help_for_enablestp">
+                          <?=gettext("Enable spanning tree options for this bridge."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
+                      <td>
+                        <select name="proto" id="proto" class="selectpicker">
+                          <option value="rstp" <?=$pconfig['proto'] == "rstp" ? "selected=\"selected\"" : "";?> >
+                            <?=gettext("RSTP");?>
+                          </option>
+                          <option value="stp" <?=$pconfig['proto'] == "stp" ? "selected=\"selected\"" : "";?> >
+                            <?=gettext("STP");?>
+                          </option>
+                        </select>
+                        <div class="hidden" for="help_for_proto">
+                          <?=gettext("Protocol used for spanning tree."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_stp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("STP interfaces"); ?></td>
+                      <td>
+                        <select name="stp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                        foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?$ifn;?>" <?=in_array($ifn, $pconfig['stp']) ? "selected=\"selected\"" : "";?> >
+                              <?=$ifdescr;?>
+                          </option>
+<?php
+                        endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_stp" >
+                         <?=gettext("Enable Spanning Tree Protocol on interface.  The if_bridge(4) " .
+                         "driver has support for the IEEE 802.1D Spanning Tree Protocol " .
+                         "(STP).  STP is used to detect and remove loops in a " .
+                         "network topology."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_maxage" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Valid time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td>
+                        <input name="maxage" type="text" value="<?=$pconfig['maxage'];?>" />
+                        <div class="hidden" for="help_for_maxage">
+                         <?=gettext("Set the time that a Spanning Tree Protocol configuration is " .
+                         "valid.  The default is 20 seconds.  The minimum is 6 seconds and " .
+                         "the maximum is 40 seconds."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_fwdelay" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Forward time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td>
+                        <input name="fwdelay" type="text" value="<?=$pconfig['fwdelay'];?>" />
+                        <div class="hidden" for="help_for_fwdelay">
+                         <?=gettext("Set the time that must pass before an interface begins forwarding " .
+                         "packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and the maximum is 30 seconds."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_hellotime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hello time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td>
+                        <input name="hellotime" type="text" value="<?=$pconfig['hellotime'];?>" />
+                        <div class="hidden" for="help_for_hellotime">
+                         <?=gettext("Set the time between broadcasting of Spanning Tree Protocol configuration messages.  The hello time may only be changed when " .
+                         "operating in legacy STP mode.  The default is 2 seconds.  The minimum is 1 second and the maximum is 2 seconds."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                      <td>
+                        <input name="priority" type="text" value="<?=$pconfig['priority'];?>" />
+                        <div class="hidden" for="help_for_priority">
+                         <?=gettext("Set the bridge priority for Spanning Tree.  The default is 32768. " .
+                         "The minimum is 0 and the maximum is 61440."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_holdcnt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hold count"); ?></td>
+                      <td>
+                        <input name="holdcnt" type="text" value="<?=$pconfig['holdcnt'];?>" />
+                        <div class="hidden" for="help_for_holdcnt">
+                         <?=gettext("Set the transmit hold count for Spanning Tree.  This is the number" .
+                         " of packets transmitted before being rate limited.  The " .
+                         "default is 6.  The minimum is 1 and the maximum is 10."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_intf_priority" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Priority"); ?></td>
+                      <td>
+                        <table class="table table-striped table-condensed">
+<?php
+                        foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <tr>
+                            <td><?=$ifdescr;?></td>
+                            <td>
+                                <input name="ifpriority_<?=$ifn;?>" type="text" value="<?=isset($pconfig['ifpriority_'.$ifn]) ? $pconfig['ifpriority_'.$ifn] : "";?>" />
+                            </td>
+                          </tr>
+<?php
+                        endforeach;?>
+                        </table>
+                        <div class="hidden" for="help_for_intf_priority">
+                         <?=gettext("Set the Spanning Tree priority of interface to value.  The " .
+                         "default is 128.  The minimum is 0 and the maximum is 240.  Increments of 16."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_intf_pathcost" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Path cost"); ?></td>
+                      <td>
+                        <table class="table table-striped table-condensed">
+<?php
+                        foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <tr>
+                            <td><?=$ifdescr;?></td>
+                            <td>
+                                <input name="ifpathcost_<?=$ifn;?>" type="text" value="<?=isset($pconfig['ifpathcost_'.$ifn]) ? $pconfig['ifpathcost_'.$ifn] : "";?>" />
+                            </td>
+                          </tr>
+<?php
+                        endforeach;?>
+                        </table>
+                        <div class="hidden" for="help_for_intf_pathcost">
+                         <?=gettext("Set the Spanning Tree path cost of interface to value.  The " .
+                         "default is calculated from the link speed.  To change a previously selected path cost back to automatic, set the cost to 0. ".
+                         "The minimum is 1 and the maximum is 200000000."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Advanced options-->
+            <div class="tab-content content-box col-xs-12 __mb act_show_advanced" style="display:none">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <td colspan="2"><strong><?=gettext("Advanced options");?></strong></td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td width="22%"><a id="help_for_maxaddr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Cache size"); ?> (<?=gettext("entries"); ?>)</td>
+                      <td width="78%">
+                        <input name="maxaddr" type="text" value="<?=$pconfig['maxaddr'];?>" />
+                      <div class="hidden" for="help_for_maxaddr">
+                        <?=gettext("Set the size of the bridge address cache to size.  The default is .100 entries."); ?>
+                      </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Cache entry expire time"); ?> (<?=gettext("seconds"); ?>)</td>
+                      <td>
+                        <input name="timeout" type="text" value="<?=$pconfig['timeout'];?>" />
+                        <div class="hidden" for="help_for_timeout">
+                         <?=gettext("Set the timeout of address cache entries to this number of seconds.  If " .
+                         "seconds is zero, then address cache entries will not be expired. " .
+                         "The default is 240 seconds."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_span" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Span port"); ?></td>
+                      <td>
+                        <select name="span" class="selectpicker" data-live-search="true">
+                          <option value="none"><?=gettext("None"); ?></option>
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=$ifn == $pconfig['span'] ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_span">
+                         <?=gettext("Add the interface named by interface as a span port on the " .
+                         "bridge.  Span ports transmit a copy of every frame received by " .
+                         "the bridge.  This is most useful for snooping a bridged network " .
+                         "passively on another host connected to one of the span ports of " .
+                         "the bridge."); ?><br/>
+                         <span class="text-warning"><strong><?=gettext("Note:"); ?><br /></strong></span>
+                         <?=gettext("The span interface cannot be part of the bridge member interfaces."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_edge" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Edge ports"); ?></td>
+                      <td>
+                        <select name="edge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['edge']) ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_edge">
+                          <?=gettext("Set interface as an edge port.  An edge port connects directly to " .
+                          "end stations and cannot create bridging loops in the network; this " .
+                          "allows it to transition straight to forwarding."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_autoedge" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auto Edge ports"); ?></td>
+                      <td>
+                        <select name="autoedge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['autoedge']) ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_autoedge">
+                          <?=gettext("Allow interface to automatically detect edge status.  This is the " .
+                            "default for all interfaces added to a bridge."); ?><br/>
+                            <span class="text-warning"><strong><?=gettext("Note:"); ?><br /></strong></span>
+                            <?=gettext("This will disable the autoedge status of interfaces."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_ptp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("PTP ports"); ?></td>
+                      <td>
+                        <select name="ptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['ptp']) ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_ptp">
+                         <?=gettext("Set the interface as a point-to-point link.  This is required for " .
+                         "straight transitions to forwarding and should be enabled on a " .
+                         "direct link to another RSTP-capable switch."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_autoptp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Auto PTP ports"); ?></td>
+                      <td>
+                        <select name="autoptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['autoptp']) ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_autoptp">
+                         <?=gettext("Automatically detect the point-to-point status on interface by " .
+                         "checking the full duplex link status.  This is the default for " .
+                         "interfaces added to the bridge."); ?><br/>
+                         <span class="text-warning"><strong><?=gettext("Note:"); ?><br /></strong></span>
+                         <?=gettext("The interfaces selected here will be removed from default autoedge status."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_static" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky ports"); ?></td>
+                      <td>
+                        <select name="static[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['static']) ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_static">
+                          <?=gettext("Mark an interface as a \"sticky\" interface.  Dynamically learned " .
+                          "address entries are treated as static once entered into the " .
+                          "cache.  Sticky entries are never aged out of the cache or " .
+                          "replaced, even if the address is seen on a different interface."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_private" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Private ports"); ?></td>
+                      <td>
+                        <select name="private[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
+<?php
+                          foreach ($ifacelist as $ifn => $ifdescr):?>
+                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['private']) ? "selected=\"selected\"" : "";?>>
+                            <?=$ifdescr;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+                        <div class="hidden" for="help_for_private">
+                          <?=gettext("Mark an interface as a \"private\" interface.  A private interface does not forward any traffic to any other port that is also " .
+                          "a private interface."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <!-- Advanced / RSTP/STP -->
+            <div class="tab-content content-box col-xs-12 __mb">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tbody>
+                    <tr>
+                      <td width="22%" valign="top">&nbsp;</td>
+                      <td width="78%">
+                        <input type="hidden" name="bridgeif" value="<?=$pconfig['bridgeif']; ?>" />
+                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_bridge.php');?>'" />
+<?php if (isset($id)): ?>
+                        <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+<?php endif; ?>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
