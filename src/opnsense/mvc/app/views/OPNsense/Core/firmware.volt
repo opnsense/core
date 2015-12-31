@@ -129,7 +129,7 @@ POSSIBILITY OF SUCH DAMAGE.
             setTimeout(rebootWait, 2500);
         }).done(function () {
             $(location).attr('href',"/");
-	});
+        });
     }
 
     /**
@@ -192,22 +192,23 @@ POSSIBILITY OF SUCH DAMAGE.
         // link event handlers
         $('#checkupdate').click(updateStatus);
         $('#upgrade').click(upgrade_ui);
+        // show upgrade message if there
+        if ($('#message').html() != '') {
+            $('#message').attr('style', '');
+        }
+        // repopulate package information
+        packagesInfo();
+        // dashboard link: run check automatically
         if (window.location.hash == '#checkupdate') {
-            // dashboard link: run check automatically
             updateStatus();
         }
-        packagesInfo();
     });
-
 
 </script>
 
 <div class="container-fluid">
     <div class="row">
-<?php   $message = @file_get_contents('/usr/local/opnsense/firmware-message');
-        if (!empty($message)): ?>
-        <div class="alert alert-warning" role="alert"><?= $message ?></div>
-<?php   endif; ?>
+        <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
             <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
