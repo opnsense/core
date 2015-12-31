@@ -116,7 +116,7 @@ $main_buttons = array(
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
-              <form action="interfaces_bridge.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                 <input type="hidden" id="action" name="action" value="">
                 <input type="hidden" id="id" name="id" value="">
                 <div class="table-responsive">
