@@ -657,7 +657,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
     if ($bridge['timeout'] <> "") {
         mwexec("/sbin/ifconfig {$bridgeif} timeout " . escapeshellarg($bridge['timeout']));
     }
-    if ($bridge['span'] <> "") {
+    if (!empty($bridge['span'])) {
         $realif = get_real_interface($bridge['span']);
         mwexec("/sbin/ifconfig {$bridgeif} span {$realif}");
     }
