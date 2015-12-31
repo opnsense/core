@@ -182,7 +182,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 '<td>' + row['version'] + '</td>' +
                 '<td>' + row['flatsize'] + '</td>' +
                 '<td>' + row['comment'] + '</td>' +
-                '<td>reinstall</td>' +
+                '<td>reinstall, ' + (row['locked'] === '1' ? 'unlock' : 'lock') +'</td>' +
             '</tr>');
             });
         });
