@@ -30,13 +30,13 @@
         <id>zone.idletimeout</id>
         <label>Idle timeout (minutes)</label>
         <type>text</type>
-        <help><![CDATA[Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Leave this field blank for no idle timeout.]]></help>
+        <help><![CDATA[Clients will be disconnected after this amount of inactivity. They may log in again immediately, though. Enter 0 to disable idle timeout.]]></help>
     </field>
     <field>
         <id>zone.hardtimeout</id>
         <label>Hard timeout (minutes)</label>
         <type>text</type>
-        <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Leave this field blank for no hard timeout (not recommended unless an idle timeout is set).]]></help>
+        <help><![CDATA[Clients will be disconnected after this amount of time, regardless of activity. They may log in again immediately, though. Enter 0 to disable hard timeout (not recommended unless an idle timeout is set).]]></help>
     </field>
     <field>
         <id>zone.concurrentlogins</id>
