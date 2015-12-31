@@ -3,8 +3,9 @@
         <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard">
             <Root url="/"/>
 	</Dashboard>
-        <ChangePassword order="1" VisibleName="Change password" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
-        <Logout order="2" url="/index.php?logout" cssClass="fa fa-sign-out"/>
+        <License order="1" url="/license.php" cssClass="fa fa-balance-scale"/>
+        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
+        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out"/>
     </Lobby>
     <System order="1" VisibleName="System" cssClass="fa fa-server">
         <CertificateManager order="120" VisibleName="Certificate Manager" cssClass="fa fa-certificate">
