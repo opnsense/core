@@ -340,12 +340,6 @@ function changeTabDIV(selectedDiv){
 </script>
 EOD;
 
-/* XXX overwrite breadcrumb for now, not in menu */
-$menuBreadcrumbs = array(
-	array('name' => gettext('Lobby')),
-	array('name' => gettext('Dashboard')),
-);
-
 include("head.inc");
 
 ?>
