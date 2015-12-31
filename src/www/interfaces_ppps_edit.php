@@ -437,12 +437,11 @@ include("head.inc");
     });
   </script>
 <?php include("fbegin.inc"); ?>
-  <section class="page-content-main">
-    <div class="container-fluid">
-      <div class="row">
-        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-        <section class="col-xs-12">
-          <div class="content-box">
+    <section class="page-content-main">
+      <div class="container-fluid">
+        <div class="row">
+          <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+          <section class="col-xs-12">
             <form action="interfaces_ppps_edit.php" method="post" name="iform" id="iform">
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
@@ -927,10 +926,9 @@ include("head.inc");
                 </div>
               </div>
             </form>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
 <?php include("foot.inc"); ?>
