@@ -315,7 +315,7 @@
         </WoL>
     </Services>
     <VPN order="4" cssClass="fa fa-globe">
-        <IPsec cssClass="fa fa-lock">
+        <IPsec cssClass="fa fa-lock" order="10">
             <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*"/>
@@ -333,7 +333,7 @@
             <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
             <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
-        <L2TP cssClass="fa fa-unlock">
+        <L2TP cssClass="fa fa-unlock" order="30">
             <Settings order="10" url="/vpn_l2tp.php"/>
             <Users order="20" url="/vpn_l2tp_users.php">
                 <Edit url="/vpn_l2tp_users_edit.php*"/>
@@ -342,7 +342,7 @@
                 <Type url="/diag_logs_l2tp.php*"/>
             </LogFile>
         </L2TP>
-        <OpenVPN cssClass="fa fa-lock">
+        <OpenVPN cssClass="fa fa-lock" order="20">
             <Server order="10" VisibleName="Server Settings" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*"/>
             </Server>
@@ -359,7 +359,7 @@
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
             <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
-        <PPTP cssClass="fa fa-unlock">
+        <PPTP cssClass="fa fa-unlock" order="40">
             <Settings order="10" url="/vpn_pptp.php"/>
             <Users order="20" url="/vpn_pptp_users.php">
                 <Edit url="/vpn_pptp_users_edit.php*"/>
