@@ -542,23 +542,22 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
     }
 
     /* Calculate smaller mtu and enforce it */
-    $mtu = 1500;
+    $mtu = null;
     $foundgif = false;
     foreach ($members as $member) {
         $realif = get_real_interface($member);
         $opts = pfSense_get_interface_addresses($realif);
-        $mtu = $opts['mtu'];
         if (substr($realif, 0, 3) == "gif") {
             $foundgif = true;
             if ($checkmember == 1) {
                 return;
             }
-            if ($mtu <= 1500) {
+            if ($opts['mtu'] <= 1500) {
                 continue;
             }
         }
-        if (!empty($opts['mtu']) && $opts['mtu'] < $mtu) {
-            $mtu = $mtu = $opts['mtu'];
+        if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
+            $mtu = $opts['mtu'];
         }
     }
 
@@ -590,7 +589,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
             continue;
         }
         /* make sure the parent interface is up */
-        legacy_interface_mtu($realif, $smallermtu);
+        legacy_interface_mtu($realif, $mtu);
         legacy_interface_flags($realif, $flags);
         interfaces_bring_up($realif);
         legacy_bridge_member($bridge['bridgeif'], $realif);
@@ -790,11 +789,11 @@ function interface_lagg_configure(&$lagg)
     }
 
     /* Calculate smaller mtu and enforce it */
-    $mtu = 1500;
+    $mtu = null;
     foreach ($members as $member) {
         $opts = pfSense_get_interface_addresses($member);
-        if (!empty($opts['mtu']) && $opts['mtu'] < $mtu) {
-            $smallermtu = $mtu;
+        if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
+            $mtu = $opts['mtu'];
         }
     }
 
