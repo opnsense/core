@@ -74,7 +74,7 @@ $main_buttons = array(
       var id = $(this).data("id");
       // delete single
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Group");?>",
         message: "<?=gettext("Do you really want to delete this group? All elements that still use it will become invalid (e.g. filter rules)!");?>",
         buttons: [{

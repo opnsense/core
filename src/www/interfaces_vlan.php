@@ -84,7 +84,7 @@ $main_buttons = array(
       var id = $(this).data("id");
       // delete single
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("VLAN");?>",
         message: "<?=gettext("Do you really want to delete this VLAN?");?>",
         buttons: [{
