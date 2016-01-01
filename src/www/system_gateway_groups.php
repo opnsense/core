@@ -126,7 +126,7 @@ $( document ).ready(function() {
       var id = $(this).data('id');
       event.preventDefault();
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Gateway-group");?>",
           message: '<?=gettext("Do you really want to delete this gateway group?");?>',
           buttons: [{

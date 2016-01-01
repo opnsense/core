@@ -455,7 +455,7 @@ $( document ).ready(function() {
       event.preventDefault();
       var priv_name = $(this).data('priv');
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("User");?>",
           message: "<?=gettext("Do you really want to delete this privilege?");?> " + "<br/>("+priv_name+")",
           buttons: [{
@@ -478,7 +478,7 @@ $( document ).ready(function() {
       var certid = $(this).data('certid');
       event.preventDefault();
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("Certificate");?>",
           message: '<?=gettext("Do you really want to remove this certificate association?") .'\n'. gettext("(Certificate will not be deleted)");?>',
           buttons: [{
@@ -502,7 +502,7 @@ $( document ).ready(function() {
       var username = $(this).data('username');
       event.preventDefault();
       BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_INFO,
+          type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("User");?>",
           message: '<?=gettext("Do you really want to delete this user?");?>' + '<br/>('+username+")",
           buttons: [{
@@ -563,7 +563,7 @@ $( document ).ready(function() {
         event.preventDefault();
         var apiKey = $(this).data('key');
         BootstrapDialog.show({
-            type:BootstrapDialog.TYPE_INFO,
+            type:BootstrapDialog.TYPE_DANGER,
             title: "<?= gettext("User");?>",
             message: '<?=gettext("Do you really want to delete this API key?");?>' + '<br/><small>('+apiKey.substring(0,40)+"...)</small>",
             buttons: [{

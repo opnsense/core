@@ -357,7 +357,7 @@ include("head.inc");
       var id = $(this).data("id");
       // delete single
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Interfaces");?>",
         message: "<?=gettext("Do you really want to delete this interface?"); ?>",
         buttons: [{

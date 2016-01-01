@@ -220,7 +220,7 @@ $( document ).ready(function() {
       event.preventDefault();
       var id = $(this).data('id');
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Gateways");?>",
         message: "<?=gettext("Do you really want to delete this gateway?");?>",
         buttons: [{
@@ -252,7 +252,7 @@ $( document ).ready(function() {
     event.preventDefault();
     var id = $(this).data('id');
     BootstrapDialog.show({
-      type:BootstrapDialog.TYPE_INFO,
+      type:BootstrapDialog.TYPE_DANGER,
       title: "<?= gettext("Gateways");?>",
       message: "<?=gettext("Do you really want to delete the selected gateway items?");?>",
       buttons: [{

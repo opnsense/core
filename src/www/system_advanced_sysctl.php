@@ -115,7 +115,7 @@ $( document ).ready(function() {
     event.preventDefault();
     var id = $(this).data('id');
     BootstrapDialog.show({
-      type:BootstrapDialog.TYPE_INFO,
+      type:BootstrapDialog.TYPE_DANGER,
       title: "<?= gettext("Tunable");?>",
       message: "<?=gettext("Do you really want to delete this entry?");?>",
       buttons: [{

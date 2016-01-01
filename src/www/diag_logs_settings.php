@@ -273,7 +273,7 @@ $(document).ready(function() {
     $("#ResetRRD").click(function(event){
         event.preventDefault();
         BootstrapDialog.show({
-            type:BootstrapDialog.TYPE_INFO,
+            type:BootstrapDialog.TYPE_DANGER,
             title: "<?= gettext("Syslog");?>",
             message: "<?=gettext('Do you really want to reset the RRD graphs? This will erase all graph data.');?>",
             buttons: [{
@@ -294,7 +294,7 @@ $(document).ready(function() {
       $("#resetlogs").click(function(event){
           event.preventDefault();
           BootstrapDialog.show({
-              type:BootstrapDialog.TYPE_INFO,
+              type:BootstrapDialog.TYPE_DANGER,
               title: "<?= gettext("Syslog");?>",
               message: "<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>",
               buttons: [{

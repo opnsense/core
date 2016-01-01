@@ -219,7 +219,7 @@ $main_buttons = array(
       var id = $(this).attr("id").split('_').pop(-1);
       // delete single
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Virtual IP");?>",
         message: "<?=gettext("Do you really want to delete this entry?");?>",
         buttons: [{
