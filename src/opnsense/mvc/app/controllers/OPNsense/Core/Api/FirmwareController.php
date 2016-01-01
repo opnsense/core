@@ -47,7 +47,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
         $backend = new Backend();
-        $response = json_decode(trim($backend->configdRun('firmware pkgstatus')), true);
+        $response = json_decode(trim($backend->configdRun('firmware check')), true);
 
         if ($response != null) {
             if (array_key_exists('connection', $response) && $response['connection'] == 'error') {

@@ -35,7 +35,7 @@ require_once("system.inc");
 require_once("stats.inc");
 
 if (isset($_REQUEST['getupdatestatus'])) {
-    $pkg_json = trim(configd_run('firmware pkgstatus'));
+    $pkg_json = trim(configd_run('firmware check'));
     if ($pkg_json != '') {
         $pkg_status = json_decode($pkg_json, true);
     }
