@@ -122,7 +122,7 @@ $( document ).ready(function() {
     $("#flushtable").click(function(event){
       event.preventDefault()
       BootstrapDialog.show({
-        type:BootstrapDialog.TYPE_INFO,
+        type:BootstrapDialog.TYPE_DANGER,
         title: "<?= gettext("Tables");?>",
         message: "<?=gettext("Do you really want to flush this table?");?>",
         buttons: [{
