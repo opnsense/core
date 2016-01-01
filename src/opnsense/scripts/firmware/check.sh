@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -24,10 +25,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
-# USAGE:
-# Add this file to a CRON job to check for package updates regularly
-#
 # This script generates a json structured file with the following content:
 # connection: error|ok
 # repository: error|ok
@@ -39,7 +36,7 @@
 # reinstall_packages: array with { name: <package_name>, version: <package_version> }
 # upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
 
-# TODO: Add object with items that will be removed or uninstalled
+# TODO: Add object with items that will be removed
 
 # Variables used
 connection="error"
