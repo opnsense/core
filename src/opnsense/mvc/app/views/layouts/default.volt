@@ -166,7 +166,7 @@
         <!-- page footer -->
 		<footer class="page-foot col-sm-push-2">
 			<div class="container-fluid">
-				<a target="_blank" href="https://opnsense.org/" class="redlnk">OPNsense</a> (c) 2014-2015 <a href="https://www.deciso.com" class="tblnk">Deciso B.V.</a>
+				<a target="_blank" href="https://opnsense.org/" class="redlnk">OPNsense</a> (c) 2014-2016 <a href="https://www.deciso.com" class="tblnk">Deciso B.V.</a>
 			</div>
 		</footer>
 
