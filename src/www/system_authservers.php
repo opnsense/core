@@ -465,7 +465,8 @@ endif; ?>
                   <td>
                     <input name="ldap_host" type="text" id="ldap_host" size="20" value="<?=$pconfig['ldap_host'];?>"/>
                     <div class="hidden" for="help_for_ldap_host">
-                      <?= gettext("NOTE: When using SSL, this hostname MUST match the Common Name (CN) of the LDAP server's SSL Certificate."); ?>
+                      <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
+                      <?= gettext("When using SSL, this hostname MUST match the Common Name (CN) of the LDAP server's SSL Certificate."); ?>
                     </div>
                   </td>
                 </tr>
@@ -562,7 +563,8 @@ endif; ?>
                     </ul>
                     <br/>
                     <div class="hidden" for="help_for_ldapauthcontainers">
-                        <br/><?=gettext("Note: Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
+                        <br/><span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
+                        <?=gettext("Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
                         <br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
                         <br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
                     </div>
@@ -642,7 +644,8 @@ endif; ?>
                     <div class="hidden" for="help_for_radius_timeout">
                       <br /><?= gettext("This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
                       <br /><?= gettext("If left blank, the default value is 5 seconds.") ?>
-                      <br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
+                      <br /><br /><span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
+                      <?= gettext("If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
                     </div>
                   </td>
                 </tr>
