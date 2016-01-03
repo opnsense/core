@@ -159,7 +159,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_noinstalllanspd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("LAN security associsations"); ?></td>
+                      <td><a id="help_for_noinstalllanspd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("LAN security associations"); ?></td>
                       <td>
                         <input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?=!empty($pconfig['noinstalllanspd']) ? "checked=\"checked\""  : "";?> />
                         <strong><?=gettext("Do not install LAN SPD"); ?></strong>
