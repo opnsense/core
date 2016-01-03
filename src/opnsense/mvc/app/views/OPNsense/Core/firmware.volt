@@ -92,6 +92,20 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
+     * perform package reinstall, install poller to update status
+     */
+    function reinstall(pkg_name)
+    {
+        $('#progresstab > a').tab('show');
+        $('#updatestatus').html("{{ lang._('Reinstalling... (do not leave this page while reinstall is in progress)') }}");
+
+        ajaxCall('/api/core/firmware/reinstall/'+pkg_name,{},function() {
+            $('#updatelist').empty();
+            setTimeout(trackStatus, 500);
+        });
+    }
+
+    /**
      *  check if a reboot is required, warn user or just upgrade
      */
     function upgrade_ui(){
@@ -190,7 +204,10 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>reinstall, ' + (row['locked'] === '1' ? 'unlock' : 'lock') +'</td>' +
+                    '<td>' +
+                      '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '">reinstall</button>'+
+                      ', ' + (row['locked'] === '1' ? 'unlock' : 'lock') +
+                    '</td>' +
                     '</tr>'
                 );
                 if (!row['name'].match(/^os-/g)) {
@@ -198,6 +215,13 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
                 installed[row['name']] = row;
             });
+
+            // link reinstall buttons to action
+            $(".act_reinstall").click(function(event){
+                event.preventDefault();
+                reinstall($(this).data('package'));
+            });
+
             $.each(data['remote'], function(index, row) {
                 if (!row['name'].match(/^os-/g)) {
                     return 1;
