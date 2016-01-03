@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
     function updateStatus() {
         // update UI
         $('#updatelist').empty();
-        $('#maintabs li:eq(1) a').tab('show');
+        $('#updatetab > a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').html("{{ lang._('Fetching... (may take up to 30 seconds)') }}");
 
@@ -81,7 +81,7 @@ POSSIBILITY OF SUCH DAMAGE.
      * perform upgrade, install poller to update status
      */
     function upgrade(){
-        $('#maintabs li:eq(2) a').tab('show');
+        $('#progresstab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Upgrading... (do not leave this page while upgrade is in progress)') }}");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
@@ -171,20 +171,53 @@ POSSIBILITY OF SUCH DAMAGE.
      * show package info
      */
     function packagesInfo() {
-        $('#packageslist').empty();
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
+            $('#packageslist').empty();
+            $('#pluginlist').empty();
+            var installed = {};
+
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
             "<th>{{ lang._('Comment') }}</th><th>{{ lang._('Action') }}</th></tr>");
+            $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
+            "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
+            "<th>{{ lang._('Comment') }}</th><th>{{ lang._('Action') }}</th></tr>");
+
             $.each(data['local'], function(index, row) {
-                $('#packageslist').append('<tr>' +
-                '<td>' + row['name'] + '</td>' +
-                '<td>' + row['version'] + '</td>' +
-                '<td>' + row['flatsize'] + '</td>' +
-                '<td>' + row['comment'] + '</td>' +
-                '<td>reinstall, ' + (row['locked'] === '1' ? 'unlock' : 'lock') +'</td>' +
-            '</tr>');
+                $('#packageslist').append(
+                    '<tr>' +
+                    '<td>' + row['name'] + '</td>' +
+                    '<td>' + row['version'] + '</td>' +
+                    '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['comment'] + '</td>' +
+                    '<td>reinstall, ' + (row['locked'] === '1' ? 'unlock' : 'lock') +'</td>' +
+                    '</tr>'
+                );
+                if (!row['name'].match(/^os-/g)) {
+                    return 1;
+                }
+                installed[row['name']] = row;
             });
+            $.each(data['remote'], function(index, row) {
+                if (!row['name'].match(/^os-/g)) {
+                    return 1;
+                }
+                $('#pluginlist').append(
+                    '<tr>' +
+                    '<td>' + row['name'] + '</td>' +
+                    '<td>' + row['version'] + '</td>' +
+                    '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['comment'] + '</td>' +
+                    '<td>' + (row['name'] in installed ? 'deinstall' : 'install') + '</td>' +
+                    '</tr>'
+                );
+            });
+            // XXX needs a bit more testing
+            //if (!data['remote'].length) {
+            //    $('#pluginlist').append(
+            //        '<tr><td colspan=5>{{ lang._('Fetch updates to view available plugins.') }}</td></tr>'
+            //    );
+            //}
         });
     }
 
@@ -217,14 +250,19 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
     <div class="row">
         <div class="col-md-12" id="content">
-            <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-                <li class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
-                <li><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
-                <li><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
+            <ul class="nav nav-tabs" data-tabs="tabs">
+                <li id="packagestab" class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
+                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
+                <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
                 <div id="packages" class="tab-pane fade in active">
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
+                    </table>
+                </div>
+                <div id="plugins" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="pluginlist">
                     </table>
                 </div>
                 <div id="updates" class="tab-pane fade in">
