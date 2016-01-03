@@ -117,6 +117,34 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * reinstall package
+     * @param string $pkg_name package name to reinstall
+     * @return array status
+     * @throws \Exception
+     */
+    public function reinstallAction($pkg_name)
+    {
+        $backend = new Backend();
+        $response =array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('pkgname', function($value) {
+                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+            });
+            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            // execute action
+            $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * retrieve upgrade status (and log file of current process)
      */
     public function upgradestatusAction()
