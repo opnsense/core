@@ -92,14 +92,14 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
-     * perform package reinstall, install poller to update status
+     * perform package action, install poller to update status
      */
-    function reinstall(pkg_name)
+    function action(pkg_act, pkg_name)
     {
         $('#progresstab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Reinstalling... (do not leave this page while reinstall is in progress)') }}");
+        $('#updatestatus').html("{{ lang._('Executing... (do not leave this page while execute is in progress)') }}");
 
-        ajaxCall('/api/core/firmware/reinstall/'+pkg_name,{},function() {
+        ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
             $('#updatelist').empty();
             setTimeout(trackStatus, 500);
         });
@@ -192,10 +192,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('Comment') }}</th><th>{{ lang._('Action') }}</th></tr>");
+            "<th>{{ lang._('Comment') }}</th><th></th></tr>");
             $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('Comment') }}</th><th>{{ lang._('Action') }}</th></tr>");
+            "<th>{{ lang._('Comment') }}</th><th></th></tr>");
 
             $.each(data['local'], function(index, row) {
                 $('#packageslist').append(
@@ -205,9 +205,16 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + row['flatsize'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
-                      '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '">reinstall</button>'+
-                      ', ' + (row['locked'] === '1' ? 'unlock' : 'lock') +
-                    '</td>' +
+                    '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '">' +
+                    '<span data-toggle="tooltip" data-placement="left" title="Reinstall ' + row['name'] + '" class="fa fa-recycle">' +
+                    '</span></button> ' + (row['locked'] === '1' ?
+                        '<button class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
+                        '<span data-toggle="tooltip" data-placement="left" title="Unlock ' + row['name'] + '" class="fa fa-lock">' +
+                        '</span></button>' :
+                        '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '">' +
+                        '<span data-toggle="tooltip" data-placement="left" title="Lock ' + row['name'] + '" class="fa fa-unlock">' +
+                        '</span></button>'
+                    ) + '</td>' +
                     '</tr>'
                 );
                 if (!row['name'].match(/^os-/g)) {
@@ -216,32 +223,54 @@ POSSIBILITY OF SUCH DAMAGE.
                 installed[row['name']] = row;
             });
 
-            // link reinstall buttons to action
-            $(".act_reinstall").click(function(event){
-                event.preventDefault();
-                reinstall($(this).data('package'));
-            });
-
             $.each(data['remote'], function(index, row) {
                 if (!row['name'].match(/^os-/g)) {
                     return 1;
                 }
                 $('#pluginlist').append(
-                    '<tr>' +
-                    '<td>' + row['name'] + '</td>' +
+                    '<tr>' + '<td>' + row['name'] + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' + (row['name'] in installed ? 'deinstall' : 'install') + '</td>' +
-                    '</tr>'
+                    '<td>' + (row['name'] in installed ?
+                        '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '">' +
+                        '<span data-toggle="tooltip" data-placement="left" title="Remove ' + row['name'] + '" class="fa fa-trash">' +
+                        '</span></button>' :
+                        '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '">' +
+                        '<span data-toggle="tooltip" data-placement="left" title="Install ' + row['name'] + '" class="fa fa-plus">' +
+                        '</span></button>'
+                    ) + '</td>' + '</tr>'
                 );
             });
+
             // XXX needs a bit more testing
             //if (!data['remote'].length) {
             //    $('#pluginlist').append(
             //        '<tr><td colspan=5>{{ lang._('Fetch updates to view available plugins.') }}</td></tr>'
             //    );
             //}
+
+            // link buttons to actions
+            $(".act_reinstall").click(function(event) {
+                event.preventDefault();
+                action('reinstall', $(this).data('package'));
+            });
+            $(".act_unlock").click(function(event) {
+                event.preventDefault();
+                action('unlock', $(this).data('package'));
+            });
+            $(".act_lock").click(function(event) {
+                event.preventDefault();
+                action('lock', $(this).data('package'));
+            });
+            $(".act_remove").click(function(event) {
+                event.preventDefault();
+                action('remove', $(this).data('package'));
+            });
+            $(".act_install").click(function(event) {
+                event.preventDefault();
+                action('install', $(this).data('package'));
+            });
         });
     }
 
