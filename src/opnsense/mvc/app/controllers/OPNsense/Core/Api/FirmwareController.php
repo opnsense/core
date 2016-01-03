@@ -73,9 +73,17 @@ class FirmwareController extends ApiControllerBase
                 $response['status'] = 'ok';
                 if ($response['updates'] == 1) {
                     /* keep this dynamic for template translation even though %s is always '1' */
-                    $response['status_msg'] = sprintf(gettext('There is %s update available, total download size is %s.'), $response['updates'], $response['download_size']);
+                    $response['status_msg'] = sprintf(
+                        gettext('There is %s update available, total download size is %s.'),
+                        $response['updates'],
+                        $response['download_size']
+                    );
                 } else {
-                    $response['status_msg'] = sprintf(gettext('There are %s updates available, total download size is %s.'), $response['updates'], $response['download_size']);
+                    $response['status_msg'] = sprintf(
+                        gettext('There are %s updates available, total download size is %s.'),
+                        $response['updates'],
+                        $response['download_size']
+                    );
                 }
                 if ($response['upgrade_needs_reboot'] == 1) {
                     $response['status_msg'] = sprintf(
@@ -131,7 +139,7 @@ class FirmwareController extends ApiControllerBase
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function($value) {
+            $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
@@ -159,7 +167,7 @@ class FirmwareController extends ApiControllerBase
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function($value) {
+            $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
@@ -181,13 +189,13 @@ class FirmwareController extends ApiControllerBase
     public function removeAction($pkg_name)
     {
         $backend = new Backend();
-        $response =array();
+        $response = array();
 
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function($value) {
+            $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
@@ -209,13 +217,13 @@ class FirmwareController extends ApiControllerBase
     public function lockAction($pkg_name)
     {
         $backend = new Backend();
-        $response =array();
+        $response = array();
 
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function($value) {
+            $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
@@ -237,13 +245,13 @@ class FirmwareController extends ApiControllerBase
     public function unlockAction($pkg_name)
     {
         $backend = new Backend();
-        $response =array();
+        $response = array();
 
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
             // sanitize package name
             $filter = new \Phalcon\Filter();
-            $filter->add('pkgname', function($value) {
+            $filter->add('pkgname', function ($value) {
                 return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
             });
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");

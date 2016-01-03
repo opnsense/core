@@ -131,7 +131,7 @@
             </Devices>
             <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
             <Status url="/status_wireless.php">
-            	<Status url="/status_wireless.php*"/>
+		<Status url="/status_wireless.php*"/>
             </Status>
         </Wireless>
         <Diagnostics order="940" cssClass="fa fa-medkit">
