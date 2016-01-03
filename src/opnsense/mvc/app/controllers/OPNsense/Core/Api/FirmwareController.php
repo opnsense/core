@@ -100,7 +100,7 @@ class FirmwareController extends ApiControllerBase
     public function upgradeAction()
     {
         $backend = new Backend();
-        $response =array();
+        $response = array();
         if ($this->request->hasPost("upgrade")) {
             $response['status'] = 'ok';
             if ($this->request->getPost("upgrade") == "pkg") {
@@ -125,7 +125,7 @@ class FirmwareController extends ApiControllerBase
     public function reinstallAction($pkg_name)
     {
         $backend = new Backend();
-        $response =array();
+        $response = array();
 
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
@@ -137,6 +137,118 @@ class FirmwareController extends ApiControllerBase
             $pkg_name = $filter->sanitize($pkg_name, "pkgname");
             // execute action
             $response['msg_uuid'] = trim($backend->configdpRun("firmware reinstall", array($pkg_name), true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * install package
+     * @param string $pkg_name package name to install
+     * @return array status
+     * @throws \Exception
+     */
+    public function installAction($pkg_name)
+    {
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('pkgname', function($value) {
+                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+            });
+            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            // execute action
+            $response['msg_uuid'] = trim($backend->configdpRun("firmware install", array($pkg_name), true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * remove package
+     * @param string $pkg_name package name to remove
+     * @return array status
+     * @throws \Exception
+     */
+    public function removeAction($pkg_name)
+    {
+        $backend = new Backend();
+        $response =array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('pkgname', function($value) {
+                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+            });
+            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            // execute action
+            $response['msg_uuid'] = trim($backend->configdpRun("firmware remove", array($pkg_name), true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * lock package
+     * @param string $pkg_name package name to lock
+     * @return array status
+     * @throws \Exception
+     */
+    public function lockAction($pkg_name)
+    {
+        $backend = new Backend();
+        $response =array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('pkgname', function($value) {
+                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+            });
+            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            // execute action
+            $response['msg_uuid'] = trim($backend->configdpRun("firmware lock", array($pkg_name), true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * unlock package
+     * @param string $pkg_name package name to unlock
+     * @return array status
+     * @throws \Exception
+     */
+    public function unlockAction($pkg_name)
+    {
+        $backend = new Backend();
+        $response =array();
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('pkgname', function($value) {
+                return preg_replace('/[^0-9a-zA-Z-_]/', '', $value);
+            });
+            $pkg_name = $filter->sanitize($pkg_name, "pkgname");
+            // execute action
+            $response['msg_uuid'] = trim($backend->configdpRun("firmware unlock", array($pkg_name), true));
         } else {
             $response['status'] = 'failure';
         }
