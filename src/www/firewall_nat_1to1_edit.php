@@ -53,25 +53,30 @@ function formNetworks() {
 function formInterfaces() {
     global $config;
     $interfaces = array();
-    foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc)
+    foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc) {
         $interfaces[$if] = $ifdesc;
+    }
 
-    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server")
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server") {
         $interfaces['l2tp'] = "L2TP VPN";
+    }
 
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server")
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server") {
         $interfaces['pptp'] = "PPTP VPN";
+    }
 
-    if (is_pppoe_server_enabled())
+    if (is_pppoe_server_enabled()) {
         $interfaces['pppoe'] = "PPPoE VPN";
+    }
 
     /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))
+    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
         $interfaces["enc0"] = "IPsec";
+    }
 
     /* add openvpn/tun interfaces */
     if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-      $interfaces['openvpn'] = 'OpenVPN';
+        $interfaces['openvpn'] = 'OpenVPN';
     }
     return $interfaces;
 }
