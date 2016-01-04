@@ -399,7 +399,8 @@ $(document).ready(function() {
                       <div class="hidden" for="help_for_logfilesize">
                         <?=gettext("Logs are held in constant-size circular log files. This field controls how large each log file is, and thus how many entries may exist inside the log. By default this is approximately 500KB per log file, and there are nearly 20 such log files.") ?>
                         <br /><br />
-                        <?=gettext("NOTE: Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "); ?>
+                        <strong><span class="text-warning"><?=gettext("NOTE:");?></span></strong>
+                        <?=gettext("Log sizes are changed the next time a log file is cleared or deleted. To immediately increase the size of the log files, you must first save the options to set the size, then clear all logs using the \"Reset Log Files\" option farther down this page. "); ?>
                         <?=gettext("Be aware that increasing this value increases every log file size, so disk usage will increase significantly."); ?>
                         <?=gettext("Disk space currently used by log files: ") ?><?= exec("/usr/bin/du -sh /var/log | /usr/bin/awk '{print $1;}'"); ?>.
                         <?=gettext("Remaining disk space for log files: ") ?><?= exec("/bin/df -h /var/log | /usr/bin/awk '{print $4;}'"); ?>.
@@ -459,7 +460,8 @@ $(document).ready(function() {
                       <td>
                         <input name="resetlogs" id="resetlogs" type="submit" class="btn btn-default" value="<?=gettext("Reset Log Files"); ?>"/>
                         <div class="hidden" for="help_for_resetlogs">
-                          <?= gettext("Note: Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
+                          <strong><span class="text-danger"><?=gettext("Note:");?></span></strong>
+                          <?= gettext("Clears all local log files and reinitializes them as empty logs. This also restarts the DHCP daemon. Use the Save button first if you have made any setting changes."); ?>
                         </div>
                       </td>
                     </tr>
@@ -494,7 +496,8 @@ $(document).ready(function() {
                           <?= gettext("This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses."); ?>
                           <?= gettext("If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces."); ?>
                           <br /><br />
-                          <?= gettext("NOTE: If an IP address cannot be located on the chosen interface, the daemon will bind to all addresses."); ?>
+                          <strong><span class="text-danger"><?=gettext("NOTE:");?></span></strong>
+                          <?= gettext("If an IP address cannot be located on the chosen interface, the daemon will bind to all addresses."); ?>
                         </div>
                       </td>
                     </tr>

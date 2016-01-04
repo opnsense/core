@@ -190,7 +190,8 @@ include("head.inc");
                   <div class="hidden" for="help_for_ipv6allow">
                     <strong><?=gettext("Allow IPv6"); ?></strong><br />
                     <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
-                    <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
+                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
+                    <?=gettext("This does not disable any IPv6 features on the firewall, it only blocks traffic.") ?><br />
                   </div>
                 </td>
               </tr>
