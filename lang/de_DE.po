@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-22 14:45+0000\n"
+"POT-Creation-Date: 2016-01-02 20:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 3172\n"
+"X-Pootle-Revision: 3281\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -1287,7 +1287,7 @@ msgstr "Umgehe Authentifizierung für Adressen und Subnetze in dieser Liste"
 
 # File: lang/dynamic/helpers/controllers.php, line: 105
 msgid "Avoid authentication for physical addresses in this list"
-msgstr "Umgehe Authentifizierung für physikalische Adressen in dieser Liste"
+msgstr "Umgehe für physikalische Adressen in dieser Liste die Authentifizierung"
 
 # File: lang/dynamic/helpers/controllers.php, line: 106
 msgid "Use custom template package for user login"
@@ -1829,7 +1829,7 @@ msgstr "PPS"
 # File: src/www/services_ntpd_pps.php, line: 92
 # File: src/www/status_ntpd.php, line: 147
 msgid "Network Time"
-msgstr ""
+msgstr "Netzwerk-Zeit"
 
 # File: lang/dynamic/helpers/models.php, line: 138
 msgid "PPPoeServerEdit"
@@ -2717,6 +2717,8 @@ msgid ""
 "Interface specified for the virtual IP address %s does not exist. Skipping "
 "this VIP."
 msgstr ""
+"Das Interface, das für die virtuelle IP-Adresse %s angegeben wurde, "
+"existiert nicht. Überspringe diese VIP."
 
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
@@ -4334,7 +4336,7 @@ msgstr "Quelle"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 445
 msgid "ClassType"
-msgstr ""
+msgstr "Klassentyp"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 446
 msgid "Message"
@@ -4456,7 +4458,6 @@ msgid "Weight"
 msgstr "Gewichtung"
 
 # File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 170
-#, fuzzy
 msgid "#"
 msgstr "#"
 
@@ -4494,8 +4495,8 @@ msgid ""
 "%s IPs have been disabled. Please note that disabling does not survive a "
 "reboot."
 msgstr ""
-"%s IPs wurden deaktiviert. Bitte beacten Sie, dass die Deaktivierung nur bis "
-"zum nächsten Neustart gültig ist."
+"%s IPs wurden deaktiviert. Bitte beachten Sie, dass die Deaktivierung nur "
+"bis zum nächsten Neustart gültig ist."
 
 msgid "CARP has been enabled."
 msgstr "CARP wurde aktiviert"
@@ -4765,7 +4766,7 @@ msgid "The firewall is now rebooting."
 msgstr "Die Firewall startet jetzt neu."
 
 msgid "Backup area:"
-msgstr "Backup Bereich:"
+msgstr "Sicherungs Bereich:"
 
 msgid "Click this button to download the system configuration in XML format."
 msgstr ""
@@ -4773,13 +4774,13 @@ msgstr ""
 "herunterzuladen. "
 
 msgid "Encrypt this configuration file."
-msgstr "Verschlüssle diese Konfigurationsdatei"
+msgstr "Konfigurationsdatei verschlüsseln."
 
 msgid ""
 "Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of "
 "config.xml space!)"
 msgstr ""
-"RRD-Daten nicht sichern. (HINWEIS: RRD-Daten kann mehr als 4 Megabytes an "
+"RRD-Daten nicht sichern. (Hinweis: RRD-Daten können mehr als 4 Megabytes an "
 "Speicherplatz für die Config.xml verbauchen!)"
 
 msgid "confirm:"
@@ -5256,7 +5257,7 @@ msgid "Clear log"
 msgstr "Protokoll löschen"
 
 msgid "Last %s Portal Auth log entries"
-msgstr ""
+msgstr "Neueste %s Portalauthentifizierungsprotokolleinträge"
 
 msgid "System logs"
 msgstr "Systemprotokolle"
@@ -5405,7 +5406,7 @@ msgstr "Einfache Regel: Erlaube diese Verbindung"
 
 # File: src/www/diag_logs_filter.php, line: 790
 msgid "Icon Easy Rule: Pass this traffic"
-msgstr ""
+msgstr "Icon Einfache Regel: Erlaube diesen Datenverkehr"
 
 # File: src/www/diag_logs_filter.php, line: 837
 msgid "added block rule"
@@ -5451,6 +5452,8 @@ msgid ""
 "The following summaries have been collected from the last %s lines of the "
 "firewall log (maximum is %s)."
 msgstr ""
+"Die folgenden Zusammenfassungen wurden aus den neuesten %s Zeilen des "
+"Firewallprotokolls erstellt (Maximum ist %s)."
 
 msgid "Count"
 msgstr "Anzahl"
@@ -5581,7 +5584,7 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 342
 msgid "Round-Robin-Database"
-msgstr ""
+msgstr "Round-Robin-Datenbank"
 
 msgid "Enables the RRD graphing backend."
 msgstr "Aktiviert das Backend für RRD Graphen"
@@ -5600,7 +5603,7 @@ msgstr "Lokale Protokollierungseinstellungen"
 
 # File: src/www/diag_logs_settings.php, line: 378
 msgid "Reverse Display"
-msgstr ""
+msgstr "Ansicht umkehren"
 
 msgid "Show log entries in reverse order (newest entries on top)"
 msgstr ""
@@ -5608,7 +5611,7 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 315
 msgid "GUI Log Entries to Display"
-msgstr "Anzeige von Protokolleinträgen"
+msgstr "Anzahl von Protokolleinträgen"
 
 msgid ""
 "Hint: This is only the number of log entries displayed in the GUI. It does "
@@ -5815,19 +5818,19 @@ msgid "DHCP service events"
 msgstr "DHCP Dienstereignisse"
 
 msgid "Portal Auth events"
-msgstr ""
+msgstr "Portal Authentifizierungs Ereignisse"
 
 msgid "VPN (PPTP, IPsec, OpenVPN) events"
 msgstr "VPN (PPTP, IPsec, OpenVPN) Ereignisse"
 
 msgid "Gateway Monitor events"
-msgstr ""
+msgstr "Gateway Monitor Ereignisse"
 
 msgid "Server Load Balancer events"
 msgstr ""
 
 msgid "Wireless events"
-msgstr ""
+msgstr "WLAN Ereignisse"
 
 msgid ""
 "syslog sends UDP datagrams to port 514 on the specified remote syslog "
@@ -6188,7 +6191,7 @@ msgstr ""
 "filtern."
 
 msgid "Update"
-msgstr "Aktualisierung"
+msgstr "Aktualisieren"
 
 msgid "Gathering data, please wait..."
 msgstr "Sammle Daten, bitte warten..."
@@ -6473,7 +6476,7 @@ msgstr ""
 "Diese Seite erlaubt die Ausführung eines simplen TCP Verbindungstests um "
 "festzustellen, ob der Host erreichbar ist und Verbindungen am angegebenen "
 "Port akzeptiert. Dieser Test funktioniert nicht mit UDP, da es keinen "
-"verlässlichen Weg zur Erkennung gibt, ob ein UDP Port Verbindungen "
+"verlässlichen Weg zur Erkennung gibt, ob ein UDP-Port Verbindungen "
 "akzeptiert."
 
 msgid ""
@@ -6717,7 +6720,7 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 msgid "The alias name may only consist of the characters"
-msgstr ""
+msgstr "Der Aliasname kann nur aus folgenden Zeichen bestehen:"
 
 msgid "%s is not an IP address. Please correct the error to continue"
 msgstr ""
@@ -6871,6 +6874,8 @@ msgstr "neue Zuweisung hinzufügen"
 
 msgid "Depending on the way your WAN connection is setup, you may also need a"
 msgstr ""
+"Je nachdem wie Ihre WAN-Verbindung konfiguriert ist, benötigen Sie "
+"möglicherweise auch eine"
 
 msgid "Virtual IP."
 msgstr "Virtuelle IP."
@@ -7037,7 +7042,7 @@ msgstr "Ziel-IP umleiten"
 
 # File: src/www/firewall_nat_edit.php, line: 219
 msgid "\"%s\" is not a valid redirect target IP address or host alias."
-msgstr ""
+msgstr "\"%s\" ist keine gültige Umleitungsziel-IP-Adresse oder Hostalias."
 
 msgid ""
 "%s is not a valid start source port. It must be a port alias or integer "
@@ -11105,7 +11110,7 @@ msgid "HTTPS"
 msgstr "HTTPS"
 
 msgid "Send/Expect"
-msgstr ""
+msgstr "Senden/Erwarten"
 
 msgid "Edit Load Balancer - Monitor entry"
 msgstr "Lastverteiler bearbeiten: Überwachungseintrag"
@@ -11249,7 +11254,7 @@ msgid ""
 msgstr ""
 
 msgid "Relay Action"
-msgstr ""
+msgstr "Relay-Aktion"
 
 msgid ""
 "The load balancer configuration has been changed.<br />You must apply the "
@@ -11263,10 +11268,10 @@ msgid "Virtual Servers"
 msgstr "Virtuelle Server"
 
 msgid "Relay Actions"
-msgstr ""
+msgstr "Relay-Aktionen"
 
 msgid "Relay Protocols"
-msgstr ""
+msgstr "Relay-Protokolle"
 
 msgid "This action name has already been used.  Action names must be unique."
 msgstr ""
@@ -11284,7 +11289,7 @@ msgid "TODO"
 msgstr "TODO"
 
 msgid "Relay Protocol"
-msgstr ""
+msgstr "Relay-Protokoll"
 
 msgid ""
 "This protocol name has already been used.  Protocol names must be unique."
@@ -11422,7 +11427,7 @@ msgid ""
 msgstr ""
 
 msgid "This option is NOT compatible with the DNS relay protocol."
-msgstr ""
+msgstr "Die Option ist NICHT mit dem DNS-Relay-Protokoll kompatibel."
 
 msgid "Submit"
 msgstr "Absenden"
@@ -11540,7 +11545,7 @@ msgid ""
 msgstr ""
 
 msgid "Text type cannot include quotation marks."
-msgstr ""
+msgstr "Text-Typ kann keine Fragezeichen beinhalten."
 
 msgid ""
 "String type must be enclosed in quotes like \"this\" or must be a series of "
@@ -11784,7 +11789,7 @@ msgid "Dynamic DNS"
 msgstr "Dynamisches DNS"
 
 msgid "Show Dynamic DNS"
-msgstr ""
+msgstr "Zeige dynamisches DNS"
 
 msgid "Enable registration of DHCP client names in DNS."
 msgstr ""
@@ -11931,7 +11936,7 @@ msgid "if enabled)"
 msgstr "falls aktiviert)"
 
 msgid "will be assigned to clients by the DHCP server."
-msgstr ""
+msgstr "wird den Clients vom DHCP-Server zugewiesen."
 
 msgid "Status: DHCP leases"
 msgstr ""
@@ -12754,7 +12759,7 @@ msgstr ""
 
 # File: src/www/services_ntpd.php, line: 261
 msgid "Time servers"
-msgstr ""
+msgstr "Zeitserver"
 
 msgid "For best results three to five servers should be configured here."
 msgstr ""
@@ -12814,10 +12819,10 @@ msgstr "Aktiviere Aufzeichnung von Systemnachrichten (Standard: deaktiviert)"
 
 # File: src/www/services_ntpd.php, line: 325
 msgid "Statistics logging"
-msgstr ""
+msgstr "Statistik-Protokollierung"
 
 msgid "Show statistics logging options"
-msgstr ""
+msgstr "Zeige Statistik-Protokollierungs Einstellungen"
 
 msgid "Warning: "
 msgstr "Warnung: "
@@ -12837,10 +12842,10 @@ msgstr ""
 
 # File: src/www/services_ntpd.php, line: 345
 msgid "Access restrictions"
-msgstr ""
+msgstr "Zugangsbeschränkungen"
 
 msgid "Show access restriction options"
-msgstr "Zeige Zugriffsbeschränkungs Einstellungen"
+msgstr "Zeige Zugangsbeschränkungens Einstellungen"
 
 msgid "these options control access to NTP from the WAN."
 msgstr "Diese Einstellung steuert den Zugriff von WAN auf NTP."
@@ -12918,7 +12923,7 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 366
 msgid "Generic"
-msgstr ""
+msgstr "Allgemein"
 
 # File: src/www/services_ntpd_gps.php, line: 368
 msgid "Garmin"
@@ -12942,7 +12947,7 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 400
 msgid "Select Generic if your GPS is not listed."
-msgstr ""
+msgstr "Wähle allgemein aus wenn dein GPS nicht aufgeführt wird."
 
 msgid ""
 "The perdefined configurations assume your GPS has already been set to NMEA "
@@ -13056,10 +13061,10 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 530
 msgid "GPS Initialization"
-msgstr ""
+msgstr "GPS Initialisierung"
 
 msgid "Show GPS Initialization commands"
-msgstr ""
+msgstr "Zeige GPS Initialisierungs Befehle"
 
 msgid ""
 "Note: Commands entered here will be sent to the GPS during initialization. "
@@ -13942,7 +13947,7 @@ msgid "Edit WOL entry"
 msgstr "WOL Eintrag bearbeiten"
 
 msgid "Choose which interface this host is connected to."
-msgstr ""
+msgstr "Wähle aus mit welchem Inteface dieser Host verbunden ist."
 
 msgid "Enter a MAC address  in the following format: xx:xx:xx:xx:xx:xx"
 msgstr "Geben Sie eine MAC-Adresse im Format xx:xx:xx:xx:xx:xx ein."
@@ -14617,7 +14622,7 @@ msgid "SSH port"
 msgstr "SSH Port"
 
 msgid "Leave this blank for the default of 22."
-msgstr "Lassen Sie es leer für den Standard (22)."
+msgstr "Freilassen für Standardport (22)."
 
 msgid "Serial Communications"
 msgstr "Serielle Kommunikation"
@@ -15326,7 +15331,7 @@ msgid ""
 "NOTE: This does not disable any IPv6 features on the firewall, it only "
 "blocks traffic."
 msgstr ""
-"HINWEIS: Dies deaktiviert nicht alle IPv6 Eigenschaften auf der Firewall, es "
+"Hinweis: Dies deaktiviert nicht alle IPv6 Eigenschaften auf der Firewall, es "
 "blockiert nur den Verkehr."
 
 msgid "IPv6 over IPv4 Tunneling"
@@ -16776,7 +16781,7 @@ msgid "DNS Server"
 msgstr "DNS-Server"
 
 msgid "Use gateway"
-msgstr "Benutze Gateway"
+msgstr "Verwende Gateway"
 
 msgid ""
 "Enter IP addresses to be used by the system for DNS resolution. These are "
