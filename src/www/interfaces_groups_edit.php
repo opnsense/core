@@ -1,362 +1,214 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2009 Ermal Luçi
-	Copyright (C) 2004 Scott Ullrich
-	All rights reserved.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2009 Ermal Luçi
+    Copyright (C) 2004 Scott Ullrich
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
+if (!isset($config['ifgroups']) || !is_array($config['ifgroups'])) {
+    $config['ifgroups'] = array();
+}
 if (!isset($config['ifgroups']['ifgroupentry']) || !is_array($config['ifgroups']['ifgroupentry'])) {
-	$config['ifgroups']['ifgroupentry'] = array();
+    $config['ifgroups']['ifgroupentry'] = array();
 }
 
 $a_ifgroups = &$config['ifgroups']['ifgroupentry'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // read form data
+    if (!empty($a_ifgroups[$_GET['id']])) {
+        $id = $_GET['id'];
+    }
+    $pconfig = array();
+    $pconfig['ifname'] = isset($a_ifgroups[$id]['ifname']) ? $a_ifgroups[$id]['ifname'] : null;
+    $pconfig['descr'] = isset($a_ifgroups[$id]['descr']) ?  $a_ifgroups[$id]['descr'] : null;
+    $pconfig['members'] = isset($a_ifgroups[$id]['members']) ? explode(' ', $a_ifgroups[$id]['members']) : array();
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // validate and save form data
+    if (!empty($a_ifgroups[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
+    $input_errors = array();
+    $pconfig = $_POST;
 
-if (isset($id) && $a_ifgroups[$id]) {
-	$pconfig['ifname'] = $a_ifgroups[$id]['ifname'];
-	$pconfig['members'] = $a_ifgroups[$id]['members'];
-	$pconfig['descr'] = html_entity_decode($a_ifgroups[$id]['descr']);
+    if (!isset($id)) {
+        foreach ($a_ifgroups as $groupentry) {
+            if ($groupentry['ifname'] == $pconfig['ifname']) {
+                $input_errors[] = gettext("Group name already exists!");
+            }
+        }
+    }
+    if (preg_match("/([^a-zA-Z])+/", $pconfig['ifname'], $match)) {
+        $input_errors[] = gettext("Only letters A-Z are allowed as the group name.");
+    }
+
+    foreach (get_configured_interface_with_descr() as $gif => $gdescr) {
+        if ($gdescr == $pconfig['ifname'] || $gif == $pconfig['ifname']) {
+            $input_errors[] = gettext("The specified group name is already used by an interface. Please choose another name.");
+        }
+    }
+
+    if (count($input_errors) == 0) {
+      $ifgroupentry = array();
+      $ifgroupentry['members'] = implode(' ', $pconfig['members']);
+      $ifgroupentry['descr'] = $pconfig['descr'];
+      $ifgroupentry['ifname'] = $pconfig['ifname'];
+
+      if (isset($id)) {
+          // rename interface group
+          if ($pconfig['ifname'] != $a_ifgroups[$id]['ifname']) {
+              if (!empty($config['filter']) && is_array($config['filter']['rule'])) {
+                  foreach ($config['filter']['rule'] as &$rule) {
+                        $rule_ifs = explode(",", $rule['interface']);
+                        if (in_array($a_ifgroups[$id]['ifname'], $rule_ifs)) {
+                            // replace interface
+                            $rule_ifs[array_search($a_ifgroups[$id]['ifname'], $rule_ifs)] = $ifgroupentry['ifname'];
+                            $rule['interface'] = implode(",", $rule_ifs);
+                        }
+                    }
+              }
+              if (!empty($config['nat']) && is_array($config['nat']['rule'])) {
+                  foreach ($config['nat']['rule'] as &$rule) {
+                      $rule_ifs = explode(",", $rule['interface']);
+                      if (in_array($a_ifgroups[$id]['ifname'], $rule_ifs)) {
+                          // replace interface
+                          $rule_ifs[array_search($a_ifgroups[$id]['ifname'], $rule_ifs)] = $ifgroupentry['ifname'];
+                          $rule['interface'] = implode(",", $rule_ifs);
+                      }
+                  }
+              }
+          }
+          // remove group members
+          foreach (explode(" ", $a_ifgroups[$id]['members']) as $old_member) {
+              if (!in_array($old_member, $pconfig['members'])) {
+                  $realif = get_real_interface($old_member);
+                  if (!empty($realif)) {
+                      mwexec("/sbin/ifconfig {$realif} -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
+                  }
+              }
+          }
+          // update item
+          $a_ifgroups[$id] = $ifgroupentry;
+      } else {
+          // add new item
+          $a_ifgroups[] = $ifgroupentry;
+      }
+      write_config();
+      interface_group_setup($ifgroupentry);
+      header("Location: interfaces_groups.php");
+      exit;
+    }
 }
 
-$iflist = get_configured_interface_with_descr();
-$iflist_disabled = get_configured_interface_with_descr(false, true);
-
-if ($_POST) {
-
-	unset($input_errors);
-	$pconfig = $_POST;
-
-	if (!isset($id)) {
-		foreach ($a_ifgroups as $groupentry)
-			if ($groupentry['ifname'] == $_POST['ifname'])
-				$input_errors[] = gettext("Group name already exists!");
-	}
-	if (preg_match("/([^a-zA-Z])+/", $_POST['ifname'], $match))
-		$input_errors[] = gettext("Only letters A-Z are allowed as the group name.");
-
-	foreach ($iflist as $gif => $gdescr) {
-		if ($gdescr == $_POST['ifname'] || $gif == $_POST['ifname'])
-			$input_errors[] = gettext("The specified group name is already used by an interface. Please choose another name.");
-	}
-	$members = "";
-	$isfirst = 0;
-	/* item is a normal ifgroupentry type */
-	for($x=0; $x<9999; $x++) {
-		if($_POST["members{$x}"] <> "") {
-			if ($isfirst > 0)
-				$members .= " ";
-			$members .= $_POST["members{$x}"];
-			$isfirst++;
-		}
-	}
-
-	if (!$input_errors) {
-		$ifgroupentry = array();
-		$ifgroupentry['members'] = $members;
-		$ifgroupentry['descr'] = $_POST['descr'];
-
-		if (isset($id) && $a_ifgroups[$id] && $_POST['ifname'] != $a_ifgroups[$id]['ifname']) {
-			if (!empty($config['filter']) && is_array($config['filter']['rule'])) {
-				foreach ($config['filter']['rule'] as $ridx => $rule) {
-					if (isset($rule['floating'])) {
-						$rule_ifs = explode(",", $rule['interface']);
-						$rule_changed = false;
-						foreach ($rule_ifs as $rule_if_id => $rule_if) {
-							if ($rule_if == $a_ifgroups[$id]['ifname']) {
-								$rule_ifs[$rule_if_id] = $_POST['ifname'];
-								$rule_changed = true;
-							}
-						}
-						if ($rule_changed)
-							$config['filter']['rule'][$ridx]['interface'] = implode(",", $rule_ifs);
-					} else {
-						if ($rule['interface'] == $a_ifgroups[$id]['ifname'])
-							$config['filter']['rule'][$ridx]['interface'] = $_POST['ifname'];
-					}
-				}
-			}
-			if (!empty($config['nat']) && is_array($config['nat']['rule'])) {
-				foreach ($config['nat']['rule'] as $ridx => $rule) {
-					if ($rule['interface'] == $a_ifgroups[$id]['ifname'])
-						$config['nat']['rule'][$ridx]['interface'] = $_POST['ifname'];
-				}
-			}
-			$omembers = explode(" ", $a_ifgroups[$id]['members']);
-			if (count($omembers) > 0) {
-				foreach ($omembers as $ifs) {
-					$realif = get_real_interface($ifs);
-					if ($realif)
-						mwexec("/sbin/ifconfig {$realif} -group " . $a_ifgroups[$id]['ifname']);
-				}
-			}
-			$ifgroupentry['ifname'] = $_POST['ifname'];
-			$a_ifgroups[$id] = $ifgroupentry;
-		} else if (isset($id) && $a_ifgroups[$id]) {
-			$omembers = explode(" ", $a_ifgroups[$id]['members']);
-			$nmembers = explode(" ", $members);
-			$delmembers = array_diff($omembers, $nmembers);
-			if (count($delmembers) > 0) {
-				foreach ($delmembers as $ifs) {
-					$realif = get_real_interface($ifs);
-					if ($realif)
-						mwexec("/sbin/ifconfig {$realif} -group " . $a_ifgroups[$id]['ifname']);
-				}
-			}
-			$ifgroupentry['ifname'] = $_POST['ifname'];
-			$a_ifgroups[$id] = $ifgroupentry;
-		} else {
-			$ifgroupentry['ifname'] = $_POST['ifname'];
-			$a_ifgroups[] = $ifgroupentry;
-		}
-
-		write_config();
-
-		interface_group_setup($ifgroupentry);
-
-		header("Location: interfaces_groups.php");
-		exit;
-	} else {
-		$pconfig['descr'] = $_POST['descr'];
-		$pconfig['members'] = $members;
-	}
-}
 
 include("head.inc");
-
+legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
 <?php include("fbegin.inc"); ?>
 
-<script type="text/javascript">
-//<![CDATA[
-// Global Variables
-var rowname = new Array(9999);
-var rowtype = new Array(9999);
-var newrow  = new Array(9999);
-var rowsize = new Array(9999);
-
-for (i = 0; i < 9999; i++) {
-        rowname[i] = '';
-        rowtype[i] = 'select';
-        newrow[i] = '';
-        rowsize[i] = '30';
-}
-
-var field_counter_js = 0;
-var loaded = 0;
-var is_streaming_progress_bar = 0;
-var temp_streaming_text = "";
-
-var addRowTo = (function() {
-    return (function (tableId) {
-        var d, tbody, tr, td, bgc, i, ii, j;
-        d = document;
-        tbody = d.getElementById(tableId).getElementsByTagName("tbody").item(0);
-        tr = d.createElement("tr");
-        for (i = 0; i < field_counter_js; i++) {
-                td = d.createElement("td");
-		<?php
-                        $innerHTML="\"<input type='hidden' value='\" + totalrows +\"' name='\" + rowname[i] + \"_row-\" + totalrows + \"' /><select size='1' name='\" + rowname[i] + totalrows + \"'>\" +\"";
-
-                        foreach ($iflist as $ifnam => $ifdescr)
-                                $innerHTML .= "<option value='{$ifnam}'>{$ifdescr}<\/option>";
-			$innerHTML .= "<\/select>\";";
-                ?>
-			td.innerHTML=<?=$innerHTML;?>
-                tr.appendChild(td);
-        }
-        td = d.createElement("td");
-        td.rowSpan = "1";
-
-        td.innerHTML = '<a onclick="removeRow(this);return false;" href="#"><span class="glyphicon glyphicon-remove" alt="remove"><\/span><\/a>';
-        tr.appendChild(td);
-        tbody.appendChild(tr);
-        totalrows++;
-    });
-})();
-
-function removeRow(el) {
-    var cel;
-    while (el && el.nodeName.toLowerCase() != "tr")
-            el = el.parentNode;
-
-    if (el && el.parentNode) {
-        cel = el.getElementsByTagName("td").item(0);
-        el.parentNode.removeChild(el);
-    }
-}
-
-	rowname[0] = "members";
-	rowtype[0] = "textbox";
-	rowsize[0] = "30";
-
-	rowname[2] = "detail";
-	rowtype[2] = "textbox";
-	rowsize[2] = "50";
-//]]>
-</script>
-<input type='hidden' name='members_type' value='textbox' class="form-control unknown" />
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-				<div id="inputerrors"></div>
-
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-					 <header class="content-box-head container-fluid">
-				        <h3><?=gettext("Interface Groups Edit");?></h3>
-				    </header>
-
-				    <div class="content-box-main">
-
-						<form action="interfaces_groups_edit.php" method="post" name="iform" id="iform">
-			                        <table class="table table-striped table-sort">
-									  <tr>
-									    <td valign="top" class="vncellreq"><?=gettext("Group Name");?></td>
-									    <td class="vtable">
-										<input type="text" class="form-control unknown" name="ifname" id="ifname" maxlength="15" value="<?=htmlspecialchars($pconfig['ifname']);?>" />
-										<br />
-										<?=gettext("No numbers or spaces are allowed. Only characters in a-zA-Z");?>
-									    </td>
-									  </tr>
-									  <tr>
-									    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-									    <td width="78%" class="vtable">
-									      <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-									      <br />
-									      <span class="vexpl">
-									        <?=gettext("You may enter a description here for your reference (not parsed).");?>
-									      </span>
-									    </td>
-									  </tr>
-									  <tr>
-									    <td width="22%" valign="top" class="vncellreq"><div id="membersnetworkport"><?=gettext("Member (s)");?></div></td>
-									    <td width="78%" class="vtable">
-									      <table id="maintable" summary="main table">
-									        <tbody>
-									          <tr>
-									            <td><div id="onecolumn"><?=gettext("Interface");?></div></td>
-									          </tr>
-
-										<?php
-										$counter = 0;
-										$members = $pconfig['members'];
-										if ($members <> "") {
-											$item = explode(" ", $members);
-											foreach($item as $ww) {
-												$members = $item[$counter];
-												$tracker = $counter;
-										?>
-									        <tr>
-										<td class="vtable">
-										        <select name="members<?php echo $tracker; ?>" class="formselect" id="members<?php echo $tracker; ?>">
-												<?php
-													$found = false;
-													foreach ($iflist as $ifnam => $ifdescr) {
-														echo "<option value=\"{$ifnam}\"";
-														if ($ifnam == $members) {
-															$found = true;
-															echo " selected=\"selected\"";
-														}
-														echo ">{$ifdescr}</option>";
-													}
-
-													if ($found === false)
-														foreach ($iflist_disabled as $ifnam => $ifdescr)
-															if ($ifnam == $members)
-																echo "<option value=\"{$ifnam}\" selected=\"selected\">{$ifdescr}</option>";
-												?>
-									                        </select>
-										</td>
-									        <td>
-										<a onclick="removeRow(this); return false;" href="#"><span class="glyphicon glyphicon-remove" alt="remove"></span></a>
-										      </td>
-									          </tr>
-									<?php
-											$counter++;
-
-											} // end foreach
-										} // end if
-									?>
-									        </tbody>
-											  </table>
-												<a onclick="javascript:addRowTo('maintable'); return false;" class="btn btn-default btn-xs" href="#">
-												    <span class="glyphicon glyphicon-plus"></span>
-												</a>
-									      </a>
-											<br /><br />
-											<strong><?= gettext('NOTE:') ?></strong>
-											<?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
-											</td>
-									  </tr>
-									  <tr>
-									    <td width="22%" valign="top">&nbsp;</td>
-									    <td width="78%">
-									      <input id="submit" name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-									      <a href="interfaces_groups.php"><input id="cancelbutton" name="cancelbutton" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
-									      <?php if (isset($id) && $a_ifgroups[$id]): ?>
-									      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-									      <?php endif; ?>
-									    </td>
-									  </tr>
-									</table>
-						</form>
-				    </div>
-				</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
-
-<script type="text/javascript">
-//<![CDATA[
-	field_counter_js = 1;
-	rows = 1;
-	totalrows = <?php echo $counter; ?>;
-	loaded = <?php echo $counter; ?>;
-//]]>
-</script>
-
+<section class="page-content-main">
+  <div class="container-fluid">
+    <div class="row">
+      <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+      <section class="col-xs-12">
+        <div class="content-box">
+          <div class="table-responsive">
+            <form method="post" name="iform" id="iform">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <td width="22%"><strong><?=gettext("Interface Groups Edit");?></strong></td>
+                    <td width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      &nbsp;
+                    </td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><a id="help_for_ifname" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Name");?></td>
+                    <td>
+                      <input type="text" name="ifname" value="<?=$pconfig['ifname'];?>" />
+                      <div class="hidden" for="help_for_ifname">
+                        <?=gettext("No numbers or spaces are allowed. Only characters in a-zA-Z");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td>
+                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                      <div class="hidden" for="help_for_descr">
+                        <?=gettext("You may enter a description here " .
+                        "for your reference (not parsed)."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_members" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Member (s)");?></td>
+                    <td>
+                        <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
-	unset($iflist);
-	unset($iflist_disabled);
-	include("foot.inc");
-?>
+                        foreach (get_configured_interface_with_descr() as $ifn => $ifinfo):?>
+                            <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
+                                <?=$ifinfo;?>
+                            </option>
+<?php
+                        endforeach;?>
+                        </select>
+                      <div class="hidden" for="help_for_members">
+                      <strong><?= gettext('NOTE:') ?></strong>
+                      <?= gettext('Rules for WAN type interfaces in groups do not contain the reply-to mechanism upon which Multi-WAN typically relies.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_groups.php');?>'" />
+                      <?php if (isset($id)): ?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+<?php
+include("foot.inc");
