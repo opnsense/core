@@ -193,7 +193,7 @@ include("head.inc");
 				//then revise the add another server line
 				if (add < 9) {
 					var next = add + 1;
-					var newdiv = '<a class="btn btn-default btn-xs" title="<?php echo gettext("Add another Time server");?>" onclick="NewTimeServer(' + next + ')" alt="add" ><span class="glyphicon glyphicon-plus"></span></a>\n';
+					var newdiv = '<a class="btn btn-default btn-xs" title="<?= gettext("Add another Time server");?>" onclick="NewTimeServer(' + next + ')" alt="add" ><span class="glyphicon glyphicon-plus"></span></a>\n';
 					document.getElementById('addserver').innerHTML=newdiv;
 				}else{
 					document.getElementById('addserver').style.display = 'none';
@@ -238,7 +238,7 @@ include("head.inc");
 									$interfaces[$aliasip] = $aliasip." (".get_vip_descr($aliasip).")";
 								$size = (count($interfaces) < 10) ? count($interfaces) : 10;
 							?>
-										<select id="interface" name="interface[]" multiple="multiple" class="formselect" size="<?php echo $size; ?>">
+										<select id="interface" name="interface[]" multiple="multiple" class="formselect" size="<?= $size; ?>">
 							<?php
 								foreach ($interfaces as $iface => $ifacename) {
 									if (!is_ipaddr(get_interface_ip($iface)) && !is_ipaddr($iface))
@@ -250,10 +250,10 @@ include("head.inc");
 								} ?>
 												</select>
 												<br />
-												<br /><?php echo gettext("Interfaces without an IP address will not be shown."); ?>
+												<br /><?= gettext("Interfaces without an IP address will not be shown."); ?>
 												<br />
-												<br /><?php echo gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
-												<br /><?php echo gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
+												<br /><?= gettext("Selecting no interfaces will listen on all interfaces with a wildcard."); ?>
+												<br /><?= gettext("Selecting all interfaces will explicitly listen on only the interfaces/IPs specified."); ?>
 											</td>
 										</tr>
 										<tr>
@@ -277,47 +277,47 @@ include("head.inc");
 													echo "<input name=\"server{$i}\" class=\"formfld unknown\" id=\"server{$i}\" size=\"30\" value=\"{$timeserverVal}\" type=\"text\" />&emsp;";
 													echo "\n<input name=\"servprefer{$i}\" class=\"formcheckbox\" id=\"servprefer{$i}\" onclick=\"CheckOffOther('servprefer{$i}', 'servselect{$i}')\" type=\"checkbox\"";
 													if (!empty($config['ntpd']['prefer']) && !empty($timeserverVal) && substr_count($config['ntpd']['prefer'], $timeserverVal)) echo " checked=\"checked\"";
-													echo " />&nbsp;prefer&emsp;";
+													echo " />&nbsp;" . gettext('prefer') . "&emsp;";
 													echo "\n<input name=\"servselect{$i}\" class=\"formcheckbox\" id=\"servselect{$i}\" onclick=\"CheckOffOther('servselect{$i}', 'servprefer{$i}')\" type=\"checkbox\"";
 													if (!empty($config['ntpd']['noselect']) && !empty($timeserverVal) && substr_count($config['ntpd']['noselect'], $timeserverVal)) echo " checked=\"checked\"";
-													echo " />&nbsp;noselect\n<br />\n</div>\n";
+													echo " />&nbsp;" . gettext('noselect') . "\n<br />\n</div>\n";
 												}
 												?>
 												<div id="addserver">
-												<a class="btn btn-default btn-xs" title="<?php echo gettext("Add another Time server");?>" onclick="NewTimeServer(<?php echo $j;?>)" alt="add" ><span class="glyphicon glyphicon-plus"></span> </a>
+												<a class="btn btn-default btn-xs" title="<?= gettext("Add another Time server");?>" onclick="NewTimeServer(<?= $j;?>)" alt="add" ><span class="glyphicon glyphicon-plus"></span> </a>
 												</div>
 												<br />
-												<?php echo gettext('For best results three to five servers should be configured here.'); ?>
+												<?= gettext('For best results three to five servers should be configured here.'); ?>
 												<br />
-												<?php echo gettext('The <i>prefer</i> option indicates that NTP should favor the use of this server more than all others.'); ?>
+												<?= sprintf(gettext('The %sprefer%s option indicates that NTP should favor the use of this server more than all others.'),'<i>','</i>') ?>
 												<br />
-												<?php echo gettext('The <i>noselect</i> option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.'); ?>
+												<?= sprintf(gettext('The %snoselect%s option indicates that NTP should not use this server for time, but stats for this server will be collected and displayed.'),'<i>','</i>') ?>
 											</td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext('Orphan mode') ?></td>
 											<td width="78%" class="vtable">
-												<input name="ntporphan" type="text" class="formfld unknown" id="ntporphan" min="1" max="16" size="20" value="<?=htmlspecialchars(isset($pconfig['orphan']) ? $pconfig['orphan']:"");?>" /><?php echo gettext("(0-15)");?><br />
-												<?php echo gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."); ?>
+												<input name="ntporphan" type="text" class="formfld unknown" id="ntporphan" min="1" max="16" size="20" value="<?=htmlspecialchars(isset($pconfig['orphan']) ? $pconfig['orphan']:"");?>" /><?= gettext("(0-15)");?><br />
+												<?= gettext("Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to insure that any other servers available to clients are preferred over this server. (default: 12)."); ?>
 											</td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext('NTP graphs') ?></td>
 											<td width="78%" class="vtable">
 												<input name="statsgraph" type="checkbox" class="formcheckbox" id="statsgraph" <?php if(!empty($pconfig['statsgraph'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
+												<?= gettext("Enable rrd graphs of NTP statistics (default: disabled)."); ?>
 											</td>
 										</tr>
 										<tr>
 											<td width="22%" valign="top" class="vncellreq"><?=gettext('Syslog logging') ?></td>
 											<td width="78%" class="vtable">
-												<?php echo gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?php echo gettext("Status > System Logs > NTP"); ?></a>).
+												<?= gettext("These options enable additional messages from NTP to be written to the System Log");?> (<a href="diag_logs_ntpd.php"><?= gettext("Status > System Logs > NTP"); ?></a>).
 												<br /><br />
 												<input name="logpeer" type="checkbox" class="formcheckbox" id="logpeer"<?php if(!empty($pconfig['logpeer'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable logging of peer messages (default: disabled)."); ?>
+												<?= gettext("Enable logging of peer messages (default: disabled)."); ?>
 												<br />
 												<input name="logsys" type="checkbox" class="formcheckbox" id="logsys"<?php if(!empty($pconfig['logsys'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable logging of system messages (default: disabled)."); ?>
+												<?= gettext("Enable logging of system messages (default: disabled)."); ?>
 											</td>
 										</tr>
 										<tr>
@@ -327,16 +327,16 @@ include("head.inc");
 												<input class="btn btn-default btn-xs" type="button" onclick="show_advanced('showstatisticsbox', 'showstatistics')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
 												</div>
 												<div id="showstatistics" style="display:none">
-												<strong><?php echo gettext("Warning: ")?></strong><?php echo gettext("these options will create persistant daily log files in /var/log/ntp."); ?>
+												<strong><?= gettext("Warning: ")?></strong><?= gettext("these options will create persistant daily log files in /var/log/ntp."); ?>
 												<br /><br />
 												<input name="clockstats" type="checkbox" class="formcheckbox" id="clockstats"<?php if(!empty($pconfig['clockstats'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable logging of reference clock statistics (default: disabled)."); ?>
+												<?= gettext("Enable logging of reference clock statistics (default: disabled)."); ?>
 												<br />
 												<input name="loopstats" type="checkbox" class="formcheckbox" id="loopstats"<?php if(!empty($pconfig['loopstats'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable logging of clock discipline statistics (default: disabled)."); ?>
+												<?= gettext("Enable logging of clock discipline statistics (default: disabled)."); ?>
 												<br />
 												<input name="peerstats" type="checkbox" class="formcheckbox" id="peerstats"<?php if(!empty($pconfig['peerstats'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable logging of NTP peer statistics (default: disabled)."); ?>
+												<?= gettext("Enable logging of NTP peer statistics (default: disabled)."); ?>
 												</div>
 											</td>
 										</tr>
@@ -347,25 +347,25 @@ include("head.inc");
 												<input type="button" class="btn btn-default btn-xs" onclick="show_advanced('showrestrictbox', 'showrestrict')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show access restriction options");?>
 												</div>
 												<div id="showrestrict" style="display:none">
-												<?php echo gettext("these options control access to NTP from the WAN."); ?>
+												<?= gettext("these options control access to NTP from the WAN."); ?>
 												<br /><br />
 												<input name="kod" type="checkbox" class="formcheckbox" id="kod"<?php if(empty($pconfig['kod'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
+												<?= gettext("Enable Kiss-o'-death packets (default: enabled)."); ?>
 												<br />
 												<input name="nomodify" type="checkbox" class="formcheckbox" id="nomodify"<?php if(empty($pconfig['nomodify'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc (default: enabled)."); ?>
+												<?= gettext("Deny state modifications (i.e. run time configuration) by ntpq and ntpdc (default: enabled)."); ?>
 												<br />
 												<input name="noquery" type="checkbox" class="formcheckbox" id="noquery"<?php if(!empty($pconfig['noquery'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Disable ntpq and ntpdc queries (default: disabled)."); ?>
+												<?= gettext("Disable ntpq and ntpdc queries (default: disabled)."); ?>
 												<br />
 												<input name="noserve" type="checkbox" class="formcheckbox" id="noserve"<?php if(!empty($pconfig['noserve'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Disable all except ntpq and ntpdc queries (default: disabled)."); ?>
+												<?= gettext("Disable all except ntpq and ntpdc queries (default: disabled)."); ?>
 												<br />
 												<input name="nopeer" type="checkbox" class="formcheckbox" id="nopeer"<?php if(empty($pconfig['nopeer'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Deny packets that attempt a peer association (default: enabled)."); ?>
+												<?= gettext("Deny packets that attempt a peer association (default: enabled)."); ?>
 												<br />
 												<input name="notrap" type="checkbox" class="formcheckbox" id="notrap"<?php if(empty($pconfig['notrap'])) echo " checked=\"checked\""; ?> />
-												<?php echo gettext("Deny mode 6 control message trap service (default: enabled)."); ?>
+												<?= gettext("Deny mode 6 control message trap service (default: enabled)."); ?>
 												</div>
 											</td>
 										</tr>
@@ -376,12 +376,12 @@ include("head.inc");
 												<input type="button" class="btn btn-default btn-xs" onclick="show_advanced('showleapsecbox', 'showleapsec')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Leap second configuration");?>
 												</div>
 												<div id="showleapsec" style="display:none">
-												<?php echo gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
-												<?php echo gettext("Normally this is only useful if this server is a stratum 1 time server.");?>
+												<?= gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
+												<?= gettext("Normally this is only useful if this server is a stratum 1 time server.");?>
 												<br /><br />
-												<?php echo gettext("Enter Leap second configuration as text:");?><br />
+												<?= gettext("Enter Leap second configuration as text:");?><br />
 												<textarea name="leaptxt" class="formpre" id="leaptxt" cols="65" rows="7"><?php $text = base64_decode(chunk_split(isset($pconfig['leapsec'])?$pconfig['leapsec']:"")); echo $text;?></textarea><br />
-												<strong><?php echo gettext("Or");?></strong>, <?php echo gettext("select a file to upload:");?>
+												<strong><?= gettext("Or");?></strong>, <?= gettext("select a file to upload:");?>
 												<input type="file" name="leapfile" class="formfld file" id="leapfile" />
 												</div>
 											</td>
