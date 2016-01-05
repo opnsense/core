@@ -1,0 +1,7 @@
+<menu>
+    <Firewall>
+        <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter">
+            <Settings url="/ui/trafficshaper/"/>
+        </TrafficShaper>
+    </Firewall>
+</menu>

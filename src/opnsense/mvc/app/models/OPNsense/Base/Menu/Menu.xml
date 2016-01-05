@@ -181,8 +181,7 @@
                 <NPTEdit url="/firewall_nat_npt_edit.php*"/>
             </NPT>
         </NAT>
-        <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter">
-            <Settings url="/ui/trafficshaper/"/>
+        <TrafficShaper>
             <Status url="/diag_limiter_info.php"/>
         </TrafficShaper>
         <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
