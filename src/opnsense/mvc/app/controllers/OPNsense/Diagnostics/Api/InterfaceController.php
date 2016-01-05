@@ -40,6 +40,18 @@ use \OPNsense\Core\Backend;
  */
 class InterfaceController extends ApiControllerBase
 {
+    private function getInterfaceNames()
+    {
+        // collect interface names
+        $intfmap = array();
+        $config = Config::getInstance()->object() ;
+        if ($config->interfaces != null) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                $intfmap[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key ;
+            }
+        }
+        return $intfmap;
+    }
     /**
      * retrieve system arp table contents
      * @return array
@@ -50,14 +62,7 @@ class InterfaceController extends ApiControllerBase
         $response = $backend->configdpRun("interface list arp json");
         $arptable = json_decode($response, true);
 
-        // collect interface names
-        $intfmap = array();
-        $config = Config::getInstance()->object() ;
-        if ($config->interfaces != null) {
-            foreach ($config->interfaces->children() as $key => $node) {
-                $intfmap[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key ;
-            }
-        }
+        $intfmap = $this->getInterfaceNames();
         // merge arp output with interface names
         if (is_array($arptable)) {
             foreach ($arptable as &$arpentry) {
@@ -70,5 +75,30 @@ class InterfaceController extends ApiControllerBase
         }
 
         return $arptable;
+    }
+
+    /**
+     * retrieve system ndp table contents
+     * @return array
+     */
+    public function getNdpAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdpRun("interface list ndp json");
+        $ndptable = json_decode($response, true);
+
+        $intfmap = $this->getInterfaceNames();
+        // merge ndp output with interface names
+        if (is_array($ndptable)) {
+            foreach ($ndptable as &$ndpentry) {
+                if (array_key_exists($ndpentry['intf'], $intfmap)) {
+                    $ndpentry['intf_description'] = $intfmap[$ndpentry['intf']];
+                } else {
+                    $ndpentry['intf_description'] = "";
+                }
+            }
+        }
+
+        return $ndptable;
     }
 }

@@ -36,9 +36,21 @@ use OPNsense\Base\IndexController;
  */
 class InterfaceController extends IndexController
 {
+    /**
+     * system arp table
+     */
     public function arpAction()
     {
         $this->view->title = "System ARP table";
         $this->view->pick('OPNsense/Diagnostics/arp');
+    }
+
+    /**
+     * system NDP table
+     */
+    public function ndpAction()
+    {
+        $this->view->title = "System NDP table";
+        $this->view->pick('OPNsense/Diagnostics/ndp');
     }
 }
