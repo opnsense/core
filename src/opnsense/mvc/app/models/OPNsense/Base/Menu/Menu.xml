@@ -134,7 +134,6 @@
         </Wireless>
         <Diagnostics order="940" cssClass="fa fa-medkit">
             <DNSLookup order="20" VisibleName="DNS Lookup" url="/diag_dns.php"/>
-            <NDPTable order="30" VisibleName="NDP Table" url="/diag_ndp.php"/>
             <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
             <Ping order="50" url="/diag_ping.php"/>
             <TestPort order="60" VisibleName="Test Port" url="/diag_testport.php"/>

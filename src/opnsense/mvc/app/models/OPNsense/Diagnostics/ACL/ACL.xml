@@ -5,15 +5,23 @@
         <description>Allow access to the 'Diagnostics: ARP Table' page.</description>
         <patterns>
             <pattern>ui/diagnostics/interface/arp/*</pattern>
-            <pattern>api/diagnostics/interface/arp/*</pattern>
+            <pattern>api/diagnostics/interface/getArp*</pattern>
         </patterns>
     </page-diagnostics-arptable>
+    <page-diagnostics-ndptable>
+        <name>Webcfg - Diagnostics: NDP Table page</name>
+        <description>Allow access to the 'Diagnostics: NDP Table' page.</description>
+        <patterns>
+            <pattern>ui/diagnostics/interface/ndp/*</pattern>
+            <pattern>api/diagnostics/interface/getNdp*</pattern>
+        </patterns>
+    </page-diagnostics-ndptable>
     <page-diagnostics-system-activity>
-      <name>WebCfg - Diagnostics: System Activity</name>
-      <description>Allows access to the 'Diagnostics: System Activity' page</description>
-      <patterns>
-          <pattern>ui/diagnostics/activity/*</pattern>
-          <pattern>api/diagnostics/activity/*</pattern>
-      </patterns>
+        <name>WebCfg - Diagnostics: System Activity</name>
+        <description>Allows access to the 'Diagnostics: System Activity' page</description>
+        <patterns>
+            <pattern>ui/diagnostics/activity/*</pattern>
+            <pattern>api/diagnostics/activity/*</pattern>
+        </patterns>
     </page-diagnostics-system-activity>
 </acl>

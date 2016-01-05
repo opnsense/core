@@ -186,13 +186,6 @@
             "diag_nanobsd.php*"
         ]
     },
-    "page-diagnostics-ndptable": {
-        "name": "Webcfg - Diagnostics: NDP Table page",
-        "descr": "Allow access to the 'Diagnostics: NDP Table' page.",
-        "match": [
-            "diag_ndp.php*"
-        ]
-    },
     "page-diagnostics-packetcapture": {
         "name": "WebCfg - Diagnostics: Packet Capture page",
         "descr": "Allow access to the 'Diagnostics: Packet Capture' page.",
