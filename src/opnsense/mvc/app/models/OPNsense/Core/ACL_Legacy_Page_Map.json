@@ -74,13 +74,6 @@
             "*.widget.php*"
         ]
     },
-    "page-diagnostics-arptable": {
-        "name": "WebCfg - Diagnostics: ARP Table page",
-        "descr": "Allow access to the 'Diagnostics: ARP Table' page.",
-        "match": [
-            "diag_arp.php*"
-        ]
-    },
     "page-diagnostics-authentication": {
         "name": "WebCfg - Diagnostics: Authentication page",
         "descr": "Allow access to the 'Diagnostics: Authentication' page.",
@@ -289,14 +282,6 @@
         "descr": "Allow access to the 'Diagnostics: States Summary' page.",
         "match": [
             "diag_states_summary.php*"
-        ]
-    },
-    "page-diagnostics-system-activity": {
-        "name": "WebCfg - Diagnostics: System Activity",
-        "descr": "Allows access to the 'Diagnostics: System Activity' page",
-        "match": [
-            "ui/diagnostics/activity/*",
-            "api/diagnostics/activity/*"
         ]
     },
     "page-diagnostics-testport": {

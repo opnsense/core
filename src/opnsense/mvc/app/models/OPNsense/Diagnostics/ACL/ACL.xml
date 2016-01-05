@@ -1,0 +1,19 @@
+<acl>
+    <!-- unique acl key, must be globally unique for all acl's  -->
+    <page-diagnostics-arptable>
+        <name>WebCfg - Diagnostics: ARP Table page</name>
+        <description>Allow access to the 'Diagnostics: ARP Table' page.</description>
+        <patterns>
+            <pattern>ui/diagnostics/interface/arp/*</pattern>
+            <pattern>api/diagnostics/interface/arp/*</pattern>
+        </patterns>
+    </page-diagnostics-arptable>
+    <page-diagnostics-system-activity>
+      <name>WebCfg - Diagnostics: System Activity</name>
+      <description>Allows access to the 'Diagnostics: System Activity' page</description>
+      <patterns>
+          <pattern>ui/diagnostics/activity/*</pattern>
+          <pattern>api/diagnostics/activity/*</pattern>
+      </patterns>
+    </page-diagnostics-system-activity>
+</acl>
