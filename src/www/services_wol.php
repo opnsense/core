@@ -154,7 +154,7 @@ include("head.inc");
 										  <td width="78%" class="vtable">
 						                      <input name="mac" type="text" class="formfld unknown" id="mac" size="20" value="<?=htmlspecialchars($mac);?>" />
 						                      <br />
-						                      <?=gettext("Enter a MAC address ");?><span class="vexpl"> <?=gettext("in the following format: xx:xx:xx:xx:xx:xx");?></span></td></tr>
+						                      <?=sprintf(gettext("Enter a MAC address %sin the following format: xx:xx:xx:xx:xx:xx%s"),'<span class="vexpl">','</span>');?></td></tr>
 										<tr>
 										  <td width="22%" valign="top">&nbsp;</td>
 										  <td width="78%">
@@ -213,7 +213,7 @@ include("head.inc");
 						<strong>
 							<?=gettext("Note:");?><br />
 				</strong>
-					</span><?=gettext("This service can be used to wake up (power on) computers by sending special"); ?> &quot;<?=gettext("Magic Packets"); ?>&quot;. <?=gettext("The NIC in the computer that is to be woken up must support Wake on LAN and has to be configured properly (WOL cable, BIOS settings). ");?>
+					</span><?= gettext('This service can be used to wake up (power on) computers by sending special "Magic Packets". The NIC in the computer that is to be woken up must support Wake on LAN and has to be configured properly (WOL cable, BIOS settings).');?>
 			</p>
 					</div>
 				</form>
