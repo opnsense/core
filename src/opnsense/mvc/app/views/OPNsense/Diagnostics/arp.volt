@@ -86,7 +86,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="10">{{ lang._('NOTE: Local IPv6 peers use NDP instead of ARP.') }}</td>
+                        <td colspan="6">{{ lang._('NOTE: Local IPv6 peers use NDP instead of ARP.') }}</td>
                     </tr>
                     </tfoot>
                 </table>
