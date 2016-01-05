@@ -192,9 +192,6 @@ function show_advanced_dns() {
 						  <div class="table-responsive">
 					<table class="table table-striped table-sort">
 									<tr>
-										<td colspan="2" valign="top" class="listtopic"><?=gettext("General DNS Forwarder Options");?></td>
-									</tr>
-									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Enable");?></td>
 										<td width="78%" class="vtable"><p>
 											<input name="enable" type="checkbox" id="enable" value="yes" <?php if ($pconfig['enable'] == "yes") echo "checked=\"checked\"";?> onclick="enable_change(false)" />
