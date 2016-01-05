@@ -997,7 +997,7 @@ $( document ).ready(function() {
                   <select name='csr_digest_alg'>
 <?php
                   foreach ($openssl_digest_algs as $csr_digest_alg) :?>
-                    <option value="<?=$csr_digest_alg;?>" <?=$pconfig['csr_digest_alg'] == $csr_digest_alg ? $pconfig['csr_digest_alg'] == $csr_digest_alg : "";?>>
+                    <option value="<?=$csr_digest_alg;?>" <?=$pconfig['csr_digest_alg'] == $csr_digest_alg ? "selected=\"selected\"" : "";?>>
                       <?=strtoupper($csr_digest_alg);?>
                     </option>
 <?php
