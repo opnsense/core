@@ -175,7 +175,7 @@ function show_advanced_dns() {
 				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
 				<?php if (isset($savemsg)) print_info_box($savemsg); ?>
 				<?php if (is_subsystem_dirty('hosts')): ?><br/>
-				<?php print_info_box_apply(gettext("The DNS forwarder configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+				<?php print_info_box_apply(gettext("The DNS forwarder configuration has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
 				<?php endif; ?>
 
 			    <section class="col-xs-12">
@@ -191,9 +191,6 @@ function show_advanced_dns() {
 					    <div class="content-box-main">
 						  <div class="table-responsive">
 					<table class="table table-striped table-sort">
-									<tr>
-										<td colspan="2" valign="top" class="listtopic"><?=gettext("General DNS Forwarder Options");?></td>
-									</tr>
 									<tr>
 										<td width="22%" valign="top" class="vncellreq"><?=gettext("Enable");?></td>
 										<td width="78%" class="vtable"><p>
