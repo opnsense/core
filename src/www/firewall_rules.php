@@ -439,6 +439,11 @@ $( document ).ready(function() {
 <?php
                       endif;?>
 <?php
+                      if(!empty($filterent['quick'])): ?>
+                        <i class="fa fa-flash<?= ($filterent['quick'] == 'yes') ? '' : ' text-muted' ?>" data-toggle="tooltip" data-placement="left" title="<?= ($filterent['quick'] == 'yes') ? gettext('quick') : gettext('not quick') ?>"></i>
+<?php                 endif; ?>
+
+<?php
                       if (isset($filterent['log'])):?>
                       <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? "text-muted" :""?>"></span>
 <?php
@@ -599,6 +604,8 @@ $( document ).ready(function() {
                           <td width="100"><?=gettext("log");?></td>
                           <td width="16"><span class="fa fa-long-arrow-right"></span></td>
                           <td width="100"><?=gettext("in");?></td>
+                          <td width="16"><span class="fa fa-flash"></span></td>
+                          <td width="100"><?=gettext("quick");?></td>
                         </tr>
                         <tr>
                           <td><span class="glyphicon glyphicon-play text-muted"></span></td>
@@ -617,6 +624,8 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td width="16"><span class="fa fa-long-arrow-left"></span></td>
                           <td width="100"><?=gettext("out");?></td>
+                          <td width="16"></td>
+                          <td width="100"></td>
                         </tr>
                       </table>
                     </td>
