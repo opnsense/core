@@ -277,10 +277,10 @@ include("head.inc");
 													echo "<input name=\"server{$i}\" class=\"formfld unknown\" id=\"server{$i}\" size=\"30\" value=\"{$timeserverVal}\" type=\"text\" />&emsp;";
 													echo "\n<input name=\"servprefer{$i}\" class=\"formcheckbox\" id=\"servprefer{$i}\" onclick=\"CheckOffOther('servprefer{$i}', 'servselect{$i}')\" type=\"checkbox\"";
 													if (!empty($config['ntpd']['prefer']) && !empty($timeserverVal) && substr_count($config['ntpd']['prefer'], $timeserverVal)) echo " checked=\"checked\"";
-													echo " />&nbsp;" . gettext('prefer') . "&emsp;";
+													echo " />&nbsp;" . gettext('prefer this server') . "&emsp;";
 													echo "\n<input name=\"servselect{$i}\" class=\"formcheckbox\" id=\"servselect{$i}\" onclick=\"CheckOffOther('servselect{$i}', 'servprefer{$i}')\" type=\"checkbox\"";
 													if (!empty($config['ntpd']['noselect']) && !empty($timeserverVal) && substr_count($config['ntpd']['noselect'], $timeserverVal)) echo " checked=\"checked\"";
-													echo " />&nbsp;" . gettext('noselect') . "\n<br />\n</div>\n";
+													echo " />&nbsp;" . gettext('do not use this server') . "\n<br />\n</div>\n";
 												}
 												?>
 												<div id="addserver">

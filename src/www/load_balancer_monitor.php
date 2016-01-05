@@ -79,7 +79,7 @@ $shortcut_section = 'relayd';
 include("head.inc");
 
 $main_buttons = array(
-	array('label'=>'Add', 'href'=>'load_balancer_monitor_edit.php'),
+	array('label'=>gettext('Add'), 'href'=>'load_balancer_monitor_edit.php'),
 );
 
 ?>
