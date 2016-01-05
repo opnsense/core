@@ -1414,13 +1414,5 @@
         "match": [
             "xmlrpc.php*"
         ]
-    },
-    "page-services-proxy": {
-      "name": "WebCfg - Services: Proxy page",
-      "descr": "Allow access to the 'Services: Proxy' page.",
-      "match": [
-        "ui/proxy/*",
-        "api/proxy/*"
-      ]
     }
 }

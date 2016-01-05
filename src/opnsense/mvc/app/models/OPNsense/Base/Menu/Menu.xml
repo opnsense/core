@@ -293,8 +293,7 @@
                 <Type url="/diag_logs_poes.php*"/>
             </LogFile>
         </PPPoEServer>
-        <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt">
-            <Administration url="/ui/proxy/"/>
+        <Proxy>
             <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
                 <More url="/diag_logs_proxy.php*"/>
             </Log>

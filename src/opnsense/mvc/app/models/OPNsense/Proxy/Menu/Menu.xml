@@ -1,0 +1,7 @@
+<menu>
+    <Services>
+      <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt">
+          <Administration url="/ui/proxy/"/>
+      </Proxy>
+    </Services>
+</menu>
