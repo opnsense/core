@@ -27,7 +27,6 @@
         </ConfigManager>
         <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug"/>
         <Firmware order="5" url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
-        <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh">
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
@@ -83,12 +82,11 @@
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
         <Diagnostics order="160" cssClass="fa fa-medkit">
-            <Activity VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
-            <Factory VisibleName="Factory Defaults" url="/diag_defaults.php"/>
-            <Halt VisibleName="Halt System" url="/diag_halt.php"/>
-            <Reboot VisibleName="Reboot System" url="/reboot.php"/>
-            <SmartStatus VisibleName="SMART Status" url="/diag_smart.php"/>
-            <Services url="/status_services.php">
+            <Factory order="20" VisibleName="Factory Defaults" url="/diag_defaults.php"/>
+            <Halt order="30" VisibleName="Halt System" url="/diag_halt.php"/>
+            <Reboot order="40" VisibleName="Reboot System" url="/reboot.php"/>
+            <SmartStatus order="60" VisibleName="SMART Status" url="/diag_smart.php"/>
+            <Services order="50" url="/status_services.php">
                 <All url="/status_services.php?*"/>
             </Services>
         </Diagnostics>
@@ -135,14 +133,13 @@
             </Status>
         </Wireless>
         <Diagnostics order="940" cssClass="fa fa-medkit">
-            <ARPTable VisibleName="ARP Table" url="/diag_arp.php"/>
-            <DNSLookup VisibleName="DNS Lookup" url="/diag_dns.php"/>
-            <NDPTable VisibleName="NDP Table" url="/diag_ndp.php"/>
-            <PacketCapture VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
-            <Ping url="/diag_ping.php"/>
-            <TestPort VisibleName="Test Port" url="/diag_testport.php"/>
-            <Traceroute url="/diag_traceroute.php"/>
-            <Traffic VisibleName="Traffic Graph" url="/status_graph.php">
+            <DNSLookup order="20" VisibleName="DNS Lookup" url="/diag_dns.php"/>
+            <NDPTable order="30" VisibleName="NDP Table" url="/diag_ndp.php"/>
+            <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
+            <Ping order="50" url="/diag_ping.php"/>
+            <TestPort order="60" VisibleName="Test Port" url="/diag_testport.php"/>
+            <Traceroute order="70" url="/diag_traceroute.php"/>
+            <Traffic order="80" VisibleName="Traffic Graph" url="/status_graph.php">
                 <Details url="/status_graph.php?*"/>
             </Traffic>
         </Diagnostics>

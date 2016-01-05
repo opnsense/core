@@ -1,0 +1,13 @@
+<menu>
+    <System>
+        <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
+        <Diagnostics>
+            <Activity order="10" VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
+        </Diagnostics>
+    </System>
+    <Interfaces>
+        <Diagnostics>
+          <ARPTable order="10" VisibleName="ARP Table" url="/ui/diagnostics/interface/arp/"/>
+        </Diagnostics>
+    </Interfaces>
+</menu>
