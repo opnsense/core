@@ -41,7 +41,7 @@ POSSIBILITY OF SUCH DAMAGE.
             ajaxGet(url = "/api/diagnostics/interface/getArp",
                     sendData = {}, callback = function (data, status) {
                         if (status == "success") {
-                            $("#grid-arp > tbody").html('');
+                            var html = [];
                             $.each(data, function (key, value) {
                                 var fields = ["ip", "mac", "manufacturer", "intf", "intf_description", "hostname"];
                                 tr_str = '<tr>';
@@ -53,8 +53,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     }
                                 }
                                 tr_str += '</tr>';
-                                $("#grid-arp > tbody").append(tr_str);
+                                html.push(tr_str);
                             });
+                            $("#grid-arp > tbody").html(html.join(''));
                         }
                         $("#grid-arp").bootgrid(gridopt);
                     }
