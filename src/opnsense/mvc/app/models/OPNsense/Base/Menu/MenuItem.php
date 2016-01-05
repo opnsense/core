@@ -253,15 +253,23 @@ class MenuItem
         // set attributes
         foreach ($properties as $propname => $propvalue) {
             $methodName = $newMenuItem->getXmlPropertySetterName($propname);
-            if ($methodName != null) {
-                $newMenuItem->$methodName((string)$propvalue);
-            }
+            $newMenuItem->$methodName((string)$propvalue);
         }
 
+        $orderNum = sprintf("%05d", $newMenuItem->getOrder());
+        $idx = $orderNum."_".$newMenuItem->id;
         if ($isNew) {
             // new item, add to child list
-            $orderNum = sprintf("%05d", $newMenuItem->getOrder());
-            $this->children[$orderNum."_".$newMenuItem->id] = $newMenuItem;
+            $this->children[$idx] = $newMenuItem;
+        } else {
+            // update existing, if the sort order changed, move this child into the new position
+            foreach ($this->children as $key => $node) {
+                if ($node == $newMenuItem && $key != $idx) {
+                    unset($this->children[$key]);
+                    $this->children[$idx] = $newMenuItem;
+                    break;
+                }
+            }
         }
 
         return $newMenuItem;
