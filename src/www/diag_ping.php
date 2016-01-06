@@ -34,7 +34,7 @@ require_once("interfaces.inc");
 define('MAX_COUNT', 10);
 define('DEFAULT_COUNT', 3);
 
-$cmd_action = false;
+$cmd_output = false;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set form defaults
     $pconfig = array();
@@ -78,7 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $host .= "%{$ifscope}";
             }
         }
+        // execute ping command and catch both stdout and stderr
         $cmd_action = "{$command} {$srcip} -c" . escapeshellarg($pconfig['count']) . " " . escapeshellarg($host);
+        $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
+        if (is_resource($process)) {
+             $cmd_output = stream_get_contents($pipes[1]);
+             $cmd_output .= stream_get_contents($pipes[2]);
+        }
     }
 }
 
@@ -155,25 +161,14 @@ include("head.inc"); ?>
         </div>
       </section>
 <?php
-      if ( $cmd_action !== false):?>
+      if ( $cmd_output !== false):?>
       <section class="col-xs-12">
         <div class="content-box">
           <header class="content-box-head container-fluid">
             <h3><?=gettext("Ping output"); ?></h3>
           </header>
           <div class="content-box-main col-xs-12">
-            <pre>
-<?php
-          // execute ping command and catch both stdout and stderr
-          $process = proc_open($cmd_action, array(array("pipe", "r"), array("pipe", "w"), array("pipe", "w")), $pipes);
-          if (is_resource($process)) {
-             $result = stream_get_contents($pipes[1]);
-             $result .= stream_get_contents($pipes[2]);
-             echo $result;
-          }
-?>
-
-            </pre>
+            <pre><?=$cmd_output;?></pre>
           </div>
         </div>
       </section>
