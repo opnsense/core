@@ -28,6 +28,12 @@
 */
 -->
 
+<style type="text/css">
+.panel-heading-sm{
+    height: 28px;
+    padding: 4px 10px;
+}
+</style>
 
 <!-- nvd3 -->
 <link rel="stylesheet" href="/ui/css/nv.d3.css">
@@ -551,26 +557,35 @@
         link.click();
     }
 
+    $(document).ready(function() {
+        $("#options").collapse('show');
+        // hide title row
+        $(".page-content-head").addClass("hidden");
+    });
+
 </script>
 
 
-<ul class="nav nav-tabs" role="tablist" id="maintabs">
-{# Tab Content #}
-</ul>
 
 <div class="content-box tab-content">
     <div id="tab_1" class="tab-pane fade in">
         <div class="panel panel-primary">
-            <div class="panel-heading"><b>{{ lang._('Options') }}</b></div>
-            <div class="panel-body">
+            <div class="panel-heading panel-heading-sm">
+              <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#options"></i>
+              <b>{{ lang._('Options') }}</b>
+            </div>
+            <div class="panel-body collapse" id="options">
                 <div class="container-fluid">
+                <ul class="nav nav-tabs" role="tablist" id="maintabs">
+                {# Tab Content #}
+                </ul>
                     <div class="row">
                         <div class="col-md-12"></div>
                         <div class="col-md-4">
                             <b>{{ lang._('Zoom level') }}:</b>
 
                             <form onChange="UpdateOptions()">
-                                <div class="btn-group" data-toggle="buttons" id="zoom">
+                                <div class="btn-group btn-group-xs" data-toggle="buttons" id="zoom">
                                     <!-- The zoom buttons are generated based upon the current dataset -->
                                 </div>
                             </form>
@@ -579,7 +594,7 @@
                             <b>{{ lang._('Inverse') }}:</b>
 
                             <form onChange="UpdateOptions()">
-                                <div class="btn-group" data-toggle="buttons">
+                                <div class="btn-group btn-group-xs" data-toggle="buttons">
                                     <label class="btn btn-default active">
                                         <input type="radio" id="in0" name="inverse" checked="checked" value="0"/> {{
                                         lang._('Off') }}
@@ -594,7 +609,7 @@
                             <b>{{ lang._('Resolution') }}:</b>
 
                             <form onChange="UpdateOptions()">
-                                <div class="btn-group" data-toggle="buttons">
+                                <div class="btn-group btn-group-xs" data-toggle="buttons">
                                     <label class="btn btn-default active">
                                         <input type="radio" id="res0" name="resolution" checked="checked" value="120"/>
                                         {{ lang._('Standard') }}
@@ -614,7 +629,7 @@
                             <b>{{ lang._('Show Tables') }}:</b>
 
                             <form onChange="UpdateOptions()">
-                                <div class="btn-group" data-toggle="buttons">
+                                <div class="btn-group btn-group-xs" data-toggle="buttons">
                                     <label class="btn btn-default active">
                                         <input type="radio" id="tab0" name="show_table" checked="checked" value="0"/> {{
                                         lang._('Off') }}
@@ -631,9 +646,6 @@
 
         </div>
 
-        <div id="averages" class="alert alert-info" role="alert">
-            <b>{{ lang._('Current detail is showing') }} <span id="stepsize"></span> {{ lang._('averages') }}.</b>
-        </div>
         <div id="loading" class="alert bg-primary"><i class="fa fa-spinner fa-spin"></i>
             <b>{{ lang._('Please wait while loading data...') }}</b>
         </div>
@@ -643,7 +655,13 @@
         <!-- place holder for the chart itself -->
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title" id="chart_title">
+                <h3 class="panel-title">
+                <span id="chart_title"> </span>
+                <span id="averages">
+                    <small>
+                    (<b>{{ lang._('Current detail is showing') }} <span id="stepsize"></span> {{ lang._('averages') }}.</b>)
+                    </small>
+                </span>
                 </h3>
             </div>
             <div class="panel-body">
@@ -676,12 +694,16 @@
             </div>
         </div>
 
+
     </div>
 
     <div id="chart_details_table" class="col-md-12" style="display: none;">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title"> {{ lang._('Current View - Details') }}</h3>
+                <h3 class="panel-title">
+                  {{ lang._('Current View - Details') }}
+
+                </h3>
             </div>
             <div class="panel-body">
                 <div class="btn-toolbar" role="toolbar">
