@@ -38,7 +38,9 @@ $cmd_action = false;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set form defaults
     $pconfig = array();
-    $pconfig['count'] = 3;
+    $pconfig['count'] = isset($_GET['count']) ? $_GET['count'] : 3;
+    $pconfig['host'] = isset($_GET['host']) ? $_GET['host'] : null;
+    $pconfig['interface'] = isset($_GET['interface']) ? $_GET['interface'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate formdata and schedule action
     $pconfig = $_POST;
