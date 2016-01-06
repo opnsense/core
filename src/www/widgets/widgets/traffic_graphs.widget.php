@@ -115,33 +115,33 @@ if (isset($a_config["scale_type"])) {
 							</td>
 						</tr>
 							<?php
-                                $scale_type_up="checked=\"checked\"";
+                                $scale_type_up='checked="checked"';
                                 $scale_type_follow="";
                             if (isset($config["widgets"]["trafficgraphs"]["scale_type"])) {
                                 $selected_radio = $config["widgets"]["trafficgraphs"]["scale_type"];
                                 if ($selected_radio == "up") {
-                                    $scale_type_up = "checked=\"checked\"";
+                                    $scale_type_up = 'checked="checked"';
                                     $scale_type_follow="";
                                 } elseif ($selected_radio == "follow") {
                                     $scale_type_up="";
-                                    $scale_type_follow = "checked=\"checked\"";
+                                    $scale_type_follow = 'checked="checked"';
                                 }
                             }
                             ?>
 			<tr>
 				<td>
-					<input name="scale_type"  type="radio" id="scale_type_up" value="up" <?php echo $scale_type_up; ?> /> <?php echo gettext('Scale up')?>
+					<input name="scale_type"  type="radio" id="scale_type_up" value="up" <?= $scale_type_up; ?> /> <?= gettext('Scale up')?>
 				</td>
 			</tr>
 			<tr>
 				<td>
-				<input name="scale_type" type="radio" id="scale_type_follow" value="follow" <?php echo $scale_type_follow; ?> /> <?php echo gettext('Scale follow')?><br /><br />
-				Refresh Interval:
+				<input name="scale_type" type="radio" id="scale_type_follow" value="follow" <?= $scale_type_follow; ?> /> <?= gettext('Scale follow')?><br /><br />
+				<?= gettext('Refresh Interval:') ?>
 				<select name="refreshinterval" class="formfld" id="refreshinterval" >
 					<?php for ($i = 1; $i <= 10; $i += 1) {
 ?>
 						<option value="<?= $i ?>" <?php if ($refreshinterval == $i) {
-                            echo "selected=\"selected\"";
+                            echo 'selected="selected"';
 }?>><?= $i ?></option>
 					<?php
 } ?>
@@ -187,7 +187,7 @@ foreach ($ifdescrs as $ifname => $ifdescr) {
 			<div id="<?=$ifname;?>topic" class="widgetsubheader">
 				<div style="float:left;width:49%">
 					<span onclick="location.href='/status_graph.php?if=<?=$ifname;
-?>'" style="cursor:pointer">Current <?=$ifdescr;?> Traffic</span>
+?>'" style="cursor:pointer"><?= sprintf(gettext('Current %s Traffic'),$ifdescr) ?></span>
 				</div>
 				<div align="right" style="float:right;width:49%">
 					<div id="<?=$ifname;?>graphdiv-min" onclick='return trafficminimizeDiv("<?= $ifname ?>", true);'
@@ -199,7 +199,7 @@ foreach ($ifdescrs as $ifname => $ifdescr) {
 				</div>
 				<div style="clear:both;"></div>
 			</div>
-			<div id="<?=$ifname;?>graphdiv" style="display:<?php echo $graphdisplay;?>">
+			<div id="<?=$ifname;?>graphdiv" style="display:<?= $graphdisplay;?>">
 				<object data="graph.php?ifnum=<?=$ifname;
 ?>&amp;ifname=<?=rawurlencode($ifdescr);
 ?>&amp;timeint=<?=$refreshinterval;
