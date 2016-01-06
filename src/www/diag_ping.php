@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // set form defaults
     $pconfig = array();
     $pconfig['count'] = 3;
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate formdata and schedule action
     $pconfig = $_POST;
@@ -79,30 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $cmd_action = "{$command} {$srcip} -c" . escapeshellarg($pconfig['count']) . " " . escapeshellarg($host);
     }
-}
-
-
-
-if ($_POST || $_REQUEST['host']) {
-
-
-
-  $host = trim($pconfig['host']);
-  $ipproto = $pconfig['ipproto'];
-
-
-  if (count($input_errors)) {
-    $do_ping = true;
-    $sourceip = $_REQUEST['sourceip'];
-    $count = $_POST['count'];
-    if (preg_match('/[^0-9]/', $count) )
-      $count = DEFAULT_COUNT;
-  }
-}
-if (!isset($do_ping)) {
-  $do_ping = false;
-  $host = '';
-  $count = DEFAULT_COUNT;
 }
 
 legacy_html_escape_form_data($pconfig);
