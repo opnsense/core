@@ -484,19 +484,19 @@ $( document ).ready(function() {
 //]]>
 </script>
 
-<form action="diag_backup.php" method="post">
-  <section class="page-content-main">
-    <div class="container-fluid">
-      <div class="row">
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-        <?php if (is_subsystem_dirty('restore')): ?><br/>
-        <form action="reboot.php" method="post">
+<section class="page-content-main">
+  <div class="container-fluid">
+    <div class="row">
+      <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+      <?php if (is_subsystem_dirty('restore')): ?><br/>
+      <form action="reboot.php" method="post">
         <input name="Submit" type="hidden" value="Yes" />
         <?php print_info_box(gettext("The firewall configuration has been changed.") . "<br />" . gettext("The firewall is now rebooting."));?><br />
-        </form>
-        <?php endif; ?>
-        <?php if ($input_messages) print_info_box($input_messages); ?>
-        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+      </form>
+      <?php endif; ?>
+      <?php if ($input_messages) print_info_box($input_messages); ?>
+      <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+      <form action="diag_backup.php" method="post" enctype="multipart/form-data">
         <section class="col-xs-12">
           <section class="__mb">
             <div class="content-box">
@@ -675,10 +675,10 @@ $( document ).ready(function() {
           </div>
         </section>
       </section>
-    </div>
+    </form>
   </div>
+</div>
 </section>
-</form>
 
 <?php include("foot.inc"); ?>
 
