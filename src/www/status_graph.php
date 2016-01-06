@@ -348,7 +348,7 @@ if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enabl
 							<div style="clear: both;"></div>
 						</div>
 						<div class="col-xs-12">
-							<p><span class="text-danger"><strong><?=gettext("Note"); ?>:</strong></span> <?=gettext("the"); ?> <a href="http://www.adobe.com/svg/viewer/install/" target="_blank"><?=gettext("Adobe SVG Viewer"); ?></a>, <?=gettext("Firefox 1.5 or later or other browser supporting SVG is required to view the graph"); ?>.</p>
+							<p><?=gettext("Note:"); ?> <?=sprintf(gettext('The %sAdobe SVG Viewer%s, Firefox 1.5 or later or other browser supporting SVG is required to view the graph.'),'<a href="http://www.adobe.com/svg/viewer/install/" target="_blank">','</a>'); ?></p>
 						</div>
 					</div>
 				</section>
