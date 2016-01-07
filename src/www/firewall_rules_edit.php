@@ -182,6 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($_GET['if'])) {
             if ($_GET['if'] == "FloatingRules" ) {
                 $pconfig['floating'] = true;
+                $pconfig['quick'] = true;
             } else {
                 $pconfig['interface'] = $_GET['if'];
             }
