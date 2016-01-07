@@ -366,7 +366,7 @@ $( document ).ready(function() {
                         endif;?>
                           <a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
                              data-toggle="tooltip" data-placement="left" title="<?=gettext("Add Gateway based on this one");?>">
-                            <span class="glyphicon glyphicon-plus"></span>
+                            <span class="fa fa-clone text-muted"></span>
                           </a>
                         </td>
                       </tr>

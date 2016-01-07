@@ -420,7 +420,7 @@ include("head.inc");
                         <span class="glyphicon glyphicon-remove"></span>
                       </a>
                       <a href="firewall_nat_out_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add a new NAT based on this one");?>">
-                        <span class="glyphicon glyphicon-plus"></span>
+                        <span class="fa fa-clone text-muted"></span>
                       </a>
                     </td>
                   </tr>

@@ -381,7 +381,7 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-remove"></span>
                         </a>
                         <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule based on this one");?>">
-                          <span class="glyphicon glyphicon-plus"></span>
+                          <span class="fa fa-clone text-muted"></span>
                         </a>
                       </td>
                      </tr>

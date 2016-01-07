@@ -381,7 +381,7 @@ if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
 ?>
                       <a href="vpn_ipsec_phase1.php?dup=<?=$i;
 ?>" title="<?=gettext("copy phase1 entry"); ?>" class="btn btn-default btn-xs" alt="add">
-                                      <span class="glyphicon glyphicon-plus"></span>
+                                      <span class="fa fa-clone text-muted"></span>
                       </a>
 <?php                 endif;
 ?>
@@ -506,7 +506,7 @@ if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm
         </button>
         <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid'];
 ?>" title="<?=gettext("add a new Phase 2 based on this one"); ?>" alt="add" class="btn btn-default btn-xs">
-          <span class="glyphicon glyphicon-plus"></span>
+          <span class="fa fa-clone text-muted"></span>
         </a>
     </td>
   </tr>

@@ -283,7 +283,7 @@ endif; ?>
                           data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
                       </button>
                       <a class="btn btn-default btn-xs" href="system_routes_edit.php?dup=<?=$i;?>">
-                        <span class="glyphicon glyphicon-plus" title="<?=gettext("add a new rule based on this one");?>" alt="duplicate"></span>
+                        <span class="fa fa-clone text-muted" title="<?=gettext("add a new rule based on this one");?>" alt="duplicate"></span>
                       </a>
                     </td>
                   </tr>

@@ -251,7 +251,7 @@ $main_buttons = array(
                         <span class="glyphicon glyphicon-remove"></span>
                       </a>
                       <a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping based on this one");?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-plus"></span>
+                        <span class="fa fa-clone text-muted"></span>
                       </a>
                     </td>
                   </tr>
