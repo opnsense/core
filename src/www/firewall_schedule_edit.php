@@ -1006,10 +1006,10 @@ function removeRow(el) {
                             <table id="scheduletable" summary="range">
                               <tbody>
                                 <tr>
-                                  <td align="center" width="35%"><?=gettext("Day(s)");?></td>
-                                  <td align="center" width="12%"><?=gettext("Start Time");?></td>
-                                  <td align="center" width="11%"><?=gettext("Stop Time");?></td>
-                                  <td align="center" width="42%"><?=gettext("Description");?></td>
+                                  <td width="35%"><?=gettext("Day(s)");?></td>
+                                  <td width="12%"><?=gettext("Start Time");?></td>
+                                  <td width="11%"><?=gettext("Stop Time");?></td>
+                                  <td width="42%"><?=gettext("Description");?></td>
                                 </tr>
                                 <?php
                                 if (isset($pconfig['timerange'])){
