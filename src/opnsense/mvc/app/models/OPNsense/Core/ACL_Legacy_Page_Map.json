@@ -63,7 +63,7 @@
             "*.widget.php*",
             "graph.php*",
             "getstats.php*",
-            "ifstats.php*",
+            "legacy_traffic_stats.php*",
             "diag_logs_filter_dynamic.php*"
         ]
     },
@@ -1045,9 +1045,8 @@
         "descr": "Allow access to the 'Status: Traffic Graph' page.",
         "match": [
             "status_graph.php*",
-            "bandwidth_by_ip.php*",
             "graph.php*",
-            "ifstats.php*"
+            "legacy_traffic_stats.php*"
         ]
     },
     "page-service-upnp": {
@@ -1398,7 +1397,7 @@
         "name": "WebCfg - XMLRPC Interface Stats page",
         "descr": "Allow access to the 'XMLRPC Interface Stats' page.",
         "match": [
-            "ifstats.php*"
+            "legacy_traffic_stats.php*"
         ]
     },
     "page-xmlrpclibrary": {
