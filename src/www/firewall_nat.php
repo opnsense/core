@@ -303,7 +303,7 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                       </td>
                       <td>
-                        <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>">
+                        <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>">
 <?php                     if (!empty($natent['associated-rule-id'])): ?>
 <?php                     if(isset($natent['disabled'])):?>
                           <span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
@@ -374,13 +374,13 @@ $( document ).ready(function() {
                         <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </a>
-                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this rule");?>" class="btn btn-default btn-xs">
+                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <a id="del_<?=$nnats;?>" title="<?=gettext("delete this rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <a id="del_<?=$nnats;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-remove"></span>
                         </a>
-                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule based on this one");?>">
+                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
                           <span class="fa fa-clone text-muted"></span>
                         </a>
                       </td>

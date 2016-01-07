@@ -323,15 +323,15 @@ $( document ).ready(function() {
                       <td>
 <?php
                     if (isset($gateway['inactive'])) :?>
-                        <span class="glyphicon glyphicon-remove text-muted" data-toggle="tooltip" data-placement="left" title="<?=gettext("This gateway is inactive because interface is missing");?>"></span>
+                        <span class="glyphicon glyphicon-remove text-muted" data-toggle="tooltip" data-placement="left" title="<?=gettext("Gateway is inactive because interface is missing");?>"></span>
 <?php
                     elseif (is_numeric($gateway['attribute'])) :?>
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>" >
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=(!isset($gateway['disabled'])) ? gettext("disable gateway") : gettext("enable gateway");?>">
                           <span class="glyphicon glyphicon-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>"></span>
                         </a>
 <?php
                     else :?>
-                        <span class="glyphicon glyphicon-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>"></span>
+                        <span class="glyphicon glyphicon-play <?=isset($gateway['disabled']) || isset($gateway['inactive']) ? "text-muted" : "text-success";?>" data-toggle="tooltip" data-placement="left" title="<?=(!isset($filterent['disabled'])) ? gettext("disable gateway") : gettext("enable gateway");?>"></span>
 <?php
                     endif;?>
                       </td>
@@ -353,19 +353,19 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <a href="system_gateways_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
-                          data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit Gateway");?>">
+                          data-toggle="tooltip" data-placement="left" title="<?=gettext("edit gateway");?>">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
 <?php
                         if (is_numeric($gateway['attribute'])) :?>
-                          <button data-id="<?=$i;?>" title="<?=gettext("Delete Gateway"); ?>" data-toggle="tooltip"
+                          <button data-id="<?=$i;?>" title="<?=gettext("delete gateway"); ?>" data-toggle="tooltip"
                                   class="act_delete btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-remove"></span>
                           </button>
 <?php
                         endif;?>
                           <a href="system_gateways_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
-                             data-toggle="tooltip" data-placement="left" title="<?=gettext("Add Gateway based on this one");?>">
+                             data-toggle="tooltip" data-placement="left" title="<?=gettext("clone gateway");?>">
                             <span class="fa fa-clone text-muted"></span>
                           </a>
                         </td>

@@ -319,7 +319,7 @@ include("head.inc");
           <div class="table-responsive content-box ">
             <table class="table table-striped table-sort">
               <thead>
-                <tr><th colspan="12"><?=gettext("Mappings:"); ?></th></tr>
+                <tr><th colspan="12"><?=gettext("Manual rules:"); ?></th></tr>
                 <tr>
                     <th>&nbsp;</th>
                     <th>&nbsp;</th>
@@ -348,11 +348,11 @@ include("head.inc");
 <?php
                     if ($mode == "disabled" || $mode == "automatic"):
 ?>
-                      <span data-toggle="tooltip" title="<?=gettext("This rule is being ignored");?>" class="glyphicon glyphicon-play <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled']) ? "text-muted" : "text-success";?>"></span>
+                      <span data-toggle="tooltip" title="<?=gettext("All manual rules are being ignored");?>" class="glyphicon glyphicon-play <?=$mode == "disabled" || $mode == "automatic" || isset($natent['disabled']) ? "text-muted" : "text-success";?>"></span>
 <?php
                     else:
 ?>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=gettext("click to toggle enabled/disabled status");?>" class="btn btn-default btn-xs <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>" class="btn btn-default btn-xs <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
                         <span class="glyphicon glyphicon-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>  "></span>
                       </a>
 <?php
@@ -413,13 +413,13 @@ include("head.inc");
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
-                      <a href="firewall_nat_out_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit mapping");?>" class="btn btn-default btn-xs">
+                      <a href="firewall_nat_out_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
-                      <a id="del_<?=$i;?>" title="<?=gettext("delete this rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-remove"></span>
                       </a>
-                      <a href="firewall_nat_out_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add a new NAT based on this one");?>">
+                      <a href="firewall_nat_out_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
                         <span class="fa fa-clone text-muted"></span>
                       </a>
                     </td>
@@ -459,7 +459,7 @@ include("head.inc");
 <?php
                 endif;
 ?>
-                  <a href="firewall_nat_out_edit.php" title="<?=gettext("add new mapping");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                  <a href="firewall_nat_out_edit.php" title="<?=gettext("add new rule");?>" alt="add"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                   </td>
                 </tr>
               </tbody>

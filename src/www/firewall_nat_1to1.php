@@ -135,7 +135,7 @@ $main_buttons = array(
         BootstrapDialog.show({
             type:BootstrapDialog.TYPE_DANGER,
             title: "<?= gettext("1:1");?>",
-            message: "<?=gettext("Do you really want to delete the selected mappings?");?>",
+            message: "<?=gettext("Do you really want to delete the selected rules?");?>",
             buttons: [{
                     label: "<?= gettext("No");?>",
                     action: function(dialogRef) {
@@ -213,7 +213,12 @@ $main_buttons = array(
                       <input type="checkbox" name="rule[]" value="<?=$i;?>" />
                     </td>
                     <td>
-                      <a href="#" type="submit" id="toggle_<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("click to toggle enabled/disabled status");?>" class="act_toggle glyphicon glyphicon glyphicon-play <?=isset($natent['disabled']) ? "text-muted" : "text-success";?>">
+                      <a href="#" type="submit" id="toggle_<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>" class="act_toggle">
+<?php                   if(isset($natent['disabled'])):?>
+                          <span class="glyphicon glyphicon-play text-muted"></span>
+<?php                   else:?>
+                          <span class="glyphicon glyphicon-play text-success"></span>
+<?php                   endif; ?>
                       </a>
                     </td>
                     <td>
@@ -241,16 +246,16 @@ $main_buttons = array(
                       <?=$natent['descr'];?> &nbsp;
                     </td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected mapping before this rule");?>" class="act_move btn btn-default btn-xs">
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
-                      <a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit this mapping");?>">
+                      <a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit rule ");?>">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
-                      <a id="del_<?=$i;?>" title="<?=gettext("delete this mapping"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-remove"></span>
                       </a>
-                      <a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping based on this one");?>" class="btn btn-default btn-xs">
+                      <a href="firewall_nat_1to1_edit.php?dup=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>" class="btn btn-default btn-xs">
                         <span class="fa fa-clone text-muted"></span>
                       </a>
                     </td>
@@ -264,30 +269,30 @@ $main_buttons = array(
                     <td>
 <?php               if ($i == 0):
 ?>
-                      <span title="<?=gettext("move selected mappings to end");?>" class="btn btn-default btn-xs">
+                      <span title="<?=gettext("move selected rules to end");?>" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left">
                         </span>
                       </span>
 <?php               else:
 ?>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected mappings to end");?>" class="act_move btn btn-default btn-xs">
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
 <?php               endif;
 ?>
 <?php               if ($i == 0):
 ?>
-                      <span title="<?=gettext("delete selected mappings"); ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
+                      <span title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-remove"></span>
                       </span>
 <?php               else:
 ?>
-                      <a id="del_x" title="<?=gettext("delete selected mappings"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-remove"></span>
                       </a>
 <?php               endif;
 ?>
-                      <a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new mapping");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                      <a href="firewall_nat_1to1_edit.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                     </td>
                   </tr>
                 </tbody>
