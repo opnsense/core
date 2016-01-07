@@ -439,8 +439,13 @@ $( document ).ready(function() {
 <?php
                       endif;?>
 <?php
-                      if(!empty($filterent['quick'])): ?>
-                        <i class="fa fa-flash<?= ($filterent['quick'] == 'yes') ? '' : ' text-muted' ?>" data-toggle="tooltip" data-placement="left" title="<?= ($filterent['quick'] == 'yes') ? gettext('quick') : gettext('not quick') ?>"></i>
+                      if ($selected_if != 'FloatingRules'):
+                        ; // all other interfaces are always quick
+                      elseif(!empty($filterent['quick'])): ?>
+                        <i class="fa fa-flash <?= ($filterent['quick'] == 'yes') ? 'text-warning' : 'text-muted' ?>" data-toggle="tooltip" data-placement="left" title="<?= ($filterent['quick'] == 'yes') ? gettext('first match') : gettext('last match') ?>"></i>
+<?php
+                      else: ?>
+                        <i class="fa fa-flash text-muted" data-toggle="tooltip" data-placement="left" title="<?= gettext('last match') ?>"></i>
 <?php                 endif; ?>
 
 <?php
@@ -604,8 +609,11 @@ $( document ).ready(function() {
                           <td width="100"><?=gettext("log");?></td>
                           <td width="16"><span class="fa fa-long-arrow-right"></span></td>
                           <td width="100"><?=gettext("in");?></td>
-                          <td width="16"><span class="fa fa-flash"></span></td>
-                          <td width="100"><?=gettext("quick");?></td>
+<?php
+                          if ($selected_if == 'FloatingRules'): ?>
+                          <td width="16"><span class="fa fa-flash text-warning"></span></td>
+                          <td width="100"><?=gettext("first match");?></td>
+<?php                     endif; ?>
                         </tr>
                         <tr>
                           <td><span class="glyphicon glyphicon-play text-muted"></span></td>
@@ -624,8 +632,11 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td width="16"><span class="fa fa-long-arrow-left"></span></td>
                           <td width="100"><?=gettext("out");?></td>
-                          <td width="16"></td>
-                          <td width="100"></td>
+<?php
+                          if ($selected_if == 'FloatingRules'): ?>
+                          <td width="16"><span class="fa fa-flash text-muted"></td>
+                          <td width="100"><?=gettext("last match");?></td>
+<?php                     endif; ?>
                         </tr>
                       </table>
                     </td>
