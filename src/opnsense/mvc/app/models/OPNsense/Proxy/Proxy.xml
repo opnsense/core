@@ -78,6 +78,12 @@
                         <default>/var/squid/cache</default>
                         <Required>Y</Required>
                     </directory>
+                    <cache_mem type="IntegerField">
+                        <default>256</default>
+                        <MinimumValue>1</MinimumValue>
+                        <ValidationMessage>Specify a positive memory cache size. (number of MB's)</ValidationMessage>
+                        <Required>Y</Required>
+                    </cache_mem>
                     <size type="IntegerField">
                         <default>100</default>
                         <MinimumValue>1</MinimumValue>
