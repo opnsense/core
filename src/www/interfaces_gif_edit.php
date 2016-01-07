@@ -202,7 +202,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("gif remote address"); ?></td>
+                    <td><a id="help_for_remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF remote address"); ?></td>
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
                       <div class="hidden" for="help_for_remote-addr">
@@ -211,7 +211,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("gif tunnel local address"); ?></td>
+                    <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF tunnel local address"); ?></td>
                     <td>
                       <input name="tunnel-local-addr" type="text" value="<?=$pconfig['tunnel-local-addr'];?>" />
                       <div class="hidden" for="help_for_tunnel-local-addr">
@@ -220,7 +220,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("gif tunnel remote address "); ?></td>
+                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GIF tunnel remote address "); ?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
