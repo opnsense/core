@@ -72,7 +72,7 @@ if (!does_interface_exist($real_interface)) {
         if (!empty($_GET['hostipformat'])) {
             $addrdata = gethostbyaddr($fields[0]);
             if ($_GET['hostipformat'] == 'hostname' && $addrdata != $fields[0]){
-                $addrdata = explode(".", $fields)[0];
+                $addrdata = explode(".", $addrdata)[0];
             }
         } else {
             $addrdata = $fields[0];
