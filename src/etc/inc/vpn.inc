@@ -411,7 +411,7 @@ EOD;
                 continue;
             }
 
-            if (strpos($ph1ent['authentication_method'], 'rsa') || $ph1ent['authentication_method'] == 'eap-tls') {
+            if (strpos($ph1ent['authentication_method'], 'rsa') !== false || $ph1ent['authentication_method'] == 'eap-tls') {
                 $certline = '';
                 $ikeid = $ph1ent['ikeid'];
                 $cert = lookup_cert($ph1ent['certref']);
