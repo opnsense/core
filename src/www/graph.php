@@ -81,7 +81,7 @@ $error_text = sprintf(gettext('Cannot get data about interface %s'), htmlspecial
 $height=100;            //SVG internal height : do not modify
 $width=200;             //SVG internal width : do not modify
 
-$fetch_link = "ifstats.php?if=" . htmlspecialchars($ifnum);
+$fetch_link = "legacy_traffic_stats.php?if=" . htmlspecialchars($ifnum);
 
 /********* Graph DATA **************/
 print('<?xml version="1.0" ?>' . "\n");?>
