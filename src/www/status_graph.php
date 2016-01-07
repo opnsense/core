@@ -188,7 +188,7 @@ include("head.inc");
               <table class="table table-condensed">
                 <thead>
                   <tr>
-                      <td><?=!empty($_GET['hostipformat']) ? gettext("Host IP") : gettext("Host Name or IP"); ?></td>
+                      <td><?=empty($pconfig['hostipformat']) ? gettext("Host IP") : gettext("Host Name or IP"); ?></td>
                       <td><?=gettext("Bandwidth In"); ?></td>
                       <td><?=gettext("Bandwidth Out"); ?></td>
                  </tr>
