@@ -1015,20 +1015,24 @@ $( document ).ready(function() {
                         </p>
                       </td>
                     </tr>
+                    <tr>
+                      <td colspan="4">
+                        <table>
+                          <tr>
+                            <td></td>
+                            <td width="20px"></td>
+                            <td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
+                            <td width="200px"><?= gettext('System Admininistrator') ?></td>
+                            <td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
+                            <td width="200px"><?= gettext('Disabled User') ?></td>
+                            <td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
+                            <td width="200px"><?= gettext('Normal User') ?></td>
+                            <td></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
                   </tfoot>
-                </table>
-                <table>
-                  <tr>
-                    <td></td>
-                    <td width="20px"></td>
-                    <td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
-                    <td width="200px"><?= gettext('System Admininistrator') ?></td>
-                    <td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
-                    <td width="200px"><?= gettext('Disabled User') ?></td>
-                    <td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
-                    <td width="200px"><?= gettext('Normal User') ?></td>
-                    <td></td>
-                  </tr>
                 </table>
               </form>
 <?php
