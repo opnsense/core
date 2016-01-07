@@ -93,6 +93,13 @@
         </subtab>
         <subtab id="proxy-general-cache-local" description="Local Cache Settings">
             <field>
+                <id>proxy.general.cache.local.cache_mem</id>
+                <label>Memory Cache size in Megabytes</label>
+                <type>text</type>
+                <help><![CDATA[Enter the cache memory size to use.]]></help>
+                <advanced>true</advanced>
+            </field>
+            <field>
                 <id>proxy.general.cache.local.enabled</id>
                 <label>Enable local cache (requires service restart)</label>
                 <type>checkbox</type>
