@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['lifetime'] = 365;
             $pconfig['usernamefld'] = null;
             foreach ($fieldnames as $fieldname) {
-                if (isset($pconfig[$fieldname])) {
+                if (!isset($pconfig[$fieldname])) {
                     $pconfig[$fieldname] = null;
                 }
             }
