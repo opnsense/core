@@ -808,11 +808,11 @@ $( document ).ready(function() {
                             </a>
                             <a href="system_usermanager.php?act=expcert&certid=<?=$i?>&userid=<?=$id?>"
                                class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                               title="<?=gettext("export cert");?>">
+                               title="<?=gettext("export certificate");?>">
                                 <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
                             <button type="submit" data-certid="<?=$i;?>" class="btn btn-default btn-xs act-del-cert"
-                                title="<?=gettext("delete cert");?>" data-toggle="tooltip" data-placement="left" >
+                                title="<?=gettext("unlink certificate");?>" data-toggle="tooltip" data-placement="left" >
                                 <span class="glyphicon glyphicon-remove"></span>
                             </button>
                           </td>
@@ -824,7 +824,8 @@ $( document ).ready(function() {
                         <tr>
                           <td colspan="2"></td>
                           <td>
-                            <a href="system_certmanager.php?act=new&userid=<?=$id?>" class="btn btn-default btn-xs">
+                            <a href="system_certmanager.php?act=new&userid=<?=$id?>" class="btn btn-default btn-xs"
+                                title="<?=gettext("create user certificate");?>" data-toggle="tooltip" data-placement="left" >
                               <span class="glyphicon glyphicon-plus"></span>
                             </a>
                           </td>
