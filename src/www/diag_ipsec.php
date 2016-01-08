@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit(0);
 }
 
-$ipsec_status = json_decode(configd_run("ipsec list_status"), true);
+$ipsec_status = json_decode(configd_run("ipsec list status"), true);
 if ($ipsec_status == null) {
     $ipsec_status = array();
 }
