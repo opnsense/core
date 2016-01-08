@@ -1,31 +1,31 @@
 <?php
 
 /*
-  Copyright (C) 2014 Deciso B.V.
-  Copyright (C) 2004-2009 Scott Ullrich
-  Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-  All rights reserved.
+    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2004-2009 Scott Ullrich
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
+    All rights reserved.
 
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-  1. Redistributions of source code must retain the above copyright notice,
-     this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-  2. Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-  POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 /* Allow additional execution time 0 = no limit. */
@@ -484,19 +484,19 @@ $( document ).ready(function() {
 //]]>
 </script>
 
-<form action="diag_backup.php" method="post">
-  <section class="page-content-main">
-    <div class="container-fluid">
-      <div class="row">
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-        <?php if (is_subsystem_dirty('restore')): ?><br/>
-        <form action="reboot.php" method="post">
+<section class="page-content-main">
+  <div class="container-fluid">
+    <div class="row">
+      <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+      <?php if (is_subsystem_dirty('restore')): ?><br/>
+      <form action="reboot.php" method="post">
         <input name="Submit" type="hidden" value="Yes" />
         <?php print_info_box(gettext("The firewall configuration has been changed.") . "<br />" . gettext("The firewall is now rebooting."));?><br />
-        </form>
-        <?php endif; ?>
-        <?php if ($input_messages) print_info_box($input_messages); ?>
-        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+      </form>
+      <?php endif; ?>
+      <?php if ($input_messages) print_info_box($input_messages); ?>
+      <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+      <form action="diag_backup.php" method="post" enctype="multipart/form-data">
         <section class="col-xs-12">
           <section class="__mb">
             <div class="content-box">
@@ -604,81 +604,83 @@ $( document ).ready(function() {
               </div>
             </div>
           </section>
-        <section class="__mb">
-          <div class="content-box">
-            <header class="content-box-head container-fluid">
-              <h3><?=gettext("Google Drive"); ?></h3>
-            </header>
-            <div class="content-box-main ">
-              <div class="table-responsive">
-                <table class="table table-striped ">
-                  <thead>
-                    <th class="col-sm-1"></th>
-                    <th class="col-sm-3"></th>
-                  </thead>
-                  <tbody>
-                   <tr>
-                     <td><?=gettext("Enable"); ?> </td>
-                     <td>
-                       <input name="GDriveEnabled" type="checkbox" <?=!empty($pconfig['GDriveEnabled']) ? "checked" : "";?> >
-                     </td>
-                   </tr>
-                   <tr>
-                     <td><?=gettext("Email Address"); ?> </td>
-                     <td>
-                       <input name="GDriveEmail" value="<?=$pconfig['GDriveEmail'];?>" type="text">
-                     </td>
-                   </tr>
-                   <tr>
-                     <td><?=gettext("P12 key"); ?> <?=!empty($pconfig['GDriveP12key']) ? gettext("(replace)") : gettext("(not loaded)"); ?> </td>
-                     <td>
-                       <input name="GDriveP12file" type="file">
-                     </td>
-                   </tr>
-                   <tr>
-                     <td><?=gettext("Folder ID"); ?> </td>
-                     <td>
-                       <input name="GDriveFolderID" value="<?=$pconfig['GDriveFolderID'];?>" type="text">
-                     </td>
-                   </tr>
-                   <tr>
-                     <td><?=gettext("Backup Count"); ?> </td>
-                     <td>
-                       <input name="GDriveBackupCount" value="<?=$pconfig['GDriveBackupCount'];?>"  type="text">
-                     </td>
-                   </tr>
-                   <tr>
-                     <td colspan=2><?=gettext("Password protect your data"); ?> :</td>
-                   </tr>
-                   <tr>
-                     <td><?=gettext("Password :"); ?></td>
-                     <td>
-                       <input name="GDrivePassword" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
-                     </td>
-                   </tr>
-                   <tr>
-                     <td><?=gettext("Confirm :"); ?></td>
-                     <td>
-                       <input name="GDrivePasswordConfirm" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
-                     </td>
-                   </tr>
-                   <tr>
-                     <td>
-                       <input name="setup_gdrive" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit">
-                     </td>
-                     <td></td>
-                   </tr>
-                  </tbody>
-                </table>
+          <section class="__mb">
+            <div class="content-box">
+              <header class="content-box-head container-fluid">
+                <h3><?=gettext("Google Drive"); ?></h3>
+              </header>
+              <div class="content-box-main ">
+                <div class="table-responsive">
+                  <table class="table table-striped ">
+                    <thead>
+                      <tr>
+                        <th class="col-sm-1"></th>
+                        <th class="col-sm-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     <tr>
+                       <td><?=gettext("Enable"); ?> </td>
+                       <td>
+                         <input name="GDriveEnabled" type="checkbox" <?=!empty($pconfig['GDriveEnabled']) ? "checked" : "";?> >
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><?=gettext("Email Address"); ?> </td>
+                       <td>
+                         <input name="GDriveEmail" value="<?=$pconfig['GDriveEmail'];?>" type="text">
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><?=gettext("P12 key"); ?> <?=!empty($pconfig['GDriveP12key']) ? gettext("(replace)") : gettext("(not loaded)"); ?> </td>
+                       <td>
+                         <input name="GDriveP12file" type="file">
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><?=gettext("Folder ID"); ?> </td>
+                       <td>
+                         <input name="GDriveFolderID" value="<?=$pconfig['GDriveFolderID'];?>" type="text">
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><?=gettext("Backup Count"); ?> </td>
+                       <td>
+                         <input name="GDriveBackupCount" value="<?=$pconfig['GDriveBackupCount'];?>"  type="text">
+                       </td>
+                     </tr>
+                     <tr>
+                       <td colspan=2><?=gettext("Password protect your data"); ?> :</td>
+                     </tr>
+                     <tr>
+                       <td><?=gettext("Password :"); ?></td>
+                       <td>
+                         <input name="GDrivePassword" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
+                       </td>
+                     </tr>
+                     <tr>
+                       <td><?=gettext("Confirm :"); ?></td>
+                       <td>
+                         <input name="GDrivePasswordConfirm" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
+                       </td>
+                     </tr>
+                     <tr>
+                       <td>
+                         <input name="setup_gdrive" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit">
+                       </td>
+                       <td></td>
+                     </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
         </section>
-      </section>
+      </form>
     </div>
   </div>
 </section>
-</form>
 
 <?php include("foot.inc"); ?>
 
