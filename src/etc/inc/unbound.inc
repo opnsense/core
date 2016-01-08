@@ -326,9 +326,10 @@ include: {$g['unbound_chroot_path']}/host_entries.conf
 
 # Domain overrides
 include: {$g['unbound_chroot_path']}/domainoverrides.conf
-{$forward_conf}
 
 {$custom_options}
+
+{$forward_conf}
 
 ###
 # Remote Control Config
