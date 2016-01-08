@@ -195,12 +195,18 @@ $( document ).ready(function() {
                       </td>
                       <td><?=$gateway_group['descr'];?></td>
                       <td>
-                        <a href="system_gateway_groups_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="system_gateway_groups_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
+                            title="edit group" data-toggle="tooltip" data-placement="left">
+                          <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
                         <button type="button" class="btn btn-default btn-xs act-del-group"
                             data-id="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip"
                             data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
                         </button>
-                        <a href="system_gateway_groups_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                        <a href="system_gateway_groups_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
+                            title="clone group" data-toggle="tooltip" data-placement="left">
+                          <span class="fa fa-clone text-muted"></span>
+                        </a>
                       </td>
                     </tr>
 <?php $i++;
