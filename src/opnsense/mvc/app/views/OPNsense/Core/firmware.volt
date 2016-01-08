@@ -243,12 +243,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 );
             });
 
-            // XXX needs a bit more testing
-            //if (!data['remote'].length) {
-            //    $('#pluginlist').append(
-            //        '<tr><td colspan=5>{{ lang._('Fetch updates to view available plugins.') }}</td></tr>'
-            //    );
-            //}
+            if (!data['remote'].length) {
+                $('#pluginlist').append(
+                    '<tr><td colspan=5>{{ lang._('Fetch updates to view available plugins.') }}</td></tr>'
+                );
+            }
 
             // link buttons to actions
             $(".act_reinstall").click(function(event) {
