@@ -701,11 +701,11 @@ $( document ).ready(function() {
                             </td>
                             <td class="text-center">
                               <br />
-                              <a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("Add Groups"); ?>">
+                              <a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("add groups"); ?>">
                                   <span class="glyphicon glyphicon-arrow-right"></span>
                               </a>
                               <br /><br />
-                              <a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("Remove Groups"); ?>">
+                              <a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("remove groups"); ?>">
                                   <span class="glyphicon glyphicon-arrow-left"></span>
                               </a>
                             </td>
@@ -757,7 +757,8 @@ $( document ).ready(function() {
                             <td class="text-center">
 <?php
                             if (empty($priv['group'])) :?>
-                              <button type="button" data-priv="<?=$priv['id']?>" class="btn btn-default btn-xs act-del-priv" title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left">
+                              <button type="button" data-priv="<?=$priv['id']?>" class="btn btn-default btn-xs act-del-priv"
+                                  title="<?=gettext("revoke privilege");?>" data-toggle="tooltip" data-placement="left">
                                 <span class="glyphicon glyphicon-remove"></span>
                               </button>
 <?php
@@ -769,7 +770,8 @@ $( document ).ready(function() {
                         <tr>
                           <td colspan="3"></td>
                           <td>
-                            <a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-xs btn-default">
+                            <a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-xs btn-default"
+                                title="<?=gettext("assign privileges");?>" data-toggle="tooltip" data-placement="left">
                               <span class="glyphicon glyphicon-plus"></span>
                             </a>
                           </td>
@@ -801,18 +803,18 @@ $( document ).ready(function() {
                             <?=htmlspecialchars($ca['descr']);?>
                           </td>
                           <td>
-                            <a href="system_usermanager.php?act=expckey&certid=<?=$i?>&userid=<?=$id?>"
+                            <a href="system_usermanager.php?act=expckey&amp;certid=<?=$i?>&amp;userid=<?=$id?>"
                                class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
                                title="<?=gettext("export private key");?>">
                                 <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
-                            <a href="system_usermanager.php?act=expcert&certid=<?=$i?>&userid=<?=$id?>"
+                            <a href="system_usermanager.php?act=expcert&amp;certid=<?=$i?>&amp;userid=<?=$id?>"
                                class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                               title="<?=gettext("export cert");?>">
+                               title="<?=gettext("export certificate");?>">
                                 <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
                             <button type="submit" data-certid="<?=$i;?>" class="btn btn-default btn-xs act-del-cert"
-                                title="<?=gettext("delete cert");?>" data-toggle="tooltip" data-placement="left" >
+                                title="<?=gettext("unlink certificate");?>" data-toggle="tooltip" data-placement="left" >
                                 <span class="glyphicon glyphicon-remove"></span>
                             </button>
                           </td>
@@ -824,7 +826,8 @@ $( document ).ready(function() {
                         <tr>
                           <td colspan="2"></td>
                           <td>
-                            <a href="system_certmanager.php?act=new&userid=<?=$id?>" class="btn btn-default btn-xs">
+                            <a href="system_certmanager.php?act=new&amp;userid=<?=$id?>" class="btn btn-default btn-xs"
+                                title="<?=gettext("create or link user certificate");?>" data-toggle="tooltip" data-placement="left" >
                               <span class="glyphicon glyphicon-plus"></span>
                             </a>
                           </td>
