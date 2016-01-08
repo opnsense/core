@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,hash-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
-    ,caref,reauth_enable,rekey_enable";
+    ,caref,reauth_enable,rekey_enable, auto";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -359,7 +359,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,hash-algorithm,dhgroup
         ,lifetime,pre-shared-key,certref,caref,authentication_method,descr
-        ,nat_traversal";
+        ,nat_traversal, auto";
 
         foreach (explode(",",$copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -599,6 +599,21 @@ function dpdchkbox_change() {
                         <strong><?=gettext("Disable this phase1 entry"); ?></strong><br />
                         <?=gettext("Set this option to disable this phase1 without " .
                                                 "removing it from the list"); ?>.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_auto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Connection method"); ?></td>
+                    <td>
+
+                      <select name="auto" class="formselect">
+                        <option value="" <?=empty($pconfig['auto']) ?  "selected=\"selected\"" : ""; ?>><?=gettext("default");?></option>
+                        <option value="add" <?=$pconfig['auto'] == "add" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Respond only");?></option>
+                        <option value="route" <?=$pconfig['auto'] == "route" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Start on traffic");?></option>
+                        <option value="start" <?=$pconfig['auto'] == "start" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Start immediate");?></option>
+                      </select>
+                      <div class="hidden" for="help_for_auto">
+                        <?=gettext("Choose the connect behaviour here, when using CARP you might want to consider the Repond only option here (wait for the other side to connect)."); ?>.
                       </div>
                     </td>
                   </tr>

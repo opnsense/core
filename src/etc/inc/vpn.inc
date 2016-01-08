@@ -512,20 +512,22 @@ EOD;
                 }
 
                 $keyexchange = "ikev1";
-                $passive = "route";
                 if (!empty($ph1ent['iketype']) && $ph1ent['iketype'] != "ikev1") {
                     $keyexchange = "ikev2";
-                    //$passive = "start";
-                } else {
-                    $passive = "route";
                 }
-
 
                 if (isset($ph1ent['mobile'])) {
                     $right_spec = "%any";
-                    $passive = 'add';
                 } else {
                     $right_spec = $ph1ent['remote-gateway'];
+                }
+
+                if (!empty($ph1ent['auto'])) {
+                    $conn_auto = $ph1ent['auto'];
+                } elseif (isset($ph1ent['mobile'])) {
+                    $conn_auto = 'add';
+                } else {
+                    $conn_auto = 'route';
                 }
 
                 list ($myid_type, $myid_data) = ipsec_find_id($ph1ent, "local");
@@ -552,7 +554,7 @@ EOD;
                 }
 
                 if (!empty($ph1ent['dpd_delay']) && !empty($ph1ent['dpd_maxfail'])) {
-                    if ($passive == "route") {
+                    if ($conn_auto == "route") {
                         $dpdline = "dpdaction = restart";
                     } else {
                         $dpdline = "dpdaction = clear";
@@ -791,7 +793,7 @@ conn con<<connectionId>>
   installpolicy = yes
   {$tunneltype}
   {$dpdline}
-  auto = {$passive}
+  auto = {$conn_auto}
   left = {$left_spec}
   right = {$right_spec}
   leftid = {$myid_data}
