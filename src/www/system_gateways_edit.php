@@ -485,10 +485,6 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
 //<![CDATA[
-function monitor_change() {
-    document.iform.monitor.disabled = document.iform.monitor_disable.checked;
-}
-
 function recalc_value(object, min, max) {
     if (object.val() != "") {
         object.val(Math.round(object.val()));     // Round to integer
@@ -530,9 +526,6 @@ $( document ).ready(function() {
         event.preventDefault();
         $(".advanced").toggleClass('hidden visible');
     });
-
-    // dis/en-able monitor ip
-    monitor_change();
 
     // (un)hide advanced on form load when any advanced setting is provided
 <?php
@@ -641,7 +634,7 @@ $( document ).ready(function() {
                 <tr>
                   <td><a id="help_for_monitor_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Gateway Monitoring"); ?></td>
                   <td>
-                    <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?> onclick="monitor_change()" />
+                    <input name="monitor_disable" type="checkbox" value="yes" <?=!empty($pconfig['monitor_disable']) ? "checked=\"checked\"" : "";?>/>
                     <div class="hidden" for="help_for_monitor_disable">
                       <?=gettext("This will consider this gateway as always being up"); ?>
                     </div>

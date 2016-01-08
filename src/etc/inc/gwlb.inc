@@ -27,8 +27,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* Returns an array of default values used for apinger.conf */
-function return_apinger_defaults() {
+function return_apinger_defaults()
+{
 	return array(
 		"latencylow" => "200",
 		"latencyhigh" => "500",
@@ -38,7 +38,8 @@ function return_apinger_defaults() {
 		"down" => "10",
 		"avg_delay_samples" => "10",
 		"avg_loss_samples" => "50",
-		"avg_loss_delay_samples" => "20");
+		"avg_loss_delay_samples" => "20"
+	);
 }
 
 /*
@@ -52,13 +53,7 @@ function setup_gateways_monitor()
 	@mkdir('/var/db/rrd', 0775);
 	@chown('/var/db/rrd', 'nobody');
 
-	$gateways_arr = return_gateways_array();
-	if (!is_array($gateways_arr)) {
-		log_error("No gateways to monitor. Apinger will not be run.");
-		killbypid('/var/run/apinger.pid');
-		@unlink('/var/run/apinger.status');
-		return;
-	}
+	$gateways_arr_all = return_gateways_array(true);
 
 	$apinger_default = return_apinger_defaults();
 	$apingerconfig = <<<EOD
@@ -145,22 +140,23 @@ target default {
 EOD;
 
 	$monitor_ips = array();
-	foreach($gateways_arr as $name => $gateway) {
-		/* Do not monitor if such was requested */
-		if (isset($gateway['monitor_disable']))
-			continue;
+	foreach($gateways_arr_all as $name => $gateway) {
 		if (empty($gateway['monitor']) || !is_ipaddr($gateway['monitor'])) {
-			if (is_ipaddr($gateway['gateway']))
+			if (is_ipaddr($gateway['gateway'])) {
 				$gateway['monitor'] = $gateway['gateway'];
-			else /* No chance to get an ip to monitor skip target. */
+			} else {
+				/* No chance to get an ip to monitor skip target. */
 				continue;
+			}
 		}
 
 		/* if the monitor address is already used before, skip */
-		if(in_array($gateway['monitor'], $monitor_ips))
+		if (in_array($gateway['monitor'], $monitor_ips)) {
 			continue;
+		}
 
-		/* Interface ip is needed since apinger will bind a socket to it.
+		/*
+		 * Interface IP is needed since apinger will bind a socket to it.
 		 * However the config GUI should already have checked this and when
 		 * PPoE is used the IP address is set to "dynamic". So using is_ipaddrv4
 		 * or is_ipaddrv6 to identify packet type would be wrong, especially as
@@ -169,8 +165,20 @@ EOD;
 		 */
 		if ($gateway['ipprotocol'] == "inet") { // This is an IPv4 gateway...
 			$gwifip = find_interface_ip($gateway['interface']);
-			if (!is_ipaddrv4($gwifip))
+			if (!is_ipaddrv4($gwifip)) {
 				continue; //Skip this target
+			}
+
+			/* flush the monitor unconditionally */
+			if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
+				log_error("Removing static route for monitor {$gateway['monitor']}");
+				mwexec("/sbin/route delete -host " . escapeshellarg($gateway['monitor']), true);
+			}
+
+			/* Do not monitor if such was requested */
+			if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+				continue;
+			}
 
 			/*
 			 * If the gateway is the same as the monitor we do not add a
@@ -179,12 +187,11 @@ EOD;
 			 * not strictly necessary but is a added level of protection.
 			 */
 			if (is_ipaddrv4($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-				log_error("Removing static route for monitor {$gateway['monitor']} and adding a new route through {$gateway['gateway']}");
-				mwexec("/sbin/route delete -host " . escapeshellarg($gateway['monitor']), true);
+				log_error("Adding static route for monitor through {$gateway['gateway']}");
 				mwexec("/sbin/route add -host " . escapeshellarg($gateway['monitor']) .
 					" " . escapeshellarg($gateway['gateway']), true);
 			}
-		} else if ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
+		} elseif ($gateway['ipprotocol'] == "inet6") { // This is an IPv6 gateway...
 			if ($gateway['monitor'] == $gateway['gateway']) {
 				/* link locals really need a different src ip */
 				if (is_linklocal($gateway['gateway'])) {
@@ -209,8 +216,20 @@ EOD;
 				}
 			}
 
-			if (!is_ipaddrv6($gwifip))
+			if (!is_ipaddrv6($gwifip)) {
 				continue; //Skip this target
+			}
+
+			/* flush the monitor unconditionally */
+			if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
+				log_error("Removing static route for monitor {$gateway['monitor']}");
+				mwexec("/sbin/route delete -host -inet6 " . escapeshellarg($gateway['monitor']), true);
+			}
+
+			/* Do not monitor if such was requested */
+			if (isset($gateway['disabled']) || isset($gateway['monitor_disable'])) {
+				continue;
+			}
 
 			/*
 			 * If the gateway is the same as the monitor we do not add a
@@ -219,13 +238,13 @@ EOD;
 			 * not strictly necessary but is a added level of protection.
 			 */
 			if (is_ipaddrv6($gateway['gateway']) && $gateway['monitor'] != $gateway['gateway']) {
-				log_error("Removing static route for monitor {$gateway['monitor']} and adding a new route through {$gateway['gateway']}");
-				mwexec("/sbin/route delete -host -inet6 " . escapeshellarg($gateway['monitor']), true);
+				log_error("Adding static route for monitor through {$gateway['gateway']}");
 				mwexec("/sbin/route add -host -inet6 " . escapeshellarg($gateway['monitor']) .
 					" " . escapeshellarg($gateway['gateway']), true);
 			}
-		} else
+		} else {
 			continue;
+		}
 
 		$monitor_ips[] = $gateway['monitor'];
 		$apingercfg = "target \"{$gateway['monitor']}\" {\n";
@@ -329,6 +348,15 @@ EOD;
 		# match the OPNsense gateway quality graph set.
 		create_gateway_quality_rrd("/var/db/rrd/{$gateway['name']}-quality.rrd");
 	}
+
+	$gateways_arr = return_gateways_array();
+	if (!is_array($gateways_arr)) {
+		log_error("No gateways to monitor. Apinger will not be run.");
+		killbypid('/var/run/apinger.pid');
+		@unlink('/var/run/apinger.status');
+		return;
+	}
+
 	@file_put_contents('/var/etc/apinger.conf', $apingerconfig);
 	unset($apingerconfig);
 
@@ -483,10 +511,11 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
 					$gateway['ipprotocol'] = "inet6";
 			}
 
-			if (isset($gateway['monitor_disable']))
+			if (isset($gateway['monitor_disable'])) {
 				$gateway['monitor_disable'] = true;
-			else if (empty($gateway['monitor']))
+			} elseif (empty($gateway['monitor'])) {
 				$gateway['monitor'] = $gateway['gateway'];
+			}
 
 			$gateway['friendlyiface'] = $gateway['interface'];
 
