@@ -184,10 +184,10 @@ if (isset($config['ipsec']['phase2'])) {
       foreach ($pool_details['items'] as $lease): ?>
       <tr>
         <td><?=htmlspecialchars($lease['user']);?></td>
+        <td><?=htmlspecialchars($lease['address']);?></td>
         <td>
           <span class='glyphicon glyphicon-transfer text-<?=$lease['status'] == 'online' ?  "success" : "danger";?>'></span>
         </td>
-        <td><?=htmlspecialchars($lease['address']);?></td>
       </tr>
 
 <?php
