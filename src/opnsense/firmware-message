@@ -12,7 +12,12 @@ import configuration and quick/easy install will work just as well.</li>
 <li>The captive portal implementation has been completely rewritten.
 <strong>Your old setup won't be converted and thus will not come back
 up</strong>. Reconfiguring the captive portal, however, will be relatively
-easy.</li></ul></p>
+easy.</li>
+<li>Due to kernel interface changes going from 10.1 to 10.2 <strong>plugins
+or custom-built kernel modules may stop working</strong>. Reinstalling the
+offending packages from the firmware pages or recompiling custom additions
+against the <em>stable/16.1</em> source branch will resolve this
+problem.</li></ul></p>
 <p>Please heed these points carefully before upgrading. Backup your configs,
 preview the new version via the live CD or in a virtual machine. Create
 snapshots. If all else fails, report back
