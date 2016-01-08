@@ -38,14 +38,6 @@ if (!is_array($config['unbound']))
 	$config['unbound'] = array();
 $a_unboundcfg =& $config['unbound'];
 
-if (!is_array($config['unbound']['hosts']))
-	$config['unbound']['hosts'] = array();
-$a_hosts =& $config['unbound']['hosts'];
-
-if (!is_array($config['unbound']['domainoverrides']))
-	$config['unbound']['domainoverrides'] = array();
-$a_domainOverrides = &$config['unbound']['domainoverrides'];
-
 if (isset($config['unbound']['enable']))
 	$pconfig['enable'] = true;
 if (isset($config['unbound']['dnssec']))
@@ -137,26 +129,6 @@ if ($_POST) {
 		if (!$input_errors) {
 			write_config("DNS Resolver configured.");
 			mark_subsystem_dirty('unbound');
-		}
-	}
-}
-
-if ($_GET['act'] == "del") {
-	if ($_GET['type'] == 'host') {
-		if ($a_hosts[$_GET['id']]) {
-			unset($a_hosts[$_GET['id']]);
-			write_config();
-			mark_subsystem_dirty('unbound');
-			header("Location: services_unbound.php");
-			exit;
-		}
-	} elseif ($_GET['type'] == 'doverride') {
-		if ($a_domainOverrides[$_GET['id']]) {
-			unset($a_domainOverrides[$_GET['id']]);
-			write_config();
-			mark_subsystem_dirty('unbound');
-			header("Location: services_unbound.php");
-			exit;
 		}
 	}
 }
@@ -361,131 +333,6 @@ function show_advanced_dns() {
 					</div>
 			    </section>
 
-			    <section class="col-xs-12">
-
-				    <div class="content-box">
-
-					    <header class="content-box-head container-fluid">
-						<h3><?=gettext("Host Overrides");?></h3>
-					</header>
-
-					<div class="content-box-main col-xs-12">
-						<?=gettext("Entries in this section override individual results from the forwarders.");?>
-	<?=gettext("Use these for changing DNS results or for adding custom DNS records.");?>
-					</div>
-					    <div class="content-box-main col-xs-12">
-					    <div class="table-responsive">
-						    <table class="table table-striped table-sort">
-								<thead>
-								<tr>
-									<td width="20%" class="listhdrr"><?=gettext("Host");?></td>
-									<td width="25%" class="listhdrr"><?=gettext("Domain");?></td>
-									<td width="20%" class="listhdrr"><?=gettext("IP");?></td>
-									<td width="30%" class="listhdr"><?=gettext("Description");?></td>
-									<td width="5%" class="list">
-										<table border="0" cellspacing="0" cellpadding="1" summary="add">
-											<tr>
-												<td width="17"></td>
-												<td valign="middle"><a href="services_unbound_host_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								</thead>
-								<tbody>
-								<?php $i = 0; foreach ($a_hosts as $hostent): ?>
-								<tr>
-									<td class="listlr" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
-										<?=strtolower($hostent['host']);?>&nbsp;
-									</td>
-									<td class="listr" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
-										<?=strtolower($hostent['domain']);?>&nbsp;
-									</td>
-									<td class="listr" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
-										<?=$hostent['ip'];?>&nbsp;
-									</td>
-									<td class="listbg" ondblclick="document.location='services_unbound_host_edit.php?id=<?=$i;?>';">
-										<?=htmlspecialchars($hostent['descr']);?>&nbsp;
-									</td>
-									<td valign="middle" class="list nowrap">
-										<table border="0" cellspacing="0" cellpadding="1" summary="icons">
-											<tr>
-												<td valign="middle"><a href="services_unbound_host_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
-												<td><a href="services_unbound.php?type=host&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this host?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
-											</tr>
-										</table>
-								</tr>
-								<?php $i++; endforeach; ?>
-								<tr style="display:none"><td></td></tr>
-								</tbody>
-							</table>
-
-					    </div>
-					    </div>
-				    </div>
-
-			    </section>
-
-			   <section class="col-xs-12">
-
-				    <div class="content-box">
-
-					    <header class="content-box-head container-fluid">
-						<h3><?=gettext("Domain Overrides");?></h3>
-					</header>
-
-					<div class="content-box-main col-xs-12">
-						<p><?=gettext("Entries in this area override an entire domain by specifying an".
-	" authoritative DNS server to be queried for that domain.");?></p>
-					</div>
-
-					    <div class="content-box-main col-xs-12">
-					    <div class="table-responsive">
-						    <table class="table table-striped table-sort"><thead>
-								<tr>
-									<td width="35%" class="listhdrr"><?=gettext("Domain");?></td>
-									<td width="20%" class="listhdrr"><?=gettext("IP");?></td>
-									<td width="40%" class="listhdr"><?=gettext("Description");?></td>
-									<td width="5%" class="list">
-										<table border="0" cellspacing="0" cellpadding="1" summary="add">
-											<tr>
-												<td width="17" height="17"></td>
-												<td><a href="services_unbound_domainoverride_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								</thead>
-
-								<tbody>
-								<?php $i = 0; foreach ($a_domainOverrides as $doment): ?>
-								<tr>
-									<td class="listlr">
-										<?=strtolower($doment['domain']);?>&nbsp;
-									</td>
-									<td class="listr">
-										<?=$doment['ip'];?>&nbsp;
-									</td>
-									<td class="listbg">
-										<?=htmlspecialchars($doment['descr']);?>&nbsp;
-									</td>
-									<td valign="middle" class="list nowrap">
-										<table border="0" cellspacing="0" cellpadding="1" summary="icons">
-											<tr>
-												<td valign="middle"><a href="services_unbound_domainoverride_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
-												<td valign="middle"><a href="services_unbound.php?act=del&amp;type=doverride&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this domain override?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								<?php $i++; endforeach; ?>
-								<tr style="display:none"><td></td></tr>
-								</tbody>
-							</table>
-					    </div>
-					    </div>
-				    </div>
-			   </section>
 			   </form>
 
 			</div>

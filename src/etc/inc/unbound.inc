@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     All rights reserved.
 
@@ -514,20 +515,27 @@ function unbound_add_host_entries() {
         $host_entries = "";
         $added_item = array();
         foreach($config['unbound']['hosts'] as $host) {
-            $current_host = $host['host'];
-            if ($host['host'] != "")
+            if ($host['host'] != "") {
                 $host['host'] = $host['host'].".";
-            if (!$added_item[$current_host]) {
-                $host_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
-                if (is_ipaddrv6($host['ip']))
-                    $host_entries .= "local-data: \"{$host['host']}{$host['domain']} IN AAAA {$host['ip']}\"\n";
-                else
-                    $host_entries .= "local-data: \"{$host['host']}{$host['domain']} IN A {$host['ip']}\"\n";
-                if (!empty($host['descr']) && isset($config['unbound']['txtsupport']))
-                    $host_entries .= "local-data: '{$host['host']}{$host['domain']} TXT \"".addslashes($host['descr'])."\"'\n";
+            }
+            /* Backwards compatibility for records created before introducing RR types. */
+            if (!isset($host['rr'])) {
+                $host['rr'] = (is_ipaddrv6($host['ip'])) ? 'AAAA' : 'A';
+            }
 
-                // Do not add duplicate entries
-                $added_item[$current_host] = true;
+            switch ($host['rr']) {
+                case 'A':
+                case 'AAAA':
+                    $host_entries .= "local-data-ptr: \"{$host['ip']} {$host['host']}{$host['domain']}\"\n";
+                    $host_entries .= "local-data: \"{$host['host']}{$host['domain']} IN {$host['rr']} {$host['ip']}\"\n";
+                    break;
+                case 'MX':
+                    $host_entries .= "local-data: \"{$host['host']}{$host['domain']} IN MX {$host['mxprio']} {$host['mx']}\"\n";
+                    break;
+            }
+
+            if (!empty($host['descr']) && isset($config['unbound']['txtsupport'])) {
+                $host_entries .= "local-data: '{$host['host']}{$host['domain']} TXT \"".addslashes($host['descr'])."\"'\n";
             }
         }
         $unbound_entries .= $host_entries;
