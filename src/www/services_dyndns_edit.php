@@ -189,7 +189,7 @@ include("head.inc");
 				document.getElementById("_urltr").style.display = '';
 				document.getElementById("_requestiftr").style.display = '';
 				document.getElementById("_curloptions").style.display = '';
-				document.getElementById("_hostnametr").style.display = 'none';
+				document.getElementById("_hostnametr").style.display = '';
 				document.getElementById("_mxtr").style.display = 'none';
 				document.getElementById("_wildcardtr").style.display = 'none';
 				document.getElementById("r53_zoneid").style.display='none';
