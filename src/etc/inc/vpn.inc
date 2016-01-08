@@ -579,9 +579,6 @@ EOD;
                 switch ($ph1ent['authentication_method']) {
                     case 'eap-tls':
                         $authentication = "leftauth=eap-tls\n\trightauth=eap-tls";
-                        if (!empty($ph1ent['certref'])) {
-                            $authentication .= "\n\tleftcert={$certpath}/cert-{$ph1ent['ikeid']}.crt";
-                        }
                         break;
                     case 'xauth_rsa_server':
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
@@ -601,6 +598,19 @@ EOD;
                         $authentication = "leftauth = xauth-generic\n\trightauth = pubkey";
                         $authentication .= "\n\trightauth2 = xauth";
                         break;
+                }
+                if (!empty($ph1ent['certref'])) {
+                    $authentication .= "\n\tleftcert={$certpath}/cert-{$ph1ent['ikeid']}.crt";
+                }
+                if (!empty($ph1ent['caref'])) {
+                    $ca = lookup_ca($ph1ent['caref']);;
+                    if (!empty($ca)) {
+                         $rightca = "";
+                         foreach (cert_get_subject_array($ca['crt']) as $ca_field) {
+                            $rightca .= "{$ca_field['a']}={$ca_field['v']}/";
+                         }
+                         $authentication .= "\n\trightca=\"/$rightca\"";
+                    }
                 }
                 $left_spec = $ep;
 
