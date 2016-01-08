@@ -157,6 +157,34 @@ function ipsec_idinfo_to_cidr(& $idinfo, $addrbits = false, $mode = "") {
 
 
 /*
+ *  Return phase2 idinfo in text format
+ */
+function ipsec_idinfo_to_text(& $idinfo) {
+	global $config;
+
+	switch ($idinfo['type']) {
+        case "address":
+		return $idinfo['address'];
+		break; /* NOTREACHED */
+        case "network":
+		return $idinfo['address']."/".$idinfo['netbits'];
+		break; /* NOTREACHED */
+	case "mobile":
+		return gettext("Mobile Client");
+		break; /* NOTREACHED */
+	case "none":
+		return gettext("None");
+		break; /* NOTREACHED */
+        default:
+		if (!empty($config['interfaces'][$idinfo['type']]))
+			return convert_friendly_interface_to_friendly_descr($idinfo['type']);
+		else
+			return strtoupper($idinfo['type']);
+		break; /* NOTREACHED */
+	}
+}
+
+/*
  * Return phase1 association for phase2
  */
 function ipsec_lookup_phase1(&$ph2ent, &$ph1ent)

@@ -1,32 +1,31 @@
 <?php
 
 /*
-    Copyright (C) 2014-2016 Deciso B.V.
-    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-    Copyright (C) 2007 Scott Ullrich
-    Copyright (C) 2008 Shrew Soft Inc
-    All rights reserved.
+	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
+	Copyright (C) 2008 Shrew Soft Inc
+	All rights reserved.
 
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions are met:
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
 
-    1. Redistributions of source code must retain the above copyright notice,
-       this list of conditions and the following disclaimer.
+	1. Redistributions of source code must retain the above copyright notice,
+	   this list of conditions and the following disclaimer.
 
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
 
-    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    POSSIBILITY OF SUCH DAMAGE.
+	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
@@ -35,36 +34,6 @@ require_once("vpn.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
-
-/*
- *  Return phase2 idinfo in text format
- */
-function ipsec_idinfo_to_text(& $idinfo) {
-    global $config;
-
-    switch ($idinfo['type']) {
-        case "address":
-            return $idinfo['address'];
-            break; /* NOTREACHED */
-        case "network":
-            return $idinfo['address']."/".$idinfo['netbits'];
-            break; /* NOTREACHED */
-        case "mobile":
-            return gettext("Mobile Client");
-            break; /* NOTREACHED */
-        case "none":
-            return gettext("None");
-            break; /* NOTREACHED */
-        default:
-            if (!empty($config['interfaces'][$idinfo['type']])) {
-                return convert_friendly_interface_to_friendly_descr($idinfo['type']);
-            } else {
-                return strtoupper($idinfo['type']);
-            }
-            break; /* NOTREACHED */
-    }
-}
-
 
 if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
     $config['ipsec'] = array();
@@ -280,19 +249,19 @@ include("head.inc");
 <script type="text/javascript">
 //<![CDATA[
 function show_phase2(id, buttonid) {
-  document.getElementById(buttonid).innerHTML='';
-  document.getElementById(id).style.display = "block";
-  var visible = id + '-visible';
-  document.getElementById(visible).value = "1";
+	document.getElementById(buttonid).innerHTML='';
+	document.getElementById(id).style.display = "block";
+	var visible = id + '-visible';
+	document.getElementById(visible).value = "1";
 }
 //]]>
 </script>
 
 <form action="vpn_ipsec.php" method="post">
-  <section class="page-content-main">
-    <div class="container-fluid">
-      <div class="row">
-        <?php
+	<section class="page-content-main">
+		<div class="container-fluid">
+			<div class="row">
+				<?php
                 if (isset($savemsg)) {
                     print_info_box($savemsg);
                 }
@@ -300,23 +269,23 @@ function show_phase2(id, buttonid) {
                     print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
                 }
                 ?>
-          <section class="col-xs-12">
-           <div class="tab-content content-box col-xs-12">
-              <div class="table-responsive">
-                <table class="table table-striped">
+			    <section class="col-xs-12">
+					 <div class="tab-content content-box col-xs-12">
+							<div class="table-responsive">
+							  <table class="table table-striped">
                   <thead>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>&nbsp;</td>
-                    <td><?=gettext("IKE"); ?></td>
-                    <td><?=gettext("Remote Gateway"); ?></td>
-                    <td><?=gettext("Mode"); ?></td>
-                    <td><?=gettext("P1 Protocol"); ?></td>
-                    <td><?=gettext("P1 Transforms"); ?></td>
-                    <td><?=gettext("P1 Description"); ?></td>
-                    <td>
-                    </td>
-                  </tr>
+									<tr>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td><?=gettext("IKE"); ?></td>
+										<td><?=gettext("Remote Gateway"); ?></td>
+										<td><?=gettext("Mode"); ?></td>
+										<td><?=gettext("P1 Protocol"); ?></td>
+										<td><?=gettext("P1 Transforms"); ?></td>
+										<td><?=gettext("P1 Description"); ?></td>
+										<td>
+										</td>
+									</tr>
                   </thead>
                   <tbody>
 <?php
@@ -582,26 +551,26 @@ endforeach;
   $i++;
 endforeach;  // $a_phase1 as $ph1ent
 ?>
-                  <tr>
-                    <td colspan="8"> </td>
+					        <tr>
+						        <td colspan="8"> </td>
                     <td>
                       <button name="move_<?=$i;?>_x"
-                      type="submit"
-                      title="<?=gettext("move selected phase1 entries to end");?>"
-                      class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-arrow-down"></span>
-                    </button>
+											type="submit"
+											title="<?=gettext("move selected phase1 entries to end");?>"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-arrow-down"></span>
+										</button>
                       <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase1");?>" alt="add" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </a>
+											<span class="glyphicon glyphicon-plus"></span>
+										</a>
                       <button
-                      name="del_x"
-                      type="submit"
-                      title="<?=gettext("delete selected phase1 entries");?>"
-                      onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
-                      class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-remove"></span>
-                    </button>
+											name="del_x"
+											type="submit"
+											title="<?=gettext("delete selected phase1 entries");?>"
+											onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
+											class="btn btn-default btn-xs">
+											<span class="glyphicon glyphicon-remove"></span>
+										</button>
                     </td>
                   </tr>
                   <tr>
