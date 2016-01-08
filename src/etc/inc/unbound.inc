@@ -557,18 +557,20 @@ function unbound_add_host_entries() {
     }
 
     // Handle DHCPLeases added host entries
-    $dhcplcfg = read_hosts();
-    $host_entries = "";
-    if (is_array($dhcplcfg)) {
-        foreach($dhcplcfg as $key=>$host) {
-            $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['fqdn']}\"\n";
-            $host_entries .= "local-data: \"{$host['fqdn']} IN A {$host['ipaddr']}\"\n";
-            if (!empty($host['name'])) {
-                $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['name']}\"\n";
-                $host_entries .= "local-data: \"{$host['name']} IN A {$host['ipaddr']}\"\n";
+    if (isset($config['unbound']['regdhcp'])) {
+        $dhcplcfg = read_hosts();
+        $host_entries = "";
+        if (is_array($dhcplcfg)) {
+            foreach($dhcplcfg as $key=>$host) {
+                $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['fqdn']}\"\n";
+                $host_entries .= "local-data: \"{$host['fqdn']} IN A {$host['ipaddr']}\"\n";
+                if (!empty($host['name'])) {
+                    $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['name']}\"\n";
+                    $host_entries .= "local-data: \"{$host['name']} IN A {$host['ipaddr']}\"\n";
+                }
             }
+            $unbound_entries .= $host_entries;
         }
-        $unbound_entries .= $host_entries;
     }
 
     // Write out entries
