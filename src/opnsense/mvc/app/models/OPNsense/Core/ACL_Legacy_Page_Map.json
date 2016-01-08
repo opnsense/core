@@ -243,7 +243,7 @@
         ]
     },
     "page-diagnostics-restore-full-backup": {
-        "name": "Webcfg - Diagnostics: Restore full backup",
+        "name": "WebCfg - Diagnostics: Restore full backup",
         "descr": "Allow access to the 'Diagnostics: Restore Full Backup' page.",
         "match": [
             "system_firmware_restorefullbackup.php"
@@ -278,7 +278,7 @@
         ]
     },
     "page-diagnostics-testport": {
-        "name": "Webcfg - Diagnostics: Test Port",
+        "name": "WebCfg - Diagnostics: Test Port",
         "descr": "Allow access to the 'Diagnostics: Test Port' page.",
         "match": [
             "diag_testport.php*"
@@ -873,7 +873,7 @@
         ]
     },
     "page-status-dhcpv6leases": {
-        "name": "Webcfg - Status: DHCPv6 leases page",
+        "name": "WebCfg - Status: DHCPv6 leases page",
         "descr": "Allow access to the 'Status: DHCPv6 leases' page.",
         "match": [
             "status_dhcpv6_leases.php*"
@@ -957,7 +957,7 @@
         ]
     },
     "page-status-ntp": {
-        "name": "Webcfg - Status: NTP page",
+        "name": "WebCfg - Status: NTP page",
         "descr": "Allow access to the 'Status: NTP' page.",
         "match": [
             "status_ntpd.php*"
@@ -1027,14 +1027,14 @@
         ]
     },
     "page-status-systemlogs-routing": {
-        "name": "Webcfg - Status: System logs: Routing page",
+        "name": "WebCfg - Status: System logs: Routing page",
         "descr": "Allow access to the 'Status: System logs: System: Routing' page.",
         "match": [
             "diag_logs_routing.php*"
         ]
     },
     "page-status-systemlogs-wireless": {
-        "name": "Webcfg - Status: System logs: Wireless page",
+        "name": "WebCfg - Status: System logs: Wireless page",
         "descr": "Allow access to the 'Status: System logs: System: Wireless' page.",
         "match": [
             "diag_logs_wireless.php*"
@@ -1219,7 +1219,7 @@
         ]
     },
     "page-system-hasync": {
-        "name": "Webcfg - System: High Availability",
+        "name": "WebCfg - System: High Availability",
         "descr": "Allow access to the 'System: High Availability' page.",
         "match": [
             "system_hasync.php*"
