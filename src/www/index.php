@@ -134,6 +134,9 @@ if ($config['widgets'] && $config['widgets']['sequence'] != "") {
     foreach ($widgetlist as $widget) {
         $dashpos = strpos($widget, "-");
         $widgetname = substr($widget, 0, $dashpos);
+        if (!in_array($widgetname, $widgetnames)) {
+            continue;
+        }
         $colposition = strpos($widget, ":");
         $displayposition = strrpos($widget, ":");
         $colpos[] = substr($widget, $colposition+1, $displayposition - $colposition-1);
