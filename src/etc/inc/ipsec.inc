@@ -112,24 +112,6 @@ function ipsec_get_phase1_src(& $ph1ent) {
 	}
 }
 
-/*
- * Return phase1 local address
- */
-function ipsec_get_phase1_dst(& $ph1ent) {
-	global $g;
-
-	if (empty($ph1ent['remote-gateway']))
-		return false;
-	$rg = $ph1ent['remote-gateway'];
-	if (!is_ipaddr($rg)) {
-		if(! file_exists("/var/run/booting"))
-			return resolve_retry($rg);
-	}
-	if(!is_ipaddr($rg))
-		return false;
-
-	return $rg;
-}
 
 /*
  * Return phase2 idinfo in cidr format

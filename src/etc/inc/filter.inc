@@ -3648,7 +3648,16 @@ function filter_generate_ipsec_rules(&$FilterIflist, $log = array())
             }
             /* determine local and remote peer addresses */
             if(!isset($ph1ent['mobile'])) {
-                $rgip = ipsec_get_phase1_dst($ph1ent);
+                if (!empty($ph1ent['remote-gateway'])) {
+                    $rgip = $ph1ent['remote-gateway'];
+                    if (!is_ipaddr($rgip) && ! file_exists("/var/run/booting")) {
+                        $rgip = resolve_retry($rgip);
+                    } elseif (!is_ipaddr($rgip)) {
+                        $rgip = false;
+                    }
+                } else {
+                    $rgip = false;
+                }
                 if(!$rgip) {
                     $ipfrules .= "# ERROR! Unable to determine remote IPsec peer address for {$ph1ent['remote-gateway']}\n";
                     continue;
