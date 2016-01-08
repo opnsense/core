@@ -114,7 +114,20 @@ if (isset($config['ipsec']['phase2'])) {
       <tr>
         <td><?= $activetunnels; ?></td>
         <td><?= (count($ipsec_tunnels) - $activetunnels); ?></td>
-        <td>0 <!-- todo: add count mobile leases --></td>
+        <td>
+<?php
+        // count active mobile users
+        $mobile_users = 0;
+        foreach ($ipsec_leases as $pool => $pool_details) {
+            foreach ($pool_details['items'] as $lease) {
+                if ($lease['status'] == 'online') {
+                    ++$mobile_users;
+                }
+            }
+        }
+?>
+          <?=$mobile_users;?>
+        </td>
       </tr>
     </tbody>
   </table>
