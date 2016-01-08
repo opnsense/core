@@ -349,30 +349,6 @@ function ipsec_dump_sad()
 	return $sad;
 }
 
-/*
- * Return dump of mobile user list
- */
-function ipsec_dump_mobile()
-{
-	global $g, $custom_listtags;
-
-	$strongswan_leases_xml = '/tmp/strongswan_leases.xml';
-
-	$_gb = exec(sprintf('/usr/local/sbin/ipsec stroke leases > %s', $strongswan_leases_xml));
-
-	if (!file_exists($strongswan_leases_xml)) {
-		log_error(gettext("IPsec daemon seems to have issues or not running! Could not display mobile user stats!"));
-		return array();
-	}
-
-	$custom_listtags = array('lease', 'pool');
-	$response = parse_xml_config($strongswan_leases_xml, 'leases');
-	@unlink($strongswan_leases_xml);
-	unset($custom_listtags, $_gb);
-
-	return $response;
-}
-
 function ipsec_mobilekey_sort() {
 	global $config;
 
