@@ -342,8 +342,8 @@ if(count($pools) > 0) {
 							    <td class="listhdrr"><?=gettext("Description"); ?></td>
 							    <td class="listhdrr"><?=gettext("Start"); ?></td>
 							    <td class="listhdrr"><?=gettext("End"); ?></td>
-							    <td class="listhdrr"><?=gettext("Online"); ?></td>
-							    <td class="listhdrr"><?=gettext("Lease Type"); ?></td>
+							    <td class="listhdrr"><?=gettext("Status"); ?></td>
+							    <td class="listhdrr"><?=gettext("Lease type"); ?></td>
 							    <td class="listhdrr">&nbsp;</td>
 							</tr>
 							<?php
