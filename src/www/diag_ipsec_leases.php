@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2016 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2014 Ermal LUÇi
     All rights reserved.
 

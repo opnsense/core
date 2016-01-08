@@ -1,7 +1,7 @@
 <?php
 
 /*
-      Copyright (C) 2016 Deciso B.V.
+      Copyright (C) 2014-2016 Deciso B.V.
       Copyright (C) 2007 Scott Dale
       Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
       and Jonathan Watt <jwatt@jwatt.org>.

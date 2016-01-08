@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2004-2009 Scott Ullrich
     Copyright (C) 2008 Shrew Soft Inc <mgrooms@shrew.net>
     Copyright (C) 2003-2004 Manuel Kasper
