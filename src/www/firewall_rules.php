@@ -446,6 +446,7 @@ $( document ).ready(function() {
                       <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? "text-muted" :""?>"></span>
 <?php                 endif; ?>
                     </td>
+
                     <td>
                         <?=$record_ipprotocol;?>
 <?php
@@ -479,30 +480,63 @@ $( document ).ready(function() {
 <?php
                         endif;?>
                     </td>
+
                     <td>
-                      <?=htmlspecialchars(pprint_address($filterent['source']));?>
 <?php                 if (isset($filterent['source']['address']) && is_alias($filterent['source']['address'])): ?>
-                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['address']);?>"><i class="fa fa-list"></i> </a>
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['address']));?>" data-toggle="tooltip">
+                          <?=htmlspecialchars(pprint_address($filterent['source']));?>&nbsp;
+                        </span>
+                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['address']);?>"
+                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                          <i class="fa fa-list"></i>
+                        </a>
+<?php                 else: ?>
+                        <?=htmlspecialchars(pprint_address($filterent['source']));?>
 <?php                 endif; ?>
                     </td>
+
                     <td class="hidden-xs hidden-sm">
-                      <?=htmlspecialchars(pprint_port(isset($filterent['source']['port']) ? $filterent['source']['port'] : null)); ?>
-<?php                   if (isset($filterent['source']['port']) && is_alias($filterent['source']['port'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['port']);?>"><i class="fa fa-list"></i> </a>
-<?php                   endif; ?>
+<?php                 if (isset($filterent['source']['port']) && is_alias($filterent['source']['port'])): ?>
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['source']['port']));?>" data-toggle="tooltip">
+                          <?=htmlspecialchars(pprint_port($filterent['source']['port'])); ?>&nbsp;
+                        </span>
+                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['source']['port']);?>"
+                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                          <i class="fa fa-list"></i>
+                        </a>
+<?php                 else: ?>
+                        <?=htmlspecialchars(pprint_port(isset($filterent['source']['port']) ? $filterent['source']['port'] : null)); ?>
+<?php                 endif; ?>
                     </td>
+
                     <td class="hidden-xs hidden-sm">
-                      <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
 <?php                 if (isset($filterent['destination']['address']) && is_alias($filterent['destination']['address'])): ?>
-                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['address']));?>" data-toggle="tooltip">
+                          <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
+                        </span>
+                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['address']);?>"
+                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                          <i class="fa fa-list"></i>
+                        </a>
+<?php                 else: ?>
+                        <?=htmlspecialchars(pprint_address($filterent['destination'])); ?>
 <?php                 endif; ?>
                     </td>
+
                     <td class="hidden-xs hidden-sm">
-                      <?=htmlspecialchars(pprint_port(isset($filterent['destination']['port']) ? $filterent['destination']['port'] : null)); ?>
 <?php                 if (isset($filterent['destination']['port']) && is_alias($filterent['destination']['port'])): ?>
-                      &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['port']);?>"><i class="fa fa-list"></i> </a>
+                        <span title="<?=htmlspecialchars(get_alias_description($filterent['destination']['port']));?>" data-toggle="tooltip">
+                          <?=htmlspecialchars(pprint_port($filterent['destination']['port'])); ?>&nbsp;
+                        </span>
+                        <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($filterent['destination']['port']);?>"
+                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                          <i class="fa fa-list"></i>
+                        </a>
+<?php                 else: ?>
+                        <?=htmlspecialchars(pprint_port(isset($filterent['destination']['port']) ? $filterent['destination']['port'] : null)); ?>
 <?php                 endif; ?>
                     </td>
+
                     <td class="hidden-xs hidden-sm">
 <?php
                        if (isset($filterent['gateway'])):?>
