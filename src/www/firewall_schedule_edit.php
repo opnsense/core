@@ -91,6 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach ($a_schedules as $i => $sched) {
             if ($sched['name'] == $_GET['name']) {
               $id = $i;
+              $configId = $id;
               break;
             }
         }
