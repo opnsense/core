@@ -548,9 +548,27 @@ $( document ).ready(function() {
                     </td>
                     <td class="hidden-xs hidden-sm">
 <?php
-                       if (!empty($filterent['sched'])):?>
-                      <?=htmlspecialchars($filterent['sched']);?>
-                      <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"> <span class="glyphicon glyphicon-calendar"> </span> </a>
+                      if (!empty($filterent['sched'])):?>
+<?php
+                        $schedule_descr = "";
+                        if (isset($config['schedules']['schedule']))
+                        {
+                            foreach ($config['schedules']['schedule'] as $schedule)
+                            {
+                                if ($schedule['name'] == $filterent['sched'])
+                                {
+                                    $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
+                                }
+                            }
+                        }
+?>
+                        <span title="<?=htmlspecialchars($schedule_descr);?>" data-toggle="tooltip">
+                          <?=htmlspecialchars($filterent['sched']);?>&nbsp;
+                        </span>
+                        <a href="/firewall_schedule_edit.php?name=<?=htmlspecialchars($filterent['sched']);?>"
+                            title="<?=gettext("edit schedule");?>" data-toggle="tooltip">
+                          <i class="glyphicon glyphicon-calendar"></i>
+                        </a>
 <?php
                        endif;?>
                     </td>
