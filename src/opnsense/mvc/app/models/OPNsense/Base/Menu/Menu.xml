@@ -8,7 +8,7 @@
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out"/>
     </Lobby>
     <System order="1" VisibleName="System" cssClass="fa fa-server">
-        <CertificateManager order="120" VisibleName="Certificate Manager" cssClass="fa fa-certificate">
+        <Trust order="120" cssClass="fa fa-certificate">
             <Certificates url="/system_certmanager.php">
                 <workAround url="/system_certmanager.php*"/>
             </Certificates>
@@ -18,13 +18,13 @@
             <Revocation url="/system_crlmanager.php">
                 <workAround url="/system_crlmanager.php*"/>
             </Revocation>
-        </CertificateManager>
-        <ConfigManager order="80" VisibleName="Config Manager" cssClass="fa fa-book">
+        </Trust>
+        <Configuration order="80" cssClass="fa fa-book">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*"/>
             </History>
             <Backups url="/diag_backup.php"/>
-        </ConfigManager>
+        </Configuration>
         <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug"/>
         <Firmware order="5" url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh">
