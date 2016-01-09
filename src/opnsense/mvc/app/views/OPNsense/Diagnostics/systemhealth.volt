@@ -288,6 +288,7 @@
 
         // info bar - hide averages info bar while refreshing data
         $('#averages').hide();
+        $('#chart_title').hide();
         // info bar - show loading info bar while refreshing data
         $('#loading').show();
         // API call to request data
@@ -488,6 +489,7 @@
                 fetching_data = false;
                 $('#loading').hide(); // Data has been found and chart will be drawn
                 $('#averages').show();
+                $('#chart_title').show();
                 if (data["title"]!="") {
                     $('#chart_title').show();
                     $('#chart_title').text(data["title"]);
@@ -646,16 +648,16 @@
 
         </div>
 
-        <div id="loading" class="alert bg-primary"><i class="fa fa-spinner fa-spin"></i>
-            <b>{{ lang._('Please wait while loading data...') }}</b>
-        </div>
-
         <!--<div id="stepsize"></div>-->
 
         <!-- place holder for the chart itself -->
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">
+                 <span id="loading">
+                     <i id="loading" class="fa fa-spinner fa-spin"></i>
+                     <b>{{ lang._('Please wait while loading data...') }}</b>
+                 </span>
                 <span id="chart_title"> </span>
                 <span id="averages">
                     <small>
