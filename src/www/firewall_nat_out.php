@@ -315,7 +315,7 @@ include("head.inc");
               </table>
           </div>
         </section>
-<?php if ($mode == "advanced" or $mode == "hybrid"): ?>
+<?php if ($mode == "advanced" || $mode == "hybrid"): ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
             <table class="table table-striped table-sort">
