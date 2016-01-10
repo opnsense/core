@@ -297,7 +297,7 @@ $( document ).ready(function() {
           print_info_box($savemsg);
       }
       if ($pconfig['enable'] && is_subsystem_dirty('ipsec')) {
-          print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+          print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . "<br />" . gettext("You must apply the changes in order for them to take effect."));
       }?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
