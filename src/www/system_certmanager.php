@@ -776,9 +776,7 @@ $( document ).ready(function() {
                   endforeach; ?>
                   </select>
                   <div class="hidden" id="no_caref">
-                    <?=gettext("No internal Certificate Authorities have been defined. You must");?>
-                    <a href="system_camanager.php?act=new&amp;method=internal"><?=gettext("create");?></a>
-                    <?=gettext("an internal CA before creating an internal certificate.");?>
+                    <?=sprintf(gettext("No internal Certificate Authorities have been defined. You must %screate%s an internal CA before creating an internal certificate."),'<a href="system_camanager.php?act=new&amp;method=internal">','</a>');?>
                   </div>
                 </td>
               </tr>

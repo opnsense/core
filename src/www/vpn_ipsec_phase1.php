@@ -598,7 +598,7 @@ function dpdchkbox_change() {
                       <div class="hidden" for="help_for_disabled">
                         <strong><?=gettext("Disable this phase1 entry"); ?></strong><br />
                         <?=gettext("Set this option to disable this phase1 without " .
-                                                "removing it from the list"); ?>.
+                                                "removing it from the list."); ?>
                       </div>
                     </td>
                   </tr>
@@ -633,7 +633,7 @@ function dpdchkbox_change() {
 ?>
                       </select>
                       <div class="hidden" for="help_for_iketype">
-                        <?=gettext("Select the KeyExchange Protocol version to be used. Usually known as IKEv1 or IKEv2."); ?>.
+                        <?=gettext("Select the KeyExchange Protocol version to be used. Usually known as IKEv1 or IKEv2."); ?>
                       </div>
                     </td>
                   </tr>
@@ -652,7 +652,7 @@ function dpdchkbox_change() {
 ?>
                       </select>
                       <div class="hidden" for="help_for_protocol">
-                        <?=gettext("Select the Internet Protocol family from this dropdown"); ?>.
+                        <?=gettext("Select the Internet Protocol family from this dropdown."); ?>
                       </div>
                     </td>
                   </tr>
@@ -692,7 +692,7 @@ function dpdchkbox_change() {
 ?>
                       </select>
                       <div class="hidden" for="help_for_interface">
-                        <?=gettext("Select the interface for the local endpoint of this phase1 entry"); ?>.
+                        <?=gettext("Select the interface for the local endpoint of this phase1 entry."); ?>
                       </div>
                     </td>
                   </tr>
@@ -716,7 +716,7 @@ function dpdchkbox_change() {
                       <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" for="help_for_remotegw">
                         <?=gettext("You may enter a description here " .
-                                                "for your reference (not parsed)"); ?>.
+                                                "for your reference (not parsed)."); ?>
                       </div>
                     </td>
                   </tr>
@@ -750,7 +750,7 @@ function dpdchkbox_change() {
 ?>
                       </select>
                       <div class="hidden" for="help_for_authmethod">
-                        <?=gettext("Must match the setting chosen on the remote side"); ?>.
+                        <?=gettext("Must match the setting chosen on the remote side."); ?>
                       </div>
                     </td>
                   </tr>
@@ -769,7 +769,7 @@ function dpdchkbox_change() {
 ?>
                       </select>
                       <div class="hidden" for="help_for_mode">
-                        <?=gettext("Aggressive is more flexible, but less secure"); ?>.
+                        <?=gettext("Aggressive is more flexible, but less secure."); ?>
                       </div>
                     </td>
                   </tr>
@@ -827,7 +827,7 @@ endforeach; ?>
                       <input name="peerid_data" type="text" id="peerid_data" size="30" value="<?=$pconfig['peerid_data'];?>" />
 <?php if (!empty($pconfig['mobile'])) {
 ?>
-                      <small><?=gettext("NOTE: This is known as the \"group\" setting on some VPN client implementations"); ?>.</small>
+                      <small><?=gettext("NOTE: This is known as the \"group\" setting on some VPN client implementations."); ?></small>
                     <?php
 } ?>
                     </td>
@@ -838,7 +838,7 @@ endforeach; ?>
                       <input name="pre-shared-key" type="text" class="formfld unknown" id="pskey" size="40"
                              value="<?= $pconfig['authentication_method'] == "pre_shared_key" || $pconfig['authentication_method'] == "xauth_psk_server" ? $pconfig['pre-shared-key'] : "";?>" />
                       <div class="hidden" for="help_for_psk">
-                        <?=gettext("Input your Pre-Shared Key string"); ?>.
+                        <?=gettext("Input your Pre-Shared Key string."); ?>
                       </div>
                     </td>
                   </tr>
@@ -858,7 +858,7 @@ endforeach; ?>
 ?>
                       </select>
                       <div class="hidden" for="help_for_certref">
-                        <?=gettext("Select a certificate previously configured in the Certificate Manager"); ?>.
+                        <?=gettext("Select a certificate previously configured in the Certificate Manager."); ?>
                       </div>
                     </td>
                   </tr>
@@ -881,7 +881,7 @@ endforeach; ?>
 ?>
                       </select>
                       <div class="hidden" for="help_for_caref">
-                        <?=gettext("Select a certificate authority previously configured in the Certificate Manager"); ?>.
+                        <?=gettext("Select a certificate authority previously configured in the Certificate Manager."); ?>
                       </div>
                     </td>
                   </tr>
@@ -929,7 +929,7 @@ endforeach; ?>
 ?>
                       </select>
                       <div class="hidden" for="help_for_halgo">
-                        <?=gettext("Must match the setting chosen on the remote side"); ?>.
+                        <?=gettext("Must match the setting chosen on the remote side."); ?>
                       </div>
                     </td>
                   </tr>
@@ -960,7 +960,7 @@ endforeach; ?>
 ?>
                       </select>
                       <div class="hidden" for="help_for_dhgroup">
-                        <?=gettext("Must match the setting chosen on the remote side"); ?>.
+                        <?=gettext("Must match the setting chosen on the remote side."); ?>
                       </div>
                     </td>
                   </tr>
@@ -1010,7 +1010,7 @@ endforeach; ?>
                       </select>
                       <div class="hidden" for="help_for_nat_traversal">
                           <?=gettext("Set this option to enable the use of NAT-T (i.e. the encapsulation of ESP in UDP packets) if needed, " .
-                                                  "which can help with clients that are behind restrictive firewalls"); ?>.
+                                                  "which can help with clients that are behind restrictive firewalls."); ?>
                       </div>
                     </td>
                   </tr>
@@ -1026,13 +1026,13 @@ endforeach; ?>
                         <input name="dpd_delay" type="text" class="formfld unknown" id="dpd_delay" size="5" value="<?=$pconfig['dpd_delay'];?>" />
                         <?=gettext("seconds"); ?>
                         <div class="hidden" for="help_for_dpd_enable">
-                          <?=gettext("Delay between requesting peer acknowledgement"); ?>.
+                          <?=gettext("Delay between requesting peer acknowledgement."); ?>
                         </div>
                         <br />
                         <input name="dpd_maxfail" type="text" class="formfld unknown" id="dpd_maxfail" size="5" value="<?=$pconfig['dpd_maxfail'];?>" />
                         <?=gettext("retries"); ?>
                         <div class="hidden" for="help_for_dpd_enable">
-                          <?=gettext("Number of consecutive failures allowed before disconnect"); ?>.
+                          <?=gettext("Number of consecutive failures allowed before disconnect."); ?>
                         </div>
                       </div>
                     </td>

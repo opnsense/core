@@ -143,7 +143,7 @@ include("head.inc");
                     <td>
                       <input name="ident" type="text" class="formfld unknown" id="ident" size="30" value="<?=$pconfig['ident'];?>" />
                       <div class="hidden" for="help_for_ident">
-                        <?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address"); ?>.
+                        <?=gettext("This can be either an IP address, fully qualified domain name or an e-mail address."); ?>
                       </div>
                     </td>
                   </tr>
