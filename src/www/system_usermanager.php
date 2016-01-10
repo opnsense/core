@@ -545,8 +545,8 @@ $( document ).ready(function() {
                 // create link, click and send to client
                 $('<a></a>')
                         .attr('id','downloadFile')
-                        .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
-                        .attr('download','apikey.ini')
+                        .attr('href','data:text/plain;charset=utf8,' + encodeURIComponent(output_data))
+                        .attr('download','apikey.txt')
                         .appendTo('body');
 
                 $('#downloadFile').ready(function() {
