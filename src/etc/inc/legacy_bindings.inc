@@ -159,4 +159,3 @@ function get_alias_description($name)
 
     return null;
 }
-

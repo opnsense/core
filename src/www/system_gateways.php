@@ -379,7 +379,7 @@ $( document ).ready(function() {
 <?php
                       if ($i > 0) :
                                       ?>
-                          <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip" 
+                          <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip"
                                   title="<?=gettext("delete selected items");?>">
                               <span class="fa fa-trash text-muted"></span>
                           </button>
