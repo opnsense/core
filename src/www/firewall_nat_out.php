@@ -268,42 +268,54 @@ include("head.inc");
                 <tbody>
                   <tr>
                     <td>
-                      <input name="mode" type="radio" value="automatic" <?= $mode == "automatic" ? "checked=\"checked\"" : "";?> />
+                      <input name="mode" type="radio" id="mode_automatic"
+                          value="automatic" <?= $mode == "automatic" ? "checked=\"checked\"" : "";?> />
                     </td>
                     <td>
-                      <strong>
-                        <?=gettext("Automatic outbound NAT rule generation"); ?><br />
-                        <?=gettext("(IPsec passthrough included)");?>
-                      </strong>
+                      <label for="mode_automatic">
+                        <strong>
+                          <?=gettext("Automatic outbound NAT rule generation"); ?><br />
+                          <?=gettext("(no manual rules can be used)");?>
+                        </strong>
+                      </label>
                     </td>
                     <td>
-                      <input name="mode" type="radio" value="hybrid" <?= $mode == "hybrid" ? "checked=\"checked\"" : "";?> />
+                      <input name="mode" type="radio" id="mode_hybrid"
+                          value="hybrid" <?= $mode == "hybrid" ? "checked=\"checked\"" : "";?> />
                     </td>
                     <td>
-                      <strong>
-                        <?=gettext("Hybrid Outbound NAT rule generation"); ?><br />
-                        <?=gettext("(Automatic Outbound NAT + rules below)");?>
-                      </strong>
+                      <label for="mode_hybrid">
+                        <strong>
+                          <?=gettext("Hybrid outbound NAT rule generation"); ?><br />
+                          <?=gettext("(automatically generated rules are applied after manual rules)");?>
+                        </strong>
+                      </label>
                     </td>
                   </tr>
                   <tr>
                     <td>
-                      <input name="mode" type="radio" value="advanced" <?= $mode == "advanced" ? "checked=\"checked\"" : "";?> />
+                      <input name="mode" type="radio" id="mode_advanced"
+                          value="advanced" <?= $mode == "advanced" ? "checked=\"checked\"" : "";?> />
                     </td>
                     <td>
-                      <strong>
-                        <?=gettext("Manual Outbound NAT rule generation"); ?><br />
-                        <?=gettext("(AON - Advanced Outbound NAT)");?>
-                      </strong>
+                      <label for="mode_advanced">
+                        <strong>
+                          <?=gettext("Manual outbound NAT rule generation"); ?><br />
+                          <?=gettext("(no automatic rules are being generated)");?>
+                        </strong>
+                      </label>
                     </td>
                     <td>
-                      <input name="mode" type="radio" value="disabled" <?= $mode == "disabled" ? "checked=\"checked\"" : "";?> />
+                      <input name="mode" type="radio" id="mode_disabled"
+                          value="disabled" <?= $mode == "disabled" ? "checked=\"checked\"" : "";?> />
                     </td>
                     <td>
-                      <strong>
-                        <?=gettext("Disable Outbound NAT rule generation"); ?><br />
-                        <?=gettext("(No Outbound NAT rules)");?>
-                      </strong>
+                      <label for="mode_disabled">
+                        <strong>
+                          <?=gettext("Disable outbound NAT rule generation"); ?><br />
+                          <?=gettext("(outbound NAT is disabled)");?>
+                        </strong>
+                      </label>
                     </td>
                   </tr>
                   <tr>
@@ -593,32 +605,6 @@ include("head.inc");
 <?php
       endif;
 ?>
-          <section class="col-xs-12">
-            <div class="table-responsive content-box ">
-              <table class="table table-striped table-sort">
-                <tr>
-                  <td>
-                    <span class="text-danger">
-                      <strong><?=gettext("Note:"); ?><br /></strong>
-                    </span>
-                    <?=gettext("If automatic outbound NAT selected, a mapping is automatically created " .
-                      "for each interface's subnet (except WAN-type connections) and the rules " .
-                      "on \"Mappings\" section of this page are ignored.<br /><br /> " .
-                      "If manual outbound NAT is selected, outbound NAT rules will not be " .
-                      "automatically generated and only the mappings you specify on this page " .
-                      "will be used. <br /><br /> " .
-                      "If hybrid outbound NAT is selected, mappings you specify on this page will " .
-                      "be used, followed by the automatically generated ones. <br /><br />" .
-                      "If disable outbound NAT is selected, no rules will be used. <br /><br />" .
-                      "If a target address other than a WAN-type interface's IP address is used, " .
-                      "then depending on the way the WAN connection is setup, a "); ?>
-                      <a href="firewall_virtual_ip.php"><?=gettext("Virtual IP"); ?></a>
-                      <?= gettext(" may also be required.") ?>
-                    </td>
-                  </tr>
-                </table>
-            </div>
-          </section>
         </form>
       </div>
     </div>
