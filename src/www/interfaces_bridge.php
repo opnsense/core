@@ -152,10 +152,10 @@ $main_buttons = array(
                         </td>
                         <td><?=$bridge['descr'];?></td>
                         <td>
-                          <a href="interfaces_bridge_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit bridge");?>">
+                          <a href="interfaces_bridge_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit bridge");?>">
                             <span class="glyphicon glyphicon-edit"></span>
                           </a>
-                          <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                          <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
                             <span class="fa fa-trash text-muted"></span>
                           </button>
                         </td>

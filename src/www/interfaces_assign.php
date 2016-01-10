@@ -421,7 +421,7 @@ include("head.inc");
                         <td>
 <?php
                         if ($ifname != 'wan'):?>
-                          <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
+                          <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
                             <span class="fa fa-trash text-muted"></span>
                           </button>
 <?php
@@ -445,7 +445,7 @@ include("head.inc");
                           </select>
                         </td>
                         <td>
-                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?=gettext("add selected interface");?>" data-toggle="tooltip" data-placement="left">
+                          <button name="add_x" type="submit" value="<?=$portname;?>" class="btn btn-primary" title="<?=gettext("add selected interface");?>" data-toggle="tooltip">
                             <span class="glyphicon glyphicon-plus"></span>
                           </button>
                         </td>

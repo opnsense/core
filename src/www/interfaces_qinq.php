@@ -150,10 +150,10 @@ $main_buttons = array(
                       <td><?=strlen($qinq['members']) > 20 ? substr($qinq['members'], 0, 20) . "..." : $qinq['members'] ;?></td>
                       <td><?=$qinq['descr'];?></td>
                       <td>
-                        <a href="interfaces_qinq_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit group");?>">
+                        <a href="interfaces_qinq_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit group");?>">
                           <span class="glyphicon glyphicon-edit"></span>
                         </a>
-                        <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                        <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
                           <span class="fa fa-trash text-muted"></span>
                         </button>
                       </td>

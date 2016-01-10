@@ -368,11 +368,11 @@ $( document ).ready(function() {
                         </td>
                         <td class="text-center">
                           <br />
-                          <a href="javascript:move_selected('notmembers','members')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("Add Groups"); ?>">
+                          <a href="javascript:move_selected('notmembers','members')" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add Groups"); ?>">
                               <span class="glyphicon glyphicon-arrow-right"></span>
                           </a>
                           <br /><br />
-                          <a href="javascript:move_selected('members','notmembers')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("Remove Groups"); ?>">
+                          <a href="javascript:move_selected('members','notmembers')" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove Groups"); ?>">
                               <span class="glyphicon glyphicon-arrow-left"></span>
                           </a>
                         </td>
@@ -420,7 +420,7 @@ $( document ).ready(function() {
                       <td><?=$priv_list[$priv]['name'];?></td>
                       <td><?=$priv_list[$priv]['descr'];?></td>
                       <td>
-                          <button type="button" data-privid="<?=$priv;?>" data-privname="<?=$priv_list[$priv]['name']?>" class="btn btn-default btn-xs act-del-priv" title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left">
+                          <button type="button" data-privid="<?=$priv;?>" data-privname="<?=$priv_list[$priv]['name']?>" class="btn btn-default btn-xs act-del-priv" title="<?=gettext("delete privilege");?>" data-toggle="tooltip">
                             <span class="fa fa-trash text-muted"></span>
                           </button>
                       </td>
@@ -487,8 +487,7 @@ $( document ).ready(function() {
                   </td>
                   <td>
                     <a href="system_groupmanager.php?act=edit&groupid=<?=$i?>"
-                       class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                       title="<?=gettext("edit group");?>">
+                       class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit group");?>">
                         <span class="glyphicon glyphicon-pencil"></span>
                     </a>
 
@@ -496,8 +495,8 @@ $( document ).ready(function() {
                     if ($group['scope'] != "system") :?>
                     <button type="button" class="btn btn-default btn-xs act-del-group"
                         data-groupname="<?=$group['name'];?>"
-                        data-groupid="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip"
-                        data-placement="left" ><span class="fa fa-trash text-muted"></span>
+                        data-groupid="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip">
+                      <span class="fa fa-trash text-muted"></span>
                     </button>
 <?php
                     endif;?>
@@ -513,7 +512,7 @@ $( document ).ready(function() {
                   <td class="hidden-xs"> </td>
                   <td class="list">
                     <a href="system_groupmanager.php?act=new" class="btn btn-default btn-xs"
-                       title="<?=gettext("add user");?>" data-toggle="tooltip" data-placement="left">
+                       title="<?=gettext("add user");?>" data-toggle="tooltip">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
                   </td>

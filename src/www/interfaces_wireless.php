@@ -133,7 +133,7 @@ $main_buttons = array(
                         <a href="interfaces_wireless_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default">
                           <span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span>
                         </a>
-                        <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                        <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
                           <span class="fa fa-trash text-muted"></span>
                         </button>
                       </td>

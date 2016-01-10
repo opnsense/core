@@ -180,7 +180,7 @@ $( document ).ready(function() {
                   </td>
                   <td>
                     <a href="system_advanced_sysctl.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                        <span data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
+                        <span data-toggle="tooltip" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
                     </a>
                     <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                       <span class="fa fa-trash text-muted"></span>

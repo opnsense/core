@@ -131,10 +131,10 @@ $main_buttons = array(
                     </td>
                     <td><?=$ifgroupentry['descr'];?></td>
                     <td>
-                      <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit group");?>">
+                      <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit group");?>">
                         <span class="glyphicon glyphicon-edit"></span>
                       </a>
-                      <button title="<?=gettext("delete ifgroupentry");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                      <button title="<?=gettext("delete ifgroupentry");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
                         <span class="fa fa-trash text-muted"></span>
                       </button>
                     </td>

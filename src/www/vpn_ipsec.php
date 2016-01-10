@@ -392,15 +392,15 @@ if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
     </td>
     <td>
       <button name="move_<?=$i; ?>_x" type="submit" class="btn btn-default btn-xs"
-          title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip" data-placement="left">
+          title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip">
         <span class="glyphicon glyphicon-arrow-left"></span>
       </button>
       <a href="vpn_ipsec_phase1.php?p1index=<?=$i; ?>" class="btn btn-default btn-xs" alt="edit"
-          title="<?=gettext("edit phase1 entry"); ?>" data-toggle="tooltip" data-placement="left">
+          title="<?=gettext("edit phase1 entry"); ?>" data-toggle="tooltip">
         <span class="glyphicon glyphicon-pencil"></span>
       </a><br/>
       <button name="del_<?=$i;?>_x"
-          title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip" data-placement="left"
+          title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip"
           type="submit"
           onclick="return confirm('<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>')"
           class="btn btn-default btn-xs">
@@ -409,7 +409,7 @@ if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
 <?php                 if (!isset($ph1ent['mobile'])) :
 ?>
                       <a href="vpn_ipsec_phase1.php?dup=<?=$i; ?>" class="btn btn-default btn-xs" alt="add"
-                          title="<?=gettext("clone phase1 entry"); ?>" data-toggle="tooltip" data-placement="left">
+                          title="<?=gettext("clone phase1 entry"); ?>" data-toggle="tooltip">
                                       <span class="fa fa-clone text-muted"></span>
                       </a>
 <?php                 endif;
@@ -517,25 +517,25 @@ if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm
     </td>
     <td>
         <button name="movep2_<?=$j;?>_x"
-            title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip" data-placement="left"
+            title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip"
             type="submit"
             class="btn btn-default btn-xs">
             <span class="glyphicon glyphicon-arrow-left"></span>
         </button>
         <a href="vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid']; ?>"
-            title="<?=gettext("edit phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
+            title="<?=gettext("edit phase 2 entry"); ?>" data-toggle="tooltip"
             alt="edit" class="btn btn-default btn-xs">
           <span class="glyphicon glyphicon-pencil"></span>
         </a>
         <button name="delp2_<?=$ph2index; ?>_x"
-          title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip" data-placement="left"
+          title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip"
           type="submit"
           onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')"
           class="btn btn-default btn-xs">
           <span class="fa fa-trash text-muted"><span>
         </button>
         <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid']; ?>"
-            title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
+            title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip"
             alt="add" class="btn btn-default btn-xs">
           <span class="fa fa-clone text-muted"></span>
         </a>
@@ -552,23 +552,23 @@ endforeach;
 ?>
 
                                 <button name="movep2_<?=$j;?>_x" type="submit"
-                                  title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip" data-placement="left"
-                                  class="btn btn-default btn-xs">
+                                    title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip"
+                                    class="btn btn-default btn-xs">
                                   <span class="glyphicon glyphicon-arrow-down"></span>
                                 </button>
 <?php                                 endif;
 ?>
 <?php                                 if ($j > 0) :
 ?>
-                                <button name="delp2_x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip" data-placement="left"
-                                  onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')"
-                                  class="btn btn-default btn-xs">
+                                <button name="delp2_x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip"
+                                    onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')"
+                                    class="btn btn-default btn-xs">
                                   <span class="fa fa-trash text-muted"></span>
                                 </button>
 <?php                                 endif;
 ?>
                 <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-default btn-xs"
-                    title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left">
+                    title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
                   <span alt="add" class="glyphicon glyphicon-plus"></span>
                 </a>
               </td>
@@ -586,22 +586,22 @@ endforeach;  // $a_phase1 as $ph1ent
                     <td colspan="8"> </td>
                     <td>
                       <button name="move_<?=$i;?>_x"
-                      type="submit"
-                      title="<?=gettext("move selected phase 1 entries to end");?>"
-                      data-toggle="tooltip" data-placement="left"
-                      class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-arrow-down"></span>
-                    </button>
+                          type="submit"
+                          title="<?=gettext("move selected phase 1 entries to end");?>"
+                          data-toggle="tooltip"
+                          class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-down"></span>
+                      </button>
                       <button
                       name="del_x"
                       type="submit"
                       title="<?=gettext("delete selected phase 1 entries");?>"
-                      data-toggle="tooltip" data-placement="left"
+                      data-toggle="tooltip"
                       onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
                       class="btn btn-default btn-xs">
                       <span class="fa fa-trash text-muted"></span>
                     </button>
-                      <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip" data-placement="left"
+                      <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
                           alt="add" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>

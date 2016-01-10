@@ -764,15 +764,15 @@ $main_buttons = array(
                   </table>
                 </td>
                 <td>
-                  <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
+                  <a href="system_camanager.php?act=edit&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit CA");?>" alt="<?=gettext("edit CA");?>" class="btn btn-default btn-xs">
                     <span class="glyphicon glyphicon-pencil"></span>
                   </a>
-                  <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
+                  <a href="system_camanager.php?act=exp&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA cert");?>" alt="<?=gettext("export CA cert");?>" class="btn btn-default btn-xs">
                     <span class="glyphicon glyphicon-download"></span>
                   </a>
 <?php
                   if ($ca['prv']) :?>
-                  <a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs">
+                  <a href="system_camanager.php?act=expkey&amp;id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("export CA private key");?>" class="btn btn-default btn-xs">
                     <span class="glyphicon glyphicon-download"></span>
                   </a>
 <?php
