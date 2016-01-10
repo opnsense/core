@@ -87,177 +87,86 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 clear_subsystem_dirty('ipsec');
             }
         }
-    } elseif (isset($_POST['submit'])) {
+    } elseif (isset($_POST['save'])) {
         $config['ipsec']['enable'] = !empty($_POST['enable']) ? true : false;
         write_config();
         vpn_ipsec_configure();
         header("Location: vpn_ipsec.php");
         exit;
-    } elseif (isset($_POST['del_x'])) {
-        /* delete selected p1 entries */
-        if (isset($_POST['p1entry']) && count($_POST['p1entry'])) {
-            foreach ($_POST['p1entry'] as $p1entrydel) {
-                unset($config['ipsec']['phase1'][$p1entrydel]);
-            }
-            if (write_config()) {
-                mark_subsystem_dirty('ipsec');
-            }
-            header("Location: vpn_ipsec.php");
-            exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase1" ) {
+        $del_items = array();
+        if (isset($_POST['id']) && isset($config['ipsec']['phase1'][$_POST['id']])){
+            $del_items[] = $_POST['id'];
+        } elseif (empty($_POST['id']) && isset($_POST['p1entry']) && count($_POST['p1entry'])) {
+            $del_items = $_POST['p1entry'];
         }
-    } elseif (isset($_POST['delp2_x'])) {
-        /* delete selected p2 entries */
-        if (isset($_POST['p2entry']) && count($_POST['p2entry'])) {
-            foreach ($_POST['p2entry'] as $p2entrydel) {
-                unset($config['ipsec']['phase2'][$p2entrydel]);
-            }
-            if (write_config()) {
-                mark_subsystem_dirty('ipsec');
-            }
-            header("Location: vpn_ipsec.php");
-            exit;
-        }
-    } else {
-      // move, delete, toggle items by id.
-      //
-      /* yuck - IE won't send value attributes for image buttons,
-      while Mozilla does - so we use .x/.y to find move button clicks instead... */
-        unset($delbtn, $delbtnp2, $movebtn, $movebtnp2, $togglebtn, $togglebtnp2);
-        foreach ($_POST as $pn => $pd) {
-            if (preg_match("/del_(\d+)_x/", $pn, $matches)) {
-                $delbtn = $matches[1];
-            } elseif (preg_match("/delp2_(\d+)_x/", $pn, $matches)) {
-                $delbtnp2 = $matches[1];
-            } elseif (preg_match("/move_(\d+)_x/", $pn, $matches)) {
-                $movebtn = $matches[1];
-            } elseif (preg_match("/movep2_(\d+)_x/", $pn, $matches)) {
-                $movebtnp2 = $matches[1];
-            } elseif (preg_match("/toggle_(\d+)_x/", $pn, $matches)) {
-                $togglebtn = $matches[1];
-            } elseif (preg_match("/togglep2_(\d+)_x/", $pn, $matches)) {
-                $togglebtnp2 = $matches[1];
-            }
-        }
-        $save = 1;
 
-      /* move selected p1 entries before this */
-        if (isset($movebtn) && isset($_POST['p1entry']) && count($_POST['p1entry'])) {
-            $a_phase1_new = array();
-
-            /* copy all p1 entries < $movebtn and not selected */
-            for ($i = 0; $i < $movebtn; $i++) {
-                if (!in_array($i, $_POST['p1entry'])) {
-                    $a_phase1_new[] = $a_phase1[$i];
-                }
-            }
-
-            /* copy all selected p1 entries */
-            for ($i = 0; $i < count($a_phase1); $i++) {
-                if ($i == $movebtn) {
-                    continue;
-                }
-                if (in_array($i, $_POST['p1entry'])) {
-                    $a_phase1_new[] = $a_phase1[$i];
-                }
-            }
-
-            /* copy $movebtn p1 entry */
-            if ($movebtn < count($a_phase1)) {
-                $a_phase1_new[] = $a_phase1[$movebtn];
-            }
-
-            /* copy all p1 entries > $movebtn and not selected */
-            for ($i = $movebtn+1; $i < count($a_phase1); $i++) {
-                if (!in_array($i, $_POST['p1entry'])) {
-                    $a_phase1_new[] = $a_phase1[$i];
-                }
-            }
-            if (count($a_phase1_new) > 0) {
-                $a_phase1 = $a_phase1_new;
-            }
-
-        } elseif (isset($movebtnp2) && isset($_POST['p2entry']) && count($_POST['p2entry'])) {
-            /* move selected p2 entries before this */
-            $a_phase2_new = array();
-
-            /* copy all p2 entries < $movebtnp2 and not selected */
-            for ($i = 0; $i < $movebtnp2; $i++) {
-                if (!in_array($i, $_POST['p2entry'])) {
-                    $a_phase2_new[] = $a_phase2[$i];
-                }
-            }
-
-            /* copy all selected p2 entries */
-            for ($i = 0; $i < count($a_phase2); $i++) {
-                if ($i == $movebtnp2) {
-                    continue;
-                }
-                if (in_array($i, $_POST['p2entry'])) {
-                    $a_phase2_new[] = $a_phase2[$i];
-                }
-            }
-
-            /* copy $movebtnp2 p2 entry */
-            if ($movebtnp2 < count($a_phase2)) {
-                $a_phase2_new[] = $a_phase2[$movebtnp2];
-            }
-
-            /* copy all p2 entries > $movebtnp2 and not selected */
-            for ($i = $movebtnp2+1; $i < count($a_phase2); $i++) {
-                if (!in_array($i, $_POST['p2entry'])) {
-                    $a_phase2_new[] = $a_phase2[$i];
-                }
-            }
-            if (count($a_phase2_new) > 0) {
-                $a_phase2 = $a_phase2_new;
-            }
-
-        } elseif (isset($togglebtn)) {
-            if (isset($a_phase1[$togglebtn]['disabled'])) {
-                unset($a_phase1[$togglebtn]['disabled']);
-            } else {
-                $a_phase1[$togglebtn]['disabled'] = true;
-            }
-
-        } elseif (isset($togglebtnp2)) {
-            if (isset($a_phase2[$togglebtnp2]['disabled'])) {
-                unset($a_phase2[$togglebtnp2]['disabled']);
-            } else {
-                $a_phase2[$togglebtnp2]['disabled'] = true;
-            }
-
-        } elseif (isset($delbtn)) {
+        foreach ($del_items as $p1entrydel) {
             /* remove static route if interface is not WAN */
-            if ($a_phase1[$delbtn]['interface'] <> "wan") {
-                mwexec("/sbin/route delete -host {$a_phase1[$delbtn]['remote-gateway']}");
+            if ($a_phase1[$p1entrydel]['interface'] <> "wan") {
+                mwexec('/sbin/route delete -host ' . escapeshellarg($a_phase1[$p1entrydel]['remote-gateway']));
             }
-
             /* remove all phase2 entries that match the ikeid */
-            $ikeid = $a_phase1[$delbtn]['ikeid'];
+            $ikeid = $a_phase1[$p1entrydel]['ikeid'];
             foreach ($a_phase2 as $p2index => $ph2tmp) {
                 if ($ph2tmp['ikeid'] == $ikeid) {
                     unset($a_phase2[$p2index]);
                 }
             }
-
-            unset($a_phase1[$delbtn]);
-
-        } elseif (isset($delbtnp2)) {
-            unset($a_phase2[$delbtnp2]);
-
-        } else {
-            $save = 0;
+            unset($config['ipsec']['phase1'][$p1entrydel]);
         }
 
-        if ($save === 1) {
-            if (write_config()) {
-                mark_subsystem_dirty('ipsec');
+        if (write_config()) {
+            mark_subsystem_dirty('ipsec');
+        }
+        header("Location: vpn_ipsec.php");
+        exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase2" ) {
+        if (isset($_POST['id']) && isset($config['ipsec']['phase2'][$_POST['id']])){
+            unset($config['ipsec']['phase2'][$_POST['id']]);
+        } elseif (empty($_POST['id']) && isset($_POST['p2entry']) && count($_POST['p2entry'])) {
+            foreach ($_POST['p2entry'] as $p1entrydel) {
+                unset($config['ipsec']['phase2'][$p1entrydel]);
             }
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('ipsec');
+        }
+        header("Location: vpn_ipsec.php");
+        exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "movep1" ) {
+        // move phase 1 records
+        if (isset($_POST['p1entry']) && count($_POST['p1entry']) > 0) {
+            // if rule not set/found, move to end
+            if (!isset($_POST['id']) || !isset($a_phase1[$_POST['id']])) {
+                $id = count($a_phase1);
+            } else {
+                $id = $_POST['id'];
+            }
+            $a_phase1 = legacy_move_config_list_items($a_phase1, $id,  $_POST['p1entry']);
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('ipsec');
+        }
+        header("Location: vpn_ipsec.php");
+        exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "movep2" ) {
+        // move phase 2 records
+        if (isset($_POST['p2entry']) && count($_POST['p2entry']) > 0) {
+            // if rule not set/found, move to end
+            if (!isset($_POST['id']) || !isset($a_phase2[$_POST['id']])) {
+                $id = count($a_phase2);
+            } else {
+                $id = $_POST['id'];
+            }
+            $a_phase2 = legacy_move_config_list_items($a_phase2, $id,  $_POST['p2entry']);
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('ipsec');
         }
         header("Location: vpn_ipsec.php");
         exit;
     }
-
 }
 
 // form data
@@ -268,37 +177,132 @@ legacy_html_escape_form_data($pconfig);
 $shortcut_section = 'ipsec';
 
 include("head.inc");
-
 ?>
 
 <body>
-
-<?php include("fbegin.inc"); ?>
-
 <script type="text/javascript">
-//<![CDATA[
-function show_phase2(id, buttonid) {
-  document.getElementById(buttonid).innerHTML='';
-  document.getElementById(id).style.display = "block";
-  var visible = id + '-visible';
-  document.getElementById(visible).value = "1";
-}
-//]]>
+$( document ).ready(function() {
+    // link move buttons (phase 1 and phase 2)
+    $(".act_move").click(function(event){
+      event.preventDefault();
+      $("#id").val($(this).data("id"));
+      $("#action").val($(this).data("act"));
+      $("#iform").submit();
+    });
+
+    // link delete phase 1 buttons
+    $(".act_delete_p1").click(function(event){
+      event.preventDefault();
+      var id = $(this).data("id");
+      if (id != 'x') {
+        // delete single
+        BootstrapDialog.show({
+          type:BootstrapDialog.TYPE_DANGER,
+          title: "<?= gettext("IPSEC");?>",
+          message: "<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>",
+          buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                    label: "<?= gettext("Yes");?>",
+                    action: function(dialogRef) {
+                      $("#id").val(id);
+                      $("#action").val("delphase1");
+                      $("#iform").submit()
+                  }
+                }]
+      });
+      } else {
+        // delete selected
+        BootstrapDialog.show({
+          type:BootstrapDialog.TYPE_DANGER,
+          title: "<?= gettext("IPSEC");?>",
+          message: "<?=gettext("Do you really want to delete the selected phase1 entries?");?>",
+          buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                    label: "<?= gettext("Yes");?>",
+                    action: function(dialogRef) {
+                      $("#id").val("");
+                      $("#action").val("delphase1");
+                      $("#iform").submit()
+                  }
+                }]
+        });
+      }
+    });
+
+    // link delete phase 2 buttons
+    $(".act_delete_p2").click(function(event){
+      event.preventDefault();
+      var id = $(this).data("id");
+      if (id != 'x') {
+        // delete single
+        BootstrapDialog.show({
+          type:BootstrapDialog.TYPE_DANGER,
+          title: "<?= gettext("IPSEC");?>",
+          message: "<?=gettext("Do you really want to delete this phase2 entry?"); ?>",
+          buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                    label: "<?= gettext("Yes");?>",
+                    action: function(dialogRef) {
+                      $("#id").val(id);
+                      $("#action").val("delphase2");
+                      $("#iform").submit()
+                  }
+                }]
+      });
+      } else {
+        // delete selected
+        BootstrapDialog.show({
+          type:BootstrapDialog.TYPE_DANGER,
+          title: "<?= gettext("IPSEC");?>",
+          message: "<?=gettext("Do you really want to delete the selected phase2 entries?");?>",
+          buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                    label: "<?= gettext("Yes");?>",
+                    action: function(dialogRef) {
+                      $("#id").val("");
+                      $("#action").val("delphase2");
+                      $("#iform").submit()
+                  }
+                }]
+        });
+      }
+    });
+
+    // show phase 2 entries
+    $(".act_show_p2").click(function(){
+        $("#tdph2-"+$(this).data("id")).show();
+        $("#shph2but-"+$(this).data("id")).hide();
+    });
+});
 </script>
 
-<form action="vpn_ipsec.php" method="post">
-  <section class="page-content-main">
-    <div class="container-fluid">
-      <div class="row">
-        <?php
-                if (isset($savemsg)) {
-                    print_info_box($savemsg);
-                }
-                if ($pconfig['enable'] && is_subsystem_dirty('ipsec')) {
-                    print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
-                }
-                ?>
-          <section class="col-xs-12">
+<?php include("fbegin.inc"); ?>
+<section class="page-content-main">
+  <div class="container-fluid">
+    <div class="row">
+<?php
+      if (isset($savemsg)) {
+          print_info_box($savemsg);
+      }
+      if ($pconfig['enable'] && is_subsystem_dirty('ipsec')) {
+          print_info_box_apply(gettext("The IPsec tunnel configuration has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));
+      }?>
+      <section class="col-xs-12">
+        <form method="post" name="iform" id="iform">
+          <input type="hidden" id="id" name="id" value="" />
+          <input type="hidden" id="action" name="act" value="" />
            <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
                 <table class="table table-striped">
@@ -321,8 +325,7 @@ function show_phase2(id, buttonid) {
                 $i = 0;
 foreach ($pconfig['phase1'] as $ph1ent) :
 ?>
-  <tr id="fr<?=$i;
-?>" ondblclick="document.location='vpn_ipsec_phase1.php?p1index=<?=$i;?>'">
+  <tr>
     <td>
       <input type="checkbox" name="p1entry[]" value="<?=$i;?>"/>
     </td>
@@ -391,25 +394,24 @@ if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
         <?=$ph1ent['descr'];?>&nbsp;
     </td>
     <td>
-      <button name="move_<?=$i; ?>_x" type="submit" class="btn btn-default btn-xs"
-          title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip">
+      <button data-id="<?=$i; ?>" data-act="movep1" type="submit" class="act_move btn btn-default btn-xs"
+          title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip" data-placement="left">
         <span class="glyphicon glyphicon-arrow-left"></span>
       </button>
       <a href="vpn_ipsec_phase1.php?p1index=<?=$i; ?>" class="btn btn-default btn-xs" alt="edit"
-          title="<?=gettext("edit phase1 entry"); ?>" data-toggle="tooltip">
+          title="<?=gettext("edit phase1 entry"); ?>" data-toggle="tooltip" data-placement="left">
         <span class="glyphicon glyphicon-pencil"></span>
       </a><br/>
-      <button name="del_<?=$i;?>_x"
-          title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip"
+      <button data-id="<?=$i; ?>"
+          title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip" data-placement="left"
           type="submit"
-          onclick="return confirm('<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>')"
-          class="btn btn-default btn-xs">
-          <span class="fa fa-trash text-muted"></span>
+          class="act_delete_p1 btn btn-default btn-xs">
+          <span class="glyphicon glyphicon-remove"></span>
       </button>
 <?php                 if (!isset($ph1ent['mobile'])) :
 ?>
                       <a href="vpn_ipsec_phase1.php?dup=<?=$i; ?>" class="btn btn-default btn-xs" alt="add"
-                          title="<?=gettext("clone phase1 entry"); ?>" data-toggle="tooltip">
+                          title="<?=gettext("clone phase1 entry"); ?>" data-toggle="tooltip" data-placement="left">
                                       <span class="fa fa-clone text-muted"></span>
                       </a>
 <?php                 endif;
@@ -429,7 +431,7 @@ foreach ($pconfig['phase2'] as $ph2ent) {
     $fr_prefix = "frp2{$i}";
 ?>
       <div id="shph2but-<?=$i?>">
-        <button class="btn btn-xs" type="button" onclick="show_phase2('tdph2-<?=$i?>','shph2but-<?=$i?>')">
+        <button class="act_show_p2 btn btn-xs" type="button" data-id="<?=$i?>">
           <i class="fa fa-plus"></i> <?php printf(gettext("Show %s Phase-2 entries"), $phase2count); ?>
         </button>
       </div>
@@ -457,8 +459,7 @@ foreach ($pconfig['phase2'] as $ph2index => $ph2ent) :
     }
 
 ?>
-  <tr id="<?=$fr_prefix . $j;
-?>" ondblclick="document.location='vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid'];?>'">
+  <tr>
     <td>
       <input type="checkbox" name="p2entry[]" value="<?=$ph2index;?>"/>
     </td>
@@ -516,26 +517,25 @@ if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm
 ?>
     </td>
     <td>
-        <button name="movep2_<?=$j;?>_x"
-            title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip"
+        <button data-id="<?=$j; ?>" data-act="movep2"
+            title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip" data-placement="left"
             type="submit"
-            class="btn btn-default btn-xs">
+            class="act_move btn btn-default btn-xs">
             <span class="glyphicon glyphicon-arrow-left"></span>
         </button>
         <a href="vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid']; ?>"
-            title="<?=gettext("edit phase 2 entry"); ?>" data-toggle="tooltip"
+            title="<?=gettext("edit phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
             alt="edit" class="btn btn-default btn-xs">
           <span class="glyphicon glyphicon-pencil"></span>
         </a>
-        <button name="delp2_<?=$ph2index; ?>_x"
-          title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip"
+        <button data-id="<?=$ph2index; ?>"
+          title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip" data-placement="left"
           type="submit"
-          onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')"
-          class="btn btn-default btn-xs">
-          <span class="fa fa-trash text-muted"><span>
+          class="act_delete_p2 btn btn-default btn-xs">
+          <span class="glyphicon glyphicon-remove"></span>
         </button>
         <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid']; ?>"
-            title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip"
+            title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
             alt="add" class="btn btn-default btn-xs">
           <span class="fa fa-clone text-muted"></span>
         </a>
@@ -551,24 +551,23 @@ endforeach;
 <?php                           if ($j > 0) :
 ?>
 
-                                <button name="movep2_<?=$j;?>_x" type="submit"
-                                    title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip"
-                                    class="btn btn-default btn-xs">
+                                <button data-id="<?=$j+1; ?>" data-act="movep2" type="submit"
+                                  title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip" data-placement="left"
+                                  class="act_move btn btn-default btn-xs">
                                   <span class="glyphicon glyphicon-arrow-down"></span>
                                 </button>
 <?php                                 endif;
 ?>
 <?php                                 if ($j > 0) :
 ?>
-                                <button name="delp2_x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip"
-                                    onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')"
-                                    class="btn btn-default btn-xs">
-                                  <span class="fa fa-trash text-muted"></span>
+                                <button data-id="x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip" data-placement="left"
+                                  class="act_delete_p2 btn btn-default btn-xs">
+                                  <span class="glyphicon glyphicon-remove"></span>
                                 </button>
 <?php                                 endif;
 ?>
                 <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-default btn-xs"
-                    title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
+                    title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left">
                   <span alt="add" class="glyphicon glyphicon-plus"></span>
                 </a>
               </td>
@@ -585,23 +584,23 @@ endforeach;  // $a_phase1 as $ph1ent
                   <tr>
                     <td colspan="8"> </td>
                     <td>
-                      <button name="move_<?=$i;?>_x"
-                          type="submit"
-                          title="<?=gettext("move selected phase 1 entries to end");?>"
-                          data-toggle="tooltip"
-                          class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-arrow-down"></span>
-                      </button>
                       <button
-                      name="del_x"
+                      type="submit"
+                      data-id="<?=$i;?>"
+                      data-act="movep1"
+                      title="<?=gettext("move selected phase 1 entries to end");?>"
+                      data-toggle="tooltip" data-placement="left"
+                      class="act_move btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-arrow-down"></span>
+                    </button>
+                      <button data-id=""
                       type="submit"
                       title="<?=gettext("delete selected phase 1 entries");?>"
-                      data-toggle="tooltip"
-                      onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
-                      class="btn btn-default btn-xs">
-                      <span class="fa fa-trash text-muted"></span>
+                      data-toggle="tooltip" data-placement="left"
+                      class="act_delete_p1 btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-remove"></span>
                     </button>
-                      <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
+                      <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip" data-placement="left"
                           alt="add" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
@@ -615,16 +614,17 @@ endforeach;  // $a_phase1 as $ph1ent
                   </tr>
                   <tr>
                     <td colspan=9>
-                      <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input type="submit" name="save" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
-        </section>
-      </div>
+        </form>
+      </section>
     </div>
-  </section>
-</form>
+  </div>
+</section>
+
 <?php include("foot.inc");
