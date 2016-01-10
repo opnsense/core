@@ -323,36 +323,70 @@ $( document ).ready(function() {
                       <td>
                         <?=strtoupper($natent['protocol']);?>
                       </td>
+
                       <td class="hidden-xs hidden-sm">
-                        <?=htmlspecialchars(pprint_address($natent['source']));?>
 <?php                   if (isset($natent['source']['address']) && is_alias($natent['source']['address'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"><i class="fa fa-list"></i> </a>
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['source']['address']));?>" data-toggle="tooltip">
+                            <?=htmlspecialchars(pprint_address($natent['source'])); ?>
+                          </span>
+                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['address']);?>"
+                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                            <i class="fa fa-list"></i>
+                          </a>
+<?php                   else: ?>
+                          <?=htmlspecialchars(pprint_address($natent['source'])); ?>
 <?php                   endif; ?>
                       </td>
+
                       <td class="hidden-xs hidden-sm">
-                        <?=htmlspecialchars(pprint_port($natent['source']['port']));?>
-<?php                   if (is_alias($natent['source']['port'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['port']);?>"><i class="fa fa-list"></i> </a>
+<?php                   if (isset($natent['source']['port']) && is_alias($natent['source']['port'])): ?>
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['source']['port']));?>" data-toggle="tooltip">
+                            <?=htmlspecialchars(pprint_port($natent['source']['port'])); ?>&nbsp;
+                          </span>
+                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['source']['port']);?>"
+                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                            <i class="fa fa-list"></i>
+                          </a>
+<?php                   else: ?>
+                          <?=htmlspecialchars(pprint_port(isset($natent['source']['port']) ? $natent['source']['port'] : null)); ?>
 <?php                   endif; ?>
                       </td>
+
                       <td class="hidden-xs hidden-sm">
-                        <?=htmlspecialchars(pprint_address($natent['destination']));?>
 <?php                   if (isset($natent['destination']['address']) && is_alias($natent['destination']['address'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"><i class="fa fa-list"></i> </a>
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['address']));?>" data-toggle="tooltip">
+                            <?=htmlspecialchars(pprint_address($natent['destination'])); ?>
+                          </span>
+                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['address']);?>"
+                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                            <i class="fa fa-list"></i>
+                          </a>
+<?php                   else: ?>
+                          <?=htmlspecialchars(pprint_address($natent['destination'])); ?>
 <?php                   endif; ?>
                       </td>
+
                       <td class="hidden-xs hidden-sm">
-                        <?=htmlspecialchars(pprint_port($natent['destination']['port']));?>
-<?php                   if (is_alias($natent['destination']['port'])): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['port']);?>"><i class="fa fa-list"></i> </a>
+<?php                   if (isset($natent['destination']['port']) && is_alias($natent['destination']['port'])): ?>
+                          <span title="<?=htmlspecialchars(get_alias_description($natent['destination']['port']));?>" data-toggle="tooltip">
+                            <?=htmlspecialchars(pprint_port($natent['destination']['port'])); ?>&nbsp;
+                          </span>
+                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($natent['destination']['port']);?>"
+                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                            <i class="fa fa-list"></i>
+                          </a>
+<?php                   else: ?>
+                          <?=htmlspecialchars(pprint_port(isset($natent['destination']['port']) ? $natent['destination']['port'] : null)); ?>
 <?php                   endif; ?>
                       </td>
+
                       <td>
                         <?=$natent['target'];?>
 <?php                   if (is_alias($natent['target'])): ?>
                         &nbsp;<a href="/firewall_aliases_edit.php?name=<?=$natent['target'];?>"><i class="fa fa-list"></i> </a>
 <?php                   endif; ?>
                       </td>
+
                       <td>
 <?php
                         $localport = $natent['local-port'];
@@ -362,11 +396,19 @@ $( document ).ready(function() {
                             $localport   .= '-' . $localendport;
                         }
 ?>
-                        <?=htmlspecialchars(pprint_port($localport));?>
-<?php                   if (is_alias($localport)): ?>
-                        &nbsp;<a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($localport);?>"><i class="fa fa-list"></i> </a>
+<?php                   if (isset($natent['destination']['port']) && is_alias($natent['destination']['port'])): ?>
+                          <span title="<?=htmlspecialchars(get_alias_description($localport));?>" data-toggle="tooltip">
+                            <?=htmlspecialchars(pprint_port($localport));?>&nbsp;
+                          </span>
+                          <a href="/firewall_aliases_edit.php?name=<?=htmlspecialchars($localport);?>"
+                              title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                            <i class="fa fa-list"></i>
+                          </a>
+<?php                   else: ?>
+                          <?=htmlspecialchars(pprint_port($localport));?>
 <?php                   endif; ?>
                       </td>
+
                       <td>
                         <?=$natent['descr'];?>
                       </td>
@@ -388,6 +430,7 @@ $( document ).ready(function() {
                      </tr>
 <?php $nnats++; endforeach; ?>
                     <tr>
+
                     <td colspan="8"></td>
                     <td class="hidden-xs hidden-sm" colspan="4"> </td>
                     <td>
