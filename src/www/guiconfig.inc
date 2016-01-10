@@ -216,15 +216,24 @@ EOFnp;
 
 function print_info_box_apply($msg)
 {
-	$value = gettext('Apply changes');
+	$iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
+	$label = gettext('Apply changes');
+	$value = 'Apply changes';
 	$name= 'apply';
 
-	$savebutton = '<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">';
-	$savebutton .= '<input name="' . $name . '" type="submit" class="btn btn-primary pull-right" id="' . $name . '" value="' . $value . '" />';
-	if (!empty($_POST['if'])) {
-		$savebutton .= '<input type="hidden" name="if" value="' . htmlspecialchars($_POST['if']) . '" />';
-	} elseif (!empty($_GET['if'])) {
-		$savebutton .= '<input type="hidden" name="if" value="' . htmlspecialchars($_GET['if']) . '" />';
+	$savebutton = sprintf('<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">', $_SERVER['REQUEST_URI']);
+	$savebutton .= sprintf(
+		'<button type="submit" name="%s" id="%s" class="btn btn-primary pull-right" value="%s">%s</button>',
+		$name,
+		$name,
+		$value,
+		$label
+	);
+	if (!empty($iface)) {
+		$savebutton .= sprintf(
+			'<input type="hidden" name="if" value="%s"/>',
+			htmlspecialchars($iface)
+		);
 	}
 	$savebutton .= '</form>';
 
