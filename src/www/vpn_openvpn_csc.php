@@ -441,7 +441,7 @@ if ($act!="new" && $act!="edit") {
                                                 "VPN can be established. " .
                                                 "Expressed as a comma-separated list of one or more IP/PREFIX networks. " .
                                                 "You may leave this blank if there are no client-side networks to " .
-                                                "be routed"); ?>.<br />
+                                                "be routed."); ?><br />
 												<?=gettext("NOTE: Remember to add these subnets to the " .
                                                 "IPv6 Remote Networks list on the corresponding OpenVPN server settings.");?>
 											</div>
@@ -467,7 +467,7 @@ if ($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="push_reset" type="checkbox" value="yes" <?= !empty($pconfig['push_reset']) ? "checked=\"checked\"" : "";?> />
 											<div class="hidden" for="help_for_push_reset">
-													<?=gettext("Prevent this client from receiving any server-defined client settings"); ?>.
+													<?=gettext("Prevent this client from receiving any server-defined client settings."); ?>
 											</div>
 										</td>
 									</tr>
@@ -488,13 +488,13 @@ if ($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> onclick="dns_server_change()" />
 											<div id="dns_server_data">
-												<?=gettext("Server"); ?> #1:&nbsp;
+												<?=gettext("Server #1:"); ?>&nbsp;
 												<input name="dns_server1" type="text" class="formfld unknown" id="dns_server1" size="20" value="<?=htmlspecialchars($pconfig['dns_server1']);?>" />
-												<?=gettext("Server"); ?> #2:&nbsp;
+												<?=gettext("Server #2:"); ?>&nbsp;
 												<input name="dns_server2" type="text" class="formfld unknown" id="dns_server2" size="20" value="<?=htmlspecialchars($pconfig['dns_server2']);?>" />
-												<?=gettext("Server"); ?> #3:&nbsp;
+												<?=gettext("Server #3:"); ?>&nbsp;
 												<input name="dns_server3" type="text" class="formfld unknown" id="dns_server3" size="20" value="<?=htmlspecialchars($pconfig['dns_server3']);?>" />
-												<?=gettext("Server"); ?> #4:&nbsp;
+												<?=gettext("Server #4:"); ?>&nbsp;
 												<input name="dns_server4" type="text" class="formfld unknown" id="dns_server4" size="20" value="<?=htmlspecialchars($pconfig['dns_server4']);?>" />
 											</div>
 											<div class="hidden" for="help_for_dns_server">
@@ -507,9 +507,9 @@ if ($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?> onclick="ntp_server_change()" />
 											<div id="ntp_server_data">
-												<?=gettext("Server"); ?> #1:&nbsp;
+												<?=gettext("Server #1:"); ?>&nbsp;
 												<input name="ntp_server1" type="text" class="formfld unknown" id="ntp_server1" size="20" value="<?=$pconfig['ntp_server1'];?>" />
-												<?=gettext("Server"); ?> #2:&nbsp;
+												<?=gettext("Server #2:"); ?>&nbsp;
 												<input name="ntp_server2" type="text" class="formfld unknown" id="ntp_server2" size="20" value="<?=$pconfig['ntp_server2'];?>" />
 											</div>
 											<div class="hidden" for="help_for_ntp_server">
@@ -547,7 +547,7 @@ if ($act!="new" && $act!="edit") {
 													<?=gettext("Possible options: b-node (broadcasts), p-node " .
                                                     "(point-to-point name queries to a WINS server), " .
                                                     "m-node (broadcast then query name server), and " .
-                                                    "h-node (query name server, then broadcast)"); ?>.
+                                                    "h-node (query name server, then broadcast)."); ?>
 												</div>
 												Scope ID:&nbsp;
 												<input name="netbios_scope" type="text" class="formfld unknown" id="netbios_scope" size="30" value="<?=$pconfig['netbios_scope'];?>" />
@@ -556,7 +556,7 @@ if ($act!="new" && $act!="edit") {
                                                     "service for	NetBIOS over TCP/IP. The NetBIOS " .
                                                     "scope ID isolates NetBIOS traffic on a single " .
                                                     "network to only those nodes with the same " .
-                                                    "NetBIOS scope ID"); ?>.
+                                                    "NetBIOS scope ID."); ?>
 												</div>
 											</div>
 										</td>
@@ -566,9 +566,9 @@ if ($act!="new" && $act!="edit") {
 										<td width="78%" class="vtable">
 											<input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes"  <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> onclick="wins_server_change()" />
 											<div id="wins_server_data">
-												<?=gettext("Server"); ?> #1:
+												<?=gettext("Server #1:"); ?>
 												<input name="wins_server1" type="text" class="formfld unknown" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
-												<?=gettext("Server"); ?> #2:
+												<?=gettext("Server #2:"); ?>
 												<input name="wins_server2" type="text" class="formfld unknown" id="wins_server2" size="20" value="<?=$pconfig['wins_server2'];?>" />
 											</div>
 											<div class="hidden" for="help_for_wins_server">
