@@ -325,12 +325,12 @@ function enable_change(enable_over) {
 					                  <td width="78%" class="vtable">
 					                    <input name="localip" type="text" class="form-control unknown" id="localip" size="20" value="<?=htmlspecialchars($pconfig['localip']);?>" />
 								<p class="text-muted"><em><small>
-								<?=gettext("Enter the IP address the L2TP server should give to clients for use as their \"gateway\""); ?>.
+								<?=gettext("Enter the IP address the L2TP server should give to clients for use as their \"gateway\"."); ?>
 								<br />
 								<?=gettext("Typically this is set to an unused IP just outside of the client range"); ?>.
 								<br />
 								<br />
-								<?=gettext("NOTE: This should NOT be set to any IP address currently in use on this firewall"); ?>.</small></em></p></td>
+								<?=gettext("NOTE: This should NOT be set to any IP address currently in use on this firewall."); ?></small></em></p></td>
 					                </tr>
 					                <tr>
 					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Remote Address Range");?></td>
@@ -374,7 +374,7 @@ function enable_change(enable_over) {
                                         ?>
 					                    </select>
 					                    <p class="text-muted"><em><small><?=gettext("Hint:");
-?> 10 <?=gettext("is ten L2TP clients"); ?></small></em></p>
+?> <?=gettext("10 is ten L2TP clients"); ?></small></em></p>
 					                  </td>
 					                </tr>
 							<tr>
