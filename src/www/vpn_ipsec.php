@@ -394,15 +394,15 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <button data-id="<?=$i; ?>" data-act="movep1" type="submit" class="act_move btn btn-default btn-xs"
-                            title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip" data-placement="left">
+                            title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </button>
                         <a href="vpn_ipsec_phase1.php?p1index=<?=$i; ?>" class="btn btn-default btn-xs" alt="edit"
-                            title="<?=gettext("edit phase1 entry"); ?>" data-toggle="tooltip" data-placement="left">
+                            title="<?=gettext("edit phase1 entry"); ?>" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a><br/>
                         <button data-id="<?=$i; ?>"
-                            title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip" data-placement="left"
+                            title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip"
                             type="submit"
                             class="act_delete_p1 btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-remove"></span>
@@ -410,7 +410,7 @@ $( document ).ready(function() {
 <?php                   if (!isset($ph1ent['mobile'])) :
 ?>
                         <a href="vpn_ipsec_phase1.php?dup=<?=$i; ?>" class="btn btn-default btn-xs" alt="add"
-                            title="<?=gettext("clone phase1 entry"); ?>" data-toggle="tooltip" data-placement="left">
+                            title="<?=gettext("clone phase1 entry"); ?>" data-toggle="tooltip">
                                         <span class="fa fa-clone text-muted"></span>
                         </a>
 <?php
@@ -510,24 +510,24 @@ $( document ).ready(function() {
                                 </td>
                                 <td>
                                     <button data-id="<?=$j; ?>" data-act="movep2"
-                                        title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip" data-placement="left"
+                                        title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip"
                                         type="submit"
                                         class="act_move btn btn-default btn-xs">
                                         <span class="glyphicon glyphicon-arrow-left"></span>
                                     </button>
                                     <a href="vpn_ipsec_phase2.php?p2index=<?=$ph2ent['uniqid']; ?>"
-                                        title="<?=gettext("edit phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
+                                        title="<?=gettext("edit phase 2 entry"); ?>" data-toggle="tooltip"
                                         alt="edit" class="btn btn-default btn-xs">
                                       <span class="glyphicon glyphicon-pencil"></span>
                                     </a>
                                     <button data-id="<?=$ph2index; ?>"
-                                      title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip" data-placement="left"
+                                      title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip"
                                       type="submit"
                                       class="act_delete_p2 btn btn-default btn-xs">
                                       <span class="glyphicon glyphicon-remove"></span>
                                     </button>
                                     <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid']; ?>"
-                                        title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
+                                        title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip"
                                         alt="add" class="btn btn-default btn-xs">
                                       <span class="fa fa-clone text-muted"></span>
                                     </a>
@@ -543,18 +543,18 @@ $( document ).ready(function() {
                                 if ($j > 0) :?>
 
                                   <button data-id="<?=$j+1; ?>" data-act="movep2" type="submit"
-                                    title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip" data-placement="left"
+                                    title="<?=gettext("move selected phase 2 entries to end");?>" data-toggle="tooltip"
                                     class="act_move btn btn-default btn-xs">
                                     <span class="glyphicon glyphicon-arrow-down"></span>
                                   </button>
-                                  <button data-id="x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip" data-placement="left"
+                                  <button data-id="x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip"
                                     class="act_delete_p2 btn btn-default btn-xs">
                                     <span class="glyphicon glyphicon-remove"></span>
                                   </button>
 <?php
                                 endif;?>
                                   <a href="vpn_ipsec_phase2.php?ikeid=<?=$ph1ent['ikeid']; ?><?= isset($ph1ent['mobile'])?"&amp;mobile=true":"";?>" class="btn btn-default btn-xs"
-                                      title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left">
+                                      title="<?=gettext("add phase 2 entry"); ?>" data-toggle="tooltip">
                                     <span alt="add" class="glyphicon glyphicon-plus"></span>
                                   </a>
                                 </td>
@@ -575,18 +575,18 @@ $( document ).ready(function() {
                         data-id="<?=$i;?>"
                         data-act="movep1"
                         title="<?=gettext("move selected phase 1 entries to end");?>"
-                        data-toggle="tooltip" data-placement="left"
+                        data-toggle="tooltip"
                         class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-down"></span>
                       </button>
                         <button data-id=""
                         type="submit"
                         title="<?=gettext("delete selected phase 1 entries");?>"
-                        data-toggle="tooltip" data-placement="left"
+                        data-toggle="tooltip"
                         class="act_delete_p1 btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-remove"></span>
                       </button>
-                        <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip" data-placement="left"
+                        <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
                             alt="add" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-plus"></span>
                       </a>
