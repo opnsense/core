@@ -317,10 +317,10 @@ $( document ).ready(function() {
                         <td> <?= format_bytes($version['filesize']) ?></td>
                         <td> <?= "{$version['username']}: {$version['description']}" ?></td>
                         <td>
-                          <a data-id="<?=$version['time'];?>" href="#" class="act_revert btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("Revert to this configuration");?>">
+                          <a data-id="<?=$version['time'];?>" href="#" class="act_revert btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Revert to this configuration");?>">
                              <span class="glyphicon glyphicon-log-in"></span>
                            </a>
-                           <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("Remove this backup");?>" >
+                           <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove this backup");?>" >
                              <span class="fa fa-trash text-muted"></span>
                            </a>
                            <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>">

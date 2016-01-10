@@ -758,7 +758,7 @@ $( document ).ready(function() {
 <?php
                             if (empty($priv['group'])) :?>
                               <button type="button" data-priv="<?=$priv['id']?>" class="btn btn-default btn-xs act-del-priv"
-                                  title="<?=gettext("revoke privilege");?>" data-toggle="tooltip" data-placement="left">
+                                  title="<?=gettext("revoke privilege");?>" data-toggle="tooltip">
                                 <span class="fa fa-trash text-muted"></span>
                               </button>
 <?php
@@ -771,7 +771,7 @@ $( document ).ready(function() {
                           <td colspan="3"></td>
                           <td>
                             <a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-xs btn-default"
-                                title="<?=gettext("assign privileges");?>" data-toggle="tooltip" data-placement="left">
+                                title="<?=gettext("assign privileges");?>" data-toggle="tooltip">
                               <span class="glyphicon glyphicon-plus"></span>
                             </a>
                           </td>
@@ -804,18 +804,16 @@ $( document ).ready(function() {
                           </td>
                           <td>
                             <a href="system_usermanager.php?act=expckey&amp;certid=<?=$i?>&amp;userid=<?=$id?>"
-                               class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                               title="<?=gettext("export private key");?>">
-                                <span class="glyphicon glyphicon-arrow-down"></span>
+                                class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export private key");?>">
+                              <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
                             <a href="system_usermanager.php?act=expcert&amp;certid=<?=$i?>&amp;userid=<?=$id?>"
-                               class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                               title="<?=gettext("export certificate");?>">
-                                <span class="glyphicon glyphicon-arrow-down"></span>
+                                class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export certificate");?>">
+                              <span class="glyphicon glyphicon-arrow-down"></span>
                             </a>
                             <button type="submit" data-certid="<?=$i;?>" class="btn btn-default btn-xs act-del-cert"
-                                title="<?=gettext("unlink certificate");?>" data-toggle="tooltip" data-placement="left" >
-                                <span class="fa fa-trash text-muted"></span>
+                                title="<?=gettext("unlink certificate");?>" data-toggle="tooltip">
+                              <span class="fa fa-trash text-muted"></span>
                             </button>
                           </td>
                         </tr>
@@ -827,7 +825,7 @@ $( document ).ready(function() {
                           <td colspan="2"></td>
                           <td>
                             <a href="system_certmanager.php?act=new&amp;userid=<?=$id?>" class="btn btn-default btn-xs"
-                                title="<?=gettext("create or link user certificate");?>" data-toggle="tooltip" data-placement="left" >
+                                title="<?=gettext("create or link user certificate");?>" data-toggle="tooltip">
                               <span class="glyphicon glyphicon-plus"></span>
                             </a>
                           </td>
@@ -863,8 +861,8 @@ $( document ).ready(function() {
                                       </td>
                                       <td>
                                         <button data-key="<?=$userApiKey['key'][0];?>" type="button" class="btn btn-default btn-xs act-del-api-key"
-                                            title="<?=gettext("delete API key");?>" data-toggle="tooltip" data-placement="left" >
-                                            <span class="glyphicon glyphicon-trash"></span>
+                                            title="<?=gettext("delete API key");?>" data-toggle="tooltip">
+                                          <span class="glyphicon glyphicon-trash"></span>
                                         </button>
                                       </td>
                                   </tr>
@@ -877,8 +875,8 @@ $( document ).ready(function() {
                                     <td></td>
                                     <td>
                                       <button type="button" class="btn btn-default btn-xs" id="newApiKey"
-                                          title="<?=gettext("create API key");?>" data-toggle="tooltip" data-placement="left" >
-                                          <span class="glyphicon glyphicon-plus"></span>
+                                          title="<?=gettext("create API key");?>" data-toggle="tooltip">
+                                        <span class="glyphicon glyphicon-plus"></span>
                                       </button>
                                     </td>
                                   </tr>
@@ -964,16 +962,15 @@ $( document ).ready(function() {
                       </td>
                       <td>
                         <a href="system_usermanager.php?act=edit&userid=<?=$i?>"
-                           class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
-                           title="<?=gettext("edit user");?>">
-                            <span class="glyphicon glyphicon-pencil"></span>
+                            class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit user");?>">
+                          <span class="glyphicon glyphicon-pencil"></span>
                         </a>
 <?php
                         if ($userent['scope'] != "system") :?>
                         <button type="button" class="btn btn-default btn-xs act-del-user"
                             data-username="<?=$userent['name'];?>"
-                            data-userid="<?=$i?>" title="<?=gettext("delete user");?>" data-toggle="tooltip"
-                            data-placement="left" ><span class="fa fa-trash text-muted"></span>
+                            data-userid="<?=$i?>" title="<?=gettext("delete user");?>" data-toggle="tooltip">
+                          <span class="fa fa-trash text-muted"></span>
                         </button>
 <?php
                         endif;?>
@@ -989,7 +986,7 @@ $( document ).ready(function() {
                       <td colspan="3"></td>
                       <td>
                         <a href="system_usermanager.php?act=new" class="btn btn-default btn-xs"
-                           title="<?=gettext("add user");?>" data-toggle="tooltip" data-placement="left">
+                           title="<?=gettext("add user");?>" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-plus"></span>
                         </a>
 <?php

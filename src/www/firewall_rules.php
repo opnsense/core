@@ -290,7 +290,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Block all IPv6 traffic");?></td>
                     <td>
-                      <a href="system_advanced_network.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="system_advanced_network.php" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
@@ -314,7 +314,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Anti-Lockout Rule");?></td>
                     <td>
-                      <a href="system_advanced_admin.php" data-toggle="tooltip" data-placement="left" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="system_advanced_admin.php" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
@@ -340,7 +340,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td class="hidden-xs hidden-sm"><?=gettext("Block private networks");?></td>
                     <td valign="middle" class="list nowrap">
-                        <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" data-placement="left" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="interfaces.php?if=<?=$selected_if?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
@@ -365,7 +365,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Block bogon networks");?></td>
                     <td>
-                      <a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" data-toggle="tooltip" data-placement="left" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
@@ -424,23 +424,23 @@ $( document ).ready(function() {
                       <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
                     <td>
-                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=(empty($filterent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>"><span class="glyphicon <?=$iconfn;?>"></span></a>
+                      <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>"><span class="glyphicon <?=$iconfn;?>"></span></a>
 <?php
                       if (!empty($filterent['direction']) && $filterent['direction'] == "in"):?>
-                        <i class="fa fa-long-arrow-right" data-toggle="tooltip" data-placement="left" title="<?=gettext("in");?>"></i>
+                        <i class="fa fa-long-arrow-right" data-toggle="tooltip" title="<?=gettext("in");?>"></i>
 <?php
                       elseif (!empty($filterent['direction']) && $filterent['direction'] == "out"):?>
-                        <i class="fa fa-long-arrow-left" data-toggle="tooltip" data-placement="left" title="<?=gettext("out");?>"></i>
+                        <i class="fa fa-long-arrow-left" data-toggle="tooltip" title="<?=gettext("out");?>"></i>
 <?php
                       elseif (!empty($filterent['direction']) && $filterent['direction'] == "any"):?>
-                        <i class="fa fa-arrows-h" data-toggle="tooltip" data-placement="left" title="<?=gettext("any");?>"></i>
+                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any");?>"></i>
 <?php                 endif;?>
 <?php                 if ($selected_if != 'FloatingRules'):
                         ; // interfaces are always quick
                       elseif (isset($filterent['quick']) && $filterent['quick'] === 'yes'): ?>
-                        <i class="fa fa-flash text-warning" data-toggle="tooltip" data-placement="left" title="<?= gettext('first match') ?>"></i>
+                        <i class="fa fa-flash text-warning" data-toggle="tooltip" title="<?= gettext('first match') ?>"></i>
 <?php                 else: ?>
-                        <i class="fa fa-flash text-muted" data-toggle="tooltip" data-placement="left" title="<?= gettext('last match') ?>"></i>
+                        <i class="fa fa-flash text-muted" data-toggle="tooltip" title="<?= gettext('last match') ?>"></i>
 <?php                 endif; ?>
 <?php                 if (isset($filterent['log'])):?>
                       <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? "text-muted" :""?>"></span>
@@ -524,16 +524,16 @@ $( document ).ready(function() {
                       <?=htmlspecialchars($filterent['descr']);?>
                     </td>
                     <td>
-                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
+                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
-                      <a href="firewall_rules_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
+                      <a href="firewall_rules_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
                       <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                         <span class="fa fa-trash text-muted"></span>
                       </a>
-                      <a href="firewall_rules_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
+                      <a href="firewall_rules_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
                         <span class="fa fa-clone text-muted"></span>
                       </a>
                     </td>
@@ -564,13 +564,13 @@ $( document ).ready(function() {
                     <td colspan="5"></td>
                     <td colspan="5" class="hidden-xs hidden-sm"></td>
                     <td>
-                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
                       <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                         <span class="fa fa-trash text-muted"></span>
                       </a>
-                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
+                      <a href="firewall_rules_edit.php?if=<?=$selected_if;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new rule");?>">
                         <span class="glyphicon glyphicon-plus"></span>
                       </a>
                     </td>

@@ -196,15 +196,15 @@ $( document ).ready(function() {
                       <td><?=$gateway_group['descr'];?></td>
                       <td>
                         <a href="system_gateway_groups_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
-                            title="edit group" data-toggle="tooltip" data-placement="left">
+                            title="edit group" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         <button type="button" class="btn btn-default btn-xs act-del-group"
-                            data-id="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip"
-                            data-placement="left" ><span class="fa fa-trash text-muted"></span>
+                            data-id="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip">
+                          <span class="fa fa-trash text-muted"></span>
                         </button>
                         <a href="system_gateway_groups_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
-                            title="clone group" data-toggle="tooltip" data-placement="left">
+                            title="clone group" data-toggle="tooltip">
                           <span class="fa fa-clone text-muted"></span>
                         </a>
                       </td>

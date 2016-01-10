@@ -635,12 +635,12 @@ include("head.inc");
                   <td>
 <?php
                   if (!empty($ca['prv'])) :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" data-placement="left" title="<?php printf(gettext("Add or Import CRL for %s"), htmlspecialchars($ca['descr']));?>" class="btn btn-default btn-xs">
+                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" title="<?php printf(gettext("Add or Import CRL for %s"), htmlspecialchars($ca['descr']));?>" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
 <?php
                   else :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" data-placement="left" title="<?php printf(gettext("Import CRL for %s"), htmlspecialchars($ca['descr']));?>" class="btn btn-default btn-xs">
+                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?php printf(gettext("Import CRL for %s"), htmlspecialchars($ca['descr']));?>" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
 <?php
@@ -660,17 +660,17 @@ include("head.inc");
                   <td><?=$inuse ? gettext("YES") : gettext("NO"); ?></td>
                   <td>
                     <a href="system_crlmanager.php?act=exp&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-export" data-toggle="tooltip" data-placement="left" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                        <span class="glyphicon glyphicon-export" data-toggle="tooltip" title="<?=gettext("Export CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
                     </a>
 <?php
                   if ($internal) :?>
                     <a href="system_crlmanager.php?act=edit&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
                     </a>
 <?php
                   else :?>
                     <a href="system_crlmanager.php?act=editimported&amp;id=<?=$tmpcrl['refid'];?>" class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
+                      <span class="glyphicon glyphicon-edit" data-toggle="tooltip" title="<?=gettext("Edit CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>"></span>
                     </a>
 <?php
                   endif; ?>

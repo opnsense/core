@@ -303,7 +303,7 @@ $( document ).ready(function() {
 <?php                 endif; ?>
                       </td>
                       <td>
-                        <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>">
+                        <a href="#" class="act_toggle" id="toggle_<?=$nnats;?>" data-toggle="tooltip" title="<?=(!isset($natent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>">
 <?php                     if (!empty($natent['associated-rule-id'])): ?>
 <?php                     if(isset($natent['disabled'])):?>
                           <span class="glyphicon glyphicon-resize-horizontal text-muted"></span>
@@ -372,16 +372,16 @@ $( document ).ready(function() {
                       </td>
 
                       <td>
-                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
+                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </a>
-                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
+                        <a href="firewall_nat_edit.php?id=<?=$nnats;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         <a id="del_<?=$nnats;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <span class="fa fa-trash text-muted"></span>
                         </a>
-                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
+                        <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
                           <span class="fa fa-clone text-muted"></span>
                         </a>
                       </td>
@@ -396,18 +396,18 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </span>
 <?php               else: ?>
-                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
+                        <a type="submit" id="move_<?=$nnats;?>" name="move_<?=$nnats;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </a>
 <?php                   endif; ?>
 <?php                   if (count($a_nat) == 0): ?>
-                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="fa fa-trash text-muted" ></span></span>
+                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" title="<?=gettext("delete selected rules");?>"><span class="fa fa-trash text-muted" ></span></span>
 <?php                   else: ?>
                         <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <span class="fa fa-trash text-muted"></span>
                         </a>
 <?php                   endif; ?>
-                        <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
+                        <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new rule");?>">
                           <span class="glyphicon glyphicon-plus"></span>
                         </a>
                     </td>

@@ -306,16 +306,16 @@ $main_buttons = array(
                           <?=htmlspecialchars($vipent['descr']);?>
                         </td>
                         <td>
-                          <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected virtual IPs before this entry");?>" class="act_move btn btn-default btn-xs">
+                          <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs before this entry");?>" class="act_move btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-arrow-left"></span>
                           </a>
-                          <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("edit virtual IP");?>" class="btn btn-default btn-xs">
+                          <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit virtual IP");?>" class="btn btn-default btn-xs">
                             <span class="glyphicon glyphicon-pencil"></span>
                           </a>
                           <a id="del_<?=$i;?>" title="<?=gettext("delete virtual IP"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                             <span class="fa fa-trash text-muted"></span>
                           </a>
-                          <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone virtual IP");?>">
+                          <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone virtual IP");?>">
                             <span class="fa fa-clone text-muted"></span>
                           </a>
                         </td>
@@ -329,10 +329,10 @@ $main_buttons = array(
                     <tr>
                       <td colspan="5"></td>
                       <td>
-                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected virtual IPs to end");?>" class="act_move btn btn-default btn-xs">
+                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs to end");?>" class="act_move btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </a>
-                        <a href="firewall_virtual_ip_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new virtual IP");?>">
+                        <a href="firewall_virtual_ip_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new virtual IP");?>">
                           <span class="glyphicon glyphicon-plus"></span>
                         </a>
                       </td>

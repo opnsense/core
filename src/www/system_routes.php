@@ -254,7 +254,7 @@ endif; ?>
                     </td>
                     <td>
                       <a href="#" class="act_toggle" data-id="<?=$i;?>">
-                        <span class="glyphicon glyphicon-play <?=isset($route['disabled']) ? "text-muted" : "text-success" ;?>" data-toggle="tooltip" data-placement="left"
+                        <span class="glyphicon glyphicon-play <?=isset($route['disabled']) ? "text-muted" : "text-success" ;?>" data-toggle="tooltip"
                               title="<?=(!isset($route['disabled'])) ? gettext("disable route") : gettext("enable route");?>" alt="icon">
                         </span>
                       </a>
@@ -272,19 +272,19 @@ endif; ?>
                       <?=$route['descr'];?>
                     </td>
                     <td>
-                      <a data-id="<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected routes before this route");?>" class="act_move btn btn-default btn-xs">
+                      <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected routes before this route");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
                       <a class="btn btn-default btn-xs" href="system_routes_edit.php?id=<?=$i;?>"
-                          title="<?=gettext("edit route");?>" data-toggle="tooltip" data-placement="left">
+                          title="<?=gettext("edit route");?>" data-toggle="tooltip">
                         <span class="glyphicon glyphicon-pencil" alt="edit" ></span>
                       </a>
                       <button type="button" class="btn btn-default btn-xs act-del-route"
-                          data-id="<?=$i?>" title="<?=gettext("delete route");?>" data-toggle="tooltip"
-                          data-placement="left" ><span class="fa fa-trash text-muted"></span>
+                          data-id="<?=$i?>" title="<?=gettext("delete route");?>" data-toggle="tooltip">
+                        <span class="fa fa-trash text-muted"></span>
                       </button>
                       <a class="btn btn-default btn-xs" href="system_routes_edit.php?dup=<?=$i;?>"
-                          title="<?=gettext("clone route");?>" data-toggle="tooltip" data-placement="left">
+                          title="<?=gettext("clone route");?>" data-toggle="tooltip">
                         <span class="fa fa-clone text-muted" alt="duplicate"></span>
                       </a>
                     </td>
@@ -302,7 +302,7 @@ endif; ?>
                             title="<?=gettext("move selected routes to end");?>" alt="move" />
 <?php
                     else :?>
-                    <button type="submit" data-id="<?=$i;?>"  data-toggle="tooltip" data-placement="left" title="<?=gettext("move selected routes to end");?>" class="act_move btn btn-default btn-xs">
+                    <button type="submit" data-id="<?=$i;?>"  data-toggle="tooltip" title="<?=gettext("move selected routes to end");?>" class="act_move btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-arrow-left"></span>
                     </button>
 <?php
@@ -315,10 +315,10 @@ endif; ?>
 
 <?php
                     else :?>
-                    <button id="del_x" title="<?=gettext("delete selected routes");?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"><span class="fa fa-trash text-muted"></span></button>
+                    <button id="del_x" title="<?=gettext("delete selected routes");?>" class="btn btn-default btn-xs" data-toggle="tooltip"><span class="fa fa-trash text-muted"></span></button>
 <?php
                     endif;?>
-                    <a href="system_routes_edit.php" class="btn btn-default btn-xs" title="<?=gettext("add route");?>" data-toggle="tooltip" data-placement="left">
+                    <a href="system_routes_edit.php" class="btn btn-default btn-xs" title="<?=gettext("add route");?>" data-toggle="tooltip">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
                     </td>
