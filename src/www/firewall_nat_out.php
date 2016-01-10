@@ -315,6 +315,7 @@ include("head.inc");
               </table>
           </div>
         </section>
+<?php if ($mode == "advanced" or $mode == "hybrid"): ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
             <table class="table table-striped table-sort">
@@ -500,6 +501,7 @@ include("head.inc");
             </table>
           </div>
         </section>
+<?php   endif; ?>
 <?php
       // when automatic or hybrid, display "auto" table.
       if ($mode == "automatic" || $mode == "hybrid"):
@@ -603,9 +605,9 @@ include("head.inc");
                     </span>
                     <?=gettext("If automatic outbound NAT selected, a mapping is automatically created " .
                       "for each interface's subnet (except WAN-type connections) and the rules " .
-                      "on \"Mappings\" section of this page are ignored.<br /><br /> " .
+                      "on \"Manual rules\" section of this page are ignored.<br /><br /> " .
                       "If manual outbound NAT is selected, outbound NAT rules will not be " .
-                      "automatically generated and only the mappings you specify on this page " .
+                      "automatically generated and only the \"Manual rules\" you specify on this page " .
                       "will be used. <br /><br /> " .
                       "If hybrid outbound NAT is selected, mappings you specify on this page will " .
                       "be used, followed by the automatically generated ones. <br /><br />" .
