@@ -405,7 +405,7 @@ $( document ).ready(function() {
                             title="<?=gettext("delete phase1 entry");?>" data-toggle="tooltip"
                             type="submit"
                             class="act_delete_p1 btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span>
+                            <span class="fa fa-trash text-muted"></span>
                         </button>
 <?php                   if (!isset($ph1ent['mobile'])) :
 ?>
@@ -524,7 +524,7 @@ $( document ).ready(function() {
                                       title="<?=gettext("delete phase 2 entry");?>" data-toggle="tooltip"
                                       type="submit"
                                       class="act_delete_p2 btn btn-default btn-xs">
-                                      <span class="glyphicon glyphicon-remove"></span>
+                                      <span class="fa fa-trash text-muted"></span>
                                     </button>
                                     <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid']; ?>"
                                         title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip"
@@ -549,7 +549,7 @@ $( document ).ready(function() {
                                   </button>
                                   <button data-id="x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip"
                                     class="act_delete_p2 btn btn-default btn-xs">
-                                    <span class="glyphicon glyphicon-remove"></span>
+                                    <span class="fa fa-trash text-muted"></span>
                                   </button>
 <?php
                                 endif;?>
@@ -584,7 +584,7 @@ $( document ).ready(function() {
                         title="<?=gettext("delete selected phase 1 entries");?>"
                         data-toggle="tooltip"
                         class="act_delete_p1 btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="fa fa-trash text-muted"></span>
                       </button>
                         <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip"
                             alt="add" class="btn btn-default btn-xs">
