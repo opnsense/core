@@ -327,6 +327,7 @@ include("head.inc");
               </table>
           </div>
         </section>
+<?php if ($mode == 'advanced' || $mode == 'hybrid'): ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
             <table class="table table-striped table-sort">
@@ -512,6 +513,7 @@ include("head.inc");
             </table>
           </div>
         </section>
+<?php   endif; ?>
 <?php
       // when automatic or hybrid, display "auto" table.
       if ($mode == "automatic" || $mode == "hybrid"):
