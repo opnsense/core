@@ -142,7 +142,7 @@ $main_buttons = array(
 
 											<a href="vpn_pppoe.php?act=del&amp;id=<?=$i;
 ?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry? All elements that still use it will become invalid (e.g. filter rules)!");
-?>')" title="<?=gettext("delete pppoe instance");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+?>')" title="<?=gettext("delete pppoe instance");?>" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
 										  </td>
 										</tr>
                                                 <?php $i++;

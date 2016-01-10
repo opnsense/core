@@ -818,7 +818,7 @@ include("head.inc");
 											</td>
 											<td>
 												<a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;pool=<?=$i;?>"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-pencil"></span></button></a>
-												<a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=delpool&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this pool?");?>')"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button></a>
+												<a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=delpool&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this pool?");?>')"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
 											</td>
 											</tr>
 											<?php endif; ?>
@@ -1067,7 +1067,7 @@ include("head.inc");
 												<input autocomplete="off" name="value<?php echo $counter; ?>" type="text" class="form-control unknown" id="value<?php echo $counter; ?>" size="40" value="<?=htmlspecialchars($value);?>" />
 											</td>
 											<td>
-												<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></a>
+												<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a></a>
 											</td>
 											</tr>
 											<?php $counter++; ?>
@@ -1164,7 +1164,7 @@ include("head.inc");
 										<table border="0" cellspacing="0" cellpadding="1" summary="icons">
 										<tr>
 										<td valign="middle"><a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
-										<td valign="middle"><a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this mapping?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+										<td valign="middle"><a href="services_dhcp.php?if=<?=htmlspecialchars($if);?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this mapping?");?>')" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a></td>
 										</tr>
 										</table>
 									</td>

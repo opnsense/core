@@ -778,7 +778,7 @@ $main_buttons = array(
 <?php
                   endif; ?>
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete ca"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-remove"></span>
+                    <span class="fa fa-trash text-muted"></span>
                   </a>
                 </td>
               </tr>

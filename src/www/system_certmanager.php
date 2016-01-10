@@ -1294,7 +1294,7 @@ $( document ).ready(function() {
                   if (!cert_in_use($cert['refid'])) :?>
 
                   <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("delete cert"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-remove"></span>
+                    <span class="fa fa-trash text-muted"></span>
                   </a>
 <?php
                   endif;

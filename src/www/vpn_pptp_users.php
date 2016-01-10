@@ -117,7 +117,7 @@ endif; ?>
 
                                         <a href="vpn_pptp_users.php?act=del&amp;id=<?=$i;
 ?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this user?");
-?>')"title="<?=gettext("delete user"); ?>"><span class="glyphicon glyphicon-remove"></span></a></td>
+?>')"title="<?=gettext("delete user"); ?>"><span class="fa fa-trash text-muted"></span></a></td>
 										</tr>
                                         <?php $i++;
 

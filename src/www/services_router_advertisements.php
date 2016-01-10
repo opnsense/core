@@ -302,7 +302,7 @@ include("head.inc");
 													</select>
 												</td>
 												<td>
-													<a onclick="removeRow(this); return false;" href="#" alt="" title="<?=gettext("remove this entry"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
+													<a onclick="removeRow(this); return false;" href="#" alt="" title="<?=gettext("remove this entry"); ?>"><span class="fa fa-trash text-muted"></span></a>
 												</td>
 											</tr>
 						<?php

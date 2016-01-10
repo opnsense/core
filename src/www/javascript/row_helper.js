@@ -62,7 +62,7 @@ var addRowTo = (function() {
 	td = d.createElement("td");
 	td.rowSpan = "1";
 
-	td.innerHTML = '<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>';
+	td.innerHTML = '<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="fa fa-trash"></span></a>';
 	tr.appendChild(td);
 	tbody.appendChild(tr);
 	totalrows++;

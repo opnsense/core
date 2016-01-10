@@ -281,7 +281,7 @@ endif; ?>
                       </a>
                       <button type="button" class="btn btn-default btn-xs act-del-route"
                           data-id="<?=$i?>" title="<?=gettext("delete route");?>" data-toggle="tooltip"
-                          data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
+                          data-placement="left" ><span class="fa fa-trash text-muted"></span>
                       </button>
                       <a class="btn btn-default btn-xs" href="system_routes_edit.php?dup=<?=$i;?>"
                           title="<?=gettext("clone route");?>" data-toggle="tooltip" data-placement="left">
@@ -310,12 +310,12 @@ endif; ?>
 <?php
                     if ($i == 0) :?>
                     <span class="btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-remove text-muted"></span>
+                        <span class="fa fa-trash text-muted"></span>
                     </span>
 
 <?php
                     else :?>
-                    <button id="del_x" title="<?=gettext("delete selected routes");?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-remove"></span></button>
+                    <button id="del_x" title="<?=gettext("delete selected routes");?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"><span class="fa fa-trash text-muted"></span></button>
 <?php
                     endif;?>
                     <a href="system_routes_edit.php" class="btn btn-default btn-xs" title="<?=gettext("add route");?>" data-toggle="tooltip" data-placement="left">

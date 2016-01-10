@@ -172,7 +172,7 @@ $main_buttons = array(
 										  </td>
 										  <td valign="middle" class="list nowrap">
 											<a href="services_dyndns_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-											&nbsp;<a href="services_dyndns.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+											&nbsp;<a href="services_dyndns.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?");?>')" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
 										  </td>
 										</tr>
 										<?php $i++; endforeach; ?>

@@ -183,7 +183,7 @@ $( document ).ready(function() {
                         <span data-toggle="tooltip" data-placement="left" title="<?=gettext("Edit Tunable"); ?>" class="glyphicon glyphicon-pencil"></span>
                     </a>
                     <a id="del_<?=$i;?>" data-id="<?=$i;?>" title="<?=gettext("Delete Tunable"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-remove"></span>
+                      <span class="fa fa-trash text-muted"></span>
                     </a>
                   </td>
                 </tr>

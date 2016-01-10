@@ -421,7 +421,7 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         <a id="del_<?=$nnats;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-remove"></span>
+                          <span class="fa fa-trash text-muted"></span>
                         </a>
                         <a href="firewall_nat_edit.php?dup=<?=$nnats;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
                           <span class="fa fa-clone text-muted"></span>
@@ -444,10 +444,10 @@ $( document ).ready(function() {
                         </a>
 <?php                   endif; ?>
 <?php                   if (count($a_nat) == 0): ?>
-                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="glyphicon glyphicon-remove" ></span></span>
+                      <span class="btn btn-default btn-xs text-muted"  data-toggle="tooltip" data-placement="left" title="<?=gettext("delete selected rules");?>"><span class="fa fa-trash text-muted" ></span></span>
 <?php                   else: ?>
                         <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-remove"></span>
+                          <span class="fa fa-trash text-muted"></span>
                         </a>
 <?php                   endif; ?>
                         <a href="firewall_nat_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">

@@ -622,7 +622,7 @@ function enable_change(enable_over) {
 ?>" size="10" value="<?=htmlspecialchars($ip);?>" />
                                     </td>
                                     <td>
-                                        <a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+                                        <a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
                                     </td>
                                 </tr>
 						<?php

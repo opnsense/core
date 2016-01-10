@@ -781,7 +781,7 @@ include("head.inc");
 													<input autocomplete="off" name="value<?php echo $counter; ?>" type="text" class="formfld" id="value<?php echo $counter; ?>" size="55" value="<?=htmlspecialchars($value);?>" />
 												</td>
 												<td>
-													<butto onclick="removeRow(this); return false;" value="<?=gettext("Delete");?>" ><span class="glyphicon glyphicon-remove"></span></button>
+													<butto onclick="removeRow(this); return false;" value="<?=gettext("Delete");?>" ><span class="fa fa-trash"></span></button>
 												</td>
 												</tr>
 												<?php $counter++; ?>
@@ -865,7 +865,7 @@ include("head.inc");
 											<table border="0" cellspacing="0" cellpadding="1" summary="icons">
 											<tr>
 											<td valign="middle"><a href="services_dhcpv6_edit.php?if=<?=$if;?>&amp;id=<?=$i;?>" alt="edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
-											<td valign="middle"><a href="services_dhcpv6.php?if=<?=$if;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this mapping?");?>')" alt="delete"><span class="glyphicon glyphicon-remove"></span></a></td>
+											<td valign="middle"><a href="services_dhcpv6.php?if=<?=$if;?>&amp;act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this mapping?");?>')" alt="delete"><span class="fa fa-trash"></span></a></td>
 											</tr>
 											</table>
 										</td>

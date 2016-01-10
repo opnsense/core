@@ -534,7 +534,7 @@ include("head.inc");
                   <td><?=date("D M j G:i:s T Y", $cert["revoke_time"]); ?></td>
                   <td>
                     <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL ");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-remove"></span>
+                      <span class="fa fa-trash text-muted"></span>
                     </a>
                   </td>
                 </tr>
@@ -677,7 +677,7 @@ include("head.inc");
 <?php
                   if (!$inuse) :?>
                     <a id="del_<?=$tmpcrl['refid'];?>" data-descr="<?=htmlspecialchars($tmpcrl['descr']);?>" data-id="<?=$tmpcrl['refid'];?>" title="<?=gettext("Delete CRL") . " " . htmlspecialchars($tmpcrl['descr']);?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-remove"></span>
+                      <span class="fa fa-trash text-muted"></span>
                     </a>
 <?php
                   endif; ?>

@@ -323,7 +323,7 @@ $( document ).ready(function() {
                       <td>
 <?php
                     if (isset($gateway['inactive'])) :?>
-                        <span class="glyphicon glyphicon-remove text-muted" data-toggle="tooltip" data-placement="left" title="<?=gettext("Gateway is inactive because interface is missing");?>"></span>
+                        <span class="fa fa-trash text-muted" data-toggle="tooltip" data-placement="left" title="<?=gettext("Gateway is inactive because interface is missing");?>"></span>
 <?php
                     elseif (is_numeric($gateway['attribute'])) :?>
                         <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=(!isset($gateway['disabled'])) ? gettext("disable gateway") : gettext("enable gateway");?>">
@@ -360,7 +360,7 @@ $( document ).ready(function() {
                         if (is_numeric($gateway['attribute'])) :?>
                           <button data-id="<?=$i;?>" title="<?=gettext("delete gateway"); ?>" data-toggle="tooltip"
                                   class="act_delete btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-remove"></span>
+                            <span class="fa fa-trash text-muted"></span>
                           </button>
 <?php
                         endif;?>
@@ -381,7 +381,7 @@ $( document ).ready(function() {
                                       ?>
                           <button type="submit" id="btn_delete" name="del_x" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"
                                   title="<?=gettext("delete selected items");?>">
-                              <span class="glyphicon glyphicon-remove"></span>
+                              <span class="fa fa-trash text-muted"></span>
                           </button>
 <?php
                       endif;?>

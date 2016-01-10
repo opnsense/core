@@ -123,7 +123,7 @@ endif; ?>
 
                                         <a href="vpn_l2tp_users.php?act=del&amp;id=<?=$i;
 ?>" class="btn btn-default" onclick="return confirm('<?=gettext("Do you really want to delete this user?");
-?>')"title="<?=gettext("delete user"); ?>"><span class="glyphicon glyphicon-remove"></span></a>
+?>')"title="<?=gettext("delete user"); ?>"><span class="fa fa-trash text-muted"></span></a>
 
 					                 </td>
 								</tr>

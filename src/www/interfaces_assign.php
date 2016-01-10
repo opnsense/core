@@ -422,7 +422,7 @@ include("head.inc");
 <?php
                         if ($ifname != 'wan'):?>
                           <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
-                            <span class=" glyphicon glyphicon-remove"></span>
+                            <span class="fa fa-trash text-muted"></span>
                           </button>
 <?php
                         endif;?>
