@@ -1004,28 +1004,6 @@ function alias_expand($name) {
 	}
 }
 
-/* get description of alias */
-function get_alias_description($name)
-{
-    global $config;
-
-    if (is_alias($name))
-    {
-        if (isset($config['aliases']['alias']))
-        {
-            foreach ($config['aliases']['alias'] as $alias)
-            {
-                if ($alias['name'] == $name)
-                {
-                    return (isset($alias['descr'])) ? $alias['descr'] : "";
-                }
-            }
-
-            return null;
-        }
-    }
-}
-
 function subnet_size($subnet) {
 	if (is_subnetv4($subnet)) {
 		list ($ip, $bits) = explode("/", $subnet);

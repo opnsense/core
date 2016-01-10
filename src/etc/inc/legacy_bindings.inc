@@ -138,3 +138,25 @@ function legacy_move_config_list_items($source, $id, $items) {
         return $new_config;
     }
 }
+
+/**
+ * Retrieve description text of firewall alias by specifying the alias name.
+ * @param string $name alias name to retrieve the description from
+ * @return description of alias, or null if no description was set or alias
+ *   does not exist.
+ */
+function get_alias_description($name)
+{
+    global $config;
+
+    if (isset($config['aliases']['alias'])) {
+        foreach ($config['aliases']['alias'] as $alias) {
+            if ($alias['name'] == $name) {
+                return (isset($alias['descr'])) ? $alias['descr'] : "";
+            }
+        }
+    }
+
+    return null;
+}
+
