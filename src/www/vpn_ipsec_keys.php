@@ -169,7 +169,7 @@ foreach ($config['ipsec']['mobilekey'] as $secretent) :
     <a href="vpn_ipsec_keys_edit.php?id=<?=$i;
 ?>" title="<?=gettext("edit key"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
     <a id="del_<?=$i;
-?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
   </td>
 </tr>
 <?php           $i++;

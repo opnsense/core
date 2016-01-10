@@ -531,7 +531,7 @@ $( document ).ready(function() {
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
                       <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="fa fa-trash text-muted"></span>
                       </a>
                       <a href="firewall_rules_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
                         <span class="fa fa-clone text-muted"></span>
@@ -568,7 +568,7 @@ $( document ).ready(function() {
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
                       <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="fa fa-trash text-muted"></span>
                       </a>
                       <a href="firewall_rules_edit.php?if=<?=$selected_if;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("add new rule");?>">
                         <span class="glyphicon glyphicon-plus"></span>

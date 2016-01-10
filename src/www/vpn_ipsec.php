@@ -404,7 +404,7 @@ if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
           type="submit"
           onclick="return confirm('<?=gettext("Do you really want to delete this phase1 and all associated phase2 entries?"); ?>')"
           class="btn btn-default btn-xs">
-          <span class="glyphicon glyphicon-remove"></span>
+          <span class="fa fa-trash text-muted"></span>
       </button>
 <?php                 if (!isset($ph1ent['mobile'])) :
 ?>
@@ -532,7 +532,7 @@ if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm
           type="submit"
           onclick="return confirm('<?=gettext("Do you really want to delete this phase2 entry?"); ?>')"
           class="btn btn-default btn-xs">
-          <span class="glyphicon glyphicon-remove"><span>
+          <span class="fa fa-trash text-muted"><span>
         </button>
         <a href="vpn_ipsec_phase2.php?dup=<?=$ph2ent['uniqid']; ?>"
             title="<?=gettext("clone phase 2 entry"); ?>" data-toggle="tooltip" data-placement="left"
@@ -563,7 +563,7 @@ endforeach;
                                 <button name="delp2_x" type="submit" title="<?=gettext("delete selected phase 2 entries");?>" data-toggle="tooltip" data-placement="left"
                                   onclick="return confirm('<?=gettext("Do you really want to delete the selected phase2 entries?");?>')"
                                   class="btn btn-default btn-xs">
-                                  <span class="glyphicon glyphicon-remove"></span>
+                                  <span class="fa fa-trash text-muted"></span>
                                 </button>
 <?php                                 endif;
 ?>
@@ -599,7 +599,7 @@ endforeach;  // $a_phase1 as $ph1ent
                       data-toggle="tooltip" data-placement="left"
                       onclick="return confirm('<?=gettext("Do you really want to delete the selected phase1 entries?");?>')"
                       class="btn btn-default btn-xs">
-                      <span class="glyphicon glyphicon-remove"></span>
+                      <span class="fa fa-trash text-muted"></span>
                     </button>
                       <a href="vpn_ipsec_phase1.php" title="<?=gettext("add new phase 1 entry");?>" data-toggle="tooltip" data-placement="left"
                           alt="add" class="btn btn-default btn-xs">

@@ -276,7 +276,7 @@ include("head.inc");
 																<input name="description<?=$counter;?>" type="text" class="formfld unknown" id="description<?=$counter;?>" size="40" value="<?=htmlspecialchars($description);?>" />
 															</td>
 															<td>
-																<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+																<a onclick="removeRow(this); return false;" href="#" class="btn btn-default btn-xs"><span class="fa fa-trash"></span></a>
 															</td>
 														</tr>
 													<?php $counter++; ?>
@@ -358,7 +358,7 @@ include("head.inc");
 												</td>
 												<td>
 													<a href="services_unbound_acls.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-													<a href="services_unbound_acls.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this access list?"); ?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+													<a href="services_unbound_acls.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this access list?"); ?>')" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
 												</td>
 											</tr>
 										<?php

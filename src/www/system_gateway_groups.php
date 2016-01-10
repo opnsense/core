@@ -201,7 +201,7 @@ $( document ).ready(function() {
                         </a>
                         <button type="button" class="btn btn-default btn-xs act-del-group"
                             data-id="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip"
-                            data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
+                            data-placement="left" ><span class="fa fa-trash text-muted"></span>
                         </button>
                         <a href="system_gateway_groups_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
                             title="clone group" data-toggle="tooltip" data-placement="left">

@@ -126,7 +126,7 @@ $main_buttons = array(
 									  </td>
 									  <td valign="middle" class="list nowrap">
 									     <a href="services_igmpproxy_edit.php?id=<?=$i;?>" title="<?=gettext("edit igmpentry"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-									     <a href="services_igmpproxy.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this igmp entry? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete igmpentry");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+									     <a href="services_igmpproxy.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this igmp entry? All elements that still use it will become invalid (e.g. filter rules)!");?>')" title="<?=gettext("delete igmpentry");?>" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
 									  </td>
 									</tr>
 										  <?php $i++; endforeach; ?>

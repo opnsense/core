@@ -759,7 +759,7 @@ $( document ).ready(function() {
                             if (empty($priv['group'])) :?>
                               <button type="button" data-priv="<?=$priv['id']?>" class="btn btn-default btn-xs act-del-priv"
                                   title="<?=gettext("revoke privilege");?>" data-toggle="tooltip" data-placement="left">
-                                <span class="glyphicon glyphicon-remove"></span>
+                                <span class="fa fa-trash text-muted"></span>
                               </button>
 <?php
                             endif;?>
@@ -815,7 +815,7 @@ $( document ).ready(function() {
                             </a>
                             <button type="submit" data-certid="<?=$i;?>" class="btn btn-default btn-xs act-del-cert"
                                 title="<?=gettext("unlink certificate");?>" data-toggle="tooltip" data-placement="left" >
-                                <span class="glyphicon glyphicon-remove"></span>
+                                <span class="fa fa-trash text-muted"></span>
                             </button>
                           </td>
                         </tr>
@@ -973,7 +973,7 @@ $( document ).ready(function() {
                         <button type="button" class="btn btn-default btn-xs act-del-user"
                             data-username="<?=$userent['name'];?>"
                             data-userid="<?=$i?>" title="<?=gettext("delete user");?>" data-toggle="tooltip"
-                            data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
+                            data-placement="left" ><span class="fa fa-trash text-muted"></span>
                         </button>
 <?php
                         endif;?>

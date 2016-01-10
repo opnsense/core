@@ -321,7 +321,7 @@ $( document ).ready(function() {
                              <span class="glyphicon glyphicon-log-in"></span>
                            </a>
                            <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("Remove this backup");?>" >
-                             <span class="glyphicon glyphicon-remove"></span>
+                             <span class="fa fa-trash text-muted"></span>
                            </a>
                            <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>">
                            <span class="glyphicon glyphicon-download"></span>

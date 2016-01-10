@@ -198,7 +198,7 @@ include("head.inc");
 						                    <table border="0" cellspacing="0" cellpadding="1" summary="icons">
 						                      <tr>
 						                        <td valign="middle"><a href="services_wol_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a></td>
-						                        <td valign="middle"><a href="services_wol.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?");?>')" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a></td>
+						                        <td valign="middle"><a href="services_wol.php?act=del&amp;id=<?=$i;?>" onclick="return confirm('<?=gettext("Do you really want to delete this entry?");?>')" class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a></td>
 						                      </tr>
 						                    </table>
 						                  </td>

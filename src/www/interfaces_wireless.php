@@ -134,7 +134,7 @@ $main_buttons = array(
                           <span class="glyphicon glyphicon-edit" title="<?=gettext("edit group");?>"></span>
                         </a>
                         <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-placement="left" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
-                          <span class=" glyphicon glyphicon-remove"></span>
+                          <span class="fa fa-trash text-muted"></span>
                         </button>
                       </td>
                     </tr>

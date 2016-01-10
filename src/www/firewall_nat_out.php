@@ -417,7 +417,7 @@ include("head.inc");
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
                       <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="fa fa-trash text-muted"></span>
                       </a>
                       <a href="firewall_nat_out_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("clone rule");?>">
                         <span class="fa fa-clone text-muted"></span>
@@ -449,12 +449,12 @@ include("head.inc");
 <?php
                 if ($i == 0):
 ?>
-                  <span title="<?=gettext("delete selected rules");?>"  class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></span>
+                  <span title="<?=gettext("delete selected rules");?>"  class="btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></span>
 <?php
                 else:
 ?>
                   <a id="del_x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                    <span class="glyphicon glyphicon-remove"></span>
+                    <span class="fa fa-trash text-muted"></span>
                   </a>
 <?php
                 endif;

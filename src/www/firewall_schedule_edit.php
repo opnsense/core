@@ -640,7 +640,7 @@ function insertElements(tempFriendlyTime, starttimehour, starttimemin, stoptimeh
     tr.appendChild(td);
 
     td = d.createElement("td");
-    td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-remove\"></span></\a>";
+    td.innerHTML = "<a onclick='removeRow(this); return false;' href='#' class=\"btn btn-default btn-xs\"><span class=\"fa fa-trash text-muted\"></span></\a>";
     tr.appendChild(td);
 
     td = d.createElement("td");
@@ -1139,7 +1139,7 @@ function removeRow(el) {
                                     <a onclick='editRow("<?=$tempTime; ?>",this); return false;' href='#' class="btn btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
                                   </td>
                                   <td>
-                                    <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></a>
+                                    <a onclick='removeRow(this); return false;' href='#' class="btn btn-default"><span class="fa fa-trash text-muted"></span></a>
                                   </td>
                                   <td>
                                     <input type='hidden' id='schedule<?=$counter; ?>' name='schedule<?=$counter; ?>' value='<?=$tempID; ?>' />

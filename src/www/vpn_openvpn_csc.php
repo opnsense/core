@@ -635,7 +635,7 @@ else :
                                     <td valign="middle" class="list nowrap">
 																			<a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
 																			<a id="del_<?=$i;
-?>" title="<?=gettext("delete csc"); ?>" class="act_delete btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></a>
+?>" title="<?=gettext("delete csc"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
                                     </td>
 									</tr>
 									<?php

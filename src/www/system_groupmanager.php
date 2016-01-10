@@ -421,7 +421,7 @@ $( document ).ready(function() {
                       <td><?=$priv_list[$priv]['descr'];?></td>
                       <td>
                           <button type="button" data-privid="<?=$priv;?>" data-privname="<?=$priv_list[$priv]['name']?>" class="btn btn-default btn-xs act-del-priv" title="<?=gettext("delete privilege");?>" data-toggle="tooltip" data-placement="left">
-                            <span class="glyphicon glyphicon-remove"></span>
+                            <span class="fa fa-trash text-muted"></span>
                           </button>
                       </td>
                     </tr>
@@ -497,7 +497,7 @@ $( document ).ready(function() {
                     <button type="button" class="btn btn-default btn-xs act-del-group"
                         data-groupname="<?=$group['name'];?>"
                         data-groupid="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip"
-                        data-placement="left" ><span class="glyphicon glyphicon-remove"></span>
+                        data-placement="left" ><span class="fa fa-trash text-muted"></span>
                     </button>
 <?php
                     endif;?>
