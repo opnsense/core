@@ -961,10 +961,6 @@
 			<description>Your configuration is now complete.</description>
 		</field>
 		<field>
-			<type>text</type>
-			<description>To be able to export client configurations, browse to System->Packages and install the OpenVPN Client Export package.</description>
-		</field>
-		<field>
 			<type>submit</type>
 			<name>Finish</name>
 		</field>
