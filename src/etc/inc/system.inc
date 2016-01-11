@@ -1314,7 +1314,7 @@ function system_firmware_configure()
 	global $config;
 
 	/* our own ABI prefix on the mirror */
-	$osabi = '15.7';
+	$osabi = '16.1';
 
 	/* rewrite the config via the defaults */
 	$origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
