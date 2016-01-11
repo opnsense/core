@@ -86,7 +86,6 @@ CORE_DEPENDS?=		apinger \
 			php56-json \
 			php56-ldap \
 			php56-mcrypt \
-			php56-mysql \
 			php56-openssl \
 			php56-pdo \
 			php56-pdo_sqlite \
