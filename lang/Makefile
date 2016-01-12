@@ -36,6 +36,8 @@ plist-${LANG}:
 
 merge-${LANG}:
 	${MSGMERGE} ${LANG}.po ${TEMPLATE}.pot
+	# strip stale translations
+	sed -i '' -e '/^#~.*/d' ${LANG}.po
 
 INSTALL+=	install-${LANG}
 PLIST+=		plist-${LANG}
