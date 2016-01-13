@@ -1,7 +1,8 @@
 <menu>
     <Firewall>
-        <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter">
-            <Settings url="/ui/trafficshaper/"/>
+        <TrafficShaper order="40" VisibleName="Traffic Shaper" cssClass="fa fa-filter fa-fw">
+            <Settings order="10" url="/ui/trafficshaper/"/>
+            <Status order="20" url="/diag_limiter_info.php"/>
         </TrafficShaper>
     </Firewall>
 </menu>

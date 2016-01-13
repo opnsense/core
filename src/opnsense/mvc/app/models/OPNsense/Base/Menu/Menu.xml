@@ -1,14 +1,14 @@
 <menu>
     <Lobby order="0" cssClass="fa fa-laptop">
-        <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard">
+        <Dashboard order="0" url="/index.php" cssClass="fa fa-dashboard fa-fw">
             <Root url="/"/>
         </Dashboard>
-        <License order="1" url="/license.php" cssClass="fa fa-balance-scale"/>
-        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key"/>
-        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out"/>
+        <License order="1" url="/license.php" cssClass="fa fa-balance-scale fa-fw"/>
+        <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw"/>
+        <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
     <System order="1" VisibleName="System" cssClass="fa fa-server">
-        <Trust order="120" cssClass="fa fa-certificate">
+        <Trust order="120" cssClass="fa fa-certificate fa-fw">
             <Certificates url="/system_certmanager.php">
                 <workAround url="/system_certmanager.php*"/>
             </Certificates>
@@ -19,26 +19,26 @@
                 <workAround url="/system_crlmanager.php*"/>
             </Revocation>
         </Trust>
-        <Configuration order="80" cssClass="fa fa-book">
+        <Configuration order="80" cssClass="fa fa-book fa-fw">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*"/>
             </History>
             <Backups url="/diag_backup.php"/>
         </Configuration>
-        <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug"/>
-        <Firmware order="5" url="/ui/core/firmware/" cssClass="fa fa-cloud-download"/>
-        <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh">
+        <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug fa-fw"/>
+        <Firmware order="5" url="/ui/core/firmware/" cssClass="fa fa-cloud-download fa-fw"/>
+        <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
         </HighAvailability>
-        <Routes order="40" cssClass="fa fa-map-signs">
+        <Routes order="40" cssClass="fa fa-map-signs fa-fw">
             <All url="/system_routes.php">
                 <Edit url="/system_routes_edit.php*"/>
             </All>
             <Status url="/diag_routes.php"/>
             <Log VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
-        <Gateways order="30" cssClass="fa fa-location-arrow">
+        <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
             <All url="/system_gateways.php">
                 <All url="/system_gateways.php*"/>
                 <Edit url="/system_gateways_edit.php*"/>
@@ -50,7 +50,7 @@
             <GroupStatus VisibleName="Group Status" url="/status_gateway_groups.php"/>
             <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
         </Gateways>
-        <Settings order="20" cssClass="fa fa-cogs">
+        <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php"/>
             <AdminAccess VisibleName="Admin Access" order="200" url="/system_advanced_admin.php"/>
             <Networking order="300" url="/system_advanced_network.php"/>
@@ -62,11 +62,11 @@
                 <Edit url="/system_advanced_sysctl.php*"/>
             </Tunables>
         </Settings>
-        <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye"/>
-        <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic">
+        <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye fa-fw"/>
+        <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic fa-fw">
             <Step url="/wizard.php*"/>
         </Wizard>
-        <Access order="10" cssClass="fa fa-users">
+        <Access order="10" cssClass="fa fa-users fa-fw">
             <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*"/>
                 <Privileges url="/system_usermanager_addprivs.php*"/>
@@ -81,7 +81,7 @@
             </Servers>
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
-        <Diagnostics order="160" cssClass="fa fa-medkit">
+        <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
             <Factory order="20" VisibleName="Factory Defaults" url="/diag_defaults.php"/>
             <Halt order="30" VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot order="40" VisibleName="Reboot System" url="/reboot.php"/>
@@ -92,9 +92,9 @@
         </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
-        <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks"/>
-        <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil"/>
-        <Types VisibleName="Other Types" order="929" cssClass="fa fa-cog">
+        <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
+        <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
+        <Types VisibleName="Other Types" order="929" cssClass="fa fa-cog fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*"/>
             </Bridge>
@@ -117,13 +117,13 @@
                 <Edit url="/interfaces_vlan_edit.php*"/>
             </VLAN>
         </Types>
-        <PPP order="926" VisibleName="Point-to-Point" cssClass="fa fa-tty">
+        <PPP order="926" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*"/>
             </Devices>
             <LogFile VisibleName="Log File"  url="/diag_logs_ppp.php"/>
         </PPP>
-        <Wireless order="925" cssClass="fa fa-wifi">
+        <Wireless order="925" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*"/>
             </Devices>
@@ -132,7 +132,7 @@
                 <Status url="/status_wireless.php*"/>
             </Status>
         </Wireless>
-        <Diagnostics order="940" cssClass="fa fa-medkit">
+        <Diagnostics order="940" cssClass="fa fa-medkit fa-fw">
             <DNSLookup order="20" VisibleName="DNS Lookup" url="/diag_dns.php"/>
             <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
             <Ping order="50" url="/diag_ping.php"/>
@@ -144,7 +144,7 @@
         </Diagnostics>
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
-        <Aliases order="10" cssClass="fa fa-list-alt">
+        <Aliases order="10" cssClass="fa fa-list-alt fa-fw">
             <All order="100"  url="/firewall_aliases.php?tab=all">
                 <Edit url="/firewall_aliases_edit.php?tab=all"/>
                 <NoneEdit url="/firewall_aliases_edit.php?id=*"/>
@@ -161,12 +161,12 @@
             </URLs>
             <Import order="500" url="/firewall_aliases_import.php"/>
         </Aliases>
-        <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check">
+        <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check fa-fw">
             <RulesEdit url="/firewall_rules_edit.php*"/>
             <Floating url="/firewall_rules.php?if=FloatingRules"/>
             <Interface url="/firewall_rules.php?if=*"/>
         </Rules>
-        <NAT order="30" cssClass="fa fa-exchange">
+        <NAT order="30" cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
               <NatEdit url="/firewall_nat_edit.php*"/>
             </PortForward>
@@ -180,16 +180,13 @@
                 <NPTEdit url="/firewall_nat_npt_edit.php*"/>
             </NPT>
         </NAT>
-        <TrafficShaper>
-            <Status url="/diag_limiter_info.php"/>
-        </TrafficShaper>
-        <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone">
+        <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone fa-fw">
             <VirtualIPEdit url="/firewall_virtual_ip_edit.php*"/>
         </VirtualIPs>
-        <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar">
+        <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar fa-fw">
             <SchedulesEdit url="/firewall_schedule_edit.php*"/>
         </Schedules>
-        <Diagnostics order="400" cssClass="fa fa-medkit">
+        <Diagnostics order="400" cssClass="fa fa-medkit fa-fw">
             <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
@@ -206,7 +203,7 @@
                 <Filter url="/diag_dump_states_sources.php*"/>
             </StatesTrackSource>
         </Diagnostics>
-        <LogFiles order="500" VisibleName="Log Files" cssClass="fa fa-eye">
+        <LogFiles order="500" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
             <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
             <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
@@ -214,7 +211,7 @@
         </LogFiles>
     </Firewall>
     <Services order="5" cssClass="fa fa-cog">
-        <DHCP cssClass="fa fa-bullseye">
+        <DHCP cssClass="fa fa-bullseye fa-fw">
             <Server order="100" url="/services_dhcp.php">
                 <Tab url="/services_dhcp.php?if=*"/>
                 <Edit url="/services_dhcp_edit.php?*"/>
@@ -225,7 +222,7 @@
             </Leases>
             <LogFile VisibleName="Log File" order="400" url="/diag_logs_dhcp.php"/>
         </DHCP>
-        <DHCPv6 cssClass="fa fa-bullseye">
+        <DHCPv6 cssClass="fa fa-bullseye fa-fw">
             <Server order="100" url="/services_dhcpv6.php">
                 <Edit url="/services_dhcpv6_edit.php?*"/>
                 <RA url="/services_router_advertisements.php?*"/>
@@ -235,11 +232,11 @@
                 <Details url="/status_dhcpv6_leases.php?*"/>
             </Leases>
         </DHCPv6>
-        <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php" cssClass="fa fa-tags">
+        <DNSForwarder VisibleName="DNS Forwarder" url="/services_dnsmasq.php" cssClass="fa fa-tags fa-fw">
             <Hosts url="/services_dnsmasq_edit.php*"/>
             <Domains url="/services_dnsmasq_domainoverride_edit.php*"/>
         </DNSForwarder>
-        <DNSResolver VisibleName="DNS Resolver" cssClass="fa fa-tags">
+        <DNSResolver VisibleName="DNS Resolver" cssClass="fa fa-tags fa-fw">
             <General order="10" url="/services_unbound.php"/>
             <Overrides order="15" url="/services_unbound_overrides.php">
                 <Hosts url="/services_unbound_host_edit.php*"/>
@@ -250,7 +247,7 @@
                 <All url="/services_unbound_acls.php*"/>
             </ACL>
         </DNSResolver>
-        <DNSTools VisibleName="DNS Tools" cssClass="fa fa-tags">
+        <DNSTools VisibleName="DNS Tools" cssClass="fa fa-tags fa-fw">
             <DynDNS url="/services_dyndns.php">
                 <Edit url="/services_dyndns_edit.php*"/>
             </DynDNS>
@@ -260,10 +257,10 @@
                 <Edit url="/services_rfc2136_edit.php*"/>
             </RFC2136>
         </DNSTools>
-        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs">
+        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs fa-fw">
             <IGMPProxyEdit url="/services_igmpproxy_edit.php"/>
         </IGMPProxy>
-        <LoadBalancer VisibleName="Load Balancer" cssClass="fa fa-truck">
+        <LoadBalancer VisibleName="Load Balancer" cssClass="fa fa-truck fa-fw">
             <Monitors url="/load_balancer_monitor.php">
                 <Edit url="/load_balancer_monitor_edit.php*"/>
             </Monitors>
@@ -278,14 +275,14 @@
             </VirtualServer>
             <VirtualServerStatus VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
         </LoadBalancer>
-        <NTP VisibleName="Network Time" cssClass="fa fa-clock-o">
+        <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
             <General url="/services_ntpd.php"/>
             <GPS url="/services_ntpd_gps.php"/>
             <PPS url="/services_ntpd_pps.php"/>
             <Status url="/status_ntpd.php"/>
             <Log VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <PPPoEServer VisibleName="PPPoE Server" cssClass="fa fa-tty">
+        <PPPoEServer VisibleName="PPPoE Server" cssClass="fa fa-tty fa-fw">
             <Settings order="10" url="/vpn_pppoe.php">
                 <Edit url="/vpn_pppoe_edit.php*"/>
             </Settings>
@@ -293,24 +290,19 @@
                 <Type url="/diag_logs_poes.php*"/>
             </LogFile>
         </PPPoEServer>
-        <Proxy>
-            <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
-                <More url="/diag_logs_proxy.php*"/>
-            </Log>
-        </Proxy>
-        <SNMP VisibleName="SNMP" url="/services_snmp.php" cssClass="fa fa-database"/>
-        <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug">
+        <SNMP VisibleName="SNMP" url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
+        <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug fa-fw">
             <Settings url="/services_upnp.php">
                 <Edit url="/services_upnp.php?*"/>
             </Settings>
             <Status url="/status_upnp.php"/>
         </UPnP>
-        <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off">
+        <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
             <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
     </Services>
     <VPN order="4" cssClass="fa fa-globe">
-        <IPsec cssClass="fa fa-lock" order="10">
+        <IPsec cssClass="fa fa-lock fa-fw" order="10">
             <Tunnels order="10" VisibleName="Tunnel Settings" url="/vpn_ipsec.php">
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*"/>
@@ -330,7 +322,7 @@
             <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
             <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
-        <L2TP cssClass="fa fa-unlock" order="30">
+        <L2TP cssClass="fa fa-unlock fa-fw" order="30">
             <Settings order="10" url="/vpn_l2tp.php"/>
             <Users order="20" url="/vpn_l2tp_users.php">
                 <Edit url="/vpn_l2tp_users_edit.php*"/>
@@ -339,7 +331,7 @@
                 <Type url="/diag_logs_l2tp.php*"/>
             </LogFile>
         </L2TP>
-        <OpenVPN cssClass="fa fa-lock" order="20">
+        <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
             <Server order="10" VisibleName="Server Settings" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*"/>
             </Server>
@@ -356,7 +348,7 @@
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
             <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
-        <PPTP cssClass="fa fa-unlock" order="40">
+        <PPTP cssClass="fa fa-unlock fa-fw" order="40">
             <Settings order="10" url="/vpn_pptp.php"/>
             <Users order="20" url="/vpn_pptp_users.php">
                 <Edit url="/vpn_pptp_users_edit.php*"/>

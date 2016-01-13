@@ -1,7 +1,10 @@
 <menu>
     <Services>
-      <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt">
-          <Administration url="/ui/proxy/"/>
+      <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt fa-fw">
+          <Administration order="10" url="/ui/proxy/"/>
+            <Log VisibleName="Log File" order="20" url="/diag_logs_proxy.php?type=cache">
+                <More url="/diag_logs_proxy.php*"/>
+            </Log>
       </Proxy>
     </Services>
 </menu>

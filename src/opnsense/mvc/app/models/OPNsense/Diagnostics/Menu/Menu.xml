@@ -1,6 +1,6 @@
 <menu>
     <System>
-        <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat"/>
+        <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
         <Diagnostics>
             <Activity order="10" VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
         </Diagnostics>
