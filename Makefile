@@ -93,7 +93,6 @@ CORE_DEPENDS?=		apinger \
 			php56-simplexml \
 			php56-sockets \
 			php56-sqlite3 \
-			php56-tokenizer \
 			php56-xml \
 			php56-zlib \
 			py27-Jinja2 \
