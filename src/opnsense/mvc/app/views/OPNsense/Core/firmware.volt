@@ -53,6 +53,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
+
                 // show upgrade list
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
                 "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
@@ -74,6 +75,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 });
             }
 
+            // update list so plugins sync as well
+            packagesInfo();
         });
     }
 
