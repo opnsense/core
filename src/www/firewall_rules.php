@@ -280,7 +280,11 @@ $( document ).ready(function() {
 ?>
                   <tr valign="top">
                     <td>&nbsp;</td>
-                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>
+                        <span class="glyphicon glyphicon-remove text-danger"></span>
+                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any direction");?>"></i>
+                        <i class="fa fa-flash text-warning" data-toggle="tooltip" title="<?= gettext('first match') ?>"></i>
+                    </td>
                     <td>IPv6 *</td>
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
