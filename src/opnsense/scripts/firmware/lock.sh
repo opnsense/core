@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -37,6 +37,5 @@ fi
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO LOCK: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-echo '***STARTING LOCK***' >> ${PKG_PROGRESS_FILE}
 pkg lock -y $PACKAGE >> ${PKG_PROGRESS_FILE}
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -37,7 +37,6 @@ fi
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO REINSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-echo '***STARTING REINSTALL***' >> ${PKG_PROGRESS_FILE}
 pkg install -yf $PACKAGE >> ${PKG_PROGRESS_FILE}
 pkg autoremove -y >> ${PKG_PROGRESS_FILE}
 pkg clean -ya >> ${PKG_PROGRESS_FILE}

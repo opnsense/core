@@ -36,8 +36,7 @@ fi
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO REINSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-echo '***STARTING REINSTALL***' >> ${PKG_PROGRESS_FILE}
+echo "***GOT REQUEST TO INSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
 pkg install -y $PACKAGE >> ${PKG_PROGRESS_FILE}
 pkg autoremove -y >> ${PKG_PROGRESS_FILE}
 pkg clean -ya >> ${PKG_PROGRESS_FILE}

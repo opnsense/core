@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -39,7 +39,6 @@ fi
 
 echo "***GOT REQUEST TO UPGRADE: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
 
-echo '***STARTING UPGRADE***' >> ${PKG_PROGRESS_FILE}
 if [ "$PACKAGE" == "all" ]; then
 	# update all installed packages
 	opnsense-update -p >> ${PKG_PROGRESS_FILE}
