@@ -280,7 +280,11 @@ $( document ).ready(function() {
 ?>
                   <tr valign="top">
                     <td>&nbsp;</td>
-                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                    <td>
+                        <span class="glyphicon glyphicon-remove text-danger"></span>
+                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any direction");?>"></i>
+                        <i class="fa fa-flash text-warning" data-toggle="tooltip" title="<?= gettext('first match') ?>"></i>
+                    </td>
                     <td>IPv6 *</td>
                     <td>*</td>
                     <td class="hidden-xs hidden-sm">*</td>
@@ -433,7 +437,7 @@ $( document ).ready(function() {
                         <i class="fa fa-long-arrow-left" data-toggle="tooltip" title="<?=gettext("out");?>"></i>
 <?php
                       elseif (!empty($filterent['direction']) && $filterent['direction'] == "any"):?>
-                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any");?>"></i>
+                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any direction");?>"></i>
 <?php                 endif;?>
 <?php                 if ($selected_if != 'FloatingRules'):
                         ; // interfaces are always quick
@@ -651,9 +655,9 @@ $( document ).ready(function() {
                           <td width="14"></td>
                           <td width="16"><span class="glyphicon glyphicon-info-sign"></span></td>
                           <td width="100"><?=gettext("log");?></td>
+<?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td width="16"><span class="fa fa-long-arrow-right"></span></td>
                           <td width="100"><?=gettext("in");?></td>
-<?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td width="16"><span class="fa fa-flash text-warning"></span></td>
                           <td width="100"><?=gettext("first match");?></td>
 <?php                     endif; ?>
@@ -673,9 +677,9 @@ $( document ).ready(function() {
                           <td>&nbsp;</td>
                           <td width="16"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
+<?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td width="16"><span class="fa fa-long-arrow-left"></span></td>
                           <td width="100"><?=gettext("out");?></td>
-<?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td width="16"><span class="fa fa-flash text-muted"></td>
                           <td width="100"><?=gettext("last match");?></td>
 <?php                     endif; ?>
