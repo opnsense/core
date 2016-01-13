@@ -433,7 +433,7 @@ $( document ).ready(function() {
                         <i class="fa fa-long-arrow-left" data-toggle="tooltip" title="<?=gettext("out");?>"></i>
 <?php
                       elseif (!empty($filterent['direction']) && $filterent['direction'] == "any"):?>
-                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any");?>"></i>
+                        <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any direction");?>"></i>
 <?php                 endif;?>
 <?php                 if ($selected_if != 'FloatingRules'):
                         ; // interfaces are always quick
