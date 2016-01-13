@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-04 11:11+0000\n"
+"POT-Creation-Date: 2016-01-13 05:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 3278\n"
+"X-Pootle-Revision: 3440\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -2465,12 +2465,12 @@ msgstr "Moniteurs"
 # File: lang/dynamic/helpers/models.php, line: 199
 # File: src/www/load_balancer_pool.php, line: 87
 msgid "Pool Setup"
-msgstr ""
+msgstr "Réglage du pool"
 
 # File: lang/dynamic/helpers/models.php, line: 200
 # File: src/www/status_lb_pool.php, line: 56
 msgid "Pool Status"
-msgstr ""
+msgstr "Statut du pool"
 
 # File: lang/dynamic/helpers/models.php, line: 204
 # File: src/www/load_balancer_virtual_server.php, line: 125
@@ -2480,7 +2480,7 @@ msgstr "Réglage du serveur virtuel"
 # File: lang/dynamic/helpers/models.php, line: 205
 # File: src/www/status_lb_vs.php, line: 44
 msgid "Virtual Server Status"
-msgstr ""
+msgstr "Statut du serveur virtuel"
 
 # File: src/www/diag_logs_relayd.php, line: 44
 # File: src/www/diag_logs_tabs.inc, line: 36
@@ -2582,13 +2582,13 @@ msgstr "Paramètres du Tunnel"
 # File: lang/dynamic/helpers/models.php, line: 232
 # File: src/www/vpn_ipsec_mobile.php, line: 197
 msgid "Mobile Clients"
-msgstr ""
+msgstr "Clients mobile"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 586
 # File: src/www/vpn_ipsec_phase2.php, line: 525
 # File: src/www/vpn_ipsec_tabs.inc, line: 5
 msgid "Pre-Shared Keys"
-msgstr ""
+msgstr "Clés pré-partagées"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 587
 # File: src/www/vpn_ipsec_phase2.php, line: 526
@@ -2606,12 +2606,12 @@ msgstr ""
 # File: lang/dynamic/helpers/models.php, line: 237
 # File: src/www/diag_ipsec.php, line: 64
 msgid "Status Overview"
-msgstr ""
+msgstr "Vue globale des statuts"
 
 # File: lang/dynamic/helpers/models.php, line: 238
 # File: src/www/diag_ipsec_leases.php, line: 35
 msgid "Lease Status"
-msgstr ""
+msgstr "Statut des baux"
 
 # File: lang/dynamic/helpers/models.php, line: 239
 # File: src/www/diag_ipsec_sad.php, line: 36
@@ -2682,7 +2682,7 @@ msgstr "Exporter la clé partagée"
 # File: lang/dynamic/helpers/models.php, line: 257
 # File: src/www/status_openvpn.php, line: 70
 msgid "Connection Status"
-msgstr "Statut de connexion"
+msgstr "État de la connexion"
 
 # File: src/etc/inc/service-utils.inc, line: 165
 # File: src/etc/inc/system.inc, line: 1723
@@ -2753,11 +2753,13 @@ msgstr "Portail Captif"
 
 # File: lang/dynamic/helpers/models.php, line: 289
 msgid "Maximum number of zones reached"
-msgstr ""
+msgstr "Nombre maximum de zones atteint"
 
 # File: lang/dynamic/helpers/models.php, line: 290
 msgid "Idle timeout must be between 0(no timeout) and 10080 (a week)"
 msgstr ""
+"Le temps d'inactivité doit être compris entre 0 (pas d'attente) et 10080 ("
+"une semaine)"
 
 # File: lang/dynamic/helpers/models.php, line: 291
 msgid "Hard timeout must be between 0(no timeout) and 10080 (a week)"
@@ -2770,6 +2772,8 @@ msgstr "Merci de sélectionner un certificat valide depuis la liste"
 # File: lang/dynamic/helpers/models.php, line: 293
 msgid "Please enter a valid servername, ip address or leave this option blank"
 msgstr ""
+"Merci de rentrer un nom de serveur, une adresse IP valides ou de laisser le "
+"champ vide"
 
 # File: lang/dynamic/helpers/models.php, line: 294
 msgid "Please enter valid addresses"
@@ -2790,11 +2794,12 @@ msgstr "La description devrait être une chaîne entre 1 et 255 caractères"
 
 # File: lang/dynamic/helpers/models.php, line: 298
 msgid "Fileid should be an internally generated unique number"
-msgstr ""
+msgstr "Fileid doit être un numéro unique généré en interne"
 
 # File: lang/dynamic/helpers/models.php, line: 299
 msgid "Template name should be a string between 1 and 255 characters"
 msgstr ""
+"Le nom de modèle doit être une chaine comportant entre 1 et 255 caractères"
 
 # File: lang/dynamic/helpers/models.php, line: 300
 msgid "File content should be in (base64 encoded) zip format"
@@ -3163,10 +3168,14 @@ msgstr "%s VLAN tag incorrect ‘%s’%s"
 # File: src/etc/inc/config.lib.inc, line: 70
 msgid "No valid config.xml found, attempting last known config restore."
 msgstr ""
+"Aucun fichier config.xml valide n'a été trouvé, tentative de restauration de "
+"la dernière configuration connue."
 
 # File: src/etc/inc/config.lib.inc, line: 74
 msgid "No valid config.xml found, attempting to restore factory config."
 msgstr ""
+"Aucun fichier config.xml valide n'a été trouvé, tentative de restauration de "
+"la configuration d'usine."
 
 # File: src/etc/inc/config.lib.inc, line: 97
 # File: src/etc/inc/config.lib.inc, line: 98
@@ -3176,6 +3185,7 @@ msgstr ""
 # File: src/etc/inc/config.lib.inc, line: 143
 msgid "Upgraded config version level from %s to %s"
 msgstr ""
+"Version de configuration mise à jour depuis le niveau %s vers le niveau %s"
 
 # File: src/etc/inc/config.lib.inc, line: 157
 msgid "WARNING: User"
@@ -3210,11 +3220,11 @@ msgstr "Échec du chiffrement/déchiffrement des données !"
 
 # File: src/etc/inc/dyndns.class, line: 1197
 msgid "Dynamic DNS updated IP Address on %s (%s) to %s"
-msgstr ""
+msgstr "L'adresse IP a été mise à jour par le Dynamic DNS le %s (%s) pour %s"
 
 # File: src/etc/inc/dyndns.class, line: 1204
 msgid "Dynamic DNS updated IPv6 Address on %s (%s) to %s"
-msgstr ""
+msgstr "L'adresse IPv6 a été mise à jour par le Dynamic DNS le %s (%s) pour %s"
 
 # File: src/etc/inc/filter.inc, line: 169
 msgid "Initializing"
@@ -3282,7 +3292,7 @@ msgstr "Paramétrage des informations de SCRUB"
 
 # File: src/etc/inc/filter.inc, line: 297
 msgid "The line in question reads [%d]: %s"
-msgstr ""
+msgstr "La ligne en question lit [%d] : %s"
 
 # File: src/etc/inc/filter.inc, line: 297
 msgid "PF was wedged/busy and has been reset."
@@ -3291,7 +3301,7 @@ msgstr "PF était coincé/occupé et a été réinitialisé."
 # File: src/etc/inc/filter.inc, line: 315
 # File: src/etc/inc/filter.inc, line: 316
 msgid "There were error(s) loading the rules: %s - %s"
-msgstr ""
+msgstr "Erreur(s) rencontrée(s) en chargeant la règle : %s - %s"
 
 # File: src/etc/inc/filter.inc, line: 366
 msgid "Processing down interface states"
@@ -3426,7 +3436,7 @@ msgstr ""
 
 # File: src/etc/inc/filter_log.inc, line: 137
 msgid "There was an error parsing a rule: no time (`%s')"
-msgstr ""
+msgstr "Il y a eu une erreur en appliquant une règle : pas d'heure ('%s')"
 
 # File: src/etc/inc/filter_log.inc, line: 157
 msgid "There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"
@@ -9182,7 +9192,7 @@ msgstr "adresse"
 
 # File: src/www/firewall_rules.php, line: 448
 msgid "Anti-Lockout Rule"
-msgstr ""
+msgstr "Règle anti-Lockout"
 
 # File: src/www/firewall_nat_1to1.php, line: 207
 # File: src/www/firewall_nat_out.php, line: 345
@@ -9313,7 +9323,7 @@ msgstr "supprimer ce mappage"
 
 # File: src/www/firewall_nat_1to1.php, line: 248
 msgid "add new mapping based on this one"
-msgstr ""
+msgstr "ajouter un nouveau mappage basé sur celui ci"
 
 # File: src/www/firewall_nat_1to1.php, line: 262
 # File: src/www/firewall_nat_1to1.php, line: 266
@@ -16388,7 +16398,7 @@ msgstr ""
 
 # File: src/www/services_dhcpv6.php, line: 589
 msgid "Prefix Delegation Size"
-msgstr ""
+msgstr "Taille du préfixe de délégation"
 
 # File: src/www/services_dhcpv6.php, line: 598
 msgid ""
@@ -17163,7 +17173,7 @@ msgstr ""
 
 # File: src/www/services_igmpproxy_edit.php, line: 188
 msgid "Upstream Interface"
-msgstr ""
+msgstr "Interface amont"
 
 # File: src/www/services_igmpproxy_edit.php, line: 189
 msgid "Downstream Interface"
@@ -17597,7 +17607,7 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 561
 msgid "NMEA checksum calculator"
-msgstr ""
+msgstr "Calculateur de chaine de contrôle NMEA"
 
 # File: src/www/services_ntpd_gps.php, line: 563
 msgid ""
@@ -19702,7 +19712,7 @@ msgstr ""
 
 # File: src/www/system_advanced_firewall.php, line: 358
 msgid "Warning: This will also turn off NAT!"
-msgstr ""
+msgstr "Attention : Cela coupera également NAT !"
 
 # File: src/www/system_advanced_firewall.php, line: 360
 msgid ""

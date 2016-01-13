@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-02 20:05+0000\n"
+"POT-Creation-Date: 2016-01-13 05:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 3281\n"
+"X-Pootle-Revision: 3456\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -1318,7 +1318,7 @@ msgstr "Zertifikate"
 
 # File: lang/dynamic/helpers/models.php, line: 41
 msgid "Authorities"
-msgstr "Befugnisse"
+msgstr "Aussteller"
 
 # File: lang/dynamic/helpers/models.php, line: 43
 msgid "Revocation"
@@ -1445,7 +1445,7 @@ msgstr "Benachrichtigungen"
 
 # File: lang/dynamic/helpers/models.php, line: 79
 msgid "Logs/Reports"
-msgstr "Protokolle/Reports"
+msgstr "Protokolle/Berichte"
 
 msgid "Miscellaneous"
 msgstr "Verschiedenes"
@@ -1608,7 +1608,7 @@ msgid "RulesEdit"
 msgstr "Bearbeitung von Regeln"
 
 msgid "Floating"
-msgstr ""
+msgstr "Fließend"
 
 msgid "Interface"
 msgstr "Interface"
@@ -1738,12 +1738,12 @@ msgstr "Server"
 # File: lang/dynamic/helpers/models.php, line: 192
 # File: lang/dynamic/helpers/models.php, line: 199
 msgid "Relay"
-msgstr ""
+msgstr "Relay"
 
 # File: lang/dynamic/helpers/models.php, line: 194
 # File: lang/dynamic/helpers/models.php, line: 201
 msgid "Leases"
-msgstr ""
+msgstr "Leases"
 
 # File: lang/dynamic/helpers/models.php, line: 197
 msgid "RA"
@@ -2867,6 +2867,8 @@ msgstr "Konnte Host \"%s\" nicht auflösen"
 # File: src/etc/inc/notices.smtp.inc, line: 228
 msgid "domain \"%s\" resolved to an address excluded to be valid"
 msgstr ""
+"Domain \"%s\" wurde zu einer Adresse aufgelöst, die als gültig "
+"ausgeschlossen wurde"
 
 # File: src/etc/inc/notices.smtp.inc, line: 230
 msgid "Connecting to host address \"%s\" port %s..."
@@ -2901,6 +2903,8 @@ msgid ""
 "it is not possible to authenticate using the specified mechanism because the "
 "SASL library class is not loaded"
 msgstr ""
+"es ist nicht möglich, sich mit der angegebenen Authentifizierungsmethode zu "
+"Authentifizieren, weil die SASL-Bibliotheksklasse nicht geladen wurde"
 
 # File: src/etc/inc/notices.smtp.inc, line: 280
 msgid "Authentication mechanism %s may not be used: %s"
@@ -4014,7 +4018,7 @@ msgstr "Bitte erstelle zuerste einen Voucher-Server "
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 52
 msgid "goto auth servers"
-msgstr ""
+msgstr "gehe zu den Authentifizierungsservern"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 139
 msgid "Remove voucher group"
@@ -4241,7 +4245,7 @@ msgid "Off"
 msgstr "Deaktiviert"
 
 msgid "On"
-msgstr "Ein"
+msgstr "Eingehend"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 602
 msgid "Resolution"
@@ -4262,7 +4266,7 @@ msgstr "Tabellen anzeigen"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
 msgid "Current detail is showing"
-msgstr ""
+msgstr "Derzeitig angezeigtes Detail"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
 msgid "averages"
@@ -4766,11 +4770,11 @@ msgid "The firewall is now rebooting."
 msgstr "Die Firewall startet jetzt neu."
 
 msgid "Backup area:"
-msgstr "Sicherungs Bereich:"
+msgstr "Sicherungsbereich:"
 
 msgid "Click this button to download the system configuration in XML format."
 msgstr ""
-"Klicke diese Schaltfläche um die Konfiguration des Systems als XML-Format "
+"Klicke diese Schaltfläche um die Konfiguration des Systems im XML-Format "
 "herunterzuladen. "
 
 msgid "Encrypt this configuration file."
@@ -5047,7 +5051,7 @@ msgid "Alias created with name %s."
 msgstr "Ein Alias mit dem Namen %s wurde erstellt."
 
 msgid "Resolution time per server"
-msgstr ""
+msgstr "Auflösungszeit pro Server"
 
 msgid "Query time"
 msgstr "Abfragezeit"
@@ -5102,7 +5106,7 @@ msgid "No states were found."
 msgstr "Keine Status wurden gefunden."
 
 msgid "States matching current filter"
-msgstr ""
+msgstr "Status die dem aktuellen Filter entsprechen"
 
 msgid "Show Source Tracking"
 msgstr "Quellenverfolgung anzeigen"
@@ -5181,11 +5185,11 @@ msgstr "Statistiken"
 
 # File: src/www/diag_ipsec.php, line: 162
 msgid "in"
-msgstr "ein"
+msgstr "eingehend"
 
 # File: src/www/diag_ipsec.php, line: 163
 msgid "out"
-msgstr "aus"
+msgstr "ausgehend"
 
 msgid "Time"
 msgstr "Zeit"
@@ -5211,7 +5215,7 @@ msgid "Host"
 msgstr "Host"
 
 msgid "No leases from this pool yet."
-msgstr ""
+msgstr "Noch keine Leases aus diesem Pool."
 
 msgid "No IPsec pools."
 msgstr "Keine IPsec Pools"
@@ -5369,7 +5373,7 @@ msgid "Protocol Flags"
 msgstr ""
 
 msgid "Any"
-msgstr "Jeglich"
+msgstr "Jedes"
 
 msgid "IPv4"
 msgstr "IPv4"
@@ -5382,7 +5386,7 @@ msgstr "Letzte %s Firewallprotokolleinträge."
 
 # File: src/www/diag_logs_filter.php, line: 706
 msgid "Showing %s matching log entries (maximum is %s)."
-msgstr ""
+msgstr "Es werden %s passenden Protokolleinträge angezeigt (maximal %s)."
 
 # Das "If" hier hat hier die Bedeutung "Interface". Zu finden unter Firewall -> NAT. Dort die erste Tabellenreihe.
 msgid "If"
@@ -5526,7 +5530,7 @@ msgstr "Die Protokolldatei wurde zurückgesetzt"
 
 # File: src/www/status_rrd_graph_settings.php, line: 40
 msgid "RRD data has been cleared."
-msgstr ""
+msgstr "RRD-Daten wurden gelöscht."
 
 msgid ""
 "A valid IP address/hostname or IP/hostname:port must be specified for remote "
@@ -5682,6 +5686,8 @@ msgstr ""
 
 msgid "Log packets blocked by 'Block Bogon Networks' rules"
 msgstr ""
+"Protokolliere Pakete, die durch die 'Blockiere Bogon-Netze'-Regel blockiert "
+"werden"
 
 msgid "Log packets blocked by 'Block Private Networks' rules"
 msgstr ""
@@ -5699,6 +5705,8 @@ msgid ""
 "Hint: If this is checked, errors from the lighttpd web server process for "
 "the GUI or Captive Portal will appear in the main system log."
 msgstr ""
+"Hinweis: Ist dies ausgewählt, erscheinen Fehler vom Lighttpd-Web-Server "
+"Prozess für die GUI oder des Captive Portals im Hauptsystemprotokoll."
 
 # File: src/www/diag_logs_settings.php, line: 357
 msgid "Filter descriptions"
@@ -5706,7 +5714,7 @@ msgstr "Filterbeschreibung"
 
 # File: src/www/diag_logs_settings.php, line: 360
 msgid "Omit descriptions"
-msgstr ""
+msgstr "Beschreibungen ausblenden"
 
 # File: src/www/diag_logs_settings.php, line: 361
 msgid "Display as column"
@@ -5791,7 +5799,7 @@ msgid ""
 msgstr ""
 
 msgid "Enable Remote Logging"
-msgstr "Aktiviere Remote Logging"
+msgstr "Aktiviere entfernte Protokollierung"
 
 msgid "Send log messages to remote syslog server"
 msgstr "Sende Protokollnachrichten an einen fernen Systemprotokollserver"
@@ -5827,7 +5835,7 @@ msgid "Gateway Monitor events"
 msgstr "Gateway Monitor Ereignisse"
 
 msgid "Server Load Balancer events"
-msgstr ""
+msgstr "Server Lastverteiler Ereignisse"
 
 msgid "Wireless events"
 msgstr "WLAN Ereignisse"
@@ -6105,7 +6113,7 @@ msgstr "Die Quellverfolgungstabelle wurde erfolgreich geleert."
 
 # File: src/www/diag_resetstate.php, line: 56
 msgid "State Reset"
-msgstr ""
+msgstr "Statusrücksetzung"
 
 msgid "Firewall state table"
 msgstr "Firewall Statustabelle"
@@ -6423,25 +6431,25 @@ msgstr "Sammle pfTOP-Aktivität, bitte warten..."
 
 # File: src/www/diag_tables.php, line: 53
 msgid "The bogons database has NOT been updated."
-msgstr ""
+msgstr "Die Bogons Datenbank wurde NICHT aktualisiert."
 
 msgid "The bogons database has been updated."
-msgstr ""
+msgstr "Die Bogons Datenbank wurde aktualisiert."
 
 msgid "Tables"
 msgstr "Tabellen"
 
 # File: src/www/diag_tables.php, line: 130
 msgid "Do you really want to flush this table?"
-msgstr ""
+msgstr "Wollen Sie diese Tabelle wirklich leeren?"
 
 # File: src/www/diag_tables.php, line: 164
 msgid "Flush"
-msgstr ""
+msgstr "Leeren"
 
 # File: src/www/diag_tables.php, line: 166
 msgid "Update bogons"
-msgstr ""
+msgstr "Aktualisiere Bogons"
 
 msgid "No entries exist in this table."
 msgstr "Es existieren keine Einträge in dieser Tabelle."
@@ -7613,13 +7621,13 @@ msgid "Invalid IP header"
 msgstr "Ungültiger IP Header"
 
 msgid "Timestamp reply"
-msgstr ""
+msgstr "Zeitstempelantwort"
 
 msgid "Information request"
 msgstr "Informationsanfrage"
 
 msgid "Information reply"
-msgstr ""
+msgstr "Informationsantwort"
 
 msgid "Address mask request"
 msgstr ""
@@ -7720,6 +7728,8 @@ msgstr ""
 
 msgid "You can not assign a ICMP type to a rule that applies to IPv4 and IPv6"
 msgstr ""
+"Sie können einer Regel keinen ICMP-Typ zuweisen, die sowohl bei IPv4 als "
+"auch bei IPv6 angewandt wird"
 
 msgid "%s is only valid with protocol tcp."
 msgstr "%s ist nur mit dem Protokoll TCP gültig"
@@ -7763,7 +7773,7 @@ msgstr ""
 "anwenden."
 
 msgid "OS detection is only valid with protocol tcp."
-msgstr ""
+msgstr "Betriebssystemerkennung ist nur mit dem Protokoll TCP gültig."
 
 msgid "Invalid OS detection selection. Please select a valid OS."
 msgstr ""
@@ -7898,10 +7908,12 @@ msgstr "Ablehnen"
 
 # File: src/www/firewall_rules_edit.php, line: 669
 msgid "Match"
-msgstr ""
+msgstr "Entsprechen"
 
 msgid "Choose what to do with packets that match the criteria specified below."
 msgstr ""
+"Wählen Sie aus, was mit Paketen zu tun ist, die den Kriterien entsprechen, "
+"die unten angegeben wurden."
 
 msgid ""
 "Hint: the difference between block and reject is that with reject, a packet ("
@@ -8421,7 +8433,7 @@ msgid ""
 msgstr ""
 
 msgid "This is a CIDR block of proxy ARP addresses."
-msgstr ""
+msgstr "Dies ist ein CIDR-Block von Proxy-ARP-Adressen"
 
 msgid "Edit Virtual IP"
 msgstr "Virtuelle IP bearbeiten"
@@ -8509,7 +8521,7 @@ msgid "In"
 msgstr "Ein"
 
 msgid "Out"
-msgstr "Aus"
+msgstr "Ausgehend"
 
 msgid "Switch to bytes/s"
 msgstr "Zu Bytes/s wechseln"
@@ -8846,6 +8858,8 @@ msgstr "SSID"
 msgid ""
 "Invalid WEP key size.   Sizes should be 40 (64) bit keys or 104 (128) bit."
 msgstr ""
+"Ungültige WEP Schlüssellänge. Eine Schlüssellänge von 40 (64) Bit oder 104 "
+"(128) Bit wird benötigt."
 
 msgid "The length of the passphrase should be between 8 and 63 characters."
 msgstr "Die Länge des Passworts muss zwischen 8 und 63 Zeichen lang sein."
@@ -8878,6 +8892,8 @@ msgstr "Interface aufzeichnen"
 
 msgid "Don't forget to adjust the DHCP Server range if needed after applying."
 msgstr ""
+"Vergessen Sie nicht daruf, ggf. den Bereich des DHCP-Servers nach dem "
+"übernehmen anzupassen"
 
 msgid "The %s configuration has been changed."
 msgstr "Die Konfiguration von %s hat sich geändert."
@@ -9283,7 +9299,7 @@ msgid "<i>vltime</i>"
 msgstr ""
 
 msgid "Prefix Delegation"
-msgstr ""
+msgstr "Präfixdelegation"
 
 msgid "id-assoc pd"
 msgstr ""
@@ -9840,7 +9856,7 @@ msgid "Both"
 msgstr "Beide"
 
 msgid "WPA Key Management Mode"
-msgstr ""
+msgstr "WPA Schlüsselverwaltungsmodus"
 
 msgid "Pre-Shared Key"
 msgstr "Pre-Shared Schlüssel"
@@ -9936,6 +9952,8 @@ msgid ""
 "When set, this option blocks traffic from IP addresses that are reserved for "
 "private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as"
 msgstr ""
+"Wenn diese Option gesetzt wird, werden IP-Adressen bockiert, die in RFC 1918 "
+"für private Netzwerke reserviert wurden (10/8, 172.16/12, 192.168/16), sowie "
 
 msgid ""
 "You should generally leave this option turned on, unless your WAN network "
@@ -9945,7 +9963,7 @@ msgstr ""
 "nicht ebenfalls im privaten Adressraum liegt."
 
 msgid "well as loopback addresses (127/8)."
-msgstr ""
+msgstr "die Loopback-Adressen (127/8)."
 
 msgid ""
 "When set, this option blocks traffic from IP addresses that are reserved ("
@@ -10143,16 +10161,16 @@ msgid "Show advanced options"
 msgstr "Erweiterte Optionen anzeigen"
 
 msgid "RSTP/STP"
-msgstr ""
+msgstr "RSTP/STP"
 
 msgid "Enable spanning tree options for this bridge."
 msgstr "Spanning Tree Optionen für diese Bridge aktivieren."
 
 msgid "Protocol used for spanning tree."
-msgstr ""
+msgstr "Protokoll, das für Spanning Tree verwendet wird."
 
 msgid "STP interfaces"
-msgstr ""
+msgstr "STP-Interfaces"
 
 msgid ""
 "Enable Spanning Tree Protocol on interface.  The if_bridge(4) driver has "
@@ -10589,7 +10607,7 @@ msgid ""
 msgstr ""
 
 msgid "fec"
-msgstr ""
+msgstr "fec"
 
 msgid ""
 "Supports the IEEE 802.3ad Link Aggregation Control Protocol (LACP) and the "
@@ -10646,13 +10664,13 @@ msgid "Do you really want to delete this PPP interface?"
 msgstr "Wollen Sie dieses PPP Interface wirklich löschen?"
 
 msgid "Link Interface(s)"
-msgstr ""
+msgstr "Verbindungsinterface(s)"
 
 msgid "Subnet"
 msgstr "Subnetz"
 
 msgid "Please choose a Link Type."
-msgstr ""
+msgstr "Bitte wählen Sie einen Verbindungstyp"
 
 msgid ""
 "Multilink connections (MLPPP) using the PPP link type is not currently "
@@ -10704,7 +10722,7 @@ msgid "PPPs configuration"
 msgstr "PPPs-Konfiguration"
 
 msgid "Link Type"
-msgstr ""
+msgstr "Verbindungstyp"
 
 msgid "Link interface(s)"
 msgstr ""
@@ -11664,6 +11682,8 @@ msgid ""
 "If this is checked, only the clients defined below will get DHCP leases from "
 "this server. "
 msgstr ""
+"Ist dies ausgewählt, nur Clients, die unten definiert wurden, bekommen von "
+"diesem Server DHCP-Leases. "
 
 msgid "Pool Description"
 msgstr ""
@@ -11739,12 +11759,14 @@ msgid "The default is 7200 seconds."
 msgstr "Der Standard ist 7200 Sekunden."
 
 msgid "Maximum lease time"
-msgstr ""
+msgstr "Maximale Leasezeit"
 
 msgid ""
 "This is the maximum lease time for clients that ask for a specific "
 "expiration time."
 msgstr ""
+"Dies ist die maximale Leasezeit für Clients, die eine bestimmte Ablaufzeit "
+"anfragen."
 
 msgid "The default is 86400 seconds."
 msgstr "Der Standard ist 86400 Sekunden."
@@ -11847,6 +11869,8 @@ msgstr "Zeige TFTP Konfiguration"
 msgid ""
 "Leave blank to disable.  Enter a full hostname or IP for the TFTP server."
 msgstr ""
+"Freilassen zum Deaktivieren.  Geben Sie einen vollständigen Hostnamen oder "
+"eine IP für den TFTP-Server ein."
 
 msgid "LDAP URI"
 msgstr "LDAP URI"
@@ -11904,6 +11928,8 @@ msgstr "Zeichenkette"
 msgid ""
 "Note: string-format: iscsi:(servername):(protocol):(port):(LUN):targetname"
 msgstr ""
+"Hinweis: Zeichenformatierung: "
+"iscsi:(Servername):(Protokoll):(Port):(LUN):Zielname"
 
 msgid "Additional BOOTP/DHCP Options"
 msgstr "Zusätzliche BOOTP/DHCP Optionen"
@@ -11916,6 +11942,9 @@ msgid ""
 "include in the DHCP lease information.  For a list of available options "
 "please visit this"
 msgstr ""
+"Geben Sie die DHCP Einstellungsnummer und den Wert für jeden Eintrag an, der "
+"in den DHCP Lease Informationen enthalten sein soll.  Für eine Liste an "
+"verfügbaren Einstellungen besuchen Sie bitte folgende Seite"
 
 msgid "URL"
 msgstr "URL"
@@ -12564,7 +12593,7 @@ msgid ""
 "Set this option only if you need a special MX record. Not all services "
 "support this."
 msgstr ""
-"Sezen Sie diese Option nur wenn Sie einen speziellen MX Record benötigen. "
+"Setzen Sie diese Option nur wenn Sie einen speziellen MX Record benötigen. "
 "Nicht alle Services unterstützen dies."
 
 msgid "Wildcards"
@@ -12769,11 +12798,15 @@ msgid ""
 "The <i>prefer</i> option indicates that NTP should favor the use of this "
 "server more than all others."
 msgstr ""
+"Die <i>bevorzugen</i> Einstellung zeigt an, dass NTP diesen Server vor allen "
+"anderen bevorzugt."
 
 msgid ""
 "The <i>noselect</i> option indicates that NTP should not use this server for "
 "time, but stats for this server will be collected and displayed."
 msgstr ""
+"Die <i>nichtausgewählt</i> Einstellung zeigt an das NTP diesen Server "
+"zurzeit nicht verwenden soll, aber weiterhin Statistiken sammelt und anzeigt."
 
 # File: src/www/services_ntpd.php, line: 299
 msgid "Orphan mode"
@@ -12801,7 +12834,7 @@ msgid "Syslog logging"
 msgstr ""
 
 msgid "Status > System Logs > NTP"
-msgstr "Satus > Systemprotokolle > NTP"
+msgstr "Status > Systemprotokolle > NTP"
 
 msgid ""
 "These options enable additional messages from NTP to be written to the "
@@ -12872,10 +12905,10 @@ msgstr ""
 
 # File: src/www/services_ntpd.php, line: 374
 msgid "Leap seconds"
-msgstr ""
+msgstr "Schaltsekunden"
 
 msgid "Show Leap second configuration"
-msgstr ""
+msgstr "Zeige Schaltsekunden Konfiguration"
 
 msgid ""
 "A leap second file allows NTP to advertize an upcoming leap second addition "
@@ -12886,6 +12919,8 @@ msgstr ""
 
 msgid "Normally this is only useful if this server is a stratum 1 time server."
 msgstr ""
+"Normalerweise ist dies nur sinnvoll, wenn dieser Server ein Stratum-1-"
+"Zeitserver ist."
 
 msgid "Enter Leap second configuration as text:"
 msgstr "Geben Sie die Schaltsekundenkonfiguration als Text ein:"
@@ -12957,7 +12992,7 @@ msgstr ""
 # File: src/www/services_ntpd_gps.php, line: 388
 # File: src/www/services_ntpd_pps.php, line: 132
 msgid "Serial port"
-msgstr ""
+msgstr "Serieller Port"
 
 msgid ""
 "All serial ports are listed, be sure to pick the port with the GPS attached."
@@ -13023,15 +13058,17 @@ msgstr ""
 "ändern."
 
 msgid "NTP should prefer this clock (default: enabled)."
-msgstr ""
+msgstr "NTP sollte diese Uhr bevorzugen (Standard: aktiviert)."
 
 msgid ""
 "NTP should not use this clock, it will be displayed for reference "
 "only(default: disabled)."
 msgstr ""
+"NTP sollte diese Uhr nicht verwenden, diese wird nur als Referenz angezeigt "
+"(Standard: deaktiviert)."
 
 msgid "Enable PPS signal processing (default: enabled)."
-msgstr ""
+msgstr "Aktivieren PPS Signalverarbeitung (Standard: aktiviert)."
 
 msgid "Enable falling edge PPS signal processing (default: rising edge)."
 msgstr ""
@@ -13239,6 +13276,8 @@ msgid ""
 "The DHCPv6 Server can only be enabled on interfaces configured with static "
 "IP addresses"
 msgstr ""
+"Der DHCPv6-Server kann nur auf Interfaces mit statischen IP Adressen "
+"aktiviert werden"
 
 msgid ""
 "Subnets are specified in CIDR format.  Select the CIDR mask that pertains to "
@@ -13567,7 +13606,7 @@ msgid "Advanced Resolver Options"
 msgstr "Erweiterte Resolveroptionen"
 
 msgid "Hide Identity"
-msgstr ""
+msgstr "Identität verbergen"
 
 msgid "If enabled, id.server and hostname.bind queries are refused."
 msgstr ""
@@ -13623,7 +13662,7 @@ msgid ""
 msgstr ""
 
 msgid "Outgoing TCP Buffers"
-msgstr ""
+msgstr "Ausgehende TCP-Puffer"
 
 msgid ""
 "The number of outgoing TCP buffers to allocate per thread. The default value "
@@ -13632,7 +13671,7 @@ msgid ""
 msgstr ""
 
 msgid "Incoming TCP Buffers"
-msgstr ""
+msgstr "Eingehende TCP-Puffer"
 
 msgid ""
 "The number of incoming TCP buffers to allocate per thread. The default value "
@@ -13697,27 +13736,27 @@ msgstr ""
 # File: src/www/services_unbound_advanced.php, line: 331
 # File: src/www/services_unbound_advanced.php, line: 346
 msgid "1 minute"
-msgstr ""
+msgstr "1 Minute"
 
 # File: src/www/services_unbound_advanced.php, line: 332
 # File: src/www/services_unbound_advanced.php, line: 347
 msgid "2 minutes"
-msgstr ""
+msgstr "2 Minuten"
 
 # File: src/www/services_unbound_advanced.php, line: 333
 # File: src/www/services_unbound_advanced.php, line: 348
 msgid "5 minutes"
-msgstr ""
+msgstr "5 Minuten"
 
 # File: src/www/services_unbound_advanced.php, line: 334
 # File: src/www/services_unbound_advanced.php, line: 349
 msgid "10 minutes"
-msgstr ""
+msgstr "10 Minuten"
 
 # File: src/www/services_unbound_advanced.php, line: 335
 # File: src/www/services_unbound_advanced.php, line: 350
 msgid "15 minutes"
-msgstr ""
+msgstr "15 Minuten"
 
 msgid ""
 "Time to live for entries in the host cache. The host cache contains "
@@ -13737,23 +13776,23 @@ msgstr ""
 
 # File: src/www/services_unbound_advanced.php, line: 361
 msgid "1000"
-msgstr ""
+msgstr "1000"
 
 # File: src/www/services_unbound_advanced.php, line: 362
 msgid "5000"
-msgstr ""
+msgstr "5000"
 
 # File: src/www/services_unbound_advanced.php, line: 363
 msgid "10 000"
-msgstr ""
+msgstr "10 000"
 
 # File: src/www/services_unbound_advanced.php, line: 364
 msgid "20 000"
-msgstr ""
+msgstr "20 000"
 
 # File: src/www/services_unbound_advanced.php, line: 365
 msgid "50 000"
-msgstr ""
+msgstr "50 000"
 
 msgid "Number of hosts for which information is cached. The default is 10,000."
 msgstr ""
@@ -13765,7 +13804,7 @@ msgstr ""
 
 # File: src/www/services_unbound_advanced.php, line: 376
 msgid "disabled"
-msgstr ""
+msgstr "deaktiviert"
 
 # File: src/www/services_unbound_advanced.php, line: 377
 msgid "5 million"
@@ -13828,7 +13867,7 @@ msgstr "DNS Resolvereintrag bearbeiten"
 
 # File: src/www/services_upnp.php, line: 70
 msgid "At least one of 'UPnP' or 'NAT-PMP' must be allowed"
-msgstr ""
+msgstr "Zumindest eins von 'UPnP' oder 'NAT-PMP' muss erlaubt werden"
 
 # File: src/www/services_upnp.php, line: 74
 msgid "It is a security risk to specify WAN in the 'Interface' field"
@@ -13892,13 +13931,15 @@ msgstr ""
 
 # File: src/www/services_wol.php, line: 55
 msgid "Sent magic packet to %s (%s)."
-msgstr ""
+msgstr "Sende Magic Packet an %s (%s)."
 
 # File: src/www/services_wol.php, line: 57
 msgid ""
 "Please check the %ssystem log%s, the wol command for %s (%s) did not "
 "complete successfully."
 msgstr ""
+"Bitte überprüfe das %sHauptprotokoll%s, der WOL-Befehl für %s (%s) wurde "
+"nicht erfolgreich abgeschlossen."
 
 msgid "A valid interface must be specified."
 msgstr "Ein gültiges Interface muss angegeben werden."
@@ -13914,9 +13955,13 @@ msgid ""
 "Please check the %ssystem log%s, the wol command for %s did not complete "
 "successfully."
 msgstr ""
+"Bitte überprüfe das %sHauptprotokoll%s, der WOL-Befehl für %s wurde nicht "
+"erfolgreich abgeschlossen."
 
 msgid "Choose which interface the host to be woken up is connected to."
 msgstr ""
+"Wählen Sie das Interface aus, mit dem der Host verbunden ist, der aufgeweckt "
+"werden soll."
 
 msgid "Enter a MAC address "
 msgstr "Geben Sie eine MAC-Adresse"
@@ -13938,10 +13983,14 @@ msgid ""
 "The NIC in the computer that is to be woken up must support Wake on LAN and "
 "has to be configured properly (WOL cable, BIOS settings). "
 msgstr ""
+"Die Netzwerkkarte im Computer welcher aufgeweckt werden soll, muss die "
+"Funktion Wake-On-Lan unterstützen und ordnungsgemäß konfiguriert sein (WOL-"
+"Kabel, BIOS-Einstellungen). "
 
 msgid ""
 "This service can be used to wake up (power on) computers by sending special"
 msgstr ""
+"Dieser Dienst kann dazu benutzt werden Computer durch senden eines speziellen"
 
 msgid "Edit WOL entry"
 msgstr "WOL Eintrag bearbeiten"
@@ -14010,10 +14059,10 @@ msgid "delete this DHCP lease"
 msgstr "lösche dieses DHCP Lease"
 
 msgid "Show active and static leases only"
-msgstr ""
+msgstr "Zeige nur aktive und statische Leases"
 
 msgid "Show all configured leases"
-msgstr ""
+msgstr "Zeige alle konfigurierten Leases"
 
 msgid "No leases file found. Is the DHCP server active"
 msgstr ""
@@ -14375,6 +14424,8 @@ msgid ""
 "Rescan has been initiated in the background. Refresh this page in 10 seconds "
 "to see the results."
 msgstr ""
+"Neu-Scan wurde im Hintergrund initiiert. Aktualisiere diese Seite in 10 "
+"Sekunden um das Resultat anzuzeigen."
 
 msgid "Nearby access points or ad-hoc peers"
 msgstr "Nahe Access Points oder Ad-Hoc Peers"
@@ -14998,7 +15049,7 @@ msgid ""
 msgstr ""
 
 msgid "Reflection Timeout"
-msgstr ""
+msgstr "Reflection Zeitüberschreitung"
 
 msgid "Enter value for Reflection timeout in seconds."
 msgstr ""
@@ -15008,7 +15059,7 @@ msgstr ""
 
 # File: src/www/system_advanced_firewall.php, line: 552
 msgid "Enable Reflection for 1:1"
-msgstr ""
+msgstr "Aktiviere Reflexion für 1:1"
 
 msgid ""
 "Enables the automatic creation of additional NAT redirect rules for access "
@@ -15445,7 +15496,7 @@ msgid ""
 msgstr ""
 
 msgid "Test Growl"
-msgstr ""
+msgstr "Growl testen"
 
 msgid "This is a test message from %s.  It is safe to ignore this message."
 msgstr ""
@@ -15456,34 +15507,41 @@ msgid "Test SMTP"
 msgstr "Teste SMTP"
 
 msgid "Growl"
-msgstr ""
+msgstr "Growl"
 
 msgid "Disable Growl Notifications"
-msgstr ""
+msgstr "Deaktiviere Growl-Benachrichtigungen"
 
 msgid ""
 "Check this option to disable growl notifications but preserve the settings "
 "below."
 msgstr ""
+"Aktivieren Sie diese Einstellung, um Growl-Benachrichtigungen zu "
+"deaktivieren aber bewahren Sie die Einstellungen unten."
 
 msgid "Registration Name"
 msgstr "Anmelde Name"
 
 msgid "Enter the name to register with the Growl server (default: PHP-Growl)."
 msgstr ""
+"Geben Sie den Namen ein um sich mit dem Growl-Server zu regestrieren. "
+"(Standard: PHP-Growl)"
 
 msgid "Notification Name"
 msgstr "Benachrichtigungs Name"
 
 msgid "Enter a name for the Growl notifications (default: %s growl alert)."
 msgstr ""
+"Gebe einen Namen für die Growl-Benachrichtigung ein (Standard: %s Growl "
+"Alarm)."
 
 msgid ""
 "This is the IP address that you would like to send growl notifications to."
-msgstr ""
+msgstr "Dies ist die IP-Adresse an die Sie Growl-Benachrichtigungen senden."
 
 msgid "Enter the password of the remote growl notification device."
 msgstr ""
+"Geben Sie das Passwort für das entfernte Growl-Benachrichtigungsgerät ein."
 
 msgid "SMTP E-Mail"
 msgstr "SMTP E-Mail"
@@ -16104,6 +16162,8 @@ msgid ""
 "NOTE: Type must be one of DNS (FQDN or Hostname), IP (IP address), URI, or "
 "email."
 msgstr ""
+"Hinweis: Der Typ muss einer der folgenden sein: DNS (FQDN oder Hostname), IP-"
+"Addresse, URI, oder E-Mail."
 
 msgid "External Signing Request"
 msgstr "Externe Signaturanfrage"
@@ -16165,7 +16225,7 @@ msgstr "OpenVPN Server"
 
 # File: src/www/system_certmanager.php, line: 1292
 msgid "OpenVPN Client"
-msgstr ""
+msgstr "OpenVPN Client"
 
 # File: src/www/system_certmanager.php, line: 1297
 msgid "IPsec Tunnel"
@@ -16199,7 +16259,7 @@ msgstr ""
 "verwendet werden."
 
 msgid "Certificate Revocation List Manager"
-msgstr ""
+msgstr "Zertifikats-Widerruf-Listen Verwaltung"
 
 msgid "Create an internal Certificate Revocation List"
 msgstr "Erstelle eine neue interne Zertifikatsrückrufliste"
@@ -16535,16 +16595,16 @@ msgstr ""
 "andere Monitor IP auswählen."
 
 msgid "The low latency threshold needs to be a numeric value."
-msgstr ""
+msgstr "Die geringe Latenzschwelle muss ein numerischer Wert sein."
 
 msgid "The low latency threshold needs to be positive."
-msgstr ""
+msgstr "Die geringe Latenzschwelle muss positiv sein."
 
 msgid "The high latency threshold needs to be a numeric value."
-msgstr ""
+msgstr "Die hohe Latenzschwelle muss ein numerischer Wert sein."
 
 msgid "The high latency threshold needs to be positive."
-msgstr ""
+msgstr "Die hohe Latenzschwelle muss positiv sein."
 
 msgid "The low Packet Loss threshold needs to be a numeric value."
 msgstr ""
@@ -16672,7 +16732,7 @@ msgid "From"
 msgstr "Von"
 
 msgid "To"
-msgstr "AN"
+msgstr "Bis"
 
 msgid "Packet Loss thresholds"
 msgstr ""
@@ -18201,7 +18261,7 @@ msgid "At least one hashing algorithm needs to be selected."
 msgstr "Mindestens ein Hashalgorithmus muss ausgewählt werden."
 
 msgid "The P2 lifetime must be an integer."
-msgstr ""
+msgstr "Die P2 Lebensdauer muss eine Zahl sein."
 
 msgid "Edit Phase 2"
 msgstr "Phase 2 bearbeiten"
@@ -18407,7 +18467,7 @@ msgid "is ten L2TP clients"
 msgstr ""
 
 msgid "Secret"
-msgstr ""
+msgstr "Geheimnis"
 
 msgid ""
 "Specify optional secret shared between peers. Required on some "
@@ -18478,6 +18538,8 @@ msgstr ""
 msgid ""
 "Don't forget to add a firewall rule to permit traffic from L2TP clients!"
 msgstr ""
+"Vergessen Sie nicht, eine Firewallregel hinzuzufügen um Datenverkehr von "
+"L2TP Clients zu erlauben!"
 
 msgid "Warning: RADIUS is enabled. The local user database will not be used."
 msgstr ""
@@ -18496,7 +18558,7 @@ msgstr "Sie müssen den Änderungen zustimmen um sie wirksam zu machen."
 # File: src/www/vpn_l2tp_users_edit.php, line: 30
 # File: src/www/vpn_pptp_users_edit.php, line: 137
 msgid "Edit User"
-msgstr ""
+msgstr "Benutzer bearbeiten"
 
 msgid "The password contains invalid characters."
 msgstr "Das Passwort enthält ungültige Zeichen."
@@ -18513,7 +18575,7 @@ msgstr ""
 
 msgid ""
 "If you want the user to be assigned a specific IP address, enter it here."
-msgstr ""
+msgstr "Hier können Sie dem Benutzer eine bestimmte IP-Adresse zuweisen."
 
 msgid "Client"
 msgstr "Client"
@@ -18546,6 +18608,8 @@ msgstr ""
 msgid ""
 "The field Local port must contain a valid port, ranging from 0 to 65535."
 msgstr ""
+"Das Feld Lokaler-Port muss einen gültigen Port zwischen 0 bis 65535 "
+"enthalten."
 
 msgid "The specified 'Local port' is in use. Please select another value"
 msgstr ""
@@ -18558,11 +18622,14 @@ msgid ""
 "The field Server host or address must contain a valid IP address or domain "
 "name."
 msgstr ""
+"Das Feld Server Host oder Adresse muss eine gültige IP-Adresse oder den "
+"Domänennamen enthalten."
 
 # File: src/www/vpn_openvpn_client.php, line: 190
 msgid ""
 "The field Server port must contain a valid port, ranging from 0 to 65535."
 msgstr ""
+"Das Feld Server-Port muss einen gültigen Port zwischen 0 bis 65535 enthalten."
 
 # File: src/www/vpn_openvpn_client.php, line: 195
 # File: src/www/vpn_openvpn_client.php.orig, line: 195
@@ -18570,11 +18637,14 @@ msgid ""
 "The field Proxy host or address must contain a valid IP address or domain "
 "name."
 msgstr ""
+"Das Feld Proxy Host oder Adresse muss eine gültige IP-Adresse oder den "
+"Domänennamen enthalten."
 
 # File: src/www/vpn_openvpn_client.php, line: 198
 msgid ""
 "The field Proxy port must contain a valid port, ranging from 0 to 65535."
 msgstr ""
+"Das Feld Proxy-Port muss einen gültigen Port zwischen 0 bis 65535 enthalten."
 
 msgid "User name and password are required for proxy with authentication."
 msgstr ""
@@ -18705,7 +18775,7 @@ msgid "if one is required for this connection."
 msgstr "wenn eins für diese Verbindung benötigt wird."
 
 msgid "Shared Key"
-msgstr ""
+msgstr "Gemeinsamer Schlüssel"
 
 msgid "Automatically generate a shared key"
 msgstr "Automatisch einen gemeinsamen Schlüssel generieren"
@@ -18797,7 +18867,7 @@ msgid "Don't forward IPv6 traffic"
 msgstr "IPv6 Verkehr nicht weiterleiten"
 
 msgid "Don't pull routes"
-msgstr ""
+msgstr "Keine Routen beziehen"
 
 msgid "Don't add or remove routes automatically. Instead pass routes to "
 msgstr ""
@@ -18954,7 +19024,7 @@ msgid "NTP Servers"
 msgstr "NTP Server"
 
 msgid "Provide a NTP server list to clients"
-msgstr ""
+msgstr "Stelle den Clients eine NTP-Serverliste zur Verfügung"
 
 msgid "NetBIOS Options"
 msgstr "NetBIOS Optionen"
@@ -19005,7 +19075,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_export.php, line: 139
 # File: src/www/vpn_openvpn_export_shared.php, line: 79
 msgid "You need to specify an IP or hostname."
-msgstr ""
+msgstr "Sie müssen eine IP-Adresse oder den Hostnamen angeben."
 
 # File: src/www/vpn_openvpn_export.php, line: 149
 msgid ""
@@ -19026,7 +19096,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_export.php, line: 168
 # File: src/www/vpn_openvpn_export_shared.php, line: 93
 msgid "You need to specify a port for the proxy ip."
-msgstr ""
+msgstr "Sie müssen einen Port für die Proxy IP angeben."
 
 # File: src/www/vpn_openvpn_export.php, line: 179
 # File: src/www/vpn_openvpn_export_shared.php, line: 101
@@ -19046,35 +19116,35 @@ msgstr "Exportieren der Konfigurationsdateien fehlgeschlagen!"
 # File: src/www/vpn_openvpn_export.php, line: 338
 # File: src/www/vpn_openvpn_export_shared.php, line: 177
 msgid "Please specify an IP address or hostname."
-msgstr ""
+msgstr "Bitte geben Sie eine IP-Adresse oder den Hostnamen ein."
 
 # File: src/www/vpn_openvpn_export.php, line: 367
 msgid "The password or confirm field is empty"
-msgstr ""
+msgstr "Das Passwort und Bestätigungsfeld ist leer"
 
 # File: src/www/vpn_openvpn_export.php, line: 371
 msgid "The password and confirm fields must match"
-msgstr ""
+msgstr "Das Passwort und Bestätigungsfeld muss übereinstimmen"
 
 # File: src/www/vpn_openvpn_export.php, line: 385
 # File: src/www/vpn_openvpn_export_shared.php, line: 193
 msgid "The proxy ip and port cannot be empty"
-msgstr ""
+msgstr "Die Proxy IP und Port darf nicht leer sein"
 
 # File: src/www/vpn_openvpn_export.php, line: 400
 # File: src/www/vpn_openvpn_export_shared.php, line: 208
 msgid "Please fill the proxy username and password."
-msgstr ""
+msgstr "Bitte geben Sie ein Proxy Benutzername und Passwort ein."
 
 # File: src/www/vpn_openvpn_export.php, line: 404
 # File: src/www/vpn_openvpn_export_shared.php, line: 212
 msgid "The proxy password or confirm field is empty"
-msgstr ""
+msgstr "Das Proxy Passwort und Bestätigungsfeld ist leer"
 
 # File: src/www/vpn_openvpn_export.php, line: 408
 # File: src/www/vpn_openvpn_export_shared.php, line: 216
 msgid "The proxy password and confirm fields must match"
-msgstr ""
+msgstr "Das Proxy Passwort und Bestätigungsfeld muss übereinstimmen"
 
 # File: src/www/vpn_openvpn_export.php, line: 638
 # File: src/www/vpn_openvpn_export.php.orig, line: 638
@@ -19226,7 +19296,7 @@ msgstr "Benutze Proxy zum Kommunizieren mit dem Server."
 # File: src/www/vpn_openvpn_export.php, line: 733
 # File: src/www/vpn_openvpn_export_shared.php, line: 356
 msgid "SOCKS"
-msgstr ""
+msgstr "SOCKS"
 
 # File: src/www/vpn_openvpn_export.php, line: 748
 # File: src/www/vpn_openvpn_export.php.orig, line: 748
@@ -19301,7 +19371,7 @@ msgstr ""
 
 # File: src/www/vpn_openvpn_export.php, line: 951
 msgid "Links to OpenVPN clients for various platforms:"
-msgstr ""
+msgstr "Links zu OpenVPN Clients für verschiedene Plattformen:"
 
 # File: src/www/vpn_openvpn_export.php, line: 956
 msgid ""
@@ -19325,7 +19395,7 @@ msgstr "Empfohlener Client für Android"
 
 # File: src/www/vpn_openvpn_export.php, line: 958
 msgid "FEAT VPN For Android"
-msgstr ""
+msgstr "FEAT VPN für Android"
 
 # File: src/www/vpn_openvpn_export.php, line: 958
 msgid "For older versions of Android"
@@ -19472,7 +19542,7 @@ msgstr "Zertifikatstiefe"
 
 # File: src/www/vpn_openvpn_server.php, line: 1160
 msgid "Do Not Check"
-msgstr ""
+msgstr "Nicht prüfen"
 
 # File: src/www/vpn_openvpn_server.php, line: 1163
 msgid "One (Client+Server)"
