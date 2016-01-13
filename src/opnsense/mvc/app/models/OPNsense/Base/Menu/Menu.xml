@@ -315,7 +315,9 @@
                 <Phase1 url="/vpn_ipsec_phase1.php*"/>
                 <Phase2 url="/vpn_ipsec_phase2.php*"/>
             </Tunnels>
-            <Mobile order="20" VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php"/>
+            <Mobile order="20" VisibleName="Mobile Clients" url="/vpn_ipsec_mobile.php">
+                <Act url="/vpn_ipsec_mobile.php*"/>
+            </Mobile>
             <Keys order="30" VisibleName="Pre-Shared Keys" url="/vpn_ipsec_keys.php">
                 <Edit url="/vpn_ipsec_keys_edit.php*"/>
             </Keys>
