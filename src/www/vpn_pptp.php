@@ -515,10 +515,7 @@ function enable_change(enable_over) {
 						                </tr>
 						                <tr>
 						                  <td width="22%" valign="top">&nbsp;</td>
-						                  <td width="78%"><span class="vexpl"><span class="red"><strong><?=gettext("Note");?>:<br />
-						                    </strong></span><?=gettext("don't forget to ");
-?><a href="firewall_rules.php?if=pptp"><?=gettext("add a firewall rule"); ?></a> <?=gettext("to permit ".
-                                            "traffic from PPTP clients");?>!</span></td>
+						                  <td width="78%"><?=sprintf(gettext("Note: don't forget to %sadd a firewall rule%s to permit traffic from PPTP clients!"),'<a href="firewall_rules.php?if=pptp">','</a>') ?></td>
 						                 </tr>
 						              </table>
 								</div>

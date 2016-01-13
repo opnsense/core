@@ -964,8 +964,7 @@ endif; ?>
 						<td>
 							<input name="route_no_pull" type="checkbox" value="yes" <?=!empty($pconfig['route_no_pull']) ? "checked=\"checked\"" : "" ;?> />
 							<div class="hidden" for="help_for_route_no_pull">
-								<?=gettext("Don't add or remove routes automatically. Instead pass routes to ");?>
-								<strong>--route-up</strong> <?=gettext("script using environmental variables"); ?>.
+								<?=sprintf(gettext("Don't add or remove routes automatically. Instead pass routes to %s--route-up%s script using environmental variables"),'<strong>','</strong>') ?>.
 							</div>
 						</td>
 					</tr>
@@ -1009,11 +1008,11 @@ endif; ?>
 							<?php endforeach; ?>
 							</select>
 							<div class="hidden" for="help_for_verbosity_level">
-								<?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output"); ?>.<br /> <br />
-								<strong>none</strong> -- <?=gettext("No output except fatal errors"); ?>. <br />
-								<strong>default</strong>-<strong>4</strong> -- <?=gettext("Normal usage range"); ?>. <br />
-								<strong>5</strong> -- <?=gettext("Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets"); ?>. <br />
-								<strong>6</strong>-<strong>11</strong> -- <?=gettext("Debug info range"); ?>.
+								<?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output.") ?> <br /> <br />
+								<?=sprintf(gettext("%snone%s -- No output except fatal errors."),'<strong>','</strong>') ?> <br />
+								<?=sprintf(gettext("%sdefault%s-%s4%s -- Normal usage range."),'<strong>','</strong>','<strong>','</strong>'); ?> <br />
+								<?=sprintf(gettext("%s5%s -- Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets."),'<strong>','</strong>') ?> <br />
+								<?=sprintf(gettext("%s6%s-%s11%s -- Debug info range."),'<strong>','</strong>','<strong>','</strong>') ?>
 							</div>
 							</td>
 					</tr>

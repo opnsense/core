@@ -1508,19 +1508,19 @@ endif; ?>
                         <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> onclick="dns_server_change()" />
                         <div id="dns_server_data" summary="dns servers">
                               <span>
-                                <?=gettext("Server"); ?> #1:&nbsp;
+                                <?=gettext("Server #1:"); ?>&nbsp;
                               </span>
                               <input name="dns_server1" type="text" class="form-control unknown" id="dns_server1" size="20" value="<?=$pconfig['dns_server1'];?>" />
                               <span>
-                                <?=gettext("Server"); ?> #2:&nbsp;
+                                <?=gettext("Server #2:"); ?>&nbsp;
                               </span>
                               <input name="dns_server2" type="text" class="form-control unknown" id="dns_server2" size="20" value="<?=$pconfig['dns_server2'];?>" />
                               <span>
-                                <?=gettext("Server"); ?> #3:&nbsp;
+                                <?=gettext("Server #3:"); ?>&nbsp;
                               </span>
                               <input name="dns_server3" type="text" class="form-control unknown" id="dns_server3" size="20" value="<?=$pconfig['dns_server3'];?>" />
                               <span>
-                                <?=gettext("Server"); ?> #4:&nbsp;
+                                <?=gettext("Server #4:"); ?>&nbsp;
                               </span>
                               <input name="dns_server4" type="text" class="form-control unknown" id="dns_server4" size="20" value="<?=$pconfig['dns_server4'];?>" />
                         </div>
@@ -1548,11 +1548,11 @@ endif; ?>
                         <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?>  onclick="ntp_server_change()" />
                         <div id="ntp_server_data" summary="ntp servers">
                           <span>
-                            <?=gettext("Server"); ?> #1:&nbsp;
+                            <?=gettext("Server #1:"); ?>&nbsp;
                           </span>
                           <input name="ntp_server1" type="text" class="form-control unknown" id="ntp_server1" size="20" value="<?=$pconfig['ntp_server1'];?>" />
                           <span>
-                            <?=gettext("Server"); ?> #2:&nbsp;
+                            <?=gettext("Server #2:"); ?>&nbsp;
                           </span>
                           <input name="ntp_server2" type="text" class="form-control unknown" id="ntp_server2" size="20" value="<?=$pconfig['ntp_server2'];?>" />
                         </div>
@@ -1595,7 +1595,7 @@ endif; ?>
                             <?=gettext("Possible options: b-node (broadcasts), p-node " .
                                                         "(point-to-point name queries to a WINS server), " .
                                                         "m-node (broadcast then query name server), and " .
-                                                        "h-node (query name server, then broadcast)"); ?>.
+                                                        "h-node (query name server, then broadcast)."); ?>
                           </div>
                           <span>
                             <?=gettext("Scope ID"); ?>:&nbsp;
@@ -1606,7 +1606,7 @@ endif; ?>
                                                         "service for  NetBIOS over TCP/IP. The NetBIOS " .
                                                         "scope ID isolates NetBIOS traffic on a single " .
                                                         "network to only those nodes with the same " .
-                                                        "NetBIOS scope ID"); ?>.
+                                                        "NetBIOS scope ID."); ?>
                           </div>
                         </div>
                       </td>
@@ -1622,11 +1622,11 @@ endif; ?>
                         </div>
                         <div id="wins_server_data" summary="wins servers">
                           <span>
-                            <?=gettext("Server"); ?> #1:&nbsp;
+                            <?=gettext("Server #1:"); ?>&nbsp;
                           </span>
                           <input name="wins_server1" type="text" class="form-control unknown" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
                           <span>
-                            <?=gettext("Server"); ?> #2:&nbsp;
+                            <?=gettext("Server #2:"); ?>&nbsp;
                           </span>
                           <input name="wins_server2" type="text" class="form-control unknown" id="wins_server2" size="20" value="<?=$pconfig['wins_server2'];?>" />
                         </div>
@@ -1677,11 +1677,11 @@ endif; ?>
                         <?php endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_verbosity_level">
-                            <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output"); ?>.<br /> <br />
-                          <strong>none</strong> -- <?=gettext("No output except fatal errors"); ?>. <br />
-                          <strong>default</strong>-<strong>4</strong> -- <?=gettext("Normal usage range"); ?>. <br />
-                          <strong>5</strong> -- <?=gettext("Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets"); ?>. <br />
-                          <strong>6</strong>-<strong>11</strong> -- <?=gettext("Debug info range"); ?>.
+                            <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output."); ?><br /> <br />
+                          <?=sprintf(gettext("%snone%s -- No output except fatal errors."),'<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%sdefault%s-%s4%s -- Normal usage range."),'<strong>','</strong>','<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%s5%s -- Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets."),'<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%s6%s-%s11%s -- Debug info range."),'<strong>','</strong>','<strong>','</strong>') ?>
                         </div>
                       </td>
                     </tr>
