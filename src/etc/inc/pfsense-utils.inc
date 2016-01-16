@@ -285,14 +285,14 @@ function setup_serial_port($sync = true)
 	}
 
 	$boot_config_split = explode("\n", $boot_config);
-	$fd = fopen($boot_config_file,"w");
-	if($fd) {
-		foreach($boot_config_split as $bcs) {
-			if(stristr($bcs, "-D") || stristr($bcs, "-h")) {
-				/* DONT WRITE OUT, WE'LL DO IT LATER */
-			} else {
-				if($bcs <> "")
-					fwrite($fd, "{$bcs}\n");
+	$fd = @fopen($boot_config_file, 'w');
+	if ($fd) {
+		foreach ($boot_config_split as $bcs) {
+			if (stristr($bcs, '-D') || stristr($bcs, '-h')) {
+				continue;
+			}
+			if ($bcs != '') {
+				@fwrite($fd, "{$bcs}\n");
 			}
 		}
 		if ($serial_enabled) {
