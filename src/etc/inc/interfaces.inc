@@ -93,6 +93,12 @@ function convert_128bit_to_ipv6($ip6bin)
     return $ip6addr;
 }
 
+function match_wireless_interface($int)
+{
+	$wireless_regex = '/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/';
+	return preg_match($wireless_regex, $int);
+}
+
 function interfaces_bring_up($interface)
 {
     if (!$interface) {

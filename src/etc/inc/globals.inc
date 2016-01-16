@@ -46,27 +46,3 @@ $g = array(
 	"product_copyright_url" => "https://www.deciso.com/",
 	"latest_config" => "11.2",
 );
-
-function is_install_media()
-{
-	/*
-	 * Despite unionfs underneath, / is still not writeable,
-	 * making the following the perfect test for install media.
-	 */
-
-	$file = '/.probe.for.install.media';
-	$fd = @fopen($file, 'w');
-	if ($fd) {
-		fclose($fd);
-		unlink($file);
-		return false;
-	}
-
-	return true;
-}
-
-function match_wireless_interface($int)
-{
-	$wireless_regex = '/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/';
-	return preg_match($wireless_regex, $int);
-}

@@ -1052,34 +1052,19 @@ function services_dhcpdv6_configure($blacklist = array())
 		return 0;
 	}
 
-	if (file_exists("/var/run/booting")) {
-		if (is_install_media()) {
-			/* restore the leases, if we have them */
-			if (file_exists('/conf/dhcp6leases.tgz')) {
-				$dhcprestore = '';
-				$dhcpreturn = '';
-				exec('cd /;LANG=C /usr/bin/tar -xzf /conf/dhcp6leases.tgz 2>&1', $dhcprestore, $dhcpreturn);
-				$dhcprestore = implode(' ', $dhcprestore);
-				if($dhcpreturn <> 0) {
-					log_error("DHCP leases v6 restore failed exited with $dhcpreturn, the error is: $dhcprestore\n");
-				}
-
-			}
-		}
-	}
-
 	$syscfg = $config['system'];
-	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6']))
+	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
+	}
 	$dhcpdv6cfg = $config['dhcpdv6'];
 	$Iflist = get_configured_interface_list();
 	$Iflist = array_merge($Iflist, get_configured_pppoe_server_interfaces());
 
-
-	if (file_exists("/var/run/booting"))
+	if (file_exists("/var/run/booting")) {
 		echo "Starting DHCPv6 service...";
-	else
+	} else {
 		sleep(1);
+	}
 
 	/* we add a fake entry for interfaces that are set to track6 another WAN */
 	foreach ($Iflist as $ifname) {
