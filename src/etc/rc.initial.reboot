@@ -27,7 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("globals.inc");
+require_once("config.lib.inc");
 require_once("util.inc");
 require_once("system.inc");
 

@@ -1,7 +1,7 @@
 <?php
 
 /*
-	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+	Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
 	Ported from config.inc by Erik Kristensen
 	Copyright (C) 2004-2010 Scott Ullrich
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
@@ -28,6 +28,9 @@
 	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 	POSSIBILITY OF SUCH DAMAGE.
 */
+
+openlog('opnsense', LOG_ODELAY, LOG_USER);
+register_shutdown_function('closelog');
 
 require_once("globals.inc");
 require_once("xmlparse.inc");

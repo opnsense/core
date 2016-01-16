@@ -1369,7 +1369,7 @@ function upgrade_048_to_049() {
 	/* work around broken gid assignments */
 	$config['system']['nextgid'] = 2000;
 	foreach ($config['system']['group'] as & $group) {
-		if ($group['name'] == $g['admin_group'])
+		if ($group['name'] == 'admins')
 			$group['gid'] = 1999;
 		else
 			$group['gid'] = $config['system']['nextgid']++;
@@ -1393,7 +1393,7 @@ function upgrade_048_to_049() {
 
 	/* reset group scope information */
 	foreach ($config['system']['group'] as & $group)
-		if ($group['name'] != $g['admin_group'])
+		if ($group['name'] != 'admins')
 		$group['scope'] = "user";
 
 	/* insert new all group */

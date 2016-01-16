@@ -29,15 +29,11 @@
 
 global $g;
 
-openlog('opnsense', LOG_ODELAY, LOG_USER);
-register_shutdown_function('closelog');
-
 $g = array(
 	"factory_shipped_username" => "root",
 	"factory_shipped_password" => "opnsense",
 	"dhcpd_chroot_path" => "/var/dhcpd",
 	"unbound_chroot_path" => "/var/unbound",
-	"admin_group" => "admins",
 	"product_name" => "OPNsense",
 	"product_website" => "https://opnsense.org",
 	"product_email" => "project@opnsense.org",
