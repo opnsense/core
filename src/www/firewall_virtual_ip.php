@@ -342,8 +342,8 @@ $main_buttons = array(
                 </div>
                 <div class="container-fluid">
                   <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
-                  </strong></span><?=gettext("The virtual IP addresses defined on this page may be used in");?><a href="firewall_nat.php"> <?=gettext("NAT"); ?> </a><?=gettext("mappings.");?><br />
-                  <?=gettext("You can check the status of your CARP Virtual IPs and interfaces ");?><a href="carp_status.php"><?=gettext("here");?></a>.</span></p>
+                  </strong></span><?=sprintf(gettext("The virtual IP addresses defined on this page may be used in %sNAT%s mappings."),'<a href="firewall_nat.php">','</a>');?><br />
+                  <?=sprintf(gettext('You can check the status of your CARP Virtual IPs and interfaces %shere%s.'),'<a href="carp_status.php">','</a>')?></span></p>
                 </div>
               </form>
             </div>
