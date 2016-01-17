@@ -114,8 +114,6 @@ if($need_alert_display == true) {
 							echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
 						}
 					?>
-					<li><a href="<?= "/help.php?page={$pagename}" ?>" target="_blank" title="<?= gettext('Help for items on this page') ?>"><?= gettext('Help') ?></a></li>
-					<li class="active"><a href="/index.php?logout"><?= gettext('Logout') ?></a></li>
 				</ul>
 
 			</div>

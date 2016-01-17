@@ -229,6 +229,11 @@ class ControllerBase extends ControllerRoot
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
+        // info about the current user and box
+        $this->view->system_hostname = $cnf->object()->system->hostname;
+        $this->view->system_domain = $cnf->object()->system->domain;
+        $this->view->session_username = $_SESSION['Username'];
+
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
     }

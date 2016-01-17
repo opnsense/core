@@ -119,11 +119,7 @@
 
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right">
-						<li id="menu_messages">
-							<a href="#">{{title|default("OPNsense") }}</a>					</li>
-						<li></li><li></li><li></li>
-						<li></li>
-						<li class="active"><a href="/index.php?logout">{{ lang._('Logout') }}</a></li>
+						<li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
 					</ul>
 
 				</div>
