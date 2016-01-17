@@ -970,16 +970,16 @@ function system_webgui_start()
 			$a_cert[] = $cert;
 			$config['system']['webgui']['ssl-certref'] = $cert['refid'];
 			write_config(gettext("Importing HTTPS certificate"));
-			if(!$config['system']['webgui']['port'])
-				$portarg = "443";
-			$ca = ca_chain($cert);
 		} else {
 			$crt = base64_decode($cert['crt']);
 			$key = base64_decode($cert['prv']);
-			if(!$config['system']['webgui']['port'])
-				$portarg = "443";
-			$ca = ca_chain($cert);
 		}
+
+		if (!$config['system']['webgui']['port']) {
+			$portarg = '443';
+		}
+
+		$ca = ca_chain($cert);
 	}
 
 	/* generate lighttpd configuration */
