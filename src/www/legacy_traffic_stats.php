@@ -2,7 +2,7 @@
 
 /*
     Copyright (C) 2016 Deciso B.V.
-    Copyright (C) 2004 - 2014 by Electric Sheep Fencing LLC
+    Copyright (C) 2004-2014 by Electric Sheep Fencing LLC
     Copyright (C) 2005-2006 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
