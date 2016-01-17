@@ -81,8 +81,6 @@ if ($_GET['act'] == "del") {
     }
 }
 
-$shortcut_section = "pppoes";
-
 include("head.inc");
 
 $main_buttons = array(

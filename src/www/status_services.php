@@ -307,7 +307,6 @@ include("head.inc");
                     <td>
                       <?=get_service_status_icon($service, true, true);?>
                       <?=get_service_control_links($service);?>
-                      <?=!empty(get_shortcut_by_service_name($service['name'])) ? get_shortcut_log_link($scut, true) :"";?>
                     </td>
                 </tr>
 <?php

@@ -90,7 +90,6 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = "dhcp6";
 $closehead = false;
 
 include("head.inc");

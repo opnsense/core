@@ -162,8 +162,6 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = "dhcp6";
-
 include("head.inc");
 
 ?>

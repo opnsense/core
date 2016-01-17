@@ -104,16 +104,7 @@ if($need_alert_display == true) {
 
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav navbar-right">
-					<li id="menu_messages">
-					<?php
-						echo get_menu_messages();
-					?>
-					</li>
-					<?php
-						if (isset($shortcut_section)) {
-							echo '<li>'.get_shortcut_log_link($shortcut_section, false).'</li>';
-						}
-					?>
+					<li id="menu_messages"><?= get_menu_messages() ?></li>
 				</ul>
 
 			</div>

@@ -345,7 +345,6 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$shortcut_section = "dhcp6";
 $closehead = false;
 
 include("head.inc");

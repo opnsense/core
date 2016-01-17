@@ -253,8 +253,6 @@ if ($_POST) {
     }
 }
 
-$shortcut_section = "pppoes";
-
 include("head.inc");
 
 ?>

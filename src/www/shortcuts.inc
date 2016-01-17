@@ -43,32 +43,14 @@ function get_shortcut_by_service_name($servicename)
 	return null;
 }
 
-function get_shortcut_log_link($shortcut_section, $addspace = true)
-{
-	global $g, $shortcuts;
-
-	$space = ($addspace) ? "&nbsp;" : "" ;
-	if(!empty($shortcut_section) && !empty($shortcuts[$shortcut_section]['log'])) {
-		if (strtok($_SERVER['REQUEST_URI'],'?') != "/status_services.php")
-			return "{$space}<a href=\"{$shortcuts[$shortcut_section]['log']}\" title=\"" . gettext("Log entries for items on this page") . "\">Log</a>";
-		else
-			return "{$space}<a href=\"{$shortcuts[$shortcut_section]['log']}\" class=\"btn btn-default\" data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"" . gettext("Log entries for items on this page") . "\"><span class=\"glyphicon glyphicon-list\"></span></a>";
-	}
-}
-
 $shortcuts['upnp'] = array();
-$shortcuts['upnp']['log'] = "diag_logs_routing.php";
 $shortcuts['upnp']['service'] = "miniupnpd";
 
 $shortcuts['relayd'] = array();
 $shortcuts['relayd']['service'] = "relayd";
 
 $shortcuts['dhcp'] = array();
-$shortcuts['dhcp']['log'] = "diag_logs_dhcp.php";
 $shortcuts['dhcp']['service'] = "dhcpd";
-
-$shortcuts['dhcp6'] = array();
-$shortcuts['dhcp6']['log'] = "diag_logs_dhcp.php";
 
 $shortcuts['ipsec'] = array();
 $shortcuts['ipsec']['service'] = "ipsec";
@@ -87,9 +69,6 @@ $shortcuts['ntp']['service'] = 'ntpd';
 
 $shortcuts['gateways'] = array();
 $shortcuts['gateways']['service'] = "apinger";
-
-$shortcuts['pppoes'] = array();
-$shortcuts['pppoes']['log'] = "diag_logs_vpn.php?vpntype=poes";
 
 $shortcuts['snmp'] = array();
 $shortcuts['snmp']['service'] = "bsnmpd";

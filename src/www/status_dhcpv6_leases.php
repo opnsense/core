@@ -34,8 +34,6 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-$shortcut_section = "dhcp6";
-
 $leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
 
 if (($_GET['deleteip']) && (is_ipaddr($_GET['deleteip']))) {
