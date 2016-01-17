@@ -1,8 +1,9 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2008 Scott Ullrich <sullrich@gmail.com>
+	Copyright (C) 2014-2015 Deciso B.V.
+	Copyright (C) 2012 Jim Pingle
+	Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
 	All rights reserved.
 
@@ -28,13 +29,33 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("shortcuts.inc");
+function find_service_by_shortcut($name)
+{
+	$shortcuts = array();
 
-function find_service_by_name($name) {
+	$shortcuts['dhcp'] = 'dhcpd';
+	$shortcuts['forwarder'] = 'dnsmasq';
+	$shortcuts['gateways'] = 'apinger';
+	$shortcuts['ipsec'] = 'ipsec';
+	$shortcuts['ntp'] = 'ntpd';
+	$shortcuts['openvpn'] = 'openvpn';
+	$shortcuts['relayd'] = 'relayd';
+	$shortcuts['resolver'] = 'unbound';
+	$shortcuts['snmp'] = 'bsnmpd';
+	$shortcuts['squid'] = 'squid';
+	$shortcuts['upnp'] = 'miniupnpd';
+
 	$services = get_services();
-	foreach ($services as $service)
-		if ($service["name"] == $name)
-			return $service;
+
+	foreach ($shortcuts as $shortcut => $realname) {
+		if ($shortcut == $name) {
+			foreach ($services as $service)
+			if ($service['name'] == $realname) {
+				return $service;
+			}
+		}
+	}
+
 	return array();
 }
 
@@ -194,15 +215,15 @@ if($need_alert_display == true) {
 
 						<?php
 
-						if (isset($shortcut_section) && !empty($shortcuts[$shortcut_section]['service'])) {
+						if (isset($shortcut_section)) {
 							$ssvc = array();
 							switch ($shortcut_section) {
-								case "openvpn":
+								case 'openvpn':
 									$ssvc = find_service_by_openvpn_vpnid($vpnid);
 									break;
 								default:
-									$ssvc = find_service_by_name($shortcuts[$shortcut_section]['service']);
-
+									$ssvc = find_service_by_shortcut($shortcut_section);
+									break;
 							}
 							if (!empty($ssvc)) {
 								echo get_service_status_icon($ssvc, false);
