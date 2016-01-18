@@ -29,21 +29,26 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function find_service_by_shortcut($name)
+function find_service_by_shortcut($names)
 {
 	$shortcuts = array();
 
-	/* WIP unify mapping so "shortcuts" are no longer needed */
+	if (!is_array($names)) {
+		$names = array($names);
+	}
+
 	$shortcuts['dhcpd'] = 'dhcpd';
 	$shortcuts['dhcrelay'] = 'dhcrelay';
 	$shortcuts['dhcrelay6'] = 'dhcrelay6';
-	$shortcuts['forwarder'] = 'dnsmasq';
+	$shortcuts['dnsmasq'] = 'dnsmasq';
+	$shortcuts['unbound'] = 'unbound';
+
+	/* WIP unify mapping so "shortcuts" are no longer needed */
 	$shortcuts['gateways'] = 'apinger';
 	$shortcuts['ipsec'] = 'ipsec';
 	$shortcuts['ntp'] = 'ntpd';
 	$shortcuts['openvpn'] = 'openvpn';
 	$shortcuts['relayd'] = 'relayd';
-	$shortcuts['resolver'] = 'unbound';
 	$shortcuts['snmp'] = 'bsnmpd';
 	$shortcuts['squid'] = 'squid';
 	$shortcuts['upnp'] = 'miniupnpd';
@@ -51,10 +56,12 @@ function find_service_by_shortcut($name)
 	$services = get_services();
 
 	foreach ($shortcuts as $shortcut => $realname) {
-		if ($shortcut == $name) {
-			foreach ($services as $service)
-			if ($service['name'] == $realname) {
-				return $service;
+		foreach ($names as $name) {
+			if ($shortcut == $name) {
+				foreach ($services as $service)
+				if ($service['name'] == $realname) {
+					return $service;
+				}
 			}
 		}
 	}

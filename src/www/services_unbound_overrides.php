@@ -88,8 +88,9 @@ if ($_GET['act'] == "del") {
 	}
 }
 
+$shortcut_section = 'unbound';
 $closehead = false;
-$pgtitle = array(gettext('Services'), gettext('DNS Resolver'), gettext('Overrides'));
+
 include_once("head.inc");
 
 ?>

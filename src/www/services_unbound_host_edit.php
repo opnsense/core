@@ -191,6 +191,8 @@ if ($_POST) {
 	}
 }
 
+$shortcut_section = 'unbound';
+
 include("head.inc");
 
 ?>

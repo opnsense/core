@@ -156,6 +156,8 @@ if ($_POST) {
 	}
 }
 
+$shortcut_section = 'dnsmasq';
+
 include("head.inc");
 
 ?>

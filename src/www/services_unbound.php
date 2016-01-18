@@ -133,6 +133,7 @@ if ($_POST) {
 	}
 }
 
+$shortcut_section = 'unbound';
 $closehead = false;
 
 include_once("head.inc");
