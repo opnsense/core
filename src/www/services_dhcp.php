@@ -535,7 +535,7 @@ if ($act == "del") {
 	}
 }
 
-$shortcut_section = "dhcp";
+$shortcut_section = 'dhcpd';
 $closehead = false;
 
 include("head.inc");

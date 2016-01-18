@@ -90,6 +90,7 @@ if ($_POST) {
 	}
 }
 
+$shortcut_section = 'dhcrelay6';
 $closehead = false;
 
 include("head.inc");

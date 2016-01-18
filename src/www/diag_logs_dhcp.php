@@ -10,6 +10,6 @@ function clear_hook()
 }
 
 require_once 'services.inc';
-$shortcut_section = 'dhcp';
+$shortcut_section = 'dhcpd';
 
 require_once 'diag_logs_template.inc';

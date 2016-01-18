@@ -33,7 +33,10 @@ function find_service_by_shortcut($name)
 {
 	$shortcuts = array();
 
-	$shortcuts['dhcp'] = 'dhcpd';
+	/* WIP unify mapping so "shortcuts" are no longer needed */
+	$shortcuts['dhcpd'] = 'dhcpd';
+	$shortcuts['dhcrelay'] = 'dhcrelay';
+	$shortcuts['dhcrelay6'] = 'dhcrelay6';
 	$shortcuts['forwarder'] = 'dnsmasq';
 	$shortcuts['gateways'] = 'apinger';
 	$shortcuts['ipsec'] = 'ipsec';

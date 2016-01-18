@@ -162,6 +162,8 @@ if ($_POST) {
 	}
 }
 
+$shortcut_section = 'dhcpd';
+
 include("head.inc");
 
 ?>
