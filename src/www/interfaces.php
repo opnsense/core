@@ -2632,15 +2632,15 @@ include("head.inc");
                             <strong><?=gettext("Non-Temporary Address Allocation"); ?></strong>
                             <div class="hidden" id="show_adv_dhcp6_id_assoc_statement_address">
                               <?=gettext("id-assoc na"); ?>
-                              <?=gettext("<i>ID</i>"); ?>
+                              <i><?=gettext("ID"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address_id" type="text" id="adv_dhcp6_id_assoc_statement_address_id" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address_id'];?>" />
                               <br />
                               <?=gettext("Address"); ?>
-                              <?=gettext("<i>ipv6-address</i>"); ?>
+                              <i><?=gettext("ipv6-address"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address" type="text" id="adv_dhcp6_id_assoc_statement_address" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address'];?>" />
-                              <?=gettext("<i>pltime</i>"); ?>
+                              <i><?=gettext("pltime"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address_pltime" type="text" id="adv_dhcp6_id_assoc_statement_address_pltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address_pltime'];?>" />
-                              <?=gettext("<i>vltime</i>"); ?>
+                              <i><?=gettext("vltime"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_address_vltime" type="text" id="adv_dhcp6_id_assoc_statement_address_vltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_address_vltime'];?>" />
                             </div>
                             <hr/>
@@ -2648,15 +2648,15 @@ include("head.inc");
                             <strong><?=gettext("Prefix Delegation"); ?></strong>
                             <div class="hidden" id="show_adv_dhcp6_id_assoc_statement_prefix">
                               <?=gettext("id-assoc pd"); ?>
-                              <?=gettext("<i>ID</i>"); ?>
+                              <i><?=gettext("ID"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix_id" type="text" id="adv_dhcp6_id_assoc_statement_prefix_id" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix_id'];?>" />
                               <br />
                               <?=gettext("Prefix"); ?>
-                              <?=gettext("<i>ipv6-prefix</i>"); ?>
+                              <i><?=gettext("ipv6-prefix"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix" type="text" id="adv_dhcp6_id_assoc_statement_prefix" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix'];?>" />
-                              <?=gettext("<i>pltime</i>"); ?>
+                              <i><?=gettext("pltime"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix_pltime" type="text" id="adv_dhcp6_id_assoc_statement_prefix_pltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix_pltime'];?>" />
-                              <?=gettext("<i>vltime</i>"); ?>
+                              <i><?=gettext("vltime"); ?></i>
                               <input name="adv_dhcp6_id_assoc_statement_prefix_vltime" type="text" id="adv_dhcp6_id_assoc_statement_prefix_vltime" value="<?=$pconfig['adv_dhcp6_id_assoc_statement_prefix_vltime'];?>" />
                             </div>
                           </td>
@@ -2665,38 +2665,38 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Prefix Interface");?></td>
                           <td>
                             <?=gettext("Prefix Interface "); ?>
-                            <?=gettext("<i>sla-id</i>"); ?>
+                            <i><?=gettext("sla-id"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_id" type="text" id="adv_dhcp6_prefix_interface_statement_sla_id" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_id'];?>" />
-                            <?=gettext("<i>sla-len</i>"); ?>
+                            <i><?=gettext("sla-len"); ?></i>
                             <input name="adv_dhcp6_prefix_interface_statement_sla_len" type="text" id="adv_dhcp6_prefix_interface_statement_sla_len" value="<?=$pconfig['adv_dhcp6_prefix_interface_statement_sla_len'];?>" />
                           </td>
                         </tr>
                         <tr class="dhcpv6_advanced">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication");?></td>
                           <td>
-                            <?=gettext("<i>authname</i>"); ?>
+                            <i><?=gettext("authname"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_authname" type="text" id="adv_dhcp6_authentication_statement_authname" value="<?=$pconfig['adv_dhcp6_authentication_statement_authname'];?>" />
-                            <?=gettext("<i>protocol</i>"); ?>
+                            <i><?=gettext("protocol"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_protocol" type="text" id="adv_dhcp6_authentication_statement_protocol" value="<?=$pconfig['adv_dhcp6_authentication_statement_protocol'];?>" />
-                            <?=gettext("<i>algorithm</i>"); ?>
+                            <i><?=gettext("algorithm"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_algorithm" type="text" id="adv_dhcp6_authentication_statement_algorithm" value="<?=$pconfig['adv_dhcp6_authentication_statement_algorithm'];?>" />
-                            <?=gettext("<i>rdm</i>"); ?>
+                            <i><?=gettext("rdm"); ?></i>
                             <input name="adv_dhcp6_authentication_statement_rdm" type="text" id="adv_dhcp6_authentication_statement_rdm" value="<?=$pconfig['adv_dhcp6_authentication_statement_rdm'];?>" />
                           </td>
                         </tr>
                         <tr class="dhcpv6_advanced">
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Keyinfo");?></td>
                           <td>
-                            <?=gettext("<i>keyname</i>"); ?>
+                            <i><?=gettext("keyname"); ?></i>
                             <input name="adv_dhcp6_key_info_statement_keyname" type="text" id="adv_dhcp6_key_info_statement_keyname" value="<?=$pconfig['adv_dhcp6_key_info_statement_keyname'];?>" />
-                            <?=gettext("<i>realm</i>"); ?>
+                            <i><?=gettext("realm"); ?></i>
                             <input name="adv_dhcp6_key_info_statement_realm" type="text" id="adv_dhcp6_key_info_statement_realm" value="<?=$pconfig['adv_dhcp6_key_info_statement_realm'];?>" />
                             <br />
-                            <?=gettext("<i>keyid</i>"); ?>
+                            <i><?=gettext("keyid"); ?></i>
                             <input name="adv_dhcp6_key_info_statement_keyid" type="text" id="adv_dhcp6_key_info_statement_keyid" value="<?=$pconfig['adv_dhcp6_key_info_statement_keyid'];?>" />
-                            <?=gettext("<i>secret</i>"); ?>
+                            <i><?=gettext("secret"); ?></i>
                             <input name="adv_dhcp6_key_info_statement_secret" type="text" id="adv_dhcp6_key_info_statement_secret" value="<?=$pconfig['adv_dhcp6_key_info_statement_secret'];?>" />
-                            <?=gettext("<i>expire</i>"); ?>
+                            <i><?=gettext("expire"); ?></i>
                             <input name="adv_dhcp6_key_info_statement_expire" type="text" id="adv_dhcp6_key_info_statement_expire" value="<?=$pconfig['adv_dhcp6_key_info_statement_expire'];?>" />
                           </td>
                         </tr>
@@ -2705,10 +2705,9 @@ include("head.inc");
                           <td>
                             <input name="adv_dhcp6_config_file_override_path" type="text" id="adv_dhcp6_config_file_override_path"  value="<?=$pconfig['adv_dhcp6_config_file_override_path'];?>" />
                             <div class="hidden" for="help_for_adv_dhcp6_config_file_override_path">
-                              <?=gettext("The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> " .
-                              "Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
-                              "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />" .
-                              "Some ISPs may require certain options be or not be sent. "); ?>
+                              <?=sprintf(gettext('The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] %s' .
+                              'Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} %sWhere C is U(pper) or L(ower) Case, and D is " :-." Delimiter (space, colon, hyphen, or period) (omitted for none).%s' .
+                              'Some ISPs may require certain options be or not be sent.'),'<br />','<br />','<br />') ?>
                             </div>
                           </td>
                         </tr>
@@ -2811,7 +2810,7 @@ include("head.inc");
                             <div class="hidden" for="help_for_track6-prefix-id">
                               <?= gettext("The value in this field is the (Delegated) IPv6 prefix id. This determines the configurable network ID based on the dynamic IPv6 connection"); ?>
                               <br />
-                              <?= sprintf(gettext("Enter a <b>hexadecimal</b> value between %x and %x here, default value is 0."), 0, pow(2, calculate_ipv6_delegation_length($pconfig['track6-interface'])) - 1); ?>
+                              <?= sprintf(gettext("Enter a hexadecimal value between %x and %x here, default value is 0."), 0, pow(2, calculate_ipv6_delegation_length($pconfig['track6-interface'])) - 1); ?>
                             </div>
                           </td>
                         </tr>
