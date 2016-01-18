@@ -2705,7 +2705,9 @@ include("head.inc");
                           <td>
                             <input name="adv_dhcp6_config_file_override_path" type="text" id="adv_dhcp6_config_file_override_path"  value="<?=$pconfig['adv_dhcp6_config_file_override_path'];?>" />
                             <div class="hidden" for="help_for_adv_dhcp6_config_file_override_path">
-                              <?=sprintf(gettext('The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] %sValue Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} %sWhere C is U(pper) or L(ower) Case, and D is " :-." Delimiter (space, colon, hyphen, or period) (omitted for none). %s Some ISPs may require certain options be or not be sent.'),'<br />','<br />','<br />') ?>
+                              <?=sprintf(gettext('The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] %s' .
+                              'Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} %sWhere C is U(pper) or L(ower) Case, and D is " :-." Delimiter (space, colon, hyphen, or period) (omitted for none).%s' .
+                              'Some ISPs may require certain options be or not be sent.'),'<br />','<br />','<br />') ?>
                             </div>
                           </td>
                         </tr>
