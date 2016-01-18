@@ -603,7 +603,6 @@ include("head.inc");
                         <?=gettext("Packets matching this rule will be mapped to the IP address given here.");?><br />
                         <?=sprintf(gettext("If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
                                 "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="firewall_virtual_ip.php">','</a>')?>
-                                
                       </div>
                   </td>
                 </tr>

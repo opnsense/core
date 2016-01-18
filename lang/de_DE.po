@@ -21244,9 +21244,3 @@ msgstr ""
 
 # File: src/www/vpn_l2tp_users_edit.php, line: 30
 # File: src/www/vpn_pptp_users_edit.php, line: 137
-
-
-
-
-
-
