@@ -2808,7 +2808,7 @@ include("head.inc");
                             <div class="hidden" for="help_for_track6-prefix-id">
                               <?= gettext("The value in this field is the (Delegated) IPv6 prefix id. This determines the configurable network ID based on the dynamic IPv6 connection"); ?>
                               <br />
-                              <?= sprintf(gettext("Enter a %shexadecimal%s value between %x and %x here, default value is 0."),'<b>','</b>', 0, pow(2, calculate_ipv6_delegation_length($pconfig['track6-interface'])) - 1); ?>
+                              <?= sprintf(gettext("Enter a hexadecimal value between %x and %x here, default value is 0."), 0, pow(2, calculate_ipv6_delegation_length($pconfig['track6-interface'])) - 1); ?>
                             </div>
                           </td>
                         </tr>
