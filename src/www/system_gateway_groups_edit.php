@@ -29,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("vpn.inc");
+require_once("services.inc");
 require_once("interfaces.inc");
 
 if (!is_array($config['gateways'])) {
@@ -142,6 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($pconfig);
+
+$shortcut_section = 'apinger';
 
 include("head.inc");
 

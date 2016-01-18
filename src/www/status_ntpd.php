@@ -145,7 +145,7 @@ if (isset($config['ntpd']['gps']['type']) && ($config['ntpd']['gps']['type'] == 
 	}
 }
 
-$shortcut_section = "ntp";
+$shortcut_section = 'ntpd';
 
 include("head.inc");
 

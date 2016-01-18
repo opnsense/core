@@ -29,39 +29,18 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function find_service_by_shortcut($names)
+function find_service_by_name($names)
 {
-	$shortcuts = array();
-
 	if (!is_array($names)) {
 		$names = array($names);
 	}
 
-	$shortcuts['dhcpd'] = 'dhcpd';
-	$shortcuts['dhcrelay'] = 'dhcrelay';
-	$shortcuts['dhcrelay6'] = 'dhcrelay6';
-	$shortcuts['dnsmasq'] = 'dnsmasq';
-	$shortcuts['unbound'] = 'unbound';
-
-	/* WIP unify mapping so "shortcuts" are no longer needed */
-	$shortcuts['gateways'] = 'apinger';
-	$shortcuts['ipsec'] = 'ipsec';
-	$shortcuts['ntp'] = 'ntpd';
-	$shortcuts['openvpn'] = 'openvpn';
-	$shortcuts['relayd'] = 'relayd';
-	$shortcuts['snmp'] = 'bsnmpd';
-	$shortcuts['squid'] = 'squid';
-	$shortcuts['upnp'] = 'miniupnpd';
-
 	$services = get_services();
 
-	foreach ($shortcuts as $shortcut => $realname) {
+	foreach ($services as $service) {
 		foreach ($names as $name) {
-			if ($shortcut == $name) {
-				foreach ($services as $service)
-				if ($service['name'] == $realname) {
-					return $service;
-				}
+			if ($service['name'] == $name) {
+				return $service;
 			}
 		}
 	}
@@ -232,7 +211,7 @@ if($need_alert_display == true) {
 									$ssvc = find_service_by_openvpn_vpnid($vpnid);
 									break;
 								default:
-									$ssvc = find_service_by_shortcut($shortcut_section);
+									$ssvc = find_service_by_name($shortcut_section);
 									break;
 							}
 							if (!empty($ssvc)) {

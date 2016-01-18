@@ -87,9 +87,9 @@ if ($_POST) {
 	$retval = system_ntp_configure();
 	$savemsg = get_std_save_message();
 }
-$pconfig = &$config['ntpd']['pps'];
 
-$shortcut_section = "ntp";
+$pconfig = &$config['ntpd']['pps'];
+$shortcut_section = 'ntpd';
 
 include("head.inc");
 

@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 // request report data
 if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways']['gateway_group'])) {
@@ -40,6 +41,8 @@ $a_gateways = return_gateways_array();
 
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($a_gateway_groups);
+
+$shortcut_section = 'apinger';
 
 include("head.inc");
 

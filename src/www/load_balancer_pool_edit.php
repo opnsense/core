@@ -146,7 +146,7 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = "relayd";
+$shortcut_section = 'relayd';
 
 include("head.inc");
 

@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("openvpn.inc");
 require_once("system.inc");
+require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("rrd.inc");
 
@@ -111,6 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 legacy_html_escape_form_data($a_gateway_groups);
+
+$shortcut_section = 'apinger';
 
 include("head.inc");
 

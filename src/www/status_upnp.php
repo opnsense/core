@@ -44,7 +44,7 @@ exec("/sbin/pfctl -aminiupnpd -sn", $rdr_entries, $pf_ret);
 $now = time();
 $year = date("Y");
 
-$shortcut_section = "upnp";
+$shortcut_section = 'miniupnpd';
 
 include("head.inc");
 

@@ -130,7 +130,7 @@ if ($_POST) {
 }
 
 $pconfig = &$config['ntpd']['gps'];
-$shortcut_section = "ntp";
+$shortcut_section = 'ntpd';
 $closehead = false;
 
 include("head.inc");
