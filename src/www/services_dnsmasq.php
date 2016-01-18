@@ -139,7 +139,7 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$shortcut_section = 'dnsmasq';
+$service_hook = 'dnsmasq';
 $closehead = false;
 
 include("head.inc");

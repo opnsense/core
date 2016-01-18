@@ -111,7 +111,7 @@ if ($_POST) {
        }
 }
 
-$shortcut_section = 'dnsmasq';
+$service_hook = 'dnsmasq';
 
 include("head.inc");
 

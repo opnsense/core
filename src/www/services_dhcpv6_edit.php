@@ -162,7 +162,7 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = 'dhcpd';
+$service_hook = 'dhcpd';
 
 include("head.inc");
 

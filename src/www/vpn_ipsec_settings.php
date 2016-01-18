@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     vpn_ipsec_configure();
 }
 
-$shortcut_section = 'ipsec';
+$service_hook = 'ipsec';
 
 include("head.inc");
 

@@ -101,7 +101,7 @@ if ($_POST) {
     }
 }
 
-$shortcut_section = 'unbound';
+$service_hook = 'unbound';
 
 include("head.inc");
 

@@ -29,7 +29,7 @@
 
 ini_set('max_execution_time', '0');
 
-$shortcut_section = 'miniupnpd';
+$service_hook = 'miniupnpd';
 
 require_once("guiconfig.inc");
 require_once("services.inc");

@@ -400,7 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$shortcut_section = 'openvpn';
+$service_hook = 'openvpn';
 
 include("head.inc");
 

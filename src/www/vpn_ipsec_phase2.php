@@ -444,7 +444,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$shortcut_section = 'ipsec';
+$service_hook = 'ipsec';
 
 legacy_html_escape_form_data($pconfig);
 

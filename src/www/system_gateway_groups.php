@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 legacy_html_escape_form_data($a_gateway_groups);
 
-$shortcut_section = 'apinger';
+$service_hook = 'apinger';
 
 include("head.inc");
 

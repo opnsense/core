@@ -345,7 +345,7 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$shortcut_section = 'dhcpd';
+$service_hook = 'dhcpd';
 $closehead = false;
 
 include("head.inc");

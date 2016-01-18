@@ -33,7 +33,7 @@ require_once("vpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$shortcut_section = 'ipsec';
+$service_hook = 'ipsec';
 
 include("head.inc");
 

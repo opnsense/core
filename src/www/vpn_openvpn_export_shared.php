@@ -35,7 +35,7 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("openvpn-client-export.inc");
 
-$shortcut_section = 'openvpn';
+$service_hook = 'openvpn';
 
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {

@@ -41,7 +41,7 @@ $a_vs = &$config['load_balancer']['virtual_server'];
 $a_pool = &$config['load_balancer']['lbpool'];
 $rdr_a = get_lb_redirects();
 
-$shortcut_section = 'relayd';
+$service_hook = 'relayd';
 
 include("head.inc");
 

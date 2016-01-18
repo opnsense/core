@@ -122,7 +122,7 @@ for ($i = 0; isset($config['load_balancer']['virtual_server'][$i]); $i++) {
 	}
 }
 
-$shortcut_section = 'relayd';
+$service_hook = 'relayd';
 
 include("head.inc");
 

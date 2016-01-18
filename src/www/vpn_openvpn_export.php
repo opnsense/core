@@ -37,7 +37,7 @@ require_once("openvpn-client-export.inc");
 
 global $current_openvpn_version, $current_openvpn_version_rev;
 
-$shortcut_section = 'openvpn';
+$service_hook = 'openvpn';
 
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {

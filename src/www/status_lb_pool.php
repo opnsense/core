@@ -53,7 +53,7 @@ if (!$nentries) {
 $now = time();
 $year = date("Y");
 
-$shortcut_section = 'relayd';
+$service_hook = 'relayd';
 
 include("head.inc");
 

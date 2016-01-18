@@ -84,7 +84,7 @@ for ($i = 0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
 	$a_pool[$i]['monitor'] = "<a href=\"/load_balancer_monitor_edit.php?id={$mondex[$a_pool[$i]['monitor']]}\">{$a_pool[$i]['monitor']}</a>";
 }
 
-$shortcut_section = 'relayd';
+$service_hook = 'relayd';
 
 include("head.inc");
 

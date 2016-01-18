@@ -126,7 +126,7 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = 'relayd';
+$service_hook = 'relayd';
 
 include("head.inc");
 

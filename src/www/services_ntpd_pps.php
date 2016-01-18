@@ -89,7 +89,7 @@ if ($_POST) {
 }
 
 $pconfig = &$config['ntpd']['pps'];
-$shortcut_section = 'ntpd';
+$service_hook = 'ntpd';
 
 include("head.inc");
 

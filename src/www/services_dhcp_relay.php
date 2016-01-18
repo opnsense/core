@@ -95,7 +95,7 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = 'dhcrelay';
+$service_hook = 'dhcrelay';
 $closehead = false;
 
 include("head.inc");

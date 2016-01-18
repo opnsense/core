@@ -74,7 +74,7 @@ if ($_GET['act'] == "del") {
 	}
 }
 
-$shortcut_section = 'relayd';
+$service_hook = 'relayd';
 
 include("head.inc");
 

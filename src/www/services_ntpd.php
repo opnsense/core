@@ -157,7 +157,7 @@ if (empty($pconfig['interface'])) {
 	$pconfig['interface'] = explode(",", $pconfig['interface']);
 }
 
-$shortcut_section = 'ntpd';
+$service_hook = 'ntpd';
 
 include("head.inc");
 

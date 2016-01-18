@@ -204,14 +204,14 @@ if($need_alert_display == true) {
 
 						<?php
 
-						if (isset($shortcut_section)) {
+						if (isset($service_hook)) {
 							$ssvc = array();
-							switch ($shortcut_section) {
+							switch ($service_hook) {
 								case 'openvpn':
 									$ssvc = find_service_by_openvpn_vpnid($vpnid);
 									break;
 								default:
-									$ssvc = find_service_by_name($shortcut_section);
+									$ssvc = find_service_by_name($service_hook);
 									break;
 							}
 							if (!empty($ssvc)) {

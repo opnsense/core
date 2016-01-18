@@ -14,6 +14,6 @@ $logpills[] = array(gettext('Access'), false, '/diag_logs_proxy.php?type=access'
 $logpills[] = array(gettext('Store'), false, '/diag_logs_proxy.php?type=store');
 
 require_once 'services.inc';
-$shortcut_section = 'squid';
+$service_hook = 'squid';
 
 require_once 'diag_logs_template.inc';

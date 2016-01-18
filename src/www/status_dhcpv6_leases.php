@@ -74,7 +74,7 @@ if (($_GET['deleteip']) && (is_ipaddr($_GET['deleteip']))) {
 // Load MAC-Manufacturer table
 $mac_man = load_mac_manufacturer_table();
 
-$shortcut_section = 'dhcpd';
+$service_hook = 'dhcpd';
 
 include("head.inc");
 

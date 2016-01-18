@@ -152,7 +152,7 @@ if ($_POST) {
 	}
 }
 
-$shortcut_section = 'bsnmpd';
+$service_hook = 'bsnmpd';
 $closehead = false;
 
 include("head.inc");

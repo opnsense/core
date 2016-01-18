@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$shortcut_section = 'ipsec';
+$service_hook = 'ipsec';
 
 include("head.inc");
 

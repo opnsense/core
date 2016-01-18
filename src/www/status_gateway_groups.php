@@ -42,7 +42,7 @@ $a_gateways = return_gateways_array();
 legacy_html_escape_form_data($a_gateways);
 legacy_html_escape_form_data($a_gateway_groups);
 
-$shortcut_section = 'apinger';
+$service_hook = 'apinger';
 
 include("head.inc");
 

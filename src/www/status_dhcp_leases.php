@@ -34,7 +34,7 @@ require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
-$shortcut_section = 'dhcpd';
+$service_hook = 'dhcpd';
 
 $leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases";
 

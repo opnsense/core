@@ -62,7 +62,7 @@ if ($ipsec_status == null) {
     $ipsec_status = array();
 }
 
-$shortcut_section = 'ipsec';
+$service_hook = 'ipsec';
 
 include("head.inc");
 
