@@ -95,6 +95,8 @@ function sync_package_miniupnpd() {
 				$config_text .= "bitrate_up={$upload}\n";
 			}
 
+			$config_text .= "secure_mode=yes\n";
+
 			/* enable logging of packets handled by miniupnpd rules */
 			if($upnp_config['logpackets'])
 				$config_text .= "packet_log=yes\n";
