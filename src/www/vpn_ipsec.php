@@ -310,12 +310,12 @@ $( document ).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
-                    <td><?=gettext("IKE"); ?></td>
+                    <td><?=gettext("Type"); ?></td>
                     <td><?=gettext("Remote Gateway"); ?></td>
                     <td><?=gettext("Mode"); ?></td>
-                    <td><?=gettext("P1 Protocol"); ?></td>
-                    <td><?=gettext("P1 Transforms"); ?></td>
-                    <td><?=gettext("P1 Description"); ?></td>
+                    <td><?=gettext("Phase 1 Proposal"); ?></td>
+                    <td><?=gettext("Authentication"); ?></td>
+                    <td><?=gettext("Description"); ?></td>
                     <td>
                     </td>
                   </tr>
@@ -335,7 +335,8 @@ $( document ).ready(function() {
                         </button>
                       </td>
                       <td>
-                          <?=empty($ph1ent['iketype']) || $ph1ent['iketype'] == "ikev1"?"V1":"V2";?>
+                          <?=empty($ph1ent['protocol']) || $ph1ent['protocol'] == "inet" ? "IPv4" : "IPv6"; ?>
+                          <?=empty($ph1ent['iketype']) || $ph1ent['iketype'] == "ikev1" ? "IKE" : "IKEv2"; ?>
                       </td>
                       <td>
 <?php
@@ -382,12 +383,40 @@ $( document ).ready(function() {
                             if ($ph1ent['encryption-algorithm']['keylen']=="auto") {
                                 echo " (" . gettext("auto") . ")";
                             } else {
-                                echo " ({$ph1ent['encryption-algorithm']['keylen']} " . gettext("bits") . ")";
+                                echo " ({$ph1ent['encryption-algorithm']['keylen']}&nbsp;" . gettext("bits") . ")";
                             }
-                        }?>
+                        }?> +
+
+                        <?=strtoupper($ph1ent['hash-algorithm']);?> +
+
+<?php
+                          $p1_dhgroups = array(
+                            1  => '1 (768&nbsp;bits)',
+                            2  => '2 (1024&nbsp;bits)',
+                            5  => '5 (1536&nbsp;bits)',
+                            14 => '14 (2048&nbsp;bits)',
+                            15 => '15 (3072&nbsp;bits)',
+                            16 => '16 (4096&nbsp;bits)',
+                            17 => '17 (6144&nbsp;bits)',
+                            18 => '18 (8192&nbsp;bits)',
+                            22 => '22 (1024(sub 160)&nbsp;bits)',
+                            23 => '23 (2048(sub 224)&nbsp;bits)',
+                            24 => '24 (2048(sub 256)&nbsp;bits)'
+                          );
+?>
+                          <?=gettext("DH Group"); ?>&nbsp;<?=$p1_dhgroups[$ph1ent['dhgroup']];?>
                       </td>
                       <td>
-                          <?=strtoupper($ph1ent['hash-algorithm']);?>
+<?php
+                          $p1_authentication_methods = array(
+                            'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
+                            'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
+                            'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
+                            'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+                            'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
+                            'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
+?>
+                          <?=$p1_authentication_methods[$ph1ent['authentication_method']]['name'];?>
                       </td>
                       <td>
                           <?=$ph1ent['descr'];?>&nbsp;
@@ -438,12 +467,12 @@ $( document ).ready(function() {
                               <tr>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
-                                <td><?=gettext("Mode"); ?></td>
+                                <td><?=gettext("Type"); ?></td>
                                 <td><?=gettext("Local Subnet"); ?></td>
                                 <td><?=gettext("Remote Subnet"); ?></td>
-                                <td><?=gettext("P2 Protocol"); ?></td>
-                                <td><?=gettext("P2 Transforms"); ?></td>
-                                <td><?=gettext("P2 Auth Methods"); ?></td>
+                                <td><?=gettext("Encryption Protocols"); ?></td>
+                                <td><?=gettext("Authenticity Protocols"); ?></td>
+                                <td><?=gettext("PFS"); ?></td>
                                 <td class ="list">&nbsp;</td>
                               </tr>
                             </thead>
@@ -465,7 +494,10 @@ $( document ).ready(function() {
                                     <span class="glyphicon glyphicon-play"></span>
                                   </button>
                                 </td>
-                                <td> <?=$ph2ent['mode'];?> </td>
+                                <td>
+                                  <?=$p2_protos[$ph2ent['protocol']];?>
+                                  <?=isset($ph2ent['mode']) ? array_search($ph2ent['mode'], array("IPv4 tunnel" => "tunnel", "IPv6 tunnel" => "tunnel6", "transport" => "transport")) : ""; ?>
+                                </td>
 <?php
                                 if (($ph2ent['mode'] == "tunnel") || ($ph2ent['mode'] == "tunnel6")) :?>
                                 <td>
@@ -480,7 +512,6 @@ $( document ).ready(function() {
                                 <td>&nbsp;</td>
 <?php
                                 endif;?>
-                                <td><?=$p2_protos[$ph2ent['protocol']];?> </td>
                                 <td>
 <?php
                                   foreach ($ph2ent['encryption-algorithm-option'] as $k => $ph2ea) {
@@ -508,6 +539,14 @@ $( document ).ready(function() {
                                       }
                                   }?>
                                 </td>
+<?php
+                                if (isset($ph2ent['pfsgroup'])): ?>
+                                <td><?=gettext("Group"); ?> <?=$p2_pfskeygroups[$ph2ent['pfsgroup']];?> </td>
+<?php
+                                else: ?>
+                                <td><?=gettext("off"); ?></td>
+<?php
+                                endif; ?>
                                 <td>
                                     <button data-id="<?=$j; ?>" data-act="movep2"
                                         title="<?=gettext("move selected entries before this");?>" data-toggle="tooltip"
