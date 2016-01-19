@@ -373,8 +373,8 @@ $( document ).ready(function() {
 <?php
                 $interface_has_rules = false;
                 foreach ($a_filter as $i => $filterent):
-                if ( (isset($filterent['interface']) && $filterent['interface'] == $selected_if) ||
-                     (isset($filterent['floating']) && $selected_if == "FloatingRules" )):
+                if ((!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
+                     (isset($filterent['floating']) && $selected_if == 'FloatingRules')):
                   $interface_has_rules = true;
                   // select icon
                   if (!isset($filterent['type']) && empty($filterent['disabled'])) {
