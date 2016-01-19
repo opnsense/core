@@ -32,6 +32,25 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 
+/**
+ * search config for phase 1 description
+ * @param string $conn connection string in format conXXX-XX
+ * @return string description (or blank if none found)
+ */
+function ipsec_conn_description($conn)
+{
+    global $config;
+    $ipsec_conn_seq = substr(explode('-', $conn)[0],3);
+    if (isset($config['ipsec']['phase1']) && is_array($config['ipsec']['phase1'])) {
+        foreach ($config['ipsec']['phase1'] as $phase1) {
+            if ($phase1['ikeid'] == $ipsec_conn_seq && !empty($phase1['descr'])) {
+                return $phase1['descr'];
+            }
+        }
+    }
+    return "";
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
         $act = $_POST['action'];
@@ -101,9 +120,9 @@ include("head.inc");
                   </tr>
                   </thead>
                   <tbody>
-                    <?php foreach ($ipsec_status as $ipsec_conn_key => $ipsec_conn): ?>
+                    <?php foreach ($ipsec_status as $ipsec_conn_key => $ipsec_conn):?>
                       <tr>
-                        <td><?= $ipsec_conn_key;?></td>
+                        <td><?=ipsec_conn_description($ipsec_conn_key);?> <small>(<?= $ipsec_conn_key;?>)</small></td>
                         <td class="hidden-xs hidden-sm"><?= $ipsec_conn['version'] ?></td>
                         <td class="hidden-xs"><?= $ipsec_conn['local-id'] ?></td>
                         <td class="hidden-xs"><?= $ipsec_conn['local-addrs'] ?></td>
