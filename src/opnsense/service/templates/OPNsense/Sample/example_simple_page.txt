@@ -23,7 +23,7 @@ and a short list of firewall rules created (multiple rule items in filter sectio
 {% for item in filter.rule%}
     descr : {{ item.descr }}
     type : {{ item.type }}
-    interface : {{ item.interface }}  ( which has ip {{ interfaces[item.interface].ipaddr }} )
+    interface : {{ item.interface }}
 
 {% endfor %}
 
