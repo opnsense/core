@@ -145,11 +145,11 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 	$conf = "";
 
 	$validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
-	if ($validconfig) {
-		list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
-	} else {
+	if (!$validconfig) {
 		return false;
 	}
+
+	list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
 
 	// determine basic variables
 	$remotes = openvpn_client_export_build_remote_lines($settings, $useaddr, $interface, $expformat, $nl);
@@ -463,11 +463,11 @@ function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $veri
 	$workdir = "{$ovpndir}/client-export";
 
 	$validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
-	if ($validconfig) {
-		list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
-	} else {
+	if (!$validconfig) {
 		return false;
 	}
+
+	list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
 
 	// create template directory
 	$tempdir = "/tmp//openvpn-export-".uniqid();
@@ -570,11 +570,11 @@ function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $usead
 	$zipfile = "/tmp/{$uniq}-Viscosity.visc.zip";
 
 	$validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
-	if ($validconfig) {
-		list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
-	} else {
+	if (!$validconfig) {
 		return false;
 	}
+
+	list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
 
 	// create template directory
 	mkdir($tempdir, 0700, true);
