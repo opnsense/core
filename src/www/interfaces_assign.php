@@ -143,9 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $descr = gettext("LAN");
         } else {
             for ($i = 1; $i <= count($config['interfaces']); $i++) {
-              if (empty($config['interfaces']["opt{$i}"])) {
-                  break;
-              }
+                if (empty($config['interfaces']["opt{$i}"])) {
+                    break;
+                }
             }
             $newifname = 'opt' . $i;
             $descr = "OPT" . $i;
@@ -154,6 +154,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config['interfaces'][$newifname] = array();
         $config['interfaces'][$newifname]['descr'] = $descr;
         $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
+        $interfaces = list_interfaces();
+        if ($interfaces[$_POST['if_add']]['section'] == 'ppps.ppp') {
+            $config['interfaces'][$newifname]['ipaddr'] = $interfaces[$_POST['if_add']]['type'];
+        }
         if (match_wireless_interface($_POST['if_add'])) {
             $config['interfaces'][$newifname]['wireless'] = array();
             interface_sync_wireless_clones($config['interfaces'][$newifname], false);
