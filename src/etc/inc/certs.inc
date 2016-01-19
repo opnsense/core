@@ -111,19 +111,26 @@ function ca_chain_array(& $cert) {
 	return false;
 }
 
-function ca_chain(& $cert) {
-	if(isset($cert['caref'])) {
-		$ca = "";
-		$cas = ca_chain_array($cert);
-		if (is_array($cas))
-			foreach ($cas as & $ca_cert)
-			{
-				$ca .= base64_decode($ca_cert['crt']);
-				$ca .= "\n";
-			}
+function ca_chain(&$cert)
+{
+	$ca = '';
+
+	if (!isset($cert['caref'])) {
 		return $ca;
 	}
-	return "";
+
+	$cas = ca_chain_array($cert);
+	if (!is_array($cas)) {
+		return $ca;
+	}
+
+	foreach ($cas as &$ca_cert) {
+		$ca .= base64_decode($ca_cert['crt']);
+		$ca .= "\n";
+	}
+
+	/* sanitise output to make sure we generate clean files */
+	return str_replace("\n\n", "\n", str_replace("\r", "", $ca));
 }
 
 function ca_create(&$ca, $keylen, $lifetime, $dn, $digest_alg = 'sha256')

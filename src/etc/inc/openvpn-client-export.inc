@@ -49,10 +49,11 @@ function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null) {
 	$port = $settings['local_port'];
 
 	$filename_addition = "";
-	if ($usrid && is_numeric($usrid))
+	if ($usrid && is_numeric($usrid)) {
 		$filename_addition = "-".$config['system']['user'][$usrid]['name'];
-	elseif ($crtid && is_numeric($crtid) && function_exists("cert_get_cn"))
+	} elseif ($crtid && is_numeric($crtid)) {
 		$filename_addition = "-" . str_replace(' ', '_', cert_get_cn($config['cert'][$crtid]['crt']));
+	}
 
 	return "{$host}-{$prot}-{$port}{$filename_addition}";
 }
@@ -95,13 +96,11 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	{
 		$input_errors[] = gettext("Could not locate server certificate.");
 	} else {
-		$server_ca = isset($server_cert['caref']) ? str_replace("\n\n", "\n", str_replace("\r", "", ca_chain($server_cert))) : null;
-		if (!$server_ca) {
+		$server_ca = ca_chain($server_cert);
+		if (empty($server_ca)) {
 			$input_errors[] = gettext("Could not locate the CA reference for the server certificate.");
 		}
-		if (function_exists("cert_get_cn")) {
-			$servercn = cert_get_cn($server_cert['crt']);
-		}
+		$servercn = cert_get_cn($server_cert['crt']);
 	}
 
 	// lookup user info
@@ -277,12 +276,10 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 	// - Disable for now, it requires the server cert to include special options
 	//$conf .= "remote-cert-tls server{$nl}";
 
-	// Extra protection for the server cert, if it's supported
-	if (function_exists("cert_get_purpose")) {
-		if (is_array($server_cert) && ($server_cert['crt'])) {
-			$purpose = cert_get_purpose($server_cert['crt'], true);
-			if ($purpose['server'] == 'Yes')
-				$conf .= "ns-cert-type server{$nl}";
+	if (is_array($server_cert) && ($server_cert['crt'])) {
+		$purpose = cert_get_purpose($server_cert['crt'], true);
+		if ($purpose['server'] == 'Yes') {
+			$conf .= "ns-cert-type server{$nl}";
 		}
 	}
 
@@ -919,4 +916,3 @@ function openvpn_client_export_find_hostname($interface) {
 	}
 
 }
-?>
