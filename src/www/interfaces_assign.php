@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // no validation errors, delete entry
             unset($config['interfaces'][$id]['enable']);
             $realid = get_real_interface($id);
-            interface_bring_down($id);   /* down the interface */
+            interface_bring_down($id, true);   /* down the interface */
 
             unset($config['interfaces'][$id]);  /* delete the specified OPTn or LAN*/
 
@@ -273,7 +273,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               if (!is_array($ifport) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
                   $reloadif = false;
                   if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] <> $ifport) {
-                      interface_bring_down($ifname);
+                      interface_bring_down($ifname, true);
                       /* Mark this to be reconfigured in any case. */
                       $reloadif = true;
                   }
