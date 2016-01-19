@@ -335,11 +335,11 @@ $( document ).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
-                    <td><?=gettext("Type"); ?></td>
+                    <td class="hidden-xs"><?=gettext("Type"); ?></td>
                     <td><?=gettext("Remote Gateway"); ?></td>
-                    <td><?=gettext("Mode"); ?></td>
-                    <td><?=gettext("Phase 1 Proposal"); ?></td>
-                    <td><?=gettext("Authentication"); ?></td>
+                    <td class="hidden-xs"><?=gettext("Mode"); ?></td>
+                    <td class="hidden-xs"><?=gettext("Phase 1 Proposal"); ?></td>
+                    <td class="hidden-xs"><?=gettext("Authentication"); ?></td>
                     <td><?=gettext("Description"); ?></td>
                     <td>
                     </td>
@@ -360,7 +360,7 @@ $( document ).ready(function() {
                           <span class="glyphicon glyphicon-play"></span>
                         </button>
                       </td>
-                      <td>
+                      <td class="hidden-xs">
                           <?=empty($ph1ent['protocol']) || $ph1ent['protocol'] == "inet" ? "IPv4" : "IPv6"; ?>
                           <?=empty($ph1ent['iketype']) || $ph1ent['iketype'] == "ikev1" ? "IKE" : "IKEv2"; ?>
                       </td>
@@ -399,10 +399,10 @@ $( document ).ready(function() {
                         "<strong>" . gettext("Mobile Client") . "</strong>";
                         ?>
                       </td>
-                      <td>
+                      <td class="hidden-xs">
                         <?=htmlspecialchars($ph1ent['mode']);?>
                       </td>
-                      <td>
+                      <td class="hidden-xs">
                         <?=$p1_ealgos[$ph1ent['encryption-algorithm']['name']]['name'];?>
 <?php
                         if (!empty($ph1ent['encryption-algorithm']['keylen'])) {
@@ -432,7 +432,7 @@ $( document ).ready(function() {
 ?>
                           <?=gettext("DH Group"); ?>&nbsp;<?=$p1_dhgroups[$ph1ent['dhgroup']];?>
                       </td>
-                      <td>
+                      <td class="hidden-xs">
 <?php
                           $p1_authentication_methods = array(
                             'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
@@ -493,13 +493,13 @@ $( document ).ready(function() {
                               <tr>
                                 <td>&nbsp;</td>
                                 <td>&nbsp;</td>
-                                <td><?=gettext("Type"); ?></td>
+                                <td class="hidden-xs"><?=gettext("Type"); ?></td>
                                 <td><?=gettext("Local Subnet"); ?></td>
                                 <td><?=gettext("Remote Subnet"); ?></td>
-                                <td><?=gettext("Encryption Protocols"); ?></td>
-                                <td><?=gettext("Authenticity Protocols"); ?></td>
-                                <td><?=gettext("PFS"); ?></td>
-                                <td class ="list">&nbsp;</td>
+                                <td class="hidden-xs"><?=gettext("Encryption Protocols"); ?></td>
+                                <td class="hidden-xs"><?=gettext("Authenticity Protocols"); ?></td>
+                                <td class="hidden-xs"><?=gettext("PFS"); ?></td>
+                                <td>&nbsp;</td>
                               </tr>
                             </thead>
                             <tbody>
@@ -520,7 +520,7 @@ $( document ).ready(function() {
                                     <span class="glyphicon glyphicon-play"></span>
                                   </button>
                                 </td>
-                                <td>
+                                <td class="hidden-xs">
                                   <?=$p2_protos[$ph2ent['protocol']];?>
                                   <?=isset($ph2ent['mode']) ? array_search($ph2ent['mode'], array("IPv4 tunnel" => "tunnel", "IPv6 tunnel" => "tunnel6", "transport" => "transport")) : ""; ?>
                                 </td>
@@ -538,7 +538,7 @@ $( document ).ready(function() {
                                 <td>&nbsp;</td>
 <?php
                                 endif;?>
-                                <td>
+                                <td class="hidden-xs">
 <?php
                                   foreach ($ph2ent['encryption-algorithm-option'] as $k => $ph2ea) {
                                       if ($k > 0) {
@@ -554,7 +554,7 @@ $( document ).ready(function() {
                                       }
                                   }?>
                                 </td>
-                                <td>
+                                <td class="hidden-xs">
 <?php
                                   if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
                                       foreach ($ph2ent['hash-algorithm-option'] as $k => $ph2ha) {
@@ -567,10 +567,10 @@ $( document ).ready(function() {
                                 </td>
 <?php
                                 if (isset($ph2ent['pfsgroup'])): ?>
-                                <td><?=gettext("Group"); ?> <?=$p2_pfskeygroups[$ph2ent['pfsgroup']];?> </td>
+                                <td class="hidden-xs"><?=gettext("Group"); ?> <?=$p2_pfskeygroups[$ph2ent['pfsgroup']];?> </td>
 <?php
                                 else: ?>
-                                <td><?=gettext("off"); ?></td>
+                                <td class="hidden-xs"><?=gettext("off"); ?></td>
 <?php
                                 endif; ?>
                                 <td>
@@ -602,7 +602,8 @@ $( document ).ready(function() {
                               $j++;
                               endforeach;?>
                               <tr>
-                                <td colspan="8"></td>
+                                <td colspan="4" class="hidden-xs"></td>
+                                <td colspan="4"></td>
                                 <td>
 <?php
                                 if ($j > 0) :?>
@@ -633,7 +634,8 @@ $( document ).ready(function() {
                     $i++;
                     endforeach;?>
                     <tr>
-                      <td colspan="8"> </td>
+                      <td colspan="4" class="hidden-xs"></td>
+                      <td colspan="4"> </td>
                       <td>
                         <button
                         type="submit"
