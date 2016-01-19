@@ -166,6 +166,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         header("Location: vpn_ipsec.php");
         exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "togglep1" && isset($a_phase1[$_POST['id']]) ) {
+        // toggle phase 1 record
+        if (isset($a_phase1[$_POST['id']]['disabled'])) {
+            unset($a_phase1[$_POST['id']]['disabled']);
+        } else {
+            $a_phase1[$_POST['id']]['disabled'] = true;
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('ipsec');
+        }
+        header("Location: vpn_ipsec.php");
+        exit;
+    } elseif (!empty($_POST['act']) && $_POST['act'] == "togglep2" && isset($a_phase2[$_POST['id']]) ) {
+        // toggle phase 2 record
+        if (isset($a_phase2[$_POST['id']]['disabled'])) {
+            unset($a_phase2[$_POST['id']]['disabled']);
+        } else {
+            $a_phase2[$_POST['id']]['disabled'] = true;
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('ipsec');
+        }
+        header("Location: vpn_ipsec.php");
+        exit;
     }
 }
 
@@ -182,13 +206,14 @@ include("head.inc");
 <body>
 <script type="text/javascript">
 $( document ).ready(function() {
-    // link move buttons (phase 1 and phase 2)
+    // link move/toggle buttons (phase 1 and phase 2)
     $(".act_move").click(function(event){
       event.preventDefault();
       $("#id").val($(this).data("id"));
       $("#action").val($(this).data("act"));
       $("#iform").submit();
     });
+
 
     // link delete phase 1 buttons
     $(".act_delete_p1").click(function(event){
@@ -329,7 +354,8 @@ $( document ).ready(function() {
                         <input type="checkbox" name="p1entry[]" value="<?=$i;?>"/>
                       </td>
                       <td>
-                        <button name="toggle_<?=$i; ?>_x" type="submit" class="btn btn-<?= isset($ph1ent['disabled'])? "default":"success"?> btn-xs"
+                        <button data-id="<?=$i; ?>" data-act="togglep1" type="submit"
+                            type="submit" class="act_move btn btn-<?= isset($ph1ent['disabled'])? "default":"success"?> btn-xs"
                             title="<?=(isset($ph1ent['disabled'])) ? gettext("enable phase 1 entry") : gettext("disable phase 1 entry");?>" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-play"></span>
                         </button>
@@ -488,9 +514,9 @@ $( document ).ready(function() {
                                   <input type="checkbox" name="p2entry[]" value="<?=$ph2index;?>"/>
                                 </td>
                                 <td>
-                                  <button name="togglep2_<?=$ph2index; ?>_x"
+                                  <button data-id="<?=$ph2index; ?>" data-act="togglep2" type="submit"
                                       title="<?=(isset($ph2ent['disabled'])) ? gettext("enable phase 2 entry") : gettext("disable phase 2 entry"); ?>" data-toggle="tooltip"
-                                      type="submit" class="btn btn-<?= isset($ph2ent['disabled'])?"default":"success";?> btn-xs">
+                                      class="act_move btn btn-<?= isset($ph2ent['disabled'])?"default":"success";?> btn-xs">
                                     <span class="glyphicon glyphicon-play"></span>
                                   </button>
                                 </td>
