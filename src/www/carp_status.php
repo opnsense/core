@@ -126,7 +126,7 @@ include("head.inc");
             <table class="table table-condensed">
               <tr>
                 <td>
-                  <input type="submit" class="btn btn-primary" name="disablecarp" value="<?=($carpcount > 0 && $status) ? gettext("Enable CARP") : gettext("Temporarily Disable CARP") ;?>" />
+                  <input type="submit" class="btn btn-primary" name="disablecarp" value="<?=($carpcount > 0 && !$status) ? gettext("Enable CARP") : gettext("Temporarily Disable CARP") ;?>" />
                   <input type="submit" class="btn btn-primary" name="carp_maintenancemode" value="<?=isset($config["virtualip_carp_maintenancemode"]) ? gettext("Leave Persistent CARP Maintenance Mode") : gettext("Enter Persistent CARP Maintenance Mode");?> " />
                 </td>
               </tr>
@@ -154,7 +154,7 @@ include("head.inc");
                     }
                     $icon = "";
                     $intf_status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");
-                    if (($carpcount > 0 && $status)) {
+                    if (($carpcount > 0 && !$status)) {
                         $icon = "glyphicon glyphicon-remove text-danger";
                         $intf_status = "DISABLED";
                     } elseif ($intf_status == "MASTER") {
