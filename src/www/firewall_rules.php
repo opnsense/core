@@ -373,7 +373,7 @@ $( document ).ready(function() {
 <?php
                 $interface_has_rules = false;
                 foreach ($a_filter as $i => $filterent):
-                if ( (isset($filterent['interface']) && $filterent['interface'] == $selected_if) ||
+                if ( (isset($filterent['interface']) && in_array($selected_if, explode(',', $filterent['interface']))) ||
                      (isset($filterent['floating']) && $selected_if == "FloatingRules" )):
                   $interface_has_rules = true;
                   // select icon
@@ -422,6 +422,9 @@ $( document ).ready(function() {
                   <tr ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
                     <td>
                       <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+<?php                 if ($selected_if != "FloatingRules" && isset($filterent['floating']) && $filterent['floating'] === 'yes'): ?>
+                      <i class="fa fa-random" data-toggle="tooltip" title="<?= gettext('floating rule') ?>"></i>
+<?php                 endif; ?>
                     </td>
                     <td>
                       <a href="#" class="act_toggle" id="toggle_<?=$i;?>" data-toggle="tooltip" title="<?=(empty($filterent['disabled'])) ? gettext("disable rule") : gettext("enable rule");?>"><span class="glyphicon <?=$iconfn;?>"></span></a>
@@ -432,14 +435,14 @@ $( document ).ready(function() {
                       elseif (!empty($filterent['direction']) && $filterent['direction'] == "out"):?>
                         <i class="fa fa-long-arrow-left" data-toggle="tooltip" title="<?=gettext("out");?>"></i>
 <?php
-                      elseif (!empty($filterent['direction']) && $filterent['direction'] == "any"):?>
+                      elseif (isset($filterent['floating']) && $selected_if == "FloatingRules" && !empty($filterent['direction']) && $filterent['direction'] == "any"):?>
                         <i class="fa fa-arrows-h" data-toggle="tooltip" title="<?=gettext("any");?>"></i>
 <?php                 endif;?>
-<?php                 if ($selected_if != 'FloatingRules'):
-                        ; // interfaces are always quick
-                      elseif (isset($filterent['quick']) && $filterent['quick'] === 'yes'): ?>
+<?php                 if ($selected_if == "FloatingRules" && isset($filterent['quick']) && $filterent['quick'] === 'yes'):
+                        // Show floating rules and current rule is quick ?>
                         <i class="fa fa-flash text-warning" data-toggle="tooltip" title="<?= gettext('first match') ?>"></i>
-<?php                 else: ?>
+<?php                 elseif (isset($filterent['floating']) && $filterent['floating'] === 'yes' && (!isset($filterent['quick']) || $filterent['quick'] !== 'yes')):
+                        // Show floating or interface rules and current rule is not quick ?>
                         <i class="fa fa-flash text-muted" data-toggle="tooltip" title="<?= gettext('last match') ?>"></i>
 <?php                 endif; ?>
 <?php                 if (isset($filterent['log'])):?>
@@ -656,6 +659,9 @@ $( document ).ready(function() {
 <?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td width="16"><span class="fa fa-flash text-warning"></span></td>
                           <td width="100"><?=gettext("first match");?></td>
+<?php                     else: ?>
+                          <td width="16"><span class="fa fa-random"></span></td>
+                          <td width="100"><?=gettext("floating rule");?></td>
 <?php                     endif; ?>
                         </tr>
                         <tr>
@@ -675,10 +681,8 @@ $( document ).ready(function() {
                           <td class="nowrap"><?=gettext("log (disabled)");?></td>
                           <td width="16"><span class="fa fa-long-arrow-left"></span></td>
                           <td width="100"><?=gettext("out");?></td>
-<?php                     if ($selected_if == 'FloatingRules'): ?>
                           <td width="16"><span class="fa fa-flash text-muted"></td>
                           <td width="100"><?=gettext("last match");?></td>
-<?php                     endif; ?>
                         </tr>
                       </table>
                     </td>
