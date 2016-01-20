@@ -422,10 +422,22 @@ $( document ).ready(function() {
     // on change event protocol change
     $("#proto").change(function(){
         if ($("#proto").val() == "tcp" ||  $("#proto").val() == "udp" || $("#proto").val() == "tcp/udp") {
-            $(".act_port_select").removeClass("hidden");
+            port_disabled = false;
         } else {
-            $(".act_port_select").addClass("hidden");
+            $("#dstbeginport optgroup:last option:first").prop('selected', true);
+            $("#dstendport optgroup:last option:first").prop('selected', true);
+            $("#srcbeginport optgroup:last option:first").prop('selected', true);
+            $("#srcendport optgroup:last option:first").prop('selected', true);
+            port_disabled = true;
         }
+        $("#srcbeginport").prop('disabled', port_disabled);
+        $("#srcendport").prop('disabled', port_disabled);
+        $("#dstbeginport").prop('disabled', port_disabled);
+        $("#dstendport").prop('disabled', port_disabled);
+        $("#srcbeginport").selectpicker('refresh');
+        $("#srcendport").selectpicker('refresh');
+        $("#dstbeginport").selectpicker('refresh');
+        $("#dstendport").selectpicker('refresh');
     });
 
     // on change event for "No RDR" checkbox
@@ -778,7 +790,7 @@ $( document ).ready(function() {
                     </table>
                   </td>
                 </tr>
-                <tr class="act_port_select">
+                <tr>
                   <td><a id="help_for_dstport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination port range"); ?></td>
                   <td>
                     <table class="table table-condensed">
@@ -851,7 +863,7 @@ $( document ).ready(function() {
                       <?=gettext("e.g."); ?> <em>192.168.1.12</em>
                     </div>
                 </tr>
-                <tr class="act_port_select act_no_rdr">
+                <tr class="act_no_rdr">
                   <td><a id="help_for_localbeginport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target port"); ?></td>
                   <td>
                     <table class="table table-condensed">
