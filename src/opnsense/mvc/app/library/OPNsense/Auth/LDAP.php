@@ -219,6 +219,8 @@ class LDAP implements IAuthConnector
             $bindResult = @ldap_bind($this->ldapHandle, $userdn, $password);
             if ($bindResult) {
                 return true;
+            } else {
+                syslog(LOG_ERR, 'LDAP bind error (' .  ldap_error($this->ldapHandle).')');
             }
         }
 
