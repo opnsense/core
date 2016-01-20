@@ -56,8 +56,14 @@ for filename in glob.glob('%s/plugins/*.py'%'/'.join(os.path.realpath(__file__).
         fOut=open('%s/%s.php'%(targetPath,modulename),'w')
         fOut.write(templateText)
 
-        # fill with gettext tags
+        # collect and sort tags
+        translations = list()
         for textValue in lang.getTranslations(OPNsenseRoot):
+            translations.append(textValue)
+        translations.sort()
+
+        # fill with gettext tags
+        for textValue in translations:
             line="echo gettext('%s');\n"%(unicode(textValue).replace("'","\\'"))
             fOut.write(line)
 
