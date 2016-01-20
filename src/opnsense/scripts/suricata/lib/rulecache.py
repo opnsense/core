@@ -33,6 +33,7 @@ import os.path
 import glob
 import sqlite3
 import shlex
+import fcntl
 from lib import rule_source_directory
 
 
@@ -133,16 +134,22 @@ class RuleCache(object):
         """ create new cache
         :return: None
         """
+        # lock create process
+        lock = open(self.cachefile + '.LCK', 'w')
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX| fcntl.LOCK_NB)
+        except IOError:
+            # other process is already creating the cache, wait, let the other process do it's work and return.
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            fcntl.flock(lock, fcntl.LOCK_UN)
+            return
+
+        # remove existing DB
         if os.path.exists(self.cachefile):
             os.remove(self.cachefile)
 
         db = sqlite3.connect(self.cachefile)
         cur = db.cursor()
-
-        # if another process created the file, exit.
-        cur.execute("select count(*) from sqlite_master where name = 'stats'")
-        if cur.fetchall()[0][0] > 0:
-            return None
 
         cur.execute("CREATE TABLE stats (timestamp number, files number)")
         cur.execute("""CREATE TABLE rules (sid number, msg TEXT, classtype TEXT,
@@ -165,6 +172,8 @@ class RuleCache(object):
                                                           'fieldvalues': ':' + (',:'.join(self._rule_fields))}, rules)
         cur.execute('INSERT INTO stats (timestamp,files) VALUES (?,?) ', (last_mtime, len(all_rule_files)))
         db.commit()
+        # release lock
+        fcntl.flock(lock, fcntl.LOCK_UN)
 
     def search(self, limit, offset, filter_txt, sort_by):
         """ search installed rules
