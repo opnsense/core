@@ -186,7 +186,7 @@
         <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar fa-fw">
             <SchedulesEdit url="/firewall_schedule_edit.php*"/>
         </Schedules>
-        <Diagnostics order="400" cssClass="fa fa-medkit fa-fw">
+        <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
             <pfTop order="40" url="/diag_system_pftop.php" VisibleName="pfTop"/>
@@ -203,7 +203,7 @@
                 <Filter url="/diag_dump_states_sources.php*"/>
             </StatesTrackSource>
         </Diagnostics>
-        <LogFiles order="500" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
+        <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
             <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
             <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
