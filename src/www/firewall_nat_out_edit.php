@@ -182,11 +182,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     /* input validation */
-    foreach ($pconfig as $key => $value) {
-        if(htmlentities($value) <> $value) {
-            $input_errors[] = sprintf(gettext("Invalid characters detected %s. Please remove invalid characters and save again."), htmlentities($value));
-        }
-    }
     $reqdfields = explode(" ", "interface protocol source source_subnet destination destination_subnet");
     $reqdfieldsn = array(gettext("Interface"),gettext("Protocol"),gettext("Source"),gettext("Source bit count"),gettext("Destination"),gettext("Destination bit count"));
 

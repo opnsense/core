@@ -157,12 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    // validate input
-    foreach ($pconfig as $key => $value) {
-        if($value <> htmlentities($value))
-            $input_errors[] = sprintf(gettext("Invalid characters detected (%s).  Please remove invalid characters and save again."),htmlentities($value));
-    }
-
     /* input validation */
     $reqdfields = explode(" ", "interface external src dst");
     $reqdfieldsn = array(gettext("Interface"), gettext("External subnet"), gettext("Source address"), gettext("Destination address"));
