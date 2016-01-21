@@ -35,6 +35,11 @@ $filter_logfile = '/var/log/filter.log';
 $lines = 5000; // Maximum number of log entries to fetch
 $entriesperblock = 10; // Maximum elements to show individually
 
+// flush log file
+if (!empty($_POST['clear'])) {
+    clear_clog($filter_logfile);
+}
+
 // Retrieve filter log data
 $filterlog = conv_log_filter($filter_logfile, $lines, $lines);
 // Set total retrieved line counter
@@ -116,11 +121,19 @@ include("head.inc"); ?>
 			    <section class="col-xs-12">
 						<div class="tab-content content-box col-xs-12">
 							<div class="table-responsive">
-								<table class="table table-striped table-sort">
+								<table class="table table-striped">
 									<tr>
 										<td>
-								<strong><?= sprintf(gettext('The following summaries have been collected from the last %s lines of the firewall log (maximum is %s).'), $gotlines, $lines)?></strong>
-									</tr></td>
+											<strong><?= sprintf(gettext('The following summaries have been collected from the last %s lines of the firewall log (maximum is %s).'), $gotlines, $lines)?></strong>
+										</td>
+										<td>
+											<form method="post">
+												<div class="pull-right">
+													<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+												</div>
+											</form>
+										</td>
+									</tr>
 								</table>
 							</div>
 						</div>

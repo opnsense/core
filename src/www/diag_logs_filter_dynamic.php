@@ -101,8 +101,16 @@ include("head.inc");
 										</td>
 									</tr>
 									<tr>
-										<td colspan="6" class="listtopic">
-										<input type="checkbox" onclick="javascript:toggle_pause();" />&nbsp;<?=gettext("Pause");?>
+										<td colspan="5" class="listtopic">
+											<input type="checkbox" onclick="javascript:toggle_pause();" />&nbsp;<?=gettext("Pause");?>
+										</td>
+										<td>
+											<form method="post">
+												<div class="pull-right">
+													<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+													&nbsp;
+												</div>
+											</form>
 										</td>
 									</tr>
 									<tr>

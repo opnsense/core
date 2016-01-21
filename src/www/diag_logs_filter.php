@@ -586,7 +586,7 @@ if (isset($filterlogentries_qty) && $filterlogentries_qty != null) {
 }
 
 if (isset($_POST['clear'])) {
-	clear_clog($filter_logfile);
+		clear_clog($filter_logfile);
 }
 
 include("head.inc");
@@ -668,6 +668,9 @@ include("head.inc");
                   <tr>
                     <td colspan="6">
                       <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" style="vertical-align:top;" value="<?=gettext("Filter");?>" />
+											<div class="pull-right">
+												<input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+											</div>
                     </td>
 					        </tr>
 					      </tbody>
