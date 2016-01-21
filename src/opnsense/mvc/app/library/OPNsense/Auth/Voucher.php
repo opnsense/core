@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -147,7 +148,7 @@ class Voucher implements IAuthConnector
         $response = array();
         if ($this->dbHandle != null) {
             // list of characters to skip for random generator
-            $doNotUseChr = array('<', '>', '&', 'l' , 'O' ,'`', '|' ,'^', '"');
+            $doNotUseChr = array('<', '>', '{', '}', '&', 'l' , 'O' ,'`', '\'', '|' ,'^', '"');
 
             // create map of random readable characters
             $characterMap = '';
