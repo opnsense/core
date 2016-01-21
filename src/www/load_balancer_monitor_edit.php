@@ -208,9 +208,6 @@ if ($_POST) {
 		$monent['descr'] = $pconfig['descr'];
 		if($pconfig['type'] == "http" || $pconfig['type'] == "https" ) {
 			/* log updates, then clear array and reassign - dumb, but easiest way to have a clear array */
-			$monent['options']['path'] = $pconfig['options']['path'];
-			$monent['options']['host'] = $pconfig['options']['host'];
-			$monent['options']['code'] = $pconfig['options']['code'];
 			$monent['options'] = array();
 			$monent['options']['path'] = $pconfig['options']['path'];
 			$monent['options']['host'] = $pconfig['options']['host'];
@@ -218,9 +215,6 @@ if ($_POST) {
 		}
 		if($pconfig['type'] == "send" ) {
 			/* log updates, then clear array and reassign - dumb, but easiest way to have a clear array */
-			$monent['options']['send'] = $pconfig['options']['send'];
-			$monent['options']['expect'] = $pconfig['options']['expect'];
-
 			$monent['options'] = array();
 			$monent['options']['send'] = $pconfig['options']['send'];
 			$monent['options']['expect'] = $pconfig['options']['expect'];
