@@ -29,11 +29,91 @@
 import urllib2
 import os
 import os.path
+import tarfile
+import gzip
+import zipfile
+import StringIO
+import syslog
 from ConfigParser import ConfigParser
 
 acl_config_fn = ('/usr/local/etc/squid/externalACLs.conf')
 acl_target_dir = ('/usr/local/etc/squid/acl')
 acl_max_timeout = 30
+
+class ACLDownload(object):
+
+    def __init__(self, url, timeout):
+        """ init new
+        """
+        self._url = url
+        self._timeout = timeout
+        self._source_data = None
+        self._target_data = None
+
+    def fetch(self):
+        """ fetch (raw) source data into self._source_data
+        """
+        try:
+            f = urllib2.urlopen(self._url,timeout = self._timeout)
+            self._source_data = f.read()
+            f.close()
+        except (urllib2.URLError, urllib2.HTTPError, IOError) as e:
+            syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s'%self._url)
+            self._source_data = None
+
+    def pre_process(self):
+        """ pre process downloaded data, handle compression
+        """
+        if self._source_data is not None:
+            # handle compressed data
+            if len(self._url) > 8 and self._url[-7:] == '.tar.gz':
+                # source is in tar.gz format, extract all into a single string
+                try:
+                    tf = tarfile.open(fileobj=StringIO.StringIO(self._source_data))
+                    target_data = []
+                    for tf_file in tf.getmembers():
+                        if tf_file.isfile():
+                            target_data.append(tf.extractfile(tf_file).read())
+                    self._target_data = ''.join(target_data)
+                except IOError as e:
+                    syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (%s)'%(self._url, e))
+            elif len(self._url) > 4 and self._url[-3:] == '.gz':
+                # source is in .gz format unpack
+                try:
+                    gf = gzip.GzipFile(mode='r', fileobj=StringIO.StringIO(self._source_data))
+                    self._target_data = gf.read()
+                except IOError as e:
+                    syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (%s)'%(self._url, e))
+            elif len(self._url) > 5 and self._url[-4:] == '.zip':
+                # source is in .zip format, extract all into a single string
+                target_data = []
+                with zipfile.ZipFile(StringIO.StringIO(self._source_data),
+                                     mode='r',
+                                     compression=zipfile.ZIP_DEFLATED) as zf:
+                    for item in zf.infolist():
+                        target_data.append(zf.read(item))
+                    self._target_data = ''.join(target_data)
+            else:
+                self._target_data = self._source_data
+
+    def download(self):
+        self.fetch()
+        self.pre_process()
+
+    def is_valid(self):
+        """ did this ACL download successful
+        """
+        if self._target_data is not None:
+            return True
+        else:
+            return False
+
+    def get_data(self):
+        """ retrieve data
+        """
+        # XXX: maybe some postprocessing is needed here, all will be used with a squid dstdom_regex tag
+        return self._target_data
+
 
 # parse OPNsense external ACLs config
 if os.path.exists(acl_config_fn):
@@ -47,11 +127,20 @@ if os.path.exists(acl_config_fn):
         # check if tag enabled exists in section
         if cnf.has_option(section,'enabled'):
             # if enabled fetch file
+            target_filename = acl_target_dir+'/'+section
             if cnf.get(section,'enabled')=='1':
                 if cnf.has_option(section,'url'):
-                    f = urllib2.urlopen(cnf.get(section,'url'),timeout = acl_max_timeout)
-                    with open('%s/%s'%(acl_target_dir,section), "wb") as code:
-                            code.write(f.read())
+                    download_url = cnf.get(section,'url')
+                    acl = ACLDownload(download_url, acl_max_timeout)
+                    acl.download()
+                    if acl.is_valid():
+                        output_data = acl.get_data()
+                        with open(target_filename, "wb") as code:
+                            code.write(output_data)
+                    elif not os.path.isfile(target_filename):
+                        # if there's no file available, create an empty one (otherwise leave the last download).
+                        with open(target_filename, "wb") as code:
+                            code.write("")
             # if disabled or not 1 try to remove old file
             elif cnf.get(section,'enabled')!='1':
                 try:
