@@ -86,9 +86,6 @@
             <Halt order="30" VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot order="40" VisibleName="Reboot System" url="/reboot.php"/>
             <SmartStatus order="60" VisibleName="SMART Status" url="/diag_smart.php"/>
-            <Services order="50" url="/status_services.php">
-                <All url="/status_services.php?*"/>
-            </Services>
         </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
@@ -300,6 +297,9 @@
         <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
             <WoLEdit url="/services_wol_edit.php*"/>
         </WoL>
+        <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
+          <All url="/status_services.php?*"/>
+        </Diagnostics>
     </Services>
     <VPN order="4" cssClass="fa fa-globe">
         <IPsec cssClass="fa fa-lock fa-fw" order="10">
