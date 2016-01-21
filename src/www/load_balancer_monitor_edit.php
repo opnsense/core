@@ -203,14 +203,14 @@ if ($_POST) {
 			$monent = $a_monitor[$id];
 		}
 
-		update_if_changed("name", $monent['name'], $pconfig['name']);
-		update_if_changed("type", $monent['type'], $pconfig['type']);
-		update_if_changed("description", $monent['descr'], $pconfig['descr']);
+		$monent['name'] = $pconfig['name'];
+		$monent['type'] = $pconfig['type'];
+		$monent['descr'] = $pconfig['descr'];
 		if($pconfig['type'] == "http" || $pconfig['type'] == "https" ) {
 			/* log updates, then clear array and reassign - dumb, but easiest way to have a clear array */
-			update_if_changed("path", $monent['options']['path'], $pconfig['options']['path']);
-			update_if_changed("host", $monent['options']['host'], $pconfig['options']['host']);
-			update_if_changed("code", $monent['options']['code'], $pconfig['options']['code']);
+			$monent['options']['path'] = $pconfig['options']['path'];
+			$monent['options']['host'] = $pconfig['options']['host'];
+			$monent['options']['code'] = $pconfig['options']['code'];
 			$monent['options'] = array();
 			$monent['options']['path'] = $pconfig['options']['path'];
 			$monent['options']['host'] = $pconfig['options']['host'];
@@ -218,8 +218,9 @@ if ($_POST) {
 		}
 		if($pconfig['type'] == "send" ) {
 			/* log updates, then clear array and reassign - dumb, but easiest way to have a clear array */
-			update_if_changed("send", $monent['options']['send'], $pconfig['options']['send']);
-			update_if_changed("expect", $monent['options']['expect'], $pconfig['options']['expect']);
+			$monent['options']['send'] = $pconfig['options']['send'];
+			$monent['options']['expect'] = $pconfig['options']['expect'];
+
 			$monent['options'] = array();
 			$monent['options']['send'] = $pconfig['options']['send'];
 			$monent['options']['expect'] = $pconfig['options']['expect'];

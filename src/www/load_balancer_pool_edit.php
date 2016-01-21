@@ -119,14 +119,14 @@ if ($_POST) {
 			$poolent = $a_pool[$id];
 		}
 
-		update_if_changed("name", $poolent['name'], $_POST['name']);
-		update_if_changed("mode", $poolent['mode'], $_POST['mode']);
-		update_if_changed("description", $poolent['descr'], $_POST['descr']);
-		update_if_changed("port", $poolent['port'], $_POST['port']);
-		update_if_changed("retry", $poolent['retry'], $_POST['retry']);
-		update_if_changed("servers", $poolent['servers'], $_POST['servers']);
-		update_if_changed("serversdisabled", $poolent['serversdisabled'], $_POST['serversdisabled']);
-		update_if_changed("monitor", $poolent['monitor'], $_POST['monitor']);
+		$poolent['name'] = $_POST['name'];
+		$poolent['mode'] = $_POST['mode'];
+		$poolent['descr'] = $_POST['descr'];
+		$poolent['port'] = $_POST['port'];
+		$poolent['retry'] = $_POST['retry'];
+		$poolent['servers'] = $_POST['servers'];
+		$poolent['serversdisabled'] = $_POST['serversdisabled'];
+		$poolent['monitor'] = $_POST['monitor'];
 
 		if (isset($id) && $a_pool[$id]) {
 			/* modify all virtual servers with this name */

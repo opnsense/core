@@ -464,29 +464,6 @@ function dump_log($logfile, $tail, $grepfor = '')
 	print_dump($logarr);
 }
 
-/* Check if variable has changed, update and log if it has
- * returns true if var changed
- * varname = variable name in plain text
- * orig = original value
- * new = new value
- */
-function update_if_changed($varname, &$orig, $new)
-{
-	if (is_array($orig) && is_array($new)) {
-		$a_diff = array_diff($orig, $new);
-		$a_diff = array_diff($new, $orig);
-		$orig = $new;
-		return true;
-	}
-
-	if ($orig != $new) {
-		$orig = $new;
-		return true;
-	}
-
-	return false;
-}
-
 function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport) {
 	if (isset($adr['any']))
 		$padr = "any";

@@ -97,14 +97,14 @@ if ($_POST) {
 			$vsent = $a_vs[$id];
 		}
 
-		update_if_changed("name", $vsent['name'], $_POST['name']);
-		update_if_changed("descr", $vsent['descr'], $_POST['descr']);
-		update_if_changed("poolname", $vsent['poolname'], $_POST['poolname']);
-		update_if_changed("port", $vsent['port'], $_POST['port']);
-		update_if_changed("sitedown", $vsent['sitedown'], $_POST['sitedown']);
-		update_if_changed("ipaddr", $vsent['ipaddr'], $_POST['ipaddr']);
-		update_if_changed("mode", $vsent['mode'], $_POST['mode']);
-		update_if_changed("relay protocol", $vsent['relay_protocol'], $_POST['relay_protocol']);
+    $vsent['name'] = $_POST['name'];
+    $vsent['descr'] = $_POST['descr'];
+    $vsent['poolname'] = $_POST['poolname'];
+    $vsent['port'] = $_POST['port'];
+    $vsent['sitedown'] = $_POST['sitedown'];
+    $vsent['ipaddr'] = $_POST['ipaddr'];
+    $vsent['mode'] = $_POST['mode'];
+    $vsent['relay_protocol'] = $_POST['relay_protocol'];
 
 		if($_POST['sitedown'] == "")
 			unset($vsent['sitedown']);
