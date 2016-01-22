@@ -1,51 +1,51 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2012 Jim Pingle
-	Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
-	Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
-	All rights reserved.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2012 Jim Pingle
+    Copyright (C) 2007-2008 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 function find_service_by_name($names)
 {
-	if (!is_array($names)) {
-		$names = array($names);
-	}
+    if (!is_array($names)) {
+        $names = array($names);
+    }
 
-	$services = get_services();
+    $services = get_services();
 
-	foreach ($services as $service) {
-		foreach ($names as $name) {
-			if ($service['name'] == $name) {
-				return $service;
-			}
-		}
-	}
+    foreach ($services as $service) {
+        foreach ($names as $name) {
+            if ($service['name'] == $name) {
+                return $service;
+            }
+        }
+    }
 
-	return array();
+    return array();
 }
 
 /* Determine automated help URL. Should output the page name and
@@ -56,24 +56,24 @@ preg_match("/\/(.*)\?(.*)/", $_SERVER["REQUEST_URI"], $uri_split);
 /* If there was no match, there were no parameters, just grab the filename
    Otherwise, use the matched filename from above. */
 if (empty($uri_split[0])) {
-	$pagename = ltrim($_SERVER["REQUEST_URI"], '/');
+    $pagename = ltrim($_SERVER["REQUEST_URI"], '/');
 } else {
-	$pagename = $uri_split[1];
+    $pagename = $uri_split[1];
 }
 /* If the page name is still empty, the user must have requested / (index.php) */
 if (empty($pagename)) {
-	$pagename = "index.php";
+    $pagename = "index.php";
 }
 
 /* If the filename is wizard.php, reparse looking for the .xml filename */
 if ($pagename == 'wizard.php') {
-	$param_split = explode('&', $uri_split[2]);
-	foreach ($param_split as $param) {
-		if (substr($param, 0, 4) == "xml=") {
-			$xmlfile = explode('=', $param);
-			$pagename = $xmlfile[1];
-		}
-	}
+    $param_split = explode('&', $uri_split[2]);
+    foreach ($param_split as $param) {
+        if (substr($param, 0, 4) == "xml=") {
+            $xmlfile = explode('=', $param);
+            $pagename = $xmlfile[1];
+        }
+    }
 }
 
 $aclObj = new \OPNsense\Core\ACL();
@@ -82,11 +82,11 @@ $aclObj = new \OPNsense\Core\ACL();
 $need_alert_display = false;
 $found_notices = are_notices_pending();
 if($found_notices == true) {
-	$notices = get_notices();
-	if(!$notices) {
-		$need_alert_display = true;
-		$display_text = print_notices($notices) . "<br />";
-	}
+    $notices = get_notices();
+    if(!$notices) {
+        $need_alert_display = true;
+        $display_text = print_notices($notices) . "<br />";
+    }
 }
 if($need_alert_display == true) {
     echo "<div class=\"col-xs-12\"><div class=\"alert alert-info\"><p>".$display_text."</p></div></div>";
@@ -95,36 +95,31 @@ if($need_alert_display == true) {
 ?>
 
 <header class="page-head">
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/index.php">
+        <img class="brand-logo" src="/ui/themes/<?=$g['theme'];?>/build/images/default-logo.png" height="30"/>
+        <img class="brand-icon" src="/ui/themes/<?=$g['theme'];?>/build/images/icon-logo.png" height="30"/>
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li id="menu_messages"><?= get_menu_messages() ?></li>
+        </ul>
 
-	<nav class="navbar navbar-default" role="navigation">
-
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="/index.php">
-				<img class="brand-logo" src="/ui/themes/<?=$g['theme'];?>/build/images/default-logo.png" height="30"/>
-				<img class="brand-icon" src="/ui/themes/<?=$g['theme'];?>/build/images/icon-logo.png" height="30"/>
-				</a>
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			</div>
-
-			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav navbar-right">
-					<li id="menu_messages"><?= get_menu_messages() ?></li>
-				</ul>
-
-			</div>
-		</div>
-	</nav>
-
+      </div>
+    </div>
+  </nav>
 </header>
 
 <main class="page-content col-sm-10 col-sm-push-2">
-
     <aside id="navigation" class="page-side col-xs-12 col-sm-2 hidden-xs">
         <div class="row">
             <nav class="page-side-nav" role="navigation">
@@ -191,50 +186,40 @@ if($need_alert_display == true) {
             </nav>
         </div>
     </aside>
+  <div class="row">
+    <header class="page-content-head">
+      <div class="container-fluid">
+          <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
+        <ul class="list-inline">
+          <li class="__mb"><h1><?= gentitle($menuBreadcrumbs) ?></h1></li>
+          <li class="btn-group-container">
+            <?php
+            if (isset($service_hook)) {
+              $ssvc = array();
+              switch ($service_hook) {
+                case 'openvpn':
+                  $ssvc = find_service_by_openvpn_vpnid($vpnid);
+                  break;
+                default:
+                  $ssvc = find_service_by_name($service_hook);
+                  break;
+              }
+              if (!empty($ssvc)) {
+                echo get_service_status_icon($ssvc, false);
+                echo get_service_control_links($ssvc, false);
+              }
+            }
+            ?>
+            <?php if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
+              <a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>
+            <?php endforeach; endif; ?>
 
-	<div class="row">
-
-		<header class="page-content-head">
-			<div class="container-fluid">
-			    <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post">
-				<ul class="list-inline">
-					<li class="__mb"><h1><?= gentitle($menuBreadcrumbs) ?></h1></li>
-
-					<li class="btn-group-container">
-
-						<?php
-
-						if (isset($service_hook)) {
-							$ssvc = array();
-							switch ($service_hook) {
-								case 'openvpn':
-									$ssvc = find_service_by_openvpn_vpnid($vpnid);
-									break;
-								default:
-									$ssvc = find_service_by_name($service_hook);
-									break;
-							}
-							if (!empty($ssvc)) {
-								echo get_service_status_icon($ssvc, false);
-								echo get_service_control_links($ssvc, false);
-							}
-						}
-
-						?>
-
-						<?php if (!empty($main_buttons)): foreach ($main_buttons as $button): ?>
-							<a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>
-						<?php endforeach; endif; ?>
-
-						<?php if (isset($widgetfiles)): ?>
-
-
-							<a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
-
-							<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?= gettext('Add widget') ?></button>
-						<?php endif; ?>
-					</li>
-				</ul>
-			    </form>
-			</div>
-		</header>
+            <?php if (isset($widgetfiles)): ?>
+              <a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
+              <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?= gettext('Add widget') ?></button>
+            <?php endif; ?>
+          </li>
+        </ul>
+          </form>
+      </div>
+    </header>
