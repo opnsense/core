@@ -190,6 +190,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header("Location: firewall_virtual_ip.php");
             exit;
         }
+    }  elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        // delete selected VIPs, sort rule in reverse order to delete the highest item sequences first
+        redirectReadOnlyUser();
+        foreach (array_reverse($pconfig['rule']) as $ruleId) {
+            if (isset($a_vip[$ruleId])) {
+                deleteVIPEntry($ruleId);
+            }
+        }
+        write_config();
+        header("Location: firewall_virtual_ip.php");
+        exit;
     }  elseif (isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         redirectReadOnlyUser();
         // move selected rules
@@ -231,6 +242,26 @@ $main_buttons = array(
                   action: function(dialogRef) {
                     $("#id").val(id);
                     $("#action").val("del");
+                    $("#iform").submit()
+                }
+              }]
+      });
+    });
+
+    $("#del_x").click(function(){
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_DANGER,
+        title: "<?= gettext("Rules");?>",
+        message: "<?=gettext("Do you really want to delete the selected Virtual IPs?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val("");
+                    $("#action").val("del_x");
                     $("#iform").submit()
                 }
               }]
@@ -334,6 +365,9 @@ $main_buttons = array(
                         </a>
                         <a href="firewall_virtual_ip_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new virtual IP");?>">
                           <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                        <a id="del_x" title="<?=gettext("delete selected virtual IPs"); ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">
+                          <span class="fa fa-trash text-muted"></span>
                         </a>
                       </td>
                     </tr>
