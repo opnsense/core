@@ -264,7 +264,7 @@ function restore_config_section_xmlrpc($new_config)
 
     $vipbackup = array();
     $oldvips = array();
-    if (isset($config['virtualip']['vip'])) {
+    if (isset($new_config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
             if ($vip['mode'] == "carp") {
                 $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
@@ -280,7 +280,7 @@ function restore_config_section_xmlrpc($new_config)
     $config = array_merge_recursive_unique($config, $new_config);
 
     /* Then add ipalias and proxyarp types already defined on the backup */
-    if (is_array($vipbackup) && !empty($vipbackup)) {
+    if (count($vipbackup) > 0) {
         if (!isset($config['virtualip'])) {
             $config['virtualip'] = array();
         }
