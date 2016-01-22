@@ -108,6 +108,9 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <!-- append some helper functions to integrate into the legacy code -->
     <script type="text/javascript" src="/javascript/opnsense_legacy.js"></script>
 
+    <!-- Bootstrap type ahead -->
+    <script type="text/javascript" src="/ui/js/bootstrap3-typeahead.min.js"></script>
+
     <?php
     /*
      *  Find all javascript files that need to be included
@@ -181,6 +184,28 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
                 }
             });
         }
+      });
+
+      // hook in live menu search
+      $.ajax("/api/core/menu/search/", {
+          type: 'get',
+          cache: false,
+          dataType: "json",
+          data: {},
+          success: function (data) {
+              var menusearch_items = [];
+              $.each(data,function(idx, menu_item){
+                  if (menu_item.Url != "") {
+                      menusearch_items.push({id:menu_item.Url, name:menu_item.breadcrumb});
+                  }
+              });
+              $("#menu_search_box").typeahead({
+                  source: menusearch_items,
+                  afterSelect: function(item){
+                      window.location.href = item.id;
+                  }
+              });
+          }
       });
     });
     //]]>
