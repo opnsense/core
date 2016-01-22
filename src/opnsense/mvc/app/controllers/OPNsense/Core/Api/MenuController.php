@@ -193,8 +193,8 @@ class MenuController extends ApiControllerBase
                     $this->extractMenuLeaves($menu_item->Children, $items);
                 }
 
-                // if Url contains wildcard, it's only meant to further define it's parent.
-                if (stripos($menu_item->Url, "*") === false) {
+                // only return visible items
+                if ($menu_item->Visibility != 'hidden') {
                     unset($menu_item->Children);
                     $items[] = $menu_item;
                 }
