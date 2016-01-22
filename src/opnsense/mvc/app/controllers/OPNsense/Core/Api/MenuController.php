@@ -221,7 +221,10 @@ class MenuController extends ApiControllerBase
     {
         $menu_items = $this->getMenu(null);
         $query = $this->request->get("q", null, null);
-        $this->search($menu_items, $query);
+        if ($query != null) {
+            // only search when a query is provided, otherwise return all entries
+            $this->search($menu_items, $query);
+        }
         $items = array();
         $this->extractMenuLeaves($menu_items, $items);
         return $items;
