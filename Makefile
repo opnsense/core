@@ -76,7 +76,6 @@ CORE_DEPENDS?=		apinger \
 			php-xdebug \
 			php56 \
 			php56-bcmath \
-			php56-bz2 \
 			php56-ctype \
 			php56-curl \
 			php56-dom \
