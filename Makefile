@@ -97,6 +97,7 @@ CORE_DEPENDS?=		apinger \
 			py27-requests \
 			py27-sqlite3 \
 			py27-ujson \
+			py27-netaddr \
 			python27 \
 			radvd \
 			rate \
