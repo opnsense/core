@@ -82,6 +82,30 @@
                 initFormAdvancedUI();
                 addMultiSelectClearUI();
 
+                // hook in live menu search
+                $.ajax("/api/core/menu/search/", {
+                    type: 'get',
+                    cache: false,
+                    dataType: "json",
+                    data: {},
+                    success: function (data) {
+                        var menusearch_items = [];
+                        $.each(data,function(idx, menu_item){
+                            if (menu_item.Url != "") {
+                                menusearch_items.push({id:menu_item.Url, name:menu_item.breadcrumb});
+                            }
+                        });
+                        $("#menu_search_box").typeahead({
+                            source: menusearch_items,
+                            afterSelect: function(item){
+                                window.location.href = item.id;
+                            }
+                        });
+                    }
+                });
+
+
+
             });
         </script>
 
@@ -93,6 +117,9 @@
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="/ui/css/jquery.bootgrid.css"/>
         <script src="/ui/js/jquery.bootgrid.js"></script>
+
+        <!-- Bootstrap type ahead -->
+        <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
 
         <!-- OPNsense standard toolkit -->
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
@@ -116,12 +143,20 @@
 						<span class="icon-bar"></span>
 					</button>
 				</div>
-
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right">
+						<li>
+							<form class="navbar-form" role="search">
+								<div class="input-group">
+									<input type="text" style="width: 250px;" class="form-control" placeholder="Search" data-provide="typeahead" id="menu_search_box">
+									<div class="input-group-btn">
+										<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+									</div>
+								</div>
+							</form>
+						</li>
 						<li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
 					</ul>
-
 				</div>
 			</div>
 		</nav>
