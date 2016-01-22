@@ -65,7 +65,7 @@ if __name__ == '__main__':
                           'hostname': ''
                           }
                 manufacturer_mac = EUI(record['mac'])
-		oui = manufacturer_mac.oui
+                oui = manufacturer_mac.oui
                 if oui.registration().org:
                     record['manufacturer'] = oui.registration().org
                 if record['ip'] in dhcp_leases:
