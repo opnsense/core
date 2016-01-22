@@ -73,7 +73,6 @@ CORE_DEPENDS?=		apinger \
 			phalcon \
 			php-pfSense \
 			php-suhosin \
-			php-xdebug \
 			php56 \
 			php56-bcmath \
 			php56-ctype \

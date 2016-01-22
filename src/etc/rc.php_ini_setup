@@ -1,28 +1,29 @@
 #!/bin/sh
 
-#	Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
-#	All rights reserved.
+# Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2010 Scott Ullrich <sullrich@gmail.com>
+# All rights reserved.
 #
-#	Redistribution and use in source and binary forms, with or without
-#	modification, are permitted provided that the following conditions are met:
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
 #
-#	1. Redistributions of source code must retain the above copyright notice,
-#	   this list of conditions and the following disclaimer.
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
 #
-#	2. Redistributions in binary form must reproduce the above copyright
-#	   notice, this list of conditions and the following disclaimer in the
-#	   documentation and/or other materials provided with the distribution.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
 #
-#	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-#	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-#	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-#	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-#	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-#	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-#	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-#	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-#	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-#	POSSIBILITY OF SUCH DAMAGE.
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+# OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 
 if [ -d /usr/local/lib/php/20151012 ]; then
 	# PHP 7
@@ -72,8 +73,13 @@ PHPMODULES="$PHPMODULES filter"
 # OPNsense
 PHPMODULES="$PHPMODULES phalcon"
 
+_EXTENSIONS_INI=$(mktemp -q /tmp/extensions_ini.XXXXXX)
+EXTENSIONS_INI=/usr/local/etc/php/extensions.ini
+
+touch ${EXTENSIONS_INI}
+cp ${EXTENSIONS_INI} ${_EXTENSIONS_INI}
+
 # Clear the .ini file to make sure we are clean
-rm -f /usr/local/etc/php/extensions.ini
 rm -f /usr/local/etc/php.ini
 rm -f /usr/local/lib/php.ini
 
@@ -117,16 +123,15 @@ EOF
 
 # Loop through and generate modules to load.
 for EXT in ${PHPMODULES}; do
-	if [ -f "${EXTENSIONSDIR}${EXT}.so" ]; then
-		echo "extension=${EXT}.so" >> /usr/local/etc/php/extensions.ini
-	fi
+	sed -i '' -e "/${EXT}.so/d" ${_EXTENSIONS_INI}
+	echo "extension=${EXT}.so" >> ${_EXTENSIONS_INI}
 done
 
-# Enable XDebug if enabled in config
-if [ ! -z `grep "<enable_xdebug>1</enable_xdebug>" /conf/config.xml` ]; then
-	cat >> /usr/local/etc/php/extensions.ini << EOF
-zend_extension=xdebug.so
-EOF
+# Enable XDebug if installed
+if [ -f "${EXTENSIONSDIR}xdebug.so" ]; then
+	sed -i '' -e "/xdebug.so/d" ${_EXTENSIONS_INI}
+	echo "zend_extension=${EXTENSIONSDIR}xdebug.so" >> ${_EXTENSIONS_INI}
+
 	cat >> /usr/local/lib/php.ini << EOF
 
 [xdebug]
@@ -156,3 +161,4 @@ EOF
 
 # Copy php.ini file to etc/ too (cli)
 cp /usr/local/lib/php.ini /usr/local/etc/php.ini
+mv ${_EXTENSIONS_INI} ${EXTENSIONS_INI}

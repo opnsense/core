@@ -46,7 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
-    $pconfig['enable_xdebug'] = isset($config['system']['webgui']['enable_xdebug']) ;
     $pconfig['loginautocomplete'] = isset($config['system']['webgui']['loginautocomplete']);
     $pconfig['althostnames'] = $config['system']['webgui']['althostnames'];
     $pconfig['enableserial'] = $config['system']['enableserial'];
@@ -150,12 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['nohttpreferercheck'] = true;
         } elseif (isset($config['system']['webgui']['nohttpreferercheck'])) {
             unset($config['system']['webgui']['nohttpreferercheck']);
-        }
-
-        if ($pconfig['enable_xdebug'] == "yes") {
-            $config['system']['webgui']['enable_xdebug'] = true;
-        } elseif (isset($config['system']['webgui']['enable_xdebug'])) {
-            unset($config['system']['webgui']['enable_xdebug']);
         }
 
         if ($pconfig['loginautocomplete'] == "yes") {
@@ -464,18 +457,6 @@ include("head.inc");
                                           "is protected against HTTP_REFERER redirection attempts. " .
                                           "Check this box to disable this protection if you find that it interferes with " .
                                           "webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from <a target='_blank' href='http://en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."); ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_xdebug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable XDebug"); ?></td>
-                  <td width="78%">
-                    <input name="enable_xdebug" type="checkbox" value="yes"  <?=!empty($pconfig['enable_xdebug']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Enable debugger / profiler (developer mode, do not enable in production environment)"); ?></strong>
-                    <div class="hidden" for="help_for_xdebug">
-                      <?php echo gettext("When this is checked, php XDebug will be enabled and profiling output can be analysed using webgrind which will be available at [this-url]/webgrind/"); ?>
-                      <br />
-                      <?php echo gettext("For more information about XDebug profiling and how to enable it for your requests, please visit http://www.xdebug.org/docs/all_settings#profiler_enable_trigger"); ?>
                     </div>
                   </td>
                 </tr>
