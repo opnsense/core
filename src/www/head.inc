@@ -201,6 +201,23 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
               });
               $("#menu_search_box").typeahead({
                   source: menusearch_items,
+                  matcher: function (item) {
+                      var ar = this.query.trim()
+                      if (ar == "") {
+                          return false;
+                      }
+                      ar = ar.toLowerCase().split(/\s+/);
+                      if (ar.length == 0) {
+                          return false;
+                      }
+                      var it = this.displayText(item).toLowerCase();
+                      for (var i = 0; i < ar.length; i++) {
+                          if (it.indexOf(ar[i]) == -1) {
+                              return false;
+                          }
+                      }
+                      return true;
+                  },
                   afterSelect: function(item){
                       window.location.href = item.id;
                   }

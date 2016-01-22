@@ -97,6 +97,23 @@
                         });
                         $("#menu_search_box").typeahead({
                             source: menusearch_items,
+                            matcher: function (item) {
+                                var ar = this.query.trim()
+                                if (ar == "") {
+                                    return false;
+                                }
+                                ar = ar.toLowerCase().split(/\s+/);
+                                if (ar.length == 0) {
+                                    return false;
+                                }
+                                var it = this.displayText(item).toLowerCase();
+                                for (var i = 0; i < ar.length; i++) {
+                                    if (it.indexOf(ar[i]) == -1) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            },
                             afterSelect: function(item){
                                 window.location.href = item.id;
                             }
@@ -148,7 +165,7 @@
 						<li>
 							<form class="navbar-form" role="search">
 								<div class="input-group">
-									<input type="text" style="width: 250px;" class="form-control" placeholder="Search" data-provide="typeahead" id="menu_search_box">
+									<input type="text" style="width: 250px;" class="form-control" tabindex="1" placeholder="{{ lang._('Search') }}" data-provide="typeahead" id="menu_search_box">
 									<div class="input-group-btn">
 										<button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
 									</div>

@@ -80,7 +80,7 @@
         // Updater can be set to any random functions via "options" parameter in constructor above.
         // Add null check for cases when upadter returns void or undefined.
         if (!newVal) {
-          newVal = "";	
+          newVal = "";
         }
         this.$element
           .val(this.displayText(newVal) || newVal)
@@ -109,11 +109,11 @@
 
       var element;
       if (this.shown) {
-      	element = this.$menu;
+	element = this.$menu;
       } else if (this.$appendTo) {
-      	element = this.$menu.appendTo(this.$appendTo);
+	element = this.$menu.appendTo(this.$appendTo);
       } else {
-      	element = this.$menu.insertAfter(this.$element);
+	element = this.$menu.insertAfter(this.$element);
       }
       element.css({
           top: pos.top + pos.height + scrollHeight
