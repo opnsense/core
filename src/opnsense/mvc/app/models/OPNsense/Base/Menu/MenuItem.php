@@ -79,6 +79,12 @@ class MenuItem
     private $isExternal = "N";
 
     /**
+     * visibility level, all, hidden, ...
+     * @var string
+     */
+    private $visibility = 'all';
+
+    /**
      * parent node, used to mark active nodes
      * @var null|MenuItem
      */
@@ -136,6 +142,15 @@ class MenuItem
     public function setOrder($value)
     {
         $this->sortOrder = $value;
+    }
+
+    /**
+     * set visibility
+     * @param $value visibility level
+     */
+    public function setVisibility($value)
+    {
+        $this->visibility = $value;
     }
 
     /**
@@ -217,6 +232,15 @@ class MenuItem
     public function getIsExternal()
     {
         return $this->isExternal;
+    }
+
+    /**
+     * getter for visibility level
+     * @return string
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
     }
 
     /**
