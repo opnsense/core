@@ -34,16 +34,10 @@ import os
 import os.path
 import sys
 import ujson
+from netaddr import *
 
 if __name__ == '__main__':
     result = []
-
-    # import mac manufacturer mac address table (index by mac prefix)
-    mac_table = {}
-    if os.path.isfile('/usr/local/share/nmap/nmap-mac-prefixes'):
-        for mac in open('/usr/local/share/nmap/nmap-mac-prefixes').read().split('\n'):
-            if len(mac) > 8:
-                mac_table[mac[0:6]] = mac[7:]
 
     # parse ndp output
     with tempfile.NamedTemporaryFile() as output_stream:
@@ -58,9 +52,10 @@ if __name__ == '__main__':
                           'intf': line_parts[2],
                           'manufacturer': ''
                           }
-                manufacturer_mac = record['mac'].replace(':' ,'')[:6].upper()
-                if manufacturer_mac in mac_table:
-                    record['manufacturer'] = mac_table[manufacturer_mac]
+                manufacturer_mac = EUI(record['mac'])
+                oui = manufacturer_mac.oui
+                if oui.registration().org:
+                    record['manufacturer'] = oui.registration().org
                 result.append(record)
 
     # handle command line argument (type selection)
