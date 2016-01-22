@@ -145,7 +145,7 @@
             <All order="100"  url="/firewall_aliases.php?tab=all">
                 <Edit url="/firewall_aliases_edit.php?tab=all" visibility="hidden"/>
                 <NoneEdit url="/firewall_aliases_edit.php?id=*" visibility="hidden"/>
-                <None url="/firewall_aliases.php"/>
+                <None url="/firewall_aliases.php" visibility="hidden"/>
             </All>
             <IPs order="200" url="/firewall_aliases.php?tab=ip">
                 <Edit url="/firewall_aliases_edit.php?tab=ip" visibility="hidden"/>
@@ -160,7 +160,7 @@
         </Aliases>
         <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check fa-fw">
             <RulesEdit url="/firewall_rules_edit.php*" visibility="hidden"/>
-            <Floating url="/firewall_rules.php?if=FloatingRules"/>
+            <Floating url="/firewall_rules.php?if=FloatingRules" visibility="hidden"/>
             <Interface url="/firewall_rules.php?if=*" visibility="hidden"/>
         </Rules>
         <NAT order="30" cssClass="fa fa-exchange fa-fw">
