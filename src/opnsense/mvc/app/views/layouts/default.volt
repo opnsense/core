@@ -116,10 +116,10 @@
 
         <!-- Bootgrind (grid system from http://www.jquery-bootgrid.com/ )  -->
         <link rel="stylesheet" type="text/css" href="/ui/css/jquery.bootgrid.css"/>
-        <script src="/ui/js/jquery.bootgrid.js"></script>
+        <script type="text/javascript" src="/ui/js/jquery.bootgrid.js"></script>
 
         <!-- Bootstrap type ahead -->
-        <script src="/ui/js/bootstrap3-typeahead.min.js"></script>
+        <script type="text/javascript" src="/ui/js/bootstrap3-typeahead.min.js"></script>
 
         <!-- OPNsense standard toolkit -->
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
