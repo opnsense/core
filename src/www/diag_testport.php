@@ -147,7 +147,7 @@ include("head.inc"); ?>
                           </option>
                         </select>
                         <div class="hidden" for="help_for_ipprotocol">
-                          <?=gettext("If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, <br />it will result in an error. For example if you force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will not work."); ?>
+                          <?=gettext("If you force IPv4 or IPv6 and use a hostname that does not contain a result using that protocol, it will result in an error. For example if you force IPv4 and use a hostname that only returns an AAAA IPv6 IP address, it will not work."); ?>
                         </div>
                       </td>
                     </tr>

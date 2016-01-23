@@ -84,9 +84,9 @@ include("head.inc");
 			                      </span><span class="vexpl"><?=gettext("The firewall will normally leave " .
 			                      "the state tables intact when changing rules."); ?><br />
 			                      <br />
-			                      <?=gettext("NOTE: If you reset the firewall state table, the browser " .
-			                      "session may appear to be hung after clicking &quot;Reset&quot;. " .
-			                      "Simply refresh the page to continue."); ?></span></p>
+			                      <?=gettext('Note: If you reset the firewall state table, the browser ' .
+			                      'session may appear to be hung after clicking "Reset". ' .
+			                      'Simply refresh the page to continue.'); ?></span></p>
 
 									<?php if (isset($config['system']['lb_use_sticky'])): ?>
 									<p>
