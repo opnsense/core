@@ -2,8 +2,8 @@
 
 /*
     Copyright (C) 2014-2015 Deciso B.V.
-    Copyright (C) 2005 Scott Ullrich (sullrich@gmail.com)
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2005 Scott Ullrich <sullrich@gmail.com>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($pconfig['apply'])) {
         filter_configure();
         clear_subsystem_dirty('filter');
-        $savemsg = sprintf(gettext("The settings have been applied. The firewall rules are now reloading in the background.%sYou can also %s monitor %s the reload progress"),'<br />',"<a href='status_filter_reload.php'>","</a>");
+        $savemsg = sprintf(
+            gettext(
+                'The settings have been applied and the rules are now reloading ' .
+                'in the background. You can monitor the reload progress %shere%s.'
+            ),
+            '<a href="status_filter_reload.php">',
+            '</a>'
+        );
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single item
         if (!empty($a_filter[$id]['associated-rule-id'])) {
