@@ -34,7 +34,7 @@ import os
 import os.path
 import sys
 import ujson
-from netaddr import *
+import netaddr
 
 if __name__ == '__main__':
     result = []
@@ -64,10 +64,11 @@ if __name__ == '__main__':
                           'manufacturer': '',
                           'hostname': ''
                           }
-                manufacturer_mac = EUI(record['mac'])
-                oui = manufacturer_mac.oui
-                if oui.registration().org:
-                    record['manufacturer'] = oui.registration().org
+                manufacturer_mac = netaddr.EUI(record['mac'])
+                try:
+                    record['manufacturer'] = manufacturer_mac.oui.registration().org
+                except netaddr.NotRegisteredError:
+                    pass
                 if record['ip'] in dhcp_leases:
                     record['hostname'] = dhcp_leases[record['ip']]['hostname']
                 result.append(record)

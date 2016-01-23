@@ -94,10 +94,10 @@ CORE_DEPENDS?=		apinger \
 			php56-xml \
 			php56-zlib \
 			py27-Jinja2 \
+			py27-netaddr \
 			py27-requests \
 			py27-sqlite3 \
 			py27-ujson \
-			py27-netaddr \
 			python27 \
 			radvd \
 			rate \
