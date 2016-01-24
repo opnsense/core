@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     // define form fields
-    $config_fields = array('interface','type','direction','ipprotocol','protocol','icmptype','os','dscp','disabled','log'
+    $config_fields = array('interface','type','direction','ipprotocol','protocol','icmptype','os','disabled','log'
                           ,'descr','tcpflags_any','tcpflags1','tcpflags2','tag','tagged','quick','allowopts'
                           ,'disablereplyto','max','max-src-nodes','max-src-conn','max-src-states','statetype'
                           ,'statetimeout','nopfsync','nosync','max-src-conn-rate','max-src-conn-rates','gateway','sched'
@@ -412,7 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $filterent = array();
         // 1-on-1 copy of form values
         $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
-                            , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'dscp', 'descr', 'gateway'
+                            , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
                             , 'sched', 'associated-rule-id', 'direction', 'quick'
                             , 'max-src-conn-rate', 'max-src-conn-rates') ;
 
@@ -1166,23 +1166,6 @@ include("head.inc");
                           <strong><?=gettext("OS Type:");?></strong><br/>
                           <?=gettext("Note: this only works for TCP rules. General OS choice matches all subtypes.");?>
                         </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Diffserv Code Point");?></td>
-                    <td>
-                        <select name="dscp" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                          <option value=""><?=gettext("none");?></option>
-<?php
-                          $firewall_rules_dscp_types = array("af11","af12","af13","af21","af22","af23","af31","af32","af33","af41"
-                                  ,"af42","af43","VA","EF","cs1","cs2","cs3","cs4","cs5","cs6","cs7","0x01","0x02","0x04");
-                          foreach($firewall_rules_dscp_types as $frdt):?>
-                            <option value="<?=$frdt?>"<?= $pconfig['dscp'] == $frdt ? " selected=\"selected\"" :""; ?>>
-                              <?=$frdt?>
-                            </option>
-<?php
-                        endforeach; ?>
-                        </select>
                     </td>
                   </tr>
                   <tr>

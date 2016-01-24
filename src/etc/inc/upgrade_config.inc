@@ -3274,24 +3274,6 @@ function upgrade_105_to_106() {
 	}
 }
 
-function upgrade_108_to_109()
-{
-	global $config;
-
-	if (!isset($config['filter']['rule']) || !is_array($config['filter']['rule']))
-		return;
-
-	foreach ($config['filter']['rule'] as &$rule) {
-		if (!isset($rule['dscp']) || empty($rule['dscp']))
-			continue;
-
-		$pos = strpos($rule['dscp'], ' ');
-		if ($pos !== false)
-			$rule['dscp'] = substr($rule['dscp'], 0, $pos);
-		unset($pos);
-	}
-}
-
 function upgrade_109_to_110()
 {
 	global $config;

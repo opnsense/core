@@ -2415,7 +2415,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     $int = "";
     $aline = array();
     // initialize array with empty tags
-    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','dscp','route','os','reply','prot','log') as $tag) {
+    foreach (array('schedlabel','divert','icmp-type','icmp6-type','tag','tagged','route','os','reply','prot','log') as $tag) {
         $aline[$tag] = "";
     }
 
@@ -2591,19 +2591,6 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     if (!empty($rule['tagged'])) {
         $aline['tagged'] = " tagged " .$rule['tagged'] . " ";
     }
-    if (!empty($rule['dscp'])) {
-        switch (strtolower($rule['dscp'])) {
-            case 'va':  $aline['dscp'] = " dscp 44 "; break;
-            case 'cs1': $aline['dscp'] = " dscp 8 ";  break;
-            case 'cs2': $aline['dscp'] = " dscp 16 "; break;
-            case 'cs3': $aline['dscp'] = " dscp 24 "; break;
-            case 'cs4': $aline['dscp'] = " dscp 32 "; break;
-            case 'cs5': $aline['dscp'] = " dscp 40 "; break;
-            case 'cs6': $aline['dscp'] = " dscp 48 "; break;
-            case 'cs7': $aline['dscp'] = " dscp 56 "; break;
-            default:    $aline['dscp'] = " dscp " . $rule['dscp'] . " "; break;
-        }
-    }
     $aline['allowopts'] = "";
     if ($type == "pass") {
         if (isset($rule['allowopts'])) {
@@ -2765,13 +2752,13 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] .
           $aline['interface'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] .
           $negate_networks . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
-          $aline['dscp']  . $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'] .
+          $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'] .
           " label \"NEGATE_ROUTE: Negate policy routing for destination\"\n";
     }
     /* piece together the actual user rule */
     $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
       $aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
-      $aline['divert'] . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] . $aline['dscp'] .
+      $aline['divert'] . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
       $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'];
 
     unset($aline);
