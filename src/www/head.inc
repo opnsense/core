@@ -71,6 +71,10 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
         font-size: 90%;
         padding-left: 54px !important;
       }
+
+      .typeahead {
+        overflow: hidden;
+      }
     </style>
 
     <!-- Favicon -->
