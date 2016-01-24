@@ -187,7 +187,7 @@ POSSIBILITY OF SUCH DAMAGE.
     {% endif %}
 {% endfor %}
     {# add custom content #}
-    <li><a data-toggle="tab" href="#remote_acls"><b>Remote Access Control Lists</b></a></li>
+    <li><a data-toggle="tab" href="#remote_acls"><b>{{ lang._('Remote Access Control Lists') }}</b></a></li>
 </ul>
 
 <div class="content-box tab-content">
@@ -222,16 +222,16 @@ POSSIBILITY OF SUCH DAMAGE.
             <tr>
                 <td><div class="control-label">
                     <a id="help_for_proxy.forward.acl.remoteACLs.blacklist" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
-                    <b>Remote Blacklist</b>
+                    <b>{{ lang._('Remote Blacklist') }}</b>
                 </div>
                 </td>
                 <td>
                 <small class="hidden" for="help_for_proxy.forward.acl.remoteACLs.blacklist">
                     {{ lang._('
-                    Add an item to the table to fetch a remote acl for blacklisting.<br/>
-                    You can enable or disable the blacklist list.<br/>
-                    The active blacklists will be merged with the settings under <b>Forward Proxy -> Access Control List</b>.
-                    ') }}
+                    Add an item to the table to fetch a remote acl for blacklisting.%s
+                    You can enable or disable the blacklist list.%s
+                    The active blacklists will be merged with the settings under %sForward Proxy -> Access Control List%s.
+                    ') | e | format('<br/>','<br/>','<b>','</b>') }}
                 </small>
                 </td>
             </tr>
@@ -240,11 +240,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     <table id="grid-remote-blacklists" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEditBlacklist">
                         <thead>
                         <tr>
-                            <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">Enabled</th>
-                            <th data-column-id="filename" data-type="string" data-sortable="false"  data-visible="true">Filename</th>
-                            <th data-column-id="url" data-type="string" data-sortable="false"  data-visible="true">URL</th>
-                            <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">Description</th>
-                            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Edit | Delete</th>
+                            <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="6em">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="filename" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Filename') }}</th>
+                            <th data-column-id="url" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('URL') }}</th>
+                            <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
+                            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit | Delete') }}</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -261,9 +261,9 @@ POSSIBILITY OF SUCH DAMAGE.
                     </table>
                     <div class="col-md-12">
                         <hr/>
-                        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary"  id="fetchandreconfigureAct" type="button"><b>Download ACLs & Apply</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary"  id="ScheduleAct" type="button"><b>Schedule with Cron</b><i id="scheduleAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="fetchandreconfigureAct" type="button"><b>{{ lang._('Download ACLs & Apply') | e }}</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="ScheduleAct" type="button"><b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i></button>
                     </div>
                 </td>
             </tr>
