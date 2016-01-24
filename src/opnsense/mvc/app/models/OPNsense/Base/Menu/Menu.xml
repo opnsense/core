@@ -332,12 +332,12 @@
             </LogFile>
         </L2TP>
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
-            <Server order="10" VisibleName="Server Settings" url="/vpn_openvpn_server.php">
+            <Servers order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
-            </Server>
-            <Client order="20" VisibleName="Client Settings" url="/vpn_openvpn_client.php">
+            </Servers>
+            <Clients order="20" url="/vpn_openvpn_client.php">
                 <Edit url="/vpn_openvpn_client.php?*" visibility="hidden"/>
-            </Client>
+            </Clients>
             <CSC order="30" VisibleName="Client Specific Overrides" url="/vpn_openvpn_csc.php">
                 <Edit url="/vpn_openvpn_csc.php?*" visibility="hidden"/>
             </CSC>
