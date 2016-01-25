@@ -161,7 +161,7 @@ include("head.inc");
                       <?=gettext('Enter the IP address of the firewall to which the selected configuration sections should be synchronized.') ?><br />
                       <div class="well">
                         <lu>
-                          <li><?=gettext('XMLRPC sync is currently only supported over connections using the same protocol and port as this system - make sure the remote system\'s port and protocol are set accordingly!') ?></li>
+                          <li><?=gettext('When using XMLRPC sync to a backup machine running on another port/protocol please input the full url') ?> (<?=gettext("example :");?> https://192.168.1.1:444/)</li>
                           <li><b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b></li>
                         </lu>
                       </div>
