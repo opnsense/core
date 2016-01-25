@@ -161,7 +161,7 @@ include("head.inc");
                       <?=gettext('Enter the IP address of the firewall to which the selected configuration sections should be synchronized.') ?><br />
                       <div class="well">
                         <lu>
-                          <li><?=gettext('When using XMLRPC sync to a backup machine running on another port/protocol please input the full url (example: https://192.168.1.1:444/)') ?></li>
+                          <li><?=sprintf(gettext('When using XMLRPC sync to a backup machine running on another port/protocol please input the full url (example: %s)'), 'https://192.168.1.1:444/') ?></li>
                           <li><b><?=gettext('Do not use the Synchronize Config to IP and password option on backup cluster members!') ?></b></li>
                         </lu>
                       </div>
