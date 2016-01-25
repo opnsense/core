@@ -2,6 +2,7 @@
 <?php
 
 /*
+    Copyright (C) 2016 Deciso B.V.
     Copyright (C) 2004-2006 Scott Ullrich
     Copyright (C) 2005 Bill Marquette
     Copyright (C) 2006 Peter Allgeyer
@@ -38,11 +39,11 @@ require_once("interfaces.inc");
 require_once("XMLRPC_Client.inc") ;
 require_once("util.inc");
 
-/*
- *  backup_vip_config_section($section): returns as an xml file string of
- *                                   the configuration section
+/**
+ * fetch carp vips from config with modified advskew for the backup host to use
+ * @return array
  */
-function backup_vip_config_section() {
+function get_vip_config_section() {
     global $config;
 
     if (!is_array($config['virtualip']['vip'])) {
@@ -54,46 +55,28 @@ function backup_vip_config_section() {
         if ($section['mode'] != "carp") {
             continue;
         }
-        if ($section['advskew'] <> "") {
-            $section_val = intval($section['advskew']);
-            $section_val=$section_val+100;
-            if ($section_val > 254) {
-                $section_val = 254;
+        if (isset($section['advskew']) && $section['advskew'] <> "") {
+            $advskew = intval($section['advskew'])+100;
+            if ($advskew > 254) {
+                $advskew = 254;
             }
-            $section['advskew'] = $section_val;
-        }
-        if ($section['advbase'] <> "") {
-            $section_val = intval($section['advbase']);
-            if ($section_val > 254) {
-                $section_val = 254;
-            }
-            $section['advbase'] = $section_val;
+            $section['advskew'] = $advskew;
         }
         $temp['vip'][] = $section;
     }
     return $temp;
 }
 
-function remove_special_characters($string) {
-    $match_array = "";
-    preg_match_all("/[a-zA-Z0-9\_\-]+/",$string,$match_array);
-    $string = "";
-    foreach ($match_array[0] as $ma) {
-        if ($string <> "") {
-            $string .= " ";
-        }
-        $string .= $ma;
-    }
-    return $string;
-}
-
+/**
+ *  validate remote config version
+ * @param string $url backup url
+ * @param string $username remote username
+ * @param string $password remote password
+ * @param string $method xmlrpc method to call
+ * @return boolean
+ */
 function carp_check_version($url, $username, $password, $method = 'opnsense.firmware_version') {
     global $config, $g;
-
-    if (file_exists('/var/run/booting')) {
-        return;
-    }
-
 
     $client = new SimpleXMLRPC_Client($url,240);
     $client->setCredentials($username, $password);
@@ -113,7 +96,7 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
         $error = "An authentication failure occurred while trying to access {$url} ({$method}).";
         log_error($error);
         file_notice("sync_settings", $error, "Settings Sync", "");
-        exit;
+        return false;
     }
 
     if (!isset($remote_version['config_version']) ||
@@ -126,111 +109,117 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
     }
 }
 
+/**
+ * traverse config structure and remove (unset) all "nosync" items
+ * @param array $cnf_structure pointer to config data
+ */
+function remove_nosync(&$cnf_structure)
+{
+    if (!is_array($cnf_structure)) {
+        return false;
+    } else {
+        foreach ($cnf_structure as $cnf_key => &$cnf_data) {
+            if (is_array($cnf_data) && isset($cnf_data['nosync'])) {
+                unset($cnf_structure[$cnf_key]);
+            } else {
+                remove_nosync($cnf_data);
+            }
+        }
+    }
+}
+
+/**
+ * find config section by reference (dot notation)
+ * for example system.user.0 points to the first enty in <system><user> xml config section
+ * @param array $cnf_structure pointer to config data
+ * @param string $reference reference pointer (system.user for example)
+ * @return bool data found and copied yes/no
+ */
+function copy_conf_section(&$cnf_structure_in, &$cnf_structure_out,  $reference)
+{
+    $cnf_out_root = array();
+    $cnf_out = &$cnf_out_root;
+    $cnf_path = explode('.', $reference);
+    $cnf_path_depth = 1;
+    foreach ($cnf_path as $cnf_section) {
+        if (isset($cnf_structure_in[$cnf_section])) {
+            // reference found, create output structure when the data to copy lies deeper.
+            // for example wireless.clone.0 would only copy the first wireless clone, returns false on not found
+            $cnf_structure_in = &$cnf_structure_in[$cnf_section];
+            if ($cnf_path_depth < count($cnf_path)) {
+                if (!isset($cnf_out[$cnf_section])) {
+                    $cnf_out[$cnf_section] = array();
+                }
+                $cnf_out = &$cnf_out[$cnf_section];
+            } else {
+              $cnf_out[$cnf_section] = $cnf_structure_in;
+            }
+        } else {
+            // reference not found
+            return false;
+        }
+        $cnf_path_depth++;
+    }
+    // only merge result if input data was found
+    $cnf_structure_out = array_merge($cnf_structure_out, $cnf_out_root);
+    return true;
+}
+
+/**
+ * traverse config structure and remove (unset) all "nosync" items
+ * @param string $url backup url
+ * @param string $username remote username
+ * @param string $password remote password
+ * @param array $sections sections to transfer
+ * @param string $method xmlrpc method to call
+ * @return boolean
+ */
 function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsense.restore_config_section') {
     global $config, $g;
 
-    if (file_exists('/var/run/booting')) {
-      return;
-    }
-
     update_filter_reload_status("Syncing CARP data to {$url}");
 
-    /* make a copy of config */
-    $config_copy = $config;
-
-    /* strip out nosync items */
-    if (is_array($config_copy['nat']) && is_array($config_copy['nat']['outbound']['rule'])) {
-        $rulescnt = count($config_copy['nat']['outbound']['rule']);
-        for ($x = 0; $x < $rulescnt; $x++) {
-            $config_copy['nat']['outbound']['rule'][$x]['descr'] = remove_special_characters($config_copy['nat']['outbound']['rule'][$x]['descr']);
-            if (isset ($config_copy['nat']['outbound']['rule'][$x]['nosync'])) {
-                unset ($config_copy['nat']['outbound']['rule'][$x]);
-            }
-        }
-    }
-    if (is_array($config_copy['nat']) && is_array($config_copy['nat']['rule'])) {
-        $natcnt = count($config_copy['nat']['rule']);
-        for ($x = 0; $x < $natcnt; $x++) {
-            $config_copy['nat']['rule'][$x]['descr'] = remove_special_characters($config_copy['nat']['rule'][$x]['descr']);
-            if (isset ($config_copy['nat']['rule'][$x]['nosync'])) {
-                unset ($config_copy['nat']['rule'][$x]);
-            }
-        }
-    }
-    if (is_array($config_copy['filter']) && is_array($config_copy['filter']['rule'])) {
-        $filtercnt = count($config_copy['filter']['rule']);
-        for ($x = 0; $x < $filtercnt; $x++) {
-            $config_copy['filter']['rule'][$x]['descr'] = remove_special_characters($config_copy['filter']['rule'][$x]['descr']);
-            if (isset ($config_copy['filter']['rule'][$x]['nosync'])) {
-                unset ($config_copy['filter']['rule'][$x]);
-            }
-        }
-    }
-    if (isset($config_copy['aliases']) && is_array($config_copy['aliases']) && is_array($config_copy['aliases']['alias'])) {
-        $aliascnt = count($config_copy['aliases']['alias']);
-        for ($x = 0; $x < $aliascnt; $x++) {
-            $config_copy['aliases']['alias'][$x]['descr'] = remove_special_characters($config_copy['aliases']['alias'][$x]['descr']);
-            if (isset ($config_copy['aliases']['alias'][$x]['nosync'])) {
-                unset ($config_copy['aliases']['alias'][$x]);
-            }
-        }
-    }
-    if (is_array($config_copy['dnsmasq']) && is_array($config_copy['dnsmasq']['hosts'])) {
-        $dnscnt = count($config_copy['dnsmasq']['hosts']);
-        for ($x = 0; $x < $dnscnt; $x++) {
-            $config_copy['dnsmasq']['hosts'][$x]['descr'] = remove_special_characters($config_copy['dnsmasq']['hosts'][$x]['descr']);
-            if (isset ($config_copy['dnsmasq']['hosts'][$x]['nosync'])) {
-                unset ($config_copy['dnsmasq']['hosts'][$x]);
-            }
-        }
-    }
-    if (isset($config_copy['ipsec']) && is_array($config_copy['ipsec']) && is_array($config_copy['ipsec']['tunnel'])) {
-        $ipseccnt = count($config_copy['ipsec']['tunnel']);
-        for ($x = 0; $x < $ipseccnt; $x++) {
-            $config_copy['ipsec']['tunnel'][$x]['descr'] = remove_special_characters($config_copy['ipsec']['tunnel'][$x]['descr']);
-            if (isset ($config_copy['ipsec']['tunnel'][$x]['nosync'])) {
-                unset ($config_copy['ipsec']['tunnel'][$x]);
-            }
-        }
-    }
-
-    if (is_array($config_copy['dhcpd'])) {
-        foreach($config_copy['dhcpd'] as $dhcpif => $dhcpifconf) {
-            if($dhcpifconf['failover_peerip'] <> "") {
-                $int = guess_interface_from_ip($dhcpifconf['failover_peerip']);
-                $intip = find_interface_ip($int);
-                $config_copy['dhcpd'][$dhcpif]['failover_peerip'] = $intip;
-            }
-        }
-    }
-
+    $transport_data = array();
     foreach ($sections as $section) {
-        /*  we can't use array_intersect_key()
-         *  due to the vip 'special case'
-         */
         switch ($section) {
             case 'virtualip':
-                $xml[$section] = backup_vip_config_section();
+                // only carp type VIP's may be transfered to the backup host
+                $transport_data[$section] = get_vip_config_section();
                 break;
-            case 'user':
-                $xml['system'][$section] = $config_copy['system'][$section];
-                $xml['system']['nextuid'] = $config_copy['system']['nextuid'];
-                break;
-            case 'group':
-                $xml['system'][$section] = $config_copy['system'][$section];
-                $xml['system']['nextgid'] = $config_copy['system']['nextgid'];
-                break;
-            case 'authserver':
-                $xml['system'][$section] = $config_copy['system'][$section];
             default:
-                $xml[$section] = $config_copy[$section];
+                copy_conf_section($config, $transport_data, $section);
+                $transport_data[$section] = $config[$section];
         }
+    }
+
+    // remove items which may not be synced
+    remove_nosync($transport_data);
+
+    // ***** post proccessing *****
+    // dhcpd, unchanged from legacy code (may need some inspection later)
+    if (is_array($transport_data['dhcpd'])) {
+        foreach($transport_data['dhcpd'] as $dhcpif => $dhcpifconf) {
+            if(isset($dhcpifconf['failover_peerip']) && $dhcpifconf['failover_peerip'] <> "") {
+                $int = guess_interface_from_ip($dhcpifconf['failover_peerip']);
+                $intip = find_interface_ip($int);
+                $transport_data['dhcpd'][$dhcpif]['failover_peerip'] = $intip;
+            }
+        }
+    }
+
+    // when syncing users, send last used uid/gid over
+    if (in_array('user', $sections)) {
+        if (!in_array('system', $transport_data)) {
+            $transport_data['system'] = array();
+        }
+        $transport_data['system']['nextuid'] = $config['system']['nextuid'];
+        $transport_data['system']['nextgid'] = $config['system']['nextgid'];
     }
 
 
     $client = new SimpleXMLRPC_Client($url,240);
     $client->setCredentials($username, $password);
-    if ($client->query($method, $xml)) {
+    if ($client->query($method, $transport_data)) {
         $response = $client->getResponse();
     } else {
         // propagate error to log
@@ -252,14 +241,11 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     return true;
 }
 
-global $g;
-
 if (file_exists('/var/run/booting')) {
     return;
 }
 
-if (is_array($config['hasync'])) {
-    $sections = array();
+if (isset($config['hasync']) && is_array($config['hasync'])) {
     update_filter_reload_status("Building high availability information");
     $hasync = $config['hasync'];
 
@@ -271,11 +257,16 @@ if (is_array($config['hasync'])) {
         $hasync['synchronizetoip'] = "[{$hasync['synchronizetoip']}]";
     }
 
-    /*
-    * XXX: The way we're finding the port right now is really suboptimal -
-    *     we can't assume that the other machine is setup identically.
-    */
-    if (!empty($config['system']['webgui']['protocol'])) {
+    // determine target url
+    if (substr($hasync['synchronizetoip'],0, 4) == 'http') {
+        // URL provided
+        if (substr($hasync['synchronizetoip'], strlen($hasync['synchronizetoip'])-1, 1) == '/') {
+            $synchronizeto = $hasync['synchronizetoip']."xmlrpc.php";
+        } else {
+            $synchronizeto = $hasync['synchronizetoip']."/xmlrpc.php";
+        }
+    } elseif (!empty($config['system']['webgui']['protocol'])) {
+        // no url provided, assume the backup is using the same settings as our box.
         $port = $config['system']['webgui']['port'];
         if (!empty($port)) {
             $synchronizeto =  $config['system']['webgui']['protocol'] . '://'.$hasync['synchronizetoip'].':'.$port."/xmlrpc.php";
@@ -284,102 +275,31 @@ if (is_array($config['hasync'])) {
         }
     }
 
+    // map configuration directives to config sections
+    $section_cnf = array();
+    $section_cnf['synchronizerules'] = 'filter';
+    $section_cnf['synchronizenat'] = 'nat';
+    $section_cnf['synchronizealiases'] = 'aliases';
+    $section_cnf['synchronizedhcpd'] = 'dhcpd';
+    $section_cnf['synchronizewol'] = 'wol';
+    $section_cnf['synchronizestaticroutes'] = 'staticroutes,gateways';
+    $section_cnf['synchronizevirtualip'] = 'virtualip';
+    $section_cnf['synchronizelb'] = 'load_balancer';
+    $section_cnf['synchronizeipsec'] = 'ipsec';
+    $section_cnf['synchronizeopenvpn'] = 'openvpn';
+    $section_cnf['synchronizecerts'] = 'cert,ca,crl';
+    $section_cnf['synchronizeusers'] = 'system.user,system.group';
+    $section_cnf['synchronizeauthservers'] = 'system.authserver';
+    $section_cnf['synchronizednsforwarder'] = 'dnsmasq';
+    $section_cnf['synchronizeschedules'] = 'schedules';
 
-    if (isset($hasync['synchronizerules'])) {
-        if (!is_array($config['filter'])) {
-            $config['filter'] = array();
+    $sections = array();
+    foreach ($section_cnf as $cnf_key => $cnf_sections) {
+        if (isset($hasync[$cnf_key])) {
+            foreach (explode(',', $cnf_sections) as $section) {
+                $sections[] = $section;
+            }
         }
-        $sections[] = 'filter';
-    }
-    if (isset($hasync['synchronizenat'])) {
-        if (!is_array($config['nat'])) {
-            $config['nat'] = array();
-        }
-        $sections[] = 'nat';
-    }
-    if (isset($hasync['synchronizealiases'])) {
-        if (!isset($config['aliases']) || !is_array($config['aliases'])) {
-            $config['aliases'] = array();
-        }
-        $sections[] = 'aliases';
-    }
-    if (isset($hasync['synchronizedhcpd']) && is_array($config['dhcpd'])) {
-        $sections[] = 'dhcpd';
-    }
-    if (isset($hasync['synchronizewol'])) {
-        if (!is_array($config['wol'])) {
-            $config['wol'] = array();
-        }
-        $sections[] = 'wol';
-    }
-    if (isset($hasync['synchronizestaticroutes'])) {
-        if (!is_array($config['staticroutes'])) {
-            $config['staticroutes'] = array();
-        }
-        if (!isset($config['staticroutes']['route']) || !is_array($config['staticroutes']['route'])) {
-            $config['staticroutes']['route'] = array();
-        }
-        $sections[] = 'staticroutes';
-        if (!is_array($config['gateways'])) {
-            $config['gateways'] = array();
-        }
-        $sections[] = 'gateways';
-    }
-    if (isset($hasync['synchronizevirtualip'])) {
-        if (!isset($config['virtualip']) || !is_array($config['virtualip'])) {
-            $config['virtualip'] = array();
-        }
-        $sections[] = 'virtualip';
-    }
-    if (isset($hasync['synchronizelb'])) {
-        if (!is_array($config['load_balancer'])) {
-            $config['load_balancer'] = array();
-        }
-        $sections[] = 'load_balancer';
-    }
-    if (isset($hasync['synchronizeipsec'])) {
-        if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
-            $config['ipsec'] = array();
-        }
-        $sections[] = 'ipsec';
-    }
-    if (isset($hasync['synchronizeopenvpn'])) {
-        if (!isset($config['openvpn']) || !is_array($config['openvpn'])) {
-            $config['openvpn'] = array();
-        }
-        $sections[] = 'openvpn';
-    }
-    if (isset($hasync['synchronizecerts']) || isset($hasync['synchronizeopenvpn'])) {
-        if (!is_array($config['cert'])) {
-            $config['cert'] = array();
-        }
-        $sections[] = 'cert';
-
-        if (!is_array($config['ca'])) {
-            $config['ca'] = array();
-        }
-        $sections[] = 'ca';
-
-        if (!isset($config['crl']) || !is_array($config['crl'])) {
-            $config['crl'] = array();
-        }
-        $sections[] = 'crl';
-    }
-    if (isset($hasync['synchronizeusers'])) {
-        $sections[] = 'user';
-        $sections[] = 'group';
-    }
-    if (isset($hasync['synchronizeauthservers'])) {
-        $sections[] = 'authserver';
-    }
-    if (isset($hasync['synchronizednsforwarder']) && is_array($config['dnsmasq'])) {
-        $sections[] = 'dnsmasq';
-    }
-    if (isset($hasync['synchronizeschedules']) || isset($hasync['synchronizerules'])) {
-        if (!isset($config['schedules']) || !is_array($config['schedules'])) {
-            $config['schedules'] = array();
-        }
-        $sections[] = 'schedules';
     }
 
     if (count($sections) <= 0) {
@@ -387,12 +307,8 @@ if (is_array($config['hasync'])) {
         exit;
     }
 
-    if (empty($hasync['username'])) {
-        $username = "admin";
-    } else {
-        $username = $hasync['username'];
-    }
 
+    $username = empty($hasync['username']) ? "root" : $hasync['username'];
     if (!carp_check_version($synchronizeto, $username, $hasync['password'])) {
         exit;
     }
@@ -406,7 +322,7 @@ if (is_array($config['hasync'])) {
         // TODO: the machine tends to get sloppy
         exit;
     }
-    $client = new SimpleXMLRPC_Client($synchronizeto,240);
+    $client = new SimpleXMLRPC_Client($synchronizeto, 240);
     $client->setCredentials($username, $hasync['password']);
     if ($client->query("opnsense.filter_configure")) {
         $response = $client->getResponse();
@@ -427,5 +343,5 @@ if (is_array($config['hasync'])) {
         exit;
     }
 
-    log_error("Filter sync successfully completed with {$synchronizetoip}:{$port}.");
+    log_error("Filter sync successfully completed with {$synchronizeto}.");
 }
