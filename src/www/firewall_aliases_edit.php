@@ -459,14 +459,14 @@ include("head.inc");
                             <?=gettext("Hosts")?><br/>
                           </span>
                           <small>
-                            <?=gettext("Enter as many hosts as you would like.  Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used.");?>
+                            <?=gettext("Enter as many hosts as you would like. Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used.");?>
                             <br/>
                           </small>
                           <span class="text-info">
                             <?=gettext("Ports")?><br/>
                           </span>
                           <small>
-                            <?=gettext("Enter as many ports as you wish.  Port ranges can be expressed by separating with a colon.");?>
+                            <?=gettext("Enter as many ports as you wish. Port ranges can be expressed by separating with a colon.");?>
                             <br/>
                           </small>
                           <span class="text-info">
