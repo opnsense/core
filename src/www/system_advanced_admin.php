@@ -453,10 +453,11 @@ include("head.inc");
                     <input name="nohttpreferercheck" type="checkbox" value="yes" <?= !empty($pconfig['nohttpreferercheck']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Disable HTTP_REFERER enforcement check"); ?></strong>
                     <div class="hidden" for="help_for_nohttpreferercheck">
-                      <?=gettext("When this is unchecked, access to the webConfigurator " .
+                      <?=sprintf(gettext("When this is unchecked, access to the webConfigurator " .
                                           "is protected against HTTP_REFERER redirection attempts. " .
                                           "Check this box to disable this protection if you find that it interferes with " .
-                                          "webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from <a target='_blank' href='http://en.wikipedia.org/wiki/HTTP_referrer'>Wikipedia</a>."); ?>
+                                          "webConfigurator access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from %sWikipedia%s."),
+                                          '<a target="_blank" href="http://en.wikipedia.org/wiki/HTTP_referrer">','</a>') ?>
                     </div>
                   </td>
                 </tr>
