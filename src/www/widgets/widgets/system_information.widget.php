@@ -273,7 +273,7 @@ endforeach; ?>
 <script type="text/javascript">
 //<![CDATA[
 	function checkupdate() {
-		jQuery('#updatestatus').html('<span class="text-info"><?= gettext('Fetching... (may take up to 30 seconds)') ?></span>');
+		jQuery('#updatestatus').html('<span class="text-info"><?= html_safe(gettext('Fetching... (may take up to 30 seconds)')) ?></span>');
 		jQuery.ajax({
 			type: "POST",
 			url: '/widgets/widgets/system_information.widget.php',
