@@ -1,6 +1,6 @@
 <?php
 /*
-        Copyright (C) 2015 Deciso B.V.
+        Copyright (C) 2015-2016 Deciso B.V.
         Copyright (C) 2009, 2010 Scott Ullrich
         Copyright (C) 2005 Colin Smith
         All rights reserved.
@@ -33,11 +33,7 @@
  */
 function xmlrpc_publishable_legacy()
 {
-    $publish = array(
-        'filter_configure_xmlrpc','interfaces_carp_configure_xmlrpc',
-        'backup_config_section_xmlrpc','restore_config_section_xmlrpc', 'merge_config_section_xmlrpc',
-        'firmware_version_xmlrpc','reboot_xmlrpc','get_notices_xmlrpc'
-    );
+    $publish = array('filter_configure_xmlrpc','restore_config_section_xmlrpc','firmware_version_xmlrpc');
 
     return $publish;
 }
@@ -78,81 +74,25 @@ function does_vip_exist($vip) {
     return false;
 }
 
-/*
-  This function was borrowed from a comment on PHP.net at the following URL:
-  http://www.php.net/manual/en/function.array-merge-recursive.php#73843
- */
-function array_merge_recursive_unique($array0, $array1) {
-    $arrays = func_get_args();
-    $remains = $arrays;
-
-    // We walk through each arrays and put value in the results (without
-    // considering previous value).
-    $result = array();
-
-    // loop available array
-    foreach($arrays as $array) {
-        // The first remaining array is $array. We are processing it. So
-        // we remove it from remaing arrays.
-        array_shift($remains);
-        // We don't care non array param, like array_merge since PHP 5.0.
-        if(is_array($array)) {
-            // Loop values
-            foreach($array as $key => $value) {
-                if(is_array($value)) {
-                    // we gather all remaining arrays that have such key available
-                    $args = array();
-                    foreach($remains as $remain) {
-                        if(array_key_exists($key, $remain)) {
-                            array_push($args, $remain[$key]);
-                        }
-                    }
-
-                    if(count($args) > 2) {
-                        // put the recursion
-                        $result[$key] = call_user_func_array(__FUNCTION__, $args);
-                    } else {
-                        foreach($value as $vkey => $vval) {
-                            if (!isset($result[$key]) || !is_array($result[$key])) {
-                                $result[$key] = array();
-                            }
-                            $result[$key][$vkey] = $vval;
-                        }
-                    }
-                } else {
-                    // simply put the value
-                    $result[$key] = $value;
-                }
-            }
-        }
-    }
-    return $result;
-}
-
-
-
-
 /**
- * @param null $category
- * @return mixed
+ * merge attributes from source array to destination
+ * updates leaves and overwrites arrays containing a single entry (container types).
+ * @param array $cnf_source source data
+ * @param array $cnf_dest target
  */
-function get_notices_xmlrpc($category = null)
+function merge_config_attributes(&$cnf_source, &$cnf_dest)
 {
-    if ($category==null) {
-        return get_notices();
-    } else {
-        return get_notices($category);
-    }
-}
-
-/**
- * perform a system reboot
- * @return bool true
- */
-function reboot_xmlrpc()
-{
-    mwexec_bg("/usr/local/etc/rc.reboot");
-    return true;
+   foreach ($cnf_source as $cnf_key => &$cnf_value) {
+       if (is_array($cnf_value)) {
+           if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || count($cnf_dest[$cnf_key]) == 1) {
+               // (re)set destination array when new or containing only one target item
+               $cnf_dest[$cnf_key] = array();
+           }
+           merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
+       } else {
+           $cnf_dest[$cnf_key] = $cnf_value;
+       }
+   }
 }
 
 /**
@@ -165,17 +105,6 @@ function firmware_version_xmlrpc()
     return host_firmware_version();
 }
 
-/**
- * interfaces_vips_configure
- * @return mixed
- */
-function interfaces_carp_configure_xmlrpc()
-{
-    require_once("interfaces.inc");
-
-    interfaces_vips_configure();
-    return true;
-}
 
 /**
  * filter reconfigure
@@ -214,21 +143,6 @@ function filter_configure_xmlrpc()
     return true;
 }
 
-
-/**
- * @param $confData array containing config data
- * @return bool
- */
-function merge_config_section_xmlrpc($confData)
-{
-    global $config;
-    $config_new = array_merge_recursive($config, $confData);
-    $config = $config_new;
-    $mergedkeys = implode(",", array_keys($confData));
-    write_config(sprintf(gettext("Merged in config (%s sections) from XMLRPC client."), $mergedkeys));
-    return true;
-}
-
 /**
  * restore config section
  * @param $new_config
@@ -241,11 +155,10 @@ function restore_config_section_xmlrpc($new_config)
     require_once("interfaces.inc");
     require_once("filter.inc");
 
-    // TODO: initial cleanup operation performed, but a full rewrite is probably a better plan.
+    // save old config
     $old_config = $config;
 
-    // Some sections should just be copied and not merged or we end
-    //   up unable to sync the deletion of the last item in a section
+    // Some sections should just be copied and not merged
     $sync_full = array('ipsec', 'aliases', 'wol', 'load_balancer', 'openvpn', 'cert', 'ca', 'crl', 'schedules', 'filter', 'nat', 'dhcpd', 'dhcpv6');
     $sync_full_done = array();
     foreach ($sync_full as $syncfull) {
@@ -261,30 +174,23 @@ function restore_config_section_xmlrpc($new_config)
     if (isset($new_config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
             if ($vip['mode'] == "carp") {
-                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
-            } elseif ($vip['mode'] == "ipalias" && (strstr($vip['interface'], "_vip") || strstr($vip['interface'], "lo0"))) {
-                $oldvips[$vip['subnet']] = "{$vip['interface']}{$vip['subnet']}{$vip['subnet_bits']}";
-            } elseif (($vip['mode'] == "ipalias" || $vip['mode'] == 'proxyarp') && !(strstr($vip['interface'], "_vip") || strstr($vip['interface'], "lo0"))) {
+                // rc.filter_synchronize only sends carp vips, keep the rest like it was
+                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = $vip ;
+                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"]['cmp'] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
+            } else {
                 $vipbackup[] = $vip;
             }
         }
     }
 
-    // For vip section, first keep items sent from the master
-    $config = array_merge_recursive_unique($config, $new_config);
+    // merge config attributes.
+    merge_config_attributes($new_config, $config);
 
-    /* Then add ipalias and proxyarp types already defined on the backup */
     if (count($vipbackup) > 0) {
-        if (!isset($config['virtualip'])) {
-            $config['virtualip'] = array();
-        }
-        if (!isset($config['virtualip']['vip'])) {
-            $config['virtualip']['vip'] = array();
-        }
+        // if $new_config contained VIPS and the old config contained non carp vips, prepend original vips
         foreach ($vipbackup as $vip) {
             array_unshift($config['virtualip']['vip'], $vip);
         }
-
     }
 
     /* Log what happened */
@@ -292,8 +198,7 @@ function restore_config_section_xmlrpc($new_config)
     write_config(sprintf(gettext("Merged in config (%s sections) from XMLRPC client."), $mergedkeys));
 
     /*
-     * The real work on handling the vips specially
-     * This is a copy of intefaces_vips_configure with addition of not reloading existing/not changed carps
+     * Handle virtual ips
      */
     if (isset($new_config['virtualip']['vip'])) {
         $carp_setuped = false;
@@ -301,21 +206,19 @@ function restore_config_section_xmlrpc($new_config)
         if (isset($config['virtualip']['vip'])) {
           foreach ($config['virtualip']['vip'] as $vip) {
               if ($vip['mode'] == "carp" && isset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"])) {
-                  if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"] == "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}") {
+                  $is_changed = false;
+                  foreach (array('password', 'advskew', 'subnet', 'subnet_bits', 'advbase') as $chk_key) {
+                      if ($oldvips["{$vip['interface']}_vip{$vip['vhid']}"][$chk_key] != $vip[$chk_key]) {
+                          $is_changed = true;
+                          break;
+                      }
+                  }
+                  if (!$is_changed) {
+                      unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
                       if (does_vip_exist($vip)) {
-                          unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
                           continue; // Skip reconfiguring this vips since nothing has changed.
                       }
                   }
-                  unset($oldvips["{$vip['interface']}_vip{$vip['vhid']}"]);
-              } else if ($vip['mode'] == "ipalias" && strstr($vip['interface'], "_vip") && isset($oldvips[$vip['subnet']])) {
-                  if ($oldvips[$vip['subnet']] == "{$vip['interface']}{$vip['subnet']}{$vip['subnet_bits']}") {
-                      if (does_vip_exist($vip)) {
-                          unset($oldvips[$vip['subnet']]);
-                          continue; // Skip reconfiguring this vips since nothing has changed.
-                      }
-                  }
-                  unset($oldvips[$vip['subnet']]);
               }
 
               switch ($vip['mode']) {
@@ -326,14 +229,18 @@ function restore_config_section_xmlrpc($new_config)
                       interface_ipalias_configure($vip);
                       break;
                   case "carp":
-                      if (!$carp_setuped) {
-                          $carp_setuped = true;
-                      }
+                      $carp_setuped = true;
                       interface_carp_configure($vip);
                       break;
               }
           }
         }
+
+        // remove old (carp) virtual ip's
+        foreach ($oldvips as $oldvip) {
+            interface_vip_bring_down($oldvip);
+        }
+
         if ($carp_setuped) {
             interfaces_carp_setup();
         }
@@ -351,20 +258,4 @@ function restore_config_section_xmlrpc($new_config)
     unset($old_config);
 
     return true;
-}
-
-/**
- * @param $sectionKeys
- * @return array config data
- */
-function backup_config_section_xmlrpc($sectionKeys)
-{
-    global $config;
-    if (!is_array($sectionKeys)) {
-        // single item
-        return array_intersect_key($config, array($sectionKeys => 0));
-    } else {
-        // backup more sections at once
-        return array_intersect_key($config, array_flip($sectionKeys));
-    }
 }
