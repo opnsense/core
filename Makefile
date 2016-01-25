@@ -32,9 +32,9 @@ CORE_REPOSITORY?=	latest
 .endif
 CORE_PACKAGESITE?=	http://pkg.opnsense.org
 
-CORE_NAME?=		opnsense-devel
+CORE_NAME?=		opnsense
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_COMMENT?=		OPNsense development package
+CORE_COMMENT?=		OPNsense release package
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
 CORE_MESSAGE?=		ACME delivery for the crafty coyote!
