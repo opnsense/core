@@ -133,12 +133,10 @@ function remove_nosync(&$cnf_structure)
  * for example system.user.0 points to the first enty in <system><user> xml config section
  * @param array $cnf_structure pointer to config data
  * @param string $reference reference pointer (system.user for example)
- * @return bool data found and copied yes/no
+ * @return null
  */
 function copy_conf_section(&$cnf_structure_in, &$cnf_structure_out,  $reference)
 {
-    $cnf_out_root = array();
-    $cnf_out = &$cnf_out_root;
     $cnf_path = explode('.', $reference);
     $cnf_path_depth = 1;
     foreach ($cnf_path as $cnf_section) {
@@ -147,22 +145,16 @@ function copy_conf_section(&$cnf_structure_in, &$cnf_structure_out,  $reference)
             // for example wireless.clone.0 would only copy the first wireless clone, returns false on not found
             $cnf_structure_in = &$cnf_structure_in[$cnf_section];
             if ($cnf_path_depth < count($cnf_path)) {
-                if (!isset($cnf_out[$cnf_section])) {
-                    $cnf_out[$cnf_section] = array();
+                if (!isset($cnf_structure_out[$cnf_section])) {
+                    $cnf_structure_out[$cnf_section] = array();
                 }
-                $cnf_out = &$cnf_out[$cnf_section];
+                $cnf_structure_out = &$cnf_structure_out[$cnf_section];
             } else {
-              $cnf_out[$cnf_section] = $cnf_structure_in;
+              $cnf_structure_out[$cnf_section] = $cnf_structure_in;
             }
-        } else {
-            // reference not found
-            return false;
         }
         $cnf_path_depth++;
     }
-    // only merge result if input data was found
-    $cnf_structure_out = array_merge($cnf_structure_out, $cnf_out_root);
-    return true;
 }
 
 /**
@@ -188,7 +180,6 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
                 break;
             default:
                 copy_conf_section($config, $transport_data, $section);
-                $transport_data[$section] = $config[$section];
         }
     }
 
@@ -215,7 +206,6 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
         $transport_data['system']['nextuid'] = $config['system']['nextuid'];
         $transport_data['system']['nextgid'] = $config['system']['nextgid'];
     }
-
 
     $client = new SimpleXMLRPC_Client($url,240);
     $client->setCredentials($username, $password);
@@ -253,7 +243,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
         log_error("Config sync not being done because of missing sync IP (this is normal on secondary systems).");
         exit;
     }
-    if(is_ipaddrv6($hasync['synchronizetoip'])) {
+    if (is_ipaddrv6($hasync['synchronizetoip'])) {
         $hasync['synchronizetoip'] = "[{$hasync['synchronizetoip']}]";
     }
 
