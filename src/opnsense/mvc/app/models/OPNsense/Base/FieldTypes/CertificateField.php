@@ -45,9 +45,28 @@ class CertificateField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string certificate type cert/ca, reflects config section to use as source
+     */
+    private $certificateType = "cert";
+
+    /**
      * @var array collected options
      */
     private static $internalOptionList = array();
+
+
+    /**
+     * set certificate type (cert/ca)
+     * @param $value certificate type
+     */
+    public function setType($value)
+    {
+        if (trim(strtolower($value)) == "ca") {
+            $this->certificateType = "ca";
+        } else {
+            $this->certificateType = "cert";
+        }
+    }
 
     /**
      * generate validation data (list of certificates)
@@ -56,7 +75,7 @@ class CertificateField extends BaseField
     {
         if (count($this->internalOptionList) ==0) {
             $configObj = Config::getInstance()->object();
-            foreach ($configObj->cert as $cert) {
+            foreach ($configObj->{$this->certificateType} as $cert) {
                 self::$internalOptionList[(string)$cert->refid] = (string)$cert->descr ;
             }
         }
