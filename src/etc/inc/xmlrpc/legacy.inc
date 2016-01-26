@@ -76,7 +76,7 @@ function does_vip_exist($vip) {
 
 /**
  * merge attributes from source array to destination
- * updates leaves and overwrites arrays containing a single entry (container types).
+ * updates leaves and overwrites sequenced arrays (container types).
  * @param array $cnf_source source data
  * @param array $cnf_dest target
  */
@@ -84,8 +84,9 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
 {
    foreach ($cnf_source as $cnf_key => &$cnf_value) {
        if (is_array($cnf_value)) {
-           if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) || count($cnf_dest[$cnf_key]) == 1) {
-               // (re)set destination array when new or containing only one target item
+           if (!isset($cnf_dest[$cnf_key]) || !is_array($cnf_dest[$cnf_key]) ||
+                (count($cnf_dest[$cnf_key]) > 0 && isset($cnf_dest[$cnf_key][0]))) {
+               // (re)set destination array when new or containing a sequenced list of items
                $cnf_dest[$cnf_key] = array();
            }
            merge_config_attributes($cnf_value, $cnf_dest[$cnf_key]);
