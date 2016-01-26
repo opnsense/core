@@ -890,7 +890,7 @@ include("head.inc");
 										<td width="22%" valign="top" class="vncell"><?=gettext("Failover peer IP:");?></td>
 										<td width="78%" class="vtable">
 											<input name="failover_peerip" type="text" class="form-control host" id="failover_peerip" size="20" value="<?=htmlspecialchars($pconfig['failover_peerip']);?>" /><br />
-											<?=gettext("Leave blank to disable.  Enter the interface IP address of the other machine.  Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
+											<?=gettext("Leave blank to disable.  Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
 										</td>
 										</tr>
 										<?php endif; ?>
@@ -1103,15 +1103,12 @@ include("head.inc");
 										</tr>
 										<tr>
 										<td width="22%" valign="top">&nbsp;</td>
-										<td width="78%"> <p><span class="vexpl"><span class="red"><strong><?=gettext("Note:");?><br />
-											</strong></span><?=gettext("The DNS servers entered in"); ?> <a href="system_general.php"><?=gettext("System: " .
-											"General setup"); ?></a> <?=gettext("(or the"); ?> <a href="services_dnsmasq.php"><?=gettext("DNS " .
-											"forwarder"); ?></a>, <?=gettext("if enabled)"); ?> </span><span class="vexpl"><?=gettext("will " .
-											"be assigned to clients by the DHCP server."); ?><br />
+										<td width="78%"> <p><?=gettext("Note:");?><br />
+											<?=sprintf(gettext("The DNS servers entered in %sSystem: " .
+											"General setup%s (or the %sDNS forwarder%s, if enabled), will be assigned to clients by the DHCP server."),'<a href="system_general.php">','</a>','<a href="services_dnsmasq.php">','</a>'); ?><br />
 											<br />
-											<?=gettext("The DHCP lease table can be viewed on the"); ?> <a href="status_dhcp_leases.php"><?=gettext("Status: " .
-											"DHCP leases"); ?></a> <?=gettext("page."); ?><br />
-											</span></p>
+											<?=sprintf(gettext("The DHCP lease table can be viewed on the %sStatus: DHCP leases%s page."),'<a href="status_dhcp_leases.php">','</a>') ?><br />
+											</p>
 										</td>
 										</tr>
 									</table>

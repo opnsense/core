@@ -325,7 +325,7 @@ include("head.inc");
                       <input name="external" type="text" value="<?=$pconfig['external'];?>" />
                       <br />
                       <div class="hidden" for="help_for_external">
-                        <?=gettext("Enter the external (usually on a WAN) subnet's starting address for the 1:1 mapping.  ");?><br />
+                        <?=gettext("Enter the external (usually on a WAN) subnet's starting address for the 1:1 mapping.");?><br />
                         <?=gettext("The subnet mask from the internal address below will be applied to this IP address."); ?><br />
                         <?=gettext("Hint: this is generally an address owned by the router itself on the selected interface."); ?>
                       </div>
