@@ -25,11 +25,14 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
-.if "${FLAVOUR}" == LibreSSL
+.if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
+CORE_REPOSITORY?=	latest
+.elif "${FLAVOUR}" == LibreSSL
 CORE_REPOSITORY?=	libressl
 .else
-CORE_REPOSITORY?=	latest
+CORE_REPOSITORY?=	${FLAVOUR}
 .endif
+
 CORE_PACKAGESITE?=	http://pkg.opnsense.org
 
 CORE_NAME?=		opnsense-devel
