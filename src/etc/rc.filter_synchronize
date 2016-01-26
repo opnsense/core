@@ -199,7 +199,7 @@ function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsens
     }
 
     // when syncing users, send last used uid/gid over
-    if (in_array('user', $sections)) {
+    if (in_array('system.user', $sections)) {
         if (!in_array('system', $transport_data)) {
             $transport_data['system'] = array();
         }
