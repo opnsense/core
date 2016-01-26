@@ -65,19 +65,6 @@ function alias_make_table($config)
 function parse_config()
 {
 	$cnf = OPNsense\Core\Config::getInstance();
-	if (!$cnf->isValid()) {
-		// there was an issue with loading the config, try to restore the last backup
-		$backups = $cnf->getBackups();
-		if (count($backups) > 0) {
-			// load last backup
-			syslog(LOG_ERR,	gettext('No valid config.xml found, attempting last known config restore.'));
-			$cnf->restoreBackup($backups[0]);
-		} else {
-			// we don't have backups, try to load the default
-			syslog(LOG_ERR, gettext('No valid config.xml found, attempting to restore factory config.'));
-			$cnf->restoreBackup('/usr/local/etc/config.xml');
-		}
-	}
 
 	// return config data as array, use old "listags" construction to mark certain elements as array (even if they're not recurring)
 	$config=$cnf->toArray(listtags());
