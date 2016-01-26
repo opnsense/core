@@ -159,8 +159,10 @@ function restore_config_section_xmlrpc($new_config)
     // save old config
     $old_config = $config;
 
-    // Some sections should just be copied and not merged
-    $sync_full = array('ipsec', 'aliases', 'wol', 'load_balancer', 'openvpn', 'cert', 'ca', 'crl', 'schedules', 'filter', 'nat', 'dhcpd', 'dhcpv6');
+    // Some sections should just be copied and not merged, namely if there's a risk of attributes being removed
+    // without being seen by the remote remote (backup) side.
+    // (ipsec, openvpn, nat can probably moved out later by specifying a better path to the attribute)
+    $sync_full = array('ipsec', 'wol', 'dnsmasq', 'load_balancer', 'openvpn', 'nat', 'dhcpd', 'dhcpv6');
     $sync_full_done = array();
     foreach ($sync_full as $syncfull) {
         if (isset($new_config[$syncfull])) {
@@ -172,12 +174,11 @@ function restore_config_section_xmlrpc($new_config)
 
     $vipbackup = array();
     $oldvips = array();
-    if (isset($new_config['virtualip']['vip'])) {
+    if (isset($new_config['virtualip']['vip']) && isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vipindex => $vip) {
             if ($vip['mode'] == "carp") {
                 // rc.filter_synchronize only sends carp vips, keep the rest like it was
                 $oldvips["{$vip['interface']}_vip{$vip['vhid']}"] = $vip ;
-                $oldvips["{$vip['interface']}_vip{$vip['vhid']}"]['cmp'] = "{$vip['password']}{$vip['advskew']}{$vip['subnet']}{$vip['subnet_bits']}{$vip['advbase']}";
             } else {
                 $vipbackup[] = $vip;
             }
