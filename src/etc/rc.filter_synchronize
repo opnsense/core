@@ -152,6 +152,13 @@ function copy_conf_section(&$cnf_structure_in, &$cnf_structure_out,  $reference)
             } else {
               $cnf_structure_out[$cnf_section] = $cnf_structure_in;
             }
+        } else {
+            // if source entry doesn't exist, make sure we copy an empty entry to the remote side
+            // otherwise there's no way to know data has been removed
+            if (!isset($cnf_structure_out[$cnf_section])) {
+                $cnf_structure_out[$cnf_section] = array();
+            }
+            $cnf_structure_out = &$cnf_structure_out[$cnf_section];
         }
         $cnf_path_depth++;
     }
