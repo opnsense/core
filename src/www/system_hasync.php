@@ -39,7 +39,7 @@ $checkbox_names = array('pfsyncenabled', 'synchronizeusers', 'synchronizeauthser
                         'synchronizerules', 'synchronizeschedules', 'synchronizealiases', 'synchronizenat',
                         'synchronizeipsec', 'synchronizeopenvpn', 'synchronizedhcpd', 'synchronizewol',
                         'synchronizestaticroutes', 'synchronizelb', 'synchronizevirtualip',
-                        'synchronizednsforwarder',
+                        'synchronizednsforwarder', 'synchronizeshaper', 'synchronizecaptiveportal'
 );
 
 
@@ -325,6 +325,24 @@ include("head.inc");
                     <input type="checkbox" name="synchronizednsforwarder" value="on" <?=!empty($pconfig['synchronizednsforwarder']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" for="help_for_synchronizednsforwarder">
                       <?=gettext('Automatically sync the DNS Forwarder configuration to the other HA host when changes are made.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_synchronizeshaper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Traffic Shaper') ?></td>
+                  <td>
+                    <input type="checkbox" name="synchronizeshaper" value="on" <?=!empty($pconfig['synchronizeshaper']) ? "checked=\"checked\"" :"";?> />
+                    <div class="hidden" for="help_for_synchronizeshaper">
+                      <?=gettext('Automatically sync the TrafficShaper configuration to the other HA host when changes are made.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_synchronizecaptiveportal" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Captive Portal') ?></td>
+                  <td>
+                    <input type="checkbox" name="synchronizecaptiveportal" value="on" <?=!empty($pconfig['synchronizecaptiveportal']) ? "checked=\"checked\"" :"";?> />
+                    <div class="hidden" for="help_for_synchronizecaptiveportal">
+                      <?=gettext('Automatically sync the Captive Portal configuration to the other HA host when changes are made.') ?>
                     </div>
                   </td>
                 </tr>
