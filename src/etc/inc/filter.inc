@@ -2675,8 +2675,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         }
 
         if ($noadvoptions == false) {
-            if ((isset($rule['source-track']) and $rule['source-track'] <> "") or
-              (isset($rule['max']) and $rule['max'] <> "") or
+            if ((isset($rule['max']) and $rule['max'] <> "") or
               (isset($rule['max-src-nodes']) and $rule['max-src-nodes'] <> "") or
               (isset($rule['max-src-states']) and $rule['max-src-states'] <> "") or
               ((isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","tcp/udp"))) and
@@ -2691,9 +2690,6 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
                 }
                 if (isset($rule['nopfsync'])) {
                     $aline['flags'] .= "no-sync ";
-                }
-                if (isset($rule['source-track']) and $rule['source-track'] <> "") {
-                    $aline['flags'] .= "source-track rule ";
                 }
                 if (isset($rule['max']) and $rule['max'] <> "") {
                     $aline['flags'] .= "max " . $rule['max'] . " ";
