@@ -144,6 +144,7 @@
         <Aliases order="10" cssClass="fa fa-list-alt fa-fw">
             <All order="100"  url="/firewall_aliases.php?tab=all">
                 <Edit url="/firewall_aliases_edit.php?tab=all" visibility="hidden"/>
+                <Network url="/firewall_aliases.php?tab=network" visibility="hidden"/>
                 <NoneEdit url="/firewall_aliases_edit.php?id=*" visibility="hidden"/>
                 <None url="/firewall_aliases.php" visibility="hidden"/>
             </All>
