@@ -29,6 +29,7 @@
 namespace OPNsense\Core;
 
 use \Phalcon\DI\FactoryDefault;
+use \Phalcon\Logger\Adapter\Syslog;
 
 /**
  * Class Config provides access to systems config xml
@@ -255,7 +256,6 @@ class Config extends Singleton
         return $this->simplexml;
     }
 
-
     /**
      * init new config object, try to load current configuration
      * (executed via Singleton)
@@ -267,8 +267,19 @@ class Config extends Singleton
             $this->load();
         } catch (\Exception $e) {
             $this->simplexml = null ;
+            // there was an issue with loading the config, try to restore the last backup
+            $backups = $this->getBackups();
+            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
+            if (count($backups) > 0) {
+                // load last backup
+                $logger->error(gettext('No valid config.xml found, attempting last known config restore.'));
+                $this->restoreBackup($backups[0]);
+            } else {
+                // in case there are no backups, restore defaults.
+                $logger->error(gettext('No valid config.xml found, attempting to restore factory config.'));
+                $this->restoreBackup('/usr/local/etc/config.xml');
+            }
         }
-
     }
 
     /**
@@ -304,6 +315,7 @@ class Config extends Singleton
         $this->simplexml = simplexml_load_string($xml);
 
         if ($this->simplexml == null) {
+            restore_error_handler();
             throw new ConfigException("invalid config xml") ;
         }
 
