@@ -164,6 +164,7 @@
 				</div>
 				<div class="collapse navbar-collapse">
 					<ul class="nav navbar-nav navbar-right">
+						<li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
 						<li>
 							<form class="navbar-form" role="search">
 								<div class="input-group">
@@ -172,7 +173,6 @@
 								</div>
 							</form>
 						</li>
-						<li id="menu_messages"><a href="#">{{session_username}}@{{system_hostname}}.{{system_domain}}</a></li>
 					</ul>
 				</div>
 			</div>
