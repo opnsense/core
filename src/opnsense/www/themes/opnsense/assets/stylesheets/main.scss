@@ -254,15 +254,8 @@ body{
 }
 
 .login-foot{
-    background: #FFF;
-    border-top: 1px solid map-get($colors, bordergrey);
     color:#9F9F9F;
     font-size: 12px;
-    height: 60px;
-
-    p{
-        padding-top: 21px;
-    }
 }
 
 .login-modal{
