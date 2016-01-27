@@ -142,7 +142,8 @@ function getAllowedPages($username) {
 }
 
 
-function session_auth() {
+function session_auth(&$Login_Error)
+{
 	global $config, $_SESSION;
 
 	// Handle HTTPS httponly and secure flags
@@ -188,7 +189,7 @@ function session_auth() {
 			exit;
 		} else {
 			/* give the user an error message */
-			$_SESSION['Login_Error'] = gettext('Wrong username or password.');
+			$Login_Error = gettext('Wrong username or password.');
 			log_error("webConfigurator authentication error for '{$_POST['usernamefld']}' from {$_SERVER['REMOTE_ADDR']}");
 		}
 	}
@@ -251,10 +252,11 @@ function session_auth() {
 	return true;
 }
 
+$Login_Error = '';
 
 /* Authenticate user - exit if failed */
-if (!session_auth()) {
-    display_login_form();
+if (!session_auth($Login_Error)) {
+    display_login_form($Login_Error);
     exit;
 }
 
@@ -328,7 +330,7 @@ function display_error_form($http_code, $desc)
 
 } // end function
 
-function display_login_form()
+function display_login_form($Login_Error = '')
 {
     global $config, $g;
     $g['theme'] = get_current_theme();
@@ -400,11 +402,7 @@ function display_login_form()
 			</header>
 
 			<div class="login-modal-content">
-				<?php if (isset($_SESSION['Login_Error'])) {
-?>
-				<div id="inputerrors" class="text-danger"><?=$_SESSION['Login_Error'];?></div><br />
-				<?php unset($_SESSION['Login_Error']);
-} // endif ?>
+				<div id="inputerrors" class="text-danger"><?= !empty($Login_Error) ? $Login_Error : '&nbsp;' ?></div><br />
 
 				    <form class="clearfix" id="iform" name="iform" method="post" <?= $loginautocomplete ?> action="<?=$_SERVER['REQUEST_URI'];?>">
 
@@ -418,33 +416,27 @@ function display_login_form()
 			    <input id="passwordfld" type="password" name="passwordfld" class="form-control pwd" tabindex="2" />
 			  </div>
 
-			  <input type="hidden" name="login" value="1" /><!-- XXX login workaround -->
-
-			  <button type="submit" name="login" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
+			  <button type="submit" name="login" value="1" class="btn btn-primary pull-right"><?=gettext("Login"); ?></button>
 
 			</form>
 
-			<?php if (!$have_cookies && isset($_POST['login'])) :
-?>
-					<br /><br />
-					<span class="text-danger">
-						<?= gettext("Your browser must support cookies to login."); ?>
-					</span>
-					<?php
-endif; ?>
+			<?php if (!$have_cookies && isset($_POST['login'])) : ?>
+				<br /><br />
+				<span class="text-danger">
+					<?= gettext("Your browser must support cookies to login."); ?>
+				</span>
+			<?php endif; ?>
 
 			    </div>
 
 			</main>
+			<div class="text-center">
+				<a target="_blank" href="<?=$g['product_website']?>" class="redlnk"><?=$g['product_name']?></a> (c) <?=$g['product_copyright_years']?>
+				<a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright_owner']?></a>
+			</div>
 
 		</div>
 
-			<footer class="login-foot container-fluid">
-			<a target="_blank" href="<?=$g['product_website']?>" class="redlnk"><?=$g['product_name']?></a> is &copy;
-					<?=$g['product_copyright_years']?> by <a href="<?=$g['product_copyright_url']?>" class="tblnk"><?=$g['product_copyright_owner']?></a>
-			</footer>
-
 		</body>
-	</html><?php
-
-} // end function
+	</html>
+<?php } // end function
