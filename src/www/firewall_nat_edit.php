@@ -365,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // If this is a new rule, create an ID and add the rule
             if( isset($pconfig['filter-rule-association']) && $pconfig['filter-rule-association']=='add-associated' ) {
                 $filterent['associated-rule-id'] = $natent['associated-rule-id'] = uniqid("nat_", true);
-                $filterent['created'] = make_config_revision_entry(null, gettext("NAT Port Forward"));
+                $filterent['created'] = make_config_revision_entry();
                 $config['filter']['rule'][] = $filterent;
             }
             mark_subsystem_dirty('filter');

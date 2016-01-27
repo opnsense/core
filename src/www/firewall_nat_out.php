@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 foreach ($automatic_rules as $natent) {
                     $natent['source']['network'] = $tonathost['subnet'];
                     $natent['descr'] .= ' - ' . $tonathost['descr'] . ' -> ' . convert_real_interface_to_friendly_descr($natent['interface']);
-                    $natent['created'] = make_config_revision_entry(null, gettext("Manual Outbound NAT Switch"));
+                    $natent['created'] = make_config_revision_entry();
 
                     /* Try to detect already auto created rules and avoid duplicate them */
                     $found = false;
