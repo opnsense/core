@@ -383,14 +383,15 @@ $( document ).ready(function() {
                 if ((!isset($filterent['floating']) && $selected_if == $filterent['interface']) ||
                      (isset($filterent['floating']) && $selected_if == 'FloatingRules')):
                   $interface_has_rules = true;
-                  // select icon
-                  if (!isset($filterent['type']) && empty($filterent['disabled'])) {
+
+                  if (!isset($filterent['type'])) {
                       // not very nice.... associated NAT rules don't have a type...
                       // NAT rules shouldn't leak into the rules screen, breaks on edit
                       continue;
-                  } else if (!isset($filterent['type']) && !empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon-play text-muted";
-                  } elseif ($filterent['type'] == "block" && empty($filterent['disabled'])) {
+                  }
+
+                  // select icon
+                  if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
                       $iconfn = "glyphicon-remove text-danger";
                   } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
                       $iconfn = "glyphicon-remove text-muted";
