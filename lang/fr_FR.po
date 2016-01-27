@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-25 06:20+0000\n"
+"POT-Creation-Date: 2016-01-27 19:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 3667\n"
+"X-Pootle-Revision: 4012\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -394,7 +394,7 @@ msgstr "Autoriser l'accès à la page 'Diagnostics: Arrêt système'."
 
 # File: lang/dynamic/helpers/acl.php, line: 123
 msgid "Allow access to the 'Diagnostics: Logs: L2TP' page."
-msgstr ""
+msgstr "Autoriser l'accès à la page 'Diagnostics: Journaux: L2TP'"
 
 # File: lang/dynamic/helpers/acl.php, line: 146
 msgid "Allow access to the 'Services: Igmpproxy: Edit' page."
@@ -416,7 +416,7 @@ msgstr "Autoriser l'accès à la page 'Bibliothèque XMLRPC'."
 
 # File: lang/dynamic/helpers/acl.php, line: 134
 msgid "Allow access to the 'Diagnostics: Logs: Firewall: Summary View' page."
-msgstr "Autoriser l'accès à la page 'Diagnostique: Rapports: Parefeu: Synthèse'"
+msgstr "Autoriser l'accès à la page 'Diagnostics: Journaux: Pare-feu: Synthèse'"
 
 # File: lang/dynamic/helpers/acl.php, line: 150
 msgid "Allow access to the 'Status: IPsec: SPD' page."
@@ -526,7 +526,7 @@ msgstr "Autoriser l'accès à la page 'Statut: NTP PPS'."
 
 # File: lang/dynamic/helpers/acl.php, line: 154
 msgid "Allow access to the 'Diagnostics: Logs: PPTP' page."
-msgstr ""
+msgstr "Autoriser l'accès à la page 'Diagnostics: Journaux: PPTP'"
 
 # File: lang/dynamic/helpers/acl.php, line: 176
 msgid "Allow access to the 'Diagnostics: NanoBSD' page."
@@ -808,7 +808,7 @@ msgstr "Autoriser l'accès à la page 'Services: Serveur PPPoE: Éditer'."
 
 # File: lang/dynamic/helpers/acl.php, line: 220
 msgid "Allow access to the 'Diagnostics: Logs: PPPoE' page."
-msgstr ""
+msgstr "Autoriser l'accès à la page 'Diagnostics: Journaux: PPPoE'"
 
 # File: lang/dynamic/helpers/acl.php, line: 248
 msgid "Allow access to the 'System: Advanced: Tunables' page."
@@ -1631,7 +1631,7 @@ msgstr ""
 
 # File: src/www/diag_logs_pills.inc, line: 45
 msgid "Access"
-msgstr ""
+msgstr "Authentification"
 
 # File: lang/dynamic/helpers/models.php, line: 181
 msgid "Factory Defaults"
@@ -2499,7 +2499,7 @@ msgstr "Plus"
 
 # File: lang/dynamic/helpers/models.php, line: 248
 msgid "Proxy"
-msgstr ""
+msgstr "Proxy"
 
 # File: src/www/services_snmp.php, line: 154
 msgid "SNMP"
@@ -17396,7 +17396,7 @@ msgstr ""
 # File: src/www/services_captiveportal_zones.php, line: 93
 # File: src/www/services_rfc2136_edit.php, line: 186
 msgid "Zone"
-msgstr ""
+msgstr "Zone"
 
 # File: src/www/services_rfc2136_edit.php, line: 188
 msgid " User"
@@ -18066,23 +18066,23 @@ msgstr ""
 
 # File: src/www/services_unbound_advanced.php, line: 377
 msgid "5 million"
-msgstr ""
+msgstr "5 millions"
 
 # File: src/www/services_unbound_advanced.php, line: 378
 msgid "10 million"
-msgstr ""
+msgstr "10 millions"
 
 # File: src/www/services_unbound_advanced.php, line: 379
 msgid "20 million"
-msgstr ""
+msgstr "20 millions"
 
 # File: src/www/services_unbound_advanced.php, line: 380
 msgid "40 million"
-msgstr ""
+msgstr "40 millions"
 
 # File: src/www/services_unbound_advanced.php, line: 381
 msgid "50 million"
-msgstr ""
+msgstr "50 millions"
 
 # File: src/www/services_unbound_advanced.php, line: 389
 msgid ""
@@ -20450,11 +20450,11 @@ msgstr ""
 
 # File: src/www/system_authservers.php, line: 81
 msgid "deleted"
-msgstr ""
+msgstr "supprimé"
 
 # File: src/www/system_authservers.php, line: 287
 msgid "Add server"
-msgstr ""
+msgstr "Ajouter un serveur"
 
 # File: src/www/system_authservers.php, line: 414
 msgid "Please fill the required values."
@@ -20472,7 +20472,7 @@ msgstr ""
 # File: src/www/system_authservers.php, line: 539
 # File: src/www/system_authservers.php, line: 813
 msgid "Hostname or IP address"
-msgstr ""
+msgstr "Nom d'hôte ou adresse IP"
 
 # File: src/www/system_authservers.php, line: 542
 msgid ""
@@ -20592,15 +20592,15 @@ msgstr ""
 
 # File: src/www/system_authservers.php, line: 579
 msgid "OpenLDAP"
-msgstr ""
+msgstr "OpenLDAP"
 
 # File: src/www/system_authservers.php, line: 580
 msgid "Microsoft AD"
-msgstr ""
+msgstr "Microsoft AD"
 
 # File: src/www/system_authservers.php, line: 581
 msgid "Novell eDirectory"
-msgstr ""
+msgstr "Novell eDirectory"
 
 # File: src/www/system_authservers.php, line: 752
 msgid "User naming attribute"
@@ -20650,7 +20650,7 @@ msgstr ""
 
 # File: src/www/system_authservers.php, line: 695
 msgid "delete this server"
-msgstr ""
+msgstr "supprimer ce serveur"
 
 # File: src/www/system_camanager.php, line: 167
 # File: src/www/system_camanager.php, line: 445
@@ -21101,7 +21101,7 @@ msgstr "DNS"
 # File: src/www/system_certmanager.php, line: 922
 # File: src/www/system_certmanager.php, line: 942
 msgid "email"
-msgstr ""
+msgstr "courriel"
 
 # File: src/www/system_certmanager.php, line: 923
 # File: src/www/system_certmanager.php, line: 943
@@ -21122,11 +21122,11 @@ msgstr "Certificats existants"
 
 # File: src/www/system_certmanager.php, line: 1110
 msgid "*In Use"
-msgstr ""
+msgstr "*En cours d'utilisation"
 
 # File: src/www/system_certmanager.php, line: 1111
 msgid "*Revoked"
-msgstr ""
+msgstr "*Révoqué"
 
 # File: src/www/system_certmanager.php, line: 1110
 msgid "Complete Signing Request"
@@ -21178,11 +21178,11 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 1287
 msgid "OpenVPN Server"
-msgstr ""
+msgstr "Serveur OpenVPN"
 
 # File: src/www/system_certmanager.php, line: 1292
 msgid "OpenVPN Client"
-msgstr ""
+msgstr "Client OpenVPN"
 
 # File: src/www/system_certmanager.php, line: 1297
 msgid "IPsec Tunnel"
@@ -26069,7 +26069,7 @@ msgstr "Problème de dépôt"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 112
 msgid "Click to check for updates"
-msgstr "Cliquer pour vérifier les mises à jours"
+msgstr "Cliquer pour vérifier les mises à jour"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 49
 msgid "Your system is up to date."

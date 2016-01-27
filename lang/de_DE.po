@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-25 06:20+0000\n"
+"POT-Creation-Date: 2016-01-27 19:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 3758\n"
+"X-Pootle-Revision: 4120\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -64,7 +64,7 @@ msgstr "Den Zugriff zur Seite 'VPN: OpenVPN: Client' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 51
 msgid "Allow access to the 'Interfaces: Assign network ports' page."
-msgstr "Zugriff zur Seite 'Interfaces: Netzwerkportzuweisung' erlauben."
+msgstr "Zugriff zur Seite 'Schnittstellen: Netzwerkportzuweisung' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 52
 msgid "Allow access to the 'Firewall: NAT: Port Forward' page."
@@ -76,11 +76,11 @@ msgstr "Den Zugriff zur Seite 'VPN: IPsec: Pre-Shared Schlüssel' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 54
 msgid "Create interface groups"
-msgstr "Erstelle Interfacegruppen"
+msgstr "Erstelle Schnittstellengruppen"
 
 # File: lang/dynamic/helpers/acl.php, line: 56
 msgid "Allow access to the 'Interfaces: VLAN: Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: VLAN: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: VLAN: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 57
 msgid "Allow access to the 'Diagnostics: Reboot System' page."
@@ -145,7 +145,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 74
 msgid "Allow access to the 'Interfaces: PPPs' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: PPPs' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: PPPs' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 78
 msgid "Allow access to the 'Firewall: NAT: 1:1' page."
@@ -226,7 +226,7 @@ msgstr "Den Zugriff zur Seite 'System: CRL Verwaltung' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 99
 msgid "Allow access to the 'Diagnostics: Interface Traffic' page."
-msgstr "Den Zugriff zur Seite 'Diagnose: Interface Traffic' erlauben."
+msgstr "Den Zugriff zur Seite 'Diagnose: Schnittstellen Traffic' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 100
 msgid "Allow access to the 'System: Firmware: Auto Update' page."
@@ -268,7 +268,7 @@ msgstr "Den Zugriff zur Seite 'Firewall: Alias: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 109
 msgid "Allow access to the 'Interfaces: PPPs: Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: PPPs: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: PPPs: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 110
 msgid "Allow access to the 'Firewall: NAT: NPT' page."
@@ -276,7 +276,7 @@ msgstr "Den Zugriff zur Seite 'Firewall: NAT: NPT' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 246
 msgid "Allow access to the 'Interfaces: GIF: Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: GIF: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: GIF: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 112
 msgid "Allow access to the 'VPN: IPsec' page."
@@ -294,7 +294,7 @@ msgstr "Den Zugriff zur Seite 'Status: Systemprotokolle: NTP' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 116
 msgid "Allow access to the 'Interfaces: GRE' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: GRE' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: GRE' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 118
 msgid "Allow access to the 'Services: Router Advertisements' page."
@@ -314,7 +314,7 @@ msgstr "Den Zugriff zur Seite 'VPN: IPsec: Phase 1 bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 123
 msgid "Allow access to the 'Interfaces: VLAN' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: VLAN' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: VLAN' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 125
 msgid "Allow access to the 'Firewall: NAT: Port Forward: Edit' page."
@@ -362,7 +362,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 134
 msgid "Allow access to the 'Status: Interfaces' page."
-msgstr "Den Zugriff zur Seite 'Status: Interfaces' erlauben."
+msgstr "Den Zugriff zur Seite 'Status: Schnittstellen' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 135
 msgid "Allow access to the 'Services: DNS Forwarder' page."
@@ -558,7 +558,7 @@ msgstr "Den Zugriff zur Seite 'System: Benutzerpasswortverwaltung' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 181
 msgid "Allow access to 'Interfaces: QinQ: Edit' page"
-msgstr "Den Zugriff zur Seite 'Interface: QinQ: Bearbeiten' erlauben"
+msgstr "Den Zugriff zur Seite 'Schnittstellen: QinQ: Bearbeiten' erlauben"
 
 # File: lang/dynamic/helpers/acl.php, line: 182
 msgid "Allow access to the 'Firewall: Rules: Edit' page."
@@ -582,7 +582,7 @@ msgstr "Den Zugriff zur Seite 'Status: IPsec' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 187
 msgid "Allow access to the 'Interfaces: Wireless : Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: Drahtlos: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: Drahtlos: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 188
 msgid "Allow access to the 'Diagnostics: Test Port' page."
@@ -604,7 +604,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 192
 msgid "Allow access to the 'Interfaces: Groups: Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: Gruppen: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: Gruppen: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 177
 msgid "Allow access to the 'Diagnostics: Logs: Firewall: Dynamic View' page."
@@ -627,7 +627,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/acl.php, line: 196
 msgid "Allow access to the 'Interfaces: LAGG: Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: LAGG: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: LAGG: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 197
 msgid "Allow access to the 'VPN: OpenVPN: Server' page."
@@ -664,7 +664,7 @@ msgstr "Den Zugriff zur Seite 'Diagnose: Konfigurationsvergangenheit' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 205
 msgid "Allow access to the 'Interfaces: GRE: Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: GRE: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: GRE: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 207
 msgid "Allow access to the 'Status: Gateway Groups' page."
@@ -676,7 +676,7 @@ msgstr "Den Zugriff zur Seite 'Dienste: DHCP Server' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 208
 msgid "Allow access to the 'Interfaces' page."
-msgstr "Den Zugriff zur Seite 'Interfaces' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 209
 msgid "Allow access to the 'Services: DNS Forwarder: Edit host' page."
@@ -721,7 +721,7 @@ msgstr "Den Zugriff zur Seite 'Status: DHCPv6 Leases' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 219
 msgid "Edit Interface LAGG"
-msgstr "Bearbeite Interface LAGG"
+msgstr "Bearbeite LAGG Schnittstelle"
 
 # File: lang/dynamic/helpers/acl.php, line: 220
 msgid "Allow access to the 'Status: NTP Serial GPS' page."
@@ -737,15 +737,15 @@ msgstr "Den Zugriff zur Seite 'Status: Lastverteiler: Pool' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 261
 msgid "Allow access to the 'Interfaces: QinQ' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: QinQ' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: QinQ' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 225
 msgid "Allow access to the 'Interfaces: Bridge : Edit' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: Brücke: Bearbeiten' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: Brücke: Bearbeiten' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 226
 msgid "Allow access to the 'Interfaces: Wireless' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: Drahtlos' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: Drahtlos' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 227
 msgid "Allow access to the 'Services: Dynamic DNS clients' page."
@@ -800,7 +800,7 @@ msgstr "Den Zugriff zur Seite 'Diagnose: pfTop' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 241
 msgid "Allow access to the 'Interfaces: GIF' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: GIF' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: GIF' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 242
 msgid "Allow access to the 'VPN: IPsec: Edit Pre-Shared Keys' page."
@@ -865,11 +865,11 @@ msgstr "Den Zufriff zur Seite 'System: Statische Routen' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 260
 msgid "Allow access to the 'XMLRPC Interface Stats' page."
-msgstr "Den Zugriff zur Seite 'XMLRPC Interfacestatus' erlauben."
+msgstr "Den Zugriff zur Seite 'XMLRPC Schnittstellenstatus' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 224
 msgid "Allow access to the 'Interfaces: Bridge' page."
-msgstr "Den Zugriff zur Seite 'Interfaces: Brücke' erlauben."
+msgstr "Den Zugriff zur Seite 'Schnittstellen: Brücke' erlauben."
 
 # File: lang/dynamic/helpers/acl.php, line: 262
 msgid "Allow access to the 'System: High Availability' page."
@@ -905,7 +905,8 @@ msgstr "Interne Nummer, die für diese Zone verwendet wird"
 # File: lang/dynamic/helpers/controllers.php, line: 97
 msgid "Select interface(s) to enable for captive portal."
 msgstr ""
-"Auswählen der Interfaces die für das Captive Portal verwendet werden sollen."
+"Auswählen der Schnittstellen die für das Captive Portal verwendet werden "
+"sollen."
 
 # File: lang/dynamic/helpers/controllers.php, line: 98
 msgid ""
@@ -930,8 +931,8 @@ msgid ""
 "activity. They may log in again immediately, though. Enter 0 to disable hard "
 "timeout (not recommended unless an idle timeout is set)."
 msgstr ""
-"Clients werden bei nach dieser Zeit unabhängig von Aktivität getrennt. Sie "
-"können jedoch sofort wieder einloggen. Die Eingabe von 0 schaltet diese "
+"Clients werden nach dieser Zeit unabhängig von Aktivität getrennt. Sie "
+"können sich jedoch sofort wieder einloggen. Die Eingabe von 0 schaltet diese "
 "Zwangstrennung ab (nur empfohlen, wenn die Inaktivitätstrennung "
 "eingeschaltet ist)."
 
@@ -1054,7 +1055,7 @@ msgstr "IDS aktivieren"
 
 # File: lang/dynamic/helpers/controllers.php, line: 69
 msgid "Select interface(s) to use."
-msgstr "Wählen Sie die zu verwendenden Interfaces aus."
+msgstr "Wählen Sie die zu verwendenden Schnittstellen aus."
 
 # File: lang/dynamic/helpers/controllers.php, line: 65
 msgid "Enter a filename for storing the blacklist."
@@ -1080,9 +1081,9 @@ msgid ""
 "neighbor caches. Leave blank to disable (default). The standard UDP port for "
 "ICP is 3130."
 msgstr ""
-"Die Portnummer von der Squid ICP-Anfragen an Nachbar-Zwischenspeicher sendet "
-"und empfängt. Leer lassen zum Deaktivieren (Standard). Der übliche UDP-Port "
-"für ICP ist 3130."
+"Die Portnummer von der Squid ICP-Anfragen an Nachbar-Cache sendet und "
+"empfängt. Leer lassen zum Deaktivieren (Standard). Der übliche UDP-Port für "
+"ICP ist 3130."
 
 # File: lang/dynamic/helpers/controllers.php, line: 39
 msgid "Enable access logging."
@@ -1112,7 +1113,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/controllers.php, line: 72
 msgid "Enter the cache memory size to use."
-msgstr "Geben die zu verwendende Speichergröße an."
+msgstr "Geben die zu verwendende Größe des Cache Speichers an."
 
 # File: lang/dynamic/helpers/controllers.php, line: 43
 msgid "Enter the storage size for the local cache (default is 100)."
@@ -1125,7 +1126,7 @@ msgid ""
 "is 16)."
 msgstr ""
 "Geben Sie die Zahl von Untervezcihnissen in erster Ebene für den lokalen "
-"Zwischenspeicher ein (Standard sind 16)."
+"Cache ein (Standard sind 16)."
 
 # File: lang/dynamic/helpers/controllers.php, line: 47
 msgid ""
@@ -1133,7 +1134,7 @@ msgid ""
 "is 256)."
 msgstr ""
 "Geben Sie die Zahl von Unterverzeichnissen in erster Ebene für den lokalen "
-"Zwischenspeicher ein (Standard sind 256)."
+"Cache ein (Standard sind 256)."
 
 # File: lang/dynamic/helpers/controllers.php, line: 48
 msgid "Enable or disable traffic management."
@@ -1172,8 +1173,7 @@ msgstr ""
 # File: lang/dynamic/helpers/controllers.php, line: 55
 msgid "Select interface(s) the proxy will bind to."
 msgstr ""
-"Wählen Sie das Interface bzw. die Interfaces aus, an welche(s) sich der "
-"Proxy binden soll."
+"Wählen Sie die Schnittstellen aus, an welche sich der Proxy binden soll."
 
 # File: lang/dynamic/helpers/controllers.php, line: 56
 # File: lang/dynamic/helpers/controllers.php, line: 60
@@ -1185,14 +1185,13 @@ msgid ""
 "When enabled the subnets of the selected interfaces will be added to the "
 "allow access list."
 msgstr ""
-"Falls aktiviert, werden die Subnetze der ausgewählten Interfaces zur "
+"Falls aktiviert, werden die Subnetze der ausgewählten Schnittstellen zur "
 "erlaubenden Zugriffsliste hinzugefügt."
 
 # File: lang/dynamic/helpers/controllers.php, line: 59
 msgid "Select interface(s) the ftp proxy will bind to."
 msgstr ""
-"Wählen Sie das Interface bzw. die Interfaces aus, an welche sich der FTP-"
-"Proxy binden soll."
+"Wählen Sie die Schnittstellen aus, an welche sich der FTP-Proxy binden soll."
 
 # File: lang/dynamic/helpers/controllers.php, line: 61
 msgid "Select Authentication method"
@@ -1200,7 +1199,7 @@ msgstr "Authentifizierungsmethode auswählen"
 
 # File: lang/dynamic/helpers/controllers.php, line: 64
 msgid "The prompt will be displayed in the authentication request window."
-msgstr ""
+msgstr "Diese Eingabeaufforderung wird im Anmeldefenster angezeigt."
 
 # File: lang/dynamic/helpers/controllers.php, line: 63
 msgid "The total number of authenticator processes to spawn."
@@ -1249,6 +1248,8 @@ msgid ""
 "interface (2).\n"
 "        "
 msgstr ""
+"sekundäre Schnittstelle, vergleicht Pakete die von Schnittstelle (1) zu "
+"Schnittstelle (2) transportiert wirden.\n"
 
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
@@ -1537,7 +1538,7 @@ msgid "Traffic Graph"
 msgstr "Datenverkehrsgraph"
 
 msgid "Interfaces"
-msgstr "Interfaces"
+msgstr "Schnittstellen"
 
 # File: lang/dynamic/helpers/models.php, line: 140
 msgid "NoneEdit"
@@ -1569,10 +1570,10 @@ msgid "RulesEdit"
 msgstr "Bearbeitung von Regeln"
 
 msgid "Floating"
-msgstr "Fließend"
+msgstr "Schwebend"
 
 msgid "Interface"
-msgstr "Interface"
+msgstr "Schnittstelle"
 
 msgid "Rules"
 msgstr "Regeln"
@@ -2121,11 +2122,11 @@ msgstr "Der ICP Port muss eine Zahl zwischen 1 und 65535 sein"
 
 # File: lang/dynamic/helpers/models.php, line: 342
 msgid "Specify a positive memory cache size. (number of MB's)"
-msgstr "Geben Sie einen positive Zwischenspeichergröße an (in MB)."
+msgstr "Geben Sie eine positive Größe für den Cache ein (in MB)."
 
 # File: lang/dynamic/helpers/models.php, line: 213
 msgid "Specify a positive cache size. (number of MB's)"
-msgstr "Geben Sie eine positive Cachegröße in Megabyte an."
+msgstr "Geben Sie eine positive Größe für den Cache ein (in MB)."
 
 # File: lang/dynamic/helpers/models.php, line: 214
 msgid "Specify a positive number of first-level subdirectories."
@@ -2318,35 +2319,36 @@ msgstr ""
 
 # File: src/etc/inc/config.console.inc, line: 42
 msgid "Press any key to start the manual interface assignment:  "
-msgstr "Taste drücken, um die manuelle Interfacezuweisung zu starten:  "
+msgstr "Taste drücken, um die manuelle Schnittstellenzuweisung zu starten:  "
 
 msgid "No interfaces found!"
-msgstr "Keine Interfaces gefunden!"
+msgstr "Keine Schnittstellen gefunden!"
 
 msgid "VLAN interfaces:"
-msgstr "VLAN Interfaces:"
+msgstr "VLAN Schnittstellen:"
 
 msgid "Enter the WAN interface name or 'a' for auto-detection:"
 msgstr ""
-"Geben Sie den WAN Interfacenamen oder 'a' für automatische Erkennung ein:"
+"Geben Sie den WAN Schnittstellennamen oder 'a' für automatische Erkennung "
+"ein:"
 
 # File: src/etc/inc/config.console.inc, line: 126
 msgid "Invalid interface name '%s'"
-msgstr "Ungültiger Interfacename '%s'"
+msgstr "Ungültiger Schnittstellenbezeichnung '%s'"
 
 msgid ""
 "%sEnter the LAN interface name or 'a' for auto-detection %sNOTE: this "
 "enables full Firewalling/NAT mode.%s(or nothing if finished):%s"
 msgstr ""
-"%sGeben Sie die LAN-Interfacebezeichnung oder 'a' für automatische Erkennung "
-"ein %sHINWEIS: Dies aktiviert den vollen Firewall/NAT Modus.%s(oder nichts "
-"wenn Sie fertig sind):%s"
+"%sGeben Sie die LAN-Schnittstellenbezeichnung oder 'a' für automatische "
+"Erkennung ein %sHINWEIS: Dies aktiviert den vollen Firewall/NAT Modus.%s("
+"oder nichts wenn Sie fertig sind):%s"
 
 msgid "%sInvalid interface name '%s'%s"
-msgstr "%sUngültiger Interfacename '%s'%s"
+msgstr "%sUngültige Schnittstellenbezeichnung '%s'%s"
 
 msgid "%sOptional interface %s description found: %s"
-msgstr "%sOptionales Interface %s Beschreibung gefunden: %s"
+msgstr "%sOptionale Schnittstelle %s Beschreibung gefunden: %s"
 
 msgid ""
 "%sEnter the Optional %s interface name or 'a' for auto-detection%s(or "
@@ -2356,7 +2358,7 @@ msgstr ""
 "Erkennung.%s(oder nichts falls Sie fertig sind):%s"
 
 msgid "The interfaces will be assigned as follows:"
-msgstr "Das Interface wird als folgendes zugewiesen:"
+msgstr "Die Schnittstellen werden wie folgt zugewiesen:"
 
 msgid "%sWriting configuration..."
 msgstr "%sSchreibe Konfiguration..."
@@ -2372,16 +2374,16 @@ msgid "No link-up detected.%s"
 msgstr "Kein aktive Verbindung gefunden.%s"
 
 msgid "VLAN Capable interfaces:"
-msgstr "VLAN-fähige Interfaces:"
+msgstr "VLAN-fähige Schnittstellen:"
 
 msgid "No VLAN capable interfaces detected."
-msgstr "Kein VLAN fähiges Interface gefunden."
+msgstr "Keine VLAN-fähige Schnittstelle gefunden."
 
 msgid ""
 "Enter the parent interface name for the new VLAN (or nothing if finished):"
 msgstr ""
-"Geben Sie den übergeordneten Interfacenamen für das neue VLAN ein (oder "
-"nichts wenn Sie fertig sind):"
+"Geben Sie die übergeordnete Schnittstellenbezeichnung für das neue VLAN ein ("
+"oder nichts wenn Sie fertig sind):"
 
 msgid "Enter the VLAN tag (1-4094):"
 msgstr "Geben Sie ein VLAN Tag ein (1-4096):"
@@ -2491,7 +2493,7 @@ msgstr "Konfiguriere SCRUB-Information"
 
 # File: src/etc/inc/filter.inc, line: 297
 msgid "The line in question reads [%d]: %s"
-msgstr "The fragwürdige Zeile lautet [%d]: %s"
+msgstr "Die fragwürdige Zeile lautet [%d]: %s"
 
 msgid "PF was wedged/busy and has been reset."
 msgstr "PF hing fest oder war ausgelastet und wurde zurückgesetzt."
@@ -2502,7 +2504,7 @@ msgid "There were error(s) loading the rules: %s - %s"
 msgstr "Es gab Fehler beim Laden der Regeln: %s - %s"
 
 msgid "Processing down interface states"
-msgstr "Interfacestatus verarbeiten"
+msgstr "Schnittstellenstatus verarbeiten"
 
 msgid "Done"
 msgstr "Erledigt"
@@ -2582,7 +2584,7 @@ msgid "Setting up pass/block rules %s"
 msgstr "Konfiguriere Erlaubnis- und Blockierregeln %s"
 
 msgid "Could not find IPv4 gateway for interface (%s)."
-msgstr "Konnte IPv4 Gateway für das Interface nicht finden (%s)."
+msgstr "Konnte IPv4 Gateway für die Schnittstelle nicht finden (%s)."
 
 msgid "Creating rule %s"
 msgstr "Erstelle Regel %s"
@@ -2643,17 +2645,17 @@ msgid "interfaces_bring_up() was called but no variable defined."
 msgstr "interfaces_bring_up() wurde aufgerufen, aber keine Variable definiert."
 
 msgid "Configuring loopback interface..."
-msgstr "Konfiguriere Loopback Interface..."
+msgstr "Konfiguriere Loopback Schnittstelle..."
 
 msgid "Configuring VLAN interfaces..."
-msgstr "Konfiguriere VLAN Interfaces"
+msgstr "Konfiguriere VLAN Schnittstellen..."
 
 msgid "VLAN: called with wrong options. Problems with config!"
 msgstr ""
 "VLAN: Aufgerufen mit den falschen Optionen. Probleme mit der Konfiguration!"
 
 msgid "interface_vlan_configure called with if undefined."
-msgstr ""
+msgstr "interface_vlan_configure wurde mit undefiniertem if aufgerufen."
 
 msgid "QinQ compat VLAN: called with wrong options. Problems with config!%s"
 msgstr ""
@@ -2661,42 +2663,44 @@ msgstr ""
 "Konfiguration!%s"
 
 msgid "interface_qinq_configure called with if undefined.%s"
-msgstr ""
+msgstr "interface_qinq_configure wurde mit undefiniertem if aufgerufen.%s"
 
 msgid "interface_qinq_configure called with invalid if.%s"
-msgstr ""
+msgstr "interface_qinq_configure wurde mit ungültigem if aufgerufen.%s"
 
 msgid "Configuring QinQ interfaces..."
-msgstr "Konfiguriere QinQ Interfaces..."
+msgstr "Konfiguriere QinQ Schnittstellen..."
 
 msgid "interface_qinq2_configure called with if undefined.%s"
-msgstr ""
+msgstr "interface_qinq2_configure wurde mit undefiniertem if aufgerufen.%s"
 
 msgid "Creating wireless clone interfaces..."
-msgstr "Erstelle drahtlose Kloninterfaces..."
+msgstr "Erstelle drahtlose Klon-Schnittstellen..."
 
 msgid "No members found on %s"
 msgstr "Keine Mitglieder auf %s gefunden"
 
 msgid "realif not defined in interfaces bridge - up"
-msgstr ""
+msgstr "realif nicht definiert in Schnittstellen Brücke - up"
 
 msgid "bridgeif not defined -- could not bring interface up"
 msgstr "Bridgeinterface nicht definiert -- konnte Interface nicht aktivieren"
 
 msgid "Configuring LAGG interfaces..."
-msgstr "Konfiguriere LAGG Interfaces..."
+msgstr "Konfiguriere LAGG Schnittstellen..."
 
 msgid ""
 "could not bring realif up -- variable not defined -- "
 "interface_gif_configure()"
 msgstr ""
+"konnte realif nicht aktivieren -- Variable nicht definiert -- "
+"interface_gif_configure()"
 
 msgid "Configuring %s interface..."
-msgstr "Konfiguriere %s Interface"
+msgstr "Konfiguriere Schnittstelle %s..."
 
 msgid "Wrong parameters used during interface_bring_down"
-msgstr ""
+msgstr "Falsche Parameter verwendet während interface_bring_down"
 
 msgid "Can't find PPP config for %s in interface_ppps_configure()."
 msgstr ""
@@ -2707,6 +2711,8 @@ msgid ""
 "Could not get a PPTP/L2TP Remote IP address from %s for %s in "
 "interfaces_ppps_configure."
 msgstr ""
+"Konnte keine PPTP/L2TP entfernte IP-Adresse von %s für %s bekommen in "
+"interfaces_ppps_configure."
 
 msgid ""
 "Device %s does not exist. PPP link cannot start without the modem device."
@@ -2715,7 +2721,7 @@ msgstr ""
 "werden."
 
 msgid "Unkown %s configured as ppp interface."
-msgstr "Unbekanntes %s als PPP Interface konfiguriert."
+msgstr "Unbekanntes %s als PPP Schnittstelle konfiguriert."
 
 msgid "Error: cannot open mpd_%s.conf in interface_ppps_configure().%s"
 msgstr ""
@@ -2728,7 +2734,7 @@ msgid ""
 "Interface specified for the virtual IP address %s does not exist. Skipping "
 "this VIP."
 msgstr ""
-"Das Interface, das für die virtuelle IP-Adresse %s angegeben wurde, "
+"Die Schnittstelle, die für die virtuelle IP-Adresse %s angegeben wurde, "
 "existiert nicht. Überspringe diese VIP."
 
 msgid ""
@@ -2736,30 +2742,31 @@ msgid ""
 "for the virtual IP address %s."
 msgstr ""
 "Entschuldigung, aber wir konnten keine erforderliche zugewiesene IP-Adresse "
-"auf dem Interface für die virtuelle IP-Adresse %s finden."
+"auf der Schnittstelle für die virtuelle IP-Adresse %s finden."
 
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IPv6 address %s."
 msgstr ""
 "Entschuldigung, aber wir konnten keine erforderliche zugewiesene IP-Adresse "
-"auf dem Interface für die virtuelle IPv6 Adresse %s finden."
+"auf der Schnittstelle für die virtuelle IPv6 Adresse %s finden."
 
 msgid "Interface %s changed to hostap mode"
-msgstr "Das Interface %s wechselte in den hostap-Modus"
+msgstr "Die Schnittstelle %s wechselte in den hostap-Modus"
 
 msgid "Interface %s changed to adhoc mode"
-msgstr "Das Interface %s wechselte in den adhoc-Modus"
+msgstr "Die Schnittstelle %s wechselte in den adhoc-Modus"
 
 msgid "Interface %s changed to infrastructure mode"
-msgstr "Das Interface %s wechselte in den Infrastrukturmodus"
+msgstr "Die Schnittstelle %s wechselte in den Infrastrukturmodus"
 
 msgid "Cloning new wireless interface %s"
-msgstr "Klone neues drahtloses Interface %s"
+msgstr "Klone neue drahtlose Schnittstelle %s"
 
 # File: src/etc/inc/interfaces.inc, line: 2211
 msgid "Failed to clone interface %s with error code %s, output %s"
-msgstr "Interface %s klonen mit Fehlercode %s fehlgeschlagen, Ausgabe %s"
+msgstr ""
+"Klonen der Schnittstelle %s fehlgeschlagen mit Fehlercode %s, Ausgabe %s"
 
 msgid "Generating new MAC address."
 msgstr "Generiere neue MAC-Adresse."
@@ -2769,7 +2776,7 @@ msgid ""
 "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %s has been "
 "automatically replaced with %s"
 msgstr ""
-"Die UNGÜLTIGE MAC-Adresse (ff:ff:ff:ff:ff:ff) auf Interface %s, wurde "
+"Die UNGÜLTIGE MAC-Adresse (ff:ff:ff:ff:ff:ff) auf Schnittstelle %s, wurde "
 "automatische ersetzt mit %s"
 
 msgid ""
@@ -2780,10 +2787,10 @@ msgstr ""
 "Schreiben öffnen.%s"
 
 msgid "Invalid interface \"%s\" in interface_dhcp_configure()"
-msgstr "Ungültiges Interface \"%s\" in interface_dhcp_configure()"
+msgstr "Ungültige Schnittstelle \"%s\" in interface_dhcp_configure()"
 
 msgid "Could not bring up %s interface in interface_dhcp_configure()"
-msgstr ""
+msgstr "Konnte Schnittstelle %s nicht aktivieren in interface_dhcp_configure()"
 
 msgid "device not present! Is the modem attached to the system?"
 msgstr "Gerät nicht vorhanden! Ist das Modem am System angeschlossen?"
@@ -2832,9 +2839,9 @@ msgstr ": Datenzugriff Time out"
 msgid ": the server disconnected"
 msgstr ": der Server trennte"
 
-# File: src/etc/inc/notices.smtp.inc, line: 98
+# eine exakte Übersetzung ist hier schwierig
 msgid "reached the end of data while reading from the SMTP server connection"
-msgstr ""
+msgstr "Ende des DATA-Blocks erreicht in der Verbindung zum SMTP-Server"
 
 # File: src/etc/inc/notices.smtp.inc, line: 104
 msgid "it was not possible to read line from the SMTP server"
@@ -2922,7 +2929,7 @@ msgstr "Authentifizierungsfehler:"
 
 # File: src/etc/inc/notices.smtp.inc, line: 322
 msgid "Could not send the authentication step message"
-msgstr ""
+msgstr "Konnte die Nachricht für den Anmeldevorgang nicht senden"
 
 # File: src/etc/inc/notices.smtp.inc, line: 342
 msgid "Could not process the SASL authentication step:"
@@ -2976,7 +2983,7 @@ msgstr "Der Server benötigt keine Authentifizierung"
 msgid ""
 "it is not supported any of the authentication mechanisms required by the "
 "server"
-msgstr ""
+msgstr "keiner der vom Server verlangten Anmeldemechanismen wird unterstützt"
 
 # File: src/etc/inc/notices.smtp.inc, line: 629
 msgid ""
@@ -3005,16 +3012,16 @@ msgstr "Verbindung ist bereits aufgebaut und der Empfänger ist bereits gesetzt"
 
 # File: src/etc/inc/notices.smtp.inc, line: 695
 msgid "connection is not in the recipient setting state"
-msgstr ""
+msgstr "die Verbindung ist nicht bereit zur Übermittlung des Empfängers"
 
 # File: src/etc/inc/notices.smtp.inc, line: 724
 msgid "connection is not in the start sending data state"
-msgstr ""
+msgstr "die Verbindung ist nicht bereit zur Übermittlung des DATA-Blocks"
 
 # File: src/etc/inc/notices.smtp.inc, line: 754
 # File: src/etc/inc/notices.smtp.inc, line: 765
 msgid "connection is not in the sending data state"
-msgstr ""
+msgstr "die Verbindung ist nicht im Sendevorgang des DATA-Blocks"
 
 # File: src/etc/inc/notices.smtp.inc, line: 801
 msgid "it was not previously established a SMTP connection"
@@ -3231,7 +3238,7 @@ msgstr ""
 
 # File: src/etc/inc/rrd.inc, line: 74
 msgid "RRD create failed exited with %s, the error is: %s"
-msgstr "RRD Erstellung fehlgeschlagen, ausgestiegen mit %s, der Fehler ist: %s"
+msgstr "RRD Erstellung fehlgeschlagen, beendet mit %s, der Fehler ist: %s"
 
 msgid "Generating RRD graphs..."
 msgstr "Generiere RRD Graphen..."
@@ -3368,7 +3375,7 @@ msgstr "%sDienst starten"
 
 # File: src/etc/inc/system.inc, line: 611
 msgid "DNSCACHE: Found old IP %s and new IP %s"
-msgstr "DNSCHACHE: Alte %s und neue %s IP gefunden"
+msgstr "DNSCACHE: Alte %s und neue %s IP gefunden"
 
 msgid "Static Routes: Gateway IP could not be found for %s"
 msgstr "Statische Route: Gateway IP wurde nicht gefunden für %s"
@@ -3402,7 +3409,7 @@ msgstr "Setze Zeitzone..."
 
 # File: src/etc/inc/upgrade_config.inc, line: 40
 msgid "RRD dump failed exited with %s, the error is: %s"
-msgstr "RRD-Dump fehlgeschlagen, ausgestiegen mit %s, der Fehler ist: %s"
+msgstr "RRD-Dump fehlgeschlagen, beendet mit %s, der Fehler ist: %s"
 
 # File: src/etc/inc/upgrade_config.inc, line: 56
 msgid ""
@@ -3438,7 +3445,7 @@ msgid ""
 "%sWarning: traffic shaper rule removed (interface '%s' does not exist "
 "anymore)."
 msgstr ""
-"%sWarnung: Traffic Shaper Regel entfernt (Interface '%s' existiert nicht "
+"%sWarnung: Traffic Shaper Regel entfernt (Schnittstelle '%s' existiert nicht "
 "mehr)."
 
 msgid ""
@@ -3576,10 +3583,10 @@ msgid "TCP Offload engine"
 msgstr "TCP Offload engine"
 
 msgid "Interface %s Static Gateway"
-msgstr "Interface %s statisches Gateway"
+msgstr "Schnittstelle %s statisches Gateway"
 
 msgid "Interface %s Dynamic Gateway"
-msgstr "Interface %s dynamisches Gateway"
+msgstr "Schnittstelle %s dynamisches Gateway"
 
 msgid "Upgraded static route for %s"
 msgstr "Aktualisierte statische Route für %s"
@@ -3634,8 +3641,8 @@ msgstr "Fehler: Konnte Phase 1 Zertifikatsdatei für %s nicht schreiben"
 
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
 msgstr ""
-"Ignoriere das erneute Laden von IPsec da es keine Tunnel auf dem Interface %"
-"s gibt."
+"Ignoriere das Neuladen von IPsec da es keine Tunnel auf der Schnittstelle %s "
+"gibt."
 
 msgid "Forcefully reloading IPsec"
 msgstr "Erzwinge erneutes Laden von IPsec"
@@ -3703,7 +3710,8 @@ msgstr "Konfiguration (%s Abschnitte) von XMLRPC Client hinzugefügt."
 # File: src/etc/rc.bootup, line: 143
 msgid "Default interfaces not found -- Running interface assignment option."
 msgstr ""
-"Standard Interface nicht gefunden -- Starte Interface Zuweisungseinstellung."
+"Standard Schnittstelle nicht gefunden -- Starte Schnittstelle "
+"Zuweisungseinstellung."
 
 # File: src/etc/rc.initial.password, line: 37
 msgid "The %s password will be reset to the factory default of `%s'."
@@ -3737,14 +3745,15 @@ msgid "Do you want to enable the %s server on %s?"
 msgstr "Wollen Sie den %s Server auf %s aktivieren?"
 
 msgid "Configure %s address %s interface via %s?"
-msgstr "Konfiguration der %s-Adresse des %s-Interfaces mittels %s?"
+msgstr "Konfiguration der %s-Adresse der %s-Schnittstelle mittels %s?"
 
 msgid "Enter the new %s %s address.  Press <ENTER> for none:"
 msgstr "Geben Sie die neue %s %s Adresse ein.  Drücken Sie <ENTER> für keine:"
 
 msgid "This IP address conflicts with another interface or a VIP"
 msgstr ""
-"Diese IP-Adresse steht im Konflikt mit einem anderen Interface oder einer VIP"
+"Diese IP-Adresse steht im Konflikt mit einer anderen Schnittstelle oder "
+"einer VIP"
 
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
 msgstr ""
@@ -3755,10 +3764,10 @@ msgid "Enter the new %s %s subnet bit count (1 to %s):"
 msgstr "Geben Sie die neue %s %s Subnetbitzahl ein (1 bis %s):"
 
 msgid "You cannot set network address to an interface"
-msgstr "Sie können die Netzwerkadresse einem Interface nicht zuweisen"
+msgstr "Sie können die Netzwerkadresse keiner Schnittstelle zuweisen"
 
 msgid "You cannot set broadcast address to an interface"
-msgstr "Sie können die Broadcastadresse einem Interface nicht zuweisen"
+msgstr "Sie können die Broadcastadresse keiner Schnittstelle zuweisen"
 
 msgid "For a WAN, enter the new %s %s upstream gateway address."
 msgstr "Für ein WAN, geben Sie die neue %s %s Upstream Gateway Adresse ein."
@@ -3776,7 +3785,7 @@ msgid "Enter the start address of the %s client address range:"
 msgstr "Geben Sie die Startadresse des %s Clientadressbereichs ein:"
 
 msgid "This IP address must be in the interface's subnet"
-msgstr "Diese IP-Adresse muss im Subnetz des Interfaces liegen"
+msgstr "Diese IP-Adresse muss im Subnetz der Schnittstelle liegen"
 
 msgid "Enter the end address of the %s client address range:"
 msgstr "Geben Sie die letzte Adresse des %s Client Adressbereichs an:"
@@ -4241,7 +4250,7 @@ msgstr "Hersteller"
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 82
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 82
 msgid "Interface name"
-msgstr "Interfacename"
+msgstr "Schnittstellenbezeichnung"
 
 msgid "Hostname"
 msgstr "Hostname"
@@ -4623,13 +4632,13 @@ msgid "Leave Persistent CARP Maintenance Mode"
 msgstr "Den persistenten CARP Wartungsmodus verlassen"
 
 msgid "CARP Interface"
-msgstr "CARP Interface"
+msgstr "CARP Schnittstelle"
 
 msgid "Virtual IP"
 msgstr "Virtuelle IP"
 
 msgid "Could not locate any defined CARP interfaces."
-msgstr "Konnte kein definiertes CARP Interface finden."
+msgstr "Konnte kein definiertes CARP Schnittstelle finden."
 
 msgid "pfSync nodes"
 msgstr "pfSync Knoten"
@@ -4960,7 +4969,7 @@ msgid ""
 "Enter the number of older configurations to keep in the local backup cache. "
 "By default this is 30."
 msgstr ""
-"Anzahl an alten Konfigurationen, die im lokalen Sicherungscache gespeichert "
+"Anzahl an alten Konfigurationen, die im lokalen Zwischenspeicher aufbewahrt "
 "werden sollen. Standardwert beträgt 30."
 
 msgid "Save"
@@ -5291,7 +5300,7 @@ msgid "Tried to block invalid IP:"
 msgstr "Versuchte eine ungültige IP zu blockieren:"
 
 msgid "Invalid interface for block rule:"
-msgstr "Ungültiges Interface für Blockierregel"
+msgstr "Ungültige Schnittstelle für Blockierregel"
 
 msgid "Host added successfully"
 msgstr "Host erfolgreich hinzugefügt"
@@ -5303,13 +5312,13 @@ msgstr ""
 
 msgid "Tried to block but had no host IP or interface"
 msgstr ""
-"Versuchte zu blockieren, hatte aber keine Host IP-Adresse oder Interface"
+"Versuchte zu blockieren, hatte aber keine Host IP-Adresse oder Schnittstelle"
 
 msgid "Unknown block error."
 msgstr "Unbekannter Blockierfehler."
 
 msgid "Invalid interface for pass rule:"
-msgstr "Ungültiges Interface für Erlaubnisregel:"
+msgstr "Ungültige Schnittstelle für Erlaubnisregel:"
 
 msgid "Invalid protocol for pass rule:"
 msgstr "Ungültiges Protokoll für Erlaubnisregel:"
@@ -5346,7 +5355,7 @@ msgstr "Die Regel die diese Aktion ausgelöst hat ist"
 
 # File: src/www/diag_logs_filter.php, line: 627
 msgid "Time and interface"
-msgstr "Zeit und Interface"
+msgstr "Zeit und Schnittstelle"
 
 # File: src/www/diag_logs_filter.php, line: 628
 msgid "Source and destination IP Address"
@@ -5392,7 +5401,7 @@ msgstr "Es werden %s passenden Protokolleinträge angezeigt (maximal %s)."
 
 # Das "If" hier hat hier die Bedeutung "Interface". Zu finden unter Firewall -> NAT. Dort die erste Tabellenreihe.
 msgid "If"
-msgstr "Interface"
+msgstr "Schnittstelle"
 
 msgid "Rule"
 msgstr "Regel"
@@ -5487,7 +5496,7 @@ msgstr "PPTP Raw"
 
 # File: src/www/diag_logs_pills.inc, line: 44
 msgid "Cache"
-msgstr "Zwischenspeicher"
+msgstr "Cache"
 
 # File: src/www/diag_logs_pills.inc, line: 42
 msgid "Store"
@@ -5769,7 +5778,7 @@ msgid ""
 msgstr ""
 "Falls Sie eine einzelne IP wählen, müssen alle fernen Systemprotokollserver "
 "dem IP-Typ entsprechen. Falls Sie ferne IPv4 und IPv6 Systemprotokollserver "
-"mischen wollen, müssen Sie an alle Interfaces binden."
+"mischen wollen, müssen Sie an alle Schnittstellen binden."
 
 msgid ""
 "NOTE: If an IP address cannot be located on the chosen interface, the daemon "
@@ -5848,7 +5857,7 @@ msgid "IP address"
 msgstr "IP-Adresse"
 
 msgid "Invalid interface."
-msgstr "Ungültiges Interface"
+msgstr "Ungültige Schnittstelle"
 
 msgid "Invalid address family."
 msgstr "Ungültige Adressfamilie"
@@ -5873,8 +5882,8 @@ msgstr "Paketaufzeichnung"
 
 msgid "Select the interface on which to capture traffic."
 msgstr ""
-"Wählen Sie das Interface aus, von welchem Sie den Datenverkehr aufzeichnen "
-"möchten."
+"Wählen Sie die Schnittstelle aus, von welcher Sie den Datenverkehr "
+"aufzeichnen möchten."
 
 msgid "Promiscuous"
 msgstr "Promiscuous"
@@ -5993,8 +6002,8 @@ msgid ""
 "If you leave this field blank, all packets on the specified interface will "
 "be captured."
 msgstr ""
-"Falls Sie das Feld leer lassen, werden alle Pakete auf dem angegebenen "
-"Interface aufgezeichnet."
+"Falls Sie das Feld leer lassen, werden alle Pakete auf der angegebenen "
+"Schnittstelle aufgezeichnet."
 
 msgid "Example:"
 msgstr "Beispiel:"
@@ -6562,6 +6571,9 @@ msgid ""
 "Using a source interface/IP address that does not match selected type (IPv4, "
 "IPv6) will result in an error or empty output."
 msgstr ""
+"Die Verwendung einer Quell-Schnittstelle/Quell-IP-Adresse die nicht dem "
+"ausgewählten Typ (IPv4, IPv6) entspricht, führt zu einem Fehler oder einer "
+"leeren Ausgabe."
 
 msgid "Traceroute output"
 msgstr "Traceroute Ausgabe"
@@ -6629,7 +6641,7 @@ msgstr ""
 "Es ist nicht möglich, ein reserviertes Wort als Aliasnamen zu benutzen %s"
 
 msgid "An interface description with this name already exists."
-msgstr "Eine Interfacebeschreibung mit diesem Namen existiert bereits."
+msgstr "Eine Schnittstellenschreibung mit diesem Namen existiert bereits."
 
 # see information some lines later for rules
 msgid ""
@@ -6922,6 +6934,11 @@ msgid ""
 "WAN IP address, any services on this system (IPsec, OpenVPN server, etc.) "
 "using the WAN IP address will no longer function."
 msgstr ""
+"Wenn Sie einen 1:1 NAT Eintrag für eine Schnittstellen-IP dieses Systems "
+"hinzufügen, wird das System unter dieser IP-Adresse nicht mehr erreichbar "
+"sein. Das bedeutet beispielsweise, wenn Sie Ihre WAN IP-Adresse verwenden, "
+"werden sämtliche lokalen Dienste auf diesem System (IPsec, OpenVPN Server, "
+"etc.) die diese WAN IP-Adresse verwenden, nicht mehr funktionieren."
 
 msgid "any"
 msgstr "jeglich"
@@ -6958,7 +6975,7 @@ msgid "A valid external subnet must be specified."
 msgstr "Ein gültiges externes Subnetz muss angegeben werden."
 
 msgid "%s is not a valid source IP address or alias."
-msgstr "%s it keine gültige Quell-IP-Adresse oder Alias."
+msgstr "%s ist keine gültige Quell-IP-Adresse oder Alias."
 
 msgid "A valid source bit count must be specified."
 msgstr "Eine gültige Quellbitanzahl muss angegeben werden."
@@ -6984,7 +7001,8 @@ msgstr ""
 "Liste zu entfernen."
 
 msgid "Choose which interface this rule applies to"
-msgstr "Wählen Sie aus welches Interface diese Regel benutzen soll"
+msgstr ""
+"Wählen Sie aus, auf welche Schnittstelle diese Regel angewandt werden soll."
 
 msgid "Hint: in most cases, you'll want to use WAN here"
 msgstr "Tipp: In den meisten Fällen, sollten Sie hier WAN benutzen."
@@ -7010,8 +7028,8 @@ msgid ""
 "Hint: this is generally an address owned by the router itself on the "
 "selected interface."
 msgstr ""
-"Hinweis: Dies ist generell eine Adresse des Routers des ausgewählten "
-"Interfaces."
+"Hinweis: Dies ist generell eine Adresse des Routers der ausgewählten "
+"Schnittstelle."
 
 # File: src/www/firewall_nat_1to1_edit.php, line: 334
 # File: src/www/firewall_nat_1to1_edit.php, line: 385
@@ -7141,7 +7159,8 @@ msgstr ""
 "wissen was Sie tun."
 
 msgid "Choose which interface this rule applies to."
-msgstr "Wähle aus welches Interface dieser Regel zugewiesen werden soll."
+msgstr ""
+"Wählen Sie aus, auf welche Schnittstelle diese Regel angewandt werden soll."
 
 msgid "Hint: in most cases, you'll want to use WAN here."
 msgstr "Tipp: In den meisten Fällen sollten Sie hier WAN benutzen."
@@ -7251,6 +7270,9 @@ msgid ""
 "NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will "
 "only work on an interface containing the default gateway."
 msgstr ""
+"HINWEIS: Die Auswahl \"pass\" funktioniert bei Multi-WAN nicht korrekt. Es "
+"wird nur auf der Schnittstelle funktionieren, die das Standard Gateway "
+"verwendet."
 
 msgid "Rule Information"
 msgstr "Regelinformation"
@@ -7316,7 +7338,7 @@ msgid "Manual Outbound NAT Switch"
 msgstr ""
 
 msgid "Default rules for each interface have been created."
-msgstr "Standardregeln für jedes Interface wurden erstellt."
+msgstr "Die Standardregeln für jede Schnittstelle wurden erstellt."
 
 # File: src/www/firewall_nat_out.php, line: 184
 # File: src/www/firewall_nat_out.php, line: 204
@@ -7340,6 +7362,7 @@ msgstr ""
 # File: src/www/firewall_nat_out.php, line: 290
 msgid "(automatically generated rules are applied after manual rules)"
 msgstr ""
+"(automatisch generierte Regeln werden nach den manuellen Regeln angewandt)"
 
 # File: src/www/firewall_nat_out.php, line: 303
 msgid "Manual outbound NAT rule generation"
@@ -7347,7 +7370,7 @@ msgstr ""
 
 # File: src/www/firewall_nat_out.php, line: 304
 msgid "(no automatic rules are being generated)"
-msgstr ""
+msgstr "(keine automatischen Regeln werden generiert)"
 
 # File: src/www/firewall_nat_out.php, line: 315
 msgid "Disable outbound NAT rule generation"
@@ -7482,7 +7505,7 @@ msgstr "Übersetzung / Ziel"
 
 # File: src/www/firewall_nat_out_edit.php, line: 572
 msgid "Interface address"
-msgstr "Interfaceadresse"
+msgstr "Schnittstellenadresse"
 
 # File: src/www/firewall_nat_out_edit.php, line: 582
 msgid "Translation address"
@@ -7497,6 +7520,10 @@ msgid ""
 "address of the interface chosen above, select it here (you will need to "
 "define %sVirtual IP addresses%s on the interface first)."
 msgstr ""
+"Wenn Sie möchten, dass diese Regel auf eine andere IP-Adresse angewandt "
+"wird, statt auf der IP-Adresse der Schnittstelle, die oben ausgewählt wurde, "
+"dann wählen Sie diese hier aus (Sie müssen zuerst %svirtuelle IP-Adressen%s "
+"für diese Schnittstelle hinzufügen)."
 
 # File: src/www/firewall_nat_out_edit.php, line: 602
 msgid "Pool Options:"
@@ -7668,17 +7695,18 @@ msgid "edit schedule"
 msgstr "Zeitplan bearbeiten"
 
 msgid "No floating rules are currently defined."
-msgstr ""
+msgstr "Es sind derzeit keine schwebenden Regeln vorhanden."
 
 msgid "No rules are currently defined for this interface"
-msgstr "Zur Zeit sind keine Regeln für dieses Interface definiert"
+msgstr "Zur Zeit sind keine Regeln für diese Schnittstelle definiert"
 
+# Wenn wir "allow" und "deny" übersetzen, müssen wir konsequenterweise auch "pass" übersetzen.
 msgid ""
 "All incoming connections on this interface will be blocked until you add "
 "pass rules."
 msgstr ""
-"Alle eingehenden Verbindungen auf diesem Interface werden blockiert bis pass "
-"Regeln hinzugefügt werden."
+"Alle eingehenden Verbindungen auf dieser Schnittstelle werden blockiert bis "
+"Durchgangsregeln hinzugefügt werden."
 
 msgid "Click the"
 msgstr "Klicken Sie auf"
@@ -7737,6 +7765,14 @@ msgid ""
 "Pay close attention to the rule order and options chosen. If no rule here "
 "matches, the per-interface or default rules are used. "
 msgstr ""
+"Schwebende Regeln werden nach nur dann dem Erster-Treffer Prinzip bearbeitet "
+"(d.h. es wird die Aktion der Regel ausgeführt, bei der es die erste "
+"Übereinstimmung für ein Paket gegeben hat), wenn die Option \"schnell\" für "
+"die Regel aktiviert wurde. Andernfalls werden diese Regeln nur dann "
+"angewandt, wenn es bei keiner anderen Regel eine Übereinstimmung gab. Legen "
+"Sie großes Augenmerk auf die Reihenfolge der Regeln und die ausgewählten "
+"Optionen. Wenn keine dieser Regeln angewandt wird, dann greifen die Regeln "
+"der jeweiligen Schnittstellen oder die Standardregeln."
 
 msgid "TCP/IP Version"
 msgstr "TCP/IP Version"
@@ -7815,6 +7851,8 @@ msgstr ""
 msgid ""
 "You can not use gateways in Floating rules without choosing a direction."
 msgstr ""
+"Sie können in schwebenden Regeln keine Gateways verwenden ohne die Richtung "
+"anzugeben."
 
 msgid ""
 "You can only specify the maximum number of established connections per host ("
@@ -7981,14 +8019,16 @@ msgid ""
 "You cannot edit the interface, protocol, source, or destination of "
 "associated filter rules."
 msgstr ""
+"Sie können Schnittstelle, Protokoll, Quelle und Ziel der verknüpften "
+"Filterregeln nicht bearbeiten."
 
 msgid "View the NAT rule"
 msgstr "Anschauen der NAT-Regel"
 
 msgid "Choose on which interface packets must come in to match this rule."
 msgstr ""
-"Wählen Sie aus, auf welchem Interface die Pakete ankommen müssen um dieser "
-"Regel zu entsprechen."
+"Wählen Sie aus, auf welcher Schnittstelle die Pakete ankommen müssen um "
+"dieser Regel zu entsprechen."
 
 msgid "Select the Internet Protocol version this rule applies to"
 msgstr ""
@@ -8425,6 +8465,8 @@ msgstr "Zuordnungen."
 
 msgid "You can check the status of your CARP Virtual IPs and interfaces "
 msgstr ""
+"Sie können den Status Ihrer virtuellen CARP IPs und Schnittstellen "
+"überprüfen."
 
 msgid "here"
 msgstr "hier"
@@ -8433,12 +8475,16 @@ msgid "A valid IP address must be specified."
 msgstr "Eine gültige IP Adresse muss spezifiziert werden."
 
 msgid "This IP address is being used by another interface or VIP."
-msgstr "Diese IP Adresse ist von einem anderem Interface oder VIP in Benutzung."
+msgstr ""
+"Diese IP Adresse ist von einer anderen Schnittstelle oder VIP in Benutzung."
 
 msgid ""
 "The interface chosen for the VIP has no IPv4 or IPv6 address configured so "
 "it cannot be used as a parent for the VIP."
 msgstr ""
+"Die für das VIP ausgewählte Schnittstelle hat weder eine IPv4- noch eine "
+"IPv6-Adresse und kann deshalb nicht als übergeordnete Schnittstelle für die "
+"VIP verwendet werden."
 
 msgid "You cannot use the network address for this VIP"
 msgstr "Sie können diese Netzwerkadresse nicht für diesen VIP nutzen."
@@ -8450,6 +8496,8 @@ msgid ""
 "VHID %s is already in use on interface %s. Pick a unique number on this "
 "interface."
 msgstr ""
+"VHID %s wird bereits für Schnittstelle %s verwendet. Wählen Sie eine "
+"eindeutige Zahl für diese Schnittstelle."
 
 msgid ""
 "You must specify a CARP password that is shared between the two VHID members."
@@ -8461,6 +8509,9 @@ msgid ""
 "Sorry, we could not locate an interface with a matching subnet for %s.  "
 "Please add an IP alias in this subnet on this interface."
 msgstr ""
+"Entschuldigung, wir könnten kein übereinstimmendes Subnetz für %s in den "
+"Schnittstellen finden. Bitte konfigurieren Sie einen IP-Alias in diesem "
+"Subnetz für diese Schnittstelle."
 
 msgid "For this type of vip localhost is not allowed."
 msgstr ""
@@ -8556,7 +8607,7 @@ msgstr "Verfügbare Widgets"
 
 # File: src/www/graph.php, line: 79
 msgid "Cannot get data about interface %s"
-msgstr ""
+msgstr "Konnte keine Informationen zu Schnittstelle %s sammeln"
 
 msgid "In"
 msgstr "Ein"
@@ -8629,6 +8680,9 @@ msgid ""
 "The firewall has globally been disabled and configured rules are currently "
 "not enforced. It can be enabled in the %sFirewall/NAT%s settings."
 msgstr ""
+"Die Firewall wurde global deaktiviert und die konfigurierten Regeln werden "
+"derzeit nicht durchgesetzt. Sie kann in den %sFirewall/NAT%s-Einstellungen "
+"aktiviert werden."
 
 msgid "The changes have been applied successfully."
 msgstr "Die Änderungen wurden erfolgreich angewandt."
@@ -8708,17 +8762,17 @@ msgid "Sorry, an alias with the name %s already exists."
 msgstr "Entschuldigung, ein Alias mit dem Namen %s existiert bereits."
 
 msgid "An interface with the specified description already exists."
-msgstr "Ein Interface mit der angegebenen Beschreibung existiert bereits."
+msgstr "Ein Schnittstelle mit der angegebenen Beschreibung existiert bereits."
 
 msgid ""
 "The DHCP Server is active on this interface and it can be used only with a "
 "static IP configuration. Please disable the DHCP Server service on this "
 "interface first, then change the interface configuration."
 msgstr ""
-"Der DHCP Server ist auf diesem Interface aktiv und kann nur mit einer "
-"statischen IP-Konfiguration verwendet werden. Bitte deaktivieren Sie den "
-"DHCP Serverdienst auf diesem Interface zuerst und dann ändern Sie die "
-"Interfacekonfiguration."
+"Der DHCP Server ist auf dieser Schnittstelle aktiv und kann nur mit einer "
+"statischen IP-Konfiguration verwendet werden. Bitte deaktivieren Sie zuerst "
+"den DHCP Serverdienst auf dieser Schnittstelle und dann ändern Sie die "
+"Schnittstellenkonfiguration."
 
 # File: src/www/interfaces.php, line: 779
 msgid ""
@@ -8726,6 +8780,10 @@ msgid ""
 "static IPv6 configuration. Please disable the DHCPv6 Server service on this "
 "interface first, then change the interface configuration."
 msgstr ""
+"Der DHCPv6 Server ist auf dieser Schnittstelle aktiv und kann nur mit einer "
+"statischen IPv6-Konfiguration verwendet werden. Bitte deaktivieren Sie "
+"zuerst den DHCPv6 Serverdienst auf dieser Schnittstelle und dann ändern Sie "
+"die Schnittstellenkonfiguration."
 
 msgid "IPv4 address"
 msgstr "IPv4-Adresse"
@@ -8740,9 +8798,12 @@ msgid ""
 "This interface is referenced by IPv4 VIPs. Please delete those before "
 "setting the interface to 'none' configuration."
 msgstr ""
+"Diese Schnittstelle wird von IPv4 VIPs verwendet. Bitte entfernen Sie diese "
+"zuerst, bevor Sie die Konfiguration der Schnittstelle auf \"keine\" ändern."
 
 msgid "You have to reassign the interface to be able to configure as %s."
-msgstr "Sie müssen das Interface neu zuweisen um es als %s zu konfigurieren."
+msgstr ""
+"Sie müssen die Schnittstelle neu zuweisen um sie als %s zu konfigurieren."
 
 msgid "Modem Port"
 msgstr "Modemport"
@@ -8793,12 +8854,15 @@ msgid ""
 "This interface is referenced by IPv6 VIPs. Please delete those before "
 "setting the interface to 'none' configuration."
 msgstr ""
+"Diese Schnittstelle wird von IPv6 VIPs verwendet. Bitte entfernen Sie diese "
+"zuerst, bevor Sie die Konfiguration der Schnittstelle auf \"keine\" ändern."
 
 msgid "You can only have one interface configured in 6rd with same prefix."
 msgstr ""
+"Sie können nur eine Schnittstelle in 6rd mit dem selben Präfix konfigurieren."
 
 msgid "You can only have one interface configured as 6to4."
-msgstr ""
+msgstr "Sie können nur eine Schnittstelle als 6to4 konfigurieren."
 
 msgid "You must enter a valid hexadecimal number for the IPv6 prefix ID."
 msgstr "Sie müssen eine valide dezimale Zahl für die IPv6 Präfix ID eingeben."
@@ -8813,7 +8877,8 @@ msgstr "Eine gültige IPv4 Adresse muss angegeben werden."
 
 msgid "This IPv4 address is being used by another interface or VIP."
 msgstr ""
-"Diese IPv4 Adresse wird bereits von einem anderen Interface oder VIP benutzt."
+"Diese IPv4 Adresse wird bereits von einer anderen Schnittstelle oder VIP "
+"verwendet."
 
 msgid "This IPv4 address is the network address and cannot be used"
 msgstr ""
@@ -8833,6 +8898,8 @@ msgstr "Eine gültige IPv6 Adresse muss angegeben werden."
 
 msgid "This IPv6 address is being used by another interface or VIP."
 msgstr ""
+"Diese IPv6 Adresse wird bereits von einer anderen Schnittstelle oder VIP "
+"verwendet."
 
 msgid "This IPv6 address conflicts with a Static Route."
 msgstr "Diese IPv6-Adresse steht in Konflikt mit einer statischen Route."
@@ -8886,10 +8953,12 @@ msgstr "Die MTU muss größer als 576 Byte und kleiner als 9000 sein ."
 
 msgid "MTU of a vlan should not be bigger than parent interface."
 msgstr ""
-"MTU eines VLAN sollte nicht größer sein als die des übergeordneten Interface."
+"Die MTU eines VLAN sollte nicht größer sein als die der übergeordneten "
+"Schnittstelle."
 
 msgid "Interface %s (VLAN) has MTU set to a bigger value"
 msgstr ""
+"Für Schnittstelle %s (VLAN) ist die MTU auf einen höheren Wert eingestellt"
 
 msgid "The MSS must be greater than 576 bytes."
 msgstr "MSS muss größer sein als 576 bytes."
@@ -8926,10 +8995,10 @@ msgid "General configuration"
 msgstr "Allgemeine Konfiguration"
 
 msgid "Enable Interface"
-msgstr "Interface aktivieren"
+msgstr "Schnittstelle aktivieren"
 
 msgid "Enter a description (name) for the interface here."
-msgstr "Geben Sie hier eine Beschreibung (Name) für das Interface ein."
+msgstr "Geben Sie hier eine Beschreibung (Name) für die Schnittstelle ein."
 
 # File: src/www/interfaces.php, line: 1706
 msgid ""
@@ -8997,7 +9066,7 @@ msgid "Static IPv6"
 msgstr "Statisches IPv6"
 
 msgid "Track Interface"
-msgstr "Interface aufzeichnen"
+msgstr "Schnittstelle aufzeichnen"
 
 msgid "MAC address"
 msgstr "MAC-Adresse"
@@ -9009,8 +9078,8 @@ msgid ""
 "This field can be used to modify (\"spoof\") the MAC address of this "
 "interface"
 msgstr ""
-"Dieses Feld kann dazu benutzt werden, um die MAC-Adresse für dieses "
-"Interface zu ändern(\"spoofen\")"
+"Dieses Feld kann dazu benutzt werden, um die MAC-Adresse für diese "
+"Schnittstelle zu ändern (\"fälschen\")"
 
 msgid "(may be required with some cable connections)"
 msgstr "(könnte bei manchen Kabelverbindungen erforderlich sein)"
@@ -9053,6 +9122,11 @@ msgid ""
 "speed) unless the port this interface connects to has its speed and duplex "
 "forced."
 msgstr ""
+"Hier können Sie die Geschwindigkeit und den Duplex Modus für diese "
+"Schnittstelle einstellen. WARNUNG: Sie MÜSSEN die automatische Auswahl ("
+"automatische Aushandlung der Geschwindigkeit) verwenden, es sei denn der "
+"Port an den diese Schnittstelle angeschlossen ist erzwingt bestimmte "
+"Einstellungen für Geschwindigkeit oder Duplex Modus."
 
 msgid "Static IPv4 configuration"
 msgstr "Statische IPv4 Konfiguration"
@@ -9086,8 +9160,9 @@ msgid ""
 "If this interface is an Internet connection, select an existing Gateway from "
 "the list or add a new one using the link above."
 msgstr ""
-"Falls dieses Interface eine Internetverbindung hat, wähle ein existierendes "
-"Gateway aus der Liste aus oder füge mit dem oberen Link ein neues hinzu."
+"Falls diese Schnittstelle eine Internetverbindung hat, wählen Sie ein "
+"existierendes Gateway aus der Liste aus oder fügen Sie mit dem oberen Link "
+"ein Neues hinzu."
 
 msgid "On local LANs the upstream gateway should be \"none\"."
 msgstr "Bei lokalen LANs sollte der Gateway \"keiner\" sein."
@@ -9310,8 +9385,8 @@ msgid ""
 "connection. The interface is configured, but the actual connection of the "
 "link is delayed until qualifying outgoing traffic is detected."
 msgstr ""
-"Verbindung. Das Interface ist konfiguriert, aber die aktuelle Verbindung ist "
-"verzögert bis entsprechender ausgehender Datenverkehr erkannt wird."
+"Verbindung. Die Schnittstelle ist konfiguriert, aber die aktuelle Verbindung "
+"ist verzögert bis entsprechender ausgehender Datenverkehr erkannt wird."
 
 msgid "virtual full time"
 msgstr ""
@@ -9389,6 +9464,8 @@ msgid ""
 "This option causes the interface to operate in dial-on-demand mode, allowing "
 "you to have a"
 msgstr ""
+"Diese Einstellung bewirkt, dass die Schnittstelle im Dial-on-Demand Modus "
+"betrieben wird; das ermöglicht Ihnen eine"
 
 msgid ""
 "for additional PPTP and L2TP configuration options. Save first if you made "
@@ -9450,9 +9527,9 @@ msgid ""
 "Send an IPv6 prefix hint to indicate the desired prefix size for delegation"
 msgstr ""
 
-# File: src/www/interfaces.php, line: 2588
+# Was ist die hier passende Wiedergabe von "Statement"?
 msgid "Interface Statement"
-msgstr ""
+msgstr "Schnittstellen Statement"
 
 msgid "Information Only"
 msgstr "Nur Information"
@@ -9530,10 +9607,10 @@ msgstr "<i>ipv6-Prefix</i>"
 
 # File: src/www/interfaces.php, line: 2665
 msgid "Prefix Interface"
-msgstr ""
+msgstr "Schnittstellen Präfix"
 
 msgid "Prefix Interface "
-msgstr ""
+msgstr "Schnittstellen Präfix"
 
 msgid "<i>sla-id</i>"
 msgstr "<i>sla-id</i>"
@@ -9577,7 +9654,7 @@ msgstr "<i>ablauf</i>"
 
 # File: src/www/interfaces.php, line: 2704
 msgid "Configuration File Override"
-msgstr ""
+msgstr "Konfigurationsdatei überschreiben"
 
 msgid "6RD Rapid Deployment"
 msgstr "6RD Rapid Deployment"
@@ -9610,10 +9687,10 @@ msgid ""
 msgstr ""
 
 msgid "Track IPv6 Interface"
-msgstr "IPv6-Interface aufzeichnen"
+msgstr "IPv6-Schnittstelle aufzeichnen"
 
 msgid "IPv6 Interface"
-msgstr "IPv6 Interface"
+msgstr "IPv6 Schnittstelle"
 
 msgid "This selects the dynamic IPv6 WAN interface to track for configuration"
 msgstr ""
@@ -9643,6 +9720,8 @@ msgid ""
 "Enabling this preserves the common wireless configuration through interface "
 "deletions and reassignments."
 msgstr ""
+"Bei Aktivierung wird die allgemeine Konfiguration für drahtlose "
+"Schnittstellen beim Löschen oder Neuzuordnungen beibehalten."
 
 msgid "Protection Mode"
 msgstr "Schutzmodus"
@@ -9654,7 +9733,7 @@ msgid "Protection mode CTS to self"
 msgstr ""
 
 msgid "Protection mode RTS and CTS"
-msgstr ""
+msgstr "Schutzmodus RTS und CTS"
 
 msgid ""
 "For IEEE 802.11g, use the specified technique for protecting OFDM frames in "
@@ -9771,6 +9850,11 @@ msgid ""
 "country codes may not be allowed by some cards.  These settings may not be "
 "able to add additional channels that are not already supported."
 msgstr ""
+"Hinweis: Alle drahtlosen Netzwerke dieser Schnittstelle werden vorübergehend "
+"stillgelegt, wenn die regulativen Einstellungen verändert werden. Einige der "
+"regulativen Einsatzgebiete oder Ländercodes können bei einigen Karten nicht "
+"erlaubt sein. Diese Einstellungen können wahrscheinlich keine zusätzlichen "
+"Kanäle hinzufügen, wenn diese nicht bereits unterstützt werden."
 
 msgid "Network-specific wireless configuration"
 msgstr "Netzwerkspezifische Drahtloskonfiguration"
@@ -9789,7 +9873,7 @@ msgid ""
 "Infrastructure mode, this interface will connect to any available SSID"
 msgstr ""
 "Bemerkung: Nur im Access Point-Modus erforderlich. Falls es im Ad-hoc oder "
-"Infrastrukturmodus leer gelassen wird, wird sich das das Interface mit jeder "
+"Infrastrukturmodus leer gelassen wird, wird sich die Schnittstelle mit jeder "
 "verfügbaren SSID verbinden"
 
 # File: src/www/interfaces.php, line: 3067
@@ -9834,6 +9918,8 @@ msgstr "Aktiviere WME"
 
 msgid "Setting this option will force the card to use WME (wireless QoS)."
 msgstr ""
+"Setzen dieser Einstellung wird die Karte zwingen, WME zu verwenden (wireless "
+"QoS)."
 
 msgid "Enable Hide SSID"
 msgstr "SSID verstecken"
@@ -9916,7 +10002,7 @@ msgid "Shared Key Authentication"
 msgstr ""
 
 msgid "Note: Shared Key Authentication requires WEP."
-msgstr ""
+msgstr "Hinweis: Shared-Key-Authentifizierung erfordert WEP."
 
 msgid "WPA Pairwise"
 msgstr "WPA paarweise"
@@ -9966,7 +10052,7 @@ msgstr "Diese Option erfordert, dass die \"WPA aktivieren\" angehakt ist."
 
 # File: src/www/interfaces.php, line: 3275
 msgid "802.1X Server IP Address"
-msgstr ""
+msgstr "802.1X Server IP-Addresse"
 
 msgid ""
 "Enter the IP address of the 802.1X Authentication Server.  This is commonly "
@@ -10011,7 +10097,7 @@ msgstr ""
 
 # File: src/www/interfaces_assign.php, line: 49
 msgid "vlan %s on %s"
-msgstr ""
+msgstr "Vlan %s auf %s "
 
 msgid "lan"
 msgstr "LAN"
@@ -10022,62 +10108,70 @@ msgstr "LAN"
 msgid ""
 "The interface is part of a group. Please remove it from the group to continue"
 msgstr ""
-"Das Interface ist Teil einer Gruppe. Bitte entfernen Sie dieses aus der "
+"Die Schnittstelle ist Teil einer Gruppe. Bitte entfernen Sie sie aus der "
 "Gruppe um fortzufahren"
 
 msgid ""
 "The interface is part of a bridge. Please remove it from the bridge to "
 "continue"
 msgstr ""
-"Das Interface ist Teil einer Brücke. Bitte entfernen Sie es aus der Brücke "
-"um fortzufahren"
+"Die Schnittstelle ist Teil einer Brücke. Bitte entfernen Sie sie aus der "
+"Brücke um fortzufahren"
 
 msgid ""
 "The interface is part of a gre tunnel. Please delete the tunnel to continue"
 msgstr ""
+"Diese Schnittstelle ist Teil eines gre Tunnels. Bitte löschen Sie den Tunnel "
+"um fortzufahren"
 
 msgid ""
 "The interface is part of a gif tunnel. Please delete the tunnel to continue"
 msgstr ""
+"Diese Schnittstelle ist Teil eines gif Tunnels. Bitte löschen Sie den Tunnel "
+"um fortzufahren"
 
 # File: src/www/interfaces_assign.php, line: 271
 msgid "Port %s was assigned to %d interfaces:"
-msgstr "Port %s wurde zugewiesen zum %d Interface:"
+msgstr "Port %s wurde zur Schnittstelle %d zugewiesen:"
 
 msgid ""
 "You cannot set port %s to interface %s because this interface is a member of "
 "%s."
 msgstr ""
-"Sie können den Port %s nicht dem Interface %s zuordnen, weil diese Interface "
-"Mitglied von %s ist."
+"Sie können den Port %s nicht der Schnittstelle %s zuordnen, weil diese "
+"Schnittstelle Mitglied von %s ist."
 
 # File: src/www/interfaces_assign.php, line: 299
 msgid "VLAN parent interface %s does not exist."
-msgstr ""
+msgstr "Die übergeordnete VLAN Schnittstelle %s existiert nicht."
 
 msgid "Do you really want to delete this interface?"
-msgstr "Wollen Sie dieses Interface wirklich löschen?"
+msgstr "Wollen Sie diese Schnittstelle wirklich löschen?"
 
 msgid "Network port"
 msgstr "Netzwerkport"
 
 msgid "delete interface"
-msgstr "Interface löschen"
+msgstr "Schnittstelle löschen"
 
 msgid "Available network ports:"
 msgstr "Verfügbare Netzwerkports:"
 
 msgid "add selected interface"
-msgstr "ausgewähltes Interface hinzufügen"
+msgstr "ausgewählte Schnittstelle hinzufügen"
 
 # File: src/www/interfaces_assign.php, line: 527
 msgid ""
 "Interfaces that are configured as members of a LAGG interface will not be "
 "shown."
 msgstr ""
+"Schnittstellen die als Mitglieder einer LAGG Schnittstelle konfiguriert "
+"sind, werden nicht angezeigt."
 
 msgid "This bridge cannot be deleted because it is assigned as an interface."
 msgstr ""
+"Diese Brücke kann nicht gelöscht werden, da sie noch als Schnittstelle "
+"zugeordnet ist."
 
 msgid "Do you really want to delete this bridge?"
 msgstr "Wollen Sie diese Bridge wirklich löschen?"
@@ -10087,13 +10181,13 @@ msgstr "Mitglieder"
 
 # File: src/www/interfaces_bridge.php, line: 155
 msgid "edit bridge"
-msgstr ""
+msgstr "Bridge bearbeiten"
 
 msgid "Here you can configure bridging of interfaces."
-msgstr ""
+msgstr "Hier können Sie das Bridging für Schnittstellen konfigurieren."
 
 msgid "Member Interfaces"
-msgstr ""
+msgstr "Mitglieder Schnittstellen"
 
 msgid "Maxage needs to be an integer between 6 and 40."
 msgstr ""
@@ -10119,41 +10213,50 @@ msgstr ""
 # File: src/www/interfaces_bridge_edit.php, line: 143
 msgid "%s interface priority for STP needs to be an integer between 0 and 240."
 msgstr ""
+"%s Schnittstellen Priorität für STP muss eine Zahl zwischen 0 und 240 sein."
 
 # File: src/www/interfaces_bridge_edit.php, line: 149
 msgid ""
 "%s interface path cost for STP needs to be an integer between 1 and "
 "200000000."
 msgstr ""
+"%s Schnittstellen Pfadkosten für STP muss eine Zahl zwischen 1 und 200000000 "
+"sein."
 
 msgid "You must select at least 2 member interfaces for a bridge."
 msgstr ""
+"Sie müssen mindestens 2 Schnittstellen als Mitglieder für eine Brücke "
+"auswählen."
 
 msgid "A member interface passed does not exist in configuration"
 msgstr ""
+"Ein angegebene Mitglieder Schnittstelle wurde nicht in der Konfiguration "
+"gefunden"
 
 # bridgeing is hard to translate this way to german
 msgid "Bridging a wireless interface is only possible in hostap mode."
 msgstr ""
-"Eine Wireless-Schnittstelle kann nur gebridget werden, wenn sie sich im "
+"Eine drahtlose Schnittstelle kann nur gebridget werden, wenn sie sich im "
 "Hostap Modus befindet."
 
 msgid ""
 "Span interface cannot be part of the bridge. Remove the span interface from "
 "bridge members to continue."
 msgstr ""
+"Eine span Schnittstelle kann kein Teil der Brücke sein. Entfernen Sie die "
+"span Schnittstelle von der Liste der Mitglieder um fortzufahren."
 
 msgid "Error occurred creating interface, please retry."
-msgstr "Fehler beim Erstellen des Interface, bitte versuchen Sie es erneut."
+msgstr "Fehler beim Erstellen der Schnittstelle, bitte versuchen Sie es erneut."
 
 msgid "Bridge configuration"
 msgstr "Bridgekonfiguration"
 
 msgid "Member interfaces"
-msgstr ""
+msgstr "Mitglieder Schnittstellen"
 
 msgid "Interfaces participating in the bridge."
-msgstr ""
+msgstr "Schnittstellen die Teil der Brücke sind."
 
 msgid "Show advanced options"
 msgstr "Erweiterte Optionen anzeigen"
@@ -10180,16 +10283,16 @@ msgid "Protocol used for spanning tree."
 msgstr "Protokoll, das für Spanning Tree verwendet wird."
 
 msgid "STP interfaces"
-msgstr "STP-Interfaces"
+msgstr "STP-Schnittstellen"
 
 msgid ""
 "Enable Spanning Tree Protocol on interface.  The if_bridge(4) driver has "
 "support for the IEEE 802.1D Spanning Tree Protocol (STP).  STP is used to "
 "detect and remove loops in a network topology."
 msgstr ""
-"Spanning Tree auf dem Interface aktivieren. Der if_bridge(4) Treiber "
+"Spanning Tree auf der Schnittstelle aktivieren. Der if_bridge(4) Treiber "
 "unterstützt das IEEE 802.1D Spanning Tree Protokoll (STP). STP wird "
-"verwendet um Loops in der Netzwerktopologie zu erkennen und zu entfernen."
+"verwendet um Schleifen in der Netzwerktopologie zu erkennen und zu entfernen."
 
 msgid "Valid time"
 msgstr "Gültige Zeit"
@@ -10256,7 +10359,7 @@ msgid "Advanced options"
 msgstr "Erweiterte Optionen"
 
 msgid "Cache size"
-msgstr "Cachegröße"
+msgstr "Cache Größe"
 
 msgid "entries"
 msgstr "Einträge"
@@ -10268,7 +10371,7 @@ msgid ""
 msgstr ""
 
 msgid "Cache entry expire time"
-msgstr "Cache-Eintrag Ablaufzeit"
+msgstr "Ablaufzeit für den Cache-Eintrag"
 
 msgid ""
 "Set the timeout of address cache entries to this number of seconds.  If "
@@ -10286,10 +10389,9 @@ msgid ""
 "useful for snooping a bridged network passively on another host connected to "
 "one of the span ports of the bridge."
 msgstr ""
-"Das Interface genannt in Interface als Span Port der Bridge hinzufügen. Span "
-"Ports senden eine Kopie jedes Frames, die die Bridge empfängt. Dies kann am "
-"nützlichsten für transparente Netzwerküberwachung (z.B durch ein IDS) "
-"eingesetzt werden."
+"Die Schnittstelle als Span Port der Bridge hinzufügen. Span Ports senden "
+"eine Kopie jedes Frames, die die Bridge empfängt. Dies kann am nützlichsten "
+"für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
 
 msgid "The span interface cannot be part of the bridge member interfaces."
 msgstr ""
@@ -10370,7 +10472,7 @@ msgstr "Tunnel zu..."
 # File: src/www/interfaces_lagg.php, line: 144
 # File: src/www/interfaces_vlan.php, line: 136
 msgid "edit interface"
-msgstr "Interface bearbeiten"
+msgstr "Schnittstelle bearbeiten"
 
 msgid "GIF tunnels are configured here."
 msgstr ""
@@ -10455,8 +10557,8 @@ msgid ""
 "This GRE tunnel cannot be deleted because it is still being used as an "
 "interface."
 msgstr ""
-"Dieser GRE-Tunnel kann nicht gelöscht werden, da er noch immer als Interface "
-"verwendet wird."
+"Dieser GRE-Tunnel kann nicht gelöscht werden, da er noch immer als "
+"Schnittstelle verwendet wird."
 
 msgid "Do you really want to delete this GRE tunnel?"
 msgstr "Wollen Sie diesen GRE Tunnel wirklich löschen?"
@@ -10545,7 +10647,7 @@ msgid "edit group"
 msgstr "Gruppe bearbeiten"
 
 msgid "delete ifgroupentry"
-msgstr "Interfacegruppeneintrag löschen"
+msgstr "Schnittstellengruppeneintrag löschen"
 
 msgid ""
 "Interface Groups allow you to create rules that apply to multiple interfaces "
@@ -10564,11 +10666,11 @@ msgid ""
 "The specified group name is already used by an interface. Please choose "
 "another name."
 msgstr ""
-"Der ausgewählte Gruppenname wird schon von einem anderen Interface "
-"verwendet. Bitte wählen Sie einen anderen Namen."
+"Der ausgewählte Gruppenname wird schon von einer Schnittstelle verwendet. "
+"Bitte wählen Sie einen anderen Namen."
 
 msgid "Interface Groups Edit"
-msgstr "Interfacegruppen bearbeiten"
+msgstr "Schnittstellengruppen bearbeiten"
 
 msgid "Group Name"
 msgstr "Gruppenname"
@@ -10586,10 +10688,11 @@ msgstr ""
 
 msgid "This LAGG interface cannot be deleted because it is still being used."
 msgstr ""
-"Das LAGG-Interface kann nicht gelöscht werden, da es noch in Benutzung ist."
+"Die LAGG-Schnittstelle kann nicht gelöscht werden, da sie noch in Benutzung "
+"ist."
 
 msgid "Do you really want to delete this LAGG interface?"
-msgstr "Wollen Sie dieses LAGG Interface wirklich löschen?"
+msgstr "Wollen Sie diese LAGG Schnittstelle wirklich löschen?"
 
 msgid ""
 "LAGG allows for link aggregation, bonding and fault tolerance. Only "
@@ -10600,7 +10703,7 @@ msgid "Lagg protocol"
 msgstr "Lagg Protokoll"
 
 msgid "Interface supplied as member is invalid"
-msgstr "Interface zum Mitglied ist ungültig"
+msgstr "Die als Mitglied angegebene Schnittstelle ist ungültig"
 
 msgid "Protocol supplied is invalid"
 msgstr "Protokoll ist ungültig"
@@ -10679,13 +10782,13 @@ msgid ""
 msgstr ""
 
 msgid "Do you really want to delete this PPP interface?"
-msgstr "Wollen Sie dieses PPP Interface wirklich löschen?"
+msgstr "Wollen Sie diese PPP Schnittstelle wirklich löschen?"
 
 msgid "Interface(s)/Port(s)"
-msgstr ""
+msgstr "Schnittstellen/Ports"
 
 msgid "Link Interface(s)"
-msgstr "Verbindungsinterface(s)"
+msgstr "Verbindungsschnittstelle(n)"
 
 msgid "Subnet"
 msgstr "Subnetz"
@@ -10738,8 +10841,8 @@ msgid ""
 "You may enter a description here for your reference. Description will appear "
 "in the \"Interfaces Assign\" select lists."
 msgstr ""
-"Die Beschreibung wird nicht als Parameter verwendet. Text erscheint in der \""
-"Interface Anwahl\" Selektionsliste."
+"Sie können eine Beschreibung für Ihre eigene Verwendung angeben. Sie "
+"erscheint dann in der \"Schnittstellen Zuordnung\" Selektionsliste."
 
 msgid "Note: Typically *99# for GSM networks and #777 for CDMA networks"
 msgstr ""
@@ -10930,10 +11033,11 @@ msgstr ""
 msgid ""
 "This QinQ cannot be deleted because it is still being used as an interface."
 msgstr ""
-"Das QinQ kann nicht gelöscht werden, da es von einem Interface benutzt wird."
+"Das QinQ kann nicht gelöscht werden, da es von einer Schnittstelle verwendet "
+"wird."
 
 msgid "QinQ interface does not exist"
-msgstr "QinQ Interface existiert nicht"
+msgstr "QinQ Schnittstelle existiert nicht"
 
 msgid "Do you really want to delete this QinQ?"
 msgstr "Wollen Sie diese QinQ wirklich löschen?"
@@ -10961,6 +11065,8 @@ msgstr ""
 msgid ""
 "You are editing an existing entry and modifying the interface is not allowed."
 msgstr ""
+"Sie bearbeiten einen bereits vorhandenen Eintrag; Veränderungen an der "
+"Schnittstelle sind nicht erlaubt."
 
 msgid "QinQ level already exists for this interface, edit it!"
 msgstr ""
@@ -10971,10 +11077,10 @@ msgid ""
 msgstr ""
 
 msgid "Interface QinQ Edit"
-msgstr "Interface QinQ ändern"
+msgstr "Schnittstelle QinQ ändern"
 
 msgid "Only QinQ capable interfaces will be shown."
-msgstr "Nur QinQ fähige Interfaces werden angezeigt."
+msgstr "Nur QinQ fähige Schnittstellen werden angezeigt."
 
 msgid "First level tag"
 msgstr ""
@@ -10987,8 +11093,8 @@ msgstr ""
 msgid ""
 "This VLAN cannot be deleted because it is still being used as an interface."
 msgstr ""
-"Dieses VLAN kann nicht gelöscht werden, da es von einem Interface benutzt "
-"wird."
+"Dieses VLAN kann nicht gelöscht werden, da es von einer Schnittstelle "
+"benutzt wird."
 
 msgid "Do you really want to delete this VLAN?"
 msgstr "Wollen Sie dieses VLAN wirklich löschen?"
@@ -11006,21 +11112,21 @@ msgid "The VLAN tag must be an integer between 1 and 4094."
 msgstr "Das VLAN Tag muss eine Zahl zwischen 1 und 4094 sein."
 
 msgid "Interface supplied as parent is invalid"
-msgstr ""
+msgstr "Die ausgewählte übergeordnete Schnittstelle ist ungültig"
 
 msgid ""
 "Interface is assigned and you cannot change the VLAN tag while assigned."
 msgstr ""
-"Solang das Interface zugewiesen ist können Sie das VLAN Tag nicht ändern."
+"Solang die Schnittstelle zugewiesen ist können Sie das VLAN Tag nicht ändern."
 
 msgid "A VLAN with the tag %s is already defined on this interface."
-msgstr "Ein VLAN mit dem Tag %s ist bereits auf diesem Interface definiert."
+msgstr "Ein VLAN mit dem Tag %s ist bereits auf dieser Schnittstelle vorhanden."
 
 msgid "A QinQ VLAN exists with this tag please remove it to use this tag with."
 msgstr ""
 
 msgid "Only VLAN capable interfaces will be shown."
-msgstr "Nur VLAN fähige Interfaces werden angezeigt."
+msgstr "Nur VLAN fähige Schnittstellen werden angezeigt."
 
 msgid "VLAN tag "
 msgstr "VLAN Tag "
@@ -11061,7 +11167,7 @@ msgid "Wireless clone configuration"
 msgstr ""
 
 msgid "Wrong Interface"
-msgstr "Falsches Interface"
+msgstr "Falsche Schnittstelle"
 
 msgid ""
 "This entry cannot be deleted because it is still referenced by at least one "
@@ -11353,13 +11459,13 @@ msgid "Are you sure you want to reboot the system?"
 msgstr "Sind Sie sicher dass Sie das System neu starten möchten?"
 
 msgid "Only interfaces configured with a static IP will be shown"
-msgstr "Nur Interfaces mit einer statischen IP-Adresse werden angezeigt"
+msgstr "Nur Schnittstellen mit einer statischen IP-Adresse werden angezeigt"
 
 msgid ""
 "The DHCP Server can only be enabled on interfaces configured with static IP "
 "addresses"
 msgstr ""
-"Der DHCP-Server kann nur auf einem Interface mit statischen IP-Adressen "
+"Der DHCP-Server kann nur auf einer Schnittstelle mit statischen IP-Adressen "
 "aktiviert werden"
 
 msgid "Range begin"
@@ -11556,7 +11662,7 @@ msgstr ""
 
 # File: src/www/services_dhcp.php, line: 736
 msgid "Enable DHCP server on %s interface"
-msgstr "Aktiviere DHCP-Server auf %s Interface"
+msgstr "Aktiviere DHCP-Server auf Schnittstelle %s"
 
 msgid ""
 "Editing Pool-Specific Options. To return to the Interface, click its tab "
@@ -11868,7 +11974,7 @@ msgid "page."
 msgstr "Seite."
 
 msgid "DHCP Static Mappings for this interface."
-msgstr "Statische DHCP-Zuweisung für dieses Interface"
+msgstr "Statische DHCP-Zuweisung für diese Schnittstelle"
 
 msgid "Do you really want to delete this mapping?"
 msgstr "Wollen Sie diese Zuweisung wirklich löschen?"
@@ -11893,11 +11999,14 @@ msgstr "Dieser Hostname, IP, MAC Adresse oder Client-ID existiert bereits."
 
 msgid "The IP address must not be within the DHCP range for this interface."
 msgstr ""
+"Die IP-Adresse für diese Schnittstelle darf nicht im DHCP-Bereich liegen."
 
 msgid ""
 "The IP address must not be within the range configured on a DHCP pool for "
 "this interface."
 msgstr ""
+"Die IP-Adresse für diese Schnittstelle darf nicht im Bereich einer der "
+"konfigurierten DHCP-Pools liegen."
 
 msgid "The IP address must lie in the %s subnet."
 msgstr "Die IPAdresse muss in dem Subnetz %s liegen."
@@ -11979,16 +12088,16 @@ msgid "DHCP Relay configuration"
 msgstr "DHCP Relay Konfiguration"
 
 msgid "Enable DHCP relay on interface"
-msgstr "Aktiviere DHCP-Relay auf dem Interface"
+msgstr "Aktiviere DHCP-Relay auf der Schnittstelle"
 
 # File: src/www/services_dhcp_relay.php, line: 158
 # File: src/www/services_dhcpv6_relay.php, line: 155
 # File: src/www/services_ntpd.php, line: 230
 msgid "Interface(s)"
-msgstr ""
+msgstr "Schnittstelle(n)"
 
 msgid "Interfaces without an IP address will not be shown."
-msgstr "Interface ohne eine IP-Adresse wird nicht angezeigt."
+msgstr "Schnittstellen ohne IP-Adresse werden nicht angezeigt."
 
 msgid "Append circuit ID and agent ID to requests"
 msgstr ""
@@ -12053,7 +12162,7 @@ msgstr ""
 
 # File: src/www/services_dhcpv6.php, line: 521
 msgid "Enable DHCPv6 server on %s interface"
-msgstr "DHCPv6 Server auf Interface %s aktivieren"
+msgstr "DHCPv6 Server auf Schnittstelle %s aktivieren"
 
 msgid "Subnet Mask"
 msgstr "Subnetzmaske"
@@ -12101,7 +12210,7 @@ msgid "Status: DHCPv6 leases"
 msgstr "Status: DHCPv6 Leases"
 
 msgid "DHCPv6 Static Mappings for this interface."
-msgstr "DHCPv6 statische Zuweisung für dieses Interface"
+msgstr "Statische DHCPv6 Zuweisungen für diese Schnittstelle."
 
 msgid "DUID"
 msgstr "DUID"
@@ -12149,10 +12258,10 @@ msgid "DHCPv6 Relay configuration"
 msgstr "DHCPv6 Relay Konfiguration"
 
 msgid "Enable DHCPv6 relay on interface"
-msgstr "DHCPv6 Relay auf dem Interface aktivieren"
+msgstr "DHCPv6 Relay auf der Schnittstelle aktivieren"
 
 msgid "Interfaces without an IPv6 address will not be shown."
-msgstr "Interfaces ohne eine IPv6 Adresse werden nicht angezeigt."
+msgstr "Schnittstellen ohne eine IPv6 Adresse werden nicht angezeigt."
 
 msgid ""
 "If this is checked, the DHCPv6 relay will append the circuit ID (%s "
@@ -13165,7 +13274,7 @@ msgid ""
 "The DHCPv6 Server can only be enabled on interfaces configured with static "
 "IP addresses"
 msgstr ""
-"Der DHCPv6-Server kann nur auf Interfaces mit statischen IP Adressen "
+"Der DHCPv6-Server kann nur auf Schnittstellen mit statischen IP Adressen "
 "aktiviert werden"
 
 msgid ""
@@ -13201,10 +13310,11 @@ msgid "Select the Priority for the Router Advertisement (RA) Daemon."
 msgstr ""
 
 msgid "RA Interface"
-msgstr "RA Interface"
+msgstr "RA Schnittstelle"
 
 msgid "Select the Interface for the Router Advertisement (RA) Daemon."
 msgstr ""
+"Wählen Sie die Schnittstelle für den Router Advertisement (RA) Dienst aus."
 
 msgid "RA Subnet(s)"
 msgstr "RA Subnetz/e"
@@ -13308,10 +13418,10 @@ msgid "Regex"
 msgstr "Regulärer Ausdruck"
 
 msgid "Interface Binding"
-msgstr "Interface-Bindung"
+msgstr "Schnittstellen Zuordnung"
 
 msgid "Bind Interface"
-msgstr "Bind Interface"
+msgstr "Zugeordnete Schnittstelle"
 
 # File: src/www/services_unbound.php, line: 89
 msgid ""
@@ -13324,12 +13434,16 @@ msgid ""
 "A single network interface needs to be selected for the DNS Resolver to bind "
 "to."
 msgstr ""
+"Eine einzelne Netzwerkschnittstelle muss ausgewählt werden, um dem DNS "
+"Resolver zugeordnet werden zu können."
 
 # File: src/www/services_unbound.php, line: 95
 msgid ""
 "A single outgoing network interface needs to be selected for the DNS "
 "Resolver to use for outgoing DNS requests."
 msgstr ""
+"Eine einzelne ausgehende Netzwerkschnittstelle muss ausgewählt werden, um "
+"vom DNS Resolver für ausgehende DNS-Anfragen verwendet zu können."
 
 msgid "You must specify a valid port number."
 msgstr "Sie müssen eine gültige Portnummer angeben."
@@ -13344,7 +13458,7 @@ msgid "Enable DNS Resolver"
 msgstr "DNS Resolver aktivieren"
 
 msgid "Network Interfaces"
-msgstr "Netzwerk Interfaces"
+msgstr "Netzwerkschnittstellen"
 
 msgid ""
 "Interface IPs used by the DNS Resolver for responding to queries from "
@@ -13354,7 +13468,7 @@ msgid ""
 msgstr ""
 
 msgid "Outgoing Network Interfaces"
-msgstr "Ausgehendes Netzwerk-Interface"
+msgstr "Ausgehende Netzwerkschnittstellen"
 
 msgid ""
 "Utilize different network interface(s) that the DNS Resolver will use to "
@@ -13883,7 +13997,7 @@ msgstr ""
 "nicht erfolgreich abgeschlossen."
 
 msgid "A valid interface must be specified."
-msgstr "Ein gültiges Interface muss angegeben werden."
+msgstr "Eine gültige Schnittstelle muss angegeben werden."
 
 msgid "A valid ip could not be found!"
 msgstr "Eine gültige IP konnte nicht gefunden werden!"
@@ -13901,8 +14015,8 @@ msgstr ""
 
 msgid "Choose which interface the host to be woken up is connected to."
 msgstr ""
-"Wählen Sie das Interface aus, mit dem der Host verbunden ist, der aufgeweckt "
-"werden soll."
+"Wählen Sie die Schnittstelle aus, mit dem der Host verbunden ist, der "
+"aufgeweckt werden soll."
 
 # File: src/www/services_wol.php, line: 157
 msgid "Enter a MAC address %sin the following format: xx:xx:xx:xx:xx:xx%s"
@@ -13927,7 +14041,7 @@ msgid "Edit WOL entry"
 msgstr "WOL Eintrag bearbeiten"
 
 msgid "Choose which interface this host is connected to."
-msgstr "Wähle aus mit welchem Inteface dieser Host verbunden ist."
+msgstr "Wählen Sie aus, mit welcher Schnittstelle dieser Host verbunden ist."
 
 msgid "Enter a MAC address  in the following format: xx:xx:xx:xx:xx:xx"
 msgstr "Geben Sie eine MAC-Adresse im Format xx:xx:xx:xx:xx:xx ein."
@@ -14083,7 +14197,7 @@ msgid ""
 msgstr ""
 
 msgid "interface"
-msgstr "Interface"
+msgstr "Schnittstelle"
 
 msgid "Release"
 msgstr ""
@@ -14886,7 +15000,7 @@ msgid "Static route filtering"
 msgstr "Filterung statischer Routen"
 
 msgid "Bypass firewall rules for traffic on the same interface"
-msgstr "Umgehe Firewall Regeln für Verkehr auf dem gleichen Interface"
+msgstr "Umgehe Firewall Regeln für Verkehr auf der gleichen Schnittstelle"
 
 msgid ""
 "This option only applies if you have defined one or more static routes. If "
@@ -15394,8 +15508,8 @@ msgid ""
 "This will take effect after you reboot the machine or re-configure each "
 "interface."
 msgstr ""
-"Dies wird wirksam, nachdem Sie den Computer neu starten oder jedes Interface "
-"neukonfigurieren."
+"Dies wird wirksam, nachdem Sie diesen Computer neu starten oder jede "
+"Schnittstelle neukonfigurieren."
 
 # File: src/www/system_advanced_network.php, line: 252
 msgid "Hardware TSO"
@@ -16403,7 +16517,7 @@ msgid "Tier %d"
 msgstr "Ebene %d"
 
 msgid "Interface Address"
-msgstr "Interface Adresse"
+msgstr "Schnittstellenadresse"
 
 msgid "Link Priority"
 msgstr "Link Priorität"
@@ -16469,7 +16583,7 @@ msgstr "Monitor IP"
 
 # File: src/www/system_gateways.php, line: 326
 msgid "Gateway is inactive because interface is missing"
-msgstr ""
+msgstr "Das Gateway ist nicht aktiv, weil die Schnittstelle fehlt"
 
 # File: src/www/system_gateways.php, line: 329
 # File: src/www/system_gateways.php, line: 334
@@ -16507,8 +16621,8 @@ msgid ""
 "Cannot add IPv4 Gateway Address because no IPv4 address could be found on "
 "the interface."
 msgstr ""
-"Konnte keine IPv4 Gatewayadresse hinzufügen, da für das Interface keine IPv4 "
-"Adresse gefunden wurde."
+"Konnte keine IPv4 Gatewayadresse hinzufügen, da für die Schnittstelle keine "
+"IPv4 Adresse gefunden wurde."
 
 # File: src/www/system_gateways_edit.php, line: 152
 # File: src/www/system_gateways_edit.php, line: 183
@@ -16516,28 +16630,29 @@ msgid ""
 "The gateway address %1$s does not lie within one of the chosen interface's "
 "subnets."
 msgstr ""
-"Die Gatewayadresse %1$s liegt nicht im Subnetz des ausgewählten Interfaces."
+"Die Gatewayadresse %1$s liegt nicht im Subnetz der ausgewählten "
+"Schnittstelle."
 
 msgid ""
 "Cannot add IPv6 Gateway Address because no IPv6 address could be found on "
 "the interface."
 msgstr ""
-"Konnte keine IPv6 Gatewayadresse hinzufügen, da für das Interface keine IPv6 "
-"Adresse gefunden wurde."
+"Konnte keine IPv6 Gatewayadresse hinzufügen, da für die Schnittstelle keine "
+"IPv6 Adresse gefunden wurde."
 
 msgid ""
 "Dynamic gateway values cannot be specified for interfaces with a static IPv4 "
 "configuration."
 msgstr ""
-"Dynamische Gateway-Werte können nicht für Interfaces mit einer statischen "
-"IPv4-Konfiguration festgelegt werden."
+"Dynamische Gateway-Werte können nicht für Schnittstellen mit einer "
+"statischen IPv4-Konfiguration festgelegt werden."
 
 msgid ""
 "Dynamic gateway values cannot be specified for interfaces with a static IPv6 "
 "configuration."
 msgstr ""
-"Dynamische Gateway-Werte können nicht für Interfaces mit einer statischen "
-"IPv6-Konfiguration festgelegt werden."
+"Dynamische Gateway-Werte können nicht für Schnittstellen mit einer "
+"statischen IPv6-Konfiguration festgelegt werden."
 
 msgid "A valid monitor IP address must be specified."
 msgstr "Eine gültige Monitor IP-Adresse muss spezifiziert werden."
@@ -16643,7 +16758,8 @@ msgstr ""
 "Liste zu entfernen."
 
 msgid "Choose which interface this gateway applies to."
-msgstr "Wählen Sie aus, welches Interface diesem Gateway zugeteilt werden soll."
+msgstr ""
+"Wählen Sie aus, welcher Schnittstelle dieses Gateway zugeteilt werden soll."
 
 msgid "Choose the Internet Protocol this gateway uses."
 msgstr ""
@@ -16996,7 +17112,7 @@ msgstr ""
 
 # File: src/www/system_hasync.php, line: 140
 msgid "Synchronize Interface"
-msgstr "Interface synchronisieren"
+msgstr "Synchronisierungsschnittstelle"
 
 # File: src/www/system_hasync.php, line: 123
 msgid "loopback"
@@ -17289,8 +17405,8 @@ msgid ""
 "firewall.  Static routes are only used for networks reachable via a "
 "different router, and not reachable via your default gateway."
 msgstr ""
-"Geben Sie keine statischen Routen für Netzwerke an, die einem Interface der "
-"Firewall zugewiesen wurden. Statische Routen werden nur für Netzwerke "
+"Geben Sie keine statischen Routen für Netzwerke an, die einer Schnittstelle "
+"der Firewall zugewiesen wurden. Statische Routen werden nur für Netzwerke "
 "verwendet, die über einen anderen Router und nicht über den Standardgateway "
 "erreichbar sind."
 
@@ -17314,6 +17430,8 @@ msgstr "Eine Route zu diesem Zielnetzwerk existiert bereits"
 
 msgid "This network conflicts with address configured on interface %s."
 msgstr ""
+"Es gibt einen Konflikt für dieses Netzwerk und der Adresse von Schnittstelle "
+"%s."
 
 msgid "Destination network for this static route"
 msgstr "Zielnetzwerk für diese statische Route"
@@ -17623,7 +17741,7 @@ msgstr "Wollen Sie die ausgewählten Phase 2 Einträge wirklich löschen?"
 
 # File: src/www/vpn_ipsec.php, line: 300
 msgid "The IPsec tunnel configuration has been changed."
-msgstr ""
+msgstr "Die IPsec-Tunnel Konfiguration wurde geändert."
 
 msgid "IKE"
 msgstr "IKE"
@@ -17642,11 +17760,11 @@ msgstr "Phase 1 Beschreibung"
 
 # File: src/www/vpn_ipsec.php, line: 333
 msgid "disable phase 1 entry"
-msgstr ""
+msgstr "Phase 1 Eintrag deaktivieren"
 
 # File: src/www/vpn_ipsec.php, line: 333
 msgid "enable phase 1 entry"
-msgstr ""
+msgstr "Phase 1 Eintrag aktivieren"
 
 msgid "auto"
 msgstr "automatisch"
@@ -17662,7 +17780,7 @@ msgstr "Lösche Phase 1 Eintrag"
 
 # File: src/www/vpn_ipsec.php, line: 413
 msgid "clone phase1 entry"
-msgstr ""
+msgstr "Phase 1 Eintrag klonen"
 
 msgid "Show %s Phase-2 entries"
 msgstr "Zeige %s Phase-2 Einträge"
@@ -17684,47 +17802,47 @@ msgstr "Phase 2 Authentifizierungsmethode"
 
 # File: src/www/vpn_ipsec.php, line: 463
 msgid "disable phase 2 entry"
-msgstr ""
+msgstr "Phase 2 Eintrag deaktivieren"
 
 # File: src/www/vpn_ipsec.php, line: 463
 msgid "enable phase 2 entry"
-msgstr ""
+msgstr "Phase 2 Eintrag aktivieren"
 
 # File: src/www/vpn_ipsec.php, line: 519
 msgid "edit phase 2 entry"
-msgstr ""
+msgstr "Phase 2 Eintrag bearbeiten"
 
 # File: src/www/vpn_ipsec.php, line: 524
 msgid "delete phase 2 entry"
-msgstr ""
+msgstr "Phase 2 Eintrag löschen"
 
 # File: src/www/vpn_ipsec.php, line: 530
 msgid "clone phase 2 entry"
-msgstr ""
+msgstr "Phase 2 Eintrag klonen"
 
 # File: src/www/vpn_ipsec.php, line: 546
 msgid "move selected phase 2 entries to end"
-msgstr ""
+msgstr "ausgewählte Phase 2 Einträge ans Ende verschieben"
 
 # File: src/www/vpn_ipsec.php, line: 550
 msgid "delete selected phase 2 entries"
-msgstr ""
+msgstr "ausgewählte Phase 2 Einträge löschen"
 
 # File: src/www/vpn_ipsec.php, line: 557
 msgid "add phase 2 entry"
-msgstr ""
+msgstr "Phase 2 Eintrag hinzufügen"
 
 # File: src/www/vpn_ipsec.php, line: 577
 msgid "move selected phase 1 entries to end"
-msgstr ""
+msgstr "ausgewählte Phase 1 Einträge ans Ende verschieben"
 
 # File: src/www/vpn_ipsec.php, line: 584
 msgid "delete selected phase 1 entries"
-msgstr ""
+msgstr "ausgewählte Phase 1 Einträge löschen"
 
 # File: src/www/vpn_ipsec.php, line: 589
 msgid "add new phase 1 entry"
-msgstr ""
+msgstr "neuen Phase 1 Eintrag hinzufügen"
 
 msgid "Enable IPsec"
 msgstr "IPsec aktivieren"
@@ -17985,7 +18103,7 @@ msgid "A valid Dynamic DNS address for 'My identifier' must be specified."
 msgstr ""
 
 msgid "Please enter an address for 'Peer Identifier'"
-msgstr ""
+msgstr "Geben Sie eine Adresse für 'Peer Bezeichnung' ein"
 
 msgid "Please enter a keyid tag for 'Peer Identifier'"
 msgstr ""
@@ -18031,14 +18149,16 @@ msgstr "Deaktiviere diesen Phase 1 Eintrag"
 msgid ""
 "Set this option to disable this phase1 without removing it from the list."
 msgstr ""
+"Setzen Sie diese Einstellung, um diese Phase1 zu deaktivieren, ohne diese "
+"von der Liste zu entfernen."
 
 # File: src/www/vpn_ipsec_phase1.php, line: 606
 msgid "Connection method"
-msgstr ""
+msgstr "Anschlussart"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 611
 msgid "Respond only"
-msgstr ""
+msgstr "Nur antworten"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 612
 msgid "Start on traffic"
@@ -18075,6 +18195,8 @@ msgstr ""
 
 msgid "Enter the public IP address or host name of the remote gateway"
 msgstr ""
+"Geben Sie die öffentliche IP-Adresse oder den Hostnamen des entfernten "
+"Gateway ein."
 
 msgid "Phase 1 proposal (Authentication)"
 msgstr ""
@@ -18093,7 +18215,7 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_phase1.php, line: 772
 msgid "Aggressive is more flexible, but less secure."
-msgstr ""
+msgstr "Aggressiv ist mehr flexibler, aber nicht so sicher."
 
 msgid "My identifier"
 msgstr "Meine Kennung"
@@ -18390,7 +18512,7 @@ msgid ""
 msgstr ""
 
 msgid "IPsec Debug"
-msgstr ""
+msgstr "IPsec Debug"
 
 msgid "Start IPSec in debug mode based on sections selected"
 msgstr ""
@@ -18418,7 +18540,7 @@ msgid "Maximum MSS"
 msgstr "Maximale MSS"
 
 msgid "Enable MSS clamping on VPN traffic"
-msgstr ""
+msgstr "Aktiviere MSS Clamping auf dem VPN-Datenverkehr"
 
 msgid ""
 "Enable MSS clamping on TCP flows over VPN. This helps overcome problems with "
@@ -18448,16 +18570,17 @@ msgstr ""
 "gerade von der Firewall verwendet wird."
 
 msgid "A valid remote start address must be specified."
-msgstr ""
+msgstr "Ein gültige entfernete Start-Adresse muss angegeben werden."
 
 msgid "A valid RADIUS server address must be specified."
 msgstr "Eine gültige RADIUS-Serveradresse muss spezifiziert werden."
 
 msgid "The specified server address lies in the remote subnet."
-msgstr ""
+msgstr "Die angegebene Server-Adresse liegt im entfernten Subnetz."
 
 msgid "The specified server address is equal to the LAN interface address."
 msgstr ""
+"Die angegebene Server-Adresse ist identisch mit der LAN-Interface Adresse."
 
 msgid "Enable L2TP server"
 msgstr "Aktiviere L2TP Server"
@@ -18494,7 +18617,7 @@ msgstr "Anzahl an L2TP Benutzer"
 
 # File: src/www/vpn_l2tp.php, line: 377
 msgid "10 is ten L2TP clients"
-msgstr ""
+msgstr "10 sind zehn L2TP-Clients"
 
 msgid "Secret"
 msgstr "Geheimnis"
@@ -18616,15 +18739,15 @@ msgid ""
 "An IPv4 protocol was selected, but the selected interface has no IPv4 "
 "address."
 msgstr ""
-"Ein IPv4 Protokoll wurde ausgewählt obwohl das ausgewählte Interface keine "
-"IPv4 Adresse hat."
+"Ein IPv4 Protokoll wurde ausgewählt obwohl die ausgewählte Schnittstelle "
+"keine IPv4 Adresse hat."
 
 msgid ""
 "An IPv6 protocol was selected, but the selected interface has no IPv6 "
 "address."
 msgstr ""
-"Ein IPv6 Protokoll wurde ausgewählt obwohl das ausgewählte Interface keine "
-"IPv6 Adresse hat."
+"Ein IPv6 Protokoll wurde ausgewählt obwohl die ausgewählte Schnittstelle "
+"keine IPv6 Adresse hat."
 
 # File: src/www/vpn_openvpn_client.php, line: 178
 msgid ""
@@ -18942,7 +19065,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_client.php, line: 1015
 # File: src/www/vpn_openvpn_server.php, line: 1684
 msgid "%s6%s-%s11%s -- Debug info range."
-msgstr ""
+msgstr "%s6%s-%s11%s -- Debug Informationsbereich"
 
 msgid "delete client"
 msgstr "Client löschen"
@@ -19035,7 +19158,7 @@ msgid ""
 msgstr ""
 
 msgid "Redirect Gateway"
-msgstr ""
+msgstr "Weiterleitungs Gateway"
 
 msgid "Force all client generated traffic through the tunnel"
 msgstr ""
@@ -19054,7 +19177,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php, line: 1551
 # File: src/www/vpn_openvpn_server.php, line: 1625
 msgid "Server #1:"
-msgstr ""
+msgstr "Server #1:"
 
 # File: src/www/vpn_openvpn_csc.php, line: 493
 # File: src/www/vpn_openvpn_csc.php, line: 512
@@ -19063,17 +19186,17 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php, line: 1555
 # File: src/www/vpn_openvpn_server.php, line: 1629
 msgid "Server #2:"
-msgstr ""
+msgstr "Server #2:"
 
 # File: src/www/vpn_openvpn_csc.php, line: 495
 # File: src/www/vpn_openvpn_server.php, line: 1519
 msgid "Server #3:"
-msgstr ""
+msgstr "Server #3:"
 
 # File: src/www/vpn_openvpn_csc.php, line: 497
 # File: src/www/vpn_openvpn_server.php, line: 1523
 msgid "Server #4:"
-msgstr ""
+msgstr "Server #4:"
 
 msgid "NTP Servers"
 msgstr "NTP Server"
@@ -19147,7 +19270,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_export.php, line: 163
 # File: src/www/vpn_openvpn_export_shared.php, line: 88
 msgid "You need to specify an address for the proxy port."
-msgstr ""
+msgstr "Sie müssen eine Adresse für den Proxy-Port angeben."
 
 # File: src/www/vpn_openvpn_export.php, line: 168
 # File: src/www/vpn_openvpn_export_shared.php, line: 93
@@ -19219,7 +19342,7 @@ msgstr "Hostname Auflösung"
 # File: src/www/vpn_openvpn_export_shared.php, line: 332
 # File: src/www/vpn_openvpn_export_shared.php.orig, line: 332
 msgid "Interface IP Address"
-msgstr "Interface IP-Adresse"
+msgstr "Schnittstellen IP-Adresse"
 
 # File: src/www/vpn_openvpn_export.php, line: 654
 # File: src/www/vpn_openvpn_export.php.orig, line: 654
@@ -19317,6 +19440,8 @@ msgid ""
 "NOTE: Not supported on older clients. Automatically disabled for Yealink and "
 "Snom configurations."
 msgstr ""
+"Hinweis: Nicht auf ältere Clients unterstützt. Automatisch deaktviert für "
+"Yealink und Snom Konfigurationen."
 
 # File: src/www/vpn_openvpn_export.php, line: 712
 # File: src/www/vpn_openvpn_export.php.orig, line: 712
@@ -19660,7 +19785,7 @@ msgstr ""
 "erhalten."
 
 msgid "Bridge Interface"
-msgstr "Bridge Interface"
+msgstr "Bridge Schnittstelle"
 
 msgid ""
 "The interface to which this tap instance will be bridged. This is not done "
@@ -19854,7 +19979,8 @@ msgstr "Lösche PPPoE Instanz"
 
 msgid "The specified server address is equal to an interface ip address."
 msgstr ""
-"Die angegebene Server Adresse ist identisch mit einer Interface IP-Adresse."
+"Die angegebene Serveradresse ist identisch mit der IP-Adresse einer "
+"Schnittstelle."
 
 msgid "No password specified for username %s"
 msgstr "Kein Passwort für Benutzer %s angegeben"
@@ -19998,7 +20124,7 @@ msgstr ""
 
 # File: src/www/vpn_pptp.php, line: 318
 msgid "Read more"
-msgstr ""
+msgstr "Weiterlesen"
 
 msgid "Redirect incoming PPTP connections to"
 msgstr "Eingehende PPTP-Verbindungen weiterleiten an"
@@ -20085,6 +20211,8 @@ msgid ""
 "Note: don't forget to %sadd a firewall rule%s to permit traffic from PPTP "
 "clients!"
 msgstr ""
+"Hinweis: Vergesse nicht eine %Firewall-Regel hinzuzufügen% um Datenverkehr "
+"von PPTP Clients zu erlauben!"
 
 msgid "The PPTP user list has been modified"
 msgstr "Die PPTP Benutzerliste wurde geändert"
@@ -20106,7 +20234,7 @@ msgstr "DEAKTIVIERT"
 # File: src/www/widgets/widgets/carp_status.widget.php, line: 84
 msgid "No CARP Interfaces Defined. Click %shere%s to configure CARP."
 msgstr ""
-"Keine CARP-Interfaces definiert. Klicken Sie %shier%s um CARP zu "
+"Keine CARP-Schnittstellen vorhanden. Klicken Sie %shier%s um CARP zu "
 "konfigurieren."
 
 # File: src/www/widgets/widgets/dyn_dns_status.widget.php, line: 68
@@ -20180,7 +20308,7 @@ msgstr "Anzahl von Zeilen die angezeigt werden:"
 
 # File: src/www/widgets/widgets/log.widget.php, line: 190
 msgid "Interfaces:"
-msgstr "Interfaces:"
+msgstr "Schnittstellen:"
 
 msgid "IF"
 msgstr "FALLS"
@@ -20412,7 +20540,7 @@ msgstr "ändern dieser Einstellung kann die CPU Nutzung ansteigen lassen"
 
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 190
 msgid "Current %s Traffic"
-msgstr ""
+msgstr "Aktueller %s Datenverkehr"
 
 msgid "Computer / Device"
 msgstr "Computer / Gerät"
