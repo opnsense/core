@@ -11,18 +11,18 @@ install${TARGET}: force
 	mkdir -p ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}; \
 	cp -vr ${TREE} ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
-		if [ $${FILE%%.in} != $${FILE} ]; then \
+		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
 			sed -i '' \
 			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
 			    -e "s=%%CORE_REPOSITORY%%=${CORE_REPOSITORY}=g" \
-			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}; \
-			mv -v ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE} \
-			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.in}; \
+			    "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}"; \
+			mv -v "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}" \
+			    "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.in}"; \
 		fi; \
 		FILE="$${FILE%%.in}"; \
-		if [ -n "${NO_SAMPLE}" -a $${FILE%%.sample} != $${FILE} ]; then \
-			mv -v ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE} \
-			    ${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.sample}; \
+		if [ -n "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
+			mv -v "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}" \
+			    "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.sample}"; \
 		fi; \
 	done
 .endfor
@@ -31,7 +31,7 @@ plist${TARGET}: force
 .for TREE in ${TREES${TARGET}}
 	@(cd ${TREE}; find * -type f) | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
-		if [ -z "${NO_SAMPLE}" -a $${FILE%%.sample} != $${FILE} ]; then \
+		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
 			PREFIX="@sample "; \
 		fi; \
 		if [ -n "${NO_SAMPLE}" ]; then \
