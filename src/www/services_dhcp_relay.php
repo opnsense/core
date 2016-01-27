@@ -96,10 +96,8 @@ if ($_POST) {
 }
 
 $service_hook = 'dhcrelay';
-$closehead = false;
 
 include("head.inc");
-
 ?>
 
 <body>

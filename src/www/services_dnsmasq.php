@@ -140,7 +140,6 @@ if ($_GET['act'] == "del") {
 }
 
 $service_hook = 'dnsmasq';
-$closehead = false;
 
 include("head.inc");
 

@@ -137,7 +137,6 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
 
     ?>
 
-    <?php if (basename($_SERVER["SCRIPT_FILENAME"] != "index.php")): ?>
     <script type="text/javascript">
     //<![CDATA[
     $( document ).ready(function() {
@@ -231,8 +230,4 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     });
     //]]>
     </script>
-
-    <?php endif; ?>
-
-
-<?php if (!isset($closehead) || !$closehead):?></head><?php endif;?>
+</head>

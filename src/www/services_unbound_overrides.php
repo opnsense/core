@@ -89,7 +89,6 @@ if ($_GET['act'] == "del") {
 }
 
 $service_hook = 'unbound';
-$closehead = false;
 
 include_once("head.inc");
 

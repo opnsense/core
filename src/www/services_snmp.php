@@ -153,7 +153,6 @@ if ($_POST) {
 }
 
 $service_hook = 'bsnmpd';
-$closehead = false;
 
 include("head.inc");
 

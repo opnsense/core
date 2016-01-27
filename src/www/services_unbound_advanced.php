@@ -114,15 +114,10 @@ if ($_POST) {
 }
 
 $service_hook = 'unbound';
-$closehead = false;
 
 include_once("head.inc");
 
 ?>
-
-</head>
-
-
 <body>
 <?php include("fbegin.inc"); ?>
 

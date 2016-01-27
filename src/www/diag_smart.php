@@ -38,11 +38,9 @@ $valid_test_types = array("offline", "short", "long", "conveyance");
 $valid_info_types = array("i", "H", "c", "A", "a");
 $valid_log_types = array("error", "selftest");
 
-$closehead = false;
 include("head.inc");
 ?>
 
-</head>
 <body>
 
 <?php

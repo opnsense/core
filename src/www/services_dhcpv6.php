@@ -346,7 +346,6 @@ if ($_GET['act'] == "del") {
 }
 
 $service_hook = 'dhcpd';
-$closehead = false;
 
 include("head.inc");
 
