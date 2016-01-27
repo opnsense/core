@@ -148,7 +148,7 @@ function convert_config()
  *   null
  ******/
 /* save the system configuration */
-function write_config($desc = 'Unknown', $backup = true)
+function write_config($desc = '', $backup = true)
 {
     global $config;
 
@@ -306,7 +306,7 @@ function set_device_perms() {
 }
 
 
-function make_config_revision_entry($desc = null)
+function make_config_revision_entry($desc = '')
 {
     global $config;
 
@@ -320,7 +320,7 @@ function make_config_revision_entry($desc = null)
         $username .= '@' . $_SERVER['REMOTE_ADDR'];
     }
 
-    if ($desc == null) {
+    if (empty($desc)) {
         $desc = sprintf(gettext('%s changed the configuration'), $_SERVER['SCRIPT_NAME']);
     }
 
