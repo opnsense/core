@@ -172,7 +172,8 @@ lint: force
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
 	    ! -name "*.otf" ! -name "*.png" ! -name "*.js" \
 	    ! -name "*.scss" ! -name "*.py" ! -name "*.ttf" \
-	    ! -name "*.tgz" -type f -print0 | xargs -0 -n1 php -l
+	    ! -name "*.tgz" ! -name "*.xml.dist" \
+	    -type f -print0 | xargs -0 -n1 php -l
 
 sweep: force
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
