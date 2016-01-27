@@ -306,34 +306,28 @@ function set_device_perms() {
 }
 
 
-function make_config_revision_entry($desc = null, $override_user = null)
+function make_config_revision_entry($desc = null)
 {
     global $config;
 
-    if (empty($override_user)) {
-        if (empty($_SESSION["Username"])) {
-            $username = getenv("USER");
-            if (empty($username) || $username == "root") {
-                $username = "(system)";
-            }
-        } else {
-            $username = $_SESSION["Username"];
-        }
-        if (!empty($_SERVER['REMOTE_ADDR'])) {
-            $username .= '@' . $_SERVER['REMOTE_ADDR'];
-        }
+    if (!empty($_SESSION['Username'])) {
+        $username = $_SESSION['Username'];
     } else {
-        $username = $override_user;
+        $username = '(' . shell_exec('/usr/bin/whoami') . ')';
+    }
+
+    if (!empty($_SERVER['REMOTE_ADDR'])) {
+        $username .= '@' . $_SERVER['REMOTE_ADDR'];
+    }
+
+    if ($desc == null) {
+        $desc = sprintf(gettext('%s changed the configuration'), $_SERVER['SCRIPT_NAME']);
     }
 
     $revision = array();
     $revision['username'] = $username;
     $revision['time'] = microtime(true);
-    if ($desc == null || $desc == 'Unknown') {
-        $revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
-    } else {
-        $revision['description'] = $desc;
-    }
+    $revision['description'] = $desc;
 
     return $revision;
 }

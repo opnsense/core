@@ -644,7 +644,7 @@ function step12_submitphpaction() {
 		$rule['protocol'] = strtolower($server['protocol']);
 		$rule['type'] = "pass";
 		$rule['enabled'] = "on";
-		$rule['created'] = make_config_revision_entry(null, gettext("OpenVPN Wizard"));
+		$rule['created'] = make_config_revision_entry();
 		$config['filter']['rule'][] = $rule;
 	}
 	if (isset($pconfig['step11']['ovpnallow'])) {
@@ -659,7 +659,7 @@ function step12_submitphpaction() {
 		//$rule['protocol'] = $server['protocol'];
 		$rule['type'] = "pass";
 		$rule['enabled'] = "on";
-		$rule['created'] = make_config_revision_entry(null, gettext("OpenVPN Wizard"));
+		$rule['created'] = make_config_revision_entry();
 		$config['filter']['rule'][] = $rule;
 	}
 
