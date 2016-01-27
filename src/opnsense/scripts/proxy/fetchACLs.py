@@ -66,7 +66,8 @@ class ACLDownload(object):
         """
         if self._source_data is not None:
             # handle compressed data
-            if len(self._url) > 8 and self._url[-7:] == '.tar.gz':
+            if (len(self._url) > 8 and self._url[-7:] == '.tar.gz') \
+                or (len(self._url) > 4 and self._url[-4:] == '.txz'):
                 # source is in tar.gz format, extract all into a single string
                 try:
                     tf = tarfile.open(fileobj=StringIO.StringIO(self._source_data))
