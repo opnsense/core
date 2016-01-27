@@ -5576,13 +5576,8 @@ body {
       height: 60px; }
 
 .login-foot {
-  background: #FFF;
-  border-top: 1px solid #E5E5E5;
   color: #9F9F9F;
-  font-size: 12px;
-  height: 60px; }
-  .login-foot p {
-    padding-top: 21px; }
+  font-size: 12px; }
 
 .login-modal-container {
   background: #FFF;
