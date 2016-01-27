@@ -386,7 +386,8 @@ $( document ).ready(function() {
                   // select icon
                   if (!isset($filterent['type']) && empty($filterent['disabled'])) {
                       // not very nice.... associated NAT rules don't have a type...
-                      $iconfn = "glyphicon-play text-success";
+                      // NAT rules shouldn't leak into the rules screen, breaks on edit
+                      continue;
                   } else if (!isset($filterent['type']) && !empty($filterent['disabled'])) {
                       $iconfn = "glyphicon-play text-muted";
                   } elseif ($filterent['type'] == "block" && empty($filterent['disabled'])) {
