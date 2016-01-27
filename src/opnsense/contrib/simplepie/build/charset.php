@@ -18,7 +18,7 @@ function build_character_set_list()
 	{
 		$data = explode("\n", $file->body);
 		unset($file);
-		
+
 		foreach ($data as $line)
 		{
 			// New character set
@@ -34,7 +34,7 @@ function build_character_set_list()
 					$charsets[$preferred] = array_unique($aliases);
 					natsort($charsets[$preferred]);
 				}
-				
+
 				$aliases = array($match[1]);
 				$preferred = $match[1];
 			}
@@ -51,7 +51,7 @@ function build_character_set_list()
 				}
 			}
 		}
-		
+
 		// Compatibility replacements
 		// From http://www.whatwg.org/specs/web-apps/current-work/multipage/parsing.html#misinterpreted-for-compatibility
 		$compat = array(
@@ -66,7 +66,7 @@ function build_character_set_list()
 			'TIS-620' => 'windows-874',
 			//'US-ASCII' => 'windows-1252',
 		);
-		
+
 		foreach ($compat as $real => $replace)
 		{
 			if (isset($charsets[$real]) && isset($charsets[$replace]))
@@ -87,10 +87,10 @@ function build_character_set_list()
 			$charsets[$replace] = array_unique($charsets[$replace]);
 			natsort($charsets[$replace]);
 		}
-		
+
 		// Sort it
 		uksort($charsets, 'strnatcasecmp');
-		
+
 		// Check that nothing matches more than one
 		$all = call_user_func_array('array_merge', $charsets);
 		$all_count = array_count_values($all);
@@ -105,7 +105,7 @@ function build_character_set_list()
 				}
 			}
 		}
-		
+
 		// And we're done!
 		return $charsets;
 	}

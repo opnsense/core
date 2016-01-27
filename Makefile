@@ -176,7 +176,7 @@ lint: force
 
 sweep: force
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
-	    ! -name "*.map" -type f -print0 | \
+	    ! -name "*.map" ! -name "*.ser" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/lang -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
