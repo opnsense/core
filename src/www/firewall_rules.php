@@ -371,7 +371,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Block bogon networks");?></td>
                     <td>
-                      <a href="interfaces.php?if=<?=htmlspecialchars($if)?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="interfaces.php?if=<?=htmlspecialchars($selected_if)?>#rfc1918" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
