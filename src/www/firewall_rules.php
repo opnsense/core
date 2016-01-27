@@ -135,7 +135,6 @@ if (isset($_GET['if'])) {
 include("head.inc");
 
 ?>
-</head>
 <body>
 <script type="text/javascript">
 $( document ).ready(function() {
@@ -685,7 +684,7 @@ $( document ).ready(function() {
                           <td width="16"><span class="fa fa-long-arrow-left"></span></td>
                           <td width="100"><?=gettext("out");?></td>
 <?php                     if ($selected_if == 'FloatingRules'): ?>
-                          <td width="16"><span class="fa fa-flash text-muted"></td>
+                          <td width="16"><span class="fa fa-flash text-muted"></span></td>
                           <td width="100"><?=gettext("last match");?></td>
 <?php                     endif; ?>
                         </tr>
@@ -730,5 +729,4 @@ $( document ).ready(function() {
     </div>
   </div>
 </section>
-
 <?php include("foot.inc"); ?>
