@@ -111,6 +111,7 @@ if($need_alert_display == true) {
       </div>
       <div class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
+          <li id="menu_messages"><?= get_menu_messages() ?></li>
           <li>
             <form class="navbar-form" role="search">
               <div class="input-group">
@@ -119,7 +120,6 @@ if($need_alert_display == true) {
               </div>
             </form>
           </li>
-          <li id="menu_messages"><?= get_menu_messages() ?></li>
         </ul>
       </div>
     </div>
