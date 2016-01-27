@@ -134,7 +134,6 @@ if ($_POST) {
 }
 
 $service_hook = 'unbound';
-$closehead = false;
 
 include_once("head.inc");
 

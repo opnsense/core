@@ -1335,7 +1335,6 @@ foreach ($mediaopts as $mediaopt){
     }
 }
 
-$closehead = false;
 include("head.inc");
 ?>
 

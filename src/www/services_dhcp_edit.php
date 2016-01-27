@@ -307,12 +307,12 @@ if ($_POST) {
 }
 
 $service_hook = 'dhcpd';
-$closehead = false;
 
 include("head.inc");
 
 ?>
 
+<body>
 <script type="text/javascript">
 //<![CDATA[
 	function show_ddns_config() {
@@ -334,9 +334,7 @@ include("head.inc");
 	}
 //]]>
 </script>
-</head>
 
-<body>
 <?php include("fbegin.inc"); ?>
 
 	<section class="page-content-main">

@@ -131,7 +131,6 @@ if ($_POST) {
 
 $pconfig = &$config['ntpd']['gps'];
 $service_hook = 'ntpd';
-$closehead = false;
 
 include("head.inc");
 

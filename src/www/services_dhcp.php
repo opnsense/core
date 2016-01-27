@@ -536,7 +536,6 @@ if ($act == "del") {
 }
 
 $service_hook = 'dhcpd';
-$closehead = false;
 
 include("head.inc");
 

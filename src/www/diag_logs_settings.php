@@ -196,14 +196,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 legacy_html_escape_form_data($pconfig);
-$closehead = false;
 
 include("head.inc");
-
 ?>
 
 
-
+<body>
 <script type="text/javascript">
 //<![CDATA[
 function enable_change(enable_over) {
@@ -315,8 +313,6 @@ $(document).ready(function() {
 
 //]]>
 </script>
-</head>
-<body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">

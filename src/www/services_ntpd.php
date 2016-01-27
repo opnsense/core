@@ -149,7 +149,7 @@ if ($_POST) {
 	$savemsg = get_std_save_message();
 
 }
-$closehead = false;
+
 $pconfig = &$config['ntpd'];
 if (empty($pconfig['interface'])) {
 	$pconfig['interface'] = array();

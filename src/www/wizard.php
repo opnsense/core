@@ -216,7 +216,6 @@ do {
 		eval($pkg['step'][$stepid]['stepbeforeformdisplay']);
 } while ($oldstepid != $stepid);
 
-$closehead = false;
 
 include("head.inc");
 

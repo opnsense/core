@@ -145,8 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$closehead = false;
-
 include("head.inc");
 
 legacy_html_escape_form_data($a_nat);
