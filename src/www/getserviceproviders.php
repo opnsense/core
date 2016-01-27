@@ -32,7 +32,7 @@ require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("system.inc");
 
-$serviceproviders_xml = "/usr/local/share/mobile-broadband-provider-info/serviceproviders.xml";
+$serviceproviders_xml = "/usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml";
 $serviceproviders_contents = file_get_contents($serviceproviders_xml);
 $serviceproviders_attr = xml2array($serviceproviders_contents,1,"attr");
 

@@ -459,7 +459,7 @@ function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $veri
 			$client_install_exe = "openvpn-install-{$current_openvpn_version}-I0{$current_openvpn_version_rev}-i686.exe";
 	}
 
-	$ovpndir = "/usr/local/share/openvpn";
+	$ovpndir = "/usr/local/opnsense/contrib/openvpn";
 	$workdir = "{$ovpndir}/client-export";
 
 	$validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
@@ -563,7 +563,7 @@ function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $usead
 	global $config, $g;
 	$uname_p = trim(exec("uname -p"));
 
-	$ovpndir = "/usr/local/share/openvpn/";
+	$ovpndir = "/usr/local/opnsense/contrib/openvpn/";
 
 	$uniq = uniqid();
 	$tempdir = "/tmp/openvpn-export-{$uniq}";
