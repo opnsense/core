@@ -90,6 +90,9 @@
                     cache: false,
                     dataType: "json",
                     data: {},
+                    error : function (jqXHR, textStatus, errorThrown) {
+                        console.log('menu.search : ' +errorThrown);
+                    },
                     success: function (data) {
                         var menusearch_items = [];
                         $.each(data,function(idx, menu_item){
