@@ -267,8 +267,7 @@ function getBoolValueFromConfig(&$configArray, $valueKey, $defaultValue)
 		</tr>
 		<tr>
 		<td colspan="3">
-      <span>* <?= gettext('You can configure a proper Thermal Sensor / Module under <br />
-    &nbsp;&nbsp;&nbsp;<a href="system_advanced_misc.php">System &gt; Advanced &gt; Miscellaneous : Thermal Sensors section</a>.') ?></span>
+      <span>* <?= sprintf(html_safe(gettext('You can configure a proper Thermal Sensor / Module under %s%sSystem > Advanced > Miscellaneous : Thermal Sensors section%s.')),'<br />&nbsp;&nbsp;&nbsp;','<a href="system_advanced_misc.php">','</a>') ?></span>
 		</td>
 		</tr>
 	</table>
