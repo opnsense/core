@@ -290,8 +290,7 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
  */
 function display_error_form($http_code, $desc)
 {
-    global $config, $g;
-    $g['theme'] = get_current_theme();
+    $themename = htmlspecialchars(get_current_theme());
 
 ?><!doctype html>
 <!--[if IE 8 ]><html lang="en" class="ie ie8 lte9 lte8 no-js"><![endif]-->
@@ -310,8 +309,8 @@ function display_error_form($http_code, $desc)
 
 		<title><?=$http_code?></title>
 
-		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-		<link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
+		<link href="/ui/themes/<?= $themename ?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+		<link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 	</head>
@@ -333,7 +332,8 @@ function display_error_form($http_code, $desc)
 function display_login_form($Login_Error = '')
 {
     global $config, $g;
-    $g['theme'] = get_current_theme();
+
+    $themename = htmlspecialchars(get_current_theme());
 
     unset($input_errors);
 
@@ -377,8 +377,8 @@ function display_login_form($Login_Error = '')
 
 		<title><?=gettext("Login"); ?></title>
 
-		<link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
-		<link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
+		<link href="/ui/themes/<?= $themename ?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+		<link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
 		<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
@@ -397,7 +397,7 @@ function display_login_form($Login_Error = '')
 		<main class="login-modal-container">
 			<header class="login-modal-head" style="height:55px;">
 				<div class="navbar-brand">
-					<img src="/ui/themes/<?=$g['theme'];?>/build/images/default-logo.png" height="30"/>
+					<img src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30"/>
 				</div>
 			</header>
 

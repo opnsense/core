@@ -99,8 +99,8 @@ if($need_alert_display == true) {
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="/index.php">
-        <img class="brand-logo" src="/ui/themes/<?=$g['theme'];?>/build/images/default-logo.png" height="30"/>
-        <img class="brand-icon" src="/ui/themes/<?=$g['theme'];?>/build/images/icon-logo.png" height="30"/>
+        <img class="brand-logo" src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30"/>
+        <img class="brand-icon" src="/ui/themes/<?= $themename ?>/build/images/icon-logo.png" height="30"/>
         </a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
           <span class="sr-only">Toggle navigation</span>

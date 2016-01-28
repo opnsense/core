@@ -48,8 +48,15 @@ if (empty($nocsrf)) {
         }
 }
 
-function set_language($lang)
+function set_language()
 {
+	global $config;
+
+	$lang = 'en_US';
+	if (!empty($config['system']['language'])) {
+		$lang = $config['system']['language'];
+	}
+
 	$lang_encoding = $lang . '.UTF-8';
 	$textdomain = 'OPNsense';
 
@@ -90,16 +97,7 @@ if (isset($omit_nocacheheaders) && $omit_nocacheheaders) {
 
 header("X-Frame-Options: SAMEORIGIN");
 
-$g['theme'] = get_current_theme();
-
-/* Set the default interface language */
-if(isset($config['system']['language']) && $config['system']['language'] <> "") {
-	$g['language'] = $config['system']['language'];
-} elseif (!isset($g['language']) || $g['language'] == "") {
-	$g['language'] = 'en_US';
-}
-
-set_language($g['language']);
+set_language();
 
 require_once("authgui.inc");
 
