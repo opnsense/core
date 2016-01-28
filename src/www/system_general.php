@@ -173,7 +173,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
       if (!empty($pconfig['language']) && $pconfig['language'] != $config['system']['language']) {
           $config['system']['language'] = $pconfig['language'];
-          set_language($config['system']['language']);
+          /* XXX while this is very proactive, we should defer in favour of a unified language transition point ;) */
+          set_language();
       }
 
       if (!isset($config['system']['firmware'])) {

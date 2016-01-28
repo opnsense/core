@@ -41,7 +41,7 @@ if (!isset($menuBreadcrumbs)) {
     $menuBreadcrumbs = $menu->getBreadcrumbs();
 }
 
-$g['theme'] = get_current_theme();
+$themename = htmlspecialchars(get_current_theme());
 
 $pagetitle = gentitle(array_reverse($menuBreadcrumbs), ' | ');
 $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']);
@@ -63,7 +63,7 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
-    <link href="/ui/themes/<?=$g['theme'];?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" media="screen, projection" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -78,13 +78,13 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     </style>
 
     <!-- Favicon -->
-    <link href="/ui/themes/<?=$g['theme'];?>/build/images/favicon.png" rel="shortcut icon">
+    <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
     <!-- Stylesheet for fancy select/dropdown -->
-    <link rel="stylesheet" type="text/css" href="/ui/themes/<?=$g['theme'];?>/build/css/bootstrap-select.css">
+    <link rel="stylesheet" type="text/css" href="/ui/themes/<?= $themename ?>/build/css/bootstrap-select.css">
 
     <!-- bootstrap dialog -->
-    <link href="/ui/themes/<?=$g['theme'];?>/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+    <link href="/ui/themes/<?= $themename ?>/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
 
 
     <!-- Font awesome -->
@@ -95,7 +95,7 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <!-- nvd3 -->
     <link rel="stylesheet" href="/ui/css/nv.d3.css">
 
-    <script>var theme = '<?=$g['theme'];?>'; </script>
+    <script>var theme = "<?= $themename ?>"; </script>
 
     <!-- JQuery -->
     <script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
