@@ -231,6 +231,9 @@ include("head.inc");
                   <strong><?=gettext("Enable device polling"); ?></strong>
                   <div class="hidden" for="help_for_polling">
                     <?php printf(gettext("Device polling is a technique that lets the system periodically poll network devices for new data instead of relying on interrupts. This prevents your webConfigurator, SSH, etc. from being inaccessible due to interrupt floods when under extreme load. Generally this is not recommended. Not all NICs support polling; see the %s homepage for a list of supported cards."), $g['product_name']); ?>
+                    <br />
+                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
+                    <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
                   </div>
                 </td>
               </tr>
