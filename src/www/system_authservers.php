@@ -322,7 +322,7 @@ else :?>
 endif; ?>
         var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150, scrollbars=yes");
         if (oWin==null || typeof(oWin)=="undefined")
-			alert("<?=gettext('Popup blocker detected.  Action aborted.');?>");
+			alert("<?=gettext('Popup blocker detected. Action aborted.');?>");
 }
 
 $( document ).ready(function() {

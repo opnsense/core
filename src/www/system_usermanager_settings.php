@@ -79,7 +79,7 @@ include("head.inc");
 if ($save_and_test):?>
 <script type="text/javascript">
     myRef = window.open('system_usermanager_settings_test.php?authserver=<?=$pconfig['authmode'];?>','mywin','left=20,top=20,width=700,height=550,toolbar=1,resizable=0');
-    if (myRef==null || typeof(myRef)=='undefined') alert('<?=gettext("Popup blocker detected.  Action aborted.");?>');
+    if (myRef==null || typeof(myRef)=='undefined') alert('<?=gettext("Popup blocker detected. Action aborted.");?>');
 </script>;
 <?php
 endif;?>

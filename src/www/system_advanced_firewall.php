@@ -373,11 +373,11 @@ include("head.inc");
                       <strong><?=gettext("Timeouts for states can be scaled adaptively as the number of state table entries grows.");?></strong>
                       <br />
                       <strong><?=gettext("start");?></strong></br>
-                      <?=gettext("When the number of state entries exceeds this value, adaptive scaling begins.  All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).");?><br/>
+                      <?=gettext("When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).");?><br/>
                       <strong><?=gettext("end");?></strong></br>
                       <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.  This value is used to define the scale factor, it should not actually be reached (set a lower state limit, see below).");?>
                       <br/>
-                      <strong><?=gettext("Note:  Leave this blank for the default(0).");?></strong>
+                      <strong><?=gettext("Note: Leave this blank for the default(0).");?></strong>
                     </div>
                   </td>
                 </tr>
@@ -388,7 +388,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_maximumstates">
                       <strong><?=gettext("Maximum number of connections to hold in the firewall state table.");?></strong>
                       <br />
-                      <?=gettext("Note:  Leave this blank for the default.  On your system the default size is:");?> <?= default_state_size() ?>
+                      <?=gettext("Note: Leave this blank for the default. On your system the default size is:");?> <?= default_state_size() ?>
                     </div>
                   </td>
                 </tr>
@@ -399,7 +399,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_maximumtableentries">
                       <strong><?=gettext("Maximum number of table entries for systems such as aliases, sshlockout, snort, etc, combined.");?></strong>
                       <br />
-                      <?=gettext("Note:  Leave this blank for the default.");?>
+                      <?=gettext("Note: Leave this blank for the default.");?>
 <?php
                       if (empty($pconfig['maximumtableentries'])) :?>
                         <?= gettext("On your system the default size is:");?> <?= default_table_entries_size(); ?>
@@ -462,7 +462,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_aliasesresolveinterval">
                       <strong><?=gettext("Interval, in seconds, that will be used to resolve hostnames configured on aliases.");?></strong>
                       <br />
-                      <?=gettext("Note:  Leave this blank for the default (300s).");?>
+                      <?=gettext("Note: Leave this blank for the default (300s).");?>
                     </div>
                   </td>
                 </tr>
@@ -520,9 +520,9 @@ include("head.inc");
                     <div class="hidden" for="help_for_natreflection">
                       <strong><?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?></strong>
                       <br /><br />
-                      <?=gettext("The NAT + proxy mode uses a helper program to send packets to the target of the port forward.  It is useful in setups where the interface and/or gateway IP used for communication with the target cannot be accurately determined at the time the rules are loaded.  Reflection rules are not created for ranges larger than 500 ports and will not be used for more than 1000 ports total between all port forwards.  Only TCP and UDP protocols are supported.");?>
+                      <?=gettext("The NAT + proxy mode uses a helper program to send packets to the target of the port forward. It is useful in setups where the interface and/or gateway IP used for communication with the target cannot be accurately determined at the time the rules are loaded. Reflection rules are not created for ranges larger than 500 ports and will not be used for more than 1000 ports total between all port forwards. Only TCP and UDP protocols are supported.");?>
                       <br /><br />
-                      <?=gettext("The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward.  It has better scalability, but it must be possible to accurately determine the interface and gateway IP used for communication with the target at the time the rules are loaded.  There are no inherent limits to the number of ports other than the limits of the protocols.  All protocols available for port forwards are supported.");?>
+                      <?=gettext("The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward. It has better scalability, but it must be possible to accurately determine the interface and gateway IP used for communication with the target at the time the rules are loaded. There are no inherent limits to the number of ports other than the limits of the protocols. All protocols available for port forwards are supported.");?>
                       <br /><br />
                       <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
                     </div>
@@ -546,7 +546,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_enablebinatreflection">
                       <strong><?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?></strong>
                       <br /><br />
-                      <?=gettext("Note: Reflection on 1:1 mappings is only for the inbound component of the 1:1 mappings.  This functions the same as the pure NAT mode for port forwards.  For more details, refer to the pure NAT mode description above.");?>
+                      <?=gettext("Note: Reflection on 1:1 mappings is only for the inbound component of the 1:1 mappings. This functions the same as the pure NAT mode for port forwards. For more details, refer to the pure NAT mode description above.");?>
                       <br /><br />
                       <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
                     </div>
@@ -561,7 +561,7 @@ include("head.inc");
                       <br />
                       <?=gettext("Required for full functionality of the pure NAT mode of NAT Reflection for port forwards or NAT Reflection for 1:1 NAT.");?>
                       <br /><br />
-                      <?=gettext("Note: This only works for assigned interfaces.  Other interfaces require manually creating the outbound NAT rules that direct the reply packets back through the router.");?>
+                      <?=gettext("Note: This only works for assigned interfaces. Other interfaces require manually creating the outbound NAT rules that direct the reply packets back through the router.");?>
                     </div>
                   </td>
                 </tr>
