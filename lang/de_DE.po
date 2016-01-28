@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-27 19:39+0000\n"
+"POT-Creation-Date: 2016-01-28 04:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 4120\n"
+"X-Pootle-Revision: 4185\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -7357,7 +7357,7 @@ msgstr "(keine manuellen Regeln können verwendet werden)"
 
 # File: src/www/firewall_nat_out.php, line: 289
 msgid "Hybrid outbound NAT rule generation"
-msgstr ""
+msgstr "Hybride Erstellung ausgehender NAT Regeln"
 
 # File: src/www/firewall_nat_out.php, line: 290
 msgid "(automatically generated rules are applied after manual rules)"
@@ -7366,7 +7366,7 @@ msgstr ""
 
 # File: src/www/firewall_nat_out.php, line: 303
 msgid "Manual outbound NAT rule generation"
-msgstr ""
+msgstr "Manuelle Erstellung ausgehender NAT Regeln"
 
 # File: src/www/firewall_nat_out.php, line: 304
 msgid "(no automatic rules are being generated)"
@@ -7374,11 +7374,11 @@ msgstr "(keine automatischen Regeln werden generiert)"
 
 # File: src/www/firewall_nat_out.php, line: 315
 msgid "Disable outbound NAT rule generation"
-msgstr ""
+msgstr "Deaktiviere Erstellung ausgehender NAT Regeln"
 
 # File: src/www/firewall_nat_out.php, line: 316
 msgid "(outbound NAT is disabled)"
-msgstr ""
+msgstr "(ausgehendes NAT ist deaktiviert)"
 
 # File: src/www/firewall_nat_out.php, line: 335
 msgid "Manual rules:"
@@ -7422,11 +7422,13 @@ msgstr "Quellbitanzahl"
 msgid ""
 "You must supply either a valid port or port alias for the source port entry."
 msgstr ""
+"Sie müssen entweder einen gültigen Port oder Portalias als Quellport angeben."
 
 msgid ""
 "You must supply either a valid port or port alias for the destination port "
 "entry."
 msgstr ""
+"Sie müssen entweder einen gültigen Port oder Portalias als Zielport angeben."
 
 msgid "You must supply a valid port for the NAT port entry."
 msgstr "Sie müssen einen gültigen Port für den NAT-Port-Eintrag angeben."
@@ -7438,16 +7440,17 @@ msgid "A valid destination must be specified."
 msgstr "Ein gültiges Ziel muss angegeben werden."
 
 msgid "Negating destination address of \"any\" is invalid."
-msgstr ""
+msgstr "Die Zieladresse \"beliebig\" kann nicht negiert werden."
 
 msgid "A valid target IP address must be specified."
 msgstr "Eine gültige Ziel-IP-Adresse muss angegeben werden."
 
 msgid "Only Round Robin pool options may be chosen when selecting an alias."
 msgstr ""
+"Nur Round Robin Pooleinstellungen können für einen Alias ausgewählt werden."
 
 msgid "Edit Advanced Outbound NAT entry"
-msgstr ""
+msgstr "Bearbeite Eintrag für ausgehendes NAT "
 
 msgid "Do not NAT"
 msgstr "Nicht NATen"
@@ -7456,6 +7459,8 @@ msgid ""
 "Enabling this option will disable NAT for traffic matching this rule and "
 "stop processing Outbound NAT rules."
 msgstr ""
+"Die Aktivierung dieser Einstellung deaktiviert NAT für Verkehr, der dieser "
+"Regel entspricht, und hält die Verarbeitung von ausgehenden NAT Regeln an."
 
 msgid "Hint: in most cases, you won't use this option."
 msgstr "Hinweis: Meistens werden Sie die Option nicht nutzen."
@@ -7488,7 +7493,7 @@ msgid "This Firewall (self)"
 msgstr "Diese Firewall (selbst)"
 
 msgid "Enter the source network for the outbound NAT mapping."
-msgstr ""
+msgstr "Geben Sie das Quellnetzwerk für das ausgehende NAT Mapping an."
 
 msgid "Source port:"
 msgstr "Quellport:"
@@ -7513,6 +7518,8 @@ msgstr "Übersetzungsadresse"
 
 msgid "Packets matching this rule will be mapped to the IP address given here."
 msgstr ""
+"Pakete die dieser Regel entsprechen werden der hier eingegebenen IP Adresse "
+"zugeordnet."
 
 # File: src/www/firewall_nat_out_edit.php, line: 604
 msgid ""
@@ -7535,7 +7542,7 @@ msgstr "Round Robin"
 
 # File: src/www/firewall_nat_out_edit.php, line: 612
 msgid "Round Robin with Sticky Address"
-msgstr ""
+msgstr "Round Robin mit dauerhafter Adresszuordnung (\"Sticky\")"
 
 # File: src/www/firewall_nat_out_edit.php, line: 615
 msgid "Random"
@@ -7543,11 +7550,11 @@ msgstr "Zufall"
 
 # File: src/www/firewall_nat_out_edit.php, line: 618
 msgid "Random with Sticky Address"
-msgstr ""
+msgstr "Zufällig mit dauerhafter Adresszuordnung (\"Sticky\")"
 
 # File: src/www/firewall_nat_out_edit.php, line: 621
 msgid "Source Hash"
-msgstr ""
+msgstr "Quell Hash"
 
 # File: src/www/firewall_nat_out_edit.php, line: 624
 msgid "Bitmask"
@@ -7557,18 +7564,25 @@ msgid ""
 "Only Round Robin types work with Host Aliases. Any type can be used with a "
 "Subnet."
 msgstr ""
+"Nur die Auswahl von Round Robin funktioniert mit Host Alias. Jede andere "
+"Auswahl kann mit einem Subnetz verwendet werden."
 
 msgid "Round Robin: Loops through the translation addresses."
-msgstr ""
+msgstr "Round Robin: Verwende eine Schleife durch die Übersetzungsadressen."
 
 msgid "Random: Selects an address from the translation address pool at random."
 msgstr ""
+"Zufällig: Wähle zufällig eine Adresse aus dem Pool der Übersetzungsadressen "
+"aus."
 
 msgid ""
 "Source Hash: Uses a hash of the source address to determine the translation "
 "address, ensuring that the redirection address is always the same for a "
 "given source."
 msgstr ""
+"Quell Hash: Verwendet einen Hash der Quelladressen, um die "
+"Übersetzungsadresse auszuwählen; stellt sicher, dass die "
+"Weiterleitungsadresse für eine bestimmte Quelle immer gleich ist."
 
 msgid ""
 "Bitmask: Applies the subnet mask and keeps the last portion identical; "
@@ -7582,6 +7596,10 @@ msgid ""
 "Round Robin pool types to ensure that a particular source address is always "
 "mapped to the same translation address."
 msgstr ""
+"Dauerhafte Adresszuordnung: Die Einstellung der dauerhaften Adresszuordnung ("
+"\"Sticky\") kann zusammen mit den Pooltypen \"Zufällig\" und \"Round Robin\" "
+"verwendet werden, um sicherzustellen, dass eine bestimmte Quelladresse immer "
+"der gleichen Übersetzungsadresse zugeordnet wird."
 
 msgid "Translation"
 msgstr "Übersetzung"
@@ -7590,16 +7608,21 @@ msgstr "Übersetzung"
 msgid "port:"
 msgstr "Port:"
 
+# Für "Mapping" gibt es keine geeignete deutsche Wiedergabe.
 msgid "Enter the source port for the outbound NAT mapping."
-msgstr ""
+msgstr "Geben Sie den Quellport für das ausgehende NAT Mapping an."
 
 msgid "Static-port:"
 msgstr "statischer Port:"
 
+# "monitor" wird zwar häufig als "überwachen" verwendet, in diesem Fall beobachten wir aber den Fortschritt
 msgid ""
 "The settings have been applied. The firewall rules are now reloading in the "
 "background.<br />You can also %s monitor %s the reload progress"
 msgstr ""
+"Die Einstellung wurden übernommen. Jetzt werden die Firewall Regeln im "
+"Hintergrund neugeladen.<br />Sie können den Fortschritt auch %s beobachten "
+"%s."
 
 msgid ""
 "The firewall rule configuration has been changed.<br />You must apply the "
@@ -7684,10 +7707,10 @@ msgid "Information reply"
 msgstr "Informationsantwort"
 
 msgid "Address mask request"
-msgstr ""
+msgstr "Anfrage zur Adressmaskierung"
 
 msgid "Address mask reply"
-msgstr ""
+msgstr "Antwort zur Adressmaskierung"
 
 # File: src/www/firewall_rules.php, line: 569
 # File: src/www/firewall_schedule.php, line: 235
@@ -7757,6 +7780,11 @@ msgid ""
 "rules, you'll have to pay attention to the rule order. Everything that isn't "
 "explicitly passed is blocked by default. "
 msgstr ""
+"Regeln werden nach nach dem Erster-Treffer Prinzip bearbeitet (d.h. es wird "
+"die Aktion der Regel ausgeführt, bei der es die erste Übereinstimmung für "
+"ein Paket gegeben hat). Achten Sie deshalb auf die Reihenfolge Ihrer Regeln, "
+"wenn Sie Blockierregeln verwenden. Alles was nicht ausdrücklich erlaubt ist, "
+"wird standardmäßig blockiert."
 
 msgid ""
 "Floating rules are evaluated on a first-match basis (i.e. the action of the "
@@ -7784,15 +7812,19 @@ msgstr ""
 
 msgid "You can not assign a IPv4 gateway group on IPv6 Address Family rule"
 msgstr ""
+"Sie können keine IPv4 Gateway Gruppe einer Regel der IPv6 Adressfamilie "
+"zuweisen"
 
 msgid "You can not assign a IPv6 gateway group on IPv4 Address Family rule"
 msgstr ""
+"Sie können keine IPv6 Gateway Gruppe einer Regel der IPv4 Adressfamilie "
+"zuweisen"
 
 msgid "You can not assign the IPv4 Gateway to a IPv6 Filter rule"
-msgstr ""
+msgstr "Sie können das IPv4 Gateway nicht einer IPv6 Filterregel zuweisen"
 
 msgid "You can not assign the IPv6 Gateway to a IPv4 Filter rule"
-msgstr ""
+msgstr "Sie können das IPv6 Gateway nicht einer IPv4 Filterregel zuweisen"
 
 msgid "You can not assign a ICMP type to a rule that applies to IPv4 and IPv6"
 msgstr ""
@@ -7810,16 +7842,22 @@ msgid ""
 "When selecting aliases for source ports, both from and to fields must be the "
 "same"
 msgstr ""
+"Bei der Auswahl von Alias für Quellports, müssen sowohl \"Von\" als auch \""
+"An\" Felder übereinstimmen"
 
 # File: src/www/firewall_rules_edit.php, line: 284
 msgid ""
 "When selecting aliases for destination ports, both from and to fields must "
 "be the same"
 msgstr ""
+"Bei der Auswahl von Alias für Zielports, müssen sowohl \"Von\" als auch \""
+"An\" Felder übereinstimmen"
 
 msgid ""
 "The Source IP address %s Address Family differs from the destination %s."
 msgstr ""
+"Die Adressfamilie der Quell IP Adresse %s unterscheidet sich von der der "
+"Zieladresse %s."
 
 msgid "You can not use IPv6 addresses in IPv4 rules."
 msgstr "Sie können keine IPv6 Adressen in IPv4 Regeln verwenden."
@@ -7858,62 +7896,89 @@ msgid ""
 "You can only specify the maximum number of established connections per host ("
 "advanced option) for TCP protocol."
 msgstr ""
+"Sie können die maximale Zahl von aufgebauten Verbindungen pro Host ("
+"erweiterte Einstellung) nur für das TCP Protokoll angeben."
 
 msgid ""
 "You can only specify the maximum new connections per host / per second(s) ("
 "advanced option) for TCP protocol."
 msgstr ""
+"Sie können die maximale Zahl neuer Verbindungen pro Host / pro Sekunde(n) ("
+"erweiterte Einstellung) nur für das TCP Protokoll angeben."
 
 msgid ""
 "You can only specify the state timeout (advanced option) for TCP protocol."
 msgstr ""
+"Sie können den die Statuszeitüberschreitung (erweiterte Einstellung) nur für "
+"das TCP Protokoll angeben."
 
+# XXX: pass type rules?
 msgid ""
 "You can only specify the maximum state entries (advanced option) for Pass "
 "type rules."
 msgstr ""
+"Sie können die maximalen Statuseinträge (erweiterte Einstellung) nur für "
+"Pass Typ Regeln angeben."
 
+# XXX: pass type rules?
 msgid ""
 "You can only specify the maximum number of unique source hosts (advanced "
 "option) for Pass type rules."
 msgstr ""
+"Sie können die maximale Anzahl von eindeutigen Quellhosts (erweiterte "
+"Einstellung) nur für Pass Typ Regeln angeben."
 
 msgid ""
 "You can only specify the maximum number of established connections per host ("
 "advanced option) for Pass type rules."
 msgstr ""
+"Sie können die maximale Anzahl von aufgebauten Verbindungen pro Host ("
+"erweiterte Einstellung) nur für Pass Typ Regeln angeben."
 
 msgid ""
 "You can only specify the maximum state entries per host (advanced option) "
 "for Pass type rules."
 msgstr ""
+"Sie können die maximalen Statuseinträge pro Host (erweiterte Einstellung) "
+"nur für Pass Typ Regeln angeben."
 
 msgid ""
 "You can only specify the maximum new connections per host / per second(s) ("
 "advanced option) for Pass type rules."
 msgstr ""
+"Sie können die maximalen neuen Verbindungen pro Host / pro Sekunde(n) ("
+"erweiterte Einstellung) nur für Pass Typ Regeln angeben."
 
 msgid ""
 "You can only specify the state timeout (advanced option) for Pass type rules."
 msgstr ""
+"Sie können die Statuszeitüberschreitung (erweiterte Einstellung) nur für "
+"Pass Typ Regeln angeben."
 
 # File: src/www/firewall_rules_edit.php, line: 496
 msgid ""
 "You cannot specify the maximum state entries (advanced option) if statetype "
 "is none."
 msgstr ""
+"Sie können die maximalen Statuseinträge (erweiterte Einstellung) nicht "
+"angeben, wenn Statustyp auf \"keiner\" eingestellt ist."
 
 # File: src/www/firewall_rules_edit.php, line: 498
 msgid ""
 "You cannot specify the maximum number of unique source hosts (advanced "
 "option) if statetype is none."
 msgstr ""
+"Sie können die maximale Anzahl von eindeutigen Quellhosts (erweiterte "
+"Einstellung) nicht angeben, wenn Statustyp auf \"keiner\" eingestellt ist."
 
 # File: src/www/firewall_rules_edit.php, line: 500
 msgid ""
 "You cannot specify the maximum number of established connections per host ("
 "advanced option) if statetype is none."
 msgstr ""
+"Sie können die maximale Anzahl von aufgebauten Verbindungen pro Host ("
+"erweiterte Einstellung) nicht angeben, wenn Statustyp auf \"keiner\" "
+"eingestellt ist."
 
 # File: src/www/firewall_rules_edit.php, line: 502
 msgid ""
@@ -7928,11 +7993,16 @@ msgid ""
 "You cannot specify the maximum new connections per host / per second(s) ("
 "advanced option) if statetype is none."
 msgstr ""
+"Sie können die maximalen neuen Verbindungen pro Host / pro Sekunde(n) ("
+"erweiterte Einstellung) nicht angeben, wenn Statustyp auf \"keiner\" "
+"eingestellt ist."
 
 # File: src/www/firewall_rules_edit.php, line: 506
 msgid ""
 "You cannot specify the state timeout (advanced option) if statetype is none."
 msgstr ""
+"Sie können keine Statuszeitüberschreitung (erweiterte Einstellung) angeben, "
+"wenn Statustyp auf \"keiner\" eingestellt ist."
 
 msgid "Maximum state entries (advanced option) must be a positive integer"
 msgstr ""
@@ -15307,7 +15377,7 @@ msgstr "Hardwarekryptografiebeschleunigung"
 # File: src/www/system_advanced_misc.php, line: 417
 # File: src/www/system_advanced_misc.php, line: 446
 msgid "Hardware"
-msgstr ""
+msgstr "Hardware"
 
 msgid ""
 "A cryptographic accelerator module will use hardware support to speed up "
@@ -15775,7 +15845,7 @@ msgstr "gelöscht"
 
 # File: src/www/system_authservers.php, line: 287
 msgid "Add server"
-msgstr ""
+msgstr "Server hinzufügen"
 
 msgid "Please fill the required values."
 msgstr "Bitte füllen Sie die erforderlichen Werte aus."
@@ -16237,7 +16307,7 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 923
 # File: src/www/system_certmanager.php, line: 943
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 msgid "External Signing Request"
 msgstr "Externe Signaturanfrage"
@@ -16250,7 +16320,7 @@ msgstr "Existierende Zertifikate"
 
 # File: src/www/system_certmanager.php, line: 1110
 msgid "*In Use"
-msgstr ""
+msgstr "*In Verwendung"
 
 # File: src/www/system_certmanager.php, line: 1111
 msgid "*Revoked"
@@ -16588,20 +16658,20 @@ msgstr "Das Gateway ist nicht aktiv, weil die Schnittstelle fehlt"
 # File: src/www/system_gateways.php, line: 329
 # File: src/www/system_gateways.php, line: 334
 msgid "disable gateway"
-msgstr ""
+msgstr "Gateway deaktivieren"
 
 # File: src/www/system_gateways.php, line: 329
 # File: src/www/system_gateways.php, line: 334
 msgid "enable gateway"
-msgstr ""
+msgstr "Gateway aktivieren"
 
 # File: src/www/system_gateways.php, line: 356
 msgid "edit gateway"
-msgstr ""
+msgstr "Gateway bearbeiten"
 
 # File: src/www/system_gateways.php, line: 361
 msgid "delete gateway"
-msgstr ""
+msgstr "Gateway löschen"
 
 # File: src/www/system_gateways.php, line: 368
 msgid "clone gateway"
