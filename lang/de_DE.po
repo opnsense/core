@@ -1250,6 +1250,7 @@ msgid ""
 msgstr ""
 "sekundäre Schnittstelle, vergleicht Pakete die von Schnittstelle (1) zu "
 "Schnittstelle (2) transportiert wirden.\n"
+"        "
 
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
