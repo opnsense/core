@@ -78,5 +78,4 @@ if __name__ == '__main__':
                         pass
                 else:
                     input_filter = enabled_rulefiles[rule['filename']]['filter']
-                    url = ('%s/%s' % (rule['source']['url'], rule['filename']))
-                    dl.download(proto=download_proto, url=url, input_filter=input_filter)
+                    dl.download(proto=download_proto, url=rule['url'], input_filter=input_filter)

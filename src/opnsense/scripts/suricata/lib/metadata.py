@@ -61,6 +61,12 @@ class Metadata(object):
                         metadata_record = dict()
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()
+                        if 'url' in rule_filename.attrib:
+                            metadata_record['url'] = (rule_filename.attrib['url'])
+                        else:
+                            metadata_record['url'] = ('%s/%s' % (metadata_record['source']['url'],
+                                                                 metadata_record['filename']))
+
                         if 'prefix' in src_location.attrib:
                             description_prefix = "%s/" % src_location.attrib['prefix']
                         else:
