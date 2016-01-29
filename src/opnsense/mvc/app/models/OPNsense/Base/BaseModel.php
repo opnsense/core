@@ -326,10 +326,10 @@ abstract class BaseModel
      * perform a validation on changed model fields, using the (renamed) internal reference as a source pointer
      * for the requestor to identify its origin
      * @param null|string $sourceref source reference, for example model.section
-     * @param null|string $targetref target reference, for example section
+     * @param string $targetref target reference, for example section. used as prefix if no source given
      * @return array list of validation errors, indexed by field reference
      */
-    public function validate($sourceref = null, $targetref = null)
+    public function validate($sourceref = null, $targetref = "")
     {
         $result = array();
         $valMsgs = $this->performValidation();
@@ -339,7 +339,8 @@ abstract class BaseModel
                 $fieldnm = str_replace($sourceref, $targetref, $msg->getField());
                 $result[$fieldnm] = $msg->getMessage();
             } else {
-                $result[$msg->getField()] = $msg->getMessage();
+                $fieldnm = $targetref . $msg->getField() ;
+                $result[$fieldnm] = $msg->getMessage();
             }
         }
         return $result;
