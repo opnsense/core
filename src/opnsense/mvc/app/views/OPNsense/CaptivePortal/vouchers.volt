@@ -136,6 +136,7 @@ POSSIBILITY OF SUCH DAMAGE.
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
             if (voucher_group != undefined) {
                 BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_DANGER,
                     title: '{{ lang._('Remove voucher group') }} "' + voucher_group + '" @ ' + voucher_provider,
                     message: '{{ lang._('All vouchers within this group will be deleted') }}',
                     buttons: [{
