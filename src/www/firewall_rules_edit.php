@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           ,'descr','tcpflags_any','tcpflags1','tcpflags2','tag','tagged','quick','allowopts'
                           ,'disablereplyto','max','max-src-nodes','max-src-conn','max-src-states','statetype'
                           ,'statetimeout','nopfsync','nosync','max-src-conn-rate','max-src-conn-rates','gateway','sched'
-                          ,'associated-rule-id','floating'
+                          ,'associated-rule-id','floating', 'category'
                         );
 
     $pconfig = array();
@@ -414,7 +414,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $copy_fields = array('type', 'interface', 'ipprotocol', 'tag', 'tagged', 'max', 'max-src-nodes'
                             , 'max-src-conn', 'max-src-states', 'statetimeout', 'statetype', 'os', 'descr', 'gateway'
                             , 'sched', 'associated-rule-id', 'direction', 'quick'
-                            , 'max-src-conn-rate', 'max-src-conn-rates') ;
+                            , 'max-src-conn-rate', 'max-src-conn-rates', 'category') ;
 
         foreach ($copy_fields as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
@@ -662,6 +662,14 @@ include("head.inc");
       $("#toggleAdvanced").click();
       <?php endif;?>
 
+      // add typeahead for existing categories, all options are saves in the select option "existing_categories"
+      var categories = [];
+      $("#existing_categories > option").each(function(){
+          categories.push($(this).val());
+      });
+      $("#category").typeahead({
+          source: categories
+      });
   });
 
   </script>
@@ -1134,6 +1142,27 @@ include("head.inc");
                         <?=gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"); ?> (<?=gettext("see the"); ?> <a href="diag_logs_settings.php"><?=gettext("Diagnostics: System logs: Settings"); ?></a> <?=gettext("page"); ?>).
                       </div>
                     </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_category" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Category"); ?></td>
+                    <td>
+                      <input name="category" type="text" class="formfld unknown" id="category" size="40" value="<?=$pconfig['category'];?>" />
+                      <div class="hidden" for="help_for_category">
+                        <?=gettext("You may enter or select a category here to group firewall rules (not parsed)."); ?>
+                      </div>
+                      <select class="hidden" id="existing_categories">
+<?php
+                      $categories = array();
+                      foreach ($a_filter as $tmp_rule) {
+                          if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
+                              $categories[] = $tmp_rule['category'];
+                          }
+                      }
+                      foreach ($categories as $category):?>
+                        <option value="<?=$category;?>"></option>
+<?php
+                      endforeach;?>
+                      </select>
                   </tr>
                   <tr>
                     <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>

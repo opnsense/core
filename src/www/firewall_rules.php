@@ -198,6 +198,38 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
+
+  // link category select/search
+  $("#fw_category").change(function(){
+      var stripe_color = 'transparent';
+      var selected_value = $(this).val();
+      $(".rule").each(function(){
+          // save zebra color
+          if ( $(this).children(0).css("background-color") != 'transparent') {
+              $("#fw_category").data('stripe_color', $(this).children(0).css("background-color"));
+          }
+          if ($(this).data('category') != selected_value && selected_value != "") {
+              $(this).hide();
+          } else {
+              $(this).show();
+          }
+      });
+
+      $("#rules").removeClass("table-striped");
+      // add stripes again
+      $(".rule:visible").each(function (index) {
+        $(this).css("background-color", "inherit");
+        if ( index % 2 == 0) {
+          $(this).css("background-color", $("#fw_category").data('stripe_color'));
+        }
+      });
+  });
+
+  // hide category search when not used
+  if ($("#fw_category > option").length == 1) {
+      $("#fw_category").addClass('hidden');
+  }
+
 });
 </script>
 
@@ -262,7 +294,7 @@ $( document ).ready(function() {
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive" >
-                <table class="table table-striped">
+                <table class="table table-striped table-hover" id="rules">
                   <thead>
                     <tr>
                       <th>&nbsp;</th>
@@ -427,7 +459,7 @@ $( document ).ready(function() {
 
 
 ?>
-                  <tr ondblclick="document.location='firewall_rules_edit.php?id=<?=$i;?>';">
+                  <tr class="rule" data-category="<?=!empty($filterent['category']) ? $filterent['category'] : "";?>">
                     <td>
                       <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
                     </td>
@@ -621,7 +653,23 @@ $( document ).ready(function() {
                   </tr>
               <?php else: ?>
                   <tr>
-                    <td colspan="5"></td>
+                    <td colspan="5">
+                      <select class="selectpicker" data-live-search="true" data-size="5"  placeholder="<?=gettext("select category");?>" id="fw_category">
+                        <option value=""><?=gettext("Filter by category");?></value>
+<?php
+                        // collect unique list of categories and append to option list
+                        $categories = array();
+                        foreach ($a_filter as $tmp_rule) {
+                            if (!empty($tmp_rule['category']) && !in_array($tmp_rule['category'], $categories)) {
+                                $categories[] = $tmp_rule['category'];
+                            }
+                        }
+                        foreach ($categories as $category):?>
+                        <option value="<?=$category;?>"><?=$category;?></value>
+<?php
+                        endforeach;?>
+                      </select>
+                    </td>
                     <td colspan="5" class="hidden-xs hidden-sm"></td>
                     <td>
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
