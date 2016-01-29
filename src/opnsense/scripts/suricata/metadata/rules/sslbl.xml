@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset>
+    <location url="https://sslbl.abuse.ch/blacklist/" prefix="abuse.ch"/>
+    <files>
+        <file url="https://sslbl.abuse.ch/blacklist/sslblacklist.rules" description="SSL Fingerprint Blacklist">abuse.ch.sslblacklist.rules</file>
+        <file url="https://sslbl.abuse.ch/blacklist/sslipblacklist.rules" description="SSL IP Blacklist">abuse.ch.sslipblacklist.rules</file>
+        <file url="https://sslbl.abuse.ch/blacklist/dyre_sslipblacklist.rules" description="Dyre SSL IPBL">abuse.ch.dyre_sslipblacklist.rules</file>
+        <file url="https://feodotracker.abuse.ch/blocklist/?download=suricata" description="Feodo Tracker">abuse.ch.feodotracker.rules</file>
+    </files>
+</ruleset>
