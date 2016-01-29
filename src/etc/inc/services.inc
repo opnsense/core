@@ -527,7 +527,7 @@ EOD;
 					}
 				}
 			} else {
-				log_error(gettext("Warning!  DHCP Failover setup and no CARP virtual IPs defined!"));
+				log_error(gettext("Warning! DHCP Failover setup and no CARP virtual IPs defined!"));
 			}
 			if($skew > 10) {
 				$type = "secondary";

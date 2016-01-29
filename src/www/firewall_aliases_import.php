@@ -189,7 +189,7 @@ include("head.inc");
                     <td>
                       <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
                       <div class="hidden" for="help_for_alias">
-                        <?=gettext("Paste in the aliases to import separated by a carriage return.  Common examples are lists of IPs, networks, blacklists, etc."); ?>
+                        <?=gettext("Paste in the aliases to import separated by a carriage return. Common examples are lists of IPs, networks, blacklists, etc."); ?>
                         <br />
                         <?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
                         <code>

@@ -1004,7 +1004,7 @@ function vpn_pptpd_configure() {
 
     if (is_process_running("mpd -b")) {
       killbypid('/var/run/pptp-vpn.pid');
-      log_error(gettext("Could not kill mpd within 3 seconds.   Trying again."));
+      log_error(gettext("Could not kill mpd within 3 seconds. Trying again."));
     }
 
     /* remove mpd.conf, if it exists */

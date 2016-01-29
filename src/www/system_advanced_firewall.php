@@ -377,7 +377,7 @@ include("head.inc");
                       <strong><?=gettext("end");?></strong></br>
                       <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.  This value is used to define the scale factor, it should not actually be reached (set a lower state limit, see below).");?>
                       <br/>
-                      <strong><?=gettext("Note:  Leave this blank for the default(0).");?></strong>
+                      <strong><?=gettext("Note: Leave this blank for the default(0).");?></strong>
                     </div>
                   </td>
                 </tr>
@@ -388,7 +388,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_maximumstates">
                       <strong><?=gettext("Maximum number of connections to hold in the firewall state table.");?></strong>
                       <br />
-                      <?=gettext("Note:  Leave this blank for the default.  On your system the default size is:");?> <?= default_state_size() ?>
+                      <?=gettext("Note: Leave this blank for the default.  On your system the default size is:");?> <?= default_state_size() ?>
                     </div>
                   </td>
                 </tr>
@@ -399,7 +399,7 @@ include("head.inc");
                     <div class="hidden" for="help_for_maximumtableentries">
                       <strong><?=gettext("Maximum number of table entries for systems such as aliases, sshlockout, snort, etc, combined.");?></strong>
                       <br />
-                      <?=gettext("Note:  Leave this blank for the default.");?>
+                      <?=gettext("Note: Leave this blank for the default.");?>
 <?php
                       if (empty($pconfig['maximumtableentries'])) :?>
                         <?= gettext("On your system the default size is:");?> <?= default_table_entries_size(); ?>
