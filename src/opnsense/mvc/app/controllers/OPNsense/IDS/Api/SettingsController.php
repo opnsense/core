@@ -219,17 +219,16 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
-     * list all installable rules including current status
-     * @return array|mixed
-     * @throws \Exception
+     * list all installable rules including configuration additions
+     * @return array
      */
-    public function listInstallableRulesetsAction()
+    private function listInstallableRules()
     {
+        $result = array();
         $backend = new Backend();
         $response = $backend->configdRun("ids list installablerulesets");
         $data = json_decode($response, true);
         if ($data != null && array_key_exists("items", $data)) {
-            $result = array("items"=>array());
             ksort($data['items']);
             foreach ($data['items'] as $filename => $fileinfo) {
                 $item = array();
@@ -238,21 +237,86 @@ class SettingsController extends ApiControllerBase
 
                 // format timestamps
                 if ($fileinfo['modified_local'] == null) {
-                    $item['modified_local'] = null ;
+                    $item['modified_local'] = null;
                 } else {
-                    $item['modified_local'] = date('Y/m/d G:i', $fileinfo['modified_local']) ;
+                    $item['modified_local'] = date('Y/m/d G:i', $fileinfo['modified_local']);
                 }
                 // retrieve status from model
-                $item['enabled'] = (string)$this->getModel()->getFileNode($fileinfo['filename'])->enabled;
-                $result['rows'][] = $item;
+                $fileNode = $this->getModel()->getFileNode($fileinfo['filename']);
+                $item['enabled'] = (string)$fileNode->enabled;
+                $item['filter'] = $fileNode->filter->getNodeData(); // filter (option list)
+                $item['filter_str'] = (string)$fileNode->filter; // filter current value
+                $result[] = $item;
             }
-            $result['rowCount'] = count($result['rows']);
-            $result['total'] = count($result['rows']);
-            $result['current'] = 1;
-            return $result;
-        } else {
-            return array();
         }
+        return $result;
+
+    }
+
+    /**
+     * list all installable rules including current status
+     * @return array|mixed list of items when $id is null otherwise the selected item is returned
+     * @throws \Exception
+     */
+    public function listRulesetsAction()
+    {
+        $result = array();
+        $result['rows'] = $this->listInstallableRules();
+        $result['rowCount'] = count($result['rows']);
+        $result['total'] = count($result['rows']);
+        $result['current'] = 1;
+        return $result;
+    }
+
+    /**
+     * get ruleset list info (file)
+     * @param string $id list filename
+     * @return array|mixed list details
+     */
+    public function getRulesetAction($id)
+    {
+        $rules = $this->listInstallableRules();
+        foreach ($rules as $rule) {
+            if ($rule['filename'] == $id) {
+                return $rule;
+            }
+        }
+        return array();
+    }
+
+    /**
+     * set ruleset attributes
+     * @param $filename rule filename (key)
+     * @return array
+     */
+    public function setRulesetAction($filename)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            // we're only allowed to edit filenames which have an install ruleset, request valid ones from configd
+            $backend = new Backend();
+            $response = $backend->configdRun("ids list installablerulesets");
+            $data = json_decode($response, true);
+            if ($data != null && array_key_exists("items", $data) && array_key_exists($filename, $data['items'])) {
+                // filename exists, input ruleset data
+                $mdlIDS = $this->getModel();
+                $node = $mdlIDS->getFileNode($filename);
+
+                // send post attributes to model
+                $node->setNodes($_POST);
+
+                $validations = $mdlIDS->validate($node->__reference . ".", "");
+                if (count($validations)) {
+                    $result['validations'] = $validations;
+                } else {
+                    // serialize model to config and save
+                    $mdlIDS->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result["result"] = "saved";
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -263,7 +327,7 @@ class SettingsController extends ApiControllerBase
      * @throws \Exception
      * @throws \Phalcon\Validation\Exception
      */
-    public function toggleInstalledRulesetAction($filenames, $enabled = null)
+    public function toggleRulesetAction($filenames, $enabled = null)
     {
         $update_count = 0;
         $result = array("status" => "none");
@@ -367,17 +431,11 @@ class SettingsController extends ApiControllerBase
                 } else {
                     $mdlIDS->setAction($sid, $newAction);
                 }
-                // perform validation
-                $valMsgs = $mdlIDS->performValidation();
-                foreach ($valMsgs as $field => $msg) {
-                    if (!array_key_exists("validations", $result)) {
-                        $result["validations"] = array();
-                    }
-                    $result["validations"]["ids.".$msg->getField()] = $msg->getMessage();
-                }
 
-                // serialize model to config and save
-                if ($valMsgs->count() == 0) {
+                $validations = $mdlIDS->validate();
+                if (count($validations)) {
+                    $result['validations'] = $validations;
+                } else {
                     $mdlIDS->serializeToConfig();
                     Config::getInstance()->save();
                     $result["result"] = "saved";
@@ -418,17 +476,10 @@ class SettingsController extends ApiControllerBase
             $mdlIDS = $this->getModel();
             $mdlIDS->setNodes($this->request->getPost("ids"));
 
-            // perform validation
-            $valMsgs = $mdlIDS->performValidation();
-            foreach ($valMsgs as $field => $msg) {
-                if (!array_key_exists("validations", $result)) {
-                    $result["validations"] = array();
-                }
-                $result["validations"]["ids.".$msg->getField()] = $msg->getMessage();
-            }
-
-            // serialize model to config and save
-            if ($valMsgs->count() == 0) {
+            $validations = $mdlIDS->validate(null, "ids.");
+            if (count($validations)) {
+                $result['validations'] = $validations;
+            } else {
                 $mdlIDS->serializeToConfig();
                 Config::getInstance()->save();
                 $result["result"] = "saved";
