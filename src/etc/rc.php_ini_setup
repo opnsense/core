@@ -78,6 +78,7 @@ EXTENSIONS_INI=/usr/local/etc/php/extensions.ini
 
 touch ${EXTENSIONS_INI}
 cp ${EXTENSIONS_INI} ${_EXTENSIONS_INI}
+chmod 644 ${_EXTENSIONS_INI}
 
 # Clear the .ini file to make sure we are clean
 rm -f /usr/local/etc/php.ini
