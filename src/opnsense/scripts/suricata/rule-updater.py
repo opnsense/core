@@ -62,6 +62,7 @@ if __name__ == '__main__':
                 else:
                     enabled_rulefiles[section.strip()]['filter'] = ""
 
+
     # download / remove rules
     md = metadata.Metadata()
     dl = downloader.Downloader(target_dir=rule_source_directory)
@@ -77,4 +78,5 @@ if __name__ == '__main__':
                         pass
                 else:
                     input_filter = enabled_rulefiles[rule['filename']]['filter']
-                    dl.download(proto=download_proto, url=rule['url'], input_filter=input_filter)
+                    dl.download(proto=download_proto, url=rule['url'],
+                                filename=rule['filename'], input_filter=input_filter)
