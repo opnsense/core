@@ -323,6 +323,29 @@ abstract class BaseModel
     }
 
     /**
+     * perform a validation on changed model fields, using the (renamed) internal reference as a source pointer
+     * for the requestor to identify its origin
+     * @param null|string $sourceref source reference, for example model.section
+     * @param null|string $targetref target reference, for example section
+     * @return array list of validation errors, indexed by field reference
+     */
+    public function validate($sourceref = null, $targetref = null)
+    {
+        $result = array();
+        $valMsgs = $this->performValidation();
+        foreach ($valMsgs as $field => $msg) {
+            // replace absolute path to attribute for relative one at uuid.
+            if ($sourceref != null) {
+                $fieldnm = str_replace($sourceref, $targetref, $msg->getField());
+                $result[$fieldnm] = $msg->getMessage();
+            } else {
+                $result[$msg->getField()] = $msg->getMessage();
+            }
+        }
+        return $result;
+    }
+
+    /**
      * render xml document from model including all parent nodes.
      * (parent nodes are included to ease testing)
      *
