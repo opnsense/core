@@ -113,6 +113,7 @@ class VoucherController extends ApiControllerBase
      */
     public function generateVouchersAction($provider)
     {
+        $response = array("status" => "error");
         if ($this->request->isPost()) {
             $authFactory = new AuthenticationFactory();
             $auth = $authFactory->get($provider);
@@ -120,11 +121,12 @@ class VoucherController extends ApiControllerBase
                 $count = $this->request->getPost('count', 'int', 0);
                 $validity = $this->request->getPost('validity', 'int', 0);
                 $vouchergroup = $this->request->getPost('vouchergroup', 'striptags', '---');
-                if ($count > 0 && $validity > 0) {
+                if ($count > 0 && $count <= 10000 && $validity > 0) {
+                    $response['status'] = 'created';
                     return $auth->generateVouchers($vouchergroup, $count, $validity);
                 }
             }
         }
-        return array();
+        return $response;
     }
 }
