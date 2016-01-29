@@ -336,7 +336,7 @@ function make_config_revision_entry($desc = '')
     }
 
     if (empty($desc)) {
-        $desc = sprintf(gettext('%s changed the configuration'), $_SERVER['SCRIPT_NAME']);
+        $desc = sprintf(gettext('%s made changes'), $_SERVER['SCRIPT_NAME']);
     }
 
     $revision = array();
