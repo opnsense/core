@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core;
 
 use \Phalcon\DI\FactoryDefault;
@@ -372,10 +374,10 @@ class Config extends Singleton
             }
             if (!empty($_SERVER['REQUEST_URI'])) {
                 // when update revision is called from a controller, log the endpoint uri
-                $revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['REQUEST_URI']);
+                $revision['description'] = sprintf(gettext('%s made changes'), $_SERVER['REQUEST_URI']);
             } else {
                 // called from a script, log script name and path
-                $revision['description'] = sprintf(gettext("%s made unknown change"), $_SERVER['SCRIPT_NAME']);
+                $revision['description'] = sprintf(gettext('%s made changes'), $_SERVER['SCRIPT_NAME']);
             }
         }
 
