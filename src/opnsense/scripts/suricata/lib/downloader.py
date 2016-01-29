@@ -36,14 +36,46 @@ class Downloader(object):
     def __init__(self, target_dir):
         self._target_dir = target_dir
 
-    def download(self, proto, url):
+    def filter(self, in_data, filter_type):
+        """ apply input filter to downloaded data
+            :param in_data: raw input data (ruleset)
+            :param filter_type: filter type to use on input data
+            :return: ruleset data
+        """
+        if filter_type == "drop":
+            return self.filter_drop(in_data)
+        else:
+            return in_data
+
+    def filter_drop(self, in_data):
+        """ change all alert rules to block
+            :param in_data: raw input data (ruleset)
+            :return: new ruleset
+        """
+        output = list()
+        for line in in_data.split('\n'):
+            if len(line) > 10:
+                if line[0:5] == 'alert':
+                    line = 'drop %s' % line[5:]
+                elif line[0:6] == '#alert':
+                    line = '#drop %s' % line[5:]
+            output.append(line)
+        return '\n'.join(output)
+
+    def download(self, proto, url, input_filter):
+        """ download ruleset file
+            :param proto: protocol (http,https)
+            :param url: download url
+            :param input_filter: filter to use on received data before save
+        """
         if proto in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
             req = requests.get(url=frm_url)
             if req.status_code == 200:
                 target_filename = ('%s/%s' % (self._target_dir, frm_url.split('/')[-1])).replace('//', '/')
                 try:
-                    open(target_filename, 'wb').write(req.text)
+                    save_data = self.filter(req.text, input_filter)
+                    open(target_filename, 'wb').write(save_data)
                 except IOError:
                     syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
                     return None
