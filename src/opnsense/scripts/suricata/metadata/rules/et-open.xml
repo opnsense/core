@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset>
-    <location url="https://rules.emergingthreats.net/open/suricata/rules/"/>
+    <location url="https://rules.emergingthreats.net/open/suricata/rules/" prefix="ET open"/>
     <files>
         <file description="botcc.portgrouped">botcc.portgrouped.rules</file>
         <file description="botcc">botcc.rules</file>
