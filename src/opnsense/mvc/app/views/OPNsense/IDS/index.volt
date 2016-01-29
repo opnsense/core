@@ -182,7 +182,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
                 // refresh when all toggles are executed
                 $.when.apply(null, deferreds).done(function(){
-                    $("#"+gridId).bootgrid("refresh");
+                    $("#"+gridId).bootgrid("reload");
                 });
             }
         }
@@ -261,16 +261,19 @@ POSSIBILITY OF SUCH DAMAGE.
          * grid for installable rule files
          */
         $("#grid-rule-files").UIBootgrid(
-                {   search:'/api/ids/settings/listInstallableRulesets',
-                    toggle:'/api/ids/settings/toggleInstalledRuleset/',
+                {   search:'/api/ids/settings/listRulesets',
+                    get:'/api/ids/settings/getRuleset/',
+                    set:'/api/ids/settings/setRuleset/',
+                    toggle:'/api/ids/settings/toggleRuleset/',
                     options:{
                         navigation:0,
                         formatters:{
                             rowtoggle: function (column, row) {
+                                var toggle = " <button type=\"button\" class=\"btn btn-xs btn-default command-edit\" data-row-id=\"" + row.filename + "\"><span class=\"fa fa-info-circle\"></span></button> ";
                                 if (parseInt(row[column.id], 2) == 1) {
-                                    var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
+                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-check-square-o command-toggle\" data-value=\"1\" data-row-id=\"" + row.filename + "\"></span>";
                                 } else {
-                                    var toggle = "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
+                                    toggle += "<span style=\"cursor: pointer;\" class=\"fa fa-square-o command-toggle\" data-value=\"0\" data-row-id=\"" + row.filename + "\"></span>";
                                 }
                                 return toggle;
                             }
@@ -329,7 +332,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#disableSelectedRuleSets").click(function(){
             var gridId = 'grid-rule-files';
-            var url = '/api/ids/settings/toggleInstalledRuleset/';
+            var url = '/api/ids/settings/toggleRuleset/';
             actionToggleSelected(gridId, url, 0, 20);
         });
 
@@ -338,7 +341,7 @@ POSSIBILITY OF SUCH DAMAGE.
          */
         $("#enableSelectedRuleSets").click(function(){
             var gridId = 'grid-rule-files';
-            var url = '/api/ids/settings/toggleInstalledRuleset/';
+            var url = '/api/ids/settings/toggleRuleset/';
             actionToggleSelected(gridId, url, 1, 20);
         });
 
@@ -401,12 +404,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     </div>
                 </td>
                 <td>
-                <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRule">
+                <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
                     <thead>
                     <tr>
                         <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">filename</th>
                         <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
-                        <th data-column-id="modified_local" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Last updated') }}</th>
+                        <th data-column-id="modified_local" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
+                        <th data-column-id="filter_str" data-type="string" data-identifier="true">Filter</th>
                         <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
                     </tr>
                     </thead>
@@ -526,3 +530,4 @@ POSSIBILITY OF SUCH DAMAGE.
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'true','msgzone_width':1])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':'Alert details','hasSaveBtn':'false','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogRuleset,'id':'DialogRuleset','label':'Ruleset details','hasSaveBtn':'true','msgzone_width':1])}}

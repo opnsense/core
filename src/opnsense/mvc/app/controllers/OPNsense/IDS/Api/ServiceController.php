@@ -237,7 +237,7 @@ class ServiceController extends ApiControllerBase
 
             $backend = new Backend();
             $response = $backend->configdpRun("ids query alerts", array($itemsPerPage,
-                ($currentPage-1)*$itemsPerPage, $searchPhrase,$fileid));
+                ($currentPage-1)*$itemsPerPage, $searchPhrase, $fileid));
             $result = json_decode($response, true);
             if ($result != null) {
                 $result['rowCount'] = count($result['rows']);
