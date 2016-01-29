@@ -76,6 +76,10 @@ class OptionField extends BaseField
     public function getNodeData()
     {
         $result = array ();
+        // if relation is not required, add empty option
+        if (!$this->internalIsRequired) {
+            $result[""] = array("value"=>"none", "selected" => 0);
+        }
         foreach ($this->internalOptionList as $optKey => $optValue) {
             if ($optKey == $this->internalValue) {
                 $selected = 1;
