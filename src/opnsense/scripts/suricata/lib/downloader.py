@@ -62,18 +62,19 @@ class Downloader(object):
             output.append(line)
         return '\n'.join(output)
 
-    def download(self, proto, url, input_filter):
+    def download(self, proto, url, filename, input_filter):
         """ download ruleset file
             :param proto: protocol (http,https)
             :param url: download url
+            :param filename: target filename
             :param input_filter: filter to use on received data before save
         """
         if proto in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
             req = requests.get(url=frm_url)
             if req.status_code == 200:
-                target_filename = ('%s/%s' % (self._target_dir, frm_url.split('/')[-1])).replace('//', '/')
                 try:
+                    target_filename = '%s/%s' % (self._target_dir, filename)
                     save_data = self.filter(req.text, input_filter)
                     open(target_filename, 'wb').write(save_data)
                 except IOError:
