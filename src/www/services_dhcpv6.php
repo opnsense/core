@@ -711,7 +711,7 @@ include("head.inc");
 											</div>
 											<div id="showtftp" style="display:none">
 												<input name="tftp" type="text" class="formfld unknown" id="tftp" size="50" value="<?=htmlspecialchars($pconfig['tftp']);?>" /><br />
-												<?=gettext("Leave blank to disable.  Enter a full hostname or IP for the TFTP server.");?>
+												<?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server.");?>
 											</div>
 											</td>
 											</tr>
