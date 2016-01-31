@@ -198,7 +198,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         $('<a></a>')
                                 .attr('id','downloadFile')
                                 .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
-                                .attr('download','vouchers.csv')
+                                .attr('download',voucher_groupname.toLowerCase() + '.csv')
                                 .appendTo('body');
 
                         $('#downloadFile').ready(function() {
