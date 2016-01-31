@@ -985,7 +985,7 @@ include("head.inc");
 											</div>
 											<div id="showldap" style="display:none">
 												<input name="ldap" type="text" class="form-control unknown" id="ldap" size="80" value="<?=htmlspecialchars($pconfig['ldap']);?>" /><br />
-												<?=gettext("Leave blank to disable.  Enter a full URI for the LDAP server in the form ldap://ldap.example.com/dc=example,dc=com");?>
+												<?=sprintf(gettext("Leave blank to disable. Enter a full URI for the LDAP server in the form %s"),'ldap://ldap.example.com/dc=example,dc=com')?>
 											</div>
 										</td>
 										</tr>
