@@ -199,6 +199,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             // remove previous link
                             $('#downloadFile').remove();
                         }
+
                         $('<a></a>')
                                 .attr('id','downloadFile')
                                 .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
@@ -209,10 +210,11 @@ POSSIBILITY OF SUCH DAMAGE.
                             $('#downloadFile').get(0).click();
                         });
 
-                        $("#generateVouchers").modal('hide')
+                        $("#generateVouchers").modal('hide');
 
                         // reload grid after creating new vouchers
                         updateVoucherGroupList();
+
                     });
 
         });
