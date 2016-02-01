@@ -450,9 +450,10 @@ class Action(object):
                     else:
                         syslog.syslog(syslog.LOG_ERR, '[%s] returned exit status %d' % (message_uuid, exit_status))
                         return 'Error (%d)' % exit_status
-                except:
-                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
-                                                                                       traceback.format_exc()))
+                except Exception as script_exception:
+                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed with %s at %s' % (message_uuid,
+                                                                                               script_exception,
+                                                                                               traceback.format_exc()))
                     return 'Execute error'
             elif self.type.lower() == 'script_output':
                 try:
@@ -469,9 +470,10 @@ class Action(object):
                                               script_error_output.strip()[:255])
                                               )
                             return script_output
-                except:
-                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed at %s' % (message_uuid,
-                                                                                       traceback.format_exc()))
+                except Exception as script_exception:
+                    syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed with %s at %s' % (message_uuid,
+                                                                                               script_exception,
+                                                                                               traceback.format_exc()))
                     return 'Execute error'
 
             # fallback should never get here
