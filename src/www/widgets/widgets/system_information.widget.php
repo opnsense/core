@@ -118,13 +118,6 @@ $filesystems = get_mounted_filesystems();
 		<?php endif; ?>
 			</td>
 		</tr>
-		<?php if (isset($hwcrypto)) :
-?>
-		<tr>
-			<td width="25%" class="vncellt"><?=gettext("Hardware crypto");?></td>
-			<td width="75%" class="listr"><?=htmlspecialchars($hwcrypto);?></td>
-		</tr>
-		<?php endif; ?>
 		<tr>
 			<td width="25%" class="vncellt"><?=gettext("Uptime");?></td>
 			<td width="75%" class="listr" id="uptime"><?= htmlspecialchars(get_uptime()); ?></td>
