@@ -314,6 +314,7 @@ netmap:
     disable-promisc: yes
     checksum-checks: auto
 
+  {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
 
   - interface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}
@@ -322,6 +323,7 @@ netmap:
   - interface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}+
     copy-iface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}
     {% endfor %}
+  {% endif %}
 
 legacy:
   uricontent: enabled
