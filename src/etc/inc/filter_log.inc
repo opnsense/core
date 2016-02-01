@@ -254,7 +254,7 @@ function parse_filter_line($line)
 			}
 			break;
 		}
-	} elseif ($flent['protoid'] == '2') { // IGMP 
+	} elseif ($flent['protoid'] == '2') { // IGMP
 		$flent['src'] = $flent['srcip'];
 		$flent['dst'] = $flent['dstip'];
 	} elseif ($flent['protoid'] == '112') { // CARP
