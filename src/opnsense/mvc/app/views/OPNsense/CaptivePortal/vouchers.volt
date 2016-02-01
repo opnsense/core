@@ -195,6 +195,10 @@ POSSIBILITY OF SUCH DAMAGE.
                         });
 
                         // generate download link and send data to the client
+                        if ($('#downloadFile').length) {
+                            // remove previous link
+                            $('#downloadFile').remove();
+                        }
                         $('<a></a>')
                                 .attr('id','downloadFile')
                                 .attr('href','data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
