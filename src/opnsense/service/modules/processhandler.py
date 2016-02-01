@@ -28,8 +28,6 @@
     function: unix domain socket process worker process
 """
 
-__author__ = 'Ad Schellevis'
-
 import os
 import subprocess
 import socket
@@ -45,6 +43,8 @@ import tempfile
 import ph_inline_actions
 from modules import singleton
 
+__author__ = 'Ad Schellevis'
+
 
 class Handler(object):
     """ Main handler class, opens unix domain socket and starts listening
@@ -57,7 +57,8 @@ class Handler(object):
                     -> execute ActionHandler command using Action objects
                     <- send back result string
     """
-    def __init__(self, socket_filename, config_path, config_environment={}, simulation_mode=False):
+
+    def __init__(self, socket_filename, config_path, config_environment=None, simulation_mode=False):
         """ Constructor
 
         :param socket_filename: filename of unix domain socket to use
@@ -65,6 +66,8 @@ class Handler(object):
         :param simulation_mode: emulation mode, do not start actual (script) commands
         :return: object
         """
+        if config_environment is None:
+            config_environment = {}
         self.socket_filename = socket_filename
         self.config_path = config_path
         self.simulation_mode = simulation_mode
@@ -77,10 +80,11 @@ class Handler(object):
         :return:
         """
         while True:
+            # noinspection PyBroadException
             try:
                 # open action handler
-                actHandler = ActionHandler(config_path=self.config_path,
-                                           config_environment=self.config_environment)
+                act_handler = ActionHandler(config_path=self.config_path,
+                                            config_environment=self.config_environment)
 
                 # remove previous socket ( if exists )
                 try:
@@ -99,7 +103,7 @@ class Handler(object):
                     # spawn a client connection
                     cmd_thread = HandlerClient(connection=connection,
                                                client_address=client_address,
-                                               action_handler=actHandler,
+                                               action_handler=act_handler,
                                                simulation_mode=self.simulation_mode)
                     if self.single_threaded:
                         # run single threaded
@@ -120,7 +124,7 @@ class Handler(object):
                     # cleanup on exit, remove socket
                     os.remove(self.socket_filename)
                 return
-            except:
+            except Exception:
                 # something went wrong... send traceback to syslog, restart listener (wait for a short time)
                 print (traceback.format_exc())
                 syslog.syslog(syslog.LOG_ERR, 'Handler died on %s' % traceback.format_exc())
@@ -130,6 +134,7 @@ class Handler(object):
 class HandlerClient(threading.Thread):
     """ Handle commands via specified socket connection
     """
+
     def __init__(self, connection, client_address, action_handler, simulation_mode=False):
         """
         :param connection: socket connection object
@@ -155,6 +160,7 @@ class HandlerClient(threading.Thread):
         exec_action = ''
         exec_params = ''
         exec_in_background = False
+        # noinspection PyBroadException
         try:
             # receive command, maximum data length is 4k... longer messages will be truncated
             data = self.connection.recv(4096)
@@ -186,7 +192,7 @@ class HandlerClient(threading.Thread):
 
                 # execute requested action
                 if self.simulation_mode:
-                    self.action_handler.showAction(exec_command, exec_action, exec_params, self.message_uuid)
+                    self.action_handler.show_action(exec_command, exec_action, exec_params, self.message_uuid)
                     result = 'OK'
                 else:
                     result = self.action_handler.execute(exec_command, exec_action, exec_params, self.message_uuid)
@@ -207,23 +213,28 @@ class HandlerClient(threading.Thread):
         except SystemExit:
             # ignore system exit related errors
             pass
-        except:
+        except Exception:
             print (traceback.format_exc())
-            syslog.syslog(syslog.LOG_ERR,
-                          'unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (result,
-                                                                                                      exec_command,
-                                                                                                      exec_action,
-                                                                                                      exec_params,
-                                                                                                      self.message_uuid,
-                                                                                                      traceback.format_exc()))
+            syslog.syslog(
+                    syslog.LOG_ERR,
+                    'unable to sendback response [%s] for [%s][%s][%s] {%s}, message was %s' % (result,
+                                                                                                exec_command,
+                                                                                                exec_action,
+                                                                                                exec_params,
+                                                                                                self.message_uuid,
+                                                                                                traceback.format_exc()
+                                                                                                )
+            )
         finally:
             if not exec_in_background:
                 self.connection.close()
+
 
 @singleton
 class ActionHandler(object):
     """ Start/stop services and functions using configuration data defined in conf/actions_<topic>.conf
     """
+
     def __init__(self, config_path=None, config_environment=None):
         """ Initialize action handler to start system functions
 
@@ -238,6 +249,7 @@ class ActionHandler(object):
 
         # try to load data on initial start
         if not hasattr(self, 'action_map'):
+            self.action_map = {}
             self.load_config()
 
     def load_config(self):
@@ -245,8 +257,6 @@ class ActionHandler(object):
 
         :return: None
         """
-
-        self.action_map = {}
         for config_filename in glob.glob('%s/actions_*.conf' % self.config_path) \
                 + glob.glob('%s/actions.d/actions_*.conf' % self.config_path):
             # this topic's name (service, filter, template, etc)
@@ -260,7 +270,7 @@ class ActionHandler(object):
             cnf.read(config_filename)
             for section in cnf.sections():
                 # map configuration data on object
-                action_obj = Action(config_environment = self.config_environment)
+                action_obj = Action(config_environment=self.config_environment)
                 for act_prop in cnf.items(section):
                     setattr(action_obj, act_prop[0], act_prop[1])
 
@@ -274,10 +284,13 @@ class ActionHandler(object):
                     for alias in section.split('|'):
                         self.action_map[topic_name][alias] = action_obj
 
-    def listActions(self, attributes=[]):
+    def list_actions(self, attributes=None):
         """ list all available actions
+        :param attributes:
         :return: dict
         """
+        if attributes is None:
+            attributes = []
         result = {}
         for command in self.action_map:
             for action in self.action_map[command]:
@@ -285,7 +298,7 @@ class ActionHandler(object):
                     # parse second level actions
                     # TODO: nesting actions may be better to solve recursive in here and in load_config part
                     for subAction in self.action_map[command][action]:
-                        cmd='%s %s %s'%(command,action,subAction)
+                        cmd = '%s %s %s' % (command, action, subAction)
                         result[cmd] = {}
                         for actAttr in attributes:
                             if hasattr(self.action_map[command][action][subAction], actAttr):
@@ -293,7 +306,7 @@ class ActionHandler(object):
                             else:
                                 result[cmd][actAttr] = ''
                 else:
-                    cmd='%s %s'%(command,action)
+                    cmd = '%s %s' % (command, action)
                     result[cmd] = {}
                     for actAttr in attributes:
                         if hasattr(self.action_map[command][action], actAttr):
@@ -303,7 +316,7 @@ class ActionHandler(object):
 
         return result
 
-    def findAction(self, command, action, parameters):
+    def find_action(self, command, action, parameters):
         """ find action object
 
         :param command: command/topic for example interface
@@ -320,7 +333,7 @@ class ActionHandler(object):
                         # 3 level action (  "interface linkup start" for example )
                         if isinstance(self.action_map[command][action][parameters[0]], Action):
                             action_obj = self.action_map[command][action][parameters[0]]
-                            action_obj.setParameterStartPos(1)
+                            action_obj.set_parameter_start_pos(1)
                 elif isinstance(self.action_map[command][action], Action):
                     action_obj = self.action_map[command][action]
 
@@ -336,17 +349,17 @@ class ActionHandler(object):
         :return: OK on success, else error code
         """
         action_params = []
-        action_obj = self.findAction(command, action, parameters)
+        action_obj = self.find_action(command, action, parameters)
 
         if action_obj is not None:
-            if parameters is not None and len(parameters) > action_obj.getParameterStartPos():
-                action_params = parameters[action_obj.getParameterStartPos():]
+            if parameters is not None and len(parameters) > action_obj.get_parameter_start_pos():
+                action_params = parameters[action_obj.get_parameter_start_pos():]
 
             return '%s\n' % action_obj.execute(action_params, message_uuid)
 
         return 'Action not found\n'
 
-    def showAction(self, command, action, parameters, message_uuid):
+    def show_action(self, command, action, parameters, message_uuid):
         """ debug/simulation mode: show action information
         :param command: command/topic for example interface
         :param action: action to run ( for example linkup )
@@ -354,10 +367,10 @@ class ActionHandler(object):
         :param message_uuid: message unique id
         :return: None
         """
-        action_obj = self.findAction(command, action, parameters)
+        action_obj = self.find_action(command, action, parameters)
         print ('---------------------------------------------------------------------')
         print ('execute %s.%s with parameters : %s ' % (command, action, parameters))
-        print ('action object %s (%s)' % (action_obj, action_obj.command))
+        print ('action object %s (%s) %s' % (action_obj, action_obj.command, message_uuid))
         print ('---------------------------------------------------------------------')
 
 
@@ -365,6 +378,7 @@ class Action(object):
     """ Action class,  handles actual (system) calls.
     set command, parameters (template) type and log message
     """
+
     def __init__(self, config_environment):
         """ setup default properties
         :param config_environment: environment to use
@@ -377,7 +391,7 @@ class Action(object):
         self.message = None
         self._parameter_start_pos = 0
 
-    def setParameterStartPos(self, pos):
+    def set_parameter_start_pos(self, pos):
         """
 
         :param pos: start position of parameter list
@@ -385,7 +399,7 @@ class Action(object):
         """
         self._parameter_start_pos = pos
 
-    def getParameterStartPos(self):
+    def get_parameter_start_pos(self):
         """ getter for _parameter_start_pos
         :return: start position of parameter list ( first argument can be part of action to start )
         """
@@ -427,18 +441,18 @@ class Action(object):
                     # use quotes on parameters to prevent code injection
                     if script_command.count('%s') > len(parameters):
                         # script command accepts more parameters then given, fill with empty parameters
-                        for i in range(script_command.count('%s')-len(parameters)):
+                        for i in range(script_command.count('%s') - len(parameters)):
                             parameters.append("")
                     elif len(parameters) > script_command.count('%s'):
                         # parameters then expected, fail execution
                         return 'Parameter mismatch'
 
                     # force escape of shell exploitable characters for all user parameters
-                    for escape_char in ['`','$','!','(',')','|']:
+                    for escape_char in ['`', '$', '!', '(', ')', '|']:
                         for i in range(len(parameters[0:script_command.count('%s')])):
-                            parameters[i] = parameters[i].replace(escape_char,'\\%s'%escape_char)
+                            parameters[i] = parameters[i].replace(escape_char, '\\%s' % escape_char)
 
-                    script_command = script_command % tuple(map(lambda x: '"'+x.replace('"', '\\"')+'"',
+                    script_command = script_command % tuple(map(lambda x: '"' + x.replace('"', '\\"') + '"',
                                                                 parameters[0:script_command.count('%s')]))
             if self.type.lower() == 'script':
                 # execute script type command
@@ -460,14 +474,15 @@ class Action(object):
                     with tempfile.NamedTemporaryFile() as error_stream:
                         with tempfile.NamedTemporaryFile() as output_stream:
                             subprocess.check_call(script_command, env=self.config_environment, shell=True,
-                                                                  stdout=output_stream, stderr=error_stream)
+                                                  stdout=output_stream, stderr=error_stream)
                             output_stream.seek(0)
                             error_stream.seek(0)
                             script_output = output_stream.read()
                             script_error_output = error_stream.read()
                             if len(script_error_output) > 0:
-                                syslog.syslog(syslog.LOG_ERR, '[%s] Script action stderr returned "%s"' % (message_uuid,
-                                              script_error_output.strip()[:255])
+                                syslog.syslog(syslog.LOG_ERR,
+                                              '[%s] Script action stderr returned "%s"' %
+                                              (message_uuid, script_error_output.strip()[:255])
                                               )
                             return script_output
                 except Exception as script_exception:

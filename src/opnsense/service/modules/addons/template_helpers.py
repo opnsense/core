@@ -30,6 +30,8 @@
 
 from operator import itemgetter
 
+
+# noinspection PyPep8Naming
 class Helpers(object):
     def __init__(self, template_in_data):
         """ initialize template helpers
@@ -82,7 +84,7 @@ class Helpers(object):
             return result
         else:
             # resort list by tag
-            return sorted(result,key=itemgetter(sortBy))
+            return sorted(result, key=itemgetter(sortBy))
 
     def getUUIDtag(self, uuid):
         """ retrieve tag name of registered uuid, returns __not_found__ if none available
