@@ -1,6 +1,4 @@
-#!/usr/local/bin/python2.7
-
-# original source from https://github.com/thesharp/daemonize
+# #!/usr/bin/python
 
 import fcntl
 import os
@@ -14,25 +12,36 @@ import atexit
 from logging import handlers
 
 
+__version__ = "2.4.2"
+
+
 class Daemonize(object):
-    """ Daemonize object
-    Object constructor expects three arguments:
-    - app: contains the application name which will be sent to syslog.
-    - pid: path to the pidfile.
-    - action: your custom function which will be executed after daemonization.
-    - keep_fds: optional list of fds which should not be closed.
-    - auto_close_fds: optional parameter to not close opened fds.
-    - privileged_action: action that will be executed before drop privileges if user or
-                         group parameter is provided.
-                         If you want to transfer anything from privileged_action to action, such as
-                         opened privileged file descriptor, you should return it from
-                         privileged_action function and catch it inside action function.
-    - user: drop privileges to this user if provided.
-    - group: drop privileges to this group if provided.
-    - verbose: send debug messages to logger if provided.
-    - logger: use this logger object instead of creating new one, if provided.
     """
-    def __init__(self, app, pid, action, keep_fds=None, auto_close_fds=True, privileged_action=None, user=None, group=None, verbose=False, logger=None):
+    Daemonize object.
+
+    Object constructor expects three arguments.
+
+    :param app: contains the application name which will be sent to syslog.
+    :param pid: path to the pidfile.
+    :param action: your custom function which will be executed after daemonization.
+    :param keep_fds: optional list of fds which should not be closed.
+    :param auto_close_fds: optional parameter to not close opened fds.
+    :param privileged_action: action that will be executed before drop privileges if user or
+                              group parameter is provided.
+                              If you want to transfer anything from privileged_action to action, such as
+                              opened privileged file descriptor, you should return it from
+                              privileged_action function and catch it inside action function.
+    :param user: drop privileges to this user if provided.
+    :param group: drop privileges to this group if provided.
+    :param verbose: send debug messages to logger if provided.
+    :param logger: use this logger object instead of creating new one, if provided.
+    :param foreground: stay in foreground; do not fork (for debugging)
+    :param chdir: change working directory if provided or /
+    """
+    def __init__(self, app, pid, action,
+                 keep_fds=None, auto_close_fds=True, privileged_action=None,
+                 user=None, group=None, verbose=False, logger=None,
+                 foreground=False, chdir="/"):
         self.app = app
         self.pid = pid
         self.action = action
@@ -43,9 +52,11 @@ class Daemonize(object):
         self.logger = logger
         self.verbose = verbose
         self.auto_close_fds = auto_close_fds
+        self.foreground = foreground
+        self.chdir = chdir
 
     def sigterm(self, signum, frame):
-        """ sigterm method
+        """
         These actions will be done after SIGTERM.
         """
         self.logger.warn("Caught signal %s. Stopping daemon." % signum)
@@ -53,7 +64,7 @@ class Daemonize(object):
         sys.exit(0)
 
     def exit(self):
-        """ exit method
+        """
         Cleanup pid file at exit.
         """
         self.logger.warn("Stopping daemon.")
@@ -61,8 +72,8 @@ class Daemonize(object):
         sys.exit(0)
 
     def start(self):
-        """ start method
-        Main daemonization process.
+        """
+        Start daemonization process.
         """
         # If pidfile already exists, we should read pid from there; to overwrite it, if locking
         # will fail, because locking attempt somehow purges the file contents.
@@ -86,47 +97,49 @@ class Daemonize(object):
                 pidfile.write(old_pid)
             sys.exit(1)
 
-        # Fork, creating a new process for the child.
-        process_id = os.fork()
-        if process_id < 0:
-            # Fork error. Exit badly.
-            sys.exit(1)
-        elif process_id != 0:
-            # This is the parent process. Exit.
-            sys.exit(0)
-        # This is the child process. Continue.
+        # skip fork if foreground is specified
+        if not self.foreground:
+            # Fork, creating a new process for the child.
+            process_id = os.fork()
+            if process_id < 0:
+                # Fork error. Exit badly.
+                sys.exit(1)
+            elif process_id != 0:
+                # This is the parent process. Exit.
+                sys.exit(0)
+            # This is the child process. Continue.
 
-        # Stop listening for signals that the parent process receives.
-        # This is done by getting a new process id.
-        # setpgrp() is an alternative to setsid().
-        # setsid puts the process in a new parent group and detaches its controlling terminal.
-        process_id = os.setsid()
-        if process_id == -1:
-            # Uh oh, there was a problem.
-            sys.exit(1)
+            # Stop listening for signals that the parent process receives.
+            # This is done by getting a new process id.
+            # setpgrp() is an alternative to setsid().
+            # setsid puts the process in a new parent group and detaches its controlling terminal.
+            process_id = os.setsid()
+            if process_id == -1:
+                # Uh oh, there was a problem.
+                sys.exit(1)
 
-        # Add lockfile to self.keep_fds.
-        self.keep_fds.append(lockfile.fileno())
+            # Add lockfile to self.keep_fds.
+            self.keep_fds.append(lockfile.fileno())
 
-        # Close all file descriptors, except the ones mentioned in self.keep_fds.
-        devnull = "/dev/null"
-        if hasattr(os, "devnull"):
-            # Python has set os.devnull on this system, use it instead as it might be different
-            # than /dev/null.
-            devnull = os.devnull
+            # Close all file descriptors, except the ones mentioned in self.keep_fds.
+            devnull = "/dev/null"
+            if hasattr(os, "devnull"):
+                # Python has set os.devnull on this system, use it instead as it might be different
+                # than /dev/null.
+                devnull = os.devnull
 
-        if self.auto_close_fds:
-            for fd in range(3, resource.getrlimit(resource.RLIMIT_NOFILE)[0]):
-                if fd not in self.keep_fds:
-                    try:
-                        os.close(fd)
-                    except OSError:
-                        pass
+            if self.auto_close_fds:
+                for fd in range(3, resource.getrlimit(resource.RLIMIT_NOFILE)[0]):
+                    if fd not in self.keep_fds:
+                        try:
+                            os.close(fd)
+                        except OSError:
+                            pass
 
-        devnull_fd = os.open(devnull, os.O_RDWR)
-        os.dup2(devnull_fd, 0)
-        os.dup2(devnull_fd, 1)
-        os.dup2(devnull_fd, 2)
+            devnull_fd = os.open(devnull, os.O_RDWR)
+            os.dup2(devnull_fd, 0)
+            os.dup2(devnull_fd, 1)
+            os.dup2(devnull_fd, 2)
 
         if self.logger is None:
             # Initialize logging.
@@ -144,7 +157,7 @@ class Daemonize(object):
 
             # We will continue with syslog initialization only if actually have such capabilities
             # on the machine we are running this.
-            if os.path.isfile(syslog_address):
+            if os.path.exists(syslog_address):
                 syslog = handlers.SysLogHandler(syslog_address)
                 if self.verbose:
                     syslog.setLevel(logging.DEBUG)
@@ -163,20 +176,35 @@ class Daemonize(object):
 
         # Change to a known directory. If this isn't done, starting a daemon in a subdirectory that
         # needs to be deleted results in "directory busy" errors.
-        os.chdir("/")
+        os.chdir(self.chdir)
 
         # Execute privileged action
         privileged_action_result = self.privileged_action()
         if not privileged_action_result:
             privileged_action_result = []
 
-        # Change gid
+        # Change owner of pid file, it's required because pid file will be removed at exit.
+        uid, gid = -1, -1
+
         if self.group:
             try:
                 gid = grp.getgrnam(self.group).gr_gid
             except KeyError:
                 self.logger.error("Group {0} not found".format(self.group))
                 sys.exit(1)
+
+        if self.user:
+            try:
+                uid = pwd.getpwnam(self.user).pw_uid
+            except KeyError:
+                self.logger.error("User {0} not found.".format(self.user))
+                sys.exit(1)
+
+        if uid != -1 or gid != -1:
+            os.chown(self.pid, uid, gid)
+
+        # Change gid
+        if self.group:
             try:
                 os.setgid(gid)
             except OSError:
