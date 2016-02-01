@@ -24,12 +24,17 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 
+
 def singleton(cls, *args, **kwargs):
     """ singleton pattern, use ad decorator
+    :param cls:
     """
     instances = {}
+
+    # noinspection PyShadowingNames
     def getinstance(*args, **kwargs):
         if cls not in instances:
             instances[cls] = cls(*args, **kwargs)
         return instances[cls]
+
     return getinstance

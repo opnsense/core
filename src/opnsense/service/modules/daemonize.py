@@ -60,6 +60,7 @@ class Daemonize(object):
     def sigterm(self, signum, frame):
         """
         These actions will be done after SIGTERM.
+        :param frame:
         """
         self.logger.warn("Caught signal %s. Stopping daemon." % signum)
         os.remove(self.pid)

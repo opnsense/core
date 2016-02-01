@@ -28,13 +28,13 @@
     package : configd
     function: config handler
 """
-__author__ = 'Ad Schellevis'
-
 import os
 import stat
 import collections
 import copy
 import xml.etree.cElementTree as ElementTree
+
+__author__ = 'Ad Schellevis'
 
 
 class Config(object):
@@ -62,14 +62,14 @@ class Config(object):
             self._config_data['__uuid_tags__'] = self.__uuid_tags
             self._file_mod = mod_time
 
-    def _traverse(self, xmlNode):
+    def _traverse(self, xml_node):
         """ traverse xml node and return ordered dictionary structure
-        :param xmlNode: ElementTree node
+        :param xml_node: ElementTree node
         :return: collections.OrderedDict
         """
         this_item = collections.OrderedDict()
-        if len(list(xmlNode)) > 0:
-            for item in list(xmlNode):
+        if len(list(xml_node)) > 0:
+            for item in list(xml_node):
                 item_content = self._traverse(item)
                 if 'uuid' in item.attrib:
                     self.__uuid_data[item.attrib['uuid']] = item_content
@@ -88,7 +88,7 @@ class Config(object):
                     this_item[item.tag] = self._traverse(item)
         else:
             # last node, return text
-            return xmlNode.text
+            return xml_node.text
 
         return this_item
 
@@ -98,14 +98,15 @@ class Config(object):
             @param elem: cElementTree
             @param level: Currentlevel
         """
-        i = "\n" + level*"  "
+        i = "\n" + level * "  "
         if len(elem):
             if not elem.text or not elem.text.strip():
                 elem.text = i + "  "
             for e in elem:
-                self.indent(e, level+1)
+                self.indent(e, level + 1)
                 if not e.tail or not e.tail.strip():
                     e.tail = i + "  "
+            # noinspection PyUnboundLocalVariable
             if not e.tail or not e.tail.strip():
                 e.tail = i
         else:

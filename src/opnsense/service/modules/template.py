@@ -28,9 +28,6 @@
     package : configd
     function: template handler, generate configuration files using templates
 """
-
-__author__ = 'Ad Schellevis'
-
 import os
 import os.path
 import syslog
@@ -39,9 +36,10 @@ import copy
 import jinja2
 import addons.template_helpers
 
+__author__ = 'Ad Schellevis'
+
 
 class Template(object):
-
     def __init__(self, target_root_directory="/"):
         """ constructor
         :return:
@@ -53,11 +51,12 @@ class Template(object):
         self._target_root_directory = target_root_directory
 
         # setup jinja2 environment
-        self._template_dir = os.path.dirname(os.path.abspath(__file__))+'/../templates/'
+        self._template_dir = os.path.dirname(os.path.abspath(__file__)) + '/../templates/'
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
-                                          extensions=["jinja2.ext.do",])
+                                          extensions=["jinja2.ext.do", ])
 
-    def _read_manifest(self, filename):
+    @staticmethod
+    def _read_manifest(filename):
         """
 
         :param filename: manifest filename (path/+MANIFEST)
@@ -71,7 +70,8 @@ class Template(object):
 
         return result
 
-    def _read_targets(self, filename):
+    @staticmethod
+    def _read_targets(filename):
         """ read raw target filename masks
 
         :param filename: targets filename (path/+TARGETS)
@@ -117,18 +117,19 @@ class Template(object):
 
         return result
 
-    def setConfig(self, config_data):
+    def set_config(self, config_data):
         """ set config data
         :param config_data: config data as dictionary/list structure
         :return: None
         """
-        if type(config_data) in(dict, collections.OrderedDict):
+        if type(config_data) in (dict, collections.OrderedDict):
             self._config = config_data
         else:
             # no data given, reset
             self._config = {}
 
-    def __find_string_tags(self, instr):
+    @staticmethod
+    def __find_string_tags(instr):
         """
         :param instr: string with optional tags [field.$$]
         :return:
@@ -194,7 +195,8 @@ class Template(object):
 
         return result
 
-    def _create_directory(self, filename):
+    @staticmethod
+    def _create_directory(filename):
         """ create directory
         :param filename: create path for filename ( if not existing )
         :return: None
@@ -231,7 +233,7 @@ class Template(object):
                             result_filenames[new_filename] = copy.deepcopy(result_filenames[filename])
                             result_filenames[new_filename][key] = target_filters[target_filter][key]
 
-            template_filename = '%s/%s'%(module_name.replace('.', '/'), src_template)
+            template_filename = '%s/%s' % (module_name.replace('.', '/'), src_template)
             # parse template, make sure issues can be traced back to their origin
             try:
                 j2_page = self._j2_env.get_template(template_filename)
@@ -268,8 +270,8 @@ class Template(object):
                         # it was in the original template.
                         # It looks like Jinja sometimes isn't consistent on placing this last end-of-line in.
                         if len(content) > 1 and content[-1] != '\n':
-                            src_file = '%s%s'%(self._template_dir,template_filename)
-                            src_file_handle = open(src_file,'r')
+                            src_file = '%s%s' % (self._template_dir, template_filename)
+                            src_file_handle = open(src_file, 'r')
                             src_file_handle.seek(-1, os.SEEK_END)
                             last_bytes_template = src_file_handle.read()
                             src_file_handle.close()
@@ -298,7 +300,7 @@ class Template(object):
                 # direct match
                 do_generate = True
             elif wildcard_pos == -1 and len(module_name) < len(template_name) \
-                    and '%s.'%module_name == template_name[0:len(module_name)+1]:
+                    and '%s.' % module_name == template_name[0:len(module_name) + 1]:
                 # match child item
                 do_generate = True
 

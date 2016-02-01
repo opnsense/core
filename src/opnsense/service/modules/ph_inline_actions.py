@@ -48,7 +48,7 @@ def execute(action, parameters):
         # generate template
         tmpl = template.Template(action.root_dir)
         conf = config.Config(action.config)
-        tmpl.setConfig(conf.get())
+        tmpl.set_config(conf.get())
         filenames = tmpl.generate(parameters)
 
         del conf
@@ -78,7 +78,7 @@ def execute(action, parameters):
         # list all available configd actions
         from processhandler import ActionHandler
         act_handler = ActionHandler()
-        actions = act_handler.listActions(['message', 'description'])
+        actions = act_handler.list_actions(['message', 'description'])
 
         if unicode(parameters).lower() == 'json':
             import json
