@@ -487,9 +487,10 @@ class Action(object):
 
                 return ph_inline_actions.execute(self, inline_act_parameters)
 
-            except:
-                syslog.syslog(syslog.LOG_ERR, '[%s] Inline action failed at %s' % (message_uuid,
-                                                                                   traceback.format_exc()))
+            except Exception as inline_exception:
+                syslog.syslog(syslog.LOG_ERR, '[%s] Inline action failed with %s at %s' % (message_uuid,
+                                                                                           inline_exception,
+                                                                                           traceback.format_exc()))
                 return 'Execute error'
 
         return 'Unknown action type'

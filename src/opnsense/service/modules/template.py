@@ -232,7 +232,12 @@ class Template(object):
                             result_filenames[new_filename][key] = target_filters[target_filter][key]
 
             template_filename = '%s/%s'%(module_name.replace('.', '/'), src_template)
-            j2_page = self._j2_env.get_template(template_filename)
+            # parse template, make sure issues can be traced back to their origin
+            try:
+                j2_page = self._j2_env.get_template(template_filename)
+            except jinja2.exceptions.TemplateSyntaxError as templExc:
+                raise Exception("%s %s %s" % (module_name, template_filename, templExc))
+
             for filename in result_filenames.keys():
                 if not (filename.find('[') != -1 and filename.find(']') != -1):
                     # copy config data
@@ -245,7 +250,11 @@ class Template(object):
                     # make sure we're only rendering output once
                     if filename not in result:
                         # render page and write to disc
-                        content = j2_page.render(cnf_data)
+                        try:
+                            content = j2_page.render(cnf_data)
+                        except Exception as render_exception:
+                            # push exception with context if anything fails
+                            raise Exception("%s %s %s" % (module_name, template_filename, render_exception))
 
                         # prefix filename with defined root directory
                         filename = ('%s/%s' % (self._target_root_directory, filename)).replace('//', '/')
