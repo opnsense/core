@@ -1,4 +1,6 @@
-# #!/usr/bin/python
+#!/usr/local/bin/python2.7
+
+# original source from https://github.com/thesharp/daemonize
 
 import fcntl
 import os
