@@ -179,6 +179,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if (($pconfig['type'] == "radius") && isset($pconfig['radius_timeout']) && !empty($pconfig['radius_timeout']) && (!is_numeric($pconfig['radius_timeout']) || (is_numeric($pconfig['radius_timeout']) && ($pconfig['radius_timeout'] <= 0)))) {
           $input_errors[] = gettext("RADIUS Timeout value must be numeric and positive.");
       }
+      if (empty($pconfig['name'])) {
+          $input_errors[] = gettext("A server name must be provided");
+      }
+
       if (count($input_errors) == 0) {
           $server = array();
           $server['refid'] = uniqid();
@@ -442,11 +446,13 @@ endif; ?>
                   <td>
 <?php if (!isset($id)) :
 ?>
-                    <select name='type' id='type' class="formselect selectpicker" data-style="btn-default">
+                    <select name='type' id='type' class="selectpicker" data-style="btn-default">
 <?php
                     foreach ($auth_server_types as $typename => $typedesc) :
 ?>
-                      <option value="<?=$typename;?>"><?=$typedesc;?></option>
+                      <option value="<?=$typename;?>" <?=$pconfig['type'] == $typename ? "selected=\"selected\"" : "";?> >
+                        <?=$typedesc;?>
+                      </option>
 <?php
                     endforeach; ?>
                     </select>
