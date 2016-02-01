@@ -99,30 +99,9 @@ if (file_exists('/usr/sbin/swapinfo')) {
     }
 }
 
-## Find out whether there's hardware encryption or not
-unset($hwcrypto);
-$fd = @fopen('/var/run/dmesg.boot', 'r');
-if ($fd) {
-    while (!feof($fd)) {
-        $dmesgl = fgets($fd);
-        if (preg_match("/^hifn.: (.*?),/", $dmesgl, $matches)
-            or preg_match("/.*(VIA Padlock)/", $dmesgl, $matches)
-            or preg_match("/^safe.: (\w.*)/", $dmesgl, $matches)
-            or preg_match("/^ubsec.: (.*?),/", $dmesgl, $matches)
-            or preg_match("/^padlock.: <(.*?)>,/", $dmesgl, $matches)
-            or preg_match("/^glxsb.: (.*?),/", $dmesgl, $matches)
-            or preg_match("/^aesni.: (.*?),/", $dmesgl, $matches)) {
-            $hwcrypto = $matches[1];
-            break;
-        }
-    }
-    fclose($fd);
-}
-
 ##build widget saved list information
 if ($config['widgets'] && $config['widgets']['sequence'] != "") {
     $pconfig['sequence'] = $config['widgets']['sequence'];
-
 
     $widgetlist = $pconfig['sequence'];
     $colpos = array();
