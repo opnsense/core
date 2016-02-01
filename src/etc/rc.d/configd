@@ -3,7 +3,7 @@
 # $FreeBSD$
 #
 # PROVIDE: configd
-# REQUIRE: REQUIRE
+# REQUIRE: SERVERS
 # KEYWORD: shutdown
 #
 
