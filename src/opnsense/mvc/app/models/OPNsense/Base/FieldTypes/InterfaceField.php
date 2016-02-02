@@ -141,7 +141,7 @@ class InterfaceField extends BaseField
         $result = array();
         // if interface is not required and single, add empty option
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
-            $result[""] = array("value"=>"none", "selected" => 0);
+            $result[""] = array("value" => gettext("none"), "selected" => 0);
         }
 
         // explode interfaces
@@ -152,7 +152,7 @@ class InterfaceField extends BaseField
             } else {
                 $selected = 0;
             }
-            $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
+            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
 
         return $result;
