@@ -100,32 +100,13 @@ class SettingsController extends ApiControllerBase
     public function searchRemoteBlacklistsAction()
     {
         $this->sessionClose();
-        // fetch query parameters
-        $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-        $currentPage = $this->request->getPost('current', 'int', 1);
-        $sortBy = array("filename");
-        $sortDescending = false;
-
-        if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-            $sortBy = array_keys($this->request->getPost("sort"));
-            if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                $sortDescending = true;
-            }
-        }
-
-        $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-        // create model and fetch query resuls
-        $fields = array(
-            "enabled",
-            "filename",
-            "url",
-            "description"
-        );
         $mdlProxy = new Proxy();
         $grid = new UIModelGrid($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist);
-
-        return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("enabled", "filename", "url", "description"),
+            "description"
+        );
     }
 
     /**

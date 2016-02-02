@@ -196,32 +196,14 @@ class SettingsController extends ApiControllerBase
      */
     public function searchPipesAction()
     {
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-            $sortBy = array("number");
-            $sortDescending = false;
-
-            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-                $sortBy = array_keys($this->request->getPost("sort"));
-                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                    $sortDescending = true;
-                }
-            }
-
-            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-            // create model and fetch query resuls
-            $fields = array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin");
-            $mdlShaper = new TrafficShaper();
-            $grid = new UIModelGrid($mdlShaper->pipes->pipe);
-            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
-        } else {
-            return array();
-        }
-
+        $this->sessionClose();
+        $mdlShaper = new TrafficShaper();
+        $grid = new UIModelGrid($mdlShaper->pipes->pipe);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin"),
+            "number"
+        );
     }
 
     /**
@@ -230,32 +212,14 @@ class SettingsController extends ApiControllerBase
      */
     public function searchQueuesAction()
     {
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-            $sortBy = array("number");
-            $sortDescending = false;
-
-            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-                $sortBy = array_keys($this->request->getPost("sort"));
-                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                    $sortDescending = true;
-                }
-            }
-
-            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-            // create model and fetch query resuls
-            $fields = array("enabled","number", "pipe","weight","description","mask","origin");
-            $mdlShaper = new TrafficShaper();
-            $grid = new UIModelGrid($mdlShaper->queues->queue);
-            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
-        } else {
-            return array();
-        }
-
+        $this->sessionClose();
+        $mdlShaper = new TrafficShaper();
+        $grid = new UIModelGrid($mdlShaper->queues->queue);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("enabled","number", "pipe","weight","description","mask","origin"),
+            "number"
+        );
     }
 
     /**
@@ -379,31 +343,14 @@ class SettingsController extends ApiControllerBase
      */
     public function searchRulesAction()
     {
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-            $sortBy = array("sequence");
-            $sortDescending = false;
-
-            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-                $sortBy = array_keys($this->request->getPost("sort"));
-                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                    $sortDescending = true;
-                }
-            }
-
-            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-            // create model and fetch query resuls
-            $fields = array("interface", "proto","source","destination","description","origin","sequence","target");
-            $mdlShaper = new TrafficShaper();
-            $grid = new UIModelGrid($mdlShaper->rules->rule);
-            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
-        } else {
-            return array();
-        }
+        $this->sessionClose();
+        $mdlShaper = new TrafficShaper();
+        $grid = new UIModelGrid($mdlShaper->rules->rule);
+        return $grid->fetchBindRequest(
+            $this->request,
+            array("interface", "proto","source","destination","description","origin","sequence","target"),
+            "sequence"
+        );
     }
 
     /**
