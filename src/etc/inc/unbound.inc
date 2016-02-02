@@ -34,14 +34,15 @@ function unbound_optimization() {
     $optimization_settings = array();
 
     /*
-     * Set the number of threads equal to number of CPUs.
+     * Set the number of threads equal to the nearest power of 2 when counting the number of CPUs.
      * Use 1 to disable threading, if for some reason this sysctl fails.
      */
-    $numprocs = intval(get_single_sysctl('kern.smp.cpus'));
-    if ($numprocs > 0)
+    $numprocs = pow(2, floor(log(intval(get_single_sysctl('kern.smp.cpus')), 2)));
+    if ($numprocs > 0) {
         $optimization['number_threads'] = "num-threads: {$numprocs}";
-    else
+    } else {
         $optimization['number_threads'] = "num-threads: 1";
+    }
 
     // Slabs to help reduce lock contention.
     if ($numprocs > 4) {
@@ -64,8 +65,9 @@ function unbound_optimization() {
     if ($numprocs > 0) {
         $or = (1024/$numprocs) - 50;
         $optimization['outgoing_range'] = "outgoing-range: {$or}";
-    } else
+    } else {
         $optimization['outgoing_range'] = "outgoing-range: {4096}";
+    }
 
     /*
      * Larger socket buffer for busy servers
@@ -75,15 +77,17 @@ function unbound_optimization() {
         if ($tunable['tunable'] == 'kern.ipc.maxsockbuf') {
             $so = floor(($tunable['value']/1024/1024)-1);
             // Check to ensure that the number is not a negative
-            if ($so > 0)
+            if ($so > 0) {
                 $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
-            else
+            } else {
                 unset($optimization['so_rcvbuf']);
+            }
         }
     }
     // Safety check in case kern.ipc.maxsockbuf is not available.
-    if (!isset($optimization['so_rcvbuf']))
+    if (!isset($optimization['so_rcvbuf'])) {
         $optimization['so_rcvbuf'] = "#so-rcvbuf: 4m";
+    }
 
     return $optimization;
 
@@ -114,8 +118,9 @@ function unbound_generate_config()
     if (isset($config['unbound']['dnssec'])) {
         $module_config = "validator iterator";
         $anchor_file = "auto-trust-anchor-file: {$g['unbound_chroot_path']}/root.key";
-    } else
+    } else {
         $module_config = "iterator";
+    }
 
     // Setup DNS Rebinding
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
@@ -157,11 +162,13 @@ EOF;
         $active_interfaces = explode(",", $config['unbound']['active_interface']);
         foreach($active_interfaces as $ubif) {
             $intip = get_interface_ip($ubif);
-            if (!is_null($intip))
+            if (!is_null($intip)) {
                 $bindints .= "interface: $intip\n";
+            }
             $intip = get_interface_ipv6($ubif);
-            if (!is_null($intip))
+            if (!is_null($intip)) {
                 $bindints .= "interface: $intip\n";
+            }
         }
     } else {
         $bindints .= "interface: 0.0.0.0\n";
@@ -175,11 +182,13 @@ EOF;
         $outgoing_interfaces = explode(",", $config['unbound']['outgoing_interface']);
         foreach($outgoing_interfaces as $outif) {
             $outip = get_interface_ip($outif);
-            if (!is_null($outip))
+            if (!is_null($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
+            }
             $outip = get_interface_ipv6($outif);
-            if (!is_null($outip))
+            if (!is_null($outip)) {
                 $outgoingints .= "outgoing-interface: $outip\n";
+            }
         }
     }
 
@@ -204,10 +213,11 @@ EOF;
     // Add custom Unbound options
     if ($config['unbound']['custom_options']) {
         $custom_options = "# Unbound custom option\n";
-        foreach (preg_split('/\s+/', $config['unbound']['custom_options']) as $ent)
+        foreach (preg_split('/\s+/', $config['unbound']['custom_options']) as $ent) {
             $custom_options .= $ent."\n";
+        }
     } else {
-	$custom_options = "";
+	     $custom_options = "";
     }
 
     // Server configuration variables
@@ -237,14 +247,16 @@ EOF;
         if (isset($config['system']['dnsallowoverride'])) {
             $ns = array_unique(get_nameservers());
             foreach($ns as $nameserver) {
-                if ($nameserver)
+                if ($nameserver) {
                     $dnsservers[] = $nameserver;
+                }
             }
         } else {
             $ns = array_unique(get_dns_servers());
             foreach($ns as $nameserver) {
-                if ($nameserver)
+                if ($nameserver) {
                     $dnsservers[] = $nameserver;
+                }
             }
         }
 
@@ -255,11 +267,13 @@ forward-zone:
     name: "."
 
 EOD;
-            foreach($dnsservers as $dnsserver)
+            foreach($dnsservers as $dnsserver) {
                 $forward_conf .= "\tforward-addr: $dnsserver\n";
+            }
         }
-    } else
+    } else {
         $forward_conf = "";
+    }
 
     $unboundconf = <<<EOD
 ##########################
@@ -377,17 +391,19 @@ function read_hosts() {
     $etc_hosts = array();
     foreach (file('/etc/hosts') as $line) {
         $d = preg_split('/\s/', $line, -1, PREG_SPLIT_NO_EMPTY);
-        if (empty($d) || substr(reset($d), 0, 1) == "#")
+        if (empty($d) || substr(reset($d), 0, 1) == "#") {
             continue;
+        }
         if ($d[3] == "#") {
             $ip = array_shift($d);
             $fqdn = array_shift($d);
             $name = array_shift($d);
             if ($fqdn != "empty") {
-                if ($name != "empty")
+                if ($name != "empty") {
                     array_push($etc_hosts, array(ipaddr => "$ip", fqdn => "$fqdn", name => "$name"));
-                else
+                } else {
                     array_push($etc_hosts, array(ipaddr => "$ip", fqdn => "$fqdn"));
+                }
             }
         }
     }
@@ -441,8 +457,9 @@ function unbound_add_domain_overrides($pvt=false) {
     $result = array();
     foreach($sorted_domains as $domain) {
         $domain_key = current($domain);
-        if (!isset($result[$domain_key]))
+        if (!isset($result[$domain_key])) {
             $result[$domain_key] = array();
+        }
         $result[$domain_key][] = $domain['ip'];
     }
 
@@ -455,16 +472,18 @@ function unbound_add_domain_overrides($pvt=false) {
         } else {
             $domain_entries .= "stub-zone:\n";
             $domain_entries .= "\tname: \"$domain\"\n";
-            foreach($ips as $ip)
+            foreach($ips as $ip) {
                 $domain_entries .= "\tstub-addr: $ip\n";
+            }
             $domain_entries .= "\tstub-prime: no\n";
         }
     }
 
-    if ($pvt == true)
+    if ($pvt == true) {
         return $domain_entries;
-    else
+    } else {
         file_put_contents("{$g['unbound_chroot_path']}/domainoverrides.conf", $domain_entries);
+    }
 }
 
 function unbound_add_host_entries() {
@@ -551,8 +570,9 @@ function unbound_add_host_entries() {
                     if ($host['ipaddr'] && $host['hostname']) {
                         $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$config['system']['domain']}\"\n";
                         $host_entries .= "local-data: \"{$host['hostname']}.{$config['system']['domain']} IN A {$host['ipaddr']}\"\n";
-                        if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on')
+                        if (!empty($host['descr']) && $unboundcfg['txtsupport'] == 'on') {
                             $host_entries .= "local-data: '{$host['hostname']}.{$config['system']['domain']} TXT \"".addslashes($host['descr'])."\"'\n";
+                        }
                     }
         $unbound_entries .= $host_entries;
     }
@@ -588,34 +608,38 @@ function unbound_control($action) {
         case "start":
             // Start Unbound
             if ($config['unbound']['enable'] == "on") {
-                if (!is_process_running("unbound"))
+                if (!is_process_running("unbound")) {
                     do_as_unbound_user("start");
+                }
             }
             break;
         case "stop":
-            if ($config['unbound']['enable'] == "on")
+            if ($config['unbound']['enable'] == "on") {
                 do_as_unbound_user("stop");
+            }
             break;
         case "reload":
-            if ($config['unbound']['enable'] == "on")
+            if ($config['unbound']['enable'] == "on") {
                 do_as_unbound_user("reload");
+            }
             break;
         case "dump_cache":
             // Dump Unbound's Cache
-            if ($config['unbound']['dumpcache'] == "on")
+            if ($config['unbound']['dumpcache'] == "on") {
                 do_as_unbound_user("dump_cache");
+            }
             break;
         case "restore_cache":
             // Restore Unbound's Cache
             if ((is_process_running("unbound")) && ($config['unbound']['dumpcache'] == "on")) {
-                if (file_exists($cache_dumpfile) && filesize($cache_dumpfile) > 0)
+                if (file_exists($cache_dumpfile) && filesize($cache_dumpfile) > 0) {
                     do_as_unbound_user("load_cache < /tmp/unbound_cache");
+                }
             }
             break;
         default:
-                break;
-
-        }
+            break;
+    }
 }
 
 // Generation of Unbound statistics
@@ -625,10 +649,11 @@ function unbound_statistics() {
     if ($config['stats'] == "on") {
         $stats_interval = $config['unbound']['stats_interval'];
         $cumulative_stats = $config['cumulative_stats'];
-        if ($config['extended_stats'] == "on")
+        if ($config['extended_stats'] == "on") {
             $extended_stats = "yes";
-        else
+        } else {
             $extended_stats = "no";
+        }
     } else {
         $stats_interval = "0";
         $cumulative_stats = "no";
@@ -653,10 +678,11 @@ function unbound_acls_config() {
     $aclcfg = "access-control: 127.0.0.1/32 allow\n";
     $aclcfg .= "access-control: ::1 allow\n";
     // Add our networks for active interfaces including localhost
-    if (!empty($config['unbound']['active_interface']))
+    if (!empty($config['unbound']['active_interface'])) {
         $active_interfaces = array_flip(explode(",", $config['unbound']['active_interface']));
-    else
+    } else {
         $active_interfaces = get_configured_interface_with_descr();
+    }
 
     $bindints = "";
     foreach($active_interfaces as $ubif => $ifdesc) {
@@ -679,8 +705,9 @@ function unbound_acls_config() {
         foreach($config['unbound']['acls'] as $unbound_acl) {
             $aclcfg .= "#{$unbound_acl['aclname']}\n";
             foreach($unbound_acl['row'] as $network) {
-                if ($unbound_acl['aclaction'] == "allow snoop")
+                if ($unbound_acl['aclaction'] == "allow snoop") {
                     $unbound_acl['aclaction'] = "allow_snoop";
+                }
                 $aclcfg .= "access-control: {$network['acl_network']}/{$network['mask']} {$unbound_acl['aclaction']}\n";
             }
         }
