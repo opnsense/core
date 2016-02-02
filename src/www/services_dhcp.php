@@ -279,7 +279,7 @@ if (isset($_POST['submit'])) {
 			$input_errors[] = gettext("You cannot use the broadcast address in the ending subnet range.");
 
 		// Disallow a range that includes the virtualip
-		if (is_array($config['virtualip']['vip'])) {
+		if (isset($config['virtualip']['vip'])) {
 			foreach($config['virtualip']['vip'] as $vip) {
 				if($vip['interface'] == $if)
 					if($vip['subnet'] && is_inrange_v4($vip['subnet'], $_POST['range_from'], $_POST['range_to']))
