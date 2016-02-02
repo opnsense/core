@@ -43,10 +43,11 @@ require_once("util.inc");
  * fetch carp vips from config with modified advskew for the backup host to use
  * @return array
  */
-function get_vip_config_section() {
+function get_vip_config_section()
+{
     global $config;
 
-    if (!is_array($config['virtualip']['vip'])) {
+    if (!isset($config['virtualip']['vip'])) {
         return;
     }
     $temp = array();
