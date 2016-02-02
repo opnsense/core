@@ -50,6 +50,31 @@ class UIModelGrid
     }
 
     /**
+     * default model search
+     * @param $request request variable
+     * @param array $fields to collect
+     * @param null|string $defaultSort default sort order
+     * @return array
+     */
+    public function fetchBindRequest($request, $fields, $defaultSort = null)
+    {
+        $itemsPerPage = $request->get('rowCount', 'int', 9999);
+        $currentPage = $request->get('current', 'int', 1);
+        $sortBy = array($defaultSort);
+        $sortDescending = false;
+
+        if ($request->has('sort') && is_array($request->get("sort"))) {
+            $sortBy = array_keys($request->get("sort"));
+            if ($request->get("sort")[$sortBy[0]] == "desc") {
+                $sortDescending = true;
+            }
+        }
+
+        $searchPhrase = $request->get('searchPhrase', 'string', '');
+        return $this->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+    }
+
+    /**
      * Fetch data from Array type field (Base\FieldTypes\ArrayField), sorted by specified fields and optionally filtered
      * @param array $fields select fieldnames
      * @param int $itemsPerPage number of items per page
