@@ -532,11 +532,14 @@ function step12_submitphpaction() {
 			'localityName' => $pconfig['step9']['city'],
 			'organizationName' => $pconfig['step9']['organization'],
 			'emailAddress' => $pconfig['step9']['email'],
-			'commonName' => $pconfig['step9']['certname']);
+			'commonName' => $pconfig['step9']['certname']
+		);
 
-		cert_create($cert, $ca['refid'], $pconfig['step9']['keylength'], $pconfig['step9']['lifetime'], $dn, 'server', "sha256");
-		if (!is_array($config['cert']))
+		cert_create($cert, $ca['refid'], $pconfig['step9']['keylength'], $pconfig['step9']['lifetime'], $dn, 'sha256', 'server_cert');
+
+		if (!is_array($config['cert'])) {
 			$config['cert'] = array();
+		}
 
 		$config['cert'][] = $cert;
 	} else if (!isset($pconfig['step9']['uselist']) && empty($pconfig['step9']['authcertname'])) {
