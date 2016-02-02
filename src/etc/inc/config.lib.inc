@@ -296,7 +296,7 @@ function cleanup_backups()
     $cnt=1;
     foreach ($cnf->getBackups() as $filename) {
         if ($cnt > $revisions ) {
-            unlink($filename);
+            @unlink($filename);
         }
         ++$cnt ;
     }
