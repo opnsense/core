@@ -90,7 +90,7 @@ class CertificateField extends BaseField
         $result = array ();
         // if certificate is not required, add empty option
         if (!$this->internalIsRequired) {
-            $result[""] = array("value"=>"none", "selected" => 0);
+            $result[""] = array("value" => gettext("none"), "selected" => 0);
         }
         foreach (self::$internalOptionList as $optKey => $optValue) {
             if ($optKey == $this->internalValue) {
@@ -98,7 +98,7 @@ class CertificateField extends BaseField
             } else {
                 $selected = 0;
             }
-            $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
+            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
 
         return $result;

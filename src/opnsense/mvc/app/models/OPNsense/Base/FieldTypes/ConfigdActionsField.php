@@ -128,7 +128,7 @@ class ConfigdActionsField extends BaseField
         $result = array();
         // if interface is not required, add empty option
         if (!$this->internalIsRequired) {
-            $result[""] = array("value"=>"none", "selected" => 0);
+            $result[""] = array("value" => gettext("none"), "selected" => 0);
         }
 
         foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
@@ -137,7 +137,7 @@ class ConfigdActionsField extends BaseField
             } else {
                 $selected = 0;
             }
-            $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
+            $result[$optKey] = array("value" => $optValue, "selected" => $selected);
         }
 
 
