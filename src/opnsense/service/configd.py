@@ -103,12 +103,18 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
     else:
         proc_handler.run()
 else:
-    # bind log handle to syslog to catch messages from Daemonize()
-    loghandle = logging.getLogger("configd.py")
-    loghandle.setLevel(logging.INFO)
-    handler = logging.handlers.SysLogHandler(address="/var/run/log", facility=logging.handlers.SysLogHandler.LOG_DAEMON)
-    handler.setFormatter(logging.Formatter("%(name)s %(message)s"))
-    loghandle.addHandler(handler)
+    syslog_socket = "/var/run/log"
+    if os.path.exists(syslog_socket):
+        # bind log handle to syslog to catch messages from Daemonize()
+        # (if syslog facility is active)
+        loghandle = logging.getLogger("configd.py")
+        loghandle.setLevel(logging.INFO)
+        handler = logging.handlers.SysLogHandler(address=syslog_socket,
+                                                 facility=logging.handlers.SysLogHandler.LOG_DAEMON)
+        handler.setFormatter(logging.Formatter("%(name)s %(message)s"))
+        loghandle.addHandler(handler)
+    else:
+        loghandle = None
     # daemonize process
     daemon = Daemonize(app=__file__.split('/')[-1].split('.py')[0],
                        pid=cnf.get('main','pid_filename'),
