@@ -34,6 +34,7 @@ use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Core\Backend;
 use \OPNsense\IDS\IDS;
 use \OPNsense\Core\Config;
+use \OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController Handles settings related API actions for the IDS module
@@ -483,6 +484,168 @@ class SettingsController extends ApiControllerBase
                 $mdlIDS->serializeToConfig();
                 Config::getInstance()->save();
                 $result["result"] = "saved";
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * search fingerprints
+     * @return array list of found fingerprints
+     */
+    public function searchFingerprintAction()
+    {
+        if ($this->request->isPost()) {
+            $this->sessionClose();
+            // fetch query parameters
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $currentPage = $this->request->getPost('current', 'int', 1);
+            $sortBy = array("number");
+            $sortDescending = false;
+
+            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
+                $sortBy = array_keys($this->request->getPost("sort"));
+                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
+                    $sortDescending = true;
+                }
+            }
+
+            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
+
+            // create model and fetch query resuls
+            $fields = array("enabled", "action", "description", "fingerprint");
+            $mdlIDS = $this->getModel();
+            $grid = new UIModelGrid($mdlIDS->rules->fingerprint);
+            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * update fingerprint
+     * @param string $uuid fingerprint internal id
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function setFingerprintAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost("fingerprint")) {
+            $mdlIDS = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdlIDS->getNodeByReference('rules.fingerprint.'.$uuid);
+                if ($node != null) {
+                    $node->setNodes($this->request->getPost("fingerprint"));
+                    $validations = $mdlIDS->validate($node->__reference, "fingerprint");
+                    if (count($validations)) {
+                        $result['validations'] = $validations;
+                    } else {
+                        // serialize model to config and save
+                        $mdlIDS->serializeToConfig();
+                        Config::getInstance()->save();
+                        $result["result"] = "saved";
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * add new fingerprint
+     * @return array save result + validation output
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function addFingerprintAction()
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost("fingerprint")) {
+            $mdlIDS = $this->getModel();
+            $node = $mdlIDS->rules->fingerprint->Add();
+            $node->setNodes($this->request->getPost("fingerprint"));
+            $validations = $mdlIDS->validate($node->__reference, "fingerprint");
+            if (count($validations)) {
+                $result['validations'] = $validations;
+            } else {
+                // serialize model to config and save
+                $mdlIDS->serializeToConfig();
+                Config::getInstance()->save();
+                $result["result"] = "saved";
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * get fingerprint properties
+     * @param null|string $uuid fingerprint internal id
+     * @return array fingerprint properties
+     */
+    public function getFingerprintAction($uuid = null)
+    {
+        $mdlIDS = $this->getModel();
+        if ($uuid != null) {
+            $node = $mdlIDS->getNodeByReference('rules.fingerprint.'.$uuid);
+            if ($node != null) {
+                // return node
+                return array("fingerprint" => $node->getNodes());
+            }
+        } else {
+            // generate new node, but don't save to disc
+            $node = $mdlIDS->rules->fingerprint->add() ;
+            return array("fingerprint" => $node->getNodes());
+        }
+        return array();
+    }
+
+    /**
+     * delete fingerprint item
+     * @param string $uuid fingerprint internal id
+     * @return array
+     * @throws \Phalcon\Validation\Exception
+     */
+    public function delFingerprintAction($uuid)
+    {
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $uuid != null) {
+            $mdlIDS = $this->getModel();
+            if ($mdlIDS->rules->fingerprint->del($uuid)) {
+                // if item is removed, serialize to config and save
+                $mdlIDS->serializeToConfig();
+                Config::getInstance()->save();
+                $result['result'] = 'deleted';
+            } else {
+                $result['result'] = 'not found';
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * toggle fingerprint by uuid (enable/disable)
+     * @param $uuid fingerprint internal id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array status
+     */
+    public function toggleFingerprintAction($uuid, $enabled = null)
+    {
+        $result = array("result" => "failed");
+        if ($this->request->isPost() && $uuid != null) {
+            $mdlIDS = $this->getModel();
+            $node = $mdlIDS->getNodeByReference('rules.fingerprint.' . $uuid);
+            if ($node != null) {
+                if ($enabled == "0" || $enabled == "1") {
+                    $node->enabled = (string)$enabled;
+                } elseif ($node->enabled->__toString() == "1") {
+                    $node->enabled = "0";
+                } else {
+                    $node->enabled = "1";
+                }
+                $result['result'] = $node->enabled;
+                // if item has toggled, serialize to config and save
+                $mdlIDS->serializeToConfig();
+                Config::getInstance()->save();
             }
         }
         return $result;

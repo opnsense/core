@@ -49,6 +49,8 @@ class IndexController extends \OPNsense\Base\IndexController
         $this->view->formGeneralSettings = $this->getForm("generalSettings");
         // link alert list dialog
         $this->view->formDialogRuleset = $this->getForm("dialogRuleset");
+        // link fingerprint dialog
+        $this->view->formDialogFingerprint = $this->getForm("DialogFingerprint");
         // choose template
         $this->view->pick('OPNsense/IDS/index');
     }
