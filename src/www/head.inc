@@ -98,7 +98,7 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <script>var theme = "<?= $themename ?>"; </script>
 
     <!-- JQuery -->
-    <script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="/ui/js/jquery-1.12.0.min.js"></script>
 
     <!-- Ticker used for notices-->
     <script type="text/javascript" src="/javascript/ticker.js"></script>
