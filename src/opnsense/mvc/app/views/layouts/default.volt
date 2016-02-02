@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
 
     <!-- JQuery -->
-    <script type="text/javascript" src="/ui/js/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="/ui/js/jquery-1.12.0.min.js"></script>
     <script type="text/javascript">
             // setup default scripting after page loading.
             $( document ).ready(function() {
