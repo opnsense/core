@@ -109,9 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    foreach ($pconfig['members'] as $member) {
-        if (!does_interface_exist($member)) {
-            $input_errors[] = gettext("Interface supplied as member is invalid");
+    if (isset($pconfig['members'])) {
+        foreach ($pconfig['members'] as $member) {
+            if (!does_interface_exist($member)) {
+                $input_errors[] = sprintf(gettext('Interface \'%s\' supplied as member does not exist'), $member);
+            }
         }
     }
 
@@ -182,7 +184,7 @@ legacy_html_escape_form_data($pconfig);
                       <select name="members[]" multiple="multiple" class="selectpicker">
 <?php
                         foreach (available_interfaces(isset($id) ? $id : null) as $ifn => $ifinfo):?>
-                        <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
+                        <option value="<?=$ifn;?>" <?=!empty($pconfig['members']) && in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifn;?> (<?=$ifinfo['mac']?>)
                         </option>
 <?php
