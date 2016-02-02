@@ -260,7 +260,7 @@ function stdDialogRemoveItem(message, callback) {
     BootstrapDialog.confirm({
         title: 'Remove',
         message: message,
-        type:BootstrapDialog.TYPE_WARNING,
+        type:BootstrapDialog.TYPE_DANGER,
         btnCancelLabel: 'Cancel',
         btnOKLabel: 'Yes',
         btnOKClass: 'btn-primary',
