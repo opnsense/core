@@ -252,6 +252,18 @@ POSSIBILITY OF SUCH DAMAGE.
                                 },
                             }
                         });
+            } else if (e.target.id == 'ssl_tab') {
+                $('#grid-fingerprints').bootgrid('destroy'); // always destroy previous grid, so data is always fresh
+                $("#grid-fingerprints").UIBootgrid({
+                        search:'/api/ids/settings/searchfingerprint',
+                        get:'/api/ids/settings/getFingerprint/',
+                        set:'/api/ids/settings/setFingerprint/',
+                        add:'/api/ids/settings/addFingerprint/',
+                        del:'/api/ids/settings/delFingerprint/',
+                        toggle:'/api/ids/settings/toggleFingerprint/'
+                    }
+                );
+
             }
         })
 
@@ -392,6 +404,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#rules" id="rule_tab">{{ lang._('Rules') }}</a></li>
+    <li><a data-toggle="tab" href="#ssl" id="ssl_tab">{{ lang._('SSL') }}</a></li>
     <li><a data-toggle="tab" href="#alerts" id="alert_tab">{{ lang._('Alerts') }}</a></li>
     <li><a href="" id="scheduled_updates" style="display:none">{{ lang._('Schedule') }}</a></li>
 </ul>
@@ -474,6 +487,40 @@ POSSIBILITY OF SUCH DAMAGE.
             </tfoot>
         </table>
     </div>
+    <div id="ssl" class="tab-pane fade in">
+        <!-- tab page "ssl" -->
+        <div class="bootgrid-header container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <strong>SSL Fingerprints</strong>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <table id="grid-fingerprints" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogFingerprint">
+            <thead>
+                <tr>
+                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
+                    <th data-column-id="fingerprint" data-type="string" data-sortable="true">{{ lang._('Fingerprint') }}</th>
+                    <th data-column-id="description" data-type="string" data-sortable="true">{{ lang._('Description') }}</th>
+                    <th data-column-id="action" data-type="string" data-sortable="true">{{ lang._('Action') }}</th>
+                    <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
+                    <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+                <tr >
+                    <td></td>
+                    <td>
+                        <button data-action="add" type="button" class="btn btn-xs btn-default"><span class="fa fa-plus"></span></button>
+                        <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-trash-o"></span></button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     <div id="alerts" class="tab-pane fade in">
         <div class="bootgrid-header container-fluid">
             <div class="row">
@@ -539,3 +586,4 @@ POSSIBILITY OF SUCH DAMAGE.
 {{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'true','msgzone_width':1])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':'Alert details','hasSaveBtn':'false','msgzone_width':1])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogRuleset,'id':'DialogRuleset','label':'Ruleset details','hasSaveBtn':'true','msgzone_width':1])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogFingerprint,'id':'DialogFingerprint','label':'Fingerprint details','hasSaveBtn':'true'])}}
