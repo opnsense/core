@@ -259,7 +259,7 @@ $(document).ready(function() {
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         foreach ($ifacelist as $ifn => $ifinfo):?>
-                            <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
+                            <option value="<?=$ifn;?>" <?=!empty($pconfig['members']) && in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
                                 <?=$ifinfo;?>
                             </option>
 <?php
@@ -330,7 +330,7 @@ $(document).ready(function() {
                         <select name="stp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                         foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?$ifn;?>" <?=in_array($ifn, $pconfig['stp']) ? "selected=\"selected\"" : "";?> >
+                          <option value="<?$ifn;?>" <?=!empty($pconfig['stp']) && in_array($ifn, $pconfig['stp']) ? "selected=\"selected\"" : "";?> >
                               <?=$ifdescr;?>
                           </option>
 <?php
@@ -503,7 +503,7 @@ $(document).ready(function() {
                         <select name="edge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['edge']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['edge']) && in_array($ifn, $pconfig['edge']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
@@ -522,7 +522,7 @@ $(document).ready(function() {
                         <select name="autoedge[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['autoedge']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['autoedge']) && in_array($ifn, $pconfig['autoedge']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
@@ -542,7 +542,7 @@ $(document).ready(function() {
                         <select name="ptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['ptp']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['ptp']) && in_array($ifn, $pconfig['ptp']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
@@ -561,7 +561,7 @@ $(document).ready(function() {
                         <select name="autoptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['autoptp']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['autoptp']) && in_array($ifn, $pconfig['autoptp']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
@@ -582,7 +582,7 @@ $(document).ready(function() {
                         <select name="static[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['static']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['static']) && in_array($ifn, $pconfig['static']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
@@ -602,7 +602,7 @@ $(document).ready(function() {
                         <select name="private[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=in_array($ifn, $pconfig['private']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['private']) && in_array($ifn, $pconfig['private']) ? "selected=\"selected\"" : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
