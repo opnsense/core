@@ -202,13 +202,23 @@ $( document ).ready(function() {
   // link category select/search
   $("#fw_category").change(function(){
       var stripe_color = 'transparent';
-      var selected_value = $(this).val();
+      var selected_values = [];
+      $("#fw_category > option:selected").each(function(){
+          if ($(this).val() != "") {
+              selected_values.push($(this).val());
+          } else {
+              // select all when "Filter by category" is selected
+              selected_values = [];
+              return false;
+          }
+      })
       $(".rule").each(function(){
           // save zebra color
           if ( $(this).children(0).css("background-color") != 'transparent') {
               $("#fw_category").data('stripe_color', $(this).children(0).css("background-color"));
           }
-          if ($(this).data('category') != selected_value && selected_value != "") {
+
+          if (selected_values.indexOf($(this).data('category')) == -1 && selected_values.length > 0) {
               $(this).hide();
           } else {
               $(this).show();
@@ -654,7 +664,7 @@ $( document ).ready(function() {
               <?php else: ?>
                   <tr>
                     <td colspan="5">
-                      <select class="selectpicker" data-live-search="true" data-size="5"  placeholder="<?=gettext("select category");?>" id="fw_category">
+                      <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("select category");?>" id="fw_category">
                         <option value=""><?=gettext("Filter by category");?></value>
 <?php
                         // collect unique list of categories and append to option list
