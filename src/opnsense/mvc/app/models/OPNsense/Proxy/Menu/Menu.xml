@@ -1,7 +1,16 @@
 <menu>
     <Services>
       <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt fa-fw">
-          <Administration order="10" url="/ui/proxy/"/>
+          <Administration order="10" url="/ui/proxy/">
+            <GeneralSettings VisibleName="General" url="/ui/proxy/#subtab_proxy-general-settings"/>
+            <LocalCache VisibleName="Cache" url="/ui/proxy/#subtab_proxy-general-cache-local"/>
+            <TrafficManagement VisibleName="TrafficManagement" url="/ui/proxy/#subtab_proxy-general-traffic"/>
+            <Forward VisibleName="Forward" url="/ui/proxy/#subtab_proxy-forward-general"/>
+            <FTP VisibleName="FTP" url="/ui/proxy/#subtab_proxy-forward-ftp"/>
+            <ACL VisibleName="ACL" url="/ui/proxy/#subtab_proxy-forward-acl"/>
+            <Authentication VisibleName="Auth" url="/ui/proxy/#subtab_proxy-general-authentication"/>
+            <RemoteACL VisibleName="RemoteACL" url="/ui/proxy/#remote_acls"/>
+          </Administration>
             <Log VisibleName="Log File" order="20" url="/diag_logs_proxy.php?type=cache">
                 <More url="/diag_logs_proxy.php*" visibility="hidden"/>
             </Log>
