@@ -202,42 +202,25 @@ class SettingsController extends ApiControllerBase
      */
     public function searchJobsAction()
     {
-        if ($this->request->isPost()) {
-            $this->sessionClose();
-            // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
-            $currentPage = $this->request->getPost('current', 'int', 1);
-            $sortBy = array("description");
-            $sortDescending = false;
-
-            if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
-                $sortBy = array_keys($this->request->getPost("sort"));
-                if ($this->request->getPost("sort")[$sortBy[0]] == "desc") {
-                    $sortDescending = true;
-                }
-            }
-
-            $searchPhrase = $this->request->getPost('searchPhrase', 'string', '');
-
-            // create model and fetch query resuls
-            $fields = array(
-                "enabled",
-                "minutes",
-                "hours",
-                "days",
-                "months",
-                "weekdays",
-                "description",
-                "command",
-                "origin",
-                "cronPermissions"
-            );
-            $mdlCron = new Cron();
-            $grid = new UIModelGrid($mdlCron->jobs->job);
-
-            return $grid->fetch($fields, $itemsPerPage, $currentPage, $sortBy, $sortDescending, $searchPhrase);
-        } else {
-            return array();
-        }
+        $this->sessionClose();
+        $fields = array(
+            "enabled",
+            "minutes",
+            "hours",
+            "days",
+            "months",
+            "weekdays",
+            "description",
+            "command",
+            "origin",
+            "cronPermissions"
+        );
+        $mdlCron = new Cron();
+        $grid = new UIModelGrid($mdlCron->jobs->job);
+        return $grid->fetchBindRequest(
+            $this->request,
+            $fields,
+            "description"
+        );
     }
 }
