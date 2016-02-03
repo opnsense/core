@@ -7,6 +7,8 @@
 # -- SSL fingerprint rules
 {% if helpers.exists('OPNsense.IDS.rules.fingerprint') %}
 {%      for rule in helpers.toList('OPNsense.IDS.rules.fingerprint') %}
+{%          if rule.enabled|default('0') == '1' %}
 {{rule.action}}  tls any any -> any any (msg:"{{rule.description.replace('"','\"')}}"; tls.fingerprint:"{{rule.fingerprint.lower()}}"; sid:{{4294967295 - loop.index}}; rev:1;)
+{%          endif %}
 {%      endfor %}
 {% endif %}
