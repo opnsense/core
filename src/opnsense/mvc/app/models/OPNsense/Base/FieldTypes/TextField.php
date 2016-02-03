@@ -62,7 +62,7 @@ class TextField extends BaseField
      */
     public function getValidators()
     {
-        $validators = array() ;
+        $validators = array();
         if ($this->internalValidationMessage == null) {
             $msg = "text validation error" ;
         } else {
