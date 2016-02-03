@@ -70,7 +70,6 @@ class CountryField extends BaseField
     {
         if (count(self::$internalOptionList) == 0) {
             $filename = '/usr/local/opnsense/contrib/tzdata/iso3166.tab';
-            $filename = '/Users/ad/Desktop/mnt_opnsense/src/opnsense/contrib/tzdata/iso3166.tab';
             $data = file_get_contents($filename);
             foreach (explode("\n", $data) as $line) {
                 $line = trim($line);
