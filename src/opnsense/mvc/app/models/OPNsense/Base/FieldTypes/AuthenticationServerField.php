@@ -30,7 +30,6 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
-use OPNsense\Core\Config;
 use OPNsense\Auth;
 use OPNsense\Base\Validators\CsvListValidator;
 
