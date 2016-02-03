@@ -68,6 +68,11 @@ class AuthenticationServerField extends BaseField
     private $internalMultiSelect = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "please specify a valid authentication server";
+
+    /**
      * generate validation data (list of AuthServers)
      */
     public function eventPostLoading()
@@ -158,26 +163,19 @@ class AuthenticationServerField extends BaseField
      */
     public function getValidators()
     {
-
-        if ($this->internalValidationMessage == null) {
-            $msg = "please specify a valid authentication server";
-        } else {
-            $msg = $this->internalValidationMessage;
-        }
-
-        if (($this->internalIsRequired == true || $this->internalValue != null)) {
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
             if ($this->internalMultiSelect) {
                 // field may contain more than one authentication server
-                return array(new CsvListValidator(array('message' => $msg,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
             } else {
                 // single authentication server selection
-                return array(new InclusionIn(array('message' => $msg,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
             }
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
         }
+
+        return $validators;
     }
 }

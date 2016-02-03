@@ -43,6 +43,11 @@ class ModelRelationField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "option not in list";
+
+    /**
      * @var array collected options
      */
     private static $internalOptionList = array();
@@ -135,25 +140,17 @@ class ModelRelationField extends BaseField
      */
     public function getValidators()
     {
-        if ($this->internalValidationMessage == null) {
-            $msg = "option not in list";
-        } else {
-            $msg = $this->internalValidationMessage;
-        }
-
-        if (($this->internalIsRequired == true || $this->internalValue != null)
-        ) {
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
             if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
                 count(self::$internalOptionList[$this->internalCacheKey]) > 0) {
-                return array(new InclusionIn(array('message' => $msg,
+                return array(new InclusionIn(array('message' => $this->internalValidationMessage,
                     'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey]))));
             } else {
-                return array(new InclusionIn(array('message' => $msg,
+                return array(new InclusionIn(array('message' => $this->internalValidationMessage,
                     'domain' => array())));
             }
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
         }
+        return $validators;
     }
 }

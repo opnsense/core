@@ -44,6 +44,11 @@ class AutoNumberField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "invalid integer value";
+
+    /**
      * maximum value for this field
      * @var integer
      */
@@ -122,23 +127,15 @@ class AutoNumberField extends BaseField
      */
     public function getValidators()
     {
-        if ($this->internalValidationMessage == null) {
-            $msg = "invalid integer value" ;
-        } else {
-            $msg = $this->internalValidationMessage;
-        }
+        $validators = parent::getValidators();
 
-        if (($this->internalIsRequired == true || $this->internalValue != null)) {
-            $result = array();
-            $result[] = new MinMaxValidator(array('message' => $msg,
+        if ($this->internalValue != null) {
+            $validators[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
                 "min" => $this->minimum_value,
                 "max" => $this->maximum_value
                 ));
-            $result[] = new IntegerValidator(array('message' => $msg));
-            return $result;
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
+            $validators[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
         }
+        return $validators;
     }
 }

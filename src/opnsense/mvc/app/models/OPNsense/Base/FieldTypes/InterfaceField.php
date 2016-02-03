@@ -46,6 +46,11 @@ class InterfaceField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "please specify a valid interface";
+
+    /**
      * @var array collected options
      */
     private static $internalOptionList = array();
@@ -160,30 +165,22 @@ class InterfaceField extends BaseField
 
     /**
      * retrieve field validators for this field type
-     * @return array returns Text/regex validator
+     * @return array returns validators
      */
     public function getValidators()
     {
-
-        if ($this->internalValidationMessage == null) {
-            $msg = "please specify a valid interface";
-        } else {
-            $msg = $this->internalValidationMessage;
-        }
-
-        if (($this->internalIsRequired == true || $this->internalValue != null)) {
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
             if ($this->internalMultiSelect) {
                 // field may contain more than one interface
-                return array(new CsvListValidator(array('message' => $msg,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
             } else {
                 // single interface selection
-                return array(new InclusionIn(array('message' => $msg,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
             }
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
         }
+        return $validators;
     }
 }

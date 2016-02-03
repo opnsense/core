@@ -30,6 +30,8 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use Phalcon\Validation\Validator\PresenceOf;
+
 /**
  * Class BaseField
  * @package OPNsense\Base\FieldTypes
@@ -324,12 +326,29 @@ abstract class BaseField
     }
 
     /**
+     * check if this field is unused and required
+     * @return bool
+     */
+    protected function isEmptyAndRequired()
+    {
+        if ($this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * return field validators for this field
      * @return array returns validators for this field type (empty if none)
      */
     public function getValidators()
     {
-        return array();
+        $validators = array();
+        if ($this->isEmptyAndRequired()) {
+            $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage)) ;
+        }
+        return $validators;
     }
 
     /**
