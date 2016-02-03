@@ -41,6 +41,10 @@ class BooleanField extends BaseField
      */
     protected $internalIsContainer = false;
 
+    /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "value should be a boolean (0,1)";
 
     /**
      * retrieve field validators for this field type
@@ -51,16 +55,11 @@ class BooleanField extends BaseField
         // regexp for validating boolean values.
         $regex_mask = "/^([0,1]){1}$/";
 
-        if ($this->internalValidationMessage == null) {
-            $msg = "value should be a boolean (0,1)" ;
-        } else {
-            $msg = $this->internalValidationMessage;
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
+            $validators[] = new Regex(array('message' => $this->internalValidationMessage,
+                'pattern'=>trim($regex_mask)));
         }
-        if ($this->internalIsRequired == true || $this->internalValue != null) {
-            return array(new Regex(array('message' => $msg,'pattern'=>trim($regex_mask))));
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
-        }
+        return $validators;
     }
 }

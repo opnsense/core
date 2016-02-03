@@ -43,21 +43,20 @@ class UrlField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "invalid url";
+
+    /**
      * retrieve field validators for this field type
      * @return array returns Url validator
      */
     public function getValidators()
     {
-        if ($this->internalValidationMessage == null) {
-            $msg = "invalid url" ;
-        } else {
-            $msg = $this->internalValidationMessage;
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
+            $validators[] = new UrlValidator(array('message' => $this->internalValidationMessage));
         }
-        if ($this->internalIsRequired == true || $this->internalValue != null) {
-            return array(new UrlValidator(array('message' => $msg)));
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
-        }
+        return $validators;
     }
 }

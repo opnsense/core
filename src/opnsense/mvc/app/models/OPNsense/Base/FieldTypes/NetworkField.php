@@ -43,6 +43,11 @@ class NetworkField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "please specify a valid network segment or address (IPv4/IPv6) ";
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
@@ -57,23 +62,13 @@ class NetworkField extends BaseField
      */
     public function getValidators()
     {
-
-        if ($this->internalValidationMessage == null) {
-            $msg = "please specify a valid network segment or address (IPv4/IPv6) " ;
-        } else {
-            $msg = $this->internalValidationMessage;
-        }
-
-        if (($this->internalIsRequired == true || $this->internalValue != null)) {
-            if ($this->internalValue == "any") {
+        $validators = parent::getValidators();
+        if ($this->internalValue != null) {
+            if ($this->internalValue != "any") {
                 // accept any as target
-                return array();
-            } else {
-                return array(new NetworkValidator(array('message' => $msg)));
+                $validators[] = new NetworkValidator(array('message' => $this->internalValidationMessage));
             }
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
         }
+        return $validators;
     }
 }

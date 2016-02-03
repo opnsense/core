@@ -43,6 +43,11 @@ class CSVListField extends BaseField
     protected $internalIsContainer = false;
 
     /**
+     * @var string default validation message string
+     */
+    protected $internalValidationMessage = "list validation error";
+
+    /**
      * item separator
      * @var string
      */
@@ -126,15 +131,11 @@ class CSVListField extends BaseField
      */
     public function getValidators()
     {
-        if ($this->internalValidationMessage == null) {
-            $msg = "list validation error" ;
-        } else {
-            $msg = $this->internalValidationMessage;
+        $validators = parent::getValidators();
+        if ($this->internalValue != null && $this->internalMask != null) {
+            $validators[] = new Regex(array('message' => $this->internalValidationMessage,
+                'pattern'=>trim($this->internalMask)));
         }
-        if (($this->internalIsRequired || $this->internalValue != null) && $this->internalMask != null) {
-            return array(new Regex(array('message' => $msg,'pattern'=>trim($this->internalMask))));
-        } else {
-            return array();
-        }
+        return $validators;
     }
 }
