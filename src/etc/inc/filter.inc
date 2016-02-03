@@ -2783,10 +2783,10 @@ function filter_rules_generate(&$FilterIflist)
     # BEGIN OF firewall rules
     /* default block logging? */
     $log = array("block"=>null,"pass"=>null);
-    if(!isset($config['syslog']['nologdefaultblock'])) {
+    if (!isset($config['syslog']['nologdefaultblock'])) {
         $log['block'] = "log";
     }
-    if(isset($config['syslog']['nologdefaultpass'])) {
+    if (!isset($config['syslog']['nologdefaultpass'])) {
         $log['pass'] = "log";
     }
 
