@@ -23,14 +23,16 @@
                     </OptionValues>
                 </action>
             </rule>
-            <fingerprint type="ArrayField">
-                <!--SSL fingerprints -->
+        </rules>
+        <userDefinedRules>
+            <rule type="ArrayField">
+                <!--user defined rules -->
                 <enabled type="BooleanField">
                     <default>1</default>
                     <Required>Y</Required>
                 </enabled>
                 <fingerprint type="TextField">
-                    <Required>Y</Required>
+                    <Required>N</Required>
                     <mask>/^([0-9a-fA-F:]){59,59}$/u</mask>
                     <ValidationMessage>A SSL fingerprint should be a 59 character long hex value</ValidationMessage>
                 </fingerprint>
@@ -47,8 +49,8 @@
                         <drop>Drop</drop>
                     </OptionValues>
                 </action>
-            </fingerprint>
-        </rules>
+            </rule>
+        </userDefinedRules>
         <files>
             <file type="ArrayField">
                 <filename type="TextField">

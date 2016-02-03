@@ -490,37 +490,37 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
-     * search fingerprints
-     * @return array list of found fingerprints
+     * search user defined rules
+     * @return array list of found user rules
      */
-    public function searchFingerprintAction()
+    public function searchUserRuleAction()
     {
         $this->sessionClose();
         $mdlIDS = $this->getModel();
-        $grid = new UIModelGrid($mdlIDS->rules->fingerprint);
+        $grid = new UIModelGrid($mdlIDS->userDefinedRules->rule);
         return $grid->fetchBindRequest(
             $this->request,
-            array("enabled", "action", "description", "fingerprint"),
+            array("enabled", "action", "description"),
             "description"
         );
     }
 
     /**
-     * update fingerprint
-     * @param string $uuid fingerprint internal id
+     * update user defined rules
+     * @param string $uuid internal id
      * @return array save result + validation output
      * @throws \Phalcon\Validation\Exception
      */
-    public function setFingerprintAction($uuid)
+    public function setUserRuleAction($uuid)
     {
         $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("fingerprint")) {
+        if ($this->request->isPost() && $this->request->hasPost("rule")) {
             $mdlIDS = $this->getModel();
             if ($uuid != null) {
-                $node = $mdlIDS->getNodeByReference('rules.fingerprint.'.$uuid);
+                $node = $mdlIDS->getNodeByReference('userDefinedRules.rule.'.$uuid);
                 if ($node != null) {
-                    $node->setNodes($this->request->getPost("fingerprint"));
-                    $validations = $mdlIDS->validate($node->__reference, "fingerprint");
+                    $node->setNodes($this->request->getPost("rule"));
+                    $validations = $mdlIDS->validate($node->__reference, "rule");
                     if (count($validations)) {
                         $result['validations'] = $validations;
                     } else {
@@ -536,18 +536,18 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
-     * add new fingerprint
+     * add new user defined rule
      * @return array save result + validation output
      * @throws \Phalcon\Validation\Exception
      */
-    public function addFingerprintAction()
+    public function addUserRuleAction()
     {
         $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost("fingerprint")) {
+        if ($this->request->isPost() && $this->request->hasPost("rule")) {
             $mdlIDS = $this->getModel();
-            $node = $mdlIDS->rules->fingerprint->Add();
-            $node->setNodes($this->request->getPost("fingerprint"));
-            $validations = $mdlIDS->validate($node->__reference, "fingerprint");
+            $node = $mdlIDS->userDefinedRules->rule->Add();
+            $node->setNodes($this->request->getPost("rule"));
+            $validations = $mdlIDS->validate($node->__reference, "rule");
             if (count($validations)) {
                 $result['validations'] = $validations;
             } else {
@@ -561,39 +561,39 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
-     * get fingerprint properties
-     * @param null|string $uuid fingerprint internal id
-     * @return array fingerprint properties
+     * get properties of user defined rule
+     * @param null|string $uuid user rule internal id
+     * @return array user defined properties
      */
-    public function getFingerprintAction($uuid = null)
+    public function getUserRuleAction($uuid = null)
     {
         $mdlIDS = $this->getModel();
         if ($uuid != null) {
-            $node = $mdlIDS->getNodeByReference('rules.fingerprint.'.$uuid);
+            $node = $mdlIDS->getNodeByReference('userDefinedRules.rule.'.$uuid);
             if ($node != null) {
                 // return node
-                return array("fingerprint" => $node->getNodes());
+                return array("rule" => $node->getNodes());
             }
         } else {
             // generate new node, but don't save to disc
-            $node = $mdlIDS->rules->fingerprint->add() ;
-            return array("fingerprint" => $node->getNodes());
+            $node = $mdlIDS->userDefinedRules->rule->add() ;
+            return array("rule" => $node->getNodes());
         }
         return array();
     }
 
     /**
-     * delete fingerprint item
-     * @param string $uuid fingerprint internal id
+     * delete user rule item
+     * @param string $uuid user rule internal id
      * @return array
      * @throws \Phalcon\Validation\Exception
      */
-    public function delFingerprintAction($uuid)
+    public function delUserRuleAction($uuid)
     {
         $result = array("result"=>"failed");
         if ($this->request->isPost() && $uuid != null) {
             $mdlIDS = $this->getModel();
-            if ($mdlIDS->rules->fingerprint->del($uuid)) {
+            if ($mdlIDS->userDefinedRules->rule->del($uuid)) {
                 // if item is removed, serialize to config and save
                 $mdlIDS->serializeToConfig();
                 Config::getInstance()->save();
@@ -606,17 +606,17 @@ class SettingsController extends ApiControllerBase
     }
 
     /**
-     * toggle fingerprint by uuid (enable/disable)
-     * @param $uuid fingerprint internal id
+     * toggle user defined rule by uuid (enable/disable)
+     * @param $uuid user defined rule internal id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status
      */
-    public function toggleFingerprintAction($uuid, $enabled = null)
+    public function toggleUserRuleAction($uuid, $enabled = null)
     {
         $result = array("result" => "failed");
         if ($this->request->isPost() && $uuid != null) {
             $mdlIDS = $this->getModel();
-            $node = $mdlIDS->getNodeByReference('rules.fingerprint.' . $uuid);
+            $node = $mdlIDS->getNodeByReference('userDefinedRules.rule.' . $uuid);
             if ($node != null) {
                 if ($enabled == "0" || $enabled == "1") {
                     $node->enabled = (string)$enabled;
