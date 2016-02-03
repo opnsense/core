@@ -126,8 +126,9 @@ class SendMonitor extends Monitor {
 }
 
 
-function relayd_configure($kill_first=false) {
-	global $config, $g;
+function relayd_configure($kill_first = false)
+{
+	global $config;
 
 	if (isset($config['load_balancer']['virtual_server'])) {
 		$vs_a = $config['load_balancer']['virtual_server'];

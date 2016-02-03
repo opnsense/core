@@ -592,7 +592,7 @@ function upgrade_029_to_030() {
 }
 
 function upgrade_039_to_040() {
-	global $config, $g;
+	global $config;
 	$config['system']['webgui']['auth_method'] = "session";
 	$config['system']['webgui']['backing_method'] = "htpasswd";
 
@@ -625,9 +625,6 @@ function upgrade_039_to_040() {
 		$config['system']['user'][0]['priv'][2]['id'] = "hasshell";
 		$config['system']['user'][0]['priv'][2]['name'] = "Has shell access";
 		$config['system']['user'][0]['priv'][2]['descr'] = gettext("Indicates whether this user is able to login for example via SSH.");
-		$config['system']['user'][0]['priv'][3]['id'] = "copyfiles";
-		$config['system']['user'][0]['priv'][3]['name'] = "Is allowed to copy files";
-		$config['system']['user'][0]['priv'][3]['descr'] = sprintf(gettext("Indicates whether this user is allowed to copy files onto the %s appliance via SCP/SFTP. If you are going to use this privilege, you must install scponly on the appliance (Hint: pkg_add -r scponly)."), $g['product_name']);
 		$config['system']['user'][0]['priv'][4]['id'] = "isroot";
 		$config['system']['user'][0]['priv'][4]['name'] = "Is root user";
 		$config['system']['user'][0]['priv'][4]['descr'] = gettext("This user is associated with the UNIX root user (you should associate this privilege only with one single user).");
@@ -2004,9 +2001,9 @@ function upgrade_053_to_054() {
 }
 
 
-function upgrade_054_to_055() {
+function upgrade_054_to_055()
+{
 	global $config;
-	global $g;
 
 	/* RRD files changed for quality, traffic and packets graphs */
 	//ini_set("max_execution_time", "1800");
@@ -2642,10 +2639,9 @@ function upgrade_079_to_080() {
 	}
 }
 
-function upgrade_080_to_081() {
+function upgrade_080_to_081()
+{
 	global $config;
-	global $g;
-	/* Welcome to the 2.1 migration path */
 
 	/* tag all the existing gateways as being IPv4 */
 	$i = 0;
@@ -2893,8 +2889,9 @@ function upgrade_084_to_085() {
 	unset($gateways, $oldnames, $gateway_group_arr);
 }
 
-function upgrade_085_to_086() {
-	global $config, $g;
+function upgrade_085_to_086()
+{
+	global $config;
 
 	/* XXX: Gross hacks in sight */
 	if (is_array($config['virtualip']['vip'])) {
@@ -3036,15 +3033,18 @@ function upgrade_091_to_092() {
 	}
 }
 
-function upgrade_092_to_093() {
-	global $g;
-
+function upgrade_092_to_093()
+{
 	$suffixes = array("concurrent", "loggedin");
 
-	foreach ($suffixes as $suffix)
-		if (file_exists("/var/db/rrd/captiveportal-{$suffix}.rrd"))
-			rename("/var/db/rrd/captiveportal-{$suffix}.rrd",
-				"/var/db/rrd/captiveportal-cpZone-{$suffix}.rrd");
+	foreach ($suffixes as $suffix) {
+		if (file_exists("/var/db/rrd/captiveportal-{$suffix}.rrd")) {
+			rename(
+				"/var/db/rrd/captiveportal-{$suffix}.rrd",
+				"/var/db/rrd/captiveportal-cpZone-{$suffix}.rrd"
+			);
+		}
+	}
 
 	enable_rrd_graphing();
 }
@@ -3071,8 +3071,9 @@ function upgrade_094_to_095() {
 				$config['interfaces'][$iface]['track6-prefix-id'] = 0;
 }
 
-function upgrade_095_to_096() {
-	global $config, $g;
+function upgrade_095_to_096()
+{
+	global $config;
 
 	$names = array("inpass", "outpass", "inblock", "outblock",
 		"inpass6", "outpass6", "inblock6", "outblock6");
@@ -3101,8 +3102,10 @@ function upgrade_095_to_096() {
 	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
 }
 
-function upgrade_096_to_097() {
-	global $config, $g;
+function upgrade_096_to_097()
+{
+	global $config;
+
 	/* If the user had disabled default block rule logging before, then bogon/private network logging was already off, so respect their choice. */
 	if (isset($config['syslog']['nologdefaultblock'])) {
 		$config['syslog']['nologbogons'] = true;
@@ -3110,8 +3113,10 @@ function upgrade_096_to_097() {
 	}
 }
 
-function upgrade_097_to_098() {
-	global $config, $g;
+function upgrade_097_to_098()
+{
+	global $config;
+
 	/* Disable kill_states by default */
 	$config['system']['kill_states'] = true;
 }
@@ -3130,12 +3135,14 @@ function upgrade_098_to_099() {
 	}
 }
 
-function upgrade_099_to_100() {
+function upgrade_099_to_100()
+{
 	install_cron_job("newsyslog", false);
 }
 
-function upgrade_100_to_101() {
-	global $config, $g;
+function upgrade_100_to_101()
+{
+	global $config;
 
 	if (!is_array($config['voucher']))
 		return;
@@ -3150,8 +3157,9 @@ function upgrade_100_to_101() {
 	}
 }
 
-function upgrade_101_to_102() {
-	global $config, $g;
+function upgrade_101_to_102()
+{
+	global $config;
 
 	if (is_array($config['captiveportal'])) {
 		foreach ($config['captiveportal'] as $cpzone => $cp) {

@@ -75,8 +75,9 @@ function openvpn_client_pem_to_pk12($outpath, $outpass, $crtpath, $keypath, $cap
 		unlink($capath);
 }
 
-function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
-	global $config, $g, $input_errors;
+function openvpn_client_export_validate_config($srvid, $usrid, $crtid)
+{
+	global $config, $input_errors;
 	$nokeys = false;
 
 	// lookup server settings
@@ -138,8 +139,9 @@ function openvpn_client_export_validate_config($srvid, $usrid, $crtid) {
 	return array($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys);
 }
 
-function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $nokeys = false, $proxy, $expformat = "baseconf", $outpass = "", $skiptls=false, $doslines=false, $openvpnmanager, $advancedoptions = "") {
-	global $config, $input_errors, $g;
+function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $nokeys = false, $proxy, $expformat = "baseconf", $outpass = "", $skiptls=false, $doslines=false, $openvpnmanager, $advancedoptions = "")
+{
+	global $config, $input_errors;
 
 	$nl = ($doslines) ? "\r\n" : "\n";
 	$conf = "";
@@ -438,8 +440,9 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 	}
 }
 
-function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions, $openvpn_version = "x86-xp") {
-	global $config, $g, $input_errors, $current_openvpn_version, $current_openvpn_version_rev;
+function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions, $openvpn_version = "x86-xp")
+{
+	global $config, $input_errors, $current_openvpn_version, $current_openvpn_version_rev;
 	$uname_p = trim(exec("uname -p"));
 
 	switch ($openvpn_version) {
@@ -559,8 +562,9 @@ RunProgram="openvpn-postinstall.exe"
 	return $outfile;
 }
 
-function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions) {
-	global $config, $g;
+function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions)
+{
+	global $config;
 	$uname_p = trim(exec("uname -p"));
 
 	$ovpndir = "/usr/local/opnsense/contrib/openvpn/";
@@ -674,8 +678,9 @@ EOF;
 
 }
 
-function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipconf = false) {
-	global $config, $input_errors, $g;
+function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipconf = false)
+{
+	global $config, $input_errors;
 
 	// lookup server settings
 	$settings = $config['openvpn']['openvpn-server'][$srvid];

@@ -174,8 +174,9 @@ function copy_conf_section(&$cnf_structure_in, &$cnf_structure_out,  $reference)
  * @param string $method xmlrpc method to call
  * @return boolean
  */
-function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsense.restore_config_section') {
-    global $config, $g;
+function carp_sync_xml($url, $username, $password, $sections, $method = 'opnsense.restore_config_section')
+{
+    global $config;
 
     update_filter_reload_status("Syncing CARP data to {$url}");
 

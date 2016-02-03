@@ -62,16 +62,18 @@ function is_schedule_inuse($schedule)
         return false;
 }
 
-
-function schedulecmp($a, $b) {
+function schedulecmp($a, $b)
+{
     return strcmp($a['name'], $b['name']);
 }
 
-function schedule_sort(){
-    global $g, $config;
+function schedule_sort()
+{
+    global $config;
 
-    if (!is_array($config['schedules']['schedule']))
+    if (!isset($config['schedules']['schedule'])) {
         return;
+    }
 
     usort($config['schedules']['schedule'], "schedulecmp");
 }

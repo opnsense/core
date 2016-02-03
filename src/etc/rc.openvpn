@@ -35,22 +35,25 @@ require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("openvpn.inc");
 
-function gateway_is_gwgroup_member($name) {
+function gateway_is_gwgroup_member($name)
+{
 	global $config;
 
-	if (is_array($config['gateways']['gateway_group']))
-		$groups = $config['gateways']['gateway_group'];
-	else
+	if (!isset($config['gateways']['gateway_group'])) {
 		return false;
+	}
 
+	$groups = $config['gateways']['gateway_group'];
 	$members = array();
+
 	foreach($groups as $group) {
-		if (is_array($group['item'])) {
+		if (isset($group['item'])) {
 			foreach($group['item'] as $item) {
 				$elements = explode("|", $item);
 				$gwname = $elements[0];
-				if ($name == $elements[0])
+				if ($name == $elements[0]) {
 					$members[] = $group['name'];
+				}
 			}
 		}
 	}
@@ -58,10 +61,9 @@ function gateway_is_gwgroup_member($name) {
 	return $members;
 }
 
-
-
-function openvpn_resync_if_needed ($mode, $ovpn_settings, $interface) {
-	global $g, $config;
+function openvpn_resync_if_needed($mode, $ovpn_settings, $interface)
+{
+	global $config;
 
 	$resync_needed = true;
 	if (isset($ovpn_settings['disable'])) {

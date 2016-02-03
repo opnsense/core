@@ -346,7 +346,7 @@ function openvpn_add_keyfile(&$data, &$conf, $mode_id, $directive, $opt = '')
 
 function openvpn_reconfigure($mode, $settings)
 {
-	global $g, $config;
+	global $config;
 
 	if (empty($settings) || isset($settings['disable'])) {
 		return;
@@ -756,7 +756,7 @@ function openvpn_reconfigure($mode, $settings)
 
 function openvpn_restart($mode, $settings)
 {
-	global $g, $config;
+	global $config;
 
 	$vpnid = $settings['vpnid'];
 	$mode_id = $mode.$vpnid;
@@ -796,7 +796,7 @@ function openvpn_restart($mode, $settings)
 
 function openvpn_delete($mode, & $settings)
 {
-	global $g, $config;
+	global $config;
 
 	$vpnid = $settings['vpnid'];
 	$mode_id = $mode.$vpnid;
@@ -829,7 +829,7 @@ function openvpn_delete($mode, & $settings)
 
 function openvpn_resync_csc(&$settings)
 {
-	global $g, $config;
+	global $config;
 
 	$fpath = "/var/etc/openvpn-csc/{$settings['common_name']}";
 
@@ -895,7 +895,7 @@ function openvpn_resync($mode, $settings)
 
 function openvpn_resync_all($interface = '')
 {
-	global $g, $config;
+	global $config;
 
 	openvpn_create_dirs();
 
@@ -931,8 +931,9 @@ function openvpn_resync_all($interface = '')
 }
 
 
-function openvpn_get_active_servers($type="multipoint") {
-	global $config, $g;
+function openvpn_get_active_servers($type = 'multipoint')
+{
+	global $config;
 
 	$servers = array();
 	if (isset($config['openvpn']['openvpn-server']) && is_array($config['openvpn']['openvpn-server'])) {
@@ -1033,8 +1034,9 @@ function openvpn_get_server_status($server, $socket) {
 	return $server;
 }
 
-function openvpn_get_active_clients() {
-	global $config, $g;
+function openvpn_get_active_clients()
+{
+	global $config;
 
 	$clients = array();
 	if (isset($config['openvpn']['openvpn-client']) && is_array($config['openvpn']['openvpn-client'])) {

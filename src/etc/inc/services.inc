@@ -98,7 +98,7 @@ function get_configured_pppoe_server_interfaces()
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
 {
-	global $config, $g;
+	global $config;
 
 	if (!isset($config['dhcpdv6']) || !is_array($config['dhcpdv6'])) {
 		$config['dhcpdv6'] = array();
@@ -1361,8 +1361,9 @@ EOD;
 	return 0;
 }
 
-function services_igmpproxy_configure() {
-        global $config, $g;
+function services_igmpproxy_configure()
+{
+        global $config;
 
         /* kill any running igmpproxy */
         killbyname("igmpproxy");
@@ -1420,7 +1421,7 @@ EOD;
 
 function services_dhcrelay_configure()
 {
-	global $config, $g;
+	global $config;
 
 	/* kill any running dhcrelay */
 	killbypid('/var/run/dhcrelay.pid');
@@ -1537,7 +1538,7 @@ function services_dhcrelay_configure()
 
 function services_dhcrelay6_configure()
 {
-	global $config, $g;
+	global $config;
 
 	/* kill any running dhcrelay */
 	killbypid('/var/run/dhcrelay6.pid');
@@ -1713,7 +1714,7 @@ function services_dyndns_configure_client($conf) {
 
 function services_dyndns_configure($int = '')
 {
-	global $config, $g;
+	global $config;
 
 	if (isset($config['dyndnses']['dyndns'])) {
 		$dyndnscfg = $config['dyndnses']['dyndns'];
@@ -1772,7 +1773,7 @@ function dyndnsCheckIP($int)
 
 function services_dnsmasq_configure()
 {
-	global $config, $g;
+	global $config;
 	$return = 0;
 
 	// hard coded args: will be removed to avoid duplication if specified in custom_options
@@ -1922,7 +1923,7 @@ function services_dnsmasq_configure()
 
 function services_unbound_configure()
 {
-	global $config, $g;
+	global $config;
 	$return = 0;
 
 	// kill any running Unbound instance
@@ -2151,7 +2152,7 @@ EOD;
 
 function services_dnsupdate_process($int = '', $updatehost = '', $forced = false)
 {
-	global $config, $g;
+	global $config;
 
 	/* Dynamic DNS updating active? */
 	if (isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate'])) {
@@ -2333,8 +2334,10 @@ function configure_cron()
 	killbypid('/var/run/cron.pid', 'HUP');
 }
 
-function upnp_action ($action) {
-	global $g, $config;
+function upnp_action($action)
+{
+	global $config;
+
 	switch($action) {
 		case "start":
 			if (file_exists('/var/etc/miniupnpd.conf')) {
@@ -2369,7 +2372,7 @@ function upnp_start()
 
 
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {
-	global $config, $g;
+	global $config;
 
 	$is_installed = false;
 
@@ -2612,8 +2615,8 @@ function get_service_status($service)
 }
 
 
-function get_service_status_icon($service, $withtext = true, $smallicon = false) {
-	global $g;
+function get_service_status_icon($service, $withtext = true, $smallicon = false)
+{
 	$output = "";
 	if(get_service_status($service)) {
 		$statustext = gettext("Running");
@@ -2625,9 +2628,8 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
 	return $output;
 }
 
-
-function get_service_control_links($service, $addname = false) {
-	global $g;
+function get_service_control_links($service, $addname = false)
+{
 	$output = "";
 	$stitle = ($addname) ? $service['name'] . " " : "";
 	if(get_service_status($service)) {

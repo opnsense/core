@@ -31,15 +31,18 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-function hostcmp($a, $b) {
+function hostcmp($a, $b)
+{
 	return strcasecmp($a['host'], $b['host']);
 }
 
-function hosts_sort() {
-        global $g, $config;
+function hosts_sort()
+{
+        global $config;
 
-        if (!is_array($config['dnsmasq']['hosts']))
+        if (!isset($config['dnsmasq']['hosts'])) {
                 return;
+	}
 
         usort($config['dnsmasq']['hosts'], "hostcmp");
 }

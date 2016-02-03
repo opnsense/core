@@ -27,11 +27,12 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("guiconfig.inc");
+require_once('guiconfig.inc');
 require_once('openvpn.inc');
 
-function openvpn_refresh_crls() {
-    global $g, $config;
+function openvpn_refresh_crls()
+{
+    global $config;
 
     openvpn_create_dirs();
 

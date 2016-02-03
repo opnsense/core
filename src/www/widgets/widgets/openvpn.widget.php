@@ -49,8 +49,6 @@ if ($_GET['action']) {
 
 function kill_client($port, $remipp)
 {
-    global $g;
-
     //$tcpsrv = "tcp://127.0.0.1:{$port}";
     $tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
     $errval;

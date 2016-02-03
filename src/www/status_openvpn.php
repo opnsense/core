@@ -34,9 +34,8 @@ require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-function kill_client($port, $remipp) {
-    global $g;
-
+function kill_client($port, $remipp)
+{
     $tcpsrv = "unix:///var/etc/openvpn/{$port}.sock";
     $errval;
     $errstr;

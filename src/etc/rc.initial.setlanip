@@ -193,7 +193,8 @@ $ifaceassigned = "";
 
 function next_unused_gateway_name($interface)
 {
-    global $g, $config;
+    global $config;
+
     $new_name = "GW_" . strtoupper($interface);
 
     if (!isset($config['gateways']['gateway_item'])) {
@@ -218,7 +219,7 @@ function next_unused_gateway_name($interface)
 
 function add_gateway_to_config($interface, $gatewayip, $inet_type)
 {
-    global $g, $config, $dry_run;
+    global $config, $dry_run;
 
     if (!isset($config['gateways']['gateway_item'])) {
         $config['gateways']['gateway_item'] = array();
@@ -393,7 +394,7 @@ $config['interfaces'][$interface]['enable']    = true;
 
 function console_configure_dhcpd($version = 4)
 {
-    global $g, $config, $restart_dhcpd, $fp, $interface, $dry_run, $intip, $intbits, $intip6, $intbits6;
+    global $config, $restart_dhcpd, $fp, $interface, $dry_run, $intip, $intbits, $intip6, $intbits6;
 
     $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
     $dhcpd      = ($version === 6) ? "dhcpdv6" : "dhcpd";
