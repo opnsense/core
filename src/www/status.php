@@ -27,8 +27,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* include all configuration functions */
-require_once("guiconfig.inc");
+require_once('guiconfig.inc');
 
 function doCmdT($title, $command) {
 	$rubbish = array('|', '-', '/', '.', ' ');  /* fixes the <a> tag to be W3C compliant */
@@ -104,8 +103,6 @@ function execCmds() {
 		doCmdT($commands[$i][0], $commands[$i][1]);
 	}
 }
-
-global $g, $config;
 
 /* Set up all of the commands we want to execute. */
 defCmdT("System uptime","uptime");

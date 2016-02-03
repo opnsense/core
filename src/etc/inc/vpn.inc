@@ -931,8 +931,9 @@ EOD;
  * For all other occasions the normal vpn_ipsec_configure()
  * will gracefully reload the settings without restarting
  */
-function vpn_ipsec_force_reload($interface = "") {
-    global $g, $config;
+function vpn_ipsec_force_reload($interface = '')
+{
+    global $config;
 
     $ipseccfg = $config['ipsec'];
 
@@ -960,8 +961,6 @@ function vpn_ipsec_force_reload($interface = "") {
 /* master setup for vpn (mpd) */
 function vpn_setup()
 {
-    global $g;
-
     /* start pptpd */
     vpn_pptpd_configure();
 
@@ -985,7 +984,7 @@ function vpn_netgraph_support() {
 }
 
 function vpn_pptpd_configure() {
-  global $config, $g;
+  global $config;
 
   $syscfg = $config['system'];
   $pptpdcfg = $config['pptpd'];
@@ -1216,7 +1215,7 @@ function vpn_pppoes_configure() {
 }
 
 function vpn_pppoe_configure(&$pppoecfg) {
-  global $config, $g;
+  global $config;
 
   $syscfg = $config['system'];
 
@@ -1426,7 +1425,7 @@ EOD;
 
 function vpn_l2tp_configure()
 {
-  global $config, $g;
+  global $config;
 
   $syscfg = $config['system'];
   if (isset($config['l2tp'])) {

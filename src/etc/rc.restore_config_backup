@@ -60,8 +60,10 @@ function choose_backup() {
 	}
 }
 
-function restore_history_backup($number) {
-	global $g, $fp, $confvers;
+function restore_history_backup($number)
+{
+	global $fp, $confvers;
+
 	if (is_numeric($number) && ($number > 0) && ($number <= count($confvers))) {
 		echo "\n" . gettext("Is this the backup you wish to restore?") . "\n";
 		list_backups($number);

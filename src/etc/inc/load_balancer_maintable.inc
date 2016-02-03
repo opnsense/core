@@ -80,8 +80,8 @@ class MainTable {
 		echo "<!-- end content table -->\n";
 	}
 
-	private function display_header() {
-		global $g;
+	private function display_header()
+	{
 		echo "<tr>\n";
 		for ($col = 0; $col < $this->columns - 1; $col++) {
 			echo "  <td width=\"{$this->width[$col]}%\" class=\"listhdrr\">{$this->headers[$col]}</td>\n";
@@ -93,8 +93,8 @@ class MainTable {
 		echo "</tr>\n";
 
 	}
-	private function display_rows() {
-		global $g;
+	private function display_rows()
+	{
 		$cur_row = 0;
 		foreach ($this->content as $row) {
 			echo "<tr>\n";
@@ -125,12 +125,9 @@ class MainTable {
 			$cur_row++;
 		}
 	}
-	private function display_footer() {
-		global $g;
-
-	}
-	private function display_buttons($row) {
-
+	private function display_footer() { }
+	private function display_buttons($row)
+	{
 		if ($this->buttons['move'])
 			echo $this->display_button('move', $row);
 		if ($this->buttons['edit'])
@@ -140,11 +137,9 @@ class MainTable {
 			echo $this->display_button('del', $row);
 		if ($this->buttons['dup'])
 			echo $this->display_button('dup', $row);
-
 	}
-	private function display_button($button, $row) {
-		global $g;
-
+	private function display_button($button, $row)
+	{
 		switch ($button) {
 			case "move": {
 				echo "<button name=\"move_{$row}\" type=\"submit\" title=\"".gettext('Move selected entries before this entry')."\" onmouseover=\"fr_insline({$row}, true)\" onmouseout=\"fr_insline({$row}, false)\" class=\"btn btn-default btn-xs\"><span class=\"glyphicon glyphicon-arrow-left\"></span></button>";

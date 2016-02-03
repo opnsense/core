@@ -962,8 +962,9 @@ if($pkg['step'][$stepid]['javascriptafterformdisplay'] <> "") {
  *  HELPER FUNCTIONS
  */
 
-function fixup_string($string) {
-	global $config, $g, $myurl, $title;
+function fixup_string($string)
+{
+	global $config, $myurl, $title;
 	$newstring = $string;
 	// fixup #1: $myurl -> http[s]://ip_address:port/
 	switch($config['system']['webgui']['protocol']) {

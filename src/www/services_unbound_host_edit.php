@@ -35,15 +35,18 @@ require_once("interfaces.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound_overrides.php');
 
-function hostcmp($a, $b) {
+function hostcmp($a, $b)
+{
 	return strcasecmp($a['host'], $b['host']);
 }
 
-function hosts_sort() {
-	global $g, $config;
+function hosts_sort()
+{
+	global $config;
 
-	if (!is_array($config['unbound']['hosts']))
+	if (!isset($config['unbound']['hosts'])) {
 		return;
+	}
 
 	usort($config['unbound']['hosts'], "hostcmp");
 }

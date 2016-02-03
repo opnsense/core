@@ -35,8 +35,9 @@ function staticmapcmp($a, $b) {
 	return ipcmp($a['ipaddr'], $b['ipaddr']);
 }
 
-function staticmaps_sort($ifgui) {
-	global $g, $config;
+function staticmaps_sort($ifgui)
+{
+	global $config;
 
 	usort($config['dhcpd'][$ifgui]['staticmap'], "staticmapcmp");
 }

@@ -30,16 +30,17 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function staticmapcmp($a, $b) {
+function staticmapcmp($a, $b)
+{
         return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
 }
 
-function staticmaps_sort($ifgui) {
-        global $g, $config;
+function staticmaps_sort($ifgui)
+{
+        global $config;
 
         usort($config['dhcpdv6'][$ifgui]['staticmap'], "staticmapcmp");
 }
-
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dhcpv6.php');
 

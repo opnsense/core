@@ -106,11 +106,8 @@ function filter_pflog_start()
     mwexec('/usr/local/sbin/filterlog -i pflog0 -p /var/run/filterlog.pid');
 }
 
-/* reload filter async */
 function filter_configure()
 {
-    global $g;
-
     /*
      * NOTE: Check here for bootup status since this should not be triggered during bootup.
      *   The reason is that rc.bootup calls filter_configure_sync directly which does this too.
@@ -123,7 +120,8 @@ function filter_configure()
     }
 }
 
-function filter_delete_states_for_down_gateways() {
+function filter_delete_states_for_down_gateways()
+{
     global $config, $GatewaysList;
 
     if (isset($config['system']['kill_states'])) {
@@ -158,7 +156,7 @@ function filter_delete_states_for_down_gateways() {
 
 function filter_configure_sync()
 {
-    global $config, $g, $after_filter_configure_run;
+    global $config, $after_filter_configure_run;
     global $time_based_rules, $filterdns, $aliases;
 
     $FilterIflist = filter_generate_optcfg_array();
@@ -649,8 +647,9 @@ function filter_generate_aliases(&$FilterIflist)
     return $result;
 }
 
-function filter_generate_gateways() {
-    global $config, $g, $GatewaysList;
+function filter_generate_gateways()
+{
+    global $config, $GatewaysList;
 
     $rules = "# Gateways\n";
 
@@ -1627,7 +1626,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
 
 function filter_nat_rules_generate(&$FilterIflist)
 {
-    global $config, $g, $after_filter_configure_run, $GatewaysList, $aliases;
+    global $config, $after_filter_configure_run, $GatewaysList, $aliases;
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";
@@ -2404,7 +2403,7 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
 
 function filter_generate_user_rule(&$FilterIflist, $rule)
 {
-    global $config, $g, $GatewaysList;
+    global $config, $GatewaysList;
 
     /* don't include disabled rules */
     if(isset($rule['disabled'])) {
@@ -2764,7 +2763,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
 
 function filter_rules_generate(&$FilterIflist)
 {
-    global $config, $g, $time_based_rules, $GatewaysList;
+    global $config, $time_based_rules, $GatewaysList;
 
     $fix_rule_label = 'fix_rule_label';
 
@@ -3382,8 +3381,10 @@ EOD;
 
 function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log)
 {
-    global $g, $config;
+    global $config;
+
     $ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} \n";
+
     return $ipfrules;
 }
 
@@ -3396,8 +3397,9 @@ function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log)
  * RESULT
  *   none
  ******/
-function filter_tdr_install_cron($should_install) {
-    global $config, $g;
+function filter_tdr_install_cron($should_install)
+{
+    global $config;
 
     if(file_exists("/var/run/booting")) {
         return;
@@ -3509,10 +3511,8 @@ function filter_get_time_based_rule_status($schedule) {
     return false;
 }
 
-function filter_tdr_day($schedule) {
-    global $g;
-
-
+function filter_tdr_day($schedule)
+{
     /*
      * Calculate day of month.
      * IE: 29th of may
@@ -3526,9 +3526,9 @@ function filter_tdr_day($schedule) {
     }
     return false;
 }
-function filter_tdr_hour($schedule) {
-    global $g;
 
+function filter_tdr_hour($schedule)
+{
     /* $schedule should be a string such as 16:00-19:00 */
     $tmp = explode("-", $schedule);
     $starting_time = strtotime($tmp[0]);
@@ -3540,9 +3540,8 @@ function filter_tdr_hour($schedule) {
     return false;
 }
 
-function filter_tdr_position($schedule) {
-    global $g;
-
+function filter_tdr_position($schedule)
+{
     /*
      * Calculate position, ie: day of week.
      * Sunday = 7, Monday = 1, Tuesday = 2
@@ -3563,9 +3562,8 @@ function filter_tdr_position($schedule) {
     return false;
 }
 
-function filter_tdr_month($schedule) {
-    global $g;
-
+function filter_tdr_month($schedule)
+{
     /*
      * Calculate month
      */
@@ -3594,7 +3592,7 @@ function filter_setup_logging_interfaces(&$FilterIflist)
 
 function filter_process_carp_rules($log)
 {
-    global $g, $config;
+    global $config;
 
     $lines = '';
     /* return if there are no carp configured items */
@@ -3608,7 +3606,7 @@ function filter_process_carp_rules($log)
 /* Generate IPsec Filter Items */
 function filter_generate_ipsec_rules(&$FilterIflist, $log = array())
 {
-    global $config, $g;
+    global $config;
 
     if (isset($config['system']['disablevpnrules'])) {
         return "\n# VPN Rules not added disabled in System->Advanced.\n";
