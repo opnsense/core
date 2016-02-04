@@ -480,9 +480,6 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['submit']) || isset($_POST['apply'])) {
-	$retval = 0;
-	$retvaldhcp = 0;
-	$retvaldns = 0;
 	/* Stop DHCP so we can cleanup leases */
 	killbyname("dhcpd");
 	dhcp_clean_leases();
@@ -490,25 +487,21 @@ if (isset($_POST['submit']) || isset($_POST['apply'])) {
 	/* dnsmasq_configure calls dhcpd_configure */
 	/* no need to restart dhcpd twice */
 	if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))	{
-		$retvaldns = services_dnsmasq_configure();
-		if ($retvaldns == 0) {
-			clear_subsystem_dirty('hosts');
-			clear_subsystem_dirty('staticmaps');
-		}
-	} else if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-		$retvaldns = services_unbound_configure();
-		if ($retvaldns == 0)
-			clear_subsystem_dirty('unbound');
+		services_dnsmasq_configure();
+		clear_subsystem_dirty('hosts');
+	} elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
+		services_unbound_configure();
+		clear_subsystem_dirty('unbound');
 	} else {
-		$retvaldhcp = services_dhcpd_configure();
-		if ($retvaldhcp == 0)
-			clear_subsystem_dirty('staticmaps');
+		services_dhcpd_configure();
 	}
-	if ($dhcpd_enable_changed)
-		$retvalfc = filter_configure();
 
-	if($retvaldhcp == 1 || $retvaldns == 1 || $retvalfc == 1)
-		$retval = 1;
+	clear_subsystem_dirty('staticmaps');
+
+	if ($dhcpd_enable_changed) {
+		filter_configure();
+	}
+
 	$savemsg = get_std_save_message();
 }
 
@@ -527,8 +520,11 @@ if ($act == "del") {
 		write_config();
 		if(isset($config['dhcpd'][$if]['enable'])) {
 			mark_subsystem_dirty('staticmaps');
-			if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))
+			if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic'])) {
 				mark_subsystem_dirty('hosts');
+			} elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
+				mark_subsystem_dirty('unbound');
+			}
 		}
 		header("Location: services_dhcp.php?if={$if}");
 		exit;
