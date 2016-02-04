@@ -47,11 +47,25 @@ class OptionField extends BaseField
      */
     protected $internalValidationMessage = "option not in list";
 
+
+    /**
+     * @var string default description for empty item
+     */
+    private $internalEmptyDescription = "none";
+
     /**
      * @var array valid options for this list
      */
     private $internalOptionList = array();
 
+    /**
+     * set descriptive text for empty value
+     * @param $value description
+     */
+    public function setBlankDesc($value)
+    {
+        $this->internalEmptyDescription = $value;
+    }
 
     /**
      * setter for option values
@@ -83,7 +97,7 @@ class OptionField extends BaseField
         $result = array ();
         // if relation is not required, add empty option
         if (!$this->internalIsRequired) {
-            $result[""] = array("value"=>"none", "selected" => 0);
+            $result[""] = array("value"=>$this->internalEmptyDescription, "selected" => 0);
         }
         foreach ($this->internalOptionList as $optKey => $optValue) {
             if ($optKey == $this->internalValue) {
