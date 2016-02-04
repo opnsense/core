@@ -333,9 +333,6 @@ reload_ttys();
 /* load graphing functions */
 enable_rrd_graphing();
 
-/* enable watchdog if supported */
-enable_watchdog();
-
 /* if we are operating at 1000 then increase timeouts.
    this was never accounted for after moving to 1000 hz */
 $kern_hz = get_single_sysctl('kern.clockrate');
