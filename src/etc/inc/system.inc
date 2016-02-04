@@ -875,6 +875,7 @@ function system_syslogd_start()
         if (!isset($syslogcfg['disablelocallogging'])) {
             $syslogconf .= <<<EOD
 local3.*              {$log_directive}/var/log/vpn.log
+!captiveportal
 local4.*              {$log_directive}/var/log/portalauth.log
 local7.*              {$log_directive}/var/log/dhcpd.log
 *.notice;kern.debug;lpr.info;mail.crit;daemon.none;    {$log_directive}/var/log/system.log
