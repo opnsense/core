@@ -22,7 +22,7 @@
         <id>rule.geoip_direction</id>
         <label>GeoIP/Direction</label>
         <type>dropdown</type>
-        <help>Connections coming from (src) or going to (dst) listed countries, default (none) selects both </help>
+        <help>Connections coming from (src) or going to (dst) listed countries, default selects both </help>
     </field>
     <field>
         <id>rule.action</id>
