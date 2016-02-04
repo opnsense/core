@@ -43,10 +43,11 @@
                 </geoip>
                 <geoip_direction type="OptionField">
                     <Required>N</Required>
+                    <BlankDesc>Both</BlankDesc>
                     <default></default>
                     <OptionValues>
-                        <src>source</src>
-                        <dst>destination</dst>
+                        <src>Source</src>
+                        <dst>Destination</dst>
                     </OptionValues>
                 </geoip_direction>
                 <description type="TextField">
