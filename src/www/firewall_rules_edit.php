@@ -594,20 +594,17 @@ include("head.inc");
           if ($("#proto").val() == 'tcp' || $("#proto").val() == 'udp' || $("#proto").val() == 'tcp/udp') {
               port_disabled = false;
           } else {
-              $("#dstbeginport optgroup:last option:first").prop('selected', true);
-              $("#dstendport optgroup:last option:first").prop('selected', true);
-              $("#srcbeginport optgroup:last option:first").prop('selected', true);
-              $("#srcendport optgroup:last option:first").prop('selected', true);
               port_disabled = true;
           }
-          $("#srcbeginport").prop('disabled', port_disabled);
-          $("#srcendport").prop('disabled', port_disabled);
-          $("#dstbeginport").prop('disabled', port_disabled);
-          $("#dstendport").prop('disabled', port_disabled);
-          $("#srcbeginport").selectpicker('refresh');
-          $("#srcendport").selectpicker('refresh');
-          $("#dstbeginport").selectpicker('refresh');
-          $("#dstendport").selectpicker('refresh');
+          var port_fields = ['srcbeginport', 'srcendport', 'dstbeginport', 'dstendport'];
+          port_fields.forEach(function(field){
+            if (port_disabled) {
+                $("#"+field+" optgroup:last option:first").prop('selected', true);
+            }
+            $("#"+field).prop('disabled', port_disabled);
+            $("#"+field).selectpicker('refresh');
+            $("#"+field).change();
+          });
       });
 
       // IPv4 address, fix dstmask
@@ -1076,7 +1073,7 @@ include("head.inc");
                       </table>
                     </td>
                   </tr>
-                  <tr class="act_port_select">
+                  <tr>
                     <td><a id="help_for_dstport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination port range"); ?></td>
                     <td>
                       <table class="table table-condensed">
