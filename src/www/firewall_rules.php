@@ -425,12 +425,6 @@ $( document ).ready(function() {
                      (isset($filterent['floating']) && $selected_if == 'FloatingRules')):
                   $interface_has_rules = true;
 
-                  if (!isset($filterent['type'])) {
-                      // not very nice.... associated NAT rules don't have a type...
-                      // NAT rules shouldn't leak into the rules screen, breaks on edit
-                      continue;
-                  }
-
                   // select icon
                   if ($filterent['type'] == "block" && empty($filterent['disabled'])) {
                       $iconfn = "glyphicon-remove text-danger";
@@ -629,15 +623,26 @@ $( document ).ready(function() {
                       <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
+<?php
+                      // not very nice.... associated NAT rules don't have a type...
+                      // if for some reason (broken config) a rule is in there which doesn't have a related nat rule
+                      // make sure we are able to delete it.
+                      if (isset($filterent['type'])):?>
                       <a href="firewall_rules_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
+<?php
+                      endif;?>
                       <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                         <span class="fa fa-trash text-muted"></span>
                       </a>
+<?php
+                      if (isset($filterent['type'])):?>
                       <a href="firewall_rules_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
                         <span class="fa fa-clone text-muted"></span>
                       </a>
+<?php
+                      endif;?>
                     </td>
                   </tr>
 <?php
