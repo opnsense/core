@@ -1784,28 +1784,6 @@ function system_disable_arp_wrong_if()
   ));
 }
 
-function enable_watchdog()
-{
-    global $config;
-
-    return;  /* XXX delete or repair please */
-
-    $install_watchdog = false;
-    $supported_watchdogs = array("Geode");
-    $file = @file_get_contents('/var/run/dmesg.boot');
-    foreach($supported_watchdogs as $sd) {
-        if(stristr($file, "Geode")) {
-            $install_watchdog = true;
-        }
-    }
-    if($install_watchdog == true) {
-        if(is_process_running("watchdogd")) {
-            mwexec("/usr/bin/killall watchdogd", true);
-        }
-        exec("/usr/sbin/watchdogd");
-    }
-}
-
 function get_possible_listen_ips($include_ipv6_link_local=false) {
     $interfaces = get_configured_interface_with_descr();
     $carplist = get_configured_carp_interface_list();
