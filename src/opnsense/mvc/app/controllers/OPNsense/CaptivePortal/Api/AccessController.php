@@ -161,6 +161,7 @@ class AccessController extends ApiControllerBase
                 }
 
                 if ($isAuthenticated) {
+                    $this->getLogger("captiveportal")->info("AUTH " . $userName .  " (".$clientIp.") zone " . $zoneid);
                     // when authenticated, we have $authServer available to request additional data if needed
                     $clientSession = $this->clientSession((string)$cpZone->zoneid);
                     if ($clientSession['clientState'] == 'AUTHORIZED') {
@@ -202,6 +203,7 @@ class AccessController extends ApiControllerBase
                         }
                     }
                 } else {
+                    $this->getLogger("captiveportal")->info("DENY " . $userName .  " (".$clientIp.") zone " . $zoneid);
                     return array("clientState" => 'NOT_AUTHORIZED', "ipAddress" => $clientIp);
                 }
             }
@@ -236,6 +238,9 @@ class AccessController extends ApiControllerBase
                 );
                 $status = json_decode($statusRAW, true);
                 if ($status != null) {
+                    $this->getLogger("captiveportal")->info(
+                        "LOGOUT " . $clientSession['userName'] .  " (".$this->getClientIp().") zone " . $zoneid
+                    );
                     return $status;
                 }
             }
