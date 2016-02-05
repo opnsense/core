@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-27 19:40+0000\n"
+"POT-Creation-Date: 2016-02-05 08:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 4012\n"
+"X-Pootle-Revision: 4262\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -1089,7 +1089,7 @@ msgstr ""
 
 # File: lang/dynamic/helpers/controllers.php, line: 72
 msgid "Enter the cache memory size to use."
-msgstr ""
+msgstr "Saisir la taille de mémoire cache à utiliser"
 
 # File: lang/dynamic/helpers/controllers.php, line: 43
 msgid "Enter the storage size for the local cache (default is 100)."
@@ -1944,7 +1944,7 @@ msgstr "Aucun"
 
 # File: lang/dynamic/helpers/models.php, line: 144
 msgid "IPs"
-msgstr ""
+msgstr "IPs"
 
 # File: src/www/firewall_aliases.php, line: 177
 msgid "Ports"
@@ -4040,42 +4040,42 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 150
 # File: src/www/vpn_openvpn_server.php, line: 315
 msgid "The field 'DNS Server #1' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur DNS 1' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 153
 # File: src/www/vpn_openvpn_server.php, line: 318
 msgid "The field 'DNS Server #2' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur DNS 2' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 156
 # File: src/www/vpn_openvpn_server.php, line: 321
 msgid "The field 'DNS Server #3' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur DNS 3' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 159
 # File: src/www/vpn_openvpn_server.php, line: 324
 msgid "The field 'DNS Server #4' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur DNS 4' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 165
 # File: src/www/vpn_openvpn_server.php, line: 330
 msgid "The field 'NTP Server #1' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur NTP 1' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 168
 # File: src/www/vpn_openvpn_server.php, line: 333
 msgid "The field 'NTP Server #2' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur NTP 2' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 181
 # File: src/www/vpn_openvpn_server.php, line: 346
 msgid "The field 'WINS Server #1' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur WINS 1' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_csc.php, line: 184
 # File: src/www/vpn_openvpn_server.php, line: 349
 msgid "The field 'WINS Server #2' must contain a valid IP address"
-msgstr ""
+msgstr "Le champ 'Serveur WINS 2' doit contenir un adresse IP valide"
 
 # File: src/www/vpn_openvpn_server.php, line: 366
 msgid "The field 'Concurrent connections' must be numeric."
@@ -4985,7 +4985,7 @@ msgstr "L'état actuel est inconnu."
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 98
 msgid "Disconnect selected client?"
-msgstr ""
+msgstr "Déconnecter le client sélectionné ?"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 131
 msgid "Session"
@@ -5440,7 +5440,7 @@ msgstr ""
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 108
 msgid "Updates"
-msgstr "Mises à jours"
+msgstr "Mise(s) à jour"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 217
 msgid "Progress"
@@ -5468,12 +5468,12 @@ msgstr ""
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 80
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 80
 msgid "Manufacturer"
-msgstr ""
+msgstr "Constructeur"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 82
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 82
 msgid "Interface name"
-msgstr ""
+msgstr "Nom de l'interface"
 
 # File: src/www/diag_arp.php, line: 327
 # File: src/www/diag_ndp.php, line: 144
@@ -6680,6 +6680,7 @@ msgstr ""
 # File: src/www/diag_defaults.php, line: 50
 msgid "If you click \"Yes\", the firewall will:"
 msgstr ""
+"Si vous cliquez sur \"Oui, le pare-feu exécutera les actions suivantes :"
 
 # File: src/www/diag_defaults.php, line: 61
 msgid "Reset to factory defaults"
@@ -8194,7 +8195,7 @@ msgstr "Abandonner"
 
 # File: src/www/diag_smart.php, line: 170
 msgid "Email sent to %s"
-msgstr "Courrier envoyé à %s"
+msgstr "Courriel envoyé à %s"
 
 # File: src/www/diag_smart.php, line: 208
 msgid "Information/Tests"
@@ -8211,7 +8212,7 @@ msgstr "Tester le courriel"
 
 # File: src/www/diag_smart.php, line: 250
 msgid "Send test email to %s"
-msgstr "Envoyer le message de test à %s"
+msgstr "Envoyer le courriel de test à %s"
 
 # File: src/www/diag_smart.php, line: 258
 # File: src/www/services_wol.php, line: 158
@@ -12330,7 +12331,7 @@ msgstr ""
 # File: src/www/interfaces.php, line: 2590
 # File: src/www/interfaces_ppps_edit.php, line: 548
 msgid "Access Point Name (APN)"
-msgstr ""
+msgstr "Nom du point d'accès (APN)"
 
 # File: src/www/interfaces.php, line: 2620
 msgid "Advanced PPP"
@@ -13006,7 +13007,7 @@ msgstr ""
 # File: src/www/interfaces.php, line: 3033
 # File: src/www/interfaces_wireless_edit.php, line: 185
 msgid "Access Point"
-msgstr ""
+msgstr "Point d'accès"
 
 # File: src/www/interfaces.php, line: 3042
 msgid ""
@@ -16609,7 +16610,7 @@ msgstr ""
 # File: src/www/services_dyndns_edit.php, line: 345
 # File: src/www/services_dyndns_edit.php, line: 351
 msgid "Enable "
-msgstr "Activer"
+msgstr "Activer "
 
 # File: src/www/services_dyndns_edit.php, line: 345
 msgid "Wildcard"
@@ -17239,7 +17240,7 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 563
 msgid "checksum"
-msgstr ""
+msgstr "somme de contrôle"
 
 # File: src/www/services_ntpd_gps.php, line: 564
 msgid "Calculate NMEA checksum"
@@ -17408,7 +17409,7 @@ msgstr ""
 
 # File: src/www/services_rfc2136_edit.php, line: 208
 msgid "Use TCP instead of UDP"
-msgstr ""
+msgstr "Utiliser TCP au lieu d'UDP"
 
 # File: src/www/services_rfc2136_edit.php, line: 211
 msgid "Use Public IP"
@@ -17513,7 +17514,7 @@ msgstr ""
 
 # File: src/www/services_snmp.php, line: 84
 msgid "Community"
-msgstr ""
+msgstr "Communauté"
 
 # File: src/www/services_snmp.php, line: 88
 msgid "Polling Port"
@@ -17521,7 +17522,7 @@ msgstr ""
 
 # File: src/www/services_snmp.php, line: 95
 msgid "Invalid character '#' in SNMP trap string"
-msgstr ""
+msgstr "Le caractère '#' est invalide dans le nom du SNMP trap"
 
 # File: src/www/services_snmp.php, line: 98
 # File: src/www/services_snmp.php, line: 380
@@ -17539,7 +17540,7 @@ msgstr ""
 
 # File: src/www/services_snmp.php, line: 286
 msgid "SNMP Daemon"
-msgstr ""
+msgstr "Service SNMP"
 
 # File: src/www/services_snmp.php, line: 303
 msgid "Polling Port "
@@ -17567,10 +17568,14 @@ msgid ""
 "to hosts knowing the community string. Use a strong value here to protect "
 "from unauthorized information disclosure."
 msgstr ""
+"Le nom de la communauté est comme un mot de passe, restreindre l'accès à "
+"l'interrogation SNMP à des hôtes connaissant le nom de la communauté. "
+"Utilisez une valeur forte ici pour protéger contre la divulgation non "
+"autorisée d'informations."
 
 # File: src/www/services_snmp.php, line: 361
 msgid "SNMP Traps"
-msgstr ""
+msgstr "Liste des Traps SNMP"
 
 # File: src/www/services_snmp.php, line: 383
 msgid "Enter trap server name"
@@ -17586,7 +17591,7 @@ msgstr ""
 
 # File: src/www/services_snmp.php, line: 396
 msgid "Enter the SNMP trap string"
-msgstr ""
+msgstr "Entrer une valeur pour le trap SNMP"
 
 # File: src/www/services_snmp.php, line: 412
 msgid "Modules"
@@ -17594,7 +17599,7 @@ msgstr ""
 
 # File: src/www/services_snmp.php, line: 423
 msgid "SNMP Modules"
-msgstr ""
+msgstr "Modules SNMP"
 
 # File: src/www/services_snmp.php, line: 425
 msgid "MibII"
@@ -17755,7 +17760,7 @@ msgstr ""
 
 # File: src/www/services_unbound_acls.php, line: 198
 msgid "%s Access List"
-msgstr ""
+msgstr "Liste d'accès %s"
 
 # File: src/www/services_unbound_acls.php, line: 201
 msgid "Access List name"
@@ -17814,7 +17819,7 @@ msgstr ""
 
 # File: src/www/services_unbound_acls.php, line: 346
 msgid "Do you really want to delete this access list?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer la liste d'accès ?"
 
 # File: src/www/services_unbound_advanced.php, line: 132
 msgid "The configuration of the DNS Resolver, has been changed"
@@ -18030,7 +18035,7 @@ msgstr ""
 
 # File: src/www/services_unbound_advanced.php, line: 363
 msgid "Number of Hosts to cache"
-msgstr ""
+msgstr "Nombre d'hôtes à conserver dans la mémoire cache"
 
 # File: src/www/services_unbound_advanced.php, line: 361
 msgid "1000"
@@ -18055,6 +18060,8 @@ msgstr "50 000"
 # File: src/www/services_unbound_advanced.php, line: 373
 msgid "Number of hosts for which information is cached. The default is 10,000."
 msgstr ""
+"Nombre d'hôtes dont les informations sont conservées dans la mémoire cache. "
+"Par défaut 10000."
 
 # File: src/www/services_unbound_advanced.php, line: 378
 msgid "Unwanted Reply Threshold"
@@ -18062,7 +18069,7 @@ msgstr ""
 
 # File: src/www/services_unbound_advanced.php, line: 376
 msgid "disabled"
-msgstr ""
+msgstr "désactivé"
 
 # File: src/www/services_unbound_advanced.php, line: 377
 msgid "5 million"
@@ -18241,7 +18248,7 @@ msgstr ""
 
 # File: src/www/services_wol.php, line: 55
 msgid "Sent magic packet to %s (%s)."
-msgstr ""
+msgstr "Paquet magic envoyé à %s (%s)."
 
 # File: src/www/services_wol.php, line: 57
 msgid ""
@@ -18259,7 +18266,7 @@ msgstr ""
 
 # File: src/www/services_wol.php, line: 89
 msgid "Sent magic packet to %s."
-msgstr ""
+msgstr "Paquet magic envoyé à %s."
 
 # File: src/www/services_wol.php, line: 94
 msgid ""
@@ -18469,7 +18476,7 @@ msgstr "Dernière vérification :"
 
 # File: src/www/status_graph.php, line: 207
 msgid "Sort by"
-msgstr ""
+msgstr "Trié par"
 
 # File: src/www/status_graph.php, line: 209
 msgid "Display"
@@ -18498,11 +18505,11 @@ msgstr "FQDN"
 
 # File: src/www/status_graph.php, line: 263
 msgid "Host IP"
-msgstr ""
+msgstr "IP de l'hôte"
 
 # File: src/www/status_graph.php, line: 263
 msgid "Host Name or IP"
-msgstr ""
+msgstr "Nom d'hôte ou IP"
 
 # File: src/www/status_graph.php, line: 264
 msgid "Bandwidth In"
@@ -18773,11 +18780,11 @@ msgstr ""
 # File: src/www/status_openvpn.php, line: 285
 # File: src/www/status_openvpn.php, line: 348
 msgid "Bytes Sent"
-msgstr ""
+msgstr "Octets envoyés"
 
 # File: src/www/status_openvpn.php, line: 166
 msgid "Bytes Received"
-msgstr ""
+msgstr "Octets reçus"
 
 # File: src/www/status_openvpn.php, line: 193
 msgid "Kill client connection from"
@@ -19599,19 +19606,19 @@ msgstr ""
 
 # File: src/www/system_advanced_firewall.php, line: 488
 msgid "Update Frequency"
-msgstr ""
+msgstr "Fréquence des mises à jour"
 
 # File: src/www/system_advanced_firewall.php, line: 494
 msgid "Monthly"
-msgstr ""
+msgstr "Mensuelle"
 
 # File: src/www/system_advanced_firewall.php, line: 498
 msgid "Weekly"
-msgstr ""
+msgstr "Hebdomadaire"
 
 # File: src/www/system_advanced_firewall.php, line: 502
 msgid "Daily"
-msgstr ""
+msgstr "Quotidienne"
 
 # File: src/www/system_advanced_firewall.php, line: 505
 msgid ""
@@ -20784,6 +20791,8 @@ msgid ""
 "Do you really want to delete this Certificate Authority and its CRLs, and "
 "unreference any associated certificates?"
 msgstr ""
+"Voulez-vous vraiment supprimer cette Autorité de certification et sa liste "
+"de révocation ainsi que les références des certificats associés ?"
 
 # File: src/www/system_camanager.php, line: 413
 # File: src/www/system_certmanager.php, line: 637
@@ -20793,15 +20802,15 @@ msgstr "Méthode"
 
 # File: src/www/system_camanager.php, line: 34
 msgid "Import an existing Certificate Authority"
-msgstr ""
+msgstr "Importer une Autorité de certification existante"
 
 # File: src/www/system_camanager.php, line: 35
 msgid "Create an internal Certificate Authority"
-msgstr ""
+msgstr "Créer une Autorité de certification interne"
 
 # File: src/www/system_camanager.php, line: 36
 msgid "Create an intermediate Certificate Authority"
-msgstr ""
+msgstr "Créer une Autorité de certification intermédiaire"
 
 # File: src/www/system_camanager.php, line: 439
 msgid "Existing Certificate Authority"
@@ -20835,7 +20844,7 @@ msgstr ""
 
 # File: src/www/system_camanager.php, line: 481
 msgid "Internal Certificate Authority"
-msgstr ""
+msgstr "Autorité de certification interne"
 
 # File: src/www/system_camanager.php, line: 529
 # File: src/www/system_certmanager.php, line: 763
@@ -21153,7 +21162,7 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 1162
 # File: src/www/system_crlmanager.php, line: 604
 msgid "In Use"
-msgstr ""
+msgstr "Utilisé par"
 
 # File: src/www/system_certmanager.php, line: 1186
 msgid "external - signature pending"
@@ -21186,11 +21195,11 @@ msgstr "Client OpenVPN"
 
 # File: src/www/system_certmanager.php, line: 1297
 msgid "IPsec Tunnel"
-msgstr ""
+msgstr "Tunnel IPsec"
 
 # File: src/www/system_certmanager.php, line: 1276
 msgid "show certificate info"
-msgstr ""
+msgstr "afficher les informations du certificat"
 
 # File: src/www/system_certmanager.php, line: 1274
 msgid "export ca"
@@ -22109,7 +22118,7 @@ msgstr "Défini par"
 # File: src/www/system_groupmanager.php, line: 290
 # File: src/www/system_groupmanager.php, line: 460
 msgid "Group name"
-msgstr ""
+msgstr "Nom du groupe"
 
 # File: src/www/system_groupmanager.php, line: 301
 msgid "Group description, for your own information only"
@@ -22156,7 +22165,7 @@ msgstr "Supprimer le privilège"
 
 # File: src/www/system_groupmanager.php, line: 462
 msgid "Member Count"
-msgstr ""
+msgstr "Nombre de membre(s)"
 
 # File: src/www/system_usermanager.php, line: 907
 # File: src/www/vpn_l2tp_users.php, line: 71
@@ -22781,7 +22790,7 @@ msgstr "Administrateur système"
 
 # File: src/www/system_usermanager.php, line: 1055
 msgid "Disabled User"
-msgstr "Désactiver l'utilisateur"
+msgstr "Utilisateur désactivé"
 
 # File: src/www/system_usermanager.php, line: 1057
 msgid "Normal User"
@@ -22818,7 +22827,7 @@ msgstr "Confirmation"
 
 # File: src/www/system_usermanager_settings.php, line: 47
 msgid "Session timeout must be an integer value."
-msgstr ""
+msgstr "Le délai d'expiration de la session doit être un entier"
 
 # File: src/www/system_usermanager_settings.php, line: 59
 msgid ""
@@ -22828,7 +22837,7 @@ msgstr ""
 
 # File: src/www/system_usermanager_settings.php, line: 133
 msgid "Session Timeout"
-msgstr ""
+msgstr "Délai d'expiration de la session"
 
 # File: src/www/system_usermanager_settings.php, line: 137
 msgid ""

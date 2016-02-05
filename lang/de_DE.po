@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-28 04:47+0000\n"
+"POT-Creation-Date: 2016-02-05 08:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /de/gui/de.po\n"
-"X-Pootle-Revision: 4185\n"
+"X-Pootle-Revision: 4256\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -1250,7 +1250,6 @@ msgid ""
 msgstr ""
 "sekundäre Schnittstelle, vergleicht Pakete die von Schnittstelle (1) zu "
 "Schnittstelle (2) transportiert wirden.\n"
-"        "
 
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
@@ -1598,7 +1597,7 @@ msgid "OutboundEdit"
 msgstr "OutboundEdit"
 
 msgid "Outbound"
-msgstr "Abgehend"
+msgstr "Ausgehend"
 
 # File: lang/dynamic/helpers/models.php, line: 106
 msgid "NPTEdit"
@@ -8068,6 +8067,10 @@ msgid ""
 "with block the packet is dropped silently. In either case, the original "
 "packet is discarded."
 msgstr ""
+"Hinweis: Der Unterschied zwischen blockieren und zurückweisen ist der, dass "
+"beim Zurückweisen ein Paket (TCP RST oder ICMP port unreachable bei UDP) an "
+"den Absender geschickt wird, während beim Blockieren das Paket still "
+"verworfen wird. In beiden Fällen wird das originale Paket verworfen."
 
 msgid "Quick"
 msgstr "Schnell"
@@ -8079,6 +8082,8 @@ msgid ""
 "Set this option if you need to apply this action to traffic that matches "
 "this rule immediately."
 msgstr ""
+"Setzen Sie diese Option, falls Sie diese Aktion sofort auf den Datenverkehr "
+"anwenden möchten, der dieser Regel entspricht."
 
 msgid "Associated filter rule"
 msgstr "Zugewiesene Filterregel"
@@ -8192,7 +8197,7 @@ msgstr ""
 
 # File: src/www/firewall_rules_edit.php, line: 1236
 msgid "disable reply-to"
-msgstr ""
+msgstr "deaktiviere Antwort-an"
 
 msgid "This will disable auto generated reply-to for this rule."
 msgstr ""
@@ -10546,7 +10551,7 @@ msgid "edit interface"
 msgstr "Schnittstelle bearbeiten"
 
 msgid "GIF tunnels are configured here."
-msgstr ""
+msgstr "GIF-Tunnel werden hier konfiguriert."
 
 # File: src/www/interfaces_gif.php, line: 158
 msgid ""
@@ -11099,7 +11104,7 @@ msgid "will be auto-negotiated by default."
 msgstr ""
 
 msgid "Set ONLY for MLPPP connections."
-msgstr ""
+msgstr "NUR für MLPPP-Verbindungen."
 
 msgid ""
 "This QinQ cannot be deleted because it is still being used as an interface."
@@ -11210,7 +11215,7 @@ msgid ""
 msgstr ""
 
 msgid "Do you really want to delete this wireless clone?"
-msgstr ""
+msgstr "Wollen Sie diesen Wireless-Klon wirklich löschen?"
 
 msgid ""
 "Here you can configure clones of wireless interfaces, which can be assigned "
@@ -14575,23 +14580,24 @@ msgstr ""
 
 # File: src/www/status_wireless.php, line: 155
 msgid "TXSEQ"
-msgstr ""
+msgstr "TXSEQ"
 
 # File: src/www/status_wireless.php, line: 156
 msgid "RXSEQ"
-msgstr ""
+msgstr "RXSEQ"
 
 # File: src/www/status_wireless.php, line: 158
 msgid "ERP"
-msgstr ""
+msgstr "ERP"
 
 # File: src/www/status_wireless.php, line: 190
 msgid "Rescan"
-msgstr ""
+msgstr "Erneut scannen"
 
 # File: src/www/status_wireless.php, line: 191
 msgid "A = authorized, E = Extended Rate (802.11g), P = Power save mode"
 msgstr ""
+"A = autorisiert, E = erweiterte Frequenz (802.11g), P = Energiesparmodus"
 
 # File: src/www/status_wireless.php, line: 191
 msgid "Flags:"
@@ -14618,7 +14624,7 @@ msgstr "Einen Moment... Weiterleitung nach %s in 20 Sekunden."
 
 # File: src/www/system_advanced_admin.php, line: 252
 msgid "Secure Shell configuration has changed. Applying now..."
-msgstr ""
+msgstr "Secure-Shell Konfiguration hat sich geändert. Jetzt anwenden..."
 
 # File: src/www/system_advanced_admin.php, line: 257
 msgid "webConfigurator configuration has changed. Applying now..."
@@ -15000,7 +15006,7 @@ msgid ""
 msgstr ""
 
 msgid "Disable Firewall Scrub"
-msgstr ""
+msgstr "Deaktiviere Firewall Scrub"
 
 msgid ""
 "Disables the PF scrubbing option which can sometimes interfere with NFS and "
@@ -15062,7 +15068,7 @@ msgid ""
 msgstr ""
 
 msgid "Note:  Leave this blank for the default."
-msgstr ""
+msgstr "Hinweis:  Leerlassen für Standard."
 
 msgid "On your system the default size is:"
 msgstr "Auf Ihrem Sytem ist die Standardgröße:"
@@ -15741,7 +15747,7 @@ msgstr ""
 
 # File: src/www/system_advanced_notifications.php, line: 266
 msgid "E-Mail auth username"
-msgstr ""
+msgstr "Benutzername für die E-Mail-Authentifizierung"
 
 msgid "(optional)"
 msgstr "(optional)"
@@ -15751,7 +15757,7 @@ msgstr ""
 
 # File: src/www/system_advanced_notifications.php, line: 276
 msgid "E-Mail auth password"
-msgstr ""
+msgstr "Passwort für die E-Mail-Authentifizierung"
 
 msgid "Enter the e-mail address password for SMTP authentication."
 msgstr "Geben Sie das E-Mail Adresspassword für SMTP Authentifizierung ein."
@@ -16278,6 +16284,9 @@ msgid ""
 "No internal Certificate Authorities have been defined. You must %sadd%s an "
 "internal CA before creating an internal certificate."
 msgstr ""
+"Es wurde keine interne Zertifizierungsstelle definiert. Sie müssen eine neue "
+"interne CA %shinzufügen%s, bevor Sie ein internes Zertifikat erstellen "
+"können."
 
 msgid "Client Certificate"
 msgstr "Client Zertifikat"
@@ -16331,7 +16340,7 @@ msgid "Complete Signing Request"
 msgstr "Signaturanfrage vervollständigen"
 
 msgid "Signing request data"
-msgstr ""
+msgstr "Signaturanfragedaten"
 
 msgid ""
 "Copy the certificate signing data from here and forward it to your "
