@@ -160,7 +160,7 @@ function services_radvd_configure($blacklist = array())
 		$radvdconf .= "\tAdvSendAdvert on;\n";
 		$radvdconf .= "\tMinRtrAdvInterval 5;\n";
 		$radvdconf .= "\tMaxRtrAdvInterval 20;\n";
-		$mtu = get_interface_mtu($realif);
+		$mtu = legacy_interface_stats($realif)['mtu'];
 		if (is_numeric($mtu))
 			$radvdconf .= "\tAdvLinkMTU {$mtu};\n";
 		else
@@ -292,7 +292,7 @@ function services_radvd_configure($blacklist = array())
 		$radvdconf .= "\tAdvSendAdvert on;\n";
 		$radvdconf .= "\tMinRtrAdvInterval 3;\n";
 		$radvdconf .= "\tMaxRtrAdvInterval 10;\n";
-		$mtu = get_interface_mtu($realif);
+		$mtu = legacy_interface_stats($realif)['mtu'];
 		if (is_numeric($mtu))
 			$radvdconf .= "\tAdvLinkMTU {$mtu};\n";
 		else
