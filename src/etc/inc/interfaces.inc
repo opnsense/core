@@ -1764,9 +1764,14 @@ EOD;
 
         $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
-            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) : "1492";
+            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) : 1500;
         }
-        $mpdconf_arr[] = "set link mtu {$mtus[$pid]}";
+        if ($ppp['type'] == "pppoe" && $mtus[$pid] > 1500 ) {
+            // use pppoe max-payload if mtu we're about to set > 1492
+            $mpdconf_arr[] = "set pppoe max-payload " . ($mtus[$pid]-8);
+        } else {
+            $mpdconf_arr[] = "set link mtu " . ($mtus[$pid]-8);
+        }
         $mrus = !empty($ppp['mtu']) ? explode(',', $ppp['mru']) : null;
         if (!empty($mrus[$pid])) {
             $mpdconf_arr[] = "set link mru {$mrus[$pid]}";
@@ -3105,8 +3110,8 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 legacy_interface_mtu($realif, $wancfg['mtu']);
             }
         } else {
-            if ($wancfg['mtu'] != legacy_interface_stats($realif)['mtu']) {
-                legacy_interface_mtu($realif, $wancfg['mtu']);
+            if ($wancfg['mtu'] != legacy_interface_stats($realhwif)['mtu']) {
+                legacy_interface_mtu($realhwif, $wancfg['mtu']);
             }
 
             /* This case is needed when the parent of vlans is being configured */
