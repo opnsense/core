@@ -1582,17 +1582,10 @@ function interface_ppps_configure($interface)
         log_error(sprintf(gettext("Can't find PPP config for %s in interface_ppps_configure()."), $ifcfg['if']));
         return 0;
     }
-    $pppif = $ifcfg['if'];
-    if ($ppp['type'] == "ppp") {
-        $type = "modem";
-    } else {
-        $type = $ppp['type'];
-    }
-    $upper_type = strtoupper($ppp['type']);
 
     if (file_exists("/var/run/booting")) {
         $descr = isset($ifcfg['descr']) ? $ifcfg['descr'] : strtoupper($interface);
-        echo "starting {$pppif} link...";
+        echo "starting {$ifcfg['if']} link...";
         // Do not re-configure the interface if we are booting and it's already been started
         if (isvalidpid("/var/run/{$ppp['type']}_{$interface}.pid")) {
             return 0;
@@ -1600,7 +1593,7 @@ function interface_ppps_configure($interface)
     }
 
     $ports = explode(',', $ppp['ports']);
-    if ($type != "modem") {
+    if ($ppp['type'] != "ppp") {
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
@@ -1652,67 +1645,9 @@ function interface_ppps_configure($interface)
                 }
                 break;
             default:
-                log_error(sprintf(gettext("Unkown %s configured as ppp interface."), $type));
+                log_error(sprintf(gettext("Unkown %s configured as ppp interface."), $ppp['type']));
                 break;
         }
-    }
-
-    if (is_array($ports) && count($ports) > 1) {
-        $multilink = "enable";
-    } else {
-        $multilink = "disable";
-    }
-
-    if ($type == "modem") {
-        if (is_ipaddr($ppp['localip'])) {
-            $localip = $ppp['localip'];
-        } else {
-            $localip = '0.0.0.0';
-        }
-
-        if (is_ipaddr($ppp['gateway'])) {
-            $gateway = $ppp['gateway'];
-        } else {
-            $gateway = "10.64.64.{$pppid}";
-        }
-        $ranges = "{$localip}/0 {$gateway}/0";
-
-        if (empty($ppp['apnum'])) {
-            $ppp['apnum'] = 1;
-        }
-    } else {
-        $ranges = "0.0.0.0/0 0.0.0.0/0";
-    }
-
-    if (isset($ppp['ondemand'])) {
-        $ondemand = "enable";
-    } else {
-        $ondemand = "disable";
-    }
-    if (!isset($ppp['idletimeout'])) {
-        $ppp['idletimeout'] = 0;
-    }
-
-    if (empty($ppp['username']) && $type == "modem") {
-        $ppp['username'] = "user";
-        $ppp['password'] = "none";
-    }
-    if (empty($ppp['password']) && $type == "modem") {
-        $passwd = "none";
-    } else {
-        $passwd = base64_decode($ppp['password']);
-    }
-
-    $bandwidths = explode(',', $ppp['bandwidth']);
-    $defaultmtu = "1492";
-    if (!empty($ifcfg['mtu'])) {
-        $defaultmtu = intval($ifcfg['mtu']);
-    }
-    $mtus = explode(',', $ppp['mtu']);
-    $mrus = explode(',', $ppp['mru']);
-
-    if (isset($ppp['mrru'])) {
-        $mrrus = explode(',', $ppp['mrru']);
     }
 
     // Construct the mpd.conf file
@@ -1727,7 +1662,7 @@ default:
 {$ppp['type']}client:
   create bundle static {$interface}
   set bundle enable ipv6cp
-  set iface name {$pppif}
+  set iface name {$ifcfg['if']}
 
 EOD;
     $setdefaultgw = false;
@@ -1745,202 +1680,159 @@ EOD;
     }
 
     if (($interface == "wan" && $founddefaultgw == false) || $setdefaultgw == true) {
-        $setdefaultgw = true;
-        $mpdconf .= <<<EOD
-  set iface route default
-
-EOD;
+        $mpdconf .= "  set iface route default\n";
     }
-    $mpdconf .= <<<EOD
-  set iface {$ondemand} on-demand
-  set iface idle {$ppp['idletimeout']}
-
-EOD;
+    if (isset($ppp['ondemand'])) {
+        $mpdconf .= "  set iface enable on-demand\n";
+    } else {
+        $mpdconf .= "  set iface disable on-demand\n";
+    }
+    if (!isset($ppp['idletimeout'])) {
+        $mpdconf .= "  set iface idle 0\n";
+    } else {
+        $mpdconf .= "  set iface idle {$ppp['idletimeout']}\n";
+    }
 
     if (isset($ppp['ondemand'])) {
-        $mpdconf .= <<<EOD
-  set iface addrs 10.10.1.1 10.10.1.2
-
-EOD;
+        $mpdconf .= "  set iface addrs 10.10.1.1 10.10.1.2\n";
     }
 
     if (isset($ppp['tcpmssfix'])) {
-        $tcpmss = "disable";
+        $mpdconf .= "  set iface disable tcpmssfix\n";
     } else {
-        $tcpmss = "enable";
+        $mpdconf .= "  set iface enable tcpmssfix\n";
     }
-    $mpdconf .= <<<EOD
-  set iface {$tcpmss} tcpmssfix
 
-EOD;
+    $mpdconf .= "  set iface up-script /usr/local/sbin/ppp-linkup\n";
+    $mpdconf .= "  set iface down-script /usr/local/sbin/ppp-linkdown\n";
+    if ($ppp['type'] == "ppp") {
+        if (is_ipaddr($ppp['localip'])) {
+            $localip = $ppp['localip'];
+        } else {
+            $localip = '0.0.0.0';
+        }
+        if (is_ipaddr($ppp['gateway'])) {
+            $gateway = $ppp['gateway'];
+        } else {
+            $gateway = "10.64.64.{$pppid}";
+        }
+        $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
+    } else {
+        $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
+    }
 
-    $mpdconf .= <<<EOD
-  set iface up-script /usr/local/sbin/ppp-linkup
-  set iface down-script /usr/local/sbin/ppp-linkdown
-  set ipcp ranges {$ranges}
-
-EOD;
     if (isset($ppp['vjcomp'])) {
-        $mpdconf .= <<<EOD
-  set ipcp no vjcomp
-
-EOD;
+        $mpdconf .= "  set ipcp no vjcomp\n";
     }
 
     if (isset($config['system']['dnsallowoverride'])) {
-            $mpdconf .= <<<EOD
-  set ipcp enable req-pri-dns
-  set ipcp enable req-sec-dns
-
-EOD;
-    }
-    if (!isset($ppp['verbose_log'])) {
-                $mpdconf .= <<<EOD
-  #log -bund -ccp -chat -iface -ipcp -lcp -link
-
-EOD;
+        $mpdconf .= "  set ipcp enable req-pri-dns\n";
+        $mpdconf .= "  set ipcp enable req-sec-dns\n";
     }
     foreach ($ports as $pid => $port) {
+        $mpdconf_arr = array();
         $port = get_real_interface($port);
-        $mpdconf .= <<<EOD
-
-  create link static {$interface}_link{$pid} {$type}
-  set link action bundle {$interface}
-  set link {$multilink} multilink
-  set link keep-alive 10 60
-  set link max-redial 0
-
-EOD;
+        if ($ppp['type'] == "ppp") {
+            $mpdconf_arr[] = "create link static {$interface}_link{$pid} modem";
+        } else {
+            $mpdconf_arr[] = "create link static {$interface}_link{$pid} {$ppp['type']}";
+        }
+        $mpdconf_arr[] = "set link action bundle {$interface}";
+        if (count($ports) > 1) {
+            $mpdconf_arr[] = "set link enable multilink";
+        } else {
+            $mpdconf_arr[] = "set link disable multilink";
+        }
+        $mpdconf_arr[] = "set link keep-alive 10 60";
+        $mpdconf_arr[] = "set link max-redial 0";
         if (isset($ppp['shortseq'])) {
-            $mpdconf .= <<<EOD
-  set link no shortseq
-
-EOD;
+            $mpdconf_arr[] = "set link no shortseq";
         }
-
         if (isset($ppp['acfcomp'])) {
-            $mpdconf .= <<<EOD
-  set link no acfcomp
-
-EOD;
+            $mpdconf_arr[] = "set link no acfcomp";
         }
-
         if (isset($ppp['protocomp'])) {
-            $mpdconf .= <<<EOD
-  set link no protocomp
-
-EOD;
+            $mpdconf_arr[] = "set link no protocomp";
         }
-
-        $mpdconf .= <<<EOD
-  set link disable chap pap
-  set link accept chap pap eap
-  set link disable incoming
-
-EOD;
-
-
+        $mpdconf_arr[] = "set link disable chap pap";
+        $mpdconf_arr[] = "set link accept chap pap eap";
+        $mpdconf_arr[] = "set link disable incoming";
+        $bandwidths = !empty($ppp['bandwidth']) ? explode(',', $ppp['bandwidth']) : null;
         if (!empty($bandwidths[$pid])) {
-            $mpdconf .= <<<EOD
-  set link bandwidth {$bandwidths[$pid]}
-
-EOD;
+            $mpdconf_arr[] = "set link bandwidth {$bandwidths[$pid]}";
         }
 
+        $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
-            $mtus[$pid] = $defaultmtu;
+            $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) : "1492";
         }
-
-        $mpdconf .= <<<EOD
-  set link mtu {$mtus[$pid]}
-
-EOD;
-
+        $mpdconf_arr[] = "set link mtu {$mtus[$pid]}";
+        $mrus = !empty($ppp['mtu']) ? explode(',', $ppp['mru']) : null;
         if (!empty($mrus[$pid])) {
-            $mpdconf .= <<<EOD
-  set link mru {$mrus[$pid]}
-
-EOD;
+            $mpdconf_arr[] = "set link mru {$mrus[$pid]}";
         }
-
+        $mrrus = !empty($ppp['mrru']) ? explode(',', $ppp['mrru']) : null;
         if (!empty($mrrus[$pid])) {
-            $mpdconf .= <<<EOD
-  set link mrru {$mrrus[$pid]}
-
-EOD;
+            $mpdconf_arr[] = "set link mrru {$mrrus[$pid]}";
         }
 
-        $mpdconf .= <<<EOD
-  set auth authname "{$ppp['username']}"
-  set auth password {$passwd}
-
-EOD;
-        if ($type == "modem") {
-            $mpdconf .= <<<EOD
-  set modem device {$ppp['ports']}
-  set modem script DialPeer
-  set modem idle-script Ringback
-  set modem watch -cd
-  set modem var \$DialPrefix "DT"
-  set modem var \$Telephone "{$ppp['phone']}"
-
-EOD;
+        if (empty($ppp['username']) && $ppp['type'] == "ppp") {
+            $mpdconf_arr[] = "set auth authname \"user\"";
+        } else {
+            $mpdconf_arr[] = "set auth authname \"{$ppp['username']}\"";
         }
-        if (isset($ppp['connect-timeout']) && $type == "modem") {
-            $mpdconf .= <<<EOD
-  set modem var \$ConnectTimeout "{$ppp['connect-timeout']}"
-
-EOD;
+        if (empty($ppp['password']) && $ppp['type'] == "ppp") {
+            $mpdconf_arr[] = "set auth password " .  base64_decode('none');
+        } else {
+            $mpdconf_arr[] = "set auth password " . base64_decode($ppp['password']);
         }
-        if (isset($ppp['initstr']) && $type == "modem") {
-            $initstr = base64_decode($ppp['initstr']);
-            $mpdconf .= <<<EOD
-  set modem var \$InitString "{$initstr}"
 
-EOD;
-        }
-        if (isset($ppp['simpin']) && $type == "modem") {
-            if ($ppp['pin-wait'] == "") {
-                $ppp['pin-wait'] = 0;
+        if ($ppp['type'] == "ppp") {
+            // ppp, modem connections
+            $mpdconf_arr[] = "set modem device {$ppp['ports']}";
+            $mpdconf_arr[] = "set modem script DialPeer";
+            $mpdconf_arr[] = "set modem idle-script Ringback";
+            $mpdconf_arr[] = "set modem watch -cd";
+            $mpdconf_arr[] = "set modem var \$DialPrefix \"DT\"";
+            $mpdconf_arr[] = "set modem var \$Telephone \"{$ppp['phone']}\"";
+            if (isset($ppp['connect-timeout'])) {
+                $mpdconf_arr[] = "set modem var \$ConnectTimeout \"{$ppp['connect-timeout']}\"";
             }
-            $mpdconf .= <<<EOD
-  set modem var \$SimPin "{$ppp['simpin']}"
-  set modem var \$PinWait "{$ppp['pin-wait']}"
-
-EOD;
-        }
-        if (isset($ppp['apn']) && $type == "modem") {
-            $mpdconf .= <<<EOD
-  set modem var \$APN "{$ppp['apn']}"
-  set modem var \$APNum "{$ppp['apnum']}"
-
-EOD;
-        }
-        if ($type == "pppoe") {
-            // Send a null service name if none is set.
+            if (isset($ppp['initstr'])) {
+                $initstr = base64_decode($ppp['initstr']);
+                $mpdconf_arr[] = "set modem var \$InitString \"{$initstr}\"";
+            }
+            if (isset($ppp['simpin'])) {
+                $mpdconf_arr[] = "set modem var \$SimPin \"{$ppp['simpin']}\"";
+                if (!empty($ppp['pin-wait'])) {
+                    $mpdconf_arr[] = "set modem var \$PinWait \"{$ppp['pin-wait']}\"";
+                } else {
+                    $mpdconf_arr[] = "set modem var \$PinWait \"0\"";
+                }
+            }
+            if (isset($ppp['apn'])) {
+                $mpdconf_arr[] = "set modem var \$APN \"{$ppp['apn']}\"";
+                if (empty($ppp['apnum'])) {
+                    $mpdconf_arr[] = "set modem var \$APNum \"1\"";
+                } else {
+                    $mpdconf_arr[] = "set modem var \$APNum \"{$ppp['apnum']}\"";
+                }
+            }
+        } elseif ($ppp['type'] == "pppoe") {
             $provider = isset($ppp['provider']) ? $ppp['provider'] : "";
-            $mpdconf .= <<<EOD
-  set pppoe service "{$provider}"
-
-EOD;
-        }
-        if ($type == "pppoe") {
-            $mpdconf .= <<<EOD
-  set pppoe iface {$port}
-
-EOD;
+            $mpdconf_arr[] = "set pppoe service \"{$provider}\"";
+            $mpdconf_arr[] = "set pppoe iface {$port}";
+        } elseif ($ppp['type'] == "pptp" || $ppp['type'] == "l2tp") {
+            $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
+            $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
         }
 
-        if ($type == "pptp" || $type == "l2tp") {
-            $mpdconf .= <<<EOD
-  set {$type} self {$localips[$pid]}
-  set {$type} peer {$gateways[$pid]}
-
-EOD;
+        foreach ($mpdconf_arr as $mpdconf_opt) {
+            $mpdconf .= "  " . $mpdconf_opt . "\n";
         }
 
         $mpdconf .= "\topen\n";
-    } //end foreach($port)
+    }
 
 
     /* Generate mpd.conf. If mpd_[interface].conf exists in the conf path, then link to it instead of generating a fresh conf file. */
@@ -1960,12 +1852,12 @@ EOD;
 
     // Create the uptime log if requested and if it doesn't exist already, or delete it if it is no longer requested.
     if (isset($ppp['uptime'])) {
-        if (!file_exists("/conf/{$pppif}.log")) {
-            file_put_contents("/conf/{$pppif}.log", '');
+        if (!file_exists("/conf/{$ifcfg['if']}.log")) {
+            file_put_contents("/conf/{$ifcfg['if']}.log", '');
         }
     } else {
-        if (file_exists("/conf/{$pppif}.log")) {
-            @unlink("/conf/{$pppif}.log");
+        if (file_exists("/conf/{$ifcfg['if']}.log")) {
+            @unlink("/conf/{$ifcfg['if']}.log");
         }
     }
 
@@ -1979,7 +1871,7 @@ EOD;
         escapeshellarg($ppp['type']) . "_{$interface}.pid -s ppp " . escapeshellarg($ppp['type']) . "client");
 
     // Check for PPPoE periodic reset request
-    if ($type == "pppoe") {
+    if ($ppp['type'] == "pppoe") {
         if (!empty($ppp['pppoe-reset-type'])) {
             interface_setup_pppoe_reset_file($ppp['if'], $interface);
         } else {
