@@ -258,6 +258,7 @@ function get_firmware_mirrors()
     $mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
     $mirrors['http://mirror.ragenetwork.de/opnsense'] = 'RageNetwork (Munich, DE)';
     $mirrors['http://mirrors.supranet.net/pub/opnsense'] = 'Supranet Communications (Middleton, US)';
+    $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
 
     return $mirrors;
 }
