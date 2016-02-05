@@ -723,8 +723,8 @@ function interface_bridge_add_member($bridgeif, $interface)
         return;
     }
 
-    $mtu = get_interface_mtu($bridgeif);
-    $mtum = get_interface_mtu($interface);
+    $mtu = legacy_interface_stats($bridgeif)['mtu'];
+    $mtum = legacy_interface_stats($interface)['mtu'];
 
     if ($mtu != $mtum && !(substr($interface, 0, 3) == "gif" && $mtu <= 1500)) {
         legacy_interface_mtu($interface, $mtu);
@@ -2908,11 +2908,11 @@ function interface_vlan_adapt_mtu($vlanifs, $mtu)
                     legacy_interface_mtu($vlan['vlanif'], $mtu);
                 }
             } else {
-                if (get_interface_mtu($vlan['vlanif']) != $mtu) {
+                if (legacy_interface_stats($vlan['vlanif'])['mtu'] != $mtu) {
                     legacy_interface_mtu($vlan['vlanif'], $mtu);
                 }
             }
-        } elseif (get_interface_mtu($vlan['vlanif']) != $mtu) {
+        } elseif (legacy_interface_stats($vlan['vlanif'])['mtu'] != $mtu) {
             legacy_interface_mtu($vlan['vlanif'], $mtu);
         }
     }
@@ -3095,7 +3095,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             }
 
             if ($wancfg['mtu'] > $parentmtu) {
-                if (get_interface_mtu($realhwif) != $wancfg['mtu']) {
+                if (legacy_interface_stats($realhwif)['mtu'] != $wancfg['mtu']) {
                     legacy_interface_mtu($realhwif, $wancfg['mtu']);
                 }
 
@@ -3105,7 +3105,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 legacy_interface_mtu($realif, $wancfg['mtu']);
             }
         } else {
-            if ($wancfg['mtu'] != get_interface_mtu($realif)) {
+            if ($wancfg['mtu'] != legacy_interface_stats($realif)['mtu']) {
                 legacy_interface_mtu($realif, $wancfg['mtu']);
             }
 
@@ -4976,19 +4976,6 @@ function is_interface_wireless($interface)
     return true;
 }
 
-
-
-/****f* interfaces/get_interface_mtu
- * NAME
- *   get_interface_mtu - Return the mtu of an interface
- * RESULT
- *   $tmp       - Returns the mtu of an interface
- ******/
-function get_interface_mtu($interface)
-{
-    $mtu = pfSense_get_interface_addresses($interface);
-    return $mtu['mtu'];
-}
 
 function get_interface_mac($interface)
 {
