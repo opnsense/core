@@ -1379,9 +1379,19 @@ include("head.inc");
                 }
               });
               $('#trcountry').removeClass("hidden");
+              $("#mtu_calc").show();
               break;
             }
+            case "pppoe":
+            case "pptp":
+            case "ppp":
+              $("#mtu_calc").show();
+              break;
+            default:
+              // hide mtu calculation for non ppp types
+              $("#mtu_calc").hide();
           }
+
       });
       $("#type").change();
 
@@ -1635,6 +1645,17 @@ include("head.inc");
         }
       });
       $("#reset_type").change();
+      $("#mtu").change(function(){
+        // ppp uses an mtu
+        if (!isNaN($("#mtu").val()) && $("#mtu").val() > 8) {
+            // display mtu used for the ppp(oe) connection
+            $("#mtu_calc > label").html($("#mtu").val() - 8 );
+        } else {
+            // default ppp mtu is 1500 - 8 (header)
+            $("#mtu_calc > label").html("1492");
+        }
+      });
+      $("#mtu").change();
   });
 </script>
 
@@ -1777,7 +1798,12 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_mtu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MTU"); ?></td>
                           <td>
-                            <input name="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
+                            <input name="mtu" id="mtu" type="text" value="<?=$pconfig['mtu'];?>" />
+                            <div id="mtu_calc" style="display:none" for="mtu">
+                              <i class="fa fa-info-circle"></i>
+                              <?=gettext("calculated ppp mtu :");?>
+                              <label></label>
+                            </div>
                             <div class="hidden" for="help_for_mtu">
                               <?= gettext("If you leave this field blank, the adapter's default MTU will " .
                                 "be used. This is typically 1500 bytes but can vary in some circumstances.");?>
