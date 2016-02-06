@@ -289,6 +289,21 @@ POSSIBILITY OF SUCH DAMAGE.
                                 }
                                 return toggle;
                             }
+                        },
+                        converters: {
+                            // show "not installed" for rules without timestamp (not on disc)
+                            rulets: {
+                                from: function (value) {
+                                    return value;
+                                },
+                                to: function (value) {
+                                    if ( value == null ) {
+                                        return "{{ lang._('not installed') }}";
+                                    } else {
+                                        return value;
+                                    }
+                                }
+                            }
                         }
                     }
                 });
@@ -430,7 +445,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     <tr>
                         <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">filename</th>
                         <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
-                        <th data-column-id="modified_local" data-type="string" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
+                        <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
                         <th data-column-id="filter_str" data-type="string" data-identifier="true">Filter</th>
                         <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
                     </tr>
