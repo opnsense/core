@@ -840,6 +840,7 @@ function system_syslogd_start()
           'routed',
           'unbound',
           'zebra',
+          'captiveportal',
         );
         $syslogconf = '';
 
@@ -859,6 +860,7 @@ function system_syslogd_start()
         $syslogconfs['relayd'] = array("conf" => "!relayd", "remote" => "relayd");
         $syslogconfs['wireless'] = array("conf" => "!hostapd", "remote" => "hostapd");
         $syslogconfs['filter'] = array("conf" => "!filterlog", "remote" => "filter");
+        $syslogconfs['portalauth'] = array("conf" => "!captiveportal", "remote" => "portalauth");
 
         foreach ($syslogconfs as $logTopic => $logConfig) {
             $syslogconf .= "{$logConfig['conf']}\n";
@@ -876,8 +878,6 @@ function system_syslogd_start()
         if (!isset($syslogcfg['disablelocallogging'])) {
             $syslogconf .= <<<EOD
 local3.*              {$log_directive}/var/log/vpn.log
-!captiveportal
-local4.*              {$log_directive}/var/log/portalauth.log
 local7.*              {$log_directive}/var/log/dhcpd.log
 *.notice;kern.debug;lpr.info;mail.crit;daemon.none;    {$log_directive}/var/log/system.log
 news.err;local0.none;local3.none;local4.none;      {$log_directive}/var/log/system.log
