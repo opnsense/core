@@ -130,27 +130,48 @@ function restore_rrddata() {
     }
 }
 
-$areas = array("aliases" => gettext("Aliases"),
-         "dnsmasq" => gettext("DNS Forwarder"),
-         "dhcpd" => gettext("DHCP Server"),
-         "dhcpdv6" => gettext("DHCPv6 Server"),
-         "filter" => gettext("Firewall Rules"),
-         "interfaces" => gettext("Interfaces"),
-         "ipsec" => gettext("IPSEC"),
-         "nat" => gettext("NAT"),
-         "openvpn" => gettext("OpenVPN"),
-         "pptpd" => gettext("PPTP Server"),
-         "rrddata" => gettext("RRD Data"),
-         "cron" => gettext("Scheduled Tasks"),
-         "syslog" => gettext("Syslog"),
-         "system" => gettext("System"),
-         "staticroutes" => gettext("Static routes"),
-         "sysctl" => gettext("System tunables"),
-         "snmpd" => gettext("SNMP Server"),
-         "vlans" => gettext("VLANS"),
-         "wol" => gettext("Wake on LAN")
-  );
-
+$areas = array(
+    'OPNsense' => gettext('OPNsense Additions'),	/* XXX need specifics */
+    'aliases' => gettext('Aliases'),
+    'bridges' => gettext('Bridge Devices'),
+    'ca' => gettext('SSL Certificate Authorities'),
+    'cert' => gettext('SSL Certificates'),
+    'cron' => gettext('Scheduled Tasks'),
+    'dhcpd' => gettext('DHCP Server'),
+    'dhcpdv6' => gettext('DHCPv6 Server'),
+    'dhcrelay' => gettext('DHCP Relay'),
+    'dhcrelay6' => gettext('DHCPv6 Relay'),
+    'dnsmasq' => gettext('DNS Forwarder'),
+    'dyndnses' => gettext('Dynamic DNS'),
+    'filter' => gettext('Firewall Rules'),
+    'gateways' => gettext('Gateways'),
+    'gifs' => gettext('GIF Devices'),
+    'igmpproxy' => gettext('IGMP Proxy'),
+    'installedpackages' => gettext('Universal Plug and Play'),	/* XXX only one, reduce depth! */
+    'interfaces' => gettext('Interfaces'),
+    'ipsec' => gettext('IPSEC'),
+    'laggs' => gettext('LAGG Devices'),
+    'load_balancer' => gettext('Load Balancer'),
+    'nat' => gettext('Network Address Translation'),
+    'notifications' => gettext('System Notifications'),
+    'ntpd' => gettext('Network Time'),
+    'opendns' => gettext('DNS Filter'),
+    'openvpn' => gettext('OpenVPN'),
+    'ppps' => gettext('Point-to-Point Devices'),
+    'pptpd' => gettext('PPTP Server'),
+    'proxyarp' => gettext('Proxy ARP'),
+    'rrddata' => gettext('RRD Data'),
+    'snmpd' => gettext('SNMP Server'),
+    'staticroutes' => gettext('Static routes'),
+    'sysctl' => gettext('System tunables'),
+    'syslog' => gettext('Syslog'),
+    'system' => gettext('System'),
+    'unbound' => gettext('DNS Resolver'),
+    'vlans' => gettext('VLAN Devices'),
+    'widgets' => gettext('Dashboard Widgets'),
+    'wireless' => gettext('Wireless Devices'),
+    'wol' => gettext('Wake on LAN'),
+);
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
