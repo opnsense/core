@@ -264,6 +264,8 @@ include("head.inc");
           $(this).val("");
         });
         $(".act-removerow").click(removeRow);
+        // link typeahead to new item
+        $(".fld_detail").typeahead({ source: document.all_aliases[$("#typeSelect").val()] });
     });
 
     $(".act-removerow").click(removeRow);
@@ -304,16 +306,39 @@ include("head.inc");
               $("#detailsHeading1").html("<?=gettext("Port(s)");?>");
               break;
       }
+      $(".fld_detail").typeahead("destroy");
+      $(".fld_detail").typeahead({ source: document.all_aliases[$("#typeSelect").val()] });
     }
 
     $("#typeSelect").change(function(){
       toggleType();
     });
 
+    // collect all known aliases per type
+    document.all_aliases = {};
+    $("#aliases > option").each(function(){
+        if (document.all_aliases[$(this).data('type')] == undefined) {
+            document.all_aliases[$(this).data('type')] = [];
+        }
+        document.all_aliases[$(this).data('type')].push($(this).val())
+    });
+
     toggleType();
   });
 </script>
-
+<!-- push all available (nestable) aliases in a hidden select box -->
+<select class="hidden" id="aliases">
+<?php
+    if (!empty($config['aliases']['alias'])):
+      foreach ($config['aliases']['alias'] as $alias):
+        if ($alias['type'] == 'network' || $alias['type'] == 'host' || $alias['type'] == 'port'):?>
+        <option data-type="<?=$alias['type'];?>" value="<?=$alias['name'];?>"></option>
+<?php
+        endif;
+      endforeach;
+    endif;
+?>
+</option>
 
   <section class="page-content-main">
     <div class="container-fluid">
@@ -325,9 +350,9 @@ include("head.inc");
               <header class="content-box-head container-fluid">
                 <h3><?=gettext("Alias Edit");?></h3>
               </header>
-          <div class="content-box-main">
+                <div class="content-box-main">
                 <form action="firewall_aliases_edit.php" method="post" name="iform" id="iform">
-        <div class="table-responsive">
+                  <div class="table-responsive">
                     <table class="table table-striped">
                       <tr>
                         <td colspan="2" align="right">
@@ -360,7 +385,7 @@ include("head.inc");
                       <tr>
                         <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
                         <td>
-                          <select name="type" class="form-control" id="typeSelect">
+                          <select  name="type" class="form-control" id="typeSelect">
                             <option value="host" <?=$pconfig['type'] == "host" ? "selected=\"selected\"" : ""; ?>><?=gettext("Host(s)"); ?></option>
                             <option value="network" <?=$pconfig['type'] == "network" ? "selected=\"selected\"" : ""; ?>><?=gettext("Network(s)"); ?></option>
                             <option value="port" <?=$pconfig['type'] == "port" ? "selected=\"selected\"" : ""; ?>><?=gettext("Port(s)"); ?></option>
@@ -421,15 +446,15 @@ include("head.inc");
                                 <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
                               </td>
                               <td>
-                                <input type="text" class="form-control"  name="host_url[]" value="<?=$address;?>"/>
+                                <input type="text" class="fld_detail"  name="host_url[]" value="<?=$address;?>"/>
                               </td>
                               <td>
-                                <input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$addressid])?$detail_desc[$addressid]:"";?>"?>
+                                <input type="text" name="detail[]" value="<?= isset($detail_desc[$addressid])?$detail_desc[$addressid]:"";?>"?>
                               </td>
                               <td>
 <?php                          if ($addressid ==0):
 ?>
-                                <input type="text" class="form-control  input-sm" id="updatefreq" name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
+                                <input type="text" class="input-sm" id="updatefreq" name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
 <?php                          endif;
 ?>
                               </td>
@@ -485,11 +510,11 @@ include("head.inc");
                       </td>
                     </tr>
                   </table>
-                            </div>
-            </form>
+                </div>
+              </form>
             </div>
-        </div>
-          </section>
+          </div>
+        </section>
       </div>
     </div>
   </section>
