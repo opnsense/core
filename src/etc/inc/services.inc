@@ -2680,6 +2680,9 @@ function get_services() {
     if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
          $services[] = array('name'=>'suricata', 'description' => gettext("Intrusion Detection"));
     }
+
+    $services[] = array('name'=>'configd', 'description' => gettext("System Configuration Daemon"));
+
     return $services;
 }
 
@@ -2717,6 +2720,9 @@ function get_service_status($service)
             break;
         case 'ntpd':
             $running = isvalidpid('/var/run/ntpd.pid');
+            break;
+        case 'configd':
+            $running = isvalidpid('/var/run/configd.pid');
             break;
         default:
             $running = is_process_running($service['name']);

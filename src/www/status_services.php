@@ -126,6 +126,9 @@ function service_control_start($name, $extras) {
         case 'suricata':
             configd_run("ids start");
             break;
+        case 'configd':
+            mwexec('/usr/local/etc/rc.d/configd start');
+            break;
         default:
             log_error(sprintf(gettext("Could not start unknown service `%s'"), $name));
             break;
@@ -195,6 +198,9 @@ function service_control_stop($name, $extras) {
         case 'suricata':
             configd_run("ids stop");
             break;
+        case 'configd':
+            killbypid("/var/run/configd.pid");
+            break;
         default:
             log_error(sprintf(gettext("Could not stop unknown service `%s'"), $name));
             break;
@@ -263,6 +269,9 @@ function service_control_restart($name, $extras) {
             break;
         case 'suricata':
             configd_run("ids restart");
+            break;
+        case 'configd':
+            mwexec('/usr/local/etc/rc.d/configd restart');
             break;
         default:
             log_error(sprintf(gettext("Could not restart unknown service `%s'"), $name));
