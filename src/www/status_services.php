@@ -60,8 +60,9 @@ if (!empty($_GET['service'])) {
           break;
     }
     sleep(5);
-    // redirect after performing action, removing the action parameters from request.
-    header("Location: status_services.php");
+    // redirect to the previous page after performing action, removing the action parameters from request.
+    $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/status_services.php');
+    header("Location: ".$referer);
     exit;
 }
 
