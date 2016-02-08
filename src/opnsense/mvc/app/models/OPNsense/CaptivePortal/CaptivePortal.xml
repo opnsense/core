@@ -64,6 +64,7 @@
                 </allowedAddresses>
                 <allowedMACAddresses type="CSVListField">
                     <Required>N</Required>
+                    <ChangeCase>lower</ChangeCase>
                     <mask>/^([0-9a-fA-F:,])*/u</mask>
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
