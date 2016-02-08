@@ -103,6 +103,11 @@ abstract class BaseField
     protected $internalAttributes = array();
 
     /**
+     * @var string $internalToLower
+     */
+    private $internalChangeCase = null;
+
+    /**
      * generate a new UUID v4 number
      * @return string uuid v4 number
      */
@@ -274,6 +279,11 @@ abstract class BaseField
             $this->internalInitialValue = $value;
         }
         $this->internalValue = $value;
+        // apply filters, may be extended later.
+        $filters = array('applyFilterChangeCase');
+        foreach ($filters as $filter) {
+            $this->$filter();
+        }
     }
 
     /**
@@ -536,6 +546,35 @@ abstract class BaseField
             $this->internalIsRequired = true;
         } else {
             $this->internalIsRequired = false;
+        }
+    }
+
+    /**
+     * change character case on save
+     * @param string $value set case type, upper, lower, null (don't change)
+     */
+    public function setChangeCase($value)
+    {
+        if (strtoupper(trim($value)) == 'UPPER') {
+            $this->internalChangeCase = 'UPPER';
+        } elseif (strtoupper(trim($value)) == 'LOWER') {
+            $this->internalChangeCase = 'LOWER';
+        } else {
+            $this->internalChangeCase = null;
+        }
+    }
+
+    /**
+     * apply change case to this node, called by setValue
+     */
+    private function applyFilterChangeCase()
+    {
+        if (!empty($this->internalValue)) {
+            if ($this->internalChangeCase == 'UPPER') {
+                $this->internalValue = strtoupper($this->internalValue);
+            } elseif ($this->internalChangeCase == 'LOWER') {
+                $this->internalValue = strtolower($this->internalValue);
+            }
         }
     }
 
