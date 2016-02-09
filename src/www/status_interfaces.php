@@ -52,6 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 include("head.inc");
 ?>
+<script type="text/javascript">
+  $( document ).ready(function() {
+    $("#collapse_all").click(function(){
+        $(".interface_details").collapse('toggle');
+    });
+  });
+</script>
 
 <body>
 <?php include("fbegin.inc"); ?>
@@ -72,12 +79,21 @@ include("head.inc");
                   <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th colspan="2" class="listtopic">
+                      <th colspan="2">
+                        <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?=htmlspecialchars($ifname);?>"></i>
                         <?=htmlspecialchars($ifname);?> <?=gettext("interface"); ?> (<?=htmlspecialchars($ifdescr);?>, <?=htmlspecialchars($ifinfo['hwif']);?>)
+<?php
+                        if (!isset($first_row)):
+                          $first_row=false;?>
+                        <div class="pull-right">
+                          <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?=gettext("collapse/expand all");?>"></i> &nbsp;
+                        </div>
+<?php
+                        endif;?>
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="<?=htmlspecialchars($ifname);?>" class="interface_details collapse">
                     <tr>
                       <td width="22%"><?=gettext("Status"); ?></td>
                       <td width="78%"><?=$ifinfo['status'];?></td>
