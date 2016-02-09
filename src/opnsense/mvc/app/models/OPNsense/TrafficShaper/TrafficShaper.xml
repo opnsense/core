@@ -172,7 +172,7 @@
                     <default>any</default>
                 </dst_port>
                 <direction type="OptionField">
-                    <Required>Y</Required>
+                    <Required>N</Required>
                     <default></default>
                     <OptionValues>
                         <__empty__>both</__empty__>
