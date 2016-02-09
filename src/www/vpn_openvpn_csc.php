@@ -527,9 +527,9 @@ if ($act!="new" && $act!="edit") {
                         <select name='netbios_ntype'>
 <?php
                         foreach ($netbios_nodetypes as $type => $name) :
-                                $selected = "";
+                            $selected = "";
                             if ($pconfig['netbios_ntype'] == $type) {
-                                    $selected = "selected=\"selected\"";
+                                $selected = "selected=\"selected\"";
                             }?>
                           <option value="<?=$type;?>" <?=$selected;?>><?=$name;?></option>
 <?php
