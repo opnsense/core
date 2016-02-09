@@ -99,6 +99,7 @@ function enable_rrd_graphing()
     $cellular = "-cellular.rrd";
     $vpnusers = "-vpnusers.rrd";
     $ntpd = "ntpd.rrd";
+    $cputemp = "-cputemp.rrd";
 
     $rrdtool = "/usr/local/bin/rrdtool";
     $netstat = "/usr/bin/netstat";
@@ -122,6 +123,7 @@ function enable_rrd_graphing()
     $rrdcellularinterval = 60;
     $rrdvpninterval = 60;
     $rrdntpdinterval = 60;
+    $rrdcputempinterval = 60;
 
     $trafficvalid = $rrdtrafficinterval * 2;
     $wirelessvalid = $rrdwirelessinterval * 2;
@@ -134,6 +136,7 @@ function enable_rrd_graphing()
     $cellularvalid = $rrdcellularinterval * 2;
     $vpnvalid = $rrdvpninterval * 2;
     $ntpdvalid = $rrdntpdinterval * 2;
+    $cputempvalid = $rrdcputempinterval * 2;
 
     /* Assume 2*10GigE for now */
     $downstream = 2500000000;
@@ -527,6 +530,43 @@ function enable_rrd_graphing()
             $rrdupdatesh .= "\n";
         }
         /* End NTP statistics */
+
+        /* CPU Temperature */
+        /* the CPU Temperature gathering Function. */
+        /* Cpu Temp, create CPU Temperature database */
+        if (!file_exists("$rrddbpath$ifname$cputemp")) {
+            $rrdcreate = "$rrdtool create $rrddbpath$ifname$cputemp --step $rrdcputempinterval ";
+            $rrdcreate .= "DS:cpu0temp:GAUGE:$cputempvalid:-273:5000 ";
+            $rrdcreate .= "RRA:MIN:0.5:1:1000 ";
+            $rrdcreate .= "RRA:MIN:0.5:5:1000 ";
+            $rrdcreate .= "RRA:MIN:0.5:60:1000 ";
+            $rrdcreate .= "RRA:MIN:0.5:720:3000 ";
+            $rrdcreate .= "RRA:AVERAGE:0.5:1:1000 ";
+            $rrdcreate .= "RRA:AVERAGE:0.5:5:1000 ";
+            $rrdcreate .= "RRA:AVERAGE:0.5:60:1000 ";
+            $rrdcreate .= "RRA:AVERAGE:0.5:720:3000 ";
+            $rrdcreate .= "RRA:MAX:0.5:1:1000 ";
+            $rrdcreate .= "RRA:MAX:0.5:5:1000 ";
+            $rrdcreate .= "RRA:MAX:0.5:60:1000 ";
+            $rrdcreate .= "RRA:MAX:0.5:720:3000 ";
+            $rrdcreate .= "RRA:LAST:0.5:1:1000 ";
+            $rrdcreate .= "RRA:LAST:0.5:5:1000 ";
+            $rrdcreate .= "RRA:LAST:0.5:60:1000 ";
+            $rrdcreate .= "RRA:LAST:0.5:720:3000 ";
+
+            create_new_rrd($rrdcreate);
+        }
+
+        /* enter UNKNOWN values in the RRD so it knows we rebooted. */
+        if (file_exists("/var/run/booting")) {
+            mwexec("$rrdtool update $rrddbpath$ifname$cputemp N:U:U:U:U:U");
+        }
+
+        /* the CPU Temperature gathering function */
+        $rrdupdatesh .= "CPUTEMP=`$sysctl -n dev.cpu.0.temperature | sed 's/C//g'`\n";
+        $rrdupdatesh .= "$rrdtool update $rrddbpath$ifname$cputemp N:\${CPUTEMP}\n";
+        /* end CPU Temp gathering */
+
         $rrdupdatesh .= "sleep 60\n";
         $rrdupdatesh .= "done\n";
         log_error(gettext("Creating rrd update script"));
