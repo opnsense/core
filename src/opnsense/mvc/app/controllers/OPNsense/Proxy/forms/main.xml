@@ -342,6 +342,108 @@
                 <advanced>true</advanced>
             </field>
         </subtab>
+        <subtab id="proxy-icap" description="ICAP Settings">
+            <field>
+                <id>proxy.forward.icap.enable</id>
+                <label>Enable ICAP</label>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help><![CDATA[If this checkbox is checked, you can use an ICAP server to filter or replace content.]]></help>
+                <hint>Select if you want to use ICAP.</hint>
+                <allownew>true</allownew>
+                <advanced>false</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.RequestURL</id>
+                <label>Request Modify URL</label>
+                <type>text</type>
+                <style>tokenize</style>
+                <help><![CDATA[Enter the url where the reqmod requests should be sent to.]]></help>
+                <hint>Enter the url of the ICAP Server</hint>
+                <allownew>true</allownew>
+                <advanced>false</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.ResponseURL</id>
+                <label>Response Modify URL</label>
+                <type>text</type>
+                <style>tokenize</style>
+                <help><![CDATA[Enter the url where the respmod requests should be sent to.]]></help>
+                <hint>Enter the url of the ICAP Server</hint>
+                <allownew>true</allownew>
+                <advanced>false</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.OptionsTTL</id>
+                <label>Default Options TTL</label>
+                <type>text</type>
+                <style>tokenize</style>
+                <help><![CDATA[Default ttl]]></help>
+                <hint>Enter the default ttl.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.SendClientIP</id>
+                <label>Send Client IP</label>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help><![CDATA[If you enable this option, the client IP address will be sent to the ICAP server. This can be useful if you want to filter traffic based on IP addresses.]]></help>
+                <hint>Send the client IP address to the ICAP server.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.SendUsername</id>
+                <label>Send Username</label>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help><![CDATA[If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames addresses. Note, that authentication is required to use usernames.]]></help>
+                <hint>Check if the username should be sent to the ICAP server.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.EncodeUsername</id>
+                <label>Encode Username</label>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help><![CDATA[Use this option if your usernames need to be encoded.]]></help>
+                <hint>Check if you want to encode the username using base64.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.UsernameHeader</id>
+                <label>Username Header</label>
+                <type>text</type>
+                <style>tokenize</style>
+                <help><![CDATA[The header which should be used to send the username to the ICAP server.]]></help>
+                <hint>Enter the name of the header.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.EnablePreview</id>
+                <label>Enable Preview</label>
+                <type>checkbox</type>
+                <style>tokenize</style>
+                <help><![CDATA[If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance. ]]></help>
+                <hint>Enable if you want to use previews.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.icap.PreviewSize</id>
+                <label>Preview Size</label>
+                <type>text</type>
+                <style>tokenize</style>
+                <help><![CDATA[Enter the size of the preview wich is sent to the ICAP server.]]></help>
+                <hint>Enter the size of the preview.</hint>
+                <allownew>true</allownew>
+                <advanced>true</advanced>
+            </field>
+        </subtab>
         <subtab id="proxy-general-authentication" description="Authentication Settings">
             <field>
                 <id>proxy.forward.authentication.method</id>

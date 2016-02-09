@@ -252,6 +252,49 @@
                     </UpdateCron>
                 </remoteACLs>
             </acl>
+            <icap>
+                <enable type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </enable>
+                <RequestURL type="TextField">
+                    <Required>Y</Required>
+                    <default>icap://127.0.0.1/reqmod</default>
+                </RequestURL>
+                <ResponseURL type="TextField">
+                    <default>icap://127.0.0.1/respmod</default>
+                    <Required>Y</Required>
+                </ResponseURL>
+                <SendClientIP type="BooleanField">
+                    <Required>Y</Required>
+                    <default>1</default>
+                </SendClientIP>
+                <SendUsername type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </SendUsername>
+                <EncodeUsername type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </EncodeUsername>
+                <UsernameHeader type="TextField">
+                    <Required>Y</Required>
+                    <default>X-Username</default>
+                    <mask>/^([a-zA-Z-]+)$/</mask>
+                </UsernameHeader>
+                <EnablePreview type="BooleanField">
+                    <default>1</default>
+                    <Required>Y</Required>
+                </EnablePreview>
+                <PreviewSize type="IntegerField">
+                    <default>1024</default>
+                    <Required>Y</Required>
+                </PreviewSize>
+                <OptionsTTL type="IntegerField">
+                    <default>60</default>
+                    <Required>Y</Required>
+                </OptionsTTL>
+            </icap>
             <authentication>
                 <method type="AuthenticationServerField">
                     <Required>N</Required>
