@@ -24,4 +24,12 @@
             <pattern>api/diagnostics/activity/*</pattern>
         </patterns>
     </page-diagnostics-system-activity>
+    <page-diagnostics-health>
+        <name>WebCfg - Diagnostics: System Health</name>
+        <description>Allows access to the 'Diagnostics: System Health' page</description>
+        <patterns>
+            <pattern>ui/diagnostics/systemhealth/*</pattern>
+            <pattern>api/diagnostics/systemhealth/*</pattern>
+        </patterns>
+    </page-diagnostics-health>
 </acl>
