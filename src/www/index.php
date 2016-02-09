@@ -351,7 +351,7 @@ if (isset($config['trigger_initial_wizard'])) :
 ?>
 	<header class="page-content-head">
 		<div class="container-fluid">
-			<h1><?=gettext("Starting initial configuration!"); ?></h1>
+			<h1><?= gettext("Starting initial configuration!") ?></h1>
 		</div>
 	</header>
 
