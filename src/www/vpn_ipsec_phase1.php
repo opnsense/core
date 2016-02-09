@@ -711,10 +711,10 @@ function dpdchkbox_change() {
 <?php            endif;
 ?>
                   <tr>
-                    <td><a id="help_for_remotegw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
                     <td>
                       <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_remotegw">
+                      <div class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here " .
                                                 "for your reference (not parsed)."); ?>
                       </div>
