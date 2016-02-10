@@ -206,6 +206,28 @@ class ServiceController extends ApiControllerBase
     }
 
     /**
+     * flush rule configuration to config and reload suricata ruleset (graceful restart)
+     * @return array
+     */
+    public function reloadRulesAction()
+    {
+      $status = "failed";
+      if ($this->request->isPost()) {
+          // close session for long running action
+          $this->sessionClose();
+          $backend = new Backend();
+          // flush rule configuration
+          $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
+          if ($bckresult == "OK") {
+              $status = $backend->configdRun("ids reload", $detach);
+          } else {
+              $status = "template error";
+          }
+      }
+      return array("status" => $status);
+    }
+
+    /**
      * query suricata alerts
      * @return array
      */
