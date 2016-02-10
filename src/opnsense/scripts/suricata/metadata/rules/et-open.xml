@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset>
+<ruleset documentation_url="http://doc.emergingthreats.net/bin/view/Main/EmergingFAQ">
     <location url="https://rules.emergingthreats.net/open/suricata/rules/" prefix="ET open"/>
     <files>
         <file description="botcc.portgrouped">botcc.portgrouped.rules</file>
