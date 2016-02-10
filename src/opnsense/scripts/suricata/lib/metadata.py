@@ -58,7 +58,14 @@ class Metadata(object):
                     syslog.syslog(syslog.LOG_ERR, 'suricata metadata missing files  @ %s' % filename)
                 else:
                     for rule_filename in rule_xml.find('files'):
+                        if 'documentation_url' in rule_filename.attrib:
+                            documentation_url = rule_filename.attrib['documentation_url']
+                        elif 'documentation_url' in rule_xml.attrib:
+                            documentation_url = rule_xml.attrib['documentation_url']
+                        else:
+                            documentation_url = ""
                         metadata_record = dict()
+                        metadata_record['documentation_url'] = documentation_url
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()
                         if 'url' in rule_filename.attrib:
