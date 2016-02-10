@@ -2678,7 +2678,24 @@ function get_services() {
         $services[] = array('name'=>'squid', 'description' => gettext("Proxy server"));
     }
     if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
-         $services[] = array('name'=>'suricata', 'description' => gettext("Intrusion Detection"));
+        $services[] = array('name'=>'suricata', 'description' => gettext("Intrusion Detection"));
+    }
+    if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
+        $enabled = false;
+        if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {
+            // single zone and enabled
+            $enabled = true;
+        } else {
+            // possible more zones, traverse items
+            foreach ($config['OPNsense']['captiveportal']['zones']['zone'] as $zone) {
+                if (!empty($zone['enabled'])) {
+                    $enabled = true;
+                }
+            }
+        }
+        if ($enabled) {
+            $services[] = array('name'=>'captiveportal', 'description' => gettext("Captive Portal"));
+        }
     }
 
     $services[] = array('name'=>'configd', 'description' => gettext("System Configuration Daemon"));
@@ -2723,6 +2740,9 @@ function get_service_status($service)
             break;
         case 'configd':
             $running = isvalidpid('/var/run/configd.pid');
+            break;
+        case 'captiveportal':
+            $running = isvalidpid('/var/run/lighttpd-api-dispatcher.pid');
             break;
         default:
             $running = is_process_running($service['name']);

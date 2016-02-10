@@ -129,6 +129,9 @@ function service_control_start($name, $extras) {
         case 'configd':
             mwexec('/usr/local/etc/rc.d/configd start');
             break;
+        case 'captiveportal':
+            configd_run("captiveportal start");
+            break;
         default:
             log_error(sprintf(gettext("Could not start unknown service `%s'"), $name));
             break;
@@ -201,6 +204,9 @@ function service_control_stop($name, $extras) {
         case 'configd':
             killbypid("/var/run/configd.pid");
             break;
+        case 'captiveportal':
+            configd_run("captiveportal stop");
+            break;
         default:
             log_error(sprintf(gettext("Could not stop unknown service `%s'"), $name));
             break;
@@ -272,6 +278,9 @@ function service_control_restart($name, $extras) {
             break;
         case 'configd':
             mwexec('/usr/local/etc/rc.d/configd restart');
+            break;
+        case 'captiveportal':
+            configd_run("captiveportal restart");
             break;
         default:
             log_error(sprintf(gettext("Could not restart unknown service `%s'"), $name));
