@@ -30,6 +30,7 @@
 """
 import unittest
 from tests.template import *
+from tests.core import *
 
 __author__ = 'Ad Schellevis'
 
