@@ -33,6 +33,7 @@ import collections
 from modules import config
 from modules import template
 
+
 class TestConfigMethods(unittest.TestCase):
     def setUp(self):
         """ setup test, load config
@@ -94,3 +95,30 @@ class TestTemplateMethods(unittest.TestCase):
         """
         generated_filenames = self.tmpl.generate('OPNsense.Sample')
         self.assertEquals(len(generated_filenames), 3, 'number of output files <> 3')
+
+    def test_all(self):
+        """ Test if all expected templates are created, can only find test for static defined cases.
+            Calls "generate *" and compares that to all defined templates in all +TARGET files
+            Fails on first missing case.
+        :return:
+        """
+        self.expected_filenames = dict()
+        self.generated_filenames = list()
+        templates_path = '%s/../templates' % '/'.join(__file__.split('/')[:-1])
+        for root, dirs, files in os.walk(templates_path):
+            for filenm in files:
+                if filenm == '+TARGETS':
+                    filename = '%s/%s' % (root, filenm)
+                    for line in open(filename).read().split('\n'):
+                        line = line.strip()
+                        if len(line) > 1 and line[0] != '#' and line.find('[') == -1:
+                            expected_filename = ('%s%s'%(self.output_path, line.split(':')[-1])).replace('//', '/')
+                            self.expected_filenames[expected_filename] = {'src': filename}
+
+        for filename in self.tmpl.generate('*'):
+            if filename.find('capt') == -1:
+                self.generated_filenames.append(filename.replace('//', '/'))
+
+        for expected_filename in self.expected_filenames :
+            message = 'missing %s (%s' % (expected_filename, self.expected_filenames[expected_filename]['src'])
+            self.assertIn(expected_filename, self.generated_filenames, message)
