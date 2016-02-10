@@ -116,8 +116,7 @@ class TestTemplateMethods(unittest.TestCase):
                             self.expected_filenames[expected_filename] = {'src': filename}
 
         for filename in self.tmpl.generate('*'):
-            if filename.find('capt') == -1:
-                self.generated_filenames.append(filename.replace('//', '/'))
+            self.generated_filenames.append(filename.replace('//', '/'))
 
         for expected_filename in self.expected_filenames :
             message = 'missing %s (%s' % (expected_filename, self.expected_filenames[expected_filename]['src'])
