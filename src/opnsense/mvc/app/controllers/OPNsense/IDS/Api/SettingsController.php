@@ -225,6 +225,8 @@ class SettingsController extends ApiControllerBase
      */
     private function listInstallableRules()
     {
+        // disable output cleansing, almost all data is preset in static xmls, the rest is strictly validated
+        $this->disableOutputCleansing();
         $result = array();
         $backend = new Backend();
         $response = $backend->configdRun("ids list installablerulesets");
@@ -235,6 +237,14 @@ class SettingsController extends ApiControllerBase
                 $item = array();
                 $item['description'] = $fileinfo['description'];
                 $item['filename'] = $fileinfo['filename'];
+                $item['documentation_url'] = $fileinfo['documentation_url'];
+                if (!empty($fileinfo['documentation_url'])) {
+                    $item['documentation'] = "<a href='".$item['documentation_url']."' target='_new'>";
+                    $item['documentation'] .= $item['documentation_url'] ;
+                    $item['documentation'] .= '</a>';
+                } else {
+                    $item['documentation'] = null;
+                }
 
                 // format timestamps
                 if ($fileinfo['modified_local'] == null) {

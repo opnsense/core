@@ -11,6 +11,11 @@
         <type>info</type>
     </field>
     <field>
+        <id>documentation</id>
+        <label>source</label>
+        <type>info</type>
+    </field>
+    <field>
         <id>filter</id>
         <label>Input Filter</label>
         <type>dropdown</type>
