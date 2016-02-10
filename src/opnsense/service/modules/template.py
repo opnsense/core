@@ -33,6 +33,7 @@ import os.path
 import syslog
 import collections
 import copy
+import codecs
 import jinja2
 import addons.template_helpers
 
@@ -264,7 +265,7 @@ class Template(object):
                             # make sure the target directory exists
                             self._create_directory(filename)
 
-                        f_out = open(filename, 'wb')
+                        f_out = codecs.open(filename, 'wb', encoding="utf-8")
                         f_out.write(content)
                         # Check if the last character of our output contains an end-of-line, if not copy it in if
                         # it was in the original template.
