@@ -334,6 +334,17 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /**
+         * update (userdefined) rules
+         */
+        $(".act_update").click(function(){
+            $(".act_update_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/ids/service/reloadRules", sendData={}, callback=function(data,status) {
+                // when done, disable progress animation.
+                $(".act_update_progress").removeClass("fa fa-spinner fa-pulse");
+            });
+        });
+
+        /**
          * update rule definitions
          */
         $("#updateRulesAct").click(function(){
@@ -466,6 +477,13 @@ POSSIBILITY OF SUCH DAMAGE.
             </tr>
             </tbody>
         </table>
+        <div class="col-md-12">
+            <hr/>
+            <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
+            <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
+            <br/>
+            <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download') }} </i>
+        </div>
     </div>
     <div id="rules" class="tab-pane fade in">
         <div class="bootgrid-header container-fluid">
@@ -501,6 +519,12 @@ POSSIBILITY OF SUCH DAMAGE.
             </tr>
             </tfoot>
         </table>
+        <div class="col-md-12">
+            <hr/>
+            <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Update') }}</b><i class="act_update_progress"></i></button>
+            <br/>
+            <br/>
+        </div>
     </div>
     <div id="userrules" class="tab-pane fade in">
         <!-- tab page "userrules" -->
@@ -526,8 +550,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 </tr>
             </tfoot>
         </table>
+        <div class="col-md-12">
+            <hr/>
+            <button class="btn btn-primary act_update" type="button"><b>{{ lang._('Update') }}</b><i class="act_update_progress"></i></button>
+            <br/>
+            <br/>
+        </div>
     </div>
     <div id="alerts" class="tab-pane fade in">
+        <!-- tab page "alerts" -->
         <div class="bootgrid-header container-fluid">
             <div class="row">
                 <div class="col-sm-12 actionBar">
@@ -550,7 +581,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 </div>
             </div>
         </div>
-        <!-- tab page "alerts" -->
         <table id="grid-alerts" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogAlert">
             <thead>
             <tr>
@@ -565,13 +595,6 @@ POSSIBILITY OF SUCH DAMAGE.
             <tbody>
             </tbody>
         </table>
-    </div>
-    <div class="col-md-12">
-        <hr/>
-        <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
-        <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
-        <br/>
-        <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download') }} </i>
     </div>
 </div>
 
