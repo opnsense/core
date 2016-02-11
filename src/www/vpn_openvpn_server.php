@@ -1678,8 +1678,10 @@ endif; ?>
                         </select>
                         <div class="hidden" for="help_for_verbosity_level">
                           <?=gettext("Each level shows all info from the previous levels. Level 3 is recommended if you want a good summary of what's happening without being swamped by output."); ?><br /> <br />
-                          <?=sprintf(gettext("%snone%s -- No output except fatal errors."),'<strong>','</strong>') ?> <br />
-                          <?=sprintf(gettext("%sdefault%s-%s4%s -- Normal usage range."),'<strong>','</strong>','<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%s0%s -- No output except fatal errors."),'<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%s1%s -- startup info + connection initiated messages + non-fatal encryption & net errors."),'<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%s2,3%s -- show TLS negotiations & route info."),'<strong>','</strong>') ?> <br />
+                          <?=sprintf(gettext("%s4%s -- Normal usage range."),'<strong>','</strong>') ?> <br />
                           <?=sprintf(gettext("%s5%s -- Output R and W characters to the console for each packet read and write, uppercase is used for TCP/UDP packets and lowercase is used for TUN/TAP packets."),'<strong>','</strong>') ?> <br />
                           <?=sprintf(gettext("%s6%s-%s11%s -- Debug info range."),'<strong>','</strong>','<strong>','</strong>') ?>
                         </div>
