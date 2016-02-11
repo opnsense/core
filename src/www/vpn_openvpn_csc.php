@@ -342,6 +342,7 @@ $( document ).ready(function() {
     $("#dns_server_enable").change();
     $("#wins_server_enable").change();
     $("#ntp_server_enable").change();
+    $("#netbios_enable").change();
   }
 
 });
@@ -571,8 +572,8 @@ if ($act!="new" && $act!="edit") {
                     <td width="22%"><a id="help_for_netbios_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NetBIOS Options"); ?></td>
                     <td width="78%">
                       <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?> />
-                      <?=gettext("Enable NetBIOS over TCP/IP");?>
                       <div class="hidden" for="help_for_netbios_enable">
+                        <?=gettext("Enable NetBIOS over TCP/IP");?><br/>
                         <?=gettext("If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled"); ?>.
                       </div>
 
