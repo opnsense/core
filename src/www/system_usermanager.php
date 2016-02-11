@@ -733,7 +733,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
 <?php
-                  if (isset($pconfig['uid'])) :?>
+                  if ($pconfig['uid'] != "") :?>
                   <tr>
                     <td colspan="2"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Effective Privileges");?></td>
                   </tr>
