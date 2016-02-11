@@ -524,7 +524,7 @@ if ($act!="new" && $act!="edit") {
                   <tr>
                     <td width="22%"><a id="help_for_dns_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
                     <td width="78%">
-                      <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> onclick="dns_domain_change()" />
+                      <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> />
                       <div id="dns_domain_data" style="display:none">
                         <input name="dns_domain" type="text" id="dns_domain" value="<?=$pconfig['dns_domain'];?>" />
                       </div>
@@ -536,7 +536,7 @@ if ($act!="new" && $act!="edit") {
                   <tr>
                     <td width="22%"><a id="help_for_dns_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
                     <td width="78%">
-                      <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> onclick="dns_server_change()" />
+                      <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> />
                       <div id="dns_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>&nbsp;
                         <input name="dns_server1" type="text" id="dns_server1" size="20" value="<?=htmlspecialchars($pconfig['dns_server1']);?>" />
@@ -555,7 +555,7 @@ if ($act!="new" && $act!="edit") {
                   <tr>
                     <td width="22%"><a id="help_for_ntp_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NTP Servers"); ?></td>
                     <td width="78%">
-                      <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?> onclick="ntp_server_change()" />
+                      <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?> />
                       <div id="ntp_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>&nbsp;
                         <input name="ntp_server1" type="text" id="ntp_server1" size="20" value="<?=$pconfig['ntp_server1'];?>" />
@@ -570,7 +570,7 @@ if ($act!="new" && $act!="edit") {
                   <tr>
                     <td width="22%"><a id="help_for_netbios_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NetBIOS Options"); ?></td>
                     <td width="78%">
-                      <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?> onclick="netbios_change()" />
+                      <input name="netbios_enable" type="checkbox" id="netbios_enable" value="yes" <?=!empty($pconfig['netbios_enable']) ? "checked=\"checked\"" : "" ;?> />
                       <?=gettext("Enable NetBIOS over TCP/IP");?>
                       <div class="hidden" for="help_for_netbios_enable">
                         <?=gettext("If this option is not set, all NetBIOS-over-TCP/IP options (including WINS) will be disabled"); ?>.
@@ -610,7 +610,7 @@ if ($act!="new" && $act!="edit") {
                   <tr id="wins_opts">
                     <td width="22%"><a id="help_for_wins_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WINS Servers"); ?></td>
                     <td width="78%">
-                      <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes"  <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> onclick="wins_server_change()" />
+                      <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes"  <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> />
                       <div id="wins_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>
                         <input name="wins_server1" type="text" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
