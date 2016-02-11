@@ -211,13 +211,13 @@ function openvpn_get_engines()
         $linematch = array();
         preg_match("/\((.*)\)\s(.*)/", $engine, $linematch);
         foreach ($details as $dt) {
-            if (strpos($dt, "unavailable") !== FALSE) {
+            if (strpos($dt, "unavailable") !== false) {
                 $keep = false;
             }
-            if (strpos($dt, "available") !== FALSE) {
+            if (strpos($dt, "available") !== false) {
                 continue;
             }
-            if (strpos($dt, "[") !== FALSE) {
+            if (strpos($dt, "[") !== false) {
                 $ciphers = trim($dt, "[]");
             }
         }
@@ -358,7 +358,7 @@ function openvpn_add_dhcpopts(& $settings, & $conf)
 
 function openvpn_add_custom(& $settings, & $conf)
 {
-    if ($settings['custom_options']) {
+    if (!empty($settings['custom_options'])) {
         $options = explode(';', $settings['custom_options']);
         if (is_array($options)) {
             foreach ($options as $option) {
@@ -519,7 +519,7 @@ function openvpn_reconfigure($mode, $settings)
                 //  See ticket #1417
                 if (!empty($ip) && !empty($mask) && ($cidr < 30)) {
                     $conf .= "server {$ip} {$mask}\n";
-                    $conf .= "client-config-dir /var/etc/openvpn-csc\n";
+                    $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";
                     if(is_ipaddr($ipv6)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
@@ -550,7 +550,7 @@ function openvpn_reconfigure($mode, $settings)
                     if(is_ipaddr($ipv6)) {
                         $conf .= "server-ipv6 {$ipv6}/{$prefix}\n";
                     }
-                    $conf .= "client-config-dir /var/etc/openvpn-csc\n";
+                    $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";
                 } else {
                     if ($settings['serverbridge_dhcp']) {
                         if ((!empty($settings['serverbridge_interface'])) && (strcmp($settings['serverbridge_interface'], "none"))) {
@@ -558,7 +558,7 @@ function openvpn_reconfigure($mode, $settings)
                             $biface_sm=gen_subnet_mask(get_interface_subnet($settings['serverbridge_interface']));
                             if (is_ipaddrv4($biface_ip) && is_ipaddrv4($settings['serverbridge_dhcp_start']) && is_ipaddrv4($settings['serverbridge_dhcp_end'])) {
                                 $conf .= "server-bridge {$biface_ip} {$biface_sm} {$settings['serverbridge_dhcp_start']} {$settings['serverbridge_dhcp_end']}\n";
-                                $conf .= "client-config-dir /var/etc/openvpn-csc\n";
+                                $conf .= "client-config-dir /var/etc/openvpn-csc/".$vpnid."\n";
                             } else {
                                 $conf .= "mode server\n";
                             }
@@ -712,11 +712,11 @@ function openvpn_reconfigure($mode, $settings)
     }
 
     // Add a remote network route if set, and only for p2p modes.
-    if ((substr($settings['mode'], 0, 3) == "p2p") && (openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === FALSE)) {
+    if ((substr($settings['mode'], 0, 3) == "p2p") && (openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === false)) {
         $conf .= openvpn_gen_routes($settings['remote_network'], "ipv4", false);
     }
     // Add a remote network route if set, and only for p2p modes.
-    if ((substr($settings['mode'], 0, 3) == "p2p") && (openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === FALSE)) {
+    if ((substr($settings['mode'], 0, 3) == "p2p") && (openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === false)) {
         $conf .= openvpn_gen_routes($settings['remote_networkv6'], "ipv6", false);
     }
 
@@ -882,18 +882,14 @@ function openvpn_delete($mode, & $settings)
 }
 
 
-function openvpn_resync_csc(&$settings)
+/**
+ * generate config (text) data for a single client specific override
+ * @param array $settings csc item
+ * @param array $server openvpn server item
+ * @return string
+ */
+function openvpn_resync_csc_conf($settings, $server)
 {
-    global $config;
-
-    $fpath = "/var/etc/openvpn-csc/{$settings['common_name']}";
-
-    if (isset($settings['disable'])) {
-        @unlink($fpath);
-        return;
-    }
-    openvpn_create_dirs();
-
     $conf = '';
     if (!empty($settings['block'])) {
         $conf .= "disable\n";
@@ -909,26 +905,28 @@ function openvpn_resync_csc(&$settings)
         $serverip = long2ip32($baselong + 1);
         $clientip = long2ip32($baselong + 2);
         /* Because this is being pushed, the order from the client's point of view. */
-        if ($settings['dev_mode'] != 'tap') {
+        if ($server['dev_mode'] != 'tap' && empty($server['topology_subnet'])) {
             $conf .= "ifconfig-push {$clientip} {$serverip}\n";
         } else {
-            $conf .= "ifconfig-push {$clientip} {$mask}\n";
+            $conf .= "ifconfig-push {$clientip} " . gen_subnet_mask($mask) . "\n";
         }
     }
 
-    if ($settings['local_network']) {
+    if (!empty($settings['local_network'])) {
         $conf .= openvpn_gen_routes($settings['local_network'], "ipv4", true);
     }
-    if ($settings['local_networkv6']) {
+    if (!empty($settings['local_networkv6'])) {
         $conf .= openvpn_gen_routes($settings['local_networkv6'], "ipv6", true);
     }
 
     // Add a remote network iroute if set
-    if (openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === FALSE) {
+    if (!empty($settings['remote_network'])
+      && openvpn_validate_cidr($settings['remote_network'], "", true, "ipv4") === false) {
         $conf .= openvpn_gen_routes($settings['remote_network'], "ipv4", false, true);
     }
     // Add a remote network iroute if set
-    if (openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === FALSE) {
+    if (!empty($settings['remote_networkv6'])
+      && openvpn_validate_cidr($settings['remote_networkv6'], "", true, "ipv6") === false) {
         $conf .= openvpn_gen_routes($settings['remote_networkv6'], "ipv6", false, true);
     }
 
@@ -939,10 +937,55 @@ function openvpn_resync_csc(&$settings)
     }
 
     openvpn_add_custom($settings, $conf);
+    return $conf;
+}
 
-    file_put_contents($fpath, $conf);
-    chown($fpath, 'nobody');
-    chgrp($fpath, 'nobody');
+/**
+ * resync all client specific overrides
+ */
+function openvpn_resync_csc()
+{
+    global $config;
+    $generated_cscs = array();
+
+    openvpn_create_dirs();
+
+    // generate configs
+    if (!empty($config['openvpn']['openvpn-csc']) && is_array($config['openvpn']['openvpn-csc'])) {
+        foreach ($config['openvpn']['openvpn-csc'] as $settings) {
+            if (!isset($settings['disable'])) {
+                if (!empty($settings['ovpn_servers'])) {
+                    $ovpn_servers = explode(',', $settings['ovpn_servers']);
+                } else {
+                    $ovpn_servers = array();
+                }
+                foreach (openvpn_get_remote_access_servers() as $server) {
+                    if (count($ovpn_servers) == 0|| in_array($server['vpnid'], $ovpn_servers)) {
+                        $vpnid = filter_var ($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+                        if (!isset($generated_cscs[$server['vpnid']])) {
+                            $generated_cscs[$vpnid] = array();
+                        }
+                        $conf = openvpn_resync_csc_conf($settings, $server);
+                        $target_filename = "/var/etc/openvpn-csc/".$vpnid."/".$settings['common_name'];
+                        file_put_contents($target_filename, $conf);
+                        chown($target_filename, 'nobody');
+                        chgrp($target_filename, 'nobody');
+                        $generated_cscs[$vpnid][] = $target_filename;
+                    }
+                }
+            }
+        }
+    }
+
+    // cleanup old / unassigned configs
+    foreach (openvpn_get_remote_access_servers() as $server) {
+        $vpnid = filter_var ($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+        foreach (glob("/var/etc/openvpn-csc/".$vpnid."/*") as $filename) {
+            if (empty($generated_cscs[$vpnid]) || !in_array($filename, $generated_cscs[$vpnid])) {
+                @unlink($filename);
+            }
+        }
+    }
 }
 
 
@@ -985,12 +1028,7 @@ function openvpn_resync_all($interface = '')
             openvpn_resync('client', $settings);
         }
     }
-
-    if (is_array($config['openvpn']['openvpn-csc'])) {
-        foreach ($config['openvpn']['openvpn-csc'] as & $settings) {
-            openvpn_resync_csc($settings);
-        }
-    }
+    openvpn_resync_csc();
 }
 
 
@@ -1224,6 +1262,15 @@ function openvpn_create_dirs()
 {
     @mkdir('/var/etc/openvpn-csc', 0750);
     @mkdir('/var/etc/openvpn', 0750);
+    foreach (openvpn_get_remote_access_servers() as $server) {
+        $vpnid = filter_var ($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+        $csc_path = '/var/etc/openvpn-csc/'.$vpnid;
+        if (is_file($csc_path)) {
+            // if the vpnid exists as file, remove it first
+            unlink($csc_path);
+        }
+        @mkdir($csc_path, 0750);
+    }
 }
 
 function openvpn_get_interface_ip($ip, $mask)
@@ -1343,4 +1390,23 @@ function openvpn_get_settings($mode, $vpnid)
     }
 
     return array();
+}
+
+
+/**
+ * Retrieve a list of remote access servers, indexed by vpnid
+ */
+function openvpn_get_remote_access_servers()
+{
+    global $config;
+    $result = array();
+
+    if (!empty($config['openvpn']['openvpn-server'])) {
+        foreach ($config['openvpn']['openvpn-server'] as $server) {
+            if (in_array($server['mode'], array('server_tls', 'server_user', 'server_tls_user'))) {
+                $result[$server['vpnid']] = $server;
+            }
+        }
+    }
+    return $result;
 }
