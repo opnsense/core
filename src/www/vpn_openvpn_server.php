@@ -401,6 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             openvpn_resync('server', $server);
             write_config();
+            openvpn_resync_csc(); // dump client specific overrides, the required set may have changed
 
             header("Location: vpn_openvpn_server.php");
             exit;
