@@ -53,31 +53,25 @@ $vpnid = 0;
 $act=null;
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
+    if (isset($_GET['dup']) && isset($a_csc[$_GET['dup']]))  {
+        $configId = $_GET['dup'];
+    } elseif (isset($_GET['id']) && isset($a_csc[$_GET['id']])) {
+        $id = $_GET['id'];
+        $configId = $id;
+    }
+
     if (isset($_GET['act'])) {
         $act = $_GET['act'];
     }
-    if (isset($_GET['id']) && is_numericint($_GET['id'])) {
-        $id = $_GET['id'];
-    }
 
-    if ($act=="edit" && isset($id) && isset($a_csc[$id])) {
-        // 1 on 1 copy of config attributes
-        foreach (explode(",", $all_form_fields) as $fieldname) {
-            $fieldname = trim($fieldname);
-            if (isset($a_csc[$id][$fieldname])) {
-                $pconfig[$fieldname] = $a_csc[$id][$fieldname];
-            } elseif (!isset($pconfig[$fieldname])) {
-                // initialize element
-                $pconfig[$fieldname] = null;
-            }
-        }
-    } else {
-        // init all form attributes
-        foreach (explode(",", $all_form_fields) as $fieldname) {
-            $fieldname = trim($fieldname);
-            if (!isset($pconfig[$fieldname])) {
-                $pconfig[$fieldname] = null;
-            }
+    // 1 on 1 copy of config attributes
+    foreach (explode(",", $all_form_fields) as $fieldname) {
+        $fieldname = trim($fieldname);
+        if (isset($a_csc[$configId][$fieldname])) {
+            $pconfig[$fieldname] = $a_csc[$configId][$fieldname];
+        } elseif (!isset($pconfig[$fieldname])) {
+            // initialize element
+            $pconfig[$fieldname] = null;
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -86,19 +80,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_POST['act'])) {
         $act = $_POST['act'];
     }
-    if (isset($_POST['id']) && is_numericint($_POST['id'])) {
+    if (isset($_POST['id']) && isset($a_csc[$_POST['id']])) {
         $id = $_POST['id'];
     }
 
     if ($act == "del") {
-        if (!isset($a_csc[$id])) {
-            header("Location: vpn_openvpn_csc.php");
-            exit;
+        if (isset($id)) {
+            @unlink("/var/etc/openvpn-csc/{$a_csc[$id]['common_name']}");
+            unset($a_csc[$id]);
+            write_config();
         }
-
-        @unlink("/var/etc/openvpn-csc/{$a_csc[$id]['common_name']}");
-        unset($a_csc[$id]);
-        write_config();
+        header("Location: vpn_openvpn_csc.php");
+        exit;
+    } elseif ($act == "del_x") {
+        if (!empty($pconfig['rule']) && is_array($pconfig['rule'])) {
+            foreach ($pconfig['rule'] as $rulei) {
+                if (isset($a_csc[$rulei])) {
+                    @unlink("/var/etc/openvpn-csc/{$a_csc[$rulei]['common_name']}");
+                    unset($a_csc[$rulei]);
+                }
+            }
+            write_config();
+        }
+        header("Location: vpn_openvpn_csc.php");
+        exit;
+    } elseif ($act == "move"){
+      // move selected items
+      if (!isset($id)) {
+          // if id not set/found, move to end
+          $id = count($a_csc);
+      }
+      $a_csc = legacy_move_config_list_items($a_csc, $id,  $pconfig['rule']);
+      write_config();
+      header("Location: vpn_openvpn_csc.php");
+      exit;
+    } elseif ($act == "toggle") {
+        if (isset($id)) {
+            if (isset($a_csc[$id]['disable'])) {
+                unset($a_csc[$id]['disable']);
+            } else {
+                $a_csc[$id]['disable'] = true;
+            }
+            openvpn_resync_csc($a_csc[$id]);
+            write_config();
+        }
+        header("Location: vpn_openvpn_csc.php");
+        exit;
     } else {
         /* perform validations */
         if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'Tunnel network')) {
@@ -178,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $csc['disable'] = true;
             }
 
-            if (isset($id) && $a_csc[$id]) {
+            if (isset($id)) {
                 $old_csc_cn = $a_csc[$id]['common_name'];
                 $a_csc[$id] = $csc;
             } else {
@@ -201,96 +228,123 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
-
 ?>
 
 <body>
 
 <script type="text/javascript">
 //<![CDATA[
-
 $( document ).ready(function() {
   // link delete buttons
   $(".act_delete").click(function(){
-    var id = $(this).attr("id").split('_').pop(-1);
-    BootstrapDialog.show({
+    var id = $(this).data("id");
+    if (id != 'x') {
+      BootstrapDialog.show({
+          type:BootstrapDialog.TYPE_DANGER,
+          title: "<?= gettext("OpenVPN");?>",
+          message: "<?= gettext("Do you really want to delete this csc?"); ?>",
+          buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                    label: "<?= gettext("Yes");?>",
+                    action: function(dialogRef) {
+                      $.post(window.location, {act: 'del', id:id}, function(data) {
+                            location.reload();
+                      });
+                      dialogRef.close();
+                  }
+              }]
+      });
+    } else {
+      // delete selected
+      BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("OpenVPN");?>",
-        message: "<?= gettext("Do you really want to delete this csc?"); ?>",
+        title: "<?=gettext("OpenVPN");?>",
+        message: "<?=gettext("Do you really want to delete the selected csc's?");?>",
         buttons: [{
-                label: "<?= gettext("No");?>",
-                action: function(dialogRef) {
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
                     dialogRef.close();
-                }}, {
+                  }}, {
                   label: "<?= gettext("Yes");?>",
                   action: function(dialogRef) {
-                    $.post(window.location, {act: 'del', id:id}, function(data) {
-                          location.reload();
-                    });
-                    dialogRef.close();
+                    $("#id").val("");
+                    $("#action").val("del_x");
+                    $("#iform2").submit()
                 }
-            }]
-    });
+              }]
+      });
+    }
   });
+  // link toggle buttons
+  $(".act_toggle").click(function(){
+      $.post(window.location, {act: 'toggle', id:$(this).data("id")}, function(data) {
+          location.reload();
+      });
+  });
+
+  // link move buttons
+  $(".act_move").click(function(){
+    $("#id").val($(this).data("id"));
+    $("#action").val("move");
+    $("#iform2").submit();
+  });
+
+  // checkboxes
+  $("#dns_domain_enable").change(function(){
+      if ($("#dns_domain_enable").is(":checked")) {
+          $("#dns_domain_data").show();
+      } else {
+          $("#dns_domain_data").hide();
+      }
+  });
+
+  $("#dns_server_enable").change(function(){
+      if ($("#dns_server_enable").is(":checked")) {
+          $("#dns_server_data").show();
+      } else {
+          $("#dns_server_data").hide();
+      }
+  });
+
+  $("#wins_server_enable").change(function(){
+      if ($("#wins_server_enable").is(":checked")) {
+          $("#wins_server_data").show();
+      } else {
+          $("#wins_server_data").hide();
+      }
+  });
+
+  $("#ntp_server_enable").change(function(){
+      if ($("#ntp_server_enable").is(":checked")) {
+          $("#ntp_server_data").show();
+      } else {
+          $("#ntp_server_data").hide();
+      }
+  });
+
+  $("#netbios_enable").change(function(){
+      if ($("#netbios_enable").is(":checked")) {
+          $("#netbios_data").show();
+          $("#wins_opts").show();
+      } else {
+          $("#netbios_data").hide();
+          $("#wins_opts").hide();
+      }
+  });
+
+
   // init form (old stuff)
   if (document.iform != undefined) {
-    dns_domain_change();
-    dns_server_change();
-    wins_server_change();
-    ntp_server_change();
-    netbios_change();
+    $("#dns_domain_enable").change();
+    $("#dns_server_enable").change();
+    $("#wins_server_enable").change();
+    $("#ntp_server_enable").change();
   }
 
 });
-
-
-function dns_domain_change() {
-
-  if (document.iform.dns_domain_enable.checked) {
-      document.getElementById("dns_domain_data").style.display="";
-  } else {
-      document.getElementById("dns_domain_data").style.display="none";
-  }
-}
-
-function dns_server_change() {
-
-  if (document.iform.dns_server_enable.checked) {
-      document.getElementById("dns_server_data").style.display="";
-  } else {
-      document.getElementById("dns_server_data").style.display="none";
-  }
-}
-
-function wins_server_change() {
-
-  if (document.iform.wins_server_enable.checked) {
-      document.getElementById("wins_server_data").style.display="";
-  } else {
-      document.getElementById("wins_server_data").style.display="none";
-  }
-}
-
-function ntp_server_change() {
-
-  if (document.iform.ntp_server_enable.checked) {
-      document.getElementById("ntp_server_data").style.display="";
-  } else {
-      document.getElementById("ntp_server_data").style.display="none";
-  }
-}
-
-function netbios_change() {
-
-  if (document.iform.netbios_enable.checked) {
-    document.getElementById("netbios_data").style.display="";
-    document.getElementById("wins_opts").style.display="";
-  } else {
-    document.getElementById("netbios_data").style.display="none";
-    document.getElementById("wins_opts").style.display="none";
-  }
-}
-
 //]]>
 </script>
 
@@ -317,7 +371,7 @@ if ($act!="new" && $act!="edit") {
           <div class="tab-content content-box col-xs-12">
 <?php
           if ($act=="new" || $act=="edit") :?>
-              <form action="vpn_openvpn_csc.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
@@ -471,7 +525,7 @@ if ($act!="new" && $act!="edit") {
                     <td width="22%"><a id="help_for_dns_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
                     <td width="78%">
                       <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes" <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> onclick="dns_domain_change()" />
-                      <div id="dns_domain_data">
+                      <div id="dns_domain_data" style="display:none">
                         <input name="dns_domain" type="text" id="dns_domain" value="<?=$pconfig['dns_domain'];?>" />
                       </div>
                       <div class="hidden" for="help_for_dns_domain">
@@ -483,7 +537,7 @@ if ($act!="new" && $act!="edit") {
                     <td width="22%"><a id="help_for_dns_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
                     <td width="78%">
                       <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes" <?=!empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "" ;?> onclick="dns_server_change()" />
-                      <div id="dns_server_data">
+                      <div id="dns_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>&nbsp;
                         <input name="dns_server1" type="text" id="dns_server1" size="20" value="<?=htmlspecialchars($pconfig['dns_server1']);?>" />
                         <?=gettext("Server #2:"); ?>&nbsp;
@@ -502,7 +556,7 @@ if ($act!="new" && $act!="edit") {
                     <td width="22%"><a id="help_for_ntp_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NTP Servers"); ?></td>
                     <td width="78%">
                       <input name="ntp_server_enable" type="checkbox" id="ntp_server_enable" value="yes" <?=!empty($pconfig['ntp_server1']) || !empty($pconfig['ntp_server2']) ? "checked=\"checked\"" : "" ;?> onclick="ntp_server_change()" />
-                      <div id="ntp_server_data">
+                      <div id="ntp_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>&nbsp;
                         <input name="ntp_server1" type="text" id="ntp_server1" size="20" value="<?=$pconfig['ntp_server1'];?>" />
                         <?=gettext("Server #2:"); ?>&nbsp;
@@ -557,7 +611,7 @@ if ($act!="new" && $act!="edit") {
                     <td width="22%"><a id="help_for_wins_server" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WINS Servers"); ?></td>
                     <td width="78%">
                       <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes"  <?=!empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "" ;?> onclick="wins_server_change()" />
-                      <div id="wins_server_data">
+                      <div id="wins_server_data" style="display:none">
                         <?=gettext("Server #1:"); ?>
                         <input name="wins_server1" type="text" id="wins_server1" size="20" value="<?=$pconfig['wins_server1'];?>" />
                         <?=gettext("Server #2:"); ?>
@@ -584,8 +638,8 @@ if ($act!="new" && $act!="edit") {
                       <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                       <input name="act" type="hidden" value="<?=$act;?>" />
 <?php
-                      if (isset($id) && $a_csc[$id]) :?>
-                      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                      if (isset($id)) :?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
 <?php
                       endif; ?>
                     </td>
@@ -595,48 +649,68 @@ if ($act!="new" && $act!="edit") {
               </form>
 <?php
               else :?>
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <tr>
-                    <td><?=gettext("Disabled"); ?></td>
-                    <td><?=gettext("Common Name"); ?></td>
-                    <td><?=gettext("Description"); ?></td>
-                    <td></td>
-                  </tr>
+              <form method="post" name="iform2" id="iform2">
+                <input type="hidden" id="id" name="id" value="" />
+                <input type="hidden" id="action" name="act" value="" />
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <tr>
+                      <td></td>
+                      <td><?=gettext("Common Name"); ?></td>
+                      <td><?=gettext("Tunnel Network");?></td>
+                      <td><?=gettext("Description"); ?></td>
+                      <td></td>
+                    </tr>
 <?php
-                  $i = 0;
-                  foreach ($a_csc as $csc) :
-                      $disabled = "NO";
-                      if (isset($csc['disable'])) {
-                          $disabled = "YES";
-                      }?>
-                  <tr ondblclick="document.location='vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>'">
-                    <td>
-                        <?=$disabled;?>
-                    </td>
-                    <td>
-                        <?=htmlspecialchars($csc['common_name']);?>
-                    </td>
-                    <td>
-                        <?=htmlspecialchars($csc['description']);?>
-                    </td>
-                    <td>
-                      <a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                      <a id="del_<?=$i;?>" title="<?=gettext("delete csc"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
-                    </td>
-                  </tr>
+                    $i = 0;
+                    foreach ($a_csc as $csc):?>
+                    <tr>
+                      <td>
+                        <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                        &nbsp;
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($csc['disable'])) ? gettext("disable") : gettext("enable");?>">
+                          <span class="glyphicon glyphicon-play <?=(empty($csc['disable'])) ? "text-success" : "text-muted";?>"></span>
+                        </a>
+                      </td>
+                      <td>
+                          <?=htmlspecialchars($csc['common_name']);?>
+                      </td>
+                      <td>
+                          <?=!empty($csc['tunnel_network']) ? htmlspecialchars($csc['tunnel_network']) : "";?>
+                      </td>
+                      <td>
+                          <?=htmlspecialchars($csc['description']);?>
+                      </td>
+                      <td>
+                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected before this item");?>" class="act_move btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        </a>
+                        <a href="vpn_openvpn_csc.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a data-id="<?=$i;?>" title="<?=gettext("delete csc"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                        <a href="vpn_openvpn_csc.php?act=new&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
+                          <span class="fa fa-clone text-muted"></span>
+                        </a>
+                      </td>
+                    </tr>
 <?php
-                  $i++;
-                  endforeach;?>
-                  <tr>
-                    <td colspan="4">
-                      <p>
+                    $i++;
+                    endforeach;?>
+                    <tr>
+                      <td colspan="4">
                         <?=gettext("Additional OpenVPN client specific overrides can be added here.");?>
-                      </p>
-                    </td>
-                  </tr>
-                </table>
-              </div>
+                      </td>
+                      <td>
+                        <a type="submit" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        </a>
+                        <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash text-muted"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </form>
 <?php
             endif; ?>
 
