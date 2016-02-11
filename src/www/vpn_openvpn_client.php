@@ -123,6 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
+    $input_errors = array();
     if (isset($_POST['id']) && isset($a_client[$_POST['id']])) {
         $id = $_POST['id'];
     }
@@ -132,20 +134,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         // remove client
-        if (!isset($id)) {
-            header("Location: vpn_openvpn_client.php");
-            exit;
-        }
-        if (!empty($a_client[$id])) {
+        if (isset($id)) {
             openvpn_delete('client', $a_client[$id]);
+            unset($a_client[$id]);
+            write_config();
         }
-        unset($a_client[$id]);
-        write_config();
+        header("Location: vpn_openvpn_client.php");
+        exit;
+    } elseif ($act == "del_x") {
+        if (!empty($pconfig['rule']) && is_array($pconfig['rule'])) {
+            foreach ($pconfig['rule'] as $rulei) {
+                if (isset($a_client[$rulei])) {
+                    openvpn_delete('client', $a_client[$rulei]);
+                    unset($a_client[$rulei]);
+                }
+            }
+            write_config();
+        }
+        header("Location: vpn_openvpn_client.php");
+        exit;
+    } elseif ($act == "move"){
+      // move selected items
+      if (!isset($id)) {
+          // if id not set/found, move to end
+          $id = count($a_client);
+      }
+      $a_client = legacy_move_config_list_items($a_client, $id,  $pconfig['rule']);
+      write_config();
+      header("Location: vpn_openvpn_client.php");
+      exit;
+    } elseif ($act == "toggle") {
+        if (isset($id)) {
+            if (isset($a_client[$id]['disable'])) {
+                unset($a_client[$id]['disable']);
+            } else {
+                $a_client[$id]['disable'] = true;
+            }
+            openvpn_resync('client', $a_client[$id]);
+            write_config();
+        }
+        header("Location: vpn_openvpn_client.php");
+        exit;
     } else {
         // update client (after validation)
-        $pconfig = $_POST;
-        $input_errors = array();
-
         if (isset($id)) {
             $vpnid = $a_client[$id]['vpnid'];
         }
@@ -342,26 +373,63 @@ $( document ).ready(function() {
 
   // link delete buttons
   $(".act_delete").click(function(){
-    var id = $(this).attr("id").split('_').pop(-1);
-    BootstrapDialog.show({
+    var id = $(this).data("id");
+    if (id != 'x') {
+      BootstrapDialog.show({
+          type:BootstrapDialog.TYPE_DANGER,
+          title: "<?= gettext("OpenVPN");?>",
+          message: "<?= gettext("Do you really want to delete this client?"); ?>",
+          buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                    label: "<?= gettext("Yes");?>",
+                    action: function(dialogRef) {
+                      $.post(window.location, {act: 'del', id:id}, function(data) {
+                            location.reload();
+                      });
+                      dialogRef.close();
+                  }
+              }]
+      });
+    } else {
+      // delete selected
+      BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
-        title: "<?= gettext("OpenVPN");?>",
-        message: "<?= gettext("Do you really want to delete this client?"); ?>",
+        title: "<?=gettext("OpenVPN");?>",
+        message: "<?=gettext("Do you really want to delete the selected clients?");?>",
         buttons: [{
-                label: "<?= gettext("No");?>",
-                action: function(dialogRef) {
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
                     dialogRef.close();
-                }}, {
+                  }}, {
                   label: "<?= gettext("Yes");?>",
                   action: function(dialogRef) {
-                    $.post(window.location, {act: 'del', id:id}, function(data) {
-                          location.reload();
-                    });
-                    dialogRef.close();
+                    $("#id").val("");
+                    $("#action").val("del_x");
+                    $("#iform2").submit()
                 }
-            }]
-    });
+              }]
+      });
+    }
   });
+
+  // link toggle buttons
+  $(".act_toggle").click(function(){
+      $.post(window.location, {act: 'toggle', id:$(this).data("id")}, function(data) {
+          location.reload();
+      });
+  });
+
+  // link move buttons
+  $(".act_move").click(function(){
+    $("#id").val($(this).data("id"));
+    $("#action").val("move");
+    $("#iform2").submit();
+  });
+
+
 });
 
 
@@ -398,18 +466,18 @@ function dev_mode_change() {
 }
 
 function autokey_change() {
-  if (document.iform.autokey_enable != undefined && document.iform.autokey_enable.checked)
-    document.getElementById("autokey_opts").style.display="none";
-  else
+  if (document.iform.autokey_enable != undefined && document.iform.autokey_enable.checked) {
+      document.getElementById("autokey_opts").style.display="none";
+  } else {
     document.getElementById("autokey_opts").style.display="";
+  }
 }
 
 function useproxy_changed() {
-
-  if (jQuery('#proxy_authtype').val() != 'none') {
-    jQuery('#proxy_authtype_opts').show();
+  if ($('#proxy_authtype').val() != 'none') {
+    $('#proxy_authtype_opts').show();
   } else {
-    jQuery('#proxy_authtype_opts').hide();
+    $('#proxy_authtype_opts').hide();
   }
 }
 
@@ -439,10 +507,11 @@ else :
 <?php
 endif; ?>
 
-  if (document.iform.tlsauth_enable.checked && !autocheck)
-    document.getElementById("autotls_opts").style.display="";
-  else
-    document.getElementById("autotls_opts").style.display="none";
+  if (document.iform.tlsauth_enable.checked && !autocheck) {
+      document.getElementById("autotls_opts").style.display="";
+  } else {
+      document.getElementById("autotls_opts").style.display="none";
+  }
 }
 
 //]]>
@@ -1006,55 +1075,73 @@ endif; ?>
         </form>
 <?php
         else:?>
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <td><?=gettext("Disabled"); ?></td>
-          <td><?=gettext("Protocol"); ?></td>
-          <td><?=gettext("Server"); ?></td>
-          <td><?=gettext("Description"); ?></td>
-          <td></td>
-        </tr>
-        </thead>
-        <tbody>
+        <form method="post" name="iform2" id="iform2">
+          <input type="hidden" id="id" name="id" value="" />
+          <input type="hidden" id="action" name="act" value="" />
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <td></td>
+                <td><?=gettext("Protocol"); ?></td>
+                <td><?=gettext("Server"); ?></td>
+                <td><?=gettext("Description"); ?></td>
+                <td></td>
+              </tr>
+            </thead>
+            <tbody>
 <?php
-        $i = 0;
-        foreach ($a_client as $client) :
-          $disabled = "NO";
-          if (isset($client['disable'])) {
-              $disabled = "YES";
-          }
-          $server = "{$client['server_addr']}:{$client['server_port']}";?>
-          <tr ondblclick="document.location='vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>'">
-            <td>
-                <?=$disabled;?>
-            </td>
-            <td>
-                <?=htmlspecialchars($client['protocol']);?>
-            </td>
-            <td>
-                <?=htmlspecialchars($server);?>
-            </td>
-            <td>
-                <?=htmlspecialchars($client['description']);?>
-            </td>
-            <td>
-                <a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
-                  <span class="glyphicon glyphicon-pencil"></span>
-                </a>
-                <a id="del_<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs">
-                  <span class="fa fa-trash text-muted"></span>
-                </a>
-                <a href="vpn_openvpn_client.php?act=new&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
-                  <span class="fa fa-clone text-muted"></span>
-                </a>
-            </td>
-          </tr>
+            $i = 0;
+            foreach ($a_client as $client) :
+              $server = "{$client['server_addr']}:{$client['server_port']}";?>
+              <tr>
+                <td>
+                  <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                  &nbsp;
+                  <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($client['disable'])) ? gettext("disable") : gettext("enable");?>">
+                    <span class="glyphicon glyphicon-play <?=(empty($client['disable'])) ? "text-success" : "text-muted";?>"></span>
+                  </a>
+                </td>
+                <td>
+                    <?=htmlspecialchars($client['protocol']);?>
+                </td>
+                <td>
+                    <?=htmlspecialchars($server);?>
+                </td>
+                <td>
+                    <?=htmlspecialchars($client['description']);?>
+                </td>
+                <td>
+                    <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected before this item");?>" class="act_move btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-arrow-left"></span>
+                    </a>
+                    <a href="vpn_openvpn_client.php?act=edit&amp;id=<?=$i;?>" class="btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <a data-id="<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs">
+                      <span class="fa fa-trash text-muted"></span>
+                    </a>
+                    <a href="vpn_openvpn_client.php?act=new&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
+                      <span class="fa fa-clone text-muted"></span>
+                    </a>
+                </td>
+              </tr>
 <?php
-          $i++;
-          endforeach;?>
-        </tbody>
-      </table>
+              $i++;
+              endforeach;?>
+              <tr>
+                <td colspan="4"></td>
+                <td>
+                  <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
+                    <span class="glyphicon glyphicon-arrow-down"></span>
+                  </a>
+                  <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                    <span class="fa fa-trash text-muted"></span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        <form>
 <?php
       endif; ?>
 
