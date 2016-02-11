@@ -700,8 +700,8 @@ if ($act!="new" && $act!="edit") {
                         <?=gettext("Additional OpenVPN client specific overrides can be added here.");?>
                       </td>
                       <td>
-                        <a type="submit" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        <a data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("move selected items to end");?>" class="act_move btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-arrow-down"></span>
                         </a>
                         <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                           <span class="fa fa-trash text-muted"></span>
