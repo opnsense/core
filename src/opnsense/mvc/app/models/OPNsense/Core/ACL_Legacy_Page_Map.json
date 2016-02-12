@@ -31,6 +31,7 @@
         "name": "WebCfg - AJAX: Get Service Providers",
         "descr": "Allow access to the 'AJAX: Service Providers' page.",
         "match": [
+            "license.php",
             "getserviceproviders.php*"
         ]
     },
@@ -38,6 +39,7 @@
         "name": "WebCfg - AJAX: Get Stats",
         "descr": "Allow access to the 'AJAX: Get Stats' page.",
         "match": [
+            "license.php",
             "getstats.php*"
         ]
     },
