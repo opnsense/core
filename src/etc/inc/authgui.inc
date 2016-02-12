@@ -52,8 +52,9 @@ function cmp_page_matches($page, & $matches, $fullwc = true) {
     /* look for a match */
     foreach ($matches as $match) {
         /* possibly ignore full wildcard match */
-        if (!$fullwc && !strcmp($match ,"*"))
-          continue;
+        if (!$fullwc && !strcmp($match ,"*")) {
+            continue;
+        }
 
         /* compare exact or wildcard match */
         $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $match);
@@ -86,6 +87,9 @@ function isAllowedPage($page)
                 return true;
             }
         }
+    }
+    if ($page == "/") {
+        $page = "/index.php";
     }
 
     /* user privelege access check */
