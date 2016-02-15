@@ -1,79 +1,81 @@
 <?php
 
 /*
- * Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- * notice, this list of conditions and the following disclaimer in the
- * documentation and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
- * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * RISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- */
+    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    RISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+*/
 
 /****f* legacy/is_private_ip
  * NAME
  *   is_private_ip
  * INPUTS
- *	none
+ *  none
  * RESULT
  *   returns true if an ip address is in a private range
  ******/
-function is_private_ip($iptocheck) {
-	$isprivate = false;
-	$ip_private_list=array(
-		"10.0.0.0/8",
-		"100.64.0.0/10",
-		"172.16.0.0/12",
-		"192.168.0.0/16",
-	);
-	foreach($ip_private_list as $private) {
-		if(ip_in_subnet($iptocheck,$private)==true)
-			$isprivate = true;
-	}
-	return $isprivate;
+function is_private_ip($iptocheck)
+{
+    $isprivate = false;
+    $ip_private_list=array(
+      "10.0.0.0/8",
+      "100.64.0.0/10",
+      "172.16.0.0/12",
+      "192.168.0.0/16",
+    );
+    foreach($ip_private_list as $private) {
+        if (ip_in_subnet($iptocheck,$private)==true) {
+            $isprivate = true;
+        }
+    }
+    return $isprivate;
 }
 
 /****f* legacy/get_dns_servers
  * NAME
- *   get_dns_servres - get system dns servers
+ *   get_dns_servers - get system dns servers
  * INPUTS
  *   $dns_servers - an array of the dns servers
  * RESULT
  *   null
  ******/
 function get_dns_servers() {
-	$dns_servers = array();
-	$dns_s = file("/etc/resolv.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-	foreach($dns_s as $dns) {
-		$matches = "";
-		if (preg_match("/nameserver (.*)/", $dns, $matches))
-			$dns_servers[] = $matches[1];
-	}
-	return array_unique($dns_servers);
+    $dns_servers = array();
+    $dns_s = file("/etc/resolv.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach($dns_s as $dns) {
+        $matches = "";
+        if (preg_match("/nameserver (.*)/", $dns, $matches)) {
+            $dns_servers[] = $matches[1];
+        }
+    }
+    return array_unique($dns_servers);
 }
 
 /****f* legacy/enable_hardware_offloading
  * NAME
  *   enable_hardware_offloading - Enable a NIC's supported hardware features.
  * INPUTS
- *   $interface	- string containing the physical interface to work on.
+ *   $interface  - string containing the physical interface to work on.
  * RESULT
  *   null
  * NOTES
@@ -81,24 +83,24 @@ function get_dns_servers() {
  ******/
 function enable_hardware_offloading($interface)
 {
-	global $config;
+    global $config;
 
-	if (isset($config['system']['do_not_use_nic_microcode'])) {
-		return;
-	}
+    if (isset($config['system']['do_not_use_nic_microcode'])) {
+        return;
+    }
 
-	/* translate wan, lan, opt -> real interface if needed */
-	$int = get_real_interface($interface);
-	if (empty($int)) {
-		return;
-	}
-	$int_family = preg_split('/[0-9]+/', $int);
-	$supported_ints = array('fxp');
-	if (in_array($int_family, $supported_ints)) {
-		if (does_interface_exist($int)) {
-			legacy_interface_flags($int, 'link0');
-		}
-	}
+    /* translate wan, lan, opt -> real interface if needed */
+    $int = get_real_interface($interface);
+    if (empty($int)) {
+        return;
+    }
+    $int_family = preg_split('/[0-9]+/', $int);
+    $supported_ints = array('fxp');
+    if (in_array($int_family, $supported_ints)) {
+        if (does_interface_exist($int)) {
+            legacy_interface_flags($int, 'link0');
+        }
+    }
 }
 
 /****f* legacy/setup_polling
@@ -113,13 +115,13 @@ function enable_hardware_offloading($interface)
  ******/
 function setup_polling()
 {
-	global $config;
+    global $config;
 
-	if (isset($config['system']['polling'])) {
-		set_single_sysctl("kern.polling.idle_poll", "1");
-	} else {
-		set_single_sysctl("kern.polling.idle_poll", "0");
-	}
+    if (isset($config['system']['polling'])) {
+        set_single_sysctl("kern.polling.idle_poll", "1");
+    } else {
+        set_single_sysctl("kern.polling.idle_poll", "0");
+    }
 }
 
 /****f* legacy/setup_microcode
@@ -134,34 +136,34 @@ function setup_polling()
  *   This function only supports the fxp driver's loadable microcode.
  ******/
 function setup_microcode() {
+    /* if list */
+    $ifs = legacy_interface_listget();
 
-	/* if list */
-	$ifs = legacy_interface_listget();
-
-	foreach($ifs as $if) {
-		enable_hardware_offloading($if);
-	}
+    foreach($ifs as $if) {
+        enable_hardware_offloading($if);
+    }
 }
 
 /*
  * get_carp_interface_status($carpinterface): returns the status of a carp ip
  */
 function get_carp_interface_status($carpinterface) {
-	$carp_query = "";
+    $carp_query = "";
 
-	/* XXX: Need to fidn a better way for this! */
-	list ($interface, $vhid) = explode("_vip", $carpinterface);
-	$interface = get_real_interface($interface);
-	exec("/sbin/ifconfig $interface | /usr/bin/grep -v grep | /usr/bin/grep carp: | /usr/bin/grep 'vhid {$vhid}'", $carp_query);
-	foreach($carp_query as $int) {
-		if(stristr($int, "MASTER"))
-			return gettext("MASTER");
-		if(stristr($int, "BACKUP"))
-			return gettext("BACKUP");
-		if(stristr($int, "INIT"))
-			return gettext("INIT");
-	}
-	return;
+    /* XXX: Need to fidn a better way for this! */
+    list ($interface, $vhid) = explode("_vip", $carpinterface);
+    $interface = get_real_interface($interface);
+    exec("/sbin/ifconfig $interface | /usr/bin/grep -v grep | /usr/bin/grep carp: | /usr/bin/grep 'vhid {$vhid}'", $carp_query);
+    foreach($carp_query as $int) {
+        if (stristr($int, "MASTER")) {
+            return gettext("MASTER");
+        } elseif (stristr($int, "BACKUP")) {
+            return gettext("BACKUP");
+        } elseif(stristr($int, "INIT")) {
+            return gettext("INIT");
+        }
+    }
+    return;
 }
 
 /*
@@ -169,12 +171,12 @@ function get_carp_interface_status($carpinterface) {
  *                                   the configuration section
  */
 function backup_config_section($section_name) {
-	global $config;
-	$new_section = &$config[$section_name];
-	/* generate configuration XML */
-	$xmlconfig = dump_xml_config($new_section, $section_name);
-	$xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
-	return $xmlconfig;
+    global $config;
+    $new_section = &$config[$section_name];
+    /* generate configuration XML */
+    $xmlconfig = dump_xml_config($new_section, $section_name);
+    $xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
+    return $xmlconfig;
 }
 
 /* KEEP THIS: unbreaks syntax highlighting <?php */
@@ -186,60 +188,59 @@ function backup_config_section($section_name) {
  */
 function restore_config_section($section_name, $new_contents)
 {
-	global $config;
+    global $config;
+    $tmpxml = '/tmp/tmpxml';
 
-	$tmpxml = '/tmp/tmpxml';
+    $fout = fopen($tmpxml, 'w');
+    fwrite($fout, $new_contents);
+    fclose($fout);
 
-	$fout = fopen($tmpxml, 'w');
-	fwrite($fout, $new_contents);
-	fclose($fout);
+    $xml = parse_xml_config($tmpxml, null);
+    if (isset($xml['pfsense'])) {
+        $xml = $xml['pfsense'];
+    } elseif (isset($xml['m0n0wall'])) {
+        $xml = $xml['m0n0wall'];
+    } elseif (isset($xml['opnsense'])) {
+        $xml = $xml['opnsense'];
+    }
+    if (isset($xml[$section_name])) {
+        $section_xml = $xml[$section_name];
+    } else {
+        $section_xml = -1;
+    }
 
-	$xml = parse_xml_config($tmpxml, null);
-	if (isset($xml['pfsense'])) {
-		$xml = $xml['pfsense'];
-	} elseif (isset($xml['m0n0wall'])) {
-		$xml = $xml['m0n0wall'];
-	} elseif (isset($xml['opnsense'])) {
-		$xml = $xml['opnsense'];
-	}
-	if (isset($xml[$section_name])) {
-		$section_xml = $xml[$section_name];
-	} else {
-		$section_xml = -1;
-	}
+    @unlink($tmpxml);
 
-	@unlink($tmpxml);
+    if ($section_xml === -1) {
+        return false;
+    }
 
-	if ($section_xml === -1) {
-		return false;
-	}
+    $config[$section_name] = &$section_xml;
+    write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
+    disable_security_checks();
 
-	$config[$section_name] = &$section_xml;
-	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
-	disable_security_checks();
-
-	return true;
+    return true;
 }
 
 /*
  *  merge_config_section($section_name, new_contents):   restore a configuration section,
  *                                                  and write the configuration out
  *                                                  to disk/cf.  But preserve the prior
- *													structure if needed
+ *                          structure if needed
  */
 function merge_config_section($section_name, $new_contents)
 {
-	global $config;
-	$fname = '/tmp/tmp-' . time();
-	$fout = fopen($fname, "w");
-	fwrite($fout, $new_contents);
-	fclose($fout);
-	$section_xml = parse_xml_config($fname, $section_name);
-	$config[$section_name] = $section_xml;
-	unlink($fname);
-	write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
-	disable_security_checks();
-	return;
+    global $config;
+    $fname = '/tmp/tmp-' . time();
+    $fout = fopen($fname, "w");
+    fwrite($fout, $new_contents);
+    fclose($fout);
+    $section_xml = parse_xml_config($fname, $section_name);
+    $config[$section_name] = $section_xml;
+    unlink($fname);
+    write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
+    disable_security_checks();
+    return;
 }
 
 /*
@@ -247,199 +248,202 @@ function merge_config_section($section_name, $new_contents)
  */
 function host_firmware_version()
 {
-	global $config;
+    global $config;
 
-	return array(
-		'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
-		'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.kernel')),
-		'base' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.base')),
-		'config_version' => $config['version']
-	);
+    return array(
+      'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
+      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.kernel')),
+      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.base')),
+      'config_version' => $config['version']
+    );
 }
 
 function reload_all()
 {
-	configd_run('service reload all', true);
+    configd_run('service reload all', true);
 }
 
 function reload_interfaces()
 {
-	configd_run('interface reload');
+    configd_run('interface reload');
 }
 
 function setup_serial_port($sync = true)
 {
-	global $config;
+    global $config;
 
-	$serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
-	$serial_enabled = isset($config['system']['enableserial']);
+    $serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
+    $serial_enabled = isset($config['system']['enableserial']);
 
-	$loader_conf_file = '/boot/loader.conf';
-	$boot_config_file = '/boot.config';
+    $loader_conf_file = '/boot/loader.conf';
+    $boot_config_file = '/boot.config';
 
-	/* serial console - write out /boot.config */
-	if (file_exists($boot_config_file)) {
-		$boot_config = file_get_contents($boot_config_file);
-	} else {
-		$boot_config = '';
-	}
+    /* serial console - write out /boot.config */
+    if (file_exists($boot_config_file)) {
+        $boot_config = file_get_contents($boot_config_file);
+    } else {
+        $boot_config = '';
+    }
 
-	$boot_config_split = explode("\n", $boot_config);
-	$fd = @fopen($boot_config_file, 'w');
-	if ($fd) {
-		foreach ($boot_config_split as $bcs) {
-			if (stristr($bcs, '-D') || stristr($bcs, '-h')) {
-				continue;
-			}
-			if ($bcs != '') {
-				@fwrite($fd, "{$bcs}\n");
-			}
-		}
-		if ($serial_enabled) {
-			@fwrite($fd, "-S{$serialspeed} -D\n");
-		}
-		fclose($fd);
-	}
+    $boot_config_split = explode("\n", $boot_config);
+    $fd = @fopen($boot_config_file, 'w');
+    if ($fd) {
+        foreach ($boot_config_split as $bcs) {
+            if (stristr($bcs, '-D') || stristr($bcs, '-h')) {
+                continue;
+            }
+            if ($bcs != '') {
+                @fwrite($fd, "{$bcs}\n");
+            }
+        }
+        if ($serial_enabled) {
+            @fwrite($fd, "-S{$serialspeed} -D\n");
+        }
+        fclose($fd);
+    }
 
-	$boot_config = @file_get_contents($loader_conf_file);
-	$boot_config_split = explode("\n", $boot_config);
-	if(count($boot_config_split) > 0) {
-		$new_boot_config = array();
-		// Loop through and only add lines that are not empty, and which
-		//  do not contain a console directive.
-		foreach($boot_config_split as $bcs) {
-			if(!empty($bcs)
-				&& (stripos($bcs, "console") === false)
-				&& (stripos($bcs, "boot_multicons") === false)
-				&& (stripos($bcs, "boot_serial") === false)
-				&& (stripos($bcs, "hw.usb.no_pf") === false)
-				&& (stripos($bcs, "autoboot_delay") === false)) {
-				$new_boot_config[] = $bcs;
-			}
-		}
+    $boot_config = @file_get_contents($loader_conf_file);
+    $boot_config_split = explode("\n", $boot_config);
+    if(count($boot_config_split) > 0) {
+        $new_boot_config = array();
+        // Loop through and only add lines that are not empty, and which
+        //  do not contain a console directive.
+        foreach($boot_config_split as $bcs) {
+            if(!empty($bcs)
+              && (stripos($bcs, "console") === false)
+              && (stripos($bcs, "boot_multicons") === false)
+              && (stripos($bcs, "boot_serial") === false)
+              && (stripos($bcs, "hw.usb.no_pf") === false)
+              && (stripos($bcs, "autoboot_delay") === false)) {
+                $new_boot_config[] = $bcs;
+            }
+        }
 
-		if ($serial_enabled) {
-			$new_boot_config[] = 'boot_multicons="YES"';
-			$new_boot_config[] = 'boot_serial="YES"';
-			$primaryconsole = $config['system']['primaryconsole'];
-			switch ($primaryconsole) {
-				case "video":
-					$new_boot_config[] = 'console="vidconsole,comconsole"';
-					break;
-				case "serial":
-				default:
-					$new_boot_config[] = 'console="comconsole,vidconsole"';
-			}
-		}
-		$new_boot_config[] = 'comconsole_speed="' . $serialspeed . '"';
-		$new_boot_config[] = 'hw.usb.no_pf="1"';
-		$new_boot_config[] = 'autoboot_delay="3"';
+        if ($serial_enabled) {
+            $new_boot_config[] = 'boot_multicons="YES"';
+            $new_boot_config[] = 'boot_serial="YES"';
+            $primaryconsole = $config['system']['primaryconsole'];
+            switch ($primaryconsole) {
+                case "video":
+                    $new_boot_config[] = 'console="vidconsole,comconsole"';
+                    break;
+                case "serial":
+                default:
+                    $new_boot_config[] = 'console="comconsole,vidconsole"';
+            }
+        }
+        $new_boot_config[] = 'comconsole_speed="' . $serialspeed . '"';
+        $new_boot_config[] = 'hw.usb.no_pf="1"';
+        $new_boot_config[] = 'autoboot_delay="3"';
 
-		@file_put_contents($loader_conf_file, implode("\n", $new_boot_config) . "\n");
-	}
+        @file_put_contents($loader_conf_file, implode("\n", $new_boot_config) . "\n");
+    }
 
-	$ttys = file_get_contents("/etc/ttys");
-	$ttys_split = explode("\n", $ttys);
-	$fd = fopen("/etc/ttys", "w");
+    $ttys = file_get_contents("/etc/ttys");
+    $ttys_split = explode("\n", $ttys);
+    $fd = fopen("/etc/ttys", "w");
 
-	$on_off = $serial_enabled ? 'on' : 'off';
+    $on_off = $serial_enabled ? 'on' : 'off';
 
-	if (isset($config['system']['disableconsolemenu'])) {
-		$console_type = 'Pc';
-		$serial_type = 'std.' . $serialspeed;
-	} else {
-		$console_type = 'al.Pc';
-		$serial_type = 'al.' . $serialspeed;
-	}
+    if (isset($config['system']['disableconsolemenu'])) {
+        $console_type = 'Pc';
+        $serial_type = 'std.' . $serialspeed;
+    } else {
+        $console_type = 'al.Pc';
+        $serial_type = 'al.' . $serialspeed;
+    }
 
-	foreach($ttys_split as $tty) {
-		if (stristr($tty, "ttyv0"))
-			fwrite($fd, "ttyv0	\"/usr/libexec/getty {$console_type}\"	cons25	on	secure\n");
-		else if (stristr($tty, "ttyu0"))
-			fwrite($fd, "ttyu0	\"/usr/libexec/getty {$serial_type}\"	cons25	{$on_off}	secure\n");
-		else
-			fwrite($fd, $tty . "\n");
-	}
+    foreach($ttys_split as $tty) {
+        if (stristr($tty, "ttyv0")) {
+            fwrite($fd, "ttyv0  \"/usr/libexec/getty {$console_type}\"  cons25  on  secure\n");
+        } elseif (stristr($tty, "ttyu0")) {
+            fwrite($fd, "ttyu0  \"/usr/libexec/getty {$serial_type}\"  cons25  {$on_off}  secure\n");
+        } else {
+            fwrite($fd, $tty . "\n");
+        }
+    }
 
-	unset($on_off, $console_type, $serial_type);
-	fclose($fd);
+    unset($on_off, $console_type, $serial_type);
+    fclose($fd);
 
-	if ($sync) {
-		reload_ttys();
-	}
+    if ($sync) {
+        reload_ttys();
+    }
 }
 
 function reload_ttys()
 {
-	/* force init(8) to reload /etc/ttys */
-	exec('/bin/kill -HUP 1');
+    /* force init(8) to reload /etc/ttys */
+    exec('/bin/kill -HUP 1');
 }
 
 
 /* Any PPPoE servers enabled? */
-function is_pppoe_server_enabled() {
-	global $config;
+function is_pppoe_server_enabled()
+{
+    global $config;
+    $pppoeenable = false;
+    if (!isset($config['pppoes']['pppoe']) || !is_array($config['pppoes']['pppoe'])) {
+        return false;
+    }
 
-	$pppoeenable = false;
+    foreach ($config['pppoes']['pppoe'] as $pppoes) {
+        if ($pppoes['mode'] == 'server') {
+            $pppoeenable = true;
+        }
+    }
 
-	if (!isset($config['pppoes']['pppoe']) || !is_array($config['pppoes']['pppoe']))
-		return false;
-
-	foreach ($config['pppoes']['pppoe'] as $pppoes)
-		if ($pppoes['mode'] == 'server')
-			$pppoeenable = true;
-
-	return $pppoeenable;
+    return $pppoeenable;
 }
 
 function add_hostname_to_watch($hostname) {
-	if(!is_dir("/var/db/dnscache")) {
-		mkdir("/var/db/dnscache");
-	}
-	$result = array();
-	if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
-		$domrecords = array();
-		$domips = array();
-		exec("host -t A " . escapeshellarg($hostname), $domrecords, $rethost);
-		if($rethost == 0) {
-			foreach($domrecords as $domr) {
-				$doml = explode(" ", $domr);
-				$domip = $doml[3];
-				/* fill array with domain ip addresses */
-				if(is_ipaddr($domip)) {
-					$domips[] = $domip;
-				}
-			}
-		}
-		sort($domips);
-		$contents = "";
-		if(! empty($domips)) {
-			foreach($domips as $ip) {
-				$contents .= "$ip\n";
-			}
-		}
-		file_put_contents("/var/db/dnscache/$hostname", $contents);
-		/* Remove empty elements */
-		$result = array_filter(explode("\n", $contents), 'strlen');
-	}
-	return $result;
+    if (!is_dir("/var/db/dnscache")) {
+        mkdir("/var/db/dnscache");
+    }
+    $result = array();
+    if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
+        $domrecords = array();
+        $domips = array();
+        exec("host -t A " . escapeshellarg($hostname), $domrecords, $rethost);
+        if($rethost == 0) {
+            foreach($domrecords as $domr) {
+                $doml = explode(" ", $domr);
+                $domip = $doml[3];
+                /* fill array with domain ip addresses */
+                if(is_ipaddr($domip)) {
+                    $domips[] = $domip;
+                }
+            }
+        }
+        sort($domips);
+        $contents = "";
+        if(! empty($domips)) {
+            foreach($domips as $ip) {
+                $contents .= "$ip\n";
+            }
+        }
+        file_put_contents("/var/db/dnscache/$hostname", $contents);
+        /* Remove empty elements */
+        $result = array_filter(explode("\n", $contents), 'strlen');
+    }
+    return $result;
 }
 
 function is_fqdn($fqdn) {
-	$hostname = false;
-	if(preg_match("/[-A-Z0-9\.]+\.[-A-Z0-9\.]+/i", $fqdn)) {
-		$hostname = true;
-	}
-	if(preg_match("/\.\./", $fqdn)) {
-		$hostname = false;
-	}
-	if(preg_match("/^\./i", $fqdn)) {
-		$hostname = false;
-	}
-	if(preg_match("/\//i", $fqdn)) {
-		$hostname = false;
-	}
-	return($hostname);
+    $hostname = false;
+    if (preg_match("/[-A-Z0-9\.]+\.[-A-Z0-9\.]+/i", $fqdn)) {
+        $hostname = true;
+    }
+    if (preg_match("/\.\./", $fqdn)) {
+        $hostname = false;
+    }
+    if (preg_match("/^\./i", $fqdn)) {
+        $hostname = false;
+    }
+    if (preg_match("/\//i", $fqdn)) {
+        $hostname = false;
+    }
+    return($hostname);
 }
 
 /*
@@ -447,18 +451,18 @@ function is_fqdn($fqdn) {
  */
 function load_crypto()
 {
-	global $config;
+    global $config;
 
-	$crypto_modules = array('glxsb', 'aesni');
+    $crypto_modules = array('glxsb', 'aesni');
 
-	if (!isset($config['system']['crypto_hardware']) || !in_array($config['system']['crypto_hardware'], $crypto_modules)) {
-		return false;
-	}
+    if (!isset($config['system']['crypto_hardware']) || !in_array($config['system']['crypto_hardware'], $crypto_modules)) {
+        return false;
+    }
 
-	if (!empty($config['system']['crypto_hardware']) && !is_module_loaded($config['system']['crypto_hardware'])) {
-		log_error("Loading {$config['system']['crypto_hardware']} cryptographic accelerator module.");
-		mwexec("/sbin/kldload {$config['system']['crypto_hardware']}");
-	}
+    if (!empty($config['system']['crypto_hardware']) && !is_module_loaded($config['system']['crypto_hardware'])) {
+        log_error("Loading {$config['system']['crypto_hardware']} cryptographic accelerator module.");
+        mwexec("/sbin/kldload {$config['system']['crypto_hardware']}");
+    }
 }
 
 /*
@@ -466,202 +470,203 @@ function load_crypto()
  */
 function load_thermal_hardware()
 {
-	global $config;
+    global $config;
 
-	$thermal_hardware_modules = array('coretemp', 'amdtemp');
+    $thermal_hardware_modules = array('coretemp', 'amdtemp');
 
-	if (!isset($config['system']['thermal_hardware']) || !in_array($config['system']['thermal_hardware'], $thermal_hardware_modules)) {
-		return false;
-	}
+    if (!isset($config['system']['thermal_hardware']) || !in_array($config['system']['thermal_hardware'], $thermal_hardware_modules)) {
+        return false;
+    }
 
-	if (!empty($config['system']['thermal_hardware']) && !is_module_loaded($config['system']['thermal_hardware'])) {
-		log_error("Loading {$config['system']['thermal_hardware']} thermal monitor module.");
-		mwexec("/sbin/kldload {$config['system']['thermal_hardware']}");
-	}
+    if (!empty($config['system']['thermal_hardware']) && !is_module_loaded($config['system']['thermal_hardware'])) {
+        log_error("Loading {$config['system']['thermal_hardware']} thermal monitor module.");
+        mwexec("/sbin/kldload {$config['system']['thermal_hardware']}");
+    }
 }
 
 function download_file($url, $destination, $verify_ssl = false, $connect_timeout = 60, $timeout = 0)
 {
-	global $config, $g;
+    global $config, $g;
 
-	$fp = fopen($destination, "wb");
+    $fp = fopen($destination, "wb");
 
-	if (!$fp)
-		return false;
+    if (!$fp) {
+        return false;
+    }
 
-	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $verify_ssl);
-	curl_setopt($ch, CURLOPT_FILE, $fp);
-	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
-	curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-	curl_setopt($ch, CURLOPT_HEADER, false);
-	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $verify_ssl);
+    curl_setopt($ch, CURLOPT_FILE, $fp);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
 
-	if (!empty($config['system']['proxyurl'])) {
-		curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);
-		if (!empty($config['system']['proxyport']))
-			curl_setopt($ch, CURLOPT_PROXYPORT, $config['system']['proxyport']);
-		if (!empty($config['system']['proxyuser']) && !empty($config['system']['proxypass'])) {
-			@curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_ANY | CURLAUTH_ANYSAFE);
-			curl_setopt($ch, CURLOPT_PROXYUSERPWD, "{$config['system']['proxyuser']}:{$config['system']['proxypass']}");
-		}
-	}
+    if (!empty($config['system']['proxyurl'])) {
+        curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);
+        if (!empty($config['system']['proxyport'])) {
+            curl_setopt($ch, CURLOPT_PROXYPORT, $config['system']['proxyport']);
+        }
+        if (!empty($config['system']['proxyuser']) && !empty($config['system']['proxypass'])) {
+            @curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_ANY | CURLAUTH_ANYSAFE);
+            curl_setopt($ch, CURLOPT_PROXYUSERPWD, "{$config['system']['proxyuser']}:{$config['system']['proxypass']}");
+        }
+    }
 
-	@curl_exec($ch);
-	$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	fclose($fp);
-	curl_close($ch);
-	return ($http_code == 200) ? true : $http_code;
+    @curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    fclose($fp);
+    curl_close($ch);
+    return ($http_code == 200) ? true : $http_code;
 }
 
 /* Split() is being DEPRECATED as of PHP 5.3.0 and REMOVED as of PHP 6.0.0. Relying on this feature is highly discouraged. */
-if(!function_exists("split")) {
-	function split($separator, $haystack, $limit = null) {
-		log_error("deprecated split() call with separator '{$separator}'");
-		return preg_split($separator, $haystack, $limit);
-	}
+if (!function_exists("split")) {
+    function split($separator, $haystack, $limit = null) {
+        log_error("deprecated split() call with separator '{$separator}'");
+        return preg_split($separator, $haystack, $limit);
+    }
 }
 
 function update_alias_names_upon_change($section, $field, $new_alias_name, $origname)
 {
-	global $config, $pconfig;
+    global $config;
+    if (!$origname) {
+        return;
+    }
 
-	if (!$origname) {
-		return;
-	}
+    $sectionref = &$config;
+    foreach($section as $sectionname) {
+        if (is_array($sectionref) && isset($sectionref[$sectionname])) {
+            $sectionref = &$sectionref[$sectionname];
+        } else {
+            return;
+        }
+    }
 
-	$sectionref = &$config;
-	foreach($section as $sectionname) {
-		if(is_array($sectionref) && isset($sectionref[$sectionname]))
-			$sectionref = &$sectionref[$sectionname];
-		else
-			return;
-	}
-
-	if(is_array($sectionref)) {
-		foreach($sectionref as $itemkey => $item) {
-			$fieldfound = true;
-			$fieldref = &$sectionref[$itemkey];
-			foreach($field as $fieldname) {
-				if(is_array($fieldref) && isset($fieldref[$fieldname]))
-					$fieldref = &$fieldref[$fieldname];
-				else {
-					$fieldfound = false;
-					break;
-				}
-			}
-			if($fieldfound && $fieldref == $origname) {
-				$fieldref = $new_alias_name;
-			}
-		}
-	}
+    if (is_array($sectionref)) {
+        foreach($sectionref as $itemkey => $item) {
+            $fieldfound = true;
+            $fieldref = &$sectionref[$itemkey];
+            foreach($field as $fieldname) {
+                if (is_array($fieldref) && isset($fieldref[$fieldname])) {
+                    $fieldref = &$fieldref[$fieldname];
+                } else {
+                    $fieldfound = false;
+                    break;
+                }
+            }
+            if ($fieldfound && $fieldref == $origname) {
+                $fieldref = $new_alias_name;
+            }
+        }
+    }
 }
 
 
 function process_alias_unzip($temp_filename) {
-	if(!file_exists("/usr/local/bin/unzip")) {
-		log_error(gettext("Alias archive is a .zip file which cannot be decompressed because utility is missing!"));
-		return false;
-	}
-	rename("{$temp_filename}/aliases", "{$temp_filename}/aliases.zip");
-	mwexec("/usr/local/bin/unzip {$temp_filename}/aliases.tgz -d {$temp_filename}/aliases/");
-	unlink("{$temp_filename}/aliases.zip");
-	$files_to_process = return_dir_as_array("{$temp_filename}/");
-	/* foreach through all extracted files and build up aliases file */
-	$fd = @fopen("{$temp_filename}/aliases", "w");
-	if (!$fd) {
-		log_error(sprintf(gettext('Could not open %s/aliases for writing!'), $temp_filename));
-		return false;
-	}
-	foreach($files_to_process as $f2p) {
-		$tmpfd = @fopen($f2p, 'r');
-		if (!$tmpfd) {
-			log_error(sprintf(gettext('The following file could not be read %s from %s'), $f2p, $temp_filename));
-			continue;
-		}
-		while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE)
-			fwrite($fd, $tmpbuf);
-		fclose($tmpfd);
-		unlink($f2p);
-	}
-	fclose($fd);
-	unset($tmpbuf);
+    if (!file_exists("/usr/local/bin/unzip")) {
+        log_error(gettext("Alias archive is a .zip file which cannot be decompressed because utility is missing!"));
+        return false;
+    }
+    rename("{$temp_filename}/aliases", "{$temp_filename}/aliases.zip");
+    mwexec("/usr/local/bin/unzip {$temp_filename}/aliases.tgz -d {$temp_filename}/aliases/");
+    unlink("{$temp_filename}/aliases.zip");
+    $files_to_process = return_dir_as_array("{$temp_filename}/");
+    /* foreach through all extracted files and build up aliases file */
+    $fd = @fopen("{$temp_filename}/aliases", "w");
+    if (!$fd) {
+        log_error(sprintf(gettext('Could not open %s/aliases for writing!'), $temp_filename));
+        return false;
+    }
+    foreach($files_to_process as $f2p) {
+        $tmpfd = @fopen($f2p, 'r');
+        if (!$tmpfd) {
+            log_error(sprintf(gettext('The following file could not be read %s from %s'), $f2p, $temp_filename));
+            continue;
+        }
+        while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE) {
+            fwrite($fd, $tmpbuf);
+        }
+        fclose($tmpfd);
+        unlink($f2p);
+    }
+    fclose($fd);
+    unset($tmpbuf);
 
-	return true;
+    return true;
 }
 
 function process_alias_tgz($temp_filename) {
-	if(!file_exists('/usr/bin/tar')) {
-		log_error(gettext("Alias archive is a .tar/tgz file which cannot be decompressed because utility is missing!"));
-		return false;
-	}
-	rename("{$temp_filename}/aliases", "{$temp_filename}/aliases.tgz");
-	mwexec("/usr/bin/tar xzf {$temp_filename}/aliases.tgz -C {$temp_filename}/aliases/");
-	unlink("{$temp_filename}/aliases.tgz");
-	$files_to_process = return_dir_as_array("{$temp_filename}/");
-	/* foreach through all extracted files and build up aliases file */
-	$fd = @fopen("{$temp_filename}/aliases", "w");
-	if (!$fd) {
-		log_error(sprintf(gettext('Could not open %s/aliases for writing!'), $temp_filename));
-		return false;
-	}
-	foreach($files_to_process as $f2p) {
-		$tmpfd = @fopen($f2p, 'r');
-		if (!$tmpfd) {
-			log_error(sprintf(gettext('The following file could not be read %s from %s'), $f2p, $temp_filename));
-			continue;
-		}
-		while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE)
-			fwrite($fd, $tmpbuf);
-		fclose($tmpfd);
-		unlink($f2p);
-	}
-	fclose($fd);
-	unset($tmpbuf);
+    if (!file_exists('/usr/bin/tar')) {
+        log_error(gettext("Alias archive is a .tar/tgz file which cannot be decompressed because utility is missing!"));
+        return false;
+    }
+    rename("{$temp_filename}/aliases", "{$temp_filename}/aliases.tgz");
+    mwexec("/usr/bin/tar xzf {$temp_filename}/aliases.tgz -C {$temp_filename}/aliases/");
+    unlink("{$temp_filename}/aliases.tgz");
+    $files_to_process = return_dir_as_array("{$temp_filename}/");
+    /* foreach through all extracted files and build up aliases file */
+    $fd = @fopen("{$temp_filename}/aliases", "w");
+    if (!$fd) {
+        log_error(sprintf(gettext('Could not open %s/aliases for writing!'), $temp_filename));
+        return false;
+    }
+    foreach($files_to_process as $f2p) {
+        $tmpfd = @fopen($f2p, 'r');
+        if (!$tmpfd) {
+            log_error(sprintf(gettext('The following file could not be read %s from %s'), $f2p, $temp_filename));
+            continue;
+        }
+        while (($tmpbuf = fread($tmpfd, 65536)) !== FALSE) {
+            fwrite($fd, $tmpbuf);
+        }
+        fclose($tmpfd);
+        unlink($f2p);
+    }
+    fclose($fd);
+    unset($tmpbuf);
 
-	return true;
+    return true;
 }
 
 function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
-	global $config;
+    global $config;
 
-	$urltable_prefix = "/var/db/aliastables/";
-	$urltable_filename = $urltable_prefix . $name . ".txt";
+    $urltable_prefix = "/var/db/aliastables/";
+    $urltable_filename = $urltable_prefix . $name . ".txt";
 
-	// Make the aliases directory if it doesn't exist
-	if (!file_exists($urltable_prefix)) {
-		mkdir($urltable_prefix);
-	} elseif (!is_dir($urltable_prefix)) {
-		unlink($urltable_prefix);
-		mkdir($urltable_prefix);
-	}
+    // Make the aliases directory if it doesn't exist
+    if (!file_exists($urltable_prefix)) {
+        mkdir($urltable_prefix);
+    } elseif (!is_dir($urltable_prefix)) {
+        unlink($urltable_prefix);
+        mkdir($urltable_prefix);
+    }
 
-	// If the file doesn't exist or is older than update_freq days, fetch a new copy.
-	if (!file_exists($urltable_filename)
-		|| ((time() - filemtime($urltable_filename)) > ($freq * 86400 - 90))
-		|| $forceupdate) {
-
-		// Try to fetch the URL supplied
-		@unlink("{$urltable_filename}.tmp");
-		$verify_ssl = isset($config['system']['checkaliasesurlcert']);
-		if (download_file($url, "{$urltable_filename}.tmp", $verify_ssl)) {
-			mwexec("/usr/bin/sed -E 's/\;.*//g; /^[[:space:]]*($|#)/d' ". escapeshellarg($urltable_filename . ".tmp") . " > " . escapeshellarg($urltable_filename));
-			if (alias_get_type($name) == "urltable_ports") {
-				$ports = explode("\n", file_get_contents($urltable_filename));
-				$ports = group_ports($ports);
-				file_put_contents($urltable_filename, implode("\n", $ports));
-			}
-			@unlink("{$urltable_filename}.tmp");
-		} else {
-			touch($urltable_filename);
-		}
-		return true;
-	} else {
-		// File exists, and it doesn't need updated.
-		return -1;
-	}
+    // If the file doesn't exist or is older than update_freq days, fetch a new copy.
+    if (!file_exists($urltable_filename) || ((time() - filemtime($urltable_filename)) > ($freq * 86400 - 90)) || $forceupdate) {
+        // Try to fetch the URL supplied
+        @unlink("{$urltable_filename}.tmp");
+        $verify_ssl = isset($config['system']['checkaliasesurlcert']);
+        if (download_file($url, "{$urltable_filename}.tmp", $verify_ssl)) {
+            mwexec("/usr/bin/sed -E 's/\;.*//g; /^[[:space:]]*($|#)/d' ". escapeshellarg($urltable_filename . ".tmp") . " > " . escapeshellarg($urltable_filename));
+            if (alias_get_type($name) == "urltable_ports") {
+                $ports = explode("\n", file_get_contents($urltable_filename));
+                $ports = group_ports($ports);
+                file_put_contents($urltable_filename, implode("\n", $ports));
+            }
+            @unlink("{$urltable_filename}.tmp");
+        } else {
+          touch($urltable_filename);
+        }
+        return true;
+    } else {
+        // File exists, and it doesn't need updated.
+        return -1;
+    }
 }
 
 
@@ -673,159 +678,134 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
  */
 function xml2array($contents, $get_attributes = 1, $priority = 'tag')
 {
-	if (!function_exists('xml_parser_create'))
-	{
-		return array ();
-	}
-	$parser = xml_parser_create('');
-	xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
-	xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
-	xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
-	xml_parse_into_struct($parser, trim($contents), $xml_values);
-	xml_parser_free($parser);
-	if (!$xml_values)
-		return; //Hmm...
-	$xml_array = array ();
-	$parents = array ();
-	$opened_tags = array ();
-	$arr = array ();
-	$current = & $xml_array;
-	$repeated_tag_index = array ();
-	foreach ($xml_values as $data)
-	{
-		unset ($attributes, $value);
-		extract($data);
-		$result = array ();
-		$attributes_data = array ();
-		if (isset ($value))
-		{
-			if ($priority == 'tag')
-				$result = $value;
-			else
-				$result['value'] = $value;
-		}
-		if (isset ($attributes) and $get_attributes)
-		{
-			foreach ($attributes as $attr => $val)
-			{
-				if ($priority == 'tag')
-					$attributes_data[$attr] = $val;
-				else
-					$result['attr'][$attr] = $val; //Set all the attributes in a array called 'attr'
-			}
-		}
-		if ($type == "open")
-		{
-			$parent[$level -1] = & $current;
-			if (!is_array($current) or (!in_array($tag, array_keys($current))))
-			{
-				$current[$tag] = $result;
-				if ($attributes_data)
-					$current[$tag . '_attr'] = $attributes_data;
-				$repeated_tag_index[$tag . '_' . $level] = 1;
-				$current = & $current[$tag];
-			}
-			else
-			{
-				if (isset ($current[$tag][0]))
-				{
-					$current[$tag][$repeated_tag_index[$tag . '_' . $level]] = $result;
-					$repeated_tag_index[$tag . '_' . $level]++;
-				}
-				else
-				{
-					$current[$tag] = array (
-						$current[$tag],
-						$result
-						);
-					$repeated_tag_index[$tag . '_' . $level] = 2;
-					if (isset ($current[$tag . '_attr']))
-					{
-						$current[$tag]['0_attr'] = $current[$tag . '_attr'];
-						unset ($current[$tag . '_attr']);
-					}
-				}
-				$last_item_index = $repeated_tag_index[$tag . '_' . $level] - 1;
-				$current = & $current[$tag][$last_item_index];
-			}
-		}
-		elseif ($type == "complete")
-		{
-			if (!isset ($current[$tag]))
-			{
-				$current[$tag] = $result;
-				$repeated_tag_index[$tag . '_' . $level] = 1;
-				if ($priority == 'tag' and $attributes_data)
-					$current[$tag . '_attr'] = $attributes_data;
-			}
-			else
-			{
-				if (isset ($current[$tag][0]) and is_array($current[$tag]))
-				{
-					$current[$tag][$repeated_tag_index[$tag . '_' . $level]] = $result;
-					if ($priority == 'tag' and $get_attributes and $attributes_data)
-					{
-						$current[$tag][$repeated_tag_index[$tag . '_' . $level] . '_attr'] = $attributes_data;
-					}
-					$repeated_tag_index[$tag . '_' . $level]++;
-				}
-				else
-				{
-					$current[$tag] = array (
-						$current[$tag],
-						$result
-						);
-					$repeated_tag_index[$tag . '_' . $level] = 1;
-					if ($priority == 'tag' and $get_attributes)
-					{
-						if (isset ($current[$tag . '_attr']))
-						{
-							$current[$tag]['0_attr'] = $current[$tag . '_attr'];
-							unset ($current[$tag . '_attr']);
-						}
-						if ($attributes_data)
-						{
-							$current[$tag][$repeated_tag_index[$tag . '_' . $level] . '_attr'] = $attributes_data;
-						}
-					}
-					$repeated_tag_index[$tag . '_' . $level]++; //0 and 1 index is already taken
-				}
-			}
-		}
-		elseif ($type == 'close')
-		{
-			$current = & $parent[$level -1];
-		}
-	}
-	return ($xml_array);
+    if (!function_exists('xml_parser_create'))
+    {
+        return array ();
+    }
+    $parser = xml_parser_create('');
+    xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
+    xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+    xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+    xml_parse_into_struct($parser, trim($contents), $xml_values);
+    xml_parser_free($parser);
+    if (!$xml_values) {
+        return; //Hmm...
+    }
+    $xml_array = array ();
+    $parents = array ();
+    $opened_tags = array ();
+    $arr = array ();
+    $current = & $xml_array;
+    $repeated_tag_index = array ();
+    foreach ($xml_values as $data) {
+        unset ($attributes, $value);
+        extract($data);
+        $result = array ();
+        $attributes_data = array ();
+        if (isset ($value))
+        {
+            if ($priority == 'tag') {
+                $result = $value;
+            } else {
+                $result['value'] = $value;
+            }
+        }
+        if (isset ($attributes) and $get_attributes) {
+            foreach ($attributes as $attr => $val) {
+                if ($priority == 'tag') {
+                    $attributes_data[$attr] = $val;
+                } else {
+                    $result['attr'][$attr] = $val; //Set all the attributes in a array called 'attr'
+                }
+            }
+        }
+        if ($type == "open") {
+            $parent[$level -1] = & $current;
+            if (!is_array($current) || (!in_array($tag, array_keys($current)))) {
+                $current[$tag] = $result;
+                if ($attributes_data) {
+                    $current[$tag . '_attr'] = $attributes_data;
+                }
+                $repeated_tag_index[$tag . '_' . $level] = 1;
+                $current = & $current[$tag];
+            } else {
+                if (isset ($current[$tag][0])) {
+                    $current[$tag][$repeated_tag_index[$tag . '_' . $level]] = $result;
+                    $repeated_tag_index[$tag . '_' . $level]++;
+                } else {
+                    $current[$tag] = array ($current[$tag], $result );
+                    $repeated_tag_index[$tag . '_' . $level] = 2;
+                    if (isset ($current[$tag . '_attr'])) {
+                        $current[$tag]['0_attr'] = $current[$tag . '_attr'];
+                        unset ($current[$tag . '_attr']);
+                    }
+                }
+                $last_item_index = $repeated_tag_index[$tag . '_' . $level] - 1;
+                $current = & $current[$tag][$last_item_index];
+            }
+        } elseif ($type == "complete") {
+            if (!isset ($current[$tag])) {
+                $current[$tag] = $result;
+                $repeated_tag_index[$tag . '_' . $level] = 1;
+                if ($priority == 'tag' and $attributes_data) {
+                    $current[$tag . '_attr'] = $attributes_data;
+                }
+            } else {
+                if (isset ($current[$tag][0]) and is_array($current[$tag])) {
+                    $current[$tag][$repeated_tag_index[$tag . '_' . $level]] = $result;
+                    if ($priority == 'tag' and $get_attributes and $attributes_data) {
+                        $current[$tag][$repeated_tag_index[$tag . '_' . $level] . '_attr'] = $attributes_data;
+                    }
+                    $repeated_tag_index[$tag . '_' . $level]++;
+                } else {
+                    $current[$tag] = array ($current[$tag], $result );
+                    $repeated_tag_index[$tag . '_' . $level] = 1;
+                    if ($priority == 'tag' and $get_attributes) {
+                        if (isset ($current[$tag . '_attr'])) {
+                            $current[$tag]['0_attr'] = $current[$tag . '_attr'];
+                            unset ($current[$tag . '_attr']);
+                        }
+                        if ($attributes_data) {
+                            $current[$tag][$repeated_tag_index[$tag . '_' . $level] . '_attr'] = $attributes_data;
+                        }
+                    }
+                    $repeated_tag_index[$tag . '_' . $level]++; //0 and 1 index is already taken
+                }
+            }
+        } elseif ($type == 'close') {
+            $current = & $parent[$level -1];
+        }
+    }
+    return ($xml_array);
 }
 
 /* sort by interface only, retain the original order of rules that apply to
    the same interface */
 function filter_rules_sort() {
-	global $config;
+    global $config;
 
-	/* mark each rule with the sequence number (to retain the order while sorting) */
-	for ($i = 0; isset($config['filter']['rule'][$i]); $i++)
-		$config['filter']['rule'][$i]['seq'] = $i;
-
-	usort($config['filter']['rule'], "filter_rules_compare");
-
-	/* strip the sequence numbers again */
-	for ($i = 0; isset($config['filter']['rule'][$i]); $i++)
-		unset($config['filter']['rule'][$i]['seq']);
+    /* mark each rule with the sequence number (to retain the order while sorting) */
+    for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
+        $config['filter']['rule'][$i]['seq'] = $i;
+    }
+    usort($config['filter']['rule'], "filter_rules_compare");
+    /* strip the sequence numbers again */
+    for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
+        unset($config['filter']['rule'][$i]['seq']);
+    }
 }
 function filter_rules_compare($a, $b) {
-	if (isset($a['floating']) && isset($b['floating']))
-		return $a['seq'] - $b['seq'];
-	else if (isset($a['floating']))
-		return -1;
-	else if (isset($b['floating']))
-		return 1;
-	else if ($a['interface'] == $b['interface'])
-		return $a['seq'] - $b['seq'];
-	else
-		return compare_interface_friendly_names($a['interface'], $b['interface']);
+    if (isset($a['floating']) && isset($b['floating'])) {
+        return $a['seq'] - $b['seq'];
+    } elseif (isset($a['floating'])) {
+        return -1;
+    } elseif (isset($b['floating'])) {
+        return 1;
+    } elseif ($a['interface'] == $b['interface']) {
+        return $a['seq'] - $b['seq'];
+    } else {
+        return compare_interface_friendly_names($a['interface'], $b['interface']);
+    }
 }
 
 
@@ -838,20 +818,22 @@ function filter_rules_compare($a, $b) {
  *   returns associative array with MAC-Manufacturer pairs
  ******/
 function load_mac_manufacturer_table() {
-	/* load MAC-Manufacture data from the file */
-	$macs = false;
-	if (file_exists("/usr/local/share/nmap/nmap-mac-prefixes"))
-		$macs=file("/usr/local/share/nmap/nmap-mac-prefixes");
-	if ($macs){
-		foreach ($macs as $line){
-			if (preg_match('/([0-9A-Fa-f]{6}) (.*)$/', $line, $matches)){
-				/* store values like this $mac_man['000C29']='VMware' */
-				$mac_man["$matches[1]"]=$matches[2];
-			}
-		}
-		return $mac_man;
-	} else
-		return -1;
+    /* load MAC-Manufacture data from the file */
+    $macs = false;
+    if (file_exists("/usr/local/share/nmap/nmap-mac-prefixes")) {
+        $macs=file("/usr/local/share/nmap/nmap-mac-prefixes");
+    }
+    if ($macs){
+        foreach ($macs as $line){
+            if (preg_match('/([0-9A-Fa-f]{6}) (.*)$/', $line, $matches)){
+                /* store values like this $mac_man['000C29']='VMware' */
+                $mac_man["$matches[1]"]=$matches[2];
+            }
+        }
+        return $mac_man;
+    } else {
+        return -1;
+    }
 
 }
 
@@ -865,59 +847,66 @@ function load_mac_manufacturer_table() {
  *   configured and present on this device.
 */
 function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, $check_subnets = false) {
-	global $config;
+    global $config;
 
-	$isipv6 = is_ipaddrv6($ipaddr);
+    $isipv6 = is_ipaddrv6($ipaddr);
+    if ($check_subnets) {
+        $iflist = get_configured_interface_list();
+        foreach ($iflist as $if => $ifname) {
+            if ($ignore_if == $if) {
+                continue;
+            }
 
-	if ($check_subnets) {
-		$iflist = get_configured_interface_list();
-		foreach ($iflist as $if => $ifname) {
-			if ($ignore_if == $if)
-				continue;
+            if ($isipv6 === true) {
+                $bitmask = get_interface_subnetv6($if);
+                $subnet = gen_subnetv6(get_interface_ipv6($if), $bitmask);
+            } else {
+                $bitmask = get_interface_subnet($if);
+                $subnet = gen_subnet(get_interface_ip($if), $bitmask);
+            }
 
-			if ($isipv6 === true) {
-				$bitmask = get_interface_subnetv6($if);
-				$subnet = gen_subnetv6(get_interface_ipv6($if), $bitmask);
-			} else {
-				$bitmask = get_interface_subnet($if);
-				$subnet = gen_subnet(get_interface_ip($if), $bitmask);
-			}
+            if (ip_in_subnet($ipaddr, $subnet . '/' . $bitmask)) {
+                return true;
+            }
+        }
+    } else {
+        if ($isipv6 === true) {
+            $interface_list_ips = get_configured_ipv6_addresses();
+        } else {
+            $interface_list_ips = get_configured_ip_addresses();
+        }
+        foreach($interface_list_ips as $if => $ilips) {
+            /* Also ignore CARP interfaces, it'll be checked below */
+            if ($ignore_if == $if || strstr($ignore_if, "_vip")) {
+                continue;
+            }
+            if (strcasecmp($ipaddr, $ilips) == 0) {
+                return true;
+            }
+        }
+    }
 
-			if (ip_in_subnet($ipaddr, $subnet . '/' . $bitmask))
-				return true;
-		}
-	} else {
-		if ($isipv6 === true)
-			$interface_list_ips = get_configured_ipv6_addresses();
-		else
-			$interface_list_ips = get_configured_ip_addresses();
+    $interface_list_vips = get_configured_vips_list(true);
+    foreach ($interface_list_vips as $id => $vip) {
+        if ($ignore_if == $vip['if']) {
+            continue;
+        }
+        if (strcasecmp($ipaddr, $vip['ipaddr']) == 0) {
+            return true;
+        }
+    }
 
-		foreach($interface_list_ips as $if => $ilips) {
-			/* Also ignore CARP interfaces, it'll be checked below */
-			if ($ignore_if == $if || strstr($ignore_if, "_vip"))
-				continue;
-			if (strcasecmp($ipaddr, $ilips) == 0)
-				return true;
-		}
-	}
+    if ($check_localip) {
+        if (is_array($config['pptpd']) && !empty($config['pptpd']['localip']) && (strcasecmp($ipaddr, $config['pptpd']['localip']) == 0)) {
+            return true;
+        }
 
-	$interface_list_vips = get_configured_vips_list(true);
-	foreach ($interface_list_vips as $id => $vip) {
-		if ($ignore_if == $vip['if'])
-			continue;
-		if (strcasecmp($ipaddr, $vip['ipaddr']) == 0)
-			return true;
-	}
+        if (!is_array($config['l2tp']) && !empty($config['l2tp']['localip']) && (strcasecmp($ipaddr, $config['l2tp']['localip']) == 0)) {
+            return true;
+        }
+    }
 
-	if ($check_localip) {
-		if (is_array($config['pptpd']) && !empty($config['pptpd']['localip']) && (strcasecmp($ipaddr, $config['pptpd']['localip']) == 0))
-			return true;
-
-		if (!is_array($config['l2tp']) && !empty($config['l2tp']['localip']) && (strcasecmp($ipaddr, $config['l2tp']['localip']) == 0))
-			return true;
-	}
-
-	return false;
+    return false;
 }
 
 
@@ -927,30 +916,30 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
 /* 6rd is variable, calculate from 64 - (v6 prefixlen - (32 - v4 prefixlen)) */
 /* 6to4 is 16 bits, e.g. 65535 */
 function calculate_ipv6_delegation_length($if) {
-	global $config;
+    global $config;
 
-	if(!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
-		return false;
-	} elseif (!isset($config['interfaces'][$if]['ipaddrv6'])) {
-		return (0);
-	}
+    if(!isset($config['interfaces'][$if]) || !is_array($config['interfaces'][$if])) {
+        return false;
+    } elseif (!isset($config['interfaces'][$if]['ipaddrv6'])) {
+        return 0;
+    }
 
-	switch($config['interfaces'][$if]['ipaddrv6']) {
-		case "6to4":
-			$pdlen = 16;
-			break;
-		case "6rd":
-			$rd6cfg = $config['interfaces'][$if];
-			$rd6plen = explode("/", $rd6cfg['prefix-6rd']);
-			$pdlen = (64 - ($rd6plen[1] + (32 - $rd6cfg['prefix-6rd-v4plen'])));
-			break;
-		case "dhcp6":
-			$dhcp6cfg = $config['interfaces'][$if];
-			$pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
-			break;
-		default:
-			$pdlen = 0;
-			break;
-	}
-	return($pdlen);
+    switch($config['interfaces'][$if]['ipaddrv6']) {
+        case "6to4":
+            $pdlen = 16;
+            break;
+        case "6rd":
+            $rd6cfg = $config['interfaces'][$if];
+            $rd6plen = explode("/", $rd6cfg['prefix-6rd']);
+            $pdlen = (64 - ($rd6plen[1] + (32 - $rd6cfg['prefix-6rd-v4plen'])));
+            break;
+        case "dhcp6":
+            $dhcp6cfg = $config['interfaces'][$if];
+            $pdlen = $dhcp6cfg['dhcp6-ia-pd-len'];
+            break;
+        default:
+            $pdlen = 0;
+            break;
+    }
+    return $pdlen;
 }
