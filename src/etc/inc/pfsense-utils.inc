@@ -71,37 +71,6 @@ function get_dns_servers() {
     return array_unique($dns_servers);
 }
 
-/****f* legacy/enable_hardware_offloading
- * NAME
- *   enable_hardware_offloading - Enable a NIC's supported hardware features.
- * INPUTS
- *   $interface  - string containing the physical interface to work on.
- * RESULT
- *   null
- * NOTES
- *   This function only supports the fxp driver's loadable microcode.
- ******/
-function enable_hardware_offloading($interface)
-{
-    global $config;
-
-    if (isset($config['system']['do_not_use_nic_microcode'])) {
-        return;
-    }
-
-    /* translate wan, lan, opt -> real interface if needed */
-    $int = get_real_interface($interface);
-    if (empty($int)) {
-        return;
-    }
-    $int_family = preg_split('/[0-9]+/', $int);
-    $supported_ints = array('fxp');
-    if (in_array($int_family, $supported_ints)) {
-        if (does_interface_exist($int)) {
-            legacy_interface_flags($int, 'link0');
-        }
-    }
-}
 
 /****f* legacy/setup_polling
  * NAME
@@ -124,25 +93,6 @@ function setup_polling()
     }
 }
 
-/****f* legacy/setup_microcode
- * NAME
- *   enumerates all interfaces and calls enable_hardware_offloading which
- *   enables a NIC's supported hardware features.
- * INPUTS
- *
- * RESULT
- *   null
- * NOTES
- *   This function only supports the fxp driver's loadable microcode.
- ******/
-function setup_microcode() {
-    /* if list */
-    $ifs = legacy_interface_listget();
-
-    foreach($ifs as $if) {
-        enable_hardware_offloading($if);
-    }
-}
 
 /*
  * get_carp_interface_status($carpinterface): returns the status of a carp ip

@@ -231,11 +231,6 @@ echo "Setting up polling defaults...";
 setup_polling();
 echo "done.\n";
 
-/* setup interface microcode which improves tcp/ip speed */
-echo "Setting up interfaces microcode...";
-setup_microcode();
-echo "done.\n";
-
 /* set up interfaces */
 mute_kernel_msgs();
 interfaces_configure();

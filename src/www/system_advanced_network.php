@@ -124,7 +124,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 "net.link.ether.inet.log_arp_movements" => "1"
             ));
         }
-        setup_microcode();
 
         write_config();
         $savemsg = get_std_save_message();
