@@ -187,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['range_to'] = !empty($dhcpdconf['range']['to']) ? $dhcpdconf['range']['to'] : "";
     $pconfig['wins1'] = !empty($dhcpdconf['winsserver'][0]) ? $dhcpdconf['winsserver'][0] : "";
     $pconfig['wins2'] = !empty($dhcpdconf['winsserver'][1]) ? $dhcpdconf['winsserver'][1] : "";
-    $pconfig['dns1'] = !empty($dhcpdconf['dnsserver'][0]) ? $dhcpdconf['winsserver'][0] : "";
+    $pconfig['dns1'] = !empty($dhcpdconf['dnsserver'][0]) ? $dhcpdconf['dnsserver'][0] : "";
     $pconfig['dns2'] = !empty($dhcpdconf['dnsserver'][1]) ? $dhcpdconf['dnsserver'][1] : "";
     $pconfig['ntp1'] = !empty($dhcpdconf['ntpserver'][0]) ? $dhcpdconf['winsserver'][0] : "";
     $pconfig['ntp2'] = !empty($dhcpdconf['ntpserver'][1]) ? $dhcpdconf['ntpserver'][1] : "";
@@ -455,11 +455,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $dhcpdconf['dnsserver'][] = $pconfig['dns2'];
             }
 
-            // copy pools to this config
-            if (!empty($config['dhcpd'][$if]['pool'])) {
-                $dhcpdconf['pools'] = $config['dhcpd'][$if]['pool'];
-            }
-
             // handle changes
             if (!isset($pool) && $act != "newpool") {
                 if (isset($config['dhcpd'][$if]['enable']) != !empty($pconfig['enable'])) {
@@ -478,6 +473,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif ($act == "newpool") {
                 $a_pools[] = $dhcpdconf;
             } else {
+                // copy structures back in
+                foreach (array('pool', 'staticmap') as $fieldname) {
+                    if (!empty($config['dhcpd'][$if][$fieldname])) {
+                        $dhcpdconf[$fieldname] = $config['dhcpd'][$if][$fieldname];
+                    }
+                }
                 $config['dhcpd'][$if] = $dhcpdconf;
             }
             write_config();
@@ -493,93 +494,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         reconfigure_dhcpd();
         header("Location: services_dhcp.php?if={$if}");
         exit;
+    } elseif ($act ==  "del") {
+        if (!empty($config['dhcpd'][$if]['staticmap'][$_POST['id']])) {
+            unset($config['dhcpd'][$if]['staticmap'][$_POST['id']]);
+            write_config();
+            if(isset($config['dhcpd'][$if]['enable'])) {
+              mark_subsystem_dirty('staticmaps');
+              if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic'])) {
+                  mark_subsystem_dirty('hosts');
+              } elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
+                  mark_subsystem_dirty('unbound');
+              }
+            }
+        }
+        header("Location: services_dhcp.php?if={$if}");
+        exit;
+    } elseif ($act ==  "delpool") {
+        if (!empty($a_pools[$_POST['id']])) {
+            unset($a_pools[$_POST['id']]);
+            write_config();
+        }
+        header("Location: services_dhcp.php?if={$if}");
+        exit;
     }
-}
-
-
-
-if ($act == "delpool") {
-  if ($a_pools[$_GET['id']]) {
-    unset($a_pools[$_GET['id']]);
-    write_config();
-    header("Location: services_dhcp.php?if={$if}");
-    exit;
-  }
-}
-
-if ($act == "del") {
-  if (!empty($config['dhcpd'][$if]['staticmap'])) {
-      $a_maps = &$config['dhcpd'][$if]['staticmap'];
-  } else {
-      $a_maps = array();
-  }
-  if ($a_maps[$_GET['id']]) {
-    unset($a_maps[$_GET['id']]);
-    write_config();
-    if(isset($config['dhcpd'][$if]['enable'])) {
-      mark_subsystem_dirty('staticmaps');
-      if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic'])) {
-        mark_subsystem_dirty('hosts');
-      } elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        mark_subsystem_dirty('unbound');
-      }
-    }
-    header("Location: services_dhcp.php?if={$if}");
-    exit;
-  }
 }
 
 $service_hook = 'dhcpd';
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
 
 <body>
 
 <script type="text/javascript">
 //<![CDATA[
-  function show_shownumbervalue() {
-    document.getElementById("shownumbervaluebox").innerHTML='';
-    aodiv = document.getElementById('shownumbervalue');
-    aodiv.style.display = "block";
-  }
+    function show_shownumbervalue() {
+        $("#shownumbervaluebox").html('');
+        $("#shownumbervalue").show();
+    }
 
-  function show_ddns_config() {
-    document.getElementById("showddnsbox").innerHTML='';
-    aodiv = document.getElementById('showddns');
-    aodiv.style.display = "block";
-  }
+    function show_ddns_config() {
+        $("#showddnsbox").html('');
+        $("#showddns").show();
+    }
 
-  function show_maccontrol_config() {
-    document.getElementById("showmaccontrolbox").innerHTML='';
-    aodiv = document.getElementById('showmaccontrol');
-    aodiv.style.display = "block";
-  }
+    function show_maccontrol_config() {
+        $("#showmaccontrolbox").html('');
+        $("#showmaccontrol").show();
+    }
 
-  function show_ntp_config() {
-    document.getElementById("showntpbox").innerHTML='';
-    aodiv = document.getElementById('showntp');
-    aodiv.style.display = "block";
-  }
+    function show_ntp_config() {
+        $("#showntpbox").html('');
+        $("#showntp").show();
+    }
 
-  function show_tftp_config() {
-    document.getElementById("showtftpbox").innerHTML='';
-    aodiv = document.getElementById('showtftp');
-    aodiv.style.display = "block";
-  }
+    function show_tftp_config() {
+        $("#showtftpbox").html('');
+        $("#showtftp").show();
+    }
 
-  function show_ldap_config() {
-    document.getElementById("showldapbox").innerHTML='';
-    aodiv = document.getElementById('showldap');
-    aodiv.style.display = "block";
-  }
+    function show_ldap_config() {
+        $("#showldapbox").html('');
+        $("#showldap").show();
+    }
 
-  function show_netboot_config() {
-    document.getElementById("shownetbootbox").innerHTML='';
-    aodiv = document.getElementById('shownetboot');
-    aodiv.style.display = "block";
-  }
+    function show_netboot_config() {
+        $("#shownetbootbox").html('');
+        $("#shownetboot").show();
+    }
 //]]>
 </script>
 
@@ -1127,28 +1109,33 @@ include("head.inc");
                     </tr>
                   </table>
                 </div>
+              </form>
+            </div>
+          </section>
 <?php
-                if (!isset($pool) && !($act == "newpool")): ?>
-                <div class="table-responsive">
-                  <table class="table table-striped table-sort">
-                    <tr>
-                      <td colspan="5" valign="top"><?=gettext("DHCP Static Mappings for this interface.");?></td>
-                      <td>&nbsp;</td>
-                    </tr>
-                    <tr>
-                      <td><?=gettext("Static ARP");?></td>
-                      <td><?=gettext("MAC address");?></td>
-                      <td><?=gettext("IP address");?></td>
-                      <td><?=gettext("Hostname");?></td>
-                      <td><?=gettext("Description");?></td>
-                      <td>
-                        <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-                      </td>
-                    </tr>
+          if (!isset($pool) && !($act == "newpool")): ?>
+          <section class="col-xs-12">
+            <div class="tab-content content-box col-xs-12">
+              <div class="table-responsive">
+                <table class="table table-striped table-sort">
+                  <tr>
+                    <td colspan="5" valign="top"><?=gettext("DHCP Static Mappings for this interface.");?></td>
+                    <td>&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td><?=gettext("Static ARP");?></td>
+                    <td><?=gettext("MAC address");?></td>
+                    <td><?=gettext("IP address");?></td>
+                    <td><?=gettext("Hostname");?></td>
+                    <td><?=gettext("Description");?></td>
+                    <td>
+                      <a href="services_dhcp_edit.php?if=<?=htmlspecialchars($if);?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                    </td>
+                  </tr>
 <?php
-                    if (!empty($config['dhcpd'][$if]['staticmap'])):
-                      $i = 0;
-                      foreach ($config['dhcpd'][$if]['staticmap'] as $mapent): ?>
+                  if (!empty($config['dhcpd'][$if]['staticmap'])):
+                    $i = 0;
+                    foreach ($config['dhcpd'][$if]['staticmap'] as $mapent): ?>
 <?php
                         if($mapent['mac'] <> "" || $mapent['ipaddr'] <> ""): ?>
                     <tr>
@@ -1181,15 +1168,14 @@ include("head.inc");
                         $i++;
                       endforeach;
                     endif; ?>
-                  </table>
-                </div>
-<?php
-                endif; ?>
-              </form>
+                </table>
+              </div>
             </div>
+          </section>
 <?php
-            endif; ?>
-        </section>
+          endif; ?>
+<?php
+        endif; ?>
       </div>
     </div>
   </section>
