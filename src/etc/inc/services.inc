@@ -409,7 +409,7 @@ function is_dhcp_server_enabled()
 {
     global $config;
 
-    if (!is_array($config['dhcpd'])) {
+    if (empty($config['dhcpd']) || !is_array($config['dhcpd'])) {
         return false;
     }
 
@@ -449,17 +449,10 @@ function services_dhcpdv4_configure()
         }
     }
 
-    $syscfg = $config['system'];
-    if (!is_array($config['dhcpd'])) {
-        $config['dhcpd'] = array();
-    }
-    $dhcpdcfg = $config['dhcpd'];
-    $Iflist = get_configured_interface_list();
-
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = array();
-    if (is_array($syscfg['dnsserver'])) {
-        foreach($syscfg['dnsserver'] as $dnsserver) {
+    if (!empty($config['system']['dnsserver'])) {
+        foreach($config['system']['dnsserver'] as $dnsserver) {
             if (is_ipaddrv4($dnsserver)) {
                 $dns_arrv4[] = $dnsserver;
             }
@@ -468,12 +461,10 @@ function services_dhcpdv4_configure()
 
     if (file_exists("/var/run/booting")) {
         echo gettext("Starting DHCP service...");
-    }  else {
-        sleep(1);
     }
 
     $custoptions = "";
-    foreach ($dhcpdcfg as $dhcpif => $dhcpifconf) {
+    foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         if (isset($dhcpifconf['numberoptions']['item'])) {
             foreach($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
                 if (!empty($item['type'])) {
@@ -487,7 +478,7 @@ function services_dhcpdv4_configure()
     }
     $dhcpdconf = <<<EOD
 
-option domain-name "{$syscfg['domain']}";
+option domain-name "{$config['system']['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 option arch code 93 = unsigned integer 16; # RFC4578
@@ -502,13 +493,6 @@ update-conflict-detection false;
 
 EOD;
 
-    if (!isset($dhcpifconf['disableauthoritative'])) {
-        $dhcpdconf .= "authoritative;\n";
-    }
-
-    if (isset($dhcpifconf['alwaysbroadcast'])) {
-        $dhcpdconf .= "always-broadcast on\n";
-    }
 
     $dhcpdifs = array();
     $add_routers = false;
@@ -525,20 +509,20 @@ EOD;
     /*    loop through and determine if we need to setup
      *    failover peer "bleh" entries
      */
-    foreach ($dhcpdcfg as $dhcpif => $dhcpifconf) {
+    foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         interfaces_staticarp_configure($dhcpif);
         if (!isset($dhcpifconf['enable'])) {
             continue;
         }
 
-        if ($dhcpifconf['failover_peerip'] <> "") {
+        if (!empty($dhcpifconf['failover_peerip'])) {
             $intip = get_interface_ip($dhcpif);
             /*
              *    yep, failover peer is defined.
              *    does it match up to a defined vip?
              */
             $skew = 110;
-            if (is_array($config['virtualip']['vip'])) {
+            if (!empty($config['virtualip']['vip'])) {
                 foreach ($config['virtualip']['vip'] as $vipent) {
                     if ($vipent['interface'] == $dhcpif) {
                         $carp_nw = gen_subnet($vipent['subnet'], $vipent['subnet_bits']);
@@ -554,6 +538,7 @@ EOD;
             } else {
                 log_error(gettext("Warning! DHCP Failover setup and no CARP virtual IPs defined!"));
             }
+            $dhcpdconf_pri = "";
             if ($skew > 10) {
                 $type = "secondary";
                 $my_port = "520";
@@ -585,7 +570,8 @@ EOPP;
         }
     }
 
-    foreach ($dhcpdcfg as $dhcpif => $dhcpifconf) {
+    $Iflist = get_configured_interface_list();
+    foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
         $newzone = array();
         $ifcfg = $config['interfaces'][$dhcpif];
 
@@ -603,24 +589,24 @@ EOPP;
 
         $all_pools = array();
         $all_pools[] = $dhcpifconf;
-        if (is_array($dhcpifconf['pool']) && isset($dhcpifconf['pool']['range']) ) {
+        if (!empty($dhcpifconf['pool'])) {
             $all_pools = array_merge($all_pools, $dhcpifconf['pool']);
         }
 
         $dnscfg = "";
 
-        if ($dhcpifconf['domain']) {
+        if (!empty($dhcpifconf['domain'])) {
             $dnscfg .= "  option domain-name \"{$dhcpifconf['domain']}\";\n";
         }
 
-        if ($dhcpifconf['domainsearchlist'] <> "") {
+        if (!empty($dhcpifconf['domainsearchlist'])) {
             $dnscfg .= "  option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $dhcpifconf['domainsearchlist'])) . "\";\n";
         }
 
         if (isset($dhcpifconf['ddnsupdate'])) {
             $need_ddns_updates = true;
             $newzone = array();
-            if ($dhcpifconf['ddnsdomain'] <> "") {
+            if (!empty($dhcpifconf['ddnsdomain'])) {
                 $newzone['domain-name'] = $dhcpifconf['ddnsdomain'];
                 $dnscfg .= "  ddns-domainname \"{$dhcpifconf['ddnsdomain']}\";\n";
             } else {
@@ -636,15 +622,15 @@ EOPP;
             $newzone['ptr-domain'] = implode(".", $revsubnet) . ".in-addr.arpa";
         }
 
-        if (is_array($dhcpifconf['dnsserver']) && ($dhcpifconf['dnsserver'][0])) {
+        if (!empty($dhcpifconf['dnsserver'][0])) {
             $dnscfg .= "  option domain-name-servers " . join(",", $dhcpifconf['dnsserver']) . ";";
-            if ($newzone['domain-name']) {
+            if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = $dhcpifconf['dnsserver'];
             }
         } elseif (isset($config['dnsmasq']['enable'])) {
             $dnscfg .= "  option domain-name-servers {$ifcfgip};";
-            if ($newzone['domain-name'] && is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
-                $newzone['dns-servers'] = $syscfg['dnsserver'];
+            if ($newzone['domain-name'] && !empty($config['system']['dnsserver'][0])) {
+                $newzone['dns-servers'] = $config['system']['dnsserver'];
             }
         } elseif (!empty($dns_arrv4)) {
             $dnscfg .= "  option domain-name-servers " . join(",", $dns_arrv4) . ";";
@@ -656,23 +642,22 @@ EOPP;
         /* Create classes - These all contain comma separated lists. Join them into one
            big comma separated string then split them all up. */
         $all_mac_strings = array();
-        if (is_array($dhcpifconf['pool']) && isset($dhcpifconf['pool']['range']) ) {
-            foreach($all_pools as $poolconf) {
+        foreach($all_pools as $poolconf) {
+            if (!empty($poolconf['mac_allow'])) {
                 $all_mac_strings[] = $poolconf['mac_allow'];
+            }
+            if (!empty($poolconf['mac_deny'])) {
                 $all_mac_strings[] = $poolconf['mac_deny'];
             }
         }
-        $all_mac_strings[] = $dhcpifconf['mac_allow'];
-        $all_mac_strings[] = $dhcpifconf['mac_deny'];
         $all_mac_list = array_unique(explode(',', implode(',', $all_mac_strings)));
         foreach ($all_mac_list as $mac) {
-            if (empty($mac)) {
-                continue;
+            if (!empty($mac)) {
+                $dhcpdconf .= 'class "' . str_replace(':', '', $mac) . '" {' . "\n";
+                // Skip the first octet of the MAC address - for media type, typically Ethernet ("01") and match the rest.
+                $dhcpdconf .= '  match if substring (hardware, 1, ' . (substr_count($mac, ':') + 1) . ') = ' . $mac . ';' . "\n";
+                $dhcpdconf .= '}' . "\n";
             }
-            $dhcpdconf .= 'class "' . str_replace(':', '', $mac) . '" {' . "\n";
-            // Skip the first octet of the MAC address - for media type, typically Ethernet ("01") and match the rest.
-            $dhcpdconf .= '  match if substring (hardware, 1, ' . (substr_count($mac, ':') + 1) . ') = ' . $mac . ';' . "\n";
-            $dhcpdconf .= '}' . "\n";
         }
 
         $dhcpdconf .= "subnet {$subnet} netmask {$subnetmask} {\n";
@@ -681,31 +666,33 @@ EOPP;
         foreach($all_pools as $poolconf) {
             $dhcpdconf .= "  pool {\n";
             /* is failover dns setup? */
-            if (is_array($poolconf['dnsserver']) && $poolconf['dnsserver'][0] <> "") {
+            if (!empty($poolconf['dnsserver'][0])) {
                 $dhcpdconf .= "    option domain-name-servers {$poolconf['dnsserver'][0]}";
-                if ($poolconf['dnsserver'][1] <> "") {
+                if (!empty($poolconf['dnsserver'][1])) {
                     $dhcpdconf .= ",{$poolconf['dnsserver'][1]}";
                 }
                 $dhcpdconf .= ";\n";
             }
 
             /* allow/deny MACs */
-            $mac_allow_list = array_unique(explode(',', $poolconf['mac_allow']));
-            foreach ($mac_allow_list as $mac) {
-                if (empty($mac)) {
-                    continue;
+            if (!empty($poolconf['mac_allow'])) {
+                $mac_allow_list = array_unique(explode(',', $poolconf['mac_allow']));
+                foreach ($mac_allow_list as $mac) {
+                    if (!empty($mac)) {
+                        $dhcpdconf .= "    allow members of \"" . str_replace(':', '', $mac) . "\";\n";
+                    }
                 }
-                $dhcpdconf .= "    allow members of \"" . str_replace(':', '', $mac) . "\";\n";
             }
-            $mac_deny_list = array_unique(explode(',', $poolconf['mac_deny']));
-            foreach ($mac_deny_list as $mac) {
-                if (empty($mac)) {
-                    continue;
+            if (!empty($poolconf['mac_deny'])) {
+                $mac_deny_list = array_unique(explode(',', $poolconf['mac_deny']));
+                foreach ($mac_deny_list as $mac) {
+                    if (!empty($mac)) {
+                        $dhcpdconf .= "    deny members of \"" . str_replace(':', '', $mac) . "\";\n";
+                    }
                 }
-                $dhcpdconf .= "    deny members of \"" . str_replace(':', '', $mac) . "\";\n";
             }
 
-            if ($poolconf['failover_peerip'] <> "") {
+            if (!empty($poolconf['failover_peerip'])) {
                 $dhcpdconf .= "    deny dynamic bootp clients;\n";
             }
 
@@ -713,76 +700,86 @@ EOPP;
                 $dhcpdconf .= "    deny unknown-clients;\n";
             }
 
-            if ($poolconf['gateway'] && $poolconf['gateway'] != "none" && ($poolconf['gateway'] != $dhcpifconf['gateway'])) {
+            if (!empty($poolconf['gateway']) && $poolconf['gateway'] != "none"
+              && (empty($dhcpifconf['gateway']) || $poolconf['gateway'] != $dhcpifconf['gateway'])
+              ) {
                 $dhcpdconf .= "    option routers {$poolconf['gateway']};\n";
             }
 
-            if ($dhcpifconf['failover_peerip'] <> "") {
+            if (!empty($dhcpifconf['failover_peerip'])) {
                 $dhcpdconf .= "    failover peer \"dhcp_{$dhcpif}\";\n";
             }
 
             $pdnscfg = "";
-
-            if ($poolconf['domain'] && ($poolconf['domain'] != $dhcpifconf['domain'])) {
+            if (!empty($poolconf['domain'])
+              && (empty($dhcpifconf['domain']) || $poolconf['domain'] != $dhcpifconf['domain'])
+              ) {
                 $pdnscfg .= "    option domain-name \"{$poolconf['domain']}\";\n";
             }
 
-            if (!empty($poolconf['domainsearchlist']) && ($poolconf['domainsearchlist'] != $dhcpifconf['domainsearchlist'])) {
+            if (!empty($poolconf['domainsearchlist'])
+              && (empty($dhcpifconf['domainsearchlist']) || $poolconf['domainsearchlist'] != $dhcpifconf['domainsearchlist'])) {
                 $pdnscfg .= "    option domain-search \"" . join("\",\"", preg_split("/[ ;]+/", $poolconf['domainsearchlist'])) . "\";\n";
             }
 
             if (isset($poolconf['ddnsupdate'])) {
-                if (($poolconf['ddnsdomain'] <> "") && ($poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
+                if (!empty($poolconf['ddnsdomain'])
+                  && (empty($dhcpifconf['ddnsdomain']) || $poolconf['ddnsdomain'] != $dhcpifconf['ddnsdomain'])) {
                     $pdnscfg .= "    ddns-domainname \"{$poolconf['ddnsdomain']}\";\n";
                 }
                 $pdnscfg .= "    ddns-update-style interim;\n";
             }
 
-            if (is_array($poolconf['dnsserver']) && ($poolconf['dnsserver'][0]) && ($poolconf['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
+            if (!empty($poolconf['dnsserver'][0])
+              && (empty($dhcpifconf['dnsserver'][0]) || $poolconf['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
                 $pdnscfg .= "    option domain-name-servers " . join(",", $poolconf['dnsserver']) . ";\n";
             }
             $dhcpdconf .= "{$pdnscfg}";
 
             // default-lease-time
-            if ($poolconf['defaultleasetime'] && ($poolconf['defaultleasetime'] != $dhcpifconf['defaultleasetime'])) {
+            if (!empty($poolconf['defaultleasetime'])
+              && (empty($dhcpifconf['defaultleasetime']) || $poolconf['defaultleasetime'] != $dhcpifconf['defaultleasetime'])) {
                 $dhcpdconf .= "    default-lease-time {$poolconf['defaultleasetime']};\n";
             }
 
             // max-lease-time
-            if ($poolconf['maxleasetime'] && ($poolconf['maxleasetime'] != $dhcpifconf['maxleasetime'])) {
+            if (!empty($poolconf['maxleasetime'])
+              && (empty($dhcpifconf['maxleasetime']) || $poolconf['maxleasetime'] != $dhcpifconf['maxleasetime'])) {
                 $dhcpdconf .= "    max-lease-time {$poolconf['maxleasetime']};\n";
             }
 
             // netbios-name*
-            if (is_array($poolconf['winsserver']) && $poolconf['winsserver'][0] && ($poolconf['winsserver'][0] != $dhcpifconf['winsserver'][0])) {
+            if (!empty($poolconf['winsserver'][0])
+              && (empty($dhcpifconf['winsserver'][0]) || $poolconf['winsserver'][0] != $dhcpifconf['winsserver'][0])) {
                 $dhcpdconf .= "    option netbios-name-servers " . join(",", $poolconf['winsserver']) . ";\n";
                 $dhcpdconf .= "    option netbios-node-type 8;\n";
             }
 
             // ntp-servers
-            if (is_array($poolconf['ntpserver']) && $poolconf['ntpserver'][0] && ($poolconf['ntpserver'][0] != $dhcpifconf['ntpserver'][0])) {
+            if (!empty($poolconf['ntpserver'][0])
+              && (empty($dhcpifconf['ntpserver'][0]) || $poolconf['ntpserver'][0] != $dhcpifconf['ntpserver'][0])) {
                 $dhcpdconf .= "    option ntp-servers " . join(",", $poolconf['ntpserver']) . ";\n";
             }
 
             // tftp-server-name
-            if (!empty($poolconf['tftp']) && ($poolconf['tftp'] != $dhcpifconf['tftp'])) {
+            if (!empty($poolconf['tftp']) && (empty($dhcpifconf['tftp']) || $poolconf['tftp'] != $dhcpifconf['tftp'])) {
                 $dhcpdconf .= "    option tftp-server-name \"{$poolconf['tftp']}\";\n";
             }
 
             // ldap-server
-            if (!empty($poolconf['ldap']) && ($poolconf['ldap'] != $dhcpifconf['ldap'])) {
+            if (!empty($poolconf['ldap']) && (empty($dhcpifconf['ldap']) || $poolconf['ldap'] != $dhcpifconf['ldap'])) {
                 $dhcpdconf .= "    option ldap-server \"{$poolconf['ldap']}\";\n";
             }
 
             // net boot information
             if (isset($poolconf['netboot'])) {
-                if (!empty($poolconf['nextserver']) && ($poolconf['nextserver'] != $dhcpifconf['nextserver'])) {
+                if (!empty($poolconf['nextserver']) && (empty($dhcpifconf['nextserver']) || $poolconf['nextserver'] != $dhcpifconf['nextserver'])) {
                     $dhcpdconf .= "    next-server {$poolconf['nextserver']};\n";
                 }
-                if (!empty($poolconf['filename']) && ($poolconf['filename'] != $dhcpifconf['filename'])) {
+                if (!empty($poolconf['filename']) && (empty($dhcpifconf['filename']) || $poolconf['filename'] != $dhcpifconf['filename'])) {
                     $dhcpdconf .= "    filename \"{$poolconf['filename']}\";\n";
                 }
-                if (!empty($poolconf['rootpath']) && ($poolconf['rootpath'] != $dhcpifconf['rootpath'])) {
+                if (!empty($poolconf['rootpath']) && (empty($dhcpifconf['rootpath']) || $poolconf['rootpath'] != $dhcpifconf['rootpath'])) {
                     $dhcpdconf .= "    option root-path \"{$poolconf['rootpath']}\";\n";
                 }
             }
@@ -791,10 +788,10 @@ EOPP;
         }
         // End of settings inside pools
 
-        if ($dhcpifconf['gateway'] && $dhcpifconf['gateway'] != "none") {
+        if (!empty($dhcpifconf['gateway']) && $dhcpifconf['gateway'] != "none") {
             $routers = $dhcpifconf['gateway'];
             $add_routers = true;
-        } elseif ($dhcpifconf['gateway'] == "none") {
+        } elseif (!empty($dhcpifconf['gateway']) && $dhcpifconf['gateway'] == "none") {
             $add_routers = false;
         } else {
             $routers = $ifcfgip;
@@ -808,28 +805,28 @@ $dnscfg
 
 EOD;
         // default-lease-time
-        if ($dhcpifconf['defaultleasetime']) {
+        if (!empty($dhcpifconf['defaultleasetime'])) {
             $dhcpdconf .= "  default-lease-time {$dhcpifconf['defaultleasetime']};\n";
         }
 
         // max-lease-time
-        if ($dhcpifconf['maxleasetime']) {
+        if (!empty($dhcpifconf['maxleasetime'])) {
             $dhcpdconf .= "  max-lease-time {$dhcpifconf['maxleasetime']};\n";
         }
 
         // netbios-name*
-        if (is_array($dhcpifconf['winsserver']) && $dhcpifconf['winsserver'][0]) {
+        if (!empty($dhcpifconf['winsserver'][0])) {
             $dhcpdconf .= "  option netbios-name-servers " . join(",", $dhcpifconf['winsserver']) . ";\n";
             $dhcpdconf .= "  option netbios-node-type 8;\n";
         }
 
         // ntp-servers
-        if (is_array($dhcpifconf['ntpserver']) && $dhcpifconf['ntpserver'][0]) {
+        if (!empty($dhcpifconf['ntpserver'][0])) {
             $dhcpdconf .= "  option ntp-servers " . join(",", $dhcpifconf['ntpserver']) . ";\n";
         }
 
         // tftp-server-name
-        if ($dhcpifconf['tftp'] <> "") {
+        if (!empty($dhcpifconf['tftp'])) {
             $dhcpdconf .= "  option tftp-server-name \"{$dhcpifconf['tftp']}\";\n";
         }
 
@@ -846,13 +843,13 @@ EOD;
         }
 
         // ldap-server
-        if ($dhcpifconf['ldap'] <> "") {
+        if (!empty($dhcpifconf['ldap'])) {
             $dhcpdconf .= "  option ldap-server \"{$dhcpifconf['ldap']}\";\n";
         }
 
         // net boot information
         if (isset($dhcpifconf['netboot'])) {
-            if ($dhcpifconf['nextserver'] <> "") {
+            if (!empty($dhcpifconf['nextserver'])) {
                 $dhcpdconf .= "  next-server {$dhcpifconf['nextserver']};\n";
             }
             if (!empty($dhcpifconf['filename']) && !empty($dhcpifconf['filename32']) && !empty($dhcpifconf['filename64'])) {
@@ -877,41 +874,40 @@ EOD;
 EOD;
 
         /* add static mappings */
-        if (is_array($dhcpifconf['staticmap'])) {
-            $i = 0;
-            foreach ($dhcpifconf['staticmap'] as $sm) {
+        if (!empty($dhcpifconf['staticmap'])) {
+            foreach ($dhcpifconf['staticmap'] as $i => $sm) {
                 $dhcpdconf .= "host s_{$dhcpif}_{$i} {\n";
-                if ($sm['mac']) {
+                if (!empty($sm['mac'])) {
                     $dhcpdconf .= "        hardware ethernet {$sm['mac']};\n";
                 }
 
-                if ($sm['cid']) {
+                if (!empty($sm['cid'])) {
                     $dhcpdconf .= "        option dhcp-client-identifier \"{$sm['cid']}\";\n";
                 }
 
-                if ($sm['ipaddr']) {
+                if (!empty($sm['ipaddr'])) {
                     $dhcpdconf .= "  fixed-address {$sm['ipaddr']};\n";
                 }
 
-                if ($sm['hostname']) {
+                if (!empty($sm['hostname'])) {
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdconf .= "  option host-name \"{$dhhostname}\";\n";
                 }
-                if ($sm['filename']) {
+                if (!empty($sm['filename'])) {
                     $dhcpdconf .= "  filename \"{$sm['filename']}\";\n";
                 }
 
-                if ($sm['rootpath']) {
+                if (!empty($sm['rootpath'])) {
                     $dhcpdconf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
-                if ($sm['gateway'] && ($sm['gateway'] != $dhcpifconf['gateway'])) {
+                if (!empty($sm['gateway']) && ($sm['gateway'] != $dhcpifconf['gateway'])) {
                     $dhcpdconf .= "  option routers {$sm['gateway']};\n";
                 }
 
                 $smdnscfg = "";
-                if ($sm['domain'] && ($sm['domain'] != $dhcpifconf['domain'])) {
+                if (!empty($sm['domain']) && ($sm['domain'] != $dhcpifconf['domain'])) {
                     $smdnscfg .= "  option domain-name \"{$sm['domain']}\";\n";
                 }
 
@@ -926,29 +922,29 @@ EOD;
                     $pdnscfg .= "    ddns-update-style interim;\n";
                 }
 
-                if (is_array($sm['dnsserver']) && ($sm['dnsserver'][0]) && ($sm['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
+                if (!empty($sm['dnsserver']) && ($sm['dnsserver'][0]) && ($sm['dnsserver'][0] != $dhcpifconf['dnsserver'][0])) {
                     $smdnscfg .= "  option domain-name-servers " . join(",", $sm['dnsserver']) . ";\n";
                 }
                 $dhcpdconf .= "{$smdnscfg}";
 
                 // default-lease-time
-                if ($sm['defaultleasetime'] && ($sm['defaultleasetime'] != $dhcpifconf['defaultleasetime'])) {
+                if (!empty($sm['defaultleasetime']) && ($sm['defaultleasetime'] != $dhcpifconf['defaultleasetime'])) {
                     $dhcpdconf .= "  default-lease-time {$sm['defaultleasetime']};\n";
                 }
 
                 // max-lease-time
-                if ($sm['maxleasetime'] && ($sm['maxleasetime'] != $dhcpifconf['maxleasetime'])) {
+                if (!empty($sm['maxleasetime']) && ($sm['maxleasetime'] != $dhcpifconf['maxleasetime'])) {
                     $dhcpdconf .= "  max-lease-time {$sm['maxleasetime']};\n";
                 }
 
                 // netbios-name*
-                if (is_array($sm['winsserver']) && $sm['winsserver'][0] && ($sm['winsserver'][0] != $dhcpifconf['winsserver'][0])) {
+                if (!empty($sm['winsserver']) && $sm['winsserver'][0] && ($sm['winsserver'][0] != $dhcpifconf['winsserver'][0])) {
                     $dhcpdconf .= "  option netbios-name-servers " . join(",", $sm['winsserver']) . ";\n";
                     $dhcpdconf .= "  option netbios-node-type 8;\n";
                 }
 
                 // ntp-servers
-                if (is_array($sm['ntpserver']) && $sm['ntpserver'][0] && ($sm['ntpserver'][0] != $dhcpifconf['ntpserver'][0])) {
+                if (!empty($sm['ntpserver']) && $sm['ntpserver'][0] && ($sm['ntpserver'][0] != $dhcpifconf['ntpserver'][0])) {
                     $dhcpdconf .= "  option ntp-servers " . join(",", $sm['ntpserver']) . ";\n";
                 }
 
@@ -958,12 +954,11 @@ EOD;
                 }
 
                 $dhcpdconf .= "}\n";
-                $i++;
             }
         }
 
         $dhcpdifs[] = get_real_interface($dhcpif);
-        if ($newzone['domain-name']) {
+        if (!empty($newzone['domain-name'])) {
             if ($need_ddns_updates) {
                 $newzone['dns-servers'] = array($dhcpifconf['ddnsdomainprimary']);
             }
