@@ -173,27 +173,6 @@ function restore_config_section($section_name, $new_contents)
 }
 
 /*
- *  merge_config_section($section_name, new_contents):   restore a configuration section,
- *                                                  and write the configuration out
- *                                                  to disk/cf.  But preserve the prior
- *                          structure if needed
- */
-function merge_config_section($section_name, $new_contents)
-{
-    global $config;
-    $fname = '/tmp/tmp-' . time();
-    $fout = fopen($fname, "w");
-    fwrite($fout, $new_contents);
-    fclose($fout);
-    $section_xml = parse_xml_config($fname, $section_name);
-    $config[$section_name] = $section_xml;
-    unlink($fname);
-    write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
-    disable_security_checks();
-    return;
-}
-
-/*
  * host_firmware_version(): Return the versions used in this install
  */
 function host_firmware_version()
