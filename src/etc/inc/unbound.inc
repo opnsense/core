@@ -73,24 +73,25 @@ function unbound_optimization() {
      * Larger socket buffer for busy servers
      * Check that it is set to 4MB (by default the OS has it configured to 4MB)
      */
-    foreach ($config['sysctl']['item'] as $tunable) {
-        if ($tunable['tunable'] == 'kern.ipc.maxsockbuf') {
-            $so = floor(($tunable['value']/1024/1024)-1);
-            // Check to ensure that the number is not a negative
-            if ($so > 0) {
-                $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
-            } else {
-                unset($optimization['so_rcvbuf']);
+    if (isset($config['sysctl']['item'])) {
+        foreach ($config['sysctl']['item'] as $tunable) {
+            if ($tunable['tunable'] == 'kern.ipc.maxsockbuf') {
+                $so = floor(($tunable['value']/1024/1024)-1);
+                // Check to ensure that the number is not a negative
+                if ($so > 0) {
+                    $optimization['so_rcvbuf'] = "so-rcvbuf: {$so}m";
+                } else {
+                    unset($optimization['so_rcvbuf']);
+                }
             }
         }
-    }
-    // Safety check in case kern.ipc.maxsockbuf is not available.
-    if (!isset($optimization['so_rcvbuf'])) {
-        $optimization['so_rcvbuf'] = "#so-rcvbuf: 4m";
+        // Safety check in case kern.ipc.maxsockbuf is not available.
+        if (!isset($optimization['so_rcvbuf'])) {
+            $optimization['so_rcvbuf'] = "#so-rcvbuf: 4m";
+        }
     }
 
     return $optimization;
-
 }
 
 function bootstrap_unbound_root()
@@ -701,7 +702,7 @@ function unbound_acls_config() {
     }
 
     // Configure the custom ACLs
-    if (is_array($config['unbound']['acls'])) {
+    if (isset($config['unbound']['acls'])) {
         foreach($config['unbound']['acls'] as $unbound_acl) {
             $aclcfg .= "#{$unbound_acl['aclname']}\n";
             foreach($unbound_acl['row'] as $network) {
