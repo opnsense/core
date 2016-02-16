@@ -179,6 +179,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+    // handle booleans
+    $dhcpdconf['enable'] =  isset($pconfig['enabled']);
+    $dhcpdconf['staticarp'] = isset($dhcpdconf['staticarp']);
+    $dhcpdconf['denyunknown'] = isset($dhcpdconf['denyunknown']);
+    $dhcpdconf['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
+    $dhcpdconf['netboot'] = isset($dhcpdconf['netboot']);
+
     // array conversions
     $pconfig['numberoptions'] = !empty($pconfig['numberoptions']) ? $pconfig['numberoptions'] : array();
 
