@@ -70,27 +70,30 @@ if (function_exists("display_error_form") && !isset($config['system']['webgui'][
 			strcasecmp($http_host, $config['system']['hostname']) == 0)
 		$found_host = true;
 
-	if(isset($config['dyndnses']['dyndns']) && is_array($config['dyndnses']['dyndns']) && !$found_host)
+	if (isset($config['dyndnses']['dyndns']) && !$found_host)
 		foreach($config['dyndnses']['dyndns'] as $dyndns)
 			if(strcasecmp($dyndns['host'], $http_host) == 0) {
 				$found_host = true;
 				break;
 			}
 
-	if(isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate']) && !$found_host)
-		foreach($config['dnsupdates']['dnsupdate'] as $rfc2136)
-			if(strcasecmp($rfc2136['host'], $http_host) == 0) {
+	if (isset($config['dnsupdates']['dnsupdate']) && !$found_host) {
+		foreach ($config['dnsupdates']['dnsupdate'] as $rfc2136) {
+			if (strcasecmp($rfc2136['host'], $http_host) == 0) {
 				$found_host = true;
 				break;
 			}
+		}
+	}
 
-	if(!empty($config['system']['webgui']['althostnames']) && !$found_host) {
+	if (!empty($config['system']['webgui']['althostnames']) && !$found_host) {
 		$althosts = explode(" ", $config['system']['webgui']['althostnames']);
-		foreach ($althosts as $ah)
-			if(strcasecmp($ah, $http_host) == 0 or strcasecmp($ah, $_SERVER['SERVER_ADDR']) == 0) {
+		foreach ($althosts as $ah) {
+			if (strcasecmp($ah, $http_host) == 0 or strcasecmp($ah, $_SERVER['SERVER_ADDR']) == 0) {
 				$found_host = true;
 				break;
 			}
+		}
 	}
 
 	if($found_host == false) {
@@ -122,7 +125,7 @@ if(function_exists("display_error_form") && !isset($config['system']['webgui']['
 					|| strcasecmp($referrer_host, $config['system']['hostname']) == 0)
 				$found_host = true;
 
-			if(!empty($config['system']['webgui']['althostnames']) && !$found_host) {
+			if (!empty($config['system']['webgui']['althostnames']) && !$found_host) {
 				$althosts = explode(" ", $config['system']['webgui']['althostnames']);
 				foreach ($althosts as $ah) {
 					if(strcasecmp($referrer_host, $ah) == 0) {
@@ -132,19 +135,23 @@ if(function_exists("display_error_form") && !isset($config['system']['webgui']['
 				}
 			}
 
-			if(isset($config['dyndnses']['dyndns']) && is_array($config['dyndnses']['dyndns']) && !$found_host)
-				foreach($config['dyndnses']['dyndns'] as $dyndns)
-					if(strcasecmp($dyndns['host'], $referrer_host) == 0) {
+			if (isset($config['dyndnses']['dyndns']) && !$found_host) {
+				foreach ($config['dyndnses']['dyndns'] as $dyndns) {
+					if (strcasecmp($dyndns['host'], $referrer_host) == 0) {
 						$found_host = true;
 						break;
 					}
+				}
+			}
 
-			if(isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate']) && !$found_host)
-				foreach($config['dnsupdates']['dnsupdate'] as $rfc2136)
-					if(strcasecmp($rfc2136['host'], $referrer_host) == 0) {
+			if (isset($config['dnsupdates']['dnsupdate']) && !$found_host) {
+				foreach ($config['dnsupdates']['dnsupdate'] as $rfc2136) {
+					if (strcasecmp($rfc2136['host'], $referrer_host) == 0) {
 						$found_host = true;
 						break;
 					}
+				}
+			}
 
 			if(!$found_host) {
 				$found_host = isAuthLocalIP($referrer_host);
