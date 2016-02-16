@@ -212,9 +212,10 @@ function show_advanced_dns() {
 														<option value="" <?php if (empty($pconfig['active_interface']) || empty($pconfig['active_interface'][0])) echo 'selected="selected"'; ?>>All</option>
 														<?php
 															foreach ($interface_addresses as $laddr):
-																$selected = "";
-																if (in_array($laddr['value'], $pconfig['active_interface']))
+																$selected = '';
+																if (!empty($pconfig['active_interface']) && in_array($laddr['value'], $pconfig['active_interface'])) {
 																	$selected = 'selected="selected"';
+																}
 														?>
 														<option value="<?=$laddr['value'];?>" <?=$selected;?>>
 															<?=htmlspecialchars($laddr['name']);?>
@@ -237,9 +238,10 @@ function show_advanced_dns() {
 														<option value="" <?php if (empty($pconfig['outgoing_interface']) || empty($pconfig['outgoing_interface'][0])) echo 'selected="selected"'; ?>>All</option>
 														<?php
 															foreach ($interface_addresses as $laddr):
-																$selected = "";
-																if (in_array($laddr['value'], $pconfig['outgoing_interface']))
-																$selected = 'selected="selected"';
+																$selected = '';
+																if (!empty($pconfig['outgoing_interface']) && in_array($laddr['value'], $pconfig['outgoing_interface'])) {
+																	$selected = 'selected="selected"';
+																}
 														?>
 														<option value="<?=$laddr['value'];?>" <?=$selected;?>>
 															<?=htmlspecialchars($laddr['name']);?>
