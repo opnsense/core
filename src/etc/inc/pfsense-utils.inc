@@ -451,14 +451,6 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
     return ($http_code == 200) ? true : $http_code;
 }
 
-/* Split() is being DEPRECATED as of PHP 5.3.0 and REMOVED as of PHP 6.0.0. Relying on this feature is highly discouraged. */
-if (!function_exists("split")) {
-    function split($separator, $haystack, $limit = null) {
-        log_error("deprecated split() call with separator '{$separator}'");
-        return preg_split($separator, $haystack, $limit);
-    }
-}
-
 function update_alias_names_upon_change($section, $field, $new_alias_name, $origname)
 {
     global $config;

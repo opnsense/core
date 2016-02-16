@@ -41,7 +41,7 @@ while (true) {
     $string = fgets($handle, 256);
 
     $elements = array();
-    $elements = split(":", $string);
+    $elements = preg_split(":", $string, null);
     $elements[0] = trim($elements[0]);
     $elements[1] = trim($elements[1]);
 
@@ -60,7 +60,7 @@ while (true) {
             break;
         case "^DSFLOWRPT":
             $items = array();
-            $items = split(",", $elements[1]);
+            $items = preg_split(",", $elements[1], null);
             $record['time'] = hexdec($items[0]);
             $record['upstream'] = round((floatval(hexdec($items[1])) * 8) /1024);
             $record['downstream'] = round((floatval(hexdec($items[2])) * 8) /1024);
