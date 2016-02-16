@@ -627,7 +627,7 @@ EOPP;
             if (!empty($newzone['domain-name'])) {
                 $newzone['dns-servers'] = $dhcpifconf['dnsserver'];
             }
-        } elseif (isset($config['dnsmasq']['enable'])) {
+        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
             $dnscfg .= "  option domain-name-servers {$ifcfgip};";
             if ($newzone['domain-name'] && !empty($config['system']['dnsserver'][0])) {
                 $newzone['dns-servers'] = $config['system']['dnsserver'];
@@ -1241,7 +1241,7 @@ EOD;
 
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
-        } else if ((isset($config['dnsmasq']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
+        } else if ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
             $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
         } else if (is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
             $dns_arrv6 = array();
