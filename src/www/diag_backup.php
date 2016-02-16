@@ -143,6 +143,7 @@ $areas = array(
     'dhcrelay6' => gettext('DHCPv6 Relay'),
     'dnsmasq' => gettext('DNS Forwarder'),
     'dyndnses' => gettext('Dynamic DNS'),
+    'dnsupdates' => gettext('RFC 2136'),
     'filter' => gettext('Firewall Rules'),
     'gateways' => gettext('Gateways'),
     'gifs' => gettext('GIF Devices'),

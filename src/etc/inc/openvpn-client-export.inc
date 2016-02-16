@@ -904,16 +904,19 @@ function openvpn_client_export_find_port_forwards($targetip, $targetport, $targe
 	return $destinations;
 }
 
-function openvpn_client_export_find_hostname($interface) {
+function openvpn_client_export_find_hostname($interface)
+{
 	global $config;
-	$hostname = "";
-	if (is_array($config['dyndnses']['dyndns'])) {
+
+	$hostname = '';
+
+	if (isset($config['dyndnses']['dyndns'])) {
 		foreach ($config['dyndnses']['dyndns'] as $ddns) {
 			if (($ddns['interface'] == $interface) && isset($ddns['enable']) && !empty($ddns['host']) && !is_numeric($ddns['host']) && is_hostname($ddns['host']))
 				return $ddns['host'];
 		}
 	}
-	if (is_array($config['dnsupdates']['dnsupdate'])) {
+	if (isset($config['dnsupdates']['dnsupdate'])) {
 		foreach ($config['dnsupdates']['dnsupdate'] as $ddns) {
 			if (($ddns['interface'] == $interface) && isset($ddns['enable']) && !empty($ddns['host']) && !is_numeric($ddns['host']) && is_hostname($ddns['host']))
 				return $ddns['host'];

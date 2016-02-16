@@ -2247,8 +2247,7 @@ function services_dnsupdate_process($int = '', $updatehost = '', $forced = false
 {
     global $config;
 
-    /* Dynamic DNS updating active? */
-    if (isset($config['dnsupdates']['dnsupdate']) && is_array($config['dnsupdates']['dnsupdate'])) {
+    if (isset($config['dnsupdates']['dnsupdate'])) {
         $notify_text = "";
         foreach ($config['dnsupdates']['dnsupdate'] as $i => $dnsupdate) {
             if (!isset($dnsupdate['enable'])) {
@@ -2259,7 +2258,6 @@ function services_dnsupdate_process($int = '', $updatehost = '', $forced = false
                 continue;
             }
 
-            /* determine interface name */
             $if = get_real_interface($dnsupdate['interface']);
 
             if (isset($dnsupdate['usepublicip'])) {
