@@ -246,9 +246,9 @@ function services_radvd_configure($blacklist = array())
                     $dnslist[] = $server;
                 }
             }
-        } elseif (isset($config['dnsmasq']['enable'])) {
+        } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
             $dnslist[] = get_interface_ipv6($realif);
-        } elseif (is_array($config['system']['dnsserver']) && !empty($config['system']['dnsserver'])) {
+        } elseif (!empty($config['system']['dnsserver'])) {
             foreach($config['system']['dnsserver'] as $server) {
                 if (is_ipaddrv6($server)) {
                     $dnslist[] = $server;
@@ -324,9 +324,9 @@ function services_radvd_configure($blacklist = array())
 
         /* add DNS servers */
         $dnslist = array();
-        if (isset($config['dnsmasq']['enable'])) {
+        if (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
             $dnslist[] = $ifcfgipv6;
-        } elseif (is_array($config['system']['dnsserver']) && !empty($config['system']['dnsserver'])) {
+        } elseif (!empty($config['system']['dnsserver'])) {
             foreach($config['system']['dnsserver'] as $server) {
                 if (is_ipaddrv6($server)) {
                     $dnslist[] = $server;
@@ -1241,9 +1241,9 @@ EOD;
 
         if (isset($dhcpv6ifconf['dnsserver'][0])) {
             $dnscfgv6 .= "  option dhcp6.name-servers " . join(",", $dhcpv6ifconf['dnsserver']) . ";";
-        } else if ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
+        } elseif ((isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) && (is_ipaddrv6($ifcfgipv6))) {
             $dnscfgv6 .= "  option dhcp6.name-servers {$ifcfgipv6};";
-        } else if (is_array($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
+        } elseif (isset($syscfg['dnsserver']) && ($syscfg['dnsserver'][0])) {
             $dns_arrv6 = array();
             foreach($syscfg['dnsserver'] as $dnsserver) {
                 if (is_ipaddrv6($dnsserver)) {
@@ -2300,10 +2300,10 @@ EOD;
                 if ($dnsupdate['keytype'] == "zone") {
                     $flags = 257;
                     $proto = 3;
-                } else if ($dnsupdate['keytype'] == "host") {
+                } elseif ($dnsupdate['keytype'] == "host") {
                     $flags = 513;
                     $proto = 3;
-                } else if ($dnsupdate['keytype'] == "user") {
+                } elseif ($dnsupdate['keytype'] == "user") {
                     $flags = 0;
                     $proto = 2;
                 }
