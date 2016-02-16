@@ -351,7 +351,7 @@ if (isset($config['trigger_initial_wizard'])) :
 ?>
 	<header class="page-content-head">
 		<div class="container-fluid">
-			<h1><?=gettext("Starting initial configuration"); ?>!</h1>
+			<h1><?= gettext("Starting initial configuration!") ?></h1>
 		</div>
 	</header>
 
@@ -484,7 +484,7 @@ endif; ?>
 
 
                 ?>
-                    <section class="col-xs-12 col-md-6 widgetdiv" id="<?php echo $widgetname;?>"  style="display:<?php echo $divdisplay; ?>;">
+                    <section class="col-xs-12 col-md-6 widgetdiv" id="<?= $widgetname ?>"  style="display:<?= $divdisplay ?>;">
                     <div class="content-box">
                         <form action="<?=$_SERVER['REQUEST_URI'];?>" method="post" id="iform">
                         <input type="hidden" value="" name="sequence" id="sequence" />
@@ -499,7 +499,7 @@ endif; ?>
                                         //only show link if defined
                                         if ($$widgettitlelink != "") {
 ?>
-                                            <u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
+                                            <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
                                             <?php
                                         }
                                             //echo widget title
@@ -512,7 +512,7 @@ endif; ?>
                                     } else {
                                         if (isset($$widgettitlelink)) {
 ?>
-                                            <u><span onclick="location.href='/<?php echo $$widgettitlelink;?>'" style="cursor:pointer">
+                                            <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
                                             <?php
                                         }
                                         echo $nicename;
@@ -527,29 +527,28 @@ endif; ?>
 
 								        <li class="pull-right">
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?php echo $widgetname;?>-min" onclick='return minimizeWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv; ?>;"><span class="glyphicon glyphicon-minus"></span></button>
+                                            <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?= $widgetname ?>-min" onclick='return minimizeWidget("<?= $widgetname ?>",true)' style="display:<?= $mindiv ?>;"><span class="glyphicon glyphicon-minus"></span></button>
 
-                                              <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?php echo $widgetname;?>-max" onclick='return showWidget("<?php echo $widgetname;?>",true)' style="display:<?php echo $mindiv == 'none' ? 'inline' : 'none'; ?>;"><span class="glyphicon glyphicon-plus"></span></button>
+                                              <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?= $widgetname ?>-max" onclick='return showWidget("<?= $widgetname ?>",true)' style="display:<?= $mindiv == 'none' ? 'inline' : 'none' ?>;"><span class="glyphicon glyphicon-plus"></span></button>
 
-                                            <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?php echo $widgetname;?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
+                                            <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?= $widgetname ?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
 
-                                            <button type="button" class="btn btn-default btn-xs" id="<?php echo $widgetname;?>-configure" onclick='return configureWidget("<?php echo $widgetname;?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
+                                            <button type="button" class="btn btn-default btn-xs" id="<?= $widgetname ?>-configure" onclick='return configureWidget("<?=  $widgetname ?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
 
                                         </div>
 								        </li>
 								    </ul>
 								</header>
 					        </form>
-							<div class="content-box-main collapse in" id="<?php echo $widgetname;
-?>-container" style="display:<?=$mindiv;?>">
-								<input type="hidden" value="<?php echo $inputdisplay;?>" id="<?php echo $widgetname;?>-config" name="<?php echo $widgetname;?>-config" />
+							<div class="content-box-main collapse in" id="<?= $widgetname ?>-container" style="display:<?= $mindiv ?>">
+								<input type="hidden" value="<?= $inputdisplay ?>" id="<?= $widgetname ?>-config" name="<?= $widgetname ?>-config" />
 
 
 									<?php if ($divdisplay != "block") {
 ?>
-									<div id="<?php echo $widgetname;?>-loader" style="display:<?php echo $display; ?>;" align="center">
+									<div id="<?= $widgetname ?>-loader" style="display:<?= $display ?>;" align="center">
 										<br />
-											<span class="glyphicon glyphicon-refresh"></span> <?=gettext("Loading selected widget"); ?>
+											<span class="glyphicon glyphicon-refresh"></span> <?= gettext("Loading selected widget") ?>
 										<br />
 									</div> <?php $display = "none";
 } ?>
@@ -580,15 +579,15 @@ endif; ?>
     $directory = "widgets/javascript/";
     $dirhandle  = opendir($directory);
     $filename = "";
-while (false !== ($filename = readdir($dirhandle))) {
-    $jsincludefiles[] = $filename;
-}
-foreach ($jsincludefiles as $jsincludename) {
-    if (!preg_match('/\.js$/', $jsincludename)) {
-        continue;
+    while (false !== ($filename = readdir($dirhandle))) {
+        $jsincludefiles[] = $filename;
     }
-    echo "<script src='{$directory}{$jsincludename}' type='text/javascript'></script>\n";
-}
+    foreach ($jsincludefiles as $jsincludename) {
+        if (!preg_match('/\.js$/', $jsincludename)) {
+            continue;
+        }
+        echo "<script src='{$directory}{$jsincludename}' type='text/javascript'></script>\n";
+    }
 ?>
 
 
