@@ -180,11 +180,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     // handle booleans
-    $dhcpdconf['enable'] =  isset($pconfig['enabled']);
-    $dhcpdconf['staticarp'] = isset($dhcpdconf['staticarp']);
-    $dhcpdconf['denyunknown'] = isset($dhcpdconf['denyunknown']);
-    $dhcpdconf['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
-    $dhcpdconf['netboot'] = isset($dhcpdconf['netboot']);
+    $pconfig['enable'] =  isset($dhcpdconf['enabled']);
+    $pconfig['staticarp'] = isset($dhcpdconf['staticarp']);
+    $pconfig['denyunknown'] = isset($dhcpdconf['denyunknown']);
+    $pconfig['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
+    $pconfig['netboot'] = isset($dhcpdconf['netboot']);
 
     // array conversions
     $pconfig['numberoptions'] = !empty($pconfig['numberoptions']) ? $pconfig['numberoptions'] : array();
