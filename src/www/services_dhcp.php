@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     // handle booleans
-    $pconfig['enable'] =  isset($dhcpdconf['enabled']);
+    $pconfig['enable'] =  isset($dhcpdconf['enable']);
     $pconfig['staticarp'] = isset($dhcpdconf['staticarp']);
     $pconfig['denyunknown'] = isset($dhcpdconf['denyunknown']);
     $pconfig['ddnsupdate'] = isset($dhcpdconf['ddnsupdate']);
@@ -198,7 +198,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dns2'] = !empty($dhcpdconf['dnsserver'][1]) ? $dhcpdconf['dnsserver'][1] : "";
     $pconfig['ntp1'] = !empty($dhcpdconf['ntpserver'][0]) ? $dhcpdconf['winsserver'][0] : "";
     $pconfig['ntp2'] = !empty($dhcpdconf['ntpserver'][1]) ? $dhcpdconf['ntpserver'][1] : "";
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // handle identifiers and actions
     if (!empty($_POST['if']) && !empty($config['interfaces'][$_POST['if']])) {
@@ -229,10 +228,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($pconfig['numberoptions_number'])) {
             $pconfig['numberoptions']['item'] = array();
             foreach ($pconfig['numberoptions_number'] as $opt_seq => $opt_number) {
-                $pconfig['numberoptions']['item'][] = array('number' => $opt_number,
-                                                            'type' => $pconfig['numberoptions_type'][$opt_seq],
-                                                            'value' => $pconfig['numberoptions_value'][$opt_seq]
-                                                      );
+                if (!empty($opt_number)) {
+                    $pconfig['numberoptions']['item'][] = array('number' => $opt_number,
+                                                                'type' => $pconfig['numberoptions_type'][$opt_seq],
+                                                                'value' => $pconfig['numberoptions_value'][$opt_seq]
+                                                          );
+                }
             }
         }
 
