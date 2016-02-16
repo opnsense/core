@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-05 08:49+0000\n"
+"POT-Creation-Date: 2016-02-16 04:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Translate Toolkit 1.13.0\n"
 "X-Pootle-Path: /fr/gui/fr.po\n"
-"X-Pootle-Revision: 4262\n"
+"X-Pootle-Revision: 4283\n"
 
 # File: lang/dynamic/helpers/acl.php, line: 36
 msgid "Allow access to the 'Status: IPsec: SAD' page."
@@ -3481,6 +3481,8 @@ msgid ""
 "Gateways status could not be determined, considering all as up/active. "
 "(Group: %s)"
 msgstr ""
+"Le statut des passerelles ne peut être déterminé, toutes sont considérées "
+"comme actives. (Groupe : %s)"
 
 # File: src/etc/inc/interfaces.inc, line: 78
 msgid "interfaces_bring_up() was called but no variable defined."
@@ -3501,7 +3503,7 @@ msgstr "VLAN : appelé avec les mauvaises options. Problème de configuration !"
 
 # File: src/etc/inc/interfaces.inc, line: 287
 msgid "interface_vlan_configure called with if undefined."
-msgstr ""
+msgstr "interface_vlan_configure appelé avec if non définit."
 
 # File: src/etc/inc/interfaces.inc, line: 321
 # File: src/etc/inc/interfaces.inc, line: 413
@@ -6419,7 +6421,7 @@ msgstr "Activer"
 # File: src/www/system_certmanager.php, line: 818
 # File: src/www/system_certmanager.php, line: 1004
 msgid "Email Address"
-msgstr "Adresse de courrier électronique"
+msgstr "Adresse courriel"
 
 # File: src/www/diag_backup.php, line: 761
 msgid "(not loaded)"
@@ -13592,7 +13594,7 @@ msgstr ""
 
 # File: src/www/interfaces_bridge_edit.php, line: 433
 msgid "Cache size"
-msgstr ""
+msgstr "Taille du cache"
 
 # File: src/www/interfaces_bridge_edit.php, line: 435
 msgid "entries"
@@ -14620,6 +14622,7 @@ msgstr ""
 # File: src/www/load_balancer_monitor_edit.php, line: 84
 msgid "This monitor name has already been used.  Monitor names must be unique."
 msgstr ""
+"Ce nom d'écran a déjà été utilisé.  Les noms d'écran doivent être uniques."
 
 # File: src/www/load_balancer_monitor_edit.php, line: 87
 # File: src/www/load_balancer_pool_edit.php, line: 78
@@ -17764,7 +17767,7 @@ msgstr "Liste d'accès %s"
 
 # File: src/www/services_unbound_acls.php, line: 201
 msgid "Access List name"
-msgstr ""
+msgstr "Nom de la liste d'accès"
 
 # File: src/www/services_unbound_acls.php, line: 205
 msgid "Provide an Access List name."
@@ -22615,7 +22618,7 @@ msgstr "Autorité de certification interne invalide"
 
 # File: src/www/system_usermanager.php, line: 726
 msgid "(Certificate will not be deleted)"
-msgstr "(le certificat ne va pas être supprimé)"
+msgstr "(le certificat ne sera pas supprimé)"
 
 # File: src/www/system_usermanager.php, line: 726
 msgid "Do you really want to remove this certificate association?"
@@ -22782,7 +22785,7 @@ msgid ""
 "OpenVPN, IPsec, and Captive Portal."
 msgstr ""
 "Les comptes créés ici sont également utilisés pour d'autres services du "
-"système telles que OpenVPN, IPsec, et le portail captif."
+"système telles que OpenVPN, IPsec et le portail captif."
 
 # File: src/www/system_usermanager.php, line: 1053
 msgid "System Admininistrator"
