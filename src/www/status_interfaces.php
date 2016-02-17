@@ -76,24 +76,28 @@ include("head.inc");
               $mac_man = load_mac_manufacturer_table();?>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th colspan="2">
+                          <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?=htmlspecialchars($ifname);?>"></i>
+                          <?=htmlspecialchars($ifname);?> <?=gettext("interface"); ?> (<?=htmlspecialchars($ifdescr);?>, <?=htmlspecialchars($ifinfo['hwif']);?>)
+  <?php
+                          if (!isset($first_row)):
+                            $first_row=false;?>
+                          <div class="pull-right">
+                            <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?=gettext("collapse/expand all");?>"></i> &nbsp;
+                          </div>
+  <?php
+                          endif;?>
+                        </th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+                <div class="interface_details collapse table-responsive"  id="<?=htmlspecialchars($ifname);?>">
                   <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th colspan="2">
-                        <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?=htmlspecialchars($ifname);?>"></i>
-                        <?=htmlspecialchars($ifname);?> <?=gettext("interface"); ?> (<?=htmlspecialchars($ifdescr);?>, <?=htmlspecialchars($ifinfo['hwif']);?>)
-<?php
-                        if (!isset($first_row)):
-                          $first_row=false;?>
-                        <div class="pull-right">
-                          <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?=gettext("collapse/expand all");?>"></i> &nbsp;
-                        </div>
-<?php
-                        endif;?>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody id="<?=htmlspecialchars($ifname);?>" class="interface_details collapse">
+                  <tbody>
                     <tr>
                       <td width="22%"><?=gettext("Status"); ?></td>
                       <td width="78%"><?=$ifinfo['status'];?></td>
