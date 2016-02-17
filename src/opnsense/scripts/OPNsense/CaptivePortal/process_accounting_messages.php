@@ -35,6 +35,7 @@ use OPNsense\Auth\AuthenticationFactory;
 // open database
 $database_filename = '/var/captiveportal/captiveportal.sqlite';
 $db = new SQLite3($database_filename);
+$db->busyTimeout(2000);
 
 // query all sessions with client restrictions
 $result = $db->query('
@@ -53,43 +54,46 @@ $result = $db->query('
     ');
 
 // process all sessions
-while($row = $result->fetchArray(SQLITE3_ASSOC) ){
-    $authFactory = new OPNsense\Auth\AuthenticationFactory();
-    $authenticator = $authFactory->get($row['authenticated_via']);
-    if ($authenticator != null) {
-        if ($row['state'] == null) {
-            // new accounting state, send start event (if applicable)
-            $stmt = $db->prepare('insert into accounting_state(zoneid, sessionid, state)
-                                  values (:zoneid, :sessionid, \'RUNNING\')');
-            $stmt->bindParam(':zoneid', $row['zoneid']);
-            $stmt->bindParam(':sessionid', $row['sessionid']);
-            $stmt->execute();
-            if (method_exists($authenticator,'startAccounting')) {
-                // send start accounting event
-                $authenticator->startAccounting($row['username'], $row['sessionid']);
-            }
-        } elseif  ($row['deleted'] == 1 && $row['state'] != 'STOPPED') {
-            // stop accounting, send stop event (if applicable)
-            $stmt = $db->prepare('update accounting_state
-                                  set state = \'STOPPED\'
-                                  where zoneid = :zoneid
-                                  and   sessionid = :sessionid');
-            $stmt->bindParam(':zoneid', $row['zoneid']);
-            $stmt->bindParam(':sessionid', $row['sessionid']);
-            $stmt->execute();
-            if (method_exists($authenticator,'startAccounting')) {
+if ($result !== false) {
+    while($row = $result->fetchArray(SQLITE3_ASSOC) ){
+        $authFactory = new OPNsense\Auth\AuthenticationFactory();
+        $authenticator = $authFactory->get($row['authenticated_via']);
+        if ($authenticator != null) {
+            if ($row['state'] == null) {
+                // new accounting state, send start event (if applicable)
+                $stmt = $db->prepare('insert into accounting_state(zoneid, sessionid, state)
+                                      values (:zoneid, :sessionid, \'RUNNING\')');
+                $stmt->bindParam(':zoneid', $row['zoneid']);
+                $stmt->bindParam(':sessionid', $row['sessionid']);
+                $stmt->execute();
+                if (method_exists($authenticator,'startAccounting')) {
+                    // send start accounting event
+                    $authenticator->startAccounting($row['username'], $row['sessionid']);
+                }
+            } elseif  ($row['deleted'] == 1 && $row['state'] != 'STOPPED') {
+                // stop accounting, send stop event (if applicable)
+                $stmt = $db->prepare('update accounting_state
+                                      set state = \'STOPPED\'
+                                      where zoneid = :zoneid
+                                      and   sessionid = :sessionid');
+                $stmt->bindParam(':zoneid', $row['zoneid']);
+                $stmt->bindParam(':sessionid', $row['sessionid']);
+                $stmt->execute();
+                if (method_exists($authenticator,'startAccounting')) {
 
-                $time_spend = time() - $row['created'];
-                $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend);
-            }
-        } elseif ($row['state'] != 'STOPPED') {
-            // send interim updates (if applicable)
-            if (method_exists($authenticator,'updateAccounting')) {
-                // send interim update event
-                $time_spend = time() - $row['created'];
-                $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend);
+                    $time_spend = time() - $row['created'];
+                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend);
+                }
+            } elseif ($row['state'] != 'STOPPED') {
+                // send interim updates (if applicable)
+                if (method_exists($authenticator,'updateAccounting')) {
+                    // send interim update event
+                    $time_spend = time() - $row['created'];
+                    $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend);
+                }
             }
         }
     }
 }
+
 $db->close();
