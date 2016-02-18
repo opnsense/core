@@ -453,7 +453,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $dhcpdconf['winsserver'][] = $pconfig['wins1'];
             }
             if (!empty($pconfig['wins2'])) {
-                $dhcpdconf['winsserver'][] = $_POST['wins2'];
+                $dhcpdconf['winsserver'][] = $pconfig['wins2'];
             }
             $dhcpdconf['dnsserver'] = [];
             if (!empty($pconfig['dns1'])) {
