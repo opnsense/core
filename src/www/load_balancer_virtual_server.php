@@ -82,9 +82,8 @@ if ($_POST) {
 	$pconfig = $_POST;
 
 	if ($_POST['apply']) {
-		$retval = 0;
-		$retval |= relayd_configure();
-		$retval |= filter_configure();
+		relayd_configure();
+		filter_configure();
 		$savemsg = get_std_save_message();
 		/* Wipe out old relayd anchors no longer in use. */
 		cleanup_lb_marked();

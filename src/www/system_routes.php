@@ -94,14 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             @unlink('/tmp/.system_routes.apply');
         }
 
-        $retval = system_routing_configure();
-        $retval |= filter_configure();
-        /* reconfigure our gateway monitor */
+        system_routing_configure();
+        filter_configure();
         setup_gateways_monitor();
-
-        if ($retval == 0) {
-            clear_subsystem_dirty('staticroutes');
-        }
+        clear_subsystem_dirty('staticroutes');
     } elseif (isset($id) && $act == 'del') {
         delete_static_route($id);
         unset($a_routes[$id]);
