@@ -40,12 +40,9 @@ if (!is_array($config['load_balancer']['setting'])) {
 $lbsetting = &$config['load_balancer']['setting'];
 
 if ($_POST) {
-
         if ($_POST['apply']) {
-                $retval = 0;
-                $retval |= relayd_configure();
-                $retval |= filter_configure();
-
+                relayd_configure();
+                filter_configure();
                 $savemsg = get_std_save_message();
                 clear_subsystem_dirty('loadbalancer');
         } else {

@@ -172,13 +172,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config();
 
-            $retval = 0;
-            $retval = system_syslogd_start();
+            system_syslogd_start();
+
             if (($oldnologdefaultblock !== isset($config['syslog']['nologdefaultblock']))
               || ($oldnologdefaultpass !== isset($config['syslog']['nologdefaultpass']))
               || ($oldnologbogons !== isset($config['syslog']['nologbogons']))
-              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets'])))
-              $retval |= filter_configure();
+              || ($oldnologprivatenets !== isset($config['syslog']['nologprivatenets']))) {
+              filter_configure();
+            }
 
             $savemsg = get_std_save_message();
 
