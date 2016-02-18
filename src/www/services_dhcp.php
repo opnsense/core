@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['wins2'] = !empty($dhcpdconf['winsserver'][1]) ? $dhcpdconf['winsserver'][1] : "";
     $pconfig['dns1'] = !empty($dhcpdconf['dnsserver'][0]) ? $dhcpdconf['dnsserver'][0] : "";
     $pconfig['dns2'] = !empty($dhcpdconf['dnsserver'][1]) ? $dhcpdconf['dnsserver'][1] : "";
-    $pconfig['ntp1'] = !empty($dhcpdconf['ntpserver'][0]) ? $dhcpdconf['winsserver'][0] : "";
+    $pconfig['ntp1'] = !empty($dhcpdconf['ntpserver'][0]) ? $dhcpdconf['ntpserver'][0] : "";
     $pconfig['ntp2'] = !empty($dhcpdconf['ntpserver'][1]) ? $dhcpdconf['ntpserver'][1] : "";
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // handle identifiers and actions
