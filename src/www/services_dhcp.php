@@ -462,6 +462,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!empty($pconfig['dns2'])) {
                 $dhcpdconf['dnsserver'][] = $pconfig['dns2'];
             }
+            $dhcpdconf['ntpserver'] = [];
+            if (!empty($pconfig['ntp1'])) {
+                $dhcpdconf['ntpserver'][] = $pconfig['ntp1'];
+            }
+            if (!empty($pconfig['ntp2'])) {
+                $dhcpdconf['ntpserver'][] = $pconfig['ntp2'];
+            }
 
             // handle changes
             if (!isset($pool) && $act != "newpool") {
