@@ -119,6 +119,7 @@ function service_control_start($name, $extras) {
             break;
         case 'relayd':
             relayd_configure();
+            filter_configure();
             break;
         case 'squid':
             configd_run("proxy start");
@@ -269,6 +270,7 @@ function service_control_restart($name, $extras) {
             break;
         case 'relayd':
             relayd_configure(true);
+            filter_configure();
             break;
         case 'squid':
             configd_run("proxy restart");
