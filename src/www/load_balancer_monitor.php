@@ -44,8 +44,8 @@ if ($_POST) {
 
 	if ($_POST['apply']) {
 		$retval = 0;
-		$retval |= filter_configure();
 		$retval |= relayd_configure();
+		$retval |= filter_configure();
 
 		$savemsg = get_std_save_message();
 		clear_subsystem_dirty('loadbalancer');
