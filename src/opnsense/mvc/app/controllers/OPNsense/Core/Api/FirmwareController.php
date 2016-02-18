@@ -97,6 +97,18 @@ class FirmwareController extends ApiControllerBase
             $response = array('status' => 'unknown', 'status_msg' => gettext('Current status is unknown.'));
         }
 
+        /* XXX array isn't flat, need to refactor this */
+        if (isset($response['upgrade_packages'])) {
+            $sorted = array();
+            foreach ($response['upgrade_packages'] as $key => $value) {
+                $sorted[$value['name']] = $value;
+            }
+            uksort($sorted, function ($a, $b) {
+                return strnatcmp($a, $b);
+            });
+            $response['upgrade_packages'] = $sorted;
+        }
+
         return $response;
     }
 

@@ -57,7 +57,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 // show upgrade list
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
                 "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
-                $.each(['upgrade_packages','new_packages','reinstall_packages'], function(type_idx,type_name){
+                $.each(['new_packages', 'upgrade_packages', 'reinstall_packages'], function(type_idx,type_name){
                     if ( data[type_name] != undefined ) {
                         $.each(data[type_name],function(index,row){
                             if (type_name == "new_packages") {
