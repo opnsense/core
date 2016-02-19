@@ -29,9 +29,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-require_once("ipsec.inc");
-
-
 /* include all configuration functions */
 function vpn_ipsec_convert_to_modp($index)
 {

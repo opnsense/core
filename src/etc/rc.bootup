@@ -152,6 +152,8 @@ require_once("filter.inc");
 echo ".";
 require_once("plugins.inc");
 echo ".";
+require_once("ipsec.inc");
+echo ".";
 require_once("openvpn.inc");
 echo ".";
 require_once("rrd.inc");

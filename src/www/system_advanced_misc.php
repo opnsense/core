@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("plugins.inc");
+require_once("ipsec.inc");
 require_once("vslb.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
