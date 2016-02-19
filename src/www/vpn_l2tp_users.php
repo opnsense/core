@@ -28,7 +28,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("vpn.inc");
+require_once("plugins.inc");
 
 if (!isset($config['l2tp']['user'])) {
     $config['l2tp']['user'] = array();

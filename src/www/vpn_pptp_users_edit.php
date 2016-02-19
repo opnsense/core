@@ -44,7 +44,7 @@ function pptpd_users_sort()
 }
 
 require_once('guiconfig.inc');
-require_once('vpn.inc');
+require_once('plugins.inc');
 
 if (!is_array($config['pptpd']['user'])) {
     $config['pptpd']['user'] = array();
