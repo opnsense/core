@@ -34,17 +34,16 @@ function pptpusercmp($a, $b)
 
 function pptpd_users_sort()
 {
-        global $config;
+    global $config;
 
     if (!is_array($config['ppptpd']['user'])) {
             return;
     }
 
-        usort($config['pptpd']['user'], "pptpusercmp");
+    usort($config['pptpd']['user'], "pptpusercmp");
 }
 
 require_once('guiconfig.inc');
-require_once('plugins.inc');
 
 if (!is_array($config['pptpd']['user'])) {
     $config['pptpd']['user'] = array();
