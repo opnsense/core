@@ -2568,6 +2568,7 @@ function services_get()
     $pconfig = array();
     $pconfig['name'] = "ntpd";
     $pconfig['description'] = gettext("NTP clock sync");
+    $pconfig['pidfile'] = '/var/run/ntpd.pid';
     $services[] = $pconfig;
 
     $iflist = array();
@@ -2590,6 +2591,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay6";
         $pconfig['description'] = gettext("DHCPv6 Relay");
+        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
         $services[] = $pconfig;
     }
 
@@ -2632,6 +2634,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "ipsec";
         $pconfig['description'] = gettext("IPsec VPN");
+        $pconfig['pidfile'] = '/var/run/charon.pid';
         $services[] = $pconfig;
     }
 
@@ -2652,6 +2655,7 @@ function services_get()
                     $pconfig['id'] = $id;
                     $pconfig['vpnid'] = $setting['vpnid'];
                     $pconfig['description'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
+                    $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$settings['vpnid']}.pid";
                     $services[] = $pconfig;
                 }
             }
@@ -2685,11 +2689,19 @@ function services_get()
             }
         }
         if ($enabled) {
-            $services[] = array('name'=>'captiveportal', 'description' => gettext("Captive Portal"));
+            $services[] = array(
+                'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
+                'description' => gettext('Captive Portal'),
+                'name' => 'captiveportal',
+            );
         }
     }
 
-    $services[] = array('name'=>'configd', 'description' => gettext("System Configuration Daemon"));
+    $services[] = array(
+        'description' => gettext('System Configuration Daemon'),
+        'pidfile' => '/var/run/configd.pid',
+        'name' => 'configd',
+    );
 
     return $services;
 }
@@ -2716,31 +2728,11 @@ function service_name_compare($a, $b) {
 
 function get_service_status($service)
 {
-    switch ($service['name']) {
-        case 'openvpn':
-            $running = isvalidpid("/var/run/openvpn_{$service['mode']}{$service['vpnid']}.pid");
-            break;
-        case 'dhcrelay6':
-            $running = isvalidpid('/var/run/dhcrelay6.pid');
-            break;
-        case 'ipsec':
-            $running = isvalidpid('/var/run/charon.pid');
-            break;
-        case 'ntpd':
-            $running = isvalidpid('/var/run/ntpd.pid');
-            break;
-        case 'configd':
-            $running = isvalidpid('/var/run/configd.pid');
-            break;
-        case 'captiveportal':
-            $running = isvalidpid('/var/run/lighttpd-api-dispatcher.pid');
-            break;
-        default:
-            $running = is_process_running($service['name']);
-            break;
+    if (isset($service['pidfile'])) {
+        return isvalidpid($service['pidfile']);
     }
 
-    return $running;
+    return is_process_running($service['name']);
 }
 
 
