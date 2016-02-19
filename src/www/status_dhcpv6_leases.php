@@ -364,7 +364,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             @unlink($leasesfile);
             @rename($leasesfile.".new", $leasesfile);
             /* Restart DHCP Service */
-            //services_dhcpd_configure();
+            services_dhcpd_configure();
         }
     }
     exit;
