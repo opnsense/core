@@ -2538,8 +2538,7 @@ function is_apinger_enabled()
     return is_array(return_gateways_array());
 }
 
-
-function get_services()
+function services_get()
 {
     global $config;
 
@@ -2695,9 +2694,9 @@ function get_services()
     return $services;
 }
 
-
-function find_service_by_openvpn_vpnid($vpnid) {
-    $services = get_services();
+function find_service_by_openvpn_vpnid($vpnid)
+{
+    $services = services_get();
     foreach ($services as $service) {
         if (($service["name"] == "openvpn") && isset($service["vpnid"]) && ($service["vpnid"] == $vpnid)) {
             return $service;

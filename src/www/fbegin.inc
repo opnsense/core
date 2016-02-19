@@ -35,7 +35,7 @@ function find_service_by_name($names)
         $names = array($names);
     }
 
-    $services = get_services();
+    $services = services_get();
 
     foreach ($services as $service) {
         foreach ($names as $name) {

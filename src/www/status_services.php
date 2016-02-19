@@ -291,7 +291,7 @@ function service_control_restart($name, $extras) {
     return sprintf(gettext("%s has been restarted."),htmlspecialchars($name));
 }
 
-$services = get_services();
+$services = services_get();
 
 if (count($services) > 0) {
     uasort($services, "service_name_compare");
