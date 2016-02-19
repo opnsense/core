@@ -1171,7 +1171,12 @@ function services_dhcpdv6_configure($blacklist = array())
     foreach ($dhcpdv6cfg as $dhcpv6if => $dhcpv6ifconf) {
         if (isset($dhcpv6ifconf['numberoptions']['item'])) {
             foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
-                $custoptionsv6 .= "option custom-{$dhcpv6if}-{$itemv6idx} code {$itemv6['number']} = text;\n";
+                if (!empty($itemv6['type'])) {
+                    $itemtype = $itemv6['type'];
+                } else {
+                    $itemtype = "text";
+                }
+                $custoptionsv6 .= "option custom-{$dhcpv6if}-{$itemv6idx} code {$itemv6['number']} = {$itemtype};\n";
             }
         }
     }
@@ -1220,9 +1225,7 @@ EOD;
         $ifcfgsnv6 = get_interface_subnetv6($dhcpv6if);
         $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
 
-
         $dnscfgv6 = "";
-
         if (!empty($dhcpv6ifconf['domain'])) {
             $dnscfgv6 .= "  option domain-name \"{$dhcpv6ifconf['domain']}\";\n";
         }
@@ -1304,11 +1307,6 @@ EOD;
                 $dhcpdv6conf .= "       option dhcp6.sntp-servers " . join(",", $dhcpv6ifconf['ntpserver']) . ";\n";
             }
         }
-        // tftp-server-name
-        /* Needs ISC DHCPD support
-         if ($dhcpv6ifconf['tftp'] <> "")
-          $dhcpdv6conf .= "  option tftp-server-name \"{$dhcpv6ifconf['tftp']}\";\n";
-        */
 
         // Handle option, number rowhelper values
         $dhcpdv6conf .= "\n";
@@ -1342,20 +1340,20 @@ host s_{$dhcpv6if}_{$i} {
   host-identifier option dhcp6.client-id {$sm['duid']};
 
 EOD;
-                if ($sm['ipaddrv6']) {
+                if (!empty($sm['ipaddrv6'])) {
                     $dhcpdv6conf .= "  fixed-address6 {$sm['ipaddrv6']};\n";
                 }
 
-                if ($sm['hostname']) {
+                if (!empty($sm['hostname'])) {
                     $dhhostname = str_replace(" ", "_", $sm['hostname']);
                     $dhhostname = str_replace(".", "_", $dhhostname);
                     $dhcpdv6conf .= "  option host-name {$dhhostname};\n";
                 }
-                if ($sm['filename']) {
+                if (!empty($sm['filename'])) {
                     $dhcpdv6conf .= "  filename \"{$sm['filename']}\";\n";
                 }
 
-                if ($sm['rootpath']) {
+                if (!empty($sm['rootpath'])) {
                     $dhcpdv6conf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
