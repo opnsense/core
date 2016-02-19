@@ -29,18 +29,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function vpn_setup()
-{
-    /* start pptpd */
-    vpn_pptpd_configure();
-
-    /* start pppoe server */
-    vpn_pppoes_configure();
-
-    /* setup l2tp */
-    vpn_l2tp_configure();
-}
-
 function vpn_netgraph_support() {
     $iflist = get_configured_interface_list();
     foreach ($iflist as $iface) {
@@ -275,16 +263,19 @@ EOD;
   return 0;
 }
 
-function vpn_pppoes_configure() {
-  global $config;
+function vpn_pppoes_configure()
+{
+    global $config;
 
-  if (isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe'])) {
-    foreach ($config['pppoes']['pppoe'] as $pppoe)
-      vpn_pppoe_configure($pppoe);
-  }
+    if (isset($config['pppoes']['pppoe'])) {
+        foreach ($config['pppoes']['pppoe'] as $pppoe) {
+            vpn_pppoe_configure($pppoe);
+	}
+    }
 }
 
-function vpn_pppoe_configure(&$pppoecfg) {
+function vpn_pppoe_configure(&$pppoecfg)
+{
   global $config;
 
   $syscfg = $config['system'];

@@ -187,11 +187,8 @@ if ($_POST) {
         }
 
         write_config();
-
-        $retval = 0;
-        $retval = vpn_pptpd_configure();
         $savemsg = get_std_save_message();
-
+        vpn_pptpd_configure();
         filter_configure();
     }
 }

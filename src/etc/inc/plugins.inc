@@ -29,3 +29,11 @@
 foreach (glob('/usr/local/etc/inc/plugins.inc.d/*.inc') as $plugin) {
     require_once $plugin;
 }
+
+/* XXX must be reworked to work dynamically, not by name */
+function plugins_hook_xxx($name)
+{
+    if (function_exists($name)) {
+        return $name();
+    }
+}
