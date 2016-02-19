@@ -44,6 +44,8 @@ function pptpd_users_sort()
 }
 
 require_once('guiconfig.inc');
+require_once('services.inc');
+require_once('plugins.inc.d/vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
     $config['pptpd']['user'] = array();
@@ -123,15 +125,17 @@ if ($_POST) {
         } else {
             $a_secret[] = $secretent;
         }
-        pptpd_users_sort();
 
+        pptpd_users_sort();
         write_config();
-        mark_subsystem_dirty('pptpusers');
+        vpn_pptpd_configure();
 
         header("Location: vpn_pptp_users.php");
         exit;
     }
 }
+
+$service_hook = 'pptpd';
 
 include("head.inc");
 
