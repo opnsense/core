@@ -30,7 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vpn.inc");
+require_once("plugins.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");

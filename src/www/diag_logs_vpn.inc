@@ -28,7 +28,7 @@
 */
 
 require_once("guiconfig.inc");
-require_once("vpn.inc");
+require_once("plugins.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 

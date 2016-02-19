@@ -150,7 +150,7 @@ require_once("vslb.inc");
 echo ".";
 require_once("filter.inc");
 echo ".";
-require_once("vpn.inc");
+require_once("plugins.inc");
 echo ".";
 require_once("openvpn.inc");
 echo ".";
