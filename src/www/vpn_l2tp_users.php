@@ -28,6 +28,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 require_once("plugins.inc.d/vpn.inc");
 
 if (!isset($config['l2tp']['user'])) {
@@ -61,6 +62,8 @@ if ($_GET['act'] == "del") {
         exit;
     }
 }
+
+$service_hook = 'l2tpd';
 
 include("head.inc");
 
