@@ -400,7 +400,7 @@ function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
 }
 
 /* include all configuration functions */
-function vpn_ipsec_convert_to_modp($index)
+function ipsec_convert_to_modp($index)
 {
     $convertion = "";
     switch ($index) {
@@ -433,7 +433,7 @@ function vpn_ipsec_convert_to_modp($index)
     return $convertion;
 }
 
-function vpn_ipsec_configure()
+function ipsec_configure()
 {
     global $config, $p2_ealgos, $ipsec_loglevels;
 
@@ -913,7 +913,7 @@ EOD;
                     } else {
                         $ealgosp1 = "ike = {$ealg_id}-{$ph1ent['hash-algorithm']}";
                     }
-                    $modp = vpn_ipsec_convert_to_modp($ph1ent['dhgroup']);
+                    $modp = ipsec_convert_to_modp($ph1ent['dhgroup']);
                     if (!empty($modp)) {
                         $ealgosp1 .= "-{$modp}";
                     }
@@ -1086,7 +1086,7 @@ EOD;
                                                     foreach ($ph2ent['hash-algorithm-option'] as $halgo) {
                                                         $halgo = str_replace('hmac_', '', $halgo);
                                                         $tmpealgo = "{$ealg_id}{$keylen}-{$halgo}";
-                                                        $modp = vpn_ipsec_convert_to_modp($ph2ent['pfsgroup']);
+                                                        $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
                                                         if (!empty($modp)) {
                                                             $tmpealgo .= "-{$modp}";
                                                         }
@@ -1094,7 +1094,7 @@ EOD;
                                                     }
                                                 } else {
                                                     $tmpealgo = "{$ealg_id}{$keylen}";
-                                                    $modp = vpn_ipsec_convert_to_modp($ph2ent['pfsgroup']);
+                                                    $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
                                                     if (!empty($modp)) {
                                                         $tmpealgo .= "-{$modp}";
                                                     }
@@ -1107,7 +1107,7 @@ EOD;
                                             foreach ($ph2ent['hash-algorithm-option'] as $halgo) {
                                                 $halgo = str_replace('hmac_', '', $halgo);
                                                 $tmpealgo = "{$ealg_id}{$ealg_kl}-{$halgo}";
-                                                $modp = vpn_ipsec_convert_to_modp($ph2ent['pfsgroup']);
+                                                $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
                                                 if (!empty($modp)) {
                                                     $tmpealgo .= "-{$modp}";
                                                 }
@@ -1115,7 +1115,7 @@ EOD;
                                             }
                                         } else {
                                             $tmpealgo = "{$ealg_id}{$ealg_kl}";
-                                            $modp = vpn_ipsec_convert_to_modp($ph2ent['pfsgroup']);
+                                            $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
                                             if (!empty($modp)) {
                                                 $tmpealgo .= "-{$modp}";
                                             }
@@ -1128,7 +1128,7 @@ EOD;
                         } else if (isset($ph2ent['protocol']) && $ph2ent['protocol'] == 'ah') {
                             $ealgoAHsp2arr_details = array();
                             if (!empty($ph2ent['hash-algorithm-option']) && is_array($ph2ent['hash-algorithm-option'])) {
-                                $modp = vpn_ipsec_convert_to_modp($ph2ent['pfsgroup']);
+                                $modp = ipsec_convert_to_modp($ph2ent['pfsgroup']);
                                 foreach ($ph2ent['hash-algorithm-option'] as $tmpAHalgo) {
                                     $tmpAHalgo = str_replace('hmac_', '', $tmpAHalgo);
                                     if (!empty($modp)) {
@@ -1295,10 +1295,10 @@ EOD;
 /*
  * Forcefully restart IPsec
  * This is required for when dynamic interfaces reload
- * For all other occasions the normal vpn_ipsec_configure()
+ * For all other occasions the normal ipsec_configure()
  * will gracefully reload the settings without restarting
  */
-function vpn_ipsec_force_reload($interface = '')
+function ipsec_force_reload($interface = '')
 {
     global $config;
 
@@ -1321,6 +1321,6 @@ function vpn_ipsec_force_reload($interface = '')
     /* if ipsec is enabled, start up again */
     if (isset($ipseccfg['enable'])) {
         log_error(gettext("Forcefully reloading IPsec"));
-        vpn_ipsec_configure();
+        ipsec_configure();
     }
 }

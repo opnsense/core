@@ -100,9 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     write_config();
     $savemsg = get_std_save_message();
-
     filter_configure();
-    vpn_ipsec_configure();
+    ipsec_configure();
 }
 
 $service_hook = 'ipsec';
