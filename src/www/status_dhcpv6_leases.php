@@ -471,8 +471,11 @@ endif;?>
                   <td><?=$data['ip'];?></td>
                   <td><?=$data['iaid'];?></td>
                   <td><?=$data['duid'];?></td>
-                  <td><?=!empty($data['hostname']) ? htmlentities($data['hostname']) : "";?></td>
-                  <td><?=htmlentities($data['descr']);?> <?=!empty($ndpdata[$data['ip']]['mac']) ? $ndpdata[$data['ip']]['mac'] : "";?></td>
+                  <td>
+                    <?=!empty($data['hostname']) ? htmlentities($data['hostname']) : "";?>
+                    <?=!empty($ndpdata[$data['ip']]) ? $ndpdata[$data['ip']]['mac'] : "";?>
+                  </td>
+                  <td><?=htmlentities($data['descr']);?></td>
                   <td><?=$data['type'] != "static" ? adjust_gmt($data['start']) : "";?></td>
                   <td><?=$data['type'] != "static" ? adjust_gmt($data['end']) : "";?></td>
                   <td><?=$data['online'];?></td>
@@ -480,8 +483,8 @@ endif;?>
                   <td>
 <?php
                       if ($data['type'] == "dynamic"):?>
-                        <a class="btn btn-default btn-xs" href="services_dhcpv6_edit.php?if=<?=$data['if'];?>&amp;mac=<?=$data['mac'];?>&amp;hostname=<?=$data['hostname'];?>">
-                          <span class="glyphicon glyphicon-plus" data-toggle="tooltip" title="<?=gettext("add a static mapping for this MAC address");?>" alt="add" ></span>
+                        <a class="btn btn-default btn-xs" href="services_dhcpv6_edit.php?if=<?=$data['if'];?>&amp;duid=<?=$data['duid'];?>&amp;hostname=<?=$data['hostname'];?>">
+                          <span class="glyphicon glyphicon-plus" alt="add" ></span>
                         </a>
 <?php
                       endif;?>
