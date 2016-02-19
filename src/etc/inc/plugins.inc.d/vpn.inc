@@ -29,6 +29,15 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+function vpn_configure()
+{
+    return array(
+        'vpn_pptpd_configure',
+        'vpn_pppoes_configure',
+        'vpn_l2tp_configure'
+    );
+}
+
 function vpn_netgraph_support() {
     $iflist = get_configured_interface_list();
     foreach ($iflist as $iface) {
