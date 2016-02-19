@@ -315,8 +315,14 @@ configd_run("dyndns reload");
 /* Run a filter configure now that most all services have started */
 filter_configure_sync();
 
-/* setup pppoe and pptp */
-vpn_setup();
+/* start pptpd */
+plugins_hook_xxx('vpn_pptpd_configure');
+
+/* start pppoe server */
+plugins_hook_xxx('vpn_pppoes_configure');
+
+/* setup l2tp */
+plugins_hook_xxx('vpn_l2tp_configure');
 
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = ipsec_configure();
