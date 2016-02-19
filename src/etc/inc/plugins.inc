@@ -49,6 +49,24 @@ function plugin_scan()
     return $ret;
 }
 
+function plugins_services()
+{
+    $services = array();
+
+    foreach (plugin_scan() as $name => $path) {
+	require_once $path;
+        $func = sprintf('%s_services', $name);
+        if (function_exists($func)) {
+            $workers = $func();
+            foreach ($workers as $work) {
+                $services[] = $work;
+            }
+        }
+    }
+
+    return $services;
+}
+
 function plugins_configure()
 {
     foreach (plugin_scan() as $name => $path) {

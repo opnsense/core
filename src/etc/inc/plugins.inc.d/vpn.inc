@@ -38,6 +38,23 @@ function vpn_configure()
     );
 }
 
+function vpn_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
+        $pconfig = array();
+        $pconfig['name'] = 'pptpd';
+        $pconfig['description'] = gettext('PPTP Server');
+        $pconfig['pidfile'] = '/var/run/pptp-vpn.pid';
+        $services[] = $pconfig;
+    }
+
+    return $services;
+}
+
 function vpn_netgraph_support() {
     $iflist = get_configured_interface_list();
     foreach ($iflist as $iface) {

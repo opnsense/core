@@ -28,6 +28,7 @@
 */
 
 require_once('guiconfig.inc');
+require_once('services.inc');
 require_once('plugins.inc.d/vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
@@ -54,6 +55,8 @@ if ($_GET['act'] == "del") {
         exit;
     }
 }
+
+$service_hook = 'pptpd';
 
 include("head.inc");
 
