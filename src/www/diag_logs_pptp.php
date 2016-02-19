@@ -19,4 +19,7 @@ $tab_array = array();
 $tab_array[] = array(gettext("PPTP Logins"), $mode != "raw", "/diag_logs_pptp.php");
 $tab_array[] = array(gettext("PPTP Raw"), $mode == "raw", "/diag_logs_pptp.php?mode=raw");
 
+require_once 'services.inc';
+$service_hook = 'pptpd';
+
 require_once 'diag_logs_vpn.inc';
