@@ -370,12 +370,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-
-
 $service_hook = 'dhcpd';
-
 include("head.inc");
-
 ?>
 
 <body>
