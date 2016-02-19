@@ -2517,9 +2517,12 @@ function install_cron_job($command, $active=false, $minute="0", $hour="*", $mont
 /**
  * check if apinger service is enabled
  */
-function is_apinger_enabled() {
+function is_apinger_enabled()
+{
     global $config;
+
     $gwcount=0;
+
     if (isset($config['gateways']['gateway_item'])) {
         foreach($config['gateways']['gateway_item'] as $gwkey => $gateway) {
             if (!isset($gateway['monitor_disable']) || $gateway['monitor_disable'] == "0") {
@@ -2530,19 +2533,18 @@ function is_apinger_enabled() {
 
     if ($gwcount == 0) {
         return false;
-    } else {
-        return true;
     }
+
+    return is_array(return_gateways_array());
 }
 
 
-function get_services() {
+function get_services()
+{
     global $config;
+
     $services = array();
 
-    /*    Add services that are in the base.
-     *
-     */
     if (is_radvd_enabled()) {
         $pconfig = array();
         $pconfig['name'] = "radvd";
@@ -2599,8 +2601,7 @@ function get_services() {
         $services[] = $pconfig;
     }
 
-    $gateways_arr = return_gateways_array();
-    if (is_apinger_enabled() && is_array($gateways_arr)) {
+    if (is_apinger_enabled()) {
         $pconfig = array();
         $pconfig['name'] = "apinger";
         $pconfig['description'] = gettext("Gateway Monitoring Daemon");
