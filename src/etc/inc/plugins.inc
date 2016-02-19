@@ -26,14 +26,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-foreach (glob('/usr/local/etc/inc/plugins.inc.d/*.inc') as $plugin) {
-    require_once $plugin;
+function plugin_scan()
+{
+    $path = '/usr/local/etc/inc/plugins.inc.d/';
+    $ext = '.inc';
+
+    $ret = array();
+
+    $plugins = glob($path . '*' . $ext);
+    if (!is_array($plugins)) {
+        return $ret;
+    }
+
+    sort($plugins);
+
+    foreach ($plugins as $plugin) {
+        $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
+        $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
+        $ret[$name] = $plugin;
+    }
+
+    return $ret;
 }
 
-/* XXX must be reworked to work dynamically, not by name */
-function plugins_hook_xxx($name)
+function plugins_configure()
 {
-    if (function_exists($name)) {
-        return $name();
+    foreach (plugin_scan() as $name => $path) {
+	require_once $path;
+        $func = sprintf('%s_configure', $name);
+        if (function_exists($func)) {
+            $workers = $func();
+            foreach ($workers as $worker) {
+                $worker();
+            }
+        }
     }
 }
