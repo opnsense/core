@@ -39,6 +39,12 @@ require_once("interfaces.inc");
 
 $services = services_get();
 
+require_once 'plugins.inc';
+
+foreach (plugins_services() as $service) {
+    $services[] = $service;
+}
+
 if (isset($_POST['servicestatusfilter'])) {
     $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved Service Status Filter via Dashboard");
