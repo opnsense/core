@@ -99,8 +99,7 @@ function parse_duid($duid_string) {
 }
 
 
-//$leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
-$leasesfile = "/tmp/dhcpd6.leases";
+$leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";
