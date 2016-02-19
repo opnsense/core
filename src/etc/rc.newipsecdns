@@ -50,9 +50,10 @@ if (isset($config['ipsec']['enable'])) {
 
 $ipseclck = lock('ipsecdns', LOCK_EX);
 
-vpn_ipsec_configure();
+ipsec_configure();
 
-if (isset($config['ipsec']['failoverforcereload']))
-	vpn_ipsec_force_reload();
+if (isset($config['ipsec']['failoverforcereload'])) {
+	ipsec_force_reload();
+}
 
 unlock($ipseclck);

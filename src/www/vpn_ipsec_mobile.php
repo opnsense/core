@@ -90,14 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif (isset($_POST['apply'])) {
         // apply changes
-        $retval = 0;
-        $retval = vpn_ipsec_configure();
+        ipsec_configure();
         $savemsg = get_std_save_message();
-        if ($retval >= 0) {
-            if (is_subsystem_dirty('ipsec')) {
-                clear_subsystem_dirty('ipsec');
-            }
-        }
+        clear_subsystem_dirty('ipsec');
         header("Location: vpn_ipsec_mobile.php?savemsg=".$savemsg);
         exit;
     } elseif (isset($_POST['submit'])) {

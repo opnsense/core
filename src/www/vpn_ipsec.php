@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $a_phase1 = &$config['ipsec']['phase1'];
     $a_phase2 = &$config['ipsec']['phase2'];
     if (isset($_POST['apply'])) {
-        $retval = vpn_ipsec_configure();
+        $retval = ipsec_configure();
         /* reload the filter in the background */
         filter_configure();
         $savemsg = get_std_save_message();
@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($_POST['save'])) {
         $config['ipsec']['enable'] = !empty($_POST['enable']) ? true : false;
         write_config();
-        vpn_ipsec_configure();
+        ipsec_configure();
         header("Location: vpn_ipsec.php");
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase1" ) {

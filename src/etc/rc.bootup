@@ -319,7 +319,7 @@ filter_configure_sync();
 vpn_setup();
 
 /* start IPsec tunnels */
-$ipsec_dynamic_hosts = vpn_ipsec_configure();
+$ipsec_dynamic_hosts = ipsec_configure();
 
 /* start SNMP service */
 services_snmpd_configure();
@@ -360,7 +360,7 @@ system_syslogd_start();
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {
-	vpn_ipsec_configure();
+	ipsec_configure();
 	filter_configure();
 }
 
