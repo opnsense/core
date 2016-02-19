@@ -44,11 +44,19 @@ function vpn_services()
 
     $services = array();
 
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] != 'off') {
         $pconfig = array();
         $pconfig['name'] = 'pptpd';
         $pconfig['description'] = gettext('PPTP Server');
         $pconfig['pidfile'] = '/var/run/pptp-vpn.pid';
+        $services[] = $pconfig;
+    }
+
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] != 'off') {
+        $pconfig = array();
+        $pconfig['name'] = 'l2tpd';
+        $pconfig['description'] = gettext('L2TP Server');
+        $pconfig['pidfile'] = '/var/run/l2tp-vpn.pid';
         $services[] = $pconfig;
     }
 
