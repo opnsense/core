@@ -1,32 +1,33 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2007 Scott Dale
-	Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
-	and Jonathan Watt <jwatt@jwatt.org>.
-	All rights reserved.
+  Copyright (C) 2014 Deciso B.V.
+  Copyright (C) 2007 Scott Dale
+  Copyright (C) 2009 Jim Pingle (jpingle@gmail.com)
+  Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
+  and Jonathan Watt <jwatt@jwatt.org>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 $nocsrf = true;
@@ -38,15 +39,64 @@ require_once("filter_log.inc");
 
 function find_action_image($action)
 {
-	if ((strstr(strtolower($action), 'p')) || (strtolower($action) == 'rdr')) {
-		return 'glyphicon glyphicon-play text-success';
-	}
+  if ((strstr(strtolower($action), 'p')) || (strtolower($action) == 'rdr')) {
+    return 'glyphicon glyphicon-play text-success';
+  }
 
-	if (strstr(strtolower($action), 'r')) {
-		return 'glyphicon glyphicon-remove text-warning';
-	}
+  if (strstr(strtolower($action), 'r')) {
+    return 'glyphicon glyphicon-remove text-warning';
+  }
 
-	return 'glyphicon glyphicon-remove text-danger';
+  return 'glyphicon glyphicon-remove text-danger';
+}
+
+/**
+ * original from diag_dns.php
+ * temporary solution.
+ */
+function display_host_results ($address,$hostname,$dns_speeds) {
+    $map_lengths = function($element) { return strlen($element[0]); };
+    echo gettext("IP Address") . ": {$address} \n";
+    echo gettext("Host Name") . ": {$hostname} \n";
+    echo "\n";
+    $text_table = array();
+    $text_table[] = array(gettext("Server"), gettext("Query Time"));
+    if (is_array($dns_speeds)) {
+        foreach ($dns_speeds as $qt) {
+            $text_table[] = array(trim($qt['dns_server']), trim($qt['query_time']));
+        }
+    }
+    $col0_padlength = max(array_map($map_lengths, $text_table)) + 4;
+    foreach ($text_table as $text_row) {
+        echo str_pad($text_row[0], $col0_padlength) . $text_row[1] . "\n";
+    }
+}
+
+if (!empty($_GET['host']) && !empty($_GET['dialog_output'])) {
+    $host = trim($_GET['host'], " \t\n\r\0\x0B[];\"'");
+    $host_esc = escapeshellarg($host);
+    $dns_servers = array();
+    exec("/usr/bin/grep nameserver /etc/resolv.conf | /usr/bin/cut -f2 -d' '", $dns_servers);
+    foreach ($dns_servers as $dns_server) {
+        $query_time = exec("/usr/bin/drill {$host_esc} " . escapeshellarg("@" . trim($dns_server)) . " | /usr/bin/grep Query | /usr/bin/cut -d':' -f2");
+        if ($query_time == "") {
+            $query_time = gettext("No response");
+        }
+        $dns_speeds[] = array('dns_server' => $dns_server, 'query_time' => $query_time);
+    }
+    $ipaddr = "";
+    if (count($input_errors) == 0) {
+        if (is_ipaddr($host)) {
+            $resolved[] = " " . gethostbyaddr($host); // add a space to provide an empty type field
+            $ipaddr = $host;
+        } elseif (is_hostname($host)) {
+            exec("/usr/bin/drill {$host_esc} A | /usr/bin/grep 'IN' | /usr/bin/grep -v ';' | /usr/bin/awk '{ print $4 \" \" $5 }'", $resolved);
+            $ipaddr = explode(" ", $resolved[count($resolved)-1])[1];
+        }
+    }
+
+    display_host_results ($host, $resolved[0], $dns_speeds);
+    exit;
 }
 
 
@@ -85,7 +135,6 @@ if (is_numeric($_POST['filterlogentries'])) {
 $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['filterlogentries'] : 5;
 
 //set variables for log
-
 $nentriesacts       = isset($config['widgets']['filterlogentriesacts'])       ? $config['widgets']['filterlogentriesacts']       : 'All';
 $nentriesinterfaces = isset($config['widgets']['filterlogentriesinterfaces']) ? $config['widgets']['filterlogentriesinterfaces'] : 'All';
 
@@ -122,22 +171,22 @@ if (isset($config['syslog']['reverse'])) {
 
 /* Called by the AJAX updater */
 function format_log_line(row) {
-	var line = '<td class="listMRlr" align="center">' + row[0] + '<\/td>' +
-		'<td class="listMRr ellipsis" title="' + row[1] + '">' + row[1].slice(0,-3) + '<\/td>' +
-		'<td class="listMRr ellipsis" title="' + row[2] + '">' + row[2] + '<\/td>' +
-		'<td class="listMRr ellipsis" title="' + row[3] + '">' + row[3] + '<\/td>' +
-		'<td class="listMRr ellipsis" title="' + row[4] + '">' + row[4] + '<\/td>';
+  var line = '<td class="listMRlr" align="center">' + row[0] + '<\/td>' +
+    '<td class="listMRr ellipsis" title="' + row[1] + '">' + row[1].slice(0,-3) + '<\/td>' +
+    '<td class="listMRr ellipsis" title="' + row[2] + '">' + row[2] + '<\/td>' +
+    '<td class="listMRr ellipsis" title="' + row[3] + '">' + row[3] + '<\/td>' +
+    '<td class="listMRr ellipsis" title="' + row[4] + '">' + row[4] + '<\/td>';
 
-	var nentriesacts = "<?php echo $nentriesacts; ?>";
-	var nentriesinterfaces = "<?php echo $nentriesinterfaces; ?>";
+  var nentriesacts = "<?php echo $nentriesacts; ?>";
+  var nentriesinterfaces = "<?php echo $nentriesinterfaces; ?>";
 
-	var Action = row[0].match(/alt=.*?(pass|block|reject)/i).join("").match(/pass|block|reject/i).join("");
-	var Interface = row[2];
+  var Action = row[0].match(/alt=.*?(pass|block|reject)/i).join("").match(/pass|block|reject/i).join("");
+  var Interface = row[2];
 
-	if ( !(in_arrayi(Action,	nentriesacts.replace      (/\s+/g, ',').split(',') ) ) && (nentriesacts != 'All') )			return false;
-	if ( !(in_arrayi(Interface,	nentriesinterfaces.replace(/\s+/g, ',').split(',') ) ) && (nentriesinterfaces != 'All') )	return false;
+  if ( !(in_arrayi(Action,  nentriesacts.replace      (/\s+/g, ',').split(',') ) ) && (nentriesacts != 'All') )      return false;
+  if ( !(in_arrayi(Interface,  nentriesinterfaces.replace(/\s+/g, ',').split(',') ) ) && (nentriesinterfaces != 'All') )  return false;
 
-	return line;
+  return line;
 }
 //]]>
 </script>
@@ -145,55 +194,55 @@ function format_log_line(row) {
 
 <input type="hidden" id="log-config" name="log-config" value="" />
 <div id="log-settings" class="widgetconfigdiv" style="display:none;">
-	<form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
-		    <table class="table table-striped">
-			<tbody>
-				<tr>
-					<td>
+  <form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
+        <table class="table table-striped">
+      <tbody>
+        <tr>
+          <td>
             <?= gettext('Number of lines to display:') ?>
-					</td>
-				</tr>
-				<tr>
-					<td>
-				<select name="filterlogentries" class="formfld unknown" id="filterlogentries">
-				<?php for ($i = 1; $i <= 20; $i++) {
+          </td>
+        </tr>
+        <tr>
+          <td>
+        <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
+        <?php for ($i = 1; $i <= 20; $i++) {
 ?>
-					<option value="<?php echo $i;?>" <?php if ($nentries == $i) {
+          <option value="<?php echo $i;?>" <?php if ($nentries == $i) {
                         echo "selected=\"selected\"";
 }?>><?php echo $i;?></option>
-				<?php
+        <?php
 } ?>
-				</select>
-					</td>
-				</tr>
+        </select>
+          </td>
+        </tr>
 <?php
         $Include_Act = explode(" ", $nentriesacts);
 if ($nentriesinterfaces == "All") {
     $nentriesinterfaces = "";
 }
 ?>
-		<tr>
-			<td>
-		<input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass', $Include_Act)) {
+    <tr>
+      <td>
+    <input id="actpass"   name="actpass"   type="checkbox" value="Pass"   <?php if (in_arrayi('Pass', $Include_Act)) {
             echo "checked=\"checked\"";
 } ?> /> Pass
-		<input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block', $Include_Act)) {
+    <input id="actblock"  name="actblock"  type="checkbox" value="Block"  <?php if (in_arrayi('Block', $Include_Act)) {
             echo "checked=\"checked\"";
 } ?> /> Block
-		<input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) {
+    <input id="actreject" name="actreject" type="checkbox" value="Reject" <?php if (in_arrayi('Reject', $Include_Act)) {
             echo "checked=\"checked\"";
 } ?> /> Reject
-			</td>
-		</tr>
-		<tr>
-			<td>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <?= gettext('Interfaces:'); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-		<select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
-			<option value="All"><?= gettext('ALL') ?></option>
+      </td>
+    </tr>
+    <tr>
+      <td>
+    <select id="filterlogentriesinterfaces" name="filterlogentriesinterfaces" class="formselect">
+      <option value="All"><?= gettext('ALL') ?></option>
 <?php
         $interfaces = get_configured_interface_with_descr();
 foreach ($interfaces as $iface => $ifacename) :
@@ -208,76 +257,76 @@ endforeach;
         unset($interfaces);
         unset($Include_Act);
 ?>
-		</select>
-	</td>
-	</tr>
-	<tr>
-		<td>
-		<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
-		</td>
-	</tr>
-	</tbody>
-	</table>
-	</form>
+    </select>
+  </td>
+  </tr>
+  <tr>
+    <td>
+    <input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Save') ?>" />
+    </td>
+  </tr>
+  </tbody>
+  </table>
+  </form>
 </div>
 
 <table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" style="table-layout: fixed;" summary="logs">
-	<colgroup>
-		<col style='width:  7%;' />
-		<col style='width: 23%;' />
-		<col style='width: 11%;' />
-		<col style='width: 28%;' />
-		<col style='width: 31%;' />
-	</colgroup>
-	<thead>
-		<tr>
-			<td class="listhdrr"><?=gettext("Act");?></td>
-			<td class="listhdrr"><?=gettext("Time");?></td>
-			<td class="listhdrr"><?=gettext("IF");?></td>
-			<td class="listhdrr"><?=gettext("Source");?></td>
-			<td class="listhdrr"><?=gettext("Destination");?></td>
-		</tr>
-	</thead>
-	<tbody id='filter-log-entries'>
-	<?php
+  <colgroup>
+    <col style='width:  7%;' />
+    <col style='width: 23%;' />
+    <col style='width: 11%;' />
+    <col style='width: 28%;' />
+    <col style='width: 31%;' />
+  </colgroup>
+  <thead>
+    <tr>
+      <td class="listhdrr"><?=gettext("Act");?></td>
+      <td class="listhdrr"><?=gettext("Time");?></td>
+      <td class="listhdrr"><?=gettext("IF");?></td>
+      <td class="listhdrr"><?=gettext("Source");?></td>
+      <td class="listhdrr"><?=gettext("Destination");?></td>
+    </tr>
+  </thead>
+  <tbody id='filter-log-entries'>
+  <?php
     $rowIndex = 0;
     foreach ($filterlog as $filterent) :
         $evenRowClass = $rowIndex % 2 ? " listMReven" : " listMRodd";
         $rowIndex++;
     ?>
-		<tr class="<?=$evenRowClass?>">
-			<td class="listMRlr nowrap" align="center">
-			<a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);">
-			<span class="<?php echo find_action_image($filterent['act']);?>" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" ></span>
-			</a>
-			</td>
-			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['time']);?>"><?php echo substr(htmlspecialchars($filterent['time']), 0, -3);?></td>
-			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['interface']);?>"><?php echo htmlspecialchars($filterent['interface']);?></td>
-			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['src']);?>">
-				<a href="#" onclick="javascript:getURL('diag_dns.php?host=<?php echo "{$filterent['srcip']}";
+    <tr class="<?=$evenRowClass?>">
+      <td class="listMRlr nowrap" align="center">
+      <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);">
+      <span class="<?php echo find_action_image($filterent['act']);?>" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" ></span>
+      </a>
+      </td>
+      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['time']);?>"><?php echo substr(htmlspecialchars($filterent['time']), 0, -3);?></td>
+      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['interface']);?>"><?php echo htmlspecialchars($filterent['interface']);?></td>
+      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['src']);?>">
+        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?php echo "{$filterent['srcip']}";
 ?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
-				<?php echo htmlspecialchars($filterent['srcip']);?></a></td>
-			<td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['dst']);?>">
-				<a href="#" onclick="javascript:getURL('diag_dns.php?host=<?php echo "{$filterent['dstip']}";
+        <?php echo htmlspecialchars($filterent['srcip']);?></a></td>
+      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['dst']);?>">
+        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?php echo "{$filterent['dstip']}";
 ?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
-				<?php echo htmlspecialchars($filterent['dstip']);?></a><?php echo ":" . htmlspecialchars($filterent['dstport']);?></td>
-			<?php
+        <?php echo htmlspecialchars($filterent['dstip']);?></a><?php echo ":" . htmlspecialchars($filterent['dstport']);?></td>
+      <?php
             if ($filterent['proto'] == "TCP") {
                 $filterent['proto'] .= ":{$filterent['tcpflags']}";
             }
             ?>
-		</tr>
-	<?php
+    </tr>
+  <?php
     endforeach; ?>
-		<tr style="display:none;"><td></td></tr>
-	</tbody>
+    <tr style="display:none;"><td></td></tr>
+  </tbody>
 </table>
 
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-	selectIntLink = "log-configure";
-	textlink = document.getElementById(selectIntLink);
-	textlink.style.display = "inline";
+  selectIntLink = "log-configure";
+  textlink = document.getElementById(selectIntLink);
+  textlink.style.display = "inline";
 //]]>
 </script>
