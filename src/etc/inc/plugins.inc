@@ -49,6 +49,19 @@ function plugin_scan()
     return $ret;
 }
 
+function plugins_action($service, $action)
+{
+    if (!isset($service['plugin'])) {
+        return;
+    }
+
+    /* avoid auto-loading, it must have been required before */
+    $func = sprintf('%s_action', $service['plugin']);
+    if (function_exists($func)) {
+        $func($service, $action);
+    }
+}
+
 function plugins_services()
 {
     $services = array();
