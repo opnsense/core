@@ -2548,6 +2548,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "radvd";
         $pconfig['description'] = gettext("Router Advertisement Daemon");
+        $pconfig['php']['start'] = array('services_radvd_configure');
         $services[] = $pconfig;
     }
 
@@ -2555,6 +2556,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dnsmasq";
         $pconfig['description'] = gettext("DNS Forwarder");
+        $pconfig['php']['start'] = array('services_dnsmasq_configure');
         $services[] = $pconfig;
     }
 
@@ -2562,12 +2564,14 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "unbound";
         $pconfig['description'] = gettext("Unbound DNS Resolver");
+        $pconfig['php']['start'] = array('services_unbound_configure');
         $services[] = $pconfig;
     }
 
     $pconfig = array();
     $pconfig['name'] = "ntpd";
     $pconfig['description'] = gettext("NTP clock sync");
+    $pconfig['php']['start'] = array('system_ntp_configure');
     $pconfig['pidfile'] = '/var/run/ntpd.pid';
     $services[] = $pconfig;
 
@@ -2584,6 +2588,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay";
         $pconfig['description'] = gettext("DHCP Relay");
+        $pconfig['php']['start'] = array('services_dhcrelay_configure');
         $services[] = $pconfig;
     }
 
@@ -2592,6 +2597,7 @@ function services_get()
         $pconfig['name'] = "dhcrelay6";
         $pconfig['description'] = gettext("DHCPv6 Relay");
         $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
+        $pconfig['php']['start'] = array('services_dhcrelay6_configure');
         $services[] = $pconfig;
     }
 
@@ -2599,6 +2605,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcpd";
         $pconfig['description'] = gettext("DHCP Service");
+        $pconfig['php']['start'] = array('services_dhcpd_configure');
         $services[] = $pconfig;
     }
 
@@ -2614,6 +2621,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "bsnmpd";
         $pconfig['description'] = gettext("SNMP Service");
+        $pconfig['php']['start'] = array('services_snmpd_configure');
         $services[] = $pconfig;
     }
 
@@ -2621,6 +2629,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "igmpproxy";
         $pconfig['description'] = gettext("IGMP proxy");
+        $pconfig['php']['start'] = array('services_igmpproxy_configure');
         $services[] = $pconfig;
     }
 
@@ -2636,6 +2645,7 @@ function services_get()
         $pconfig['name'] = "ipsec";
         $pconfig['description'] = gettext("IPsec VPN");
         $pconfig['pidfile'] = '/var/run/charon.pid';
+        $pconfig['php']['start'] = array('vpn_ipsec_force_reload');
         $services[] = $pconfig;
     }
 
@@ -2668,15 +2678,30 @@ function services_get()
           $pconfig = array();
           $pconfig['name'] = "relayd";
           $pconfig['description'] = gettext("Server load balancing daemon");
+          $pconfig['php']['start'] = array('relayd_configure', 'filter_configure');
           $services[] = $pconfig;
     }
 
     if (isset($config['OPNsense']['proxy']['general']['enabled']) && $config['OPNsense']['proxy']['general']['enabled'] == 1) {
-        $services[] = array('name'=>'squid', 'description' => gettext("Proxy server"));
+        $services[] = array(
+            'description' => gettext('Proxy server'),
+            'configd' => array(
+                'start' => array('proxy start'),
+            ),
+            'name' => 'squid',
+        );
     }
+
     if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
-        $services[] = array('name'=>'suricata', 'description' => gettext("Intrusion Detection"));
+        $services[] = array(
+            'description' => gettext('Intrusion Detection'),
+            'configd' => array(
+                'start' => array('ids start'),
+            ),
+            'name' => 'suricata',
+        );
     }
+
     if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
         $enabled = false;
         if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {
@@ -2694,6 +2719,9 @@ function services_get()
             $services[] = array(
                 'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
                 'description' => gettext('Captive Portal'),
+                'confidg' => array(
+                    'start' => array('captiveportal start'),
+                ),
                 'name' => 'captiveportal',
             );
         }
