@@ -2702,6 +2702,9 @@ function services_get()
     $services[] = array(
         'description' => gettext('System Configuration Daemon'),
         'pidfile' => '/var/run/configd.pid',
+        'mwexec' => array(
+            'start' => array('/usr/local/etc/rc.d/configd start'),
+        ),
         'name' => 'configd',
     );
 
