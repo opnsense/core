@@ -29,6 +29,7 @@
 
 require_once('guiconfig.inc');
 require_once('services.inc');
+require_once("plugins.inc");
 require_once('plugins.inc.d/vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
