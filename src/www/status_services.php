@@ -91,11 +91,15 @@ function service_control_start($name, $extras)
     }
 
     if (isset($service['configd']['start'])) {
-        configd_run($service['configd']['start']);
+        foreach ($service['configd']['start'] as $cmd) {
+            configd_run($cmd);
+        }
         /* XXX fall through later */
         return sprintf(gettext('%s has been started via configd.'), htmlspecialchars($name));
     } elseif (isset($service['php']['start'])) {
-        $service['php']['start']();
+        foreach ($service['php']['start'] as $cmd) {
+            $cmd();
+        }
         /* XXX fall through later */
         return sprintf(gettext('%s has been started via php.'), htmlspecialchars($name));
     }

@@ -2613,7 +2613,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "apinger";
         $pconfig['description'] = gettext("Gateway Monitoring Daemon");
-        $pconfig['php']['start'] = 'setup_gateways_monitor';
+        $pconfig['php']['start'] = array('setup_gateways_monitor');
         $services[] = $pconfig;
     }
 
@@ -2650,7 +2650,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = 'sshd';
         $pconfig['description'] = gettext('Secure Shell Daemon');
-        $pconfig['configd']['start'] = 'sshd restart';
+        $pconfig['configd']['start'] = array('sshd restart');
         $services[] = $pconfig;
     }
 
