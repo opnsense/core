@@ -71,6 +71,8 @@ if (!empty($_GET['service'])) {
 
 function service_control_start($name, $extras)
 {
+    $msg = sprintf(gettext('%s has been started.'), htmlspecialchars($name));
+
     /* XXX openvpn is handled special at the moment */
     if ($name == 'openvpn') {
         $vpnmode = isset($extras['vpnmode']) ? htmlspecialchars($extras['vpnmode']) : htmlspecialchars($extras['mode']);
@@ -81,8 +83,11 @@ function service_control_start($name, $extras)
                 openvpn_restart_by_vpnid($vpnmode, $id);
             }
         }
-
-        return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
+        return $msg;
+    /* XXX extra argument is extra tricky */
+    } elseif ($name == 'miniupnpd') {
+        upnp_action('start');
+        return $msg;
     }
 
     $service = find_service_by_name($name);
@@ -94,75 +99,19 @@ function service_control_start($name, $extras)
         foreach ($service['configd']['start'] as $cmd) {
             configd_run($cmd);
         }
-        /* XXX fall through later */
-        return sprintf(gettext('%s has been started via configd.'), htmlspecialchars($name));
     } elseif (isset($service['php']['start'])) {
         foreach ($service['php']['start'] as $cmd) {
             $cmd();
         }
-        /* XXX fall through later */
-        return sprintf(gettext('%s has been started via php.'), htmlspecialchars($name));
     } elseif (isset($service['mwexec']['start'])) {
         foreach ($service['mwexec']['start'] as $cmd) {
             mwexec($cmd);
         }
-        /* XXX fall through later */
-        return sprintf(gettext('%s has been started via mwexec.'), htmlspecialchars($name));
+    } else {
+        $msg = printf(gettext("Could not launch service `%s'"), htmlspecialchars($name));
     }
 
-    /* XXX migrate all of those */
-    switch ($service['name']) {
-        case 'radvd':
-            services_radvd_configure();
-            break;
-        case 'ntpd':
-            system_ntp_configure();
-            break;
-        case 'bsnmpd':
-            services_snmpd_configure();
-            break;
-        case 'dhcrelay':
-            services_dhcrelay_configure();
-            break;
-        case 'dhcrelay6':
-            services_dhcrelay6_configure();
-            break;
-        case 'dnsmasq':
-            services_dnsmasq_configure();
-            break;
-        case 'unbound':
-            services_unbound_configure();
-            break;
-        case 'dhcpd':
-            services_dhcpd_configure();
-            break;
-        case 'igmpproxy':
-            services_igmpproxy_configure();
-            break;
-        case 'miniupnpd':
-            upnp_action('start');
-            break;
-        case 'ipsec':
-            vpn_ipsec_force_reload();
-            break;
-        case 'relayd':
-            relayd_configure();
-            filter_configure();
-            break;
-        case 'squid':
-            configd_run("proxy start");
-            break;
-        case 'suricata':
-            configd_run("ids start");
-            break;
-        case 'captiveportal':
-            configd_run("captiveportal start");
-            break;
-        default:
-            return sprintf(gettext("Could not launch service `%s'"), htmlspecialchars($name));
-    }
-
-    return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
+    return $msg;
 }
 
 
