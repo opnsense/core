@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
+require_once('plugins.inc');
 require_once("vslb.inc");
 require_once("system.inc");
 require_once("unbound.inc");
@@ -176,8 +177,6 @@ function service_control_restart($name, $extras)
 }
 
 $services = services_get();
-
-require_once 'plugins.inc';
 
 foreach (plugins_services() as $service) {
     $services[] = $service;

@@ -45,6 +45,7 @@ function l2tp_users_sort()
 
 require_once("guiconfig.inc");
 require_once("services.inc");
+require_once("plugins.inc");
 require_once("plugins.inc.d/vpn.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');
