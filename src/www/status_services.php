@@ -90,15 +90,23 @@ function service_control_start($name, $extras)
         return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
     }
 
+    if (isset($service['configd']['start'])) {
+        configd_run($service['configd']['start']);
+        /* XXX fall through later */
+        return sprintf(gettext('%s has been started via configd.'), htmlspecialchars($name));
+    } elseif (isset($service['php']['start'])) {
+        $service['php']['start']();
+        /* XXX fall through later */
+        return sprintf(gettext('%s has been started via php.'), htmlspecialchars($name));
+    }
+
+   /* XXX migrate all of those */
     switch ($service['name']) {
         case 'radvd':
             services_radvd_configure();
             break;
         case 'ntpd':
             system_ntp_configure();
-            break;
-        case 'apinger':
-            setup_gateways_monitor();
             break;
         case 'bsnmpd':
             services_snmpd_configure();
@@ -126,9 +134,6 @@ function service_control_start($name, $extras)
             break;
         case 'ipsec':
             vpn_ipsec_force_reload();
-            break;
-        case 'sshd':
-            configd_run("sshd restart");
             break;
         case 'relayd':
             relayd_configure();
