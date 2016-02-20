@@ -40,10 +40,6 @@ require_once("widgets/include/services_status.inc");
 
 $services = services_get();
 
-foreach (plugins_services() as $service) {
-    $services[] = $service;
-}
-
 if (isset($_POST['servicestatusfilter'])) {
     $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved Service Status Filter via Dashboard");
