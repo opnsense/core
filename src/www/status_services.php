@@ -178,10 +178,6 @@ function service_control_restart($name, $extras)
 
 $services = services_get();
 
-foreach (plugins_services() as $service) {
-    $services[] = $service;
-}
-
 if (count($services) > 0) {
     uasort($services, "service_name_compare");
 }
