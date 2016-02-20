@@ -2547,7 +2547,7 @@ function is_apinger_enabled()
 
 function services_get()
 {
-    global $config;
+    global $config, $g;
 
     $services = array();
 
@@ -2556,6 +2556,7 @@ function services_get()
         $pconfig['name'] = "radvd";
         $pconfig['description'] = gettext("Router Advertisement Daemon");
         $pconfig['php']['start'] = array('services_radvd_configure');
+        $pconfig['pidfile'] = '/var/run/radvd.pid';
         $services[] = $pconfig;
     }
 
@@ -2564,6 +2565,7 @@ function services_get()
         $pconfig['name'] = "dnsmasq";
         $pconfig['description'] = gettext("DNS Forwarder");
         $pconfig['php']['start'] = array('services_dnsmasq_configure');
+        $pconfig['pidfile'] = '/var/run/dnsmasq.pid';
         $services[] = $pconfig;
     }
 
@@ -2572,6 +2574,7 @@ function services_get()
         $pconfig['name'] = "unbound";
         $pconfig['description'] = gettext("Unbound DNS Resolver");
         $pconfig['php']['start'] = array('services_unbound_configure');
+        $pconfig['pidfile'] = '/var/run/unbound.pid';
         $services[] = $pconfig;
     }
 
@@ -2596,6 +2599,7 @@ function services_get()
         $pconfig['name'] = "dhcrelay";
         $pconfig['description'] = gettext("DHCP Relay");
         $pconfig['php']['start'] = array('services_dhcrelay_configure');
+        $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
         $services[] = $pconfig;
     }
 
@@ -2603,8 +2607,8 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay6";
         $pconfig['description'] = gettext("DHCPv6 Relay");
-        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
         $pconfig['php']['start'] = array('services_dhcrelay6_configure');
+        $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
         $services[] = $pconfig;
     }
 
@@ -2613,6 +2617,7 @@ function services_get()
         $pconfig['name'] = "dhcpd";
         $pconfig['description'] = gettext("DHCP Service");
         $pconfig['php']['start'] = array('services_dhcpd_configure');
+        $pconfig['pidfile'] = "{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid";
         $services[] = $pconfig;
     }
 
@@ -2621,6 +2626,7 @@ function services_get()
         $pconfig['name'] = "apinger";
         $pconfig['description'] = gettext("Gateway Monitoring Daemon");
         $pconfig['php']['start'] = array('setup_gateways_monitor');
+        $pconfig['pidfile'] = '/var/run/apinger.pid';
         $services[] = $pconfig;
     }
 
@@ -2629,6 +2635,7 @@ function services_get()
         $pconfig['name'] = "bsnmpd";
         $pconfig['description'] = gettext("SNMP Service");
         $pconfig['php']['start'] = array('services_snmpd_configure');
+        $pconfig['pidfile'] = '/var/run/snmpd.pid';
         $services[] = $pconfig;
     }
 
@@ -2653,6 +2660,7 @@ function services_get()
         $pconfig['description'] = gettext("IPsec VPN");
         $pconfig['pidfile'] = '/var/run/charon.pid';
         $pconfig['php']['start'] = array('vpn_ipsec_force_reload');
+        $pconfig['mwexec']['stop'] = array('/usr/local/sbin/ipsec stop');
         $services[] = $pconfig;
     }
 
@@ -2694,6 +2702,7 @@ function services_get()
             'description' => gettext('Proxy server'),
             'configd' => array(
                 'start' => array('proxy start'),
+                'stop' => array('proxy stop'),
             ),
             'name' => 'squid',
         );
@@ -2704,6 +2713,7 @@ function services_get()
             'description' => gettext('Intrusion Detection'),
             'configd' => array(
                 'start' => array('ids start'),
+                'stop' => array('ids stop'),
             ),
             'name' => 'suricata',
         );
@@ -2728,6 +2738,7 @@ function services_get()
                 'description' => gettext('Captive Portal'),
                 'confidg' => array(
                     'start' => array('captiveportal start'),
+                    'stop' => array('captiveportal stop'),
                 ),
                 'name' => 'captiveportal',
             );
