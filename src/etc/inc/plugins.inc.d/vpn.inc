@@ -49,7 +49,10 @@ function vpn_services()
         $services[] = array(
             'description' => gettext('PPTP Server'),
             'pidfile' => '/var/run/pptp-vpn.pid',
-            'plugin' => 'vpn',
+            'php' => array(
+                'restart' => array('vpn_pptpd_configure'),
+                'start' => array('vpn_pptpd_configure'),
+            ),
             'name' => 'pptpd',
         );
     }
@@ -58,34 +61,17 @@ function vpn_services()
         $services[] = array(
             'description' => gettext('L2TP Server'),
             'pidfile' => '/var/run/l2tp-vpn.pid',
-            'plugin' => 'vpn',
+            'php' => array(
+                'restart' => array('vpn_l2tp_configure'),
+                'start' => array('vpn_l2tp_configure'),
+            ),
             'name' => 'l2tpd',
         );
     }
 
+    /* XXX pppoe server instances too */
+
     return $services;
-}
-
-function vpn_action($service, $action)
-{
-    if ($action != 'start' && $action != 'restart') {
-        /* XXX also need stop */
-        return;
-    }
-
-    switch ($service['name']) {
-        case 'l2tpd':
-            vpn_l2tp_configure();
-            break;
-        case 'pptpd':
-            vpn_pptpd_configure();
-            break;
-        case 'pppoe':
-            /* XXX TBD */
-            break;
-        default:
-            break;
-    }
 }
 
 function vpn_netgraph_support() {
