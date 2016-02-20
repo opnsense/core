@@ -102,9 +102,15 @@ function service_control_start($name, $extras)
         }
         /* XXX fall through later */
         return sprintf(gettext('%s has been started via php.'), htmlspecialchars($name));
+    } elseif (isset($service['mwexec']['start'])) {
+        foreach ($service['mwexec']['start'] as $cmd) {
+            mwexec($cmd);
+        }
+        /* XXX fall through later */
+        return sprintf(gettext('%s has been started via mwexec.'), htmlspecialchars($name));
     }
 
-   /* XXX migrate all of those */
+    /* XXX migrate all of those */
     switch ($service['name']) {
         case 'radvd':
             services_radvd_configure();
@@ -148,9 +154,6 @@ function service_control_start($name, $extras)
             break;
         case 'suricata':
             configd_run("ids start");
-            break;
-        case 'configd':
-            mwexec('/usr/local/etc/rc.d/configd start');
             break;
         case 'captiveportal':
             configd_run("captiveportal start");
