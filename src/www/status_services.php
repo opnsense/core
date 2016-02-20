@@ -108,57 +108,26 @@ function service_control_start($name, $extras)
             mwexec($cmd);
         }
     } else {
-        $msg = printf(gettext("Could not launch service `%s'"), htmlspecialchars($name));
+        $msg = sprintf(gettext("Could not launch service `%s'"), htmlspecialchars($name));
     }
 
     return $msg;
 }
 
+function service_control_stop($name, $extras)
+{
+    $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
 
-function service_control_stop($name, $extras) {
-    switch($name) {
-        case 'radvd':
-            killbypid("/var/run/radvd.pid");
-            break;
-        case 'ntpd':
-            killbyname("ntpd");
-            break;
-        case 'apinger':
-            killbypid("/var/run/apinger.pid");
-            break;
-        case 'bsnmpd':
-            killbypid("/var/run/snmpd.pid");
-            break;
-        case 'choparp':
-            killbyname("choparp");
-            break;
-        case 'dhcpd':
-            killbyname("dhcpd");
-            break;
-        case 'dhcrelay':
-            killbypid("/var/run/dhcrelay.pid");
-            break;
-        case 'dhcrelay6':
-            killbypid("/var/run/dhcrelay6.pid");
-            break;
-        case 'dnsmasq':
-            killbypid("/var/run/dnsmasq.pid");
-            break;
-        case 'unbound':
-            killbypid("/var/run/unbound.pid");
-            break;
+    switch ($name) {
         case 'igmpproxy':
             killbyname("igmpproxy");
-            break;
+            return $msg;
         case 'miniupnpd':
             upnp_action('stop');
-            break;
+            return $msg;
         case 'sshd':
             killbyname("sshd");
-            break;
-        case 'ipsec':
-            exec("/usr/local/sbin/ipsec stop");
-            break;
+            return $msg;
         case 'openvpn':
             $vpnmode = htmlspecialchars($extras['vpnmode']);
             if (($vpnmode == "server") or ($vpnmode == "client")) {
@@ -166,27 +135,38 @@ function service_control_stop($name, $extras) {
                 $pidfile = "/var/run/openvpn_{$vpnmode}{$id}.pid";
                 killbypid($pidfile);
             }
-            break;
+            return $msg;
         case 'relayd':
-            mwexec('pkill relayd');
-            break;
-        case 'squid':
-            configd_run("proxy stop");
-            break;
-        case 'suricata':
-            configd_run("ids stop");
-            break;
-        case 'configd':
-            killbypid("/var/run/configd.pid");
-            break;
-        case 'captiveportal':
-            configd_run("captiveportal stop");
-            break;
+            killbyname('relayd');
+            return $msg;
         default:
-            log_error(sprintf(gettext("Could not stop unknown service `%s'"), $name));
             break;
     }
-    return sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
+
+    $service = find_service_by_name($name);
+    if (!isset($service['name'])) {
+        return sprintf(gettext("Could not stop unknown service `%s'"), htmlspecialchars($name));
+    }
+
+    if (isset($service['configd']['stop'])) {
+        foreach ($service['configd']['stop'] as $cmd) {
+            configd_run($cmd);
+        }
+    } elseif (isset($service['php']['stop'])) {
+        foreach ($service['php']['stop'] as $cmd) {
+            $cmd();
+        }
+    } elseif (isset($service['mwexec']['stop'])) {
+        foreach ($service['mwexec']['stop'] as $cmd) {
+            mwexec($cmd);
+        }
+    } elseif (isset($service['pidfile'])) {
+        killbypid($service['pidfile']);
+    } else {
+        $msg = sprintf(gettext("Could not stop service `%s'"), htmlspecialchars($name));
+    }
+
+    return $msg;
 }
 
 
