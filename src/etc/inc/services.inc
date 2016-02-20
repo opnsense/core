@@ -2717,6 +2717,24 @@ function find_service_by_openvpn_vpnid($vpnid)
     return array();
 }
 
+function find_service_by_name($names)
+{
+    if (!is_array($names)) {
+        $names = array($names);
+    }
+
+    $services = services_get();
+
+    foreach ($services as $service) {
+        foreach ($names as $name) {
+            if ($service['name'] == $name) {
+                return $service;
+            }
+        }
+    }
+
+    return array();
+}
 
 function service_name_compare($a, $b) {
     if (strtolower($a['name']) == strtolower($b['name'])) {

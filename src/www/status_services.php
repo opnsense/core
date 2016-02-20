@@ -47,7 +47,7 @@ function openvpn_restart_by_vpnid($mode, $vpnid)
 }
 
 if (!empty($_GET['service'])) {
-    $service_name = htmlspecialchars($_GET['service']);
+    $service_name = $_GET['service'];
     switch ($_GET['mode']) {
         case "restartservice":
           $savemsg = service_control_restart($service_name, $_GET);
@@ -59,15 +59,38 @@ if (!empty($_GET['service'])) {
           $savemsg = service_control_stop($service_name, $_GET);
           break;
     }
-    sleep(5);
-    // redirect to the previous page after performing action, removing the action parameters from request.
-    $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/status_services.php');
-    header("Location: ".$referer);
-    exit;
+    if (isset($_SERVER['HTTP_REFERER'])) {
+        $referer = $_SERVER['HTTP_REFERER'];
+        if (strpos($referer, $_SERVER['PHP_SELF']) === false) {
+            /* redirect only if launched from somewhere else */
+            header('Location: '. $referer);
+            exit;
+        }
+    }
 }
 
-function service_control_start($name, $extras) {
-    switch($name) {
+function service_control_start($name, $extras)
+{
+    /* XXX openvpn is handled special at the moment */
+    if ($name == 'openvpn') {
+        $vpnmode = isset($extras['vpnmode']) ? htmlspecialchars($extras['vpnmode']) : htmlspecialchars($extras['mode']);
+        if (($vpnmode == "server") || ($vpnmode == "client")) {
+            $id = isset($extras['vpnid']) ? htmlspecialchars($extras['vpnid']) : htmlspecialchars($extras['id']);
+            $configfile = "/var/etc/openvpn/{$vpnmode}{$id}.conf";
+            if (file_exists($configfile)) {
+                openvpn_restart_by_vpnid($vpnmode, $id);
+            }
+        }
+
+        return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
+    }
+
+    $service = find_service_by_name($name);
+    if (!isset($service['name'])) {
+        return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
+    }
+
+    switch ($service['name']) {
         case 'radvd':
             services_radvd_configure();
             break;
@@ -107,16 +130,6 @@ function service_control_start($name, $extras) {
         case 'sshd':
             configd_run("sshd restart");
             break;
-        case 'openvpn':
-            $vpnmode = isset($extras['vpnmode']) ? htmlspecialchars($extras['vpnmode']) : htmlspecialchars($extras['mode']);
-            if (($vpnmode == "server") || ($vpnmode == "client")) {
-                $id = isset($extras['vpnid']) ? htmlspecialchars($extras['vpnid']) : htmlspecialchars($extras['id']);
-                $configfile = "/var/etc/openvpn/{$vpnmode}{$id}.conf";
-                if (file_exists($configfile)) {
-                    openvpn_restart_by_vpnid($vpnmode, $id);
-                }
-            }
-            break;
         case 'relayd':
             relayd_configure();
             filter_configure();
@@ -134,10 +147,10 @@ function service_control_start($name, $extras) {
             configd_run("captiveportal start");
             break;
         default:
-            log_error(sprintf(gettext("Could not start unknown service `%s'"), $name));
-            break;
+            return sprintf(gettext("Could not launch service `%s'"), htmlspecialchars($name));
     }
-    return sprintf(gettext("%s has been started."),htmlspecialchars($name));
+
+    return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
 }
 
 

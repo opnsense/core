@@ -29,25 +29,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function find_service_by_name($names)
-{
-    if (!is_array($names)) {
-        $names = array($names);
-    }
-
-    $services = services_get();
-
-    foreach ($services as $service) {
-        foreach ($names as $name) {
-            if ($service['name'] == $name) {
-                return $service;
-            }
-        }
-    }
-
-    return array();
-}
-
 /* Determine automated help URL. Should output the page name and
    parameters separately */
 $uri_split = "";
