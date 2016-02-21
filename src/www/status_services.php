@@ -104,7 +104,7 @@ function service_control_start($name, $extras)
             mwexec($cmd);
         }
     } else {
-        $msg = sprintf(gettext("Could not launch service `%s'"), htmlspecialchars($name));
+        $msg = sprintf(gettext("Could not start service `%s'"), htmlspecialchars($name));
     }
 
     return $msg;
@@ -148,49 +148,16 @@ function service_control_stop($name, $extras)
 }
 
 
-function service_control_restart($name, $extras) {
+function service_control_restart($name, $extras)
+{
+    $msg = sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
+
+    /* XXX clean this up */
     switch($name) {
-        case 'radvd':
-            services_radvd_configure();
-            break;
-        case 'ntpd':
-            system_ntp_configure();
-            break;
         case 'apinger':
             killbypid("/var/run/apinger.pid");
             setup_gateways_monitor();
-            break;
-        case 'bsnmpd':
-            services_snmpd_configure();
-            break;
-        case 'dhcrelay':
-            services_dhcrelay_configure();
-            break;
-        case 'dhcrelay6':
-            services_dhcrelay6_configure();
-            break;
-        case 'dnsmasq':
-            services_dnsmasq_configure();
-            break;
-        case 'unbound':
-            services_unbound_configure();
-            break;
-        case 'dhcpd':
-            services_dhcpd_configure();
-            break;
-        case 'igmpproxy':
-            services_igmpproxy_configure();
-            break;
-        case 'miniupnpd':
-            upnp_stop();
-            upnp_start();
-            break;
-        case 'ipsec':
-            vpn_ipsec_force_reload();
-            break;
-        case 'sshd':
-            configd_run("sshd restart");
-            break;
+            return $msg;
         case 'openvpn':
             $vpnmode = htmlspecialchars($extras['vpnmode']);
             if ($vpnmode == "server" || $vpnmode == "client") {
@@ -200,28 +167,37 @@ function service_control_restart($name, $extras) {
                     openvpn_restart_by_vpnid($vpnmode, $id);
                 }
             }
-            break;
+            return $msg;
         case 'relayd':
             relayd_configure(true);
             filter_configure();
-            break;
-        case 'squid':
-            configd_run("proxy restart");
-            break;
-        case 'suricata':
-            configd_run("ids restart");
-            break;
-        case 'configd':
-            mwexec('/usr/local/etc/rc.d/configd restart');
-            break;
-        case 'captiveportal':
-            configd_run("captiveportal restart");
-            break;
+            return $msg;
         default:
-            log_error(sprintf(gettext("Could not restart unknown service `%s'"), $name));
             break;
     }
-    return sprintf(gettext("%s has been restarted."),htmlspecialchars($name));
+
+    $service = find_service_by_name($name);
+    if (!isset($service['name'])) {
+        return sprintf(gettext("Could not restart unknown service `%s'"), htmlspecialchars($name));
+    }
+
+    if (isset($service['configd']['restart'])) {
+        foreach ($service['configd']['restart'] as $cmd) {
+            configd_run($cmd);
+        }
+    } elseif (isset($service['php']['restart'])) {
+        foreach ($service['php']['restart'] as $cmd) {
+            $cmd();
+        }
+    } elseif (isset($service['mwexec']['restart'])) {
+        foreach ($service['mwexec']['restart'] as $cmd) {
+            mwexec($cmd);
+        }
+    } else {
+        $msg = sprintf(gettext("Could not restart service `%s'"), htmlspecialchars($name));
+    }
+
+    return $msg;
 }
 
 $services = services_get();

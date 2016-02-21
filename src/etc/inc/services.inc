@@ -2518,6 +2518,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "radvd";
         $pconfig['description'] = gettext("Router Advertisement Daemon");
+        $pconfig['php']['restart'] = array('services_radvd_configure');
         $pconfig['php']['start'] = array('services_radvd_configure');
         $pconfig['pidfile'] = '/var/run/radvd.pid';
         $services[] = $pconfig;
@@ -2527,6 +2528,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dnsmasq";
         $pconfig['description'] = gettext("DNS Forwarder");
+        $pconfig['php']['restart'] = array('services_dnsmasq_configure');
         $pconfig['php']['start'] = array('services_dnsmasq_configure');
         $pconfig['pidfile'] = '/var/run/dnsmasq.pid';
         $services[] = $pconfig;
@@ -2536,6 +2538,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "unbound";
         $pconfig['description'] = gettext("Unbound DNS Resolver");
+        $pconfig['php']['restart'] = array('services_unbound_configure');
         $pconfig['php']['start'] = array('services_unbound_configure');
         $pconfig['pidfile'] = '/var/run/unbound.pid';
         $services[] = $pconfig;
@@ -2544,6 +2547,7 @@ function services_get()
     $pconfig = array();
     $pconfig['name'] = "ntpd";
     $pconfig['description'] = gettext("NTP clock sync");
+    $pconfig['php']['restart'] = array('system_ntp_configure');
     $pconfig['php']['start'] = array('system_ntp_configure');
     $pconfig['pidfile'] = '/var/run/ntpd.pid';
     $services[] = $pconfig;
@@ -2561,6 +2565,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay";
         $pconfig['description'] = gettext("DHCP Relay");
+        $pconfig['php']['restart'] = array('services_dhcrelay_configure');
         $pconfig['php']['start'] = array('services_dhcrelay_configure');
         $pconfig['pidfile'] = '/var/run/dhcrelay.pid';
         $services[] = $pconfig;
@@ -2570,6 +2575,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcrelay6";
         $pconfig['description'] = gettext("DHCPv6 Relay");
+        $pconfig['php']['restart'] = array('services_dhcrelay6_configure');
         $pconfig['php']['start'] = array('services_dhcrelay6_configure');
         $pconfig['pidfile'] = '/var/run/dhcrelay6.pid';
         $services[] = $pconfig;
@@ -2579,6 +2585,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "dhcpd";
         $pconfig['description'] = gettext("DHCP Service");
+        $pconfig['php']['restart'] = array('services_dhcpd_configure');
         $pconfig['php']['start'] = array('services_dhcpd_configure');
         $pconfig['pidfile'] = "{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid";
         $services[] = $pconfig;
@@ -2597,6 +2604,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "bsnmpd";
         $pconfig['description'] = gettext("SNMP Service");
+        $pconfig['php']['restart'] = array('services_snmpd_configure');
         $pconfig['php']['start'] = array('services_snmpd_configure');
         $pconfig['pidfile'] = '/var/run/snmpd.pid';
         $services[] = $pconfig;
@@ -2606,6 +2614,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "igmpproxy";
         $pconfig['description'] = gettext("IGMP proxy");
+        $pconfig['php']['restart'] = array('services_igmpproxy_configure');
         $pconfig['php']['start'] = array('services_igmpproxy_configure');
         $services[] = $pconfig;
     }
@@ -2627,6 +2636,7 @@ function services_get()
         $pconfig['name'] = "ipsec";
         $pconfig['description'] = gettext("IPsec VPN");
         $pconfig['pidfile'] = '/var/run/charon.pid';
+        $pconfig['php']['restart'] = array('vpn_ipsec_force_reload');
         $pconfig['php']['start'] = array('vpn_ipsec_force_reload');
         $pconfig['mwexec']['stop'] = array('/usr/local/sbin/ipsec stop');
         $services[] = $pconfig;
@@ -2636,6 +2646,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = 'sshd';
         $pconfig['description'] = gettext('Secure Shell Daemon');
+        $pconfig['configd']['restart'] = array('sshd restart');
         $pconfig['configd']['start'] = array('sshd restart');
         $services[] = $pconfig;
     }
@@ -2669,6 +2680,7 @@ function services_get()
         $services[] = array(
             'description' => gettext('Proxy server'),
             'configd' => array(
+                'restart' => array('proxy restart'),
                 'start' => array('proxy start'),
                 'stop' => array('proxy stop'),
             ),
@@ -2680,6 +2692,7 @@ function services_get()
         $services[] = array(
             'description' => gettext('Intrusion Detection'),
             'configd' => array(
+                'restart' => array('ids restart'),
                 'start' => array('ids start'),
                 'stop' => array('ids stop'),
             ),
@@ -2705,6 +2718,7 @@ function services_get()
                 'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
                 'description' => gettext('Captive Portal'),
                 'confidg' => array(
+                    'restart' => array('captiveportal restart'),
                     'start' => array('captiveportal start'),
                     'stop' => array('captiveportal stop'),
                 ),
@@ -2717,7 +2731,9 @@ function services_get()
         'description' => gettext('System Configuration Daemon'),
         'pidfile' => '/var/run/configd.pid',
         'mwexec' => array(
+            'restart' => array('/usr/local/etc/rc.d/configd restart'),
             'start' => array('/usr/local/etc/rc.d/configd start'),
+            'stop' => array('/usr/local/etc/rc.d/configd stop'),
         ),
         'name' => 'configd',
     );
