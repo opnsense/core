@@ -2675,7 +2675,7 @@ function services_get()
                     $pconfig['id'] = $id;
                     $pconfig['vpnid'] = $setting['vpnid'];
                     $pconfig['description'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
-                    $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$settings['vpnid']}.pid";
+                    $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
                     $services[] = $pconfig;
                 }
             }
@@ -2750,18 +2750,7 @@ function services_get()
     return $services;
 }
 
-function find_service_by_openvpn_vpnid($vpnid)
-{
-    $services = services_get();
-    foreach ($services as $service) {
-        if (($service["name"] == "openvpn") && isset($service["vpnid"]) && ($service["vpnid"] == $vpnid)) {
-            return $service;
-        }
-    }
-    return array();
-}
-
-function find_service_by_name($names)
+function find_service_by_name($names, $filter = array())
 {
     if (!is_array($names)) {
         $names = array($names);
@@ -2771,8 +2760,22 @@ function find_service_by_name($names)
 
     foreach ($services as $service) {
         foreach ($names as $name) {
-            if ($service['name'] == $name) {
-                return $service;
+            if ($service['name'] != $name) {
+                continue;
+            }
+            if (!count($filter)) {
+                /* force match if filter wasn't set (standard behaviour) */
+                $filter['name'] = $name;
+            }
+            foreach ($filter as $key => $value) {
+                if (isset($service[$key]) && $service[$key] == $value) {
+                    /*
+                     * First match wins, $names is only used
+                     * to probe similar services that exclude
+                     * each other.
+                     */
+                    return $service;
+                }
             }
         }
     }
