@@ -567,6 +567,8 @@ class SystemhealthController extends ApiControllerBase
                 $inverse = false;
             }
 
+            // The zoom (timespan) level determines the number of datasets to
+            // use in the equation. All the irrelevant sets are removed here. 
             if ((int)$detail >= 0) {
                 for ($count = count($xml->rra) - 1; $count > $detail; $count--) {
                     unset($xml->rra[$count]);
