@@ -2654,6 +2654,9 @@ function services_get()
                     $pconfig['id'] = $id;
                     $pconfig['vpnid'] = $setting['vpnid'];
                     $pconfig['description'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
+                    $pconfig['php']['restart'] = array('openvpn_restart_by_vpnid');
+                    $pconfig['php']['start'] = array('openvpn_restart_by_vpnid');
+                    $pconfig['php']['args'] = array('mode', 'vpnid');
                     $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
                     $services[] = $pconfig;
                 }

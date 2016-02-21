@@ -40,12 +40,6 @@ require_once("vpn.inc");
 require_once("interfaces.inc");
 require_once("rrd.inc");
 
-function openvpn_restart_by_vpnid($mode, $vpnid)
-{
-    $settings = openvpn_get_settings($mode, $vpnid);
-    openvpn_restart($mode, $settings);
-}
-
 if (!empty($_GET['service'])) {
     $service_name = $_GET['service'];
     switch ($_GET['mode']) {
@@ -73,20 +67,11 @@ function service_control_start($name, $extras)
 {
     $msg = sprintf(gettext('%s has been started.'), htmlspecialchars($name));
 
-    /* XXX openvpn is handled special at the moment */
     if ($name == 'openvpn') {
-        $vpnmode = isset($extras['vpnmode']) ? htmlspecialchars($extras['vpnmode']) : htmlspecialchars($extras['mode']);
-        if (($vpnmode == "server") || ($vpnmode == "client")) {
-            $id = isset($extras['vpnid']) ? htmlspecialchars($extras['vpnid']) : htmlspecialchars($extras['id']);
-            $configfile = "/var/etc/openvpn/{$vpnmode}{$id}.conf";
-            if (file_exists($configfile)) {
-                openvpn_restart_by_vpnid($vpnmode, $id);
-            }
-        }
-        return $msg;
+        $filter['vpnid'] = $extras['id'];
     }
 
-    $service = find_service_by_name($name);
+    $service = find_service_by_name($name, $filter);
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
     }
@@ -97,7 +82,13 @@ function service_control_start($name, $extras)
         }
     } elseif (isset($service['php']['start'])) {
         foreach ($service['php']['start'] as $cmd) {
-            $cmd();
+            $params = array();
+            if (isset($service['php']['args'])) {
+                foreach ($service['php']['args'] as $param) {
+                    $params[] = $service[$param];
+                }
+            }
+            call_user_func_array($cmd, $params);
         }
     } elseif (isset($service['mwexec']['start'])) {
         foreach ($service['mwexec']['start'] as $cmd) {
@@ -116,7 +107,6 @@ function service_control_stop($name, $extras)
     $filter = array();
 
     if ($name == 'openvpn') {
-        $filter['mode'] = $extras['vpnmode'];	/* XXX I think mode is spurious */
         $filter['vpnid'] = $extras['id'];
     }
 
@@ -147,7 +137,6 @@ function service_control_stop($name, $extras)
     return $msg;
 }
 
-
 function service_control_restart($name, $extras)
 {
     $msg = sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
@@ -157,16 +146,6 @@ function service_control_restart($name, $extras)
         case 'apinger':
             killbypid("/var/run/apinger.pid");
             setup_gateways_monitor();
-            return $msg;
-        case 'openvpn':
-            $vpnmode = htmlspecialchars($extras['vpnmode']);
-            if ($vpnmode == "server" || $vpnmode == "client") {
-                $id = htmlspecialchars($extras['id']);
-                $configfile = "/var/etc/openvpn/{$vpnmode}{$id}.conf";
-                if (file_exists($configfile)) {
-                    openvpn_restart_by_vpnid($vpnmode, $id);
-                }
-            }
             return $msg;
         case 'relayd':
             relayd_configure(true);
@@ -187,7 +166,13 @@ function service_control_restart($name, $extras)
         }
     } elseif (isset($service['php']['restart'])) {
         foreach ($service['php']['restart'] as $cmd) {
-            $cmd();
+            $params = array();
+            if (isset($service['php']['args'])) {
+                foreach ($service['php']['args'] as $param) {
+                    $params[] = $service[$param];
+                }
+            }
+            call_user_func_array($cmd, $params);
         }
     } elseif (isset($service['mwexec']['restart'])) {
         foreach ($service['mwexec']['restart'] as $cmd) {

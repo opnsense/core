@@ -807,6 +807,31 @@ function openvpn_reconfigure($mode, $settings)
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
 }
 
+function openvpn_restart_by_vpnid($mode, $vpnid)
+{
+    global $config;
+
+    $found = null;
+
+    if (isset($config['openvpn']["openvpn-$mode"])) {
+        foreach ($config['openvpn']["openvpn-$mode"] as $settings) {
+            if (isset($settings['disable'])) {
+                continue;
+            }
+            if ($vpnid != 0 && $vpnid == $settings['vpnid']) {
+                $found = $settings;
+                break;
+            }
+        }
+    }
+
+    if ($found == null) {
+        return;
+    }
+
+    openvpn_restart($mode, $found);
+}
+
 function openvpn_restart($mode, $settings)
 {
     global $config;
@@ -1361,37 +1386,6 @@ function openvpn_gen_route_ipv6($network, $iroute = false)
     }
     return "{$i}route-ipv6 ${ipv6}/${prefix}";
 }
-
-function openvpn_get_settings($mode, $vpnid)
-{
-    global $config;
-
-    if (is_array($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $settings) {
-            if (isset($settings['disable'])) {
-                continue;
-            }
-            if ($vpnid != 0 && $vpnid == $settings['vpnid']) {
-                return $settings;
-            }
-        }
-    }
-
-    if (is_array($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as $settings) {
-            if (isset($settings['disable'])) {
-                continue;
-            }
-
-            if ($vpnid != 0 && $vpnid == $settings['vpnid']) {
-                return $settings;
-            }
-        }
-    }
-
-    return array();
-}
-
 
 /**
  * Retrieve a list of remote access servers, indexed by vpnid
