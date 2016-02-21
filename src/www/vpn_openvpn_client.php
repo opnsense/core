@@ -33,8 +33,6 @@ require_once("services.inc");
 require_once("interfaces.inc");
 require_once('pfsense-utils.inc');
 
-$service_hook = 'openvpn';
-
 if (!isset($config['openvpn']['openvpn-client'])) {
     $config['openvpn']['openvpn-client'] = array();
 }

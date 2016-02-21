@@ -411,8 +411,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$service_hook = 'openvpn';
-
 include("head.inc");
 
 $main_buttons = array(
