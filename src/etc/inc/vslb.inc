@@ -125,6 +125,10 @@ class SendMonitor extends Monitor {
 	}
 }
 
+function relady_configure_full()
+{
+    relayd_configure(true);
+}
 
 function relayd_configure($kill_first = false)
 {

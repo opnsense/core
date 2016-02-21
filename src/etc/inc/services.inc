@@ -2588,6 +2588,7 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "apinger";
         $pconfig['description'] = gettext("Gateway Monitoring Daemon");
+        $pconfig['php']['restart'] = array('setup_gateways_monitor_full');
         $pconfig['php']['start'] = array('setup_gateways_monitor');
         $pconfig['pidfile'] = '/var/run/apinger.pid';
         $services[] = $pconfig;
@@ -2668,6 +2669,7 @@ function services_get()
           $pconfig = array();
           $pconfig['name'] = "relayd";
           $pconfig['description'] = gettext("Server load balancing daemon");
+          $pconfig['php']['restart'] = array('relayd_configure_full', 'filter_configure');
           $pconfig['php']['start'] = array('relayd_configure', 'filter_configure');
           $services[] = $pconfig;
     }
