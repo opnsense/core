@@ -69,7 +69,23 @@ function vpn_services()
         );
     }
 
-    /* XXX pppoe server instances too */
+    if (isset($config['pppoes']['pppoe'])) {
+        foreach ($config['pppoes']['pppoe'] as $pppoecfg) {
+            if (isset($pppoecfg['mode']) || $pppoecfg['mode'] != 'off') {
+                $services[] = array(
+                    'description' => gettext('PPPoE Server') . ': ' . htmlspecialchars($pppoecfg['descr']),
+                    'php' => array(
+                        'restart' => array('vpn_pppoe_configure_by_id'),
+                        'start' => array('vpn_pppoe_configure_by_id'),
+                        'args' => array('pppoeid'),
+                    ),
+                    'pidfile' => "/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid",
+                    'pppoeid' => $pppoecfg['pppoeid'],
+                    'name' => 'pppoed',
+                );
+            }
+	}
+    }
 
     return $services;
 }
@@ -317,6 +333,31 @@ function vpn_pppoes_configure()
             vpn_pppoe_configure($pppoe);
 	}
     }
+}
+
+function vpn_pppoe_configure_by_id($id)
+{
+    global $config;
+
+    $found = null;
+
+    if (isset($config['pppoes']['pppoe'])) {
+        foreach ($config['pppoes']['pppoe'] as $pppoe) {
+            if (!isset($pppoe['mode']) || $pppoe['mode'] == 'off') {
+                continue;
+            }
+            if ($id != 0 && $id == $pppoe['pppoeid']) {
+                $found = $pppoe;
+                break;
+            }
+        }
+    }
+
+    if ($found == null) {
+        return;
+    }
+
+    vpn_pppoe_configure($found);
 }
 
 function vpn_pppoe_configure(&$pppoecfg)
