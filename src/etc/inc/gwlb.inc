@@ -42,6 +42,12 @@ function return_apinger_defaults()
 	);
 }
 
+function setup_gateways_monitor_full()
+{
+	killbypid('/var/run/apinger.pid');
+	setup_gateways_monitor();
+}
+
 /*
  * Creates monitoring configuration file and
  * adds appropriate static routes.

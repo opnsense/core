@@ -141,18 +141,8 @@ function service_control_restart($name, $extras)
 {
     $msg = sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
 
-    /* XXX clean this up */
-    switch($name) {
-        case 'apinger':
-            killbypid("/var/run/apinger.pid");
-            setup_gateways_monitor();
-            return $msg;
-        case 'relayd':
-            relayd_configure(true);
-            filter_configure();
-            return $msg;
-        default:
-            break;
+    if ($name == 'openvpn') {
+        $filter['vpnid'] = $extras['id'];
     }
 
     $service = find_service_by_name($name);
