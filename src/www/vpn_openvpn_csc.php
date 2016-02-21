@@ -33,8 +33,6 @@ require_once("services.inc");
 require_once("interfaces.inc");
 require_once('pfsense-utils.inc');
 
-$service_hook = 'openvpn';
-
 // define all fields used in this form
 $all_form_fields = "custom_options,disable,common_name,block,description
     ,tunnel_network,local_network,local_networkv6,remote_network

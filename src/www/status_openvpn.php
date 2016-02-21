@@ -67,8 +67,6 @@ function kill_client($port, $remipp)
     return $killed;
 }
 
-$service_hook = 'openvpn';
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
   $vpnid = 0;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {

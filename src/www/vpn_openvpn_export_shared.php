@@ -35,8 +35,6 @@ require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("openvpn-client-export.inc");
 
-$service_hook = 'openvpn';
-
 $ras_server = array();
 if (isset($config['openvpn']['openvpn-server'])) {
     foreach ($config['openvpn']['openvpn-server'] as $sindex => $server) {
