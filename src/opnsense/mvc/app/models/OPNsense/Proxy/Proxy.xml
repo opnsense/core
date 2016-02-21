@@ -84,6 +84,12 @@
                         <ValidationMessage>Specify a positive memory cache size. (number of MB's)</ValidationMessage>
                         <Required>Y</Required>
                     </cache_mem>
+                    <maximum_object_size type="IntegerField">
+                      <MinimumValue>1</MinimumValue>
+                      <MaximumValue>99999</MaximumValue>
+                      <ValidationMessage>Specify a maximum object size. (number of MB's)</ValidationMessage>
+                      <Required>N</Required>
+                    </maximum_object_size>
                     <size type="IntegerField">
                         <default>100</default>
                         <MinimumValue>1</MinimumValue>
