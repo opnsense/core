@@ -117,23 +117,20 @@ function service_control_start($name, $extras)
 function service_control_stop($name, $extras)
 {
     $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
+    $filter = array();
 
-    /* XXX openvpn is handled special at the moment */
-    if ($name == 'openvpn') {
-        $vpnmode = htmlspecialchars($extras['vpnmode']);
-        if (($vpnmode == "server") or ($vpnmode == "client")) {
-            $id = htmlspecialchars($extras['id']);
-            $pidfile = "/var/run/openvpn_{$vpnmode}{$id}.pid";
-            killbypid($pidfile);
-        }
-        return $msg;
     /* XXX extra argument is extra tricky */
-    } elseif ($name == 'miniupnpd') {
+    if ($name == 'miniupnpd') {
         upnp_action('stop');
         return $msg;
     }
 
-    $service = find_service_by_name($name);
+    if ($name == 'openvpn') {
+        $filter['mode'] = $extras['vpnmode'];	/* XXX I think mode is spurious */
+        $filter['vpnid'] = $extras['id'];
+    }
+
+    $service = find_service_by_name($name, $filter);
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not stop unknown service `%s'"), htmlspecialchars($name));
     }
