@@ -118,29 +118,19 @@ function service_control_stop($name, $extras)
 {
     $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
 
-    switch ($name) {
-        case 'igmpproxy':
-            killbyname("igmpproxy");
-            return $msg;
-        case 'miniupnpd':
-            upnp_action('stop');
-            return $msg;
-        case 'sshd':
-            killbyname("sshd");
-            return $msg;
-        case 'openvpn':
-            $vpnmode = htmlspecialchars($extras['vpnmode']);
-            if (($vpnmode == "server") or ($vpnmode == "client")) {
-                $id = htmlspecialchars($extras['id']);
-                $pidfile = "/var/run/openvpn_{$vpnmode}{$id}.pid";
-                killbypid($pidfile);
-            }
-            return $msg;
-        case 'relayd':
-            killbyname('relayd');
-            return $msg;
-        default:
-            break;
+    /* XXX openvpn is handled special at the moment */
+    if ($name == 'openvpn') {
+        $vpnmode = htmlspecialchars($extras['vpnmode']);
+        if (($vpnmode == "server") or ($vpnmode == "client")) {
+            $id = htmlspecialchars($extras['id']);
+            $pidfile = "/var/run/openvpn_{$vpnmode}{$id}.pid";
+            killbypid($pidfile);
+        }
+        return $msg;
+    /* XXX extra argument is extra tricky */
+    } elseif ($name == 'miniupnpd') {
+        upnp_action('stop');
+        return $msg;
     }
 
     $service = find_service_by_name($name);
@@ -163,7 +153,8 @@ function service_control_stop($name, $extras)
     } elseif (isset($service['pidfile'])) {
         killbypid($service['pidfile']);
     } else {
-        $msg = sprintf(gettext("Could not stop service `%s'"), htmlspecialchars($name));
+        /* last resort, but not very elegant */
+        killbyname($service['name']);
     }
 
     return $msg;

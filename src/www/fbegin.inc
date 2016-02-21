@@ -183,15 +183,7 @@ if($need_alert_display == true) {
           <li class="btn-group-container">
             <?php
             if (isset($service_hook)) {
-              $ssvc = array();
-              switch ($service_hook) {
-                case 'openvpn':
-                  $ssvc = find_service_by_openvpn_vpnid($vpnid);
-                  break;
-                default:
-                  $ssvc = find_service_by_name($service_hook);
-                  break;
-              }
+              $ssvc = find_service_by_name($service_hook);
               if (!empty($ssvc)) {
                 echo get_service_status_icon($ssvc, false);
                 echo get_service_control_links($ssvc, false);
