@@ -33,7 +33,8 @@ require_once("interfaces.inc");
 
 if ($_POST) {
 	if ($_POST['clear'] == "Clear") {
-		upnp_action('restart');
+		upnp_stop();
+		upnp_start();
 		$savemsg = gettext("Rules have been cleared and the daemon restarted");
 	}
 }
@@ -111,7 +112,7 @@ include("head.inc");
                     </div>
 
 					<form action="status_upnp.php" method="post">
-					  <input type="submit" name="clear" id="clear" class="btn btn-primary" value="<?=gettext("Clear");?>" /> <?=gettext("all currently connected sessions");?>.
+					  <button type="submit" name="clear" id="clear" class="btn btn-primary" value="Clear"><?=gettext("Clear");?></button> <?=gettext("all currently connected sessions");?>.
 					</form>
 					<?php endif; ?>
 

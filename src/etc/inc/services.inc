@@ -1,9 +1,10 @@
 <?php
 
 /*
-    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
-    Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
+    Copyright (C) 2014-2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2010 Ermal Luci
+    Copyright (C) 2005-2006 Colin Smith <ethethlay@gmail.com>
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -2430,33 +2431,25 @@ function configure_cron()
     killbypid('/var/run/cron.pid', 'HUP');
 }
 
-function upnp_action($action)
+function upnp_start()
 {
-    global $config;
-
-    switch($action) {
-        case "start":
-            if (file_exists('/var/etc/miniupnpd.conf')) {
-                @unlink('/var/run/miniupnpd.pid');
-                mwexec_bg('/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P /var/run/miniupnpd.pid');
-            }
-            break;
-        case "stop":
-            killbypid('/var/run/miniupnpd.pid');
-            while((int)exec("/bin/pgrep -a miniupnpd | wc -l") > 0) {
-                mwexec('killall miniupnpd 2>/dev/null', true);
-            }
-            mwexec('/sbin/pfctl -aminiupnpd -Fr 2>&1 >/dev/null');
-            mwexec('/sbin/pfctl -aminiupnpd -Fn 2>&1 >/dev/null');
-            break;
-        case "restart":
-            upnp_action('stop');
-            upnp_action('start');
-            break;
+    if (file_exists('/var/etc/miniupnpd.conf')) {
+        @unlink('/var/run/miniupnpd.pid');
+        mwexec_bg('/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P /var/run/miniupnpd.pid');
     }
 }
 
-function upnp_start()
+function upnp_stop()
+{
+    killbypid('/var/run/miniupnpd.pid');
+    while((int)exec("/bin/pgrep -a miniupnpd | wc -l") > 0) {
+        mwexec('killall miniupnpd 2>/dev/null', true);
+    }
+    mwexec('/sbin/pfctl -aminiupnpd -Fr 2>&1 >/dev/null');
+    mwexec('/sbin/pfctl -aminiupnpd -Fn 2>&1 >/dev/null');
+}
+
+function upnp_configure()
 {
        global $config;
 
@@ -2466,7 +2459,6 @@ function upnp_start()
            echo "done.\n";
        }
 }
-
 
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {
     global $config;
@@ -2644,6 +2636,11 @@ function services_get()
         $pconfig = array();
         $pconfig['name'] = "miniupnpd";
         $pconfig['description'] = gettext("UPnP Service");
+        $pconfig['description'] = gettext("UPnP Service");
+        $pconfig['php']['restart'] = array('upnp_stop', 'upnp_start');
+        $pconfig['php']['start'] = array('upnp_start');
+        $pconfig['php']['stop'] = array('upnp_stop');
+        $pconfig['pidfile'] = '/var/run/miniupnpd.pid';
         $services[] = $pconfig;
     }
 
