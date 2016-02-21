@@ -1,8 +1,5 @@
 <?php
 
-
-/* MiniUPnPd */
-
 function upnp_notice ($msg) { log_error("miniupnpd: {$msg}"); }
 function upnp_warn ($msg) { log_error("miniupnpd: {$msg}"); }
 
@@ -11,6 +8,36 @@ function upnp_running () {
 		return true;
 	return false;
 }
+
+function upnp_start()
+{
+    if (file_exists('/var/etc/miniupnpd.conf')) {
+        @unlink('/var/run/miniupnpd.pid');
+        mwexec_bg('/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P /var/run/miniupnpd.pid');
+    }
+}
+
+function upnp_stop()
+{
+    killbypid('/var/run/miniupnpd.pid');
+    while((int)exec("/bin/pgrep -a miniupnpd | wc -l") > 0) {
+        mwexec('killall miniupnpd 2>/dev/null', true);
+    }
+    mwexec('/sbin/pfctl -aminiupnpd -Fr 2>&1 >/dev/null');
+    mwexec('/sbin/pfctl -aminiupnpd -Fn 2>&1 >/dev/null');
+}
+
+function upnp_configure()
+{
+       global $config;
+
+       if (!empty($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
+           echo gettext("Starting UPnP service... ");
+           sync_package_miniupnpd();
+           echo "done.\n";
+       }
+}
+
 
 function upnp_write_config($file, $text) {
 	$handle = fopen($file, 'w');
