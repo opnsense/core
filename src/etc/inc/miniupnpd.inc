@@ -139,12 +139,13 @@ function sync_package_miniupnpd() {
 			/* if miniupnpd not running start it */
 			if(!upnp_running()) {
 				upnp_notice("Starting service on interface: {$ifaces_active}");
-				upnp_action('start');
+				upnp_start();
 			}
 			/* or restart miniupnpd if settings were changed */
 			else {
 				upnp_notice("Restarting service on interface: {$ifaces_active}");
-				upnp_action('restart');
+				upnp_stop();
+				upnp_start();
 			}
 		}
 	} else {
@@ -157,7 +158,7 @@ function sync_package_miniupnpd() {
 			else
 				upnp_notice('Stopping service: no interfaces selected');
 
-			upnp_action('stop');
+			upnp_stop();
 			@unlink($config_file);
 		}
 	}

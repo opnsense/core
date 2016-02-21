@@ -84,10 +84,6 @@ function service_control_start($name, $extras)
             }
         }
         return $msg;
-    /* XXX extra argument is extra tricky */
-    } elseif ($name == 'miniupnpd') {
-        upnp_action('start');
-        return $msg;
     }
 
     $service = find_service_by_name($name);
@@ -118,12 +114,6 @@ function service_control_stop($name, $extras)
 {
     $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
     $filter = array();
-
-    /* XXX extra argument is extra tricky */
-    if ($name == 'miniupnpd') {
-        upnp_action('stop');
-        return $msg;
-    }
 
     if ($name == 'openvpn') {
         $filter['mode'] = $extras['vpnmode'];	/* XXX I think mode is spurious */
@@ -192,7 +182,8 @@ function service_control_restart($name, $extras) {
             services_igmpproxy_configure();
             break;
         case 'miniupnpd':
-            upnp_action('restart');
+            upnp_stop();
+            upnp_start();
             break;
         case 'ipsec':
             vpn_ipsec_force_reload();
