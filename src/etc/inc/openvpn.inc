@@ -807,7 +807,7 @@ function openvpn_reconfigure($mode, $settings)
     @chmod("/var/etc/openvpn/{$mode_id}.conf", 0600);
 }
 
-function openvpn_restart_by_vpnid($mode, $vpnid)
+function openvpn_restart_by_id($mode, $id)
 {
     global $config;
 
@@ -818,7 +818,7 @@ function openvpn_restart_by_vpnid($mode, $vpnid)
             if (isset($settings['disable'])) {
                 continue;
             }
-            if ($vpnid != 0 && $vpnid == $settings['vpnid']) {
+            if ($id != 0 && $id == $settings['vpnid']) {
                 $found = $settings;
                 break;
             }
