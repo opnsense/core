@@ -690,11 +690,18 @@ include("head.inc");
               <form action="services_dhcp.php" method="post" name="iform" id="iform">
                 <div class="table-responsive">
                   <table class="table table-striped">
+                    <tr>
+                      <td width="22%" valign="top"></td>
+                      <td width="78%" align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      </td>
+                    </tr>
 <?php
                     if (!isset($pool) && !($act == "newpool")): ?>
                     <tr>
-                      <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
-                      <td width="78%">
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
+                      <td>
                         <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
                         <strong><?php printf(gettext("Enable DHCP server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
@@ -705,7 +712,7 @@ include("head.inc");
                       <td colspan="2"><?php echo gettext("Editing Pool-Specific Options. To return to the Interface, click its tab above."); ?></td>
                     </tr>
                     <tr>
-                      <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Pool Description");?></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Pool Description");?></td>
                       <td>
                         <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
                       </td>

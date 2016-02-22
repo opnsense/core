@@ -335,11 +335,15 @@ include("head.inc");
             <div class="table-responsive">
               <table class="table table-striped">
                 <tr>
-                  <td colspan="2"><?=gettext("Static DHCP Mapping");?></td>
+                  <td width="22%" valign="top"><strong><?=gettext("Static DHCP Mapping");?></strong></td>
+                  <td width="78%" align="right">
+                    <small><?=gettext("full help"); ?> </small>
+                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                  </td>
                 </tr>
                 <tr>
-                  <td width="22%"><a id="help_for_mac" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MAC address");?></td>
-                  <td width="78%">
+                  <td><a id="help_for_mac" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MAC address");?></td>
+                  <td>
                     <input name="mac" id="mac" type="text" value="<?=$pconfig['mac'];?>" />
 <?php
                     $ip = getenv('REMOTE_ADDR');

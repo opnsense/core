@@ -114,15 +114,19 @@ include("head.inc");
               <p><?= gettext('DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.') ?></p>
 <?php
             else: ?>
-              <header class="content-box-head container-fluid">
-                  <h3><?=gettext("DHCP Relay configuration"); ?></h3>
-              </header>
-              <div class="content-box-main">
+              <div>
                 <div class="table-responsive">
                   <table class="table table-striped">
                     <tr>
-                      <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext('Enable') ?></td>
-                      <td width="78%">
+                      <td width="22%" valign="top"><strong><?=gettext("DHCP Relay configuration"); ?></strong></td>
+                      <td width="78%" align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Enable') ?></td>
+                      <td>
                         <input name="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> onclick="enable_change(false)" />
                       </td>
                     </tr>

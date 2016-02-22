@@ -169,11 +169,15 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td colspan="2"><?=gettext("Static DHCPv6 Mapping");?></td>
+                    <td width="22%" valign="top"><strong><?=gettext("Static DHCPv6 Mapping");?></strong></td>
+                    <td width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                    </td>
                   </tr>
                   <tr>
-                    <td width="22%"><a id="help_for_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DUID Identifier");?></td>
-                    <td width="78%">
+                    <td><a id="help_for_duid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DUID Identifier");?></td>
+                    <td>
                       <input name="duid" type="text" value="<?=$pconfig['duid'];?>" />
                       <div class="hidden" for="help_for_duid">
                         <?=gettext("Enter a DUID Identifier in the following format: ");?><br />
