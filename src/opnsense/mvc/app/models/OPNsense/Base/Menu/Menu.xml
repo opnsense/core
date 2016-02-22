@@ -19,7 +19,7 @@
                 <workAround url="/system_crlmanager.php*" visibility="hidden"/>
             </Revocation>
         </Trust>
-        <Configuration order="80" cssClass="fa fa-book fa-fw">
+        <Configuration order="80" cssClass="fa fa-history fa-fw">
             <History url="/diag_confbak.php">
                 <none url="/diag_confbak.php*" visibility="hidden"/>
             </History>
@@ -222,7 +222,7 @@
         </DHCP>
         <DHCPv6 cssClass="fa fa-bullseye fa-fw">
             <Server order="100" url="/services_dhcpv6.php">
-		<Interface url="/services_dhcpv6.php?*" visibility="hidden"/>
+                <Interface url="/services_dhcpv6.php?*" visibility="hidden"/>
                 <Edit url="/services_dhcpv6_edit.php?*" visibility="hidden"/>
                 <RA url="/services_router_advertisements.php?*" visibility="hidden"/>
             </Server>
@@ -361,14 +361,8 @@
         </PPTP>
     </VPN>
     <Help order="6" cssClass="fa fa-support">
-        <AboutThisPage VisibleName="About this Page" url="/help.php" IsExternal="Y"/>
-        <DevelopersWiki VisibleName="Developers Wiki" url="https://wiki.opnsense.org/index.php/developers"
-                        IsExternal="Y"/>
-        <Documentation url="https://wiki.opnsense.org/" IsExternal="Y"/>
-        <FreeBSDHandbook VisibleName="FreeBSD Handbook" url="https://www.freebsd.org/doc/en/books/handbook/"
-                         IsExternal="Y"/>
-        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/"
-                     IsExternal="Y"/>
-        <UserForum VisibleName="User Forum" url="https://forum.opnsense.org/" IsExternal="Y"/>
+        <OPNsense VisibleName="Documentation" url="https://docs.opnsense.org/" cssClass="fa fa-book" IsExternal="Y"/>
+        <UserForum VisibleName="User Forum" url="https://forum.opnsense.org/" cssClass="fa fa-ticket" IsExternal="Y"/>
+        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/" cssClass="fa fa-phone" IsExternal="Y"/>
     </Help>
 </menu>
