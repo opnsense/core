@@ -132,4 +132,3 @@ class TestCoreMethods(unittest.TestCase):
         cmd_thread.run()
         response = json.loads(self.dummysock.getReceived()[:-4])
         self.assertGreater(len(response), 10, 'number of configd commands very suspicious')
-
