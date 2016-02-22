@@ -471,8 +471,15 @@ include("head.inc");
                 <div class="table-responsive">
                   <table class="table table-striped">
                     <tr>
-                      <td width="22%"><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Enable");?></td>
-                      <td width="78%">
+                      <td width="22%" valign="top"></td>
+                      <td width="78%" align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Enable");?></td>
+                      <td>
                         <input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> />
                         <strong><?php printf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
