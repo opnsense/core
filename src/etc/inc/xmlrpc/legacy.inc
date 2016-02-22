@@ -157,6 +157,7 @@ function restore_config_section_xmlrpc($new_config)
 
     require_once("interfaces.inc");
     require_once("filter.inc");
+    require_once("ipsec.inc");
 
     // save old config
     $old_config = $config;

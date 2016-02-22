@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2006 Scott Ullrich (sullrich@gmail.com)
-	All rights reserved.
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2006 Scott Ullrich (sullrich@gmail.com)
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 function l2tpusercmp($a, $b)
@@ -34,13 +34,13 @@ function l2tpusercmp($a, $b)
 
 function l2tp_users_sort()
 {
-        global  $config;
+    global  $config;
 
     if (!is_array($config['l2tp']['user'])) {
-            return;
+        return;
     }
 
-        usort($config['l2tp']['user'], "l2tpusercmp");
+    usort($config['l2tp']['user'], "l2tpusercmp");
 }
 
 require_once("guiconfig.inc");
@@ -50,7 +50,7 @@ require_once("plugins.inc.d/vpn.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');
 
-if (!is_array($config['l2tp']['user'])) {
+if (empty($config['l2tp']['user']) || !is_array($config['l2tp']['user'])) {
     $config['l2tp']['user'] = array();
 }
 $a_secret = &$config['l2tp']['user'];
@@ -142,69 +142,57 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
 
-				<?php if (isset($input_errors) && count($input_errors) > 0) {
+        <?php if (isset($input_errors) && count($input_errors) > 0) {
                     print_input_errors($input_errors);
 } ?>
 
-				<div id="inputerrors"></div>
-
-
-			    <section class="col-xs-12">
-
-					<div class="tab-content content-box col-xs-12">
-
-							<form action="vpn_l2tp_users_edit.php" method="post" name="iform" id="iform">
-
-							 <div class="table-responsive">
-								<table class="table table-striped table-sort">
-									<tr>
-					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
-					                  <td width="78%" class="vtable">
-										<input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
-					                  </td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
-					                  <td width="78%" class="vtable">
-					                    <input name="passwordfld" type="password" class="form-control pwd" id="passwordfld" size="20" />
-					                    <br /><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
-					                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :
-?><br />
-					                    <p class="text-muted"><em><small><?=gettext("If you want to change the users password, enter it here twice.");?></small></em></p>
-					                    <?php
-endif; ?></td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
-					                  <td width="78%" class="vtable">
-					                    <input name="ip" type="text" class="form-control unknown" id="ip" size="20" value="<?=htmlspecialchars($pconfig['ip']);?>" />
-					                    <p class="text-muted"><em><small><?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?></small></em></p></td>
-					                </tr>
-					                <tr>
-					                  <td width="22%" valign="top">&nbsp;</td>
-					                  <td width="78%">
-					                    <input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext('Save');?>" />
-					                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");
-?>" onclick="window.location.href='<?=$referer;?>'" />
-					                    <?php if (isset($id) && $a_secret[$id]) :
-?>
-					                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-					                    <?php
-endif; ?>
-					                  </td>
-					                </tr>
-					            </table>
-							 </div>
-							</form>
-
-					</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
+        <section class="col-xs-12">
+          <div class="tab-content content-box col-xs-12">
+              <form method="post" name="iform" id="iform">
+               <div class="table-responsive">
+                <table class="table table-striped table-sort">
+                  <tr>
+                    <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
+                    <td width="78%" class="vtable">
+                      <input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
+                    <td width="78%" class="vtable">
+                      <input name="passwordfld" type="password" class="form-control pwd" id="passwordfld" size="20" />
+                      <br /><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
+                      &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :?><br />
+                      <p class="text-muted"><em><small><?=gettext("If you want to change the users password, enter it here twice.");?></small></em></p>
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
+                    <td width="78%" class="vtable">
+                      <input name="ip" type="text" class="form-control unknown" id="ip" size="20" value="<?=htmlspecialchars($pconfig['ip']);?>" />
+                      <p class="text-muted"><em><small><?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?></small></em></p></td>
+                  </tr>
+                  <tr>
+                    <td width="22%" valign="top">&nbsp;</td>
+                    <td width="78%">
+                      <input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext('Save');?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
+                      <?php if (isset($id) && $a_secret[$id]) :?>
+                      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                </table>
+               </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
 <?php include("foot.inc");
