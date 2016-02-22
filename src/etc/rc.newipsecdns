@@ -32,7 +32,7 @@
 require_once("util.inc");
 require_once("config.inc");
 require_once("filter.inc");
-require_once("vpn.inc");
+require_once('ipsec.inc');
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
@@ -49,9 +49,10 @@ if (isset($config['ipsec']['enable'])) {
 
 $ipseclck = lock('ipsecdns', LOCK_EX);
 
-vpn_ipsec_configure();
+ipsec_configure();
 
-if (isset($config['ipsec']['failoverforcereload']))
-	vpn_ipsec_force_reload();
+if (isset($config['ipsec']['failoverforcereload'])) {
+	ipsec_force_reload();
+}
 
 unlock($ipseclck);

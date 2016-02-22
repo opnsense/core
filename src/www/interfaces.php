@@ -32,12 +32,11 @@
 */
 
 require_once("guiconfig.inc");
-require_once("vpn.inc");
 require_once("filter.inc");
 require_once("rrd.inc");
-require_once("vpn.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("ipsec.inc");
 require_once("openvpn.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");

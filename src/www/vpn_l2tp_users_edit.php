@@ -44,7 +44,9 @@ function l2tp_users_sort()
 }
 
 require_once("guiconfig.inc");
-require_once("vpn.inc");
+require_once("services.inc");
+require_once("plugins.inc");
+require_once("plugins.inc.d/vpn.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');
 
@@ -122,17 +124,17 @@ if ($_POST) {
         } else {
             $a_secret[] = $secretent;
         }
+
         l2tp_users_sort();
-
         write_config();
-
-        $retval = vpn_l2tp_configure();
+        vpn_l2tp_configure();
 
         header("Location: vpn_l2tp_users.php");
-
         exit;
     }
 }
+
+$service_hook = 'l2tpd';
 
 include("head.inc");
 ?>

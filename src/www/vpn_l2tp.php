@@ -28,9 +28,11 @@
 */
 
 require_once("guiconfig.inc");
-require_once("vpn.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
+require_once("services.inc");
+require_once("plugins.inc");
+require_once("plugins.inc.d/vpn.inc");
 
 if (!isset($config['l2tp']['radius']) || !is_array($config['l2tp']['radius'])) {
     $config['l2tp']['radius'] = array();
@@ -163,6 +165,8 @@ if ($_POST) {
         $savemsg = get_std_save_message();
     }
 }
+
+$service_hook = 'l2tpd';
 
 include("head.inc");
 ?>

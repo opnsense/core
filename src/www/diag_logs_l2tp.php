@@ -19,4 +19,6 @@ $tab_array = array();
 $tab_array[] = array(gettext("L2TP Logins"), $mode != "raw", "/diag_logs_l2tp.php");
 $tab_array[] = array(gettext("L2TP Raw"), $mode == "raw", "/diag_logs_l2tp.php?mode=raw");
 
+$service_hook = 'l2tpd';
+
 require_once 'diag_logs_vpn.inc';

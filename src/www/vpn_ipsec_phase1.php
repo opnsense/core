@@ -31,7 +31,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vpn.inc");
+require_once("ipsec.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
@@ -399,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         /* if the remote gateway changed and the interface is not WAN then remove route */
-        /* the vpn_ipsec_configure() handles adding the route */
+        /* the ipsec_configure() handles adding the route */
         if ($pconfig['interface'] <> "wan") {
             if ($old_ph1ent['remote-gateway'] <> $pconfig['remote-gateway']) {
                 mwexec("/sbin/route delete -host {$old_ph1ent['remote-gateway']}");

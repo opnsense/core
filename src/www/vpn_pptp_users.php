@@ -28,7 +28,9 @@
 */
 
 require_once('guiconfig.inc');
-require_once('vpn.inc');
+require_once('services.inc');
+require_once("plugins.inc");
+require_once('plugins.inc.d/vpn.inc');
 
 if (!is_array($config['pptpd']['user'])) {
     $config['pptpd']['user'] = array();
@@ -39,14 +41,9 @@ if ($_POST) {
     $pconfig = $_POST;
 
     if ($_POST['apply']) {
-        $retval = 0;
-        $retval = vpn_setup();
+        vpn_pptpd_configure();
         $savemsg = get_std_save_message();
-        if ($retval == 0) {
-            if (is_subsystem_dirty('pptpusers')) {
-                clear_subsystem_dirty('pptpusers');
-            }
-        }
+        clear_subsystem_dirty('pptpusers');
     }
 }
 
@@ -59,6 +56,8 @@ if ($_GET['act'] == "del") {
         exit;
     }
 }
+
+$service_hook = 'pptpd';
 
 include("head.inc");
 

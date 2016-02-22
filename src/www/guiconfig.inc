@@ -273,8 +273,8 @@ function print_service_banner($service)
 	}
 }
 
-function get_std_save_message() {
-	global $d_sysrebootreqd_path;
+function get_std_save_message()
+{
 	$filter_related = false;
 	$filter_pages = array("nat", "filter");
 	$to_return = gettext("The changes have been applied successfully.");

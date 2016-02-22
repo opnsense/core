@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vpn.inc");
+require_once("ipsec.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
@@ -99,9 +99,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     write_config();
     $savemsg = get_std_save_message();
-
     filter_configure();
-    vpn_ipsec_configure();
+    ipsec_configure();
 }
 
 $service_hook = 'ipsec';

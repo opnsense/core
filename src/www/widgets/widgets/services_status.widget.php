@@ -33,9 +33,10 @@ $nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("services.inc");
-require_once("vpn.inc");
-require_once("widgets/include/services_status.inc");
+require_once('plugins.inc');
+require_once("ipsec.inc");
 require_once("interfaces.inc");
+require_once("widgets/include/services_status.inc");
 
 $services = services_get();
 

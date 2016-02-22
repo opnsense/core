@@ -31,7 +31,7 @@
 /* parse the configuration and include all functions used below */
 require_once("config.inc");
 require_once("filter.inc");
-require_once("vpn.inc");
+require_once('ipsec.inc');
 require_once("openvpn.inc");
 require_once("rrd.inc");
 require_once("util.inc");
@@ -200,7 +200,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     services_dyndns_configure($interface);
 
     /* reconfigure IPsec tunnels */
-    vpn_ipsec_force_reload($interface);
+    ipsec_force_reload($interface);
 
     /* start OpenVPN server & clients */
     if (substr($interface_real, 0, 4) != "ovpn") {

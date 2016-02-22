@@ -31,6 +31,7 @@
 require_once("config.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
+require_once('ipsec.inc');
 require_once('openvpn.inc');
 require_once("util.inc");
 require_once("system.inc");
@@ -72,7 +73,6 @@ function handle_argument_group($iface, $argument2) {
                 case "start":
                     log_error("DEVD Ethernet attached event for {$iface}");
                     log_error("HOTPLUG: Configuring interface {$iface}");
-                    require_once("vpn.inc");
                     // Do not try to readd to bridge otherwise em(4) has problems
                     interface_configure($iface, true, true);
                     break;

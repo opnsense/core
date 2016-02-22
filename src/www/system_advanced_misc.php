@@ -31,13 +31,12 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vpn.inc");
+require_once("ipsec.inc");
 require_once("vslb.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-
 
 $crypto_modules = array('glxsb' => gettext("AMD Geode LX Security Block"),
                         'aesni' => gettext("AES-NI CPU-based Acceleration")

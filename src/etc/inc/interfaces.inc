@@ -1183,7 +1183,7 @@ function interfaces_configure()
         system_routing_configure();
 
         /* reload IPsec tunnels */
-        vpn_ipsec_configure();
+        ipsec_configure();
 
         /* reload dhcpd (interface enabled/disabled status may have changed) */
         services_dhcpd_configure();
@@ -3164,7 +3164,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             system_routing_configure($interface);
 
             /* reload ipsec tunnels */
-            vpn_ipsec_configure();
+            ipsec_configure();
 
             /* restart dnsmasq or unbound */
             if (isset($config['dnsmasq']['enable'])) {

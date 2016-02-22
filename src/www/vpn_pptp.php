@@ -30,8 +30,10 @@
 require_once('guiconfig.inc');
 require_once('interfaces.inc');
 require_once('filter.inc');
-require_once('vpn.inc');
+require_once('services.inc');
+require_once("plugins.inc");
 require_once("pfsense-utils.inc");
+require_once('plugins.inc.d/vpn.inc');
 
 if (!is_array($config['pptpd']['radius'])) {
     $config['pptpd']['radius'] = array();
@@ -187,14 +189,13 @@ if ($_POST) {
         }
 
         write_config();
-
-        $retval = 0;
-        $retval = vpn_pptpd_configure();
         $savemsg = get_std_save_message();
-
+        vpn_pptpd_configure();
         filter_configure();
     }
 }
+
+$service_hook = 'pptpd';
 
 include("head.inc");
 

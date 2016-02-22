@@ -2736,6 +2736,13 @@ function services_get()
         'name' => 'configd',
     );
 
+    if (function_exists('plugins_services')) {
+        /* only pull plugins if plugins.inc was included before */
+        foreach (plugins_services() as $service) {
+            $services[] = $service;
+        }
+    }
+
     return $services;
 }
 
