@@ -37,7 +37,6 @@ function staticmapcmp($a, $b)
 }
 
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
@@ -46,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header("Location: services_dhcpv6.php");
         exit;
     }
-    if (!empty($config['dhcpdv6'][$if]['staticmap'][$_GET['id']])) {
+    if (isset($if) && isset($_GET['id']) && !empty($config['dhcpdv6'][$if]['staticmap'][$_GET['id']])) {
         $id = $_GET['id'];
     }
 
@@ -54,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr');
     foreach ($config_copy_fieldnames as $fieldname) {
-        if (isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
+        if (isset($if) && isset($id) && isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if]['staticmap'][$id][$fieldname];
         } elseif (isset($_GET[$fieldname])) {
             $pconfig[$fieldname] = $_GET[$fieldname];
