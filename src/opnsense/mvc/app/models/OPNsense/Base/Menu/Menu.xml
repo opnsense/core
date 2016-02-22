@@ -361,8 +361,8 @@
         </PPTP>
     </VPN>
     <Help order="6" cssClass="fa fa-support">
-        <OPNsense VisibleName="Documentation" url="https://docs.opnsense.org/" cssClass="fa fa-book" IsExternal="Y"/>
-        <UserForum VisibleName="User Forum" url="https://forum.opnsense.org/" cssClass="fa fa-ticket" IsExternal="Y"/>
-        <PaidSupport VisibleName="Paid Support" url="https://opnsense.org/support-overview/commercial-support/" cssClass="fa fa-phone" IsExternal="Y"/>
+        <OPNsense VisibleName="Documentation" order="10" url="https://docs.opnsense.org/" cssClass="fa fa-book" IsExternal="Y"/>
+        <UserForum VisibleName="User Forum" order="20" url="https://forum.opnsense.org/" cssClass="fa fa-ticket" IsExternal="Y"/>
+        <PaidSupport VisibleName="Paid Support" order="30" url="https://opnsense.org/support-overview/commercial-support/" cssClass="fa fa-phone" IsExternal="Y"/>
     </Help>
 </menu>
