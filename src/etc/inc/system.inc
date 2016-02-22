@@ -869,11 +869,9 @@ EOD;
             if (isset($syslogcfg['portalauth'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
             }
-
             if (isset($syslogcfg['dhcp'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local7.*");
             }
-
             if (isset($syslogcfg['system'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.notice;kern.debug;lpr.info;mail.crit;");
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "news.err;local0.none;local3.none;local7.none");
