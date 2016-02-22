@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           "IP addresses. Only interfaces configured with a static IP will be shown."
         );
         foreach ($config['interfaces'] as $if_id => $intf) {
-            if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($oc['ipaddrv6'])) {
+            if (!empty($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($intf['ipaddrv6'])) {
                 $if = $if_id;
                 break;
             }
@@ -445,7 +445,7 @@ include("head.inc");
         /* active tabs */
         $tab_array_main = array();
         foreach ($config['interfaces'] as $if_id => $intf) {
-            if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6'])) {
+            if (!empty($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6'])) {
                 $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
                 if ($if_id == $if) {
                     $tab_array_main[] = array($ifname, true, "services_dhcpv6.php?if={$if_id}");
@@ -815,7 +815,7 @@ include("head.inc");
                       foreach ($config['dhcpdv6'][$if]['staticmap'] as $mapent): ?>
                     <tr>
                       <td><?=htmlspecialchars($mapent['duid']);?></td>
-                      <td><?=htmlspecialchars($mapent['ipaddrv6']);?></td>
+                      <td><?=isset($mapent['ipaddrv6']) ? htmlspecialchars($mapent['ipaddrv6']) : "";?></td>
                       <td><?=htmlspecialchars($mapent['hostname']);?></td>
                       <td><?=htmlspecialchars($mapent['descr']);?></td>
                       <td>

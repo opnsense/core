@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header("Location: services_dhcp.php");
         exit;
     }
-    if (!empty($config['dhcpd'][$if]['staticmap'][$_GET['id']])) {
+    if (isset($if) && isset($_GET['id']) && !empty($config['dhcpd'][$if]['staticmap'][$_GET['id']])) {
         $id = $_GET['id'];
     }
 
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       'ddnsdomainprimary', 'ddnsdomainkeyname', 'ddnsdomainkey', 'ddnsupdate', 'ntp1', 'ntp2', 'tftp', 'ipaddr',
       'winsserver', 'dnsserver');
     foreach ($config_copy_fieldnames as $fieldname) {
-        if (isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
+        if (isset($if) && isset($id) && isset($config['dhcpd'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpd'][$if]['staticmap'][$id][$fieldname];
         } elseif (isset($_GET[$fieldname])) {
             $pconfig[$fieldname] = $_GET[$fieldname];

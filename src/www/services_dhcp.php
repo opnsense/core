@@ -139,6 +139,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = gettext("The DHCP Server can only be enabled on interfaces configured with static IP addresses") . ".<br/><br/>" . gettext("Only interfaces configured with a static IP will be shown") . ".";
     }
 
+    /* If no interface is provided, choose first one from interfaces */
+    if (!isset($if)) {
+        foreach ($config['interfaces'] as $if_id => $intf) {
+            if (!empty($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
+                $if = $if_id;
+                break;
+            }
+        }
+    }
+
     if (empty($config['dhcpd'][$if])) {
         $config['dhcpd'][$if] = array();
     }
@@ -153,15 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $act = null;
     }
 
-    /* If no interface is provided, choose first one from interfaces */
-    if (!isset($if)) {
-        foreach ($config['interfaces'] as $if_id => $intf) {
-            if (!empty($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
-                $if = $if_id;
-                break;
-            }
-        }
-    }
     // point to source of data (pool or main dhcp section)
     if (isset($pool)) {
         $dhcpdconf = &$a_pools[$pool];
