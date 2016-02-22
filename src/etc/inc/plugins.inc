@@ -54,7 +54,7 @@ function plugins_services()
     $services = array();
 
     foreach (plugin_scan() as $name => $path) {
-	require_once $path;
+        require_once $path;
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
             $workers = $func();
@@ -70,7 +70,7 @@ function plugins_services()
 function plugins_configure()
 {
     foreach (plugin_scan() as $name => $path) {
-	require_once $path;
+        require_once $path;
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
             $workers = $func();
