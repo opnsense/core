@@ -812,58 +812,30 @@ function system_syslogd_start()
     $syslogd_extra = '';
 
     if (isset($syslogcfg)) {
-        $separatelogfacilities = array(
-          'apinger',
-          'bgpd',
-          'charon',
-          'dhclient',
-          'dhcp6c',
-          'dhcpd',
-          'dhcrelay',
-          'dnsmasq',
-          'filterdns',
-          'filterlog',
-          'hostapd',
-          'l2tps',
-          'miniupnpd',
-          'ntp',
-          'ntpd',
-          'ntpdate',
-          'olsrd',
-          'openvpn',
-          'ospfd',
-          'poes',
-          'ppp',
-          'pptps',
-          'radvd',
-          'relayd',
-          'routed',
-          'unbound',
-          'zebra',
-          'captiveportal',
-        );
         $syslogconf = '';
 
         // create structure with log section definitions and config tags for remote usage
         $syslogconfs = array();
-        $syslogconfs['routing'] = array("conf" => "!radvd,routed,olsrd,zebra,ospfd,bgpd,miniupnpd" , "remote" => null);
-        $syslogconfs['ntpd'] = array("conf" => "!ntp,ntpd,ntpdate", "remote" => null);
-        $syslogconfs['ppps'] = array("conf" => "!ppp", "remote" => null);
-        $syslogconfs['pptps'] = array("conf" => "!pptps", "remote" => null);
-        $syslogconfs['poes'] = array("conf" => "!poes", "remote" => null);
-        $syslogconfs['l2tps'] = array("conf" => "!l2tps", "remote" => null);
-        $syslogconfs['ipsec'] = array("conf" => "!charon", "remote" => null);
-        $syslogconfs['openvpn'] = array("conf" => "!openvpn", "remote" => "vpn");
-        $syslogconfs['gateways'] = array("conf" => "!apinger", "remote" => "apinger");
-        $syslogconfs['resolver'] = array("conf" => "!dnsmasq,filterdns,unbound", "remote" => null);
-        $syslogconfs['dhcpd'] = array("conf" => "!dhcpd,dhcrelay,dhclient,dhcp6c", "remote" => "dhcp");
-        $syslogconfs['relayd'] = array("conf" => "!relayd", "remote" => "relayd");
-        $syslogconfs['wireless'] = array("conf" => "!hostapd", "remote" => "hostapd");
-        $syslogconfs['filter'] = array("conf" => "!filterlog", "remote" => "filter");
-        $syslogconfs['portalauth'] = array("conf" => "!captiveportal", "remote" => "portalauth");
+        $syslogconfs['routing'] = array("facility" => array('radvd', 'routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd') , "remote" => null);
+        $syslogconfs['ntpd'] = array("facility" => array('ntp', 'ntpd', 'ntpdate'), "remote" => null);
+        $syslogconfs['ppps'] = array("facility" => array('ppp'), "remote" => null);
+        $syslogconfs['pptps'] = array("facility" => array('pptps'), "remote" => null);
+        $syslogconfs['poes'] = array("facility" => array('poes'), "remote" => null);
+        $syslogconfs['l2tps'] = array("facility" => array('l2tps'), "remote" => null);
+        $syslogconfs['ipsec'] = array("facility" => array('charon'), "remote" => null);
+        $syslogconfs['openvpn'] = array("facility" => array('openvpn'), "remote" => "vpn");
+        $syslogconfs['gateways'] = array("facility" => array('apinger'), "remote" => "apinger");
+        $syslogconfs['resolver'] = array("facility" => array('dnsmasq','filterdns','unbound'), "remote" => null);
+        $syslogconfs['dhcpd'] = array("facility" => array('dhcpd','dhcrelay','dhclient','dhcp6c'), "remote" => "dhcp");
+        $syslogconfs['relayd'] = array("facility" => array('relayd'), "remote" => "relayd");
+        $syslogconfs['wireless'] = array("facility" => array('hostapd'), "remote" => "hostapd");
+        $syslogconfs['filter'] = array("facility" => array('filterlog'), "remote" => "filter");
+        $syslogconfs['portalauth'] = array("facility" => array('captiveportal'), "remote" => "portalauth");
 
+        $separatelogfacilities = array();
         foreach ($syslogconfs as $logTopic => $logConfig) {
-            $syslogconf .= "{$logConfig['conf']}\n";
+            $syslogconf .= "!".implode(',', $logConfig['facility'])."\n";
+            $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
             if (!isset($syslogcfg['disablelocallogging'])) {
                 $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
             }
@@ -873,6 +845,7 @@ function system_syslogd_start()
         }
 
 
+        asort($separatelogfacilities);
         $facilitylist = implode(',', array_unique($separatelogfacilities));
         $syslogconf .= "!-{$facilitylist}\n";
         if (!isset($syslogcfg['disablelocallogging'])) {
