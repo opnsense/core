@@ -103,19 +103,6 @@ function vpn_syslog()
     return $logfacilities;
 }
 
-function vpn_netgraph_support()
-{
-    $iflist = get_configured_interface_list();
-    foreach ($iflist as $iface) {
-        $realif = get_real_interface($iface);
-        /* Get support for netgraph(4) from the nic */
-        $ifinfo = pfSense_get_interface_addresses($realif);
-        if (!empty($ifinfo) && in_array($ifinfo['iftype'], array("ether", "vlan", "bridge"))) {
-            pfSense_ngctl_attach(".", $realif);
-        }
-    }
-}
-
 function vpn_pptpd_configure()
 {
   global $config;
@@ -322,9 +309,9 @@ EOD;
       unset($mpdsecret);
       chmod('/var/etc/pptp-vpn/mpd.secret', 0600);
 
-      vpn_netgraph_support();
+      /* fixed to WAN elsewhere, no need to extend, but at least make it work */
+      pfSense_ngctl_attach('.', get_real_interface('wan'));
 
-      /* fire up mpd */
       mwexec('/usr/local/sbin/mpd4 -b -d /var/etc/pptp-vpn -p /var/run/pptp-vpn.pid -s pptps pptps');
 
       break;
@@ -568,12 +555,10 @@ EOD;
         chmod("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", 0600);
       }
 
-      /* Check if previous instance is still up */
       killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
 
-      /* Get support for netgraph(4) from the nic */
       pfSense_ngctl_attach(".", $pppoe_interface);
-      /* fire up mpd */
+
       mwexec("/usr/local/sbin/mpd4 -b -d /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn -p /var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
 
       break;
@@ -762,9 +747,8 @@ EOD;
       unset($mpdsecret);
       chmod('/var/etc/l2tp-vpn/mpd.secret', 0600);
 
-      vpn_netgraph_support();
+      pfSense_ngctl_attach('.', get_real_interface($l2tpcfg['interface']));
 
-      /* fire up mpd */
       mwexec('/usr/local/sbin/mpd4 -b -d /var/etc/l2tp-vpn -p /var/run/l2tp-vpn.pid -s l2tps l2tps');
 
       break;
