@@ -5,6 +5,11 @@
  * Licensed under MIT (https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE)
  */
 
+/* set form-control on span height, which is used by liHeight to calculate height */
+span.form-control {
+  height: 34px !important;
+  padding: 6px 12px;
+}
 .bootstrap-select {
   width: 348px \0;
   /*IE9 and below*/
