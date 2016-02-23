@@ -45,7 +45,7 @@ function vpn_services()
 
     $services = array();
 
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] != 'off') {
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
         $services[] = array(
             'description' => gettext('PPTP Server'),
             'pidfile' => '/var/run/pptp-vpn.pid',
@@ -57,7 +57,7 @@ function vpn_services()
         );
     }
 
-    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] != 'off') {
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == 'server') {
         $services[] = array(
             'description' => gettext('L2TP Server'),
             'pidfile' => '/var/run/l2tp-vpn.pid',
@@ -71,7 +71,7 @@ function vpn_services()
 
     if (isset($config['pppoes']['pppoe'])) {
         foreach ($config['pppoes']['pppoe'] as $pppoecfg) {
-            if (isset($pppoecfg['mode']) || $pppoecfg['mode'] != 'off') {
+            if (isset($pppoecfg['mode']) && $pppoecfg['mode'] == 'server') {
                 $services[] = array(
                     'description' => gettext('PPPoE Server') . ': ' . htmlspecialchars($pppoecfg['descr']),
                     'php' => array(
