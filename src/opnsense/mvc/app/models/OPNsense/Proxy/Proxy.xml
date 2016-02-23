@@ -42,6 +42,7 @@
             <forwardedForHandling type="OptionField">
                 <default>on</default>
                 <Required>N</Required>
+                <BlankDesc>Default</BlankDesc>
                 <OptionValues>
                     <on>Append client's IP (on)</on>
                     <off>Set forward header to unknown (off)</off>
