@@ -804,7 +804,6 @@ function system_syslogd_start()
     mwexec('/etc/rc.d/hostid start');
 
     $syslogcfg = $config['syslog'];
-
     if (file_exists('/var/run/booting')) {
         echo gettext('Starting syslog...');
     }
@@ -820,9 +819,6 @@ function system_syslogd_start()
         $syslogconfs['routing'] = array("facility" => array('radvd', 'routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd') , "remote" => null);
         $syslogconfs['ntpd'] = array("facility" => array('ntp', 'ntpd', 'ntpdate'), "remote" => null);
         $syslogconfs['ppps'] = array("facility" => array('ppp'), "remote" => null);
-        $syslogconfs['pptps'] = array("facility" => array('pptps'), "remote" => null);
-        $syslogconfs['poes'] = array("facility" => array('poes'), "remote" => null);
-        $syslogconfs['l2tps'] = array("facility" => array('l2tps'), "remote" => null);
         $syslogconfs['ipsec'] = array("facility" => array('charon'), "remote" => null);
         $syslogconfs['openvpn'] = array("facility" => array('openvpn'), "remote" => "vpn");
         $syslogconfs['gateways'] = array("facility" => array('apinger'), "remote" => "apinger");
@@ -832,6 +828,24 @@ function system_syslogd_start()
         $syslogconfs['wireless'] = array("facility" => array('hostapd'), "remote" => "hostapd");
         $syslogconfs['filter'] = array("facility" => array('filterlog'), "remote" => "filter");
         $syslogconfs['portalauth'] = array("facility" => array('captiveportal'), "remote" => "portalauth");
+
+        // probe syslog facilities in plugins
+        foreach (plugin_scan() as $name => $path) {
+            require_once $path;
+            $func = sprintf('%s_syslog', $name);
+            if (function_exists($func)) {
+                $workers = $func();
+                foreach ($workers as $plugin_syslog => $plugin_details) {
+                    if (!array_key_exists($plugin_syslog, $syslogconfs)) {
+                        $syslogconfs[$plugin_syslog] = array();
+                        $syslogconfs[$plugin_syslog]['facility'] = array();
+                        $syslogconfs[$plugin_syslog]['remote'] = $plugin_details['remote'];
+                    }
+                    $tmp = array_merge($syslogconfs[$plugin_syslog]['facility'], $plugin_details['facility']);
+                    $syslogconfs[$plugin_syslog]['facility'] = $tmp;
+                }
+            }
+        }
 
         $separatelogfacilities = array();
         foreach ($syslogconfs as $logTopic => $logConfig) {
