@@ -90,7 +90,21 @@ function vpn_services()
     return $services;
 }
 
-function vpn_netgraph_support() {
+/**
+ * request syslog facilities for this plugin
+ * @return array
+ */
+function vpn_syslog()
+{
+    $logfacilities = array();
+    $logfacilities['pptps'] = array("facility" => array('pptps'), "remote" => null);
+    $logfacilities['poes'] = array("facility" => array('poes'), "remote" => null);
+    $logfacilities['l2tps'] = array("facility" => array('l2tps'), "remote" => null);
+    return $logfacilities;
+}
+
+function vpn_netgraph_support()
+{
     $iflist = get_configured_interface_list();
     foreach ($iflist as $iface) {
         $realif = get_real_interface($iface);
@@ -102,7 +116,8 @@ function vpn_netgraph_support() {
     }
 }
 
-function vpn_pptpd_configure() {
+function vpn_pptpd_configure()
+{
   global $config;
 
   $syscfg = $config['system'];
