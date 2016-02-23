@@ -54,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['id']) && !empty($a_hosts[$_POST['id']])) {
         $id = $_POST['id'];
@@ -139,8 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 }
-
-
 
 $service_hook = 'dnsmasq';
 legacy_html_escape_form_data($pconfig);
