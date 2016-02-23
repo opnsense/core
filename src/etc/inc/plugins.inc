@@ -26,29 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function plugin_scan()
-{
-    $path = '/usr/local/etc/inc/plugins.inc.d/';
-    $ext = '.inc';
-
-    $ret = array();
-
-    $plugins = glob($path . '*' . $ext);
-    if (!is_array($plugins)) {
-        return $ret;
-    }
-
-    sort($plugins);
-
-    foreach ($plugins as $plugin) {
-        $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
-        $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
-        $ret[$name] = $plugin;
-    }
-
-    return $ret;
-}
-
 function plugins_services()
 {
     $services = array();

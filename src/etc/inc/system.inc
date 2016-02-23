@@ -1,6 +1,7 @@
 <?php
 
 /*
+  Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
   Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
   All rights reserved.
 
@@ -843,7 +844,6 @@ function system_syslogd_start()
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
             }
         }
-
 
         asort($separatelogfacilities);
         $facilitylist = implode(',', array_unique($separatelogfacilities));
@@ -1803,4 +1803,31 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
         }
     }
     return $sourceips;
+}
+
+/**
+ * scan plugins for legacy system
+ * @return array
+ */
+function plugin_scan()
+{
+    $path = '/usr/local/etc/inc/plugins.inc.d/';
+    $ext = '.inc';
+
+    $ret = array();
+
+    $plugins = glob($path . '*' . $ext);
+    if (!is_array($plugins)) {
+        return $ret;
+    }
+
+    sort($plugins);
+
+    foreach ($plugins as $plugin) {
+        $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
+        $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
+        $ret[$name] = $plugin;
+    }
+
+    return $ret;
 }
