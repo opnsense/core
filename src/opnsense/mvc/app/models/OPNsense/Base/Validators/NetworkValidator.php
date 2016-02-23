@@ -102,8 +102,7 @@ class NetworkValidator extends Validator implements ValidatorInterface
                     }
                 }
             }
-        }
-        else if($this->getOption('netMaskRequired') === true) {
+        } elseif ($this->getOption('netMaskRequired') === true) {
             $result = false;
         }
 
