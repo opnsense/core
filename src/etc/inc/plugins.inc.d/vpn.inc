@@ -84,7 +84,7 @@ function vpn_services()
                     'name' => 'pppoed',
                 );
             }
-	}
+        }
     }
 
     return $services;
