@@ -932,6 +932,17 @@ EOD;
         }
 
         $syslogd_extra = "-f /var/etc/syslog.conf {$sourceip}";
+        // setup log files for all facilities including default
+        $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
+        $syslog_files = array_keys($syslogconfs);
+        $syslog_files = array_merge($syslog_files, array('system', 'vpn', 'lighttpd'));
+        foreach ($syslog_files as $syslog_fn) {
+            $filename = "/var/log/".basename($syslog_fn).".log";
+            if (!file_exists($filename)) {
+                mwexecf('/usr/local/sbin/clog -i -s %s %s', array($default_logfile_size, $filename));
+            }
+            mwexecf('chmod 0600 %s', array($filename));
+        }
     }
 
     if (isvalidpid('/var/run/syslog.pid')) {

@@ -165,21 +165,6 @@ rm -rf /tmp/*
 chmod 1777 /tmp
 
 echo -n "."
-LOG_FILES="system filter dhcpd vpn pptps poes l2tps openvpn portalauth ipsec ppps relayd wireless lighttpd ntpd gateways resolver routing"
-
-DEFAULT_LOG_FILE_SIZE=`/usr/local/bin/xmllint --xpath 'string(//opnsense/syslog/logfilesize)' /conf/config.xml`
-if [ ! ${DEFAULT_LOG_FILE_SIZE} ]; then
-	DEFAULT_LOG_FILE_SIZE=511488
-fi
-
-for logfile in $LOG_FILES; do
-	if [ ! -f /var/log/$logfile.log ]; then
-		clog -i -s ${DEFAULT_LOG_FILE_SIZE} /var/log/$logfile.log
-	fi
-	chmod 0600 /var/log/$logfile.log
-done
-
-echo -n "."
 /sbin/ldconfig -elf /usr/lib /usr/local/lib /lib
 /etc/rc.d/ldconfig start 2>/dev/null
 
