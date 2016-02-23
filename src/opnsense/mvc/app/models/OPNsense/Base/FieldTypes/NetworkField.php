@@ -48,12 +48,26 @@ class NetworkField extends BaseField
     protected $internalValidationMessage = "please specify a valid network segment or address (IPv4/IPv6) ";
 
     /**
+     * @var bool marks if net mask is required
+     */
+    protected $internalNetMaskRequired = false;
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
     public function setValue($value)
     {
         parent::setValue(trim(strtolower($value)));
+    }
+
+    /**
+     * setter for net mask required
+     * @param integer $value
+     */
+    public function setNetMaskRequired($value)
+    {
+        $this->internalNetMaskRequired = (trim(strtolower($value)) == 'y' || intval($value) == 1);
     }
 
     /**
@@ -66,7 +80,10 @@ class NetworkField extends BaseField
         if ($this->internalValue != null) {
             if ($this->internalValue != "any") {
                 // accept any as target
-                $validators[] = new NetworkValidator(array('message' => $this->internalValidationMessage));
+                $validators[] = new NetworkValidator(array(
+                    'message' => $this->internalValidationMessage,
+                    'netMaskRequired' => $this->internalNetMaskRequired
+                    ));
             }
         }
         return $validators;
