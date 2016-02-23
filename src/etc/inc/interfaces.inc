@@ -202,13 +202,8 @@ function interface_netgraph_needed($interface = "wan")
 
     if (!$found) {
         $realif = get_real_interface($interface);
-        pfSense_ngctl_detach("{$realif}:", $realif);
+        mwexecf('/usr/sbin/ngctl msg %s: detach', array($realif));
     }
-    /* NOTE: We make sure for this on interface_ppps_configure()
-     *  no need to do it here agan.
-     *  else
-     *    pfSense_ngctl_attach(".", $realif);
-     */
 }
 
 function interfaces_loopback_configure()
@@ -298,7 +293,7 @@ function interface_vlan_configure(&$vlan)
     } else {
         $tmpvlanif = legacy_interface_create('vlan');
         legacy_interface_rename($tmpvlanif, $vlanif);
-        pfSense_ngctl_name("{$tmpvlanif}:", $vlanif);
+        mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpvlanif, $vlanif));
     }
 
     legacy_vlan_tag($vlanif, $if, $tag);
@@ -1615,7 +1610,7 @@ function interface_ppps_configure($interface)
                 interfaces_bring_up($port);
                 pfSense_ngctl_attach(".", $port);
                 /* Enable setautosrc to automatically change mac address if parent interface's changes */
-                mwexec("ngctl msg {$port}: setautosrc 1");
+                mwexecf('/usr/sbin/ngctl msg %s: setautosrc 1', array($port));
                 break;
             case "pptp":
             case "l2tp":
