@@ -67,7 +67,11 @@ class NetworkField extends BaseField
      */
     public function setNetMaskRequired($value)
     {
-        $this->internalNetMaskRequired = (trim(strtolower($value)) == 'y' || intval($value) == 1);
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalNetMaskRequired = true;
+        } else {
+            $this->internalNetMaskRequired = false;
+        }
     }
 
     /**
