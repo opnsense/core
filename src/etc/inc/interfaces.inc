@@ -202,7 +202,7 @@ function interface_netgraph_needed($interface = "wan")
 
     if (!$found) {
         $realif = get_real_interface($interface);
-        mwexecf('/usr/sbin/ngctl msg %s: detach', array($realif));
+        legacy_netgraph_detach($realif);
     }
 }
 
@@ -293,7 +293,7 @@ function interface_vlan_configure(&$vlan)
     } else {
         $tmpvlanif = legacy_interface_create('vlan');
         legacy_interface_rename($tmpvlanif, $vlanif);
-        mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpvlanif, $vlanif));
+        legacy_netgraph_rename($tmpvlanif, $vlanif);
     }
 
     legacy_vlan_tag($vlanif, $if, $tag);
@@ -338,8 +338,8 @@ function interface_qinq_configure(&$vlan, $fd = null)
 
     /* make sure the parent is converted to ng_vlan(4) and is up */
     interfaces_bring_up($qinqif);
+    legacy_netgraph_attach($qinqif);
 
-    pfSense_ngctl_attach(".", $qinqif);
     if (!empty($vlanif) && does_interface_exist($vlanif)) {
         fwrite($fd, "shutdown {$qinqif}qinq:\n");
         exec("/usr/sbin/ngctl msg {$qinqif}qinq: gettable", $result);
@@ -1608,7 +1608,7 @@ function interface_ppps_configure($interface)
             case "pppoe":
                 /* Bring the parent interface up */
                 interfaces_bring_up($port);
-                pfSense_ngctl_attach(".", $port);
+                legacy_netgraph_attach($port);
                 /* Enable setautosrc to automatically change mac address if parent interface's changes */
                 mwexecf('/usr/sbin/ngctl msg %s: setautosrc 1', array($port));
                 break;
@@ -1631,7 +1631,7 @@ function interface_ppps_configure($interface)
                     log_error(sprintf(gettext('Could not get a PPTP/L2TP Remote IP address from %s for %s in interfaces_ppps_configure.'), $dhcp_gateway, $gway));
                     return 0;
                 }
-                pfSense_ngctl_attach(".", $port);
+                legacy_netgraph_attach($port);
                 break;
             case "ppp":
                 if (!file_exists("{$port}")) {

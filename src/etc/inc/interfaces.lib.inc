@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (c) 2015 Franco Fichtner <franco@opnsense.org>
+    Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -198,4 +198,19 @@ function legacy_interface_details($intf)
         proc_close($process);
     }
     return $result;
+}
+
+function legacy_netgraph_attach($ifs)
+{
+	mwexecf('/usr/local/sbin/ngattach %s', array($ifs));
+}
+
+function legacy_netgraph_detach($ifs)
+{
+        mwexecf('/usr/sbin/ngctl msg %s: detach', array($ifs));
+}
+
+function legacy_netgraph_rename($tmpifs, $ifs)
+{
+        mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpifs, $ifs));
 }
