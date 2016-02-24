@@ -780,7 +780,7 @@ $( document ).ready(function() {
                     <?=gettext("Use calculated value."); ?>
 
                     <div class="hidden" for="help_for_avg_loss_samples">
-                      <?=gettext(sprintf("How many probes should be useds to compute average packet loss?  Default is %d.", $apinger_default['avg_loss_samples']));?>
+                      <?=gettext(sprintf("How many probes should be used to compute average packet loss?  Default is %d.", $apinger_default['avg_loss_samples']));?>
                     </div>
                   </td>
                 </tr>
