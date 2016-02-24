@@ -134,76 +134,68 @@ function does_interface_exist($interface)
     }
 }
 
-
-function interface_netgraph_needed($interface = "wan")
+function interface_netgraph_needed($interface)
 {
     global $config;
 
-    $found = false;
-    if (!empty($config['pptpd']) &&
-        $config['pptpd']['mode'] == "server"
-    ) {
-        $found = true;
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
+        if ('wan' == $interface) {
+            return true;
+        }
     }
-    if (!$found && !empty($config['l2tp']) &&
-        $config['l2tp']['mode'] == "server"
-    ) {
-        $found = true;
+
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == 'server') {
+        if ($config['l2tp']['interface'] == $interface) {
+            return true;
+        }
     }
-    if (!$found && isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe'])) {
+
+    if (isset($config['pppoes']['pppoe'])) {
         foreach ($config['pppoes']['pppoe'] as $pppoe) {
-            if ($pppoe['mode'] != "server") {
+            if ($pppoe['mode'] != 'server') {
                 continue;
             }
             if ($pppoe['interface'] == $interface) {
-                $found = true;
-            }
-            break;
-        }
-    }
-    if (!$found) {
-        if (!empty($config['interfaces'][$interface])) {
-            switch ($config['interfaces'][$interface]['ipaddr']) {
-                case "ppp":
-                case "pppoe":
-                case "l2tp":
-                case "pptp":
-                    $found = true;
-                    break;
-                default:
-                    $found = false;
-                    break;
+                return true;
             }
         }
     }
-    if (!$found) {
-        $realif = get_real_interface($interface);
-        if (isset($config['ppps']['ppp'])) {
-            foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
-                $ports = explode(',', $ppp['ports']);
-                foreach ($ports as $pid => $port) {
-                    $port = get_real_interface($port);
-                    if ($realif == $port) {
-                        $found = true;
-                        break;
-                    }
-                    /* Find the parent interfaces of the vlans in the MLPPP configs
-                     * there should be only one element in the array here
-                     * -- this could be better . . . */
-                    $parent_if = get_parent_interface($port);
-                    if ($realif == $parent_if[0]) {
-                        $found = true;
-                        break;
-                    }
+
+    if (isset($config['interfaces'][$interface]['ipaddr'])) {
+        switch ($config['interfaces'][$interface]['ipaddr']) {
+            case 'ppp':
+            case 'pppoe':
+            case 'l2tp':
+            case 'pptp':
+		return true;
+            default:
+               break;
+        }
+    }
+
+    $realif = get_real_interface($interface);
+
+    if (isset($config['ppps']['ppp'])) {
+        foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
+            $ports = explode(',', $ppp['ports']);
+            foreach ($ports as $pid => $port) {
+                $port = get_real_interface($port);
+                if ($realif == $port) {
+                    return true;
+                }
+                /*
+                 * Find the parent interfaces of the vlans in the MLPPP
+                 * configs there should be only one element in the array
+                 */
+                $parent_if = get_parent_interface($port);
+                if ($realif == $parent_if[0]) {
+                    return true;
                 }
             }
         }
     }
 
-    if (!$found) {
-        $realif = get_real_interface($interface);
-        legacy_netgraph_detach($realif);
-    }
+    return false;
 }
 
 function interfaces_loopback_configure()
@@ -3119,7 +3111,9 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         interfaces_bring_up($wancfg['if']);
     }
 
-    interface_netgraph_needed($interface);
+    if (!interface_netgraph_needed($interface)) {
+        legacy_netgraph_detach($realif);
+    }
 
     if (!file_exists("/var/run/booting")) {
         link_interface_to_vips($interface, "update");
