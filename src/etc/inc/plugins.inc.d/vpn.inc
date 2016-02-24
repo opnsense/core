@@ -302,7 +302,7 @@ EOD;
       chmod('/var/etc/pptp-vpn/mpd.secret', 0600);
 
       /* fixed to WAN elsewhere, no need to extend, but at least make it work */
-      pfSense_ngctl_attach('.', get_real_interface('wan'));
+      legacy_netgraph_attach(get_real_interface('wan'));
 
       mwexec('/usr/local/sbin/mpd4 -b -d /var/etc/pptp-vpn -p /var/run/pptp-vpn.pid -s pptps pptps');
 
@@ -541,7 +541,7 @@ EOD;
         chmod("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", 0600);
       }
 
-      pfSense_ngctl_attach(".", $pppoe_interface);
+      legacy_netgraph_attach($pppoe_interface);
 
       mwexec("/usr/local/sbin/mpd4 -b -d /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn -p /var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
 
@@ -730,7 +730,7 @@ EOD;
       unset($mpdsecret);
       chmod('/var/etc/l2tp-vpn/mpd.secret', 0600);
 
-      pfSense_ngctl_attach('.', get_real_interface($l2tpcfg['interface']));
+      legacy_netgraph_attach(get_real_interface($l2tpcfg['interface']));
 
       mwexec('/usr/local/sbin/mpd4 -b -d /var/etc/l2tp-vpn -p /var/run/l2tp-vpn.pid -s l2tps l2tps');
 
