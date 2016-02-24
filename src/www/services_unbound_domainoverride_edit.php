@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2014 Warren Baker (warren@decoy.co.za)
     Copyright (C) 2003-2005 Bob Zoller <bob@kludgebox.com> and Manuel Kasper <mk@neon1.net>.
     All rights reserved.
@@ -32,150 +32,140 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound_overrides.php');
-
-if (!is_array($config['unbound']['domainoverrides']))
-       $config['unbound']['domainoverrides'] = array();
+if (empty($config['unbound']['domainoverrides']) || !is_array($config['unbound']['domainoverrides'])) {
+    $config['unbound']['domainoverrides'] = array();
+}
 
 $a_domainOverrides = &$config['unbound']['domainoverrides'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
 
-if (isset($id) && $a_domainOverrides[$id]) {
-    $pconfig['domain'] = $a_domainOverrides[$id]['domain'];
-    $pconfig['ip'] = $a_domainOverrides[$id]['ip'];
-    $pconfig['descr'] = $a_domainOverrides[$id]['descr'];
-}
-
-if ($_POST) {
-
-    unset($input_errors);
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['id']) && !empty($a_domainOverrides[$_GET['id']])) {
+        $id = $_GET['id'];
+    }
+    $pconfig =  array();
+    $pconfig['domain'] = isset($id) && !empty($a_domainOverrides[$id]['domain']) ? $a_domainOverrides[$id]['domain'] : null;
+    $pconfig['ip'] = isset($id) && !empty($a_domainOverrides[$id]['ip']) ? $a_domainOverrides[$id]['ip'] : null;
+    $pconfig['descr'] = isset($id) && !empty($a_domainOverrides[$id]['descr']) ? $a_domainOverrides[$id]['descr'] : null;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_GET['id']) && !empty($a_domainOverrides[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
+    $input_errors= array();
     $pconfig = $_POST;
 
     /* input validation */
     $reqdfields = explode(" ", "domain ip");
     $reqdfieldsn = array(gettext("Domain"),gettext("IP address"));
 
-    do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-
-    function String_Begins_With($needle, $haystack) {
-        return (substr($haystack, 0, strlen($needle))==$needle);
-    }
-
-    if (String_Begins_With(_msdcs, $_POST['domain'])) {
-        $subdomainstr = substr($_POST['domain'], 7);
-        if ($subdomainstr && !is_domain($subdomainstr))
+    do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+    if (!empty($pconfig['domain']) && substr($pconfig['domain'], 0, 6) == '_msdcs') {
+        $subdomainstr = substr($pconfig['domain'], 7);
+        if ($subdomainstr && !is_domain($subdomainstr)) {
             $input_errors[] = gettext("A valid domain must be specified after _msdcs.");
-    } elseif ($_POST['domain'] && !is_domain($_POST['domain']))
+        }
+    } elseif (!empty($pconfig['domain']) && !is_domain($_POST['domain'])) {
         $input_errors[] = gettext("A valid domain must be specified.");
-
-    if ($_POST['ip']) {
-        if (strpos($_POST['ip'],'@') !== false) {
-            $ip_details = explode("@", $_POST['ip']);
-            if (!is_ipaddr($ip_details[0]) && !is_port($ip_details[1]))
-                $input_errors[] = gettext("A valid IP address and port must be specified, for example 192.168.100.10@5353.");
-        } else if (!is_ipaddr($_POST['ip']))
-            $input_errors[] = gettext("A valid IP address must be specified, for example 192.168.100.10.");
     }
 
-    if (!$input_errors) {
-        $doment = array();
-        $doment['domain'] = $_POST['domain'];
-        $doment['ip'] = $_POST['ip'];
-        $doment['descr'] = $_POST['descr'];
+    if (!empty($pconfig['ip'])) {
+        if (strpos($pconfig['ip'],'@') !== false) {
+            $ip_details = explode("@", $pconfig['ip']);
+            if (!is_ipaddr($ip_details[0]) && !is_port($ip_details[1])) {
+                $input_errors[] = gettext("A valid IP address and port must be specified, for example 192.168.100.10@5353.");
+            }
+        } elseif (!is_ipaddr($pconfig['ip'])) {
+            $input_errors[] = gettext("A valid IP address must be specified, for example 192.168.100.10.");
+        }
+    }
 
-        if (isset($id) && $a_domainOverrides[$id])
+    if (count($input_errors) == 0) {
+        $doment = array();
+        $doment['domain'] = $pconfig['domain'];
+        $doment['ip'] = $pconfig['ip'];
+        $doment['descr'] = $pconfig['descr'];
+
+        if (isset($id)) {
             $a_domainOverrides[$id] = $doment;
-        else
+        } else {
             $a_domainOverrides[] = $doment;
+        }
 
         mark_subsystem_dirty('unbound');
-
         write_config();
-
         header("Location: services_unbound_overrides.php");
         exit;
     }
 }
 
 $service_hook = 'unbound';
-
+legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
-
-
 <body>
-
-	<?php include("fbegin.inc"); ?>
-
-	<section class="page-content-main">
-
-		<div class="container-fluid">
-
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-                        <form action="services_unbound_domainoverride_edit.php" method="post" name="iform" id="iform">
-
-				<div class="table-responsive">
-					<table class="table table-striped table-sort">
-
-						            <tr>
-						                <td width="22%" valign="top" class="vncellreq"><?=gettext("Domain");?></td>
-						                <td width="78%" class="vtable">
-						                    <input name="domain" type="text" class="formfld unknown" id="domain" size="40" value="<?=htmlspecialchars($pconfig['domain']);?>" /><br />
-						                    <span class="vexpl">
-						                        <?=gettext("Domain to override (NOTE: this does not have to be a valid TLD!)"); ?><br />
-						                        <?=gettext("e.g."); ?> <em><?=gettext("test"); ?></em> <?=gettext("or"); ?> <em>mycompany.localdomain</em> <?=gettext("or"); ?> <em>1.168.192.in-addr.arpa</em>
-						                    </span>
-						                </td>
-						            </tr>
-						            <tr>
-						                <td width="22%" valign="top" class="vncellreq"><?=gettext("IP address");?></td>
-						                <td width="78%" class="vtable">
-						                    <input name="ip" type="text" class="formfld unknown" id="ip" size="40" value="<?=htmlspecialchars($pconfig['ip']);?>" /><br />
-						                    <span class="vexpl">
-						                    <?=gettext("IP address of the authoritative DNS server for this domain"); ?><br />
-						                    <?=gettext("e.g."); ?> <em>192.168.100.100</em><br />
-						                    <?=gettext("To use a nondefault port for communication, append an '@' with the port number."); ?><br />
-						                    </span>
-						                </td>
-						            </tr>
-						            <tr>
-						                <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-						                <td width="78%" class="vtable">
-						                    <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" /><br />
-						                    <span class="vexpl">
-						                        <?=gettext("You may enter a description here for your reference (not parsed).");?>
-						                    </span>
-						                </td>
-						            </tr>
-						            <tr>
-						                <td width="22%" valign="top">&nbsp;</td>
-						                <td width="78%">
-						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-						                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-						                    <?php if (isset($id) && $a_domainOverrides[$id]): ?>
-						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-						                    <?php endif; ?>
-						                </td>
-						            </tr>
-						        </table>
-				</div>
-                        </form>
-				</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
+  <?php include("fbegin.inc"); ?>
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <section class="col-xs-12">
+          <div class="content-box">
+            <form method="post" name="iform" id="iform">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tr>
+                    <td width="22%"><strong><?=gettext("Edit Domain Override entry");?></strong></td>
+                    <td width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain");?></td>
+                    <td>
+                      <input name="domain" type="text" id="domain" size="40" value="<?=$pconfig['domain'];?>" />
+                      <div class="hidden" for="help_for_domain">
+                          <?=gettext("Domain to override (NOTE: this does not have to be a valid TLD!)"); ?><br />
+                          <?=gettext("e.g."); ?> <em><?=gettext("test"); ?></em> <?=gettext("or"); ?> <em>mycompany.localdomain</em> <?=gettext("or"); ?> <em>1.168.192.in-addr.arpa</em>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
+                    <td>
+                        <input name="ip" type="text" id="ip" size="40" value="<?=$pconfig['ip'];?>" />
+                        <div class="hidden" for="help_for_ip">
+                          <?=gettext("IP address of the authoritative DNS server for this domain"); ?><br />
+                          <?=gettext("e.g."); ?> <em>192.168.100.100</em><br />
+                          <?=gettext("To use a nondefault port for communication, append an '@' with the port number."); ?><br />
+                        </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                    <td>
+                      <input name="descr" type="text" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                      <div class="hidden" for="help_for_descr">
+                        <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_unbound_overrides.php');?>'" />
+                        <?php if (isset($id)): ?>
+                        <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                        <?php endif; ?>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
