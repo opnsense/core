@@ -54,7 +54,7 @@ if (!$authcfg) {
 } else {
     echo "<table class='table table-striped'>";
 
-    echo "<tr><th colspan='2'>".sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name'])."</th></tr>";
+    echo "<tr><th colspan='2'>".gettext("Testing LDAP settings... One moment please...")."</th></tr>";
     echo "<tr><td>" . gettext("Attempting connection to") . " " . $authserver . "</td>";
     if ($ldap_is_connected) {
         echo "<td><font color='green'>OK</font></td></tr>";
