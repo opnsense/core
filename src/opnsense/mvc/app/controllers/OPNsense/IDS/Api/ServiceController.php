@@ -219,7 +219,7 @@ class ServiceController extends ApiControllerBase
             // flush rule configuration
             $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
             if ($bckresult == "OK") {
-                $status = $backend->configdRun("ids reload", $detach);
+                $status = $backend->configdRun("ids reload");
             } else {
                 $status = "template error";
             }
