@@ -386,35 +386,27 @@ function services_dhcpdv6_leasesfile()
     return "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
 }
 
-function services_dhcpd_configure($family = "all", $blacklist = array())
+function services_dhcpd_configure($family = 'all', $blacklist = array())
 {
-    global $config, $g;
+    global $g;
 
-    /* configure DHCPD chroot once */
-    $fd = fopen('/tmp/dhcpd.sh', 'w');
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/dev\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/etc\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/usr/local/sbin\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/db\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/run\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/usr\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/lib\n");
-    fwrite($fd, "/bin/mkdir -p {$g['dhcpd_chroot_path']}/run\n");
-    $status = `/sbin/mount -t devfs | /usr/bin/grep "{$g['dhcpd_chroot_path']}/dev"`;
-    if (!trim($status)) {
-        fwrite($fd, "/sbin/mount -t devfs devfs {$g['dhcpd_chroot_path']}/dev\n");
+    $dirs = array('/dev', '/etc', '/lib', '/run', '/usr', '/usr/local/sbin', '/var/db', '/var/run');
+
+    foreach ($dirs as $dir) {
+        mwexecf('/bin/mkdir -p %s', "{$g['dhcpd_chroot_path']}{$dir}");
     }
-    fwrite($fd, "/usr/sbin/chown -R dhcpd:dhcpd {$g['dhcpd_chroot_path']}\n");
-    fclose($fd);
 
-    mwexec('/bin/sh /tmp/dhcpd.sh');
+    if (mwexecf('/sbin/mount -uw %s', "{$g['dhcpd_chroot_path']}/dev", true)) {
+        mwexecf('/sbin/mount -t devfs devfs %s', "{$g['dhcpd_chroot_path']}/dev");
+    }
 
-    if ($family == "all" || $family == "inet") {
+    mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', $g['dhcpd_chroot_path']);
+
+    if ($family == 'all' || $family == 'inet') {
         services_dhcpdv4_configure();
     }
 
-    if ($family == "all" || $family == "inet6") {
+    if ($family == 'all' || $family == 'inet6') {
         services_dhcpdv6_configure($blacklist);
         services_radvd_configure($blacklist);
     }
