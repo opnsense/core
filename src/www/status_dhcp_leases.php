@@ -75,7 +75,7 @@ function remove_duplicate($array, $field)
     return $new;
 }
 
-$leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases";
+$leasesfile = services_dhcpd_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";

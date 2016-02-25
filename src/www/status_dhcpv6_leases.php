@@ -98,8 +98,7 @@ function parse_duid($duid_string) {
     return array($iaid, $duid);
 }
 
-
-$leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
+$leasesfile = services_dhcpdv6_leasesfile();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $awk = "/usr/bin/awk";

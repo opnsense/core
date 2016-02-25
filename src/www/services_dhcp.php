@@ -35,16 +35,20 @@ require_once("unbound.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
-/* This function will remove entries from dhcpd.leases that would otherwise
+/*
+ * This function will remove entries from dhcpd.leases that would otherwise
  * overlap with static DHCP reservations. If we don't clean these out,
  * then DHCP will print a warning in the logs about a duplicate lease
  */
-function dhcp_clean_leases() {
-    global $g, $config;
-    $leasesfile = "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases";
+function dhcp_clean_leases()
+{
+    global $config;
+
+    $leasesfile = services_dhcpd_leasesfile();
     if (!file_exists($leasesfile)) {
         return;
     }
+
     /* Build list of static MACs */
     $staticmacs = array();
     foreach($config['interfaces'] as $ifname => $ifarr) {

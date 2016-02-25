@@ -372,6 +372,20 @@ function services_radvd_configure($blacklist = array())
     return 0;
 }
 
+function services_dhcpd_leasesfile()
+{
+    global $g;
+
+    return "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases";
+}
+
+function services_dhcpdv6_leasesfile()
+{
+    global $g;
+
+    return "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
+}
+
 function services_dhcpd_configure($family = "all", $blacklist = array())
 {
     global $config, $g;

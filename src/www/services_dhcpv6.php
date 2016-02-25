@@ -42,15 +42,14 @@ require_once("services.inc");
  */
 function reconfigure_dhcpd()
 {
-    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
-    /* dnsmasq_configure calls dhcpd_configure */
-    /* no need to restart dhcpd twice */
+    /* services_dnsmasq_configure calls services_dhcpd_configure */
     if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
         $retvaldns = services_dnsmasq_configure();
         if ($retvaldns == 0) {
             clear_subsystem_dirty('hosts');
             clear_subsystem_dirty('staticmaps');
         }
+    /* services_unbound_configure calls services_dhcpd_configure */
     } elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
         $retvaldns = services_unbound_configure();
         if ($retvaldns == 0) {
