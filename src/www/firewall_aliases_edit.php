@@ -285,16 +285,16 @@ include("head.inc");
       }
       switch($("#typeSelect").val()) {
           case 'urltable':
-              $("#detailsHeading1").html("<?=gettext("IP or FQDN");?>");
+              $("#detailsHeading1").html("<?=gettext("URL");?>");
               break;
           case 'urltable_ports':
-              $("#detailsHeading1").html("<?=gettext("IP or FQDN");?>");
+              $("#detailsHeading1").html("<?=gettext("URL");?>");
               break;
           case 'url':
-              $("#detailsHeading1").html("<?=gettext("IP or FQDN");?>");
+              $("#detailsHeading1").html("<?=gettext("URL");?>");
               break;
           case 'url_ports':
-              $("#detailsHeading1").html("<?=gettext("IP or FQDN");?>");
+              $("#detailsHeading1").html("<?=gettext("URL");?>");
               break;
           case 'host':
               $("#detailsHeading1").html("<?=gettext("Host(s)");?>");
@@ -393,10 +393,39 @@ include("head.inc");
                           <option value="urltable" <?=$pconfig['type'] == "urltable" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (IPs)"); ?></option>
                           <option value="urltable_ports" <?=$pconfig['type'] == "urltable_ports" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (Ports)"); ?></option>
                         </select>
+                        <div class="hidden" for="help_for_type">
+                          <span class="text-info">
+                            <?=gettext("Networks")?><br/>
+                          </span>
+                          <small>
+                            <?=gettext("Networks are specified in CIDR format.  Select the CIDR mask that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 specifies 255.255.255.0, /64 specifies a normal IPv6 network, etc. Hostnames (FQDNs) may also be specified, using a /32 mask for IPv4 or /128 for IPv6.");?>
+                            <br/>
+                          </small>
+                          <span class="text-info">
+                            <?=gettext("Hosts")?><br/>
+                          </span>
+                          <small>
+                            <?=gettext("Enter as many hosts as you would like. Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used.");?>
+                            <br/>
+                          </small>
+                          <span class="text-info">
+                            <?=gettext("Ports")?><br/>
+                          </span>
+                          <small>
+                            <?=gettext("Enter as many ports as you wish. Port ranges can be expressed by separating with a colon.");?>
+                            <br/>
+                          </small>
+                          <span class="text-info">
+                            <?=gettext("URL's")?><br/>
+                          </span>
+                          <small>
+                            <?=gettext("Enter a URL containing a large number of IPs,ports and/or Subnets. After saving the lists will be downloaded and scheduled for automatic updates when a frequency is provided.");?>
+                          </small>
+                        </div>
                       </td>
                     </tr>
                     <tr>
-                      <td><div id="addressnetworkport"><a id="help_for_hosts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Host(s)"); ?></div></td>
+                      <td><div id="addressnetworkport"><a id="help_for_hosts" href="#" class="showhelp"><i class="fa fa-info-circle text-muted"></i></a> <?=gettext("Host(s)"); ?></div></td>
                       <td>
                         <table class="table table-striped table-condensed" id="detailTable">
                           <thead>
@@ -471,35 +500,6 @@ include("head.inc");
                               </tr>
                             </tfoot>
                           </table>
-                          <div class="hidden" for="help_for_hosts">
-                            <span class="text-info">
-                              <?=gettext("Networks")?><br/>
-                            </span>
-                            <small>
-                              <?=gettext("Networks are specified in CIDR format.  Select the CIDR mask that pertains to each entry. /32 specifies a single IPv4 host, /128 specifies a single IPv6 host, /24 specifies 255.255.255.0, /64 specifies a normal IPv6 network, etc. Hostnames (FQDNs) may also be specified, using a /32 mask for IPv4 or /128 for IPv6.");?>
-                              <br/>
-                            </small>
-                            <span class="text-info">
-                              <?=gettext("Hosts")?><br/>
-                            </span>
-                            <small>
-                              <?=gettext("Enter as many hosts as you would like. Hosts must be specified by their IP address or fully qualified domain name (FQDN). FQDN hostnames are periodically re-resolved and updated. If multiple IPs are returned by a DNS query, all are used.");?>
-                              <br/>
-                            </small>
-                            <span class="text-info">
-                              <?=gettext("Ports")?><br/>
-                            </span>
-                            <small>
-                              <?=gettext("Enter as many ports as you wish. Port ranges can be expressed by separating with a colon.");?>
-                              <br/>
-                            </small>
-                            <span class="text-info">
-                              <?=gettext("URL's")?><br/>
-                            </span>
-                            <small>
-                              <?=gettext("Enter a URL containing a large number of IPs,ports and/or Subnets. After saving the lists will be downloaded and scheduled for automatic updates when a frequency is provided.");?>
-                            </small>
-                          </div>
                         </td>
                       </tr>
                       <tr>
