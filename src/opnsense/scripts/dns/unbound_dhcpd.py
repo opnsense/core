@@ -65,7 +65,7 @@ def main():
             last_cleanup = time.time()
             addresses = cached_leases.keys()
             for address in addresses:
-                if cached_leases[address]['ends'] > time.time():
+                if cached_leases[address]['ends'] < time.time():
                     del cached_leases[address]
                     dhcpd_changed = True
 
