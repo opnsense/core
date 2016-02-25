@@ -584,7 +584,7 @@ $( document ).ready(function() {
                     <tbody>
                       <tr>
                         <td>
-                          <?=gettext("Open a"); ?> <?=$g['[product_name']?> <?=gettext("configuration XML file and click the button below to restore the configuration."); ?>
+                          <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?>
                           <br /><br />
                           <?=gettext("Restore area:"); ?>
                           <select name="restorearea" id="restorearea">

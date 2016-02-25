@@ -566,9 +566,9 @@ $(document).ready(function() {
                     </tr>
                     <tr>
                       <td  colspan="2"><strong><span class="text-danger"><?=gettext("Note:")?></span></strong><br />
-                      <?=gettext("syslog sends UDP datagrams to port 514 on the specified " .
+                      <?=gettext("Syslog sends UDP datagrams to port 514 on the specified " .
                       "remote syslog server, unless another port is specified. Be sure to set syslogd on the " .
-                      "remote server to accept syslog messages from");?> <?=$g['product_name']?>.
+                      "remote server to accept remote syslog messages.");?>
                       </td>
                     </tr>
                   </table>

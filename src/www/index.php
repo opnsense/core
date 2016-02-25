@@ -367,10 +367,10 @@ if (isset($config['trigger_initial_wizard'])) :
 								<br />
 								<div class="content-box-main">
                                 <?php
-                                    echo sprintf(gettext("Welcome to %s!\n"), $g['product_name']) . "<p>";
+                                    echo sprintf(gettext("Welcome to %s!"), $g['product_name']) . "<p>\n";
                                     echo gettext("One moment while we start the initial setup wizard.") . "<p>\n";
                                     echo gettext("Embedded platform users: Please be patient, the wizard takes a little longer to run than the normal GUI.") . "<p>\n";
-                                    echo sprintf(gettext("To bypass the wizard, click on the %s logo on the initial page."), $g['product_name']) . "\n";
+                                    echo gettext("To bypass the wizard, click on the logo in the upper left corner.") . "\n";
                                 ?>
 								</div>
 							<div>

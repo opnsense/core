@@ -76,8 +76,9 @@ function get_vip_config_section()
  * @param string $method xmlrpc method to call
  * @return boolean
  */
-function carp_check_version($url, $username, $password, $method = 'opnsense.firmware_version') {
-    global $config, $g;
+function carp_check_version($url, $username, $password, $method = 'opnsense.firmware_version')
+{
+    global $config;
 
     $client = new SimpleXMLRPC_Client($url,240);
     $client->setCredentials($username, $password);
@@ -102,8 +103,8 @@ function carp_check_version($url, $username, $password, $method = 'opnsense.firm
 
     if (!isset($remote_version['config_version']) ||
         $remote_version['config_version'] < $config['version']) {
-        update_filter_reload_status("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
-        log_error("The other member is on older configuration version of {$g['product_name']}. Sync will not be done to prevent problems!");
+        update_filter_reload_status("The other member is on older configuration version. Sync will not be done to prevent problems!");
+        log_error("The other member is on older configuration version. Sync will not be done to prevent problems!");
         return false;
     } else {
         return true;
