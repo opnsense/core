@@ -380,7 +380,7 @@ EOF;
         file_put_contents("{$g['unbound_chroot_path']}/remotecontrol.conf", $remotcfg);
 
         // Generate our keys
-        execute_unbound_command("unbound-control-setup");
+        unbound_execute("unbound-control-setup");
 
     }
 }
@@ -420,17 +420,17 @@ function sync_unbound_service()
     bootstrap_unbound_root();
 
     // Configure our Unbound service
-    execute_unbound_command("unbound-anchor");
+    unbound_execute("unbound-anchor");
     unbound_remote_control_setup();
     unbound_generate_config();
-    execute_unbound_command("start");
+    unbound_execute("start");
     if (is_process_running('unbound')) {
-        execute_unbound_command("restore_cache");
+        unbound_execute("restore_cache");
     }
 }
 
 // Execute commands as the user unbound
-function execute_unbound_command($cmd)
+function unbound_execute($cmd)
 {
     global $g, $config;
 
@@ -602,31 +602,31 @@ function unbound_control($action) {
             // Start Unbound
             if ($config['unbound']['enable'] == "on") {
                 if (!is_process_running("unbound")) {
-                    execute_unbound_command("start");
+                    unbound_execute("start");
                 }
             }
             break;
         case "stop":
             if ($config['unbound']['enable'] == "on") {
-                execute_unbound_command("stop");
+                unbound_execute("stop");
             }
             break;
         case "reload":
             if ($config['unbound']['enable'] == "on") {
-                execute_unbound_command("reload");
+                unbound_execute("reload");
             }
             break;
         case "dump_cache":
             // Dump Unbound's Cache
             if ($config['unbound']['dumpcache'] == "on") {
-                execute_unbound_command("dump_cache");
+                unbound_execute("dump_cache");
             }
             break;
         case "restore_cache":
             // Restore Unbound's Cache
             if ((is_process_running("unbound")) && ($config['unbound']['dumpcache'] == "on")) {
                 if (file_exists($cache_dumpfile) && filesize($cache_dumpfile) > 0) {
-                    execute_unbound_command("load_cache < /tmp/unbound_cache");
+                    unbound_execute("load_cache < /tmp/unbound_cache");
                 }
             }
             break;
