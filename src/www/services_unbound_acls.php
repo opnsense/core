@@ -120,23 +120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-//
-// if ($act == "del") {
-//   if (!$a_acls[$id]) {
-//     header("Location: services_unbound_acls.php");
-//     exit;
-//   }
-//
-//   unset($a_acls[$id]);
-//   write_config();
-//   mark_subsystem_dirty('unbound');
-// }
-//
-// if ($act == "new") {
-//   $id = unbound_get_next_id();
-// }
-
-
 $service_hook = 'unbound';
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
