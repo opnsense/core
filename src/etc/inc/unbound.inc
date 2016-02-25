@@ -354,7 +354,7 @@ EOD;
     if (isset($config['unbound']['regdhcp'])) {
         // include dynamic leases
         @touch("{$g['unbound_chroot_path']}/dhcpleases.conf");
-        $unboundconf .= "\ninclude: {$g['unbound_chroot_path']}/dhcpleases.conf\n"
+        $unboundconf .= "\ninclude: {$g['unbound_chroot_path']}/dhcpleases.conf\n";
     }
     file_put_contents("{$g['unbound_chroot_path']}/unbound.conf", $unboundconf);
 
