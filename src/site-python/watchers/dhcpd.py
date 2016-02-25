@@ -28,7 +28,7 @@ import time
 import datetime
 
 class DHCPDLease(object):
-    watch_file = '/tmp/dhcpd.leases'
+    watch_file = '/var/dhcpd/var/db/dhcpd.leases'
 
     def __init__(self):
         """ init watcher
