@@ -159,9 +159,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     # it's easy to have a little too much whitespace in the field, clean it up for the user before processing.
     $pconfig['timeservers'] = preg_replace('/[[:blank:]]+/', ' ', $pconfig['timeservers']);
     $pconfig['timeservers'] = trim($pconfig['timeservers']);
-    foreach (explode(' ', $pconfig['timeservers']) as $ts) {
-        if (!is_domain($ts)) {
-            $input_errors[] = gettext("A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'.");
+    if (!empty($pconfig['timeservers'])) {
+        foreach (explode(' ', $pconfig['timeservers']) as $ts) {
+            if (!is_domain($ts)) {
+                $input_errors[] = gettext("A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'.");
+            }
         }
     }
 
@@ -170,6 +172,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       $config['system']['domain'] = $pconfig['domain'];
       $config['system']['timezone'] = $pconfig['timezone'];
       $config['system']['timeservers'] = strtolower($pconfig['timeservers']);
+      if (empty($config['system']['timeservers'])) {
+          unset($config['system']['timeservers']);
+      }
       $config['theme'] =  $pconfig['theme'];
 
       if (!empty($pconfig['language']) && $pconfig['language'] != $config['system']['language']) {
@@ -448,9 +453,9 @@ include("head.inc");
               <td width="78%" class="vtable">
                 <input name="timeservers" type="text" class="formfld unknown" value="<?=$pconfig['timeservers'];?>" />
                 <div class="hidden" for="help_for_ntp">
-                  <?=gettext("Use a space to separate multiple hosts (only one " .
-                  "required). Remember to set up at least one DNS server " .
-                  "if you enter a host name here!"); ?>
+                  <?=gettext("Use a space to separate multiple hosts if " .
+                  "needed or leave blank to disable the network time service. " .
+                  "Remember to set up DNS if you enter host names here."); ?>
                 </div>
               </td>
             </tr>

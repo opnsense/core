@@ -1474,6 +1474,17 @@ function system_ntp_configure($start_ntpd = true)
 {
     global $config;
 
+    /* if ntpd is running, kill it when restart is not delayed */
+    while ($start_ntpd && isvalidpid('/var/run/ntpd.pid')) {
+        killbypid('/var/run/ntpd.pid');
+        usleep(200 * 1000);
+    }
+
+    if (!isset($config['system']['timeservers'])) {
+        /* use this field for on/off toggle */
+        return;
+    }
+
     $driftfile = '/var/db/ntpd.drift';
     $statsdir = '/var/log/ntp';
     $gps_device = '/dev/gps0';
@@ -1717,12 +1728,6 @@ function system_ntp_configure($start_ntpd = true)
         /* write out the config and delay startup */
         mwexec_bg('/usr/local/sbin/ntpdate_sync_once.sh');
         return;
-    }
-
-    /* if ntpd is running, kill it */
-    while (isvalidpid('/var/run/ntpd.pid')) {
-        killbypid('/var/run/ntpd.pid');
-        usleep(200 * 1000);
     }
 
     /* if /var/empty does not exist, create it */
