@@ -463,9 +463,9 @@ include("head.inc");
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform" id="iform">
               <?php if (!empty($config['dhcrelay6']['enabled'])): ?>
-              <p><?= gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.') ?></p>
+              <?php print_content_box(gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.')); ?></p>
               <?php elseif (count($tab_array_main) == 0):?>
-              <?php print_info_box(("No interfaces found with a static IPv6 address.")); ?>
+              <?php print_content_box(gettext('No interfaces found with a static IPv6 address.')); ?>
               <?php else: ?>
                 <div class="table-responsive">
                   <table class="table table-striped">
