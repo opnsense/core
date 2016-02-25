@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (empty($pconfig['outgoing_interface'])) {
             $input_errors[] = gettext("A single outgoing network interface needs to be selected for the DNS Resolver to use for outgoing DNS requests.");
         }
-        if (!is_port($pconfig['port'])) {
+        if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number.");
         }
 
