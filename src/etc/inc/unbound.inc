@@ -242,6 +242,14 @@ EOF;
     $unwanted_reply_threshold = (!empty($config['unbound']['unwanted_reply_threshold'])) ? $config['unbound']['unwanted_reply_threshold'] : "0";
     $verbosity = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : 1;
 
+    if (isset($config['unbound']['regdhcp'])) {
+        // include dynamic leases
+        @touch("{$g['unbound_chroot_path']}/dhcpleases.conf");
+        $include_dhcpleases = "include: {$g['unbound_chroot_path']}/dhcpleases.conf";
+    } else {
+        $include_dhcpleases = "";
+    }
+
     // Set up forwarding if it configured
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
@@ -339,6 +347,9 @@ include: {$g['unbound_chroot_path']}/access_lists.conf
 # Static host entries
 include: {$g['unbound_chroot_path']}/host_entries.conf
 
+# DHCP leases (if configured)
+{$include_dhcpleases}
+
 # Domain overrides
 include: {$g['unbound_chroot_path']}/domainoverrides.conf
 
@@ -353,11 +364,6 @@ include: {$g['unbound_chroot_path']}/remotecontrol.conf
 
 EOD;
 
-    if (isset($config['unbound']['regdhcp'])) {
-        // include dynamic leases
-        @touch("{$g['unbound_chroot_path']}/dhcpleases.conf");
-        $unboundconf .= "\ninclude: {$g['unbound_chroot_path']}/dhcpleases.conf\n";
-    }
     file_put_contents("{$g['unbound_chroot_path']}/unbound.conf", $unboundconf);
 
     return 0;
