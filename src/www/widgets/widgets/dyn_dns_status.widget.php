@@ -53,7 +53,7 @@ if ($_REQUEST['getdyndnsstatus']) {
         }
 
         $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
-        if (file_exists($filename)) {
+        if (file_exists($filename) && !empty($dyndns['enable'])) {
             $ipaddr = dyndnsCheckIP($dyndns['interface']);
             $cached_ip_s = preg_split('/:/', file_get_contents($filename));
             $cached_ip = $cached_ip_s[0];
@@ -64,8 +64,9 @@ if ($_REQUEST['getdyndnsstatus']) {
             }
             echo htmlspecialchars($cached_ip);
             echo "</font>";
+        /* XXX IPv6 missing */
         } else {
-            echo gettext("N/A ") . date("H:i:s");
+            echo '<span class="text-muted">' . gettext('N/A') . '</span>';
         }
     }
     exit;
