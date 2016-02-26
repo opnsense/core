@@ -71,57 +71,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['apply'])) {
+        services_unbound_configure();
+        clear_subsystem_dirty('unbound');
+        header("Location: services_unbound_advanced.php");
+        exit;
+    } else {
+        $pconfig = $_POST;
+        $config['unbound']['hideidentity'] =  !empty($pconfig['hideidentity']);
+        $config['unbound']['hideversion'] =  !empty($pconfig['hideversion']);
+        $config['unbound']['prefetch'] =  !empty($pconfig['prefetch']);
+        $config['unbound']['prefetchkey'] =  !empty($pconfig['prefetchkey']);
+        $config['unbound']['dnssecstripped'] =  !empty($pconfig['dnssecstripped']);
+        $config['unbound']['msgcachesize'] = $pconfig['msgcachesize'];
+        $config['unbound']['outgoing_num_tcp'] = $pconfig['outgoing_num_tcp'];
+        $config['unbound']['incoming_num_tcp'] = $pconfig['incoming_num_tcp'];
+        $config['unbound']['edns_buffer_size'] = $pconfig['edns_buffer_size'];
+        $config['unbound']['num_queries_per_thread'] = $pconfig['num_queries_per_thread'];
+        $config['unbound']['jostle_timeout'] = $pconfig['jostle_timeout'];
+        $config['unbound']['cache_max_ttl'] = $pconfig['cache_max_ttl'];
+        $config['unbound']['cache_min_ttl'] = $pconfig['cache_min_ttl'];
+        $config['unbound']['infra_host_ttl'] = $pconfig['infra_host_ttl'];
+        $config['unbound']['infra_cache_numhosts'] = $pconfig['infra_cache_numhosts'];
+        $config['unbound']['unwanted_reply_threshold'] = $pconfig['unwanted_reply_threshold'];
+        $config['unbound']['log_verbosity'] = $pconfig['log_verbosity'];
+        write_config("DNS Resolver configured.");
+        mark_subsystem_dirty('unbound');
+    }
 }
 
-
-if ($_POST) {
-  if ($_POST['apply']) {
-    $retval = services_unbound_configure();
-    $savemsg = get_std_save_message();
-    if ($retval == 0)
-      clear_subsystem_dirty('unbound');
-  } else {
-    $pconfig = $_POST;
-
-    if (isset($_POST['hideidentity']))
-      $config['unbound']['hideidentity'] = true;
-    else
-      unset($config['unbound']['hideidentity']);
-    if (isset($_POST['hideversion']))
-      $config['unbound']['hideversion'] = true;
-    else
-      unset($config['unbound']['hideversion']);
-    if (isset($_POST['prefetch']))
-      $config['unbound']['prefetch'] = true;
-    else
-      unset($config['unbound']['prefetch']);
-    if (isset($_POST['prefetchkey']))
-      $config['unbound']['prefetchkey'] = true;
-    else
-      unset($config['unbound']['prefetchkey']);
-    if (isset($_POST['dnssecstripped']))
-      $config['unbound']['dnssecstripped'] = true;
-    else
-      unset($config['unbound']['dnssecstripped']);
-    $config['unbound']['msgcachesize'] = $_POST['msgcachesize'];
-    $config['unbound']['outgoing_num_tcp'] = $_POST['outgoing_num_tcp'];
-    $config['unbound']['incoming_num_tcp'] = $_POST['incoming_num_tcp'];
-    $config['unbound']['edns_buffer_size'] = $_POST['edns_buffer_size'];
-    $config['unbound']['num_queries_per_thread'] = $_POST['num_queries_per_thread'];
-    $config['unbound']['jostle_timeout'] = $_POST['jostle_timeout'];
-    $config['unbound']['cache_max_ttl'] = $_POST['cache_max_ttl'];
-    $config['unbound']['cache_min_ttl'] = $_POST['cache_min_ttl'];
-    $config['unbound']['infra_host_ttl'] = $_POST['infra_host_ttl'];
-    $config['unbound']['infra_cache_numhosts'] = $_POST['infra_cache_numhosts'];
-    $config['unbound']['unwanted_reply_threshold'] = $_POST['unwanted_reply_threshold'];
-    $config['unbound']['log_verbosity'] = $_POST['log_verbosity'];
-    write_config("DNS Resolver configured.");
-    mark_subsystem_dirty('unbound');
-  }
-}
 
 $service_hook = 'unbound';
-
+legacy_html_escape_form_data($pconfig);
 include_once("head.inc");
 
 ?>
