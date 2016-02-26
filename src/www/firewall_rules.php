@@ -652,7 +652,7 @@ $( document ).ready(function() {
 ?>
                   <tr>
                     <td colspan="11" align="center" valign="middle">
-                    <span class="gray">
+                    <span class="text-muted">
                 <?php if ($selected_if == "FloatingRules"): ?>
                       <?=gettext("No floating rules are currently defined."); ?><br /><br />
                 <?php else: ?>

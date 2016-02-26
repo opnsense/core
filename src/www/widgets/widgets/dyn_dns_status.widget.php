@@ -88,7 +88,7 @@ if ($_REQUEST['getdyndnsstatus']) {
         foreach ($iflist as $if => $ifdesc) {
             if ($dyndns['interface'] == $if) {
                 if (!isset($dyndns['enable'])) {
-                    echo "<span class=\"gray\">{$ifdesc}</span>";
+                    echo "<span class=\"text-muted\">{$ifdesc}</span>";
                 } else {
                     echo "{$ifdesc}";
                 }
@@ -99,7 +99,7 @@ if ($_REQUEST['getdyndnsstatus']) {
         foreach ($groupslist as $if => $group) {
             if ($dyndns['interface'] == $if) {
                 if (!isset($dyndns['enable'])) {
-                    echo "<span class=\"gray\">{$if}</span>";
+                    echo "<span class=\"text-muted\">{$if}</span>";
                 } else {
                     echo "{$if}";
                 }
@@ -113,7 +113,7 @@ if ($_REQUEST['getdyndnsstatus']) {
         $types = services_dyndns_list();
         if (isset($types[$dyndns['type']])) {
             if (!isset($dyndns['enable'])) {
-                echo '<span class="gray">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
+                echo '<span class="text-muted">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
             } else {
                 echo htmlspecialchars($types[$dyndns['type']]);
             }
@@ -123,7 +123,7 @@ if ($_REQUEST['getdyndnsstatus']) {
 		<td class="listr">
 		<?php
         if (!isset($dyndns['enable'])) {
-            echo "<span class=\"gray\">".htmlspecialchars($dyndns['host'])."</span>";
+            echo "<span class=\"text-muted\">".htmlspecialchars($dyndns['host'])."</span>";
         } else {
             echo htmlspecialchars($dyndns['host']);
         }

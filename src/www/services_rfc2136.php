@@ -90,7 +90,7 @@ $main_buttons = array(
 											foreach ($iflist as $if => $ifdesc) {
 												if ($rfc2136['interface'] == $if) {
 													if (!isset($rfc2136['enable']))
-														echo "<span class=\"gray\">{$ifdesc}</span>";
+														echo "<span class=\"text-muted\">{$ifdesc}</span>";
 													else
 														echo "{$ifdesc}";
 													break;
@@ -101,7 +101,7 @@ $main_buttons = array(
 										  <td class="listr">
 										  <?php
 											if (!isset($rfc2136['enable']))
-												echo "<span class=\"gray\">" . htmlspecialchars($rfc2136['server']) . "</span>";
+												echo "<span class=\"text-muted\">" . htmlspecialchars($rfc2136['server']) . "</span>";
 											else
 												echo htmlspecialchars($rfc2136['server']);
 										  ?>
@@ -109,7 +109,7 @@ $main_buttons = array(
 										  <td class="listr">
 										  <?php
 											if (!isset($rfc2136['enable']))
-												echo "<span class=\"gray\">" . htmlspecialchars($rfc2136['host']) . "</span>";
+												echo "<span class=\"text-muted\">" . htmlspecialchars($rfc2136['host']) . "</span>";
 											else
 												echo htmlspecialchars($rfc2136['host']);
 										  ?>
@@ -154,7 +154,7 @@ $main_buttons = array(
 										  <td class="listbg">
 										  <?php
 											if (!isset($rfc2136['enable']))
-												echo "<span class=\"gray\">" . htmlspecialchars($rfc2136['descr']) . "</span>";
+												echo "<span class=\"text-muted\">" . htmlspecialchars($rfc2136['descr']) . "</span>";
 											else
 												echo htmlspecialchars($rfc2136['descr']);
 										  ?>
