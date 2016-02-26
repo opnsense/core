@@ -239,6 +239,14 @@ EOF;
     $rrsetcachesize = $msgcachesize * 2;
     $dnssecstripped = !empty($config['unbound']['dnssecstripped']) ? "yes" : "no";
 
+    if (isset($config['unbound']['regdhcp'])) {
+        // include dynamic leases
+        @touch("{$g['unbound_chroot_path']}/dhcpleases.conf");
+        $include_dhcpleases = "include: {$g['unbound_chroot_path']}/dhcpleases.conf";
+    } else {
+        $include_dhcpleases = "";
+    }
+
     // Set up forwarding if it configured
     if (isset($config['unbound']['forwarding'])) {
         $dnsservers = array();
@@ -337,11 +345,11 @@ include: {$g['unbound_chroot_path']}/access_lists.conf
 # Static host entries
 include: {$g['unbound_chroot_path']}/host_entries.conf
 
+# DHCP leases (if configured)
+{$include_dhcpleases}
+
 # Domain overrides
 include: {$g['unbound_chroot_path']}/domainoverrides.conf
-
-# TODO: DHCP leases should be included here
-##include: {$g['unbound_chroot_path']}/dhcpleases.conf
 
 {$custom_options}
 
@@ -378,7 +386,7 @@ EOF;
         file_put_contents("{$g['unbound_chroot_path']}/remotecontrol.conf", $remotcfg);
 
         // Generate our keys
-        do_as_unbound_user("unbound-control-setup");
+        unbound_execute("unbound-control-setup");
 
     }
 }
@@ -418,25 +426,31 @@ function sync_unbound_service()
     bootstrap_unbound_root();
 
     // Configure our Unbound service
-    do_as_unbound_user("unbound-anchor");
+    unbound_execute("unbound-anchor");
     unbound_remote_control_setup();
     unbound_generate_config();
-    do_as_unbound_user("start");
+    unbound_execute("start");
     if (is_process_running('unbound')) {
-        do_as_unbound_user("restore_cache");
+        unbound_execute("restore_cache");
     }
 }
 
 // Execute commands as the user unbound
-function do_as_unbound_user($cmd)
+function unbound_execute($cmd)
 {
-    global $g;
+    global $g, $config;
 
     switch ($cmd) {
         case 'start':
+            $local_domain = !empty($config['system']['domain']) ? $config['system']['domain'] : "local";
+            killbypid('/var/run/unbound_dhcpd.pid');
+            if (isset($config['unbound']['regdhcp'])) {
+                mwexec('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain "'.$local_domain.'"');
+            }
             mwexec("/usr/local/sbin/unbound -c {$g['unbound_chroot_path']}/unbound.conf");
             break;
         case 'stop':
+            killbypid('/var/run/unbound_dhcpd.pid');
             mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-control stop", true);
             break;
         case 'unbound-anchor':
@@ -579,23 +593,6 @@ function unbound_add_host_entries() {
         $unbound_entries .= $host_entries;
     }
 
-    // Handle DHCPLeases added host entries
-    if (isset($config['unbound']['regdhcp'])) {
-        $dhcplcfg = read_hosts();
-        $host_entries = "";
-        if (is_array($dhcplcfg)) {
-            foreach($dhcplcfg as $key=>$host) {
-                $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['fqdn']}\"\n";
-                $host_entries .= "local-data: \"{$host['fqdn']} IN A {$host['ipaddr']}\"\n";
-                if (!empty($host['name'])) {
-                    $host_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['name']}\"\n";
-                    $host_entries .= "local-data: \"{$host['name']} IN A {$host['ipaddr']}\"\n";
-                }
-            }
-            $unbound_entries .= $host_entries;
-        }
-    }
-
     // Write out entries
     bootstrap_unbound_root();
     file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
@@ -611,31 +608,31 @@ function unbound_control($action) {
             // Start Unbound
             if ($config['unbound']['enable'] == "on") {
                 if (!is_process_running("unbound")) {
-                    do_as_unbound_user("start");
+                    unbound_execute("start");
                 }
             }
             break;
         case "stop":
             if ($config['unbound']['enable'] == "on") {
-                do_as_unbound_user("stop");
+                unbound_execute("stop");
             }
             break;
         case "reload":
             if ($config['unbound']['enable'] == "on") {
-                do_as_unbound_user("reload");
+                unbound_execute("reload");
             }
             break;
         case "dump_cache":
             // Dump Unbound's Cache
             if ($config['unbound']['dumpcache'] == "on") {
-                do_as_unbound_user("dump_cache");
+                unbound_execute("dump_cache");
             }
             break;
         case "restore_cache":
             // Restore Unbound's Cache
             if ((is_process_running("unbound")) && ($config['unbound']['dumpcache'] == "on")) {
                 if (file_exists($cache_dumpfile) && filesize($cache_dumpfile) > 0) {
-                    do_as_unbound_user("load_cache < /tmp/unbound_cache");
+                    unbound_execute("load_cache < /tmp/unbound_cache");
                 }
             }
             break;
