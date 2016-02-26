@@ -48,6 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             configd_run('dyndns reload', true);
         }
         exit;
+    } elseif (isset($_POST['act']) && $_POST['act'] == "toggle" && isset($_POST['id'])) {
+        if (!empty($a_dyndns[$_POST['id']])) {
+            if (!empty($a_dyndns[$_POST['id']]['enabled'])) {
+                $a_dyndns[$_POST['id']]['enabled'] = false;
+            } else {
+                $a_dyndns[$_POST['id']]['enabled'] = true;
+            }
+            write_config();
+            configd_run('dyndns reload', true);
+        }
+        exit;
     }
 }
 
@@ -84,6 +95,12 @@ $main_buttons = array(
               }]
       });
     });
+    // link toggle buttons
+    $(".act_toggle").click(function(){
+        $.post(window.location, {act: 'toggle', id:$(this).data("id")}, function(data) {
+            location.reload();
+        });
+    });
   });
   </script>
 
@@ -112,6 +129,9 @@ $main_buttons = array(
                     foreach ($a_dyndns as $dyndns): ?>
                     <tr>
                       <td>
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($server['disable'])) ? gettext("disable") : gettext("enable");?>">
+                          <span class="glyphicon glyphicon-play <?=(!empty($dyndns['enabled'])) ? "text-success" : "text-muted";?>"></span>
+                        </a>
                         <?=!empty($config['interfaces'][$dyndns['interface']]['descr']) ? $config['interfaces'][$dyndns['interface']]['descr'] : strtoupper($dyndns['interface']);?>
                       </td>
                       <td><?=services_dyndns_list()[$dyndns['type']];?></td>
@@ -120,24 +140,26 @@ $main_buttons = array(
 <?php
                       $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
                       $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
-                      if (file_exists($filename)) {
+                      if (file_exists($filename) && !empty($dyndns['enabled'])) {
                         $ipaddr = dyndnsCheckIP($dyndns['interface']);
                         $cached_ip_s = explode(":", file_get_contents($filename));
                         $cached_ip = $cached_ip_s[0];
-                        if ($ipaddr <> $cached_ip)
-                          echo "<font color='red'>";
-                        else
-                          echo "<font color='green'>";
+                        if ($ipaddr <> $cached_ip) {
+                            echo "<font color='red'>";
+                        } else {
+                            echo "<font color='green'>";
+                        }
                         echo htmlspecialchars($cached_ip);
                         echo "</font>";
                       } elseif (file_exists($filename_v6)) {
                         $ipv6addr = get_interface_ipv6($dyndns['interface']);
                         $cached_ipv6_s = explode("|", file_get_contents($filename_v6));
                         $cached_ipv6 = $cached_ipv6_s[0];
-                        if ($ipv6addr <> $cached_ipv6)
-                          echo "<font color='red'>";
-                        else
-                          echo "<font color='green'>";
+                        if ($ipv6addr <> $cached_ipv6) {
+                            echo "<font color='red'>";
+                        } else {
+                            echo "<font color='green'>";
+                        }
                         echo htmlspecialchars($cached_ipv6);
                         echo "</font>";
                       } else {
