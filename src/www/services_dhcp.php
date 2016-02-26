@@ -1001,18 +1001,19 @@ include("head.inc");
                         <div id="shownetboot" style="display:none">
                           <input type="checkbox" value="yes" name="netboot" id="netboot" <?=!empty($pconfig['netboot']) ? " checked=\"checked\"" : ""; ?> />
                           <strong><?=gettext("Enables network booting.");?></strong>
-                          <br/>
-                          <?=gettext("Enter the IP of the"); ?> <b><?=gettext("next-server"); ?></b>
+                          <br/><br/>
+                          <?=gettext('Set next-server IP');?>
                           <input name="nextserver" type="text" id="nextserver" value="<?=$pconfig['nextserver'];?>" /><br />
-                          <?=gettext("and the default bios filename");?>
+                          <?=gettext('Set default bios filename');?>
                           <input name="filename" type="text" id="filename" value="<?=$pconfig['filename'];?>" /><br />
-                          <?=gettext("and the UEFI 32bit filename  ");?>
+                          <?=gettext('Set UEFI 32bit filename');?>
                           <input name="filename32" type="text" id="filename32" value="<?=$pconfig['filename32'];?>" /><br />
-                          <?=gettext("and the UEFI 64bit filename  ");?>
+                          <?=gettext('Set UEFI 64bit filename');?>
                           <input name="filename64" type="text" id="filename64" value="<?=$pconfig['filename64'];?>" /><br />
-                          <?=gettext("Note: You need both a filename and a boot server configured for this to work!");?>
+                          <?=gettext("Note: You need both a filename and a boot server configured for this to work!");?><br/>
                           <?=gettext("You will need all three filenames and a boot server configured for UEFI to work!");?>
-                          <?=gettext("Enter the"); ?> <b><?=gettext("root-path"); ?></b>-<?=gettext("string");?>
+                          <br/><br/>
+                          <?=gettext('Set root-path string');?>
                           <input name="rootpath" type="text" id="rootpath" size="90" value="<?=$pconfig['rootpath'];?>" /><br />
                           <?=gettext("Note: string-format: iscsi:(servername):(protocol):(port):(LUN):targetname");?>
                         </div>
