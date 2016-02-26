@@ -39,7 +39,7 @@ if(empty($config['unbound']) || !is_array($config['unbound'])) {
 
 $copy_fields = array('msgcachesize', 'outgoing_num_tcp', 'incoming_num_tcp', 'edns_buffer_size',
                     'num_queries_per_thread', 'jostle_timeout', 'cache_max_ttl', 'cache_min_ttl',
-                    'infra_host_ttl', 'infra_cache_numhosts','unwanted_reply_threshold');
+                    'infra_host_ttl', 'infra_cache_numhosts','unwanted_reply_threshold', 'log_verbosity');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -51,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['infra_cache_numhosts'] = 10000;
     $pconfig['edns_buffer_size'] = 4096;
     $pconfig['num_queries_per_thread'] = 4096;
+    $pconfig['log_verbosity'] = "1";
 
     // boolean fields
     $pconfig['hideidentity'] = isset($config['unbound']['hideidentity']);
@@ -58,9 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['prefetch'] = isset($config['unbound']['prefetch']);
     $pconfig['prefetchkey'] = isset($config['unbound']['prefetchkey']);
     $pconfig['dnssecstripped'] = isset($config['unbound']['dnssecstripped']);
-
-    // predefined
-    $pconfig['log_verbosity'] = isset($config['unbound']['log_verbosity']) ? $config['unbound']['log_verbosity'] : "1";
 
     // text fields
     foreach ($copy_fields as $fieldname) {
@@ -78,25 +76,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } else {
         $pconfig = $_POST;
+        // boolean fields
         $config['unbound']['hideidentity'] =  !empty($pconfig['hideidentity']);
         $config['unbound']['hideversion'] =  !empty($pconfig['hideversion']);
         $config['unbound']['prefetch'] =  !empty($pconfig['prefetch']);
         $config['unbound']['prefetchkey'] =  !empty($pconfig['prefetchkey']);
         $config['unbound']['dnssecstripped'] =  !empty($pconfig['dnssecstripped']);
-        $config['unbound']['msgcachesize'] = $pconfig['msgcachesize'];
-        $config['unbound']['outgoing_num_tcp'] = $pconfig['outgoing_num_tcp'];
-        $config['unbound']['incoming_num_tcp'] = $pconfig['incoming_num_tcp'];
-        $config['unbound']['edns_buffer_size'] = $pconfig['edns_buffer_size'];
-        $config['unbound']['num_queries_per_thread'] = $pconfig['num_queries_per_thread'];
-        $config['unbound']['jostle_timeout'] = $pconfig['jostle_timeout'];
-        $config['unbound']['cache_max_ttl'] = $pconfig['cache_max_ttl'];
-        $config['unbound']['cache_min_ttl'] = $pconfig['cache_min_ttl'];
-        $config['unbound']['infra_host_ttl'] = $pconfig['infra_host_ttl'];
-        $config['unbound']['infra_cache_numhosts'] = $pconfig['infra_cache_numhosts'];
-        $config['unbound']['unwanted_reply_threshold'] = $pconfig['unwanted_reply_threshold'];
-        $config['unbound']['log_verbosity'] = $pconfig['log_verbosity'];
+        // text fields
+        foreach ($copy_fields as $fieldname) {
+            $config['unbound'][$fieldname] = $pconfig[$fieldname];
+        }
         write_config("DNS Resolver configured.");
         mark_subsystem_dirty('unbound');
+        header("Location: services_unbound_advanced.php");
+        exit;
     }
 }
 
