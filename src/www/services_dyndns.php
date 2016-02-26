@@ -129,7 +129,7 @@ $main_buttons = array(
                     foreach ($a_dyndns as $dyndns): ?>
                     <tr>
                       <td>
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($server['disable'])) ? gettext("disable") : gettext("enable");?>">
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(!empty($server['enable'])) ? gettext("disable") : gettext("enable");?>">
                           <span class="glyphicon glyphicon-play <?=(!empty($dyndns['enabled'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                         <?=!empty($config['interfaces'][$dyndns['interface']]['descr']) ? $config['interfaces'][$dyndns['interface']]['descr'] : strtoupper($dyndns['interface']);?>
