@@ -815,9 +815,6 @@ function openvpn_restart_by_id($mode, $id)
 
     if (isset($config['openvpn']["openvpn-$mode"])) {
         foreach ($config['openvpn']["openvpn-$mode"] as $settings) {
-            if (isset($settings['disable'])) {
-                continue;
-            }
             if ($id != 0 && $id == $settings['vpnid']) {
                 $found = $settings;
                 break;
@@ -839,12 +836,7 @@ function openvpn_restart($mode, $settings)
     $vpnid = $settings['vpnid'];
     $mode_id = $mode.$vpnid;
 
-    /* kill the process if running */
-    $pfile = "/var/run/openvpn_{$mode_id}.pid";
-    killbypid($pfile);
-    while (isvalidpid($pfile)) {
-        usleep(250000);
-    }
+    killbypid("/var/run/openvpn_{$mode_id}.pid", 'TERM', true);
 
     if (isset($settings['disable'])) {
         return;

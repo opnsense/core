@@ -1474,10 +1474,8 @@ function system_ntp_configure($start_ntpd = true)
 {
     global $config;
 
-    /* if ntpd is running, kill it when restart is not delayed */
-    while ($start_ntpd && isvalidpid('/var/run/ntpd.pid')) {
-        killbypid('/var/run/ntpd.pid');
-        usleep(200 * 1000);
+    if ($start_ntpd) {
+        killbypid('/var/run/ntpd.pid', 'TERM', true);
     }
 
     if (!isset($config['system']['timeservers'])) {

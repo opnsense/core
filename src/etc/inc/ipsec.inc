@@ -489,7 +489,7 @@ function ipsec_configure()
         @mkdir('/usr/local/etc/ipsec.d/reqs');
 
         if (file_exists("/var/run/booting")) {
-            echo gettext("Configuring IPsec VPN... ");
+            echo gettext("Configuring IPsec VPN...");
         }
 
         /* fastforwarding is not compatible with ipsec tunnels */

@@ -37,13 +37,21 @@ function killbyname($procname, $sig = 'TERM')
 	mwexecf('/bin/pkill -%s %s', array($sig, $procname));
 }
 
-function killbypid($pidfile, $sig = 'TERM')
+function killbypid($pidfile, $sig = 'TERM', $waitforit = false)
 {
 	if (!isvalidpid($pidfile)) {
 		return;
 	}
 
 	mwexecf('/bin/pkill -%s -F %s', array($sig, $pidfile));
+
+	if (!$waitforit) {
+		return;
+        }
+
+	while (isvalidpid($pidfile)) {
+		usleep(200 * 1000);
+	}
 }
 
 function isvalidpid($pidfile)
