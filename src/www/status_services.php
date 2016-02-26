@@ -129,7 +129,7 @@ function service_control_stop($name, $extras)
             mwexec($cmd);
         }
     } elseif (isset($service['pidfile'])) {
-        killbypid($service['pidfile']);
+        killbypid($service['pidfile'], 'TERM', true);
     } else {
         /* last resort, but not very elegant */
         killbyname($service['name']);

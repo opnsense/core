@@ -97,28 +97,20 @@ function vpn_pptpd_configure()
   $syscfg = $config['system'];
   $pptpdcfg = $config['pptpd'];
 
-  if (file_exists("/var/run/booting")) {
-    if (!$pptpdcfg['mode'] || ($pptpdcfg['mode'] == "off"))
+  killbypid('/var/run/pptp-vpn.pid', 'TERM', true);
+
+  if (!isset($pptpdcfg['mode']) || $pptpdcfg['mode'] == 'off') {
       return 0;
-
-    echo gettext("Configuring PPTP VPN service... ");
-  } else {
-    /* kill mpd */
-    killbypid('/var/run/pptp-vpn.pid');
-
-    /* wait for process to die */
-    sleep(3);
-
-    if (is_process_running("mpd -b")) {
-      killbypid('/var/run/pptp-vpn.pid');
-      log_error(gettext("Could not kill mpd within 3 seconds. Trying again."));
-    }
-
-    /* remove mpd.conf, if it exists */
-    @unlink('/var/etc/pptp-vpn/mpd.conf');
-    @unlink('/var/etc/pptp-vpn/mpd.links');
-    @unlink('/var/etc/pptp-vpn/mpd.secret');
   }
+
+  if (file_exists('/var/run/booting')) {
+    echo gettext("Configuring PPTP VPN service...");
+  }
+
+  /* remove mpd.conf, if it exists */
+  @unlink('/var/etc/pptp-vpn/mpd.conf');
+  @unlink('/var/etc/pptp-vpn/mpd.links');
+  @unlink('/var/etc/pptp-vpn/mpd.secret');
 
   if (empty($pptpdcfg['n_pptp_units'])) {
     log_error("Something wrong in the PPTPd configuration. Preventing starting the daemon because issues would arise.");
@@ -307,8 +299,9 @@ EOD;
       break;
   }
 
-  if (file_exists("/var/run/booting"))
-    echo "done\n";
+  if (file_exists('/var/run/booting')) {
+    echo gettext("done") . "\n";
+  }
 
   return 0;
 }
@@ -332,9 +325,6 @@ function vpn_pppoe_configure_by_id($id)
 
     if (isset($config['pppoes']['pppoe'])) {
         foreach ($config['pppoes']['pppoe'] as $pppoe) {
-            if (!isset($pppoe['mode']) || $pppoe['mode'] == 'off') {
-                continue;
-            }
             if ($id != 0 && $id == $pppoe['pppoeid']) {
                 $found = $pppoe;
                 break;
@@ -355,26 +345,22 @@ function vpn_pppoe_configure(&$pppoecfg)
 
   $syscfg = $config['system'];
 
-  /* create directory if it does not exist */
-  @mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
+  killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid", 'TERM', true);
 
-  if (file_exists("/var/run/booting")) {
-    if (!$pppoecfg['mode'] || ($pppoecfg['mode'] == "off"))
+  if (!isset($pppoecfg['mode']) || $pppoecfg['mode'] == 'off') {
       return 0;
+  }
 
-    echo gettext("Configuring PPPoE VPN service... ");
-  } else {
-    /* kill mpd */
-    killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
-
-    /* wait for process to die */
-    sleep(2);
-
+  if (file_exists('/var/run/booting')) {
+    echo gettext("Configuring PPPoE VPN service...");
   }
 
   switch ($pppoecfg['mode']) {
 
     case 'server' :
+
+      /* create directory if it does not exist */
+      @mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
 
       $pppoe_interface = get_real_interface($pppoecfg['interface']);
 
@@ -542,8 +528,6 @@ EOD;
         chmod("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", 0600);
       }
 
-      killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid");
-
       pfSense_ngctl_attach(".", $pppoe_interface);
 
       mwexec("/usr/local/sbin/mpd4 -b -d /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn -p /var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid -s poes poes");
@@ -551,8 +535,9 @@ EOD;
       break;
   }
 
-  if (file_exists("/var/run/booting"))
+  if (file_exists('/var/run/booting')) {
     echo gettext("done") . "\n";
+  }
 
   return 0;
 }
@@ -561,6 +546,8 @@ function vpn_l2tp_configure()
 {
   global $config;
 
+  killbypid('/var/run/l2tp-vpn.pid', 'TERM', true);
+
   $syscfg = $config['system'];
   if (isset($config['l2tp'])) {
     $l2tpcfg = $config['l2tp'];
@@ -568,16 +555,12 @@ function vpn_l2tp_configure()
     return 0;
   }
 
-  if (file_exists("/var/run/booting")) {
-    if (!isset($l2tpcfg['mode']) || $l2tpcfg['mode'] == "off")
-      return 0;
+  if (!isset($l2tpcfg['mode']) || $l2tpcfg['mode'] == 'off') {
+    return 0;
+  }
 
-    echo gettext("Configuring l2tp VPN service... ");
-  } else {
-    while (isvalidpid('/var/run/l2tp-vpn.pid')) {
-      killbypid('/var/run/l2tp-vpn.pid');
-      usleep(250 * 1000);
-    }
+  if (file_exists('/var/run/booting')) {
+    echo gettext('Configuring L2TP VPN service...');
   }
 
   @mkdir('/var/etc/l2tp-vpn');
@@ -744,8 +727,9 @@ EOD;
       break;
   }
 
-  if (file_exists("/var/run/booting"))
-    echo "done\n";
+  if (file_exists('/var/run/booting')) {
+    echo gettext("done") . "\n";
+  }
 
   return 0;
 }
