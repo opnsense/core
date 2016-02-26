@@ -50,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } elseif (isset($_POST['act']) && $_POST['act'] == "toggle" && isset($_POST['id'])) {
         if (!empty($a_dyndns[$_POST['id']])) {
-            if (!empty($a_dyndns[$_POST['id']]['enabled'])) {
-                $a_dyndns[$_POST['id']]['enabled'] = false;
+            if (!empty($a_dyndns[$_POST['id']]['enable'])) {
+                $a_dyndns[$_POST['id']]['enable'] = false;
             } else {
-                $a_dyndns[$_POST['id']]['enabled'] = true;
+                $a_dyndns[$_POST['id']]['enable'] = true;
             }
             write_config();
             configd_run('dyndns reload', true);
@@ -129,8 +129,8 @@ $main_buttons = array(
                     foreach ($a_dyndns as $dyndns): ?>
                     <tr>
                       <td>
-                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(!empty($server['enable'])) ? gettext("disable") : gettext("enable");?>">
-                          <span class="glyphicon glyphicon-play <?=(!empty($dyndns['enabled'])) ? "text-success" : "text-muted";?>"></span>
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(!empty($dyndns['enable'])) ? gettext("disable") : gettext("enable");?>">
+                          <span class="glyphicon glyphicon-play <?=(!empty($dyndns['enable'])) ? "text-success" : "text-muted";?>"></span>
                         </a>
                         <?=!empty($config['interfaces'][$dyndns['interface']]['descr']) ? $config['interfaces'][$dyndns['interface']]['descr'] : strtoupper($dyndns['interface']);?>
                       </td>
@@ -140,7 +140,7 @@ $main_buttons = array(
 <?php
                       $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
                       $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
-                      if (file_exists($filename) && !empty($dyndns['enabled'])) {
+                      if (file_exists($filename) && !empty($dyndns['enable'])) {
                         $ipaddr = dyndnsCheckIP($dyndns['interface']);
                         $cached_ip_s = explode(":", file_get_contents($filename));
                         $cached_ip = $cached_ip_s[0];
