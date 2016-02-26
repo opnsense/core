@@ -151,7 +151,7 @@ $main_buttons = array(
                         }
                         echo htmlspecialchars($cached_ip);
                         echo "</font>";
-                      } elseif (file_exists($filename_v6)) {
+                      } elseif (file_exists($filename_v6) && !empty($dyndns['enable'])) {
                         $ipv6addr = get_interface_ipv6($dyndns['interface']);
                         $cached_ipv6_s = explode("|", file_get_contents($filename_v6));
                         $cached_ipv6 = $cached_ipv6_s[0];
@@ -163,7 +163,7 @@ $main_buttons = array(
                         echo htmlspecialchars($cached_ipv6);
                         echo "</font>";
                       } else {
-                        echo "N/A";
+                        echo gettext('N/A');
                       }?>
                       </td>
                       <td><?=$dyndns['descr'];?></td>
