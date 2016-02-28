@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 04:33+0000\n"
+"POT-Creation-Date: 2016-02-26 07:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1482,7 +1482,7 @@ msgid "Assignments"
 msgstr "Zuweisungen"
 
 msgid "Bridge"
-msgstr "Bridge"
+msgstr "Brücke"
 
 msgid "GIF"
 msgstr "GIF"
@@ -2685,7 +2685,7 @@ msgid "realif not defined in interfaces bridge - up"
 msgstr "realif nicht definiert in Schnittstellen Brücke - up"
 
 msgid "bridgeif not defined -- could not bring interface up"
-msgstr "Bridgeinterface nicht definiert -- konnte Interface nicht aktivieren"
+msgstr "Brückeninterface nicht definiert -- konnte Interface nicht aktivieren"
 
 msgid "Configuring LAGG interfaces..."
 msgstr "Konfiguriere LAGG Schnittstellen..."
@@ -6519,6 +6519,9 @@ msgid ""
 "attempt to open a connection and optionally display the data sent back from "
 "the server."
 msgstr ""
+"Wärend des Tests werden keine Daten an den fernen Host gesendet. Es wird "
+"lediglich versucht, eine Verbindung aufzubauen und optional die Daten "
+"angezeigt, die der Server gesendet hat."
 
 msgid ""
 "If you force IPv4 or IPv6 and use a hostname that does not contain a result "
@@ -6537,6 +6540,8 @@ msgid ""
 "Shows the text given by the server when connecting to the port. Will take 10+"
 " seconds to display if checked."
 msgstr ""
+"Zeigt den Text an, den der Server beim Verbinden mit dem Port sendet. Dies "
+"dauert länger als 10 Sekunden, sofern aktiviert, bis der Text angezeigt wird."
 
 msgid "Port Test Results"
 msgstr "Ergebnis des Porttests"
@@ -8038,7 +8043,7 @@ msgid ""
 msgstr ""
 
 msgid "State timeout (advanced option) must be a positive integer"
-msgstr ""
+msgstr "Statusgültigkeitsdauer (erweiterte Option) muss eine positive Zahl sein"
 
 msgid ""
 "Both maximum new connections per host and the interval (per second(s)) must "
@@ -8479,6 +8484,8 @@ msgid ""
 "Select the time range for the day(s) selected on the Month(s) above. A full "
 "day is 0:00-23:59."
 msgstr ""
+"Wählen Sie einen Zeitbereich für den/die oben ausgewählten Tag(e) der/des "
+"Monat(s) aus. Ein vollständiger Tag ist 0:00-23:59."
 
 msgid "Time Range Description"
 msgstr "Beschreibung Zeitbereich"
@@ -9206,7 +9213,7 @@ msgstr "Geschwindigkeit und Duplex"
 
 # File: src/www/interfaces.php, line: 1802
 msgid "Default (no preference, typically autoselect)"
-msgstr ""
+msgstr "Standard (keine Bevorzugung, üblicherweise automatische Auswahl)"
 
 msgid ""
 "Here you can explicitly set speed and duplex mode for this interface. "
@@ -9481,7 +9488,7 @@ msgstr ""
 "ist verzögert bis entsprechender ausgehender Datenverkehr erkannt wird."
 
 msgid "virtual full time"
-msgstr ""
+msgstr "virtuelle Vollzeit"
 
 msgid "Idle timeout"
 msgstr "Leerlaufzeitlimit"
@@ -10266,14 +10273,14 @@ msgstr ""
 "zugeordnet ist."
 
 msgid "Do you really want to delete this bridge?"
-msgstr "Wollen Sie diese Bridge wirklich löschen?"
+msgstr "Wollen Sie diese Brücke wirklich löschen?"
 
 msgid "Members"
 msgstr "Mitglieder"
 
 # File: src/www/interfaces_bridge.php, line: 155
 msgid "edit bridge"
-msgstr "Bridge bearbeiten"
+msgstr "Brücke bearbeiten"
 
 msgid "Here you can configure bridging of interfaces."
 msgstr "Hier können Sie das Bridging für Schnittstellen konfigurieren."
@@ -10342,7 +10349,7 @@ msgid "Error occurred creating interface, please retry."
 msgstr "Fehler beim Erstellen der Schnittstelle, bitte versuchen Sie es erneut."
 
 msgid "Bridge configuration"
-msgstr "Bridgekonfiguration"
+msgstr "Brückenkonfiguration"
 
 msgid "Member interfaces"
 msgstr "Mitglieder Schnittstellen"
@@ -10361,7 +10368,7 @@ msgid "Spanning Tree Protocol"
 msgstr ""
 
 msgid "Enable spanning tree options for this bridge."
-msgstr "Spanning Tree Optionen für diese Bridge aktivieren."
+msgstr "Spanning Tree Optionen für diese Brücke aktivieren."
 
 # File: src/www/interfaces_bridge_edit.php, line: 316
 msgid "RSTP"
@@ -10481,8 +10488,8 @@ msgid ""
 "useful for snooping a bridged network passively on another host connected to "
 "one of the span ports of the bridge."
 msgstr ""
-"Die Schnittstelle als Span Port der Bridge hinzufügen. Span Ports senden "
-"eine Kopie jedes Frames, die die Bridge empfängt. Dies kann am nützlichsten "
+"Die Schnittstelle als Span-Port der Brücke hinzufügen. Span-Ports senden "
+"eine Kopie jedes Frames, die die Brücke empfängt. Dies kann am nützlichsten "
 "für transparente Netzwerküberwachung (z.B durch ein IDS) eingesetzt werden."
 
 msgid "The span interface cannot be part of the bridge member interfaces."
@@ -10518,7 +10525,7 @@ msgid ""
 msgstr ""
 
 msgid "Auto PTP ports"
-msgstr ""
+msgstr "Automatische PTP-Ports"
 
 msgid ""
 "Automatically detect the point-to-point status on interface by checking the "
@@ -11677,6 +11684,8 @@ msgstr ""
 
 msgid "Unsigned 16-bit integer type must be a number in the range 0 to 65535."
 msgstr ""
+"Der vorzeichenlose 16-Bit Ganzzahl-Typ muss eine Zahl zwischen 0 und 65535 "
+"sein."
 
 msgid ""
 "Unsigned 32-bit integer type must be a number in the range 0 to 4294967295."
@@ -11798,10 +11807,10 @@ msgid ""
 msgstr ""
 
 msgid "Pool Start"
-msgstr ""
+msgstr "Start des Pools"
 
 msgid "Pool End"
-msgstr ""
+msgstr "Ende des Pools"
 
 msgid "Do you really want to delete this pool?"
 msgstr "Wollen Sie diesen Pool wirklich löschen?"
@@ -11906,7 +11915,7 @@ msgid "Show Dynamic DNS"
 msgstr "Zeige dynamisches DNS"
 
 msgid "Enable registration of DHCP client names in DNS."
-msgstr ""
+msgstr "Registrierung von DHCP-Clientnamen im DNS aktivieren."
 
 msgid "Note: Leave blank to disable dynamic DNS registration."
 msgstr "Hinweis: Freilassen zum Deaktivieren der dynamischen DNS-Anmeldung."
@@ -11915,6 +11924,8 @@ msgid ""
 "Enter the dynamic DNS domain which will be used to register client names in "
 "the DNS server."
 msgstr ""
+"Geben Sie die dynamische DNS-Domain ein, welche verwendet wird, um "
+"Clientnamen im DNS-Server zu registrieren."
 
 msgid ""
 "Enter the primary domain name server IP address for the dynamic domain name."
@@ -11934,7 +11945,7 @@ msgid "MAC Address Control"
 msgstr "MAC-Adressensteuerung"
 
 msgid "Show MAC Address Control"
-msgstr ""
+msgstr "Zeige MAC-Addresskontrolle an"
 
 msgid ""
 "Enter a list of partial MAC addresses to allow, comma separated, no spaces, "
@@ -12002,11 +12013,15 @@ msgstr "und den UEFI 64 Bit Dateinamen "
 msgid ""
 "Note: You need both a filename and a boot server configured for this to work!"
 msgstr ""
+"Anmerkung: Sie brauchen sowohl einen Dateinamen als auche einen Bootserver, "
+"damit dies funktioniert!"
 
 msgid ""
 "You will need all three filenames and a boot server configured for UEFI to "
 "work!"
 msgstr ""
+"Sie brauchen alle drei Dateinamen und einen Bootserver konfiguriert für UEFI "
+"konfiguriert, damit dies funktioniert!"
 
 msgid "Enter the"
 msgstr "Gib die"
@@ -12063,7 +12078,7 @@ msgid "will be assigned to clients by the DHCP server."
 msgstr "wird den Clients vom DHCP-Server zugewiesen."
 
 msgid "Status: DHCP leases"
-msgstr ""
+msgstr "Status: DHCP-Leases"
 
 msgid "The DHCP lease table can be viewed on the"
 msgstr ""
@@ -12341,7 +12356,7 @@ msgstr ""
 
 # File: src/www/services_dhcpv6_edit.php, line: 222
 msgid "Netboot filename"
-msgstr ""
+msgstr "Netzwerkbootdateiname"
 
 msgid "A valid Destination Server IPv6 address  must be specified."
 msgstr "Eine gültige Zielserveradresse muss spezifiziert werden."
@@ -13107,7 +13122,7 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 423
 msgid "NMEA sentences"
-msgstr ""
+msgstr "NMEA-Sätze"
 
 msgid ""
 "By default NTP will listen for all supported NMEA sentences. Here one or "
@@ -13206,7 +13221,7 @@ msgid ""
 msgstr ""
 
 msgid "NMEA checksum calculator"
-msgstr ""
+msgstr "NMEA-Prüfsummenrechner"
 
 msgid ""
 "Enter the text between &quot;$&quot; and &quot;*&quot; of a NMEA command "
@@ -13285,7 +13300,7 @@ msgstr "OpenDNS Setup"
 
 # File: src/www/services_opendns.php, line: 133
 msgid "Filter DNS requests using OpenDNS"
-msgstr ""
+msgstr "DNS-Abfragen mit OpenDNS filtern"
 
 # File: src/www/services_opendns.php, line: 153
 msgid ""
@@ -13468,7 +13483,7 @@ msgid "System contact"
 msgstr "Systemkontakt"
 
 msgid "Read Community String"
-msgstr ""
+msgstr "Lese Community-String"
 
 msgid ""
 "The community string is like a password, restricting access to querying SNMP "
@@ -13477,7 +13492,7 @@ msgid ""
 msgstr ""
 
 msgid "SNMP Traps"
-msgstr ""
+msgstr "SNMP-Traps"
 
 msgid "Enter trap server name"
 msgstr ""
@@ -13605,7 +13620,7 @@ msgid ""
 msgstr ""
 
 msgid "TXT Comment Support"
-msgstr ""
+msgstr "TXT-Kommentarunterstützung"
 
 msgid ""
 "If this option is set, then any descriptions associated with Host entries "
@@ -13739,7 +13754,7 @@ msgid "Only trust glue if it is within the servers authority."
 msgstr ""
 
 msgid "Harden DNSSEC data"
-msgstr ""
+msgstr "Härte DNSSEC-Daten"
 
 msgid ""
 "DNSSEC data is required for trust-anchored zones. If such data is absent, "
@@ -13787,7 +13802,7 @@ msgid ""
 msgstr ""
 
 msgid "Number of queries per thread"
-msgstr ""
+msgstr "Anzahl an Abfragen pro Thread"
 
 msgid ""
 "The number of queries that every thread will service simultaneously. If more "
@@ -13970,11 +13985,11 @@ msgstr "MX-Priorität"
 
 # File: src/www/services_unbound_host_edit.php, line: 114
 msgid "A valid MX priority must be specified."
-msgstr ""
+msgstr "Eine gültige MX-Priorität muss angegeben werden."
 
 # File: src/www/services_unbound_host_edit.php, line: 118
 msgid "A valid MX host must be specified."
-msgstr ""
+msgstr "Ein gültiger MX-Host muss angegeben werden."
 
 # File: src/www/services_unbound_host_edit.php, line: 122
 msgid "A valid resource record type must be specified."
@@ -14001,11 +14016,11 @@ msgstr ""
 
 # File: src/www/services_unbound_host_edit.php, line: 301
 msgid "Priority of MX record"
-msgstr ""
+msgstr "Priorität des MX-Eintrags"
 
 # File: src/www/services_unbound_host_edit.php, line: 309
 msgid "Host name of MX host"
-msgstr ""
+msgstr "Hostname des MX-Hosts"
 
 # File: src/www/services_unbound_overrides.php, line: 124
 msgid ""
@@ -14396,7 +14411,7 @@ msgid "Collisions"
 msgstr "Kollisionen"
 
 msgid "Bridge (%s)"
-msgstr "Bridge (%s)"
+msgstr "Brücke (%s)"
 
 msgid "Interrupts/Second"
 msgstr "Interrupts/Second"
@@ -15452,7 +15467,7 @@ msgid ""
 msgstr ""
 
 msgid "Schedule States"
-msgstr ""
+msgstr "Zeitplanstatus"
 
 msgid ""
 "By default schedules clear the states of existing connections when the "
@@ -15490,10 +15505,10 @@ msgid ""
 msgstr ""
 
 msgid "RAM Disk Settings (Reboot to Apply Changes)"
-msgstr ""
+msgstr "RAM-Disks Einstellungen (Neustart um die Änderungen vorzunehmen)"
 
 msgid "Use RAM Disks"
-msgstr ""
+msgstr "RAM-Disks verwenden"
 
 msgid "Use memory file system for /tmp and /var"
 msgstr ""
@@ -15565,10 +15580,10 @@ msgid ""
 msgstr ""
 
 msgid "Prefer IPv4 over IPv6"
-msgstr ""
+msgstr "IPv4 gegenüber IPv6 bevorzugen"
 
 msgid "Prefer to use IPv4 even if IPv6 is available"
-msgstr ""
+msgstr "Bevorzuge die Verwendung von IPv4 auch wenn IPv6 verfügbar ist"
 
 msgid ""
 "By default, if a hostname resolves IPv6 and IPv4 addresses IPv6 will be "
@@ -15612,7 +15627,7 @@ msgstr ""
 
 # File: src/www/system_advanced_network.php, line: 252
 msgid "Hardware TSO"
-msgstr ""
+msgstr "Hardware TSO"
 
 msgid "Disable hardware TCP segmentation offload"
 msgstr ""
@@ -15625,7 +15640,7 @@ msgstr ""
 
 # File: src/www/system_advanced_network.php, line: 265
 msgid "Hardware LRO"
-msgstr ""
+msgstr "Hardware LRO"
 
 msgid "Disable hardware large receive offload"
 msgstr ""
@@ -16334,7 +16349,7 @@ msgstr "DNS"
 # File: src/www/system_certmanager.php, line: 922
 # File: src/www/system_certmanager.php, line: 942
 msgid "email"
-msgstr ""
+msgstr "Email"
 
 # File: src/www/system_certmanager.php, line: 923
 # File: src/www/system_certmanager.php, line: 943
@@ -16356,7 +16371,7 @@ msgstr "*In Verwendung"
 
 # File: src/www/system_certmanager.php, line: 1111
 msgid "*Revoked"
-msgstr ""
+msgstr "*widerrufen"
 
 msgid "Complete Signing Request"
 msgstr "Signaturanfrage vervollständigen"
@@ -16707,7 +16722,7 @@ msgstr "Gateway löschen"
 
 # File: src/www/system_gateways.php, line: 368
 msgid "clone gateway"
-msgstr ""
+msgstr "Gateway klonen"
 
 msgid "delete selected items"
 msgstr "Ausgewählte Punkte löschen"
@@ -16917,7 +16932,7 @@ msgid "To"
 msgstr "Bis"
 
 msgid "Packet Loss thresholds"
-msgstr ""
+msgstr "Paketverlustgrenzwerte"
 
 msgid "Probe Interval"
 msgstr ""
@@ -17018,7 +17033,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 341
 msgid "e.g. %smycorp.com, home, office, private, etc.%s"
-msgstr ""
+msgstr "z.B. %smeinefirma.com, zuhause, buero, privat, etc.%s"
 
 msgid "DNS Server"
 msgstr "DNS-Server"
@@ -17350,7 +17365,7 @@ msgstr ""
 
 # File: src/www/system_hasync.php, line: 232
 msgid "Firewall Schedules"
-msgstr ""
+msgstr "Firewallzeitpläne"
 
 # File: src/www/system_hasync.php, line: 259
 msgid ""
@@ -17398,7 +17413,7 @@ msgstr ""
 
 # File: src/www/system_hasync.php, line: 278
 msgid "DHCPD"
-msgstr ""
+msgstr "DHCPD"
 
 # File: src/www/system_hasync.php, line: 305
 msgid ""
@@ -17490,7 +17505,7 @@ msgstr "Route löschen"
 
 # File: src/www/system_routes.php, line: 287
 msgid "clone route"
-msgstr ""
+msgstr "Route klonen"
 
 msgid "move selected routes to end"
 msgstr "verschiebe ausgewählte Routen ans Ende"
@@ -18216,9 +18231,12 @@ msgstr ""
 msgid ""
 "Please enter a user and fully qualified domain name for 'Peer Identifier'"
 msgstr ""
+"Bitte geben Sie einen Benutzer und einen vollqualifizierten Domainnamen als "
+"'Peer-Identifizierer' ein."
 
 msgid "A valid IP address for 'Peer identifier' must be specified."
 msgstr ""
+"Eine gültige IP-Adresse muss für den 'Peer-Identifizierer' angegeben werden."
 
 msgid "A valid domain name for 'Peer identifier' must be specified."
 msgstr ""
@@ -18230,6 +18248,8 @@ msgid ""
 "A valid User FQDN in the form of user@my.domain.com for 'Peer identifier' "
 "must be specified."
 msgstr ""
+"Ein gültiger Benutzer-FQDN in der Form benutzer@meine.domain.com muss für "
+"den 'Peer-Identifizierer' angegeben werden."
 
 msgid "A numeric value must be specified for DPD delay."
 msgstr "Ein numerischer Wert muss für den DPD Delay angegeben werden."
@@ -18264,7 +18284,7 @@ msgstr "Nur antworten"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 612
 msgid "Start on traffic"
-msgstr ""
+msgstr "Starte bei Datenverkehr"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 613
 msgid "Start immediate"
@@ -18289,7 +18309,7 @@ msgstr "Internet Protokoll"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 655
 msgid "Select the Internet Protocol family from this dropdown."
-msgstr ""
+msgstr "Wählen Sie die Internetprotokollfamilie aus diesem Dropdown."
 
 # File: src/www/vpn_ipsec_phase1.php, line: 695
 msgid "Select the interface for the local endpoint of this phase1 entry."
@@ -18332,7 +18352,7 @@ msgid "KeyID tag"
 msgstr "KeyID Tag"
 
 msgid "Peer identifier"
-msgstr ""
+msgstr "Peer-Identifizierer"
 
 msgid "Peer IP address"
 msgstr "Peer IP-Adresse"
@@ -19887,7 +19907,7 @@ msgstr ""
 "erhalten."
 
 msgid "Bridge Interface"
-msgstr "Bridge Schnittstelle"
+msgstr "Brücken-Schnittstelle"
 
 msgid ""
 "The interface to which this tap instance will be bridged. This is not done "
@@ -20165,7 +20185,7 @@ msgid "RADIUS issued IPs"
 msgstr ""
 
 msgid "Issue IP Addresses via RADIUS server"
-msgstr ""
+msgstr "IP-Adressen via RADIUS-Server vergeben"
 
 msgid "RADIUS server Primary"
 msgstr "Primärer RADIUS-Server"
@@ -20275,7 +20295,7 @@ msgid ""
 msgstr ""
 
 msgid "Issue IP addresses via RADIUS server"
-msgstr ""
+msgstr "IP-Adressen via RADIUS-Server vergeben"
 
 msgid "RADIUS NAS IP"
 msgstr "RADIUS NAS IP"
@@ -20420,7 +20440,7 @@ msgstr ""
 
 # File: src/www/widgets/widgets/ntp_status.widget.php, line: 135
 msgid "No active peers available"
-msgstr ""
+msgstr "Keine aktiven Peers verfügbar"
 
 # File: src/www/widgets/widgets/ntp_status.widget.php, line: 147
 msgid "Clock location"
@@ -20465,6 +20485,7 @@ msgstr ""
 # File: src/www/widgets/widgets/services_status.widget.php, line: 52
 msgid "Comma separated list of services to NOT display in the widget"
 msgstr ""
+"Kommagetrennte Liste an Diensten, die NICHT im Widget angezeigt werden sollen"
 
 msgid "Drive"
 msgstr "Festplatte"

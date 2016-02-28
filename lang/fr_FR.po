@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 04:33+0000\n"
+"POT-Creation-Date: 2016-02-26 07:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1627,7 +1627,7 @@ msgstr "Serveurs"
 
 # File: lang/dynamic/helpers/models.php, line: 93
 msgid "Tester"
-msgstr ""
+msgstr "Tester"
 
 # File: src/www/diag_logs_pills.inc, line: 45
 msgid "Access"
@@ -1834,7 +1834,7 @@ msgstr "Autres types"
 # File: lang/dynamic/helpers/models.php, line: 124
 # File: lang/dynamic/helpers/models.php, line: 128
 msgid "Devices"
-msgstr ""
+msgstr "Matériels"
 
 # File: lang/dynamic/helpers/models.php, line: 126
 msgid "Point-to-Point"
@@ -2573,12 +2573,12 @@ msgstr "Statut des baux"
 # File: lang/dynamic/helpers/models.php, line: 239
 # File: src/www/diag_ipsec_sad.php, line: 36
 msgid "Security Association Database"
-msgstr ""
+msgstr "Base de données des associations de sécurité"
 
 # File: lang/dynamic/helpers/models.php, line: 240
 # File: src/www/diag_ipsec_spd.php, line: 36
 msgid "Security Policy Database"
-msgstr ""
+msgstr "Base de données des politiques de sécurité"
 
 # File: src/www/diag_ipsec.php, line: 34
 # File: src/www/diag_ipsec_leases.php, line: 32

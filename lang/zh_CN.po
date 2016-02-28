@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-16 04:31+0000\n"
+"POT-Creation-Date: 2016-02-26 07:32+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1552,7 +1552,7 @@ msgstr "重启动系统"
 
 # File: src/www/widgets/widgets/smart_status.widget.php, line: 41
 msgid "SMART Status"
-msgstr "智能状态"
+msgstr "SMART状态"
 
 # File: src/www/load_balancer_monitor.php, line: 77
 # File: src/www/load_balancer_monitor_edit.php, line: 182
@@ -2748,7 +2748,7 @@ msgstr ""
 # File: lang/dynamic/helpers/models.php, line: 117
 # File: src/etc/inc/service-utils.inc, line: 183
 msgid "Intrusion Detection"
-msgstr ""
+msgstr "入侵检测"
 
 # File: lang/dynamic/helpers/models.php, line: 210
 msgid "sid should be a number"
@@ -4794,11 +4794,11 @@ msgstr ""
 msgid ""
 "There is a mandatory update for the package manager available. Please "
 "install and fetch updates again."
-msgstr ""
+msgstr "有一个可用软件管理器强制更新，请先更新并在完成后重新点击获取更新。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 77
 msgid "There is %s update available, total download size is %s."
-msgstr ""
+msgstr "共有 %s 个可用的更新，共需下载 %s 。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 83
 msgid "There are %s updates available, total download size is %s."
@@ -4806,7 +4806,7 @@ msgstr ""
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 84
 msgid "This update requires a reboot."
-msgstr ""
+msgstr "此更新需要重启系统。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 89
 msgid "Current status is unknown."
@@ -5129,43 +5129,43 @@ msgstr ""
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 291
 msgid "4 hours"
-msgstr ""
+msgstr "4小时"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 292
 msgid "8 hours"
-msgstr ""
+msgstr "8小时"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 293
 msgid "1 day"
-msgstr ""
+msgstr "1天"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 294
 msgid "2 days"
-msgstr ""
+msgstr "2天"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 295
 msgid "3 days"
-msgstr ""
+msgstr "3天"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 296
 msgid "4 days"
-msgstr ""
+msgstr "4天"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 297
 msgid "5 days"
-msgstr ""
+msgstr "5天"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 298
 msgid "6 days"
-msgstr ""
+msgstr "6天"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 299
 msgid "1 week"
-msgstr ""
+msgstr "1周"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 300
 msgid "2 weeks"
-msgstr ""
+msgstr "2周"
 
 # File: src/www/services_captiveportal_vouchers.php, line: 429
 # File: src/www/services_captiveportal_vouchers.php, line: 436
@@ -5180,7 +5180,7 @@ msgstr "关闭"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
 msgid "Fetching... (may take up to 30 seconds)"
-msgstr ""
+msgstr "获取中... (可能长达30秒)"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 57
 msgid "Package Name"
@@ -5204,7 +5204,7 @@ msgstr "重新安装"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 85
 msgid "Upgrading... (do not leave this page while upgrade is in progress)"
-msgstr ""
+msgstr "升级中... (升级过程中请勿关闭此页面)"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 100
 msgid "Executing... (do not leave this page while execute is in progress)"
@@ -5248,15 +5248,15 @@ msgstr ""
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 207
 msgid "Upgrade now"
-msgstr ""
+msgstr "立即升级"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 208
 msgid "Fetch updates"
-msgstr ""
+msgstr "获取更新"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 209
 msgid "Click to check for updates."
-msgstr ""
+msgstr "点击以检查更新。"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 215
 msgid "Packages"
@@ -5672,7 +5672,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php, line: 730
 # File: src/www/vpn_openvpn_server.php.orig, line: 730
 msgid "full help"
-msgstr ""
+msgstr "完成帮助"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Proxy/index.volt, line: 234
 msgid ""
@@ -6490,7 +6490,7 @@ msgstr "系统已重设为默认初始状态，正在重启动。这将在几分
 
 # File: src/www/diag_defaults.php, line: 50
 msgid "If you click \"Yes\", the firewall will:"
-msgstr ""
+msgstr "如果你点击“是”，防火墙将会："
 
 # File: src/www/diag_defaults.php, line: 61
 msgid "Reset to factory defaults"
@@ -22052,7 +22052,7 @@ msgstr ""
 
 # File: src/www/system_routes.php, line: 210
 msgid "Add route"
-msgstr ""
+msgstr "添加路由"
 
 # File: src/www/system_routes.php, line: 165
 # File: src/www/system_routes.php, line: 187
@@ -22108,14 +22108,14 @@ msgstr "删除所选路由"
 
 # File: src/www/system_routes.php, line: 321
 msgid "add route"
-msgstr ""
+msgstr "添加路由"
 
 # File: src/www/system_routes.php, line: 360
 msgid ""
 "Do not enter static routes for networks assigned on any interface of this "
 "firewall.  Static routes are only used for networks reachable via a "
 "different router, and not reachable via your default gateway."
-msgstr ""
+msgstr "不要输入任何防火墙的接口上分配的网络的静态路由。静态路由仅用于通过您的本地网关不可达，且经过其他路由器可达的网络。"
 
 # File: src/www/system_routes_edit.php, line: 78
 # File: src/www/system_routes_edit.php, line: 238
