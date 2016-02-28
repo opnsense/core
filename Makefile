@@ -67,6 +67,7 @@ CORE_DEPENDS?=		apinger \
 			miniupnpd \
 			mpd4 \
 			mpd5 \
+			ngattach \
 			ntp \
 			openssh-portable \
 			openvpn \
