@@ -121,7 +121,6 @@ class JsonKeyValueStoreField extends BaseField
     protected function actionPostLoadingEvent()
     {
         if ($this->internalSourceField != null && $this->internalSourceFile != null) {
-            //$this->internalOptionList[$key] = $value ;
             $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
             if (is_file($sourcefile)) {
                 $data = json_decode(file_get_contents($sourcefile), true);
@@ -185,11 +184,11 @@ class JsonKeyValueStoreField extends BaseField
             if ($this->internalMultiSelect) {
                 // field may contain more than one authentication server
                 $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
+                    'domain'=>array_keys($this->internalOptionList[$this->internalCacheKey])));
             } else {
                 // single authentication server selection
                 $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
+                    'domain'=>array_keys($this->internalOptionList[$this->internalCacheKey])));
             }
         }
         return $validators;
