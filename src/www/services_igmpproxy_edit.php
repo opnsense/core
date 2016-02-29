@@ -1,301 +1,280 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2009 Ermal Luçi
-	Copyright (C) 2004 Scott Ullrich
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2009 Ermal Luçi
+    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
 
-if (!isset($config['igmpproxy']['igmpentry']))
-	$config['igmpproxy']['igmpentry'] = array();
-
-//igmpproxy_sort();
+if (!isset($config['igmpproxy']['igmpentry'])) {
+    $config['igmpproxy']['igmpentry'] = array();
+}
 $a_igmpproxy = &$config['igmpproxy']['igmpentry'];
 
-if (is_numericint($_GET['id']))
-	$id = $_GET['id'];
-if (isset($_POST['id']) && is_numericint($_POST['id']))
-	$id = $_POST['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['id']) && !empty($a_igmpproxy[$_GET['id']])) {
+        $id = $_GET['id'];
+    }
+    $pconfig = array();
+    foreach (array('ifname', 'threshold', 'type', 'address', 'descr') as $fieldname) {
+        if (isset($id) && isset($a_igmpproxy[$id][$fieldname])) {
+            $pconfig[$fieldname] = $a_igmpproxy[$id][$fieldname];
+        } else {
+            $pconfig[$fieldname] = null;
+        }
+    }
+    $pconfig['networks_network'] = array();
+    $pconfig['networks_mask'] = array();
+    foreach (explode(" ", $pconfig['address']) as $entry) {
+        $parts = explode('/', $entry);
+        $pconfig['networks_network'][] = $parts[0];
+        $pconfig['networks_mask'][] = $parts[1];
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['id']) && !empty($a_igmpproxy[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
+    $pconfig = $_POST;
+    $input_errors = array();
+    $pconfig['address'] = "";
+    foreach ($pconfig['networks_network'] as $idx => $value) {
+        if (!empty($value) && !empty($pconfig['networks_mask'][$idx])) {
+            $pconfig['address'] .= " " . $value . "/" . $pconfig['networks_mask'][$idx];
+        }
+    }
+    $pconfig['address'] = trim($pconfig['address']);
+    if ($pconfig['type'] == "upstream") {
+        foreach ($a_igmpproxy as $pid => $proxyentry) {
+            if (isset($id) && $id == $pid) {
+                continue;
+            }
+            if ($proxyentry['type'] == "upstream" && $proxyentry['ifname'] != $pconfig['interface']) {
+                $input_errors[] = gettext("Only one 'upstream' interface can be configured.");
+            }
+        }
+    }
+    if (count($input_errors) == 0) {
+        $igmpentry = array();
+        $igmpentry['ifname'] = $pconfig['ifname'];
+        $igmpentry['threshold'] = $pconfig['threshold'];
+        $igmpentry['type'] = $pconfig['type'];
+        $igmpentry['address'] = $pconfig['address'];
+        $igmpentry['descr'] = $pconfig['descr'];
 
-if (isset($id) && $a_igmpproxy[$id]) {
-	$pconfig['ifname'] = $a_igmpproxy[$id]['ifname'];
-	$pconfig['threshold'] = $a_igmpproxy[$id]['threshold'];
-	$pconfig['type'] = $a_igmpproxy[$id]['type'];
-	$pconfig['address'] = $a_igmpproxy[$id]['address'];
-	$pconfig['descr'] = html_entity_decode($a_igmpproxy[$id]['descr']);
+        if (isset($id)) {
+            $a_igmpproxy[$id] = $igmpentry;
+        } else {
+            $a_igmpproxy[] = $igmpentry;
+        }
 
+        write_config();
+
+        mark_subsystem_dirty('igmpproxy');
+        header("Location: services_igmpproxy.php");
+        exit;
+    }
 }
 
-if ($_POST) {
-
-	unset($input_errors);
-	$pconfig = $_POST;
-
-	if ($_POST['type'] == "upstream") {
-		foreach ($a_igmpproxy as $pid => $proxyentry) {
-			if (isset($id) && $id == $pid)
-				continue;
-			if ($proxyentry['type'] == "upstream" && $proxyentry['ifname'] != $_POST['interface'])
-				$input_errors[] = gettext("Only one 'upstream' interface can be configured.");
-		}
-	}
-	$igmpentry = array();
-	$igmpentry['ifname'] = $_POST['ifname'];
-	$igmpentry['threshold'] = $_POST['threshold'];
-	$igmpentry['type'] = $_POST['type'];
-	$address = "";
-	$isfirst = 0;
-	/* item is a normal igmpentry type */
-	for($x=0; $x<4999; $x++) {
-		if($_POST["address{$x}"] <> "") {
-			if ($isfirst > 0)
-				$address .= " ";
-			$address .= $_POST["address{$x}"];
-			$address .= "/" . $_POST["address_subnet{$x}"];
-			$isfirst++;
-		}
-	}
-
-	if (!$input_errors) {
-		$igmpentry['address'] = $address;
-		$igmpentry['descr'] = $_POST['descr'];
-
-		if (isset($id) && $a_igmpproxy[$id])
-			$a_igmpproxy[$id] = $igmpentry;
-		else
-			$a_igmpproxy[] = $igmpentry;
-
-		write_config();
-
-		mark_subsystem_dirty('igmpproxy');
-		header("Location: services_igmpproxy.php");
-		exit;
-	}
-	//we received input errors, copy data to prevent retype
-	else
-	{
-		$pconfig['descr'] = $_POST['descr'];
-		$pconfig['address'] = $address;
-		$pconfig['type'] = $_POST['type'];
-	}
-}
-
+legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
 
 <body>
-	<?php include("fbegin.inc"); ?>
+  <?php include("fbegin.inc"); ?>
+  <script type="text/javascript">
+    $( document ).ready(function() {
+      /**
+       *  Aliases
+       */
+      function removeRow() {
+          if ( $('#networks_table > tbody > tr').length == 1 ) {
+              $('#networks_table > tbody > tr:last > td > input').each(function(){
+                $(this).val("");
+              });
+          } else {
+              $(this).parent().parent().remove();
+          }
+      }
+      // add new detail record
+      $("#addNew").click(function(){
+          // copy last row and reset values
+          $('#networks_table > tbody').append('<tr>'+$('#networks_table > tbody > tr:last').html()+'</tr>');
+          $('#networks_table > tbody > tr:last > td > input').each(function(){
+            $(this).val("");
+          });
+          //  link network / cidr
+          var item_cnt = $('#networks_table > tbody > tr').length;
+          $('#networks_table > tbody > tr:last > td:eq(1) > input').attr('id', 'network_n'+item_cnt);
+          $('#networks_table > tbody > tr:last > td:eq(2) > select').data('network-id', 'network_n'+item_cnt);
+          $(".act-removerow").click(removeRow);
+          // hookin ipv4/v6 for new item
+          hook_ipv4v6('ipv4v6net', 'network-id');
+      });
+      $(".act-removerow").click(removeRow);
+      // hook in, ipv4/ipv6 selector events
+      hook_ipv4v6('ipv4v6net', 'network-id');
+    });
+  </script>
 
-	<script type="text/javascript" src="/javascript/jquery.ipv4v6ify.js">
-	</script>
-	<script type="text/javascript" src="/javascript/row_helper.js">
-	</script>
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
+        <section class="col-xs-12">
+          <div class="content-box">
+              <form method="post" name="iform" id="iform">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <tr>
+                      <td width="22%"><strong><?=gettext("IGMP Proxy Edit");?></strong></td>
+                      <td width="78%" align="right">
+                        <small><?=gettext("full help"); ?> </small>
+                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface");?></td>
+                      <td> <select name="ifname" id="ifname" >
+<?php
+                        foreach (get_configured_interface_with_descr() as $ifnam => $ifdescr):?>
+                          <option value="<?=$ifnam;?>" <?=$ifnam == $pconfig['ifname'] ? "selected=\"selected\"" :"";?>>
+                            <?=htmlspecialchars($ifdescr);?>
+                          </option>
 
-	<input type="hidden" name="address_type" value="textbox" class="formfld unknown" />
-	<input type="hidden" name="address_subnet_type" value="select" />
-
-	<script type="text/javascript">
-	//<![CDATA[
-		rowname[0] = "address";
-		rowtype[0] = "textbox,ipv4v6";
-		rowsize[0] = "30";
-
-		rowname[1] = "address_subnet";
-		rowtype[1] = "select,ipv4v6";
-		rowsize[1] = "1";
-
-		rowname[2] = "detail";
-		rowtype[2] = "textbox";
-		rowsize[2] = "50";
-	//]]>
-	</script>
-
-	<section class="page-content-main">
-
-		<div class="container-fluid">
-
-			<div class="row">
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-				<div id="inputerrors"></div>
-
-			    <section class="col-xs-12">
-
-				<div class="content-box">
-
-                        <form action="services_igmpproxy_edit.php" method="post" name="iform" id="iform">
-
-				<div class="table-responsive">
-					<table class="table table-striped table-sort">
-								  <tr>
-									<td colspan="2" valign="top" class="listtopic"><?=gettext("IGMP Proxy Edit");?></td>
-								  </tr>
-								  <tr>
-								    <td valign="top" class="vncellreq"><?=gettext("Interface");?></td>
-								    <td class="vtable"> <select name="ifname" id="ifname" >
-										<?php $iflist = get_configured_interface_with_descr();
-											foreach ($iflist as $ifnam => $ifdescr) {
-												echo "<option value=\"{$ifnam}\"";
-												if ($ifnam == $pconfig['ifname'])
-													echo " selected=\"selected\"";
-												echo ">{$ifdescr}</option>";
-											}
-										?>
-											</select>
-								    </td>
-								  </tr>
-								  <tr>
-								    <td width="22%" valign="top" class="vncell"><?=gettext("Description");?></td>
-								    <td width="78%" class="vtable">
-								      <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=htmlspecialchars($pconfig['descr']);?>" />
-								      <br />
-								      <span class="vexpl">
-								        <?=gettext("You may enter a description here for your reference (not parsed).");?>
-								      </span>
-								    </td>
-								  </tr>
-								  <tr>
-								    <td valign="top" class="vncellreq"><?=gettext("Type");?></td>
-								    <td class="vtable">
-								      <select name="type" class="formselect" id="type" >
-								        <option value="upstream" <?php if ($pconfig['type'] == "upstream") echo "selected=\"selected\""; ?>><?=gettext("Upstream Interface");?></option>
-								        <option value="downstream" <?php if ($pconfig['type'] == "downstream") echo "selected=\"selected\""; ?>><?=gettext("Downstream Interface");?></option>
-								      </select>
-								      <br />
-								      <span class="vexpl">
-								        <?=gettext("The upstream network interface is the outgoing interface which is".
-								      " responsible for communicating to available multicast data sources.".
-								      " There can only be one upstream interface.");?>
-									</span>
-									<br />
-									<span class="vexpl">
-								       <?=gettext("Downstream network interfaces are the distribution interfaces to the".
-								      " destination networks, where multicast clients can join groups and".
-								      " receive multicast data. One or more downstream interfaces must be configured.");?>
-								      </span>
-								    </td>
-								  </tr>
-								  <tr>
-								    <td valign="top" class="vncell"><?=gettext("Threshold");?></td>
-								    <td class="vtable">
-								      <input name="threshold" class="formfld unknown" id="threshold" value="<?php echo htmlspecialchars($pconfig['threshold']);?>" />
-								      <br />
-								      <span class="vexpl">
-									      <?=gettext("Defines the TTL threshold for the network interface. ".
-								             "Packets with a lower TTL than the threshold value will be ignored. ".
-								             "This setting is optional, and by default the threshold is 1.");?>
-								      </span>
-								    </td>
-								  </tr>
-								  <tr>
-								    <td width="22%" valign="top" class="vncellreq"><div id="addressnetworkport"><?=gettext("Network(s)");?></div></td>
-								    <td width="78%" class="vtable">
-								      <table id="maintable">
-								        <tbody>
-								          <tr>
-								            <td><div id="onecolumn"><?=gettext("Network");?></div></td>
-								            <td><div id="twocolumn"><?=gettext("CIDR");?></div></td>
-								          </tr>
-
-									<?php
-									$counter = 0;
-									$address = $pconfig['address'];
-									if ($address <> "") {
-										$item = explode(" ", $address);
-										foreach($item as $ww) {
-											$address = $item[$counter];
-											$address_subnet = "";
-											$item2 = explode("/", $address);
-											foreach($item2 as $current) {
-												if($item2[1] <> "") {
-													$address = $item2[0];
-													$address_subnet = $item2[1];
-												}
-											}
-											$item4 = $item3[$counter];
-											$tracker = $counter;
-									?>
-								          <tr>
-								            <td>
-								              <input name="address<?php echo $tracker; ?>" type="text" class="formfld unknown" id="address<?php echo $tracker; ?>" size="30" value="<?=htmlspecialchars($address);?>" />
-								            </td>
-								            <td>
-											        <select name="address_subnet<?php echo $tracker; ?>" class="formselect" id="address_subnet<?php echo $tracker; ?>">
-											          <option></option>
-											          <?php for ($i = 32; $i >= 1; $i--): ?>
-											          <option value="<?=$i;?>" <?php if ($i == $address_subnet) echo "selected=\"selected\""; ?>><?=$i;?></option>
-											          <?php endfor; ?>
-											        </select>
-											      </td>
-								            <td>
-										<a onclick="removeRow(this); return false;" href="#">
-										<div style="cursor:pointer;" class="btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
-										</a>
-									      </td>
-								          </tr>
-								<?php
-										$counter++;
-
-										} // end foreach
-									} // end if
-								?>
-								        </tbody>
-										  </table>
-											<a onclick="javascript:addRowTo('maintable'); return false;" href="#" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
-										</td>
-								  </tr>
-								  <tr>
-								    <td width="22%" valign="top">&nbsp;</td>
-								    <td width="78%">
-								      <input id="submit" name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-								      <a href="services_igmpproxy.php"><input id="cancelbutton" name="cancelbutton" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
-								      <?php if (isset($id) && $a_igmpproxy[$id]): ?>
-								      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-								      <?php endif; ?>
-								    </td>
-								  </tr>
-								</table>
-				</div>
-                        </form>
-				</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
-<script type="text/javascript">
-//<![CDATA[
-	field_counter_js = 2;
-	rows = 1;
-	totalrows = <?php echo $counter; ?>;
-	loaded = <?php echo $counter; ?>;
-//]]>
-</script>
-
+<?php
+                        endforeach;?>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                      <td>
+                        <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                        <div class="hidden" for="help_for_descr">
+                          <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type");?></td>
+                      <td>
+                        <select name="type" class="formselect" id="type" >
+                          <option value="upstream" <?=$pconfig['type'] == "upstream" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Upstream Interface");?></option>
+                          <option value="downstream" <?= $pconfig['type'] == "downstream" ? "selected=\"selected\"" : ""; ?>><?=gettext("Downstream Interface");?></option>
+                        </select>
+                        <div class="hidden" for="help_for_type">
+                            <?=gettext("The upstream network interface is the outgoing interface which is".
+                              " responsible for communicating to available multicast data sources.".
+                              " There can only be one upstream interface.");?>
+                          <br />
+                          <?=gettext("Downstream network interfaces are the distribution interfaces to the".
+                             " destination networks, where multicast clients can join groups and".
+                             " receive multicast data. One or more downstream interfaces must be configured.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_threshold" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Threshold");?></td>
+                      <td>
+                        <input name="threshold" type="text" class="formfld unknown" id="threshold" value="<?=$pconfig['threshold'];?>" />
+                        <div class="hidden" for="help_for_threshold">
+                          <?=gettext("Defines the TTL threshold for the network interface. ".
+                               "Packets with a lower TTL than the threshold value will be ignored. ".
+                               "This setting is optional, and by default the threshold is 1.");?>
+                        </div>
+                      </td>
+                    </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Network(s)");?></td>
+                    <td>
+                      <table class="table table-striped table-condensed" id="networks_table">
+                        <thead>
+                          <tr>
+                            <th></th>
+                            <th><?=gettext("Network"); ?></th>
+                            <th><?=gettext("CIDR"); ?></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+<?php
+                        if (count($pconfig['networks_network']) == 0 ) {
+                            $pconfig['networks_network'][] = "";
+                            $pconfig['networks_mask'][] = "";
+                        }
+                        foreach($pconfig['networks_network'] as $item_idx => $network):?>
+                          <tr>
+                            <td>
+                              <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
+                            </td>
+                            <td>
+                              <input name="networks_network[]" type="text" id="network_<?=$item_idx;?>" value="<?=$network;?>" />
+                            </td>
+                            <td>
+                              <select name="networks_mask[]" data-network-id="network_<?=$item_idx;?>" class="ipv4v6net" id="mask<?=$item_idx;?>">
+<?php
+                                for ($i = 128; $i > 0; $i--):?>
+                                <option value="<?=$i;?>" <?= $pconfig['networks_mask'][$item_idx] == $i ?  "selected=\"selected\"" : ""?>>
+                                  <?=$i;?>
+                                </option>
+<?php
+                                endfor;?>
+                              </select>
+                            </td>
+                          </tr>
+<?php
+                        endforeach;?>
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td colspan="4">
+                              <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input id="submit" name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <a href="services_igmpproxy.php"><input id="cancelbutton" name="cancelbutton" type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" /></a>
+                      <?php if (isset($id)): ?>
+                      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc"); ?>
