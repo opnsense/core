@@ -126,46 +126,61 @@ if os.path.exists(acl_config_fn):
     cnf = ConfigParser()
     cnf.read(acl_config_fn)
     for section in cnf.sections():
-        # check if tag enabled exists in section
-        if cnf.has_option(section,'enabled'):
-            # if enabled fetch file
-            target_filename = acl_target_dir+'/'+section
-            if cnf.has_option(section,'url'):
-                # define targets
-                targets = {'domain': {'filename': target_filename, 'handle' : None},
-                           'url': {'filename': '%s.url'%target_filename, 'handle': None}}
+        target_filename = acl_target_dir+'/'+section
+        if cnf.has_option(section,'url'):
+            # collect filters to apply
+            acl_filters = list()
+            if cnf.has_option(section,'filter'):
+                for acl_filter in cnf.get(section,'filter').strip().split(','):
+                    if len(acl_filter.strip()) > 0:
+                        acl_filters.append(acl_filter)
 
-                # download file
-                if cnf.get(section,'enabled') == '1':
-                    # only generate files if enabled, otherwise dump empty files
-                    download_url = cnf.get(section,'url')
-                    acl = ACLDownload(download_url, acl_max_timeout)
-                    all_filenames = list()
-                    for filename, filetype, line in acl.download():
-                        if filename not in all_filenames:
-                            all_filenames.append(filename)
-                        if filetype in targets and targets[filetype]['handle'] is None:
-                            targets[filetype]['handle'] = open(targets[filetype]['filename'], 'wb')
-                        if filetype in targets:
-                            targets[filetype]['handle'].write('%s\n'%line)
-                    # save index to disc
-                    with open('%s.index'%target_filename,'wb') as idx_out:
-                        index_data = dict()
-                        for filename in all_filenames:
-                            if len(filename.split('/')) > 3:
-                                index_key = '/'.join(filename.split('/')[1:-1])
-                                if index_key not in index_data:
-                                    index_data[index_key] = index_key
-                        idx_out.write(json.dumps(index_data))
-                # cleanup
-                for filetype in targets:
-                    if targets[filetype]['handle'] is not None:
-                        targets[filetype]['handle'].close()
-                    elif cnf.get(section,'enabled') != '1':
-                        if os.path.isfile(targets[filetype]['filename']):
-                            # disabled, remove previous data
-                            os.remove(targets[filetype]['filename'])
-                    elif not os.path.isfile(targets[filetype]['filename']):
-                        # no data fetched and no file available, create new empty file
-                        with open(targets[filetype]['filename'], 'wb') as target_out:
-                            target_out.write("")
+            # define targets
+            targets = {'domain': {'filename': target_filename, 'handle' : None},
+                       'url': {'filename': '%s.url'%target_filename, 'handle': None}}
+
+            # only generate files if enabled, otherwise dump empty files
+            if cnf.has_option(section,'enabled') and cnf.get(section,'enabled') == '1':
+                download_url = cnf.get(section,'url')
+                acl = ACLDownload(download_url, acl_max_timeout)
+                all_filenames = list()
+                for filename, filetype, line in acl.download():
+                    if filename not in all_filenames:
+                        all_filenames.append(filename)
+
+                    if len(acl_filters) > 0:
+                        acl_found = False
+                        for acl_filter in acl_filters:
+                            if filename.find(acl_filter) > -1:
+                                acl_found = True
+                                break
+                        if not acl_found:
+                            # skip this acl entry
+                            continue
+
+                    if filetype in targets and targets[filetype]['handle'] is None:
+                        targets[filetype]['handle'] = open(targets[filetype]['filename'], 'wb')
+                    if filetype in targets:
+                        targets[filetype]['handle'].write('%s\n'%line)
+                # save index to disc
+                with open('%s.index'%target_filename,'wb') as idx_out:
+                    index_data = dict()
+                    for filename in all_filenames:
+                        if len(filename.split('/')) > 3:
+                            index_key = '/'.join(filename.split('/')[1:-1])
+                            if index_key not in index_data:
+                                index_data[index_key] = index_key
+                    idx_out.write(json.dumps(index_data))
+
+            # cleanup
+            for filetype in targets:
+                if targets[filetype]['handle'] is not None:
+                    targets[filetype]['handle'].close()
+                elif cnf.has_option(section,'enabled') and cnf.get(section,'enabled') != '1':
+                    if os.path.isfile(targets[filetype]['filename']):
+                        # disabled, remove previous data
+                        os.remove(targets[filetype]['filename'])
+                elif not os.path.isfile(targets[filetype]['filename']):
+                    # no data fetched and no file available, create new empty file
+                    with open(targets[filetype]['filename'], 'wb') as target_out:
+                        target_out.write("")
