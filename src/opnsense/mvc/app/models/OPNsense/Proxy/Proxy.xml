@@ -240,7 +240,7 @@
                             <filter type="JsonKeyValueStoreField">
                                 <Required>N</Required>
                                 <SourceField>filename</SourceField>
-                                <SourceFile>/tmp/%s.index</SourceFile>
+                                <SourceFile>/usr/local/etc/squid/acl/%s.index</SourceFile>
                                 <SelectAll>Y</SelectAll>
                             </filter>
                             <description type="TextField">
