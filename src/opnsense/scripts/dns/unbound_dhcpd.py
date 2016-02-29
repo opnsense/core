@@ -30,7 +30,7 @@
 """
 import os
 import sys
-sys.path.insert(0, "/usr/local/site-python")
+sys.path.insert(0, "/usr/local/opnsense/site-python")
 import subprocess
 import time
 import tempfile
