@@ -18,6 +18,14 @@
         <help>Enter an url to fetch the blacklist from.</help>
     </field>
     <field>
+        <id>blacklist.filter</id>
+        <label>filter list</label>
+        <type>text</type>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[select categories to use, leave empty for all. Categories are visible after initial download.]]></help>
+    </field>
+    <field>
         <id>blacklist.description</id>
         <label>Description</label>
         <type>text</type>
