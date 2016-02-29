@@ -154,8 +154,8 @@ class JsonKeyValueStoreField extends BaseField
     public function getNodeData()
     {
         $result = array ();
-        // if relation is not required, add empty option
-        if (!$this->internalIsRequired) {
+        // if relation is not required and single, add empty option
+        if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = array("value"=>$this->internalEmptyDescription, "selected" => 0);
         }
 
@@ -182,13 +182,13 @@ class JsonKeyValueStoreField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             if ($this->internalMultiSelect) {
-                // field may contain more than one authentication server
+                // field may contain more than one value
                 $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys($this->internalOptionList[$this->internalCacheKey])));
+                    'domain'=>array_keys($this->internalOptionList)));
             } else {
-                // single authentication server selection
+                // single value selection
                 $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain'=>array_keys($this->internalOptionList[$this->internalCacheKey])));
+                    'domain'=>array_keys($this->internalOptionList)));
             }
         }
         return $validators;
