@@ -98,7 +98,7 @@ $main_buttons = array(
     <div class="container-fluid">
       <div class="row">
         <?php if (is_subsystem_dirty('igmpproxy')): ?><br/>
-        <?php print_info_box_apply(gettext("The IGMP entry list has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?>
+        <?php print_info_box_apply(gettext("The IGMP entry list has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?>
         <?php endif; ?>
         <section class="col-xs-12">
           <div class="content-box">
