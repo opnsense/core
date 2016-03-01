@@ -151,7 +151,7 @@ class ServiceController extends ApiControllerBase
 
 
     /**
-     * fetch acls
+     * fetch acls (download + install)
      * @return array
      */
     public function fetchaclsAction()
@@ -163,6 +163,25 @@ class ServiceController extends ApiControllerBase
 
             // fetch files
             $response = $backend->configdRun("proxy fetchacls");
+            return array("response" => $response,"status" => "ok");
+        } else {
+            return array("response" => array());
+        }
+    }
+
+    /**
+     * download (only) acls
+     * @return array
+     */
+    public function downloadaclsAction()
+    {
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            // generate template
+            $backend->configdRun("template reload OPNsense.Proxy");
+
+            // download files
+            $response = $backend->configdRun("proxy downloadacls");
             return array("response" => $response,"status" => "ok");
         } else {
             return array("response" => array());
