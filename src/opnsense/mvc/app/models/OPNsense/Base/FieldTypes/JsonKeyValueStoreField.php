@@ -30,6 +30,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Base\Validators\CsvListValidator;
 
 /**
  * Class JsonKeyValueStoreField, use a json encoded file as selection list
