@@ -275,9 +275,9 @@ def main():
 
                         # detect output type
                         if '/' in line or '|' in line:
-                            file_type = 'url'
+                            filetype = 'url'
                         else:
-                            file_type = 'domain'
+                            filetype = 'domain'
 
                         if filename not in all_filenames:
                             all_filenames.append(filename)
