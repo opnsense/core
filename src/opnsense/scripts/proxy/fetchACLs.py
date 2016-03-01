@@ -113,6 +113,16 @@ class ACLDownload(object):
                 yield filename, file_type, line
 
 
+def filename_in_ignorelist(filename):
+    """ ignore certain files from processing.
+        :param filename: filename to inspect
+    """
+    if (filename.lower().split('.')[-1] in ['pdf', 'txt', 'doc']):
+        return True
+    elif (filename.lower() in ('readme', 'license')):
+        return True
+    return False
+
 # parse OPNsense external ACLs config
 if os.path.exists(acl_config_fn):
     # create acl directory (if new)
@@ -145,6 +155,10 @@ if os.path.exists(acl_config_fn):
                 acl = ACLDownload(download_url, acl_max_timeout)
                 all_filenames = list()
                 for filename, filetype, line in acl.download():
+                    if filename_in_ignorelist(os.path.basename(filename)):
+                        # ignore documents, licenses and readme's
+                        continue
+
                     if filename not in all_filenames:
                         all_filenames.append(filename)
 
@@ -166,7 +180,7 @@ if os.path.exists(acl_config_fn):
                 with open('%s.index'%target_filename,'wb') as idx_out:
                     index_data = dict()
                     for filename in all_filenames:
-                        if len(filename.split('/')) > 3:
+                        if len(filename.split('/')) > 2:
                             index_key = '/'.join(filename.split('/')[1:-1])
                             if index_key not in index_data:
                                 index_data[index_key] = index_key
