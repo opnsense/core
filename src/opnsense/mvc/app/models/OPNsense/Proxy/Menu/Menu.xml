@@ -10,6 +10,7 @@
             <ACL VisibleName="ACL" url="/ui/proxy/#subtab_proxy-forward-acl"/>
             <Authentication VisibleName="Auth" url="/ui/proxy/#subtab_proxy-general-authentication"/>
             <RemoteACL VisibleName="RemoteACL" url="/ui/proxy/#remote_acls"/>
+            <ICAP VisibleName="ICAP" url="/ui/proxy/#subtab_proxy-icap"/>
           </Administration>
             <Log VisibleName="Log File" order="20" url="/diag_logs_proxy.php?type=cache">
                 <More url="/diag_logs_proxy.php*" visibility="hidden"/>
