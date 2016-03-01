@@ -1,6 +1,8 @@
 <?php
 /**
- *    Copyright (C) 2015 Deciso B.V.
+ *    Copyright (C) 2015-2016 Deciso B.V.
+ *    Copyright (C) 2016 Fabian Franz
+ *    Copyright (C) 2016 @zvs44
  *
  *    All rights reserved.
  *
@@ -98,5 +100,66 @@ class SessionController extends ApiControllerBase
             }
         }
         return array();
+    }
+    
+    /**
+     * logon client to zone, must use post type of request
+     * @param int|string zone id number
+     * @return array
+     */
+    public function connectAction($zoneid = 0)
+    {
+        if(!$this->request->isPost())
+        {
+            return array("clientState" => 'Error', "errorMessage" => "not a POST request");
+        }
+        // get username, IP and auth server from post
+        $username = $this->request->getPost("user", "striptags", null);
+        $client_ip = $this->request->getPost("ip", "striptags", null);
+        $timeout = $this->request->getPost("timeout", "striptags", null);
+        // If an explicit client IP wasn't provided
+        if(!$client_ip)
+        {
+            return array("clientState" => 'Error', "errorMessage" => "No client ip given");
+        }
+        
+        $mdlCP = new CaptivePortal();
+        $cpZone = $mdlCP->getByZoneID($zoneid);
+        if ($cpZone == null) {
+            return array("clientState" => 'Error', "errorMessage" => "Zone not found");
+        }
+        // is there already a session for this user?
+        $clientSession = $mdlCP->clientSession((string)$cpZone->zoneid, $client_ip);
+        if ($clientSession['clientState'] == 'AUTHORIZED') {
+            // already authorized, return current session
+            return $clientSession;
+        }
+        // allow client to this captiveportal zone
+        $backend = new Backend();
+        $CPsession = $backend->configdpRun(
+            "captiveportal allow", array((string)$cpZone->zoneid, $username, $client_ip, null, 'json')
+        );
+        
+        // Attempt to decode the session data returned from the config daemon
+        $CPsession = json_decode($CPsession, true);
+        
+        // Push session restrictions, if they apply
+        if ($CPsession != null && array_key_exists('sessionId', $CPsession) && $timeout) {
+            // If a timeout has been specified in the POST request that we received then apply it
+            $backend->configdpRun(
+                "captiveportal set session_restrictions",
+                array((string)$cpZone->zoneid,
+                    $CPsession['sessionId'],
+                    $timeout
+                    )
+            );
+        }
+        
+        if ($CPsession != null) {
+            // Return the details on the newly-established session
+            return $CPsession;
+        }
+        // configd returned something other than json
+        return array("clientState" => 'UNKNOWN', "ipAddress" => $client_ip);
     }
 }

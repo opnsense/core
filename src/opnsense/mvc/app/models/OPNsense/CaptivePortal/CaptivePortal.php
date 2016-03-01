@@ -29,6 +29,7 @@
 namespace OPNsense\CaptivePortal;
 
 use OPNsense\Base\BaseModel;
+use \OPNsense\Core\Backend;
 
 /**
  * Class CaptivePortal
@@ -36,6 +37,42 @@ use OPNsense\Base\BaseModel;
  */
 class CaptivePortal extends BaseModel
 {
+    /**
+     * request client session data
+     * @param $zoneid captive portal zone
+     * @param $client_ip the ip to look for
+     * @return array
+     */
+    public function clientSession($zoneid,$client_ip)
+    {
+        $backend = new Backend();
+        $allClientsRaw = $backend->configdpRun(
+            "captiveportal list_clients",
+            array($zoneid, 'json')
+        );
+        $allClients = json_decode($allClientsRaw, true);
+        if ($allClients != null) {
+            // search for client by ip address
+            foreach ($allClients as $connectedClient) {
+                if ($connectedClient['ipAddress'] == $client_ip) {
+                    // client is authorized in this zone according to our administration
+                    $connectedClient['clientState'] = 'AUTHORIZED';
+                    return $connectedClient;
+                }
+            }
+        }
+
+        // return Unauthorized including authentication requirements
+        $result = array('clientState' => "NOT_AUTHORIZED", "ip_address" => $client_ip);
+        $cpZone = $this->getByZoneID($zoneid);
+        if ($cpZone != null && trim((string)$cpZone->authservers) == "") {
+            // no authentication needed, logon without username/password
+            $result['authType'] = 'none';
+        } else {
+            $result['authType'] = 'normal';
+        }
+        return $result;
+    }
     /**
      * retrieve zone by number
      * @param $zoneid zone number
