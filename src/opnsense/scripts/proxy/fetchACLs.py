@@ -55,7 +55,6 @@ class Downloader(object):
         self._url = url
         self._timeout = timeout
         self._source_handle = None
-        self._target_data = None
 
     def fetch(self):
         """ fetch (raw) source data into tempfile using self._source_handle
@@ -107,8 +106,7 @@ class Downloader(object):
                                      compression=zipfile.ZIP_DEFLATED) as zf:
                     for item in zf.infolist():
                         if item.file_size > 0:
-                            yield item.filename, zf.read(item)
-                    self._target_data = target_data
+                            yield item.filename, zf.open(item)
             else:
                 yield os.path.basename(self._url), self._source_handle
 
