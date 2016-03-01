@@ -19,7 +19,7 @@
     </field>
     <field>
         <id>blacklist.filter</id>
-        <label>filter list</label>
+        <label>categories (if available)</label>
         <type>text</type>
         <type>select_multiple</type>
         <style>tokenize</style>
