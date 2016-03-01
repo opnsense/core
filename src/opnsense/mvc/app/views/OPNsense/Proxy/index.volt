@@ -98,6 +98,26 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /**
+         *
+         * Download ACLs, no reconfigure
+         */
+        $("#downloadAct").click(function(){
+            $("#downloadAct_progress").addClass("fa fa-spinner fa-pulse");
+            ajaxCall(url="/api/proxy/service/downloadacls", sendData={}, callback=function(data,status) {
+                // when done, disable progress animation.
+                $("#downloadAct_progress").removeClass("fa fa-spinner fa-pulse");
+                if (status != "success" || data['status'] != 'ok') {
+                    BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_WARNING,
+                        title: "Error fetching remote acls",
+                        message: data['status'],
+                        draggable: true
+                    });
+                }
+            });
+        });
+
+        /**
          * setup cron item
          */
         $("#ScheduleAct").click(function() {
@@ -270,6 +290,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         <hr/>
                         <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
                         <button class="btn btn-primary" id="fetchandreconfigureAct" type="button"><b>{{ lang._('Download ACLs & Apply') | e }}</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="downloadAct" type="button"><b>{{ lang._('Download ACLs') | e }}</b><i id="downloadAct_progress" class=""></i></button>
                         <button class="btn btn-primary" id="ScheduleAct" type="button"><b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i></button>
                     </div>
                 </td>
