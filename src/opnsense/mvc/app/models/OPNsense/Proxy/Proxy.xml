@@ -242,6 +242,7 @@
                                 <SourceField>filename</SourceField>
                                 <SourceFile>/usr/local/etc/squid/acl/%s.index</SourceFile>
                                 <SelectAll>Y</SelectAll>
+                                <Multiple>Y</Multiple>
                             </filter>
                             <description type="TextField">
                                 <Required>Y</Required>
