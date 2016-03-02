@@ -157,7 +157,7 @@ class DomainSorter(object):
         """ save content, send reverse sorted to buffers
             :param data: line to write
         """
-        line = data.strip()
+        line = data.strip().lower()
         if len(line) > 0:
             self.add(line[::-1], line)
 
