@@ -46,7 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] =  isset($config['system']['disablelargereceiveoffloading']);
-    $pconfig['disablevlanhwfilter'] = isset($config['system']['disablevlanhwfilter']);
+    if (!isset($config['system']['disablevlanhwfilter'])) {
+      $pconfig['disablevlanhwfilter'] = "0";
+    } else {
+      $pconfig['disablevlanhwfilter'] = $config['system']['disablevlanhwfilter'];
+    }
     $pconfig['sharednet'] = isset($config['system']['sharednet']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -107,13 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($_POST['disablevlanhwfilter'])) {
-        $config['system']['disablevlanhwfilter'] = true;
+        $config['system']['disablevlanhwfilter'] = $pconfig['disablevlanhwfilter'];
     } elseif(isset($config['system']['disablevlanhwfilter'])) {
         unset($config['system']['disablevlanhwfilter']);
     }
 
     if (count($input_errors) == 0) {
-
         setup_polling();
         if (isset($config['system']['sharednet'])) {
             system_disable_arp_wrong_if();
@@ -126,10 +129,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        $savemsg = get_std_save_message();
-
         prefer_ipv4_or_ipv6();
         filter_configure();
+        header("Location: system_advanced_network.php");
+        exit;
     }
 }
 
@@ -278,8 +281,17 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_disablevlanhwfilter" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN Hardware Filtering"); ?></td>
                 <td>
-                  <input name="disablevlanhwfilter" type="checkbox" id="disablevlanhwfilter" value="yes" <?= !empty($pconfig['disablevlanhwfilter']) ? "checked=\"checked\"" : "";?>/>
-                  <strong><?=gettext("Disable VLAN Hardware Filtering"); ?></strong><br />
+                  <select name="disablevlanhwfilter" class="selectpicker">
+                      <option value="0" <?=$pconfig['disablevlanhwfilter'] == "0" ? "selected=\"selected\"" : "";?> >
+                        <?=gettext("Enable VLAN Hardware Filtering");?>
+                      </option>
+                      <option value="1" <?=$pconfig['disablevlanhwfilter'] == "1" ? "selected=\"selected\"" : "";?> >
+                        <?=gettext("Disable VLAN Hardware Filtering"); ?>
+                      </option>
+                      <option value="2" <?=$pconfig['disablevlanhwfilter'] == "2" ? "selected=\"selected\"" : "";?> >
+                        <?=gettext("Leave default");?>
+                      </option>
+                  </select>
                   <div class="hidden" for="help_for_disablevlanhwfilter">
                     <?=gettext("Checking this option will disable VLAN hardware filtering. This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
                     <br />

@@ -272,13 +272,16 @@ function interface_vlan_configure(&$vlan)
         }
     }
 
-    foreach ($members as $member) {
-        // set one tag at a time to avoid driver issues
-        foreach (array('vlanmtu', 'vlanhwtag', 'vlanhwfilter', 'vlanhwcsum', 'vlanhwtso')  as $tag) {
-            if (!isset($config['system']['disablevlanhwfilter'])) {
-                legacy_interface_flags($member, $tag);
-            } else {
-                legacy_interface_flags($member, '-'.$tag);
+    // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected 
+    if (!isset($config['system']['disablevlanhwfilter']) || $config['system']['disablevlanhwfilter'] == 1) {
+        foreach ($members as $member) {
+            // set one tag at a time to avoid driver issues
+            foreach (array('vlanmtu', 'vlanhwtag', 'vlanhwfilter', 'vlanhwcsum', 'vlanhwtso')  as $tag) {
+                if (!isset($config['system']['disablevlanhwfilter'])) {
+                    legacy_interface_flags($member, $tag);
+                } else {
+                    legacy_interface_flags($member, '-'.$tag);
+                }
             }
         }
     }
