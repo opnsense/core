@@ -273,10 +273,13 @@ function interface_vlan_configure(&$vlan)
     }
 
     foreach ($members as $member) {
-        if (!isset($config['system']['disablevlanhwfilter'])) {
-            legacy_interface_flags($member, 'vlanmtu vlanhwtag vlanhwfilter vlanhwcsum vlanhwtso');
-        } else {
-            legacy_interface_flags($member, '-vlanmtu -vlanhwtag -vlanhwfilter -vlanhwcsum -vlanhwtso');
+        // set one tag at a time to avoid driver issues
+        foreach (array('vlanmtu', 'vlanhwtag', 'vlanhwfilter', 'vlanhwcsum', 'vlanhwtso')  as $tag) {
+            if (!isset($config['system']['disablevlanhwfilter'])) {
+                legacy_interface_flags($member, $tag);
+            } else {
+                legacy_interface_flags($member, '-'.$tag);
+            }
         }
     }
 
