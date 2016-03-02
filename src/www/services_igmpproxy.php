@@ -111,7 +111,7 @@ $main_buttons = array(
                       <td><?=gettext("Type");?></td>
                       <td><?=gettext("Values");?></td>
                       <td><?=gettext("Description");?></td>
-                      <td>
+                      <td></td>
                     </tr>
                   </thead>
                   <tbody>
