@@ -59,9 +59,9 @@ CORE_DEPENDS?=		apinger \
 			filterlog \
 			ifinfo \
 			igmpproxy \
-			isc-dhcp42-client \
-			isc-dhcp42-relay \
-			isc-dhcp42-server \
+			isc-dhcp43-client \
+			isc-dhcp43-relay \
+			isc-dhcp43-server \
 			lighttpd \
 			minicron \
 			miniupnpd \
