@@ -277,12 +277,6 @@
       </range>
     </lan>
   </dhcpd>
-  <pptpd>
-    <mode/>
-    <redir/>
-    <localip/>
-    <remoteip/>
-  </pptpd>
   <dnsmasq>
     <enable/>
   </dnsmasq>
