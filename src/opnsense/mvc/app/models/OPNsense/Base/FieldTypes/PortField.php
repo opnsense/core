@@ -127,7 +127,7 @@ class PortField extends BaseField
      */
     public function getValidators()
     {
-
+        $validators = parent::getValidators();
         if ($this->internalValidationMessage == null) {
             $msg = "please specify a valid portnumber (1-65535) or name (" . implode(",", self::$wellknownservices) .
                 ")" ;
@@ -137,10 +137,8 @@ class PortField extends BaseField
 
         if (($this->internalIsRequired == true || $this->internalValue != null) &&
             count(self::$internalOptionList) > 0) {
-            return array(new InclusionIn(array('message' => $msg,'domain'=>self::$internalOptionList)));
-        } else {
-            // empty field and not required, skip this validation.
-            return array();
+            $validators[] = new InclusionIn(array('message' => $msg,'domain'=>self::$internalOptionList));
         }
+        return $validators;
     }
 }
