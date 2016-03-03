@@ -101,11 +101,11 @@ class IntegerField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $result[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
+            $validators[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
                 "min" => $this->minimum_value,
                 "max" => $this->maximum_value
             ));
-            $result[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
+            $validators[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
         }
         return $validators;
     }
