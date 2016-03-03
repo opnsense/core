@@ -70,9 +70,9 @@ label           :   dialog label
                         <tbody>
                         {%  if advanced|default(false) or help|default(false) %}
                         <tr>
-                            <td align="left"><a href="#">{% if advanced|default(false) %}<i class="fa fa-toggle-off text-danger" id="show_advanced_formDialogPipe" type="button"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
-                            <td colspan="2" align="right">
-                                {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialogPipe" type="button"></i></a>{% endif %}
+                            <td>{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{id}}"></i> </a><small>{{ lang._('advanced mode') }} </small>{% endif %}</td>
+                            <td colspan="2" style="text-align:right;">
+                                {% if help|default(false) %}<small>{{ lang._('full help') }} </small><a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialog{{id}}"></i></a>{% endif %}
                             </td>
                         </tr>
                         {% endif %}
