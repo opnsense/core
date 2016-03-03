@@ -144,11 +144,11 @@ class ModelRelationField extends BaseField
         if ($this->internalValue != null) {
             if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
                 count(self::$internalOptionList[$this->internalCacheKey]) > 0) {
-                return array(new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey]))));
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey])));
             } else {
-                return array(new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => array())));
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain' => array()));
             }
         }
         return $validators;
