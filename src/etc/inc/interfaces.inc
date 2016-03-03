@@ -110,20 +110,6 @@ function interfaces_bring_up($interface)
     legacy_interface_flags($interface, 'up');
 }
 
-function interface_override_flags()
-{
-    global $config;
-
-    return sprintf(
-        '%stxcsum %srxcsum %stso %slro %spolling',
-        isset($config['system']['disablechecksumoffloading']) ? '-' : '',
-        isset($config['system']['disablechecksumoffloading']) ? '-' : '',
-        isset($config['system']['disablesegmentationoffloading']) ? '-' : '',
-        isset($config['system']['disablelargereceiveoffloading']) ? '-' : '',
-        isset($config['system']['polling']) ? '' : '-'
-    );
-}
-
 function does_interface_exist($interface)
 {
     $ints = legacy_interface_listget();
@@ -564,8 +550,6 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         return;
     }
 
-    $flags = interface_override_flags();
-
     if (file_exists("/var/run/booting") || !empty($bridge['bridgeif'])) {
         legacy_interface_destroy($bridge['bridgeif']);
         legacy_interface_create($bridge['bridgeif']);
@@ -589,7 +573,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
         }
         /* make sure the parent interface is up */
         legacy_interface_mtu($realif, $mtu);
-        legacy_interface_flags($realif, $flags);
+        configure_interface_hardware($realif);
         interfaces_bring_up($realif);
         legacy_bridge_member($bridge['bridgeif'], $realif);
     }
@@ -796,16 +780,14 @@ function interface_lagg_configure(&$lagg)
         }
     }
 
-    $flags = interface_override_flags();
     $checklist = get_interface_list();
-
     foreach ($members as $member) {
         if (!array_key_exists($member, $checklist)) {
             continue;
         }
 
         legacy_interface_mtu($member, $mtu);
-        legacy_interface_flags($member, $flags);
+        configure_interface_hardware($member);
         interfaces_bring_up($member);
         mwexec("/sbin/ifconfig {$laggif} laggport {$member}");
     }
