@@ -272,7 +272,7 @@ function interface_vlan_configure(&$vlan)
         }
     }
 
-    // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected 
+    // disable/enable hardware vlan tags, will be skipped when "Leave default" (option 2) is selected
     if (!isset($config['system']['disablevlanhwfilter']) || $config['system']['disablevlanhwfilter'] == 1) {
         foreach ($members as $member) {
             // set one tag at a time to avoid driver issues
@@ -3030,12 +3030,8 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         }
         mwexec($cmd);
     }
-    $options = pfSense_get_interface_addresses($realhwif);
-
-    /* skip vlans for checksumming and polling */
-    if (!stristr($realif, "_vlan") && is_array($options)) {
-        legacy_interface_flags($realhwif, interface_override_flags(), false);
-    }
+    // apply interface hardware settings (tso, lro, ..)
+    configure_interface_hardware($realhwif);
 
     $tunnelif = substr($realif, 0, 3);
     switch ($wancfg['ipaddr']) {
