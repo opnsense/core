@@ -17,17 +17,17 @@
                                       </div>
                                   </div>
                                 </a>
-                                <div class="collapse {% if subMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}_{{ subMenuItem.Id }}" aria-expanded="{% if subMenuItem.Selected %}true{%else%}false{% endif  %}">
+                                <div class="collapse {% if subMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}_{{ subMenuItem.Id }}" >
                                     {% for subsubMenuItem in subMenuItem.Children %}
                                         {% if subsubMenuItem.IsExternal == "Y" %}
-                                            <a href="{{ subsubMenuItem.Url }}" target="_new" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ lang._(subsubMenuItem.VisibleName) }}</a>
+                                            <a href="{{ subsubMenuItem.Url }}" target="_blank" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ lang._(subsubMenuItem.VisibleName) }}</a>
                                         {% elseif acl.isPageAccessible(session.get('Username'),subsubMenuItem.Url)  %}
                                             <a href="{{ subsubMenuItem.Url }}" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ lang._(subsubMenuItem.VisibleName) }}</a>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
                         {% elseif subMenuItem.IsExternal == "Y" %}
-                                <a href="{{ subMenuItem.Url }}" target="_new" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}"  aria-expanded="{% if subMenuItem.Selected %}true{%else%}false{% endif  %}">
+                                <a href="{{ subMenuItem.Url }}" target="_blank" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}"  aria-expanded="{% if subMenuItem.Selected %}true{%else%}false{% endif  %}">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell">{{ lang._(subMenuItem.VisibleName) }}</div>

@@ -16,7 +16,7 @@
     <title>{{title|default("OPNsense") }}</title>
 
         <!-- include (theme) style -->
-    <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/main.css" media="screen, projection" rel="stylesheet">
+    <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/main.css" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -169,8 +169,8 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
-            <img class="brand-logo" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/default-logo.png" height="30"/>
-            <img class="brand-icon" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/icon-logo.png" height="30"/>
+            <img class="brand-logo" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/default-logo.png" height="30" alt="logo"/>
+            <img class="brand-icon" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/icon-logo.png" height="30" alt="icon"/>
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
             <span class="sr-only">Toggle navigation</span>

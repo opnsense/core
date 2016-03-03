@@ -63,7 +63,7 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <title><?= $pagetitle ?></title>
 
     <!-- include (theme) style -->
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>

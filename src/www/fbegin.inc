@@ -80,8 +80,8 @@ if($need_alert_display == true) {
     <div class="container-fluid">
       <div class="navbar-header">
         <a class="navbar-brand" href="/index.php">
-        <img class="brand-logo" src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30"/>
-        <img class="brand-icon" src="/ui/themes/<?= $themename ?>/build/images/icon-logo.png" height="30"/>
+        <img class="brand-logo" src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30" alt="logo" />
+        <img class="brand-icon" src="/ui/themes/<?= $themename ?>/build/images/icon-logo.png" height="30" alt="icon" />
         </a>
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
           <span class="sr-only">Toggle navigation</span>
@@ -134,7 +134,7 @@ if($need_alert_display == true) {
                                   foreach ($subMenuItem->Children as $subsubMenuItem):?>
 <?php
                                     if ($subsubMenuItem->IsExternal == "Y"):?>
-                                            <a href="<?=$subsubMenuItem->Url;?>" target="_new" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=gettext($subsubMenuItem->VisibleName);?></a>
+                                            <a href="<?=$subsubMenuItem->Url;?>" target="_blank" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=gettext($subsubMenuItem->VisibleName);?></a>
 <?php
                                     elseif ($aclObj->isPageAccessible($_SESSION['Username'],$subsubMenuItem->Url)):?>
                                             <a href="<?=$subsubMenuItem->Url;?>" class="list-group-item menu-level-3-item <?=$subsubMenuItem->Selected ? "active" :"";?>"><?=gettext($subsubMenuItem->VisibleName);?></a>
@@ -144,7 +144,7 @@ if($need_alert_display == true) {
                                 </div>
 <?php
                               elseif ($subMenuItem->IsExternal == "Y" ):?>
-                                <a href="<?=$subMenuItem->Url;?>" target="_new" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>" aria-expanded="<?=$subMenuItem->Selected ? "true" : "false";?>">
+                                <a href="<?=$subMenuItem->Url;?>" target="_blank" class="list-group-item <?=$subMenuItem->Selected ? "active" : "";?>" aria-expanded="<?=$subMenuItem->Selected ? "true" : "false";?>">
                                   <div style="display: table;width: 100%;">
                                     <div style="display: table-row">
                                       <div style="display: table-cell"><?=gettext($subMenuItem->VisibleName);?></div>

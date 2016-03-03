@@ -320,7 +320,7 @@ function display_error_form($http_code, $desc)
 
     <title><?=$http_code?></title>
 
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
     <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
@@ -388,7 +388,7 @@ function display_login_form($Login_Error = '')
 
     <title><?=gettext("Login"); ?></title>
 
-    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" media="screen, projection" rel="stylesheet">
+    <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
     <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
@@ -408,7 +408,7 @@ function display_login_form($Login_Error = '')
     <main class="login-modal-container">
       <header class="login-modal-head" style="height:55px;">
         <div class="navbar-brand">
-          <img src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30"/>
+          <img src="/ui/themes/<?= $themename ?>/build/images/default-logo.png" height="30" alt="logo"/>
         </div>
       </header>
 
