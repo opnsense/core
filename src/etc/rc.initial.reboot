@@ -33,7 +33,7 @@ require_once("system.inc");
 
 $fp = fopen('php://stdin', 'r');
 
-echo "\nThe system will reboot.  Do you want to proceed [y|n]? ";
+echo "The system will reboot.  Do you want to proceed [y|n]? ";
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
     system_reboot(true);
