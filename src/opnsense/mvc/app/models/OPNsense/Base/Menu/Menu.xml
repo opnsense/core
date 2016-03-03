@@ -266,7 +266,7 @@
                 <Edit url="/load_balancer_monitor_edit.php*" visibility="hidden"/>
             </Monitors>
             <PoolSetup VisibleName="Pool Setup" url="/load_balancer_pool.php">
-                <Edit url="/load_balancer_pool_edit.php" visibility="hidden"/>
+                <Edit url="/load_balancer_pool_edit.php*" visibility="hidden"/>
             </PoolSetup>
             <PoolStatus VisibleName="Pool Status" url="/status_lb_pool.php"/>
             <Settings url="/load_balancer_setting.php"/>
