@@ -27,18 +27,19 @@
 
 set -e
 
-echo "This will automatically fetch all available updates, apply them,"
-echo -n "and reboot if necessary.  Proceed with this action? [y/N]: "
-
-read YN
-case ${YN} in
-[yY])
-	;;
-*)
-	exit 0
-	;;
-esac
+# upgrade all packages if possible
+opnsense-update -p
 
 echo
 
-/usr/local/etc/rc.firmware
+# trigger a webgui restart to cope with changes
+/usr/local/etc/rc.restart_webgui
+
+echo
+
+# if we can update base, we'll do that as well
+if opnsense-update -c; then
+	if opnsense-update -bk; then
+		/usr/local/etc/rc.reboot
+	fi
+fi
