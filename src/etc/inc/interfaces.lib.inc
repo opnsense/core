@@ -182,6 +182,7 @@ function legacy_interface_details($intf)
 {
     $result = array();
     $result["capabilities"] = array();
+    $result["options"] = array();
     $process = proc_open('/sbin/ifconfig -m ' . escapeshellarg($intf), array(array("pipe", "r"), array("pipe", "w")), $pipes);
     if (is_resource($process)) {
         $ifconfig_data = stream_get_contents($pipes[1]);
@@ -192,7 +193,14 @@ function legacy_interface_details($intf)
                 foreach (explode(',', $capabilities) as $capability) {
                     $result["capabilities"][] = strtolower(trim($capability));
                 }
+            } elseif (strpos(trim($line), 'options=') !== false) {
+                // parse options
+                $capabilities = substr($line, strpos($line, '<') + 1, -1);
+                foreach (explode(',', $capabilities) as $capability) {
+                    $result["options"][] = strtolower(trim($capability));
+                }
             }
+
         }
         fclose($pipes[1]);
         proc_close($process);
@@ -213,4 +221,49 @@ function legacy_netgraph_detach($ifs)
 function legacy_netgraph_rename($tmpifs, $ifs)
 {
         mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpifs, $ifs));
+}
+
+/**
+ * configure interface hardware settings
+ * @param string $ifs interface name
+ */
+function configure_interface_hardware($ifs)
+{
+    global $config;
+    $intf_details = legacy_interface_details($ifs);
+    /* skip vlans for checksumming and polling */
+    if (!stristr($ifs, "_vlan") && is_array($intf_details)) {
+        // get current settings
+        $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
+        $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
+        $lro_set = in_array('lro', $intf_details['options']);
+        $polling_set = in_array('polling', $intf_details['options']);
+
+        // hardware checksum offloading offloading
+        if (isset($config['system']['disablechecksumoffloading']) && $csum_set) {
+            legacy_interface_flags($ifs, '-txcsum -rxcsum', false);
+        } elseif (!isset($config['system']['disablechecksumoffloading']) && !$csum_set) {
+            legacy_interface_flags($ifs, 'txcsum rxcsum', false);
+        }
+        // TCP segmentation offloading
+        if (isset($config['system']['disablesegmentationoffloading']) && $tso_set) {
+            legacy_interface_flags($ifs, '-tso', false);
+        } elseif (!isset($config['system']['disablesegmentationoffloading']) && !$tso_set) {
+            legacy_interface_flags($ifs, 'tso', false);
+        }
+
+        // large receive offload
+        if (isset($config['system']['disablelargereceiveoffloading']) && $lro_set) {
+            legacy_interface_flags($ifs, '-lro', false);
+        } elseif (!isset($config['system']['disablelargereceiveoffloading']) && !$lro_set) {
+            legacy_interface_flags($ifs, 'lro', false);
+        }
+
+        // polling
+        if (isset($config['system']['polling']) && !$polling_set) {
+            legacy_interface_flags($ifs, 'polling', false);
+        } elseif (!isset($config['system']['polling']) && $polling_set) {
+            legacy_interface_flags($ifs, '-polling', false);
+        }
+    }
 }
