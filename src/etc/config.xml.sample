@@ -258,16 +258,6 @@
       <track6-prefix-id>0</track6-prefix-id>
     </lan>
   </interfaces>
-  <staticroutes>
-    <!--
-    <route>
-      <interface>lan|opt[n]|pptp</interface>
-      <network>xxx.xxx.xxx.xxx/xx</network>
-      <gateway>xxx.xxx.xxx.xxx</gateway>
-      <descr></descr>
-    </route>
-    -->
-  </staticroutes>
   <dhcpd>
     <lan>
       <enable/>
@@ -290,9 +280,6 @@
       <ipaddr/>
     </ipv6nat>
   </diag>
-  <bridge>
-    <!-- <filteringbridge/> -->
-  </bridge>
   <syslog>
     <reverse/>
   </syslog>
@@ -327,18 +314,6 @@
       </destination>
     </rule>
   </filter>
-  <proxyarp>
-    <!--
-    <proxyarpnet>
-      <network>xxx.xxx.xxx.xxx/xx</network>
-      *or*
-      <range>
-        <from>xxx.xxx.xxx.xxx</from>
-        <to>xxx.xxx.xxx.xxx</to>
-      </range>
-    </proxyarpnet>
-    -->
-  </proxyarp>
   <cron>
     <item>
       <minute>1,31</minute>
@@ -395,15 +370,6 @@
       <command>/usr/local/etc/rc.update_urltables</command>
     </item>
   </cron>
-  <wol>
-    <!--
-    <wolentry>
-      <interface>lan|opt[n]</interface>
-      <mac>xx:xx:xx:xx:xx:xx</mac>
-      <descr></descr>
-    </wolentry>
-    -->
-  </wol>
   <rrd>
     <enable/>
   </rrd>
