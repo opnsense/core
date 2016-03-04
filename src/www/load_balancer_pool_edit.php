@@ -160,7 +160,7 @@ include("head.inc");
       if (!empty($config['aliases']['alias'])):
         foreach ($config['aliases']['alias'] as $alias):
           if ($alias['type'] == 'port'):?>
-          <option data-type="<?=$alias['type'];?>" value="<?=$alias['name'];?>"><?=$alias['name'];?></option>
+          <option data-type="<?=$alias['type'];?>" value="<?=htmlspecialchars($alias['name']);?>"><?=htmlspecialchars($alias['name']);?></option>
   <?php
           endif;
         endforeach;
