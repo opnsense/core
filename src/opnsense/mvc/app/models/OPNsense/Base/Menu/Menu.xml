@@ -262,19 +262,19 @@
             </IGMPProxyEdit>
         </IGMPProxy>
         <LoadBalancer VisibleName="Load Balancer" cssClass="fa fa-truck fa-fw">
-            <Monitors url="/load_balancer_monitor.php">
+            <Monitors order="10" url="/load_balancer_monitor.php">
                 <Edit url="/load_balancer_monitor_edit.php*" visibility="hidden"/>
             </Monitors>
-            <PoolSetup VisibleName="Pool Setup" url="/load_balancer_pool.php">
+            <PoolSetup order="20" VisibleName="Pool Setup" url="/load_balancer_pool.php">
                 <Edit url="/load_balancer_pool_edit.php*" visibility="hidden"/>
             </PoolSetup>
-            <PoolStatus VisibleName="Pool Status" url="/status_lb_pool.php"/>
-            <Settings url="/load_balancer_setting.php"/>
-            <Log VisibleName="Log File" url="/diag_logs_relayd.php"/>
-            <VirtualServer VisibleName="Virtual Server Setup" url="/load_balancer_virtual_server.php">
+            <VirtualServer order="30" VisibleName="Virtual Server Setup" url="/load_balancer_virtual_server.php">
                 <Edit url="/load_balancer_virtual_server_edit.php*" visibility="hidden"/>
             </VirtualServer>
-            <VirtualServerStatus VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
+            <Settings order="40" url="/load_balancer_setting.php"/>
+            <PoolStatus order="50" VisibleName="Pool Status" url="/status_lb_pool.php"/>
+            <VirtualServerStatus order="60" VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
+            <Log VisibleName="Log File" order="100" url="/diag_logs_relayd.php"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
             <General url="/services_ntpd.php"/>
