@@ -351,9 +351,6 @@ include: {$g['unbound_chroot_path']}/host_entries.conf
 # Domain overrides
 include: {$g['unbound_chroot_path']}/domainoverrides.conf
 
-# TODO: DHCP leases should be included here
-##include: {$g['unbound_chroot_path']}/dhcpleases.conf
-
 {$custom_options}
 
 {$forward_conf}
