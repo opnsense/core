@@ -226,6 +226,4 @@ if [ "$pkg_running" == "" ]; then
       last_check=`date`
       # Write our json structure to disk
       echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
-else
-  # pkg is already running, quitting
 fi
