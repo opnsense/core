@@ -237,7 +237,6 @@ function interface_vlan_configure(&$vlan)
     }
     $if = $vlan['if'];
     $vlanif = empty($vlan['vlanif']) ? "{$if}_vlan{$vlan['tag']}" : $vlan['vlanif'];
-    $tag = $vlan['tag'];
 
     if (empty($if)) {
         log_error(gettext("interface_vlan_configure called with if undefined."));
@@ -280,7 +279,7 @@ function interface_vlan_configure(&$vlan)
         legacy_netgraph_rename($tmpvlanif, $vlanif);
     }
 
-    legacy_vlan_tag($vlanif, $if, $tag);
+    legacy_vlan_tag($vlanif, $if, $vlan['tag']);
 
     interfaces_bring_up($vlanif);
 
