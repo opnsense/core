@@ -148,7 +148,7 @@ legacy_html_escape_form_data($pconfig);
                     <td width="22%"><strong><?=gettext("Interface Groups Edit");?></strong></td>
                     <td width="78%" align="right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       &nbsp;
                     </td>
                   </tr>
