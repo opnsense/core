@@ -105,8 +105,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (!empty($pconfig['custom_options'])) {
                 $config['dnsmasq']['custom_options'] = str_replace("\r\n", "\n", $pconfig['custom_options']);
-            } elseif (isset($pconfig['custom_options'])) {
-                unset($pconfig['custom_options']);
+            } elseif (isset($config['dnsmasq']['custom_options'])) {
+                unset($config['dnsmasq']['custom_options']);
             }
             write_config();
             services_dnsmasq_configure();
