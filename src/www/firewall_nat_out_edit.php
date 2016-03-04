@@ -237,21 +237,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // target ip/net
         if (empty($pconfig['targetip'])) {
             // empty target "Interface address"
-            $natent['target'] = $pconfig['targetip'] ;
+            $natent['target'] = $pconfig['targetip'];
             $natent['targetip_subnet'] = 0;
-            $natent['target'] = $pconfig['targetip'] ;
         } elseif (!array_key_exists($pconfig['targetip'], formTranslateAddresses())) {
             // a bit vague behaviour in "target" and "targetip", if a custom net is given
             // the backend code wants target to be filled with "other-subnet".
             // if any other known net is given, target is used to provide the actual address....
             // -- can't remove this behaviour now without breaking old confid, so let's reimplement
             $natent['target'] = 'other-subnet';
-            $natent['targetip'] = trim($pconfig['targetip']) ;
-            $natent['targetip_subnet'] = $pconfig['targetip_subnet'] ;
+            $natent['targetip'] = trim($pconfig['targetip']);
+            $natent['targetip_subnet'] = $pconfig['targetip_subnet'];
         } else {
-            $natent['target'] = $pconfig['targetip'] ;
+            $natent['target'] = $pconfig['targetip'];
         }
-
 
         // handle fields containing portnumbers
         if (in_array($pconfig['protocol'], explode(" ", "any tcp udp tcp/udp"))) {
@@ -567,7 +565,7 @@ include("head.inc");
                         <tr>
                           <td>
                             <select name="targetip" id="targetip" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                                <option data-other=true value="" <?= empty($pconfig['targetip']) ? "selected=\"selected\"" : "";?> > <?=gettext("Interface address");?> </option>
+                                <option value="" <?= empty($pconfig['targetip']) ? "selected=\"selected\"" : "";?> > <?=gettext("Interface address");?> </option>
                                 <option data-other=true value="<?=$pconfig['targetip'];?>" <?= !empty($pconfig['target']) && !array_key_exists($pconfig['targetip'], formTranslateAddresses() ) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
 <?php                              foreach (formTranslateAddresses() as $optKey => $optValue): ?>
                                     <option value="<?=$optKey;?>" <?= $pconfig['target'] == $optKey ? "selected=\"selected\"" : ""; ?>>
@@ -582,7 +580,7 @@ include("head.inc");
                             <div class="input-group">
                               <!-- updates to "other" option in  source -->
                               <input type="text" for="targetip" value="<?=$pconfig['targetip'];?>" aria-label="<?=gettext("Translation address");?>"/>
-                              <select name="targetip_subnet" class="selectpicker" data-size="5" data-width="auto" for="destination" >
+                              <select name="targetip_subnet" class="selectpicker" data-size="5" data-width="auto" for="targetip" >
                               <?php for ($i = 32; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['targetip_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                               <?php endfor; ?>
