@@ -301,7 +301,7 @@ include("fbegin.inc");
                     <td width="22%"><strong><?=gettext("Packet capture");?></strong></td>
                     <td width="78%" align="right">
                       <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i></a>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       &nbsp;
                     </td>
                   </tr>
