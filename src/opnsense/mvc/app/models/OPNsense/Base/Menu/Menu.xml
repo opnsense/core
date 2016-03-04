@@ -272,7 +272,7 @@
             <Settings url="/load_balancer_setting.php"/>
             <Log VisibleName="Log File" url="/diag_logs_relayd.php"/>
             <VirtualServer VisibleName="Virtual Server Setup" url="/load_balancer_virtual_server.php">
-                <Edit url="/load_balancer_virtual_server_edit.php" visibility="hidden"/>
+                <Edit url="/load_balancer_virtual_server_edit.php*" visibility="hidden"/>
             </VirtualServer>
             <VirtualServerStatus VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
         </LoadBalancer>
