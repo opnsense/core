@@ -75,66 +75,64 @@ include("head.inc");
         <?php endif; ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
-            <div class="container-fluid">
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <td><?=gettext("Name"); ?></td>
-                      <td><?=gettext("Address"); ?></td>
-                      <td><?=gettext("Servers"); ?></td>
-                      <td><?=gettext("Status"); ?></td>
-                      <td><?=gettext("Description"); ?></td>
-                    </tr>
-                  </thead>
-                  <tbody>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <td><?=gettext("Name"); ?></td>
+                    <td><?=gettext("Address"); ?></td>
+                    <td><?=gettext("Servers"); ?></td>
+                    <td><?=gettext("Status"); ?></td>
+                    <td><?=gettext("Description"); ?></td>
+                  </tr>
+                </thead>
+                <tbody>
 <?php
-                  $i = 0;
-                  foreach ($a_vs as $vsent): ?>
-                    <tr>
-                      <td><?=$vsent['name'];?></td>
-                      <td><?=$vsent['ipaddr']." : ".$vsent['port'];?></td>
-                      <td>
+                $i = 0;
+                foreach ($a_vs as $vsent): ?>
+                  <tr>
+                    <td><?=$vsent['name'];?></td>
+                    <td><?=$vsent['ipaddr']." : ".$vsent['port'];?></td>
+                    <td>
 <?php
-                        foreach ($a_pool as $vipent):
-                          if ($vipent['name'] == $vsent['poolname']):?>
+                      foreach ($a_pool as $vipent):
+                        if ($vipent['name'] == $vsent['poolname']):?>
 
-                          <?=implode('<br/>',$vipent['servers']);?>
+                        <?=implode('<br/>',$vipent['servers']);?>
 <?php
-                          endif;
-                        endforeach;?>
-                      </td>
+                        endif;
+                      endforeach;?>
+                    </td>
 <?php
-                        switch (trim($rdr_a[$vsent['name']]['status'])) {
-                          case 'active':
-                            $bgcolor = "#90EE90";  // lightgreen
-                            $rdr_a[$vsent['name']]['status'] = "Active";
-                            break;
-                          case 'down':
-                            $bgcolor = "#F08080";  // lightcoral
-                            $rdr_a[$vsent['name']]['status'] = "Down";
-                            break;
-                          default:
-                            $bgcolor = "#D3D3D3";  // lightgray
-                            $rdr_a[$vsent['name']]['status'] = 'Unknown - relayd not running?';
-                        }
-                        ?>
-                      <td>
-                        <table border="0" cellpadding="3" cellspacing="2" summary="status">
-                          <tr><td bgcolor="<?=$bgcolor?>"><?=$rdr_a[$vsent['name']]['status']?> </td></tr>
-                        </table>
-                        <?=!empty($rdr_a[$vsent['name']]['total']) ?  "Total Sessions: {$rdr_a[$vsent['name']]['total']}" : "";?>
-                        <?=!empty($rdr_a[$vsent['name']]['last']) ? "<br />Last: {$rdr_a[$vsent['name']]['last']}" : "";?>
-                        <?=!empty($rdr_a[$vsent['name']]['average']) ? "<br />Average: {$rdr_a[$vsent['name']]['average']}" : "";?>
-                      </td>
-                      <td><?=$vsent['descr'];?></td>
-                    </tr>
+                      switch (trim($rdr_a[$vsent['name']]['status'])) {
+                        case 'active':
+                          $bgcolor = "#90EE90";  // lightgreen
+                          $rdr_a[$vsent['name']]['status'] = "Active";
+                          break;
+                        case 'down':
+                          $bgcolor = "#F08080";  // lightcoral
+                          $rdr_a[$vsent['name']]['status'] = "Down";
+                          break;
+                        default:
+                          $bgcolor = "#D3D3D3";  // lightgray
+                          $rdr_a[$vsent['name']]['status'] = 'Unknown - relayd not running?';
+                      }
+                      ?>
+                    <td>
+                      <table border="0" cellpadding="3" cellspacing="2" summary="status">
+                        <tr><td bgcolor="<?=$bgcolor?>"><?=$rdr_a[$vsent['name']]['status']?> </td></tr>
+                      </table>
+                      <?=!empty($rdr_a[$vsent['name']]['total']) ?  "Total Sessions: {$rdr_a[$vsent['name']]['total']}" : "";?>
+                      <?=!empty($rdr_a[$vsent['name']]['last']) ? "<br />Last: {$rdr_a[$vsent['name']]['last']}" : "";?>
+                      <?=!empty($rdr_a[$vsent['name']]['average']) ? "<br />Average: {$rdr_a[$vsent['name']]['average']}" : "";?>
+                    </td>
+                    <td><?=$vsent['descr'];?></td>
+                  </tr>
 <?php
-                    $i++;
-                  endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
+                  $i++;
+                endforeach; ?>
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
