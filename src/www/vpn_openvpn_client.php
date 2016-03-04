@@ -1139,7 +1139,7 @@ endif; ?>
               </tr>
             </tbody>
           </table>
-        <form>
+        </form>
 <?php
       endif; ?>
 
