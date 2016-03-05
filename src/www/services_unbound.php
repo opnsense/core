@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } else {
         // perform validations
-        if (isset($pconfig['enable']) && isset($config['dnsmasq']['enable'])) {
+        if (isset($pconfig['enable']) && isset($config['dnsmasq']['enable']) && (empty($pconfig['port']) || $pconfig['port'] == '53')) {
             $input_errors[] = gettext("The DNS Forwarder is still active. Disable it before enabling the DNS Resolver.");
         }
         if (empty($pconfig['active_interface'])) {
