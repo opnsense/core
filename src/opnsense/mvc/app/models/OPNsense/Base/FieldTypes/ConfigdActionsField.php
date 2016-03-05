@@ -80,6 +80,8 @@ class ConfigdActionsField extends BaseField
                 $actions = json_decode($response, true);
                 if (is_array($actions)) {
                     file_put_contents($service_tempfile, $response);
+                } else {
+                    $actions = array();
                 }
             } else {
                 $actions = json_decode(file_get_contents($service_tempfile), true);
