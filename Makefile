@@ -65,7 +65,6 @@ CORE_DEPENDS?=		apinger \
 			lighttpd \
 			minicron \
 			miniupnpd \
-			mpd4 \
 			mpd5 \
 			ngattach \
 			ntp \
