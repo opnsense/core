@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    Copyright (c) 2014 Ad Schellevis
+    Copyright (c) 2014-2016 Ad Schellevis
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -37,6 +37,7 @@ __author__ = 'Ad Schellevis'
 import os
 import sys
 import logging
+import subprocess
 import modules.processhandler
 import modules.csconfigparser
 from modules.daemonize import Daemonize
@@ -52,36 +53,58 @@ else:
 sys.path.append(program_path)
 os.chdir(program_path)
 
-# open configuration
-cnf = modules.csconfigparser.CSConfigParser()
-cnf.read('conf/configd.conf')
+def get_config():
+    """ open configuration
+    """
+    cnf = modules.csconfigparser.CSConfigParser()
+    cnf.read('conf/configd.conf')
+    return cnf
 
-# validate configuration, exit on missing item
-for config_item in  ['socket_filename','pid_filename']:
-    if cnf.has_section('main') == False or cnf.has_option('main',config_item) == False:
-        print('configuration item main/%s not found in %s/conf/configd.conf'%(config_item,program_path))
-        sys.exit(0)
+def validate_config(cnf):
+    """ validate configuration, exit on missing item
+    """
+    for config_item in  ['socket_filename','pid_filename']:
+        if cnf.has_section('main') == False or cnf.has_option('main',config_item) == False:
+            print('configuration item main/%s not found in %s/conf/configd.conf'%(config_item,program_path))
+            sys.exit(0)
 
-# setup configd environment to use for all configured actions
-if not cnf.has_section('environment'):
-    config_environment = os.environ.copy()
-else:
-    config_environment={}
-    for envKey in cnf.items('environment'):
-        config_environment[envKey[0]] = envKey[1]
+def main(cnf, simulate=False, single_threaded=False):
+    """ configd startup
+    """
+    # setup configd environment to use for all configured actions
+    if not cnf.has_section('environment'):
+        config_environment = os.environ.copy()
+    else:
+        config_environment={}
+        for envKey in cnf.items('environment'):
+            config_environment[envKey[0]] = envKey[1]
 
-# run process coordinator ( on console or as daemon )
-# if command-line arguments contain "emulate",  start in emulation mode
-if len(sys.argv) > 1 and 'simulate' in sys.argv[1:]:
-    proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
-                                                  config_path='%s/conf'%program_path,
-                                                  config_environment=config_environment,
-                                                  simulation_mode=True)
-else:
-    proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
-                                                  config_path='%s/conf'%program_path,
-                                                  config_environment=config_environment)
+    # run process coordinator ( on console or as daemon )
+    # if command-line arguments contain "emulate",  start in emulation mode
+    if simulate:
+        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
+                                                      config_path='%s/conf'%program_path,
+                                                      config_environment=config_environment,
+                                                      simulation_mode=True)
+    else:
+        proc_handler = modules.processhandler.Handler(socket_filename=cnf.get('main','socket_filename'),
+                                                      config_path='%s/conf'%program_path,
+                                                      config_environment=config_environment)
+    proc_handler.single_threaded = single_threaded
+    proc_handler.run()
 
+def run_watch():
+    """ start configd process and restart if it dies unexpected
+    """
+    while True:
+        process = subprocess.Popen(['/usr/local/opnsense/service/configd.py', 'console'])
+        # optional dump process.pid into a pid file, but because the daemon is stopped by name
+        # this shouldn't be necessary
+        process.wait()
+
+
+this_config = get_config()
+validate_config(this_config)
 if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
     print('run %s in console mode'%sys.argv[0])
     if 'profile' in sys.argv[1:]:
@@ -93,8 +116,11 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         profile = cProfile.Profile()
         profile.enable(subcalls=True)
         try:
-            proc_handler.single_threaded = True
-            proc_handler.run()
+            if len(sys.argv) > 1 and 'simulate' in sys.argv[1:]:
+                print('simulate calls.')
+                main(cnf=this_config, simulate=True, single_threaded=True)
+            else:
+                main(cnf=this_config, single_threaded=True)
         except KeyboardInterrupt:
             pass
         except:
@@ -102,8 +128,9 @@ if len(sys.argv) > 1 and 'console' in sys.argv[1:]:
         profile.disable()
         profile.dump_stats('/tmp/configd.profile')
     else:
-        proc_handler.run()
+        main(cnf=this_config)
 else:
+    # run as daemon, wrap the actual work process to enable automatic restart on sudden death
     syslog_socket = "/var/run/log"
     if os.path.exists(syslog_socket):
         # bind log handle to syslog to catch messages from Daemonize()
@@ -118,10 +145,9 @@ else:
         loghandle = None
     # daemonize process
     daemon = Daemonize(app=__file__.split('/')[-1].split('.py')[0],
-                       pid=cnf.get('main','pid_filename'),
-                       action=proc_handler.run,
+                       pid=this_config.get('main','pid_filename'),
+                       action=run_watch,
                        logger=loghandle
                        )
     daemon.start()
-
 sys.exit(0)
