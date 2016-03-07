@@ -97,17 +97,17 @@ function relayd_configure($kill_first = false)
        - use a 1000 ms timeout value as in pfsense 2.0.1 and above
        - leave interval and prefork empty, relayd will use its default values */
 
-    if (isset($setting['timeout']) && !empty($setting['timeout'])) {
+    if (!empty($setting['timeout'])) {
         $conf .= "timeout ".$setting['timeout']." \n";
     } else {
         $conf .= "timeout 1000 \n";
     }
 
-    if (isset($setting['interval']) && !empty($setting['interval'])) {
+    if (!empty($setting['interval'])) {
         $conf .= "interval ".$setting['interval']." \n";
     }
 
-    if (isset($setting['prefork']) && !empty($setting['prefork'])) {
+    if (!empty($setting['prefork'])) {
         $conf .= "prefork ".$setting['prefork']." \n";
     }
 
