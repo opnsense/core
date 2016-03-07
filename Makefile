@@ -169,6 +169,8 @@ plist: force
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
+	find ${.CURDIR}/src ${.CURDIR}/src \
+	    -name "*.xml" -type f -print0 | xargs -0 -n1 xmllint --noout
 	find ${.CURDIR}/src ${.CURDIR}/lang/dynamic/helpers \
 	    ! -name "*.xml" ! -name "*.xml.sample" ! -name "*.eot" \
 	    ! -name "*.svg" ! -name "*.woff" ! -name "*.woff2" \
