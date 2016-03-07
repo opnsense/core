@@ -219,14 +219,12 @@
                 <type>text</type>
                 <help><![CDATA[The port the proxy service will listen to.]]></help>
             </field>
-            <!--
-                        <field>
-                            <id>proxy.forward.ftpTransparentMode</id>
-                            <label>Enable Transparent mode</label>
-                            <type>checkbox</type>
-                            <help><![CDATA[Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.]]></help>
-                        </field>
-            -->
+            <field>
+                <id>proxy.forward.ftpTransparentMode</id>
+                <label>Enable Transparent mode</label>
+                <type>checkbox</type>
+                <help><![CDATA[Enable transparent ftp proxy mode to forward all requests for destination port 21 to the proxy server without any additional configuration.]]></help>
+            </field>
         </subtab>
         <subtab id="proxy-forward-acl" description="Access Control List">
             <field>
