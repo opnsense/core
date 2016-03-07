@@ -40,137 +40,52 @@ function subnetv4_expand($subnet) {
 }
 
 
-/* include all configuration functions */
-class Monitor
-{
-    private $conf = array();
-    function __construct($config) {
-        $this->conf = $config;
-    }
-
-    public function p() {
-        return "check {$this->get('proto')}";
-    }
-    private function get($var) {
-        return isset($this->$var) ? $this->$var : "";
-    }
-    protected function config($element) {
-        return isset($this->conf[$element]) ? $this->conf[$element] : "";
-    }
-}
-
-class TCPMonitor extends Monitor
-{
-    protected $proto = 'tcp';
-}
-
-class SSLMonitor extends Monitor
-{
-    protected $proto = 'ssl';
-}
-
-class ICMPMonitor extends Monitor
-{
-    protected $proto = 'icmp';
-}
-
-class HTTPMonitor extends Monitor
-{
-    protected $proto = 'http';
-    function __construct($config) {
-        parent::__construct($config);
-    }
-    public function p() {
-        $method = ($this->code() != "") ? $this->code() : $this->digest();
-        return "check {$this->proto} {$this->path()} {$this->host()} {$method}";
-    }
-
-    private function path() {
-        return $this->config('path') != "" ? "'{$this->config('path')}'" : "";
-    }
-
-    private function host() {
-        return $this->config('host') != "" ? "host {$this->config('host')}" : "";
-    }
-
-    private function code() {
-        return $this->config('code') != "" ? "code {$this->config('code')}" : "";
-    }
-
-    private function digest() {
-        return $this->config('digest') != "" ? "digest {$this->config('digest')}" : "";
-    }
-}
-
-class HTTPSMonitor extends HTTPMonitor
-{
-    protected $proto = 'https';
-}
-
-class SendMonitor extends Monitor {
-    private $proto = 'send';
-    function __construct($config) {
-        parent::__construct($config);
-    }
-    public function p() {
-        return "check {$this->proto} {$this->data()} expect {$this->pattern()} {$this->ssl()}";
-    }
-
-    private function data() {
-        return $this->config('send') != "" ? "\"{$this->config('send')}\"" : "\"\"";
-    }
-
-    private function pattern() {
-        return $this->config('expect') != "" ? "\"{$this->config('expect')}\"" : "\"\"";
-    }
-
-    private function ssl() {
-        return $this->config('ssl') == true ? "ssl" : "";
-    }
-}
-
 function relayd_configure($kill_first = false)
 {
     global $config;
 
-    if (isset($config['load_balancer']['virtual_server'])) {
+    if (isset($config['load_balancer']['virtual_server']) && is_array($config['load_balancer']['virtual_server'])) {
         $vs_a = $config['load_balancer']['virtual_server'];
     } else {
-        $vs_a = null;
+        $vs_a = array();
     }
-    if (isset($config['load_balancer']['lbpool'])) {
+    if (isset($config['load_balancer']['lbpool']) && is_array($config['load_balancer']['lbpool'])) {
         $pool_a = $config['load_balancer']['lbpool'];
     } else {
-        $pool_a = null;
+        $pool_a = array();
     }
-    if (isset($config['load_balancer']['setting'])) {
+    if (isset($config['load_balancer']['setting']) && is_array($config['load_balancer']['setting'])) {
         $setting = $config['load_balancer']['setting'];
     } else {
-        $setting = null;
+        $setting = array();
     }
 
     $check_a = array();
 
     foreach ((array)$config['load_balancer']['monitor_type'] as $type) {
+        $type['options'] = isset($type['options']) ? $type['options'] : array();
         switch($type['type']) {
             case 'icmp':
-                $mon = new ICMPMonitor($type['options']);
-                break;
             case 'tcp':
-                $mon = new TCPMonitor($type['options']);
+                $check_a[$type['name']] = 'check ' . $type['type'];
                 break;
             case 'http':
-                $mon = new HTTPMonitor($type['options']);
-                break;
             case 'https':
-                $mon = new HTTPSMonitor($type['options']);
+                $check_a[$type['name']] = 'check ' . $type['type']. " ";
+                if (!empty($type['options']['path'])) {
+                    $check_a[$type['name']] .= "'".$type['options']['path'] . "' ";
+                }
+                if (!empty($type['options']['host'])) {
+                    $check_a[$type['name']] .= "host ".$type['options']['host'] . " ";
+                }
+                $check_a[$type['name']] .= "code " . $type['options']['code'];
                 break;
             case 'send':
-                $mon = new SendMonitor($type['options']);
+                $check_a[$type['name']] = "send  ";
+                $check_a[$type['name']] .= !empty($type['options']['send']) ? "\"{$type['options']['send']}\"" : "\"\"" ;
+                $check_a[$type['name']] .= " expect ";
+                $check_a[$type['name']] .= !empty($type['options']['expect']) ? "\"{$type['options']['expect']}\"" : "\"\"" ;
                 break;
-        }
-        if ($mon) {
-            $check_a[$type['name']] = $mon->p();
         }
     }
 
@@ -199,122 +114,122 @@ function relayd_configure($kill_first = false)
     /* reindex pools by name as we loop through the pools array */
     $pools = array();
     /* Virtual server pools */
-    if (is_array($pool_a)) {
-        for ($i = 0; isset($pool_a[$i]); $i++) {
-            if (is_array($pool_a[$i]['servers'])) {
-                if (!empty($pool_a[$i]['retry'])) {
-                    $retrytext = " retry {$pool_a[$i]['retry']}";
-                } else {
-                    $retrytext = "";
-                }
-                $conf .= "table <{$pool_a[$i]['name']}> {\n";
-                foreach ($pool_a[$i]['servers'] as $server) {
-                    if (is_subnetv4($server)) {
-                      foreach (subnetv4_expand($server) as $ip) {
-                          $conf .= "\t{$ip}{$retrytext}\n";
-                      }
-                  } else {
-                      $conf .= "\t{$server}{$retrytext}\n";
+    for ($i = 0; isset($pool_a[$i]); $i++) {
+        if (is_array($pool_a[$i]['servers'])) {
+            if (!empty($pool_a[$i]['retry'])) {
+                $retrytext = " retry {$pool_a[$i]['retry']}";
+            } else {
+                $retrytext = "";
+            }
+            $conf .= "table <{$pool_a[$i]['name']}> {\n";
+            foreach ($pool_a[$i]['servers'] as $server) {
+                if (is_subnetv4($server)) {
+                  foreach (subnetv4_expand($server) as $ip) {
+                      $conf .= "\t{$ip}{$retrytext}\n";
                   }
-                }
-                $conf .= "}\n";
-                /* Index by name for easier fetching when we loop through the virtual servers */
-                $pools[$pool_a[$i]['name']] = $pool_a[$i];
+              } else {
+                  $conf .= "\t{$server}{$retrytext}\n";
+              }
+            }
+            $conf .= "}\n";
+            /* Index by name for easier fetching when we loop through the virtual servers */
+            $pools[$pool_a[$i]['name']] = $pool_a[$i];
+        }
+    }
+
+    // collect used protocols
+    $used_protocols = array();
+    foreach ($vs_a as $vs) {
+        if (isset($vs['relay_protocol']) && !in_array($vs['relay_protocol'], $used_protocols)) {
+            $used_protocols[] = $vs['relay_protocol'];
+            if (is_file('/usr/local/etc/inc/vslb/'.basename($vs['relay_protocol']).'.proto')) {
+                $conf .= file_get_contents('/usr/local/etc/inc/vslb/'.basename($vs['relay_protocol']).'.proto')."\n";
             }
         }
     }
 
-    $conf .= "dns protocol \"dnsproto\" {\n";
-    $conf .= "\t" . "tcp { nodelay, sack, socket buffer 1024, backlog 1000 }\n";
-    $conf .= "}\n";
+    for ($i = 0; isset($vs_a[$i]); $i++) {
+        $append_port_to_name = false;
+        if (is_alias($pools[$vs_a[$i]['poolname']]['port'])) {
+            $dest_port_array = filter_expand_alias_array($pools[$vs_a[$i]['poolname']]['port']);
+            $append_port_to_name = true;
+        } else {
+            $dest_port_array = array($pools[$vs_a[$i]['poolname']]['port']);
+        }
+        if (is_alias($vs_a[$i]['port'])) {
+            $src_port_array = filter_expand_alias_array($vs_a[$i]['port']);
+            $append_port_to_name = true;
+        } elseif ($vs_a[$i]['port']) {
+            $src_port_array = array($vs_a[$i]['port']);
+        } else {
+            $src_port_array = $dest_port_array;
+        }
 
-    if (is_array($vs_a)) {
-        for ($i = 0; isset($vs_a[$i]); $i++) {
-            $append_port_to_name = false;
-            if (is_alias($pools[$vs_a[$i]['poolname']]['port'])) {
-                $dest_port_array = filter_expand_alias_array($pools[$vs_a[$i]['poolname']]['port']);
-                $append_port_to_name = true;
-            } else {
-                $dest_port_array = array($pools[$vs_a[$i]['poolname']]['port']);
-            }
-            if (is_alias($vs_a[$i]['port'])) {
-                $src_port_array = filter_expand_alias_array($vs_a[$i]['port']);
-                $append_port_to_name = true;
-            } elseif ($vs_a[$i]['port']) {
-                $src_port_array = array($vs_a[$i]['port']);
-            } else {
-                $src_port_array = $dest_port_array;
-            }
-
-            $append_ip_to_name = false;
-            if (is_alias($vs_a[$i]['ipaddr'])) {
-                $ip_list = array();
-                foreach (filter_expand_alias_array($vs_a[$i]['ipaddr']) as $item) {
-                    log_error("item is $item");
-                    if (is_subnetv4($item)) {
-                        $ip_list = array_merge($ip_list, subnetv4_expand($item));
-                    } else {
-                        $ip_list[] = $item;
-                    }
+        $append_ip_to_name = false;
+        if (is_alias($vs_a[$i]['ipaddr'])) {
+            $ip_list = array();
+            foreach (filter_expand_alias_array($vs_a[$i]['ipaddr']) as $item) {
+                log_error("item is $item");
+                if (is_subnetv4($item)) {
+                    $ip_list = array_merge($ip_list, subnetv4_expand($item));
+                } else {
+                    $ip_list[] = $item;
                 }
-                $append_ip_to_name = true;
-            } elseif (is_subnetv4($vs_a[$i]['ipaddr'])) {
-                $ip_list = subnetv4_expand($vs_a[$i]['ipaddr']);
-                $append_ip_to_name = true;
-            } else {
-                $ip_list = array($vs_a[$i]['ipaddr']);
             }
+            $append_ip_to_name = true;
+        } elseif (is_subnetv4($vs_a[$i]['ipaddr'])) {
+            $ip_list = subnetv4_expand($vs_a[$i]['ipaddr']);
+            $append_ip_to_name = true;
+        } else {
+            $ip_list = array($vs_a[$i]['ipaddr']);
+        }
 
-            for ($j = 0; $j < count($ip_list); $j += 1) {
-                $ip = $ip_list[$j];
-                for ($k = 0; $k < count($src_port_array) && $k < count($dest_port_array); $k += 1) {
-                    $src_port  = $src_port_array[$k];
-                    $dest_port = $dest_port_array[$k];
+        for ($j = 0; $j < count($ip_list); $j += 1) {
+            $ip = $ip_list[$j];
+            for ($k = 0; $k < count($src_port_array) && $k < count($dest_port_array); $k += 1) {
+                $src_port  = $src_port_array[$k];
+                $dest_port = $dest_port_array[$k];
 
-                    $name = $vs_a[$i]['name'];
-                    if ($append_ip_to_name) {
-                        $name .= "_" . $j;
+                $name = $vs_a[$i]['name'];
+                if ($append_ip_to_name) {
+                    $name .= "_" . $j;
+                }
+                if ($append_port_to_name) {
+                    $name .= "_" . $src_port;
+                }
+
+                if ($vs_a[$i]['mode'] == 'relay') {
+                    // relay mode
+                    $conf .= "relay \"{$name}\" {\n";
+                    $conf .= "  listen on {$ip} port {$src_port} \n";
+                    $conf .= "  protocol \"{$vs_a[$i]['relay_protocol']}\"\n";
+                    $lbmode = "";
+                    if ($pools[$vs_a[$i]['poolname']]['mode'] == "loadbalance") {
+                        $lbmode = "mode loadbalance";
                     }
-                    if ($append_port_to_name) {
-                        $name .= "_" . $src_port;
+
+                    $conf .= "  forward to <{$vs_a[$i]['poolname']}> port {$dest_port} {$lbmode} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
+
+                    if (isset($vs_a[$i]['sitedown']) &&  strlen($vs_a[$i]['sitedown']) > 0 && ($vs_a[$i]['relay_protocol'] != 'dns')) {
+                        $conf .= "  forward to <{$vs_a[$i]['sitedown']}> port {$dest_port} {$lbmode} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
+                    }
+                    $conf .= "}\n";
+                } else  {
+                    // redirect mode
+                    $conf .= "redirect \"{$name}\" {\n";
+                    $conf .= "  listen on {$ip} port {$src_port}\n";
+                    $conf .= "  forward to <{$vs_a[$i]['poolname']}> port {$dest_port} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
+
+                    if (isset($config['system']['lb_use_sticky'])) {
+                        $conf .= "  sticky-address\n";
                     }
 
-                    if (($vs_a[$i]['mode'] == 'relay') || ($vs_a[$i]['relay_protocol'] == 'dns')) {
-                        $conf .= "relay \"{$name}\" {\n";
-                        $conf .= "  listen on {$ip} port {$src_port}\n";
-
-                        if ($vs_a[$i]['relay_protocol'] == "dns") {
-                            $conf .= "  protocol \"dnsproto\"\n";
-                        } else {
-                            $conf .= "  protocol \"{$vs_a[$i]['relay_protocol']}\"\n";
-                        }
-                        $lbmode = "";
-                        if ( $pools[$vs_a[$i]['poolname']]['mode'] == "loadbalance" ) {
-                            $lbmode = "mode loadbalance";
-                        }
-
-                        $conf .= "  forward to <{$vs_a[$i]['poolname']}> port {$dest_port} {$lbmode} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
-
-                        if (isset($vs_a[$i]['sitedown']) &&  strlen($vs_a[$i]['sitedown']) > 0 && ($vs_a[$i]['relay_protocol'] != 'dns')) {
-                            $conf .= "  forward to <{$vs_a[$i]['sitedown']}> port {$dest_port} {$lbmode} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
-                        }
-                        $conf .= "}\n";
-                    } else  {
-                      $conf .= "redirect \"{$name}\" {\n";
-                      $conf .= "  listen on {$ip} port {$src_port}\n";
-                      $conf .= "  forward to <{$vs_a[$i]['poolname']}> port {$dest_port} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
-
-                      if (isset($config['system']['lb_use_sticky'])) {
-                          $conf .= "  sticky-address\n";
-                      }
-
-                      /* sitedown MUST use the same port as the primary pool - sucks, but it's a relayd thing */
-                      if (isset($vs_a[$i]['sitedown']) && strlen($vs_a[$i]['sitedown']) > 0 && ($vs_a[$i]['relay_protocol'] != 'dns')) {
-                          $conf .= "  forward to <{$vs_a[$i]['sitedown']}> port {$dest_port} {$check_a[$pools[$vs_a[$i]['sitedown']]['monitor']]} \n";
-                      }
-
-                      $conf .= "}\n";
+                    /* sitedown MUST use the same port as the primary pool - sucks, but it's a relayd thing */
+                    if (isset($vs_a[$i]['sitedown']) && strlen($vs_a[$i]['sitedown']) > 0 && ($vs_a[$i]['relay_protocol'] != 'dns')) {
+                        $conf .= "  forward to <{$vs_a[$i]['sitedown']}> port {$dest_port} {$check_a[$pools[$vs_a[$i]['sitedown']]['monitor']]} \n";
                     }
+
+                    $conf .= "}\n";
                 }
             }
         }
