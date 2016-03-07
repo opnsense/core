@@ -114,7 +114,7 @@ class ACL
                             $aclPayload['name'] = (string)$ACLnode->name;
                             if (isset($ACLnode->description)) {
                                 // rename internal tag for backward compat.
-                                $aclPayload['desc'] = (string)$ACLnode->description;
+                                $aclPayload['descr'] = (string)$ACLnode->description;
                             }
                             if (isset($ACLnode->patterns->pattern)) {
                                 // rename pattern to match for internal usage, old code did use match and

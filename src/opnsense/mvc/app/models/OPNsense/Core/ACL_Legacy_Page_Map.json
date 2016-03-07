@@ -39,7 +39,7 @@
         ]
     },
     "page-diagnostics-crash-reporter": {
-        "name": "WebCfg - Crash reporter",
+        "name": "WebCfg - System: Crash Reporter",
         "descr": "Uploads crash reports to the developers.",
         "match": [
             "crash_reporter.php*"
@@ -169,25 +169,11 @@
             "diag_logs_l2tp.php*"
         ]
     },
-    "page-diagnostics-nanobsd": {
-        "name": "WebCfg - Diagnostics: NanoBSD",
-        "descr": "Allow access to the 'Diagnostics: NanoBSD' page.",
-        "match": [
-            "diag_nanobsd.php*"
-        ]
-    },
     "page-diagnostics-packetcapture": {
         "name": "WebCfg - Diagnostics: Packet Capture page",
         "descr": "Allow access to the 'Diagnostics: Packet Capture' page.",
         "match": [
             "diag_packet_capture.php*"
-        ]
-    },
-    "page-diagnostics-patters": {
-        "name": "WebCfg - Diagnostics: Patterns page",
-        "descr": "Allow access to the 'Diagnostics: Patterns' page.",
-        "match": [
-            "patterns.php*"
         ]
     },
     "page-diagnostics-tables": {
@@ -230,13 +216,6 @@
         "descr": "Allow access to the 'Diagnostics: Reset state' page.",
         "match": [
             "diag_resetstate.php*"
-        ]
-    },
-    "page-diagnostics-restore-full-backup": {
-        "name": "WebCfg - Diagnostics: Restore full backup",
-        "descr": "Allow access to the 'Diagnostics: Restore Full Backup' page.",
-        "match": [
-            "system_firmware_restorefullbackup.php"
         ]
     },
     "page-diagnostics-routingtables": {
@@ -1128,21 +1107,8 @@
         "name": "WebCfg - System: Firmware: Manual Update page",
         "descr": "Allow access to the 'System: Firmware: Manual Update' page.",
         "match": [
-            "system_firmware.php*"
-        ]
-    },
-    "page-upload_progress": {
-        "name": "WebCfg - System: Firmware: Manual Update page (progress bar)",
-        "descr": "Allow access to the 'System: Firmware: Manual Update: Progress bar' page.",
-        "match": [
-            "upload_progress*"
-        ]
-    },
-    "page-system-firmware-settings": {
-        "name": "WebCfg - System: Firmware: Settings page",
-        "descr": "Allow access to the 'System: Firmware: Settings' page.",
-        "match": [
-            "system_firmware_settings.php*"
+            "ui/core/firmware/*",
+            "api/core/firmware/*"
         ]
     },
     "page-system-gatewaygroups": {
