@@ -57,8 +57,9 @@ if (isset($configObj->OPNsense->captiveportal->zones)) {
                     // generate ca pem file
                     if (!empty($cert->caref)) {
                         $output_pem_filename = "/var/etc/ca-cp-zone" . $zone_id . ".pem" ;
+                        $cert = (array)$cert;
                         $ca = ca_chain($cert);
-                        file_put_contents($output_pem_filename, $pem_content);
+                        file_put_contents($output_pem_filename, $ca);
                         chmod($output_pem_filename, 0600);
                         echo "certificate generated " .$output_pem_filename  ."\n";
                     }
