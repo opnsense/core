@@ -668,7 +668,6 @@ $( document ).ready(function() {
                   <tr>
                     <td colspan="5">
                       <select class="selectpicker" data-live-search="true" data-size="5"  multiple placeholder="<?=gettext("select category");?>" id="fw_category">
-                        <option value=""><?=gettext("Filter by category");?></value>
 <?php
                         // collect unique list of categories and append to option list
                         $categories = array();
