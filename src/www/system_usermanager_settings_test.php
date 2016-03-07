@@ -1,8 +1,9 @@
 <?php
+
 /*
-  Copyright (C) 2014-2015 Deciso B.V.
-  Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
-  All rights reserved.
+    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
+    All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -28,8 +29,8 @@
 
 require_once("guiconfig.inc");
 require_once("auth.inc");
-include('head.inc');
 
+include('head.inc');
 
 if (isset($config['system']['authserver'][0]['host'])) {
     $auth_server = $config['system']['authserver'][0]['host'];
