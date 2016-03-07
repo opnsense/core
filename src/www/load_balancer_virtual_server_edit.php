@@ -108,6 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($vsent['sitedown'] == "") {
             unset($vsent['sitedown']);
         }
+        if ($vsent['mode'] != 'relay'){
+            // relay protocol only applies to relay
+            unset($vsent['relay_protocol']);
+        }
+
         if (isset($id)) {
             if ($a_vs[$id]['name'] != $pconfig['name']) {
                 /* Because the VS name changed, mark the old name for cleanup. */
@@ -146,6 +151,15 @@ include("head.inc");
 
       $("#ipadd").typeahead({ source: all_aliases['host'] });
       $("#port").typeahead({ source: all_aliases['port'] });
+
+      $("#mode").change(function(){
+        if ($(this).val() == 'redirect') {
+            $("#protocol").hide();
+        } else {
+            $("#protocol").show();
+        }
+      });
+      $("#mode").change();
 
     });
   </script>
@@ -268,13 +282,25 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Mode");?></td>
+                      <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Mode");?></td>
                       <td>
-                        <input type="radio" name="mode" value="redirect"<?=$pconfig['mode'] != 'relay' ? ' checked="checked"': ''?> /> <?=gettext("Redirect");?>
-                        <input type="radio" name="mode" value="relay"<?=$pconfig['mode'] == 'relay' ? ' checked="checked"': ''?> /> <?=gettext("Relay");?>
+                        <select name="mode" id="mode">
+                          <option value="redirect"  <?=$pconfig['mode'] != 'relay' ? " selected=\"selected\"" : ""?>>
+                            <?=gettext("Redirect");?>
+                          </option>
+                          <option value="relay" <?=$pconfig['mode'] == 'relay' ? " selected=\"selected\"" : ""?>>
+                            <?=gettext("Relay");?>
+                          </option>
+                        </select>
+                        <div class="hidden" for="help_for_mode">
+                          <strong><?=gettext("Redirect");?></strong><br/>
+                          <?=gettext("Redirections are translated to pf(4) rdr-to rules for stateful forwarding to a target host from a health-checked table on layer 3.");?>
+                          <strong><?=gettext("Relay");?></strong><br/>
+                          <?=gettext("Relays allow application layer load balancing, TLS acceleration, and general purpose TCP proxying on layer 7.");?>
+                        </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr id="protocol">
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Relay Protocol"); ?></td>
                       <td>
                         <select name="relay_protocol">
