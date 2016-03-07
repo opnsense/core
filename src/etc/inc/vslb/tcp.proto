@@ -1,0 +1,3 @@
+protocol "tcp" { 
+	tcp { nodelay, socket buffer 65536 } 
+} 
