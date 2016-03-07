@@ -283,14 +283,6 @@
             <Status url="/status_ntpd.php"/>
             <Log VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <PPPoEServer VisibleName="PPPoE Server" cssClass="fa fa-tty fa-fw">
-            <Settings order="10" url="/vpn_pppoe.php">
-                <Edit url="/vpn_pppoe_edit.php*" visibility="hidden"/>
-            </Settings>
-            <LogFile order="20" VisibleName="Log File" url="/diag_logs_poes.php">
-                <Type url="/diag_logs_poes.php*" visibility="hidden"/>
-            </LogFile>
-        </PPPoEServer>
         <SNMP VisibleName="SNMP" url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
         <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug fa-fw">
             <Settings url="/services_upnp.php">
@@ -326,15 +318,6 @@
             <SPD order="80" VisibleName="Security Policy Database" url="/diag_ipsec_spd.php"/>
             <Log order="90" VisibleName="Log File" url="/diag_logs_ipsec.php"/>
         </IPsec>
-        <L2TP cssClass="fa fa-unlock fa-fw" order="30">
-            <Settings order="10" url="/vpn_l2tp.php"/>
-            <Users order="20" url="/vpn_l2tp_users.php">
-                <Edit url="/vpn_l2tp_users_edit.php*" visibility="hidden"/>
-            </Users>
-            <LogFile order="30" VisibleName="Log File" url="/diag_logs_l2tp.php">
-                <Type url="/diag_logs_l2tp.php*" visibility="hidden"/>
-            </LogFile>
-        </L2TP>
         <OpenVPN cssClass="fa fa-lock fa-fw" order="20">
             <Servers order="10" url="/vpn_openvpn_server.php">
                 <Edit url="/vpn_openvpn_server.php?*" visibility="hidden"/>
@@ -352,15 +335,6 @@
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
             <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
-        <PPTP cssClass="fa fa-unlock fa-fw" order="40">
-            <Settings order="10" url="/vpn_pptp.php"/>
-            <Users order="20" url="/vpn_pptp_users.php">
-                <Edit url="/vpn_pptp_users_edit.php*" visibility="hidden"/>
-            </Users>
-            <LogFile order="30" VisibleName="Log File" url="/diag_logs_pptp.php">
-                <Type url="/diag_logs_pptp.php*" visibility="hidden"/>
-            </LogFile>
-        </PPTP>
     </VPN>
     <Help order="6" cssClass="fa fa-support">
         <OPNsense VisibleName="Documentation" order="10" url="https://docs.opnsense.org/" cssClass="fa fa-book" IsExternal="Y"/>

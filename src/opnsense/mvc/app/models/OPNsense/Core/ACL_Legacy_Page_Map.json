@@ -11,18 +11,6 @@
         "name": "User - VPN - IPsec xauth Dialin",
         "descr": "Indicates whether the user is allowed to dial in via IPsec xauth (Note: Does not allow shell access, but may allow the user to create ssh tunnels)"
     },
-    "user-l2tp-dialin": {
-        "name": "User - VPN - L2TP Dialin",
-        "descr": "Indicates whether the user is allowed to dial in via L2TP"
-    },
-    "user-pppoe-dialin": {
-        "name": "User - VPN - PPPOE Dialin",
-        "descr": "Indicates whether the user is allowed to dial in via PPPOE"
-    },
-    "user-pptp-dialin": {
-        "name": "User - VPN - PPTP Dialin",
-        "descr": "Indicates whether the user is allowed to dial in via PPTP"
-    },
     "user-proxy-auth": {
         "name": "User - Proxy - Login",
         "descr": "Indicates whether the user is allowed to use the proxy"
@@ -811,20 +799,6 @@
             "services_ntpd.php*"
         ]
     },
-    "page-services-pppoeserver": {
-        "name": "WebCfg - Services: PPPoE Server page",
-        "descr": "Allow access to the 'Services: PPPoE Server' page.",
-        "match": [
-            "vpn_pppoe.php*"
-        ]
-    },
-    "page-services-pppoeserver-edit": {
-        "name": "WebCfg - Services: PPPoE Server: Edit page",
-        "descr": "Allow access to the 'Services: PPPoE Server: Edit' page.",
-        "match": [
-            "vpn_pppoe_edit.php*"
-        ]
-    },
     "page-services-rfc2136clients": {
         "name": "WebCfg - Services: RFC 2136 clients page",
         "descr": "Allow access to the 'Services: RFC 2136 clients' page.",
@@ -1325,27 +1299,6 @@
             "vpn_ipsec_keys.php*"
         ]
     },
-    "page-vpn-vpnl2tp": {
-        "name": "WebCfg - VPN: L2TP page",
-        "descr": "Allow access to the 'VPN: L2TP' page.",
-        "match": [
-            "vpn_l2tp.php*"
-        ]
-    },
-    "page-vpn-vpnl2tp-users-edit": {
-        "name": "WebCfg - VPN: L2TP: Users : Edit page",
-        "descr": "Allow access to the 'VPN: L2TP: Users : Edit' page.",
-        "match": [
-            "vpn_l2tp_users_edit.php*"
-        ]
-    },
-    "page-vpn-vpnl2tp-users": {
-        "name": "WebCfg - VPN: L2TP: Users page",
-        "descr": "Allow access to the 'VPN: L2TP : Users' page.",
-        "match": [
-            "vpn_l2tp_users.php*"
-        ]
-    },
     "page-openvpn-client-export": {
         "name": "WebCfg - VPN: OpenVPN: Client Export Utility",
         "descr": "Allow access to the 'VPN: OpenVPN: Client Export Utility' page.",
@@ -1372,27 +1325,6 @@
         "descr": "Allow access to the 'VPN: OpenVPN: Server' page.",
         "match": [
             "vpn_openvpn_server.php*"
-        ]
-    },
-    "page-vpn-vpnpptp": {
-        "name": "WebCfg - VPN: PPTP page",
-        "descr": "Allow access to the 'VPN: PPTP' page.",
-        "match": [
-            "vpn_pptp.php*"
-        ]
-    },
-    "page-vpn-vpnpptp-user-edit": {
-        "name": "WebCfg - VPN: PPTP: User: Edit page",
-        "descr": "Allow access to the 'VPN: PPTP: User: Edit' page.",
-        "match": [
-            "vpn_pptp_users_edit.php*"
-        ]
-    },
-    "page-vpn-vpnpptp-users": {
-        "name": "WebCfg - VPN: PPTP: Users page",
-        "descr": "Allow access to the 'VPN: PPTP: Users' page.",
-        "match": [
-            "vpn_pptp_users.php*"
         ]
     },
     "page-xmlrpcinterfacestats": {
