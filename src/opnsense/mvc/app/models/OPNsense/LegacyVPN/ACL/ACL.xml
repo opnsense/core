@@ -1,5 +1,26 @@
 <acl>
     <!-- unique acl key, must be globally unique for all acl's  -->
+    <page-diagnostics-logs-pptp>
+        <name>WebCfg - Diagnostics: Logs: PPTP page</name>
+        <description>Allow access to the 'Diagnostics: Logs: PPTP' page.</description>
+        <patterns>
+            <pattern>diag_logs_pptp.php*</pattern>
+        </patterns>
+    </page-diagnostics-logs-pptp>
+    <page-diagnostics-logs-poes>
+        <name>WebCfg - Diagnostics: Logs: PPPoE page</name>
+        <description>Allow access to the 'Diagnostics: Logs: PPPoE' page.</description>
+        <patterns>
+            <pattern>diag_logs_poes.php*</pattern>
+        </patterns>
+    </page-diagnostics-logs-poes>
+    <page-diagnostics-logs-l2tp>
+        <name>WebCfg - Diagnostics: Logs: L2TP page</name>
+        <description>Allow access to the 'Diagnostics: Logs: L2TP' page.</description>
+        <patterns>
+            <pattern>diag_logs_l2tp.php*</pattern>
+        </patterns>
+    </page-diagnostics-logs-l2tp>
     <page-vpn-vpnl2tp>
         <name>WebCfg - VPN: L2TP page</name>
         <description>Allow access to the 'VPN: L2TP' page.</description>
