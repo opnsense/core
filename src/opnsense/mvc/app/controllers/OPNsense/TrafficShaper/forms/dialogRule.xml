@@ -15,8 +15,7 @@
         <label>interface 2</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <help>secondary interface, matches packets going traveling from interface (1) to interface (2).
-        </help>
+        <help>secondary interface, matches packets traveling to/from interface (1) to/from interface (2). can be combined with direction.</help>
     </field>
     <field>
         <id>rule.proto</id>
