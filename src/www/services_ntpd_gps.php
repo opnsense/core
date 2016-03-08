@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }  elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
-    if (!empty($pconfig['stratum']) && ($pconfig['stratum'] > 17 || $pconfig['stratum'] < 0 || (int)$pconfig['stratum'] == null)) {
+    if (!empty($pconfig['stratum']) && ($pconfig['stratum'] > 17 || $pconfig['stratum'] < 0 || !is_numeric($pconfig['stratum']))) {
         $input_errors[] = gettext("Clock stratum must be a number in the range 0..16");
     }
     // swap prefer
