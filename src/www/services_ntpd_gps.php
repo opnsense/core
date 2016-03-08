@@ -288,7 +288,6 @@ SureGPS =    #Sure Electronics SKG16B
     <div class="container-fluid">
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
             <form method="post" name="iform" id="iform">
