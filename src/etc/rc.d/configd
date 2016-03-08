@@ -7,10 +7,10 @@
 # KEYWORD: shutdown
 #
 
-# load standard rc
 . /etc/rc.subr
 
 name=configd
+pidfile="/var/run/${name}.pid"
 
 start_precmd=configd_prestart
 start_postcmd=configd_poststart
@@ -73,14 +73,10 @@ configd_stop()
 # cleanup after stopping configd
 configd_poststop()
 {
-	if [ -f /var/run/configd.pid ]; then
-		rm /var/run/configd.pid
-	fi
-	if  [ -f /var/run/configd.socket ]; then
+	if  [ -S /var/run/configd.socket ]; then
 		rm /var/run/configd.socket
 	fi
 }
-
 
 load_rc_config $name
 configd_load_rc_config
