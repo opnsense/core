@@ -206,9 +206,8 @@ include("head.inc");
                 </table>
                 </div>
             </form>
-
           </div>
-          </section>
+        </section>
       </div>
     </div>
   </section>
