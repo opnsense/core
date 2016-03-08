@@ -24,12 +24,14 @@ PAGER?=		less
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
-
 .for LANG in ${LANGUAGES}
 ${LANG}DIR=	${LOCALEDIR:S/%%LANG%%/${LANG}/g}
 install-${LANG}:
 	@mkdir -p ${DESTDIR}${${LANG}DIR}
 	${MSGFMT} -o ${DESTDIR}${${LANG}DIR}/OPNsense.mo ${LANG}.po
+
+clean-${LANG}:
+	@rm -f ${DESTDIR}${${LANG}DIR}/OPNsense.mo
 
 plist-${LANG}:
 	@echo ${${LANG}DIR}/OPNsense.mo
@@ -40,6 +42,7 @@ merge-${LANG}:
 	sed -i '' -e '/^#~.*/d' ${LANG}.po
 
 INSTALL+=	install-${LANG}
+CLEAN+=		clean-${LANG}
 PLIST+=		plist-${LANG}
 MERGE+=		merge-${LANG}
 .endfor
@@ -54,6 +57,7 @@ ${TEMPLATE}:
 
 template: ${TEMPLATE}
 install: ${INSTALL}
+clean: ${CLEAN}
 plist: ${PLIST}
 merge: ${MERGE}
 

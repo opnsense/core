@@ -19,4 +19,8 @@ Merge the latest template changes into the actual translations:
 
     # make merge
 
+Remove the compiled translation files from the system/chroot:
+
+    # make clean
+
 The build system will automatically pick up all registered languages.
