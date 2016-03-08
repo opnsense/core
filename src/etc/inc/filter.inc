@@ -201,7 +201,6 @@ function filter_configure_sync()
         mwexec("/sbin/pfctl -e", true);
     } else {
         mwexec("/sbin/pfctl -d", true);
-        @unlink('/tmp/filter_loading');
         update_filter_reload_status(gettext("Filter is disabled.  Not loading rules."));
         if (file_exists("/var/run/booting")) {
             echo gettext("done.") . "\n";
@@ -284,19 +283,29 @@ function filter_configure_sync()
      * check for a error while loading the rules file.  if an error has occurred
      * then output the contents of the error to the caller
      */
-    if ($rules_loading <> 0) {
+    if ($rules_loading) {
+        /* XXX ALTQ not loaded message compat */
+        $altq_strip = 2;
+        if (count($rules_error) >= $altq_strip) {
+            foreach (range(1, $altq_strip) as $altq_unused) {
+                if (strpos($rules_error[0], 'ALTQ') !== false) {
+                    array_shift($rules_error);
+                }
+            }
+        }
+
         $saved_line_error = $rules_error[0];
+        $config_line_error = '';
+
         $line_error = explode(":", $rules_error[0]);
         if (isset($line_error[1])) {
             // only report issues with line numbers
             $line_number = $line_error[1];
             $line_split = file('/tmp/rules.debug');
             if (is_array($line_split)) {
-                $line_error = sprintf(gettext('The line in question reads [%d]: %s'), $line_number, $line_split[$line_number-1]);
+                $config_line_error = sprintf(' - ' . gettext('The line in question reads [%d]: %s'), $line_number, $line_split[$line_number-1]);
             }
             unset($line_split);
-        } else {
-            $line_number = null;
         }
 
         /* Brutal ugly hack but required -- PF is stuck, unwedge */
@@ -309,12 +318,10 @@ function filter_configure_sync()
         }
         unset($rules_loading, $rules_error);
 
-        if ($line_error and $line_number) {
-            file_notice("filter_load", sprintf(gettext('There were error(s) loading the rules: %s - %s'), $saved_line_error, $line_error), "Filter Reload", "");
-            update_filter_reload_status(sprintf(gettext('There were error(s) loading the rules: %s - %s'), $saved_line_error, $line_error));
-            unlock($filterlck);
-            return;
-        }
+        file_notice('filter_load', sprintf(gettext('There were error(s) loading the rules: %s%s'), $saved_line_error, $config_line_error), 'Filter Reload', '');
+        update_filter_reload_status(sprintf(gettext('There were error(s) loading the rules: %s%s'), $saved_line_error, $config_line_error));
+        unlock($filterlck);
+        return;
     }
 
     # If we are not using bogonsv6 then we can remove any bogonsv6 table from the running pf (if the table is not there, the kill is still fine).
