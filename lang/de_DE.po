@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-26 07:32+0000\n"
+"POT-Creation-Date: 2016-03-06 12:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -6564,7 +6564,7 @@ msgid "Maximum number of hops"
 msgstr "Maximale Anzahl an Hops"
 
 msgid "Reverse Address Lookup"
-msgstr ""
+msgstr "Reverse-Lookup-Adresse"
 
 msgid "Use ICMP"
 msgstr "Benutze ICMP"
@@ -6576,6 +6576,9 @@ msgid ""
 "Traceroute may take a while to complete. You may hit the Stop button on your "
 "browser at any time to see the progress of failed traceroutes."
 msgstr ""
+"Traceroute könnte einige Zeit bis zur Fertigstellung beanspruchen. Sie "
+"können jederzeit den \"Stopp\"-Button Ihres Browsers drücken, um den "
+"Fortschritt der fehlgeschlagenen Traceroutes zu sehen."
 
 msgid ""
 "Using a source interface/IP address that does not match selected type (IPv4, "
@@ -7079,6 +7082,8 @@ msgid ""
 "The 1:1 mapping will only be used for connections to or from the specified "
 "destination."
 msgstr ""
+"Die 1:1-Zuweiseung wird nur für Verbindungen zu oder von dem angegebenen "
+"Ziel verwendet."
 
 msgid "Hint: this is usually 'any'."
 msgstr "Hinweis: Dies ist üblicherweise 'jegliche(r|s)'."
@@ -7275,10 +7280,10 @@ msgid "View the filter rule"
 msgstr "Die Filterregel anzeigen"
 
 msgid "Add associated filter rule"
-msgstr ""
+msgstr "Zugehörige Filterregel hinzufügen"
 
 msgid "Add unassociated filter rule"
-msgstr ""
+msgstr "Unabhängige Filterregel hinzufügen"
 
 msgid ""
 "NOTE: The \"pass\" selection does not work properly with Multi-WAN. It will "
@@ -8036,11 +8041,15 @@ msgstr ""
 msgid ""
 "Maximum state entries per host (advanced option) must be a positive integer"
 msgstr ""
+"Maximale Statuseinträge pro Host (erweiterte Option) muss eine positive Zahl "
+"sein"
 
 msgid ""
 "Maximum new connections per host / per second(s) (advanced option) must be a "
 "positive integer"
 msgstr ""
+"Maximale neue Verbindungen pro Host / pro Sekunde (erweiterte Option) muss "
+"eine positive Zahl sein"
 
 msgid "State timeout (advanced option) must be a positive integer"
 msgstr "Statusgültigkeitsdauer (erweiterte Option) muss eine positive Zahl sein"
@@ -8888,7 +8897,7 @@ msgid "IPv4 address"
 msgstr "IPv4-Adresse"
 
 msgid "Subnet bit count"
-msgstr ""
+msgstr "Subnetzbitanzahl"
 
 msgid "Reject Leases From"
 msgstr "Verweigere Leases von"
@@ -9315,14 +9324,14 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 2003
 msgid "Timeout"
-msgstr ""
+msgstr "Gültigkeitsdauer"
 
 msgid "Retry"
 msgstr "Wiederholen"
 
 # File: src/www/interfaces.php, line: 2005
 msgid "Select Timeout"
-msgstr ""
+msgstr "Gültigkeitsdauer auswählen"
 
 # File: src/www/interfaces.php, line: 2006
 msgid "Reboot"
@@ -9387,7 +9396,7 @@ msgid ""
 msgstr ""
 
 msgid "Request Options"
-msgstr ""
+msgstr "Abfrageoptionen"
 
 msgid ""
 "The values in this field are DHCP option 55 to be sent when requesting a "
@@ -9506,10 +9515,10 @@ msgid "Custom"
 msgstr "Benutzerdefiniert"
 
 msgid "Pre-Set"
-msgstr ""
+msgstr "Voreinstellung"
 
 msgid "Select a reset timing type"
-msgstr ""
+msgstr "Einen Rücksetzungstyp auswählen"
 
 msgid "hour (0-23)"
 msgstr "Stunde (0-23)"
@@ -9620,7 +9629,7 @@ msgid ""
 msgstr ""
 
 msgid "Send IPv6 prefix hint"
-msgstr ""
+msgstr "Sende einen IPv6-Präfixhinweis"
 
 msgid ""
 "Send an IPv6 prefix hint to indicate the desired prefix size for delegation"
@@ -11504,6 +11513,8 @@ msgstr ""
 msgid ""
 "The port must be an integer between 1 and 65535, a port alias, or left blank."
 msgstr ""
+"Der Port muss eine Zahl zwischen 1 und 65535 oder ein Portalias sein oder "
+"leer gelassen werden."
 
 msgid "%s is not a valid IP address, IPv4 subnet, or alias."
 msgstr "%s ist keine gültige IP-Adresse oder IPv4-Subnetz"
@@ -11556,6 +11567,8 @@ msgid ""
 "Don't forget to add a firewall rule for the virtual server/pool after you're "
 "finished setting it up."
 msgstr ""
+"Vergessen Sie nicht darauf, eine Firewallregel für den virtuellen Server/"
+"Pool zu erstellen, sobald Sie mit der Konfiguration fertig sind."
 
 msgid "The system is rebooting now. This may take one minute."
 msgstr "Das System startet nun neu. Dies kann eine Minute dauern."
@@ -11787,7 +11800,7 @@ msgstr ""
 "diesem Server DHCP-Leases. "
 
 msgid "Pool Description"
-msgstr ""
+msgstr "Poolbeschreibung"
 
 msgid "Subnet mask"
 msgstr "Subnetzmaske"
@@ -12013,15 +12026,15 @@ msgstr "und den UEFI 64 Bit Dateinamen "
 msgid ""
 "Note: You need both a filename and a boot server configured for this to work!"
 msgstr ""
-"Anmerkung: Sie brauchen sowohl einen Dateinamen als auche einen Bootserver, "
+"Anmerkung: Sie brauchen sowohl einen Dateinamen als auch einen Bootserver "
 "damit dies funktioniert!"
 
 msgid ""
 "You will need all three filenames and a boot server configured for UEFI to "
 "work!"
 msgstr ""
-"Sie brauchen alle drei Dateinamen und einen Bootserver konfiguriert für UEFI "
-"konfiguriert, damit dies funktioniert!"
+"Sie brauchen alle drei Dateinamen und einen Bootserver für UEFI damit dies "
+"funktioniert!"
 
 msgid "Enter the"
 msgstr "Gib die"
@@ -12353,6 +12366,8 @@ msgstr ""
 msgid ""
 "If no IPv6 address is given, one will be dynamically allocated from the pool."
 msgstr ""
+"Falls keine IPv6-Adresse angegeben wird, wird dynamisch eine aus dem Pool "
+"zugewiesen."
 
 # File: src/www/services_dhcpv6_edit.php, line: 222
 msgid "Netboot filename"
@@ -12614,7 +12629,7 @@ msgid "Name of the host, without domain part"
 msgstr "Name des Hosts ohne Domainteil"
 
 msgid "myhost"
-msgstr ""
+msgstr "meinhost"
 
 msgid "Domain of the host"
 msgstr "Domain des Hosts"
@@ -12667,7 +12682,7 @@ msgid "yes"
 msgstr "ja"
 
 msgid "Interface to monitor"
-msgstr ""
+msgstr "Zu überwachende Schnittstelle"
 
 msgid "Interface to send update from"
 msgstr ""
@@ -12939,6 +12954,8 @@ msgstr "NTP-Graphen"
 
 msgid "Enable rrd graphs of NTP statistics (default: disabled)."
 msgstr ""
+"RRD-Graphen von NTP-Statistiken aktivieren (Standardeinstellung: "
+"deaktiviert)."
 
 # File: src/www/services_ntpd.php, line: 313
 msgid "Syslog logging"
@@ -13456,7 +13473,7 @@ msgid "Polling Port"
 msgstr ""
 
 msgid "Invalid character '#' in SNMP trap string"
-msgstr ""
+msgstr "Ungültiges Zeichen '#' im SNMP-Trap-String"
 
 msgid "Trap server"
 msgstr ""
@@ -13658,7 +13675,7 @@ msgid "When"
 msgstr "Wann"
 
 msgid "Provide an Access List name."
-msgstr ""
+msgstr "Einen Zugriffslistennamen zur Verfügung stellen."
 
 msgid ""
 "Choose what to do with DNS requests that match the criteria specified below."
@@ -13721,12 +13738,15 @@ msgstr "Identität verbergen"
 
 msgid "If enabled, id.server and hostname.bind queries are refused."
 msgstr ""
+"Falls aktiviert, werden Abfragen für id.server und hostname.bind verweigert."
 
 msgid "Hide Version"
 msgstr "Version verstecken"
 
 msgid "If enabled, version.server and version.bind queries are refused."
 msgstr ""
+"Falls aktiviert, werden Abfragen für version.server und version.bind "
+"verweigert."
 
 msgid "Prefetch Support"
 msgstr ""
@@ -13972,6 +13992,8 @@ msgid ""
 "To use a nondefault port for communication, append an '@' with the port "
 "number."
 msgstr ""
+"Um einen vom Standard abweichenden Port zur Kommunikation zu verwenden, "
+"fügen Sie ein '@' mit der Portnummer an."
 
 # File: src/www/services_unbound_host_edit.php, line: 109
 # File: src/www/services_unbound_host_edit.php, line: 306
@@ -14012,7 +14034,7 @@ msgstr ""
 
 # File: src/www/services_unbound_host_edit.php, line: 286
 msgid "for IPv4 or IPv6 addresses"
-msgstr ""
+msgstr "für IPv4- und IPv6-Adressen"
 
 # File: src/www/services_unbound_host_edit.php, line: 301
 msgid "Priority of MX record"
@@ -14095,7 +14117,7 @@ msgstr ""
 
 # File: src/www/services_upnp.php, line: 208
 msgid "Modified Universal Plug and Play settings."
-msgstr ""
+msgstr "Modifizierte Universal Plug and Play-Einstellungen"
 
 # File: src/www/services_wol.php, line: 55
 msgid "Sent magic packet to %s (%s)."
@@ -14767,7 +14789,7 @@ msgid "DNS Rebind Check"
 msgstr ""
 
 msgid "Disable DNS Rebinding Checks"
-msgstr ""
+msgstr "Deaktiviere DNS-Rebinding-Prüfungen"
 
 msgid ""
 "When this is unchecked, your system is protected against <a href=\""
@@ -15003,6 +15025,8 @@ msgstr "konservativ"
 
 msgid "Select the type of state table optimization to use"
 msgstr ""
+"Wählen Sie den Typ der Statustabellenoptimierung aus, der verwendet werden "
+"soll"
 
 msgid "as the name says, it is the normal optimization algorithm"
 msgstr "wie der Name sagt, ist das der normale Optimierungsalgorithmus"
@@ -15030,7 +15054,7 @@ msgstr "Paketfilterung komplett deaktivieren"
 
 # File: src/www/system_advanced_firewall.php, line: 357
 msgid "Warning: This converts %s into a routing only platform!"
-msgstr ""
+msgstr "Warnung: Dadurch wird %s zur reinen Routing-Plattform!"
 
 # File: src/www/system_advanced_firewall.php, line: 358
 msgid "Warning: This will also turn off NAT!"
@@ -15947,7 +15971,7 @@ msgstr "Erstelle hier eines"
 # File: src/www/vpn_openvpn_server.php, line: 958
 # File: src/www/vpn_openvpn_server.php.orig, line: 958
 msgid "No Certificate Authorities defined."
-msgstr ""
+msgstr "Keine Zertifizierungsstellen definiert."
 
 # File: src/www/vpn_openvpn_client.php, line: 718
 # File: src/www/vpn_openvpn_client.php, line: 756
@@ -20081,7 +20105,7 @@ msgid "add a new pppoe instance"
 msgstr "Eine neue PPPoE Instanz hinzufügen"
 
 msgid "The PPPoE entry list has been changed"
-msgstr "Die PPoE Eintragsliste wurde geändert"
+msgstr "Die PPPoE Eintragsliste wurde geändert"
 
 msgid "Number of users"
 msgstr "Benutzeranzahl"
