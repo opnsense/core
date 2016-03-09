@@ -1,4 +1,21 @@
 @charset "UTF-8";
+.widgetdiv .content-box-head {
+  background: #F7F7F7 !important;
+  color: #3C3C3B !important;
+  padding-bottom: 1px !important;
+  padding-top: 1px !important;
+  padding-right: 1px !important;
+  min-height: 25px !important;
+  border: 1px solid #3C3C3B; }
+  .widgetdiv .content-box-head .btn-group .btn {
+    color: #3C3C3B !important;
+    background: #F7F7F7 !important;
+    border: 0px; }
+    .widgetdiv .content-box-head .btn-group .btn .glyphicon {
+      color: #3C3C3B !important; }
+  .widgetdiv .content-box-head .list-inline li > h3 {
+    padding-top: 4px; }
+
 @font-face {
   font-family: 'SourceSansProBold';
   src: url("/ui/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.woff") format("woff"), url("/ui/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf") format("truetype"); }
@@ -2003,7 +2020,8 @@ th {
 
 .table {
   width: 100%;
-  max-width: 100%; }
+  max-width: 100%;
+  margin-bottom: 20px; }
   .table > thead > tr > th,
   .table > thead > tr > td,
   .table > tbody > tr > th,
@@ -3480,7 +3498,7 @@ tbody.collapse.in {
   .nav-tabs.nav-justified > .active > a:hover,
   .nav-tabs-justified > .active > a:focus,
   .nav-tabs.nav-justified > .active > a:focus {
-    border: 0px; }
+    border: 1px solid #ddd; }
   @media (min-width: 768px) {
     .nav-tabs-justified > li > a, .nav-tabs.nav-justified > li > a {
       border-bottom: 1px solid #ddd;
@@ -5688,6 +5706,12 @@ body {
 table {
   width: 100%; }
 
+.table {
+  margin-bottom: 0px !important; }
+
+.nav-tabs-justified .nav-tabs.nav-justified > .active > a:focus, .nav-tabs.nav-justified .nav-tabs.nav-justified > .active > a:focus, .nav-tabs.nav-justified .nav-tabs.nav-justified > .active > a:focus {
+  border: 0px !important; }
+
 .table th, strong, b {
   font-family: 'SourceSansProSemibold';
   font-weight: normal; }
@@ -5799,3 +5823,5 @@ select {
   background-repeat: no-repeat;
   background-position: right;
   background-image: url(/ui/themes/opnsense/build/images/caret.png) !important; }
+
+/*# sourceMappingURL=main.css.map */
