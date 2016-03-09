@@ -58,15 +58,18 @@ if parameters['output_type'] != 'json':
                'macAddress': 'mac_address',
                'total_bytes': 'total_bytes',
                'idletime': 'idletime',
-               'totaltime': 'totaltime'
+               'totaltime': 'totaltime',
+               'acc_session_timeout': 'acc_session_timeout'
                }
-    print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s '\
-          + '%(total_bytes)-15s %(idletime)-10s %(totaltime)-10s' % heading
+    heading_format = '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s '\
+                   + '%(total_bytes)-15s %(idletime)-10s %(totaltime)-10s'
+    print (heading_format % heading)
     for item in response:
         item['total_bytes'] = (item['bytes_out'] + item['bytes_in'])
         item['idletime'] = time.time() - item['last_accessed']
         item['totaltime'] = time.time() - item['startTime']
-        print '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s '\
-              + '%(total_bytes)-15s %(idletime)-10d %(totaltime)-10d' % item
+        frmt = '%(sessionId)-30s %(userName)-20s %(ipAddress)-20s %(macAddress)-20s '\
+             + '%(total_bytes)-15s %(idletime)-10d %(totaltime)-10d'
+        print (frmt % item)
 else:
     print(ujson.dumps(response))
