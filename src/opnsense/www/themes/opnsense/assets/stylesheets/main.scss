@@ -1,16 +1,16 @@
 $colors: (
-	orange: #EA7105,
-	lightgrey: #F7F7F7,
-	lightergrey: #FBFBFB,
-	darkgrey: #3C3C3B,
-	bordergrey: #E5E5E5,
+  orange: #EA7105,
+  lightgrey: #F7F7F7,
+  lightergrey: #FBFBFB,
+  darkgrey: #3C3C3B,
+  bordergrey: #E5E5E5,
 );
 
 $zindex: (
-	header: 2,
-	footer: 2,
-	main: 1,
-	sidebar: 3,
+  header: 2,
+  footer: 2,
+  main: 1,
+  sidebar: 3,
 );
 
 @font-face {
@@ -87,123 +87,123 @@ $zindex: (
 }
 
 html, body{
-	height: 100%;
-	font-family: 'SourceSansProRegular';
+  height: 100%;
+  font-family: 'SourceSansProRegular';
 }
 
 body{
-	min-width: 320px;
+  min-width: 320px;
 }
 
 .page-head{
-	background: map-get($colors, darkgrey);
-	top: 0;
-	left: 0;
-	position: fixed;
-	width: 100%;
-	z-index: map-get($zindex, header);
+  background: map-get($colors, darkgrey);
+  top: 0;
+  left: 0;
+  position: fixed;
+  width: 100%;
+  z-index: map-get($zindex, header);
 }
 
 .page-content{
-	height: calc(100% - 52px);
-	padding-top: 52px;
-	position: relative;
-	z-index: map-get($zindex, main);
+  height: calc(100% - 52px);
+  padding-top: 52px;
+  position: relative;
+  z-index: map-get($zindex, main);
 
-	> .row{
-		height: 100%;
-	}
+  > .row{
+    height: 100%;
+  }
 }
 
 .page-content-head{
-	background: map-get($colors, lightergrey);
-	border-bottom: 1px solid rgba(#D9D9D9, .50);
-	padding-bottom: 15px;
-	padding-top: 20px;
+  background: map-get($colors, lightergrey);
+  border-bottom: 1px solid rgba(#D9D9D9, .50);
+  padding-bottom: 15px;
+  padding-top: 20px;
 
-	.navbar-nav{
-		width: 100%;
-	}
+  .navbar-nav{
+    width: 100%;
+  }
 
-	h1,h2,h3{
-		line-height: 1;
-		margin: 0;
-	}
+  h1,h2,h3{
+    line-height: 1;
+    margin: 0;
+  }
 }
 
 .page-content-main{
-	background: map-get($colors, lightgrey);
-	min-height: calc(100% - 64px);
-	padding: 15px 0 (15px + 58px);
+  background: map-get($colors, lightgrey);
+  min-height: calc(100% - 64px);
+  padding: 15px 0 (15px + 58px);
 }
 
 .page-side{
-	background: #FFF;
-	border-right: 1px solid rgba(0,0,0,.15);
-	height: 100% !important;
-	height: calc(100% - 52px) !important;
-	left: 0;
-	overflow: auto;
-	margin-top: 52px;
-	position: fixed;
-	top: 0;
-	z-index: map-get($zindex, sidebar);
+  background: #FFF;
+  border-right: 1px solid rgba(0,0,0,.15);
+  height: 100% !important;
+  height: calc(100% - 52px) !important;
+  left: 0;
+  overflow: auto;
+  margin-top: 52px;
+  position: fixed;
+  top: 0;
+  z-index: map-get($zindex, sidebar);
 
-	@extend .hidden-xs;
+  @extend .hidden-xs;
 }
 
 .page-side-nav {
 
-	&--active{
-		background: map-get($colors, lightgrey);
-		border-left: 3px solid map-get($colors, orange);
-	}
+  &--active{
+    background: map-get($colors, lightgrey);
+    border-left: 3px solid map-get($colors, orange);
+  }
 }
 
 .page-foot{
-	background: map-get($colors, lightergrey);
-	bottom: 0;
-	border-top: 1px solid rgba(#D9D9D9, .50);
-	font-size: 12px;
-	padding: 20px 0;
-	position: fixed;
-	width: 100%;
-	z-index: map-get($zindex, footer);
+  background: map-get($colors, lightergrey);
+  bottom: 0;
+  border-top: 1px solid rgba(#D9D9D9, .50);
+  font-size: 12px;
+  padding: 20px 0;
+  position: fixed;
+  width: 100%;
+  z-index: map-get($zindex, footer);
 }
 
 .content-box{
-	background: #FFF;
-	border: 1px solid map-get($colors, bordergrey);;
+  background: #FFF;
+  border: 1px solid map-get($colors, bordergrey);;
 
-	@extend .clearfix;
+  @extend .clearfix;
 
-	&-head{
-	@extend .page-content-head;
-	}
+  &-head{
+  @extend .page-content-head;
+  }
 
-	&-main{
-	//background: map-get($colors, lightgrey);
-	padding-bottom: 15px;
-	padding-top: 15px;
-	}
+  &-main{
+  //background: map-get($colors, lightgrey);
+  padding-bottom: 15px;
+  padding-top: 15px;
+  }
 }
 
 .tab-content{
-	border-top: 0px;
-	padding: 0px 0;
+  border-top: 0px;
+  padding: 0px 0;
 
-	> .tab-content{
-	margin-bottom: 0;
-	padding: 0 15px;
-	}
+  > .tab-content{
+  margin-bottom: 0;
+  padding: 0 15px;
+  }
 
-	.tab-content:last-child{
-	margin-bottom: 0;
-	}
+  .tab-content:last-child{
+  margin-bottom: 0;
+  }
 }
 
 .page-content-main [class^="col-"] + [class^="col-"]{
-	padding-top: ($grid-gutter-width/2);
+  padding-top: ($grid-gutter-width/2);
 }
 
 .brand-logo{
@@ -340,13 +340,13 @@ body{
 
 /* BOOTSTRAP EDIT */
 .list-group-item{
-	border-left: none;
-	border-right: none;
+  border-left: none;
+  border-right: none;
 
-	&.collapsed .caret{
-		border-bottom: 4px solid green;
-		border-top: 0;
-	}
+  &.collapsed .caret{
+    border-bottom: 4px solid green;
+    border-top: 0;
+  }
 }
 
 #navigation.collapse.in{
@@ -355,56 +355,56 @@ body{
 
 .list-group-submenu .list-group-item:last-child,
 .collapse .list-group-item:last-child {
-	border-bottom: none;
+  border-bottom: none;
 }
 
 .nav-tabs > li.active {
-	background: #FFF !important;
+  background: #FFF !important;
 }
 
 .nav-tabs > li > a{
-	border-radius: 0px;
-	margin-right: 0px;
+  border-radius: 0px;
+  margin-right: 0px;
 }
 
 .nav-tabs.nav-justified{
-	border-right:1px solid map-get($colors, bordergrey);
-	> li {
-		border-bottom:1px solid map-get($colors, bordergrey);
-		border-top:1px solid map-get($colors, bordergrey);
-		border-left:1px solid map-get($colors, bordergrey);
-		border-radius: 0px;
-		background: map-get($colors, lightgrey);
-	> a {
-		color: map-get($colors, darkgrey);
-		font-family: 'SourceSansProSemibold';
+  border-right:1px solid map-get($colors, bordergrey);
+  > li {
+    border-bottom:1px solid map-get($colors, bordergrey);
+    border-top:1px solid map-get($colors, bordergrey);
+    border-left:1px solid map-get($colors, bordergrey);
+    border-radius: 0px;
+    background: map-get($colors, lightgrey);
+  > a {
+    color: map-get($colors, darkgrey);
+    font-family: 'SourceSansProSemibold';
 
-		@media (min-width:$screen-sm-min){
-		border-bottom: 1px solid transparent;
-	}
-	}
-	}
+    @media (min-width:$screen-sm-min){
+    border-bottom: 1px solid transparent;
+  }
+  }
+  }
 
-	> li.active > a{
-	@media (max-width:$screen-xs-max){
-		border-right: 0 !important;
-	}
-	}
-	}
+  > li.active > a{
+  @media (max-width:$screen-xs-max){
+    border-right: 0 !important;
+  }
+  }
+  }
 
-	> li.active + li > a{
-	@media (min-width:$screen-sm-min){
-		border-left: 1px solid transparent;
-	}
-	}
+  > li.active + li > a{
+  @media (min-width:$screen-sm-min){
+    border-left: 1px solid transparent;
+  }
+  }
 
-	> li:last-child > a{
-		border-right:1px solid transparent !important;
+  > li:last-child > a{
+    border-right:1px solid transparent !important;
 
-		@media (max-width:$screen-xs-max){
-		margin-bottom: 0;
-	}
-	}
+    @media (max-width:$screen-xs-max){
+    margin-bottom: 0;
+  }
+  }
 
 .btn .glyphicon {
     vertical-align: -1px;
@@ -526,24 +526,24 @@ table{
 }
 
 ::-webkit-scrollbar {
-	width: 8px;
+  width: 8px;
 }
 ::-webkit-scrollbar-button {
-	width: 8px;
-	height:5px;
+  width: 8px;
+  height:5px;
 }
 ::-webkit-scrollbar-track {
-	background: #f7f7f7;
-	box-shadow: 0px 0px 0px;
-	border-radius:0;
+  background: #f7f7f7;
+  box-shadow: 0px 0px 0px;
+  border-radius:0;
 }
 ::-webkit-scrollbar-thumb {
-	background: #e5e5e5;
-	border: thin solid #e5e5e5;
-	border-radius: 0px;
+  background: #e5e5e5;
+  border: thin solid #e5e5e5;
+  border-radius: 0px;
 }
 ::-webkit-scrollbar-thumb:hover {
-	background:#e5e5e5;
+  background:#e5e5e5;
 }
 
 .widgetdiv {
