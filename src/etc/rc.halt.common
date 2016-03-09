@@ -15,7 +15,7 @@
 
 # wait for config lock to release
 php -a >/dev/null  << EOF
-\$fp = fopen('/conf/config.xml', "w+");
+\$fp = fopen('/conf/config.xml', "a+");
 if (flock(\$fp, LOCK_EX)) {
 	flock(\$fp, LOCK_UN);
 	fclose(\$fp);
