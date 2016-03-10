@@ -83,11 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['enable']) && (empty($pconfig['enable_upnp']) && empty($pconfig['enable_natpmp']))) {
         $input_errors[] = gettext('At least one of \'UPnP\' or \'NAT-PMP\' must be allowed');
     }
-    foreach($pconfig['iface_array'] as $iface) {
-        if ($iface == 'wan') {
-            $input_errors[] = gettext('It is a security risk to specify WAN in the \'Interface\' field');
-        } elseif ($iface == $pconfig['ext_iface']) {
-            $input_errors[] = gettext('You cannot select the external interface as an internal interface.');
+    if (!empty($pconfig['iface_array'])) {
+        foreach($pconfig['iface_array'] as $iface) {
+            if ($iface == 'wan') {
+                $input_errors[] = gettext('It is a security risk to specify WAN in the \'Interface\' field');
+            } elseif ($iface == $pconfig['ext_iface']) {
+                $input_errors[] = gettext('You cannot select the external interface as an internal interface.');
+            }
         }
     }
     if (!empty($pconfig['overridewanip']) && !is_ipaddr($pconfig['overridewanip'])) {
@@ -225,12 +227,12 @@ include("head.inc");
                       <td><a id="help_for_iface_array" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces (generally LAN)");?></td>
                       <td>
                        <select class="selectpicker" name="iface_array[]" multiple="multiple">
-                         <option value="lo0" <?=in_array('lo0', $pconfig['iface_array']) ? "selected=\"selected\"" : "";?>>
+                         <option value="lo0" <?=!empty($pconfig['iface_array']) && in_array('lo0', $pconfig['iface_array']) ? "selected=\"selected\"" : "";?>>
                            <?=gettext("Localhost");?>
                          </option>
 <?php
                         foreach (get_configured_interface_with_descr() as $iface => $ifacename):?>
-                          <option value="<?=$iface;?>" <?=in_array($iface, $pconfig['iface_array']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$iface;?>" <?=!empty($pconfig['iface_array']) && in_array($iface, $pconfig['iface_array']) ? "selected=\"selected\"" : "";?>>
                             <?=htmlspecialchars($ifacename);?>
                           </option>
 <?php
