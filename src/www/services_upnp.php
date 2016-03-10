@@ -314,7 +314,8 @@ include("head.inc");
                       <td width="78%">
                         <input name="permuser1" type="text" value="<?=$pconfig['permuser1'];?>" />
                         <div class="hidden" for="help_for_permuser1">
-                          <?=gettext("Format: [allow or deny] [ext port or range] [int ipaddr or ipaddr/cdir] [int port or range]&lt;br /&gt;Example: allow 1024-65535 192.168.0.0/24 1024-65535");?>
+                          <?=gettext("Format: [allow or deny] [ext port or range] [int ipaddr or ipaddr/cdir] [int port or range]");?><br/>
+                          <?=gettext("Example: allow 1024-65535 192.168.0.0/24 1024-65535");?>
                         </div>
                       </td>
                     </tr>
