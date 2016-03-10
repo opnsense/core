@@ -1,5 +1,5 @@
 ROOT=	/usr/local
-TREES=	etc opnsense pkg sbin wizard www
+TREES=	etc opnsense sbin wizard www
 
 EXTRA=	bootstrap
 
