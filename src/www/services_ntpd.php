@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $a_ntpd['prefer'] = "";
         if (!empty($pconfig['timeservers_prefer'])) {
             foreach ($pconfig['timeservers_prefer'] as $timeserver) {
-                if (!in_array($timeserver, $pconfig['timeservers_noselect'])) {
+                if (!is_array($pconfig['timeservers_noselect']) || !in_array($timeserver, $pconfig['timeservers_noselect'])) {
                     // a timeserver can't be both preferred and disabled, don't set preferred when disabled
                     $a_ntpd['prefer'] .= $timeserver . " ";
                 }
