@@ -197,9 +197,6 @@
             <StatesDump order="70" VisibleName="States Dump" url="/diag_dump_states.php"/>
             <StatesReset order="80" VisibleName="States Reset" url="/diag_resetstate.php"/>
             <StatesSummary order="90" VisibleName="States Summary" url="/diag_states_summary.php"/>
-            <StatesTrackSource order="100" VisibleName="Source Tracking" url="/diag_dump_states_sources.php">
-                <Filter url="/diag_dump_states_sources.php*" visibility="hidden"/>
-            </StatesTrackSource>
         </Diagnostics>
         <LogFiles order="400" VisibleName="Log Files" cssClass="fa fa-eye fa-fw">
             <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
