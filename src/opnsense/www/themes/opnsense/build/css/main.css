@@ -1,15 +1,14 @@
 @charset "UTF-8";
 .widgetdiv .content-box-head {
-  background: #F7F7F7 !important;
+  background: #E8E8E8 !important;
   color: #3C3C3B !important;
   padding-bottom: 1px !important;
   padding-top: 1px !important;
   padding-right: 1px !important;
-  min-height: 25px !important;
-  border: 1px solid #3C3C3B; }
+  min-height: 25px !important; }
   .widgetdiv .content-box-head .btn-group .btn {
     color: #3C3C3B !important;
-    background: #F7F7F7 !important;
+    background: #E8E8E8 !important;
     border: 0px; }
     .widgetdiv .content-box-head .btn-group .btn .glyphicon {
       color: #3C3C3B !important; }
