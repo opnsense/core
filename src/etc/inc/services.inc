@@ -2077,16 +2077,6 @@ read := "{$config['snmpd']['rocommunity']}"
 
 EOD;
 
-/* No docs on what write strings do there for disable for now.
-    if(isset($config['snmpd']['rwenable']) && preg_match('/^\S+$/', $config['snmpd']['rwcommunity'])){
-        $snmpdconf .= <<<EOD
-# write string
-write := "{$config['snmpd']['rwcommunity']}"
-
-EOD;
-    }
-*/
-
 
         if (isset($config['snmpd']['trapenable']) && preg_match('/^\S+$/', $config['snmpd']['trapserver'])){
             $snmpdconf .= <<<EOD
@@ -2115,16 +2105,6 @@ begemotSnmpdCommunityString.0.1 = $(read)
 
 EOD;
 
-/* No docs on what write strings do there for disable for now.
-    if(isset($config['snmpd']['rwcommunity']) && preg_match('/^\S+$/', $config['snmpd']['rwcommunity'])){
-        $snmpdconf .= <<<EOD
-begemotSnmpdCommunityString.0.2 = $(write)
-
-EOD;
-    }
-*/
-
-
         if (isset($config['snmpd']['trapenable']) && preg_match('/^\S+$/', $config['snmpd']['trapserver'])){
             $snmpdconf .= <<<EOD
 begemotTrapSinkStatus.[$(traphost)].$(trapport) = 4
@@ -2140,10 +2120,6 @@ begemotSnmpdCommunityDisable    = 1
 
 EOD;
 
-        if (isset($config['snmpd']['bindlan'])) {
-            $config['snmpd']['bindip'] = 'lan';
-            unset($config['snmpd']['bindlan']);
-        }
         $bind_to_ip = "0.0.0.0";
         if (isset($config['snmpd']['bindip'])) {
             if (is_ipaddr($config['snmpd']['bindip'])) {
@@ -2232,13 +2208,9 @@ EOD;
         fclose($fd);
         unset($snmpdconf);
 
-        if (isset($config['snmpd']['bindlan'])) {
-            $bindlan = "";
-        }
 
         /* run bsnmpd */
-        mwexec("/usr/sbin/bsnmpd -c /var/etc/snmpd.conf" .
-          "{$bindlan} -p /var/run/snmpd.pid");
+        mwexec("/usr/sbin/bsnmpd -c /var/etc/snmpd.conf -p /var/run/snmpd.pid");
 
         if (file_exists("/var/run/booting")) {
             echo gettext("done.") . "\n";
