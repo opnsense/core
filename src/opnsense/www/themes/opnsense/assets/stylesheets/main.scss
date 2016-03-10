@@ -16,18 +16,17 @@ $zindex: (
 // format dashboard widget headers
 .widgetdiv {
     .content-box-head {
-        background: map-get($colors, lightgrey) !important;
+        background: #E8E8E8 !important;
         color: map-get($colors, darkgrey) !important;
         padding-bottom: 1px !important;
         padding-top:  1px !important;
         padding-right: 1px !important;
         min-height: 25px !important;
-        border: 1px solid map-get($colors, darkgrey);
 
         .btn-group {
             .btn {
                 color: map-get($colors, darkgrey) !important;
-                background: map-get($colors, lightgrey) !important;
+                background: #E8E8E8 !important;
                 border: 0px;
                 .glyphicon {
                     color: map-get($colors, darkgrey) !important;
