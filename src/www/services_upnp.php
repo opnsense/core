@@ -347,22 +347,22 @@ include("head.inc");
                       </td>
                     </tr>
                   </tbody>
-                </tbody>
-              </table>
+                </table>
+              </div>
             </div>
-          </div>
-        </section>
-        <section class="col-xs-12">
-          <div class="content-box">
-            <div class="table-responsive">
-              <table class="table table-striped">
-                <tbody>
-                  <tr>
-                   <td width="22%" valign="top">&nbsp;</td>
-                   <td width="78%">
-                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                   </td>
-                  </tr>
+          </section>
+          <section class="col-xs-12">
+            <div class="content-box">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tbody>
+                    <tr>
+                     <td width="22%" valign="top">&nbsp;</td>
+                     <td width="78%">
+                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                     </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>
