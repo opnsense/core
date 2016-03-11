@@ -262,7 +262,7 @@ include("head.inc");
                         $iflist = array_merge($iflist, return_gateway_groups_array());
                         foreach ($iflist as $if => $ifdesc):?>
                           <option value="<?=$if;?>" <?=$pconfig['interface'] == $if ? "selected=\"selected\"" : "";?>>
-                            <?=htmlspecialchars($ifdesc);?>
+                            <?=is_array($ifdesc) ? $if : htmlspecialchars($ifdesc);?>
                           </option>
 
 <?php
@@ -279,7 +279,7 @@ include("head.inc");
                        $iflist = array_merge($iflist, return_gateway_groups_array());
                        foreach ($iflist as $if => $ifdesc):?>
                          <option value="<?=$if;?>" <?=$pconfig['requestif'] == $if ? "selected=\"selected\"" : "";?>>
-                           <?=htmlspecialchars($ifdesc);?>
+                           <?=is_array($ifdesc) ? $if : htmlspecialchars($ifdesc);?>
                          </option>
 
 <?php
