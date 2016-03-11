@@ -166,6 +166,18 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/lang plist
 	@${MAKE} -C ${.CURDIR}/src plist
 
+TMPDIR?=	${DESTDIR}/tmp/core-pkg
+
+package: force
+	@rm -rf ${TMPDIR}
+	@${MAKE} DESTDIR=${TMPDIR} FLAVOUR=${FLAVOUR} install
+	@${MAKE} DESTDIR=${TMPDIR} scripts
+	@${MAKE} DESTDIR=${TMPDIR} manifest > ${TMPDIR}/+MANIFEST
+	@${MAKE} DESTDIR=${TMPDIR} plist > ${TMPDIR}/plist
+	@${PKG} create -v -m ${TMPDIR} -r ${TMPDIR} -p ${TMPDIR}/plist
+	@ls -lah *.txz
+	@rm -rf ${TMPDIR}
+
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
