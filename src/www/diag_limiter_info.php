@@ -29,18 +29,19 @@
 
 require_once("guiconfig.inc");
 
-if(isset($_POST['getactivity'])) {
-	$text = `/sbin/ipfw pipe show`;
-	if($text == "")
-		$text = gettext('We could not find any limiters on this system.');
-	echo "Limiters:\n";
-	echo $text;
-	$text = `/sbin/ipfw queue show`;
-	if($text != "") {
-		echo "\n\nQueues:\n";
-		echo $text;
-	}
-	exit;
+if (isset($_POST['getactivity'])) {
+    $text = `/sbin/ipfw pipe show`;
+    if ($text == "") {
+        $text = gettext('We could not find any limiters on this system.');
+    }
+    echo "Limiters:\n";
+    echo $text;
+    $text = `/sbin/ipfw queue show`;
+    if ($text != "") {
+        echo "\n\nQueues:\n";
+        echo $text;
+    }
+    exit;
 }
 
 include("head.inc");
@@ -50,48 +51,46 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
 //<![CDATA[
-	function getlimiteractivity() {
-		var url = "/diag_limiter_info.php";
-		var pars = 'getactivity=yes';
-		jQuery.ajax(
-			url,
-			{
-				type: 'post',
-				data: pars,
-				complete: activitycallback
-			});
-	}
-	function activitycallback(transport) {
-		jQuery('#limiteractivitydiv').html('<font face="Courier" size="2"><pre style="text-align:left;">' + transport.responseText  + '<\/pre><\/font>');
-		setTimeout('getlimiteractivity()', 2000);
-	}
-	setTimeout('getlimiteractivity()', 1000);
+  function getlimiteractivity() {
+    var url = "/diag_limiter_info.php";
+    var pars = 'getactivity=yes';
+    jQuery.ajax(
+      url,
+      {
+        type: 'post',
+        data: pars,
+        complete: activitycallback
+      });
+  }
+  function activitycallback(transport) {
+    jQuery('#limiteractivitydiv').html('<font face="Courier" size="2"><pre style="text-align:left;">' + transport.responseText  + '<\/pre><\/font>');
+    setTimeout('getlimiteractivity()', 2000);
+  }
+  setTimeout('getlimiteractivity()', 1000);
 //]]>
 </script>
 
 
 
 <section class="page-content-main">
-	<div class="container-fluid col-xs-12 col-sm-10 col-md-9">
-		<div class="row">
-		    <section class="col-xs-12">
-
-			<?php
-				if($savemsg) {
-					echo "<div id=\"savemsg\">";
-					print_info_box($savemsg);
-					echo "</div>";
-				}
-				if (isset($input_errors) && count($input_errors) > 0)
-					print_input_errors($input_errors);
-			?>
-
-			<div id="limiteractivitydiv">
-				<?=gettext("Gathering Limiter information, please wait...");?>
-			</div>
-		 </section>
-		</div>
-	</div>
+  <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
+    <div class="row">
+        <section class="col-xs-12">
+<?php
+        if($savemsg) {
+          echo "<div id=\"savemsg\">";
+          print_info_box($savemsg);
+          echo "</div>";
+        }
+        if (isset($input_errors) && count($input_errors) > 0)
+          print_input_errors($input_errors);
+?>
+      <div id="limiteractivitydiv">
+        <?=gettext("Gathering Limiter information, please wait...");?>
+      </div>
+     </section>
+    </div>
+  </div>
 </section>
 
 
