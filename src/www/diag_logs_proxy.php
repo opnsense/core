@@ -2,7 +2,7 @@
 
 $type = 'cache';
 if (isset($_GET['type']) && ($_GET['type'] === 'access' || $_GET['type'] === 'store')) {
-	$type = $_GET['type'];
+    $type = $_GET['type'];
 }
 
 $logfile = "/var/log/squid/{$type}.log";
