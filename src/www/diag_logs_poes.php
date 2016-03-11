@@ -1,16 +1,17 @@
 <?php
 
-if (htmlspecialchars($_POST['mode']))
-	$mode = htmlspecialchars($_POST['mode']);
-elseif (htmlspecialchars($_GET['mode']))
-	$mode = htmlspecialchars($_GET['mode']);
-else
-	$mode = "login";
+if (htmlspecialchars($_POST['mode'])) {
+    $mode = htmlspecialchars($_POST['mode']);
+} elseif (htmlspecialchars($_GET['mode'])) {
+    $mode = htmlspecialchars($_GET['mode']);
+} else {
+    $mode = "login";
+}
 
 if ($mode != 'raw') {
-	$logfile = '/var/log/vpn.log';
+    $logfile = '/var/log/vpn.log';
 } else {
-	$logfile = '/var/log/poes.log';
+    $logfile = '/var/log/poes.log';
 }
 
 $logtype = 'poes';
