@@ -4000,8 +4000,15 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
 
 function DHCP_Config_File_Override($wancfg, $wanif)
 {
-    $dhclientconf = file_get_contents($wancfg['adv_dhcp_config_file_override_path']);
-    $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
+    $dhclientfile = $wancfg['adv_dhcp_config_file_override_path'];
+    $dhclientconf = '';
+
+    if (file_exists($dhclientfile)) {
+        $dhclientconf = file_get_contents($hclientfile);
+        $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
+    } else {
+        log_error(sprintf(gettext('DHCP config file override does not exist: %s'), $dhclientfile));
+    }
 
     return $dhclientconf;
 }
