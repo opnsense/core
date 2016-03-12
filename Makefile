@@ -7,17 +7,27 @@ all:
 
 force:
 
+WRKDIR?=${.CURDIR}/work
+WRKSRC=	${WRKDIR}/src
+PKGDIR=	${WRKDIR}/pkg
+
 mount: force
-	@${.CURDIR}/scripts/version.sh > \
-	    ${.CURDIR}/src/opnsense/version/opnsense
-	mount_unionfs ${.CURDIR}/src /usr/local
-	@service configd restart
+	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
+	    echo "Enabling core.git live mount..."; \
+	    ${.CURDIR}/scripts/version.sh > \
+	        ${.CURDIR}/src/opnsense/version/opnsense; \
+	    mount_unionfs ${.CURDIR}/src /usr/local; \
+	    touch ${WRKDIR}/.mount_done; \
+	    service configd restart; \
+	fi
 
 umount: force
-	umount -f "<above>:${.CURDIR}/src"
-	@service configd restart
-
-remount: umount mount
+	@if [ -f ${WRKDIR}/.mount_done ]; then \
+	    echo "Disabling core.git live mount..."; \
+	    umount -f "<above>:${.CURDIR}/src"; \
+	    rm ${WRKDIR}/.mount_done; \
+	    service configd restart; \
+	fi
 
 .if ${GIT} != true
 CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
@@ -165,10 +175,6 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/contrib plist
 	@${MAKE} -C ${.CURDIR}/lang plist
 	@${MAKE} -C ${.CURDIR}/src plist
-
-WRKDIR?=${.CURDIR}/work
-WRKSRC=	${WRKDIR}/src
-PKGDIR=	${WRKDIR}/pkg
 
 package: force
 	@${PKG} info gettext-tools > /dev/null
