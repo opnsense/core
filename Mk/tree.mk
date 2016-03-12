@@ -10,7 +10,7 @@ install${TARGET}: force
 	@REALTARGET=/$$(dirname ${TREE}); \
 	mkdir -p ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}; \
 	cp -vr ${TREE} ${DESTDIR}${ROOT${TARGET}}$${REALTARGET}
-	@(cd ${TREE}; find * -type f) | while read FILE; do \
+	@(cd ${TREE}; find * -type f ! -name "*.pyc") | while read FILE; do \
 		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
 			sed -i '' \
 			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
@@ -29,7 +29,7 @@ install${TARGET}: force
 
 plist${TARGET}: force
 .for TREE in ${TREES${TARGET}}
-	@(cd ${TREE}; find * -type f) | while read FILE; do \
+	@(cd ${TREE}; find * -type f ! -name "*.pyc") | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
 			PREFIX="@sample "; \
