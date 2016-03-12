@@ -8,5 +8,5 @@ rm -f /etc/shells.bak
 
 echo "Unhooking from /etc/rc"
 cp /etc/rc /etc/rc.bak
-tail -n +5 /etc/rc.bak > /etc/rc
+tail -n +4 /etc/rc.bak > /etc/rc
 rm -f /etc/rc.bak
