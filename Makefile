@@ -166,17 +166,26 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/lang plist
 	@${MAKE} -C ${.CURDIR}/src plist
 
-TMPDIR?=	${DESTDIR}/tmp/core-pkg
+WRKDIR?=${.CURDIR}/work
+WRKSRC=	${WRKDIR}/src
+PKGDIR=	${WRKDIR}/pkg
 
 package: force
-	@rm -rf ${TMPDIR}
-	@${MAKE} DESTDIR=${TMPDIR} FLAVOUR=${FLAVOUR} install
-	@${MAKE} DESTDIR=${TMPDIR} scripts
-	@${MAKE} DESTDIR=${TMPDIR} manifest > ${TMPDIR}/+MANIFEST
-	@${MAKE} DESTDIR=${TMPDIR} plist > ${TMPDIR}/plist
-	@${PKG} create -v -m ${TMPDIR} -r ${TMPDIR} -p ${TMPDIR}/plist
-	@ls -lah *.txz
-	@rm -rf ${TMPDIR}
+	@${PKG} info gettext-tools > /dev/null
+	@${PKG} info git > /dev/null
+	@rm -rf ${WRKSRC} ${PKGDIR}
+	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
+	@${MAKE} DESTDIR=${WRKSRC} scripts
+	@${MAKE} DESTDIR=${WRKSRC} manifest > ${WRKSRC}/+MANIFEST
+	@${MAKE} DESTDIR=${WRKSRC} plist > ${WRKSRC}/plist
+	@${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
+	    -p ${WRKSRC}/plist -o ${PKGDIR}
+	@echo -n "Sucessfully built "
+	@cd ${PKGDIR}; find . -name "*.txz" | cut -c3-
+
+upgrade: package
+	${PKG} delete -y ${CORE_NAME}
+	${PKG} add ${PKGDIR}/*.txz
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/scripts \
