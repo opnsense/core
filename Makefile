@@ -191,7 +191,8 @@ package: force
 
 upgrade: package
 	${PKG} delete -y ${CORE_NAME}
-	${PKG} add ${PKGDIR}/*.txz
+	@${PKG} add ${PKGDIR}/*.txz
+	@/usr/local/etc/rc.restart_webgui
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/scripts \
