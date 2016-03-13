@@ -101,4 +101,31 @@ class InterfaceController extends ApiControllerBase
 
         return $ndptable;
     }
+
+    /**
+     * retrieve system routing table
+     * @return mixed
+     */
+    public function getRoutesAction()
+    {
+        $backend = new Backend();
+        if (empty($this->request->get('resolve', null))) {
+            $response = $backend->configdpRun("interface routes list -n json");
+        } else {
+            $response = $backend->configdpRun("interface routes list json");
+        }
+
+        $routingtable = json_decode($response, true);
+        if (is_array($routingtable)) {
+            $intfmap = $this->getInterfaceNames();
+            foreach ($routingtable as &$routingentry) {
+                if (array_key_exists($routingentry['netif'], $intfmap)) {
+                    $ndpentry['intf_description'] = $intfmap[$routingentry['netif']];
+                } else {
+                    $ndpentry['intf_description'] = "";
+                }
+            }
+        }
+        return $routingtable;
+    }
 }

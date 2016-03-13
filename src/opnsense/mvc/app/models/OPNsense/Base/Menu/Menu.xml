@@ -32,11 +32,10 @@
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
         </HighAvailability>
         <Routes order="40" cssClass="fa fa-map-signs fa-fw">
-            <All url="/system_routes.php">
+            <All order="10" url="/system_routes.php">
                 <Edit url="/system_routes_edit.php*" visibility="hidden"/>
             </All>
-            <Status url="/diag_routes.php"/>
-            <Log VisibleName="Log File" url="/diag_logs_routing.php"/>
+            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
             <All url="/system_gateways.php">

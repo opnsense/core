@@ -4,6 +4,9 @@
         <Diagnostics>
             <Activity order="10" VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
         </Diagnostics>
+        <Routes>
+            <Status order="20" url="/ui/diagnostics/interface/routes/"/>
+        </Routes>
     </System>
     <Interfaces>
         <Diagnostics>
