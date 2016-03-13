@@ -44,7 +44,7 @@ POSSIBILITY OF SUCH DAMAGE.
             } else {
                 resolve = "";
             }
-            ajaxGet(url = "/api/diagnostics/interface/getRoutes",
+            ajaxGet(url = "/api/diagnostics/interface/getRoutes/",
                     sendData = {resolve:resolve}, callback = function (data, status) {
                         if (status == "success") {
                             $("#grid-routes").bootgrid('destroy');
@@ -64,8 +64,8 @@ POSSIBILITY OF SUCH DAMAGE.
                             });
                             $("#grid-routes > tbody").html(html.join(''));
                             $("#grid-routes").bootgrid(gridopt);
-                            $('#processing-dialog').modal('hide');
                         }
+                        $('#processing-dialog').modal('hide');
                     }
             );
         });
