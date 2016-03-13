@@ -16,6 +16,14 @@
             <pattern>api/diagnostics/interface/getNdp*</pattern>
         </patterns>
     </page-diagnostics-ndptable>
+    <page-diagnostics-routingtables>
+        <name>WebCfg - Diagnostics: Routing tables page</name>
+        <description>Allow access to the 'Diagnostics: Routing tables' page.</description>
+        <patterns>
+            <pattern>ui/diagnostics/interface/routes/*</pattern>
+            <pattern>api/diagnostics/interface/getRoutes*</pattern>
+        </patterns>
+    </page-diagnostics-routingtables>
     <page-diagnostics-system-activity>
         <name>WebCfg - Diagnostics: System Activity</name>
         <description>Allows access to the 'Diagnostics: System Activity' page</description>

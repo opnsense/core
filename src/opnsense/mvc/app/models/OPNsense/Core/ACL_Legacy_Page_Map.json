@@ -197,13 +197,6 @@
             "diag_resetstate.php*"
         ]
     },
-    "page-diagnostics-routingtables": {
-        "name": "WebCfg - Diagnostics: Routing tables page",
-        "descr": "Allow access to the 'Diagnostics: Routing tables' page.",
-        "match": [
-            "diag_routes.php*"
-        ]
-    },
     "page-diagnostics-showstates": {
         "name": "WebCfg - Diagnostics: Show States page",
         "descr": "Allow access to the 'Diagnostics: Show States' page.",

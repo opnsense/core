@@ -53,4 +53,13 @@ class InterfaceController extends IndexController
         $this->view->title = "System NDP table";
         $this->view->pick('OPNsense/Diagnostics/ndp');
     }
+
+    /**
+     * system Routing table
+     */
+    public function routesAction()
+    {
+        $this->view->title = "System Routing table";
+        $this->view->pick('OPNsense/Diagnostics/routes');
+    }
 }
