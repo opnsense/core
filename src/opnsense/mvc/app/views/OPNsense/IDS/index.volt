@@ -598,19 +598,7 @@ POSSIBILITY OF SUCH DAMAGE.
     </div>
 </div>
 
-<!-- Static Modal -->
-<div class="modal modal-static fade" id="processing-dialog" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="text-center">
-                    <i class="fa fa-spinner fa-pulse fa-5x"></i>
-                    <h4>{{ lang._('Processing request...') }} </h4>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+{{ partial("layout_partials/base_dialog_processing") }}
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogRule,'id':'DialogRule','label':'Rule details','hasSaveBtn':'true','msgzone_width':1])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogAlert,'id':'DialogAlert','label':'Alert details','hasSaveBtn':'false','msgzone_width':1])}}
