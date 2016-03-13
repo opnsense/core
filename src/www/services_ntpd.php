@@ -100,7 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         $a_ntpd['prefer'] = trim($a_ntpd['prefer']);
-        $a_ntpd['interface'] = implode(',', $pconfig['interface']);
+
+        if (!empty($pconfig['interface'])) {
+            $a_ntpd['interface'] = implode(',', $pconfig['interface']);
+        }
 
         // unset empty
         foreach (array('noselect', 'prefer', 'interface') as $fieldname) {
