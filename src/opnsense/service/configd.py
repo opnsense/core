@@ -37,6 +37,8 @@ __author__ = 'Ad Schellevis'
 import os
 import sys
 import logging
+import signal
+import time
 import subprocess
 import modules.processhandler
 import modules.csconfigparser
@@ -96,12 +98,21 @@ def main(cnf, simulate=False, single_threaded=False):
 def run_watch():
     """ start configd process and restart if it dies unexpected
     """
+    current_child_pid = None
+    def signal_handler(sig, frame):
+        print current_child_pid
+        if current_child_pid is not None:
+            os.kill(current_child_pid, sig)
+        sys.exit(1)
+
+    signal.signal(signal.SIGTERM, signal_handler)
     while True:
         process = subprocess.Popen(['/usr/local/opnsense/service/configd.py', 'console'])
-        # optional dump process.pid into a pid file, but because the daemon is stopped by name
-        # this shouldn't be necessary
+        # save created pid for signal_handler() to use
+        current_child_pid = process.pid
         process.wait()
-
+        # wait a small period of time before trying to restart a new process
+        time.sleep(0.5)
 
 this_config = get_config()
 validate_config(this_config)
