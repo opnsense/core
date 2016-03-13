@@ -1068,8 +1068,8 @@ function system_generate_lighty_config(
 # Phalcon ui and api routing
 alias.url += ( "/ui/" => "/usr/local/opnsense/www/" )
 alias.url += ( "/api/"  => "/usr/local/opnsense/www/" )
-url.rewrite-if-not-file = ( "^/ui/(.*)$" => "/ui/index.php?_url=/$1" ,
-                            "^/api/(.*)$" => "/api/api.php?_url=/$1"
+url.rewrite-if-not-file = ( "^/ui/([^\?]+)(\?(.*))?" => "/ui/index.php?_url=/$1&$3" ,
+                            "^/api/([^\?]+)(\?(.*))?" => "/api/api.php?_url=/$1&$3"
 )
 
 EOD;
