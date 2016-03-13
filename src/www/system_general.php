@@ -61,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['theme'] = null;
     $pconfig['language'] = null;
     $pconfig['timezone'] = "Etc/UTC";
-    $pconfig['timeservers'] = "pool.ntp.org";
     $pconfig['mirror'] = 'default';
     $pconfig['flavour'] = 'default';
 
@@ -82,7 +81,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     $pconfig['dnsallowoverride'] = isset($config['system']['dnsallowoverride']);
     $pconfig['timezone'] = $config['system']['timezone'];
-    $pconfig['timeservers'] = $config['system']['timeservers'];
     if (isset($config['system']['theme'])) {
         $pconfig['theme'] = $config['system']['theme'];
     }
@@ -156,25 +154,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    # it's easy to have a little too much whitespace in the field, clean it up for the user before processing.
-    $pconfig['timeservers'] = preg_replace('/[[:blank:]]+/', ' ', $pconfig['timeservers']);
-    $pconfig['timeservers'] = trim($pconfig['timeservers']);
-    if (!empty($pconfig['timeservers'])) {
-        foreach (explode(' ', $pconfig['timeservers']) as $ts) {
-            if (!is_domain($ts)) {
-                $input_errors[] = gettext("A NTP Time Server name may only contain the characters a-z, 0-9, '-' and '.'.");
-            }
-        }
-    }
-
     if (count($input_errors) == 0) {
       $config['system']['hostname'] = $pconfig['hostname'];
       $config['system']['domain'] = $pconfig['domain'];
       $config['system']['timezone'] = $pconfig['timezone'];
-      $config['system']['timeservers'] = strtolower($pconfig['timeservers']);
-      if (empty($config['system']['timeservers'])) {
-          unset($config['system']['timeservers']);
-      }
       $config['theme'] =  $pconfig['theme'];
 
       if (!empty($pconfig['language']) && $pconfig['language'] != $config['system']['language']) {
@@ -280,7 +263,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
       system_timezone_configure();
       system_firmware_configure();
-      system_ntp_configure();
 
       if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
           configd_run("dns reload");
@@ -445,17 +427,6 @@ include("head.inc");
                 </select>
                 <div class="hidden" for="help_for_timezone">
                   <?=gettext("Select the location closest to you"); ?>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_ntp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NTP time server"); ?></td>
-              <td width="78%" class="vtable">
-                <input name="timeservers" type="text" class="formfld unknown" value="<?=$pconfig['timeservers'];?>" />
-                <div class="hidden" for="help_for_ntp">
-                  <?=gettext("Use a space to separate multiple hosts if " .
-                  "needed or leave blank to disable the network time service. " .
-                  "Remember to set up DNS if you enter host names here."); ?>
                 </div>
               </td>
             </tr>
