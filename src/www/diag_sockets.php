@@ -99,7 +99,7 @@ $showAllOption = $showAll ? "" : "?showAll";
       <section class="col-xs-12">
         <div class="content-box">
           <header class="content-box-head container-fluid">
-            <h3><a name="about"></a>Socket information explanation</h3>
+            <h3><a name="about"></a><?=gettext("Socket information explanation");?></h3>
           </header>
           <div class="content-box-main col-xs-12">
             <p><?= sprintf(gettext('This page show the output for the commands: "sockstat -4lL" and "sockstat -6lL".%s' .
@@ -107,7 +107,7 @@ $showAllOption = $showAll ? "" : "?showAll";
                                     'The information listed for each socket is:'),'<br />','<br />','<br />') ?></p>
           </div>
 
-          <table class="table table-striped table-sort sortable __nomb" id="IPv4" summary="ipv4 routes">
+          <table class="table table-striped" id="IPv4" summary="ipv4 routes">
           <tr><td>USER</td><td><?= gettext('The user who owns the socket.') ?></td></tr>
           <tr><td>COMMAND</td><td><?= gettext('The command which holds the socket.') ?></td></tr>
           <tr><td>PID</td><td><?= gettext('The process ID of the command which holds the socket.') ?></td></tr>
