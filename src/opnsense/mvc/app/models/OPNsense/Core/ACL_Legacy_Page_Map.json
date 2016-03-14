@@ -358,13 +358,6 @@
             "firewall_virtual_ip.php*"
         ]
     },
-    "page-hidden-detailedstatus": {
-        "name": "WebCfg - Hidden: Detailed Status page",
-        "descr": "Allow access to the 'Hidden: Detailed Status' page.",
-        "match": [
-            "status.php*"
-        ]
-    },
     "page-diagnostics-logs-firewall": {
         "name": "WebCfg - Diagnostics: Logs: Firewall: Normal View page",
         "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Normal View' page.",
