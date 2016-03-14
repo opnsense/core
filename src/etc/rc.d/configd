@@ -63,10 +63,12 @@ configd_stop()
 		sleep 0.1
 	done
 
-	# kill if it's still running
-	if [ ! -z "`/bin/ps -ex | /usr/bin/awk '{print $1;}' | /usr/bin/grep "^${rc_pid}"`" ]; then
-		kill -9 ${rc_pid}
-	fi
+	# kill any remaining configd processes (if still running)
+	for configd_pid in `/bin/ps -ex | grep 'configd.py' | /usr/bin/awk '{print $1;}' `
+	do
+	   kill -9 $configd_pid >/dev/null 2>&1
+	done
+
 	echo  "..done"
 }
 
