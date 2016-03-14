@@ -13,19 +13,21 @@ PKGDIR=	${WRKDIR}/pkg
 
 mount: force
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
-	    echo "Enabling core.git live mount..."; \
+	    echo -n "Enabling core.git live mount..."; \
 	    ${.CURDIR}/scripts/version.sh > \
 	        ${.CURDIR}/src/opnsense/version/opnsense; \
 	    mount_unionfs ${.CURDIR}/src /usr/local; \
 	    touch ${WRKDIR}/.mount_done; \
+	    echo "done"; \
 	    service configd restart; \
 	fi
 
 umount: force
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
-	    echo "Disabling core.git live mount..."; \
+	    echo -n "Disabling core.git live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
 	    rm ${WRKDIR}/.mount_done; \
+	    echo "done"; \
 	    service configd restart; \
 	fi
 
@@ -178,6 +180,9 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/src plist
 
 package: force
+	@if [ -f ${WRKDIR}/.mount_done ]; then \
+	    echo "Cannot continue with live mount"; exit 1; \
+	fi
 	@${PKG} info gettext-tools > /dev/null
 	@${PKG} info git > /dev/null
 	@rm -rf ${WRKSRC} ${PKGDIR}
