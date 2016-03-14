@@ -1,32 +1,32 @@
 <?php
 
 /*
-	Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2004 Scott Ullrich
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+    Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2004 Scott Ullrich
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("util.inc");
@@ -34,65 +34,65 @@ require_once("config.inc");
 
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if (empty($nocsrf)) {
-	function csrf_startup()
-	{
-		csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
-		$timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
-		csrf_conf('expires', $timeout_minutes * 60);
-	}
-	require_once('csrf/csrf-magic.php');
+    function csrf_startup()
+    {
+      csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
+      $timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
+      csrf_conf('expires', $timeout_minutes * 60);
+    }
+    require_once('csrf/csrf-magic.php');
 
-        // make sure the session is closed after executing csrf-magic
-        if (session_status() != PHP_SESSION_NONE) {
-            session_write_close();
-        }
+    // make sure the session is closed after executing csrf-magic
+    if (session_status() != PHP_SESSION_NONE) {
+        session_write_close();
+    }
 }
 
 function set_language()
 {
-	global $config;
+    global $config;
 
-	$lang = 'en_US';
-	if (!empty($config['system']['language'])) {
-		$lang = $config['system']['language'];
-	}
+    $lang = 'en_US';
+    if (!empty($config['system']['language'])) {
+        $lang = $config['system']['language'];
+    }
 
-	$lang_encoding = $lang . '.UTF-8';
-	$textdomain = 'OPNsense';
+    $lang_encoding = $lang . '.UTF-8';
+    $textdomain = 'OPNsense';
 
-	putenv('LANG=' . $lang_encoding);
-	setlocale(LC_ALL, $lang_encoding);
-	textdomain($textdomain);
-	bindtextdomain($textdomain, '/usr/local/share/locale');
-	bind_textdomain_codeset($textdomain, $lang_encoding);
+    putenv('LANG=' . $lang_encoding);
+    setlocale(LC_ALL, $lang_encoding);
+    textdomain($textdomain);
+    bindtextdomain($textdomain, '/usr/local/share/locale');
+    bind_textdomain_codeset($textdomain, $lang_encoding);
 }
 
 function get_current_theme()
 {
-	global $config;
+    global $config;
 
-	$theme = 'opnsense';
+    $theme = 'opnsense';
 
-	if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
-		$theme = $config['theme'];
-	}
+    if (isset($config['theme']) && is_dir('/usr/local/opnsense/www/themes/' . $config['theme'])) {
+        $theme = $config['theme'];
+    }
 
-	return $theme;
+    return $theme;
 }
 
 function html_safe($text)
 {
-	/* gettext() embedded in JavaScript can cause syntax errors */
-	return htmlspecialchars($text, ENT_QUOTES | ENT_HTML401);
+    /* gettext() embedded in JavaScript can cause syntax errors */
+    return htmlspecialchars($text, ENT_QUOTES | ENT_HTML401);
 }
 
 /* make sure nothing is cached */
 if (isset($omit_nocacheheaders) && $omit_nocacheheaders) {
-	header("Expires: 0");
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-	header("Cache-Control: no-store, no-cache, must-revalidate");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache");
+    header("Expires: 0");
+    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+    header("Cache-Control: post-check=0, pre-check=0", false);
+    header("Pragma: no-cache");
 }
 
 header("X-Frame-Options: SAMEORIGIN");
@@ -103,124 +103,124 @@ require_once("authgui.inc");
 
 /* Reserved table names to avoid colision */
 $reserved_table_names = array(
-        "bogons",
-        "bogonsv6",
-        "negate_networks",
-        "sshlockout",
-        "tonatsubnets",
-        "virusprot",
-        "vpn_networks",
-        "webConfiguratorlockout"
+    "bogons",
+    "bogonsv6",
+    "negate_networks",
+    "sshlockout",
+    "tonatsubnets",
+    "virusprot",
+    "vpn_networks",
+    "webConfiguratorlockout"
 );
 
 
 $netbios_nodetypes = array(
-	'0' => "none",
-	'1' => "b-node",
-	'2' => "p-node",
-	'4' => "m-node",
-	'5' => "h-node");
+    '0' => "none",
+    '1' => "b-node",
+    '2' => "p-node",
+    '4' => "m-node",
+    '5' => "h-node");
 
 /* some well knows ports */
 $wkports = array(
-	5999 => "CVSup",
-	53 => "DNS",
-	21 => "FTP",
-	3000 => "HBCI",
-	80 => "HTTP",
-	443 => "HTTPS",
-	5190 => "ICQ",
-	113 => "IDENT/AUTH",
-	143 => "IMAP",
-	993 => "IMAP/S",
-	4500 => "IPsec NAT-T",
-	500 => "ISAKMP",
-	1701 => "L2TP",
-	389 => "LDAP",
-	1755 => "MMS/TCP",
-	7000 => "MMS/UDP",
-	445 => "MS DS",
-	3389 => "MS RDP",
-	1512 => "MS WINS",
-	1863 => "MSN",
-	119 => "NNTP",
-	123 => "NTP",
-	138 => "NetBIOS-DGM",
-	137 => "NetBIOS-NS",
-	139 => "NetBIOS-SSN",
-	1194 => "OpenVPN",
-	110 => "POP3",
-	995 => "POP3/S",
-	1723 => "PPTP",
-	1812 => "RADIUS",
-	1813 => "RADIUS accounting",
-	5004 => "RTP",
-	5060 => "SIP",
-	25 => "SMTP",
-	465 => "SMTP/S",
-	161 => "SNMP",
-	162 => "SNMP-Trap",
-	22 => "SSH",
-	3478 => "STUN",
-	587 => "SUBMISSION",
-	3544 => "Teredo",
-	23 => "Telnet",
-	69 => "TFTP",
-	5900 => "VNC");
+    5999 => "CVSup",
+    53 => "DNS",
+    21 => "FTP",
+    3000 => "HBCI",
+    80 => "HTTP",
+    443 => "HTTPS",
+    5190 => "ICQ",
+    113 => "IDENT/AUTH",
+    143 => "IMAP",
+    993 => "IMAP/S",
+    4500 => "IPsec NAT-T",
+    500 => "ISAKMP",
+    1701 => "L2TP",
+    389 => "LDAP",
+    1755 => "MMS/TCP",
+    7000 => "MMS/UDP",
+    445 => "MS DS",
+    3389 => "MS RDP",
+    1512 => "MS WINS",
+    1863 => "MSN",
+    119 => "NNTP",
+    123 => "NTP",
+    138 => "NetBIOS-DGM",
+    137 => "NetBIOS-NS",
+    139 => "NetBIOS-SSN",
+    1194 => "OpenVPN",
+    110 => "POP3",
+    995 => "POP3/S",
+    1723 => "PPTP",
+    1812 => "RADIUS",
+    1813 => "RADIUS accounting",
+    5004 => "RTP",
+    5060 => "SIP",
+    25 => "SMTP",
+    465 => "SMTP/S",
+    161 => "SNMP",
+    162 => "SNMP-Trap",
+    22 => "SSH",
+    3478 => "STUN",
+    587 => "SUBMISSION",
+    3544 => "Teredo",
+    23 => "Telnet",
+    69 => "TFTP",
+    5900 => "VNC");
 
 $wlan_modes = array(
-	'bss' => 'Infrastructure (BSS)',
-	'adhoc' => 'Ad-hoc (IBSS)',
-	'hostap' => 'Access Point'
+    'bss' => 'Infrastructure (BSS)',
+    'adhoc' => 'Ad-hoc (IBSS)',
+    'hostap' => 'Access Point'
 );
 
 function do_input_validation($postdata, $reqdfields, $reqdfieldsn, &$input_errors)
 {
-	/* check for bad control characters */
-	foreach ($postdata as $pn => $pd) {
-		if (is_string($pd) && preg_match("/[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]/", $pd)) {
-			$input_errors[] = sprintf(gettext("The field %s contains invalid characters."), $pn);
-		}
-	}
+    /* check for bad control characters */
+    foreach ($postdata as $pn => $pd) {
+        if (is_string($pd) && preg_match("/[\\x00-\\x08\\x0b\\x0c\\x0e-\\x1f]/", $pd)) {
+            $input_errors[] = sprintf(gettext("The field %s contains invalid characters."), $pn);
+        }
+    }
 
-	for ($i = 0; $i < count($reqdfields); $i++) {
-		// why.. do you want to do this? we send data to validate and then validate something else....
-		// can't now for sure if any page uses this wrong behaviour, but it should die eventually.
-		// TODO: kill
-		if (empty($_POST[$reqdfields[$i]]) && empty($_REQUEST[$reqdfields[$i]])) {
-			$input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
-		}
-	}
+    for ($i = 0; $i < count($reqdfields); $i++) {
+        // why.. do you want to do this? we send data to validate and then validate something else....
+        // can't now for sure if any page uses this wrong behaviour, but it should die eventually.
+        // TODO: kill
+        if (empty($_POST[$reqdfields[$i]]) && empty($_REQUEST[$reqdfields[$i]])) {
+            $input_errors[] = sprintf(gettext("The field %s is required."), $reqdfieldsn[$i]);
+        }
+    }
 }
 
 function print_input_errors($input_errors)
 {
-	echo '<div class="col-xs-12"><div class="alert alert-danger" role="alert">
-            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	';
+    echo '<div class="col-xs-12"><div class="alert alert-danger" role="alert">
+          <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    ';
 
-	echo "<p>" . gettext("The following input errors were detected:") . "</p>\n<ul>";
-	foreach ($input_errors as $ierr) {
-		echo "<li>" . htmlspecialchars($ierr) . "</li>";
-	}
-	echo "</ul></div></div>";
+    echo "<p>" . gettext("The following input errors were detected:") . "</p>\n<ul>";
+    foreach ($input_errors as $ierr) {
+        echo "<li>" . htmlspecialchars($ierr) . "</li>";
+    }
+    echo "</ul></div></div>";
 }
 
 function print_alert_box($msg, $alert = 'warning', $button = '')
 {
-	echo <<<EOFnp
+    echo <<<EOFnp
 <div class="col-xs-12">
-	<div class="alert alert-{$alert}" role="alert">
-		{$button}
-		<p>{$msg}</p>
-	</div>
+  <div class="alert alert-{$alert}" role="alert">
+    {$button}
+    <p>{$msg}</p>
+  </div>
 </div>
 EOFnp;
 }
 
 function print_content_box($msg)
 {
-	echo <<<EOFnp
+    echo <<<EOFnp
 <div class="table-responsive">
   <table class="table table-striped">
      <tr><td>{$msg}</td></tr>
@@ -231,335 +231,348 @@ EOFnp;
 
 function print_info_box_apply($msg)
 {
-	$iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
-	$label = gettext('Apply changes');
-	$value = 'Apply changes';
-	$name= 'apply';
+    $iface = !empty($_POST['if']) ? $_POST['if'] : (!empty($_GET['if']) ? $_GET['if'] : '');
+    $label = gettext('Apply changes');
+    $value = 'Apply changes';
+    $name= 'apply';
 
-	$savebutton = sprintf('<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">', $_SERVER['REQUEST_URI']);
-	$savebutton .= sprintf(
-		'<button type="submit" name="%s" id="%s" class="btn btn-primary pull-right" value="%s">%s</button>',
-		$name,
-		$name,
-		$value,
-		$label
-	);
-	if (!empty($iface)) {
-		$savebutton .= sprintf(
-			'<input type="hidden" name="if" value="%s"/>',
-			htmlspecialchars($iface)
-		);
-	}
-	$savebutton .= '</form>';
+    $savebutton = sprintf('<form action="' . $_SERVER['REQUEST_URI'] . '" method="post">', $_SERVER['REQUEST_URI']);
+    $savebutton .= sprintf(
+        '<button type="submit" name="%s" id="%s" class="btn btn-primary pull-right" value="%s">%s</button>',
+        $name,
+        $name,
+        $value,
+        $label
+    );
+    if (!empty($iface)) {
+        $savebutton .= sprintf(
+            '<input type="hidden" name="if" value="%s"/>',
+            htmlspecialchars($iface)
+        );
+    }
+    $savebutton .= '</form>';
 
-	print_alert_box($msg, 'info', $savebutton);
+    print_alert_box($msg, 'info', $savebutton);
 }
 
 function print_info_box($msg)
 {
-	print_alert_box($msg, 'info');
+    print_alert_box($msg, 'info');
 }
 
 function print_service_banner($service)
 {
-	global $config;
+    global $config;
 
-	switch ($service) {
-		case 'firewall':
-			if (!isset($config['system']['disablefilter'])) {
-				break;
-			}
-			print_alert_box(sprintf(
-				gettext(
-					'The firewall has globally been disabled and configured rules are ' .
-					'currently not enforced. It can be enabled in the %sFirewall/NAT%s ' .
-					'settings.'
-				),
-				'<a href="/system_advanced_firewall.php">',
-				'</a>'
-			));
-			break;
-		default:
-			break;
-	}
+    switch ($service) {
+        case 'firewall':
+            if (!isset($config['system']['disablefilter'])) {
+                break;
+            }
+            print_alert_box(sprintf(
+              gettext(
+                'The firewall has globally been disabled and configured rules are ' .
+                'currently not enforced. It can be enabled in the %sFirewall/NAT%s ' .
+                'settings.'
+              ),
+              '<a href="/system_advanced_firewall.php">',
+              '</a>'
+            ));
+            break;
+        default:
+            break;
+    }
 }
 
 function get_std_save_message()
 {
-	$filter_related = false;
-	$filter_pages = array("nat", "filter");
-	$to_return = gettext("The changes have been applied successfully.");
-	foreach($filter_pages as $fp)
-		if(stristr($_SERVER['SCRIPT_FILENAME'], $fp))
-			$filter_related = true;
-	if($filter_related)
-		$to_return .= "<br />" . gettext("You can also <a href=\"status_filter_reload.php\">monitor</a> the filter reload progress.");
-	return $to_return;
+    $filter_related = false;
+    $filter_pages = array("nat", "filter");
+    $to_return = gettext("The changes have been applied successfully.");
+    foreach($filter_pages as $fp) {
+        if (stristr($_SERVER['SCRIPT_FILENAME'], $fp)) {
+            $filter_related = true;
+        }
+    }
+    if ($filter_related) {
+        $to_return .= "<br />" . gettext("You can also <a href=\"status_filter_reload.php\">monitor</a> the filter reload progress.");
+    }
+    return $to_return;
 }
 
 function pprint_address($adr) {
-	if (!isset($specialnets)) {
-		global $specialnets;
-		$specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
+    if (!isset($specialnets)) {
+        global $specialnets;
+        $specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
 
-		$spiflist = get_configured_interface_with_descr(false, true);
-		foreach ($spiflist as $ifgui => $ifdesc) {
-			$specialnets[$ifgui] = $ifdesc . " net";
-			$specialnets[$ifgui . 'ip'] = $ifdesc . " address";
-		}
-	}
+        $spiflist = get_configured_interface_with_descr(false, true);
+        foreach ($spiflist as $ifgui => $ifdesc) {
+            $specialnets[$ifgui] = $ifdesc . " net";
+            $specialnets[$ifgui . 'ip'] = $ifdesc . " address";
+        }
+    }
 
-	if (isset($adr['any'])) {
-		$padr = "*";
-	} else if (isset($adr['network'])) {
-		$padr = $specialnets[$adr['network']];
-	} else {
-		$padr = isset($adr['address']) ? $adr['address'] : null;
-	}
+    if (isset($adr['any'])) {
+        $padr = "*";
+    } elseif (isset($adr['network'])) {
+        $padr = $specialnets[$adr['network']];
+    } else {
+        $padr = isset($adr['address']) ? $adr['address'] : null;
+    }
 
-	if (isset($adr['not']))
-		$padr = "! " . $padr;
+    if (isset($adr['not'])) {
+        $padr = "! " . $padr;
+    }
 
-	return $padr;
+    return $padr;
 }
 
 function pprint_port($port) {
-	global $wkports;
+    global $wkports;
 
-	$pport = "";
+    $pport = "";
 
-	if (!$port)
-		return "*";
-	else {
-		$srcport = explode("-", $port);
-		if ((empty($srcport[1])) || ($srcport[0] == $srcport[1])) {
-			$pport = $srcport[0];
-			if (!empty($wkports[$srcport[0]])) {
-				$pport .= " (" . $wkports[$srcport[0]] . ")";
-			}
-		} else
-			$pport .= $srcport[0] . " - " . $srcport[1];
-	}
+    if (!$port) {
+        return "*";
+    } else {
+        $srcport = explode("-", $port);
+        if ((empty($srcport[1])) || ($srcport[0] == $srcport[1])) {
+            $pport = $srcport[0];
+            if (!empty($wkports[$srcport[0]])) {
+                $pport .= " (" . $wkports[$srcport[0]] . ")";
+            }
+        } else {
+            $pport .= $srcport[0] . " - " . $srcport[1];
+        }
+    }
 
-	return $pport;
+    return $pport;
 }
 
 function gentitle($breadcrumbs, $navlevelsep = ': ')
 {
-	$output = $breadcrumbs;
+    $output = $breadcrumbs;
 
-	if (isset($breadcrumbs[0]['name'])) {
-		$output = array();
-		foreach ($breadcrumbs as $crumb) {
-			$output[] = gettext($crumb['name']);
-		}
-	}
+    if (isset($breadcrumbs[0]['name'])) {
+        $output = array();
+        foreach ($breadcrumbs as $crumb) {
+            $output[] = gettext($crumb['name']);
+        }
+    }
 
-	return join($navlevelsep, $output);
+    return join($navlevelsep, $output);
 }
 
 function clear_log($logfile, $restart_syslogd = true)
 {
-	if ($restart_syslogd) {
-		killbyname('syslogd');
-	}
+    if ($restart_syslogd) {
+        killbyname('syslogd');
+    }
 
-	foreach (glob($logfile . '.*') as $rotated) {
-		@unlink($rotated);
-	}
+    foreach (glob($logfile . '.*') as $rotated) {
+        @unlink($rotated);
+    }
 
-	/* preserve file ownership and permissions */
-	if (file_exists($logfile)) {
-		$handle = fopen($logfile, 'r+');
-		if ($handle) {
-			ftruncate($handle, 0);
-			fclose($handle);
-		}
-	}
+    /* preserve file ownership and permissions */
+    if (file_exists($logfile)) {
+        $handle = fopen($logfile, 'r+');
+        if ($handle) {
+            ftruncate($handle, 0);
+            fclose($handle);
+        }
+    }
 
-	if ($restart_syslogd) {
-		system_syslogd_start();
-	}
+    if ($restart_syslogd) {
+        system_syslogd_start();
+    }
 }
 
 function clear_clog($logfile, $restart_syslogd = true)
 {
-	global $config;
+    global $config;
 
-	if ($restart_syslogd) {
-		killbyname('syslogd');
-	}
+    if ($restart_syslogd) {
+        killbyname('syslogd');
+    }
 
-	$log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
-	mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
+    $log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
+    mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
 
-	if ($restart_syslogd) {
-		system_syslogd_start();
-	}
+    if ($restart_syslogd) {
+        system_syslogd_start();
+    }
 }
 
 function print_dump($logarr)
 {
-	global $config;
+    global $config;
 
-	if (!is_array($logarr)) {
-		echo "<tr valign=\"top\">\n";
-		echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logarr) . "</td>\n";
-		echo "</tr>\n";
-		return;
-	}
+    if (!is_array($logarr)) {
+        echo "<tr valign=\"top\">\n";
+        echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logarr) . "</td>\n";
+        echo "</tr>\n";
+        return;
+    }
 
-	foreach ($logarr as $logent) {
-		$logent = preg_split("/\s+/", $logent, 6);
-		echo "<tr valign=\"top\">\n";
-		$entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
-		$entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
-		$entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
-		echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
-		echo "<td class=\"listr\">{$entry_text}</td>\n";
-		echo "</tr>\n";
-	}
+    foreach ($logarr as $logent) {
+        $logent = preg_split("/\s+/", $logent, 6);
+        echo "<tr valign=\"top\">\n";
+        $entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
+        $entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
+        $entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
+        echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
+        echo "<td class=\"listr\">{$entry_text}</td>\n";
+        echo "</tr>\n";
+    }
 }
 
 function dump_clog($logfile, $tail, $grepfor = '')
 {
-	global $config;
+    global $config;
 
-	$sor = isset($config['syslog']['reverse']) ? '-r' : '';
-	$logarr = array();
-	$grepline = '';
+    $sor = isset($config['syslog']['reverse']) ? '-r' : '';
+    $logarr = array();
+    $grepline = '';
 
-	$grepfor = preg_split('/\s+/', trim($grepfor));
+    $grepfor = preg_split('/\s+/', trim($grepfor));
 
-	foreach ($grepfor as $pattern) {
-		$grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
-	}
+    foreach ($grepfor as $pattern) {
+        $grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
+    }
 
-	if (is_dir($logfile)) {
-		$logarr = sprintf(gettext('File %s is a directory.'), $logfile);
-	} elseif (!file_exists($logfile)) {
-		$logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
-	} else {
-		exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " {$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-	}
+    if (is_dir($logfile)) {
+        $logarr = sprintf(gettext('File %s is a directory.'), $logfile);
+    } elseif (!file_exists($logfile)) {
+        $logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
+    } else {
+        exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " {$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+    }
 
-	if (is_array($logarr) && !count($logarr)) {
-		$logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
-	}
+    if (is_array($logarr) && !count($logarr)) {
+        $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
+    }
 
-	print_dump($logarr);
+    print_dump($logarr);
 }
 
 function dump_log($logfile, $tail, $grepfor = '')
 {
-	global $config;
+    global $config;
 
-	$sor = isset($config['syslog']['reverse']) ? '-r' : '';
-	$logarr = array();
-	$grepline = '';
+    $sor = isset($config['syslog']['reverse']) ? '-r' : '';
+    $logarr = array();
+    $grepline = '';
 
-	$grepfor = preg_split('/\s+/', trim($grepfor));
+    $grepfor = preg_split('/\s+/', trim($grepfor));
 
-	foreach ($grepfor as $pattern) {
-		$grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
-	}
+    foreach ($grepfor as $pattern) {
+        $grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
+    }
 
-	if (is_dir($logfile)) {
-		$logarr = sprintf(gettext('File %s is a directory.'), $logfile);
-	} elseif (!file_exists($logfile)) {
-		$logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
-	} else {
-		exec("cat " . escapeshellarg($logfile) . " {$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-	}
+    if (is_dir($logfile)) {
+        $logarr = sprintf(gettext('File %s is a directory.'), $logfile);
+    } elseif (!file_exists($logfile)) {
+        $logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
+    } else {
+        exec("cat " . escapeshellarg($logfile) . " {$grepline} | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
+    }
 
-	if (is_array($logarr) && !count($logarr)) {
-		$logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
-	}
+    if (is_array($logarr) && !count($logarr)) {
+        $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
+    }
 
-	print_dump($logarr);
+    print_dump($logarr);
 }
 
-function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport) {
-	if (isset($adr['any']))
-		$padr = "any";
-	else if (isset($adr['network']))
-		$padr = $adr['network'];
-	else if (isset($adr['address'])) {
-		if (strpos($adr['address'], '/') !== false) {
-			list($padr, $pmask) = explode("/", $adr['address']);
-		} else {
-			$padr = $adr['address'];
-			if (is_ipaddrv6($padr))
-				$pmask = 128;
-			else
-				$pmask = 32;
-		}
+function address_to_pconfig($adr, &$padr, &$pmask, &$pnot, &$pbeginport, &$pendport)
+{
+    if (isset($adr['any'])) {
+        $padr = "any";
+    } elseif (isset($adr['network'])) {
+        $padr = $adr['network'];
+    } elseif (isset($adr['address'])) {
+        if (strpos($adr['address'], '/') !== false) {
+            list($padr, $pmask) = explode("/", $adr['address']);
+        } else {
+            $padr = $adr['address'];
+            if (is_ipaddrv6($padr)) {
+                $pmask = 128;
+            } else {
+                $pmask = 32;
+            }
+        }
+    }
 
-	}
+    if (isset($adr['not'])) {
+        $pnot = 1;
+    } else {
+        $pnot = 0;
+    }
 
-	if (isset($adr['not']))
-		$pnot = 1;
-	else
-		$pnot = 0;
-
-	if (isset($adr['port'])) {
-		if (strpos($adr['port'], '-') !== false) {
-			list($pbeginport, $pendport) = explode("-", $adr['port']);
-		} else {
-			$pbeginport = $adr['port'];
-			$pendport = $pbeginport;
-		}
-	} else if (!is_alias($pbeginport) && !is_alias($pendport)) {
-		$pbeginport = "any";
-		$pendport = "any";
-	}
+    if (isset($adr['port'])) {
+        if (strpos($adr['port'], '-') !== false) {
+            list($pbeginport, $pendport) = explode("-", $adr['port']);
+        } else {
+            $pbeginport = $adr['port'];
+            $pendport = $pbeginport;
+        }
+    } elseif (!is_alias($pbeginport) && !is_alias($pendport)) {
+        $pbeginport = "any";
+        $pendport = "any";
+    }
 }
 
-function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $pendport=0) {
-		$adr = array();
-		if ($padr == "any") {
-				$adr['any'] = true;
-		} elseif (is_specialnet($padr)) {
-				$adr['network'] = $padr;
-		} elseif (is_alias($padr)) {
-				$adr['address'] = $padr;
-		} else {
-			$adr['address'] = $padr;
-			if (is_ipaddrv6($padr)) {
-				if ($pmask != 128)
-					$adr['address'] .= "/" . $pmask;
-			} else {
-				if ($pmask != 32)
-					$adr['address'] .= "/" . $pmask;
-			}
-		}
+function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $pendport=0)
+{
+    $adr = array();
+    if ($padr == "any") {
+        $adr['any'] = true;
+    } elseif (is_specialnet($padr)) {
+        $adr['network'] = $padr;
+    } elseif (is_alias($padr)) {
+        $adr['address'] = $padr;
+    } else {
+        $adr['address'] = $padr;
+        if (is_ipaddrv6($padr)) {
+            if ($pmask != 128) {
+                $adr['address'] .= "/" . $pmask;
+            }
+        } else {
+            if ($pmask != 32) {
+                $adr['address'] .= "/" . $pmask;
+            }
+        }
+    }
 
-		if ($pnot) {
-				$adr['not'] = true;
-		} elseif (isset($adr['not'])) {
-				unset($adr['not']);
-		}
+    if ($pnot) {
+        $adr['not'] = true;
+    } elseif (isset($adr['not'])) {
+        unset($adr['not']);
+    }
 
-		if(is_alias($pbeginport)) {
-				$adr['port'] = $pbeginport;
-		} elseif (($pbeginport != 0) && ($pbeginport != "any")) {
-				if ($pbeginport != $pendport) {
-						$adr['port'] = $pbeginport . "-" . $pendport;
-				} else {
-						$adr['port'] = $pbeginport;
-				}
-		}
+    if (is_alias($pbeginport)) {
+        $adr['port'] = $pbeginport;
+    } elseif (($pbeginport != 0) && ($pbeginport != "any")) {
+        if ($pbeginport != $pendport) {
+            $adr['port'] = $pbeginport . "-" . $pendport;
+        } else {
+            $adr['port'] = $pbeginport;
+        }
+    }
 }
 
-function is_specialnet($net) {
-	global $specialsrcdst;
+function is_specialnet($net)
+{
+    global $specialsrcdst;
 
-	if(!$net)
-		return false;
-	if (is_array($specialsrcdst) && in_array($net, $specialsrcdst))
-		return true;
-	else
-		return false;
+    if (!$net) {
+        return false;
+    }
+    if (is_array($specialsrcdst) && in_array($net, $specialsrcdst)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -574,169 +587,171 @@ function is_specialnet($net) {
  ******/
 function display_top_tabs(& $tab_array, $no_drop_down = false)
 {
-	global $config;
+    global $config;
 
-	$tab_array_char_limit = 92;
+    $tab_array_char_limit = 92;
 
-	/*  does the user have access to this tab?
-	 *  master user has access to everything.
-	 *  if the user does not have access, simply
-	 *  unset the tab item.
-	 */
-	foreach ($tab_array as $tab_id => $ta){
-		if(!isAllowedPage($ta[2]))
-			unset ($tab_array[$tab_id]);
-	}
+    /*  does the user have access to this tab?
+     *  master user has access to everything.
+     *  if the user does not have access, simply
+     *  unset the tab item.
+     */
+    foreach ($tab_array as $tab_id => $ta){
+        if (!isAllowedPage($ta[2])) {
+            unset ($tab_array[$tab_id]);
+        }
+    }
 
-	$tabcharcount = 0;
-	foreach ($tab_array as $ta)
-		$tabcharcount = $tabcharcount + strlen($ta[0]);
+    $tabcharcount = 0;
+    foreach ($tab_array as $ta) {
+        $tabcharcount = $tabcharcount + strlen($ta[0]);
+    }
 
-	if($no_drop_down == true) {
-		$tabcharcount = 0;
-		unset($tab_array_char_limit);
-	}
+    if ($no_drop_down == true) {
+        $tabcharcount = 0;
+        unset($tab_array_char_limit);
+    }
 
-	// If the character count of the tab names is > 670
-	// then show a select item dropdown menubox.
-	if($tabcharcount > $tab_array_char_limit) {
-		echo "<h2>".gettext("Currently viewing: ")."</h2>";
-		echo "<select class=\"selectpicker\" name=\"TabSelect\" onchange=\"tabs_will_go(this)\" data-live-search=\"true\" data-style=\"btn-default\">\n";
-		foreach ($tab_array as $ta) {
-			if($ta[1]=="true")
-				$selected = " selected=\"selected\"";
-			else
-				$selected = "";
-			// Onclick in option will not work in some browser
-			// echo "<option onclick=\"document.location='{$ta[2]}';\"{$selected}>{$ta['0']}</option>\n";
-			echo "<option value=\"{$ta[2]}\"{$selected}>{$ta['0']}</option>\n";
-		}
-		echo "</select>\n<p>&nbsp;</p>";
-		echo "<script type=\"text/javascript\">";
-		echo "\n//<![CDATA[\n";
-		echo " function tabs_will_go(obj){ document.location = obj.value; }\n";
-		echo "//]]>\n";
-		echo "</script>";
-	}  else {
-		echo "<!-- Tabbed bar code-->\n";
-		echo "<ul class=\"nav nav-tabs nav-justified\" role=\"tablist\">\n";
-		$tabscounter = 0;
-		foreach ($tab_array as $ta) {
-			if ($ta[1] == true) {
-				echo "  <li class=\"active\"><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
-			} else {
-				echo "  <li><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
-			}
-			$tabscounter++;
-		}
-		echo "</ul>\n";
-	}
+    // If the character count of the tab names is > 670
+    // then show a select item dropdown menubox.
+    if ($tabcharcount > $tab_array_char_limit) {
+        echo "<h2>".gettext("Currently viewing: ")."</h2>";
+        echo "<select class=\"selectpicker\" name=\"TabSelect\" onchange=\"tabs_will_go(this)\" data-live-search=\"true\" data-style=\"btn-default\">\n";
+        foreach ($tab_array as $ta) {
+            if ($ta[1]=="true") {
+                $selected = " selected=\"selected\"";
+            } else {
+                $selected = "";
+            }
+            // Onclick in option will not work in some browser
+            // echo "<option onclick=\"document.location='{$ta[2]}';\"{$selected}>{$ta['0']}</option>\n";
+            echo "<option value=\"{$ta[2]}\"{$selected}>{$ta['0']}</option>\n";
+        }
+        echo "</select>\n<p>&nbsp;</p>";
+        echo "<script type=\"text/javascript\">";
+        echo "\n//<![CDATA[\n";
+        echo " function tabs_will_go(obj){ document.location = obj.value; }\n";
+        echo "//]]>\n";
+        echo "</script>";
+    }  else {
+        echo "<!-- Tabbed bar code-->\n";
+        echo "<ul class=\"nav nav-tabs nav-justified\" role=\"tablist\">\n";
+        $tabscounter = 0;
+        foreach ($tab_array as $ta) {
+            if ($ta[1] == true) {
+                echo "  <li class=\"active\"><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
+            } else {
+                echo "  <li><a href=\"{$ta[2]}\" role=\"tab\">{$ta[0]}</a></li>\n";
+            }
+            $tabscounter++;
+        }
+        echo "</ul>\n";
+    }
 }
 
 $timezone = $config['system']['timezone'];
 if (!$timezone) {
-	$timezone = 'Etc/UTC';
+    $timezone = 'Etc/UTC';
 }
 
 date_default_timezone_set($timezone);
 
 function get_crash_report($pedantic = false)
 {
-	$savemsg = sprintf(
-		gettext('A problem was detected. Click %shere%s for more information.'),
-		'<a href="/crash_reporter.php">',
-		'</a>'
-	);
-	$skip_files = array('.', '..', 'minfree', 'bounds', '');
-	$PHP_errors_log = '/tmp/PHP_errors.log';
-	$excludes = array();
-	$count = 0;
+    $savemsg = sprintf(
+        gettext('A problem was detected. Click %shere%s for more information.'),
+        '<a href="/crash_reporter.php">',
+        '</a>'
+    );
+    $skip_files = array('.', '..', 'minfree', 'bounds', '');
+    $PHP_errors_log = '/tmp/PHP_errors.log';
+    $excludes = array();
+    $count = 0;
 
-	if (!$pedantic) {
-		$excludes[] = 'PHP Notice:';
-		$excludes[] = 'PHP Startup: Unable to load dynamic library \'/usr/local/lib/php/20131226/suhosin.so\' - /usr/local/lib/php/20131226/suhosin.so: Undefined symbol "ps_globals" in Unknown on line 0';
-	}
+    if (!$pedantic) {
+        $excludes[] = 'PHP Notice:';
+        $excludes[] = 'PHP Startup: Unable to load dynamic library \'/usr/local/lib/php/20131226/suhosin.so\' - /usr/local/lib/php/20131226/suhosin.so: Undefined symbol "ps_globals" in Unknown on line 0';
+    }
 
-	if (file_exists($PHP_errors_log)) {
-		$extra = '';
-		foreach ($excludes as $exclude) {
-			$extra .= sprintf('/usr/bin/grep -v %s | ', escapeshellarg($exclude));
-		}
-		$total = shell_exec(sprintf(
-			'/bin/cat %s | %s /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
-			$PHP_errors_log,
-			$extra
-		));
-		if ($total > 0) {
-			$count++;
-		}
-	}
+    if (file_exists($PHP_errors_log)) {
+        $extra = '';
+        foreach ($excludes as $exclude) {
+            $extra .= sprintf('/usr/bin/grep -v %s | ', escapeshellarg($exclude));
+        }
+        $total = shell_exec(sprintf(
+            '/bin/cat %s | %s /usr/bin/wc -l | /usr/bin/awk \'{ print $1 }\'',
+            $PHP_errors_log,
+            $extra
+        ));
+        if ($total > 0) {
+            $count++;
+        }
+    }
 
-	$crashes = glob('/var/crash/*');
-	foreach ($crashes as $crash) {
-		if (!in_array(basename($crash), $skip_files)) {
-			$count++;
-		}
-	}
+    $crashes = glob('/var/crash/*');
+    foreach ($crashes as $crash) {
+        if (!in_array(basename($crash), $skip_files)) {
+            $count++;
+        }
+    }
 
-	if (!$count) {
-		$savemsg = '';
-	}
+    if (!$count) {
+        $savemsg = '';
+    }
 
-	return $savemsg;
+    return $savemsg;
 }
 
 function get_menu_messages()
 {
-	global $config;
+    global $config;
 
-	$menu_messages = '';
-	if (are_notices_pending()) {
-		$notices = get_notices();
-		$requests = array();
+    $menu_messages = '';
+    if (are_notices_pending()) {
+        $notices = get_notices();
+        $requests = array();
 
-		## Get Query Arguments from URL ###
-		foreach ($_REQUEST as $key => $value) {
-			if ($key != "PHPSESSID") {
-				$requests[] = $key.'='.$value;
-			}
-		}
+        ## Get Query Arguments from URL ###
+        foreach ($_REQUEST as $key => $value) {
+            if ($key != "PHPSESSID") {
+                $requests[] = $key.'='.$value;
+            }
+        }
 
-		if (is_array($requests)) {
-			$request_string = implode("&", $requests);
-		}
+        if (is_array($requests)) {
+            $request_string = implode("&", $requests);
+        }
 
-		if (is_array($notices)) {
-			$notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
+        if (is_array($notices)) {
+            $notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
 
-			$notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
+            $notice_msgs .= "<li><a href=\"#\" onclick=\"notice_action('acknowledge','all');\" >".gettext("Acknowledge All Notices")."</a></li><li class=\"divider\"></li>";
 
-			foreach ($notices as $key => $value) {
-				$date = date("m-d-y H:i:s", $key);
-				$noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
-				$noticemsg = preg_replace("/(\"|\'|\n|<.?\w+>)/i","",$noticemsg);
-				$alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
-				$notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)."]</a></li>";
-			}
+            foreach ($notices as $key => $value) {
+                $date = date("m-d-y H:i:s", $key);
+                $noticemsg = ($value['notice'] != "" ? $value['notice'] : $value['id']);
+                $noticemsg = preg_replace("/(\"|\'|\n|<.?\w+>)/i","",$noticemsg);
+                $alert_action ="onclick=\"notice_action('acknowledge','{$key}'); jQuery(this).parent().parent().remove();\"";
+                $notice_msgs .= "<li><a href=\"#\"  {$alert_action}>{$date} [ ".htmlspecialchars($noticemsg)."]</a></li>";
+            }
 
-			$notice_msgs .="</ul>";
+            $notice_msgs .="</ul>";
 
-			if (count($notices) == 1) {
-				$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
-			} else {
-				$msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
-			}
+            if (count($notices) == 1) {
+                $msg= sprintf("%1$02d",count($notices))." ".gettext("unread notice");
+            } else {
+                $msg= sprintf("%1$02d",count($notices))." ".gettext("unread notices");
+            }
+            $menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
+        }
+    } else {
+        $menu_messages .= sprintf(
+          '<a href="#">%s@%s.%s</a>',
+          $_SESSION['Username'],
+          $config['system']['hostname'],
+          $config['system']['domain']
+        );
+    }
 
-			$menu_messages.="<a href=\"/\" class=\"dropdown-toggle \" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\"><span class=\"text-primary\">{$msg}&nbsp;</span><span class=\"caret text-primary\"></span></a>{$notice_msgs}\n";
-		}
-	} else {
-		$menu_messages .= sprintf(
-			'<a href="#">%s@%s.%s</a>',
-			$_SESSION['Username'],
-			$config['system']['hostname'],
-			$config['system']['domain']
-		);
-	}
-
-	return ($menu_messages);
+    return ($menu_messages);
 }
