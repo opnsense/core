@@ -90,20 +90,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // list types
         $config['system']['timeservers'] = trim(implode(' ', $pconfig['timeservers_host']));
         $a_ntpd['noselect'] = !empty($pconfig['timeservers_noselect']) ? trim(implode(' ', $pconfig['timeservers_noselect'])) : null;
-        $a_ntpd['prefer'] = "";
-        if (!empty($pconfig['timeservers_prefer'])) {
-            foreach ($pconfig['timeservers_prefer'] as $timeserver) {
-                if (!is_array($pconfig['timeservers_noselect']) || !in_array($timeserver, $pconfig['timeservers_noselect'])) {
-                    // a timeserver can't be both preferred and disabled, don't set preferred when disabled
-                    $a_ntpd['prefer'] .= $timeserver . " ";
-                }
-            }
-        }
-        $a_ntpd['prefer'] = trim($a_ntpd['prefer']);
-
-        if (!empty($pconfig['interface'])) {
-            $a_ntpd['interface'] = implode(',', $pconfig['interface']);
-        }
+        $a_ntpd['prefer'] = !empty($pconfig['timeservers_prefer']) ? trim(implode(' ', $pconfig['timeservers_prefer'])) : null;
+        $a_ntpd['interface'] = !empty($pconfig['interface']) ? implode(',', $pconfig['interface']) : null;
 
         // unset empty
         foreach (array('noselect', 'prefer', 'interface') as $fieldname) {
@@ -258,8 +246,6 @@ include("head.inc");
 <?php
                         if (count($pconfig['timeservers_host']) == 0 ) {
                             $pconfig['timeservers_host'][] = "";
-                            $pconfig['timeservers_prefer'][] = false;
-                            $pconfig['timeservers_noselect'][] = false;
                         }
                         foreach($pconfig['timeservers_host'] as $item_idx => $timeserver):?>
                           <tr>
