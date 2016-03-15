@@ -155,11 +155,13 @@ function formatTokenizersUI(){
         hint=$(this).data("hint");
         width=$(this).data("width");
         allownew=$(this).data("allownew");
+        nbDropdownElements=$(this).data("nbdropdownelements");
         maxTokenContainerHeight=$(this).data("maxheight");
 
         $(this).tokenize({
             displayDropdownOnFocus: true,
             newElements: allownew,
+            nbDropdownElements: nbDropdownElements,
             placeholder:hint
         });
         $(this).parent().find('ul[class="TokensContainer"]').parent().css("width",width);
