@@ -169,7 +169,8 @@ class JsonKeyValueStoreField extends BaseField
             }
             $result[$optKey] = array("value"=>$optValue, "selected" => $selected);
         }
-
+        // sort keys
+        ksort($result);
         return $result;
     }
 
