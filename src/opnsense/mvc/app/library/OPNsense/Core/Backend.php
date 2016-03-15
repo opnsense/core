@@ -90,9 +90,9 @@ class Backend
         }
 
         $resp = "";
-        $stream = stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
+        $stream = @stream_socket_client('unix://'.$this->configdSocket, $errorNumber, $errorMessage, $poll_timeout);
         if ($stream === false) {
-            $this->getLogger()->error("Failed to connect to configd socket: $errorMessage");
+            $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
             return null;
         }
 
