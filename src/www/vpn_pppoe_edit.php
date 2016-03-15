@@ -316,7 +316,7 @@ legacy_html_escape_form_data($pconfig);
                       endfor;?>
                       </select>
                       <div class="hidden" for="help_for_pppoe_subnet">
-                        <?=gettext("Hint");?>: 24 <?=gettext("is"); ?> 255.255.255.0
+                        <?=gettext("Hint: 24 is 255.255.255.0"); ?>
                       </div>
                     </td>
                   </tr>
