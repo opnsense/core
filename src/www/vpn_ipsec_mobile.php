@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2008 Shrew Soft Inc
-	All rights reserved.
+  Copyright (C) 2014-2015 Deciso B.V.
+  Copyright (C) 2008 Shrew Soft Inc
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("interfaces.inc");
@@ -211,23 +211,23 @@ $( document ).ready(function() {
 
 function pool_change() {
 
-	if (document.iform.pool_enable.checked) {
-		document.iform.pool_address.disabled = 0;
-		document.iform.pool_netbits.disabled = 0;
-	} else {
-		document.iform.pool_address.disabled = 1;
-		document.iform.pool_netbits.disabled = 1;
-	}
+  if (document.iform.pool_enable.checked) {
+    document.iform.pool_address.disabled = 0;
+    document.iform.pool_netbits.disabled = 0;
+  } else {
+    document.iform.pool_address.disabled = 1;
+    document.iform.pool_netbits.disabled = 1;
+  }
 }
 
 function dns_domain_change() {
 
-	if (document.iform.dns_domain_enable.checked) {
+  if (document.iform.dns_domain_enable.checked) {
     document.iform.dns_domain.disabled = 0;
     $("#dns_domain").addClass('show');
     $("#dns_domain").removeClass('hidden');
   } else {
-		document.iform.dns_domain.disabled = 1;
+    document.iform.dns_domain.disabled = 1;
     $("#dns_domain").addClass('hidden');
     $("#dns_domain").removeClass('show');
   }
@@ -235,7 +235,7 @@ function dns_domain_change() {
 
 function dns_split_change() {
 
-	if (document.iform.dns_split_enable.checked){
+  if (document.iform.dns_split_enable.checked){
     document.iform.dns_split.disabled = 0;
     $("#dns_split").addClass('show');
     $("#dns_split").removeClass('hidden');
@@ -249,41 +249,41 @@ function dns_split_change() {
 
 function dns_server_change() {
 
-	if (document.iform.dns_server_enable.checked) {
-		document.iform.dns_server1.disabled = 0;
-		document.iform.dns_server2.disabled = 0;
-		document.iform.dns_server3.disabled = 0;
-		document.iform.dns_server4.disabled = 0;
+  if (document.iform.dns_server_enable.checked) {
+    document.iform.dns_server1.disabled = 0;
+    document.iform.dns_server2.disabled = 0;
+    document.iform.dns_server3.disabled = 0;
+    document.iform.dns_server4.disabled = 0;
     $("#dns_server_enable_inputs").addClass('show');
     $("#dns_server_enable_inputs").removeClass('hidden');
-	} else {
-		document.iform.dns_server1.disabled = 1;
-		document.iform.dns_server2.disabled = 1;
-		document.iform.dns_server3.disabled = 1;
-		document.iform.dns_server4.disabled = 1;
+  } else {
+    document.iform.dns_server1.disabled = 1;
+    document.iform.dns_server2.disabled = 1;
+    document.iform.dns_server3.disabled = 1;
+    document.iform.dns_server4.disabled = 1;
     $("#dns_server_enable_inputs").addClass('hidden');
     $("#dns_server_enable_inputs").removeClass('show');
-	}
+  }
 }
 
 function wins_server_change() {
 
-	if (document.iform.wins_server_enable.checked) {
-		document.iform.wins_server1.disabled = 0;
-		document.iform.wins_server2.disabled = 0;
+  if (document.iform.wins_server_enable.checked) {
+    document.iform.wins_server1.disabled = 0;
+    document.iform.wins_server2.disabled = 0;
     $("#wins_server_enable_inputs").addClass('show');
     $("#wins_server_enable_inputs").removeClass('hidden');
-	} else {
-		document.iform.wins_server1.disabled = 1;
-		document.iform.wins_server2.disabled = 1;
+  } else {
+    document.iform.wins_server1.disabled = 1;
+    document.iform.wins_server2.disabled = 1;
     $("#wins_server_enable_inputs").addClass('hidden');
     $("#wins_server_enable_inputs").removeClass('show');
-	}
+  }
 }
 
 function pfs_group_change() {
 
-	if (document.iform.pfs_group_enable.checked) {
+  if (document.iform.pfs_group_enable.checked) {
     document.iform.pfs_group.disabled = 0;
     $("#pfs_group").addClass('show');
     $("#pfs_group").removeClass('hidden');
@@ -296,7 +296,7 @@ function pfs_group_change() {
 
 function login_banner_change() {
 
-	if (document.iform.login_banner_enable.checked) {
+  if (document.iform.login_banner_enable.checked) {
     document.iform.login_banner.disabled = 0;
     $("#login_banner").addClass('show');
     $("#login_banner").removeClass('hidden');
@@ -312,9 +312,9 @@ function login_banner_change() {
 
 <?php include("fbegin.inc"); ?>
 
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
 <?php
 if (isset($savemsg)) {
     print_info_box($savemsg);
@@ -331,19 +331,19 @@ foreach ($config['ipsec']['phase1'] as $ph1ent) {
 
 function print_legacy_box($msg, $name, $value)
 {
-	$savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
-	$savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
-	if (!empty($_POST['if'])) {
-		$savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
-	}
-	$savebutton .= '</form>';
+  $savebutton = "<form action=\"".$_SERVER['REQUEST_URI']."\" method=\"post\">";
+  $savebutton .= "<input name=\"{$name}\" type=\"submit\" class=\"btn btn-default\" id=\"${name}\" value=\"{$value}\" />";
+  if (!empty($_POST['if'])) {
+    $savebutton .= "<input type=\"hidden\" name=\"if\" value=\"" . htmlspecialchars($_POST['if']) . "\" />";
+  }
+  $savebutton .= '</form>';
 
-	echo <<<EOFnp
+  echo <<<EOFnp
 <div class="col-xs-12">
-	<div class="alert alert-info alert-dismissible" role="alert">
-		{$savebutton}
-		<p>{$msg}</p>
-	</div>
+  <div class="alert alert-info alert-dismissible" role="alert">
+    {$savebutton}
+    <p>{$msg}</p>
+  </div>
 </div>
 EOFnp;
 }
@@ -355,11 +355,11 @@ if (isset($input_errors) && count($input_errors) > 0) {
     print_input_errors($input_errors);
 }
 ?>
-			    <section class="col-xs-12">
-					 <div class="tab-content content-box col-xs-12">
-							 <form action="vpn_ipsec_mobile.php" method="post" name="iform" id="iform">
-							 <div class="table-responsive">
-								<table class="table table-striped table-sort">
+          <section class="col-xs-12">
+           <div class="tab-content content-box col-xs-12">
+               <form action="vpn_ipsec_mobile.php" method="post" name="iform" id="iform">
+               <div class="table-responsive">
+                <table class="table table-striped table-sort">
                     <tr>
                       <td width="22%"><b><?=gettext("IKE Extensions"); ?> </b></td>
                       <td width="78%" align="right">
@@ -367,109 +367,109 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                       </td>
                     </tr>
-									<tr>
+                  <tr>
                       <td><a id="help_for_enabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable")?></td>
-										<td>
+                    <td>
                         <input name="enable" type="checkbox" id="enable" value="yes" <?= !empty($pconfig['enable']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" for="help_for_enabled">
                             <?=gettext("Enable IPsec Mobile Client Support"); ?>
                         </div>
-										</td>
-									</tr>
+                    </td>
+                  </tr>
                     <tr>
-										<td colspan="2"><b><?=gettext("Extended Authentication (Xauth)"); ?></b></td>
-									</tr>
+                    <td colspan="2"><b><?=gettext("Extended Authentication (Xauth)"); ?></b></td>
+                  </tr>
                     <tr>
-									<tr>
-										<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User Authentication"); ?></td>
-										<td>
-											<?=gettext("Source"); ?>:
-											<select name="user_source[]" class="form-control" id="user_source" multiple="multiple" size="3">
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User Authentication"); ?></td>
+                    <td>
+                      <?=gettext("Source"); ?>:
+                      <select name="user_source[]" class="form-control" id="user_source" multiple="multiple" size="3">
 <?php
                         $authmodes = explode(",", $pconfig['user_source']);
                         $auth_servers = auth_get_authserver_list();
 foreach ($auth_servers as $auth_key => $auth_server) : ?>
   <option value="<?=htmlspecialchars($auth_key)?>" <?=in_array($auth_key, $authmodes) ? 'selected="selected"' : ''?>><?=$auth_server['name']?></option>
 <?php                                           endforeach; ?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group Authentication"); ?></td>
-										<td>
-											<select name="group_source" class="form-control" id="group_source">
-												<option value="none"><?=gettext("none"); ?></option>
-												<option value="system" <?= $pconfig['group_source'] == "system" ?  "selected=\"selected\"" : "";
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Group Authentication"); ?></td>
+                    <td>
+                      <select name="group_source" class="form-control" id="group_source">
+                        <option value="none"><?=gettext("none"); ?></option>
+                        <option value="system" <?= $pconfig['group_source'] == "system" ?  "selected=\"selected\"" : "";
 ?>><?=gettext("system"); ?></option>
-											</select>
-										</td>
-									</tr>
+                      </select>
+                    </td>
+                  </tr>
                     <tr>
                       <td colspan="2"><b><?=gettext("Client Configuration (mode-cfg)"); ?> </b></td>
                     </tr>
-									<tr>
-										<td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual Address Pool"); ?></td>
-										<td>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Virtual Address Pool"); ?></td>
+                    <td>
                         <input name="pool_enable" type="checkbox" id="pool_enable" value="yes" <?= !empty($pconfig['pool_address'])&&!empty($pconfig['pool_netbits']) ? "checked=\"checked\"" : "";?> onclick="pool_change()" />
                         <?=gettext("Provide a virtual IP address to clients"); ?><br />
-											<?=gettext("Network"); ?>:&nbsp;
-											<input name="pool_address" type="text" class="form-control unknown" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" />
-											/
-											<select name="pool_netbits" class="form-control" id="pool_netbits">
-															<?php for ($i = 32; $i >= 0; $i--) :
+                      <?=gettext("Network"); ?>:&nbsp;
+                      <input name="pool_address" type="text" class="form-control unknown" id="pool_address" size="20" value="<?=$pconfig['pool_address'];?>" />
+                      /
+                      <select name="pool_netbits" class="form-control" id="pool_netbits">
+                              <?php for ($i = 32; $i >= 0; $i--) :
     ?>
-															<option value="<?=$i;
+                              <option value="<?=$i;
 ?>" <?= ($i == $pconfig['pool_netbits']) ? "selected=\"selected\"" : "";?>>
-																<?=$i;?>
-															</option>
-															<?php
+                                <?=$i;?>
+                              </option>
+                              <?php
 endfor; ?>
-											</select>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_net_list" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Network List"); ?></td>
-										<td>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_net_list" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Network List"); ?></td>
+                    <td>
                         <input name="net_list" type="checkbox" id="net_list_enable" value="yes" <?= !empty($pconfig['net_list']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" for="help_for_net_list">
                             <?=gettext("Provide a list of accessible networks to clients"); ?><br />
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_save_passwd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Save Xauth Password"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_save_passwd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Save Xauth Password"); ?></td>
+                    <td>
                         <input name="save_passwd" type="checkbox" id="save_passwd_enable" value="yes" <?= !empty($pconfig['save_passwd']) ? "checked=\"checked\"" : "";?> />
                         <div class="hidden" for="help_for_save_passwd">
                             <?=gettext("Allow clients to save Xauth passwords (Cisco VPN client only)."); ?><br />
                             <?=gettext("NOTE: With iPhone clients, this does not work when deployed via the iPhone configuration utility, only by manual entry."); ?><br />
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_dns_domain_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_dns_domain_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Default Domain"); ?></td>
+                    <td>
                         <input name="dns_domain_enable" type="checkbox" id="dns_domain_enable" value="yes"  <?= !empty($pconfig['dns_domain']) ? "checked=\"checked\"" : "";?> onclick="dns_domain_change()" />
                         <input name="dns_domain" type="text" id="dns_domain" size="30" value="<?=$pconfig['dns_domain'];?>" />
                         <div class="hidden" for="help_for_dns_domain_enable">
                             <?=gettext("Provide a default domain name to clients"); ?>
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_dns_split_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Split DNS"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_dns_split_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Split DNS"); ?></td>
+                    <td>
                         <input name="dns_split_enable" type="checkbox" id="dns_split_enable" value="yes" <?= !empty($pconfig['dns_split']) ? "checked=\"checked\"" : "";?> onclick="dns_split_change()" />
                         <input name="dns_split" type="text" class="form-control unknown" id="dns_split" size="30" value="<?=$pconfig['dns_split'];?>" />
                         <div class="hidden" for="help_for_dns_split_enable">
                             <?=gettext("Provide a list of split DNS domain names to clients. Enter a comma separated list."); ?><br />
                             <?=gettext("NOTE: If left blank, and a default domain is set, it will be used for this value."); ?>
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_dns_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_dns_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Servers"); ?></td>
+                    <td>
                         <input name="dns_server_enable" type="checkbox" id="dns_server_enable" value="yes"  <?= !empty($pconfig['dns_server1']) || !empty($pconfig['dns_server2']) || !empty($pconfig['dns_server3']) || !empty($pconfig['dns_server4']) ? "checked=\"checked\"" : "";?> onclick="dns_server_change()" />
                         <div id="dns_server_enable_inputs">
                             <?=gettext("Server"); ?> #1:
@@ -484,11 +484,11 @@ endfor; ?>
                         <div class="hidden" for="help_for_dns_server_enable">
                             <?=gettext("Provide a DNS server list to clients"); ?>
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_wins_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WINS Servers"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_wins_server_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WINS Servers"); ?></td>
+                    <td>
                         <input name="wins_server_enable" type="checkbox" id="wins_server_enable" value="yes" <?= !empty($pconfig['wins_server1']) || !empty($pconfig['wins_server2']) ? "checked=\"checked\"" : "";?> onclick="wins_server_change()" />
                         <div id="wins_server_enable_inputs">
                             <?=gettext("Server"); ?> #1:
@@ -499,11 +499,11 @@ endfor; ?>
                         <div class="hidden" for="help_for_wins_server_enable">
                             <?=gettext("Provide a WINS server list to clients"); ?>
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_pfs_group_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Phase2 PFS Group"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_pfs_group_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Phase2 PFS Group"); ?></td>
+                    <td>
                         <input name="pfs_group_enable" type="checkbox" id="pfs_group_enable" value="yes" <?= !empty($pconfig['pfs_group']) ? "checked=\"checked\"" : "";?>  onclick="pfs_group_change()" />
 
                         <select name="pfs_group" class="form-control" id="pfs_group">
@@ -520,31 +520,31 @@ endforeach;
                         <div class="hidden" for="help_for_pfs_group_enable">
                             <?=gettext("Provide the Phase2 PFS group to clients ( overrides all mobile phase2 settings )"); ?>
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td><a id="help_for_login_banner_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Login Banner"); ?></td>
-										<td>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_login_banner_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Login Banner"); ?></td>
+                    <td>
                         <input name="login_banner_enable" type="checkbox" id="login_banner_enable" value="yes" <?= !empty($pconfig['login_banner']) ? "checked=\"checked\"" : "";?> onclick="login_banner_change()" />
                         <textarea name="login_banner" cols="65" rows="7" id="login_banner" class="formpre"><?=$pconfig['login_banner'];?></textarea>
                         <div class="hidden" for="help_for_login_banner_enable">
                             <?=gettext("Provide a login banner to clients"); ?><br />
                         </div>
-										</td>
-									</tr>
-									<tr>
-										<td>&nbsp;</td>
-										<td>
-											<input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-										</td>
-									</tr>
-								</table>
-							 </div>
-							 </form>
-					  </div>
-			  </section>
-			</div>
-	</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                    </td>
+                  </tr>
+                </table>
+               </div>
+               </form>
+            </div>
+        </section>
+      </div>
+  </div>
 </section>
 
 <?php include("foot.inc"); ?>
