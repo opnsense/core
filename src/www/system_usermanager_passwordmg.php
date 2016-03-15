@@ -77,9 +77,9 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
 <?
                 if (isset($input_errors) && count($input_errors) > 0) {
                     print_input_errors($input_errors);
@@ -89,25 +89,25 @@ include("head.inc");
                 }
 ?>
         <section class="col-xs-12">
-			    <div class="content-box">
+          <div class="content-box">
             <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
-						  <div class="table-responsive">
-							  <table class="table table-striped">
-			            <tr>
-			              <td><?=gettext("Old password"); ?></td>
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tr>
+                    <td><?=gettext("Old password"); ?></td>
                     <td>
                       <input name="passwordfld0" type="password" id="passwordfld0" size="20" />
                     </td>
-			            </tr>
-			            <tr>
-			              <td><?=gettext("New password"); ?></td>
+                  </tr>
+                  <tr>
+                    <td><?=gettext("New password"); ?></td>
                     <td>
                       <input name="passwordfld1" type="password" id="passwordfld1" size="20" />
                     </td>
-			            </tr>
+                  </tr>
                   <tr>
-									  <td><?=gettext("Confirmation");?></td>
-			              <td>
+                    <td><?=gettext("Confirmation");?></td>
+                    <td>
                       <input name="passwordfld2" type="password" id="passwordfld2" size="20" />
                     </td>
                   </tr>
@@ -118,11 +118,11 @@ include("head.inc");
                     </td>
                   </tr>
                 </table>
-						</div>
+            </div>
           </form>
-				</div>
-			</section>
-		</div>
-	</div>
+        </div>
+      </section>
+    </div>
+  </div>
 </section>
 <?php include("foot.inc");
