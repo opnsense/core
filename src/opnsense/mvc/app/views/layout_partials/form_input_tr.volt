@@ -57,7 +57,7 @@ allownew    :   allow new items (for list) if applicable
         {% elseif type == "checkbox"  %}
             <input type="checkbox" id="{{ id }}" >
         {% elseif type == "select_multiple" %}
-            <select multiple="multiple" {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" {% if style|default(false) %}class="{{style}}" {% endif %}  {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}  {% if maxheight|default(false) %}data-maxheight="{{maxheight}}"{% endif %} data-width="{{width|default("348px")}}" data-allownew="{{allownew|default("false")}}"></select>
+            <select multiple="multiple" {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" {% if style|default(false) %}class="{{style}}" {% endif %}  {% if hint|default(false) %}data-hint="{{hint}}"{% endif %}  {% if maxheight|default(false) %}data-maxheight="{{maxheight}}"{% endif %} data-width="{{width|default("348px")}}" data-allownew="{{allownew|default("false")}}" data-nbdropdownelements="{{nbDropdownElements|default("10")}}"></select>
             <br/><a href="#" class="text-danger" id="clear-options" for="{{id}}"><i class="fa fa-times-circle"></i></a> <small>{{ lang._('Clear All') }}</small>
         {% elseif type == "dropdown" %}
             <select {% if size|default(false) %}size="{{size}}"{% endif %}  id="{{ id }}" class="{{style|default('selectpicker')}}"  data-width="{{width|default("348px")}}"></select>
