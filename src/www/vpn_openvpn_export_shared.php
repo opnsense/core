@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2008 Shrew Soft Inc.
-	Copyright (C) 2010 Ermal Luçi
-	All rights reserved.
+    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2010 Ermal Luçi
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
@@ -153,7 +153,7 @@ $( document ).ready(function() {
 });
 
 var servers = new Array();
-<?php	foreach ($ras_server as $sindex => $server) :
+<?php  foreach ($ras_server as $sindex => $server) :
 ?>
 servers[<?=$sindex;?>] = new Array();
 servers[<?=$sindex;
@@ -166,102 +166,102 @@ endforeach; ?>
 
 function download_begin(act) {
 
-	var index = document.getElementById("server").selectedIndex;
-	var useaddr;
+  var index = document.getElementById("server").selectedIndex;
+  var useaddr;
 
-	if (document.getElementById("useaddr").value == "other") {
-		if (document.getElementById("useaddr_hostname").value == "") {
-			alert("<?=gettext('Please specify an IP address or hostname.') ?>");
-			return;
-		}
-		useaddr = document.getElementById("useaddr_hostname").value;
-	} else
-		useaddr = document.getElementById("useaddr").value;
+  if (document.getElementById("useaddr").value == "other") {
+    if (document.getElementById("useaddr_hostname").value == "") {
+      alert("<?=gettext('Please specify an IP address or hostname.') ?>");
+      return;
+    }
+    useaddr = document.getElementById("useaddr_hostname").value;
+  } else
+    useaddr = document.getElementById("useaddr").value;
 
-	var useproxy = 0;
-	var useproxypass = 0;
-	if (document.getElementById("useproxy").checked)
-		useproxy = 1;
+  var useproxy = 0;
+  var useproxypass = 0;
+  if (document.getElementById("useproxy").checked)
+    useproxy = 1;
 
-	var proxyaddr = document.getElementById("proxyaddr").value;
-	var proxyport = document.getElementById("proxyport").value;
-	if (useproxy) {
-		if (!proxyaddr || !proxyport) {
-			alert("<?=gettext('The proxy ip and port cannot be empty') ?>");
-			return;
-		}
+  var proxyaddr = document.getElementById("proxyaddr").value;
+  var proxyport = document.getElementById("proxyport").value;
+  if (useproxy) {
+    if (!proxyaddr || !proxyport) {
+      alert("<?=gettext('The proxy ip and port cannot be empty') ?>");
+      return;
+    }
 
-		if (document.getElementById("useproxypass").value != 'none')
-			useproxypass = 1;
+    if (document.getElementById("useproxypass").value != 'none')
+      useproxypass = 1;
 
-		var proxytype = document.getElementById("useproxytype").value;
+    var proxytype = document.getElementById("useproxytype").value;
 
-		var proxyauth = document.getElementById("useproxypass").value;
-		var proxyuser = document.getElementById("proxyuser").value;
-		var proxypass = document.getElementById("proxypass").value;
-		var proxyconf = document.getElementById("proxyconf").value;
-		if (useproxypass) {
-			if (!proxyuser) {
-				alert("<?=gettext('Please fill the proxy username and password.') ?>");
-				return;
-			}
-			if (!proxypass || !proxyconf) {
-				alert("<?=gettext('The proxy password or confirm field is empty') ?>");
-				return;
-			}
-			if (proxypass != proxyconf) {
-				alert("<?=gettext('The proxy password and confirm fields must match') ?>");
-				return;
-			}
-		}
-	}
+    var proxyauth = document.getElementById("useproxypass").value;
+    var proxyuser = document.getElementById("proxyuser").value;
+    var proxypass = document.getElementById("proxypass").value;
+    var proxyconf = document.getElementById("proxyconf").value;
+    if (useproxypass) {
+      if (!proxyuser) {
+        alert("<?=gettext('Please fill the proxy username and password.') ?>");
+        return;
+      }
+      if (!proxypass || !proxyconf) {
+        alert("<?=gettext('The proxy password or confirm field is empty') ?>");
+        return;
+      }
+      if (proxypass != proxyconf) {
+        alert("<?=gettext('The proxy password and confirm fields must match') ?>");
+        return;
+      }
+    }
+  }
 
-	var dlurl;
-	dlurl  = "/vpn_openvpn_export_shared.php?act=" + act;
-	dlurl += "&srvid=" + servers[index][0];
-	dlurl += "&useaddr=" + useaddr;
-	if (useproxy) {
-		dlurl += "&proxy_type=" + escape(proxytype);
-		dlurl += "&proxy_addr=" + proxyaddr;
-		dlurl += "&proxy_port=" + proxyport;
-		dlurl += "&proxy_authtype=" + proxyauth;
-		if (useproxypass) {
-			dlurl += "&proxy_user=" + proxyuser;
-			dlurl += "&proxy_password=" + proxypass;
-		}
-	}
+  var dlurl;
+  dlurl  = "/vpn_openvpn_export_shared.php?act=" + act;
+  dlurl += "&srvid=" + servers[index][0];
+  dlurl += "&useaddr=" + useaddr;
+  if (useproxy) {
+    dlurl += "&proxy_type=" + escape(proxytype);
+    dlurl += "&proxy_addr=" + proxyaddr;
+    dlurl += "&proxy_port=" + proxyport;
+    dlurl += "&proxy_authtype=" + proxyauth;
+    if (useproxypass) {
+      dlurl += "&proxy_user=" + proxyuser;
+      dlurl += "&proxy_password=" + proxypass;
+    }
+  }
 
-	window.open(dlurl,"_self");
+  window.open(dlurl,"_self");
 }
 
 function server_changed() {
-	var table = document.getElementById("clients");
-	while (table.rows.length > 1 ) {
+  var table = document.getElementById("clients");
+  while (table.rows.length > 1 ) {
     table.deleteRow(1);
   }
 
-	var index = document.getElementById("server").selectedIndex;
+  var index = document.getElementById("server").selectedIndex;
 
-	if (servers[index][2] == 'p2p_shared_key') {
-		var row = table.insertRow(table.rows.length);
-		var cell0 = row.insertCell(0);
-		var cell1 = row.insertCell(1);
-		cell0.innerHTML = "Other Shared Key OS Client";
+  if (servers[index][2] == 'p2p_shared_key') {
+    var row = table.insertRow(table.rows.length);
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    cell0.innerHTML = "Other Shared Key OS Client";
     cell1.innerHTML += "<div>";
     cell1.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"skconf\")'>Configuration</button>";
     cell1.innerHTML += "&nbsp;";
     cell1.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"skzipconf\")'>Configuration archive</button>";
     cell1.innerHTML += "</div>";
 
-	}
+  }
 }
 
 function useaddr_changed(obj) {
 
-	if (obj.value == "other")
-		$('#HostName').show();
-	else
-		$('#HostName').hide();
+  if (obj.value == "other")
+    $('#HostName').show();
+  else
+    $('#HostName').hide();
 
 }
 
