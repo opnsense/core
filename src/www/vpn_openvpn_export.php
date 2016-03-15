@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2008 Shrew Soft Inc.
-	Copyright (C) 2010 Ermal Luçi
-	All rights reserved.
+    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2010 Ermal Luçi
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
@@ -289,7 +289,7 @@ servers[<?=$sindex;?>][1] = new Array();
 servers[<?=$sindex;
 ?>][2] = '<?=$server['mode'];?>';
 servers[<?=$sindex;?>][3] = new Array();
-<?php	  foreach ($server['users'] as $uindex => $user) :
+<?php    foreach ($server['users'] as $uindex => $user) :
 ?>
 servers[<?=$sindex;
 ?>][1][<?=$uindex;?>] = new Array();
@@ -307,7 +307,7 @@ servers[<?=$sindex;
 ?>][3] = '<?=str_replace("'", "\\'", $user['certname']);?>';
 <?
 endforeach; ?>
-<?php	  $c=0;
+<?php    $c=0;
 foreach ($server['certs'] as $cert) :
 ?>
 servers[<?=$sindex;
@@ -323,263 +323,263 @@ servers[<?=$sindex;
 
 function download_begin(act, i, j) {
 
-	var index = document.getElementById("server").selectedIndex;
-	var users = servers[index][1];
-	var certs = servers[index][3];
-	var useaddr;
+  var index = document.getElementById("server").selectedIndex;
+  var users = servers[index][1];
+  var certs = servers[index][3];
+  var useaddr;
 
-	var advancedoptions;
+  var advancedoptions;
 
-	if (document.getElementById("useaddr").value == "other") {
-		if (document.getElementById("useaddr_hostname").value == "") {
-			alert("<?=gettext('Please specify an IP address or hostname.') ?>");
-			return;
-		}
-		useaddr = document.getElementById("useaddr_hostname").value;
-	} else
-		useaddr = document.getElementById("useaddr").value;
+  if (document.getElementById("useaddr").value == "other") {
+    if (document.getElementById("useaddr_hostname").value == "") {
+      alert("<?=gettext('Please specify an IP address or hostname.') ?>");
+      return;
+    }
+    useaddr = document.getElementById("useaddr_hostname").value;
+  } else
+    useaddr = document.getElementById("useaddr").value;
 
-	advancedoptions = document.getElementById("advancedoptions").value;
+  advancedoptions = document.getElementById("advancedoptions").value;
 
-	var verifyservercn;
-	verifyservercn = document.getElementById("verifyservercn").value;
+  var verifyservercn;
+  verifyservercn = document.getElementById("verifyservercn").value;
 
-	var randomlocalport = 0;
-	if (document.getElementById("randomlocalport").checked)
-		randomlocalport = 1;
-	var usetoken = 0;
-	if (document.getElementById("usetoken").checked)
-		usetoken = 1;
-	var usepass = 0;
-	if (document.getElementById("usepass").checked)
-		usepass = 1;
-	var openvpnmanager = 0;
-	if (document.getElementById("openvpnmanager").checked)
-		openvpnmanager = 1;
+  var randomlocalport = 0;
+  if (document.getElementById("randomlocalport").checked)
+    randomlocalport = 1;
+  var usetoken = 0;
+  if (document.getElementById("usetoken").checked)
+    usetoken = 1;
+  var usepass = 0;
+  if (document.getElementById("usepass").checked)
+    usepass = 1;
+  var openvpnmanager = 0;
+  if (document.getElementById("openvpnmanager").checked)
+    openvpnmanager = 1;
 
-	var pass = document.getElementById("pass").value;
-	var conf = document.getElementById("conf").value;
-	if (usepass && (act.substring(0,4) == "inst")) {
-		if (!pass || !conf) {
-			alert("<?=gettext('The password or confirm field is empty') ?>");
-			return;
-		}
-		if (pass != conf) {
-			alert("<?=gettext('The password and confirm fields must match') ?>");
-			return;
-		}
-	}
+  var pass = document.getElementById("pass").value;
+  var conf = document.getElementById("conf").value;
+  if (usepass && (act.substring(0,4) == "inst")) {
+    if (!pass || !conf) {
+      alert("<?=gettext('The password or confirm field is empty') ?>");
+      return;
+    }
+    if (pass != conf) {
+      alert("<?=gettext('The password and confirm fields must match') ?>");
+      return;
+    }
+  }
 
-	var useproxy = 0;
-	var useproxypass = 0;
-	if (document.getElementById("useproxy").checked)
-		useproxy = 1;
+  var useproxy = 0;
+  var useproxypass = 0;
+  if (document.getElementById("useproxy").checked)
+    useproxy = 1;
 
-	var proxyaddr = document.getElementById("proxyaddr").value;
-	var proxyport = document.getElementById("proxyport").value;
-	if (useproxy) {
-		if (!proxyaddr || !proxyport) {
-			alert("<?=gettext('The proxy ip and port cannot be empty') ?>");
-			return;
-		}
+  var proxyaddr = document.getElementById("proxyaddr").value;
+  var proxyport = document.getElementById("proxyport").value;
+  if (useproxy) {
+    if (!proxyaddr || !proxyport) {
+      alert("<?=gettext('The proxy ip and port cannot be empty') ?>");
+      return;
+    }
 
-		if (document.getElementById("useproxypass").value != 'none')
-			useproxypass = 1;
+    if (document.getElementById("useproxypass").value != 'none')
+      useproxypass = 1;
 
-		var proxytype = document.getElementById("useproxytype").value;
+    var proxytype = document.getElementById("useproxytype").value;
 
-		var proxyauth = document.getElementById("useproxypass").value;
-		var proxyuser = document.getElementById("proxyuser").value;
-		var proxypass = document.getElementById("proxypass").value;
-		var proxyconf = document.getElementById("proxyconf").value;
-		if (useproxypass) {
-			if (!proxyuser) {
-				alert("<?=gettext('Please fill the proxy username and password.') ?>");
-				return;
-			}
-			if (!proxypass || !proxyconf) {
-				alert("<?=gettext('The proxy password or confirm field is empty') ?>");
-				return;
-			}
-			if (proxypass != proxyconf) {
-				alert("<?=gettext('The proxy password and confirm fields must match') ?>");
-				return;
-			}
-		}
-	}
+    var proxyauth = document.getElementById("useproxypass").value;
+    var proxyuser = document.getElementById("proxyuser").value;
+    var proxypass = document.getElementById("proxypass").value;
+    var proxyconf = document.getElementById("proxyconf").value;
+    if (useproxypass) {
+      if (!proxyuser) {
+        alert("<?=gettext('Please fill the proxy username and password.') ?>");
+        return;
+      }
+      if (!proxypass || !proxyconf) {
+        alert("<?=gettext('The proxy password or confirm field is empty') ?>");
+        return;
+      }
+      if (proxypass != proxyconf) {
+        alert("<?=gettext('The proxy password and confirm fields must match') ?>");
+        return;
+      }
+    }
+  }
 
-	var dlurl;
-	dlurl  = "/vpn_openvpn_export.php?act=" + act;
-	dlurl += "&srvid=" + escape(servers[index][0]);
-	if (users[i]) {
-		dlurl += "&usrid=" + escape(users[i][0]);
-		dlurl += "&crtid=" + escape(users[i][1]);
-	}
-	if (certs[j]) {
-		dlurl += "&usrid=";
-		dlurl += "&crtid=" + escape(certs[j][0]);
-	}
-	dlurl += "&useaddr=" + escape(useaddr);
-	dlurl += "&verifyservercn=" + escape(verifyservercn);
-	dlurl += "&randomlocalport=" + escape(randomlocalport);
-	dlurl += "&openvpnmanager=" + escape(openvpnmanager);
-	dlurl += "&usetoken=" + escape(usetoken);
-	if (usepass)
-		dlurl += "&password=" + escape(pass);
-	if (useproxy) {
-		dlurl += "&proxy_type=" + escape(proxytype);
-		dlurl += "&proxy_addr=" + escape(proxyaddr);
-		dlurl += "&proxy_port=" + escape(proxyport);
-		dlurl += "&proxy_authtype=" + escape(proxyauth);
-		if (useproxypass) {
-			dlurl += "&proxy_user=" + escape(proxyuser);
-			dlurl += "&proxy_password=" + escape(proxypass);
-		}
-	}
+  var dlurl;
+  dlurl  = "/vpn_openvpn_export.php?act=" + act;
+  dlurl += "&srvid=" + escape(servers[index][0]);
+  if (users[i]) {
+    dlurl += "&usrid=" + escape(users[i][0]);
+    dlurl += "&crtid=" + escape(users[i][1]);
+  }
+  if (certs[j]) {
+    dlurl += "&usrid=";
+    dlurl += "&crtid=" + escape(certs[j][0]);
+  }
+  dlurl += "&useaddr=" + escape(useaddr);
+  dlurl += "&verifyservercn=" + escape(verifyservercn);
+  dlurl += "&randomlocalport=" + escape(randomlocalport);
+  dlurl += "&openvpnmanager=" + escape(openvpnmanager);
+  dlurl += "&usetoken=" + escape(usetoken);
+  if (usepass)
+    dlurl += "&password=" + escape(pass);
+  if (useproxy) {
+    dlurl += "&proxy_type=" + escape(proxytype);
+    dlurl += "&proxy_addr=" + escape(proxyaddr);
+    dlurl += "&proxy_port=" + escape(proxyport);
+    dlurl += "&proxy_authtype=" + escape(proxyauth);
+    if (useproxypass) {
+      dlurl += "&proxy_user=" + escape(proxyuser);
+      dlurl += "&proxy_password=" + escape(proxypass);
+    }
+  }
 
-	dlurl += "&advancedoptions=" + escape(advancedoptions);
+  dlurl += "&advancedoptions=" + escape(advancedoptions);
 
-	window.open(dlurl,"_self");
+  window.open(dlurl,"_self");
 }
 
 function server_changed() {
 
-	var table = document.getElementById("users");
-	while (table.rows.length > 1 )
-		table.deleteRow(1);
+  var table = document.getElementById("users");
+  while (table.rows.length > 1 )
+    table.deleteRow(1);
 
-	var index = document.getElementById("server").selectedIndex;
-	var users = servers[index][1];
-	var certs = servers[index][3];
-	for (i=0; i < users.length; i++) {
-		var row = table.insertRow(table.rows.length);
-		var cell0 = row.insertCell(0);
-		var cell1 = row.insertCell(1);
-		var cell2 = row.insertCell(2);
-		cell0.innerHTML = users[i][2];
-		cell1.innerHTML = users[i][3];
-		cell2.innerHTML = "- Standard Configurations:<br\/>";
+  var index = document.getElementById("server").selectedIndex;
+  var users = servers[index][1];
+  var certs = servers[index][3];
+  for (i=0; i < users.length; i++) {
+    var row = table.insertRow(table.rows.length);
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    var cell2 = row.insertCell(2);
+    cell0.innerHTML = users[i][2];
+    cell1.innerHTML = users[i][3];
+    cell2.innerHTML = "- Standard Configurations:<br\/>";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confzip\"," + i + ", -1)'>Archive</button>";
     cell2.innerHTML += "&nbsp;&nbsp;";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf\"," + i + ", -1)'>Config Only</button>";
-		cell2.innerHTML += "<br\/>- Inline Configurations:<br\/>";
+    cell2.innerHTML += "<br\/>- Inline Configurations:<br\/>";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlinedroid\"," + i + ", -1)'>Android</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlineios\"," + i + ", -1)'>OpenVPN Connect (iOS/Android)</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinline\"," + i + ", -1)'>Others</button>";
-		cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
+    cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-xp\"," + i + ", -1)'>x86-xp</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-xp\"," + i + ", -1)'>x64-xp</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-win6\"," + i + ", -1)'>x86-win6</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-win6\"," + i + ", -1)'>x64-win6</button>";
-		cell2.innerHTML += "<br\/>- Mac OSX:<br\/>";
+    cell2.innerHTML += "<br\/>- Mac OSX:<br\/>";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"visc\"," + i + ", -1)'>Viscosity Bundle</button>";
-	}
-	for (j=0; j < certs.length; j++) {
-		var row = table.insertRow(table.rows.length);
-		var cell0 = row.insertCell(0);
-		var cell1 = row.insertCell(1);
-		var cell2 = row.insertCell(2);
-		if (servers[index][2] == "server_tls") {
-			cell0.innerHTML = "Certificate (SSL/TLS, no Auth)";
-		} else {
-			cell0.innerHTML = "Certificate with External Auth";
-		}
-		cell1.innerHTML = certs[j][1];
-		cell2.innerHTML = "- Standard Configurations:<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+  }
+  for (j=0; j < certs.length; j++) {
+    var row = table.insertRow(table.rows.length);
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    var cell2 = row.insertCell(2);
+    if (servers[index][2] == "server_tls") {
+      cell0.innerHTML = "Certificate (SSL/TLS, no Auth)";
+    } else {
+      cell0.innerHTML = "Certificate with External Auth";
+    }
+    cell1.innerHTML = certs[j][1];
+    cell2.innerHTML = "- Standard Configurations:<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confzip\",-1," + j + ")'>Archive</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf\",-1," + j + ")'>File Only</button>";
-		cell2.innerHTML += "<br\/>- Inline Configurations:<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<br\/>- Inline Configurations:<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlinedroid\",-1," + j + ")'>Android</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlineios\",-1," + j + ")'>OpenVPN Connect (iOS/Android)</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinline\",-1," + j + ")'>Others</button>";
-		cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-xp\",-1," + j + ")'>x86-xp</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-xp\",-1," + j + ")'>x64-xp</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-win6\",-1," + j + ")'>x86-win6</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-win6\",-1," + j + ")'>x64-win6</button>";
-		cell2.innerHTML += "<br\/>- Mac OSX:<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<br\/>- Mac OSX:<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"visc\",-1," + j + ")'>Viscosity Bundle</button>";
-		if (servers[index][2] == "server_tls") {
-			cell2.innerHTML += "<br\/>- Yealink SIP Handsets: <br\/>";
-			cell2.innerHTML += "&nbsp;&nbsp; ";
+    if (servers[index][2] == "server_tls") {
+      cell2.innerHTML += "<br\/>- Yealink SIP Handsets: <br\/>";
+      cell2.innerHTML += "&nbsp;&nbsp; ";
       cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf_yealink_t28\",-1," + j + ")'>T28</button>";
-			cell2.innerHTML += "&nbsp;&nbsp; ";
+      cell2.innerHTML += "&nbsp;&nbsp; ";
       cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf_yealink_t38g\",-1," + j + ")'>T38G (1)</button>";
-			cell2.innerHTML += "&nbsp;&nbsp; ";
+      cell2.innerHTML += "&nbsp;&nbsp; ";
       cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf_yealink_t38g\",-1," + j + ")'>T38G (1)</button>";
-			cell2.innerHTML += "<br\/>";
+      cell2.innerHTML += "<br\/>";
       cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf_snom\",-1," + j + ")'>SNOM SIP Handset</button>";
-		}
-	}
-	if (servers[index][2] == 'server_user') {
-		var row = table.insertRow(table.rows.length);
-		var cell0 = row.insertCell(0);
-		var cell1 = row.insertCell(1);
-		var cell2 = row.insertCell(2);
-		cell0.innerHTML = "Authentication Only (No Cert)";
-		cell1.innerHTML = "none";
-		cell2.innerHTML = "- Standard Configurations:<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    }
+  }
+  if (servers[index][2] == 'server_user') {
+    var row = table.insertRow(table.rows.length);
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    var cell2 = row.insertCell(2);
+    cell0.innerHTML = "Authentication Only (No Cert)";
+    cell1.innerHTML = "none";
+    cell2.innerHTML = "- Standard Configurations:<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confzip\"," + i + ")'>Archive</button>";
-		cell2.innerHTML += "<a href='javascript:download_begin(\"confzip\"," + i + ")'>Archive<\/a>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<a href='javascript:download_begin(\"confzip\"," + i + ")'>Archive<\/a>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"conf\"," + i + ")'>File Only</button>";
-		cell2.innerHTML += "<a href='javascript:download_begin(\"conf\"," + i + ")'>File Only<\/a>";
-		cell2.innerHTML += "<br\/>- Inline Configurations:<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<a href='javascript:download_begin(\"conf\"," + i + ")'>File Only<\/a>";
+    cell2.innerHTML += "<br\/>- Inline Configurations:<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlinedroid\"," + i + ")'>Android</button>";
-		cell2.innerHTML += "<a href='javascript:download_begin(\"confinlinedroid\"," + i + ")'>Android<\a>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<a href='javascript:download_begin(\"confinlinedroid\"," + i + ")'>Android<\a>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlineios\"," + i + ")'>OpenVPN Connect (iOS/Android)</button>";
-		cell2.innerHTML += "<a href='javascript:download_begin(\"confinlineios\"," + i + ")'>OpenVPN Connect (iOS/Android)<\/a>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<a href='javascript:download_begin(\"confinlineios\"," + i + ")'>OpenVPN Connect (iOS/Android)<\/a>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinline\"," + i + ")'>Others</button>";
-		cell2.innerHTML += "<a href='javascript:download_begin(\"confinline\"," + i + ")'>Others<\/a>";
-		cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<a href='javascript:download_begin(\"confinline\"," + i + ")'>Others<\/a>";
+    cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-xp\"," + i + ")'>x86-xp</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-xp\"," + i + ")'>x64-xp</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-win6\"," + i + ")'>x86-win6</button>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-win6\"," + i + ")'>x64-win6</button>";
-		cell2.innerHTML += "<br\/>- Mac OSX:<br\/>";
-		cell2.innerHTML += "&nbsp;&nbsp; ";
+    cell2.innerHTML += "<br\/>- Mac OSX:<br\/>";
+    cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"visc\"," + i + ")'>Viscosity Bundle</button>";
-	}
+  }
 }
 
 function useaddr_changed(obj) {
 
-	if (obj.value == "other")
-		$('#HostName').show();
-	else
-		$('#HostName').hide();
+  if (obj.value == "other")
+    $('#HostName').show();
+  else
+    $('#HostName').hide();
 
 }
 
 function usepass_changed() {
 
-	if (document.getElementById("usepass").checked)
-		document.getElementById("usepass_opts").style.display = "";
-	else
-		document.getElementById("usepass_opts").style.display = "none";
+  if (document.getElementById("usepass").checked)
+    document.getElementById("usepass_opts").style.display = "";
+  else
+    document.getElementById("usepass_opts").style.display = "none";
 }
 
 function useproxy_changed(obj) {
@@ -620,22 +620,22 @@ if (isset($savemsg)) {
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
               </tr>
-					<tr>
-						<td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
-						<td>
-							<select name="server" id="server" class="formselect" onchange="server_changed()">
-								<?php foreach ($ras_server as & $server) :
+          <tr>
+            <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Remote Access Server");?></td>
+            <td>
+              <select name="server" id="server" class="formselect" onchange="server_changed()">
+                <?php foreach ($ras_server as & $server) :
     ?>
-								<option value="<?=$server['index'];
+                <option value="<?=$server['index'];
 ?>"><?=htmlspecialchars($server['name']);?></option>
-								<?php
+                <?php
 endforeach; ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Host Name Resolution");?></td>
-						<td >
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Host Name Resolution");?></td>
+            <td >
                   <select name="useaddr" id="useaddr" class="formselect" onchange="useaddr_changed(this)">
                     <option value="serveraddr" ><?=gettext("Interface IP Address");?></option>
                     <option value="servermagic" ><?=gettext("Automagic Multi-WAN IPs (port forward targets)");?></option>
@@ -669,11 +669,11 @@ endif; ?>
                     </div>
                     <input name="useaddr_hostname" type="text" id="useaddr_hostname" size="40" />
                   </div>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
-						<td >
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
+            <td >
                   <select name="verifyservercn" id="verifyservercn" class="formselect">
                     <option value="auto"><?=gettext("Automatic - Use verify-x509-name (OpenVPN 2.3+) where possible");?></option>
                     <option value="tls-remote"><?=gettext("Use tls-remote (Deprecated, use only on old clients &lt;= OpenVPN 2.2.x");?>)</option>
@@ -685,21 +685,21 @@ endif; ?>
                     <?=gettext("Only use tls-remote if you must use an older client that you cannot control. The option has been deprecated by OpenVPN and will be removed in the next major version.");?><br/><br/>
                     <?=gettext("With tls-remote the server CN may optionally be enclosed in quotes. This can help if the server CN contains spaces and certain clients cannot parse the server CN. Some clients have problems parsing the CN with quotes. Use only as needed.");?>
                   </div>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top"><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
-						<td >
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
+            <td >
                   <input name="randomlocalport" id="randomlocalport" type="checkbox" value="yes" checked="CHECKED" />
                   <div class="hidden" for="help_for_random_local_port">
                     <?=gettext("Use a random local source port (lport) for traffic from the client. Without this set, two clients may not run concurrently.");?>
                     <br/>
                     <?=gettext("NOTE: Not supported on older clients. Automatically disabled for Yealink and Snom configurations."); ?>
                   </div>
-					</tr>
-					<tr>
-						<td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
-						<td >
+          </tr>
+          <tr>
+            <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
+            <td >
                   <div>
                     <input name="usetoken" id="usetoken" type="checkbox" value="yes" />
                     <?=gettext("Use Microsoft Certificate Storage instead of local files.");?>
@@ -714,11 +714,11 @@ endif; ?>
                     <?=gettext("Confirm");?> :
                     <input name="conf" id="conf" type="password" class="formfld pwd" size="20" value="" />
                   </div>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top"><a id="help_for_http_proxy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Proxy");?></td>
-						<td >
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><a id="help_for_http_proxy" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Proxy");?></td>
+            <td >
                   <input name="useproxy" id="useproxy" type="checkbox" value="yes" onclick="useproxy_changed(this)" />
                   <div class="hidden" for="help_for_http_proxy">
                     <?=gettext("Use proxy to communicate with the server.");?>
@@ -750,11 +750,11 @@ endif; ?>
                       </div>
                     </div>
                   </div>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPNManager");?></td>
-						<td >
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPNManager");?></td>
+            <td >
                   <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
                   <div class="hidden" for="help_for_openvpnmanager">
                     <?=gettext('This will change the generated .ovpn configuration to allow for usage of the management interface.'.
@@ -763,31 +763,31 @@ endif; ?>
                     <br/>
                     <?=gettext("NOTE: This is not currently compatible with the 64-bit OpenVPN installer. It will work with the 32-bit installer on a 64-bit system.");?>
                   </div>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" class="list" height="12">&nbsp;</td>
-					</tr>
-					<tr>
-						<td valign="top"><a id="help_for_advancedoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional configuration options");?></td>
-						<td >
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" class="list" height="12">&nbsp;</td>
+          </tr>
+          <tr>
+            <td valign="top"><a id="help_for_advancedoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional configuration options");?></td>
+            <td >
                   <textarea rows="6" cols="68" name="advancedoptions" id="advancedoptions"></textarea><br/>
                   <div class="hidden" for="help_for_advancedoptions">
                     <?=gettext("Enter any additional options you would like to add to the OpenVPN client export configuration here, separated by a line break or semicolon"); ?><br/>
-							<?=gettext("EXAMPLE: remote-random"); ?>;
+              <?=gettext("EXAMPLE: remote-random"); ?>;
                   </div>
-						</td>
-					</tr>
-					<tr>
-						<td valign="top"><a id="help_for_clientpkg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Client Install Packages");?></td>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top"><a id="help_for_clientpkg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Client Install Packages");?></td>
                 <td>
                   <table width="100%" id="users" border="0" cellpadding="0" cellspacing="0" class="table table-striped table-bordered ">
-						<tr>
-							<td width="25%" ><b><?=gettext("User");?></b></td>
-							<td width="35%" ><b><?=gettext("Certificate Name");?></b></td>
-							<td width="40%" ><b><?=gettext("Export");?></b></td>
-						</tr>
-					</table>
+            <tr>
+              <td width="25%" ><b><?=gettext("User");?></b></td>
+              <td width="35%" ><b><?=gettext("Certificate Name");?></b></td>
+              <td width="40%" ><b><?=gettext("Export");?></b></td>
+            </tr>
+          </table>
                   <div class="hidden" for="help_for_clientpkg">
                     <?= gettext("NOTES:") ?> <br/>
                     <?= gettext("The &quot;XP&quot; Windows installers work on Windows XP and later versions. The &quot;win6&quot; Windows installers include a new tap-windows6 driver that works only on Windows Vista and later.") ?><br/>
@@ -804,8 +804,8 @@ endif; ?>
                     <?= gettext("If you expect to see a certain client in the list but it is not there, it is usually due to a CA mismatch between the OpenVPN server instance and the client certificates found in the User Manager.") ?><br/>
                   </div>
                 </td>
-					</tr>
-				</table>
+          </tr>
+        </table>
           </div>
         </div>
       </section>
