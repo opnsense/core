@@ -2627,18 +2627,17 @@ function services_get()
 
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
                 if (!isset($setting['disable'])) {
                     $pconfig = array();
-                    $pconfig['name'] = "openvpn";
-                    $pconfig['mode'] = $mode;
-                    $pconfig['id'] = $id;
-                    $pconfig['vpnid'] = $setting['vpnid'];
                     $pconfig['description'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
                     $pconfig['php']['restart'] = array('openvpn_restart_by_id');
                     $pconfig['php']['start'] = array('openvpn_restart_by_id');
-                    $pconfig['php']['args'] = array('mode', 'vpnid');
+                    $pconfig['php']['args'] = array('mode', 'id');
                     $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
+                    $pconfig['id'] = $setting['vpnid'];
+                    $pconfig['name'] = 'openvpn';
+                    $pconfig['mode'] = $mode;
                     $services[] = $pconfig;
                 }
             }
@@ -2792,38 +2791,35 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
 
 function get_service_control_links($service, $addname = false)
 {
-    $output = "";
-    $stitle = ($addname) ? $service['name'] . " " : "";
+    $stitle = $addname ? $service['name'] . ' ' : '';
+    $output = '';
+
     if (get_service_status($service)) {
-        switch ($service['name']) {
-            case "openvpn":
-                $output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
-                break;
-            default:
-                $output .= "<a href='status_services.php?mode=restartservice&amp;service={$service['name']}' class=\"btn btn-default\">";
+        /* restart service button */
+        $output .= "<a href='status_services.php?action=restart&amp;service={$service['name']}";
+        if (isset($service['id'])) {
+            $output .= "&amp;id={$service['id']}";
         }
-        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"> </span> </a>\n";
-        switch ($service['name']) {
-            case "openvpn":
-                $output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
-                break;
-            default:
-                $output .= "<a href='status_services.php?mode=stopservice&amp;service={$service['name']}' class=\"btn btn-default\">";
-                break;
+        $output .= "' class=\"btn btn-default\">";
+        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"></span></a>\n";
+
+	/* stop service button */
+        $output .= "<a href='status_services.php?action=stop&amp;service={$service['name']}";
+        if (isset($service['id'])) {
+            $output .= "&amp;id={$service['id']}";
         }
-        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\" ></span>";
-        $output .= "</a>";
+        $output .= "' class=\"btn btn-default\">";
+        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\"></span></a>";
       } else {
-        switch ($service['name']) {
-            case "openvpn":
-                $output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}&amp;vpnmode={$service['mode']}&amp;id={$service['vpnid']}' class=\"btn btn-default\">";
-                break;
-            default:
-                $output .= "<a href='status_services.php?mode=startservice&amp;service={$service['name']}' class=\"btn btn-default\">";
-                break;
+        /* start service button */
+        $output .= "<a href='status_services.php?action=start&amp;service={$service['name']}";
+        if (isset($service['id'])) {
+            $output .= "&amp;id={$service['id']}";
         }
-        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' alt='start' class=\"glyphicon glyphicon-play\"/></a>\n";
+        $output .= "' class=\"btn btn-default\">";
+        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' class=\"glyphicon glyphicon-play\"/></a>\n";
     }
+
     return $output;
 }
 

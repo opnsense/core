@@ -77,10 +77,10 @@ function vpn_services()
                     'php' => array(
                         'restart' => array('vpn_pppoe_configure_by_id'),
                         'start' => array('vpn_pppoe_configure_by_id'),
-                        'args' => array('pppoeid'),
+                        'args' => array('id'),
                     ),
                     'pidfile' => "/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid",
-                    'pppoeid' => $pppoecfg['pppoeid'],
+                    'id' => $pppoecfg['pppoeid'],
                     'name' => 'pppoed',
                 );
             }

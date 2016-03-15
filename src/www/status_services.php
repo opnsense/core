@@ -43,14 +43,14 @@ require_once("rrd.inc");
 
 if (!empty($_GET['service'])) {
     $service_name = $_GET['service'];
-    switch ($_GET['mode']) {
-        case "restartservice":
+    switch ($_GET['action']) {
+        case 'restart':
           $savemsg = service_control_restart($service_name, $_GET);
           break;
-        case "startservice":
+        case 'start':
           $savemsg = service_control_start($service_name, $_GET);
           break;
-        case "stopservice":
+        case 'stop':
           $savemsg = service_control_stop($service_name, $_GET);
           break;
     }
@@ -68,8 +68,8 @@ function service_control_start($name, $extras)
 {
     $msg = sprintf(gettext('%s has been started.'), htmlspecialchars($name));
 
-    if ($name == 'openvpn') {
-        $filter['vpnid'] = $extras['id'];
+    if (isset($extras['id'])) {
+        $filter['id'] = $extras['id'];
     }
 
     $service = find_service_by_name($name, $filter);
@@ -107,8 +107,8 @@ function service_control_stop($name, $extras)
     $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
     $filter = array();
 
-    if ($name == 'openvpn') {
-        $filter['vpnid'] = $extras['id'];
+    if (isset($extras['id'])) {
+        $filter['id'] = $extras['id'];
     }
 
     $service = find_service_by_name($name, $filter);
@@ -142,11 +142,11 @@ function service_control_restart($name, $extras)
 {
     $msg = sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
 
-    if ($name == 'openvpn') {
-        $filter['vpnid'] = $extras['id'];
+    if (isset($extras['id'])) {
+        $filter['id'] = $extras['id'];
     }
 
-    $service = find_service_by_name($name);
+    $service = find_service_by_name($name, $filter);
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not restart unknown service `%s'"), htmlspecialchars($name));
     }
