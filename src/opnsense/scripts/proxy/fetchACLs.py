@@ -159,7 +159,12 @@ class DomainSorter(object):
         """
         line = data.strip().lower()
         if len(line) > 0:
-            self.add(line[::-1], line)
+            # Calculate sort key, which is the reversed url with dots (.) replaced by spaces.
+            # We need to replace dots (.) here to avoid having a wrong sorting order when dashes
+            # or similar characters are used inside the url.
+            # (The process writing out the domains checks for domain overlaps)
+            sort_key = line[::-1].replace('.', ' ')
+            self.add(sort_key, line)
 
     def add(self, key, value):
         """ spool data to temp
@@ -218,8 +223,8 @@ class DomainSorter(object):
                         # duplicate, skip
                         continue
                     if self.is_domain(line):
-                        # prefix domain, but only if the chances are very small it will overlap
-                        if prev_line is None or line not in prev_line:
+                        # prefix domain, if this domain is different then the previous one
+                        if prev_line is None or '.%s'%line not in prev_line:
                             f_out.write('.')
                     f_out.write(line)
                     prev_line = line
