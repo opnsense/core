@@ -407,6 +407,11 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#actQueryAlerts").click(function(){
             $('#grid-alerts').bootgrid('reload');
         });
+        $("#inputSearchAlerts").keypress(function (e) {
+            if (e.which == 13) {
+                $("#actQueryAlerts").click();
+            }
+        });
 
         /**
          * Initialize
