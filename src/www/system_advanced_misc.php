@@ -87,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
+    $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
@@ -106,6 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //
     $input_errors = array();
     $pconfig = $_POST;
+
+    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], crypto_modules())) {
+        $input_errors[] = gettext("Please select a valid Cryptographic Accelerator.");
+    }
+
+    if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], thermal_modules())) {
+        $input_errors[] = gettext("Please select a valid Thermal Hardware Sensor.");
+    }
 
     if (count($input_errors) == 0) {
         if (!empty($pconfig['proxyurl'])) {
@@ -168,6 +177,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['crypto_hardware'] = $pconfig['crypto_hardware'];
         } elseif (isset($config['system']['crypto_hardware'])) {
             unset($config['system']['crypto_hardware']);
+        }
+
+        if (!empty($pconfig['cryptodev_enable'])) {
+            $config['system']['cryptodev_enable'] = true;
+        } elseif (isset($config['system']['cryptodev_enable'])) {
+            unset($config['system']['cryptodev_enable']);
         }
 
         if (!empty($pconfig['thermal_hardware'])) {
@@ -456,6 +471,20 @@ include("head.inc");
                   <br /><br />
                   <?=gettext("If you do not have a crypto chip in your system, this option will have no " .
                                       "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_cryptodev_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use /dev/crypto");?> </td>
+                <td>
+                  <input name="cryptodev_enable" type="checkbox" id="cryptodev_enable" value="yes" <?= !empty($pconfig['cryptodev_enable']) ? "checked=\"checked\"" : "";?> />
+                  <strong><?=gettext("Enable old userland device node for cryptographic accelleration"); ?></strong>
+                  <div class="hidden" for="help_for_cryptodev_enable">
+                    <?=gettext("Old hardware accellerators may only provide userland accelleration to e.g. OpenVPN " .
+                                            "by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
+                                            "engine framework. Note that LibreSSL does not have support for this device and " .
+                                            "instead solely relies on embedded acceleration methods e.g. AES-NI. The default is " .
+                                            "to disable this device as it is likely not needed on modern systems."); ?>
+                  </div>
                 </td>
               </tr>
               <tr>

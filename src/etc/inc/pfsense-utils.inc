@@ -383,6 +383,12 @@ function load_crypto_module()
         log_error(sprintf(gettext('Loading %s cryptographic accelerator module.'), $config['system']['crypto_hardware']));
         mwexecf('/sbin/kldload %s', $config['system']['crypto_hardware']);
     }
+
+    if (isset($config['system']['cryptodev_enable'])) {
+        mwexecf('/sbin/kldload %s', 'cryptodev', true);
+    } else {
+        mwexecf('/sbin/kldunload %s', 'cryptodev', true);
+    }
 }
 
 function load_thermal_module()
