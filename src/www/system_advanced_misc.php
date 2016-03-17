@@ -38,15 +38,19 @@ require_once("pfsense-utils.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$crypto_modules = array('glxsb' => gettext("AMD Geode LX Security Block"),
-                        'aesni' => gettext("AES-NI CPU-based Acceleration")
+$crypto_modules = array(
+    'aesni' => gettext('AES-NI CPU-based Acceleration'),
+    'glxsb' => gettext('AMD Geode LX Security Block'),
+    'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
+    'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
+    'save' => gettext('SafeNet Crypto Accelerator'),
+    'ubsec' => gettext('Broadcom and BlueSteel uBsec 5x0x crypto accelerator'),
 );
 
-$thermal_hardware_modules = array('coretemp' => gettext("Intel Core* CPU on-die thermal sensor"),
-                                  'amdtemp' => gettext("AMD K8, K10 and K11 CPU on-die thermal sensor")
+$thermal_hardware_modules = array(
+    'coretemp' => gettext('Intel Core* CPU on-die thermal sensor'),
+    'amdtemp' => gettext('AMD K8, K10 and K11 CPU on-die thermal sensor'),
 );
-
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();

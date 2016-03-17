@@ -382,15 +382,9 @@ function load_crypto()
 {
     global $config;
 
-    $crypto_modules = array('glxsb', 'aesni');
-
-    if (!isset($config['system']['crypto_hardware']) || !in_array($config['system']['crypto_hardware'], $crypto_modules)) {
-        return false;
-    }
-
     if (!empty($config['system']['crypto_hardware']) && !is_module_loaded($config['system']['crypto_hardware'])) {
-        log_error("Loading {$config['system']['crypto_hardware']} cryptographic accelerator module.");
-        mwexec("/sbin/kldload {$config['system']['crypto_hardware']}");
+        log_error(sprintf(gettext('Loading %s cryptographic accelerator module.'), $config['system']['crypto_hardware']));
+        mwexecf('/sbin/kldload %s', $config['system']['crypto_hardware']);
     }
 }
 
