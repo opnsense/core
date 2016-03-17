@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $pconfig['address'] = implode(' ',$pconfig['host_url']);
     }
-    unset($pconfig['host_url']);
+
     foreach ($pconfig['detail'] as &$detailDescr) {
         if (empty($detailDescr)) {
             $detailDescr = sprintf(gettext("Entry added %s"), date('r'));
@@ -108,6 +108,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['submit'])) {
         $input_errors = array();
         // validate data
+        foreach ($pconfig['host_url'] as $detail_entry) {
+            if ($pconfig['type'] == 'host') {
+                if (!is_domain($detail_entry) && !is_ipaddr($detail_entry)) {
+                    $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid hostname or ip address"), $detail_entry) ;
+                }
+            } elseif ($pconfig['type'] == 'port') {
+                if (!is_port($detail_entry)) {
+                    $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid port number"), $detail_entry) ;
+                }
+            }
+
+        }
 
         /* Check for reserved keyword names */
         // Keywords not allowed in names
@@ -120,18 +132,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $reserved_ifs = get_configured_interface_list(false, true);
         $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
-        foreach($reserved_keywords as $rk)
-            if($rk == $pconfig['name'])
+        foreach ($reserved_keywords as $rk)
+            if ($rk == $pconfig['name'])
                 $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
 
         /* check for name interface description conflicts */
-        foreach($config['interfaces'] as $interface) {
-            if($interface['descr'] == $pconfig['name']) {
+        foreach ($config['interfaces'] as $interface) {
+            if ($interface['descr'] == $pconfig['name']) {
                 $input_errors[] = gettext("An interface description with this name already exists.");
                 break;
             }
         }
-        if ( is_validaliasname($pconfig['name']) !== true) {
+        if (is_validaliasname($pconfig['name']) !== true) {
             $input_errors[] = gettext("The alias name must be less than 32 characters long and may only consist of the characters") . " a-z, A-Z, 0-9, _.";
         }
 
@@ -174,29 +186,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
              *   renamed on referenced rules and such
              */
             if (isset($id) && $pconfig['name'] <> $pconfig['origname']) {
-              // Firewall rules
-              $origname = $pconfig['origname'];
-              update_alias_names_upon_change(array('filter', 'rule'), array('source', 'address'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('filter', 'rule'), array('destination', 'address'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('filter', 'rule'), array('source', 'port'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('filter', 'rule'), array('destination', 'port'), $pconfig['name'], $origname);
-              // NAT Rules
-              update_alias_names_upon_change(array('nat', 'rule'), array('source', 'address'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'rule'), array('source', 'port'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'rule'), array('destination', 'address'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'rule'), array('destination', 'port'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'rule'), array('target'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'rule'), array('local-port'), $pconfig['name'], $origname);
-              // NAT 1:1 Rules
-              update_alias_names_upon_change(array('nat', 'onetoone'), array('destination', 'address'), $pconfig['name'], $origname);
-              // NAT Outbound Rules
-              update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('source', 'network'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('sourceport'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('destination', 'address'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('dstport'), $pconfig['name'], $origname);
-              update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('target'), $pconfig['name'], $origname);
-              // Alias in an alias
-              update_alias_names_upon_change(array('aliases', 'alias'), array('address'), $pconfig['name'], $origname);
+                // Firewall rules
+                $origname = $pconfig['origname'];
+                update_alias_names_upon_change(array('filter', 'rule'), array('source', 'address'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('filter', 'rule'), array('destination', 'address'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('filter', 'rule'), array('source', 'port'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('filter', 'rule'), array('destination', 'port'), $pconfig['name'], $origname);
+                // NAT Rules
+                update_alias_names_upon_change(array('nat', 'rule'), array('source', 'address'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'rule'), array('source', 'port'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'rule'), array('destination', 'address'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'rule'), array('destination', 'port'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'rule'), array('target'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'rule'), array('local-port'), $pconfig['name'], $origname);
+                // NAT 1:1 Rules
+                update_alias_names_upon_change(array('nat', 'onetoone'), array('destination', 'address'), $pconfig['name'], $origname);
+                // NAT Outbound Rules
+                update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('source', 'network'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('sourceport'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('destination', 'address'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('dstport'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('target'), $pconfig['name'], $origname);
+                // Alias in an alias
+                update_alias_names_upon_change(array('aliases', 'alias'), array('address'), $pconfig['name'], $origname);
             }
 
 
