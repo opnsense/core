@@ -375,7 +375,7 @@ $( document ).ready(function() {
                       <span class="glyphicon glyphicon-remove text-danger"></span>
 <?php
                       if (!isset($config['syslog']['nologprivatenets'])):?>
-                      <span class="glyphicon glyphicon-info-sign"></span>
+                      <span class="glyphicon glyphicon-info-sign text-info"></span>
 <?php
                       endif; ?>
                     </td>
@@ -400,7 +400,7 @@ $( document ).ready(function() {
                       <span class="glyphicon glyphicon-remove text-danger"></span>
 <?php
                       if (!isset($config['syslog']['nologbogons'])):?>
-                      <span class="glyphicon glyphicon-info-sign"></span>
+                      <span class="glyphicon glyphicon-info-sign text-info"></span>
 <?php
                       endif; ?>
                     </td>
@@ -431,11 +431,11 @@ $( document ).ready(function() {
                   } elseif ($filterent['type'] == "block" && !empty($filterent['disabled'])) {
                       $iconfn = "glyphicon-remove text-muted";
                   }  elseif ($filterent['type'] == "reject" && empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon-remove  text-warning";
+                      $iconfn = "glyphicon-remove-sign text-danger";
                   }  elseif ($filterent['type'] == "reject" && !empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon-remove  text-muted";
+                      $iconfn = "glyphicon-remove-sign text-muted";
                   } else if ($filterent['type'] == "match" && empty($filterent['disabled'])) {
-                      $iconfn = "glyphicon-ok";
+                      $iconfn = "glyphicon-ok text-info";
                   } else if ($filterent['type'] == "match" && !empty($filterent['disabled'])) {
                       $iconfn = "glyphicon-ok text-muted";
                   } elseif (empty($filterent['disabled'])) {
@@ -487,7 +487,7 @@ $( document ).ready(function() {
                         <i class="fa fa-flash text-muted" data-toggle="tooltip" title="<?= gettext('last match') ?>"></i>
 <?php                 endif; ?>
 <?php                 if (isset($filterent['log'])):?>
-                      <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? "text-muted" :""?>"></span>
+                      <span class="glyphicon glyphicon-info-sign <?=!empty($filterent['disabled']) ? 'text-muted' : 'text-info' ?>"></span>
 <?php                 endif; ?>
                     </td>
 
@@ -708,16 +708,16 @@ $( document ).ready(function() {
                           <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
                           <td width="100"><?=gettext("pass");?></td>
                           <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-ok"></span></td>
+                          <td width="16"><span class="glyphicon glyphicon-ok text-info"></span></td>
                           <td width="100"><?=gettext("match");?></td>
                           <td width="14"></td>
                           <td width="16"><span class="glyphicon glyphicon-remove text-danger"></span></td>
                           <td width="100"><?=gettext("block");?></td>
                           <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-remove text-warning"></span></td>
+                          <td width="16"><span class="glyphicon glyphicon-remove-sign text-danger"></span></td>
                           <td width="100"><?=gettext("reject");?></td>
                           <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-info-sign"></span></td>
+                          <td width="16"><span class="glyphicon glyphicon-info-sign text-info"></span></td>
                           <td width="100"><?=gettext("log");?></td>
                           <td width="16"><span class="fa fa-long-arrow-right"></span></td>
                           <td width="100"><?=gettext("in");?></td>
@@ -736,7 +736,7 @@ $( document ).ready(function() {
                           <td><span class="glyphicon glyphicon-remove text-muted"></span></td>
                           <td class="nowrap"><?=gettext("block (disabled)");?></td>
                           <td>&nbsp;</td>
-                          <td><span class="glyphicon glyphicon-remove text-muted"></span></td>
+                          <td><span class="glyphicon glyphicon-remove-sign text-muted"></span></td>
                           <td class="nowrap"><?=gettext("reject (disabled)");?></td>
                           <td>&nbsp;</td>
                           <td width="16"><span class="glyphicon glyphicon-info-sign text-muted"></span></td>
