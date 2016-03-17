@@ -38,14 +38,26 @@ require_once("pfsense-utils.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$crypto_modules = array(
-    'aesni' => gettext('AES-NI CPU-based Acceleration'),
-    'glxsb' => gettext('AMD Geode LX Security Block'),
-    'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
-    'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
-    'save' => gettext('SafeNet Crypto Accelerator'),
-    'ubsec' => gettext('Broadcom and BlueSteel uBsec 5x0x crypto accelerator'),
-);
+function crypto_modules()
+{
+    $crypto_modules = array(
+        'aesni' => gettext('AES-NI CPU-based Acceleration'),
+        'glxsb' => gettext('AMD Geode LX Security Block'),
+        'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
+        'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
+        'safe' => gettext('SafeNet Crypto Accelerator'),
+        'ubsec' => gettext('Broadcom and BlueSteel uBsec 5x0x crypto accelerator'),
+    );
+    $available = array();
+
+    foreach ($crypto_modules as $name => $desc) {
+        if (file_exists("/boot/kernel/{$name}.ko")) {
+            $available[$name] = $desc;
+        }
+    }
+
+    return $available;
+}
 
 $thermal_hardware_modules = array(
     'coretemp' => gettext('Intel Core* CPU on-die thermal sensor'),
@@ -82,10 +94,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //
     $input_errors = array();
     $pconfig = $_POST;
-
-    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], $crypto_modules)) {
-        $input_errors[] = gettext("Please select a valid Cryptographic Accelerator.");
-    }
 
     if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], $thermal_hardware_modules)) {
         $input_errors[] = gettext("Please select a valid Thermal Hardware Sensor.");
@@ -422,7 +430,7 @@ include("head.inc");
                   <select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None"); ?></option>
 <?php
-                    foreach ($crypto_modules as $cryptomod_name => $cryptomod_descr) :?>
+                    foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr) :?>
                       <option value="<?=$cryptomod_name; ?>" <?=$pconfig['crypto_hardware'] == $cryptomod_name ? "selected=\"selected\"" :"";?>>
                         <?="{$cryptomod_descr} ({$cryptomod_name})"; ?>
                       </option>
