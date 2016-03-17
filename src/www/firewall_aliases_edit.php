@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_aliases.php');
+$referer = (isset($_SERVER['HTTP_REFERER']) ? html_safe($_SERVER['HTTP_REFERER']) : '/firewall_aliases.php');
 
 legacy_html_escape_form_data($pconfig);
 
