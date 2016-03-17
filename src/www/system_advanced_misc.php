@@ -40,7 +40,7 @@ require_once("interfaces.inc");
 
 function crypto_modules()
 {
-    $crypto_modules = array(
+    $modules = array(
         'aesni' => gettext('AES-NI CPU-based Acceleration'),
         'glxsb' => gettext('AMD Geode LX Security Block'),
         'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
@@ -50,7 +50,7 @@ function crypto_modules()
     );
     $available = array();
 
-    foreach ($crypto_modules as $name => $desc) {
+    foreach ($modules as $name => $desc) {
         if (file_exists("/boot/kernel/{$name}.ko")) {
             $available[$name] = $desc;
         }
@@ -59,10 +59,22 @@ function crypto_modules()
     return $available;
 }
 
-$thermal_hardware_modules = array(
-    'coretemp' => gettext('Intel Core* CPU on-die thermal sensor'),
-    'amdtemp' => gettext('AMD K8, K10 and K11 CPU on-die thermal sensor'),
-);
+function thermal_modules()
+{
+    $modules = array(
+        'amdtemp' => gettext('AMD K8, K10 and K11 CPU on-die thermal sensor'),
+        'coretemp' => gettext('Intel Core* CPU on-die thermal sensor'),
+    );
+    $available = array();
+
+    foreach ($modules as $name => $desc) {
+        if (file_exists("/boot/kernel/{$name}.ko")) {
+            $available[$name] = $desc;
+        }
+    }
+
+    return $available;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -94,10 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //
     $input_errors = array();
     $pconfig = $_POST;
-
-    if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], $thermal_hardware_modules)) {
-        $input_errors[] = gettext("Please select a valid Thermal Hardware Sensor.");
-    }
 
     if (count($input_errors) == 0) {
         if (!empty($pconfig['proxyurl'])) {
@@ -213,8 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_resolvconf_generate(true);
         filter_configure();
         activate_powerd();
-        load_crypto();
-        load_thermal_hardware();
+        load_crypto_module();
+        load_thermal_module();
         if ($need_relayd_restart) {
             relayd_configure();
         }
@@ -459,7 +467,7 @@ include("head.inc");
                   <select name="thermal_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None/ACPI"); ?></option>
 <?php
-                    foreach ($thermal_hardware_modules as $themalmod_name => $themalmod_descr) :?>
+                    foreach (thermal_modules() as $themalmod_name => $themalmod_descr) :?>
                       <option value="<?=$themalmod_name; ?>" <?=$pconfig['thermal_hardware'] == $themalmod_name ? " selected=\"selected\"" :"";?>>
                         <?="{$themalmod_descr} ({$themalmod_name})"; ?>
                       </option>

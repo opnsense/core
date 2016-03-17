@@ -201,10 +201,10 @@ system_setup_sysctl();
 echo "done.\n";
 
 /* enable optional crypto modules */
-load_crypto();
+load_crypto_module();
 
 /* enable optional thermal sensor modules */
-load_thermal_hardware();
+load_thermal_module();
 
 /* set up our timezone */
 system_timezone_configure();

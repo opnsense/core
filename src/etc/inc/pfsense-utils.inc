@@ -375,10 +375,7 @@ function is_fqdn($fqdn) {
     return($hostname);
 }
 
-/*
- * load_crypto() - Load crypto modules if enabled in config.
- */
-function load_crypto()
+function load_crypto_module()
 {
     global $config;
 
@@ -388,22 +385,13 @@ function load_crypto()
     }
 }
 
-/*
- * load_thermal_hardware() - Load temperature monitor kernel module
- */
-function load_thermal_hardware()
+function load_thermal_module()
 {
     global $config;
 
-    $thermal_hardware_modules = array('coretemp', 'amdtemp');
-
-    if (!isset($config['system']['thermal_hardware']) || !in_array($config['system']['thermal_hardware'], $thermal_hardware_modules)) {
-        return false;
-    }
-
     if (!empty($config['system']['thermal_hardware']) && !is_module_loaded($config['system']['thermal_hardware'])) {
-        log_error("Loading {$config['system']['thermal_hardware']} thermal monitor module.");
-        mwexec("/sbin/kldload {$config['system']['thermal_hardware']}");
+        log_error(sprintf(gettext('Loading %s thermal monitor module.'), $config['system']['thermal_hardware']));
+        mwexecf('/sbin/kldload %s', $config['system']['thermal_hardware']);
     }
 }
 
