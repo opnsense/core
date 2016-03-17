@@ -38,15 +38,43 @@ require_once("pfsense-utils.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-$crypto_modules = array('glxsb' => gettext("AMD Geode LX Security Block"),
-                        'aesni' => gettext("AES-NI CPU-based Acceleration")
-);
+function crypto_modules()
+{
+    $modules = array(
+        'aesni' => gettext('AES-NI CPU-based Acceleration'),
+        'glxsb' => gettext('AMD Geode LX Security Block'),
+        'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
+        'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
+        'safe' => gettext('SafeNet Crypto Accelerator'),
+        'ubsec' => gettext('Broadcom and BlueSteel uBsec 5x0x crypto accelerator'),
+    );
+    $available = array();
 
-$thermal_hardware_modules = array('coretemp' => gettext("Intel Core* CPU on-die thermal sensor"),
-                                  'amdtemp' => gettext("AMD K8, K10 and K11 CPU on-die thermal sensor")
-);
+    foreach ($modules as $name => $desc) {
+        if (file_exists("/boot/kernel/{$name}.ko")) {
+            $available[$name] = $desc;
+        }
+    }
 
+    return $available;
+}
 
+function thermal_modules()
+{
+    $modules = array(
+        'amdtemp' => gettext('AMD K8, K10 and K11 CPU on-die thermal sensor'),
+        'coretemp' => gettext('Intel Core* CPU on-die thermal sensor'),
+    );
+    $available = array();
+
+    foreach ($modules as $name => $desc) {
+        if (file_exists("/boot/kernel/{$name}.ko")) {
+            $available[$name] = $desc;
+        }
+    }
+
+    return $available;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -59,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
+    $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
@@ -79,11 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     $pconfig = $_POST;
 
-    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], $crypto_modules)) {
+    if (!empty($pconfig['crypto_hardware']) && !array_key_exists($pconfig['crypto_hardware'], crypto_modules())) {
         $input_errors[] = gettext("Please select a valid Cryptographic Accelerator.");
     }
 
-    if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], $thermal_hardware_modules)) {
+    if (!empty($pconfig['thermal_hardware']) && !array_key_exists($pconfig['thermal_hardware'], thermal_modules())) {
         $input_errors[] = gettext("Please select a valid Thermal Hardware Sensor.");
     }
 
@@ -150,6 +179,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['crypto_hardware']);
         }
 
+        if (!empty($pconfig['cryptodev_enable'])) {
+            $config['system']['cryptodev_enable'] = true;
+        } elseif (isset($config['system']['cryptodev_enable'])) {
+            unset($config['system']['cryptodev_enable']);
+        }
+
         if (!empty($pconfig['thermal_hardware'])) {
             $config['system']['thermal_hardware'] = $pconfig['thermal_hardware'];
         } elseif (isset($config['system']['thermal_hardware'])) {
@@ -201,8 +236,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_resolvconf_generate(true);
         filter_configure();
         activate_powerd();
-        load_crypto();
-        load_thermal_hardware();
+        load_crypto_module();
+        load_thermal_module();
         if ($need_relayd_restart) {
             relayd_configure();
         }
@@ -418,7 +453,7 @@ include("head.inc");
                   <select name="crypto_hardware" id="crypto_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None"); ?></option>
 <?php
-                    foreach ($crypto_modules as $cryptomod_name => $cryptomod_descr) :?>
+                    foreach (crypto_modules() as $cryptomod_name => $cryptomod_descr) :?>
                       <option value="<?=$cryptomod_name; ?>" <?=$pconfig['crypto_hardware'] == $cryptomod_name ? "selected=\"selected\"" :"";?>>
                         <?="{$cryptomod_descr} ({$cryptomod_name})"; ?>
                       </option>
@@ -439,6 +474,20 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
+                <td><a id="help_for_cryptodev_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use /dev/crypto");?> </td>
+                <td>
+                  <input name="cryptodev_enable" type="checkbox" id="cryptodev_enable" value="yes" <?= !empty($pconfig['cryptodev_enable']) ? "checked=\"checked\"" : "";?> />
+                  <strong><?=gettext("Enable old userland device for cryptographic acceleration"); ?></strong>
+                  <div class="hidden" for="help_for_cryptodev_enable">
+                    <?=gettext("Old hardware accelerators like 'safe', 'hifn' or 'ubsec' may only provide userland acceleration to e.g. " .
+                                            "OpenVPN by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
+                                            "engine framework. Note that LibreSSL does not have support for this device and " .
+                                            "instead solely relies on embedded acceleration methods e.g. AES-NI. The default is " .
+                                            "to disable this device as it is likely not needed on modern systems."); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
                 <th colspan="2" valign="top" class="listtopic"><?=gettext("Thermal Sensors"); ?></th>
               </tr>
               <tr>
@@ -447,7 +496,7 @@ include("head.inc");
                   <select name="thermal_hardware" class="selectpicker" data-style="btn-default">
                     <option value=""><?=gettext("None/ACPI"); ?></option>
 <?php
-                    foreach ($thermal_hardware_modules as $themalmod_name => $themalmod_descr) :?>
+                    foreach (thermal_modules() as $themalmod_name => $themalmod_descr) :?>
                       <option value="<?=$themalmod_name; ?>" <?=$pconfig['thermal_hardware'] == $themalmod_name ? " selected=\"selected\"" :"";?>>
                         <?="{$themalmod_descr} ({$themalmod_name})"; ?>
                       </option>
