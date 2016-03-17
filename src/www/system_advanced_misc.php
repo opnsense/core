@@ -477,10 +477,10 @@ include("head.inc");
                 <td><a id="help_for_cryptodev_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use /dev/crypto");?> </td>
                 <td>
                   <input name="cryptodev_enable" type="checkbox" id="cryptodev_enable" value="yes" <?= !empty($pconfig['cryptodev_enable']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("Enable old userland device node for cryptographic acceleration"); ?></strong>
+                  <strong><?=gettext("Enable old userland device for cryptographic acceleration"); ?></strong>
                   <div class="hidden" for="help_for_cryptodev_enable">
-                    <?=gettext("Old hardware accelerators may only provide userland acceleration to e.g. OpenVPN " .
-                                            "by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
+                    <?=gettext("Old hardware accelerators like 'safe', 'hifn' or 'ubsec' may only provide userland acceleration to e.g. " .
+                                            "OpenVPN by means of the /dev/crypto interface, which can be accessed via the OpenSSL " .
                                             "engine framework. Note that LibreSSL does not have support for this device and " .
                                             "instead solely relies on embedded acceleration methods e.g. AES-NI. The default is " .
                                             "to disable this device as it is likely not needed on modern systems."); ?>
