@@ -39,7 +39,7 @@ if (!isset($config['gres']) || !is_array($config['gres'])) {
     $config['gres'] = array();
 }
 if (!isset($config['gres']['gre']) || !is_array($config['gres']['gre'])) {
-    $config['gres']['gif'] = array();
+    $config['gres']['gre'] = array();
 }
 $a_gres = &$config['gres']['gre'];
 
