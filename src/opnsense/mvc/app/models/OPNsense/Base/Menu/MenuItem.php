@@ -340,7 +340,7 @@ class MenuItem
     public function toggleSelected($url)
     {
         $this->selected = false ;
-        foreach ($this->children as $nodeId => $node) {
+        foreach ($this->getFilteredChildren() as $nodeId => $node) {
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
                 $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $node->getUrl());
@@ -349,6 +349,23 @@ class MenuItem
                 }
             }
         }
+    }
+
+    /**
+     * Menu items are pluggable and can override already existing sections.
+     * This function filters the available child items and only return the still existing ones.
+     * @return array filtered set of children
+     */
+    private function getFilteredChildren()
+    {
+        $result = array();
+        foreach ($this->children as $key => $node) {
+            if ($node->getVisibility() != 'delete') {
+                $result[$key] = $node;
+            }
+        }
+        ksort($result);
+        return $result;
     }
 
     /**
@@ -369,8 +386,7 @@ class MenuItem
         }
 
         // sort by order/id and map getters to array items
-        ksort($this->children);
-        foreach ($this->children as $key => $node) {
+        foreach ($this->getFilteredChildren() as $key => $node) {
             $result[$node->id] = new \stdClass();
             foreach ($properties as $methodName => $propName) {
                 $result[$node->id]->{$propName} = $node->$methodName();
@@ -387,7 +403,7 @@ class MenuItem
      */
     public function findNodeById($id)
     {
-        foreach ($this->children as $key => $node) {
+        foreach ($this->getFilteredChildren() as $key => $node) {
             if (strtolower($node->getId()) == strtolower($id)) {
                 return $node ;
             }
