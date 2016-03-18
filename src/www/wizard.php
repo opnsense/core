@@ -221,6 +221,10 @@ include("head.inc");
 
 ?>
 <body>
+<script type="text/javascript" src="/javascript/wizard/autosuggest.js"></script>
+<script type="text/javascript" src="/javascript/wizard/disablekeys.js"></script>
+<script type="text/javascript" src="/javascript/wizard/suggestions.js"></script>
+
 <?php include("fbegin.inc"); ?>
 
 <?php if($pkg['step'][$stepid]['fields']['field'] <> "") { ?>
