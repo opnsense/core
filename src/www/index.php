@@ -330,6 +330,7 @@ include("head.inc");
 
 <?php
 include("fbegin.inc");
+echo "\n\t<script type=\"text/javascript\" src=\"/javascript/index/ajax.js\"></script>\n";
 echo $jscriptstr;
 ?>
 
