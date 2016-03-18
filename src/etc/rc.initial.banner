@@ -35,11 +35,12 @@ require_once("util.inc");
 
 $version = strtok(file_get_contents('/usr/local/opnsense/version/opnsense'), '-');
 $hostname = $config['system']['hostname'];
+$domain = $config['system']['domain'];
 $product = $g['product_name'];
 $machine = trim(shell_exec('uname -m'));
 $flavour = strtok(shell_exec('/usr/local/bin/openssl version'), ' ');
 
-print "\n*** Welcome to {$product} {$version} ({$machine}/${flavour}) on {$hostname} ***\n";
+print "\n*** Welcome to {$product} {$version} ({$machine}/${flavour}) on {$hostname}.{$domain} ***\n";
 
 $iflist = get_configured_interface_with_descr(false, true);
 
