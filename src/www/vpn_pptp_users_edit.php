@@ -1,30 +1,30 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 function pptpusercmp($a, $b)
@@ -54,19 +54,21 @@ if (!is_array($config['pptpd']['user'])) {
 }
 $a_secret = &$config['pptpd']['user'];
 
-if (is_numericint($_GET['id'])) {
-    $id = $_GET['id'];
-}
-if (isset($_POST['id']) && is_numericint($_POST['id'])) {
-    $id = $_POST['id'];
-}
-
-if (isset($id) && $a_secret[$id]) {
-    $pconfig['username'] = $a_secret[$id]['name'];
-    $pconfig['ip'] = $a_secret[$id]['ip'];
-}
-
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['id']) && !empty($a_secret[$_GET['id']])) {
+        $id = $_GET['id'];
+    }
+    if (isset($id)) {
+        $pconfig['username'] = $a_secret[$id]['name'];
+        $pconfig['ip'] = $a_secret[$id]['ip'];
+    } else {
+        $pconfig['username'] = null;
+        $pconfig['ip'] = null;
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['id']) && !empty($a_secret[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
     unset($input_errors);
     $pconfig = $_POST;
 
@@ -137,73 +139,80 @@ if ($_POST) {
     }
 }
 
+
 $service_hook = 'pptpd';
-
+legacy_html_escape_form_data($pconfig);
 include("head.inc");
-
 ?>
 
 <body>
 <?php include("fbegin.inc"); ?>
-
-	<section class="page-content-main">
-		<div class="container-fluid">
-			<div class="row">
-
-
-				<?php if (isset($input_errors) && count($input_errors) > 0) {
-                    print_input_errors($input_errors);
-} ?>
-
-			    <section class="col-xs-12">
-					<div class="tab-content content-box col-xs-12">
-
-							<form action="vpn_pptp_users_edit.php" method="post" name="iform" id="iform">
-
-								<div class="table-responsive">
-									<table class="table table-striped table-sort">
-										<tr>
-						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
-						                  <td width="78%" class="vtable">
-											<input name="username" type="text" class="form-control user" id="username" size="20" value="<?=htmlspecialchars($pconfig['username']);?>" />
-						                  </td>
-						                </tr>
-						                <tr>
-						                  <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
-						                  <td width="78%" class="vtable">
-						                    <input name="password" type="password" class="form-control pwd" id="password" size="20" />
-						                    <br /><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
-						                    &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :
-?><br />
-						                    <span class="vexpl"><?=gettext("If you want to change the users' password, ".
-                                            "enter it here twice.");?></span><?php
-endif; ?></td>
-						                </tr>
-						                <tr>
-						                  <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
-						                  <td width="78%" class="vtable">
-						                    <input name="ip" type="text" class="form-control unknown" id="ip" size="20" value="<?=htmlspecialchars($pconfig['ip']);?>" />
-						                    <br /><span class="vexpl"><?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?></span></td>
-						                </tr>
-						                <tr>
-						                  <td class="vncell" width="22%" valign="top">&nbsp;</td>
-						                  <td class="vncell" width="78%">
-						                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-						                    <?php if (isset($id) && $a_secret[$id]) :
-?>
-						                    <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
-						                    <?php
-endif; ?>
-						                  </td>
-						                </tr>
-						              </table>
-							      </div>
-							</form>
-
-					</div>
-			    </section>
-			</div>
-		</div>
-	</section>
-
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+      <?php if (isset($input_errors) && count($input_errors) > 0) {
+              print_input_errors($input_errors);
+      } ?>
+        <section class="col-xs-12">
+          <div class="tab-content content-box col-xs-12">
+            <form method="post" name="iform" id="iform">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <tr>
+                    <td width="22%">
+                      <strong><?=gettext("Edit User");?></strong>
+                    </td>
+                    <td width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username");?></td>
+                    <td>
+                      <input name="username" type="text" id="username" value="<?=$pconfig['username'];?>" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
+                    <td>
+                      <input name="password" type="password" class="form-control pwd" id="password" />
+                      <br /><input name="password2" type="password" class="form-control pwd" id="password2" />
+                      &nbsp;(<?=gettext("confirmation");?>)
+<?php
+                      if (isset($id)) :?><br />
+                      <?=gettext("If you want to change the users' password, ".
+                                  "enter it here twice.");?>
+<?php
+                      endif; ?>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
+                    <td>
+                      <input name="ip" type="text" class="form-control unknown" id="ip" value="<?=htmlspecialchars($pconfig['ip']);?>" />
+                      <div class="hidden" for="help_for_ip">
+                        <?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+<?php
+                      if (isset($id)) :?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
+<?php
+                      endif; ?>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
 <?php include("foot.inc");
