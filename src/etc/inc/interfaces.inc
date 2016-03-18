@@ -3591,7 +3591,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
 
     // DHCP6 Config File Override
-    if ($wancfg['adv_dhcp6_config_file_override']) {
+    if (!empty($wancfg['adv_dhcp6_config_file_override'])) {
         $dhcp6cconf = DHCP6_Config_File_Override($wancfg, $wanif);
     }
 
@@ -3820,8 +3820,15 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif)
 
 function DHCP6_Config_File_Override($wancfg, $wanif)
 {
-    $dhcp6cconf = file_get_contents($wancfg['adv_dhcp6_config_file_override_path']);
-    $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
+    $dhcp6cfile = $wancfg['adv_dhcp6_config_file_override_path'];
+    $dhcp6cconf = '';
+
+    if (file_exists($dhcp6cfile)) {
+        $dhcp6cconf = file_get_contents($dhcp6cfile);
+        $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
+    } else {
+        log_error(sprintf(gettext('DHCP6 config file override does not exist: %s'), $dhcp6cfile));
+    }
 
     return $dhcp6cconf;
 }
@@ -3906,7 +3913,7 @@ EOD;
     }
 
     // DHCP Config File Override
-    if ($wancfg['adv_dhcp_config_file_override']) {
+    if (!empty($wancfg['adv_dhcp_config_file_override'])) {
         $dhclientconf = DHCP_Config_File_Override($wancfg, $wanif);
     }
 
@@ -4004,7 +4011,7 @@ function DHCP_Config_File_Override($wancfg, $wanif)
     $dhclientconf = '';
 
     if (file_exists($dhclientfile)) {
-        $dhclientconf = file_get_contents($hclientfile);
+        $dhclientconf = file_get_contents($dhclientfile);
         $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
     } else {
         log_error(sprintf(gettext('DHCP config file override does not exist: %s'), $dhclientfile));
