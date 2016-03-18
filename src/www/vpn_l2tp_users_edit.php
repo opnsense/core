@@ -49,26 +49,27 @@ require_once("system.inc");
 require_once("plugins.inc");
 require_once("plugins.inc.d/vpn.inc");
 
-$referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');
 
 if (empty($config['l2tp']['user']) || !is_array($config['l2tp']['user'])) {
     $config['l2tp']['user'] = array();
 }
 $a_secret = &$config['l2tp']['user'];
 
-if (is_numericint($_GET['id'])) {
-    $id = $_GET['id'];
-}
-if (isset($_POST['id']) && is_numericint($_POST['id'])) {
-    $id = $_POST['id'];
-}
-
-if (isset($id) && $a_secret[$id]) {
-    $pconfig['usernamefld'] = $a_secret[$id]['name'];
-    $pconfig['ip'] = $a_secret[$id]['ip'];
-}
-
-if ($_POST) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (isset($_GET['id']) && !empty($a_secret[$_GET['id']])) {
+        $id = $_GET['id'];
+    }
+    if (isset($id)) {
+        $pconfig['usernamefld'] = $a_secret[$id]['name'];
+        $pconfig['ip'] = $a_secret[$id]['ip'];
+    } else {
+        $pconfig['usernamefld'] = null;
+        $pconfig['ip'] = null;
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['id']) && !empty($a_secret[$_POST['id']])) {
+        $id = $_POST['id'];
+    }
     unset($input_errors);
     $pconfig = $_POST;
 
@@ -135,8 +136,9 @@ if ($_POST) {
     }
 }
 
-$service_hook = 'l2tpd';
 
+$service_hook = 'l2tpd';
+legacy_html_escape_form_data($pconfig);
 include("head.inc");
 ?>
 
@@ -147,44 +149,57 @@ include("head.inc");
     <div class="container-fluid">
       <div class="row">
 
-        <?php if (isset($input_errors) && count($input_errors) > 0) {
-                    print_input_errors($input_errors);
-} ?>
-
+<?php
+      if (isset($input_errors) && count($input_errors) > 0) {
+          print_input_errors($input_errors);
+      } ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
               <form method="post" name="iform" id="iform">
                <div class="table-responsive">
-                <table class="table table-striped table-sort">
+                <table class="table table-striped">
                   <tr>
-                    <td width="22%" valign="top" class="vncellreq"><?=gettext("Username");?></td>
-                    <td width="78%" class="vtable">
-                      <input name="usernamefld" type="text" class="form-control user" id="usernamefld" size="20" value="<?=htmlspecialchars($pconfig['usernamefld']);?>" />
+                    <td width="22%">
+                      <strong><?=gettext("Edit User");?></strong>
+                    </td>
+                    <td width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top" class="vncellreq"><?=gettext("Password");?></td>
-                    <td width="78%" class="vtable">
-                      <input name="passwordfld" type="password" class="form-control pwd" id="passwordfld" size="20" />
-                      <br /><input name="password2" type="password" class="form-control pwd" id="password2" size="20" />
-                      &nbsp;(<?=gettext("confirmation");?>)<?php if (isset($id) && $a_secret[$id]) :?><br />
-                      <p class="text-muted"><em><small><?=gettext("If you want to change the users password, enter it here twice.");?></small></em></p>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Username");?></td>
+                    <td>
+                      <input name="usernamefld" type="text" value="<?=$pconfig['usernamefld'];?>" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Password");?></td>
+                    <td>
+                      <input name="passwordfld" type="password" /><br />
+                      <input name="password2" type="password" />
+                      &nbsp;(<?=gettext("confirmation");?>)
+                      <?php if (isset($id)):?><br />
+                      <div class="text-muted"><em><small><?=gettext("If you want to change the users password, enter it here twice.");?></small></em></div>
                       <?php endif; ?>
                     </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top" class="vncell"><?=gettext("IP address");?></td>
-                    <td width="78%" class="vtable">
-                      <input name="ip" type="text" class="form-control unknown" id="ip" size="20" value="<?=htmlspecialchars($pconfig['ip']);?>" />
-                      <p class="text-muted"><em><small><?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?></small></em></p></td>
+                    <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP address");?></td>
+                    <td>
+                      <input name="ip" type="text" value="<?=$pconfig['ip'];?>" />
+                      <div class="hidden" for="help_for_ip">
+                        <?=gettext("If you want the user to be assigned a specific IP address, enter it here.");?>
+                      </div>
+                    </td>
                   </tr>
                   <tr>
-                    <td width="22%" valign="top">&nbsp;</td>
-                    <td width="78%">
+                    <td>&nbsp;</td>
+                    <td>
                       <input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext('Save');?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=$referer;?>'" />
-                      <?php if (isset($id) && $a_secret[$id]) :?>
-                      <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/vpn_l2tp_users.php');?>'" />
+                      <?php if (isset($id)) :?>
+                      <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>
                     </td>
                   </tr>
