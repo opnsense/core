@@ -258,7 +258,7 @@ include("head.inc");
                       ?>
                       </select>
                       <div class="hidden" for="help_for_l2tp_subnet">
-                        <?=gettext("Hint:");?> 24 <?=gettext("is"); ?> 255.255.255.0
+                        <?=gettext("Hint: 24 is 255.255.255.0"); ?>
                       </div>
                     </td>
                   </tr>
@@ -278,7 +278,7 @@ include("head.inc");
                                 ?>
                       </select>
                       <div class="hidden" for="help_for_n_l2tp_units">
-                        <?=gettext("Hint:");?> <?=gettext("10 is ten L2TP clients"); ?>
+                        <?=gettext("Hint: 10 is ten L2TP clients"); ?>
                       </div>
                     </td>
                   </tr>
