@@ -86,11 +86,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['iface_array'])) {
         foreach($pconfig['iface_array'] as $iface) {
             if ($iface == 'wan') {
-                $input_errors[] = gettext('It is a security risk to specify WAN in the \'Interface\' field');
+                $input_errors[] = gettext('It is a security risk to specify WAN as an internal interface.');
             } elseif ($iface == $pconfig['ext_iface']) {
                 $input_errors[] = gettext('You cannot select the external interface as an internal interface.');
             }
         }
+    } else {
+        $input_errors[] = gettext('You must specify at least one internal interface.');
     }
     if (!empty($pconfig['overridewanip']) && !is_ipaddr($pconfig['overridewanip'])) {
         $input_errors[] = gettext('You must specify a valid ip address in the \'Override WAN address\' field');
