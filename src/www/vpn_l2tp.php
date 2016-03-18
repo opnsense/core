@@ -199,9 +199,9 @@ include("head.inc");
                   <tr>
                     <td></td>
                     <td>
-                      <input name="mode" type="radio" onclick="enable_change(false)" value="off" <?=($pconfig['mode'] != "server") && ($pconfig['mode'] != "redir") ? "checked=\"checked\"" : "";?>/>
+                      <input name="mode" type="radio" value="off" <?=($pconfig['mode'] != "server") && ($pconfig['mode'] != "redir") ? "checked=\"checked\"" : "";?>/>
                       <?=gettext("Off"); ?> <br/>
-                      <input type="radio" name="mode" value="server" onclick="enable_change(false)" <?=$pconfig['mode'] == "server" ? "checked=\"checked\"" : "";?>/>
+                      <input type="radio" name="mode" value="server"  <?=$pconfig['mode'] == "server" ? "checked=\"checked\"" : "";?>/>
                       <?=gettext("Enable L2TP server"); ?></td>
                     </td>
                   </tr>
@@ -326,12 +326,12 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_radius" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RADIUS"); ?></td>
                     <td>
-                      <input name="radiusenable" type="checkbox" id="radiusenable" onclick="enable_change(false)" value="yes" <?=($pconfig['radiusenable']) ? "checked=\"checked\"" : "";?>/>
+                      <input name="radiusenable" type="checkbox" id="radiusenable" value="yes" <?=($pconfig['radiusenable']) ? "checked=\"checked\"" : "";?>/>
                       <strong> <?=gettext("Use a RADIUS server for authentication");?><br /></strong>
                       <div class="hidden" for="help_for_radius">
                         <?=gettext("When set, all users will be authenticated using the RADIUS server specified below. The local user database will not be used.");?>
                       </div>
-                      <input name="radacct_enable" type="checkbox" id="radacct_enable" onclick="enable_change(false)" value="yes" <?=($pconfig['radacct_enable']) ? "checked=\"checked\"" : "";?>/>
+                      <input name="radacct_enable" type="checkbox" id="radacct_enable" value="yes" <?=($pconfig['radacct_enable']) ? "checked=\"checked\"" : "";?>/>
                       <strong><?=gettext("Enable RADIUS accounting");?></strong><br />
                       <div class="hidden" for="help_for_radius">
                         <?=gettext("Sends accounting packets to the RADIUS server.");?>
@@ -368,7 +368,7 @@ include("head.inc");
                   <tr>
                     <td></td>
                     <td width="78%">
-                      <input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" onclick="enable_change(true)" />
+                      <input id="submit" name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     </td>
                   </tr>
                   <tr>
