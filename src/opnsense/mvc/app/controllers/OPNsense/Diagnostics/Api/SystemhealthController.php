@@ -546,7 +546,7 @@ class SystemhealthController extends ApiControllerBase
         if ($rrd_details['filename'] != "") {
             $backend = new Backend();
             $response = $backend->configdpRun("systemhealth fetch ", array($rrd_details['filename']));
-            $xml = simplexml_load_string($response);
+            $xml = simplexml_load_string($response);	/* XXX can cause a crash report */
         } else {
             $xml = false;
         }
