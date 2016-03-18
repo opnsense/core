@@ -38,23 +38,20 @@ if (!isset($config['l2tp']['user'])) {
 }
 $a_secret = &$config['l2tp']['user'];
 
-if ($_POST) {
-    $pconfig = $_POST;
-
-    if ($_POST['apply']) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // delete entry
+    if (isset($_POST['act']) && $_POST['act'] == "del" && isset($_POST['id'])) {
+        if (!empty($a_secret[$_POST['id']])) {
+            unset($a_secret[$_POST['id']]);
+            write_config();
+        }
+        exit;
+    } elseif (!empty($_POST['apply'])) {
         vpn_l2tp_configure();
-        $savemsg = get_std_save_message();
         clear_subsystem_dirty('l2tpusers');
-    }
-}
-
-if ($_GET['act'] == "del") {
-    if ($a_secret[$_GET['id']]) {
-        unset($a_secret[$_GET['id']]);
-        write_config();
-        mark_subsystem_dirty('l2tpusers');
         header("Location: vpn_l2tp_users.php");
         exit;
+
     }
 }
 
@@ -67,61 +64,84 @@ $main_buttons = array(
 ?>
 
 <body>
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    // delete host action
+    $(".act_delete_user").click(function(event){
+      event.preventDefault();
+      var id = $(this).data("id");
+      // delete single
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_DANGER,
+        title: "<?=gettext("delete user"); ?>",
+        message: "<?=gettext("Do you really want to delete this user?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $.post(window.location, {act: 'del', id:id}, function(data) {
+                        location.reload();
+                    });
+                }
+              }]
+      });
+    });
+  });
+  </script>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (isset($savemsg)) {
-                    print_info_box($savemsg);
-} ?>
-        <?php if (isset($config['l2tp']['radius']['enable'])) {
-                    print_info_box(gettext("Warning: RADIUS is enabled. The local user database will not be used."));
-} ?>
-        <?php if (is_subsystem_dirty('l2tpusers')) :
-?><br/>
+<?php
+      if (isset($savemsg)) {
+          print_info_box($savemsg);
+      }
+      if (isset($config['l2tp']['radius']['enable'])) {
+          print_info_box(gettext("Warning: RADIUS is enabled. The local user database will not be used."));
+      }
+      if (is_subsystem_dirty('l2tpusers')) :?><br/>
         <?php print_info_box_apply(gettext("The l2tp user list has been modified") . ".<br />" . gettext("You must apply the changes in order for them to take effect") . ".<br /><b>" . gettext("Warning: this will terminate all current l2tp sessions!") . "</b>");?>
         <?php
-endif; ?>
-          <section class="col-xs-12">
-            <div class="tab-content content-box col-xs-12">
-              <form method="post" name="iform" id="iform">
-                 <div class="table-responsive">
-                  <table class="table table-striped table-sort">
-                   <tr>
-                    <td class="listhdrr"><?=gettext("Username");?></td>
-                    <td class="listhdr"><?=gettext("IP address");?></td>
-                    <td class="list"></td>
-                  </tr>
-                  <?php $i = 0; foreach ($a_secret as $secretent) :
-?>
+      endif; ?>
+        <section class="col-xs-12">
+          <div class="tab-content content-box col-xs-12">
+            <form method="post" name="iform" id="iform">
+              <div class="table-responsive">
+                <table class="table table-striped">
                   <tr>
-                    <td class="listlr">
-                      <?=htmlspecialchars($secretent['name']);?>
-                    </td>
-                    <td class="listr">
-                          <?php if ($secretent['ip'] == "") {
+                    <td><?=gettext("Username");?></td>
+                    <td><?=gettext("IP address");?></td>
+                    <td></td>
+                  </tr>
+<?php
+                  $i = 0;
+                  foreach ($a_secret as $secretent) :?>
+                  <tr>
+                    <td><?=htmlspecialchars($secretent['name']);?></td>
+                    <td>
+<?php
+                      if ($secretent['ip'] == "") {
                               $secretent['ip'] = "Dynamic";
-} ?>
-                          <?=htmlspecialchars($secretent['ip']);?>&nbsp;
+                      } ?>
+                      <?=htmlspecialchars($secretent['ip']);?>&nbsp;
                     </td>
-                    <td class="list nowrap" width="150">
-                      <a href="vpn_l2tp_users_edit.php?id=<?=$i;?>" class="btn btn-default"><span class="glyphicon glyphicon-edit"></span></a>
-                      <a href="vpn_l2tp_users.php?act=del&amp;id=<?=$i;?>" class="btn btn-default"
-                         onclick="return confirm('<?=gettext("Do you really want to delete this user?");?>')"
-                         title="<?=gettext("delete user"); ?>"><span class="fa fa-trash text-muted"></span>
-                      </a>
+                    <td>
+                      <a href="vpn_l2tp_users_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-edit"></span></a>
+                      <button data-id="<?=$i;?>" type="button" class="act_delete_user btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button>
                     </td>
                   </tr>
 <?php
                   $i++;
                   endforeach; ?>
                 </table>
-               </div>
-              </form>
-            </div>
-          </section>
-        </div>
+              </div>
+            </form>
+          </div>
+        </section>
       </div>
-    </section>
-
+    </div>
+  </section>
 <?php include("foot.inc");
