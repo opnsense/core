@@ -226,7 +226,7 @@ include("head.inc");
                       <div class="hidden" for="help_for_localip">
                         <?=gettext("Enter the IP address the L2TP server should give to clients for use as their \"gateway\"."); ?>
                         <br />
-                        <?=gettext("Typically this is set to an unused IP just outside of the client range"); ?>.
+                        <?=gettext("Typically this is set to an unused IP just outside of the client range."); ?>
                         <br />
                         <br />
                         <?=gettext("NOTE: This should NOT be set to any IP address currently in use on this firewall."); ?></small>
