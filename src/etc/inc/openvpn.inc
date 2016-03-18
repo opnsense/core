@@ -1389,7 +1389,7 @@ function openvpn_get_remote_access_servers()
 
     if (!empty($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as $server) {
-            if (in_array($server['mode'], array('server_tls', 'server_user', 'server_tls_user'))) {
+            if (in_array($server['mode'], array('server_tls', 'server_user', 'server_tls_user', 'p2p_tls'))) {
                 $result[$server['vpnid']] = $server;
             }
         }
