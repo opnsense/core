@@ -116,7 +116,7 @@ defCmdT("top | head -n5", "/usr/bin/top | /usr/bin/head -n5");
 
 defCmdT("sysctl hw.physmem","/sbin/sysctl hw.physmem");
 
-if (is_module_loaded('ipfw')) {
+if (!mwexecf('/sbin/kldstat -qn %s', 'ipfw', true)) {
 	defCmdT('ipfw queue show', '/sbin/ipfw queue show');
 	defCmdT('ipfw pipe show', '/sbin/ipfw pipe show');
 	defCmdT('ipfw show', '/sbin/ipfw show');
