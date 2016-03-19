@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -158,11 +159,11 @@ class Radius implements IAuthConnector
             }
 
             if ($error != null) {
-                syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                syslog(LOG_ERR, 'RadiusError: ' . $error);
             } else {
                 $req = radius_send_request($radius);
                 if (!$req) {
-                    syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                    syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
                     exit;
                 }
                 switch ($req) {
@@ -227,11 +228,11 @@ class Radius implements IAuthConnector
             }
 
             if ($error != null) {
-                syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                syslog(LOG_ERR, 'RadiusError: ' . $error);
             } else {
                 $req = radius_send_request($radius);
                 if (!$req) {
-                    syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                    syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
                     exit;
                 }
                 switch ($req) {
@@ -297,11 +298,11 @@ class Radius implements IAuthConnector
             }
 
             if ($error != null) {
-                syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                syslog(LOG_ERR, 'RadiusError: ' . $error);
             } else {
                 $req = radius_send_request($radius);
                 if (!$req) {
-                    syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                    syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
                     exit;
                 }
                 switch ($req) {
@@ -368,11 +369,11 @@ class Radius implements IAuthConnector
 
         // log errors and perform actual authentication request
         if ($error != null) {
-            syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+            syslog(LOG_ERR, 'RadiusError: ' . $error);
         } else {
             $request = radius_send_request($radius);
             if (!$radius) {
-                syslog(LOG_ERR, 'RadiusError:' . radius_strerror($error));
+                syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
             } else {
                 switch ($request) {
                     case RADIUS_ACCESS_ACCEPT:
