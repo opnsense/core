@@ -3346,10 +3346,6 @@ function interface_6rd_configure($interface = "wan", $wancfg)
         return;
     }
 
-    if (!is_module_loaded('if_stf')) {
-        mwexec('/sbin/kldload if_stf');
-    }
-
     $wanif = get_real_interface($interface);
     $ip4address = find_interface_ip($wanif);
     if ((!is_ipaddrv4($ip4address)) || (is_private_ip($ip4address))) {
@@ -3383,9 +3379,6 @@ function interface_6rd_configure($interface = "wan", $wancfg)
     $rd6brgw = "{$rd6prefix}{$wancfg['gateway-6rd']}";
 
     /* XXX: need to extend to support variable prefix size for v4 */
-    if (!is_module_loaded('if_stf')) {
-        mwexec('/sbin/kldload if_stf');
-    }
     $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
@@ -3495,10 +3488,6 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
     $stflanarr[7] = 1;
     $stflan = Net_IPv6::compress(implode(":", $stflanarr));
 
-    /* setup the stf interface */
-    if (!is_module_loaded("if_stf")) {
-        mwexec("/sbin/kldload if_stf");
-    }
     $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
         legacy_interface_destroy($stfiface);
