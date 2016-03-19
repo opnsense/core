@@ -215,7 +215,7 @@ function legacy_netgraph_attach($ifs)
 
 function legacy_netgraph_detach($ifs)
 {
-        mwexecf('/usr/sbin/ngctl msg %s: detach', array($ifs));
+        mwexecf('/usr/sbin/ngctl msg %s: detach', array($ifs), true);
 }
 
 function legacy_netgraph_rename($tmpifs, $ifs)

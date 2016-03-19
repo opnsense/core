@@ -3346,8 +3346,8 @@ function interface_6rd_configure($interface = "wan", $wancfg)
         return;
     }
 
-    if (!is_module_loaded('if_stf.ko')) {
-        mwexec('/sbin/kldload if_stf.ko');
+    if (!is_module_loaded('if_stf')) {
+        mwexec('/sbin/kldload if_stf');
     }
 
     $wanif = get_real_interface($interface);
@@ -3384,7 +3384,7 @@ function interface_6rd_configure($interface = "wan", $wancfg)
 
     /* XXX: need to extend to support variable prefix size for v4 */
     if (!is_module_loaded('if_stf')) {
-        mwexec('/sbin/kldload if_stf.ko');
+        mwexec('/sbin/kldload if_stf');
     }
     $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
@@ -3497,7 +3497,7 @@ function interface_6to4_configure($interface = 'wan', $wancfg)
 
     /* setup the stf interface */
     if (!is_module_loaded("if_stf")) {
-        mwexec("/sbin/kldload if_stf.ko");
+        mwexec("/sbin/kldload if_stf");
     }
     $stfiface = "{$interface}_stf";
     if (does_interface_exist($stfiface)) {
