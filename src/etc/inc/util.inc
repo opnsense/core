@@ -116,11 +116,6 @@ function unlock($cfglckkey = null)
 	}
 }
 
-function is_module_loaded($module_name)
-{
-	return !mwexecf('/sbin/kldstat -qn %s', $module_name, true);
-}
-
 /* validate non-negative numeric string, or equivalent numeric variable */
 function is_numericint($arg) {
 	return (((is_int($arg) && $arg >= 0) || (is_string($arg) && strlen($arg) > 0 && ctype_digit($arg))) ? true : false);
