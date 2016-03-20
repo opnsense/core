@@ -2,3 +2,4 @@ rc.conf.d:/etc/rc.conf.d/squid
 squid.conf:/usr/local/etc/squid/squid.conf
 newsyslog.conf:/etc/newsyslog.conf.d/squid
 externalACLs.conf:/usr/local/etc/squid/externalACLs.conf
+nobumpsites.acl:/usr/local/etc/squid/nobumpsites.acl

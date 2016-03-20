@@ -197,6 +197,34 @@
                     ]]></help>
             </field>
             <field>
+                <id>proxy.forward.sslbump</id>
+                <label>Enable SSL mode</label>
+                <type>checkbox</type>
+                <help><![CDATA[
+                  Enable sslbump mode,
+                  which makes the proxy act like a man in the middle between the internet and your clients.
+                  Be aware of the security implications before enabling this option.
+                  ]]></help>
+            </field>
+            <field>
+                <id>proxy.forward.sslcertificate</id>
+                <label>CA to use</label>
+                <type>dropdown</type>
+                <help><![CDATA[
+                  Select a Certificate Authority to use.
+                  ]]></help>
+            </field>
+            <field>
+                <id>proxy.forward.sslnobumpsites</id>
+                <label>SSL no bump sites</label>
+                <type>select_multiple</type>
+                <style>tokenize</style>
+                <allownew>true</allownew>
+                <help><![CDATA[
+                  Create a list of sites which may not be inspected, for example bank sites.
+                  ]]></help>
+            </field>
+            <field>
                 <id>proxy.forward.addACLforInterfaceSubnets</id>
                 <label>Allow interface subnets</label>
                 <type>checkbox</type>

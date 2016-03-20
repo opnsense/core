@@ -159,6 +159,20 @@
                 <ValidationMessage>Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </port>
+            <sslbump type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </sslbump>
+            <sslcertificate type="CertificateField">
+                <Required>N</Required>
+                <Type>ca</Type>
+                <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+            </sslcertificate>
+            <sslnobumpsites type="CSVListField">
+              <Required>N</Required>
+              <mask>/^([a-zA-Z0-9.:,]){0,}/</mask>
+              <ValidationMessage>Please enter ip addresses or domain names here</ValidationMessage>
+            </sslnobumpsites>
             <ftpInterfaces type="InterfaceField">
                 <Required>N</Required>
                 <multiple>Y</multiple>
