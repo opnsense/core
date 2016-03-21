@@ -512,7 +512,7 @@ $( document ).ready(function() {
                   <td class="hidden-xs"> </td>
                   <td class="list">
                     <a href="system_groupmanager.php?act=new" class="btn btn-default btn-xs"
-                       title="<?=gettext("add user");?>" data-toggle="tooltip">
+                       title="<?=gettext("add group");?>" data-toggle="tooltip">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
                   </td>
