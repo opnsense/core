@@ -35,7 +35,7 @@ function vpn_configure()
     return array(
         'vpn_pptpd_configure',
         'vpn_pppoes_configure',
-        'vpn_l2tp_configure'
+        'vpn_l2tp_configure',
     );
 }
 
@@ -111,6 +111,7 @@ function vpn_pptpd_configure()
     $pptpdcfg = $config['pptpd'];
 
     killbypid('/var/run/pptp-vpn.pid', 'TERM', true);
+    mwexec('rm -rf /var/etc/pptp-vpn');
 
     if (!isset($pptpdcfg['mode']) || $pptpdcfg['mode'] == 'off') {
         return 0;
@@ -125,7 +126,6 @@ function vpn_pptpd_configure()
         return;
     }
 
-    mwexec('rm -rf /var/etc/pptp-vpn');
     mkdir('/var/etc/pptp-vpn');
 
     switch ($pptpdcfg['mode']) {
@@ -331,6 +331,7 @@ function vpn_pppoe_configure(&$pppoecfg)
     $syscfg = $config['system'];
 
     killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid", 'TERM', true);
+    mwexec("rm -rf /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
 
     if (!isset($pppoecfg['mode']) || $pppoecfg['mode'] == 'off') {
         return 0;
@@ -340,12 +341,10 @@ function vpn_pppoe_configure(&$pppoecfg)
         echo gettext("Configuring PPPoE VPN service...");
     }
 
+    mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
+
     switch ($pppoecfg['mode']) {
-
         case 'server':
-          /* create directory if it does not exist */
-            @mkdir("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
-
             $pppoe_interface = get_real_interface($pppoecfg['interface']);
 
             if ($pppoecfg['paporchap'] == "chap") {
@@ -354,7 +353,7 @@ function vpn_pppoe_configure(&$pppoecfg)
                 $paporchap = "set link enable pap";
             }
 
-          /* write mpd.conf */
+            /* write mpd.conf */
             $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.conf", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_pppoe_configure().") . "\n");
@@ -468,7 +467,7 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-          /* write mpd.links */
+            /* write mpd.links */
             $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.links", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.links in vpn_pppoe_configure().") . "\n");
@@ -495,7 +494,7 @@ EOD;
             unset($mpdlinks);
 
             if ($pppoecfg['username']) {
-              /* write mpd.secret */
+                /* write mpd.secret */
                 $fd = fopen("/var/etc/pppoe{$pppoecfg['pppoeid']}-vpn/mpd.secret", "w");
                 if (!$fd) {
                     printf(gettext("Error: cannot open mpd.secret in vpn_pppoe_configure().") . "\n");
@@ -537,6 +536,7 @@ function vpn_l2tp_configure()
     global $config;
 
     killbypid('/var/run/l2tp-vpn.pid', 'TERM', true);
+    mwexec('rm -rf /var/etc/l2tp-vpn');
 
     $syscfg = $config['system'];
     if (isset($config['l2tp'])) {
@@ -553,7 +553,7 @@ function vpn_l2tp_configure()
         echo gettext('Configuring L2TP VPN service...');
     }
 
-    @mkdir('/var/etc/l2tp-vpn');
+    mkdir('/var/etc/l2tp-vpn');
 
     switch (isset($l2tpcfg['mode'])?$l2tpcfg['mode']:null) {
 
@@ -564,7 +564,7 @@ function vpn_l2tp_configure()
                 $paporchap = "set link enable pap";
             }
 
-          /* write mpd.conf */
+            /* write mpd.conf */
             $fd = fopen("/var/etc/l2tp-vpn/mpd.conf", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.conf in vpn_l2tp_configure().") . "\n");
@@ -666,7 +666,7 @@ EOD;
             fclose($fd);
             unset($mpdconf);
 
-          /* write mpd.links */
+            /* write mpd.links */
             $fd = fopen("/var/etc/l2tp-vpn/mpd.links", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.links in vpn_l2tp_configure().") . "\n");
@@ -693,7 +693,7 @@ EOD;
             fclose($fd);
             unset($mpdlinks);
 
-          /* write mpd.secret */
+            /* write mpd.secret */
             $fd = fopen("/var/etc/l2tp-vpn/mpd.secret", "w");
             if (!$fd) {
                 printf(gettext("Error: cannot open mpd.secret in vpn_l2tp_configure().") . "\n");
