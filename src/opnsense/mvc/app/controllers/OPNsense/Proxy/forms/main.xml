@@ -234,7 +234,7 @@
                 <label>CA to use</label>
                 <type>dropdown</type>
                 <help><![CDATA[
-                  Select a Certificate Authority to use.
+                  Select a Certificate Authority to use. To create a CA, go to <a href="/system_camanager.php">CA Manager</a>.
                   ]]></help>
             </field>
             <field>
