@@ -202,7 +202,7 @@
                 <type>checkbox</type>
                 <help><![CDATA[
                   Enable sslbump mode,
-                  which makes the proxy act like a man in the middle between the internet and your clients.
+                  which makes the proxy act as a man in the middle between the internet and your clients.
                   Be aware of the security implications before enabling this option.
                   ]]></help>
             </field>
@@ -223,6 +223,20 @@
                 <help><![CDATA[
                   Create a list of sites which may not be inspected, for example bank sites.
                   ]]></help>
+            </field>
+            <field>
+                <id>proxy.forward.ssl_crtd_storage_max_size</id>
+                <label>SSL cache size</label>
+                <type>text</type>
+                <help><![CDATA[Enter the maximum size (in MB) to use for SSL certificates.]]></help>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.forward.sslcrtd_children</id>
+                <label>SSL cert workers</label>
+                <type>text</type>
+                <help><![CDATA[Enter the number of ssl certificate workers to use (sslcrtd_children).]]></help>
+                <advanced>true</advanced>
             </field>
             <field>
                 <id>proxy.forward.addACLforInterfaceSubnets</id>
