@@ -47,19 +47,36 @@ function dump_clog_vpn($logfile, $tail, $logtype)
 {
     global $config;
 
-    $sor = isset($config['syslog']['reverse']) ? "-r" : "";
+    $sort = isset($config['syslog']['reverse']) ? '-r' : '';
+    $servers = array();
+
+    switch ($logtype) {
+    case 'pptp':
+        if (isset($config['pptpd']['localip'])) {
+            $servers[] = $config['pptpd']['localip'];
+        }
+        break;
+    case 'l2tp':
+        if (isset($config['l2tp']['localip'])) {
+            $servers[] = $config['l2tp']['localip'];
+        }
+        break;
+    default:
+        break;
+    }
 
     $logarr = "";
-
-    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | tail {$sor} -n " . $tail, $logarr);
+    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | tail {$sort} -n " . $tail, $logarr);
 
     foreach ($logarr as $logent) {
         $logent = preg_split("/\s+/", $logent, 6);
         $llent = explode(",", $logent[5]);
-        $iftype = substr($llent[1], 0, 4);
-        if ($iftype != $logtype) {
+
+	$srv = explode('/', $llent[4]);
+        if (!is_array($srv) || !in_array($srv[0], $servers)) {
             continue;
         }
+
         echo "<tr>\n";
         echo "<td class=\"listlr nowrap\">" . htmlspecialchars(join(" ", array_slice($logent, 0, 3))) . "</td>\n";
 
@@ -104,7 +121,7 @@ include("head.inc");
                 <td class="listhdrr"><?=gettext("User");?></td>
                 <td class="listhdrr"><?=gettext("IP address");?></td>
               </tr>
-              <?php dump_clog_vpn($logfile, $nentries, $logname); ?>
+              <?php dump_clog_vpn($logfile, $nentries, $logtype); ?>
               <?php else:
                 dump_clog($logfile, $nentries);
               endif; ?>

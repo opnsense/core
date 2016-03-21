@@ -78,9 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($_POST['localip'] && !is_ipaddr($_POST['localip'])) {
             $input_errors[] = gettext("A valid server address must be specified.");
         }
-        if (is_ipaddr_configured($_POST['localip'])) {
-            $input_errors[] = gettext("'Server address' parameter should NOT be set to any IP address currently in use on this firewall.");
-        }
         if ($_POST['localip'] && !is_ipaddr($_POST['remoteip'])) {
             $input_errors[] = gettext("A valid remote start address must be specified.");
         }
@@ -95,9 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ((ip2ulong($_POST['localip']) >= $subnet_start) &&
                 (ip2ulong($_POST['localip']) <= $subnet_end)) {
                 $input_errors[] = gettext("The specified server address lies in the remote subnet.");
-            }
-            if ($_POST['localip'] == get_interface_ip("lan")) {
-                $input_errors[] = gettext("The specified server address is equal to the LAN interface address.");
             }
         }
     }
@@ -222,11 +216,6 @@ include("head.inc");
                       <input name="localip" type="text" id="localip" value="<?=$pconfig['localip'];?>" />
                       <div class="hidden" for="help_for_localip">
                         <?=gettext("Enter the IP address the L2TP server should give to clients for use as their \"gateway\"."); ?>
-                        <br />
-                        <?=gettext("Typically this is set to an unused IP just outside of the client range."); ?>
-                        <br />
-                        <br />
-                        <?=gettext("NOTE: This should NOT be set to any IP address currently in use on this firewall."); ?></small>
                       </div>
                     </td>
                   </tr>
