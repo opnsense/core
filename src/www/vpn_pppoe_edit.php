@@ -325,8 +325,9 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                       <select id="n_pppoe_units" name="n_pppoe_units">
 <?php
-                      for ($x=0; $x<255; $x++):?>
-                        <option value="<?=$x;?>" <?=$x == $pconfig['n_pppoe_units'] ? "selected=\"selected\"" : "" ;?>>
+                      $toselect = ($pconfig['n_pppoe_units'] > 0) ? $pconfig['n_pppoe_units'] : 16;
+                      for ($x=1; $x<255; $x++):?>
+                        <option value="<?=$x;?>" <?=$x == $toselect ? "selected=\"selected\"" : "" ;?>>
                             <?=$x;?>
 <?php
                       endfor;?>

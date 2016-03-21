@@ -267,8 +267,9 @@ include("head.inc");
                     <td>
                       <select id="n_l2tp_units" name="n_l2tp_units">
                       <?php
-                                for ($x=0; $x<255; $x++) {
-                                    if ($x == $pconfig['n_l2tp_units']) {
+                                $toselect = ($pconfig['n_l2tp_units'] > 0) ? $pconfig['n_l2tp_units'] : 16;
+                                for ($x=1; $x<255; $x++) {
+                                    if ($x == $toselect) {
                                            $SELECTED = " selected=\"selected\"";
                                     } else {
                                         $SELECTED = "";
