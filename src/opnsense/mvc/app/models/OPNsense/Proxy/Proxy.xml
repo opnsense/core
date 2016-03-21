@@ -77,7 +77,7 @@
             <VisibleHostname type="TextField">
                 <default>localhost</default>
                 <Required>N</Required>
-                <mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</mask>
+                <mask>/^([0-9a-zA-Z\.,_\-:]){0,1024}$/u</mask>
                 <ValidationMessage>Please enter a valid servername, ip address or leave this option blank.</ValidationMessage>
             </VisibleHostname>
             <cache>
