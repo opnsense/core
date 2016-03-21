@@ -69,6 +69,14 @@
                 <default>0</default>
                 <Required>N</Required>
             </suppressVersion>
+            <VisibleEmail type="TextField">
+                <default>localhost</default>
+                <Required>N</Required>
+            </VisibleEmail>
+            <VisibleHostname type="TextField">
+                <default>admin@localhost</default>
+                <Required>N</Required>
+            </VisibleHostname>
             <cache>
                 <local>
                     <enabled type="BooleanField">
