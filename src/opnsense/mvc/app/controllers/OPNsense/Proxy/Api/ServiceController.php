@@ -118,6 +118,7 @@ class ServiceController extends ApiControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
+            $force_restart = false;
             // close session for long running action
             $this->sessionClose();
 
@@ -126,8 +127,20 @@ class ServiceController extends ApiControllerBase
 
             $runStatus = $this->statusAction();
 
+            // some operations can not be performed by a squid -k reconfigure,
+            // try to determine if we need a stop/start here
+            if (is_file('/var/squid/ssl_crtd.id')) {
+                $prev_sslbump_cert = trim(file_get_contents('/var/squid/ssl_crtd.id'));
+            } else {
+                $prev_sslbump_cert = "";
+            }
+            if (((string)$mdlProxy->forward->sslcertificate) != $prev_sslbump_cert) {
+                $force_restart = true;
+            }
+
             // stop squid when disabled
-            if ($runStatus['status'] == "running" && $mdlProxy->general->enabled->__toString() == 0) {
+            if ($runStatus['status'] == "running" &&
+               ($mdlProxy->general->enabled->__toString() == 0 || $force_restart)) {
                 $this->stopAction();
             }
 
@@ -136,7 +149,7 @@ class ServiceController extends ApiControllerBase
 
             // (res)start daemon
             if ($mdlProxy->general->enabled->__toString() == 1) {
-                if ($runStatus['status'] == "running") {
+                if ($runStatus['status'] == "running" && !$force_restart) {
                     $backend->configdRun("proxy reconfigure");
                 } else {
                     $this->startAction();
