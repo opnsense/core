@@ -43,7 +43,6 @@ $l2tpcfg = &$config['l2tp'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['remoteip'] = $l2tpcfg['remoteip'];
     $pconfig['localip'] = $l2tpcfg['localip'];
-    $pconfig['l2tp_subnet'] = $l2tpcfg['l2tp_subnet'];
     $pconfig['mode'] = $l2tpcfg['mode'];
     $pconfig['interface'] = $l2tpcfg['interface'];
     $pconfig['l2tp_dns1'] = $l2tpcfg['dns1'];
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['radacct_enable'] = isset($l2tpcfg['radius']['accounting']);
     $pconfig['radiusserver'] = $l2tpcfg['radius']['server'];
     $pconfig['radiussecret'] = $l2tpcfg['radius']['secret'];
-    $pconfig['radiusissueips'] = $l2tpcfg['radius']['radiusissueips'];
+    $pconfig['radiusissueips'] = isset($l2tpcfg['radius']['radiusissueips']);
     $pconfig['n_l2tp_units'] = $l2tpcfg['n_l2tp_units'];
     $pconfig['paporchap'] = $l2tpcfg['paporchap'];
     $pconfig['secret'] = $l2tpcfg['secret'];
@@ -76,21 +75,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-        if (($_POST['localip'] && !is_ipaddr($_POST['localip']))) {
+        if ($_POST['localip'] && !is_ipaddr($_POST['localip'])) {
             $input_errors[] = gettext("A valid server address must be specified.");
         }
         if (is_ipaddr_configured($_POST['localip'])) {
             $input_errors[] = gettext("'Server address' parameter should NOT be set to any IP address currently in use on this firewall.");
         }
-        if (($_POST['l2tp_subnet'] && !is_ipaddr($_POST['remoteip']))) {
+        if ($_POST['localip'] && !is_ipaddr($_POST['remoteip'])) {
             $input_errors[] = gettext("A valid remote start address must be specified.");
         }
-        if (($_POST['radiusserver'] && !is_ipaddr($_POST['radiusserver']))) {
+        if ($_POST['radiusserver'] && !is_ipaddr($_POST['radiusserver'])) {
             $input_errors[] = gettext("A valid RADIUS server address must be specified.");
         }
 
         if (!$input_errors) {
-            $_POST['remoteip'] = $pconfig['remoteip'] = gen_subnet($_POST['remoteip'], $_POST['l2tp_subnet']);
             $subnet_start = ip2ulong($_POST['remoteip']);
             $subnet_end = ip2ulong($_POST['remoteip']) + $_POST['n_l2tp_units'] - 1;
 
@@ -107,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!$input_errors) {
         $l2tpcfg['remoteip'] = $_POST['remoteip'];
         $l2tpcfg['localip'] = $_POST['localip'];
-        $l2tpcfg['l2tp_subnet'] = $_POST['l2tp_subnet'];
         $l2tpcfg['mode'] = $_POST['mode'];
         $l2tpcfg['interface'] = $_POST['interface'];
         $l2tpcfg['n_l2tp_units'] = $_POST['n_l2tp_units'];
@@ -238,27 +235,7 @@ include("head.inc");
                     <td>
                       <input name="remoteip" type="text" id="remoteip" value="<?=$pconfig['remoteip'];?>" />
                       <div class="hidden" for="help_for_remoteip">
-                        <?=gettext("Specify the starting address for the client IP address subnet.");?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_l2tp_subnet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Subnet Mask"); ?></td>
-                    <td>
-                      <select id="l2tp_subnet" name="l2tp_subnet">
-<?php
-                      for ($x=0; $x<33; $x++) {
-                          if ($x == $pconfig['l2tp_subnet']) {
-                                 $SELECTED = " selected=\"selected\"";
-                          } else {
-                              $SELECTED = "";
-                          }
-                          echo "<option value=\"{$x}\"{$SELECTED}>{$x}</option>\n";
-                      }
-                      ?>
-                      </select>
-                      <div class="hidden" for="help_for_l2tp_subnet">
-                        <?=gettext("Hint: 24 is 255.255.255.0"); ?>
+                        <?=gettext("Specify the starting address for the client IP addresses.");?>
                       </div>
                     </td>
                   </tr>
@@ -358,10 +335,10 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_rradiusissueips" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RADIUS Issued IP's");?></td>
+                    <td><a id="help_for_radiusissueips" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RADIUS Issued IP's");?></td>
                     <td>
-                      <input name="radiusissueips" value="yes" type="checkbox" class="form-control" id="radiusissueips"<?=isset($pconfig['radiusissueips']) ? " checked=\"checked\"" : "";?>>
-                      <div class="hidden" for="help_for_rradiusissueips">
+                      <input name="radiusissueips" value="yes" type="checkbox" class="form-control" id="radiusissueips"<?=$pconfig['radiusissueips'] ? " checked=\"checked\"" : "";?>>
+                      <div class="hidden" for="help_for_radiusissueips">
                         <?=gettext("Issue IP Addresses via RADIUS server.");?>
                       </div>
                     </td>
