@@ -300,7 +300,7 @@ include("head.inc");
                       <td>
                         <input name="remoteip" type="text" id="remoteip" value="<?=htmlspecialchars($pconfig['remoteip']);?>" />
                         <div class="hidden" for="help_for_remoteip">
-                          <?=gettext("Specify the starting address for the client IP subnet."); ?>
+                          <?=gettext("Specify the starting address for the client IP address subnet."); ?>
                         </div>
                       </td>
                     </tr>
