@@ -20,3 +20,6 @@ if [ ! -d /var/squid/ssl_crtd ]; then
 chown -R squid:squid /var/squid/ssl_crtd
 chmod -R 750 /var/squid/ssl_crtd
 fi
+
+# generate SSL bump certificate
+/usr/local/opnsense/scripts/proxy/generate_cert.php
