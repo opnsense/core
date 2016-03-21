@@ -202,9 +202,18 @@
                 <type>checkbox</type>
                 <help><![CDATA[
                   Enable sslbump mode,
-                  which makes the proxy act as a man in the middle between the internet and your clients.
+                  which makes the proxy act as a man in the middle between the internet and your clients.<br/>
                   Be aware of the security implications before enabling this option.
+                  <br/><br/>
+                  Transparent HTTP proxy needs to be enabled and you need nat rules to reflect your traffic
+                  for this feature to work.
                   ]]></help>
+            </field>
+            <field>
+                <id>proxy.forward.sslbumpport</id>
+                <label>SSL Proxy port</label>
+                <type>text</type>
+                <help><![CDATA[The port the ssl proxy service will listen to.]]></help>
             </field>
             <field>
                 <id>proxy.forward.sslcertificate</id>
@@ -221,7 +230,8 @@
                 <style>tokenize</style>
                 <allownew>true</allownew>
                 <help><![CDATA[
-                  Create a list of sites which may not be inspected, for example bank sites.
+                  Create a list of sites which may not be inspected, for example bank sites.<br/>
+                  Prefix the domain with a . to accept all subdomains (e.g. .google.com).
                   ]]></help>
             </field>
             <field>
