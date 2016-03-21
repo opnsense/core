@@ -86,13 +86,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
 
-        if (($_POST['localip'] && !is_ipaddr($_POST['localip']))) {
+        if ($_POST['localip'] && !is_ipaddr($_POST['localip'])) {
             $input_errors[] = gettext("A valid server address must be specified.");
         }
-        if (is_ipaddr_configured($_POST['localip'])) {
-            $input_errors[] = gettext("'Server address' parameter should NOT be set to any IP address currently in use on this firewall.");
-        }
-        if (!is_ipaddr($_POST['remoteip'])) {
+        if ($_POST['remoteip'] && !is_ipaddr($_POST['remoteip'])) {
             $input_errors[] = gettext("A valid remote start address must be specified.");
         }
         if (($_POST['radiusserver'] && !is_ipaddr($_POST['radiusserver']))) {
@@ -106,10 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ((ip2ulong($_POST['localip']) >= $subnet_start) &&
                 (ip2ulong($_POST['localip']) <= $subnet_end)) {
                 $input_errors[] = gettext("The specified server address lies in the remote subnet.");
-            }
-            // TODO: Should this check be for any local IP address?
-            if ($_POST['localip'] == $config['interfaces']['lan']['ipaddr']) {
-                $input_errors[] = gettext("The specified server address is equal to the LAN interface address.");
             }
         }
     } elseif ($_POST['mode'] == "redir") {
@@ -221,7 +214,7 @@ include("head.inc");
             'It should be considered an unencrypted tunneling protocol.'
           ) .  ' <a href="https://isc.sans.edu/diary/End+of+Days+for+MS-CHAPv2/13807">' .
           gettext('Read more') . '</a>.',
-          'danger'
+          'warning'
         ); ?>
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
@@ -287,11 +280,6 @@ include("head.inc");
                         <input name="localip" type="text" id="localip" value="<?=$pconfig['localip'];?>" />
                         <div class="hidden" for="help_for_localip">
                           <?=gettext("Enter the IP address the PPTP server should give to clients for use as their \"gateway\"."); ?>
-                          <br />
-                          <?=gettext("Typically this is set to an unused IP just outside of the client range."); ?>
-                          <br />
-                          <br />
-                          <?=gettext("NOTE: This should NOT be set to any IP address currently in use on this firewall."); ?>
                         </div>
                       </td>
                     </tr>
