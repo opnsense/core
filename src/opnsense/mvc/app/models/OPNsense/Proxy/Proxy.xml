@@ -159,6 +159,13 @@
                 <ValidationMessage>Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
                 <Required>Y</Required>
             </port>
+            <sslbumpport type="IntegerField">
+                <default>3129</default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>SSL Proxy port needs to be an integer value between 1 and 65535</ValidationMessage>
+                <Required>Y</Required>
+            </sslbumpport>
             <sslbump type="BooleanField">
                 <default>0</default>
                 <Required>Y</Required>
