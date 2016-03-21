@@ -75,6 +75,20 @@
                 <advanced>true</advanced>
             </field>
             <field>
+                <id>proxy.general.VisibleHostname</id>
+                <label>Visible Hostname</label>
+                <type>text</type>
+                <help><![CDATA[This is the hostname to be displayed in proxy server error messages.]]></help>
+                <advanced>true</advanced>
+            </field>
+            <field>
+                <id>proxy.general.VisibleEmail</id>
+                <label>Administrator's Email</label>
+                <type>text</type>
+                <help><![CDATA[This is the email address displayed in error messages to the users.]]></help>
+                <advanced>true</advanced>
+            </field>
+            <field>
                 <id>proxy.general.suppressVersion</id>
                 <label>Suppress version string</label>
                 <type>checkbox</type>
