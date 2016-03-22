@@ -8,11 +8,7 @@ for SQUID_DIR in ${SQUID_DIRS}; do
     chmod -R 750 ${SQUID_DIR}
 done
 /usr/sbin/pw groupmod proxy -m squid
-/usr/local/sbin/squid -z > /dev/null 2>&1
-
-# wait a moment before exit, running squid -z and squid start without time between them sometimes results in
-# some vague errors.
-sleep 1
+/usr/local/sbin/squid -z -N > /dev/null 2>&1
 
 # remove ssl certificate store in case the user changed the CA
 if [ -f /usr/local/etc/squid/ca.pem.id ]; then
