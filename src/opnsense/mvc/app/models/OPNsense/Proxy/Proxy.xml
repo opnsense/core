@@ -70,7 +70,7 @@
                 <Required>N</Required>
             </suppressVersion>
             <VisibleEmail type="EmailField">
-                <default>admin@localhost</default>
+                <default>admin@localhost.local</default>
                 <Required>N</Required>
                 <ValidationMessage>Please enter a valid email address.</ValidationMessage>
             </VisibleEmail>
