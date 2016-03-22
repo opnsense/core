@@ -1,3 +1,0 @@
-#!/bin/sh
-
-/usr/bin/logger -p local3.info "login,$1,$4,$5,$3"

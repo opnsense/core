@@ -43,37 +43,20 @@ if ($_POST['clear']) {
     clear_clog($logfile);
 }
 
-function dump_clog_vpn($logfile, $tail, $logtype)
+function dump_clog_vpn($file, $tail, $type)
 {
     global $config;
 
     $sort = isset($config['syslog']['reverse']) ? '-r' : '';
-    $servers = array();
+    $logarr = array();
 
-    switch ($logtype) {
-    case 'pptp':
-        if (isset($config['pptpd']['localip'])) {
-            $servers[] = $config['pptpd']['localip'];
-        }
-        break;
-    case 'l2tp':
-        if (isset($config['l2tp']['localip'])) {
-            $servers[] = $config['l2tp']['localip'];
-        }
-        break;
-    default:
-        break;
-    }
-
-    $logarr = "";
-    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | tail {$sort} -n " . $tail, $logarr);
+    exec("/usr/local/sbin/clog " . escapeshellarg($file) . " | tail {$sort} -n " . escapeshellarg($tail), $logarr);
 
     foreach ($logarr as $logent) {
-        $logent = preg_split("/\s+/", $logent, 6);
-        $llent = explode(",", $logent[5]);
+        $logent = preg_split('/\s+/', $logent, 6);
+        $llent = explode(',', $logent[5]);
 
-	$srv = explode('/', $llent[4]);
-        if (!is_array($srv) || !in_array($srv[0], $servers)) {
+        if ($llent[1] !== $type) {
             continue;
         }
 
