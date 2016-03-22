@@ -989,7 +989,7 @@ function filter_generate_optcfg_array()
         $oic['virtual'] = true;
         $FilterIflist['l2tp'] = $oic;
     }
-    if (isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe']) && (count($config['pppoes']['pppoe']) > 0)) {
+    if (isset($config['pppoes']['pppoe'])) {
         $pppoeifs = array();
         foreach($config['pppoes']['pppoe'] as $pppoe) {
             if ($pppoe['mode'] == "server") {

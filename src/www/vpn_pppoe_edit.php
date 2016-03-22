@@ -140,15 +140,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid RADIUS server address must be specified.");
         }
 
-        $pconfig['remoteip'] = gen_subnet($pconfig['remoteip'], $pconfig['pppoe_subnet']);
         $subnet_start = ip2ulong($pconfig['remoteip']);
         $subnet_end = ip2ulong($pconfig['remoteip']) + $pconfig['pppoe_subnet'] - 1;
         if ((ip2ulong($pconfig['localip']) >= $subnet_start) &&
             (ip2ulong($pconfig['localip']) <= $subnet_end)) {
             $input_errors[] = gettext("The specified server address lies in the remote subnet.");
-        }
-        if ($pconfig['localip'] == get_interface_ip($pconfig['interface'])) {
-            $input_errors[] = gettext("The specified server address is equal to an interface ip address.");
         }
     }
 
@@ -305,18 +301,11 @@ legacy_html_escape_form_data($pconfig);
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_pppoe_subnet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Subnet netmask"); ?></td>
+                    <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Server address"); ?></td>
                     <td>
-                      <select id="pppoe_subnet" name="pppoe_subnet">
-<?php
-                      for ($x=0; $x<33; $x++):?>
-                        <option value="<?=$x;?>" <?=$x == $pconfig['pppoe_subnet'] ? "selected=\"selected\"" : "" ;?>>
-                            <?=$x;?>
-<?php
-                      endfor;?>
-                      </select>
-                      <div class="hidden" for="help_for_pppoe_subnet">
-                        <?=gettext("Hint: 24 is 255.255.255.0"); ?>
+                      <input name="localip" type="text" value="<?=$pconfig['localip'];?>" />
+                      <div class="hidden" for="help_for_localip">
+                        <?=gettext("Enter the IP address the PPPoE server should give to clients for use as their \"gateway\"."); ?>
                       </div>
                     </td>
                   </tr>
@@ -338,25 +327,27 @@ legacy_html_escape_form_data($pconfig);
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Server address"); ?></td>
-                    <td>
-                      <input name="localip" type="text" value="<?=$pconfig['localip'];?>" />
-                      <div class="hidden" for="help_for_localip">
-                        <?=gettext("Enter the IP address the PPPoE server should give to clients for use as their \"gateway\"."); ?>
-                        <br />
-                        <?=gettext("Typically this is set to an unused IP just outside of the client range."); ?>
-                        <br />
-                        <br />
-                        <?=gettext("NOTE: This should NOT be set to any IP address currently in use on this firewall."); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
                     <td><a id="help_for_remoteip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Remote address range"); ?></td>
                     <td>
                       <input name="remoteip" type="text" value="<?=$pconfig['remoteip'];?>" />
                       <div class="hidden" for="help_for_remoteip">
                         <?=gettext("Specify the starting address for the client IP address subnet."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_pppoe_subnet" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Subnet netmask"); ?></td>
+                    <td>
+                      <select id="pppoe_subnet" name="pppoe_subnet">
+<?php
+                      for ($x=0; $x<33; $x++):?>
+                        <option value="<?=$x;?>" <?=$x == $pconfig['pppoe_subnet'] ? "selected=\"selected\"" : "" ;?>>
+                            <?=$x;?>
+<?php
+                      endfor;?>
+                      </select>
+                      <div class="hidden" for="help_for_pppoe_subnet">
+                        <?=gettext("Hint: 24 is 255.255.255.0"); ?>
                       </div>
                     </td>
                   </tr>
