@@ -677,7 +677,7 @@ $( document ).ready(function() {
                             }
                         }
                         foreach ($categories as $category):?>
-                        <option value="<?=$category;?>"><?=$category;?></value>
+                        <option value="<?=$category;?>"><?=$category;?></option>
 <?php
                         endforeach;?>
                       </select>
