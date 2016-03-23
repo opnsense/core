@@ -489,12 +489,12 @@ include("head.inc");
                                   <input type="text" class="fld_detail"  name="host_url[]" value="<?=$address;?>"/>
                                 </td>
                                 <td>
-                                  <input type="text" name="detail[]" value="<?= isset($detail_desc[$addressid])?$detail_desc[$addressid]:"";?>"?>
+                                  <input type="text" name="detail[]" value="<?= isset($detail_desc[$addressid])?$detail_desc[$addressid]:"";?>"/>
                                 </td>
                                 <td>
 <?php                          if ($addressid ==0):
 ?>
-                                  <input type="text" class="input-sm" id="updatefreq" name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
+                                  <input type="text" class="input-sm" id="updatefreq" name="updatefreq" value="<?=$pconfig['updatefreq'];?>"/>
 <?php                          endif;
 ?>
                                 </td>
