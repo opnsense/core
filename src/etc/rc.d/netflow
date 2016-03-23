@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# Copyright (C) 2016 Deciso B.V.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+# OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# load standard rc
+. /etc/rc.subr
+
+# load netflow config
+if [ -f /usr/local/etc/netflow.conf ]; then
+    . /usr/local/etc/netflow.conf
+fi
+
+name=netflow
+rcvar=netflow_enable
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+
+[ -z "$netflow_enable" ] && netflow_enable="NO"
+
+# setup_interface (interface, internal destination, destinations)
+# - use netgraph + ng_netflow in combination with samplicate to record netflow data and send it to multiple locations
+setup_interface()
+{
+    interface=$1
+    netflow_int_destination=$2
+    netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`
+    destinations=`echo $3 | /usr/bin/sed 's/:/\//g'`
+    echo "setup $interface ($netflow_int_destination $destinations)"
+    # make sure netgraph is attached
+    /usr/local/sbin/ngattach $interface
+    # remove earlier setup (if any)
+    /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
+    # configure netflow for this interface, sending all to localhost
+    /usr/sbin/ngctl -f-  <<-SEQ
+       mkpeer $interface: netflow	lower iface0
+       name	$interface:lower netflow_em0
+       connect $interface: netflow_$interface: upper	out0
+       mkpeer netflow_$interface: ksocket export inet/dgram/udp
+       msg netflow_$interface:export connect inet/$netflow_int_destination
+SEQ
+    # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
+    if [ "$destinations" != "" ]; then
+        /usr/local/bin/samplicate -s 127.0.0.1 -f -p $netflow_port $destinations
+    fi
+}
+
+netflow_start()
+{
+    for interface in $netflow_interfaces
+    do
+        int_destination="netflow_"$interface"_int_destination"
+        eval "int_destination=\$$int_destination"
+        destinations="netflow_"$interface"_destinations"
+        eval "destinations=\$$destinations"
+        if [ "$int_destination" != "" ]; then
+          setup_interface "$interface" "$int_destination" "$destinations"
+        fi
+    done
+}
+
+netflow_stop()
+{
+    #todo
+}
+
+load_rc_config $name
+run_rc_command $1
