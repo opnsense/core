@@ -12,7 +12,7 @@ LOCALEDIR=	/usr/local/share/locale/%%LANG%%/LC_MESSAGES
 # stable
 LANGUAGES=	de_DE fr_FR ja_JP zh_CN
 # devel
-LANGUAGES+=	es_CO mn_MN nl_NL
+LANGUAGES+=	es_CO mn_MN nl_NL ru_RU
 
 TEMPLATE=	en_US
 INSTALL=
