@@ -236,7 +236,7 @@ $( document ).ready(function() {
   });
 
   // hide category search when not used
-  if ($("#fw_category > option").length == 1) {
+  if ($("#fw_category > option").length == 0) {
       $("#fw_category").addClass('hidden');
   }
 
