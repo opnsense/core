@@ -39,6 +39,7 @@ import sys
 import logging
 import signal
 import time
+import socket
 import subprocess
 import modules.processhandler
 import modules.csconfigparser
@@ -144,14 +145,17 @@ else:
     # run as daemon, wrap the actual work process to enable automatic restart on sudden death
     syslog_socket = "/var/run/log"
     if os.path.exists(syslog_socket):
-        # bind log handle to syslog to catch messages from Daemonize()
-        # (if syslog facility is active)
-        loghandle = logging.getLogger("configd.py")
-        loghandle.setLevel(logging.INFO)
-        handler = logging.handlers.SysLogHandler(address=syslog_socket,
-                                                 facility=logging.handlers.SysLogHandler.LOG_DAEMON)
-        handler.setFormatter(logging.Formatter("%(name)s %(message)s"))
-        loghandle.addHandler(handler)
+        try:
+            # bind log handle to syslog to catch messages from Daemonize()
+            # (if syslog facility is active)
+            loghandle = logging.getLogger("configd.py")
+            loghandle.setLevel(logging.INFO)
+            handler = logging.handlers.SysLogHandler(address=syslog_socket,
+                                                     facility=logging.handlers.SysLogHandler.LOG_DAEMON)
+            handler.setFormatter(logging.Formatter("%(name)s %(message)s"))
+            loghandle.addHandler(handler)
+        except socket.error:
+            loghandle = None
     else:
         loghandle = None
     # daemonize process
