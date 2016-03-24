@@ -39,31 +39,36 @@ stop_cmd="${name}_stop"
 
 [ -z "$netflow_enable" ] && netflow_enable="NO"
 
-# setup_interface (interface, internal destination, destinations)
+# setup_interface (interface)
 # - use netgraph + ng_netflow in combination with samplicate to record netflow data and send it to multiple locations
 setup_interface()
 {
+    # set netflow version (export keyword)
+    if [ "$netflow_version" == "9" ]; then
+        nfversion="9"
+    else
+        nfversion=""
+    fi
     interface=$1
-    netflow_int_destination=$2
-    netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`
-    destinations=`echo $3 | /usr/bin/sed 's/:/\//g'`
-    echo "setup $interface ($netflow_int_destination $destinations)"
+    # determine (snmp) ifIndex
+    ifIndex=`/usr/bin/netstat -i | /usr/bin/grep Link# | /usr/bin/grep $interface | awk '{print $3}' | /usr/bin/sed 's/<Link#//g' | /usr/bin/sed 's/>//g'`
+    if [ "$ifIndex" == "" ]; then
+        echo "error : interface $interface not found"
+        return
+    fi
+    echo "setup $interface"
     # make sure netgraph is attached
     /usr/local/sbin/ngattach $interface
     # remove earlier setup (if any)
     /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
     # configure netflow for this interface, sending all to localhost
     /usr/sbin/ngctl -f-  <<-SEQ
-       mkpeer $interface: netflow	lower iface0
+       mkpeer $interface: netflow	lower iface$ifIndex
        name	$interface:lower netflow_$interface
-       connect $interface: netflow_$interface: upper	out0
+       connect $interface: netflow_$interface: upper	out$ifIndex
        mkpeer netflow_$interface: ksocket export inet/dgram/udp
-       msg netflow_$interface:export connect inet/$netflow_int_destination
+       msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
 SEQ
-    # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
-    if [ "$destinations" != "" ]; then
-        /usr/sbin/daemon -p /var/run/netflow_samplicate_$interface -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
-    fi
 }
 
 netflow_start()
@@ -73,33 +78,33 @@ netflow_start()
         echo "already running"
         return
     fi
+    # configure interfaces
     for interface in $netflow_interfaces
     do
-        int_destination="netflow_"$interface"_int_destination"
-        eval "int_destination=\$$int_destination"
-        destinations="netflow_"$interface"_destinations"
-        eval "destinations=\$$destinations"
-        if [ "$int_destination" != "" ]; then
-          setup_interface "$interface" "$int_destination" "$destinations"
-        fi
+          setup_interface "$interface"
     done
+    # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
+    if [ "$netflow_destinations" != "" ]; then
+        netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`
+        destinations=`echo $netflow_destinations | /usr/bin/sed 's/:/\//g'`
+        /usr/sbin/daemon -p /var/run/netflow_samplicate.pid -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
+    fi
+
 }
 
 # stop netflow collect and distribution
 netflow_stop()
 {
-    # kill all samplicate processes
-    for samplicate_pid in `ls /var/run/netflow_samplicate_* 2>/dev/null`
-    do
-        kill -9 `cat $samplicate_pid`
-    done
+    # kill all samplicate process
+    if [ -f /var/run/netflow_samplicate.pid ]; then
+        kill -9 `cat /var/run/netflow_samplicate.pid`
+    fi
 
     # cleanup netflow processes
     for netflow_node in `ngctl list | grep netflow_ | awk '{print $2;}'`
     do
         /usr/sbin/ngctl shutdown  $netflow_node:
     done
-
 }
 
 load_rc_config $name
