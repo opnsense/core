@@ -1020,7 +1020,7 @@ $( document ).ready(function() {
                             <td></td>
                             <td width="20px"></td>
                             <td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
-                            <td width="200px"><?= gettext('System Admininistrator') ?></td>
+                            <td width="200px"><?= gettext('System Administrator') ?></td>
                             <td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
                             <td width="200px"><?= gettext('Disabled User') ?></td>
                             <td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
