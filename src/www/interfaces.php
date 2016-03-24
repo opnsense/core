@@ -1726,9 +1726,9 @@ include("head.inc");
                             <input name="blockpriv" type="checkbox" id="blockpriv" value="yes" <?=!empty($pconfig['blockpriv']) ? "checked=\"checked\"" : ""; ?> />
                             <div class="hidden" for="help_for_blockpriv">
                               <?=gettext("When set, this option blocks traffic from IP addresses that are reserved " .
-                              "for private  networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback addresses (127/8)."); ?>&nbsp;&nbsp; <?=gettext("You should generally " .
-                              "leave this option turned on, unless your WAN network lies in such " .
-                              "a private address space, too."); ?>
+                                "for private networks as per RFC 1918 (10/8, 172.16/12, 192.168/16) as well as loopback " .
+                                "addresses (127/8). This option should only be set for WAN type interfaces that use " .
+                                "public IP address space.");?>
                             </div>
                           </td>
                         </tr>
