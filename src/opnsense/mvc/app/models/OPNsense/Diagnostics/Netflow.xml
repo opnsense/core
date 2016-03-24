@@ -1,0 +1,31 @@
+<model>
+    <mount>//OPNsense/Netflow</mount>
+    <description>
+        OPNsense Netflow
+    </description>
+    <items>
+        <capture>
+            <interfaces type="InterfaceField">
+                <Required>N</Required>
+                <default></default>
+                <multiple>Y</multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                </filters>
+            </interfaces>
+            <version type="OptionField">
+                <Required>Y</Required>
+                <default>5</default>
+                <OptionValues>
+                    <v5>v5</v5>
+                    <v9>v9</v9>
+                </OptionValues>
+            </version>
+            <targets type="CSVListField">
+                <Required>N</Required>
+                <mask>/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):(6553[0-5]|655[0-2][0-9]|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3})([,]){0,1})*/u</mask>
+                <ValidationMessage>Please enter valid targets (e.g. 192.168.0.1:2055)</ValidationMessage>
+            </targets>
+        </capture>
+    </items>
+</model>

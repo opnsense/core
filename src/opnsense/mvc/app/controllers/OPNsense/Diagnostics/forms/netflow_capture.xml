@@ -1,0 +1,25 @@
+<form>
+    <field>
+        <id>netflow.capture.interfaces</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Select interface(s) to enable netflow on.]]></help>
+        <hint>Type or select interface.</hint>
+    </field>
+    <field>
+        <id>netflow.capture.version</id>
+        <label>Version</label>
+        <type>dropdown</type>
+        <help><![CDATA[Select netflow version to use.]]></help>
+    </field>
+    <field>
+        <id>netflow.capture.targets</id>
+        <label>Destinations</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Select destinations to send netflow data to (ip address:port, eg 192.168.0.1:2550).]]></help>
+        <hint>Type or select destinations.</hint>
+        <allownew>true</allownew>
+    </field>
+</form>
