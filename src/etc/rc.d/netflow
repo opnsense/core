@@ -62,12 +62,17 @@ setup_interface()
 SEQ
     # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
     if [ "$destinations" != "" ]; then
-        /usr/local/bin/samplicate -s 127.0.0.1 -f -p $netflow_port $destinations
+        /usr/sbin/daemon -p /var/run/netflow_samplicate_$interface -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
     fi
 }
 
 netflow_start()
 {
+    is_running=`ngctl list | grep netflow_ | wc -l`
+    if [ $is_running -ne 0 ]; then
+        echo "already running"
+        return
+    fi
     for interface in $netflow_interfaces
     do
         int_destination="netflow_"$interface"_int_destination"
@@ -80,9 +85,21 @@ netflow_start()
     done
 }
 
+# stop netflow collect and distribution
 netflow_stop()
 {
-    #todo
+    # kill all samplicate processes
+    for samplicate_pid in `ls /var/run/netflow_samplicate_* 2>/dev/null`
+    do
+        kill -9 `cat $samplicate_pid`
+    done
+
+    # cleanup netflow processes
+    for netflow_node in `ngctl list | grep netflow_ | awk '{print $2;}'`
+    do
+        /usr/sbin/ngctl shutdown  $netflow_node:
+    done
+
 }
 
 load_rc_config $name
