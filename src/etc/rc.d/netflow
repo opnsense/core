@@ -55,7 +55,7 @@ setup_interface()
     # configure netflow for this interface, sending all to localhost
     /usr/sbin/ngctl -f-  <<-SEQ
        mkpeer $interface: netflow	lower iface0
-       name	$interface:lower netflow_em0
+       name	$interface:lower netflow_$interface
        connect $interface: netflow_$interface: upper	out0
        mkpeer netflow_$interface: ksocket export inet/dgram/udp
        msg netflow_$interface:export connect inet/$netflow_int_destination
