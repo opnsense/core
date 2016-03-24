@@ -225,7 +225,7 @@ interfaces_loopback_configure();
 system_syslogd_start();
 
 echo "Starting Secure Shell Services...";
-configd_run("sshd restart");
+mwexec("/usr/local/etc/rc.sshd");
 echo "done.\n";
 
 /* setup polling */
@@ -310,7 +310,7 @@ services_dhcrelay_configure();
 services_dhcrelay6_configure();
 
 /* dyndns service updates */
-configd_run("dyndns reload");
+mwexec("/usr/local/etc/rc.dyndns.update");
 
 /* Run a filter configure now that most all services have started */
 filter_configure_sync();
