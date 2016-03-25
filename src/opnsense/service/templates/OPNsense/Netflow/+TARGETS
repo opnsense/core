@@ -1,0 +1,2 @@
+netflow.conf:/usr/local/etc/netflow.conf
+rc.conf.d:/etc/rc.conf.d/netflow

@@ -125,4 +125,20 @@ class NetflowController extends ApiControllerBase
             return array("status" => "inactive");
         }
     }
+
+    /**
+     * Retrieve netflow cache statistics
+     * @return array cache statistics per netgraph node
+     */
+    public function cache_statsAction()
+    {
+        $backend = new Backend();
+        $response = $backend->configdRun("netflow cache stats json");
+        $stats = json_decode($response, true);
+        if ($stats != null) {
+            return $stats;
+        } else {
+            return array();
+        }
+    }
 }
