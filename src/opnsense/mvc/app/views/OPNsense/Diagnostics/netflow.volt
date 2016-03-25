@@ -37,14 +37,16 @@ POSSIBILITY OF SUCH DAMAGE.
 
         // link save button to API set action
         $("#btn_save_capture").click(function(){
+            $("#frm_CaptureSettings_progress").addClass("fa fa-spinner fa-pulse");
             saveFormToEndpoint(url="/api/diagnostics/netflow/setconfig",formid='frm_CaptureSettings',callback_ok=function(){
+              ajaxCall(url="/api/diagnostics/netflow/reconfigure", sendData={}, callback=function(data,status) {
+                  $("#frm_CaptureSettings_progress").removeClass("fa fa-spinner fa-pulse");
+              });
             });
         });
 
     });
 </script>
-
-
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" href="#capture">{{ lang._('Capture') }}</a></li>
