@@ -33,6 +33,7 @@ namespace OPNsense\Diagnostics\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Diagnostics\Netflow;
 use \OPNsense\Core\Config;
+use \OPNsense\Core\Backend;
 
 /**
  * Class NetflowController
@@ -82,5 +83,46 @@ class NetflowController extends ApiControllerBase
             }
         }
         return $result;
+    }
+
+    /**
+     * configure start/stop netflow
+     * @return array
+     */
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+
+            // reconfigure netflow
+            $backend = new Backend();
+            $backend->configdRun("template reload OPNsense.Netflow");
+            // restart netflow, by calling stop (which will always stop the collectors) and start
+            // (which will only start if there are collectors configured)
+            $backend->configdRun("netflow stop");
+            $backend->configdRun("netflow start");
+            return array("status" => "ok");
+        } else {
+            return array("status" => "error");
+        }
+    }
+
+    /**
+     * request netflow status
+     * @return array
+     */
+    public function statusAction()
+    {
+        $backend = new Backend();
+        $status = trim($backend->configdRun("netflow status"));
+        if (strpos($status, "netflow is active") !== false) {
+            // active, return status active + number of configured collectors
+            $collectors = trim(explode(')', explode(':', $status)[1])[0]);
+            return array("status" => "active", "collectors" => $collectors);
+        } else {
+            // inactive
+            return array("status" => "inactive");
+        }
     }
 }
