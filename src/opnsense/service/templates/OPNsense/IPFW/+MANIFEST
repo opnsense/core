@@ -1,6 +1,6 @@
 name: opnsense-ipfw
 version: 0.1
-origin: opnsense/proxy
+origin: opnsense/ipfw
 comment: IPFW configuration
 desc: configuration templates for ipfw rulesets
 maintainer: ad at opnsense.org
