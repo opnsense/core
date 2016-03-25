@@ -1,3 +1,5 @@
+{# Macro import #}
+{% from 'OPNsense/Macros/interface.macro' import physical_interface %}
 %YAML 1.1
 ---
 
@@ -317,11 +319,11 @@ netmap:
   {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
     {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
 
-  - interface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}
-    copy-iface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}+
+  - interface: {{physical_interface(intfName)}}
+    copy-iface: {{physical_interface(intfName)}}+
 
-  - interface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}+
-    copy-iface: {{helpers.getNodeByTag('interfaces.'+intfName).if}}
+  - interface: {{physical_interface(intfName)}}+
+    copy-iface: {{physical_interface(intfName)}}
     {% endfor %}
   {% endif %}
 
