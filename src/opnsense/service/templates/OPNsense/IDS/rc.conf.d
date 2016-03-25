@@ -1,3 +1,5 @@
+{# Macro import #}
+{% from 'OPNsense/Macros/interface.macro' import physical_interface %}
 {% if helpers.exists('OPNsense.IDS.general') and OPNsense.IDS.general.enabled|default("0") == "1" %}
 suricata_enable="YES"
 
@@ -12,10 +14,10 @@ suricata_netmap=YES
 {% for intfName in OPNsense.IDS.general.interfaces.split(',') %}
 {%   if loop.index == 1 %}
 {# enable first interface #}
-suricata_interface="{{helpers.getNodeByTag('interfaces.'+intfName).if}}"
+suricata_interface="{{ physical_interface(intfName) }}"
 {%   else %}
 {#   store additional interfaces to addFlags #}
-{%      do addFlags.append(helpers.getNodeByTag('interfaces.'+intfName).if) %}
+{%      do addFlags.append(physical_interface(intfName)) %}
 {%   endif %}
 {% endfor %}
 {#   append additional interfaces #}
