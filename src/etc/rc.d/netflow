@@ -36,6 +36,8 @@ name=netflow
 rcvar=netflow_enable
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+extra_commands="status"
 
 [ -z "$netflow_enable" ] && netflow_enable="NO"
 
@@ -51,7 +53,7 @@ setup_interface()
     fi
     interface=$1
     # determine (snmp) ifIndex
-    ifIndex=`/usr/bin/netstat -i | /usr/bin/grep Link# | /usr/bin/grep $interface | awk '{print $3}' | /usr/bin/sed 's/<Link#//g' | /usr/bin/sed 's/>//g'`
+    ifIndex=`/usr/bin/netstat -i -n | /usr/bin/grep Link# | /usr/bin/grep $interface | awk '{print $3}' | /usr/bin/sed 's/<Link#//g' | /usr/bin/sed 's/>//g'`
     if [ "$ifIndex" == "" ]; then
         echo "error : interface $interface not found"
         return
@@ -101,10 +103,21 @@ netflow_stop()
     fi
 
     # cleanup netflow processes
-    for netflow_node in `ngctl list | grep netflow_ | awk '{print $2;}'`
+    for netflow_node in `/usr/sbin/ngctl list | grep netflow_ | awk '{print $2;}'`
     do
         /usr/sbin/ngctl shutdown  $netflow_node:
     done
+}
+
+# netflow status
+netflow_status()
+{
+    flows=`/usr/sbin/ngctl list | grep netflow_ | wc -l | /usr/bin/awk '{print $1}'`
+    if [ $flows -eq 0 ]; then
+        echo "netflow is not active"
+    else
+        echo "netflow is active (flows : $flows)"
+    fi
 }
 
 load_rc_config $name
