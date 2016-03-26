@@ -45,7 +45,7 @@ function list_interfaces() {
 
     // define config sections to fetch interfaces from.
     $config_sections = array();
-    $config_sections['wireless.clone'] = array('descr' => 'cloneif', 'key' => 'cloneif');
+    $config_sections['wireless.clone'] = array('descr' => 'cloneif,descr', 'key' => 'cloneif', 'format' => '%s (%s)');
     $config_sections['vlans.vlan'] = array('descr' => 'tag,if,descr', 'format' => gettext('vlan %s on %s') . ' (%s)', 'key' => 'vlanif');
     $config_sections['bridges.bridged'] = array('descr' => 'bridgeif, descr', 'key' => 'bridgeif', 'format' => '%s (%s)');
     $config_sections['gifs.gif'] = array('descr' => 'remote-addr,descr', 'key' => 'gifif', 'format' => 'gif %s (%s)');
@@ -57,6 +57,7 @@ function list_interfaces() {
     foreach (get_interface_list() as $key => $intf_item) {
         if (match_wireless_interface($key)) {
             continue;
+        }
         $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
     }
     // collect interfaces from defined config sections
