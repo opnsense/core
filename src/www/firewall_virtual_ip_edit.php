@@ -263,7 +263,7 @@ $( document ).ready(function() {
             case "ipalias":
               $("#type").prop("selectedIndex",0);
               $("#subnet_bits").attr('disabled', false);
-              $("#typenote").html("<?=gettext("Please provide a single IP address");?>");
+              $("#typenote").html("<?=gettext("Please provide a single IP address.");?>");
               break;
             case "carp":
               $("#type").prop("selectedIndex",0);
@@ -353,7 +353,7 @@ $( document ).ready(function() {
                         <td></td>
                     </tr>
                     <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type:");?></td>
+                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type");?></td>
                         <td>
                           <select name="type" class="selectpicker" data-width="auto" id="type">
                               <option value="single" <?=(!empty($pconfig['subnet_bits']) && $pconfig['subnet_bits'] == 32) || !isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
@@ -365,7 +365,7 @@ $( document ).ready(function() {
                         </td>
                     </tr>
                     <tr>
-                        <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address:");?></td>
+                        <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address");?></td>
                         <td>
                           <table border="0" cellspacing="0" cellpadding="0">
                             <tr>
@@ -419,7 +419,7 @@ $( document ).ready(function() {
                           <?php endfor; ?>
                         </select>
                         <div class="hidden" for="help_for_vhid">
-                          <?=gettext("Enter the VHID group that the machines will share");?>
+                          <?=gettext("Enter the VHID group that the machines will share.");?>
                         </div>
                       </td>
                     </tr>
@@ -445,7 +445,7 @@ $( document ).ready(function() {
 
                         <div class="hidden" for="help_for_adv">
                           <br/>
-                          <?=gettext("The frequency that this machine will advertise.  0 means usually master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
+                          <?=gettext("The frequency that this machine will advertise.  0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
                         </div>
                       </td>
                     </tr>
@@ -476,7 +476,7 @@ $( document ).ready(function() {
               <span class="text-danger">
                 <strong><?=gettext("Note:");?><br /></strong>
               </span>
-              <?=gettext("Proxy ARP and Other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
+              <?=gettext("Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
               <br /><br />
               <?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
             </div>
