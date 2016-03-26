@@ -46,15 +46,17 @@ function list_interfaces() {
     // define config sections to fetch interfaces from.
     $config_sections = array();
     $config_sections['wireless.clone'] = array('descr' => 'cloneif', 'key' => 'cloneif');
-    $config_sections['vlans.vlan'] = array('descr' => "tag,if,descr", 'format' => gettext('vlan %s on %s') . ' (%s)', 'key' => 'vlanif');
+    $config_sections['vlans.vlan'] = array('descr' => 'tag,if,descr', 'format' => gettext('vlan %s on %s') . ' (%s)', 'key' => 'vlanif');
     $config_sections['bridges.bridged'] = array('descr' => 'bridgeif, descr', 'key' => 'bridgeif', 'format' => '%s (%s)');
     $config_sections['gifs.gif'] = array('descr' => 'remote-addr,descr', 'key' => 'gifif', 'format' => 'gif %s (%s)');
     $config_sections['gres.gre'] = array('descr' => 'remote-addr,descr', 'key' => 'greif', 'format' => 'gre %s (%s)');
-    $config_sections['laggs.lagg'] = array('descr' => 'laggif, descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members');
+    $config_sections['laggs.lagg'] = array('descr' => 'laggif,descr', 'key' => 'laggif', 'format' => '%s (%s)', 'fields' => 'members');
     $config_sections['ppps.ppp'] = array('descr' => 'if,ports,descr,username', 'key' => 'if','format' => '%s (%s) - %s %s', 'fields' => 'type');
 
     // add physical network interfaces
     foreach (get_interface_list() as $key => $intf_item) {
+        if (match_wireless_interface($key)) {
+            continue;
         $interfaces[$key] = array('descr' => $key . ' (' . $intf_item['mac'] . ')', 'section' => 'interfaces');
     }
     // collect interfaces from defined config sections
