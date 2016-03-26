@@ -392,7 +392,7 @@ $( document ).ready(function() {
                         </td>
                     </tr>
                     <tr id="noexpandrow">
-                        <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion:");?> </td>
+                        <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion");?> </td>
                         <td>
                             <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
                             <div class="hidden" for="help_for_noexpand">
