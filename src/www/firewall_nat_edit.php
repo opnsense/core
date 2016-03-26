@@ -948,8 +948,6 @@ $( document ).ready(function() {
                       endif;
 ?>
                     </select>
-                    <br/>
-                    <a href="firewall_rules_edit.php?id=<?=$linkedrule;?>"> <?=gettext("View the filter rule");?></a>
                   </td>
                 </tr>
 <?php         elseif (!isset($id) || (isset($_GET['dup']) && is_numericint($_GET['dup']))) :
