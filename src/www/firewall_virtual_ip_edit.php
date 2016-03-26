@@ -476,9 +476,9 @@ $( document ).ready(function() {
               <span class="text-danger">
                 <strong><?=gettext("Note:");?><br /></strong>
               </span>
-              <?=gettext("Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc.  Use a CARP or IP Alias type address for these cases.");?>
+              <?=gettext("Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type address for these cases.");?>
               <br /><br />
-              <?=gettext("For more information on CARP and the above values, visit the OpenBSD ");?><a href='http://www.openbsd.org/faq/pf/carp.html'> <?=gettext("CARP FAQ"); ?></a>.
+              <?= sprintf(gettext("For more information on CARP and the above values, visit the OpenBSD %sCARP FAQ%s."), "<a href='http://www.openbsd.org/faq/pf/carp.html'>","</a>" ) ?>
             </div>
           </div>
         </section>
