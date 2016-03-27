@@ -217,3 +217,53 @@ function ajaxGet(url,sendData,callback) {
         data:sendData
     });
 }
+
+/**
+ * set cookie value by key
+ * @param key cookie key
+ * @param value cookie value
+ * @param expire time to live
+ */
+function setCookie(key, value, expire) {
+   var expires = new Date();
+   if (expire == undefined) {
+      expire = 3600000 ; // expire in 1 hour
+   }
+   expires.setTime(expires.getTime() + expire); // 1 hour
+   document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+}
+
+/**
+ * get cookie value
+ * @param key cookie key
+ * @return cookie value (or null if not found)
+ */
+function getCookie(key) {
+   var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+   return keyValue ? keyValue[2] : null;
+}
+
+/**
+ * watch scroll position and set to last known on page load
+ */
+function watchScrollPosition() {
+    function current_location() {
+        // concat url pieces to indentify this page and parameters
+        return window.location.href.replace(/\/|\:|\.|\?|\#/gi, '');
+    }
+
+    // link on scroll event handler
+    $(window).scroll(function(){
+        setCookie('scrollpos',current_location()+"|"+$(window).scrollTop());
+    });
+
+    // move to last known position on page load
+    $( document ).ready(function() {
+        var scrollpos = getCookie('scrollpos');
+        if (scrollpos != null) {
+            if (scrollpos.split('|')[0] == current_location()) {
+                $(window).scrollTop(scrollpos.split('|')[1]);
+            }
+        }
+    });
+}
