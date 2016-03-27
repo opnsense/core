@@ -139,7 +139,8 @@ include("head.inc");
 <script type="text/javascript">
 $( document ).ready(function() {
   // link delete buttons
-  $(".act_delete").click(function(){
+  $(".act_delete").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     if (id != 'x') {
       // delete single
@@ -183,7 +184,8 @@ $( document ).ready(function() {
   });
 
   // link move buttons
-  $(".act_move").click(function(){
+  $(".act_move").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     $("#id").val(id);
     $("#action").val("move");
@@ -191,13 +193,16 @@ $( document ).ready(function() {
   });
 
   // link toggle buttons
-  $(".act_toggle").click(function(){
+  $(".act_toggle").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     $("#id").val(id);
     $("#action").val("toggle");
     $("#iform").submit();
   });
 
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
 
   // link category select/search
   $("#fw_category").change(function(){
