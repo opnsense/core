@@ -111,6 +111,8 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
 
     <!-- append some helper functions to integrate into the legacy code -->
     <script type="text/javascript" src="/javascript/opnsense_legacy.js"></script>
+    <!-- opnsense non legacy helper functions -->
+    <script type="text/javascript" src="/ui/js/opnsense.js"></script>
 
     <!-- Bootstrap type ahead -->
     <script type="text/javascript" src="/ui/js/bootstrap3-typeahead.min.js"></script>
