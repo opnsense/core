@@ -414,20 +414,22 @@ $( document ).ready(function() {
   });
 
   // link toggle buttons
-  $(".act_toggle").click(function(){
+  $(".act_toggle").click(function(event){
+      event.preventDefault();
       $.post(window.location, {act: 'toggle', id:$(this).data("id")}, function(data) {
           location.reload();
       });
   });
 
   // link move buttons
-  $(".act_move").click(function(){
+  $(".act_move").click(function(event){
+    event.preventDefault();
     $("#id").val($(this).data("id"));
     $("#action").val("move");
     $("#iform2").submit();
   });
-
-
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
 });
 
 

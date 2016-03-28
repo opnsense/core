@@ -203,7 +203,8 @@ $( document ).ready(function() {
   });
 
   // link move buttons
-  $(".act_move").click(function(){
+  $(".act_move").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     $("#id").val(id);
     $("#action").val("move");
@@ -211,13 +212,16 @@ $( document ).ready(function() {
   });
 
   // link toggle buttons
-  $(".act_toggle").click(function(){
+  $(".act_toggle").click(function(event){
+    event.preventDefault();
     var id = $(this).attr("id").split('_').pop(-1);
     $("#id").val(id);
     $("#action").val("toggle");
     $("#iform").submit();
   });
 
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
 });
 </script>
 <?php include("fbegin.inc"); ?>

@@ -206,13 +206,16 @@ $( document ).ready(function() {
     });
 
     // link move buttons
-    $(".act_move").click(function(){
+    $(".act_move").click(function(event){
+      event.preventDefault();
       var id = $(this).data("id");
       $("#id").val(id);
       $("#act").val("move");
       $("#iform").submit();
     });
 
+    // watch scroll position and set to last known on page load
+    watchScrollPosition();
 });
 </script>
 <body>

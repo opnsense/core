@@ -426,6 +426,8 @@ legacy_html_escape_form_data($pconfig);
 <script type="text/javascript">
 //<![CDATA[
 $( document ).ready(function() {
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
   // link delete buttons
   $(".act_delete").click(function(){
     var id = $(this).attr("id").split('_').pop(-1);
@@ -450,7 +452,8 @@ $( document ).ready(function() {
   });
 
   // link toggle buttons
-  $(".act_toggle").click(function(){
+  $(".act_toggle").click(function(event){
+      event.preventDefault();
       $.post(window.location, {act: 'toggle', id:$(this).data("id")}, function(data) {
           location.reload();
       });
