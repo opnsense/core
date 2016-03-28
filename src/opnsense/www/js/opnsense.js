@@ -229,12 +229,12 @@ function watchScrollPosition() {
 
     // link on scroll event handler
     $(window).scroll(function(){
-        localStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
+        sessionStorage.setItem('scrollpos', current_location()+"|"+$(window).scrollTop());
     });
 
     // move to last known position on page load
     $( document ).ready(function() {
-        var scrollpos = localStorage.getItem('scrollpos');
+        var scrollpos = sessionStorage.getItem('scrollpos');
         if (scrollpos != null) {
             if (scrollpos.split('|')[0] == current_location()) {
                 $(window).scrollTop(scrollpos.split('|')[1]);
