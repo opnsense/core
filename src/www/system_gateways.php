@@ -270,6 +270,8 @@ $( document ).ready(function() {
             }]
     });
   });
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
 });
 </script>
 

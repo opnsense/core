@@ -94,11 +94,14 @@ $main_buttons = array(
       });
     });
     // link toggle buttons
-    $(".act_toggle").click(function(){
+    $(".act_toggle").click(function(event){
+        event.preventDefault();
         $.post(window.location, {act: 'toggle', id:$(this).data("id")}, function(data) {
             location.reload();
         });
     });
+    // watch scroll position and set to last known on page load
+    watchScrollPosition();
   });
   </script>
 
