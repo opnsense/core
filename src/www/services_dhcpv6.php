@@ -444,7 +444,7 @@ include("head.inc");
         /* active tabs */
         $tab_array_main = array();
         foreach ($config['interfaces'] as $if_id => $intf) {
-            if (!empty($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6'])) {
+            if (isset($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6'])) {
                 $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
                 if ($if_id == $if) {
                     $tab_array_main[] = array($ifname, true, "services_dhcpv6.php?if={$if_id}");
