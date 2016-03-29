@@ -93,6 +93,25 @@ include("head.inc");
           $("#" + $(this).data('target')).toggleClass('hidden visible');
           event.preventDefault();
       });
+
+      // show/hide all info
+      $("#collapse_all").click(function(){
+          // use a data attribute to store visibility for all detail items (we can't toggle here, because some items
+          // might already be expanded)
+          if ($("#collapse_all").data('status') != 'visible') {
+              $(".ipsec_info").each(function(){
+                  $("#" + $(this).data('target')).removeClass('hidden');
+                  $("#" + $(this).data('target')).addClass('visible');
+              });
+              $("#collapse_all").data('status', 'visible');
+          } else {
+              $(".ipsec_info").each(function(){
+                  $("#" + $(this).data('target')).removeClass('visible');
+                  $("#" + $(this).data('target')).addClass('hidden');
+              });
+              $("#collapse_all").data('status', 'hidden');
+          }
+      });
   });
 </script>
 <body>
@@ -116,7 +135,11 @@ include("head.inc");
                     <th><?= gettext("Remote IP");?></th>
                     <th class="hidden-xs hidden-sm"><?= gettext("Local Auth");?></th>
                     <th class="hidden-xs hidden-sm"><?= gettext("Remote Auth");?></th>
-                    <th><?= gettext("Status");?></th>
+                    <th><?= gettext("Status");?>
+                      <div class="pull-right">
+                        <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?=gettext("collapse/expand all");?>"></i> &nbsp;&nbsp;
+                      </div>
+                    </th>
                   </tr>
                   </thead>
                   <tbody>
