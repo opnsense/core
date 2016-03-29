@@ -676,7 +676,7 @@ include("head.inc");
             /* active tabs */
             $tab_array = array();
             foreach ($config['interfaces'] as $if_id => $intf) {
-                if (!empty($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
+                if (isset($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
                     $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
                     if ($if_id == $if) {
                         $tab_array[] = array($ifname, true, "services_dhcp.php?if={$if_id}");
