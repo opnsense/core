@@ -52,22 +52,19 @@ class UniqueIdField extends BaseField
     private $initialValue = null;
 
     /**
-     * generate unique id (if none available) and store previous value for comparison before save
-     */
-    public function eventPostLoading()
-    {
-        if (empty($this->internalValue)) {
-            $this->internalValue = uniqid('', true);
-        }
-        $this->initialValue = $this->internalValue;
-    }
-
-    /**
      * retrieve field validators for this field type
      * @return array
      */
     public function getValidators()
     {
+        if (empty($this->internalValue) && empty($this->initialValue)) {
+            // trigger initial value on change, before returning validators
+            // (new nodes will always be marked as "changed", see isFieldChanged())
+            // Maybe we should add an extra event handler if this kind of scenarios happen more often, similar to
+            // actionPostLoadingEvent. (which is not triggered on setting data for a complete new structure node)
+            $this->internalValue = uniqid('', true);
+            $this->initialValue = $this->internalValue;
+        }
         $validators = parent::getValidators();
         // unique id may not change..
         $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
