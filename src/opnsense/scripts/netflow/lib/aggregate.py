@@ -31,6 +31,7 @@ import os
 import datetime
 import sqlite3
 
+
 class BaseFlowAggregator(object):
     # target location ('/var/netflow/<store>.sqlite')
     target_filename = None
@@ -48,19 +49,16 @@ class BaseFlowAggregator(object):
         self._known_targets = list()
         # construct update and insert sql statements
         tmp = 'update %s set octets = octets + :octets_consumed, packets = packets + :packets_consumed '
-        tmp = tmp + 'where mtime = :mtime and %s '
-        self._update_stmt =  tmp % (self._target_table_name,
-                                    ' and '.join(map(lambda x: '%s = :%s'%(x,x),
-                                    self.agg_fields)))
+        tmp += 'where mtime = :mtime and %s '
+        self._update_stmt = tmp % (self._target_table_name,
+                                   ' and '.join(map(lambda x: '%s = :%s' % (x, x), self.agg_fields)))
         tmp = 'insert into %s (mtime, octets, packets, %s) values (:mtime, :octets_consumed, :packets_consumed, %s)'
         self._insert_stmt = tmp % (self._target_table_name,
                                    ','.join(self.agg_fields),
-                                   ','.join(map(lambda x: ':%s'%(x),
-                                   self.agg_fields)))
+                                   ','.join(map(lambda x: ':%s' % x, self.agg_fields)))
         # open database
         self._open_db()
         self._fetch_known_targets()
-
 
     def _fetch_known_targets(self):
         """ read known target table names from the sqlite db
@@ -79,7 +77,7 @@ class BaseFlowAggregator(object):
         if self._db_connection is not None:
             # construct new aggregate table
             sql_text = list()
-            sql_text.append('create table %s ( ' % self._target_table_name )
+            sql_text.append('create table %s ( ' % self._target_table_name)
             sql_text.append('  mtime timestamp')
             for agg_field in self.agg_fields:
                 sql_text.append(', %s varchar(255)' % agg_field)
@@ -122,27 +120,28 @@ class BaseFlowAggregator(object):
 
     def add(self, flow):
         """ calculate timeslices per flow depending on sample resolution
+        :param flow: flow data (from parse.py)
         """
         # make sure target exists
         if self._target_table_name not in self._known_targets:
             self._create_target_table()
 
         # push record(s) depending on resolution
-        start_time = int(flow['flow_start'] / self.resolution)*self.resolution
+        start_time = int(flow['flow_start'] / self.resolution) * self.resolution
         while start_time <= flow['flow_end']:
             consume_start_time = max(flow['flow_start'], start_time)
             consume_end_time = min(start_time + self.resolution, flow['flow_end'])
             if flow['duration_ms'] != 0:
-                consume_perc = (consume_end_time - consume_start_time) / float(flow['duration_ms']/1000)
+                consume_perc = (consume_end_time - consume_start_time) / float(flow['duration_ms'] / 1000)
             else:
                 consume_perc = 1
             if self.is_db_open():
                 # upsert data
-                flow['octets_consumed'] = consume_perc*flow['octets']
-                flow['packets_consumed'] = consume_perc*flow['packets']
+                flow['octets_consumed'] = consume_perc * flow['octets']
+                flow['packets_consumed'] = consume_perc * flow['packets']
                 flow['mtime'] = datetime.datetime.utcfromtimestamp(start_time)
-                result = self._update_cur.execute(self._update_stmt, flow)
+                self._update_cur.execute(self._update_stmt, flow)
                 if self._update_cur.rowcount == 0:
-                    result = self._update_cur.execute(self._insert_stmt, flow)
+                    self._update_cur.execute(self._insert_stmt, flow)
             # next start time
             start_time += self.resolution

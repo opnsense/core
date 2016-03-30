@@ -46,7 +46,8 @@ PARSE_FLOW_FIELDS = [
     {'check': flowd.FIELD_FLOW_TIMES, 'target': 'netflow_ver'}]
 
 # location of flowd logfiles to use
-FLOWD_LOG_FILES='/var/log/flowd.log*'
+FLOWD_LOG_FILES = '/var/log/flowd.log*'
+
 
 def parse_flow(recv_stamp):
     """ parse flowd logs and yield records (dict type)
@@ -63,7 +64,7 @@ def parse_flow(recv_stamp):
             flow_record = dict()
             if flow.has_field(flowd.FIELD_RECV_TIME):
                 # receive timestamp
-                flow_record['recv'] = flow.recv_sec + flow.recv_usec/1000.0
+                flow_record['recv'] = flow.recv_sec + flow.recv_usec / 1000.0
                 if flow_record['recv'] <= recv_stamp:
                     # do not parse next flow archive (oldest reached)
                     parse_done = True
@@ -72,7 +73,7 @@ def parse_flow(recv_stamp):
                     # calculate flow start, end, duration in ms
                     flow_record['flow_end'] = (flow.recv_sec - flow.flow_finish / 1000.0)
                     flow_record['duration_ms'] = (flow.flow_finish - flow.flow_start)
-                    flow_record['flow_start'] = flow_record['flow_end'] - flow_record['duration_ms']/1000.0
+                    flow_record['flow_start'] = flow_record['flow_end'] - flow_record['duration_ms'] / 1000.0
                     # handle source data
                     for flow_field in PARSE_FLOW_FIELDS:
                         if flow.has_field(flow_field['check']):
