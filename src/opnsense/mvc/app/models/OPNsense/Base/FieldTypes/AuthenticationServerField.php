@@ -121,7 +121,7 @@ class AuthenticationServerField extends BaseField
      * select if multiple authentication servers may be selected at once
      * @param $value boolean value Y/N
      */
-    public function setmultiple($value)
+    public function setMultiple($value)
     {
         if (trim(strtoupper($value)) == "Y") {
             $this->internalMultiSelect = true;

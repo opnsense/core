@@ -128,7 +128,7 @@ class InterfaceField extends BaseField
      * select if multiple interfaces may be selected at once
      * @param $value boolean value 0/1
      */
-    public function setmultiple($value)
+    public function setMultiple($value)
     {
         if (trim(strtoupper($value)) == "Y") {
             $this->internalMultiSelect = true;
