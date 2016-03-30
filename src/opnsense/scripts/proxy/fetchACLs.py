@@ -36,17 +36,18 @@ import os.path
 import tarfile
 import gzip
 import zipfile
-import StringIO
 import syslog
 from ConfigParser import ConfigParser
 
-acl_config_fn = ('/usr/local/etc/squid/externalACLs.conf')
-acl_target_dir = ('/usr/local/etc/squid/acl')
+acl_config_fn = '/usr/local/etc/squid/externalACLs.conf'
+acl_target_dir = '/usr/local/etc/squid/acl'
 acl_max_timeout = 30
+
 
 class Downloader(object):
     """ Download helper
     """
+
     def __init__(self, url, timeout):
         """ init new
             :param url: source url
@@ -60,7 +61,7 @@ class Downloader(object):
         """ fetch (raw) source data into tempfile using self._source_handle
         """
         try:
-            f = urllib2.urlopen(self._url, timeout = self._timeout)
+            f = urllib2.urlopen(self._url, timeout=self._timeout)
             # flush to temp file
             self._source_handle = tempfile.NamedTemporaryFile()
             while True:
@@ -72,7 +73,7 @@ class Downloader(object):
             self._source_handle.seek(0)
             f.close()
         except (urllib2.URLError, urllib2.HTTPError, IOError) as e:
-            syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s'%self._url)
+            syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s' % self._url)
             self._source_handle = None
 
     def get_files(self):
@@ -82,7 +83,7 @@ class Downloader(object):
         if self._source_handle is not None:
             # handle compressed data
             if (len(self._url) > 8 and self._url[-7:] == '.tar.gz') \
-                or (len(self._url) > 4 and self._url[-4:] == '.tgz'):
+                    or (len(self._url) > 4 and self._url[-4:] == '.tgz'):
                 # source is in tar.gz format, extract all into a single string
                 try:
                     tf = tarfile.open(fileobj=self._source_handle)
@@ -90,17 +91,16 @@ class Downloader(object):
                         if tf_file.isfile():
                             yield tf_file.name, tf.extractfile(tf_file)
                 except IOError as e:
-                    syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (%s)'%(self._url, e))
+                    syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (%s)' % (self._url, e))
             elif len(self._url) > 4 and self._url[-3:] == '.gz':
                 # source is in .gz format unpack
                 try:
                     gf = gzip.GzipFile(mode='r', fileobj=self._source_handle)
                     yield os.path.basename(self._url), gf
                 except IOError as e:
-                    syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (%s)'%(self._url, e))
+                    syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (%s)' % (self._url, e))
             elif len(self._url) > 5 and self._url[-4:] == '.zip':
                 # source is in .zip format, extract all into a single string
-                target_data = dict()
                 with zipfile.ZipFile(self._source_handle,
                                      mode='r',
                                      compression=zipfile.ZIP_DEFLATED) as zf:
@@ -127,6 +127,7 @@ class DomainSorter(object):
     """ Helper class for building sorted squid domain acl list.
         Use as file type object, close flushes the actual (sorted) data to disc
     """
+
     def __init__(self, filename=None, mode=None):
         """ new sorted output file, uses an acl record in reverse order as sort key
             :param filename: target filename
@@ -147,8 +148,8 @@ class DomainSorter(object):
         """
         sets = 255
         for i in range(sets):
-            target = chr(i+1)
-            setid =  int(i / (sets / self._num_targets))
+            target = chr(i + 1)
+            setid = int(i / (sets / self._num_targets))
             if setid not in self._buckets:
                 self._buckets[setid] = tempfile.NamedTemporaryFile()
             self._sort_map[target] = self._buckets[setid]
@@ -173,7 +174,7 @@ class DomainSorter(object):
         """
         target = key[0]
         if target in self._sort_map:
-            self._sort_map[target].write('%s%s%s\n'%(key, self._seperator, value))
+            self._sort_map[target].write('%s%s%s\n' % (key, self._seperator, value))
         else:
             # not supposed to happen, every key should have a calculated target pool
             pass
@@ -224,7 +225,7 @@ class DomainSorter(object):
                         continue
                     if self.is_domain(line):
                         # prefix domain, if this domain is different then the previous one
-                        if prev_line is None or '.%s'%line not in prev_line:
+                        if prev_line is None or '.%s' % line not in prev_line:
                             f_out.write('.')
                     f_out.write(line)
                     prev_line = line
@@ -234,11 +235,12 @@ def filename_in_ignorelist(filename):
     """ ignore certain files from processing.
         :param filename: filename to inspect
     """
-    if (filename.lower().split('.')[-1] in ['pdf', 'txt', 'doc']):
+    if filename.lower().split('.')[-1] in ['pdf', 'txt', 'doc']:
         return True
-    elif (filename.lower() in ('readme', 'license', 'usage', 'categories')):
+    elif filename.lower() in ('readme', 'license', 'usage', 'categories'):
         return True
     return False
+
 
 def main():
     # parse OPNsense external ACLs config
@@ -248,27 +250,27 @@ def main():
             os.mkdir(acl_target_dir)
         else:
             # remove index files
-            for filename in glob.glob('%s/*.index'%acl_target_dir):
+            for filename in glob.glob('%s/*.index' % acl_target_dir):
                 os.remove(filename)
         # read config and download per section
         cnf = ConfigParser()
         cnf.read(acl_config_fn)
         for section in cnf.sections():
-            target_filename = acl_target_dir+'/'+section
-            if cnf.has_option(section,'url'):
+            target_filename = acl_target_dir + '/' + section
+            if cnf.has_option(section, 'url'):
                 # collect filters to apply
                 acl_filters = list()
-                if cnf.has_option(section,'filter'):
-                    for acl_filter in cnf.get(section,'filter').strip().split(','):
+                if cnf.has_option(section, 'filter'):
+                    for acl_filter in cnf.get(section, 'filter').strip().split(','):
                         if len(acl_filter.strip()) > 0:
                             acl_filters.append(acl_filter)
 
                 # define target(s)
-                targets = {'domain': {'filename': target_filename, 'handle' : None, 'class': DomainSorter}}
+                targets = {'domain': {'filename': target_filename, 'handle': None, 'class': DomainSorter}}
 
                 # only generate files if enabled, otherwise dump empty files
-                if cnf.has_option(section,'enabled') and cnf.get(section,'enabled') == '1':
-                    download_url = cnf.get(section,'url')
+                if cnf.has_option(section, 'enabled') and cnf.get(section, 'enabled') == '1':
+                    download_url = cnf.get(section, 'url')
                     acl = Downloader(download_url, acl_max_timeout)
                     all_filenames = list()
                     for filename, line in acl.download():
@@ -296,11 +298,12 @@ def main():
                                 continue
 
                         if filetype in targets and targets[filetype]['handle'] is None:
-                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'], 'wb')
+                            targets[filetype]['handle'] = targets[filetype]['class'](targets[filetype]['filename'],
+                                                                                     'wb')
                         if filetype in targets:
-                            targets[filetype]['handle'].write('%s\n'%line)
+                            targets[filetype]['handle'].write('%s\n' % line)
                     # save index to disc
-                    with open('%s.index'%target_filename,'wb') as idx_out:
+                    with open('%s.index' % target_filename, 'wb') as idx_out:
                         index_data = dict()
                         for filename in all_filenames:
                             if len(filename.split('/')) > 2:
@@ -313,7 +316,7 @@ def main():
                 for filetype in targets:
                     if targets[filetype]['handle'] is not None:
                         targets[filetype]['handle'].close()
-                    elif cnf.has_option(section,'enabled') and cnf.get(section,'enabled') != '1':
+                    elif cnf.has_option(section, 'enabled') and cnf.get(section, 'enabled') != '1':
                         if os.path.isfile(targets[filetype]['filename']):
                             # disabled, remove previous data
                             os.remove(targets[filetype]['filename'])
@@ -321,5 +324,7 @@ def main():
                         # no data fetched and no file available, create new empty file
                         with open(targets[filetype]['filename'], 'wb') as target_out:
                             target_out.write("")
+
+
 # execute downloader
 main()
