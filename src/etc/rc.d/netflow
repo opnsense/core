@@ -68,7 +68,7 @@ setup_interface()
        mkpeer $interface: netflow	lower iface$ifIndex
        name	$interface:lower netflow_$interface
        connect $interface: netflow_$interface: upper	out$ifIndex
-       mkpeer netflow_$interface: ksocket export inet/dgram/udp
+       mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp
        msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
 SEQ
 }
