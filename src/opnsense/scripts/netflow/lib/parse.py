@@ -80,3 +80,5 @@ def parse_flow(recv_stamp):
                         else:
                             flow_record[flow_field['target']] = None
                 yield flow_record
+    # send None to mark last record
+    yield None
