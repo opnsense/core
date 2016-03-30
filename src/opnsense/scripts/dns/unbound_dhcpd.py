@@ -30,6 +30,7 @@
 """
 import os
 import sys
+
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 import subprocess
 import time
@@ -38,6 +39,7 @@ from daemonize import Daemonize
 import watchers.dhcpd
 import params
 
+
 def unbound_control(commands, output_stream=None):
     """ execute (chrooted) unbound-control command
         :param commands: command list (parameters)
@@ -45,8 +47,8 @@ def unbound_control(commands, output_stream=None):
         :return: None
     """
     output_stream = open(os.devnull, 'w')
-    subprocess.check_call(['/usr/sbin/chroot', '-u', 'unbound', '-g' ,'unbound','/',
-                           '/usr/local/sbin/unbound-control','-c', '/var/unbound/unbound.conf'] + commands,
+    subprocess.check_call(['/usr/sbin/chroot', '-u', 'unbound', '-g', 'unbound', '/',
+                           '/usr/local/sbin/unbound-control', '-c', '/var/unbound/unbound.conf'] + commands,
                           stdout=output_stream, stderr=subprocess.STDOUT)
     output_stream.seek(0)
 
@@ -64,12 +66,14 @@ def unbound_known_addresses():
                 result.append(parts[4])
     return result
 
+
 # parse input params
-app_params={'pid': '/var/run/unbound_dhcpd.pid',
-            'domain': 'local',
-            'target': '/var/unbound/dhcpleases.conf',
-            'background':'1'}
+app_params = {'pid': '/var/run/unbound_dhcpd.pid',
+              'domain': 'local',
+              'target': '/var/unbound/dhcpleases.conf',
+              'background': '1'}
 params.update_params(app_params)
+
 
 def main():
     # cleanup interval (seconds)
@@ -117,6 +121,7 @@ def main():
 
         # wait for next cycle
         time.sleep(1)
+
 
 # startup
 if app_params['background'] == '1':
