@@ -36,9 +36,9 @@ import sys
 import ujson
 
 if __name__ == '__main__':
-    result = {'nodes':[]}
+    result = {'nodes': []}
     with tempfile.NamedTemporaryFile() as output_stream:
-        subprocess.call(['/sbin/pfctl', '-s', 'state','-vv'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+        subprocess.call(['/sbin/pfctl', '-s', 'state', '-vv'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
         output_stream.seek(0)
         data = output_stream.read().strip()
         if data.count('\n') > 2:
