@@ -117,7 +117,7 @@ class ModelRelationField extends BaseField
      * select if multiple data nodes may be selected at once
      * @param $value boolean value Y/N
      */
-    public function setmultiple($value)
+    public function setMultiple($value)
     {
         if (trim(strtoupper($value)) == "Y") {
             $this->internalMultiSelect = true;
@@ -162,9 +162,17 @@ class ModelRelationField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            // field may contain more than one entries
-            $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
+            if ($this->internalMultiSelect) {
+                // field may contain more than one entries
+                $validators[] = new CsvListValidator(array(
+                    'message' => $this->internalValidationMessage,
+                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey])
+                ));
+            } else {
+                // single value selection
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey])));
+            }
         }
         return $validators;
     }
