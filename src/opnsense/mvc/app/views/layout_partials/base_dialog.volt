@@ -34,6 +34,27 @@ label           :   dialog label
 
 #}
 
+{# close table and reopen for new header#}
+{%- macro base_dialog_header(header_text) %}
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped table-condensed">
+        <colgroup>
+            <col class="col-md-3"/>
+            <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
+            <col class="col-md-{{ msgzone_width|default(5) }}"/>
+        </colgroup>
+        <thead>
+          <tr colspan="3">
+            <th><h2>{{header_text}}</h2></th>
+          </tr>
+        </thead>
+        <tbody>
+{%- endmacro %}
+
+
 
 {# Find if there are help supported or advanced field on this page #}
 {% set help=false %}
@@ -61,7 +82,8 @@ label           :   dialog label
             </div>
             <div class="modal-body">
                 <form id="frm_{{id}}">
-                    <table class="table table-striped table-condensed table-responsive">
+                  <div class="table-responsive">
+                    <table class="table table-striped table-condensed">
                         <colgroup>
                             <col class="col-md-3"/>
                             <col class="col-md-{{ 12-3-msgzone_width|default(5) }}"/>
@@ -77,10 +99,16 @@ label           :   dialog label
                         </tr>
                         {% endif %}
                         {% for field in fields|default({})%}
-                            {{ partial("layout_partials/form_input_tr",field)}}
+                            {% if field['type'] == 'header' %}
+                              {# close table and start new one with header #}
+                              {{ base_dialog_header(field['label']) }}
+                            {% else %}
+                              {{ partial("layout_partials/form_input_tr",field)}}
+                            {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
+                  </div>
                 </form>
             </div>
             <div class="modal-footer">
