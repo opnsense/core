@@ -30,6 +30,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Base\Validators\CsvListValidator;
 
 /**
  * Class ModelRelationField defines a relation to another entity within the model, acts like a select item.
@@ -41,6 +42,11 @@ class ModelRelationField extends BaseField
      * @var bool marks if this is a data node or a container
      */
     protected $internalIsContainer = false;
+
+    /**
+     * @var bool field may contain multiple data nodes at once
+     */
+    private $internalMultiSelect = false;
 
     /**
      * @var string default validation message string
@@ -108,6 +114,19 @@ class ModelRelationField extends BaseField
     }
 
     /**
+     * select if multiple data nodes may be selected at once
+     * @param $value boolean value Y/N
+     */
+    public function setmultiple($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalMultiSelect = true;
+        } else {
+            $this->internalMultiSelect = false;
+        }
+    }
+
+    /**
      * get valid options, descriptions and selected value
      * @return array
      */
@@ -121,8 +140,9 @@ class ModelRelationField extends BaseField
                 $result[""] = array("value"=>"none", "selected" => 0);
             }
 
+            $datanodes = explode(',', $this->internalValue);
             foreach (self::$internalOptionList[$this->internalCacheKey] as $optKey => $optValue) {
-                if ($optKey == $this->internalValue && $this->internalValue != null) {
+                if (in_array($optKey, $datanodes)) {
                     $selected = 1;
                 } else {
                     $selected = 0;
@@ -142,14 +162,9 @@ class ModelRelationField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            if (array_key_exists($this->internalCacheKey, self::$internalOptionList) &&
-                count(self::$internalOptionList[$this->internalCacheKey]) > 0) {
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => array_keys(self::$internalOptionList[$this->internalCacheKey])));
-            } else {
-                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                    'domain' => array()));
-            }
+            // field may contain more than one entries
+            $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
+                'domain'=>array_keys(self::$internalOptionList[$this->internalCacheKey])));
         }
         return $validators;
     }
