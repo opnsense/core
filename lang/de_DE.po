@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-20 08:23+0000\n"
+"POT-Creation-Date: 2016-03-28 10:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -7230,6 +7230,8 @@ msgid ""
 "and almost never equal to the destination port range (and should usually be "
 "'any')"
 msgstr ""
+"und so gut wie nie identisch mit dem Zielportbereich (und sollte "
+"üblicherweise 'jeglicher' sein)"
 
 msgid "Destination port range"
 msgstr "Zielportbereich"
@@ -8193,7 +8195,7 @@ msgid "Diffserv Code Point"
 msgstr ""
 
 msgid "Leave as 'none' to leave the rule enabled all the time."
-msgstr ""
+msgstr "Belassen Sie es auf 'keiner', damit die Regel permanent aktiv ist."
 
 msgid "default"
 msgstr "standard"
@@ -8431,6 +8433,8 @@ msgstr "Zeitplan klonen"
 msgid ""
 "Schedules act as placeholders for time ranges to be used in Firewall Rules."
 msgstr ""
+"Zeitpläne dienen als Platzhalter für Zeitbereiche, die in Firewallregeln "
+"verwendet werden können."
 
 msgid "Schedule may not be named LAN."
 msgstr "Zeitplan kann nicht \"LAN\" genannt werden."
@@ -9052,10 +9056,10 @@ msgid "A valid PPPoE reset date must be specified (mm/dd/yyyy)."
 msgstr ""
 
 msgid "A valid PPTP local IP address must be specified."
-msgstr ""
+msgstr "Eine gültige lokale PPTP-IP muss angegeben werden."
 
 msgid "A valid PPTP subnet bit count must be specified."
-msgstr ""
+msgstr "Eine gültige PPTP-Subnetzbitanzahl muss angegeben werden."
 
 msgid "A valid PPTP remote IP address must be specified."
 msgstr "Eine gültige PPTP entfernte IP-Adresse muss angegeben werden."
@@ -9378,7 +9382,7 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 2032
 msgid "Lease Requirements"
-msgstr ""
+msgstr "Leaseanforderungen"
 
 # File: src/www/interfaces.php, line: 2035
 msgid "FreeBSD Manual"
@@ -9462,7 +9466,7 @@ msgid "Plan:"
 msgstr "Plan:"
 
 msgid "Select to fill in data for your service provider."
-msgstr ""
+msgstr "Auswählen, um Daten für Ihren Serviceprovider einzufügen."
 
 msgid "Access Point Name (APN)"
 msgstr "Access Point Name (APN)"
@@ -10144,6 +10148,8 @@ msgstr "Regenerierung des Masterschlüssels"
 msgid ""
 "Allowed values are 1-9999 but should not be shorter than Key Rotation time."
 msgstr ""
+"Die Werte 1-9999 sind erlaubt, sollte aber kürzer als die "
+"Schlüsselrotationszeit sein."
 
 msgid "Strict Key Regeneration"
 msgstr ""
@@ -12127,7 +12133,7 @@ msgid "Either MAC address or Client identifier must be specified"
 msgstr "Entweder eine MAC-Adresse oder ein Client-Kennung muss angegeben werden"
 
 msgid "The hostname cannot end with a hyphen according to RFC952"
-msgstr ""
+msgstr "Der Hostname kann nach RFC 952 nicht mit einem Bindestrich enden"
 
 msgid ""
 "A valid hostname is specified, but the domain name part should be omitted"
@@ -15252,13 +15258,16 @@ msgstr "Network Address Translation"
 
 # File: src/www/system_advanced_firewall.php, line: 516
 msgid "Reflection for port forwards"
-msgstr ""
+msgstr "Reflektion für Portweiterleitungen"
 
 msgid ""
 "When enabled, this automatically creates additional NAT redirect rules for "
 "access to port forwards on your external IP addresses from within your "
 "internal networks."
 msgstr ""
+"Dies generiert, sofern aktiviert, automatisch zusätzliche NAT-"
+"Weiterleitungsregeln die den Zugang zu Ihren Portweiterleitungen Ihrer "
+"externen IP von Ihren internen Netzen aus ermöglicht."
 
 msgid ""
 "The NAT + proxy mode uses a helper program to send packets to the target of "
@@ -15340,10 +15349,10 @@ msgid "AMD K8, K10 and K11 CPU on-die thermal sensor"
 msgstr "CPU-integrierter Temperatursensor (AMD K8, K10 und K11)"
 
 msgid "Please select a valid Cryptographic Accelerator."
-msgstr ""
+msgstr "Bitte wählen sie einen gültigen Kryptografiebeschleuniger aus."
 
 msgid "Please select a valid Thermal Hardware Sensor."
-msgstr ""
+msgstr "Bitte wählen Sie einen gültigen Hardwarewärmesensor aus."
 
 msgid "Proxy support"
 msgstr "Proxy Unterstützung"
@@ -15490,7 +15499,7 @@ msgid ""
 msgstr ""
 
 msgid "Thermal Sensors"
-msgstr ""
+msgstr "Wärmesensoren"
 
 msgid "None/ACPI"
 msgstr "Keine/ACPI"
@@ -17247,11 +17256,11 @@ msgstr ""
 
 # File: src/www/system_hasync.php, line: 98
 msgid "State Synchronization"
-msgstr ""
+msgstr "Statussynchronisation"
 
 # File: src/www/system_hasync.php, line: 127
 msgid "Synchronize States"
-msgstr ""
+msgstr "Status synchronisieren"
 
 # File: src/www/system_hasync.php, line: 132
 msgid ""
@@ -17501,6 +17510,8 @@ msgid ""
 "Automatically sync the DNS Forwarder configuration to the other HA host when "
 "changes are made."
 msgstr ""
+"Die DNS-Forwarderkonfiguration automatisch zum anderen HA-Host "
+"synchronisieren, wenn Änderungen gemacht werden."
 
 # File: src/www/system_routes.php, line: 210
 msgid "Add route"
@@ -17535,7 +17546,7 @@ msgstr "Route aktivieren"
 
 # File: src/www/system_routes.php, line: 275
 msgid "move selected routes before this route"
-msgstr ""
+msgstr "verschiebe ausgewählte Routen vor diese Route"
 
 # File: src/www/system_routes.php, line: 279
 msgid "edit route"
@@ -17645,7 +17656,7 @@ msgid "Invalid expiration date format; use MM/DD/YYYY instead."
 msgstr "Format des Ablaufdatums ungültig; benutze stattdessen MM/TT/JJJJ."
 
 msgid "Invalid internal Certificate Authority"
-msgstr ""
+msgstr "Ungültige interne Zertifizierungsstelle"
 
 msgid "(Certificate will not be deleted)"
 msgstr "(Zertifikat wird nicht gelöscht werden)"
@@ -18230,6 +18241,7 @@ msgstr ""
 
 msgid "There is a Phase 2 using IPv4, you cannot use IPv6."
 msgstr ""
+"Es gibt eine Phase 2, die IPv4 verwendet. Sie können IPv6 nicht verwenden."
 
 msgid "Please enter an address for 'My Identifier'"
 msgstr "Bitte gebe eine Adresse für 'Meine Kennung' ein"
@@ -18558,6 +18570,8 @@ msgid ""
 "A valid remote network IPv4 address must be specified or you need to change "
 "Mode to IPv6"
 msgstr ""
+"Ein gültige ferne IPv4-Netzwerkadresse muss angegeben werden oder Sie müssen "
+"den Modus auf IPv6 ändern"
 
 msgid ""
 "A valid remote network IPv6 address must be specified or you need to change "
@@ -20377,8 +20391,8 @@ msgid ""
 "Note: don't forget to %sadd a firewall rule%s to permit traffic from PPTP "
 "clients!"
 msgstr ""
-"Hinweis: Vergesse nicht eine %Firewall-Regel hinzuzufügen% um Datenverkehr "
-"von PPTP Clients zu erlauben!"
+"Hinweis: Vergesse nicht eine %sFirewall-Regel hinzuzufügen%s, um "
+"Datenverkehr von PPTP Clients zu erlauben!"
 
 msgid "The PPTP user list has been modified"
 msgstr "Die PPTP Benutzerliste wurde geändert"
