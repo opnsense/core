@@ -100,7 +100,7 @@ def parse_flow(recv_stamp):
                     continue
                 if flow.has_field(flowd.FIELD_FLOW_TIMES):
                     # calculate flow start, end, duration in ms
-                    flow_record['flow_end'] = (flow.recv_sec - flow.flow_finish / 1000.0)
+                    flow_record['flow_end'] = (flow.recv_sec - flow.flow_finish / 1000.0 + flow.sys_uptime_ms/1000.0)
                     flow_record['duration_ms'] = (flow.flow_finish - flow.flow_start)
                     flow_record['flow_start'] = flow_record['flow_end'] - flow_record['duration_ms'] / 1000.0
                     # handle source data
