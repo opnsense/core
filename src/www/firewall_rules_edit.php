@@ -842,7 +842,7 @@ include("head.inc");
                       </select>
                       <div class="hidden" for="help_for_protocol">
                         <?=gettext("Choose which IP protocol this rule should match.");?> <br />
-                        <?=gettext("Hint: in most cases, you should specify ");?><em>TCP</em> &nbsp;<?=gettext("here.");?>
+                        <?= gettext("Hint: in most cases, you should specify TCP here.") ?>
                       </div>
                     </td>
                   </tr>
@@ -1009,11 +1009,8 @@ include("head.inc");
                         </tbody>
                       </table>
                       <div class="hidden" for="help_for_srcport">
-                        <?=gettext("Specify the source port or port range for this rule"); ?>.
-                        <b><?=gettext("This is usually"); ?>
-                          <em><?=gettext("random"); ?></em>
-                           <?=gettext("and almost never equal to the destination port range (and should usually be 'any')"); ?>.
-                         </b>
+                        <?=gettext("Specify the source port or port range for this rule."); ?>
+                        <b><?= gettext("This is usually random and almost never equal to the destination port range (and should usually be 'any').") ?></b>
                       </div>
                     </td>
                   </tr>
@@ -1142,7 +1139,7 @@ include("head.inc");
                       <div class="hidden" for="help_for_log">
                         <strong><?=gettext("Log packets that are handled by this rule");?></strong>
                         <br />
-                        <?=gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server"); ?> (<?=gettext("see the"); ?> <a href="diag_logs_settings.php"><?=gettext("Diagnostics: System logs: Settings"); ?></a> <?=gettext("page"); ?>).
+                        <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                       </div>
                     </td>
                   </tr>
@@ -1172,7 +1169,7 @@ include("head.inc");
                     <td>
                       <input name="descr" type="text" class="formfld unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" for="help_for_descr">
-                        <?=gettext("You may enter a description here " ."for your reference (not parsed)."); ?>
+                        <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                   </tr>
                   <tr>
@@ -1253,7 +1250,7 @@ include("head.inc");
                         endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_gateway">
-                          <?=gettext("Leave as 'default' to use the system routing table.  Or choose a gateway to utilize policy based routing.");?>
+                          <?=gettext("Leave as 'default' to use the system routing table. Or choose a gateway to utilize policy based routing.");?>
                         </div>
                     </td>
                   </tr>
@@ -1290,7 +1287,7 @@ include("head.inc");
                       <td>
                         <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
                         <div class="hidden" for="help_for_tag">
-                          <?=gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules. It is called"); ?> <b><?=gettext("Policy filtering"); ?></b>
+                          <?= sprintf(gettext("You can mark a packet matching this rule and use this mark to match on other NAT/filter rules. It is called %sPolicy filtering%s."),'<b>','</b>') ?>
                         </div>
                       </td>
                   </tr>
@@ -1308,7 +1305,7 @@ include("head.inc");
                       <td>
                         <input name="max" type="text" value="<?=$pconfig['max'];?>" />
                         <div class="hidden" for="help_for_max">
-                          <?=gettext(" Maximum state entries this rule can create");?>
+                          <?=gettext("Maximum state entries this rule can create");?>
                         </div>
                       </td>
                   </tr>
@@ -1386,8 +1383,8 @@ include("head.inc");
                           $setflags = explode(",", $pconfig['tcpflags1']);
                           $outofflags = explode(",", $pconfig['tcpflags2']);
                           $header = "<td></td>";
-                          $tcpflags1 = "<td>set</td>";
-                          $tcpflags2 = "<td>out of</td>";
+                          $tcpflags1 = "<td>" . gettext('set') . "</td>";
+                          $tcpflags2 = "<td>" . gettext('out of') . "</td>";
                           foreach ($tcpflags as $tcpflag) {
                             $header .= "<td><strong>" . strtoupper($tcpflag) . "</strong></td>\n";
                             $tcpflags1 .= "<td> <input class='input_flags' type='checkbox' name='tcpflags1_{$tcpflag}' value='on' ";
@@ -1412,7 +1409,7 @@ include("head.inc");
                         <tr>
                         </table>
                         <div class="hidden" for="help_for_tcpflags">
-                            <?=gettext("Use this to choose TCP flags that must "."be set or cleared for this rule to match.");?>
+                            <?=gettext("Use this to choose TCP flags that must be set or cleared for this rule to match.");?>
                         </div>
                       </td>
                   </tr>
@@ -1444,7 +1441,7 @@ include("head.inc");
                           </select>
                           <div class="hidden" for="help_for_statetype">
                             <span>
-                              <?=gettext("Hint: Select which type of state tracking mechanism you would like to use.  If in doubt, use keep state.");?>
+                              <?=gettext("Hint: Select which type of state tracking mechanism you would like to use. If in doubt, use keep state.");?>
                             </span>
                               <ul>
                                 <li><strong><?=gettext("keep state");?> </strong><?=gettext("Works with all IP protocols.");?></li>
@@ -1488,7 +1485,7 @@ include("head.inc");
                       <td>
                         &nbsp;<br />&nbsp;
                         <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_rules.php');?>'" />
+                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? html_safe($_SERVER['HTTP_REFERER']) : '/firewall_rules.php');?>'" />
                       </td>
                     </tr>
                   </table>
