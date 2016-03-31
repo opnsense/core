@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-23 06:11+0000\n"
+"POT-Creation-Date: 2016-03-31 05:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2228,7 +2228,7 @@ msgstr "Pare-feu"
 
 # File: lang/dynamic/helpers/models.php, line: 189
 msgid "Tab"
-msgstr ""
+msgstr "Tabulation"
 
 # File: src/www/diag_dns.php, line: 154
 # File: src/www/diag_dns.php, line: 231
@@ -3644,7 +3644,7 @@ msgid ""
 "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %s has been "
 "automatically replaced with %s"
 msgstr ""
-"L'adresse MAC INVALIDE (ff:ff:ff:ff:ff:ff) sur l'interface %s a été "
+"L'adresse MAC EST INVALIDE (ff:ff:ff:ff:ff:ff) sur l'interface %s qui a été "
 "automatiquement remplacée par %s"
 
 # File: src/etc/inc/interfaces.inc, line: 3853
@@ -7469,7 +7469,7 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 321
 msgid "Log File Size (Bytes)"
-msgstr ""
+msgstr "Taille des fichiers journaux (Bytes)"
 
 # File: src/www/diag_logs_settings.php, line: 283
 msgid ""
@@ -7843,15 +7843,15 @@ msgstr "ICMP"
 
 # File: src/www/diag_packet_capture.php, line: 276
 msgid "Exclude ICMP"
-msgstr ""
+msgstr "Exlure ICMP"
 
 # File: src/www/diag_packet_capture.php, line: 277
 msgid "ICMPv6"
-msgstr ""
+msgstr "ICMPv6"
 
 # File: src/www/diag_packet_capture.php, line: 278
 msgid "Exclude ICMPv6"
-msgstr ""
+msgstr "Exclure ICMPv6"
 
 # File: src/www/firewall_nat_edit.php, line: 533
 # File: src/www/load_balancer_monitor_edit.php, line: 186
@@ -7862,7 +7862,7 @@ msgstr "TCP"
 
 # File: src/www/diag_packet_capture.php, line: 280
 msgid "Exclude TCP"
-msgstr ""
+msgstr "Exclure TCP"
 
 # File: src/www/diag_packet_capture.php, line: 281
 # File: src/www/firewall_nat_out_edit.php, line: 450
@@ -7871,7 +7871,7 @@ msgstr "UDP"
 
 # File: src/www/diag_packet_capture.php, line: 282
 msgid "Exclude UDP"
-msgstr ""
+msgstr "Exclure UDP"
 
 # File: src/www/diag_packet_capture.php, line: 283
 msgid "ARP"
@@ -7879,20 +7879,20 @@ msgstr "ARP"
 
 # File: src/www/diag_packet_capture.php, line: 284
 msgid "Exclude ARP"
-msgstr ""
+msgstr "Exclure ARP"
 
 # File: src/www/diag_packet_capture.php, line: 285
 msgid "CARP (VRRP)"
-msgstr ""
+msgstr "CARP (VRRP)"
 
 # File: src/www/diag_packet_capture.php, line: 286
 msgid "Exclude CARP (VRRP)"
-msgstr ""
+msgstr "Exclure CARP (VRRP)"
 
 # File: src/www/diag_packet_capture.php, line: 287
 # File: src/www/firewall_nat_out_edit.php, line: 450
 msgid "ESP"
-msgstr ""
+msgstr "ESP"
 
 # File: src/www/diag_packet_capture.php, line: 287
 msgid "Select the protocol to capture, or Any."
@@ -8529,11 +8529,11 @@ msgstr ""
 
 # File: src/www/diag_testport.php, line: 59
 msgid "You cannot connect to an IPv4 address using IPv6."
-msgstr ""
+msgstr "Vous ne pouvez pas vous connecter à une adresse IPv4 en utilisant IPv6."
 
 # File: src/www/diag_testport.php, line: 62
 msgid "You cannot connect to an IPv6 address using IPv4."
-msgstr ""
+msgstr "Vous ne pouvez pas vous connecter à une adresse IPv6 en utilisant IPv4."
 
 # File: src/www/diag_testport.php, line: 92
 msgid ""
@@ -9643,7 +9643,7 @@ msgstr ""
 # File: src/www/system_general.php, line: 322
 # File: src/www/system_general.php, line: 333
 msgid "e.g."
-msgstr "par exemple"
+msgstr "ex."
 
 # File: src/www/firewall_nat_edit.php, line: 772
 msgid "Redirect target port"
@@ -10159,7 +10159,7 @@ msgstr "Réseaux RFC 1918"
 # File: src/www/firewall_rules.php, line: 471
 # File: src/www/interfaces.php, line: 3301
 msgid "Block private networks"
-msgstr "Bloquer les réseaux privée"
+msgstr "Bloquer les réseaux privés"
 
 # File: src/www/firewall_rules.php, line: 487
 msgid "Reserved/not assigned by IANA"
@@ -17605,12 +17605,12 @@ msgstr "Serveur Trap"
 
 # File: src/www/services_snmp.php, line: 102
 msgid "Trap server port"
-msgstr ""
+msgstr "Port du serveur Trap"
 
 # File: src/www/services_snmp.php, line: 106
 # File: src/www/services_snmp.php, line: 399
 msgid "Trap string"
-msgstr ""
+msgstr "Nom du Trap"
 
 # File: src/www/services_snmp.php, line: 286
 msgid "SNMP Daemon"
@@ -17653,15 +17653,15 @@ msgstr "Liste des Traps SNMP"
 
 # File: src/www/services_snmp.php, line: 383
 msgid "Enter trap server name"
-msgstr ""
+msgstr "Entrer le nom du serveur Trap"
 
 # File: src/www/services_snmp.php, line: 388
 msgid "Trap server port "
-msgstr ""
+msgstr "Port du serveur Trap"
 
 # File: src/www/services_snmp.php, line: 391
 msgid "Enter the port to send the traps to (default 162)"
-msgstr ""
+msgstr "Entrer le port pour envoyer les Traps (par défaut 162)"
 
 # File: src/www/services_snmp.php, line: 396
 msgid "Enter the SNMP trap string"
@@ -19325,6 +19325,10 @@ msgid ""
 "keyboard. A <b>null modem</b> serial cable or adapter is required to use the "
 "serial console."
 msgstr ""
+"Note:  Ceci redirigera la sortie console et les messages sur le port série. "
+"Vous pouvez toujours accéder au menu de la console à partir de la carte "
+"vidéo interne/clavier. Un câble série <b>null modem</v> ou un adaptateur est "
+"nécessaire pour utiliser la console série."
 
 # File: src/www/system_advanced_admin.php, line: 580
 msgid "Serial Speed"
@@ -22040,13 +22044,13 @@ msgid ""
 "Do not use 'local' as a domain name. It will cause local hosts running mDNS ("
 "avahi, bonjour, etc.) to be unable to resolve local hosts not running mDNS."
 msgstr ""
-"Ne pas utiliser «local» comme un nom de domaine. Il provoquera des "
+"Ne pas utiliser «local» comme nom de domaine. Il provoquera des "
 "dysfonctionnements avec les hôtes locaux utilisant mDNS (avahi, bonjour, "
 "etc.)."
 
 # File: src/www/system_general.php, line: 341
 msgid "e.g. %smycorp.com, home, office, private, etc.%s"
-msgstr ""
+msgstr "ex. %smycorp.com, home, office, private, etc.%s"
 
 # File: src/www/system_general.php, line: 344
 msgid "DNS Server"
