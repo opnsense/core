@@ -842,7 +842,7 @@ include("head.inc");
                       </select>
                       <div class="hidden" for="help_for_protocol">
                         <?=gettext("Choose which IP protocol this rule should match.");?> <br />
-                        <?= sprintf(gettext("Hint: in most cases, you should specify %sTCP%s here."),'<em>','</em>') ?>
+                        <?= gettext("Hint: in most cases, you should specify TCP here.") ?>
                       </div>
                     </td>
                   </tr>
@@ -1010,7 +1010,7 @@ include("head.inc");
                       </table>
                       <div class="hidden" for="help_for_srcport">
                         <?=gettext("Specify the source port or port range for this rule."); ?>
-                        <b><?= sprintf(gettext("This is usually %srandom%s and almost never equal to the destination port range (and should usually be 'any')."),'<em>','</em>') ?></b>
+                        <b><?= gettext("This is usually random and almost never equal to the destination port range (and should usually be 'any').") ?></b>
                       </div>
                     </td>
                   </tr>
@@ -1139,7 +1139,7 @@ include("head.inc");
                       <div class="hidden" for="help_for_log">
                         <strong><?=gettext("Log packets that are handled by this rule");?></strong>
                         <br />
-                        <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a remote syslog server (see the %sDiagnostics: System logs: Settings%s page)."),'<a href="diag_logs_settings.php">','</a>') ?>
+                        <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                       </div>
                     </td>
                   </tr>
