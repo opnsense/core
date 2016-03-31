@@ -413,7 +413,11 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $verify_ssl);
+    if (!$verify_ssl) {
+        /* leave the curl defaults untouched when verify is used */
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    }
     curl_setopt($ch, CURLOPT_FILE, $fp);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $connect_timeout);
     curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
