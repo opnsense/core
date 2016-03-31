@@ -24,13 +24,56 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    aggregate flow data (format in parse.py) into sqlite structured container, using a table per resolution and a
-    file per collection.
+    aggregate flow data (format in parse.py) into sqlite structured container per type/resolution.
+    Implementations are collected in lib\aggregates\
 """
 import os
 import datetime
 import sqlite3
 
+class AggMetadata(object):
+    """ store some metadata needed to keep track of parse progress
+    """
+    def __init__(self):
+        self._filename = '/var/netflow/metadata.sqlite'
+        # make sure the target directory exists
+        target_path = os.path.dirname(self._filename)
+        if not os.path.isdir(target_path):
+            os.makedirs(target_path)
+        # open sqlite database and cursor
+        self._db_connection = sqlite3.connect(self._filename)
+        self._db_cursor = self._db_connection.cursor()
+        # known tables
+        self._tables = list()
+        # cache known tables
+        self._update_known_tables()
+
+    def _update_known_tables(self):
+        """ request known tables
+        """
+        result = list()
+        self._db_cursor.execute('SELECT name FROM sqlite_master')
+        for record in self._db_cursor.fetchall():
+            self._tables.append(record[0])
+
+    def update_sync_time(self, timestamp):
+        """ update (last) sync timestamp
+        """
+        if 'sync_timestamp' not in self._tables:
+            self._db_cursor.execute('create table sync_timestamp(mtime timestamp)')
+            self._db_cursor.execute('insert into sync_timestamp(mtime) values(0)')
+            self._db_connection.commit()
+            self._update_known_tables()
+        # update last sync timestamp, if this date > timestamp
+        self._db_cursor.execute('update sync_timestamp set mtime = :mtime where mtime < :mtime', {'mtime': timestamp})
+        self._db_connection.commit()
+
+    def last_sync(self):
+        if 'sync_timestamp' not in self._tables:
+            return 0.0
+        else:
+            self._db_cursor.execute('select max(mtime) from sync_timestamp')
+            return self._db_cursor.fetchall()[0][0]
 
 class BaseFlowAggregator(object):
     # target location ('/var/netflow/<store>.sqlite')
@@ -43,19 +86,15 @@ class BaseFlowAggregator(object):
         """
         self.resolution = resolution
         # target table name, data_<resolution in seconds>
-        self._target_table_name = 'data_%d' % self.resolution
         self._db_connection = None
         self._update_cur = None
         self._known_targets = list()
         # construct update and insert sql statements
-        tmp = 'update %s set octets = octets + :octets_consumed, packets = packets + :packets_consumed '
+        tmp = 'update timeserie set octets = octets + :octets_consumed, packets = packets + :packets_consumed '
         tmp += 'where mtime = :mtime and %s '
-        self._update_stmt = tmp % (self._target_table_name,
-                                   ' and '.join(map(lambda x: '%s = :%s' % (x, x), self.agg_fields)))
-        tmp = 'insert into %s (mtime, octets, packets, %s) values (:mtime, :octets_consumed, :packets_consumed, %s)'
-        self._insert_stmt = tmp % (self._target_table_name,
-                                   ','.join(self.agg_fields),
-                                   ','.join(map(lambda x: ':%s' % x, self.agg_fields)))
+        self._update_stmt = tmp % (' and '.join(map(lambda x: '%s = :%s' % (x, x), self.agg_fields)))
+        tmp = 'insert into timeserie (mtime, octets, packets, %s) values (:mtime, :octets_consumed, :packets_consumed, %s)'
+        self._insert_stmt = tmp % (','.join(self.agg_fields), ','.join(map(lambda x: ':%s' % x, self.agg_fields)))
         # open database
         self._open_db()
         self._fetch_known_targets()
@@ -77,7 +116,7 @@ class BaseFlowAggregator(object):
         if self._db_connection is not None:
             # construct new aggregate table
             sql_text = list()
-            sql_text.append('create table %s ( ' % self._target_table_name)
+            sql_text.append('create table timeserie ( ')
             sql_text.append('  mtime timestamp')
             for agg_field in self.agg_fields:
                 sql_text.append(', %s varchar(255)' % agg_field)
@@ -104,11 +143,11 @@ class BaseFlowAggregator(object):
         """
         if self.target_filename is not None:
             # make sure the target directory exists
-            target_path = os.path.dirname(self.target_filename)
+            target_path = os.path.dirname(self.target_filename % self.resolution)
             if not os.path.isdir(target_path):
                 os.makedirs(target_path)
             # open sqlite database
-            self._db_connection = sqlite3.connect(self.target_filename)
+            self._db_connection = sqlite3.connect(self.target_filename % self.resolution)
             # open update/insert cursor
             self._update_cur = self._db_connection.cursor()
 
@@ -123,7 +162,7 @@ class BaseFlowAggregator(object):
         :param flow: flow data (from parse.py)
         """
         # make sure target exists
-        if self._target_table_name not in self._known_targets:
+        if 'timeserie' not in self._known_targets:
             self._create_target_table()
 
         # push record(s) depending on resolution
@@ -139,7 +178,7 @@ class BaseFlowAggregator(object):
                 # upsert data
                 flow['octets_consumed'] = consume_perc * flow['octets']
                 flow['packets_consumed'] = consume_perc * flow['packets']
-                flow['mtime'] = datetime.datetime.utcfromtimestamp(start_time)
+                flow['mtime'] = datetime.datetime.fromtimestamp(start_time)
                 self._update_cur.execute(self._update_stmt, flow)
                 if self._update_cur.rowcount == 0:
                     self._update_cur.execute(self._insert_stmt, flow)
