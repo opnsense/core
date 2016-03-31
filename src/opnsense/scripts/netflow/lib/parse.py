@@ -28,6 +28,9 @@
 """
 import flowd
 import glob
+import tempfile
+import subprocess
+import os
 
 # define field
 PARSE_FLOW_FIELDS = [
@@ -48,12 +51,38 @@ PARSE_FLOW_FIELDS = [
 # location of flowd logfiles to use
 FLOWD_LOG_FILES = '/var/log/flowd.log*'
 
+class Interfaces(object):
+    """ mapper for local interface index to interface name (1 -> em0 for example)
+    """
+    def __init__(self):
+        """ construct local interface mapping
+        """
+        self._ifIndex = dict()
+        with tempfile.NamedTemporaryFile() as output_stream:
+            subprocess.call(['/usr/bin/netstat', '-i', '-n'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            output_stream.seek(0)
+            for line in output_stream.read().split('\n'):
+                parts = line.split()
+                if len(parts) > 2 and parts[2].find('<Link#') > -1:
+                    self._ifIndex[parts[2].split('#')[1].split('>')[0]] = parts[0]
+
+    def if_device(self, ifIndex):
+        """ convert index to device (if found)
+        """
+        if str(ifIndex) in self._ifIndex:
+            # found, return interface name
+            return self._ifIndex[str(ifIndex)]
+        else:
+            # not found, return index
+            return str(ifIndex)
+
 
 def parse_flow(recv_stamp):
     """ parse flowd logs and yield records (dict type)
     :param recv_stamp: last receive timestamp (recv)
     :return: iterator flow details
     """
+    interfaces = Interfaces()
     parse_done = False
     for filename in sorted(glob.glob(FLOWD_LOG_FILES)):
         if parse_done:
@@ -80,6 +109,9 @@ def parse_flow(recv_stamp):
                             flow_record[flow_field['target']] = getattr(flow, flow_field['target'])
                         else:
                             flow_record[flow_field['target']] = None
+                    # map interface indexes to actual interface names
+                    flow_record['if_in'] = interfaces.if_device(flow_record['if_ndx_in'])
+                    flow_record['if_out'] = interfaces.if_device(flow_record['if_ndx_out'])
                 yield flow_record
     # send None to mark last record
     yield None
