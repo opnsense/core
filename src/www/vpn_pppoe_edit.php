@@ -549,10 +549,8 @@ legacy_html_escape_form_data($pconfig);
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;</td>
-                    <td width="78%">
-                      <span class="text-danger"><strong><?=gettext("Note"); ?>:<br /></strong></span>
-                      <?=gettext("don't forget to add a firewall rule to permit " ."traffic from PPPoE clients!"); ?>
+                    <td colspan="2">
+                      <?=gettext("Don't forget to add a firewall rule to permit traffic from PPPoE clients."); ?>
                     </td>
                   </tr>
                 </table>

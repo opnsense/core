@@ -340,7 +340,6 @@ include("head.inc");
                   </tr>
                   <tr>
                     <td colspan="2">
-                      <strong class="text-danger"><?=gettext("Note:");?></strong><br />
                       <?=gettext("Don't forget to add a firewall rule to permit traffic from L2TP clients!");?>
                     </td>
                   </tr>

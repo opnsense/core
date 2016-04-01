@@ -172,7 +172,9 @@ foreach ($config['ipsec']['mobilekey'] as $secretent) :
 <?php           $i++;
 endforeach; ?>
                 <tr>
-                  <td colspan="2"></td>
+                  <td colspan="2">
+                    <?=gettext("PSK for any user can be set by using an identifier of any/ANY") ?>
+                  </td>
                   <td>
                     <a href="vpn_ipsec_keys_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                   </td>
@@ -180,12 +182,6 @@ endforeach; ?>
               </table>
             </div>
           </form>
-          <div class="container-fluid">
-            <span class="text-danger">
-              <strong><?=gettext("Note"); ?>:<br /></strong>
-            </span>
-            <?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
-          </div>
         </div>
       </section>
     </div>

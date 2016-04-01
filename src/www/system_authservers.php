@@ -680,15 +680,6 @@ else :
                   <th width="10%" class="list"></th>
                 </tr>
               </thead>
-              <tfoot>
-                <tr>
-                  <td colspan="4">
-                    <p>
-                      <?=gettext("Additional authentication servers can be added here.");?>
-                    </p>
-                  </td>
-                </tr>
-              </tfoot>
               <tbody>
 <?php
 $i = 0;
@@ -715,6 +706,11 @@ endif; ?>
 <?php
                 $i++;
               endforeach;?>
+                <tr>
+                  <td colspan="4">
+                    <?=gettext("Additional authentication servers can be added here.");?>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </form>

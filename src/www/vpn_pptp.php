@@ -439,9 +439,8 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td></td>
-                      <td><?=sprintf(gettext("Note: don't forget to %sadd a firewall rule%s to permit traffic from PPTP clients!"),'<a href="firewall_rules.php?if=pptp">','</a>') ?></td>
-                     </tr>
+                      <td colspan="2"><?= gettext("Don't forget to add a firewall rule to permit traffic from PPTP clients.") ?></td>
+                    </tr>
                   </table>
                 </div>
               </form>

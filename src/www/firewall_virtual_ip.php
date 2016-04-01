@@ -357,7 +357,9 @@ $main_buttons = array(
                       ?>
                     <?php ?>
                   <tr>
-                    <td colspan="5"></td>
+                    <td colspan="5">
+                      <?=sprintf(gettext('You can check the status of your CARP Virtual IPs and interfaces %shere%s.'),'<a href="carp_status.php">','</a>')?></span>
+                    </td>
                     <td>
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs to end");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
@@ -368,11 +370,6 @@ $main_buttons = array(
                       <a id="del_x" title="<?=gettext("delete selected virtual IPs"); ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">
                         <span class="fa fa-trash text-muted"></span>
                       </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="6">
-                      <?=sprintf(gettext('You can check the status of your CARP Virtual IPs and interfaces %shere%s.'),'<a href="carp_status.php">','</a>')?></span>
                     </td>
                   </tr>
                 </tbody>

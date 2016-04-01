@@ -978,10 +978,22 @@ $( document ).ready(function() {
                   $i++;
                   endforeach;
 ?>
-                  </tbody>
-                  <tfoot>
                     <tr>
-                      <td colspan="3"></td>
+                      <td colspan="3">
+                        <table>
+                          <tr>
+                            <td></td>
+                            <td width="20px"></td>
+                            <td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
+                            <td width="200px"><?= gettext('System Administrator') ?></td>
+                            <td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
+                            <td width="200px"><?= gettext('Disabled User') ?></td>
+                            <td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
+                            <td width="200px"><?= gettext('Normal User') ?></td>
+                            <td></td>
+                          </tr>
+                        </table>
+                      </td>
                       <td>
                         <a href="system_usermanager.php?act=new" class="btn btn-default btn-xs"
                            title="<?=gettext("add user");?>" data-toggle="tooltip">
@@ -1002,7 +1014,6 @@ $( document ).ready(function() {
                     </tr>
                     <tr>
                       <td colspan="4">
-                        <p class="col-xs-12 col-sm-10">
                           <?=gettext("Additional users can be added here. User permissions for accessing " .
                                         "the webConfigurator can be assigned directly or inherited from group memberships. " .
                                         "An icon that appears grey indicates that it is a system defined object. " .
@@ -1010,27 +1021,9 @@ $( document ).ready(function() {
                           <br /><br />
                           <?=gettext("Accounts created here are also used for other parts of the system " .
                                         "such as OpenVPN, IPsec, and Captive Portal.");?>
-                        </p>
                       </td>
                     </tr>
-                    <tr>
-                      <td colspan="4">
-                        <table>
-                          <tr>
-                            <td></td>
-                            <td width="20px"></td>
-                            <td width="20px"><span class="glyphicon glyphicon-user text-danger"></span></td>
-                            <td width="200px"><?= gettext('System Administrator') ?></td>
-                            <td width="20px"><span class="glyphicon glyphicon-user text-muted"></span></td>
-                            <td width="200px"><?= gettext('Disabled User') ?></td>
-                            <td width="20px"><span class="glyphicon glyphicon-user text-info"></span></td>
-                            <td width="200px"><?= gettext('Normal User') ?></td>
-                            <td></td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </tfoot>
+                  </tbody>
                 </table>
               </form>
 <?php

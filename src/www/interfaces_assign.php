@@ -458,12 +458,9 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr>
-                          <td colspan="3">
-                            <?= gettext('Interfaces that are configured as members of a LAGG interface will not be shown.') ?>
-                          </td>
-                      </tr>
-                      <tr>
-                        <td colspan="2"></td>
+                        <td colspan="2">
+                          <?= gettext('Interfaces that are configured as members of a LAGG interface will not be shown.') ?>
+                        </td>
                         <td>
                           <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                         </td>
