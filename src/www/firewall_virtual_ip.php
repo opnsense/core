@@ -292,98 +292,96 @@ $main_buttons = array(
             print_info_box_apply(gettext("The VIP configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
         ?>
         <section class="col-xs-12">
-            <div class="content-box-main content-box">
-              <form action="firewall_virtual_ip.php" method="post" name="iform" id="iform">
-                <input type="hidden" id="id" name="id" value="" />
-                <input type="hidden" id="action" name="act" value="" />
-                <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <td></td>
-                        <td><?=gettext("Virtual IP address");?></td>
-                        <td><?=gettext("Interface");?></td>
-                        <td><?=gettext("Type");?></td>
-                        <td><?=gettext("Description");?></td>
-                        <td></td>
-                      </tr>
-                    </thead>
-                    <tbody>
+          <div class="content-box tab-content">
+            <form action="firewall_virtual_ip.php" method="post" name="iform" id="iform">
+              <input type="hidden" id="id" name="id" value="" />
+              <input type="hidden" id="action" name="act" value="" />
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <td></td>
+                    <td><?=gettext("Virtual IP address");?></td>
+                    <td><?=gettext("Interface");?></td>
+                    <td><?=gettext("Type");?></td>
+                    <td><?=gettext("Description");?></td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody>
 <?php
                   $interfaces = get_configured_interface_with_descr(false, true);
                   $interfaces['lo0'] = "Localhost";
                   $i = 0;
                   foreach ($a_vip as $vipent):
                     if(!empty($vipent['subnet']) || !empty($vipent['range']) || !empty($vipent['subnet_bits']) || (isset($vipent['range']['from']) && !empty($vipent['range']['from']))): ?>
-                      <tr ondblclick="document.location='firewall_virtual_ip_edit.php?id=<?=$i;?>';">
-                        <td>
-                          <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
-                        </td>
-                        <td>
-                          <?=($vipent['type'] == "single" || $vipent['type'] == "network") && !empty($vipent['subnet_bits']) ? $vipent['subnet']."/".$vipent['subnet_bits'] : "";?>
-                          <?=$vipent['type'] == "range" ? $vipent['range']['from'] . "-" .  $vipent['range']['to'] : "";?>
-                          <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']} )" : "";?>
-                        </td>
-                        <td>
-                          <?=htmlspecialchars($interfaces[$vipent['interface']]);?>
-                        </td>
-                        <td>
-                          <?=$vipent['mode'] == "proxyarp" ? "Proxy ARP" : "";?>
-                          <?=$vipent['mode'] == "carp" ? "CARP" : "";?>
-                          <?=$vipent['mode'] == "other" ? "Other" : "";?>
-                          <?=$vipent['mode'] == "ipalias" ? "IP Alias" :"";?>
-                        </td>
-                        <td>
-                          <?=htmlspecialchars($vipent['descr']);?>
-                        </td>
-                        <td>
-                          <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs before this entry");?>" class="act_move btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-arrow-left"></span>
-                          </a>
-                          <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit virtual IP");?>" class="btn btn-default btn-xs">
-                            <span class="glyphicon glyphicon-pencil"></span>
-                          </a>
-                          <a id="del_<?=$i;?>" title="<?=gettext("delete virtual IP"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                            <span class="fa fa-trash text-muted"></span>
-                          </a>
-                          <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone virtual IP");?>">
-                            <span class="fa fa-clone text-muted"></span>
-                          </a>
-                        </td>
-                      </tr>
+                  <tr ondblclick="document.location='firewall_virtual_ip_edit.php?id=<?=$i;?>';">
+                    <td>
+                      <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                    </td>
+                    <td>
+                      <?=($vipent['type'] == "single" || $vipent['type'] == "network") && !empty($vipent['subnet_bits']) ? $vipent['subnet']."/".$vipent['subnet_bits'] : "";?>
+                      <?=$vipent['type'] == "range" ? $vipent['range']['from'] . "-" .  $vipent['range']['to'] : "";?>
+                      <?=$vipent['mode'] == "carp" ?  " (vhid {$vipent['vhid']} , freq. {$vipent['advbase']} / {$vipent['advskew']} )" : "";?>
+                    </td>
+                    <td>
+                      <?=htmlspecialchars($interfaces[$vipent['interface']]);?>
+                    </td>
+                    <td>
+                      <?=$vipent['mode'] == "proxyarp" ? "Proxy ARP" : "";?>
+                      <?=$vipent['mode'] == "carp" ? "CARP" : "";?>
+                      <?=$vipent['mode'] == "other" ? "Other" : "";?>
+                      <?=$vipent['mode'] == "ipalias" ? "IP Alias" :"";?>
+                    </td>
+                    <td>
+                      <?=htmlspecialchars($vipent['descr']);?>
+                    </td>
+                    <td>
+                      <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs before this entry");?>" class="act_move btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      </a>
+                      <a href="firewall_virtual_ip_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit virtual IP");?>" class="btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </a>
+                      <a id="del_<?=$i;?>" title="<?=gettext("delete virtual IP"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                        <span class="fa fa-trash text-muted"></span>
+                      </a>
+                      <a href="firewall_virtual_ip_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone virtual IP");?>">
+                        <span class="fa fa-clone text-muted"></span>
+                      </a>
+                    </td>
+                  </tr>
 <?php
                       endif;
                       $i++;
                     endforeach;
                       ?>
                     <?php ?>
-                    <tr>
-                      <td colspan="5"></td>
-                      <td>
-                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs to end");?>" class="act_move btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-arrow-left"></span>
-                        </a>
-                        <a href="firewall_virtual_ip_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new virtual IP");?>">
-                          <span class="glyphicon glyphicon-plus"></span>
-                        </a>
-                        <a id="del_x" title="<?=gettext("delete selected virtual IPs"); ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
-                        </a>
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="container-fluid">
-                  <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
-                  </strong></span><?=sprintf(gettext("The virtual IP addresses defined on this page may be used in %sNAT mappings%s."),'<a href="firewall_nat.php">','</a>');?><br />
-                  <?=sprintf(gettext('You can check the status of your CARP Virtual IPs and interfaces %shere%s.'),'<a href="carp_status.php">','</a>')?></span></p>
-                </div>
-              </form>
-            </div>
-          </section>
-        </div>
+                  <tr>
+                    <td colspan="5"></td>
+                    <td>
+                      <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected virtual IPs to end");?>" class="act_move btn btn-default btn-xs">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                      </a>
+                      <a href="firewall_virtual_ip_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new virtual IP");?>">
+                        <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                      <a id="del_x" title="<?=gettext("delete selected virtual IPs"); ?>" data-toggle="tooltip"  class="btn btn-default btn-xs">
+                        <span class="fa fa-trash text-muted"></span>
+                      </a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="6">
+                      <?=sprintf(gettext('You can check the status of your CARP Virtual IPs and interfaces %shere%s.'),'<a href="carp_status.php">','</a>')?></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
+  </section>
 
 <?php include("foot.inc"); ?>

@@ -308,178 +308,171 @@ $( document ).ready(function() {
       <div class="row">
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <section class="col-xs-12">
-          <div class="content-box">
+          <div class="content-box tab-content">
             <form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead></thead>
-                  <tbody>
-                    <tr>
-                      <td width="22%"><strong><?=gettext("Edit Virtual IP");?></strong></td>
-                      <td  width="78%" align="right">
-                        <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
-                      </td>
-                    </tr>
-                    <tr>
+              <table class="table table-striped">
+                <thead></thead>
+                <tbody>
+                  <tr>
+                    <td width="22%"><strong><?=gettext("Edit Virtual IP");?></strong></td>
+                    <td  width="78%" align="right">
+                      <small><?=gettext("full help"); ?> </small>
+                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Type');?></td>
+                    <td>
+                      <select id="mode" name="mode" class="selectpicker" data-width="auto" data-live-search="true">
+                        <option value="ipalias" <?=$pconfig['mode'] == "ipalias" ? "selected=\"selected\"" : ""; ?>><?=gettext("IP Alias");?></option>
+                        <option value="carp" <?=$pconfig['mode'] == "carp" ? "selected=\"selected\"" : ""; ?>><?=gettext("carp");?></option>
+                        <option value="proxyarp" <?=$pconfig['mode'] == "proxyarp" ? "selected=\"selected\"" : ""; ?>><?=gettext("Proxy ARP");?></option>
+                        <option value="other" <?=$pconfig['mode'] == "other" ? "selected=\"selected\"" : ""; ?>><?=gettext("Other");?></option>
+                      </select>
+                      <div class="hidden" for="help_for_mode">
+                        <?=gettext("Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type address for these cases.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface");?></td>
+                    <td>
+                      <select name="interface" class="selectpicker" data-width="auto">
+<?php
+                      $interfaces = get_configured_interface_with_descr(false, true);
+                      $interfaces['lo0'] = "Localhost";
+                      foreach ($interfaces as $iface => $ifacename): ?>
+                        <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
+                          <?=htmlspecialchars($ifacename);?>
+                        </option>
+<?php
+                      endforeach; ?>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                      <td><?=gettext("IP Address(es)");?></td>
+                      <td></td>
+                  </tr>
+                  <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type");?></td>
                       <td>
-                        <select id="mode" name="mode" class="selectpicker" data-width="auto" data-live-search="true">
-                          <option value="ipalias" <?=$pconfig['mode'] == "ipalias" ? "selected=\"selected\"" : ""; ?>><?=gettext("IP Alias");?></option>
-                          <option value="carp" <?=$pconfig['mode'] == "carp" ? "selected=\"selected\"" : ""; ?>><?=gettext("carp");?></option>
-                          <option value="proxyarp" <?=$pconfig['mode'] == "proxyarp" ? "selected=\"selected\"" : ""; ?>><?=gettext("Proxy ARP");?></option>
-                          <option value="other" <?=$pconfig['mode'] == "other" ? "selected=\"selected\"" : ""; ?>><?=gettext("Other");?></option>
-                        </select>
+                        <select name="type" class="selectpicker" data-width="auto" id="type">
+                            <option value="single" <?=(!empty($pconfig['subnet_bits']) && $pconfig['subnet_bits'] == 32) || !isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
+                              <?=gettext("Single address");?>
+                            </option>
+                            <option value="network" <?=empty($pconfig['subnet_bits']) || $pconfig['subnet_bits'] != 32 || isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
+                              <?=gettext("Network");?></option>
+                            </select>
                       </td>
-                    </tr>
-                    <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface");?></td>
+                  </tr>
+                  <tr>
+                      <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address");?></td>
                       <td>
-                        <select name="interface" class="selectpicker" data-width="auto">
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            <td width="348px">
+                              <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
+                            </td>
+                            <td >
+                              <select name="subnet_bits" data-network-id="subnet" class="selectpicker ipv4v6net" data-size="10"  data-width="auto" id="subnet_bits">
+                                <option disabled="disabled"></option> <!-- workaround for selectpicker -->
 <?php
-                        $interfaces = get_configured_interface_with_descr(false, true);
-                        $interfaces['lo0'] = "Localhost";
-                        foreach ($interfaces as $iface => $ifacename): ?>
-                          <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" :""; ?>>
-                            <?=htmlspecialchars($ifacename);?>
-                          </option>
+                                for ($i = 128; $i >= 1; $i--): ?>
+                                  <option value="<?=$i;?>" <?= $i == $pconfig['subnet_bits'] ? "selected=\"selected\"" :""; ?>>
+                                    <?=$i;?>
+                                  </option>
 <?php
-                        endforeach; ?>
-                        </select>
-                      </td>
-                    </tr>
-                    <tr>
-                        <td><?=gettext("IP Address(es)");?></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type");?></td>
-                        <td>
-                          <select name="type" class="selectpicker" data-width="auto" id="type">
-                              <option value="single" <?=(!empty($pconfig['subnet_bits']) && $pconfig['subnet_bits'] == 32) || !isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Single address");?>
-                              </option>
-                              <option value="network" <?=empty($pconfig['subnet_bits']) || $pconfig['subnet_bits'] != 32 || isset($pconfig['subnet']) ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Network");?></option>
+                                endfor; ?>
                               </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><a id="help_for_address" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Address");?></td>
-                        <td>
-                          <table border="0" cellspacing="0" cellpadding="0">
-                            <tr>
-                              <td width="348px">
-                                <input name="subnet" type="text" class="form-control" id="subnet" size="28" value="<?=$pconfig['subnet'];?>" />
-                              </td>
-                              <td >
-                                <select name="subnet_bits" data-network-id="subnet" class="selectpicker ipv4v6net" data-size="10"  data-width="auto" id="subnet_bits">
-                                  <option disabled="disabled"></option> <!-- workaround for selectpicker -->
-<?php
-                                  for ($i = 128; $i >= 1; $i--): ?>
-                                    <option value="<?=$i;?>" <?= $i == $pconfig['subnet_bits'] ? "selected=\"selected\"" :""; ?>>
-                                      <?=$i;?>
-                                    </option>
-<?php
-                                  endfor; ?>
-                                </select>
-                              </td>
-                            </tr>
-                          </table>
-                          <div class="hidden" for="help_for_address">
-                              <i id="typenote"></i>
+                            </td>
+                          </tr>
+                        </table>
+                        <div class="hidden" for="help_for_address">
+                            <i id="typenote"></i>
+                        </div>
+                      </td>
+                  </tr>
+                  <tr id="noexpandrow">
+                      <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion");?> </td>
+                      <td>
+                          <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
+                          <div class="hidden" for="help_for_noexpand">
+                            <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>
                           </div>
-                        </td>
-                    </tr>
-                    <tr id="noexpandrow">
-                        <td><a id="help_for_noexpand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expansion");?> </td>
-                        <td>
-                            <input id="noexpand" name="noexpand" type="checkbox" class="form-control unknown" id="noexpand" <?= !empty($pconfig['noexpand']) ? "checked=\"checked\"" : "" ; ?> />
-                            <div class="hidden" for="help_for_noexpand">
-                              <?=gettext("Disable expansion of this entry into IPs on NAT lists (e.g. 192.168.1.0/24 expands to 256 entries.");?>
-                            </div>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Virtual IP Password");?></td>
-                      <td>
-                        <input type='password'  name='password' id="password" value="<?=$pconfig['password'];?>" />
-                        <div class="hidden" for="help_for_password">
-                          <?=gettext("Enter the VHID group password.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_vhid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VHID Group");?></td>
-                      <td>
-                        <select id='vhid' name='vhid' class="selectpicker" data-size="10" data-width="auto">
-                          <?php for ($i = 1; $i <= 255; $i++): ?>
-                            <option value="<?=$i;?>" <?= $i == $pconfig['vhid'] ?  "selected=\"selected\"" : ""; ?>>
-                              <?=$i;?>
-                            </option>
-                          <?php endfor; ?>
-                        </select>
-                        <div class="hidden" for="help_for_vhid">
-                          <?=gettext("Enter the VHID group that the machines will share.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_adv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advertising Frequency");?></td>
-                      <td>
-                        <?=gettext("Base");?>:
-                        <select id='advbase' name='advbase' class="selectpicker" data-size="10" data-width="auto">
-                          <?php for ($i = 1; $i <= 254; $i++): ?>
-                            <option value="<?=$i;?>" <?=$i == $pconfig['advbase'] ? "selected=\"selected\"" :""; ?>>
-                              <?=$i;?>
-                            </option>
-                          <?php endfor; ?>
-                        </select>
-                        <?=gettext("Skew");?>:
-                        <select id='advskew' name='advskew' class="selectpicker" data-size="10" data-width="auto">
-                          <?php for ($i = 0; $i <= 254; $i++): ?>
-                            <option value="<?=$i;?>" <?php if ($i == $pconfig['advskew']) echo "selected=\"selected\""; ?>>
-                              <?=$i;?>
-                            </option>
-                          <?php endfor; ?>
-                        </select>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Virtual IP Password");?></td>
+                    <td>
+                      <input type='password'  name='password' id="password" value="<?=$pconfig['password'];?>" />
+                      <div class="hidden" for="help_for_password">
+                        <?=gettext("Enter the VHID group password.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_vhid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VHID Group");?></td>
+                    <td>
+                      <select id='vhid' name='vhid' class="selectpicker" data-size="10" data-width="auto">
+                        <?php for ($i = 1; $i <= 255; $i++): ?>
+                          <option value="<?=$i;?>" <?= $i == $pconfig['vhid'] ?  "selected=\"selected\"" : ""; ?>>
+                            <?=$i;?>
+                          </option>
+                        <?php endfor; ?>
+                      </select>
+                      <div class="hidden" for="help_for_vhid">
+                        <?=gettext("Enter the VHID group that the machines will share.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_adv" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Advertising Frequency");?></td>
+                    <td>
+                      <?=gettext("Base");?>:
+                      <select id='advbase' name='advbase' class="selectpicker" data-size="10" data-width="auto">
+                        <?php for ($i = 1; $i <= 254; $i++): ?>
+                          <option value="<?=$i;?>" <?=$i == $pconfig['advbase'] ? "selected=\"selected\"" :""; ?>>
+                            <?=$i;?>
+                          </option>
+                        <?php endfor; ?>
+                      </select>
+                      <?=gettext("Skew");?>:
+                      <select id='advskew' name='advskew' class="selectpicker" data-size="10" data-width="auto">
+                        <?php for ($i = 0; $i <= 254; $i++): ?>
+                          <option value="<?=$i;?>" <?php if ($i == $pconfig['advskew']) echo "selected=\"selected\""; ?>>
+                            <?=$i;?>
+                          </option>
+                        <?php endfor; ?>
+                      </select>
 
-                        <div class="hidden" for="help_for_adv">
-                          <br/>
-                          <?=gettext("The frequency that this machine will advertise.  0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
-                      <td>
-                        <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
-                        <div class="hidden" for="help_for_adv">
-                          <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td>
-                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_virtual_ip.php');?>'" />
-                        <?php if (isset($id) && $a_vip[$id]): ?>
-                          <input name="id" type="hidden" value="<?=$id;?>" />
-                        <?php endif; ?>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                      <div class="hidden" for="help_for_adv">
+                        <br/>
+                        <?=gettext("The frequency that this machine will advertise.  0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                    <td>
+                      <input name="descr" type="text" class="form-control unknown" id="descr" size="40" value="<?=$pconfig['descr'];?>" />
+                      <div class="hidden" for="help_for_adv">
+                        <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_virtual_ip.php');?>'" />
+                      <?php if (isset($id) && $a_vip[$id]): ?>
+                        <input name="id" type="hidden" value="<?=$id;?>" />
+                      <?php endif; ?>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </form>
-            <div class="container-fluid">
-              <span class="text-danger">
-                <strong><?=gettext("Note:");?><br /></strong>
-              </span>
-              <?=gettext("Proxy ARP and other type Virtual IPs cannot be bound to by anything running on the firewall, such as IPsec, OpenVPN, etc. Use a CARP or IP Alias type address for these cases.");?>
-              <br /><br />
-              <?= sprintf(gettext("For more information on CARP and the above values, visit the OpenBSD %sCARP FAQ%s."), "<a href='http://www.openbsd.org/faq/pf/carp.html'>","</a>" ) ?>
-            </div>
           </div>
         </section>
       </div>
