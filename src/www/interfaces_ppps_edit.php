@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!isset($pconfig['ports'])) {
-        $pconfig = array();
+        $pconfig['ports'] = array();
     }
 
     if ($pconfig['type'] == "ppp" && count($pconfig['ports']) > 1) {
