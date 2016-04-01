@@ -34,5 +34,23 @@ class FlowInterfaceTotals(BaseFlowAggregator):
     target_filename = '/var/netflow/interface_%06d.sqlite'
     agg_fields = ['if_in', 'if_out']
 
+    @classmethod
+    def resolutions(cls):
+        """
+        :return: list of sample resolutions
+        """
+        return  [60, 60*5]
+
+    @classmethod
+    def history_per_resolution(cls):
+        """
+        :return: dict sample resolution / expire time (seconds)
+        """
+        return  {60: 60*60}
+
     def __init__(self, resolution):
+        """
+        :param resolution: sample resultion (seconds)
+        :return: None
+        """
         super(FlowInterfaceTotals, self).__init__(resolution)
