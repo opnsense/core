@@ -153,67 +153,63 @@ include("head.inc");
       <div class="row">
 <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <section class="col-xs-12">
-          <div class="content-box">
-            <header class="content-box-head container-fluid">
-          <h3><?=gettext("Alias Import");?></h3>
-            </header>
-            <div class="content-box-main">
-              <form action="firewall_aliases_import.php" method="post" name="iform">
-                <table class="table table-striped">
-                  <tr>
-                    <td colspan="2" align="right">
-                      <small><?=gettext("full help"); ?> </small>
-                      <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td  width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alias Name"); ?></td>
-                    <td  width="78%">
-                      <input name="name" type="text" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
-                      <div class="hidden" for="help_for_name">
-                        <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
-                    <td>
-                      <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                      <div class="hidden" for="help_for_description">
-                        <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases to import"); ?></td>
-                    <td>
-                      <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
-                      <div class="hidden" for="help_for_alias">
-                        <?=gettext("Paste in the aliases to import separated by a carriage return. Common examples are lists of IPs, networks, blacklists, etc."); ?>
-                        <br />
-                        <?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
-                        <code>
-                          <br/>172.16.1.2
-                          <br/>172.16.0.0/24
-                          <br/>10.11.12.100-10.11.12.200
-                          <br/>192.168.1.254 Home router
-                          <br/>10.20.0.0/16 Office network
-                          <br/>10.40.1.10-10.40.1.19 Managed switches
-                        </code>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
-                             onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/firewall_aliases.php');?>'" />
-                    </td>
-                  </tr>
-                </table>
-              </form>
-            </div>
+          <div class="content-box tab-content">
+            <form action="firewall_aliases_import.php" method="post" name="iform">
+              <table class="table table-striped">
+                <tr>
+                  <td width="22%"><strong><?=gettext("Alias Import");?></strong></td>
+                  <td width="78%" align="right">
+                    <small><?=gettext("full help"); ?> </small>
+                    <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td  width="22%"><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alias Name"); ?></td>
+                  <td  width="78%">
+                    <input name="name" type="text" class="form-control unknown" size="40" maxlength="31" value="<?=$pconfig['name'];?>" />
+                    <div class="hidden" for="help_for_name">
+                      <?=gettext("The name of the alias may only consist of the characters \"a-z, A-Z and 0-9\"."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_description" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description"); ?></td>
+                  <td>
+                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                    <div class="hidden" for="help_for_description">
+                      <?=gettext("You may enter a description here for your reference (not parsed)"); ?>.
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_alias" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Aliases to import"); ?></td>
+                  <td>
+                    <textarea name="aliasimport" rows="15" cols="40"><?=$pconfig['aliasimport'];?></textarea>
+                    <div class="hidden" for="help_for_alias">
+                      <?=gettext("Paste in the aliases to import separated by a carriage return. Common examples are lists of IPs, networks, blacklists, etc."); ?>
+                      <br />
+                      <?=gettext("The list may contain IP addresses, with or without CIDR prefix, IP ranges, blank lines (ignored) and an optional description after each IP. e.g.:"); ?>
+                      <code>
+                        <br/>172.16.1.2
+                        <br/>172.16.0.0/24
+                        <br/>10.11.12.100-10.11.12.200
+                        <br/>192.168.1.254 Home router
+                        <br/>10.20.0.0/16 Office network
+                        <br/>10.40.1.10-10.40.1.19 Managed switches
+                      </code>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
+                           onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? html_safe($_SERVER['HTTP_REFERER']) : '/firewall_aliases.php');?>'" />
+                  </td>
+                </tr>
+              </table>
+            </form>
           </div>
         </section>
       </div>

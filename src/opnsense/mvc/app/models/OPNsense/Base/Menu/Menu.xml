@@ -140,22 +140,10 @@
     </Interfaces>
     <Firewall order="3" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" cssClass="fa fa-list-alt fa-fw">
-            <All order="100"  url="/firewall_aliases.php?tab=all">
-                <Edit url="/firewall_aliases_edit.php?tab=all" visibility="hidden"/>
-                <Network url="/firewall_aliases.php?tab=network" visibility="hidden"/>
-                <NoneEdit url="/firewall_aliases_edit.php?id=*" visibility="hidden"/>
-                <None url="/firewall_aliases.php" visibility="hidden"/>
-            </All>
-            <IPs order="200" url="/firewall_aliases.php?tab=ip">
-                <Edit url="/firewall_aliases_edit.php?tab=ip" visibility="hidden"/>
-            </IPs>
-            <Ports order="300" url="/firewall_aliases.php?tab=port">
-                <Edit url="/firewall_aliases_edit.php?tab=port" visibility="hidden"/>
-            </Ports>
-            <URLs order="400"  url="/firewall_aliases.php?tab=url">
-                <Edit url="/firewall_aliases_edit.php?tab=url" visibility="hidden"/>
-            </URLs>
-            <Import order="500" url="/firewall_aliases_import.php"/>
+            <View order="100"  url="/firewall_aliases.php">
+                <Edit url="/firewall_aliases_edit.php*" visibility="hidden"/>
+            </View>
+            <Import order="200" url="/firewall_aliases_import.php"/>
         </Aliases>
         <Rules order="20" url="/firewall_rules.php" cssClass="fa fa-check fa-fw">
             <RulesEdit url="/firewall_rules_edit.php*" visibility="hidden"/>

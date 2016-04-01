@@ -31,6 +31,25 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 
+function find_alias_type($type)
+{
+    $types = array(
+        'host' => gettext('Host(s)'),
+        'network' => gettext('Network(s)'),
+        'port' => gettext('Port(s)'),
+        'url' => gettext('URL (IPs)'),
+        'url_ports' => gettext('URL (Ports)'),
+        'urltable' => gettext('URL Table (IPs)'),
+        'urltable_ports' => gettext('URL Table (Ports)'),
+    );
+
+    if (isset($types[$type])) {
+        return $types[$type];
+    }
+
+    return $type;
+}
+
 function find_alias_reference($section, $field, $origname, &$is_alias_referenced, &$referenced_by) {
     global $config;
     if(!$origname || $is_alias_referenced)
@@ -74,9 +93,6 @@ if (!isset($config['aliases']['alias'])) {
     $config['aliases']['alias'] = array();
 }
 $a_aliases = &$config['aliases']['alias'];
-
-// determine selected tab
-$selected_tab = htmlspecialchars(($_REQUEST['tab'] == "" ? "ip" : preg_replace("/\W/","",$_REQUEST['tab'])));
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['apply'])) {
@@ -128,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     filter_configure();
                     mark_subsystem_dirty('aliases');
                 }
-                header("Location: firewall_aliases.php?tab=" . $selected_tab);
+                header('Location: firewall_aliases.php');
                 exit;
             }
         }
@@ -137,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 legacy_html_escape_form_data($a_aliases);
 $main_buttons = array(
-    array('href'=>'firewall_aliases_edit.php?tab='.$selected_tab, 'label'=>gettext("Add a new alias")),
+    array('href' => 'firewall_aliases_edit.php', 'label' => gettext('Add a new alias')),
 );
 
 include("head.inc");
@@ -186,37 +202,18 @@ $( document ).ready(function() {
                   <table class="table table-striped">
                     <tr>
                       <td><?=gettext("Name"); ?></td>
-                      <td><?=gettext("Values"); ?></td>
+                      <td><?=gettext("Type"); ?></td>
                       <td><?=gettext("Description"); ?></td>
+                      <td><?=gettext("Values"); ?></td>
                       <td>&nbsp;</td>
                     </tr>
 <?php
-                    uasort($a_aliases, function($a, $b){
+                    uasort($a_aliases, function($a, $b) {
                         return strnatcmp($a['name'], $b['name']);
                     });
+
                     foreach ($a_aliases as $i=> $alias){
-                      $show_alias = false;
-                      switch ($selected_tab){
-                      case "all":
-                        $show_alias= true;
-                        break;
-                      case "ip":
-                      case "host":
-                      case "network":
-                        if (preg_match("/(host|network)/",$alias["type"]))
-                          $show_alias= true;
-                        break;
-                      case "url":
-                        if (preg_match("/(url)/i",$alias["type"]))
-                          $show_alias= true;
-                        break;
-                      case "port":
-                        if($alias["type"] == "port")
-                          $show_alias= true;
-                        break;
-                      }
-                      if ($show_alias ){
-                    ?>
+?>
                     <tr>
                       <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
                         <?=$alias['name'];?>
@@ -238,10 +235,13 @@ $( document ).ready(function() {
                       }
 ?>
                       <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
-                        <?=$alias_values; ?>
+                        <?= find_alias_type($alias['type']) ?>
                       </td>
                       <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
-                        <?=$alias['descr'];?>
+                        <?= $alias['descr'] ?>
+                      </td>
+                      <td ondblclick="document.location='firewall_aliases_edit.php?id=<?=$i;?>';">
+                        <?= $alias_values ?>
                       </td>
                       <td>
                         <a href="firewall_aliases_edit.php?id=<?=$i;?>" title="<?=gettext("Edit alias"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -249,17 +249,14 @@ $( document ).ready(function() {
                       </td>
                     </tr>
 <?php
-                      } // if ($show_alias)
                     } // foreach
 ?>
+                  <tr>
+                    <td colspan="5">
+                      <?=gettext("Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."); ?>
+                    </td>
+                  </tr>
                 </table>
-                <div class="container-fluid">
-                  <span class="text-danger">
-                    <strong><?=gettext("Note:"); ?><br />
-                    </strong></span>
-                  </span>
-                  <?=gettext("Aliases act as placeholders for real hosts, networks or ports. They can be used to minimize the number of changes that have to be made if a host, network or port changes. You can enter the name of an alias instead of the host, network or port in all fields that have a red background. The alias will be resolved according to the list above. If an alias cannot be resolved (e.g. because you deleted it), the corresponding element (e.g. filter/NAT/shaper rule) will be considered invalid and skipped."); ?>
-                </div>
             </form>
           </div>
         </section>
