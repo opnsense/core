@@ -152,15 +152,14 @@ $main_buttons = array(
 <?php
                     $i++;
                     endforeach; ?>
+                      <tr>
+                        <td colspan="4">
+                           <?=gettext("LAGG allows for link aggregation, bonding and fault tolerance. Only unassigned interfaces can be added to LAGG."); ?>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-              <div class="container-fluid">
-                <p>
-                  <span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span>
-                  <?=gettext("LAGG allows for link aggregation, bonding and fault tolerance. Only unassigned interfaces can be added to LAGG."); ?>
-                </p>
-              </div>
             </form>
           </div>
         </section>

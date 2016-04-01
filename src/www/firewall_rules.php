@@ -766,10 +766,6 @@ $( document ).ready(function() {
                   </tr>
                   <tr class="hidden-xs hidden-sm">
                     <td colspan="11">
-                      <strong>
-                        <span class="text-danger"><?=gettext("Hint:");?></span>
-                      </strong>
-                      <br />
                       <?php if ("FloatingRules" != $selected_if): ?>
                       <?=gettext("Rules are evaluated on a first-match basis (i.e. " .
                         "the action of the first rule to match a packet will be executed). " .

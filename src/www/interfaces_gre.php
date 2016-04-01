@@ -147,12 +147,6 @@ $main_buttons = array(
                   </tbody>
                 </table>
               </div>
-              <div class="container-fluid">
-                <p>
-                  <span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-                  <?=gettext("Here you can configure Generic Routing Encapsulation (GRE - RFC 2784) tunnels.");?>
-                </p>
-              </div>
             </form>
           </div>
           </section>

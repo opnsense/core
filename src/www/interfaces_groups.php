@@ -142,14 +142,13 @@ $main_buttons = array(
 <?php
                 $i++;
                 endforeach; ?>
+                  <tr>
+                    <td colspan="4">
+                      <?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
-              <div class="container-fluid">
-                <p>
-                  <span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-                  <?=gettext("Interface Groups allow you to create rules that apply to multiple interfaces without duplicating the rules. If you remove members from an interface group, the group rules no longer apply to that interface.");?>
-                </p>
-              </div>
             </form>
           </div>
         </section>

@@ -178,16 +178,12 @@ $main_buttons = array(
 <?php
                       $i++;
                     endforeach; ?>
-                  </tbody>
-                  <tfoot>
                     <tr>
                       <td colspan="6" class="list">
-                        <p><span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-                        <?=gettext("IP addresses appearing in green are up to date with Dynamic DNS provider.");?><br />
-                        <?=gettext("You can force an update for an IP address on the edit page for that service.");?></p>
+                        <?=gettext("You can force an update for an IP address on the edit page for that service.");?>
                       </td>
                     </tr>
-                  </tfoot>
+                  </tbody>
                 </table>
               </div>
             </form>

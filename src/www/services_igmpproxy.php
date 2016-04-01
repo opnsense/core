@@ -138,11 +138,8 @@ $main_buttons = array(
                     $i++;
                   endforeach; ?>
                     <tr>
-                      <td class="tabcont" colspan="5">
-                       <p>
-                         <span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
+                      <td colspan="5">
                          <?=gettext("Please add the interface for upstream, the allowed subnets, and the downstream interfaces you would like the proxy to allow. Only one 'upstream' interface can be configured.");?>
-                       </p>
                       </td>
                     </tr>
                   </tbody>
