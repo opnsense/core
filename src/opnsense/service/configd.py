@@ -108,7 +108,6 @@ def run_watch():
     current_child_pid = None
 
     def signal_handler(sig, frame):
-        print current_child_pid
         if current_child_pid is not None:
             os.kill(current_child_pid, sig)
         sys.exit(1)
