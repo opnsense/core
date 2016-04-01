@@ -363,7 +363,7 @@ nsCertType			= server
 nsComment			= "OpenSSL Generated Server Certificate"
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer:always
-extendedKeyUsage=serverAuth
+extendedKeyUsage=serverAuth,1.3.6.1.5.5.8.2.2
 keyUsage = digitalSignature, keyEncipherment
 
 ###OPNsense:server_cert###
