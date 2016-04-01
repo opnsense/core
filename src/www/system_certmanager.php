@@ -1309,8 +1309,7 @@ $( document ).ready(function() {
               endforeach; ?>
 
               <tr>
-                <td>&nbsp;</td>
-                <td colspan="3"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
+                <td colspan="4"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
               </tr>
             </tbody>
           </table>

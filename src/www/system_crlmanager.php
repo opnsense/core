@@ -613,15 +613,6 @@ include("head.inc");
                   <td></td>
                 </tr>
               </thead>
-              <tfoot>
-                <tr>
-                  <td colspan="5">
-                    <p>
-                      <?=gettext("Additional Certificate Revocation Lists can be added here.");?>
-                    </p>
-                  </td>
-                </tr>
-              </tfoot>
               <tbody>
 <?php
                 // Map CRLs to CAs
@@ -687,9 +678,13 @@ include("head.inc");
 <?php
                     endforeach;
                   endif; ?>
-                <tr><td colspan="5">&nbsp;</td></tr>
 <?php
                 endforeach; ?>
+                <tr>
+                  <td colspan="5">
+                      <?=gettext("Additional Certificate Revocation Lists can be added here.");?>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </form>

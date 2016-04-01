@@ -110,10 +110,10 @@ include("head.inc");
           <div class="content-box">
             <form method="post" name="iform" id="iform">
 <?php
-            if ($dhcpd_enabled): ?>
-              <p><?= gettext('DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.') ?></p>
-<?php
-            else: ?>
+            if ($dhcpd_enabled) {
+              print_content_box(gettext('DHCP Server is currently enabled. Cannot enable the DHCP Relay service while the DHCP Server is enabled on any interface.'));
+            } else {
+?>
               <div>
                 <div class="table-responsive">
                   <table class="table table-striped">
@@ -178,7 +178,7 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-              <?php endif; ?>
+              <?php } ?>
             </form>
           </div>
         </section>

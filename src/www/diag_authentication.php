@@ -86,55 +86,48 @@ include("head.inc");
 <body>
 
 <?php include("fbegin.inc"); ?>
-<form id="iform" name="iform"  method="post">
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
         <?php if (isset($savemsg)) print_info_box($savemsg);?>
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors);?>
         <section class="col-xs-12">
-          <div class="content-box">
-            <header class="content-box-head container-fluid">
-               <h3><?= gettext('Test a server') ?></h3>
-            </header>
-            <div class="content-box-main">
-              <div class="table-responsive">
-                <table class="table table-striped __nomb">
-                  <tbody>
-                    <tr>
-                      <td><?=gettext("Authentication Server"); ?></td>
-                      <td>
-                        <select name="authmode" id="authmode" class="form-control" >
+          <div class="content-box tab-content">
+            <form id="iform" name="iform"  method="post">
+            <table class="table table-striped __nomb">
+              <tbody>
+                <tr>
+                  <td width="22%"><?=gettext("Authentication Server"); ?></td>
+                  <td width="78%">
+                    <select name="authmode" id="authmode" class="form-control" >
 <?php
-                        foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
-                          <option value="<?=$auth_server_id;?>" <?=$auth_server['name'] == $pconfig['authmode'] ? "selected=\"selected\"" : "";?>>
-                            <?=htmlspecialchars($auth_server['name']);?>
-                          </option>
+                    foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
+                      <option value="<?=$auth_server_id;?>" <?=$auth_server['name'] == $pconfig['authmode'] ? "selected=\"selected\"" : "";?>>
+                        <?=htmlspecialchars($auth_server['name']);?>
+                      </option>
 <?php
-                        endforeach; ?>
-                      </select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><?=gettext("Username"); ?></td>
-                      <td><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
-                    </tr>
-                    <tr>
-                      <td><?=gettext("Password"); ?></td>
-                      <td><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                    endforeach; ?>
+                  </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="22%"><?=gettext("Username"); ?></td>
+                  <td width="78%"><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
+                </tr>
+                <tr>
+                  <td width="22%"><?=gettext("Password"); ?></td>
+                  <td width="78%"><input type="password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
+                </tr>
+                <tr>
+                  <td width="22%">&nbsp;</td>
+                  <td width="78%"><input id="save" name="save" type="submit" class="btn btn-primary" value="<?=gettext("Test");?>" /></td>
+                </tr>
+              </tbody>
+            </table>
+            </form>
           </div>
         </section>
       </div>
     </div>
   </section>
-</form>
 <?php include('foot.inc');?>

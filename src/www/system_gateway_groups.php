@@ -214,15 +214,12 @@ $( document ).ready(function() {
                     </tr>
 <?php $i++;
                     endforeach; ?>
-                  </tbody>
-                  <tfoot>
                     <tr class="hidden-xs">
                       <td colspan="5">
-                        <b><?=gettext("Note:");?></b>
                         <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?>
                       </td>
                     </tr>
-                  </tfoot>
+                  </tbody>
                 </table>
                 </div>
               </form>
