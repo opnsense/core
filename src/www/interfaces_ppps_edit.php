@@ -138,6 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("Please choose a Link Type.");
             break;
     }
+
+    if (!isset($pconfig['ports'])) {
+        $pconfig['ports'] = array();
+    }
+
     if ($pconfig['type'] == "ppp" && count($pconfig['ports']) > 1) {
         $input_errors[] = gettext("Multilink connections (MLPPP) using the PPP link type is not currently supported. Please select only one Link Interface.");
     }
@@ -162,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("A valid PPPoE reset date must be specified (mm/dd/yyyy).");
         }
     }
-
 
     foreach($pconfig['ports'] as $iface_idx => $iface){
         if (!empty($pconfig['localip'][$iface_idx]) && !is_ipaddr($pconfig['localip'][$iface_idx])) {
