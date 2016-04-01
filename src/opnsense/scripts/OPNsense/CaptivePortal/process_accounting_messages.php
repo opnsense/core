@@ -80,7 +80,6 @@ if ($result !== false) {
                 $stmt->bindParam(':sessionid', $row['sessionid']);
                 $stmt->execute();
                 if (method_exists($authenticator,'startAccounting')) {
-
                     $time_spend = time() - $row['created'];
                     $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend);
                 }
