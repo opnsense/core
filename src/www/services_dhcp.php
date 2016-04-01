@@ -52,7 +52,7 @@ function dhcp_clean_leases()
     /* Build list of static MACs */
     $staticmacs = array();
     foreach($config['interfaces'] as $ifname => $ifarr) {
-        if (is_array($config['dhcpd'][$ifname]['staticmap'])) {
+        if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
                 $staticmacs[] = $static['mac'];
             }
