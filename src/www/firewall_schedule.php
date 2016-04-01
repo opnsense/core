@@ -114,33 +114,32 @@ $main_buttons = array(
       <div class="row">
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
-          <div class="content-box content-box-main ">
+          <div class="content-box tab-content">
             <form action="firewall_schedule.php" method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <td><?=gettext("Name");?></td>
-                      <td><?=gettext("Time Range(s)");?></td>
-                      <td><?=gettext("Description");?></td>
-                      <td></td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $i = 0; foreach ($a_schedules as $schedule): ?>
-                    <tr ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
-                       <td>
-                        <?=$schedule['name'];?>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <td><?=gettext("Name");?></td>
+                    <td><?=gettext("Time Range(s)");?></td>
+                    <td><?=gettext("Description");?></td>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php $i = 0; foreach ($a_schedules as $schedule): ?>
+                  <tr ondblclick="document.location='firewall_schedule_edit.php?id=<?=$i;?>';">
+                     <td>
+                      <?=$schedule['name'];?>
 <?php
                         if (filter_get_time_based_rule_status($schedule)):?>
-                          <span data-toggle="tooltip" title="<?=gettext("Schedule is currently active");?>" class="fa fa-clock-o"></span>
+                        <span data-toggle="tooltip" title="<?=gettext("Schedule is currently active");?>" class="fa fa-clock-o"></span>
 <?php
                         endif;?>
-                      </td>
-                      <td>
-                        <table class="table table-condensed table-striped">
+                    </td>
+                    <td>
+                      <table class="table table-condensed table-striped">
 <?php
                           foreach($schedule['timerange'] as $timerange) {
                               $firstprint = false;
@@ -227,32 +226,32 @@ $main_buttons = array(
                                 ?><tr><td><?=$dayFriendly;?></td><td><?=$timeFriendly;?></td><td><?=$description;?></td></tr><?php
                               }
                             }//end for?></table>
-                      </td>
-                     <td>
-                      <?=$schedule['descr'];?>
-                      </td>
-                      <td>
-                        <a href="firewall_schedule_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit schedule");?>" class="btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-pencil"></span>
-                        </a>
-                        <a id="del_<?=$i;?>" title="<?=gettext("delete schedule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
-                          <span class="fa fa-trash text-muted"></span>
-                        </a>
-                        <a href="firewall_schedule.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
-                          <span class="fa fa-clone text-muted"></span>
-                        </a>
-                    </td>
-                  </tr>
+                  </td>
+                  <td>
+                    <?=$schedule['descr'];?>
+                  </td>
+                  <td>
+                    <a href="firewall_schedule_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit schedule");?>" class="btn btn-default btn-xs">
+                      <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    <a id="del_<?=$i;?>" title="<?=gettext("delete schedule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                      <span class="fa fa-trash text-muted"></span>
+                    </a>
+                    <a href="firewall_schedule.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
+                      <span class="fa fa-clone text-muted"></span>
+                    </a>
+                  </td>
+                </tr>
 <?php
                   $i++;
                   endforeach; ?>
-                </tbody>
-              </table>
-            </div>
-            <div class="container-fluid">
-              <span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-              <?=gettext("Schedules act as placeholders for time ranges to be used in Firewall Rules.");?>
-            </div>
+                <tr>
+                  <td colspan="4">
+                    <?=gettext("Schedules act as placeholders for time ranges to be used in Firewall Rules.");?>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </form>
         </div>
       </section>
