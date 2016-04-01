@@ -367,26 +367,27 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="2">
+                  <td></td>
+                  <td>
                     <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                   </td>
                 </tr>
+                <tr>
+                  <td colspan="2">
+                    <?= sprintf(gettext("If the DNS forwarder is enabled, the DHCP".
+                    " service (if enabled) will automatically serve the LAN IP".
+                    " address as a DNS server to DHCP clients so they will use".
+                    " the forwarder. The DNS forwarder will use the DNS servers".
+                    " entered in %sSystem: General setup%s".
+                    " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
+                    " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+                    " is checked. If you don't use that option (or if you use".
+                    " a static IP address on WAN), you must manually specify at".
+                    " least one DNS server on the %sSystem: General setup%s page."),
+                    '<a href="system_general.php">','</a>','<a href="system_general.php">','</a>');?>
+                  </td>
+                </tr>
               </table>
-            </div>
-            <div class="container-fluid">
-              <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
-              </strong></span><?php printf(gettext("If the DNS forwarder is enabled, the DHCP".
-              " service (if enabled) will automatically serve the LAN IP".
-              " address as a DNS server to DHCP clients so they will use".
-              " the forwarder. The DNS forwarder will use the DNS servers".
-              " entered in %sSystem: General setup%s".
-              " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
-              " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
-              " is checked. If you don't use that option (or if you use".
-              " a static IP address on WAN), you must manually specify at".
-              " least one DNS server on the %sSystem: General setup%s page."),
-              '<a href="system_general.php">','</a>','<a href="system_general.php">','</a>');?><br />
-              </span></p>
             </div>
           </form>
         </div>

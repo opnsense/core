@@ -142,24 +142,21 @@ $main_buttons = array(
 <?php
                   $i++;
                   endforeach; ?>
+                    <tr>
+                      <td colspan="4">
+                        <?=sprintf(
+                          gettext(
+                            'If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) Tunnel Broker ' .
+                            'on a WAN with a dynamic IP, you may want to add a %sHE.net Tunnelbroker dynamic DNS entry%s ' .
+                            'to keep your tunnel functional when your IP changes.'
+                          ),
+                          '<a href="services_dyndns.php">',
+                          '</a>'
+                        ); ?>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
-              </div>
-              <div class="container-fluid">
-                <p>
-                  <span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span>
-                  <?=gettext("GIF tunnels are configured here."); ?>
-                  <br /><br />
-                  <?=sprintf(
-                      gettext(
-                        'If you are using a GIF tunnel to connect to a Hurricane Electric (he.net) Tunnel Broker ' .
-                        'on a WAN with a dynamic IP, you may want to add a %sHE.net Tunnelbroker dynamic DNS entry%s ' .
-                        'to keep your tunnel functional when your IP changes.'
-                      ),
-                      '<a href="services_dyndns.php">',
-                      '</a>'
-                    ); ?>
-                </p>
               </div>
             </form>
           </div>

@@ -166,10 +166,6 @@ $main_buttons = array(
                   </tbody>
                 </table>
               </div>
-              <div class="container-fluid">
-                <span class="text-danger"><strong><?=gettext("Note:"); ?><br /></strong></span>
-                <?=gettext("Here you can configure bridging of interfaces."); ?>
-              </div>
             </form>
           </div>
         </section>

@@ -263,24 +263,25 @@ function show_advanced_dns() {
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="2">
+                        <td></td>
+                        <td>
                           <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="2">
+                          <?= sprintf(gettext("If the DNS Resolver is enabled, the DHCP".
+                          " service (if enabled) will automatically serve the LAN IP".
+                          " address as a DNS server to DHCP clients so they will use".
+                          " the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
+                          " entered in %sSystem: General setup%s".
+                          " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
+                          " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
+                          " is checked."),'<a href="system_general.php">','</a>');?>
                         </td>
                       </tr>
                     </tbody>
                   </table>
-                </div>
-                <div class="container-fluid">
-                  <span class="text-danger"><strong><?=gettext("Note:");?><br />
-                  </strong></span><?php printf(gettext("If the DNS Resolver is enabled, the DHCP".
-                  " service (if enabled) will automatically serve the LAN IP".
-                  " address as a DNS server to DHCP clients so they will use".
-                  " the DNS Resolver. If Forwarding, is enabled, the DNS Resolver will use the DNS servers".
-                  " entered in %sSystem: General setup%s".
-                  " or those obtained via DHCP or PPP on WAN if the &quot;Allow".
-                  " DNS server list to be overridden by DHCP/PPP on WAN&quot;".
-                  " is checked."),'<a href="system_general.php">','</a>');?>
-                  <br /><br />
                 </div>
               </div>
           </section>

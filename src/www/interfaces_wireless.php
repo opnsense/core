@@ -141,14 +141,13 @@ $main_buttons = array(
 <?php
                     $i++;
                   endforeach;?>
+                    <tr>
+                      <td colspan="4">
+                        <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
-              </div>
-              <div class="container-fluid">
-                <p>
-                  <span class="text-danger"><strong><?=gettext("Note");?>:<br /></strong></span>
-                  <?=gettext("Here you can configure clones of wireless interfaces, which can be assigned as separate independent interfaces. Only available on wireless chipsets that support this, with limitations on the number that can be created in each mode.");?>
-                </p>
               </div>
             </form>
           </div>
