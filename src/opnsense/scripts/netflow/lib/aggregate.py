@@ -49,6 +49,13 @@ class AggMetadata(object):
         # cache known tables
         self._update_known_tables()
 
+    def __del__(self):
+        """ close database on destruct
+        :return: None
+        """
+        if self._db_connection is not None:
+            self._db_connection.close()
+
     def _update_known_tables(self):
         """ request known tables
         """
@@ -122,6 +129,13 @@ class BaseFlowAggregator(object):
         # open database
         self._open_db()
         self._fetch_known_targets()
+
+    def __del__(self):
+        """ close database on destruct
+        :return: None
+        """
+        if self._db_connection is not None:
+            self._db_connection.close()
 
     def _fetch_known_targets(self):
         """ read known target table names from the sqlite db
