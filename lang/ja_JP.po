@@ -937,7 +937,7 @@ msgid ""
 "secondary interface, matches packets going traveling from interface (1) to "
 "interface (2).\n"
 "        "
-msgstr "セカンダリインタフェース。一致するパケットはインタフェース (1) からインタフェース (2) へ流れます。\n"
+msgstr "セカンダリインタフェース。一致するパケットはインタフェース (1) からインタフェース (2) へ流れます。\n        "
 
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
