@@ -30,6 +30,7 @@
 namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
+use OPNsense\Base\Validators\CsvListValidator;
 use OPNsense\Core\Config;
 
 /**
@@ -50,6 +51,11 @@ class CertificateField extends BaseField
     private $certificateType = "cert";
 
     /**
+     * @var bool field may contain multiple certs at once
+     */
+    private $internalMultiSelect = false;
+
+    /**
      * @var string default validation message string
      */
     protected $internalValidationMessage = "option not in list";
@@ -58,7 +64,6 @@ class CertificateField extends BaseField
      * @var array collected options
      */
     private static $internalOptionList = array();
-
 
     /**
      * set certificate type (cert/ca)
@@ -70,6 +75,19 @@ class CertificateField extends BaseField
             $this->certificateType = "ca";
         } else {
             $this->certificateType = "cert";
+        }
+    }
+
+    /**
+     * select if multiple certs may be selected at once
+     * @param $value boolean value Y/N
+     */
+    public function setMultiple($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalMultiSelect = true;
+        } else {
+            $this->internalMultiSelect = false;
         }
     }
 
@@ -97,8 +115,10 @@ class CertificateField extends BaseField
         if (!$this->internalIsRequired) {
             $result[""] = array("value" => gettext("none"), "selected" => 0);
         }
+
+        $certs = explode(',', $this->internalValue);
         foreach (self::$internalOptionList as $optKey => $optValue) {
-            if ($optKey == $this->internalValue) {
+            if (in_array($optKey, $certs)) {
                 $selected = 1;
             } else {
                 $selected = 0;
@@ -117,8 +137,15 @@ class CertificateField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
-                'domain'=>array_keys(self::$internalOptionList)));
+            if ($this->internalMultiSelect) {
+                // field may contain more than one country
+                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList)));
+            } else {
+                // single country selection
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList)));
+            }
         }
         return $validators;
     }
