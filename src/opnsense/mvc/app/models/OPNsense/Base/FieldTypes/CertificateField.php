@@ -29,6 +29,7 @@
  */
 namespace OPNsense\Base\FieldTypes;
 
+use Phalcon\Validation\Validator\InclusionIn;
 use OPNsense\Base\Validators\CsvListValidator;
 use OPNsense\Core\Config;
 
@@ -136,8 +137,15 @@ class CertificateField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
-                'domain'=>array_keys(self::$internalOptionList)));
+            if ($this->internalMultiSelect) {
+                // field may contain more than one country
+                $validators[] = new CsvListValidator(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList)));
+            } else {
+                // single country selection
+                $validators[] = new InclusionIn(array('message' => $this->internalValidationMessage,
+                    'domain'=>array_keys(self::$internalOptionList)));
+            }
         }
         return $validators;
     }
