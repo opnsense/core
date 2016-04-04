@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-28 10:55+0000\n"
+"POT-Creation-Date: 2016-04-04 18:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4535,6 +4535,10 @@ msgid ""
 "under <b>Forward Proxy -> Access Control List</b>.\n"
 "                    "
 msgstr ""
+"Fügen Sie einen Eintrag in der Tabelle hinzu, um eine externe ACL für das "
+"Blacklisting herunter zu laden.Sie können den Eintrag in der Blockliste "
+"aktivieren oder deaktivieren.Die aktiven Blocklisten werden mit den "
+"Einstellungen unter Forward Proxy / Zugriffslisten zusammengeführt."
 
 # File: src/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt, line: 88
 msgid "Error reconfiguring trafficshaper"
@@ -5501,7 +5505,7 @@ msgstr "Cache"
 
 # File: src/www/diag_logs_pills.inc, line: 42
 msgid "Store"
-msgstr ""
+msgstr "Speicher"
 
 msgid "The log files have been reset."
 msgstr "Die Protokolldatei wurde zurückgesetzt"
@@ -8253,6 +8257,8 @@ msgstr ""
 
 msgid "You can match packet on a mark placed before on another rule."
 msgstr ""
+"Sie können ein Paket auf eine Markierung prüfen, die von einer anderen Regel "
+"erstellt wurde."
 
 # File: src/www/firewall_rules_edit.php, line: 1263
 msgid "Max states"
@@ -10955,7 +10961,7 @@ msgid "Link Type"
 msgstr "Verbindungstyp"
 
 msgid "Link interface(s)"
-msgstr ""
+msgstr "Verbindungsschnittstelle(n)"
 
 msgid "Select at least two interfaces for Multilink (MLPPP) connections."
 msgstr ""
@@ -11762,9 +11768,12 @@ msgid ""
 "You must disable the DHCP relay on the %s interface before enabling the DHCP "
 "server."
 msgstr ""
+"Sie müssen das DHCP-Relay auf der Schnittstelle %s deaktivieren, bevor der "
+"DHCP-Server aktiviert werden kann."
 
 msgid "The DHCP range cannot overlap any static DHCP mappings."
 msgstr ""
+"Der DHCP-Bereich kann nicht mit einem statischen DHCP-Mapping überlappen."
 
 msgid "Boolean"
 msgstr "Wahrheitswert"
@@ -11936,7 +11945,7 @@ msgid "Time format change"
 msgstr "Zeitformat geändert"
 
 msgid "Change DHCP display lease time from UTC to local time."
-msgstr ""
+msgstr "Ändere die DHCP-Leasezeit von UTC auf lokale Zeit."
 
 # File: src/www/services_dhcp.php, line: 943
 msgid ""
@@ -11944,6 +11953,10 @@ msgid ""
 "box DHCP lease time will be displayed in local time and set to time zone "
 "selected. This will be used for all DHCP interfaces lease time."
 msgstr ""
+"Warnung: Standardmäßig werden die DHCP-Leases in der UTC-Zeit angezeigt. "
+"Durck das anhaken dieser Box wird die DHCP-Leasezeit in der ausgewählten "
+"Zeitzone angezeigt. Dies wird für alle Leasezeiten auf allen DHCP-"
+"Schnittstellen übernommen."
 
 msgid "Dynamic DNS"
 msgstr "Dynamisches DNS"
@@ -12335,9 +12348,11 @@ msgid ""
 "The DHCP server can optionally provide a domain search list. Use the "
 "semicolon character as separator"
 msgstr ""
+"Der DHCP-Server kann optional eine Domainsuchliste zur Verfügung stellen. "
+"Verwenden Sie einen Strichpunkt als Separator"
 
 msgid "Change DHCPv6 display lease time from UTC to local time."
-msgstr ""
+msgstr "Ändere die Angezeigte DHCPv4-Leasezeit von UTC auf lokale Zeit."
 
 # File: src/www/services_dhcpv6.php, line: 661
 msgid ""
@@ -12386,6 +12401,8 @@ msgstr ""
 
 msgid "If an IPv6 address is entered, the address must be outside of the pool."
 msgstr ""
+"Falls eine IPv6-Adresse eingegeben wird, muss diese außerhalb des Pools "
+"liegen."
 
 msgid ""
 "If no IPv6 address is given, one will be dynamically allocated from the pool."
@@ -12491,7 +12508,7 @@ msgid ""
 msgstr ""
 
 msgid "Require domain"
-msgstr ""
+msgstr "Domain verlangen"
 
 msgid ""
 "If this option is set, %s DNS Forwarder (dnsmasq) will not forward A or AAAA "
@@ -12647,7 +12664,7 @@ msgid "This host/domain already exists."
 msgstr "Dieser Host/Domain existiert bereits."
 
 msgid "Edit DNS Forwarder entry"
-msgstr ""
+msgstr "DNS-Forwardereintrag bearbeiten"
 
 msgid "Name of the host, without domain part"
 msgstr "Name des Hosts ohne Domainteil"
