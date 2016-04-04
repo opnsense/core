@@ -8,6 +8,12 @@
         <hint>Type or select interface.</hint>
     </field>
     <field>
+        <id>netflow.collect.enable</id>
+        <label>Capture local</label>
+        <type>checkbox</type>
+        <help>Collect netflow data on this firewall, this will automatically append localhost as netflow target</help>
+    </field>
+    <field>
         <id>netflow.capture.version</id>
         <label>Version</label>
         <type>dropdown</type>

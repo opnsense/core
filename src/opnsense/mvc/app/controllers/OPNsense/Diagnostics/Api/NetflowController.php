@@ -67,6 +67,18 @@ class NetflowController extends ApiControllerBase
             // load model and update with provided data
             $mdlNetflow = new Netflow();
             $mdlNetflow->setNodes($this->request->getPost("netflow"));
+            if ((string)$mdlNetflow->collect->enable == 1) {
+                // add localhost (127.0.0.1:2056) as target if local capture is configured
+                if (strpos((string)$mdlNetflow->capture->targets, "127.0.0.1:2056") === false) {
+                    if ((string)$mdlNetflow->capture->targets != "") {
+                        $targets = explode(",", (string)$mdlNetflow->capture->targets);
+                    } else {
+                        $targets = array();
+                    }
+                    $targets[] = "127.0.0.1:2056";
+                    $mdlNetflow->capture->targets = implode(',', $targets);
+                }
+            }
 
             // perform validation
             $validations = $mdlNetflow->validate();

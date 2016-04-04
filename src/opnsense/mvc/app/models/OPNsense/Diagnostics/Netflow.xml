@@ -27,5 +27,11 @@
                 <ValidationMessage>Please enter valid targets (e.g. 192.168.0.1:2055)</ValidationMessage>
             </targets>
         </capture>
+        <collect>
+            <enable type="BooleanField">
+                <default>1</default>
+                <Required>Y</Required>
+            </enable>
+        </collect>
     </items>
 </model>
