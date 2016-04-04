@@ -46,7 +46,7 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         $("#act_refresh_cache_stats").click(function(){
-            ajaxGet(url='/api/diagnostics/netflow/cache_stats',sendData={}, callback=function(data, status) {
+            ajaxGet(url='/api/diagnostics/netflow/cacheStats',sendData={}, callback=function(data, status) {
                 var html = []
                 // convert to plain Array
                 var data_arr = $.makeArray(data)[0];

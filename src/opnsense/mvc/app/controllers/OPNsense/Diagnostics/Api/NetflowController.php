@@ -142,7 +142,7 @@ class NetflowController extends ApiControllerBase
      * Retrieve netflow cache statistics
      * @return array cache statistics per netgraph node
      */
-    public function cache_statsAction()
+    public function cacheStatsAction()
     {
         $backend = new Backend();
         $response = $backend->configdRun("netflow cache stats json");
