@@ -15,7 +15,7 @@
             </interfaces>
             <version type="OptionField">
                 <Required>Y</Required>
-                <default>9</default>
+                <default>v9</default>
                 <OptionValues>
                     <v5>v5</v5>
                     <v9>v9</v9>
