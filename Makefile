@@ -72,6 +72,7 @@ CORE_DEPENDS?=		apinger \
 			filterdns \
 			filterlog \
 			ifinfo \
+			flowd \
 			igmpproxy \
 			isc-dhcp43-client \
 			isc-dhcp43-relay \
