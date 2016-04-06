@@ -16395,7 +16395,7 @@ msgstr "中国語 ( 簡体字 )"
 
 # File: src/www/system_general.php, line: 45
 msgid "French"
-msgstr ""
+msgstr "フランス語"
 
 msgid "German"
 msgstr "ドイツ語"
@@ -16405,7 +16405,7 @@ msgstr "日本語"
 
 # File: src/www/system_general.php, line: 48
 msgid "Mongolian"
-msgstr ""
+msgstr "モンゴル語"
 
 msgid "Spanish"
 msgstr "スペイン語"
