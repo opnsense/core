@@ -128,7 +128,6 @@
             </Status>
         </Wireless>
         <Diagnostics order="960" cssClass="fa fa-medkit fa-fw">
-            <DNSLookup order="20" VisibleName="DNS Lookup" url="/diag_dns.php"/>
             <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
             <Ping order="50" url="/diag_ping.php"/>
             <TestPort order="60" VisibleName="Test Port" url="/diag_testport.php"/>
@@ -238,6 +237,7 @@
             <RFC2136 order="30" VisibleName="RFC 2136" url="/services_rfc2136.php">
                 <Edit url="/services_rfc2136_edit.php*" visibility="hidden"/>
             </RFC2136>
+            <Lookup order="40" url="/diag_dns.php"/>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
         <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs fa-fw">
