@@ -71,29 +71,6 @@ function get_dns_servers() {
     return array_unique($dns_servers);
 }
 
-
-/****f* legacy/setup_polling
- * NAME
- *   sets up polling
- * INPUTS
- *
- * RESULT
- *   null
- * NOTES
- *
- ******/
-function setup_polling()
-{
-    global $config;
-
-    if (isset($config['system']['polling'])) {
-        set_single_sysctl("kern.polling.idle_poll", "1");
-    } else {
-        set_single_sysctl("kern.polling.idle_poll", "0");
-    }
-}
-
-
 /*
  * get_carp_interface_status($carpinterface): returns the status of a carp ip
  */

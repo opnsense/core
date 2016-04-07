@@ -228,11 +228,6 @@ echo "Starting Secure Shell Services...";
 mwexec("/usr/local/etc/rc.sshd");
 echo "done.\n";
 
-/* setup polling */
-echo "Setting up polling defaults...";
-setup_polling();
-echo "done.\n";
-
 /* set up interfaces */
 mute_kernel_msgs();
 interfaces_configure();

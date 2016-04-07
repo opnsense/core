@@ -1357,12 +1357,12 @@ function get_alias_list($type = null)
 	return $result;
 }
 
-/* Define what is preferred, IPv4 or IPv6 */
-function prefer_ipv4_or_ipv6() {
+function prefer_ipv4_or_ipv6()
+{
 	global $config;
 
-	if (isset($config['system']['prefer_ipv4']))
-		mwexec("/etc/rc.d/ip6addrctl prefer_ipv4");
-	else
-		mwexec("/etc/rc.d/ip6addrctl prefer_ipv6");
+	mwexecf(
+		'/etc/rc.d/ip6addrctl %s',
+		isset($config['system']['prefer_ipv4']) ? 'prefer_ipv4' : 'prefer_ipv6'
+	);
 }
