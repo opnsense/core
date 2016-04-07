@@ -30,6 +30,7 @@ require_once("config.inc");
 require_once("util.inc");
 require_once("pfsense-utils.inc");
 
+
 function update_alias_url_data()
 {
     global $config;
@@ -43,8 +44,7 @@ function update_alias_url_data()
                 continue;
             }
 
-            $address = "";
-            $isfirst = 0;
+            $address_list = array();
             foreach ($alias['aliasurl'] as $alias_url) {
                 /* fetch down and add in */
                 $temp_filename = tempnam('/tmp/', 'alias_import');
@@ -52,17 +52,6 @@ function update_alias_url_data()
                 $verify_ssl = isset($config['system']['checkaliasesurlcert']);
                 mkdir($temp_filename);
                 download_file($alias_url, $temp_filename . "/aliases", $verify_ssl);
-
-                /* if the item is tar gzipped then extract */
-                if (stripos($alias_url, '.tgz')) {
-                    if (!process_alias_tgz($temp_filename)) {
-                        continue;
-                    }
-                } elseif (stripos($alias_url, '.zip')) {
-                    if (!process_alias_unzip($temp_filename)) {
-                        continue;
-                    }
-                }
                 if (file_exists("{$temp_filename}/aliases")) {
                     $fd = @fopen("{$temp_filename}/aliases", 'r');
                     if (!$fd) {
@@ -79,19 +68,18 @@ function update_alias_url_data()
                         if (!empty($tmp_str)) {
                             $tmp = $tmp_str;
                         }
-                        if ($isfirst == 1) {
-                            $address .= ' ';
+                        // validate address, it should either be an address or a subnet and must be unique
+                        if ((is_ipaddr($tmp) || is_subnet($tmp)) && !in_array($tmp, $address_list)) {
+                            $address_list[] = $tmp;
                         }
-                        $address .= $tmp;
-                        $isfirst = 1;
                     }
                     fclose($fd);
                     mwexec("/bin/rm -rf {$temp_filename}");
                 }
             }
-            if (!empty($address)) {
-              $config['aliases']['alias'][$x]['address'] = $address;
-              $updated = true;
+            if (count($address_list) > 0) {
+                $config['aliases']['alias'][$x]['address'] = implode(" ", $address_list);
+                $updated = true;
             }
         }
     }
@@ -100,7 +88,6 @@ function update_alias_url_data()
     /* Report status to callers as well */
     return $updated;
 }
-
 
 if (update_alias_url_data()) {
     write_config();
