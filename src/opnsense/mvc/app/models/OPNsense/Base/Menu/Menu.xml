@@ -26,7 +26,12 @@
             <Backups url="/diag_backup.php"/>
         </Configuration>
         <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug fa-fw"/>
-        <Firmware order="5" url="/ui/core/firmware/" cssClass="fa fa-cloud-download fa-fw"/>
+        <Firmware order="5" cssClass="fa fa-building-o fa-fw">
+            <Updates order="10" url="/ui/core/firmware/"/>
+            <Reboot order="20" url="/reboot.php"/>
+            <Halt order="30" url="/diag_halt.php"/>
+            <Defaults order="40" url="/diag_defaults.php"/>
+        </Firmware>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
@@ -78,11 +83,6 @@
             </Servers>
             <Tester order="50" url="/diag_authentication.php"/>
         </Access>
-        <Diagnostics order="160" cssClass="fa fa-medkit fa-fw">
-            <Factory order="20" VisibleName="Factory Defaults" url="/diag_defaults.php"/>
-            <Halt order="30" VisibleName="Halt System" url="/diag_halt.php"/>
-            <Reboot order="40" VisibleName="Reboot System" url="/reboot.php"/>
-        </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
         <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
