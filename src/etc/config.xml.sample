@@ -275,11 +275,6 @@
     <syscontact/>
     <rocommunity>public</rocommunity>
   </snmpd>
-  <diag>
-    <ipv6nat>
-      <ipaddr/>
-    </ipv6nat>
-  </diag>
   <syslog>
     <reverse/>
   </syslog>

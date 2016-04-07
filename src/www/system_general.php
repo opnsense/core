@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['mirror'] = 'default';
     $pconfig['flavour'] = 'default';
 
+    $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['domain'] = $config['system']['domain'];
     if (isset($config['system']['dnsserver'])) {
@@ -89,6 +90,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['language'] = $config['system']['language'];
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
+
+    if (!empty($pconfig['prefer_ipv4'])) {
+        $config['system']['prefer_ipv4'] = true;
+    } elseif (isset($config['system']['prefer_ipv4'])) {
+        unset($config['system']['prefer_ipv4']);
+    }
 
     if (isset($config['system']['firmware']['mirror'])) {
         $pconfig['mirror'] = $config['system']['firmware']['mirror'];
@@ -187,7 +194,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $config['system']['firmware']['flavour'] = $pconfig['flavour'];
       }
 
-      /* XXX - billm: these still need updating after figuring out how to check if they actually changed */
       $olddnsservers = $config['system']['dnsserver'];
       $config['system']['dnsserver'] = array();
       foreach (array('dns1', 'dns2', 'dns3', 'dns4') as $dnsopt) {
@@ -252,16 +258,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
           }
       }
+
       write_config();
 
+      prefer_ipv4_or_ipv6();
       system_hostname_configure();
       system_hosts_generate();
       system_resolvconf_generate();
-      if (isset($config['dnsmasq']['enable'])) {
-          services_dnsmasq_configure();
-      } elseif (isset($config['unbound']['enable'])) {
-          services_unbound_configure();
-      }
+      services_dnsmasq_configure();
+      services_unbound_configure();
       system_timezone_configure();
       system_firmware_configure();
 
@@ -269,7 +274,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           configd_run("dns reload");
       }
 
-      // Reload the filter - plugins might need to be run.
       filter_configure();
 
       $savemsg = get_std_save_message();
@@ -408,6 +412,18 @@ include("head.inc");
                 <div class="hidden" for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
+              <td>
+                <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
+                <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
+                <div class="hidden" for="help_for_prefer_ipv4">
+                  <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
+                                      "IPv6 will be used, if you check this option, IPv4 will be " .
+                                      "used instead of IPv6."); ?>
                 </div>
               </td>
             </tr>

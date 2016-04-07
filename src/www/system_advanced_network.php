@@ -41,12 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['ipv6nat_enable'] = isset($config['diag']['ipv6nat']['enable']);
     $pconfig['ipv6nat_ipaddr'] = isset($config['diag']['ipv6nat']['ipaddr']) ? $config['diag']['ipv6nat']['ipaddr']:"" ;
-    $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
-    $pconfig['disablelargereceiveoffloading'] =  isset($config['system']['disablelargereceiveoffloading']);
+    $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
     if (!isset($config['system']['disablevlanhwfilter'])) {
-      $pconfig['disablevlanhwfilter'] = "0";
+      $pconfig['disablevlanhwfilter'] = '0';
     } else {
       $pconfig['disablevlanhwfilter'] = $config['system']['disablevlanhwfilter'];
     }
@@ -71,12 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['ipv6allow'] = true;
     } elseif (isset($config['system']['ipv6allow'])) {
         unset($config['system']['ipv6allow']);
-    }
-
-    if (!empty($pconfig['prefer_ipv4'])) {
-        $config['system']['prefer_ipv4'] = true;
-    } elseif (isset($config['system']['prefer_ipv4'])) {
-        unset($config['system']['prefer_ipv4']);
     }
 
     if (!empty($pconfig['sharednet'])) {
@@ -112,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (count($input_errors) == 0) {
         write_config();
         system_arp_wrong_if();
-        prefer_ipv4_or_ipv6();
         filter_configure();
         header("Location: system_advanced_network.php");
         exit;
@@ -195,18 +187,6 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
-                <td>
-                  <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($config['system']['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
-                  <div class="hidden" for="help_for_prefer_ipv4">
-                    <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
-                                        "IPv6 will be used, if you check this option, IPv4 will be " .
-                                        "used instead of IPv6."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
                 <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Interfaces"); ?></th>
               </tr>
               <tr>
@@ -216,9 +196,6 @@ include("head.inc");
                   <strong><?=gettext("Disable hardware checksum offload"); ?></strong>
                   <div class="hidden" for="help_for_disablechecksumoffloading">
                     <?=gettext("Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs."); ?>
-                    <br />
-                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
-                    <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
                   </div>
                 </td>
               </tr>
@@ -229,9 +206,6 @@ include("head.inc");
                   <strong><?=gettext("Disable hardware TCP segmentation offload"); ?></strong><br />
                   <div class="hidden" for="help_for_disablesegmentationoffloading">
                     <?=gettext("Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
-                    <br />
-                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
-                    <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
                   </div>
                 </td>
               </tr>
@@ -242,9 +216,6 @@ include("head.inc");
                   <strong><?=gettext("Disable hardware large receive offload"); ?></strong><br />
                   <div class="hidden" for="help_for_disablelargereceiveoffloading">
                     <?=gettext("Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
-                    <br />
-                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
-                    <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
                   </div>
                 </td>
               </tr>
@@ -264,9 +235,6 @@ include("head.inc");
                   </select>
                   <div class="hidden" for="help_for_disablevlanhwfilter">
                     <?=gettext("Checking this option will disable VLAN hardware filtering. This offloading is broken in some hardware drivers, and may impact performance with some specific NICs."); ?>
-                    <br />
-                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
-                    <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
                   </div>
                 </td>
               </tr>
@@ -283,6 +251,11 @@ include("head.inc");
             <tr>
               <td>&nbsp;</td>
               <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
+              </td>
             </tr>
             </table>
           </form>
