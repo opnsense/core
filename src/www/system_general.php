@@ -91,12 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
 
-    if (!empty($pconfig['prefer_ipv4'])) {
-        $config['system']['prefer_ipv4'] = true;
-    } elseif (isset($config['system']['prefer_ipv4'])) {
-        unset($config['system']['prefer_ipv4']);
-    }
-
     if (isset($config['system']['firmware']['mirror'])) {
         $pconfig['mirror'] = $config['system']['firmware']['mirror'];
     }
@@ -192,6 +186,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
       } else {
           $config['system']['firmware']['flavour'] = $pconfig['flavour'];
+      }
+
+      if (!empty($pconfig['prefer_ipv4'])) {
+          $config['system']['prefer_ipv4'] = true;
+      } elseif (isset($config['system']['prefer_ipv4'])) {
+          unset($config['system']['prefer_ipv4']);
       }
 
       $olddnsservers = $config['system']['dnsserver'];
