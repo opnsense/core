@@ -82,7 +82,6 @@
             <Factory order="20" VisibleName="Factory Defaults" url="/diag_defaults.php"/>
             <Halt order="30" VisibleName="Halt System" url="/diag_halt.php"/>
             <Reboot order="40" VisibleName="Reboot System" url="/reboot.php"/>
-            <SmartStatus order="60" VisibleName="SMART Status" url="/diag_smart.php"/>
         </Diagnostics>
     </System>
     <Interfaces order="2" cssClass="fa fa-sitemap">
@@ -267,7 +266,8 @@
             <Status order="40" url="/status_ntpd.php"/>
             <Log order="50" VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <SNMP VisibleName="SNMP" url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
+        <SMART url="/diag_smart.php" cssClass="fa fa-stethoscope fa-fw"/>
+        <SNMP url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
         <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug fa-fw">
             <Settings url="/services_upnp.php">
                 <Edit url="/services_upnp.php?*" visibility="hidden"/>
