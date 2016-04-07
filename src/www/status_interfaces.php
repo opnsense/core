@@ -474,11 +474,11 @@ include("head.inc");
                 <table class="table table-striped">
                   <tr>
                     <td>
-                      <?php printf(gettext("Using dial-on-demand will bring the connection up again if any packet ".
+                      <?= gettext("Using dial-on-demand will bring the connection up again if any packet ".
                       "triggers it. To substantiate this point: disconnecting manually ".
-                      "will %snot%s prevent dial-on-demand from making connections ".
-                      "to the outside! Don't use dial-on-demand if you want to make sure that the line ".
-                      "is kept disconnected."),'<strong>','</strong>')?>
+                      "will not prevent dial-on-demand from making connections ".
+                      "to the outside. Don't use dial-on-demand if you want to make sure that the line ".
+                      "is kept disconnected.") ?>
                     </td>
                   </tr>
                 </table>

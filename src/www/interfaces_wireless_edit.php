@@ -140,67 +140,63 @@ include("head.inc");
     <div class="row">
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <section class="col-xs-12">
-        <div class="content-box">
-          <div class="content-box-main">
-            <div class="table-responsive">
-              <form method="post" name="iform" id="iform">
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <td width="22%"><strong><?=gettext("Wireless clone configuration");?></strong></td>
-                      <td width="78%" align="right">
-                        <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
-                        &nbsp;
-                      </td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Parent interface");?></td>
-                      <td>
-                        <select name="if" class="selectpicker">
+        <div class="content-box tab-content">
+          <form method="post" name="iform" id="iform">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <td width="22%"><strong><?=gettext("Wireless clone configuration");?></strong></td>
+                  <td width="78%" align="right">
+                    <small><?=gettext("full help"); ?> </small>
+                    <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                    &nbsp;
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Parent interface");?></td>
+                  <td>
+                    <select name="if" class="selectpicker">
 <?php
-                        foreach (get_interface_list() as $ifn => $ifinfo):
-                            if (match_wireless_interface($ifn)):
-                              if (strstr($ifn, '_wlan')) {
-                                  continue;
-                              }?>
-                          <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? "selected=\"selected\"" : "";?>>
-                              <?=htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");?>
-                          </option>
+                    foreach (get_interface_list() as $ifn => $ifinfo):
+                        if (match_wireless_interface($ifn)):
+                          if (strstr($ifn, '_wlan')) {
+                              continue;
+                          }?>
+                      <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ? "selected=\"selected\"" : "";?>>
+                          <?=htmlspecialchars($ifn . " (" . $ifinfo['mac'] . ")");?>
+                      </option>
 <?php
-                          endif;
-                        endforeach;?>
-                        </select>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
-                      <td>
-                        <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
-                        <div class="hidden" for="help_for_descr">
-                          <?=gettext("You may enter a description here for your reference (not parsed).");?>
-                        </div>
-                      </div>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <input type="hidden" name="mode" value="<?=isset($pconfig['mode']) ? $pconfig['mode'] : 'bss' ?>" />
-                        <input type="hidden" name="cloneif" value="<?=$pconfig['cloneif']; ?>" />
-                        <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
-                        <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_wireless.php');?>'" />
-                        <?php if (isset($id)): ?>
-                        <input name="id" type="hidden" value="<?=$id;?>" />
-                        <?php endif; ?>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </form>
-            </div>
-          </div>
+                      endif;
+                    endforeach;?>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_descr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Description");?></td>
+                  <td>
+                    <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
+                    <div class="hidden" for="help_for_descr">
+                      <?=gettext("You may enter a description here for your reference (not parsed).");?>
+                    </div>
+                  </div>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>
+                    <input type="hidden" name="mode" value="<?=isset($pconfig['mode']) ? $pconfig['mode'] : 'bss' ?>" />
+                    <input type="hidden" name="cloneif" value="<?=$pconfig['cloneif']; ?>" />
+                    <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                    <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_wireless.php');?>'" />
+                    <?php if (isset($id)): ?>
+                    <input name="id" type="hidden" value="<?=$id;?>" />
+                    <?php endif; ?>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
         </div>
       </section>
     </div>
