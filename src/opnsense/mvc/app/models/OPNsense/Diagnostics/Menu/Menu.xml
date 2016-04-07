@@ -1,7 +1,7 @@
 <menu>
     <System>
         <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
-        <Diagnostics url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
+        <Diagnostics order="160" url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
         <Routes>
             <Status order="20" url="/ui/diagnostics/interface/routes/"/>
         </Routes>
