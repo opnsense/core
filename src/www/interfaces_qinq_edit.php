@@ -40,8 +40,8 @@ if (!isset($config['qinqs']['qinqentry']) || !is_array($config['qinqs']['qinqent
 $a_qinqs = &$config['qinqs']['qinqentry'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // read form data
-    if (!empty($a_qinqs[$_GET['id']])) {
+    $id = 0;
+    if (isset($_GET['id']) && !empty($a_qinqs[$_GET['id']])) {
         $id = $_GET['id'];
     }
     $pconfig['if'] = isset($a_qinqs[$id]['if']) ? $a_qinqs[$id]['if'] : null;
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['descr'] = isset($a_qinqs[$id]['descr']) ? $a_qinqs[$id]['descr'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate / save form data
-    if (!empty($a_qinqs[$_POST['id']])) {
+    if (isset($_POST['id']) && !empty($a_qinqs[$_POST['id']])) {
         $id = $_POST['id'];
     }
     $input_errors = array();
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("QinQ level already exists for this interface, edit it!");
             }
         }
-        if (is_array($config['vlans']['vlan'])) {
+        if (isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 if ($vlan['tag'] == $pconfig['tag'] && $vlan['if'] == $pconfig['if']) {
                     $input_errors[] = gettext("A normal VLAN exists with this tag please remove it to use this tag for QinQ first level.");
@@ -214,7 +214,7 @@ include("head.inc");
                     <td>
                       <input name="submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_qinq.php');?>'" />
-                      <?php if (isset($id) && $a_qinqs[$id]): ?>
+                      <?php if (isset($id) && isset($a_qinqs[$id])): ?>
                       <input name="id" type="hidden" value="<?=$id;?>" />
                       <?php endif; ?>
                     </td>

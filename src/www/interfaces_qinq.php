@@ -162,7 +162,7 @@ $main_buttons = array(
                     $i++;
                     endforeach; ?>
                     <tr>
-                      <td colspan="4">
+                      <td colspan="5">
                         <?= gettext("Not all drivers/NICs support 802.1Q QinQ tagging properly. On cards that do not explicitly support it, QinQ tagging will still work, but the reduced MTU may cause problems.");?>
                       </td>
                     </tr>
