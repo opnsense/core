@@ -315,6 +315,93 @@ include("head.inc");
                     <input name="ipv6nat_ipaddr" type="text" class="formfld unknown" id="ipv6nat_ipaddr" size="20" value="<?=$pconfig['ipv6nat_ipaddr'];?>" />
                   </td>
                 </tr>
+<?php           if (count($config['interfaces']) > 1): ?>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Address Translation");?></th>
+                </tr>
+                <tr>
+                  <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
+                  <td>
+                    <select name="natreflection" class="formselect selectpicker" data-style="btn-default">
+                      <option value="disable" <?=$pconfig['natreflection'] == "disable" ? "selected=\"selected\"" : "";?>>
+                        <?=gettext("Disable"); ?>
+                      </option>
+                      <option value="proxy" <?=$pconfig['natreflection'] == "proxy" ? "selected=\"selected\"" : "";?>>
+                        <?=gettext("Enable (NAT + Proxy)"); ?>
+                      </option>
+                      <option value="purenat" <?=$pconfig['natreflection'] == "purenat" ? "selected=\"selected\"" : "";?>>
+                        <?=gettext("Enable (Pure NAT)"); ?>
+                      </option>
+                    </select>
+                    <div class="hidden" for="help_for_natreflection">
+                      <strong><?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?></strong>
+                      <br /><br />
+                      <?=gettext("The NAT + proxy mode uses a helper program to send packets to the target of the port forward. It is useful in setups where the interface and/or gateway IP used for communication with the target cannot be accurately determined at the time the rules are loaded. Reflection rules are not created for ranges larger than 500 ports and will not be used for more than 1000 ports total between all port forwards. Only TCP and UDP protocols are supported.");?>
+                      <br /><br />
+                      <?=gettext("The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward. It has better scalability, but it must be possible to accurately determine the interface and gateway IP used for communication with the target at the time the rules are loaded. There are no inherent limits to the number of ports other than the limits of the protocols. All protocols available for port forwards are supported.");?>
+                      <br /><br />
+                      <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_reflectiontimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection Timeout");?></td>
+                  <td>
+                    <input name="reflectiontimeout" type="text" value="<?=$pconfig['reflectiontimeout']; ?>" />
+                    <div class="hidden" for="help_for_reflectiontimeout">
+                      <strong><?=gettext("Enter value for Reflection timeout in seconds.");?></strong>
+                      <br /><br />
+                      <?=gettext("Note: Only applies to Reflection on port forwards in NAT + proxy mode.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
+                  <td>
+                    <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
+                    <strong><?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?></strong>
+                    <div class="hidden" for="help_for_enablebinatreflection">
+                      <?=gettext("Note: Reflection on 1:1 mappings is only for the inbound component of the 1:1 mappings. This functions the same as the pure NAT mode for port forwards. For more details, refer to the pure NAT mode description above.");?>
+                      <br /><br />
+                      <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
+                  <td>
+                    <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
+                    <strong><?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?></strong>
+                    <div class="hidden" for="help_for_enablenatreflectionhelper">
+                      <?=gettext("Required for full functionality of the pure NAT mode of NAT Reflection for port forwards or NAT Reflection for 1:1 NAT.");?>
+                      <br /><br />
+                      <?=gettext("Note: This only works for assigned interfaces. Other interfaces require manually creating the outbound NAT rules that direct the reply packets back through the router.");?>
+                    </div>
+                  </td>
+                </tr>
+<?php           endif; ?>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Bogon Networks");?></th>
+                </tr>
+                <tr>
+                  <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
+                  <td>
+                    <select name="bogonsinterval" class="formselect selectpicker" data-style="btn-default">
+                    <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Monthly"); ?>
+                    </option>
+                    <option value="weekly" <?=$pconfig['bogonsinterval'] == 'weekly' ? "selected=\"selected\"" :"";?>>
+                      <?=gettext("Weekly"); ?>
+                    </option>
+                    <option value="daily" <?=$pconfig['bogonsinterval'] == 'daily' ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Daily"); ?>
+                    </option>
+                    </select>
+                    <div class="hidden" for="help_for_bogonsinterval">
+                      <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
+                    </div>
+                  </td>
+                </tr>
                 <tr>
                   <th colspan="2" valign="top" class="listtopic"><?=gettext("Miscellaneous");?></th>
                 </tr>
@@ -533,93 +620,6 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Bogon Networks");?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
-                  <td>
-                    <select name="bogonsinterval" class="formselect selectpicker" data-style="btn-default">
-                    <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Monthly"); ?>
-                    </option>
-                    <option value="weekly" <?=$pconfig['bogonsinterval'] == 'weekly' ? "selected=\"selected\"" :"";?>>
-                      <?=gettext("Weekly"); ?>
-                    </option>
-                    <option value="daily" <?=$pconfig['bogonsinterval'] == 'daily' ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Daily"); ?>
-                    </option>
-                    </select>
-                    <div class="hidden" for="help_for_bogonsinterval">
-                      <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
-                    </div>
-                  </td>
-                </tr>
-<?php           if (count($config['interfaces']) > 1): ?>
-                <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Address Translation");?></th>
-                </tr>
-                <tr>
-                  <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for port forwards");?></td>
-                  <td>
-                    <select name="natreflection" class="formselect selectpicker" data-style="btn-default">
-                      <option value="disable" <?=$pconfig['natreflection'] == "disable" ? "selected=\"selected\"" : "";?>>
-                        <?=gettext("Disable"); ?>
-                      </option>
-                      <option value="proxy" <?=$pconfig['natreflection'] == "proxy" ? "selected=\"selected\"" : "";?>>
-                        <?=gettext("Enable (NAT + Proxy)"); ?>
-                      </option>
-                      <option value="purenat" <?=$pconfig['natreflection'] == "purenat" ? "selected=\"selected\"" : "";?>>
-                        <?=gettext("Enable (Pure NAT)"); ?>
-                      </option>
-                    </select>
-                    <div class="hidden" for="help_for_natreflection">
-                      <strong><?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?></strong>
-                      <br /><br />
-                      <?=gettext("The NAT + proxy mode uses a helper program to send packets to the target of the port forward. It is useful in setups where the interface and/or gateway IP used for communication with the target cannot be accurately determined at the time the rules are loaded. Reflection rules are not created for ranges larger than 500 ports and will not be used for more than 1000 ports total between all port forwards. Only TCP and UDP protocols are supported.");?>
-                      <br /><br />
-                      <?=gettext("The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward. It has better scalability, but it must be possible to accurately determine the interface and gateway IP used for communication with the target at the time the rules are loaded. There are no inherent limits to the number of ports other than the limits of the protocols. All protocols available for port forwards are supported.");?>
-                      <br /><br />
-                      <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_reflectiontimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection Timeout");?></td>
-                  <td>
-                    <input name="reflectiontimeout" type="text" value="<?=$pconfig['reflectiontimeout']; ?>" />
-                    <div class="hidden" for="help_for_reflectiontimeout">
-                      <strong><?=gettext("Enter value for Reflection timeout in seconds.");?></strong>
-                      <br /><br />
-                      <?=gettext("Note: Only applies to Reflection on port forwards in NAT + proxy mode.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
-                  <td>
-                    <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
-                    <strong><?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?></strong>
-                    <div class="hidden" for="help_for_enablebinatreflection">
-                      <?=gettext("Note: Reflection on 1:1 mappings is only for the inbound component of the 1:1 mappings. This functions the same as the pure NAT mode for port forwards. For more details, refer to the pure NAT mode description above.");?>
-                      <br /><br />
-                      <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
-                  <td>
-                    <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?></strong>
-                    <div class="hidden" for="help_for_enablenatreflectionhelper">
-                      <?=gettext("Required for full functionality of the pure NAT mode of NAT Reflection for port forwards or NAT Reflection for 1:1 NAT.");?>
-                      <br /><br />
-                      <?=gettext("Note: This only works for assigned interfaces. Other interfaces require manually creating the outbound NAT rules that direct the reply packets back through the router.");?>
-                    </div>
-                  </td>
-                </tr>
-<?php           endif; ?>
                 <tr>
                   <td></td>
                   <td><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
