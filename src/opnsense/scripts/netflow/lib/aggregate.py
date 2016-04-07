@@ -109,7 +109,7 @@ class BaseFlowAggregator(object):
         :param days: number of days
         :return: number of seconds
         """
-        return 60*60*24
+        return 60*60*24*days
 
     def __init__(self, resolution):
         """ construct new flow sample class
