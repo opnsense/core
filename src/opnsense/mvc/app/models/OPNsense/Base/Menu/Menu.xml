@@ -88,7 +88,8 @@
     <Interfaces order="2" cssClass="fa fa-sitemap">
         <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
-        <Types VisibleName="Other Types" order="929" cssClass="fa fa-archive fa-fw">
+        <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
+        <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
             </Bridge>
@@ -111,13 +112,13 @@
                 <Edit url="/interfaces_vlan_edit.php*" visibility="hidden"/>
             </VLAN>
         </Types>
-        <PPP order="926" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
+        <PPP order="940" VisibleName="Point-to-Point" cssClass="fa fa-tty fa-fw">
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
             <LogFile VisibleName="Log File"  url="/diag_logs_ppp.php"/>
         </PPP>
-        <Wireless order="925" cssClass="fa fa-wifi fa-fw">
+        <Wireless order="930" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
@@ -126,8 +127,7 @@
                 <Status url="/status_wireless.php*" visibility="hidden"/>
             </Status>
         </Wireless>
-        <Settings order="930" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
-        <Diagnostics order="940" cssClass="fa fa-medkit fa-fw">
+        <Diagnostics order="960" cssClass="fa fa-medkit fa-fw">
             <DNSLookup order="20" VisibleName="DNS Lookup" url="/diag_dns.php"/>
             <PacketCapture order="40" VisibleName="Packet Capture" url="/diag_packet_capture.php"/>
             <Ping order="50" url="/diag_ping.php"/>
