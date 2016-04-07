@@ -1,9 +1,7 @@
 <menu>
     <System>
         <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
-        <Diagnostics>
-            <Activity order="10" VisibleName="Activity Monitor" url="/ui/diagnostics/activity/"/>
-        </Diagnostics>
+        <Diagnostics url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
         <Routes>
             <Status order="20" url="/ui/diagnostics/interface/routes/"/>
         </Routes>
