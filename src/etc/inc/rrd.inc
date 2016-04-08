@@ -296,7 +296,7 @@ function enable_rrd_graphing()
                     mwexec("$rrdtool update $rrddbpath$ifname$vpnusers N:U");
                 }
 
-                if (is_array($config['openvpn']['openvpn-server'])) {
+                if (isset($config['openvpn']['openvpn-server'])) {
                     foreach($config['openvpn']['openvpn-server'] as $server) {
                         if ("ovpns{$server['vpnid']}" == $ifname) {
                             $port = $server['local_port'];
