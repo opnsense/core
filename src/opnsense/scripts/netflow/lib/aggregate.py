@@ -230,9 +230,10 @@ class BaseFlowAggregator(object):
             # next start time
             start_time += self.resolution
 
-    def cleanup(self):
+    def cleanup(self, do_vacuum = False):
         """ cleanup timeserie table
         :param expire: cleanup table, remove data older then [expire] seconds
+        :param do_vacuum: vacuum database
         :return: None
         """
         if self.is_db_open() and 'timeserie' in self._known_targets \
@@ -244,7 +245,9 @@ class BaseFlowAggregator(object):
                 expire_timestamp = last_timestamp - datetime.timedelta(seconds=expire)
                 self._update_cur.execute('delete from timeserie where mtime < :expire', {'expire': expire_timestamp})
                 self.commit()
-                # todo: might need vacuum at some point.
+                if do_vacuum:
+                    # vacuum database if requested
+                    self._update_cur.execute('vacuum')
 
     def get_data(self, start_time, end_time, fields):
         """ fetch data from aggregation source, groups by mtime and selected fields
