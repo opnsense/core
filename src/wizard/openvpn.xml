@@ -404,7 +404,7 @@
 		<field>
 			<name>state</name>
 			<displayname>State or Province</displayname>
-			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Saksen, Paris, Kentucky).</description>
+			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Paris, Kentucky).</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step6->state</bindstofield>
@@ -533,7 +533,7 @@
 		<field>
 			<name>state</name>
 			<displayname>State or Province</displayname>
-			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Saksen, Paris, Kentucky).</description>
+			<description>Full State of Province name, not abbreviated (e.g. Zuid Holland, Sachsen, Paris, Kentucky).</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step9->state</bindstofield>
