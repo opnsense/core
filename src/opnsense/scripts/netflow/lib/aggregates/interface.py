@@ -39,14 +39,19 @@ class FlowInterfaceTotals(BaseFlowAggregator):
         """
         :return: list of sample resolutions
         """
-        return  [60, 60*5, 60*60]
+        # sample in 30 seconds, 5 minutes, 1 hour and 1 day
+        return  [30, 300, 3600, 86400]
 
     @classmethod
     def history_per_resolution(cls):
         """
         :return: dict sample resolution / expire time (seconds)
         """
-        return  {60: cls.seconds_per_day(1), 60*5: cls.seconds_per_day(31), 60*60: cls.seconds_per_day(365)}
+        return  {30: cls.seconds_per_day(1),
+                 300: cls.seconds_per_day(7),
+                 3600: cls.seconds_per_day(31),
+                 86400: cls.seconds_per_day(365)
+                 }
 
     def __init__(self, resolution):
         """
