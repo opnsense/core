@@ -138,7 +138,7 @@ function vpn_pptpd_configure()
     killbypid('/var/run/pptp-vpn.pid', 'TERM', true);
     mwexec('rm -rf /var/etc/pptp-vpn');
 
-    if (empty($pptpdcfg['mode']) || $pptpdcfg['mode'] == 'off') {
+    if (!isset($pptpdcfg['mode']) || ($pptpdcfg['mode'] != 'server' && $pptpdcfg['mode'] != 'redir')) {
         return 0;
     }
 
@@ -351,7 +351,7 @@ function vpn_pppoe_configure(&$pppoecfg)
     killbypid("/var/run/pppoe{$pppoecfg['pppoeid']}-vpn.pid", 'TERM', true);
     mwexec("rm -rf /var/etc/pppoe{$pppoecfg['pppoeid']}-vpn");
 
-    if (empty($pppoecfg['mode']) || $pppoecfg['mode'] == 'off') {
+    if (!isset($pppoecfg['mode']) || $pppoecfg['mode'] != 'server') {
         return 0;
     }
 
@@ -520,7 +520,7 @@ function vpn_l2tp_configure()
         return 0;
     }
 
-    if (empty($l2tpcfg['mode']) || $l2tpcfg['mode'] == 'off') {
+    if (!isset($l2tpcfg['mode']) || $l2tpcfg['mode'] != 'server') {
         return 0;
     }
 
