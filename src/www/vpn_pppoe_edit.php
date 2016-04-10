@@ -279,10 +279,10 @@ legacy_html_escape_form_data($pconfig);
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Mode");?></td>
                     <td>
-                      <input name="mode" type="radio" value="off" <?=$pconfig['mode'] != "server" ? "checked=\"checked\"" : "";?> />
+                      <input name="mode" type="radio" value="off" <?=$pconfig['mode'] != 'server' ? 'checked="checked"' : '';?> />
                       <?=gettext("Off"); ?>
                       &nbsp;
-                      <input type="radio" name="mode" value="server" <?=$pconfig['mode'] == "server" ? "checked=\"checked\"" : "";?>/>
+                      <input type="radio" name="mode" value="server" <?=$pconfig['mode'] == 'server' ? 'checked="checked"' : '';?>/>
                       <?=gettext("Enable PPPoE server"); ?></td>
                     </td>
                   </tr>

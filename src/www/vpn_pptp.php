@@ -218,10 +218,11 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td></td>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Mode");?></td>
                       <td>
                         <input name="mode" type="radio" value="off" <?=($pconfig['mode'] != 'server') ? 'checked="checked"' : '';?>/>
-                        <?=gettext("Off"); ?><br/>
+                        <?=gettext("Off"); ?>
+                        &nbsp;
                         <input type="radio" name="mode" value="server"  <?=($pconfig['mode'] == 'server') ? 'checked="checked"' : '';?>/>
                         <?=gettext("Enable PPTP server"); ?>
                       </td>
