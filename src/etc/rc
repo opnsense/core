@@ -88,13 +88,6 @@ if [ ! -f /usr/local/openssl/openssl.cnf ]; then
 	echo "done."
 fi
 
-#Eject CD devices on 3G modems
-MANUFACTURER="huawei|zte"
-CDDEVICE=`dmesg |egrep -ie "($MANUFACTURER)" | awk -F: '/cd/ {print $1}'`
-if [ "$CDDEVICE" != "" ]; then
-	cdcontrol -f /dev/"$CDDEVICE" eject
-fi
-
 # Enable console output if its muted.
 /sbin/conscontrol mute off >/dev/null
 
