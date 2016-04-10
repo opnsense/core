@@ -44,7 +44,6 @@ $pptpcfg = &$config['pptpd'];
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['remoteip'] = $pptpcfg['remoteip'];
     $pconfig['localip'] = $pptpcfg['localip'];
-    $pconfig['redir'] = $pptpcfg['redir'];
     $pconfig['mode'] = $pptpcfg['mode'];
     $pconfig['wins'] = $pptpcfg['wins'];
     $pconfig['req128'] = isset($pptpcfg['req128']);
@@ -105,22 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The specified server address lies in the remote subnet.");
             }
         }
-    } elseif ($_POST['mode'] == "redir") {
-        $reqdfields = explode(" ", "redir");
-        $reqdfieldsn = array(gettext("PPTP redirection target address"));
-
-        do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
-
-        if (($_POST['redir'] && !is_ipaddr($_POST['redir']))) {
-            $input_errors[] = gettext("A valid target address must be specified.");
-        }
     } elseif (isset($config['pptpd']['mode'])) {
         unset($config['pptpd']['mode']);
     }
 
     if (!$input_errors) {
         $pptpcfg['remoteip'] = $_POST['remoteip'];
-        $pptpcfg['redir'] = $_POST['redir'];
         $pptpcfg['localip'] = $_POST['localip'];
         $pptpcfg['mode'] = $_POST['mode'];
         $pptpcfg['wins'] = $_POST['wins'];
@@ -231,25 +220,9 @@ include("head.inc");
                     <tr>
                       <td></td>
                       <td>
-                        <input name="mode" type="radio" value="off" <?=(($pconfig['mode'] != "server") && ($pconfig['mode'] != "redir")) ? "checked=\"checked\"" : "";?>/>
+                        <input name="mode" type="radio" value="off" <?=($pconfig['mode'] != 'server') ? 'checked="checked"' : '';?>/>
                         <?=gettext("Off"); ?><br/>
-                        <input type="radio" name="mode" value="redir" <?=($pconfig['mode'] == "redir") ? "checked=\"checked\"" : "";?>/>
-                        <?=gettext("Redirect incoming PPTP connections to");?>:
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_redir" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("PPTP redirection");?></td>
-                      <td>
-                        <input name="redir" type="text" id="redir" value="<?=$pconfig['redir'];?>" />
-                        <div class="hidden" for="help_for_redir">
-                          <?=gettext("Enter the IP address of a host which will accept incoming PPTP connections."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <input type="radio" name="mode" value="server"  <?=($pconfig['mode'] == "server") ? "checked=\"checked\"" : "";?>/>
+                        <input type="radio" name="mode" value="server"  <?=($pconfig['mode'] == 'server') ? 'checked="checked"' : '';?>/>
                         <?=gettext("Enable PPTP server"); ?>
                       </td>
                     </tr>

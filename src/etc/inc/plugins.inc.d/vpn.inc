@@ -138,17 +138,12 @@ function vpn_pptpd_configure()
     killbypid('/var/run/pptp-vpn.pid', 'TERM', true);
     mwexec('rm -rf /var/etc/pptp-vpn');
 
-    if (!isset($pptpdcfg['mode']) || ($pptpdcfg['mode'] != 'server' && $pptpdcfg['mode'] != 'redir')) {
+    if (!isset($pptpdcfg['mode']) || $pptpdcfg['mode'] != 'server') {
         return 0;
     }
 
     if (file_exists('/var/run/booting')) {
         echo gettext("Configuring PPTP VPN service...");
-    }
-
-    if (empty($pptpdcfg['n_pptp_units'])) {
-        log_error("Something wrong in the PPTPd configuration. Preventing starting the daemon because issues would arise.");
-        return;
     }
 
     switch ($pptpdcfg['mode']) {
@@ -296,9 +291,6 @@ EOD;
 
             mwexec('/usr/local/sbin/mpd5 -b -d /var/etc/pptp-vpn -p /var/run/pptp-vpn.pid -s pptps pptps');
 
-            break;
-
-        case 'redir':
             break;
     }
 
