@@ -128,6 +128,7 @@ $main_buttons = array(
                       <tr>
                         <th><?=gettext("Interface");?></th>
                         <th><?=gettext("Members");?></th>
+                        <th><?=gettext("Protocol");?></th>
                         <th><?=gettext("Description");?></th>
                         <th>&nbsp;</th>
                       </tr>
@@ -139,6 +140,7 @@ $main_buttons = array(
                       <tr>
                         <td><?=strtoupper($lagg['laggif']);?></td>
                         <td><?=$lagg['members'];?></td>
+                        <td><?=strtoupper($lagg['proto']);?></td>
                         <td><?=$lagg['descr'];?></td>
                         <td>
                           <a href="interfaces_lagg_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit interface");?>">
@@ -153,7 +155,7 @@ $main_buttons = array(
                     $i++;
                     endforeach; ?>
                       <tr>
-                        <td colspan="4">
+                        <td colspan="5">
                            <?=gettext("LAGG allows for link aggregation, bonding and fault tolerance. Only unassigned interfaces can be added to LAGG."); ?>
                         </td>
                       </tr>
