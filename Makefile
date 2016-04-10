@@ -56,7 +56,6 @@ CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
 CORE_MESSAGE?=		ACME delivery for the crafty coyote!
 CORE_DEPENDS?=		apinger \
-			ataidle \
 			beep \
 			bind910 \
 			bsdinstaller \
