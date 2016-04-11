@@ -45,7 +45,7 @@ $pconfig = array();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_aliases[$_GET['id']])) {
         $id = $_GET['id'];
-        foreach (array("name","detail","address","type","descr","updatefreq","aliasurl","url") as $fieldname) {
+        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url") as $fieldname) {
             if (isset($a_aliases[$id][$fieldname])) {
                 $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
             } else {
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         // initialize form fields, when not found present empty form
-        foreach (array("name","detail","address","type","descr","updatefreq","aliasurl","url") as $fieldname) {
+        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url") as $fieldname) {
             if (isset($id) && isset($a_aliases[$id][$fieldname])) {
                 $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
             } else {
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         // init empty
-        $init_fields = array("name","detail","address","type","descr","updatefreq","url");
+        $init_fields = array("name", "detail", "address", "type", "descr", "updatefreq", "url");
         foreach ($init_fields as $fieldname) {
             $pconfig[$fieldname] = null;
         }
@@ -438,9 +438,19 @@ include("head.inc");
                         </tr>
                       </thead>
                       <tbody>
-<?php                      if (is_array($pconfig['aliasurl'])):
-                        $detail_desc = explode("||", $pconfig['detail']);
-                        foreach ($pconfig['aliasurl'] as $aliasid => $aliasurl):
+<?php
+                      if (is_array($pconfig['aliasurl'])) {
+                          $detail_desc = explode("||", $pconfig['detail']);
+                          $aliases = $pconfig['aliasurl'];
+                      } else {
+                          $detail_desc = explode("||", $pconfig['detail']);
+                          if (empty($pconfig['address']) && isset($pconfig['url'])) {
+                              $aliases = array($pconfig['url']);
+                          } else {
+                              $aliases = explode(' ', $pconfig['address']);
+                          }
+                      }
+                      foreach ($aliases as $aliasid => $aliasurl):
 ?>
                         <tr>
                           <td>
@@ -453,45 +463,15 @@ include("head.inc");
                             <input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$aliasid])?$detail_desc[$aliasid]:"";?>">
                           </td>
                           <td>
-<?php                          if ($aliasid ==0):
+<?php                       if ($aliasid ==0):
 ?>
                             <input type="text" class="form-control input-sm" id="updatefreq"  name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
-<?php                          endif;
+<?php                       endif;
 ?>
                           </td>
                         </tr>
-<?php                        endforeach;
-                      else:
-                        $detail_desc = explode("||", $pconfig['detail']);
-                        if (empty($pconfig['address']) && isset($pconfig['url'])) {
-                          $addresslst = array($pconfig['url']);
-                        } else {
-                          $addresslst = explode(' ', $pconfig['address']);
-                        }
-                        foreach ($addresslst as $addressid => $address):
-?>
-                        <tr>
-                          <td>
-                            <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
-                          </td>
-                          <td>
-                            <input type="text" class="fld_detail"  name="host_url[]" value="<?=$address;?>"/>
-                          </td>
-                          <td>
-                            <input type="text" name="detail[]" value="<?= isset($detail_desc[$addressid])?$detail_desc[$addressid]:"";?>"/>
-                          </td>
-                          <td>
-<?php                          if ($addressid ==0):
-?>
-                            <input type="text" class="input-sm" id="updatefreq" name="updatefreq" value="<?=$pconfig['updatefreq'];?>"/>
-<?php                          endif;
-?>
-                          </td>
-                        </tr>
-
-<?php                      endforeach;
-                      endif;
-?>
+<?php
+                      endforeach;?>
                       </tbody>
                       <tfoot>
                         <tr>
