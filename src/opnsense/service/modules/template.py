@@ -54,7 +54,7 @@ class Template(object):
         # setup jinja2 environment
         self._template_dir = os.path.dirname(os.path.abspath(__file__)) + '/../templates/'
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
-                                          extensions=["jinja2.ext.do", ])
+                                          extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
 
     @staticmethod
     def _read_manifest(filename):
