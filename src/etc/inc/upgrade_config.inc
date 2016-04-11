@@ -3432,4 +3432,8 @@ function upgrade_111_to_112()
 			}
 		}
 	}
+
+	if (!isset($config['system']['backupcount'])) {
+		$config['system']['backupcount'] = 60;
+	}
 }

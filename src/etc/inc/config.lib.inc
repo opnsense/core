@@ -288,7 +288,8 @@ function cleanup_backups()
     if (isset($config['system']['backupcount']) && is_numeric($config['system']['backupcount']) && ($config['system']['backupcount'] >= 0)) {
         $revisions = intval($config['system']['backupcount']);
     } else {
-        $revisions = 30;
+        /* XXX this value used to be left out of the config */
+        $revisions = 60;
     }
 
     $cnf = OPNsense\Core\Config::getInstance();
