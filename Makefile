@@ -186,6 +186,11 @@ package: force
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
 	    echo "Cannot continue with live mount"; exit 1; \
 	fi
+	@if [ ! -f /usr/ports/Keywords/sample.ucl ]; then \
+	    mkdir -p /usr/ports/Keywords; \
+	    cd /usr/ports/Keywords; \
+	    fetch -q https://raw.githubusercontent.com/opnsense/ports/master/Keywords/sample.ucl; \
+	fi
 	@${PKG} info gettext-tools > /dev/null
 	@${PKG} info git > /dev/null
 	@rm -rf ${WRKSRC} ${PKGDIR}
