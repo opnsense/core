@@ -254,7 +254,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (write_config()) {
               // post save actions
               mark_subsystem_dirty('aliases');
-              if (strpos($pconfig['type'],'url') !== false) {
+              if (strpos($pconfig['type'],'url') !== false || $pconfig['type'] == 'geoip') {
                   // update URL Table Aliases
                   configd_run('filter refresh_url_alias', true);
               }
