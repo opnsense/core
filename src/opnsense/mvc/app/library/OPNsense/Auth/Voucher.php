@@ -59,6 +59,11 @@ class Voucher implements IAuthConnector
     private $usernameLength = 8;
 
     /**
+     * @var bool use simple passwords (less secure)
+     */
+    private $simplePasswords = false;
+
+    /**
      * @var array internal list of authentication properties (returned by radius auth)
      */
     private $lastAuthProperties = array();
@@ -133,6 +138,18 @@ class Voucher implements IAuthConnector
         } else {
             $this->refid = 'default';
         }
+        // use simple passwords
+        if (array_key_exists('simplePasswords', $config) && !empty($config['simplePasswords'])) {
+            $this->simplePasswords = true;
+        }
+        // use predefined username and password length
+        if (array_key_exists('usernameLength', $config) && is_numeric($config['usernameLength'])) {
+            $this->usernameLength = (int)$config['usernameLength'];
+        }
+        if (array_key_exists('passwordLength', $config) && is_numeric($config['passwordLength'])) {
+            $this->passwordLength = (int)$config['passwordLength'];
+        }
+
         $this->openDatabase();
     }
 
@@ -148,17 +165,37 @@ class Voucher implements IAuthConnector
     {
         $response = array();
         if ($this->dbHandle != null) {
-            // list of characters to skip for random generator
-            $doNotUseChr = array('<', '>', '{', '}', '&', 'l' , 'O' ,'`', '\'', '|' ,'^', '"');
+            if ($this->simplePasswords) {
+                // create a map of easy to read characters
+                $characterMap = '';
+                while (strlen($characterMap) < 256) {
+                    $random_bytes = openssl_random_pseudo_bytes(10000);
+                    for ($i = 0; $i < strlen($random_bytes); $i++) {
+                        $chr_ord = ord($random_bytes[$i]);
+                        if (($chr_ord >= 50 && $chr_ord <= 57) || // 2..9
+                            ($chr_ord >= 65 && $chr_ord <= 78) || // A..N
+                            ($chr_ord >= 80 && $chr_ord <= 90) || // P..Z
+                            ($chr_ord >= 97 && $chr_ord <= 107) || // a..k
+                            ($chr_ord >= 109 && $chr_ord <= 110) || // m..n
+                            ($chr_ord >= 112 && $chr_ord <= 122)  // p..z
+                        ) {
+                            $characterMap .= $random_bytes[$i] ;
+                        }
+                    }
+                }
+            } else {
+                // list of characters to skip for random generator
+                $doNotUseChr = array('<', '>', '{', '}', '&', 'l' , 'O' ,'`', '\'', '|' ,'^', '"');
 
-            // create map of random readable characters
-            $characterMap = '';
-            while (strlen($characterMap) < 256) {
-                $random_bytes = openssl_random_pseudo_bytes(10000);
-                for ($i = 0; $i < strlen($random_bytes); $i++) {
-                    $chr_ord = ord($random_bytes[$i]);
-                    if ($chr_ord >= 33 and $chr_ord <= 125 and !in_array($random_bytes[$i], $doNotUseChr)) {
-                        $characterMap .= $random_bytes[$i] ;
+                // create map of random readable characters
+                $characterMap = '';
+                while (strlen($characterMap) < 256) {
+                    $random_bytes = openssl_random_pseudo_bytes(10000);
+                    for ($i = 0; $i < strlen($random_bytes); $i++) {
+                        $chr_ord = ord($random_bytes[$i]);
+                        if ($chr_ord >= 33 && $chr_ord <= 125 && !in_array($random_bytes[$i], $doNotUseChr)) {
+                            $characterMap .= $random_bytes[$i] ;
+                        }
                     }
                 }
             }
