@@ -351,11 +351,8 @@ $(document).ready(function() {
                   </tr>
                   <tr>
                     <td colspan="2">
-                      <p>
-                        <strong><span class="text-danger"><?=gettext("Note:");?></span></strong><br />
-                            <?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
-                            "take this into account after changing the style.");?>
-                      </p>
+                      <?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
+                        "take this into account after changing the style.");?>
                     </td>
                   </tr>
                 </table>
@@ -565,10 +562,10 @@ $(document).ready(function() {
                       </td>
                     </tr>
                     <tr>
-                      <td  colspan="2"><strong><span class="text-danger"><?=gettext("Note:")?></span></strong><br />
-                      <?=gettext("Syslog sends UDP datagrams to port 514 on the specified " .
-                      "remote syslog server, unless another port is specified. Be sure to set syslogd on the " .
-                      "remote server to accept remote syslog messages.");?>
+                      <td colspan="2">
+                        <?=gettext("Syslog sends UDP datagrams to port 514 on the specified " .
+                          "remote syslog server, unless another port is specified. Be sure to set syslogd on the " .
+                          "remote server to accept remote syslog messages.");?>
                       </td>
                     </tr>
                   </table>
