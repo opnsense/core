@@ -85,6 +85,7 @@ CORE_DEPENDS?=		apinger \
 			openssh-portable \
 			openvpn \
 			opnsense-update \
+			p7zip \
 			pecl-radius \
 			pftop \
 			phalcon \
