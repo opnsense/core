@@ -197,13 +197,10 @@ $( document ).ready(function() {
                   <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30."); ?></td>
                 </tr>
                 <tr>
-                  <td></td>
                   <td>
                     <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                   </td>
-                </tr>
-                <tr>
-                  <td colspan="2">
+                  <td>
                     <?= gettext("Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups: "); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
                   </td>
                 </tr>
