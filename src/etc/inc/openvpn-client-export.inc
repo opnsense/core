@@ -458,7 +458,6 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
 function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions, $openvpn_version = "x86-xp")
 {
     global $config, $input_errors, $current_openvpn_version, $current_openvpn_version_rev;
-    $uname_p = trim(exec("uname -p"));
 
     switch ($openvpn_version) {
         case "x86-xp":
@@ -580,7 +579,6 @@ RunProgram="openvpn-postinstall.exe"
 function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions)
 {
     global $config;
-    $uname_p = trim(exec("uname -p"));
 
     $uniq = uniqid();
     $tempdir = "/tmp/openvpn-export-{$uniq}";
