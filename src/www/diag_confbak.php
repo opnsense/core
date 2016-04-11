@@ -89,8 +89,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($pconfig['save'])) {
-        if (!isset($pconfig['backupcount']) || !is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] < 0) {
-            $input_errors[] = gettext('Backup count must be greater or equal to zero.');
+        if (!isset($pconfig['backupcount']) || !is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] <= 0) {
+            $input_errors[] = gettext('Backup count must be greater than zero.');
         }
         if (count($input_errors) == 0) {
             $config['system']['backupcount'] = $pconfig['backupcount'];
