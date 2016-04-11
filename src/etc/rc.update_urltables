@@ -41,6 +41,10 @@ if (count($todo) > 0) {
         } else {
             log_error("{$argv[0]}: GeoIP database doesn't need updating");
         }
+        // create alias target directly if it doesn't exists (mfs)
+        if (!file_exists("/var/db/aliastables/")) {
+            mkdir("/var/db/aliastables");
+        }
     }
 
     log_error("{$argv[0]}: Starting URL table alias updates");
