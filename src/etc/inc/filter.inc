@@ -589,6 +589,7 @@ function filter_generate_aliases(&$FilterIflist)
             switch ($aliased['type']) {
                 case "host":
                 case "network":
+                case "geoip":
                 case "url":
                     $tableaddrs = "{$addrlist}{$extralias}";
                     if (empty($tableaddrs)) {
