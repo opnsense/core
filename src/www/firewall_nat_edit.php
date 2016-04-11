@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         address_to_pconfig($a_nat[$configId]['destination'], $pconfig['dst'],
           $pconfig['dstmask'], $pconfig['dstnot'],
           $pconfig['dstbeginport'], $pconfig['dstendport']);
-    } else if (isset($_GET['template']) && $_GET['template'] == 'transparant_proxy') {
+    } elseif (isset($_GET['template']) && $_GET['template'] == 'transparant_proxy') {
         // new rule for transparant proxy reflection, to use as sample
         $pconfig['interface'] = "lan";
         $pconfig['src'] = "lan";
@@ -158,8 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } else {
                 $pconfig['local-port'] = 3129;
             }
-        }
-        else {
+        } else {
             $pconfig['dstbeginport'] = 80;
             $pconfig['dstendport'] = 80;
             // try to read the proxy configuration to determine the current port
@@ -172,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         $pconfig['target'] = '127.0.0.1';
-        
+
         $pconfig['natreflection'] = 'enable';
         $pconfig['descr'] = gettext("redirect traffic to proxy");
     } else {
