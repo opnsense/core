@@ -87,7 +87,7 @@ class CountryField extends BaseField
 
     /**
      * select if multiple countries may be selected at once
-     * @param $value boolean value Y/N
+     * @param string $value boolean value Y/N
      */
     public function setMultiple($value)
     {
@@ -100,7 +100,7 @@ class CountryField extends BaseField
 
     /**
      * Add inverted countries to selection (prefix !, meaning not)
-     * @param $value boolean value Y/N
+     * @param string $value boolean value Y/N
      */
     public function setAddInverted($value)
     {
