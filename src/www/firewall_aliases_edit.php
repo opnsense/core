@@ -33,6 +33,23 @@
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 
+/**
+ * generate simple country selection list for geoip
+ */
+function geoip_countries()
+{
+    $result = array();
+    foreach (explode("\n", file_get_contents('/usr/local/opnsense/contrib/tzdata/iso3166.tab')) as $line) {
+        $line = trim($line);
+        if (strlen($line) > 3 && substr($line, 0, 1) != '#') {
+          $code = substr($line, 0, 2);
+          $name = trim(substr($line, 2, 9999));
+          $result[$code] = $name;
+        }
+    }
+    return $result;
+}
+
 if (!isset($config['aliases']) || !is_array($config['aliases'])) {
     $config['aliases'] = array();
 }
@@ -45,7 +62,7 @@ $pconfig = array();
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['id']) && is_numericint($_GET['id']) && isset($a_aliases[$_GET['id']])) {
         $id = $_GET['id'];
-        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url") as $fieldname) {
+        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url", "proto") as $fieldname) {
             if (isset($a_aliases[$id][$fieldname])) {
                 $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
             } else {
@@ -65,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         // initialize form fields, when not found present empty form
-        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url") as $fieldname) {
+        foreach (array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url", "proto") as $fieldname) {
             if (isset($id) && isset($a_aliases[$id][$fieldname])) {
                 $pconfig[$fieldname] = $a_aliases[$id][$fieldname];
             } else {
@@ -74,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         // init empty
-        $init_fields = array("name", "detail", "address", "type", "descr", "updatefreq", "url");
+        $init_fields = array("name", "detail", "address", "type", "descr", "updatefreq", "url", "proto");
         foreach ($init_fields as $fieldname) {
             $pconfig[$fieldname] = null;
         }
@@ -92,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (strpos($pconfig['type'],'url') !== false) {
         $pconfig['aliasurl'] = $pconfig['host_url'];
     } else {
-        $pconfig['address'] = implode(' ',$pconfig['host_url']);
+        $pconfig['address'] = implode(' ', $pconfig['host_url']);
     }
 
     foreach ($pconfig['detail'] as &$detailDescr) {
@@ -108,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($pconfig['submit'])) {
         $input_errors = array();
         // validate data
+        $country_codes = array_keys(geoip_countries());
         foreach ($pconfig['host_url'] as $detail_entry) {
             if ($pconfig['type'] == 'host') {
                 if (!is_domain($detail_entry) && !is_ipaddr($detail_entry)) {
@@ -117,8 +135,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!is_port($detail_entry) && !is_portrange($detail_entry)) {
                     $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid port number"), $detail_entry) ;
                 }
+            } elseif ($pconfig['type'] == 'geoip') {
+                if (!in_array($detail_entry, $country_codes)) {
+                    $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid country code"), $detail_entry) ;
+                }
             }
-
         }
 
         /* Check for reserved keyword names */
@@ -126,15 +147,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $reserved_keywords = array("all", "pass", "block", "out", "queue", "max", "min", "pptp", "pppoe", "L2TP", "OpenVPN", "IPsec");
 
         // Add all Load balance names to reserved_keywords
-        if (is_array($config['load_balancer']['lbpool']))
-            foreach ($config['load_balancer']['lbpool'] as $lbpool)
+        if (is_array($config['load_balancer']['lbpool'])) {
+            foreach ($config['load_balancer']['lbpool'] as $lbpool) {
                 $reserved_keywords[] = $lbpool['name'];
+            }
+        }
 
         $reserved_ifs = get_configured_interface_list(false, true);
         $reserved_keywords = array_merge($reserved_keywords, $reserved_ifs, $reserved_table_names);
-        foreach ($reserved_keywords as $rk)
-            if ($rk == $pconfig['name'])
+        foreach ($reserved_keywords as $rk) {
+            if ($rk == $pconfig['name']) {
                 $input_errors[] = sprintf(gettext("Cannot use a reserved keyword as alias name %s"), $rk);
+            }
+        }
 
         /* check for name interface description conflicts */
         foreach ($config['interfaces'] as $interface) {
@@ -174,12 +199,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (count($input_errors) == 0) {
             // save to config
-            $copy_fields = array("name","detail","address","type","descr","updatefreq","aliasurl","url");
+            $copy_fields = array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url");
             $confItem = array();
             foreach ($copy_fields as $fieldname) {
                 if (!empty($pconfig[$fieldname])) {
                     $confItem[$fieldname] = $pconfig[$fieldname];
                 }
+            }
+
+            // proto is only for geoip selection
+            if ($pconfig['type'] == 'geoip') {
+                $confItem['proto'] = $pconfig['proto'];
             }
 
             /*   Check to see if alias name needs to be
@@ -271,6 +301,10 @@ include("head.inc");
         $(".act-removerow").click(removeRow);
         // link typeahead to new item
         $(".fld_detail").typeahead({ source: document.all_aliases[$("#typeSelect").val()] });
+        // link geoip list to new item
+        $(".geoip_list").change(function(){
+            $(this).parent().find('input').val($(this).val());
+        });
     });
 
     $(".act-removerow").click(removeRow);
@@ -288,6 +322,10 @@ include("head.inc");
         $("#addNew").removeClass('hidden');
         $('.act-removerow').removeClass('hidden');
       }
+      $("#proto").addClass("hidden");
+      $(".geoip_list").addClass("hidden");
+      $(".host_url").removeClass("hidden");
+      $(".geoip_list > option").remove();
       switch($("#typeSelect").val()) {
           case 'urltable':
               $("#detailsHeading1").html("<?=gettext("URL");?>");
@@ -310,13 +348,27 @@ include("head.inc");
           case 'port':
               $("#detailsHeading1").html("<?=gettext("Port(s)");?>");
               break;
+          case 'geoip':
+              $("#proto").removeClass("hidden");
+              $(".geoip_list").removeClass("hidden");
+              $(".host_url").addClass("hidden");
+              $("#detailsHeading1").html("<?=gettext("Country");?>");
+              $("#countries > option").clone().appendTo('.geoip_list');
+              $('.geoip_list').each(function(){
+                  var url_item = $(this).parent().find('input').val();
+                  $(this).val(url_item);
+              });
+              $('.geoip_list').change(function(){
+                  $(this).parent().find('input').val($(this).val());
+              });
+              break;
       }
       $(".fld_detail").typeahead("destroy");
       $(".fld_detail").typeahead({ source: document.all_aliases[$("#typeSelect").val()] });
     }
 
     $("#typeSelect").change(function(){
-      toggleType();
+        toggleType();
     });
 
     // collect all known aliases per type
@@ -342,6 +394,16 @@ include("head.inc");
         endif;
       endforeach;
     endif;
+?>
+</select>
+
+<!-- push all available countries in a hidden select box for geoip -->
+<select class="hidden" id="countries">
+<?php
+foreach (geoip_countries() as $code => $name):?>
+    <option value="<?=$code;?>"><?=$name;?></option>
+<?php
+endforeach;
 ?>
 </select>
 
@@ -393,7 +455,15 @@ include("head.inc");
                       <option value="url_ports" <?=$pconfig['type'] == "url_ports" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL (Ports)");?></option>
                       <option value="urltable" <?=$pconfig['type'] == "urltable" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (IPs)"); ?></option>
                       <option value="urltable_ports" <?=$pconfig['type'] == "urltable_ports" ? "selected=\"selected\"" : ""; ?>><?=gettext("URL Table (Ports)"); ?></option>
+                      <option value="geoip" <?=$pconfig['type'] == "geoip" ? "selected=\"selected\"" : ""; ?>><?=gettext("GeoIP"); ?></option>
                     </select>
+                    <div id="proto" class="hidden">
+                      <small><?=gettext("Protocol");?></small><br/>
+                      <select name="proto">
+                        <option value="IPv4" <?=$pconfig['proto'] == "IPv4" ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv4");?></option>
+                        <option value="IPv6" <?=$pconfig['proto'] == "IPv6" ? "selected=\"selected\"" : ""; ?>><?=gettext("IPv6");?></option>
+                      </select>
+                    </div>
                     <div class="hidden" for="help_for_type">
                       <span class="text-info">
                         <?=gettext("Networks")?><br/>
@@ -457,7 +527,9 @@ include("head.inc");
                             <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
                           </td>
                           <td>
-                            <input type="text" class="form-control" name="host_url[]" value="<?=$aliasurl;?>"/>
+                            <select class="geoip_list hidden">
+                            </select>
+                            <input type="text" class="host_url" name="host_url[]" value="<?=$aliasurl;?>"/>
                           </td>
                           <td>
                             <input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$aliasid])?$detail_desc[$aliasid]:"";?>">

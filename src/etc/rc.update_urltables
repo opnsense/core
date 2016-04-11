@@ -10,16 +10,15 @@ if (!isset($config['aliases']['alias'])) {
     exit;
 }
 
-// Gather list of urltable aliases
+// Gather list of urltable / geoip aliases
 $todo = array();
+$download_geoip = false;
 foreach ($config['aliases']['alias'] as $alias) {
     if (preg_match('/urltable/i', $alias['type'])) {
-        $tmp = array();
-        $tmp['type'] = $alias['type'];
-        $tmp['name'] = $alias['name'];
-        $tmp['url']  = $alias['url'];
-        $tmp['freq'] = $alias['updatefreq'];
-        $todo[] = $tmp;
+        $todo[] = $alias;
+    } elseif ($alias['type'] == 'geoip') {
+        $todo[] = $alias;
+        $download_geoip = true;
     }
 }
 
@@ -33,24 +32,49 @@ if (count($todo) > 0) {
         sleep($wait);
     }
 
+    // download geoip database
+    if ($download_geoip) {
+        // download the geoip database, first check if we haven't already done so the last day
+        if (!is_file('/usr/local/share/GeoIP/alias/NL-IPv4') || (time() - filemtime('/usr/local/share/GeoIP/alias/NL-IPv4')) > (86400 - 90)) {
+            log_error("{$argv[0]}: Download GeoIP database");
+            exec('/usr/local/opnsense/scripts/filter/download_geoip.py');
+        } else {
+            log_error("{$argv[0]}: GeoIP database doesn't need updating");
+        }
+    }
+
     log_error("{$argv[0]}: Starting URL table alias updates");
 
     $filter_reload = false;
-    foreach ($todo as $t) {
-        $r = process_alias_urltable($t['name'], $t['url'], $t['freq']);
-        if ($r == 1) {
-            $result = "";
-            // TODO: Change it when pf supports tables with ports
-            if ($t['type'] == "urltable") {
-                exec("/sbin/pfctl -t " . escapeshellarg($t['name']) . " -T replace -f /var/db/aliastables/" . escapeshellarg($t['name']) . ".txt 2>&1", $result);
+    foreach ($todo as $alias) {
+        if (preg_match('/urltable/i', $alias['type'])) {
+            $r = process_alias_urltable($alias['name'], $alias['url'], $alias['updatefreq']);
+            if ($r == 1) {
+                if ($alias['type'] == "urltable") {
+                    exec("/sbin/pfctl -t " . escapeshellarg($alias['name']) . " -T replace -f /var/db/aliastables/" . escapeshellarg($alias['name']) . ".txt 2>&1", $result);
+                    log_error("{$argv[0]}: Updated {$alias['name']} content from {$alias['url']}: ". $result[count($result)-1]);
+                } else {
+                    $filter_reload = true;
+                }
+            } elseif ($r == -1) {
+                log_error("{$argv[0]}: {$alias['name']} does not need updating.");
             } else {
-                $filter_reload = true;
+                log_error("{$argv[0]}: ERROR: could not update {$alias['name']} content from {$alias['url']}");
             }
-            log_error("{$argv[0]}: Updated {$t['name']} content from {$t['url']}: {$result[0]}");
-        } elseif ($r == -1) {
-            log_error("{$argv[0]}: {$t['name']} does not need updating.");
-        } else {
-            log_error("{$argv[0]}: ERROR: could not update {$t['name']} content from {$t['url']}");
+        } elseif ($alias['type'] == 'geoip') {
+            // concat geoip countries and load into pf table
+            $alias_content = "";
+            foreach (explode(' ', $alias['address']) as $country_code) {
+                if (strlen($country_code) == 2 && in_array($alias['proto'], array('IPv4', 'IPv6'))) {
+                    $filename = "/usr/local/share/GeoIP/alias/".$country_code."-".$alias['proto'];
+                    if (is_file($filename)) {
+                        $alias_content .= file_get_contents($filename);
+                    }
+                }
+            }
+            file_put_contents('/var/db/aliastables/'.basename($alias['name']).'.txt', $alias_content);
+            exec("/sbin/pfctl -t " . escapeshellarg($alias['name']) . " -T replace -f /var/db/aliastables/" . escapeshellarg($alias['name']) . ".txt 2>&1", $result);
+            log_error("{$argv[0]}: Updated {$alias['name']} content from geoip database: ". $result[count($result)-1]);
         }
     }
 
