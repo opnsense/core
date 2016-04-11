@@ -55,7 +55,16 @@ function alias_expand_urltable($name) {
             if (preg_match("/urltable/i", $alias['type']) && ($alias['name'] == $name)) {
                 if (is_URL($alias["url"]) && file_exists($urltable_filename) && filesize($urltable_filename)) {
                     return $urltable_filename;
-                } else if (process_alias_urltable($name, $alias["url"], 0, true)) {
+                } elseif (process_alias_urltable($name, $alias["url"], 0, true)) {
+                    return $urltable_filename;
+                }
+            } elseif ($alias['type'] == 'geoip' && $alias['name'] == $name) {
+                if (!file_exists($urltable_filename) || filesize($urltable_filename) == 0) {
+                    if (download_alias_geoip($alias)) {
+                        return $urltable_filename;
+                    }
+                } else {
+                    // alias file found and not 0 bytes
                     return $urltable_filename;
                 }
             }
@@ -589,7 +598,6 @@ function filter_generate_aliases(&$FilterIflist)
             switch ($aliased['type']) {
                 case "host":
                 case "network":
-                case "geoip":
                 case "url":
                     $tableaddrs = "{$addrlist}{$extralias}";
                     if (empty($tableaddrs)) {
@@ -625,6 +633,7 @@ function filter_generate_aliases(&$FilterIflist)
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                     break;
                 case "urltable":
+                case "geoip":
                     $urlfn = alias_expand_urltable($aliased['name']);
                     if ($urlfn) {
                         $aliases .= "table <{$aliased['name']}> persist file \"{$urlfn}\"\n";
