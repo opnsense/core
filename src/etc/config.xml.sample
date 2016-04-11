@@ -227,6 +227,7 @@
       <interval>monthly</interval>
     </bogons>
     <kill_states/>
+    <backupcount>60</backupcount>
   </system>
   <interfaces>
     <wan>

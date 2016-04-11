@@ -33,6 +33,12 @@ require_once("guiconfig.inc");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $cnf = OPNsense\Core\Config::getInstance();
     $confvers = $cnf->getBackups(true);
+    if (isset($config['system']['backupcount'])) {
+        $pconfig['backupcount'] = $config['system']['backupcount'];
+    } else {
+        # XXX fallback value for older configs
+        $pconfig['backupcount'] = 60;
+    }
     if (!empty($_GET['getcfg'])) {
         foreach ($confvers as $filename => $revision) {
             if ($revision['time'] == $_GET['getcfg']) {
@@ -79,16 +85,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $input_errors = array();
+    $pconfig = $_POST;
+
+    if (!empty($pconfig['save'])) {
+        if (!isset($pconfig['backupcount']) || !is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] < 0) {
+            $input_errors[] = gettext('Backup count must be greater or equal to zero.');
+        }
+        if (count($input_errors) == 0) {
+            $config['system']['backupcount'] = $pconfig['backupcount'];
+            write_config(gettext('Changed backup revision count.'));
+            $savemsg = get_std_save_message();
+        }
+    }
+
     $cnf = OPNsense\Core\Config::getInstance();
     $confvers = $cnf->getBackups(true);
-    if (!empty($_POST['save'])) {
-        if (is_numeric($_POST['backupcount']) && ($_POST['backupcount'] >= 0)) {
-            $config['system']['backupcount'] = $_POST['backupcount'];
-        } elseif (isset($config['system']['backupcount'])) {
-            unset($config['system']['backupcount']);
-        }
-        write_config(gettext('Changed backup revision count.'));
-    } elseif (!empty($_POST['act']) && $_POST['act'] == "revert") {
+
+    if (!empty($_POST['act']) && $_POST['act'] == "revert") {
         foreach ($confvers as $filename => $revision) {
             if (isset($revision['time']) && $revision['time'] == $_POST['time']) {
                 if (config_restore($filename) == 0) {
@@ -113,13 +127,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
     }
-
 }
-
 
 include("head.inc");
 ?>
-
 
 <script type="text/javascript">
 //<![CDATA[
@@ -176,10 +187,13 @@ $( document ).ready(function() {
 <body>
   <?php
     include("fbegin.inc");
-    if($savemsg)
+    if (isset($input_errors) && count($input_errors) > 0) {
+        print_input_errors($input_errors);
+    }
+    if ($savemsg) {
       print_info_box($savemsg);
+    }
   ?>
-
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -193,15 +207,18 @@ $( document ).ready(function() {
                   <th colspan="2" valign="top" class="listtopic"><?=gettext("Backup Count"); ?></th>
                 </tr>
                 <tr>
-                  <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($config['system']['backupcount']);?>"/></td>
-                  <td><?= gettext("Enter the number of older configurations to keep in the local backup cache. By default this is 30."); ?></td>
+                  <td><input name="backupcount" type="text" class="formfld unknown" size="5" value="<?=htmlspecialchars($pconfig['backupcount']);?>"/></td>
+                  <td><?= gettext("Enter the number of older configurations to keep in the local backup cache."); ?></td>
                 </tr>
                 <tr>
                   <td>
                     <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                   </td>
                   <td>
-                    <?= gettext("Be aware of how much space is consumed by backups before adjusting this value. Current space used by backups: "); ?> <?= exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
+                    <?= gettext('Be aware of how much space is consumed by backups before adjusting this value.'); ?>
+                    <?php if (count($confvers)) {
+                      print gettext('Current space used:') . ' ' . exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'");
+                    } ?>
                   </td>
                 </tr>
               </table>
@@ -245,6 +262,7 @@ $( document ).ready(function() {
             </div>
           </section>
           <?php endif; ?>
+          <?php if (count($confvers)): ?>
           <form method="get">
           <section>
             <div class="content-box">
@@ -290,14 +308,17 @@ $( document ).ready(function() {
                       <td><b><?=gettext("Current");?></b></td>
                     </tr>
 <?php
-                  $i = 0;
+                  $last = count($confvers);
+                  $curr = 1;
                   foreach($confvers as $version):?>
                     <tr>
                       <td>
-                        <input type="radio" name="oldtime" value="<?=$version['time'];?>" <?= (!isset($oldcheck) && $i == 0)  || (isset($oldcheck) && $oldcheck == $version['time']) ? 'checked="checked"' : '' ?>/>
+                        <input type="radio" name="oldtime" value="<?=$version['time'];?>" <?= (!isset($oldcheck) && $curr == 1)  || (isset($oldcheck) && $oldcheck == $version['time']) ? 'checked="checked"' : '' ?>/>
                       </td>
                       <td>
+                        <?php if ($curr != $last): ?>
                         <input type="radio" name="newtime" value="<?=$version['time'];?>" <?= isset($newcheck) && $newcheck == $version['time'] ? 'checked="checked"' : ''?>/>
+                        <?php endif ?>
                       </td>
                       <td> <?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
                       <td> <?= $version['version'] ?></td>
@@ -316,7 +337,7 @@ $( document ).ready(function() {
                       </td>
                     </tr>
 <?php
-                  $i++;
+                  $curr++;
                   endforeach;?>
                   </tbody>
                 </table>
@@ -324,6 +345,7 @@ $( document ).ready(function() {
             </div>
           </section>
         </form>
+        <?php endif ?>
       </section>
     </div>
   </div>
