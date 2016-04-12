@@ -206,8 +206,8 @@ POSSIBILITY OF SUCH DAMAGE.
         <select class="selectpicker" id="total_time_select">
           <option value="2h">{{ lang._('Last 2 hours, 30 second average') }}</option>
           <option value="8h">{{ lang._('Last 8 hours, 5 minute average') }}</option>
-          <option value="1w"> {{ lang._('Last week, 1 hour average') }}</option>
-          <option value="1y"> {{ lang._('Last year, 24 hour average') }}</option>
+          <option value="1w">{{ lang._('Last week, 1 hour average') }}</option>
+          <option value="1y">{{ lang._('Last year, 24 hour average') }}</option>
         </select>
       </div>
       <br/>
