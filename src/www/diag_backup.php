@@ -626,78 +626,74 @@ $( document ).ready(function() {
               </div>
             </div>
           </section>
-          <section class="__mb">
-            <div class="content-box">
-              <header class="content-box-head container-fluid">
-                <h3><?=gettext("Google Drive"); ?></h3>
-              </header>
-              <div class="content-box-main ">
-                <div class="table-responsive">
-                  <table class="table table-striped ">
-                    <thead>
-                      <tr>
-                        <th class="col-sm-1"></th>
-                        <th class="col-sm-3"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                     <tr>
-                       <td><?=gettext("Enable"); ?> </td>
-                       <td>
-                         <input name="GDriveEnabled" type="checkbox" <?=!empty($pconfig['GDriveEnabled']) ? "checked" : "";?> >
-                       </td>
-                     </tr>
-                     <tr>
-                       <td><?=gettext("Email Address"); ?> </td>
-                       <td>
-                         <input name="GDriveEmail" value="<?=$pconfig['GDriveEmail'];?>" type="text">
-                       </td>
-                     </tr>
-                     <tr>
-                       <td><?=gettext("P12 key"); ?> <?=!empty($pconfig['GDriveP12key']) ? gettext("(replace)") : gettext("(not loaded)"); ?> </td>
-                       <td>
-                         <input name="GDriveP12file" type="file">
-                       </td>
-                     </tr>
-                     <tr>
-                       <td><?=gettext("Folder ID"); ?> </td>
-                       <td>
-                         <input name="GDriveFolderID" value="<?=$pconfig['GDriveFolderID'];?>" type="text">
-                       </td>
-                     </tr>
-                     <tr>
-                       <td><?=gettext("Backup Count"); ?> </td>
-                       <td>
-                         <input name="GDriveBackupCount" value="<?=$pconfig['GDriveBackupCount'];?>"  type="text">
-                       </td>
-                     </tr>
-                     <tr>
-                       <td colspan=2><?=gettext("Password protect your data"); ?> :</td>
-                     </tr>
-                     <tr>
-                       <td><?=gettext("Password :"); ?></td>
-                       <td>
-                         <input name="GDrivePassword" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
-                       </td>
-                     </tr>
-                     <tr>
-                       <td><?=gettext("Confirm :"); ?></td>
-                       <td>
-                         <input name="GDrivePasswordConfirm" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
-                       </td>
-                     </tr>
-                     <tr>
-                       <td>
-                         <input name="setup_gdrive" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit">
-                       </td>
-                       <td></td>
-                     </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </section>
+          <div class="content-box tab-content table-responsive">
+            <table class="table table-striped ">
+              <thead style="display: none;">
+                <tr>
+                  <th class="col-sm-1"></th>
+                  <th class="col-sm-3"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic">
+                    <?=gettext("Google Drive"); ?>
+                  </th>
+                </tr>
+                <tr>
+                  <td><?=gettext("Enable"); ?> </td>
+                  <td>
+                    <input name="GDriveEnabled" type="checkbox" <?=!empty($pconfig['GDriveEnabled']) ? "checked" : "";?> >
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Email Address"); ?> </td>
+                  <td>
+                    <input name="GDriveEmail" value="<?=$pconfig['GDriveEmail'];?>" type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("P12 key"); ?> <?=!empty($pconfig['GDriveP12key']) ? gettext("(replace)") : gettext("(not loaded)"); ?> </td>
+                  <td>
+                    <input name="GDriveP12file" type="file">
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Folder ID"); ?> </td>
+                  <td>
+                    <input name="GDriveFolderID" value="<?=$pconfig['GDriveFolderID'];?>" type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Backup Count"); ?> </td>
+                  <td>
+                    <input name="GDriveBackupCount" value="<?=$pconfig['GDriveBackupCount'];?>"  type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan=2><?=gettext("Password protect your data"); ?> :</td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Password :"); ?></td>
+                  <td>
+                    <input name="GDrivePassword" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td><?=gettext("Confirm :"); ?></td>
+                  <td>
+                    <input name="GDrivePasswordConfirm" type="password" value="<?=$pconfig['GDrivePassword'];?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input name="setup_gdrive" class="btn btn-primary" id="Gdrive" value="<?=gettext("Setup/Test Google Drive");?>" type="submit">
+                  </td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </section>
       </form>
     </div>
