@@ -30,6 +30,7 @@
 import os
 import datetime
 import sqlite3
+import copy
 
 class AggMetadata(object):
     """ store some metadata needed to keep track of parse progress
@@ -200,6 +201,23 @@ class BaseFlowAggregator(object):
         """
         if self._db_connection is not None:
             self._db_connection.commit()
+
+    def copy_reverse_flow(self, flow):
+        """ reverse source/destination, in/out from given flow and return copy
+        :param flow: flow data (from parse.py)
+        :return: dict flow data
+        """
+        flow_copy = copy.deepcopy(flow)
+        for fieldname in flow:
+            if fieldname.find('src_') > -1:
+                flow_copy[fieldname.replace('src_', 'dst_')] = flow[fieldname]
+            elif fieldname.find('dst_') > -1:
+                flow_copy[fieldname.replace('dst_', 'src_')] = flow[fieldname]
+            elif fieldname.find('_in') > -1:
+                flow_copy[fieldname.replace('_in', '_out')] = flow[fieldname]
+            elif fieldname.find('_out') > -1:
+                flow_copy[fieldname.replace('_out', '_in')] = flow[fieldname]
+        return flow_copy
 
     def add(self, flow):
         """ calculate timeslices per flow depending on sample resolution
