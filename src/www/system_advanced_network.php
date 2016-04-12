@@ -117,18 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        setup_polling();
-        if (isset($config['system']['sharednet'])) {
-            system_disable_arp_wrong_if();
-        } else {
-            // system_enable_arp_wrong_if
-            set_sysctl(array(
-                "net.link.ether.inet.log_arp_wrong_iface" => "1",
-                "net.link.ether.inet.log_arp_movements" => "1"
-            ));
-        }
-
         write_config();
+        setup_polling();
+        system_arp_wrong_if();
         prefer_ipv4_or_ipv6();
         filter_configure();
         header("Location: system_advanced_network.php");
@@ -189,8 +180,8 @@ include("head.inc");
                 <td><a id="help_for_ipv6allow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Allow IPv6"); ?></td>
                 <td>
                   <input name="ipv6allow" type="checkbox" value="yes" <?= !empty($pconfig['ipv6allow']) ? "checked=\"checked\"" :"";?> onclick="enable_change(false)" />
+                  <strong><?=gettext("Allow IPv6"); ?></strong>
                   <div class="hidden" for="help_for_ipv6allow">
-                    <strong><?=gettext("Allow IPv6"); ?></strong><br />
                     <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
                     <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
                   </div>
@@ -215,8 +206,8 @@ include("head.inc");
                 <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
                 <td>
                   <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($config['system']['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
+                  <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
                   <div class="hidden" for="help_for_prefer_ipv4">
-                    <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong><br />
                     <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
                                         "IPv6 will be used, if you check this option, IPv4 will be " .
                                         "used instead of IPv6."); ?>
