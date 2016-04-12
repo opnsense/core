@@ -32,7 +32,7 @@ class FlowInterfaceTotals(BaseFlowAggregator):
     """ collect interface totals
     """
     target_filename = '/var/netflow/interface_%06d.sqlite'
-    agg_fields = ['if_in', 'if_out']
+    agg_fields = ['if', 'direction']
 
     @classmethod
     def resolutions(cls):
@@ -59,3 +59,16 @@ class FlowInterfaceTotals(BaseFlowAggregator):
         :return: None
         """
         super(FlowInterfaceTotals, self).__init__(resolution)
+
+    def add(self, flow):
+        """ combine up/down flow into interface and direction
+        :param flow: netflow data
+        :return: None
+        """
+        flow['if'] = flow['if_in']
+        flow['direction'] = 'out'
+        flow_copy = self.copy_reverse_flow(flow)
+        flow_copy['if'] = flow_copy['if_in']
+        flow_copy['direction'] = 'in'
+        super(FlowInterfaceTotals, self).add(flow)
+        super(FlowInterfaceTotals, self).add(flow_copy)
