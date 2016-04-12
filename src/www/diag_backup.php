@@ -542,9 +542,11 @@ $( document ).ready(function() {
 <?php
                     endforeach;?>
                     </select><br/>
+                    <input name="donotbackuprrd" type="checkbox" id="dotnotbackuprrd" checked="checked" />
+                    <?=gettext("Do not backup RRD data."); ?><br/>
                     <input name="encrypt" type="checkbox" id="encryptconf" />
                     <?=gettext("Encrypt this configuration file."); ?><br/>
-                    <div class="hidden table-responsive __mb __mt" id="encrypt_opts">
+                    <div class="hidden table-responsive __mt" id="encrypt_opts">
                       <table class="table table-condensed">
                         <tr>
                           <td><?=gettext("Password:"); ?></td>
@@ -556,8 +558,6 @@ $( document ).ready(function() {
                         </tr>
                       </table>
                     </div>
-                    <input name="donotbackuprrd" type="checkbox" id="dotnotbackuprrd" checked="checked" />
-                    <?=gettext("Do not backup RRD data (NOTE: RRD Data can consume 4+ megabytes of config.xml space!)"); ?>
                   </td>
                 </tr>
                 <tr>
@@ -573,59 +573,56 @@ $( document ).ready(function() {
               </tbody>
             </table>
           </div>
-          <section class="__mb">
-            <div class="content-box">
-              <header class="content-box-head container-fluid">
-                <h3><?=gettext("Restore"); ?></h3>
-              </header>
-              <div class="content-box-main ">
-                <div class="table-responsive">
-                  <table class="table table-striped">
-                    <tbody>
-                      <tr>
-                        <td>
-                          <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?>
-                          <br /><br />
-                          <?=gettext("Restore area:"); ?>
-                          <select name="restorearea" id="restorearea">
-                            <option value=""><?=gettext("ALL");?></option>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped ">
+              <tbody>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic">
+                    <?=gettext("Restore"); ?>
+                  </th>
+                </tr>
+                <tr>
+                  <td>
+                    <?=gettext("Restore area:"); ?>
+                    <select name="restorearea" id="restorearea">
+                      <option value=""><?=gettext("ALL");?></option>
 <?php
-                          foreach($areas as $area => $areaname):?>
-                            <option value="<?=$area;?>"><?=$areaname;?></option>
+                    foreach($areas as $area => $areaname):?>
+                      <option value="<?=$area;?>"><?=$areaname;?></option>
 <?php
-                          endforeach;?>
-                          </select>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input name="conffile" type="file" id="conffile" />
-                          <input name="decrypt" type="checkbox" id="decryptconf"/>
-                          <?=gettext("Configuration file is encrypted."); ?>
-                          <div class="hidden table-responsive" id="decrypt_opts">
-                            <table class="table table-condensed">
-                                <tr>
-                                  <td><?=gettext("Password:"); ?></td>
-                                  <td><input name="decrypt_password" type="password" value="" /></td>
-                                </tr>
-                                <tr>
-                                  <td><?=gettext("confirm:"); ?></td>
-                                  <td><input name="decrypt_passconf" type="password" value="" /> </td>
-                                </tr>
-                            </table>
-                          </div>
-                          <hr/>
-                          <input name="restore" type="submit" class="btn btn-primary" id="restore" value="<?=gettext("Restore configuration"); ?>" />
-                          <hr/>
-                          <p><strong><span class="text-danger"><?=gettext("Note:"); ?> <?=gettext("The firewall will reboot after restoring the configuration."); ?></span></strong></p>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </section>
+                    endforeach;?>
+                    </select><br/>
+                    <input name="conffile" type="file" id="conffile" /><br/>
+                    <input name="decrypt" type="checkbox" id="decryptconf"/>
+                    <?=gettext("Configuration file is encrypted."); ?>
+                    <div class="hidden table-responsive __mt" id="decrypt_opts">
+                      <table class="table table-condensed">
+                        <tr>
+                          <td><?=gettext("Password:"); ?></td>
+                          <td><input name="decrypt_password" type="password" value="" /></td>
+                        </tr>
+                        <tr>
+                          <td><?=gettext("confirm:"); ?></td>
+                          <td><input name="decrypt_passconf" type="password" value="" /> </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input name="restore" type="submit" class="btn btn-primary" id="restore" value="<?=gettext("Restore configuration"); ?>" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?><br/>
+                    <span class="text-danger"><?=gettext("The firewall will reboot after restoring the configuration."); ?></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="content-box tab-content table-responsive">
             <table class="table table-striped ">
               <thead style="display: none;">
