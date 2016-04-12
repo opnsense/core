@@ -70,13 +70,6 @@ class NetworkinsightController extends ApiControllerBase
         $resolution = $filter->sanitize($resolution, "int");
         $field = $filter->sanitize($field, "string");
 
-        // map physical interfaces to description / name
-        $configObj = Config::getInstance()->object();
-        $allInterfaces = array();
-        foreach ($configObj->interfaces->children() as $key => $intf) {
-            $allInterfaces[(string)$intf->if] = empty($intf->descr) ? $key : (string)$intf->descr;
-        }
-
         $result = array();
         if ($this->request->isGet()) {
             $backend = new Backend();
@@ -88,10 +81,10 @@ class NetworkinsightController extends ApiControllerBase
             if ($graph_data != null) {
                 ksort($graph_data);
                 $timeseries = array();
-                foreach ($graph_data as $timeserie => $interfaces) {
-                    foreach ($interfaces as $interface => $payload) {
-                        if (!isset($timeseries[$interface])) {
-                            $timeseries[$interface] = array();
+                foreach ($graph_data as $timeserie => $timeserie_data) {
+                    foreach ($timeserie_data as $timeserie_key => $payload) {
+                        if (!isset($timeseries[$timeserie_key])) {
+                            $timeseries[$timeserie_key] = array();
                         }
                         // measure value
                         $measure_val = 0;
@@ -105,18 +98,29 @@ class NetworkinsightController extends ApiControllerBase
                             $measure_val = $payload['packets'] / $payload['resolution'];
                         }
                         // add to timeseries
-                        $timeseries[$interface][] = array((int)$timeserie*1000, $measure_val);
+                        $timeseries[$timeserie_key][] = array((int)$timeserie*1000, $measure_val);
                     }
                 }
-                foreach ($timeseries as $interface => $data) {
-                    if (isset($allInterfaces[$interface])) {
-                        $result[] = array("key" => $allInterfaces[$interface], "values" => $data);
-                    } else {
-                        $result[] = array("key" => $interface, "values" => $data);
-                    }
+                foreach ($timeseries as $timeserie_key => $data) {
+                    $result[] = array("key" => $timeserie_key, "values" => $data);
                 }
             }
         }
         return $result;
+    }
+
+    /**
+     * return interface map (device / name)
+     * @return array interfaces
+     */
+    public function getInterfacesAction()
+    {
+        // map physical interfaces to description / name
+        $configObj = Config::getInstance()->object();
+        $allInterfaces = array();
+        foreach ($configObj->interfaces->children() as $key => $intf) {
+            $allInterfaces[(string)$intf->if] = empty($intf->descr) ? $key : (string)$intf->descr;
+        }
+        return $allInterfaces;
     }
 }
