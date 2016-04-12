@@ -225,42 +225,40 @@ $( document ).ready(function() {
             </div>
           </form>
           <?php if ($diff): ?>
-          <section style="margin-bottom:15px;">
-            <div class="content-box">
-              <header class="content-box-head container-fluid">
-                  <h3><?=gettext("Configuration diff from");?> <?= date(gettext("n/j/y H:i:s"), $oldtime); ?> <?=gettext("to");?> <?=date(gettext("n/j/y H:i:s"), $newtime); ?></h3>
-              </header>
-              <div class="content-box-main">
-                <div class="container-fluid __mb">
-                  <div class="table-responsive" style="overflow: scroll;">
-                    <table class="table table-condensed table-striped">
+          <div class="content-box tab-content table-responsive __mb" style="overflow: scroll;">
+            <table class="table table-striped">
+              <tr>
+                <th colspan="2" valign="top" class="listtopic">
+                  <?= sprintf(
+                        gettext('Configuration diff from %s to %s'),
+                        date(gettext('n/j/y H:i:s'), $oldtime),
+                        date(gettext('n/j/y H:i:s'), $newtime)
+                      ); ?>
+	        </th>
+              </tr>
+              <tr>
+                <td>
 <?php
-                    foreach ($diff as $line):
-                      switch (substr($line, 0, 1)) {
-                        case '+':
-                          $color = '#3bbb33';
-                          break;
-                        case '-':
-                          $color = '#c13928';
-                          break;
-                        case '@':
-                          $color = '#3bb9c3';
-                          break;
-                        default:
-                          $color = '#000000';
-                      }
-                      ?>
-                      <tr>
-                        <td style="color: <?=$color;?>; white-space: pre-wrap; font-family: monospace;"><?=htmlentities($line);?></td>
-                      </tr>
-<?php
-                    endforeach;?>
-                  </table>
-              </div>
-               </div>
-            </div>
-            </div>
-          </section>
+                  foreach ($diff as $line):
+                    switch (substr($line, 0, 1)) {
+                      case '+':
+                        $color = '#3bbb33';
+                        break;
+                      case '-':
+                        $color = '#c13928';
+                        break;
+                      case '@':
+                        $color = '#3bb9c3';
+                        break;
+                      default:
+                        $color = '#000000';
+                    } ?>
+                  <span style="color: <?=$color;?>; white-space: pre-wrap; font-family: monospace;"><?=htmlentities($line);?></span><br/>
+<?php endforeach; ?>
+                </td>
+              </tr>
+            </table>
+          </div>
           <?php endif; ?>
           <?php if (count($confvers)): ?>
           <form method="get">
@@ -269,79 +267,75 @@ $( document ).ready(function() {
               <header class="content-box-head container-fluid">
                 <h3><?=gettext('History');?></h3>
               </header>
-              <div class="content-box-main">
-                <div class="container-fluid __mb">
-                  <table class="table table-condensed">
-                    <tr>
-                      <td>
-                        <button type="submit" name="diff" class="btn btn-primary pull-left" value="Diff">
-                          <?=gettext('View differences');?>
-                        </button>
-                      </td>
-                      <td>
-                        <?= gettext("To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the button."); ?>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <table class="table table-striped">
-                  <thead>
-                    <tr>
-                      <th colspan="2"><?=gettext("Diff");?></th>
-                      <th><?=gettext("Date");?></th>
-                      <th><?=gettext("Version");?></th>
-                      <th><?=gettext("Size");?></th>
-                      <th><?=gettext("Configuration Change");?></th>
-                      <th>&nbsp;</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td></td>
-                      <td>
-                        <input type="radio" name="newtime" value="current" <?= !isset($newcheck) || $newcheck == 'current' ? 'checked="checked"' : '' ?>/>
-                      </td>
-                      <td> <?=date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
-                      <td> <?=$config['version'] ?></td>
-                      <td> <?=format_bytes(filesize("/conf/config.xml")) ?></td>
-                      <td> <?="{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
-                      <td><b><?=gettext("Current");?></b></td>
-                    </tr>
+              <table class="table table-responsive">
+                <tr>
+                  <td>
+                    <button type="submit" name="diff" class="btn btn-primary pull-left" value="Diff">
+                      <?=gettext('View differences');?>
+                    </button>
+                  </td>
+                  <td>
+                    <?= gettext("To view the differences between an older configuration and a newer configuration, select the older configuration using the left column of radio options and select the newer configuration in the right column, then press the button."); ?>
+                  </td>
+                </tr>
+              </table>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th colspan="2"><?=gettext("Diff");?></th>
+                    <th><?=gettext("Date");?></th>
+                    <th><?=gettext("Version");?></th>
+                    <th><?=gettext("Size");?></th>
+                    <th><?=gettext("Configuration Change");?></th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td></td>
+                    <td>
+                      <input type="radio" name="newtime" value="current" <?= !isset($newcheck) || $newcheck == 'current' ? 'checked="checked"' : '' ?>/>
+                    </td>
+                    <td> <?=date(gettext("n/j/y H:i:s"), $config['revision']['time']) ?></td>
+                    <td> <?=$config['version'] ?></td>
+                    <td> <?=format_bytes(filesize("/conf/config.xml")) ?></td>
+                    <td> <?="{$config['revision']['username']}: {$config['revision']['description']}" ?></td>
+                    <td><b><?=gettext("Current");?></b></td>
+                  </tr>
 <?php
-                  $last = count($confvers);
-                  $curr = 1;
-                  foreach($confvers as $version):?>
-                    <tr>
-                      <td>
-                        <input type="radio" name="oldtime" value="<?=$version['time'];?>" <?= (!isset($oldcheck) && $curr == 1)  || (isset($oldcheck) && $oldcheck == $version['time']) ? 'checked="checked"' : '' ?>/>
-                      </td>
-                      <td>
-                        <?php if ($curr != $last): ?>
-                        <input type="radio" name="newtime" value="<?=$version['time'];?>" <?= isset($newcheck) && $newcheck == $version['time'] ? 'checked="checked"' : ''?>/>
-                        <?php endif ?>
-                      </td>
-                      <td> <?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
-                      <td> <?= $version['version'] ?></td>
-                      <td> <?= format_bytes($version['filesize']) ?></td>
-                      <td> <?= "{$version['username']}: {$version['description']}" ?></td>
-                      <td>
-                        <a data-id="<?=$version['time'];?>" href="#" class="act_revert btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Revert to this configuration");?>">
-                           <span class="glyphicon glyphicon-log-in"></span>
-                         </a>
-                         <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove this backup");?>" >
-                           <span class="fa fa-trash text-muted"></span>
-                         </a>
-                         <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>">
-                         <span class="glyphicon glyphicon-download"></span>
+                $last = count($confvers);
+                $curr = 1;
+                foreach($confvers as $version):?>
+                  <tr>
+                    <td>
+                      <input type="radio" name="oldtime" value="<?=$version['time'];?>" <?= (!isset($oldcheck) && $curr == 1)  || (isset($oldcheck) && $oldcheck == $version['time']) ? 'checked="checked"' : '' ?>/>
+                    </td>
+                    <td>
+                      <?php if ($curr != $last): ?>
+                      <input type="radio" name="newtime" value="<?=$version['time'];?>" <?= isset($newcheck) && $newcheck == $version['time'] ? 'checked="checked"' : ''?>/>
+                      <?php endif ?>
+                    </td>
+                    <td> <?= date(gettext("n/j/y H:i:s"), $version['time']) ?></td>
+                    <td> <?= $version['version'] ?></td>
+                    <td> <?= format_bytes($version['filesize']) ?></td>
+                    <td> <?= "{$version['username']}: {$version['description']}" ?></td>
+                    <td>
+                      <a data-id="<?=$version['time'];?>" href="#" class="act_revert btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Revert to this configuration");?>">
+                         <span class="glyphicon glyphicon-log-in"></span>
                        </a>
-                      </td>
-                    </tr>
+                       <a data-id="<?=$version['time'];?>" href="#" class="act_delete btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove this backup");?>" >
+                         <span class="fa fa-trash text-muted"></span>
+                       </a>
+                       <a href="diag_confbak.php?getcfg=<?=$version['time'];?>" class="btn btn-default btn-xs" title="<?=gettext("Download this backup");?>">
+                       <span class="glyphicon glyphicon-download"></span>
+                     </a>
+                    </td>
+                  </tr>
 <?php
-                  $curr++;
-                  endforeach;?>
-                  </tbody>
-                </table>
-              </div>
+                $curr++;
+                endforeach;?>
+                </tbody>
+              </table>
             </div>
           </section>
         </form>
