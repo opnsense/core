@@ -359,7 +359,6 @@
                 <method type="AuthenticationServerField">
                     <Required>N</Required>
                     <multiple>Y</multiple>
-                    <default>Local Database</default>
                 </method>
                 <realm type="TextField">
                     <default>OPNsense proxy authentication</default>
