@@ -31,8 +31,6 @@
 require_once("guiconfig.inc");
 
 $smartctl = "/usr/local/sbin/smartctl";
-$smartd = "/usr/local/sbin/smartd";
-$start_script = "/usr/local/etc/rc.d/smartd.sh";
 
 $valid_test_types = array("offline", "short", "long", "conveyance");
 $valid_info_types = array("i", "H", "c", "A", "a");
@@ -69,25 +67,6 @@ function add_colors($string)
     ksort($patterns);
     ksort($replacements);
     return preg_replace($patterns, $replacements, $string);
-}
-
-// Edits smartd.conf file, adds or removes email for failed disk reporting
-function update_email($email)
-{
-    // Did they pass an email?
-    if (!empty($email)) {
-      // Put it in the smartd.conf file
-      shell_exec("/usr/bin/sed -i old 's/^DEVICESCAN.*/DEVICESCAN -H -m " . escapeshellarg($email) . "/' /usr/local/etc/smartd.conf");
-    } else {
-      // Remove email flags in smartd.conf
-      shell_exec("/usr/bin/sed -i old 's/^DEVICESCAN.*/DEVICESCAN/' /usr/local/etc/smartd.conf");
-    }
-}
-
-function smartmonctl($action)
-{
-    global $start_script;
-    shell_exec($start_script . escapeshellarg($action));
 }
 
 // What page, aka. action is being wanted
@@ -152,114 +131,6 @@ switch($action) {
     break;
   }
 
-  // Config changes, users email in xml config and write changes to smartd.conf
-  case 'config':
-  {
-    if(isset($_POST['submit']))
-    {
-      // DOES NOT WORK YET...
-      if($_POST['testemail'])
-      {
-// FIXME        shell_exec($smartd . " -M test -m " . $config['system']['smartmonemail']);
-        $savemsg = sprintf(gettext("Email sent to %s"), $config['system']['smartmonemail']);
-        smartmonctl("stop");
-        smartmonctl("start");
-      }
-      else
-      {
-        $config['system']['smartmonemail'] = $_POST['smartmonemail'];
-        write_config();
-
-        // Don't know what all this means, but it addes the config changed header when config is saved
-        $retval = 0;
-        if(stristr($retval, "error") <> true)
-          $savemsg = get_std_save_message();
-        else
-          $savemsg = $retval;
-
-        if($_POST['email'])
-        {
-          // Write the changes to the smartd.conf file
-          update_email($_POST['smartmonemail']);
-        }
-
-        // Send sig HUP to smartd, rereads the config file
-        shell_exec("/usr/bin/killall -HUP smartd");
-      }
-    }
-    // Was the config changed? if so , print the message
-    if (isset($savemsg)) print_info_box($savemsg);
-    // Get users email from the xml file
-    $pconfig['smartmonemail'] = $config['system']['smartmonemail'];
-
-    ?>
-    <!-- Print the tabs across the top -->
-    <table width="100%" border="0" cellpadding="0" cellspacing="0" summary="tabs">
-      <tr>
-        <td>
-          <?php
-          $tab_array = array();
-          $tab_array[0] = array(gettext("Information/Tests"), false, $_SERVER['PHP_SELF'] . "?action=default");
-          $tab_array[1] = array(gettext("Config"), true, $_SERVER['PHP_SELF'] . "?action=config");
-          display_top_tabs($tab_array);
-        ?>
-        </td>
-      </tr>
-    </table>
-<!-- user email address -->
-    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="config">
-    <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="e-mail">
-      <tbody>
-        <tr>
-          <td colspan="2" valign="top" class="listtopic"><?=gettext("Config"); ?></td>
-        </tr>
-        <tr>
-          <td width="22%" valign="top" class="vncell"><?=gettext("Email Address"); ?></td>
-          <td width="78%" class="vtable">
-            <input type="text" name="smartmonemail" value="<?=htmlspecialchars($pconfig['smartmonemail'])?>"/>
-          </td>
-        </tr>
-        <tr>
-          <td width="22%" valign="top">&nbsp;</td>
-          <td width="78%">
-            <input type="hidden" name="action" value="config" />
-            <input type="hidden" name="email" value="true" />
-            <input type="submit" name="submit" value="<?=gettext("Save"); ?>" class="formbtn" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </form>
-
-<!-- test email -->
-    <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="config">
-    <table width="100%" border="0" cellpadding="6" cellspacing="0" summary="test e-mail">
-      <tbody>
-        <tr>
-          <td colspan="2" valign="top" class="listtopic"><?=gettext("Test email"); ?></td>
-        </tr>
-        <tr>
-          <td width="22%" valign="top" class="vncell">&nbsp;</td>
-          <td width="78%" class="vtable">
-            <?php printf(gettext("Send test email to %s"), $config['system']['smartmonemail']); ?>
-          </td>
-        </tr>
-        <tr>
-          <td width="22%" valign="top">&nbsp;</td>
-          <td width="78%">
-            <input type="hidden" name="action" value="config" />
-            <input type="hidden" name="testemail" value="true" />
-            <input type="submit" name="submit" value="<?=gettext("Send"); ?>" class="formbtn" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    </form>
-
-    <?php
-    break;
-  }
-
   // Default page, prints the forms to view info, test, etc...
   default:
   {
@@ -268,28 +139,19 @@ switch($action) {
     exec("ls /dev | grep '^\(ad\|da\|ada\)[0-9]\{1,2\}$'", $devs);
     ?>
 
-
-
-        <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-
-                <div class="content-box">
-
-                    <header class="content-box-head container-fluid">
-                <h3><?=gettext("Info"); ?></h3>
-            </header>
-
-            <div class="content-box-main">
+            <div class="content-box tab-content table-responsive">
               <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="iform" id="iform">
-              <div class="table-responsive">
                 <table class="table table-striped __nomb">
-                  <tbody>
+                   <tr>
+                     <th colspan="2" valign="top" class="listtopic"><?=gettext('Info'); ?></th>
+                    </tr>
                     <tr>
                       <td><?=gettext("Info type"); ?></td>
                       <td><div class="radio">
-                  <label><input type="radio" name="type" value="i" /><?=gettext("Info"); ?></label>
-                      <label><input type="radio" name="type" value="H" checked="checked" /><?=gettext("Health"); ?></label>
-                      <label><input type="radio" name="type" value="c" /><?=gettext("SMART Capabilities"); ?></label>
-                      <label><input type="radio" name="type" value="A" /><?=gettext("Attributes"); ?></label>
+                      <label><input type="radio" name="type" value="i" /><?=gettext("Info"); ?></label>&nbsp;
+                      <label><input type="radio" name="type" value="H" checked="checked" /><?=gettext("Health"); ?></label>&nbsp;
+                      <label><input type="radio" name="type" value="c" /><?=gettext("SMART Capabilities"); ?></label>&nbsp;
+                      <label><input type="radio" name="type" value="A" /><?=gettext("Attributes"); ?></label>&nbsp;
                       <label><input type="radio" name="type" value="a" /><?=gettext("All"); ?></label>
                 </div>
                       </td>
@@ -314,35 +176,27 @@ switch($action) {
                       <input type="submit" name="submit" class="btn btn-primary" value="<?=gettext("View"); ?>" />
                     </td>
                   </tr>
-                </tbody>
               </table>
-              </div>
               </form>
             </div>
-                </div>
       </section>
 
 
       <section class="col-xs-12">
 
-                <div class="content-box">
-
-                    <header class="content-box-head container-fluid">
-                <h3><?=gettext("Perform Self-tests"); ?></h3>
-            </header>
-
-            <div class="content-box-main">
+            <div class="content-box tab-content table-responsive">
               <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="test" id="iform">
-              <div class="table-responsive">
                 <table class="table table-striped __nomb">
-                  <tbody>
+                   <tr>
+                     <th colspan="2" valign="top" class="listtopic"><?=gettext('Perform Self-tests'); ?></th>
+                    </tr>
                     <tr>
                       <td><?=gettext("Test type"); ?></td>
                       <td>
                   <div class="radio">
-                    <label><input type="radio" name="testType" value="offline" /><?=gettext("Offline"); ?></label>
-                        <label><input type="radio" name="testType" value="short" checked="checked" /><?=gettext("Short"); ?></label>
-                        <label><input type="radio" name="testType" value="long" /><?=gettext("Long"); ?></label>
+                    <label><input type="radio" name="testType" value="offline" /><?=gettext("Offline"); ?></label>&nbsp;
+                        <label><input type="radio" name="testType" value="short" checked="checked" /><?=gettext("Short"); ?></label>&nbsp;
+                        <label><input type="radio" name="testType" value="long" /><?=gettext("Long"); ?></label>&nbsp;
                         <label><input type="radio" name="testType" value="conveyance" /><?=gettext("Conveyance (ATA Disks Only)"); ?></label>
                   </div>
                       </td>
@@ -367,33 +221,24 @@ switch($action) {
                       <input type="submit" name="submit" class="btn btn-primary" value="<?=gettext("Test"); ?>" />
                     </td>
                   </tr>
-                </tbody>
-              </table>
-              </div>
+                </table>
               </form>
             </div>
-                </div>
       </section>
 
 
       <section class="col-xs-12">
-
-                <div class="content-box">
-
-                    <header class="content-box-head container-fluid">
-                <h3><?=gettext("View Logs"); ?></h3>
-            </header>
-
-            <div class="content-box-main">
+            <div class="content-box tab-content table-responsive">
               <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="logs" id="iform">
-              <div class="table-responsive">
                 <table class="table table-striped __nomb">
-                  <tbody>
+                   <tr>
+                     <th colspan="2" valign="top" class="listtopic"><?=gettext('View Logs'); ?></th>
+                    </tr>
                     <tr>
                       <td><?=gettext("Log type"); ?></td>
                       <td>
                         <div class="radio">
-                  <label><input type="radio" name="type" value="error" checked="checked" /><?=gettext("Error"); ?></label>
+                  <label><input type="radio" name="type" value="error" checked="checked" /><?=gettext("Error"); ?></label>&nbsp;
                       <label><input type="radio" name="type" value="selftest" /><?=gettext("Self-test"); ?></label>
                         </div>
                       </td>
@@ -418,28 +263,19 @@ switch($action) {
                       <input type="submit" name="submit" class="btn btn-primary" value="<?=gettext("View"); ?>" />
                     </td>
                   </tr>
-                </tbody>
               </table>
-              </div>
               </form>
             </div>
-                </div>
       </section>
 
 
       <section class="col-xs-12">
-
-                <div class="content-box">
-
-                    <header class="content-box-head container-fluid">
-                <h3><?=gettext("Abort tests"); ?></h3>
-            </header>
-
-            <div class="content-box-main">
+            <div class="content-box tab-content table-responsive">
               <form action="<?= $_SERVER['PHP_SELF']?>" method="post" name="abort" id="iform">
-              <div class="table-responsive">
                 <table class="table table-striped __nomb">
-                  <tbody>
+                   <tr>
+                     <th colspan="2" valign="top" class="listtopic"><?=gettext('Abort tests'); ?></th>
+                    </tr>
                   <tr>
                     <td><?=gettext("Device: /dev/"); ?></td>
                     <td >
@@ -460,12 +296,9 @@ switch($action) {
                       <input type="submit" name="submit" value="<?=gettext("Abort"); ?>" class="btn btn-primary" onclick="return confirm('<?=gettext("Do you really want to abort the test?"); ?>')" />
                     </td>
                   </tr>
-                </tbody>
               </table>
-              </div>
               </form>
             </div>
-                </div>
       </section>
 
     <?php
