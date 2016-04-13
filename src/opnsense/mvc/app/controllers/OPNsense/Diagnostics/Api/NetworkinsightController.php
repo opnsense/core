@@ -146,7 +146,7 @@ class NetworkinsightController extends ApiControllerBase
             $backend = new Backend();
             $configd_cmd = "netflow aggregate top {$provider} {$from_date} {$to_date} {$field}";
             $configd_cmd .= " {$measure} {$data_filter} {$max_hits}";
-            $response = $backend->configdRun($configd_cmd); //
+            $response = $backend->configdRun($configd_cmd);
             $graph_data = json_decode($response, true);
             if ($graph_data != null) {
                 return $graph_data;
