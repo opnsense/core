@@ -4313,11 +4313,11 @@ msgstr ""
 
 # File: src/etc/inc/upgrade_config.inc, line: 666
 msgid "Sending of IPv4 ICMP redirects"
-msgstr ""
+msgstr "Отправка IPv4 ICMP перенаправлений"
 
 # File: src/etc/inc/upgrade_config.inc, line: 670
 msgid "Sending of IPv6 ICMP redirects"
-msgstr ""
+msgstr "Отправка IPv6 ICMP перенаправлений"
 
 # File: src/etc/inc/upgrade_config.inc, line: 674
 msgid "Generate SYN cookies for outbound SYN-ACK packets"
@@ -4354,11 +4354,13 @@ msgstr ""
 
 # File: src/etc/inc/upgrade_config.inc, line: 702
 msgid "Allow unprivileged access to tap(4) device nodes"
-msgstr ""
+msgstr "Разрешить ограниченный доступ к tap(4) устройствам"
 
 # File: src/etc/inc/upgrade_config.inc, line: 706
 msgid "Randomize PID's (see src/sys/kern/kern_fork.c: sysctl_kern_randompid())"
 msgstr ""
+"Рандомизировать PID's (подробнее в src/sys/kern/kern_fork.c: "
+"sysctl_kern_randompid())"
 
 # File: src/etc/inc/upgrade_config.inc, line: 710
 msgid ""
@@ -4373,7 +4375,7 @@ msgstr "Установить ICMP ограничения"
 
 # File: src/etc/inc/upgrade_config.inc, line: 718
 msgid "TCP Offload engine"
-msgstr ""
+msgstr "Механизм разгрузки TCP"
 
 # File: src/etc/inc/upgrade_config.inc, line: 749
 msgid "Interface %s Static Gateway"
@@ -4553,11 +4555,11 @@ msgstr "Вы хотите продолжить? [y|n]?"
 
 # File: src/etc/rc.initial.password, line: 47
 msgid "The User manager authentication server is set to \"%s\"."
-msgstr ""
+msgstr "Сервером аутентификации пользователей установлен \"%s\"."
 
 # File: src/etc/rc.initial.password, line: 49
 msgid "Do you want to set it back to Local Database [y|n]? "
-msgstr ""
+msgstr "Действительно хотите вернуться на Локальную БД [y|n] "
 
 # File: src/etc/rc.initial.password, line: 75
 msgid "password changed from console menu"
@@ -5762,6 +5764,9 @@ msgid ""
 "Please use \"Download & Update Rules\" to fetch your initial ruleset, "
 "automatic updating can be scheduled after the first download"
 msgstr ""
+"Используйте страницу \\«Скачать и обновить правила\\», чтобы получить "
+"первоначальный набор правил, автоматическое обновление можно запланировать "
+"после первой загрузки"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 520
 msgid "Processing request..."
@@ -6444,11 +6449,11 @@ msgstr "Настроить/проверить Google Drive"
 
 # File: src/www/diag_confbak.php, line: 90
 msgid "Changed backup revision count."
-msgstr ""
+msgstr "Счетчик ревизий резервных копий изменен."
 
 # File: src/www/diag_confbak.php, line: 107
 msgid "Deleted backup with timestamp %s and description \"%s\"."
-msgstr ""
+msgstr "Удалена резервная копия от %s с описанием \"%s\"."
 
 # File: src/www/diag_confbak.php, line: 109
 msgid "Unable to delete the selected configuration."
@@ -6704,7 +6709,7 @@ msgstr ""
 
 # File: src/www/diag_defaults.php, line: 50
 msgid "If you click \"Yes\", the firewall will:"
-msgstr ""
+msgstr "Если вы нажмете \\«Да\\», то межсетевой экран:"
 
 # File: src/www/diag_defaults.php, line: 52
 msgid "Reset to factory defaults"
@@ -6914,11 +6919,11 @@ msgstr "Удаленный IP-адрес"
 
 # File: src/www/diag_ipsec.php, line: 98
 msgid "Local Auth"
-msgstr ""
+msgstr "Локальная аутентификация"
 
 # File: src/www/diag_ipsec.php, line: 99
 msgid "Remote Auth"
-msgstr ""
+msgstr "Удаленная аутентификация"
 
 # File: src/www/diag_ipsec.php, line: 148
 msgid "Local subnets"
@@ -6961,11 +6966,11 @@ msgstr "Время"
 
 # File: src/www/diag_ipsec.php, line: 175
 msgid "Bytes in"
-msgstr ""
+msgstr "Получено байт"
 
 # File: src/www/diag_ipsec.php, line: 176
 msgid "Bytes out"
-msgstr ""
+msgstr "Отправлено байт"
 
 # File: src/www/diag_ipsec_leases.php, line: 58
 msgid "Pool: "
@@ -8381,6 +8386,10 @@ msgid ""
 "-6lL\".%sOr in case of showing all sockets the output for: \"sockstat -4\" "
 "and \"sockstat -6\".%s%sThe information listed for each socket is:"
 msgstr ""
+"Эта страница показывает результат команд: \\«sockstat -4lL\\» и \\«sockstat "
+"-6lL\\». %sOr результат для \"sockstat -4\" and \"sockstat -6\", если вы "
+"выбрали показывать все сокеты. %s%sThe информация для каждого сокета "
+"включает:"
 
 # File: src/www/diag_sockets.php, line: 128
 msgid "The user who owns the socket."
@@ -8617,6 +8626,8 @@ msgid ""
 "No output received, or connection failed. Try with \"Show Remote Text\" "
 "unchecked first."
 msgstr ""
+"Результат не получен или произошел сбой соединения. Попробуйте снять флажок "
+"с \\«Показать текст с удаленного сервера\\» и запустить проверку снова."
 
 # File: src/www/diag_testport.php, line: 223
 msgid "Connection failed (Refused/Timeout)"
@@ -8832,6 +8843,7 @@ msgid ""
 "The name of the alias may only consist of the characters \"a-z, A-Z, 0-9 and "
 "_\"."
 msgstr ""
+"Имя псевдонима должно содержать только символы \\«a–z, A–Z, 0–9 и _\\»."
 
 # File: src/www/firewall_aliases_edit.php, line: 356
 # File: src/www/firewall_nat_1to1_edit.php, line: 448
@@ -9024,7 +9036,7 @@ msgstr "Имя псевдонима"
 msgid ""
 "The name of the alias may only consist of the characters \"a-z, A-Z and "
 "0-9\"."
-msgstr ""
+msgstr "Имя псевдонима должно содержать только символы \\«a–z, A–Z и 0–9\\»."
 
 # File: src/www/firewall_aliases_import.php, line: 183
 # File: src/www/system_gateways_edit.php, line: 811
@@ -9566,6 +9578,8 @@ msgstr "Перенаправление целевого IP-адреса"
 # File: src/www/firewall_nat_edit.php, line: 215
 msgid "\"%s\" is not a valid redirect target IP address or host alias."
 msgstr ""
+"\\«%s\\» не является допустимым перенаправленным целевым IP-адресом или "
+"псевдонимом хоста."
 
 # File: src/www/firewall_nat_edit.php, line: 218
 # File: src/www/firewall_rules_edit.php, line: 284
@@ -10069,7 +10083,7 @@ msgstr "Укажите допустимый адрес назначения."
 
 # File: src/www/firewall_nat_out_edit.php, line: 219
 msgid "Negating destination address of \"any\" is invalid."
-msgstr ""
+msgstr "Отрицание адреса назначения для значения \\«любой\\» недопустимо."
 
 # File: src/www/firewall_nat_out_edit.php, line: 223
 msgid "A valid target IP address must be specified."
@@ -12302,6 +12316,8 @@ msgid ""
 "This field can be used to modify (\"spoof\") the MAC address of this "
 "interface"
 msgstr ""
+"Используйте это поле для изменения (\\«spoof\\») MAC-адреса для этого "
+"интерфейса"
 
 # File: src/www/interfaces.php, line: 1769
 msgid "(may be required with some cable connections)"
@@ -22204,12 +22220,12 @@ msgstr ""
 # File: src/www/system_certmanager.php, line: 922
 # File: src/www/system_certmanager.php, line: 942
 msgid "email"
-msgstr ""
+msgstr "email"
 
 # File: src/www/system_certmanager.php, line: 923
 # File: src/www/system_certmanager.php, line: 943
 msgid "URI"
-msgstr ""
+msgstr "URI"
 
 # File: src/www/system_certmanager.php, line: 975
 msgid "External Signing Request"
@@ -22225,11 +22241,11 @@ msgstr ""
 
 # File: src/www/system_certmanager.php, line: 1110
 msgid "*In Use"
-msgstr ""
+msgstr "*Используется"
 
 # File: src/www/system_certmanager.php, line: 1111
 msgid "*Revoked"
-msgstr ""
+msgstr "*Отозван"
 
 # File: src/www/system_certmanager.php, line: 1152
 msgid "Complete Signing Request"
@@ -22352,12 +22368,12 @@ msgstr ""
 
 # File: src/www/system_crlmanager.php, line: 297
 msgid "Do you really want to delete this Certificate Revocation List?"
-msgstr ""
+msgstr "Действительно удалить указанный Перечень отозванных сертификатов?"
 
 # File: src/www/system_crlmanager.php, line: 321
 # File: src/www/system_crlmanager.php, line: 536
 msgid "Delete this certificate from the CRL "
-msgstr ""
+msgstr "Удалить указанный сертификат из CRL "
 
 # File: src/www/system_crlmanager.php, line: 378
 msgid "Create an internal Certificate Revocation List"
@@ -23066,7 +23082,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 425
 msgid "Time zone"
-msgstr ""
+msgstr "Часовой пояс"
 
 # File: src/www/system_general.php, line: 440
 msgid "Select the location closest to you"
@@ -23074,7 +23090,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 445
 msgid "NTP time server"
-msgstr ""
+msgstr "Сервер времени NTP"
 
 # File: src/www/system_general.php, line: 449
 msgid ""
@@ -23084,7 +23100,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 456
 msgid "Language"
-msgstr ""
+msgstr "Язык"
 
 # File: src/www/system_general.php, line: 469
 msgid "Choose a language for the webConfigurator"
@@ -23092,7 +23108,7 @@ msgstr ""
 
 # File: src/www/system_general.php, line: 475
 msgid "Theme"
-msgstr ""
+msgstr "Оформление"
 
 # File: src/www/system_general.php, line: 489
 msgid "This will change the look and feel of"
@@ -23200,7 +23216,7 @@ msgstr ""
 # File: src/www/vpn_l2tp_users.php, line: 69
 # File: src/www/vpn_pptp_users.php, line: 66
 msgid "add user"
-msgstr ""
+msgstr "добавить пользователя"
 
 # File: src/www/system_groupmanager.php, line: 523
 msgid ""
@@ -23950,7 +23966,7 @@ msgstr ""
 
 # File: src/www/system_usermanager_settings.php, line: 130
 msgid "Save and Test"
-msgstr ""
+msgstr "Сохранить и проверить"
 
 # File: src/www/system_usermanager_settings_ldapacpicker.php, line: 92
 msgid "Please select which containers to Authenticate against:"
@@ -23966,7 +23982,7 @@ msgstr ""
 
 # File: src/www/system_usermanager_settings_test.php, line: 58
 msgid "Attempting connection to"
-msgstr ""
+msgstr "Попытка подключения к"
 
 # File: src/www/system_usermanager_settings_test.php, line: 61
 msgid "Attempting to fetch Organizational Units from"
@@ -23984,7 +24000,7 @@ msgstr ""
 # File: src/www/vpn_ipsec.php, line: 52
 # File: src/www/vpn_ipsec.php, line: 372
 msgid "Mobile Client"
-msgstr ""
+msgstr "Мобильный клиент"
 
 # File: src/www/vpn_ipsec.php, line: 202
 msgid ""
@@ -24039,7 +24055,7 @@ msgstr ""
 # File: src/www/vpn_ipsec.php, line: 493
 # File: src/www/vpn_ipsec_phase2.php, line: 863
 msgid "auto"
-msgstr ""
+msgstr "Автоматически"
 
 # File: src/www/vpn_ipsec.php, line: 397
 # File: src/www/vpn_ipsec.php, line: 513
@@ -24147,7 +24163,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_keys_edit.php, line: 78
 # File: src/www/vpn_ipsec_keys_edit.php, line: 142
 msgid "Identifier"
-msgstr ""
+msgstr "Идентификатор"
 
 # File: src/www/vpn_ipsec_keys.php, line: 145
 msgid "ANY USER"
@@ -24155,15 +24171,15 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_keys.php, line: 152
 msgid "edit"
-msgstr ""
+msgstr "Редактировать"
 
 # File: src/www/vpn_ipsec_keys.php, line: 170
 msgid "edit key"
-msgstr ""
+msgstr "Редактировать ключ"
 
 # File: src/www/vpn_ipsec_keys.php, line: 172
 msgid "delete key"
-msgstr ""
+msgstr "Удалить ключ"
 
 # File: src/www/vpn_ipsec_keys.php, line: 190
 # File: src/www/vpn_ipsec_keys_edit.php, line: 173
@@ -24176,7 +24192,7 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_keys_edit.php, line: 83
 msgid "The identifier contains invalid characters."
-msgstr ""
+msgstr "Идентификатор содержит недопустимые символы."
 
 # File: src/www/vpn_ipsec_keys_edit.php, line: 90
 msgid "Another entry with the same identifier already exists."
@@ -24345,7 +24361,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 487
 # File: src/www/vpn_openvpn_server.php, line: 1506
 msgid "DNS Servers"
-msgstr ""
+msgstr "DNS-серверы"
 
 # File: src/www/vpn_ipsec_mobile.php, line: 490
 # File: src/www/vpn_openvpn_csc.php, line: 501
@@ -24390,7 +24406,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_phase1.php, line: 210
 # File: src/www/vpn_ipsec_phase1.php, line: 703
 msgid "Remote gateway"
-msgstr ""
+msgstr "Удаленный шлюз"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 216
 msgid "The P1 lifetime must be an integer."
@@ -24519,7 +24535,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_csc.php, line: 328
 # File: src/www/vpn_openvpn_server.php, line: 724
 msgid "General information"
-msgstr ""
+msgstr "Общая информация"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 599
 msgid "Disable this phase1 entry"
@@ -24532,7 +24548,7 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_phase1.php, line: 606
 msgid "Connection method"
-msgstr ""
+msgstr "Способ подключения"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 611
 msgid "Respond only"
@@ -24576,7 +24592,7 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_phase1.php, line: 707
 msgid "Enter the public IP address or host name of the remote gateway"
-msgstr ""
+msgstr "Введите публичный IP-адрес или имя удаленного шлюза"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 727
 msgid "Phase 1 proposal (Authentication)"
@@ -24585,7 +24601,7 @@ msgstr ""
 # File: src/www/vpn_ipsec_phase1.php, line: 730
 # File: src/www/vpn_openvpn_client.php, line: 621
 msgid "Authentication method"
-msgstr ""
+msgstr "Способ аутентификации"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 753
 # File: src/www/vpn_ipsec_phase1.php, line: 932
@@ -24607,7 +24623,7 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_phase1.php, line: 782
 msgid "My IP address"
-msgstr ""
+msgstr "Мой IP-адрес"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 786
 # File: src/www/vpn_ipsec_phase1.php, line: 814
@@ -24635,11 +24651,11 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_phase1.php, line: 841
 msgid "Input your Pre-Shared Key string."
-msgstr ""
+msgstr "Введите общий ключ."
 
 # File: src/www/vpn_ipsec_phase1.php, line: 846
 msgid "My Certificate"
-msgstr ""
+msgstr "Мой сертификат"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 861
 msgid "Select a certificate previously configured in the Certificate Manager."
@@ -24663,11 +24679,11 @@ msgstr ""
 # File: src/www/vpn_openvpn_client.php, line: 787
 # File: src/www/vpn_openvpn_server.php, line: 1095
 msgid "Encryption algorithm"
-msgstr ""
+msgstr "Алгоритм шифрования"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 911
 msgid "Hash algorithm"
-msgstr ""
+msgstr "Алгоритм хеширования"
 
 # File: src/www/vpn_ipsec_phase1.php, line: 937
 msgid "DH key group"
@@ -24748,27 +24764,29 @@ msgstr ""
 
 # File: src/www/vpn_ipsec_phase2.php, line: 256
 msgid "A valid local network IP address must be specified."
-msgstr ""
+msgstr "Необходимо установить корректный внутренний IP-адрес."
 
 # File: src/www/vpn_ipsec_phase2.php, line: 258
 msgid ""
 "A valid local network IPv4 address must be specified or you need to change "
 "Mode to IPv6"
 msgstr ""
+"Необходимо установить внутренний IPv4-адрес или переключиться в режим IPv6"
 
 # File: src/www/vpn_ipsec_phase2.php, line: 260
 msgid ""
 "A valid local network IPv6 address must be specified or you need to change "
 "Mode to IPv4"
 msgstr ""
+"Необходимо установить внутренний IPv6-адрес или переключиться в режим IPv4"
 
 # File: src/www/vpn_ipsec_phase2.php, line: 270
 msgid "Invalid Local Network."
-msgstr ""
+msgstr "Неверная внутренняя сеть."
 
 # File: src/www/vpn_ipsec_phase2.php, line: 270
 msgid "has no subnet."
-msgstr ""
+msgstr "не имеет подсети."
 
 # File: src/www/vpn_ipsec_phase2.php, line: 278
 msgid "A valid NAT local network bit count must be specified."
