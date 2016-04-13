@@ -44,12 +44,12 @@ class NetworkinsightController extends ApiControllerBase
 {
     /**
      * request timeserie data to use for reporting
-     * @param $provider provider class name
-     * @param $measure measure [octets, packets, octets_ps, packets_ps]
-     * @param $from_date from timestamp
-     * @param $to_date to timestamp
-     * @param $resolution resolution in seconds
-     * @param $field field name to aggregate
+     * @param string $provider provider class name
+     * @param string $measure measure [octets, packets, octets_ps, packets_ps]
+     * @param string $from_date from timestamp
+     * @param string $to_date to timestamp
+     * @param string $resolution resolution in seconds
+     * @param string $field field name to aggregate
      * @return array timeseries
      */
      public function timeserieAction(
@@ -76,7 +76,7 @@ class NetworkinsightController extends ApiControllerBase
             // request current data
             $response = $backend->configdRun("netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field}"); //
             // for test, request random data
-            //$response = $backend->configdRun("netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field} em0,em1,em2,em3,em4"); //
+            //$response = $backend->configdRun("netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field} em0,in~em0,out~em1,in~em1,out~em2,in~em2,out~em3,in~em3,out"); //
             $graph_data = json_decode($response, true);
             if ($graph_data != null) {
                 ksort($graph_data);
@@ -107,6 +107,51 @@ class NetworkinsightController extends ApiControllerBase
             }
         }
         return $result;
+    }
+
+    /**
+     * request top usage data (for reporting), values can optionally be filtered using filter_field and filter_value
+     * @param string $provider provider class name
+     * @param string $from_date from timestamp
+     * @param string $to_date to timestamp
+     * @param string $field field name(s) to aggregate
+     * @param string $measure measure [octets, packets]
+     * @param string $max_hits maximum number of results
+     * @return array timeseries
+     */
+     public function topAction(
+        $provider = null,
+        $from_date = null,
+        $to_date = null,
+        $field = null,
+        $measure = null,
+        $max_hits = null
+    ) {
+        // cleanse input
+        $filter = new Filter();
+        $provider = $filter->sanitize($provider, "alphanum");
+        $from_date = $filter->sanitize($from_date, "int");
+        $to_date = $filter->sanitize($to_date, "int");
+        $field = $filter->sanitize($field, "string");
+        $measure = $filter->sanitize($measure, "string");
+        $max_hits = $filter->sanitize($max_hits, "int");
+
+        $result = array();
+        if ($this->request->isGet()) {
+            if ($this->request->get("filter_field") != null && $this->request->get("filter_value") != null) {
+                $data_filter = $this->request->get("filter_field") . "=" . $this->request->get("filter_value");
+            } else {
+                $data_filter = "";
+            }
+            $backend = new Backend();
+            $configd_cmd = "netflow aggregate top {$provider} {$from_date} {$to_date} {$field}";
+            $configd_cmd .= " {$measure} {$data_filter} {$max_hits}";
+            $response = $backend->configdRun($configd_cmd); //
+            $graph_data = json_decode($response, true);
+            if ($graph_data != null) {
+                return $graph_data;
+            }
+        }
     }
 
     /**
