@@ -26,27 +26,27 @@
     POSSIBILITY OF SUCH DAMAGE.
 
     --------------------------------------------------------------------------------------
-    fetch timeseries from data provider
+    fetch top usage from data provider
 """
 import time
 import datetime
 import os
 import sys
 import ujson
-import random
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib.parse import parse_flow
 from lib.aggregate import BaseFlowAggregator
 import lib.aggregates
 import params
 
-# define
-app_params = {'resolution': '',
-              'start_time': '',
+
+app_params = {'start_time': '',
               'end_time': '',
               'key_fields': '',
-              'provider': '',
-              'sample': ''
+              'value_field': '',
+              'filter': '',
+              'max_hits': '',
+              'provider': ''
               }
 params.update_params(app_params)
 
@@ -56,54 +56,34 @@ if app_params['start_time'].isdigit():
     start_time = int(app_params['start_time'])
     if app_params['end_time'].isdigit():
         end_time = int(app_params['end_time'])
-        if app_params['resolution'].isdigit():
-            resolution = int(app_params['resolution'])
+        if app_params['max_hits'].isdigit():
+            max_hits = int(app_params['max_hits'])
             if app_params['key_fields']:
                 key_fields = app_params['key_fields'].split(',')
-                valid_params = True
+                if app_params['value_field']:
+                    value_field = app_params['value_field']
+                    valid_params = True
+data_filter=app_params['filter']
 
 timeseries=dict()
 if valid_params:
-    if app_params['sample'] == '':
-        # fetch all measurements from selected data provider
-        dimension_keys=list()
-        for agg_class in lib.aggregates.get_aggregators():
-            if app_params['provider'] == agg_class.__name__:
-                obj = agg_class(resolution)
-                for record in obj.get_timeserie_data(start_time, end_time, key_fields):
-                    record_key = []
-                    for key_field in key_fields:
-                        if key_field in record and record[key_field] != None:
-                            record_key.append(record[key_field])
-                        else:
-                            record_key.append('')
-                    record_key = ','.join(record_key)
-                    start_time_stamp = time.mktime(record['start_time'].timetuple())
-                    if start_time_stamp not in timeseries:
-                        timeseries[start_time_stamp] = dict()
-                    timeseries[start_time_stamp][record_key] = {'octets': record['octets'],
-                                                                'packets': record['packets'],
-                                                                'resolution': resolution}
-                    if record_key not in dimension_keys:
-                        dimension_keys.append(record_key)
-
-        # make sure all measure points exists for all given keys
-        for timeserie in sorted(timeseries):
-            for dimension_key in dimension_keys:
-                if dimension_key not in timeseries[timeserie]:
-                    timeseries[timeserie][dimension_key] = {'octets': 0, 'packets': 0, 'resolution': resolution}
-    else:
-        # generate sample data for given keys
-        timeseries=dict()
-        while start_time < time.time():
-            timeseries[start_time] = dict()
-            for key in app_params['sample'].split('~'):
-                timeseries[start_time][key] = {'octets': (random.random() * 10000000),
-                                               'packets': (random.random() * 10000000),
-                                               'resolution': resolution}
-            start_time += resolution
-
-    print (ujson.dumps(timeseries))
+    # collect requested top
+    result = dict()
+    for agg_class in lib.aggregates.get_aggregators():
+        if app_params['provider'] == agg_class.__name__:
+            # provider may specify multiple resolutions, we need to find the one most likely to serve the
+            # beginning of our timeframe
+            resolutions = sorted(agg_class.resolutions())
+            history_per_resolution = agg_class.history_per_resolution()
+            for resolution in resolutions:
+                if (resolution in history_per_resolution \
+                  and time.time() - history_per_resolution[resolution] <= start_time ) \
+                  or resolutions[-1] == resolution:
+                    selected_resolution = resolution
+                    break
+            obj = agg_class(selected_resolution)
+            result = obj.get_top_data(start_time, end_time, key_fields, value_field, data_filter, max_hits)
+    print (ujson.dumps(result))
 else:
     print ('missing parameters :')
     tmp = list()
@@ -111,9 +91,11 @@ else:
         tmp.append('/%s %s' % (key, app_params[key]))
     print ('  %s %s'%(sys.argv[0], ' '.join(tmp)))
     print ('')
-    print ('  resolution : sample rate in seconds')
     print ('  start_time : start time (seconds since epoch)')
     print ('  end_time : end timestamp (seconds since epoch)')
     print ('  key_fields : key field(s)')
+    print ('  value_field : field to sum')
+    print ('  filter : apply filter <field>=value')
     print ('  provider : data provider classname')
+    print ('  max_hits : maximum number of hits (+1 for rest of data)')
     print ('  sample : if provided, use these keys to generate sample data (e.g. em0,em1,em2)')
