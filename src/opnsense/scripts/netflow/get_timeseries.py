@@ -97,7 +97,7 @@ if valid_params:
         timeseries=dict()
         while start_time < time.time():
             timeseries[start_time] = dict()
-            for key in app_params['sample'].split(','):
+            for key in app_params['sample'].split('~'):
                 timeseries[start_time][key] = {'octets': (random.random() * 10000000),
                                                'packets': (random.random() * 10000000),
                                                'resolution': resolution}
