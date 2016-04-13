@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-31 05:58+0000\n"
+"POT-Creation-Date: 2016-04-13 05:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Chie Taguchi <taguchi.ch@gmail.com>\n"
 "Language-Team: https://github.com/dotike/opnsense.core.ja_JP.UTF8\n"
@@ -937,7 +937,9 @@ msgid ""
 "secondary interface, matches packets going traveling from interface (1) to "
 "interface (2).\n"
 "        "
-msgstr "セカンダリインタフェース。一致するパケットはインタフェース (1) からインタフェース (2) へ流れます。\n        "
+msgstr ""
+"セカンダリインタフェース。一致するパケットはインタフェース (1) からインタフェース (2) へ流れます。\n"
+"        "
 
 # File: lang/dynamic/helpers/controllers.php, line: 79
 msgid "source ip or network, examples 10.0.0.0/24, 10.0.0.1"
@@ -2079,7 +2081,7 @@ msgstr "PF は反応がない、もしくはビジーのため、リセットさ
 # File: src/etc/inc/filter.inc, line: 315
 # File: src/etc/inc/filter.inc, line: 316
 msgid "There were error(s) loading the rules: %s - %s"
-msgstr ""
+msgstr "ルールの読み込み中にエラーが発生しました: %s - %s"
 
 msgid "Processing down interface states"
 msgstr "インタフェースステータスをダウンにしています"
@@ -2101,49 +2103,38 @@ msgstr "%s に対するリフレクション NAT ルールを作成していま�
 msgid "Creating reflection rule for %s..."
 msgstr "%s に対するリフレクションルールを作成しています..."
 
-#, fuzzy
 msgid "localhost"
-msgstr "ローカルポート"
+msgstr "ローカルホスト"
 
-#, fuzzy
 msgid "static route"
 msgstr "静的ルート"
 
-#, fuzzy
 msgid "DHCP alias address"
-msgstr "DHCP リース"
+msgstr "DHCP エイリアスアドレス"
 
-#, fuzzy
 msgid "PPTP server"
 msgstr "PPTP サーバ"
 
-#, fuzzy
 msgid "PPPoE server"
 msgstr "PPPoE サーバ"
 
-#, fuzzy
 msgid "L2TP server"
-msgstr "NTP サーバ"
+msgstr "L2TP サーバ"
 
-#, fuzzy
 msgid "OpenVPN server"
-msgstr "OpenVPN ユーザ"
+msgstr "OpenVPN サーバ"
 
-#, fuzzy
 msgid "OpenVPN client"
-msgstr "OpenVPN ユーザ"
+msgstr "OpenVPN クライアント"
 
-#, fuzzy
 msgid "IPsec client"
-msgstr "クライアントの編集"
+msgstr "IPsec クライアント"
 
-#, fuzzy
 msgid "Auto created rule for ISAKMP"
-msgstr "ISAKMP のルールを自動作成 - %1$s to %2$s"
+msgstr "ISAKMP ルールを自動作成"
 
-#, fuzzy
 msgid "Auto created rule"
-msgstr "PPTP サーバのルールを自動作成しました"
+msgstr "ルールを自動作成"
 
 msgid "Creating 1:1 rules..."
 msgstr "1:1 ルールを作成しています..."
@@ -2154,22 +2145,20 @@ msgstr "高度な外向きルール %s を作成"
 msgid "Creating outbound NAT rules"
 msgstr "外向き NAT ルールを作成"
 
-#, fuzzy
 msgid "Creating automatic outbound rules"
-msgstr "高度な外向きルール %s を作成"
+msgstr "外向きルールを自動作成"
 
 msgid "Creating NAT rule %s"
-msgstr "NAT ルール %s の作成"
+msgstr "NAT ルール %s を作成"
 
 msgid "Creating filter rule %s ..."
 msgstr "フィルタルール %s を作成しています..."
 
-#, fuzzy
 msgid "filter_generate_port: %s is not a valid %s port."
-msgstr "filter_generate_address: %s は有効な送信元ポートではありません"
+msgstr "filter_generate_port: %s は有効な %s ポートではありません"
 
 msgid "Setting up pass/block rules %s"
-msgstr "パス/ブロックルール %s の設定"
+msgstr "パス / ブロックルール %s の設定"
 
 msgid "Could not find IPv4 gateway for interface (%s)."
 msgstr "インタフェース (%s) の IPv4 ゲートウェイが見つかりません"
@@ -2189,35 +2178,28 @@ msgstr "インストールされている 15 分フィルタを、時間基準�
 msgid "Removed 15 minute filter reload for Time Based Rules"
 msgstr "削除された 15 分フィルタを、時間基準ルールに対して再読み込みします"
 
-#, fuzzy
 msgid "There was an error parsing a rule: no time (`%s')"
-msgstr "%s に対するパッケージフィルタルール解析中にエラーが発生しました"
+msgstr "ルール解析中にエラーが発生しました: 時間がありません ( %s )"
 
-#, fuzzy
 msgid "There was an error parsing rule number: %s -- not IPv4 or IPv6 (`%s')"
-msgstr "解析ルールにエラーが発生しました: %s メーリングリストかフォーラムに報告してください。"
+msgstr "次のルール番号を解析中にエラーが発生しました: %s -- IPv4 もしくは IPv6 ではありません ( %s )"
 
-#, fuzzy
 msgid "There was an error parsing rule number: %s -- no src or dst (`%s')"
-msgstr "解析ルールにエラーが発生しました: %s メーリングリストかフォーラムに報告してください。"
+msgstr "次のルール番号を解析中にエラーが発生しました: %s -- 送信元もしくは送信先がありません ( %s )"
 
-#, fuzzy
 msgid "MONITOR: %s is down, removing from routing group %s"
-msgstr "監視: %s はダウンです。ルーティンググループから削除しています"
+msgstr "モニタ: %s はダウンしています。ルーティンググループ %s から削除しています"
 
-#, fuzzy
 msgid "MONITOR: %s has packet loss, removing from routing group %s"
-msgstr "監視: %s にパケットロスがあります。ルーティンググループから削除しています"
+msgstr "モニタ: %s にパケットロスがあります。ルーティンググループ %s から削除しています"
 
-#, fuzzy
 msgid "MONITOR: %s has high latency, removing from routing group %s"
-msgstr "監視: %s が高レイテンシです。ルーティンググループから削除しています"
+msgstr "モニタ: %s が高レイテンシです。ルーティンググループ %s から削除しています"
 
-#, fuzzy
 msgid ""
 "Gateways status could not be determined, considering all as up/active. "
 "(Group: %s)"
-msgstr "ゲートウェイのステータスは決定できませんでした。全てアップもしくはアクティブと見なします"
+msgstr "ゲートウェイステータスが判定できませんでした。全てアップもしくはアクティブと見なします ( グループ: %s )"
 
 msgid "interfaces_bring_up() was called but no variable defined."
 msgstr "interfaces_bring_up(): 変数が定義されていません"
@@ -2283,6 +2265,7 @@ msgid ""
 "Could not get a PPTP/L2TP Remote IP address from %s for %s in "
 "interfaces_ppps_configure."
 msgstr ""
+"interfaces_ppps_configure: %s に対する %s からの PPTP/L2TP リモート IP アドレスが取得できませんでした"
 
 msgid ""
 "Device %s does not exist. PPP link cannot start without the modem device."
@@ -2302,17 +2285,15 @@ msgid ""
 "this VIP."
 msgstr "仮想 IP アドレス %s を指定されたインタフェースが存在しません。この仮想 IP アドレスをスキップします"
 
-#, fuzzy
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IP address %s."
-msgstr "仮想 IP アドレス %s と一致する実インタフェースのサブネットが見つかりませんでした"
+msgstr "仮想 IP アドレス %s に対して、インタフェースに割当する必要のある IP アドレスが見つかりませんでした。"
 
-#, fuzzy
 msgid ""
 "Sorry but we could not find a required assigned ip address on the interface "
 "for the virtual IPv6 address %s."
-msgstr "仮想 IPv6 アドレス %s と一致する実インタフェースのサブネットが見つかりませんでした"
+msgstr "仮想 IPv6 アドレス %s に対して、インタフェースに割当する必要のある IP アドレスが見つかりませんでした。"
 
 msgid "Interface %s changed to hostap mode"
 msgstr "インタフェース %s は hostap モードに変更されました"
@@ -2328,7 +2309,7 @@ msgstr "新しい無線インタフェース %s をクローンしています"
 
 # File: src/etc/inc/interfaces.inc, line: 2211
 msgid "Failed to clone interface %s with error code %s, output %s"
-msgstr ""
+msgstr "インタフェース %s のクローンに失敗しました。エラーコード: %s 出力: %s"
 
 msgid "Generating new MAC address."
 msgstr "新しい MAC アドレスを生成しています"
@@ -2337,7 +2318,7 @@ msgstr "新しい MAC アドレスを生成しています"
 msgid ""
 "The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %s has been "
 "automatically replaced with %s"
-msgstr ""
+msgstr "インタフェース %s の MAC アドレス (ff:ff:ff:ff:ff:ff) は無効です。自動的に %s に置換されました"
 
 msgid ""
 "Error: cannot open dhclient_%s.conf in interface_dhcp_configure() for "
@@ -2370,14 +2351,14 @@ msgstr "履歴データはありません！"
 
 # File: src/etc/inc/load_balancer_maintable.inc, line: 150
 msgid "Move selected entries before this entry"
-msgstr ""
+msgstr "選択したエントリをこのエントリの前に移動"
 
 msgid "Do you really want to delete this entry?"
 msgstr "本当にこのエントリを削除しますか？"
 
 # File: src/etc/inc/load_balancer_maintable.inc, line: 162
 msgid "Duplicate entry"
-msgstr ""
+msgstr "重複エントリ"
 
 msgid "Could not open %s for writing"
 msgstr "書き込み用として %s を開けません"
@@ -2387,7 +2368,7 @@ msgstr "%s へのメッセージ送信に成功"
 
 # File: src/etc/inc/notices.inc, line: 296
 msgid "Could not send the message to %s -- Error: %s"
-msgstr ""
+msgstr "%s にメッセージ送信できませんでした -- エラー: %s"
 
 msgid ": data access time out"
 msgstr ": データアクセスはタイムアウトしました"
@@ -2397,7 +2378,7 @@ msgstr ": サーバは切断しました"
 
 # File: src/etc/inc/notices.smtp.inc, line: 98
 msgid "reached the end of data while reading from the SMTP server connection"
-msgstr ""
+msgstr "SMTP サーバ接続から読み込み中にデータの最後に到達しました"
 
 msgid "it was not possible to read line from the SMTP server"
 msgstr "SMTP サーバから行を読み込むことができません"
@@ -2422,7 +2403,7 @@ msgstr "ドメイン %s が解決されたアドレスは、有効アドレス�
 
 # File: src/etc/inc/notices.smtp.inc, line: 230
 msgid "Connecting to host address \"%s\" port %s..."
-msgstr ""
+msgstr "ホストに接続しています... アドレス %s ポート %s"
 
 msgid "-3 socket could not be created"
 msgstr "-3 ソケットを作成できません"
@@ -2441,7 +2422,7 @@ msgstr "-7 setvbuf() 呼び出しに失敗しました"
 
 # File: src/etc/inc/notices.smtp.inc, line: 247
 msgid "could not connect to the host \"%s\": %s"
-msgstr ""
+msgstr "ホストに接続できませんでした: %s: %s"
 
 msgid ""
 "it is not possible to authenticate using the specified mechanism because the "
@@ -2450,7 +2431,7 @@ msgstr "SASL ライブラリクラスが読み込まれていないため、指�
 
 # File: src/etc/inc/notices.smtp.inc, line: 280
 msgid "Authentication mechanism %s may not be used: %s"
-msgstr ""
+msgstr "認証機構 %s は使用されていない可能性があります: %s"
 
 msgid "Could not start the SASL authentication client:"
 msgstr "SASL 認証 クライアントを起動できません: "
@@ -2537,109 +2518,107 @@ msgstr "前回確立した SMTP 接続ではありません"
 # File: src/etc/inc/openvpn-client-export.inc, line: 84
 # File: src/etc/inc/openvpn-client-export.inc, line: 686
 msgid "Could not locate server configuration."
-msgstr ""
+msgstr "サーバ構成が検索できませんでした。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 88
 # File: src/etc/inc/openvpn-client-export.inc, line: 690
 msgid "You cannot export for disabled servers."
-msgstr ""
+msgstr "無効なサーバはエクスポートできません。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 96
 msgid "Could not locate server certificate."
-msgstr ""
+msgstr "サーバ証明書が検索できませんでした。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 100
 msgid "Could not locate the CA reference for the server certificate."
-msgstr ""
+msgstr "サーバ証明書の CA 参照が検索できませんでした。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 111
 msgid "Could not find user settings."
-msgstr ""
+msgstr "ユーザ設定が見つかりませんでした。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 123
 # File: src/etc/inc/openvpn-client-export.inc, line: 132
 msgid "Could not find client certificate."
-msgstr ""
+msgstr "クライアント証明書が見つかりませんでした。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 209
 # File: src/etc/inc/openvpn-client-export.inc, line: 754
 msgid "This server uses UDP protocol and cannot communicate with HTTP proxy."
-msgstr ""
+msgstr "このサーバは UDP プロトコルを使用しています。HTTP プロキシとは通信できません。"
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 502
 msgid "Could not create a config to export."
-msgstr ""
+msgstr "エクスポートする設定が作成できませんでした。"
 
 # File: src/etc/inc/openvpn.inc, line: 34
 msgid "0 (none)"
-msgstr ""
+msgstr "0 ( なし )"
 
 # File: src/etc/inc/openvpn.inc, line: 35
 msgid "1 (default)"
-msgstr ""
+msgstr "1 ( デフォルト )"
 
 # File: src/etc/inc/openvpn.inc, line: 36
 msgid "2"
-msgstr ""
+msgstr "2"
 
 # File: src/etc/inc/openvpn.inc, line: 37
 msgid "3 (recommended)"
-msgstr ""
+msgstr "3 ( 推奨 )"
 
 # File: src/etc/inc/openvpn.inc, line: 38
 msgid "4"
-msgstr ""
+msgstr "4"
 
 # File: src/etc/inc/openvpn.inc, line: 39
 msgid "5"
-msgstr ""
+msgstr "5"
 
 # File: src/etc/inc/openvpn.inc, line: 40
 msgid "6"
-msgstr ""
+msgstr "6"
 
 # File: src/etc/inc/openvpn.inc, line: 41
 msgid "7"
-msgstr ""
+msgstr "7"
 
 # File: src/etc/inc/openvpn.inc, line: 42
 msgid "8"
-msgstr ""
+msgstr "8"
 
 # File: src/etc/inc/openvpn.inc, line: 43
 msgid "9"
-msgstr ""
+msgstr "9"
 
 # File: src/etc/inc/openvpn.inc, line: 44
 msgid "10"
-msgstr ""
+msgstr "10"
 
 # File: src/etc/inc/openvpn.inc, line: 45
 msgid "11"
-msgstr ""
+msgstr "11"
 
 # File: src/etc/inc/openvpn.inc, line: 101
 msgid "No Preference"
-msgstr ""
+msgstr "優先なし"
 
-#, fuzzy
 msgid "Disabled - No Compression"
-msgstr "圧縮"
+msgstr "無効 - 圧縮なし"
 
 # File: src/etc/inc/openvpn.inc, line: 103
 msgid "Enabled with Adaptive Compression"
-msgstr ""
+msgstr "アダプティブ圧縮を有効"
 
 # File: src/etc/inc/openvpn.inc, line: 104
 msgid "Enabled without Adaptive Compression"
-msgstr ""
+msgstr "アダプティブ圧縮不使用を有効"
 
 msgid "None (No Encryption)"
 msgstr "なし ( 暗号化なし )"
 
-#, fuzzy
 msgid "None (No Authentication)"
-msgstr "認証なし"
+msgstr "なし ( 認証なし )"
 
 msgid "The field '%s' must contain a valid port, ranging from 0 to 65535."
 msgstr "フィールド '%s' には、0 - 65535 の有効なポート番号が含まれている必要があります"
@@ -2654,15 +2633,15 @@ msgstr "フィールド %s は、カンマで区切られた、有効な %s CIDR
 # File: src/etc/inc/openvpn_wizard.inc, line: 216
 # File: src/etc/inc/openvpn_wizard.inc, line: 315
 msgid "Please do not use special characters in Certificate field names."
-msgstr ""
+msgstr "証明書フィールド名に特殊文字を使用しないでください。"
 
 # File: src/etc/inc/openvpn_wizard.inc, line: 401
 msgid "The specified 'Local port' is in use. Please select another value."
-msgstr ""
+msgstr "指定した「ローカルポート」は既に使用されています。他の値を選択してください。"
 
 # File: src/etc/inc/openvpn_wizard.inc, line: 406
 msgid "The field 'TLS Authentication Key' does not appear to be valid."
-msgstr ""
+msgstr "「TLS 認証キー」フィールドが有効ではありません。"
 
 msgid "The field 'DNS Server #1' must contain a valid IP address"
 msgstr "「DNS サーバ #1」フィールドには、有効な IP アドレスが必要です"
@@ -2693,7 +2672,7 @@ msgstr "「同時接続」フィールドは数値です"
 
 # File: src/etc/inc/openvpn_wizard.inc, line: 431
 msgid "You must specify a 'Tunnel network'."
-msgstr ""
+msgstr "「トンネルネットワーク」を指定してください。"
 
 msgid "OpenVPN %s wizard"
 msgstr "OpenVPN %s ウィザード"
@@ -2717,26 +2696,25 @@ msgstr "%s 構成ファイルがリストアされました ( CARP パートナ�
 msgid ""
 "Alias archive is a .zip file which cannot be decompressed because utility is "
 "missing!"
-msgstr ""
+msgstr "エイリアスアーカイブは ZIP ファイルですが、ユーティリティが見つからないため解凍できません！"
 
-#, fuzzy
 msgid "Could not open %s/aliases for writing!"
-msgstr "書き込み用として %s を開けません"
+msgstr "書き込み用として %s もしくはエイリアスを開けません！"
 
 # File: src/etc/inc/pfsense-utils.inc, line: 1557
 # File: src/etc/inc/pfsense-utils.inc, line: 1589
 msgid "The following file could not be read %s from %s"
-msgstr ""
+msgstr "以下のファイルの %s を %s から読み込めませんでした"
 
 # File: src/etc/inc/pfsense-utils.inc, line: 1573
 msgid ""
 "Alias archive is a .tar/tgz file which cannot be decompressed because "
 "utility is missing!"
-msgstr ""
+msgstr "エイリアスアーカイブは tar/tgz ファイルですが、ユーティリティが見つからないため解凍できません！"
 
 # File: src/etc/inc/rrd.inc, line: 74
 msgid "RRD create failed exited with %s, the error is: %s"
-msgstr ""
+msgstr "RRD 作成に失敗したため終了しました: %s エラー: %s"
 
 msgid "Generating RRD graphs..."
 msgstr "RRD グラフを生成しています..."
@@ -2746,12 +2724,11 @@ msgstr "RRD 更新スクリプトを作成しています"
 
 # File: src/etc/inc/services.inc, line: 425
 msgid "DHCP leases restore failed exited with %s, the error is: %s"
-msgstr ""
+msgstr "DHCP リースリストアに失敗したため終了しました: %s エラー: %s"
 
 msgid "Starting DHCP service..."
 msgstr "DHCP サービス を開始しています..."
 
-#, fuzzy
 msgid "Warning!  DHCP Failover setup and no CARP virtual IPs defined!"
 msgstr "警告！DHCP フェールオーバーが設定されていますが、CARP 仮想 IP が定義されていません！"
 
@@ -2772,14 +2749,13 @@ msgstr "DHCPv6 リレーサービスを開始しています..."
 
 # File: src/etc/inc/services.inc, line: 1739
 msgid "Starting dynamic DNS clients..."
-msgstr ""
+msgstr "ダイナミック DNS クライアントを起動しています..."
 
 msgid "Starting DNS forwarder..."
 msgstr "DNS フォワーダを起動しています..."
 
-#, fuzzy
 msgid "Starting DNS Resolver..."
-msgstr "DNS フォワーダを起動しています..."
+msgstr "DNS リゾルバを起動しています..."
 
 msgid "Starting SNMP daemon... "
 msgstr "SNMP デーモンを起動しています... "
@@ -2789,11 +2765,11 @@ msgstr "エラー: services_snmpd_configure(): snmpd.conf を開けません%s"
 
 # File: src/etc/inc/services.inc, line: 2253
 msgid "Dynamic DNS updated IP Address (A) for %s on %s (%s) to %s"
-msgstr ""
+msgstr "ダイナミック DNS は %s に対する %s (%s) の IP アドレス (A) を %s にアップデートしました"
 
 # File: src/etc/inc/services.inc, line: 2268
 msgid "Dynamic DNS updated IPv6 Address (AAAA) for %s on %s (%s) to %s"
-msgstr ""
+msgstr "ダイナミック DNS は %s に対する %s (%s) の IPv6 アドレス (AAAA) を %s にアップデートしました"
 
 msgid "Starting UPnP service... "
 msgstr "UPnP サービスを開始しています... "
@@ -2812,7 +2788,7 @@ msgstr "ルータ広告デーモン"
 
 # File: src/etc/inc/services.inc, line: 2476
 msgid "Unbound DNS Resolver"
-msgstr ""
+msgstr "Unbound DNS リゾルバ"
 
 msgid "NTP clock sync"
 msgstr "NTP 時刻同期"
@@ -2826,9 +2802,8 @@ msgstr "DHCPv6 リレー"
 msgid "DHCP Service"
 msgstr "DHCP サービス"
 
-#, fuzzy
 msgid "Gateway Monitoring Daemon"
-msgstr "ゲートウェイ監視"
+msgstr "ゲートウェイ監視デーモン"
 
 msgid "SNMP Service"
 msgstr "SNMP サービス"
@@ -2842,16 +2817,14 @@ msgstr "UPnP サービス"
 msgid "IPsec VPN"
 msgstr "IPSec VPN"
 
-#, fuzzy
 msgid "Secure Shell Daemon"
-msgstr "SSH"
+msgstr "SSH デーモン"
 
 msgid "Server load balancing daemon"
 msgstr "サーバ負荷分散デーモン"
 
-#, fuzzy
 msgid "Proxy server"
-msgstr "プロキシユーザ名"
+msgstr "プロキシサーバ"
 
 msgid "Running"
 msgstr "実行しています"
@@ -2873,7 +2846,7 @@ msgstr "%s サービスの起動"
 
 # File: src/etc/inc/system.inc, line: 611
 msgid "DNSCACHE: Found old IP %s and new IP %s"
-msgstr ""
+msgstr "DNS キャッシュ: 古い IP %s と新しい IP %s が見つかりました"
 
 msgid "Static Routes: Gateway IP could not be found for %s"
 msgstr "静的ルート: %s に対するゲートウェイの IP が見つかりません"
@@ -2907,17 +2880,19 @@ msgstr "タイムゾーンを設定しています..."
 
 # File: src/etc/inc/upgrade_config.inc, line: 40
 msgid "RRD dump failed exited with %s, the error is: %s"
-msgstr ""
+msgstr "RRD ダンプに失敗したため終了しました: %s エラー: %s"
 
 # File: src/etc/inc/upgrade_config.inc, line: 56
 msgid ""
 "Import RRD has %s DS values and %s RRA databases, new format RRD has %s DS "
 "values and %s RRA databases"
 msgstr ""
+"インポートする RRD の DS 値は %s、RRA データベースは %s、新規フォーマットの RRD の DS 値は %s、RRA データベースは %"
+"s です"
 
 # File: src/etc/inc/upgrade_config.inc, line: 140
 msgid "The new RRD now has %s DS values and %s RRA databases"
-msgstr ""
+msgstr "新規 RRD の現在の DS 値は %s、RRA データベースは %s です"
 
 msgid "%sWarning: filter rule removed (interface '%s' does not exist anymore)."
 msgstr "%s警告: フィルタルールが削除されました ( インタフェース '%s' は現在存在しません )"
@@ -2965,11 +2940,11 @@ msgid ""
 "accessed a particular page (the lock will be freed if the user leaves or "
 "saves the page form)."
 msgstr ""
-"このユーザが、特定のページにアクセスすることで、個別の HTML ページをロックするかどうかを示します。( ロックはユーザが特に設定しないか、"
-"もしくはページフォームを保存することで解除されます )"
+"このユーザが、特定のページにアクセスした場合に、HTML ページを個別にロックするかどうかを示します。( 該当ユーザがページから移動するか、"
+"ページフォームを保存することでロック解除されます )。"
 
 msgid "Indicates whether this user is able to login for example via SSH."
-msgstr "このユーザが、例えば SSH 経由でログイン可能かどうかを示します。"
+msgstr "このユーザが SSH 等を経由してログイン可能かどうかを示します。"
 
 msgid ""
 "Indicates whether this user is allowed to copy files onto the %s appliance "
@@ -3076,9 +3051,8 @@ msgstr "構成のアップグレードから OpenVPN ルールを自動追加"
 msgid "WARNING: You must give a name as parameter to lock() function."
 msgstr "警告: 関数 lock() のパラメータとして「名前」が必要です"
 
-#, fuzzy
 msgid "The command '%s' returned exit code '%d', the output was '%s'"
-msgstr "コマンド %1$s は終了コード %2$d を返しました。出力は %3$s です"
+msgstr "コマンド %s は終了コード %d を返しました。出力は %s です"
 
 msgid "Configuring IPsec VPN... "
 msgstr "IPsec VPN を構成しています... "
@@ -3101,13 +3075,11 @@ msgstr "エラー: %s のフェーズ 1 鍵ファイルを書き込めません"
 msgid "Error: Cannot write phase1 certificate file for %s"
 msgstr "エラー: %s のフェーズ 1 証明書ファイルを書き込めません"
 
-#, fuzzy
 msgid "Ignoring IPsec reload since there are no tunnels on interface %s"
-msgstr "IPsec racoon デーモンの再読み込みを無視しています。インタフェース %s にトンネルがありません。"
+msgstr "IPsec の再読み込みを無視しています。インタフェース %s にトンネルがありません。"
 
-#, fuzzy
 msgid "Forcefully reloading IPsec"
-msgstr "強制的に IPsec racoon デーモンを再読み込みしています"
+msgstr "強制的に IPsec を再読み込みしています"
 
 msgid "Configuring PPTP VPN service... "
 msgstr "PPTP の VPN サービスの構成をしています..."
@@ -3154,14 +3126,14 @@ msgstr "エラー: vpn_l2tp_configure(): mpd.secret を開けません"
 # File: src/etc/inc/xmlparse.inc, line: 83
 # File: src/www/interfaces.php, line: 92
 msgid "XML error: %s at line %d cannot occur more than once"
-msgstr ""
+msgstr "XML エラー: %s: %d 行: 複数設定できません"
 
 msgid "Error: could not open XML input"
 msgstr "エラー: XML 入力を開けませんでした"
 
 # File: src/etc/inc/xmlparse.inc, line: 165
 msgid "XML error: %s at line %d in %s"
-msgstr ""
+msgstr "XML エラー: %s: %d 行: %s"
 
 msgid "XML error: no %s object found!"
 msgstr "XML エラー: %s オブジェクトがありません！"
@@ -3171,143 +3143,126 @@ msgstr "XMLRPC クライアントから構成をマージしました ( %s セ�
 
 # File: src/etc/rc.bootup, line: 143
 msgid "Default interfaces not found -- Running interface assignment option."
-msgstr ""
+msgstr "デフォルトインタフェースが見つかりません -- オプション割当てのインタフェースで動作しています"
 
 # File: src/etc/rc.initial.password, line: 37
 msgid "The %s password will be reset to the factory default of `%s'."
-msgstr ""
+msgstr "%s パスワードは %s の出荷時の規定値でリセットされます。"
 
-#, fuzzy
 msgid "Do you want to proceed [y|n]? "
-msgstr "続行してもよろしいですか？"
+msgstr "続行してもよろしいですか？ [y|n]"
 
 # File: src/etc/rc.initial.password, line: 48
 msgid "The User manager authentication server is set to \"%s\"."
-msgstr ""
+msgstr "ユーザ管理認証サーバは %s に設定されます。"
 
 # File: src/etc/rc.initial.password, line: 50
 msgid "Do you want to set it back to Local Database [y|n]? "
-msgstr ""
+msgstr "設定をローカルデータベースに戻しますか？ [y|n]"
 
-#, fuzzy
 msgid "password changed from console menu"
-msgstr "コンソールメニューをパスワードで保護"
+msgstr "コンソールメニューからパスワードが変更されました"
 
-#, fuzzy
 msgid "The password has been reset."
-msgstr "パスワードが一致しません"
+msgstr "パスワードがリセットされました。"
 
 # File: src/etc/rc.initial.password, line: 80
 msgid "Please change the password as soon as you log in!"
-msgstr ""
+msgstr "ログインしたら、なるべく早くパスワードを変更してください！"
 
-#, fuzzy
 msgid "Do you want to enable the %s server on %s?"
-msgstr "本当にこのサーバを削除しますか？"
+msgstr "%s サーバを %s で有効にしますか？"
 
-#, fuzzy
 msgid "Configure %s address %s interface via %s?"
-msgstr "新しい無線インタフェース %s をクローンしています"
+msgstr "%s アドレス %s インタフェース %s 経由、で設定しますか？"
 
 # File: src/etc/rc.initial.setlanip, line: 262
 msgid "Enter the new %s %s address.  Press <ENTER> for none:"
-msgstr ""
+msgstr "新しい %s %s アドレスを入力してください。入力しない場合は <ENTER> を押してください: "
 
-#, fuzzy
 msgid "This IP address conflicts with another interface or a VIP"
-msgstr "この IP アドレスは、別のインタフェース、または VIP で使用されています。"
+msgstr "この IP アドレスは、別のインタフェースもしくは VIP で使用されています。"
 
 # File: src/etc/rc.initial.setlanip, line: 273
 msgid "Subnet masks are entered as bit counts (as in CIDR notation) in %s."
-msgstr ""
+msgstr "%s のサブネットマスクはビットカウント ( CIDR 表記法 ) として入力されています。"
 
 # File: src/etc/rc.initial.setlanip, line: 288
 msgid "Enter the new %s %s subnet bit count (1 to %s):"
-msgstr ""
+msgstr "新しい %s %s サブネットビットカウントを入力してください ( 1 - %s ): "
 
-#, fuzzy
 msgid "You cannot set network address to an interface"
-msgstr "サブネット範囲の一番最初はネットワークアドレスのため、使用できません"
+msgstr "インタフェースのネットワークアドレスを設定できません"
 
-#, fuzzy
 msgid "You cannot set broadcast address to an interface"
-msgstr "サブネット範囲の一番最後はブロードキャストアドレスのため、使用できません"
+msgstr "インタフェースのブロードキャストアドレスを設定できません"
 
 # File: src/etc/rc.initial.setlanip, line: 313
 msgid "For a WAN, enter the new %s %s upstream gateway address."
-msgstr ""
+msgstr "WAN に対して、新しい %s %s アップストリームゲートウェイアドレスを入力してください。"
 
 # File: src/etc/rc.initial.setlanip, line: 314
 msgid "For a LAN, press <ENTER> for none:"
-msgstr ""
+msgstr "LAN に対して入力してください、入力しない場合は <ENTER> を押してください: "
 
-#, fuzzy
 msgid "not an %s IP address!"
-msgstr "ローカル IP アドレス"
+msgstr "%s IP アドレスではありません！"
 
-#, fuzzy
 msgid "not in subnet!"
-msgstr " サブネット"
+msgstr "サブネットの範囲内ではありません！"
 
-#, fuzzy
 msgid "Enter the start address of the %s client address range:"
-msgstr "クライアント IP アドレスサブネットの開始アドレスを指定してください"
+msgstr "%s クライアントアドレス範囲の開始アドレスを入力してください: "
 
-#, fuzzy
 msgid "This IP address must be in the interface's subnet"
-msgstr "%s サブネット内の IP アドレスを指定してください"
+msgstr "この IP アドレスはインタフェースのサブネット内で指定してください"
 
-#, fuzzy
 msgid "Enter the end address of the %s client address range:"
-msgstr "クライアント IP アドレスサブネットの開始アドレスを指定してください"
+msgstr "%s クライアントアドレス範囲の終了アドレスを入力してください: "
 
 # File: src/etc/rc.initial.setlanip, line: 391
 msgid "The end address of the DHCP range must be >= the start address"
-msgstr ""
+msgstr "DHCP 範囲は、終了アドレス >= 開始アドレス です"
 
 # File: src/etc/rc.initial.setlanip, line: 402
 msgid "Disabling %s DHCPD..."
-msgstr ""
+msgstr "%s DHCPD を無効にしています..."
 
 # File: src/etc/rc.initial.setlanip, line: 415
 msgid "Do you want to revert to HTTP as the webConfigurator protocol?"
-msgstr ""
+msgstr "Web 設定管理画面のプロトコルを HTTP に戻しますか？"
 
 # File: src/etc/rc.initial.setlanip, line: 422
 msgid "Note: the anti-lockout rule on %s has been re-enabled."
-msgstr ""
+msgstr "注意: %s のアンチロックアウトルールは再有効化されています。"
 
 # File: src/etc/rc.initial.setlanip, line: 451
 msgid "%s IP configuration from console menu"
-msgstr ""
+msgstr "コンソールメニューからの %s IP 構成"
 
-#, fuzzy
 msgid "The IPv4 %s address has been set to %s"
-msgstr "ブートスライスに設定: "
+msgstr "IPv4 %s アドレスは %s に設定されています"
 
-#, fuzzy
 msgid "The IPv6 %s address has been set to %s"
-msgstr "ブートスライスに設定: "
+msgstr "IPv6 %s アドレスは %s に設定されています"
 
 # File: src/etc/rc.initial.setlanip, line: 485
 msgid ""
 "You can now access the webConfigurator by opening the following URL in your "
 "web browser:"
-msgstr ""
+msgstr "次の URL をブラウザで開くことで Web 設定管理画面にアクセスできます: "
 
-#, fuzzy
 msgid "Press <ENTER> to continue."
-msgstr "続行には Enter キーを押してください"
+msgstr "続行するには Enter キーを押してください。"
 
-#, fuzzy
 msgid "WARNING: You must give a name as parameter to try_lock() function."
-msgstr "警告: 関数 lock() のパラメータとして「名前」が必要です"
+msgstr "警告: 関数 try_lock() のパラメータとして「名前」が必要です。"
 
 # File: src/etc/rc.openvpn, line: 88
 msgid ""
 "Could not obtain openvpn lock for executing rc.openvpn for more than 10 "
 "seconds continuing..."
-msgstr ""
+msgstr "10 秒以上 rc.openvpn の実行を継続しましたが、openvpn のロックを取得できませんでした..."
 
 msgid "n/j/y H:i:s"
 msgstr "n/j/y H:i:s"
@@ -3315,43 +3270,40 @@ msgstr "n/j/y H:i:s"
 msgid "Unknown"
 msgstr "不明"
 
-#, fuzzy
 msgid "Unknown Page"
-msgstr "不明"
+msgstr "不明なページ"
 
-#, fuzzy
 msgid "No backups found in the configuration history."
-msgstr "構成の復元後に、base_package メニューが復元されます"
+msgstr "構成履歴にバックアップがありません。"
 
 msgid "Which configuration would you like to restore?"
 msgstr "どの構成でリストアしますか？"
 
-#, fuzzy
 msgid "That is not a valid backup number.\n"
-msgstr "有効なポート番号を入力してください。"
+msgstr "有効なバックアップ番号ではありません。\n"
 
 # File: src/etc/rc.restore_config_backup, line: 67
 msgid "Is this the backup you wish to restore?"
-msgstr ""
+msgstr "このバックアップをリストアしますか？"
 
 # File: src/etc/rc.restore_config_backup, line: 71
 msgid "Y/N?"
-msgstr ""
+msgstr "Y/N?"
 
 # File: src/etc/rc.restore_config_backup, line: 73
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
 # File: src/etc/rc.restore_config_backup, line: 76
 # File: src/www/diag_confbak.php, line: 47
 msgid "Successfully reverted to timestamp %s with description \"%s\"."
-msgstr ""
+msgstr "タイムスタンプを %s に戻すことに成功しました: 説明 %s"
 
 # File: src/etc/rc.restore_config_backup, line: 78
 msgid ""
 "You may need to reboot the firewall or restart services before the restored "
 "configuration is fully active."
-msgstr ""
+msgstr "リストアした構成を完全に有効にする前に、ファイアウォールを再起動するか、サービスの再起動をする必要があります。"
 
 msgid "Unable to revert to the selected configuration."
 msgstr "選択した構成に戻せませんでした"
@@ -3361,137 +3313,134 @@ msgstr "リストアはキャンセルされました。"
 
 # File: src/etc/rc.restore_config_backup, line: 86
 msgid "Restore canceled due to invalid input."
-msgstr ""
+msgstr "無効な入力により、リストアはキャンセルされました。"
 
 msgid "Restore Backup from Configuration History"
 msgstr "構成履歴からバックアップをリストア"
 
-#, fuzzy
 msgid "List Backups"
-msgstr "RRD バックアップ"
+msgstr "バックアップリスト"
 
 msgid "Restore Backup"
 msgstr "バックアップをリストア"
 
 # File: src/etc/rc.restore_config_backup, line: 96
 msgid "Quit"
-msgstr ""
+msgstr "終了"
 
-#, fuzzy
 msgid "Please select an option to continue"
-msgstr "有効な鍵長を選択してください。"
+msgstr "継続するオプションを選択してください"
 
 # File: src/etc/rc.restore_config_backup, line: 103
 msgid "quit"
-msgstr ""
+msgstr "終了"
 
 # File: src/etc/rc.sshd, line: 132
 msgid "Started creating your SSH keys. SSH startup is being delayed a wee bit."
-msgstr ""
+msgstr "SSH 鍵の生成を開始しました。SSH の起動まで少し時間がかかります。"
 
 # File: src/etc/rc.sshd, line: 139
 msgid "Completed creating your SSH keys. SSH will now be started."
-msgstr ""
+msgstr "SSH 鍵の生成が完了しました。SSH を起動しています。"
 
-#, fuzzy
 msgid "Could not process aliases from alias: %s"
-msgstr "リストからエイリアスを一括インポート"
+msgstr "次のエイリアスからエイリアス処理ができません: %s"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 54
 msgid "Connection error."
-msgstr ""
+msgstr "接続エラー。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 57
 msgid "Repository problem."
-msgstr ""
+msgstr "リポジトリに問題があります。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 60
 msgid "There are no updates available."
-msgstr ""
+msgstr "利用可能な更新はありません。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 68
 msgid ""
 "There is a mandatory update for the package manager available. Please "
 "install and fetch updates again."
-msgstr ""
+msgstr "パッケージ管理の必須更新が利用可能です。インストールして、もう一度更新を取得してください。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 77
 msgid "There is %s update available, total download size is %s."
-msgstr ""
+msgstr "%s 更新が利用可能です。合計ダウンロードサイズは %s です。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 83
 msgid "There are %s updates available, total download size is %s."
-msgstr ""
+msgstr "%s 更新が利用可能です。合計ダウンロードサイズは %s です。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 84
 msgid "This update requires a reboot."
-msgstr ""
+msgstr "この更新には再起動が必要です。"
 
 # File: src/opnsense/mvc/app/controllers/OPNsense/Core/Api/FirmwareController.php, line: 89
 msgid "Current status is unknown."
-msgstr ""
+msgstr "現在のステータスは不明です。"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 98
 msgid "Disconnect selected client?"
-msgstr ""
+msgstr "選択したクライアントを切断しますか？"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 131
 msgid "Session"
-msgstr ""
+msgstr "セッション"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 132
 msgid "userName"
-msgstr ""
+msgstr "ユーザ名"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 133
 msgid "macAddress"
-msgstr ""
+msgstr "MAC アドレス"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 134
 msgid "ipAddress"
-msgstr ""
+msgstr "IP アドレス"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt, line: 135
 msgid "connected since"
-msgstr ""
+msgstr "接続開始時間: "
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 63
 msgid "Error reconfiguring captiveportal"
-msgstr ""
+msgstr "キャプティブポータルの再構成中にエラーが発生しました"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 167
 msgid "Error uploading template"
-msgstr ""
+msgstr "テンプレートのアップロード中にエラーが発生しました"
 
 msgid "Zones"
 msgstr "ゾーン"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 181
 msgid "Templates"
-msgstr ""
+msgstr "テンプレート"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 86
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 409
 msgid "Enabled"
-msgstr ""
+msgstr "有効"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 87
 msgid "Zoneid"
-msgstr ""
+msgstr "ゾーン ID"
 
 msgid "Description"
 msgstr "説明"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 89
 msgid "Commands"
-msgstr ""
+msgstr "コマンド"
 
 msgid "ID"
 msgstr "ID"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 214
 msgid "Fileid"
-msgstr ""
+msgstr "ファイル ID"
 
 msgid "Name"
 msgstr "名前"
@@ -3499,38 +3448,38 @@ msgstr "名前"
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 111
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 505
 msgid "Apply"
-msgstr ""
+msgstr "適用"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 251
 msgid "Upload file"
-msgstr ""
+msgstr "ファイルをアップロード"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 257
 msgid "Template name"
-msgstr ""
+msgstr "テンプレート名"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt, line: 261
 msgid "File input"
-msgstr ""
+msgstr "ファイルをインプット"
 
 msgid "Upload"
 msgstr "アップロード"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 52
 msgid "Please setup a voucher server first "
-msgstr ""
+msgstr "最初にバウチャーサーバを設定してください"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 52
 msgid "goto auth servers"
-msgstr ""
+msgstr "認証サーバに移動"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 139
 msgid "Remove voucher group"
-msgstr ""
+msgstr "バウチャーグループを削除"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 140
 msgid "All vouchers within this group will be deleted"
-msgstr ""
+msgstr "このグループに含まれる全てのバウチャーは削除されます"
 
 msgid "Yes"
 msgstr "はい"
@@ -3540,126 +3489,126 @@ msgstr "バウチャー"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 240
 msgid "Valid from"
-msgstr ""
+msgstr "有効期間の開始"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 241
 msgid "Valid to"
-msgstr ""
+msgstr "有効時間の終了"
 
 msgid "State"
 msgstr "ステータス"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 256
 msgid "Create vouchers"
-msgstr ""
+msgstr "バウチャーを作成"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 276
 msgid "Generate vouchers"
-msgstr ""
+msgstr "バウチャーを生成"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 282
 msgid "Validity"
-msgstr ""
+msgstr "有効性"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 283
 msgid "Number of vouchers"
-msgstr ""
+msgstr "バウチャーの数"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 284
 msgid "Groupname"
-msgstr ""
+msgstr "グループ名"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 291
 msgid "4 hours"
-msgstr ""
+msgstr "4 時間"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 292
 msgid "8 hours"
-msgstr ""
+msgstr "8 時間"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 293
 msgid "1 day"
-msgstr ""
+msgstr "1 日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 294
 msgid "2 days"
-msgstr ""
+msgstr "2 日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 295
 msgid "3 days"
-msgstr ""
+msgstr "3 日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 296
 msgid "4 days"
-msgstr ""
+msgstr "4 日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 297
 msgid "5 days"
-msgstr ""
+msgstr "5 日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 298
 msgid "6 days"
-msgstr ""
+msgstr "6 日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 299
 msgid "1 week"
-msgstr ""
+msgstr "1 週間"
 
 # File: src/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt, line: 300
 msgid "2 weeks"
-msgstr ""
+msgstr "2 週間"
 
 msgid "Generate"
-msgstr "新規鍵を生成"
+msgstr "生成"
 
 msgid "Close"
 msgstr "閉じる"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 39
 msgid "Fetching... (may take up to 30 seconds)"
-msgstr ""
+msgstr "取得しています...( 30 秒程度かかります )"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 57
 msgid "Package Name"
-msgstr ""
+msgstr "パッケージ名"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
 msgid "Current Version"
-msgstr ""
+msgstr "現在のバージョン"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 58
 msgid "New Version"
-msgstr ""
+msgstr "新バージョン"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 64
 msgid "NEW"
-msgstr ""
+msgstr "NEW"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 67
 msgid "REINSTALL"
-msgstr ""
+msgstr "再インストール"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 85
 msgid "Upgrading... (do not leave this page while upgrade is in progress)"
-msgstr ""
+msgstr "アップグレードしています...( アップグレード中はこのページから移動しないでください )"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 100
 msgid "Executing... (do not leave this page while execute is in progress)"
-msgstr ""
+msgstr "実行しています...( 実行中はこのページから移動しないでください )"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 146
 msgid "Upgrade done!"
-msgstr ""
+msgstr "アップグレードが終了しました！"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 152
 msgid "Your device is rebooting"
-msgstr ""
+msgstr "デバイスを再起動しています"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 157
 msgid ""
 "The upgrade has finished and your device is being rebooted at the moment, "
 "please wait..."
-msgstr ""
+msgstr "アップグレードが終了しました。デバイスは現在再起動しています。少しお待ちください..."
 
 msgid "Size"
 msgstr "サイズ"
@@ -3672,39 +3621,39 @@ msgstr "コメント"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 248
 msgid "Fetch updates to view available plugins."
-msgstr ""
+msgstr "更新を取得して利用可能なプラグインを表示します。"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 207
 msgid "Upgrade now"
-msgstr ""
+msgstr "今すぐアップグレード"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 208
 msgid "Fetch updates"
-msgstr ""
+msgstr "更新を取得"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 209
 msgid "Click to check for updates."
-msgstr ""
+msgstr "クリックで更新を確認します。"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 215
 msgid "Packages"
-msgstr ""
+msgstr "パッケージ"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 307
 msgid "Plugins"
-msgstr ""
+msgstr "プラグイン"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 108
 msgid "Updates"
-msgstr ""
+msgstr "更新"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Core/firmware.volt, line: 217
 msgid "Progress"
-msgstr ""
+msgstr "進行状況"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Cron/index.volt, line: 116
 msgid "Jobs"
-msgstr ""
+msgstr "ジョブ"
 
 msgid "IP"
 msgstr "IP"
@@ -3712,77 +3661,77 @@ msgstr "IP"
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 79
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 79
 msgid "MAC"
-msgstr ""
+msgstr "MAC"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 80
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 80
 msgid "Manufacturer"
-msgstr ""
+msgstr "製造元"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 82
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 82
 msgid "Interface name"
-msgstr ""
+msgstr "インタフェース名"
 
 msgid "Hostname"
 msgstr "ホスト名"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 90
 msgid "NOTE: Local IPv6 peers use NDP instead of ARP."
-msgstr ""
+msgstr "注意: ローカル IPv6 ピアは ARP ではなく NDP を使用します。"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/arp.volt, line: 100
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/ndp.volt, line: 94
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 128
 msgid "Refresh"
-msgstr ""
+msgstr "更新"
 
 msgid "IPv6"
 msgstr "IPv6"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 100
 msgid "PID"
-msgstr ""
+msgstr "PID"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 101
 msgid "USERNAME"
-msgstr ""
+msgstr "USERNAME"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 102
 msgid "PRI"
-msgstr ""
+msgstr "PRI"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 103
 msgid "NICE"
-msgstr ""
+msgstr "NICE"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 104
 msgid "SIZE"
-msgstr ""
+msgstr "SIZE"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 105
 msgid "RES"
-msgstr ""
+msgstr "RES"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 106
 msgid "STATE"
-msgstr ""
+msgstr "STATE"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 107
 msgid "C"
-msgstr ""
+msgstr "C"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 108
 msgid "TIME"
-msgstr ""
+msgstr "TIME"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 109
 msgid "WCPU"
-msgstr ""
+msgstr "WCPU"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemactivity.volt, line: 110
 msgid "COMMAND"
-msgstr ""
+msgstr "COMMAND"
 
 msgid "seconds"
 msgstr "秒"
@@ -3798,37 +3747,37 @@ msgstr "分"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 336
 msgid "Year(s)"
-msgstr ""
+msgstr "年"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 338
 msgid "Days"
-msgstr ""
+msgstr "日"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 340
 msgid "Hours"
-msgstr ""
+msgstr "時間"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 342
 msgid "Minutes"
-msgstr ""
+msgstr "分"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 369
 msgid "full date & time"
-msgstr ""
+msgstr "日付・時間"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 371
 msgid "timestamp"
-msgstr ""
+msgstr "タイムスタンプ"
 
 msgid "Options"
 msgstr "オプション"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 578
 msgid "Zoom level"
-msgstr ""
+msgstr "ズームレベル"
 
 msgid "Inverse"
-msgstr "逆"
+msgstr "反転"
 
 msgid "Off"
 msgstr "オフ"
@@ -3838,7 +3787,7 @@ msgstr "オン"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 602
 msgid "Resolution"
-msgstr ""
+msgstr "解像度"
 
 msgid "Standard"
 msgstr "標準"
@@ -3851,31 +3800,31 @@ msgstr "高"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 622
 msgid "Show Tables"
-msgstr ""
+msgstr "テーブル表示"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 646
 msgid "Please wait while loading data..."
-msgstr ""
+msgstr "データを読み込んでいます。お待ちください..."
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
 msgid "Current detail is showing"
-msgstr ""
+msgstr "現在の詳細情報を表示しています"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 643
 msgid "averages"
-msgstr ""
+msgstr "平均"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 668
 msgid "Current View - Overview"
-msgstr ""
+msgstr "現在の表示 - 概要"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 692
 msgid "Current View - Details"
-msgstr ""
+msgstr "現在の表示 - 詳細"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 696
 msgid "Toggle Timeview"
-msgstr ""
+msgstr "時間表示の切替"
 
 msgid "Timestamp"
 msgstr "タイムスタンプ"
@@ -3885,39 +3834,41 @@ msgid ""
 "Full Date &\n"
 "                                Time"
 msgstr ""
+"日付・\n"
+"                                時間"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Diagnostics/systemhealth.volt, line: 712
 msgid "Download as CSV"
-msgstr ""
+msgstr "CVS でダウンロード"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 383
 msgid "Alerts"
-msgstr ""
+msgstr "アラート"
 
 msgid "Schedule"
 msgstr "スケジュール"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 399
 msgid "rulesets"
-msgstr ""
+msgstr "ルールセット"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 408
 msgid "Last updated"
-msgstr ""
+msgstr "最終更新"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 418
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 455
 msgid "disable selected"
-msgstr ""
+msgstr "選択したものを無効"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 419
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 456
 msgid "enable selected"
-msgstr ""
+msgstr "選択したものを有効"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 443
 msgid "sid"
-msgstr ""
+msgstr "SID"
 
 msgid "Action"
 msgstr "動作"
@@ -3927,47 +3878,48 @@ msgstr "送信元"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 445
 msgid "ClassType"
-msgstr ""
+msgstr "クラスタイプ"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 446
 msgid "Message"
-msgstr ""
+msgstr "メッセージ"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 447
 msgid "Info / enabled"
-msgstr ""
+msgstr "情報 / 有効"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 481
 msgid "Search"
-msgstr ""
+msgstr "検索"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 482
 msgid "Query"
-msgstr ""
+msgstr "クエリ"
 
 msgid "Destination"
 msgstr "送信先"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 495
 msgid "Alert"
-msgstr ""
+msgstr "アラート"
 
 msgid "Info"
 msgstr "情報"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 506
 msgid "Download & Update Rules"
-msgstr ""
+msgstr "ダウンロードしてルールを更新"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 508
 msgid ""
 "Please use \"Download & Update Rules\" to fetch your initial ruleset, "
 "automatic updating can be scheduled after the first download"
 msgstr ""
+"「ダウンロードしてルールを更新」を初期ルールセットの取得に使用してください。初回ダウンロードの後に、自動アップデートがスケジュール可能になります。"
 
 # File: src/opnsense/mvc/app/views/OPNsense/IDS/index.volt, line: 519
 msgid "Processing request..."
-msgstr ""
+msgstr "リクエストを処理しています..."
 
 # File: src/www/firewall_aliases_edit.php, line: 324
 # File: src/www/firewall_aliases_import.php, line: 165
@@ -3989,7 +3941,7 @@ msgstr ""
 # File: src/www/vpn_openvpn_server.php, line: 730
 # File: src/www/vpn_openvpn_server.php.orig, line: 730
 msgid "full help"
-msgstr ""
+msgstr "全てのヘルプ"
 
 # File: src/opnsense/mvc/app/views/OPNsense/Proxy/index.volt, line: 234
 msgid ""
