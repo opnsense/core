@@ -53,7 +53,7 @@ setup_interface()
     fi
     interface=$1
     # determine (snmp) ifIndex
-    ifIndex=`/usr/bin/netstat -i -n | /usr/bin/grep Link# | /usr/bin/grep $interface | awk '{print $3}' | /usr/bin/sed 's/<Link#//g' | /usr/bin/sed 's/>//g'`
+    ifIndex=$(/usr/bin/netstat -Win | /usr/bin/grep Link# | awk '{if ( $1 == "'"$interface"'" ) {print $3 }}' | /usr/bin/sed 's/<Link#//g' | /usr/bin/sed 's/>//g')
     if [ "$ifIndex" == "" ]; then
         echo "error : interface $interface not found"
         return
