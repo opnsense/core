@@ -168,4 +168,41 @@ class NetworkinsightController extends ApiControllerBase
         }
         return $allInterfaces;
     }
+
+    /**
+     * return known protocols
+     */
+    public function getProtocolsAction()
+    {
+        $result = array();
+        foreach (explode ("\n", file_get_contents('/etc/protocols')) as $line) {
+            if (strlen($line) > 1 && $line[0] != '#') {
+                $parts = preg_split('/\s+/', $line);
+                if (count($parts) >= 4) {
+                    $result[$parts[1]] = $parts[0];
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * return known services
+     */
+    public function getServicesAction()
+    {
+        $result = array();
+        foreach (explode ("\n", file_get_contents('/etc/services')) as $line) {
+            if (strlen($line) > 1 && $line[0] != '#') {
+                // there a few ports which have different names for different protocols, but to not overcomplicate
+                // things here, we ignore those exceptions.
+                $parts = preg_split('/\s+/', $line);
+                if (count($parts) >= 2) {
+                    $portnum = explode('/', trim($parts[1]))[0];
+                    $result[$portnum] = $parts[0];
+                }
+            }
+        }
+        return $result;
+    }
 }
