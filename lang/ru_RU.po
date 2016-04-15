@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-25 08:05+0000\n"
+"POT-Creation-Date: 2016-04-13 05:49+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3745,7 +3745,7 @@ msgstr "Не удалось найти сертификат клиента."
 # File: src/etc/inc/openvpn-client-export.inc, line: 754
 msgid "This server uses UDP protocol and cannot communicate with HTTP proxy."
 msgstr ""
-"Этот сервер использует протокол UDP и не может обмениваться данными с HTTP "
+"Этот сервер использует протокол UDP и не может обмениваться данными в HTTP "
 "прокси-сервером."
 
 # File: src/etc/inc/openvpn-client-export.inc, line: 502
@@ -7032,7 +7032,7 @@ msgstr "SPI"
 
 # File: src/www/diag_ipsec_sad.php, line: 60
 msgid "Enc. alg."
-msgstr "Алгоритм шифрования"
+msgstr "Криптоалгоритм"
 
 # File: src/www/diag_ipsec_sad.php, line: 61
 msgid "Auth. alg."
@@ -7530,8 +7530,8 @@ msgid ""
 "Be aware that increasing this value increases every log file size, so disk "
 "usage will increase significantly."
 msgstr ""
-"Увеличение данного значения приведет к увеличению размера каждого файла "
-"журнала и значительному использованию дискового пространства."
+"Увеличение данного значения приведет к увеличению каждого журнала событий и "
+"значительному использованию дискового пространства."
 
 # File: src/www/diag_logs_settings.php, line: 404
 msgid "Disk space currently used by log files: "
@@ -7579,12 +7579,15 @@ msgstr ""
 
 # File: src/www/diag_logs_settings.php, line: 423
 msgid "Log packets blocked by 'Block Bogon Networks' rules"
-msgstr "Журналировать пакеты, блокированные правилом «Блокировать bogon сети»"
+msgstr ""
+"Записывать в журнал событий блокированные пакеты по правилу \"Блокировать "
+"Bogon Networks\"."
 
 # File: src/www/diag_logs_settings.php, line: 425
 msgid "Log packets blocked by 'Block Private Networks' rules"
 msgstr ""
-"Журналировать пакеты, блокированные правилом «Блокировать частные сети»"
+"Записывать в журнал событий блокированные пакеты по правилу \"Блокировать "
+"Частные Сети\""
 
 # File: src/www/diag_logs_settings.php, line: 429
 msgid "Web Server Log"
@@ -7592,7 +7595,7 @@ msgstr "Журнал веб-сервера"
 
 # File: src/www/diag_logs_settings.php, line: 432
 msgid "Log errors from the web server process."
-msgstr "Журналировать сообщения об ошибках в работе веб-сервера."
+msgstr "Записывать в журнал событий ошибки в работе веб-сервера."
 
 # File: src/www/diag_logs_settings.php, line: 434
 msgid ""
@@ -7782,7 +7785,7 @@ msgid ""
 "server, unless another port is specified. Be sure to set syslogd on the "
 "remote server to accept syslog messages from"
 msgstr ""
-"syslog отправляет UDP-датаграммы на порт 514 (если не указан другой) "
+"syslog отправляет UDP-датаграммы на порт 514 (если не установлен другой) "
 "удаленного syslog-сервера. Убедитесь, что syslogd на удаленном сервере "
 "принимает syslog-сообщения от"
 
@@ -7822,7 +7825,7 @@ msgstr "Недопустимый протокол."
 
 # File: src/www/diag_packet_capture.php, line: 230
 msgid "A valid IP address or CIDR block must be specified. [%s]"
-msgstr "Укажите действительный IP-адрес или CIDR-блок. [%s]"
+msgstr "Необходимо установить корректный IP-адрес или CIDR-блок. [%s]"
 
 # File: src/www/diag_packet_capture.php, line: 235
 msgid "Invalid value specified for port."
@@ -8074,8 +8077,8 @@ msgid ""
 "This is the level of detail that will be displayed after hitting 'Stop' when "
 "the packets have been captured."
 msgstr ""
-"Уровень детализации информации о захваченных пакетах, которая будут "
-"отображена после нажатия на кнопку «Остановить»."
+"Уровень детализации захваченных пакетов, которые будут отображены после "
+"нажатия 'Стоп'."
 
 # File: src/www/diag_packet_capture.php, line: 432
 msgid ""
@@ -9549,7 +9552,7 @@ msgid ""
 "The subnet mask from the internal address below will be applied to this IP "
 "address."
 msgstr ""
-"Маска подсети из указанного ниже внутреннего адреса будет применена к этому "
+"Маска подсети из нижеуказанного внутреннего адреса будет применена к этому "
 "IP-адресу."
 
 # File: src/www/firewall_nat_1to1_edit.php, line: 336
@@ -9580,8 +9583,7 @@ msgstr "Инвертировать"
 # File: src/www/firewall_rules_edit.php, line: 884
 # File: src/www/firewall_rules_edit.php, line: 1017
 msgid "Use this option to invert the sense of the match."
-msgstr ""
-"Используйте этот параметр, чтобы инвертировать смысл правила совпадения."
+msgstr "Используйте этот параметр, чтобы инвертировать смысл совпадения."
 
 # File: src/www/firewall_nat_1to1_edit.php, line: 356
 # File: src/www/firewall_nat_1to1_edit.php, line: 407
@@ -11731,7 +11733,7 @@ msgstr "Базовая"
 
 # File: src/www/firewall_virtual_ip_edit.php, line: 437
 msgid "Skew"
-msgstr "Со сдвигом времени "
+msgstr "со сдвигом времени "
 
 # File: src/www/firewall_virtual_ip_edit.php, line: 448
 msgid ""
@@ -11739,7 +11741,7 @@ msgid ""
 "Otherwise the lowest combination of both values in the cluster determines "
 "the master."
 msgstr ""
-"Частота, с которой это устройство будет синхронизироваться. Частота "
+"Частота с которой это устройство будет синхронизироваться. Частота "
 "синхронизации ведущего устройства равна 0. В противном случае ведущее "
 "устройство определяет самая низкая комбинация обоих значений в кластере."
 
@@ -12661,7 +12663,7 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 2032
 msgid "Lease Requirements"
-msgstr "Требования к аренде адресов"
+msgstr "Требования по аренде"
 
 # File: src/www/interfaces.php, line: 2035
 msgid "FreeBSD Manual"
@@ -12672,7 +12674,7 @@ msgid ""
 "More detailed information about lease requirements and requests can be found "
 "in the "
 msgstr ""
-"Больше информации о требованиях к аренде адресов и запросах можно узнать в"
+"Больше информации о требованиях к ответам и запросах может быть найдено в "
 
 # File: src/www/interfaces.php, line: 2038
 # File: src/www/interfaces.php, line: 2602
@@ -12699,7 +12701,7 @@ msgstr ""
 # File: src/www/interfaces.php, line: 2047
 # File: src/www/interfaces.php, line: 2612
 msgid "Request Options"
-msgstr "Параметры запроса"
+msgstr "Запрашиваемые параметры"
 
 # File: src/www/interfaces.php, line: 2050
 msgid ""
@@ -12709,20 +12711,20 @@ msgid ""
 msgstr ""
 "Значения в этом поле являются параметрами DHCP (опция 55), которые "
 "отправляются клиенту при запросе аренды DHCP. [параметр [, …]] <br /"
-">Некоторые Интернет-провайдеры могут требовать, чтобы определенные параметры "
-"запрашивались или не запрашивались."
+">Некоторые поставщики услуги Интернет могут требовать, чтобы определенные "
+"параметры запрашивались или не запрашивались."
 
 # File: src/www/interfaces.php, line: 2054
 msgid "Require Options"
-msgstr "Требуемые параметры"
+msgstr "Необходимые параметры"
 
 # File: src/www/interfaces.php, line: 2057
 msgid ""
 "The values in this field are DHCP options required by the client when "
 "requesting a DHCP lease.  [option [, ...]] "
 msgstr ""
-"Значения в этом поле являются параметрами DHCP, которые требует клиент при "
-"запросе аренды DHCP. [параметр [, …]]"
+"Значения в этом поле являются параметрами DHCP, которые необходимые клиенту "
+"при запросе аренды DHCP. [параметр [, …]]"
 
 # File: src/www/interfaces.php, line: 2062
 msgid "Option Modifiers"
@@ -13056,7 +13058,7 @@ msgstr ""
 
 # File: src/www/interfaces.php, line: 2588
 msgid "Interface Statement"
-msgstr "Оператор интерфейса"
+msgstr "Интерфейс Statement"
 
 # File: src/www/interfaces.php, line: 2591
 msgid "Information Only"
@@ -13296,9 +13298,7 @@ msgstr "IPv6-интерфейс"
 
 # File: src/www/interfaces.php, line: 2798
 msgid "This selects the dynamic IPv6 WAN interface to track for configuration"
-msgstr ""
-"Этот параметр выбирает динамический IPv6-адрес WAN интерфейса, который будет "
-"отслеживаться для конфигурации"
+msgstr "Определяет "
 
 # File: src/www/interfaces.php, line: 2803
 msgid "IPv6 Prefix ID"
@@ -13535,7 +13535,7 @@ msgstr "Инфраструктура (BSS)"
 
 # File: src/www/interfaces.php, line: 3044
 msgid "Ad-hoc (IBSS)"
-msgstr "Одноранговая беспроводная сеть (IBSS)"
+msgstr "Одноранговая беспроводная сеть (IBSS"
 
 # File: src/www/interfaces.php, line: 3049
 msgid "Access Point"
@@ -14748,7 +14748,7 @@ msgid ""
 "aggregation with the peer or exchange frames to monitor the link."
 msgstr ""
 "Поддерживает технологию Cisco EtherChannel. Это статическая настройка не "
-"согласовывает агрегирование с узлом или обмен кадрами для наблюдения за "
+"согласовывает агрегацию с участником или обмен кадрами для наблюдения за "
 "каналом."
 
 # File: src/www/interfaces_lagg_edit.php, line: 220
@@ -14975,9 +14975,9 @@ msgid ""
 "string at the beginning of the command. Many modern USB 3G modems don't need "
 "an initialization string."
 msgstr ""
-"Примечание: введите здесь строку инициализации модема. НЕ используйте символ "
-"«@» в начале команды. Многие современные USB 3G модемы не нуждаются в строке "
-"инициализации."
+"Здесь необходимо ввести строку инициализации модема. Не используйте символ "
+"\"@\" перед командой. Заметьте, что современные USB 3G модемы не нуждаются в "
+"строке инициализации."
 
 # File: src/www/interfaces_ppps_edit.php, line: 761
 msgid "Connection Timeout"
@@ -14993,7 +14993,7 @@ msgstr ""
 
 # File: src/www/interfaces_ppps_edit.php, line: 770
 msgid "Uptime Logging"
-msgstr "Журналирование времени подключения"
+msgstr "Аптайм журналирования"
 
 # File: src/www/interfaces_ppps_edit.php, line: 773
 msgid "Enable persistent logging of connection uptime."
@@ -15004,8 +15004,8 @@ msgid ""
 "This option causes cumulative uptime to be recorded and displayed on the "
 "Status Interfaces page."
 msgstr ""
-"Этот параметр включает запись общего времени подключения и отображает его на "
-"странице «Статус. Интерфейсы»."
+"Включает запись общего времени работы, отображаемого на странице Статуса "
+"интерфейсов."
 
 # File: src/www/interfaces_ppps_edit.php, line: 785
 msgid "Dial On Demand"
@@ -15588,16 +15588,14 @@ msgstr "Это порт, который прослушивает ваш серв
 # File: src/www/load_balancer_virtual_server_edit.php, line: 194
 msgid ""
 "You may also specify a port alias listed in Firewall -&gt; Aliases here."
-msgstr ""
-"Вы можете указать здесь псевдоним порта из списка на странице «Межсетевой "
-"экран. Псевдонимы»"
+msgstr "Вы можете указать псевдоним порта из списка"
 
 # File: src/www/load_balancer_pool_edit.php, line: 233
 msgid ""
 "Optionally specify how many times to retry checking a server before "
 "declaring it down."
 msgstr ""
-"Вы можете указать, сколько раз необходимо повторить попытку проверки "
+"(Необязательно) Указать, сколько раз необходимо повторить попытку проверки "
 "сервера, прежде чем объявить его недоступным."
 
 # File: src/www/load_balancer_pool_edit.php, line: 240
@@ -16271,7 +16269,7 @@ msgid ""
 "The DHCP server can optionally provide a domain search list. Use the "
 "semicolon character as separator "
 msgstr ""
-"DHCP-сервер может дополнительно предоставлять список поиска домена. "
+"DHCP-сервер дополнительно может предоставлять список поиска домена. "
 "Используйте точку с запятой в качестве разделителя "
 
 # File: src/www/services_dhcp.php, line: 869
@@ -16307,7 +16305,7 @@ msgid ""
 "This is the maximum lease time for clients that ask for a specific "
 "expiration time."
 msgstr ""
-"Максимальное время аренды для клиентов, которые запрашивают точное время "
+"Максимальное время аренды для клиентов, которые запрашивают конкретное время "
 "аренды."
 
 # File: src/www/services_dhcp.php, line: 885
@@ -17090,7 +17088,7 @@ msgstr "Регистрация DHCP"
 
 # File: src/www/services_dnsmasq.php, line: 205
 msgid "Register DHCP leases in DNS forwarder"
-msgstr "Регистрировать DHCP аренды в перенаправляющем DNS-сервере"
+msgstr "Регистрация DHCP аренды в перенаправляющем DNS-сервере"
 
 # File: src/www/services_dnsmasq.php, line: 206
 msgid ""
@@ -17219,7 +17217,7 @@ msgid ""
 "to other interface IPs not selected below are discarded. The default "
 "behavior is to respond to queries on every available IPv4 and IPv6 address."
 msgstr ""
-"IP-адреса интерфейса, используемые перенаправляющим DNS-сервером для ответа "
+"IP-адреса интерфейса, используемые перенаправляющим DNS-сервером для отавета "
 "на запросы клиентов. Если интерфейс имеет IPv4-адрес и IPv6-адрес, то "
 "используются оба. Запросы на другие IP-адреса интерфейса, не выбранные ниже, "
 "отбрасываются. Поведение по умолчанию: ответа на запросы на всех доступных "
@@ -18101,7 +18099,7 @@ msgstr ""
 # File: src/www/services_ntpd_gps.php, line: 358
 # File: src/www/services_ntpd_pps.php, line: 127
 msgid "Services > NTP"
-msgstr "«Службы. NTP»,"
+msgstr "Службы > NTP"
 
 # File: src/www/services_ntpd_gps.php, line: 358
 msgid ""
@@ -18218,7 +18216,7 @@ msgstr "Часовой слой"
 # File: src/www/services_ntpd_gps.php, line: 450
 # File: src/www/services_ntpd_pps.php, line: 156
 msgid "(0-16)"
-msgstr "(0–16)"
+msgstr "(0-16)"
 
 # File: src/www/services_ntpd_gps.php, line: 451
 msgid "This may be used to change the GPS Clock stratum"
@@ -18307,7 +18305,7 @@ msgstr ""
 
 # File: src/www/services_ntpd_gps.php, line: 530
 msgid "GPS Initialization"
-msgstr "Инициализация GPS-приемника"
+msgstr "Инициализация GPS"
 
 # File: src/www/services_ntpd_gps.php, line: 533
 msgid "Show GPS Initialization commands"
@@ -18437,11 +18435,11 @@ msgstr ""
 
 # File: src/www/services_opendns.php, line: 142
 msgid "OpenDNS Setup"
-msgstr "Настройки OpenDNS"
+msgstr "Настройка OpenDNS"
 
 # File: src/www/services_opendns.php, line: 150
 msgid "Filter DNS requests using OpenDNS"
-msgstr "Фильтровать запросы DNS с помощью OpenDNS"
+msgstr "Фильтровать DNS-запросы через OpenDNS"
 
 # File: src/www/services_opendns.php, line: 170
 msgid ""
@@ -18458,7 +18456,7 @@ msgstr "Инструментальная панель сетей OpenDNS"
 
 # File: src/www/services_opendns.php, line: 201
 msgid "Test result"
-msgstr "Результаты проверки"
+msgstr "Результат теста"
 
 # File: src/www/services_opendns.php, line: 223
 msgid "Test/Update"
@@ -18526,11 +18524,11 @@ msgstr "Вставьте здесь ключ HMAC-MD5."
 
 # File: src/www/services_rfc2136_edit.php, line: 209
 msgid "Use TCP instead of UDP"
-msgstr "Используйте TCP вместо UDP"
+msgstr "Использовать TCP вместо UDP"
 
 # File: src/www/services_rfc2136_edit.php, line: 212
 msgid "Use Public IP"
-msgstr "Используйте общедоступный IP-адрес"
+msgstr "Использовать публичный IP"
 
 # File: src/www/services_rfc2136_edit.php, line: 215
 msgid ""
@@ -21323,12 +21321,12 @@ msgstr "Режим «adaptive»"
 # File: src/www/system_advanced_misc.php, line: 370
 # File: src/www/system_advanced_misc.php, line: 386
 msgid "Minimum"
-msgstr "Режим «minimum»"
+msgstr "Минимум"
 
 # File: src/www/system_advanced_misc.php, line: 373
 # File: src/www/system_advanced_misc.php, line: 389
 msgid "Maximum"
-msgstr "Режим «maximum»"
+msgstr "Максимум"
 
 # File: src/www/system_advanced_misc.php, line: 397
 msgid ""
@@ -21798,11 +21796,11 @@ msgstr "Введите пароль удаленного устройства у
 
 # File: src/www/system_advanced_notifications.php, line: 210
 msgid "SMTP E-Mail"
-msgstr "Электронная почта SMTP"
+msgstr "SMTP E-Mail"
 
 # File: src/www/system_advanced_notifications.php, line: 213
 msgid "Disable SMTP Notifications"
-msgstr "Отключить уведомления SMTP"
+msgstr "Отключить SMTP-уведомления"
 
 # File: src/www/system_advanced_notifications.php, line: 217
 msgid ""
@@ -21810,9 +21808,9 @@ msgid ""
 "below. Some other mechanisms, such as packages, may need these settings in "
 "place to function."
 msgstr ""
-"Установите этот параметр, чтобы отключить уведомления SMTP, но сохранить "
-"настройки ниже. Некоторые другие механизмы, такие как пакеты, могут "
-"потребовать эти настройки на месте, чтобы функционировать."
+"Установите этот флажок, чтобы отключить уведомления SMTP, но сохранить "
+"настройки ниже. Некоторым другим механизмам, таким как пакеты, могут "
+"понадобиться эти настройки, чтобы функционировать."
 
 # File: src/www/system_advanced_notifications.php, line: 222
 msgid "E-Mail server"
@@ -21828,7 +21826,7 @@ msgstr ""
 
 # File: src/www/system_advanced_notifications.php, line: 231
 msgid "SMTP Port of E-Mail server"
-msgstr "SMTP-порт почтового сервера"
+msgstr "SMTP порт почтового сервера"
 
 # File: src/www/system_advanced_notifications.php, line: 235
 msgid ""
@@ -21840,11 +21838,11 @@ msgstr ""
 
 # File: src/www/system_advanced_notifications.php, line: 240
 msgid "Secure SMTP Connection"
-msgstr "Обеспечить защиту соединения SMTP"
+msgstr "Безопасное SMTP соединение"
 
 # File: src/www/system_advanced_notifications.php, line: 243
 msgid "Enable SMTP over SSL/TLS"
-msgstr "Включить SMTP вместо SSL/TLS"
+msgstr "Включить SMTP поверх SSL/TLS"
 
 # File: src/www/system_advanced_notifications.php, line: 245
 msgid "Enable STARTTLS"
@@ -21852,7 +21850,7 @@ msgstr "Включить STARTTLS"
 
 # File: src/www/system_advanced_notifications.php, line: 249
 msgid "From e-mail address"
-msgstr "Адрес электронной почты отправителя"
+msgstr "Адрес отправителя "
 
 # File: src/www/system_advanced_notifications.php, line: 253
 msgid "This is the e-mail address that will appear in the from field."
@@ -21860,7 +21858,7 @@ msgstr "Это адрес электронной почты, который бу
 
 # File: src/www/system_advanced_notifications.php, line: 258
 msgid "E-Mail address"
-msgstr "Адрес электронной почты"
+msgstr "Почтовый адрес"
 
 # File: src/www/system_advanced_notifications.php, line: 262
 msgid ""
@@ -21877,7 +21875,7 @@ msgstr "Отправить имя пользователя для аутенти
 # File: src/www/system_advanced_notifications.php, line: 281
 # File: src/www/system_camanager.php, line: 538
 msgid "(optional)"
-msgstr "(необязательно)"
+msgstr "(дополнительно)"
 
 # File: src/www/system_advanced_notifications.php, line: 272
 msgid "Enter the e-mail address username for SMTP authentication."
@@ -21893,7 +21891,7 @@ msgstr "Введите пароль электронной почты для а�
 
 # File: src/www/system_advanced_notifications.php, line: 291
 msgid "System Sounds"
-msgstr "Системные звуки"
+msgstr "Настройки звука"
 
 # File: src/www/system_advanced_notifications.php, line: 294
 msgid "Startup/Shutdown Sound"
@@ -22765,7 +22763,7 @@ msgstr "Вставьте сертификат, полученный от ваш�
 # File: src/www/system_certmanager.php, line: 1190
 # File: src/www/system_crlmanager.php, line: 611
 msgid "In Use"
-msgstr "Используется"
+msgstr "В использовании"
 
 # File: src/www/system_certmanager.php, line: 1214
 msgid "external - signature pending"
@@ -22782,7 +22780,7 @@ msgstr "Сервер:"
 # File: src/www/system_certmanager.php, line: 1252
 # File: src/www/system_usermanager.php, line: 800
 msgid "Revoked"
-msgstr "Отозван"
+msgstr "Отозванный"
 
 # File: src/www/system_certmanager.php, line: 1260
 msgid "User Cert"
@@ -22794,15 +22792,15 @@ msgstr "OpenVPN-сервер"
 
 # File: src/www/system_certmanager.php, line: 1268
 msgid "OpenVPN Client"
-msgstr "Клиент OpenVPN"
+msgstr "OpenVPN-клиент"
 
 # File: src/www/system_certmanager.php, line: 1272
 msgid "IPsec Tunnel"
-msgstr "IPsec туннель"
+msgstr "IPsec-туннель"
 
 # File: src/www/system_certmanager.php, line: 1276
 msgid "show certificate info"
-msgstr "показать информацию о сертификате"
+msgstr "Информация о сертификате"
 
 # File: src/www/system_certmanager.php, line: 1280
 msgid "export ca"
@@ -22810,25 +22808,23 @@ msgstr "экспортировать CA"
 
 # File: src/www/system_certmanager.php, line: 1284
 msgid "export key"
-msgstr "экспортировать ключ"
+msgstr "Экспортировать ключ"
 
 # File: src/www/system_certmanager.php, line: 1288
 msgid "export ca cert+user cert+user cert key in .p12 format"
-msgstr "экспортировать ca cert+user cert+user cert key в формате .p12"
+msgstr "Экспортировать ca cert+user cert+user cert key в формате .p12"
 
 # File: src/www/system_certmanager.php, line: 1294
 msgid "delete cert"
-msgstr "удалить сертификат"
+msgstr "Удалить сертификат"
 
 # File: src/www/system_certmanager.php, line: 1300
 msgid "update csr"
-msgstr "обновить запрос на получение сертификата"
+msgstr "Обновить CSR"
 
 # File: src/www/system_certmanager.php, line: 1313
 msgid "Note: You can only delete a certificate if it is not currently in use."
-msgstr ""
-"Примечание: вы можете удалить сертификат, только если он не используется в "
-"данный момент."
+msgstr "Удалить можно только не используемый сертификат."
 
 # File: src/www/system_crlmanager.php, line: 153
 msgid "Certificate Revocation List %s is in use and cannot be deleted"
@@ -22836,15 +22832,15 @@ msgstr "Нельзя удалить список отзыва сертифика
 
 # File: src/www/system_crlmanager.php, line: 183
 msgid "Deleted Certificate %s from CRL %s"
-msgstr "Удалить сертификат %s из списка %s"
+msgstr "Удалить сертификат %s из CRL %s"
 
 # File: src/www/system_crlmanager.php, line: 187
 msgid "Failed to delete Certificate %s from CRL %s"
-msgstr "Не удалось удалить сертификат %s из списка %s"
+msgstr "Не удалось удалить сертификат %s из CRL %s"
 
 # File: src/www/system_crlmanager.php, line: 202
 msgid "Both the Certificate and CRL must be specified."
-msgstr "Необходимо указать сертификат и список CRL."
+msgstr "Необходимо выбрать сертификат и CRL."
 
 # File: src/www/system_crlmanager.php, line: 206
 msgid "CA mismatch between the Certificate and CRL. Unable to Revoke."
@@ -22852,8 +22848,7 @@ msgstr "Несоответствие CA между Сертификатом и C
 
 # File: src/www/system_crlmanager.php, line: 209
 msgid "Cannot revoke certificates for an imported/external CRL."
-msgstr ""
-"Невозможно отозвать сертификаты для импортированного/внешнего списка CRL."
+msgstr "Невозможно отозвать сертификаты для сторонних CRL."
 
 # File: src/www/system_crlmanager.php, line: 229
 msgid "Certificate Revocation List data"
@@ -22917,7 +22912,7 @@ msgstr "Отозванные в данный момент сертификаты
 # File: src/www/system_crlmanager.php, line: 514
 # File: src/www/vpn_openvpn_export.php, line: 789
 msgid "Certificate Name"
-msgstr "Имя сертификата"
+msgstr "Название сертификата"
 
 # File: src/www/system_crlmanager.php, line: 515
 msgid "Revocation Reason"
@@ -22929,7 +22924,7 @@ msgstr "Отозван"
 
 # File: src/www/system_crlmanager.php, line: 525
 msgid "No Certificates Found for this CRL."
-msgstr "Не найдено сертификатов в этом списке CRL."
+msgstr "Не найдено сертификатов в данном CRL."
 
 # File: src/www/system_crlmanager.php, line: 552
 msgid "No Certificates Found for this CA."
@@ -23855,7 +23850,7 @@ msgstr "Синхронизировать интерфейс"
 
 # File: src/www/system_hasync.php, line: 123
 msgid "loopback"
-msgstr "закольцовывание"
+msgstr "петля"
 
 # File: src/www/system_hasync.php, line: 133
 msgid ""
@@ -24242,7 +24237,7 @@ msgstr ""
 # File: src/www/system_usermanager.php, line: 170
 # File: src/www/system_usermanager.php, line: 191
 msgid "successfully deleted"
-msgstr "удален успешно"
+msgstr "успешно удален"
 
 # File: src/www/system_usermanager.php, line: 190
 msgid "Privilege"
@@ -24254,19 +24249,19 @@ msgstr "ассоциация удалена."
 
 # File: src/www/system_usermanager.php, line: 226
 msgid "API key"
-msgstr "Ключ API"
+msgstr "API-ключ"
 
 # File: src/www/system_usermanager.php, line: 227
 msgid "removed."
-msgstr "удалено"
+msgstr "удален."
 
 # File: src/www/system_usermanager.php, line: 229
 msgid "No API key found"
-msgstr "Ключ API не найден"
+msgstr "API-ключ не найден"
 
 # File: src/www/system_usermanager.php, line: 254
 msgid "The username is longer than 16 characters."
-msgstr "Длина имени пользователя больше 16 символов."
+msgstr "Имя пользователя длиннее 16 символов."
 
 # File: src/www/system_usermanager.php, line: 258
 # File: src/www/system_usermanager_passwordmg.php, line: 47
@@ -24279,15 +24274,15 @@ msgstr "Пароли не совпадают."
 # File: src/www/vpn_l2tp_users_edit.php, line: 102
 # File: src/www/vpn_pptp_users_edit.php, line: 104
 msgid "Another entry with the same username already exists."
-msgstr "Другая запись с таким же именем уже существует."
+msgstr "Пользователь с таким именем уже существует."
 
 # File: src/www/system_usermanager.php, line: 281
 msgid "That username is reserved by the system."
-msgstr "Это имя пользователя зарезервировано системой."
+msgstr "Данное имя пользователя зарезервировано для служебных целей."
 
 # File: src/www/system_usermanager.php, line: 301
 msgid "Invalid expiration date format; use MM/DD/YYYY instead."
-msgstr "Неверный формат даты окончания срока действия; используйте ДД.ММ.ГГГГ."
+msgstr "Неверный формат даты истечения; используйте ММ/ДД/ГГГГ."
 
 # File: src/www/system_usermanager.php, line: 308
 msgid "Invalid internal Certificate Authority"
@@ -24305,11 +24300,11 @@ msgstr "Вы действительно хотите удалить эту ас�
 # File: src/www/vpn_l2tp_users.php, line: 125
 # File: src/www/vpn_pptp_users.php, line: 119
 msgid "Do you really want to delete this user?"
-msgstr "Вы действительно хотите удалить этого пользователя?"
+msgstr "Действительно удалить данного пользователя?"
 
 # File: src/www/system_usermanager.php, line: 568
 msgid "Do you really want to delete this API key?"
-msgstr "Вы действительно хотите удалить этот ключ API?"
+msgstr "Действительно удалить данный API-ключ?"
 
 # File: src/www/system_usermanager.php, line: 640
 # File: src/www/vpn_ipsec_phase1.php, line: 785
@@ -24332,7 +24327,7 @@ msgstr "Полное имя пользователя, только для ваш
 
 # File: src/www/system_usermanager.php, line: 667
 msgid "Expiration date"
-msgstr "Дата окончания срока действия"
+msgstr "Дата окончания"
 
 # File: src/www/system_usermanager.php, line: 671
 msgid ""
@@ -24392,7 +24387,7 @@ msgstr "создать или соединить сертификат польз
 
 # File: src/www/system_usermanager.php, line: 837
 msgid "API keys"
-msgstr "Ключи API"
+msgstr "API-ключи"
 
 # File: src/www/system_usermanager.php, line: 844
 msgid "key"
@@ -24400,11 +24395,11 @@ msgstr "ключ"
 
 # File: src/www/system_usermanager.php, line: 864
 msgid "delete API key"
-msgstr "удалить ключ API"
+msgstr "удалить API-ключ"
 
 # File: src/www/system_usermanager.php, line: 878
 msgid "create API key"
-msgstr "создать ключ API"
+msgstr "Создать API-ключ"
 
 # File: src/www/system_usermanager.php, line: 887
 msgid ""
@@ -24416,7 +24411,7 @@ msgstr ""
 
 # File: src/www/system_usermanager.php, line: 896
 msgid "Click to create a user certificate."
-msgstr "Нажмите, чтобы создать сертификат пользователя."
+msgstr "Создать сертификат пользователя."
 
 # File: src/www/system_usermanager.php, line: 896
 msgid "Redirects on save"
@@ -24424,29 +24419,29 @@ msgstr "Переадресовывает на сохранение"
 
 # File: src/www/system_usermanager.php, line: 902
 msgid "Authorized keys"
-msgstr "Авторизованный ключ"
+msgstr "Ключи авторизации"
 
 # File: src/www/system_usermanager.php, line: 904
 msgid "Paste an authorized keys file here."
-msgstr "Вставьте файл авторизованных ключей здесь,"
+msgstr "Вставьте файл ключей авторизации."
 
 # File: src/www/system_usermanager.php, line: 908
 msgid "IPsec Pre-Shared Key"
-msgstr "Предварительно выданные ключи IPsec"
+msgstr "Общий ключ IPsec"
 
 # File: src/www/system_usermanager.php, line: 965
 msgid "edit user"
-msgstr "редактировать пользователя"
+msgstr "Редактировать пользователя"
 
 # File: src/www/system_usermanager.php, line: 972
 # File: src/www/vpn_l2tp_users.php, line: 126
 # File: src/www/vpn_pptp_users.php, line: 120
 msgid "delete user"
-msgstr "удалить пользователя"
+msgstr "Удалить пользователя"
 
 # File: src/www/system_usermanager.php, line: 998
 msgid "import users"
-msgstr "импортировать пользователей"
+msgstr "Импортировать пользователей"
 
 # File: src/www/system_usermanager.php, line: 1008
 msgid ""
@@ -25010,7 +25005,7 @@ msgstr "Значение тайм-аута бездействия должно �
 
 # File: src/www/vpn_ipsec_phase1.php, line: 221
 msgid "A valid remote gateway address or host name must be specified."
-msgstr "Укажите IP-адрес удаленного шлюза или имч хоста."
+msgstr "Необходимо определить адрес или имя удаленного шлюза."
 
 # File: src/www/vpn_ipsec_phase1.php, line: 223
 msgid ""
@@ -28107,7 +28102,7 @@ msgstr "ОК"
 # File: src/www/widgets/widgets/system_information.widget.php, line: 44
 # File: src/www/widgets/widgets/system_information.widget.php, line: 46
 msgid "Click to retry"
-msgstr "Нажмите, чтобы повторить попытку"
+msgstr "Повторить"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 44
 msgid "Connection Error"
@@ -28115,28 +28110,28 @@ msgstr "Ошибка подключения"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 46
 msgid "Repository Problem"
-msgstr "Неполадки в работе хранилища"
+msgstr "Проблема репозитория"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 48
 # File: src/www/widgets/widgets/system_information.widget.php, line: 105
 msgid "Click to check for updates"
-msgstr "Нажмите, чтобы проверить наличие обновлений"
+msgstr "Проверить обновления"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 48
 msgid "Your system is up to date."
-msgstr "У вас установлена последняя версия системы."
+msgstr "Система находится в актуальном состоянии."
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 50
 msgid " update(s) available."
-msgstr "доступны обновления."
+msgstr " обновление(-ий) доступно."
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 50
 msgid "Click to upgrade"
-msgstr "Нажмите, чтобы обновить"
+msgstr "Выполнить обновление"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 50
 msgid "Re-check now"
-msgstr "Проверить сейчас"
+msgstr "Проверить повторно"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 50
 msgid "There are "
@@ -28148,7 +28143,7 @@ msgstr "Версии"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 109
 msgid "CPU Type"
-msgstr "Тип ЦП"
+msgstr "Тип ЦПУ"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 124
 msgid "Hardware crypto"
@@ -28160,15 +28155,15 @@ msgstr "Время работы"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 133
 msgid "Current date/time"
-msgstr "Текущая дата/время"
+msgstr "Текущие дата/время"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 139
 msgid "DNS server(s)"
-msgstr "DNS-сервер (-ы)"
+msgstr "DNS-сервер(-ы)"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 152
 msgid "Last config change"
-msgstr "Последнее изменение файла конфигурации"
+msgstr "Последнее изменение конфигурации"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 157
 msgid "State table size"
@@ -28180,7 +28175,7 @@ msgstr "Показать состояния"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 175
 msgid "MBUF Usage"
-msgstr "Использование буфера памяти"
+msgstr "Использование MBUF"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 193
 msgid "Temperature"
@@ -28192,7 +28187,7 @@ msgstr "Средняя нагрузка"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 213
 msgid "CPU usage"
-msgstr "Загрузка ЦП"
+msgstr "Использование ЦПУ"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 221
 msgid "Updating in 10 seconds"
@@ -28200,7 +28195,7 @@ msgstr "Обновление через 10 секунд"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 225
 msgid "Memory usage"
-msgstr "Использование памяти"
+msgstr "Использование ОЗУ"
 
 # File: src/www/widgets/widgets/system_information.widget.php, line: 239
 msgid "SWAP usage"
@@ -28212,7 +28207,7 @@ msgstr "Использование диска"
 
 # File: src/www/widgets/widgets/system_log.widget.php, line: 55
 msgid "Number of Log lines to display"
-msgstr "Количество отображаемых строк журнала"
+msgstr "Количество строк системного журнала для отображения"
 
 # File: src/www/widgets/widgets/thermal_sensors.widget.php, line: 181
 msgid "Thresholds in &deg;C (1 to 100):"
@@ -28266,7 +28261,7 @@ msgstr ""
 
 # File: src/www/widgets/widgets/thermal_sensors.widget.php, line: 280
 msgid "Updating..."
-msgstr "Обновление…"
+msgstr "Обновление..."
 
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 114
 msgid "Default AutoScale:"
@@ -28290,19 +28285,19 @@ msgstr "Секунд"
 
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 148
 msgid "changing this setting will increase CPU utilization"
-msgstr "изменение этих настроек увеличит загрузку ЦП"
+msgstr "изменение этого параметра увеличить загрузку ЦПУ"
 
 # File: src/www/widgets/widgets/traffic_graphs.widget.php, line: 190
 msgid "Current %s Traffic"
-msgstr "Текущий %s трафик"
+msgstr "Текущий трафик %s"
 
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 45
 msgid "Computer / Device"
-msgstr "Компьютер / устройство"
+msgstr "Компьютер / Устройство"
 
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 71
 msgid "Wake Up"
-msgstr "Разбудить"
+msgstr "Пробудить"
 
 # File: src/www/widgets/widgets/wake_on_lan.widget.php, line: 76
 msgid "No saved WoL addresses"
