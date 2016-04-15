@@ -8,6 +8,14 @@
         <hint>Type or select interface.</hint>
     </field>
     <field>
+        <id>netflow.capture.egress_only</id>
+        <label>Egress only</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <help><![CDATA[Select interfaces used for wan traffic to avoid counting nat traffic twice]]></help>
+        <hint>Type or select interface.</hint>
+    </field>
+    <field>
         <id>netflow.collect.enable</id>
         <label>Capture local</label>
         <type>checkbox</type>

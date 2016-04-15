@@ -40,6 +40,7 @@ status_cmd="${name}_status"
 extra_commands="status"
 
 [ -z "$netflow_enable" ] && netflow_enable="NO"
+[ -z "$netflow_egress_only" ] && netflow_egress_only=""
 
 # setup_interface (interface)
 # - use netgraph + ng_netflow in combination with samplicate to record netflow data and send it to multiple locations
@@ -58,7 +59,16 @@ setup_interface()
         echo "error : interface $interface not found"
         return
     fi
-    echo "setup $interface"
+    # disable ingress (traffic to this host) for selected interfaces
+    # avoids counting traffic going through this firewall double when using nat
+    if [ ! -z "`echo " $netflow_egress_only " | grep " $interface "`" ]; then
+        conf="10"
+        echo "setup $interface [egress only]"
+    else
+        conf="11"
+        echo "setup $interface"
+    fi;
+
     # make sure netgraph is attached
     /usr/local/sbin/ngattach $interface
     # remove earlier setup (if any)
@@ -69,7 +79,7 @@ setup_interface()
        name	$interface:lower netflow_$interface
        connect $interface: netflow_$interface: upper	out$ifIndex
        mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp
-       msg netflow_$interface: setconfig {iface=$ifIndex conf=11}
+       msg netflow_$interface: setconfig {iface=$ifIndex conf=$conf}
        msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
 SEQ
 }

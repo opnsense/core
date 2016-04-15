@@ -13,6 +13,14 @@
                     <enable>/^(?!0).*$/</enable>
                 </filters>
             </interfaces>
+            <egress_only type="InterfaceField">
+                <Required>N</Required>
+                <default>wan</default>
+                <multiple>Y</multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                </filters>
+            </egress_only>
             <version type="OptionField">
                 <Required>Y</Required>
                 <default>v9</default>
