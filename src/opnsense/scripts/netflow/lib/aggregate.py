@@ -30,7 +30,6 @@
 import os
 import datetime
 import sqlite3
-import copy
 
 class AggMetadata(object):
     """ store some metadata needed to keep track of parse progress
@@ -336,8 +335,8 @@ class BaseFlowAggregator(object):
         else:
             value_sql = '0'
 
-        # query filters
-        query_params['start_time'] = self._parse_timestamp(start_time)
+        # query filters, correct start_time for resolution
+        query_params['start_time'] = self._parse_timestamp((int(start_time/self.resolution))*self.resolution)
         query_params['end_time'] = self._parse_timestamp(end_time)
         if data_filter:
             tmp = data_filter.split('=')[0].strip()
