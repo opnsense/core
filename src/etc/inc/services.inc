@@ -497,9 +497,9 @@ one-lease-per-client true;
 deny duplicates;
 ping-check true;
 update-conflict-detection false;
+authoritative;
 
 EOD;
-
 
     $dhcpdifs = array();
     $add_routers = false;
@@ -1205,16 +1205,9 @@ one-lease-per-client true;
 deny duplicates;
 ping-check true;
 update-conflict-detection false;
+authoritative;
 
 EOD;
-
-    if (!isset($dhcpv6ifconf['disableauthoritative'])) {
-        $dhcpdv6conf .= "authoritative;\n";
-    }
-
-    if (isset($dhcpv6ifconf['alwaysbroadcast'])) {
-        $dhcpdv6conf .= "always-broadcast on\n";
-    }
 
     $dhcpdv6ifs = array();
     $dhcpv6num = 0;
