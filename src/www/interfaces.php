@@ -2050,8 +2050,7 @@ include("head.inc");
                               </label>
                             </div>
                             <div class="hidden" for="help_for_dhcpprotocol_timing">
-                              <?=gettext("The values in these fields are DHCP protocol timings used when requesting a lease. <br /> " ); ?>
-                              <a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING</a>
+                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease. "),'<a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
                             </div>
                           </td>
                         </tr>
@@ -2059,7 +2058,7 @@ include("head.inc");
                           <td><a id="help_for_dhcp_lease_requirements_and_requests" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Lease Requirements");?> </td>
                           <td>
                             <div class="hidden" for="help_for_dhcp_lease_requirements_and_requests">
-                              <?=gettext("More detailed information about lease requirements and requests can be found in the ");?> <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS"><?=gettext("FreeBSD Manual");?></a><br/>
+                              <?=sprintf(gettext("More detailed information about lease requirements and requests can be found in the %sFreeBSD Manual%s."),'<a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#LEASE_REQUIREMENTS_AND_REQUESTS">','</a>')?><br/>
                               <hr/>
                             </div>
                             <?=gettext("Send Options"); ?><br />
@@ -2203,17 +2202,13 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td><?=gettext("Advanced PPP"); ?></td>
+                          <td>
                             <?php if (!empty($pconfig['pppid'])): ?>
-                              <td>
-                              <a href="/interfaces_ppps_edit.php?id=<?=htmlspecialchars($pconfig['pppid']);?>" class="navlnk"><?=gettext("Click here"); ?> </a>
-                              <?=gettext("to edit PPP configuration."); ?>
-                              </td>
+                              <?= sprintf(gettext('%sClick here%s to edit PPP configuration.'),'<a href="/interfaces_ppps_edit.php?id=' . htmlspecialchars($pconfig['pppid']) . '" class="navlnk">', '</a>') ?>
                             <?php else: ?>
-                              <td>
-                              <a href="/interfaces_ppps_edit.php" class="navlnk"><?=gettext("Click here"); ?> </a>
-                              <?=gettext("to create a PPP configuration."); ?>
-                              </td>
+                              <?= sprintf(gettext("%sClick here%s to create a PPP configuration."), '<a href="/interfaces_ppps_edit.php" class="navlnk">', '</a>') ?>
                             <?php endif; ?>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -2343,13 +2338,11 @@ include("head.inc");
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced and MLPPP"); ?></td>
                           <?php if (isset($pconfig['pppid'])): ?>
                             <td>
-                            <a href="/interfaces_ppps_edit.php?id=<?=$pconfig['pppid'];?>" class="navlnk"><?=gettext("Click here"); ?> </a>
-                            <?=gettext("for additional PPPoE configuration options. Save first if you made changes."); ?>
+                            <?= sprintf(gettext('%sClick here%s for additional PPPoE configuration options. Save first if you made changes.'),'<a href="/interfaces_ppps_edit.php?id='.$pconfig['pppid'].'" class="navlnk">','</a>') ?>
                             </td>
                           <?php else: ?>
                             <td>
-                            <a href="/interfaces_ppps_edit.php" class="navlnk"><?=gettext("Click here"); ?> </a>
-                            <?=gettext("for advanced PPPoE configuration options and MLPPP configuration."); ?>
+                            <?= sprintf(gettext('%sClick here%s for advanced PPPoE configuration options and MLPPP configuration.'),'<a href="/interfaces_ppps_edit.php" class="navlnk">','</a>') ?>
                             </td>
                           <?php endif; ?>
                         </tr>
@@ -2390,7 +2383,7 @@ include("head.inc");
                                 <td>
                                   <select name="pptp_subnet" class="selectpicker" data-width="auto" data-style="btn-default" data-size="10" id="pptp_subnet">
                                     <?php for ($i = 31; $i > 0; $i--): ?>
-                                      <option value="<?=$i;?>" <?= $i == $pconfig['pptp_subnet'] ? "selected=\"selected\"" : ""; ?>>
+                                      <option value="<?=$i;?>" <?= $i == $pconfig['pptp_subnet'] ? 'selected="selected"' : ''; ?>>
                                         <?=$i;?>
                                       </option>
                                     <?php endfor; ?>
@@ -2409,7 +2402,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_pptp_dialondemand" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Dial on demand"); ?></td>
                           <td>
-                            <input name="pptp_dialondemand" type="checkbox" id="pptp_dialondemand" value="enable" <?=!empty($pconfig['pptp_dialondemand']) ? "checked=\"checked\"" : ""; ?> />
+                            <input name="pptp_dialondemand" type="checkbox" id="pptp_dialondemand" value="enable" <?=!empty($pconfig['pptp_dialondemand']) ? 'checked="checked"' : '' ?> />
                             <strong><?=gettext("Enable Dial-On-Demand mode"); ?></strong><br />
                             <div class="hidden" for="help_for_pptp_dialondemand">
                               <?=gettext("This option causes the interface to operate in dial-on-demand mode, allowing you to have a 'virtual full time' connection. The interface is configured, but the actual connection of the link is delayed until qualifying outgoing traffic is detected."); ?>
@@ -2424,17 +2417,13 @@ include("head.inc");
                         </tr>
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced"); ?></td>
+                            <td>
                           <?php if (!empty($pconfig['pppid'])): ?>
-                            <td>
-                            <a href="/interfaces_ppps_edit.php?id=<?=$pconfig['pppid'];?>" class="navlnk"><?=gettext("Click here");?></a>
-                            <?=gettext("for additional PPTP and L2TP configuration options. Save first if you made changes.");?>
-                            </td>
+                            <?= sprintf(gettext("%sClick here%s for additional PPTP and L2TP configuration options. Save first if you made changes."),'<a href="/interfaces_ppps_edit.php?id='.$pconfig['pppid'].'" class="navlnk">','</a>') ?>
                           <?php else: ?>
-                            <td>
-                            <a href="/interfaces_ppps_edit.php" class="navlnk"><?=gettext("Click here");?></a>
-                            <?=gettext("for advanced PPTP and L2TP configuration options");?>.
-                            </td>
+                            <?= sprintf(gettext('%sClick here%s for advanced PPTP and L2TP configuration options.'),'<a href="/interfaces_ppps_edit.php" class="navlnk">','</a>') ?>
                           <?php endif; ?>
+                            </td>
                         </tr>
                       </tbody>
                     </table>
