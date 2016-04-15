@@ -2785,32 +2785,45 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
 function get_service_control_links($service, $addname = false)
 {
     $stitle = $addname ? $service['name'] . ' ' : '';
-    $output = '';
+    $output = "
+      <script type='text/javascript'>
+          $( document ).ready(function() {
+              $('.srv_status_act').click(function(event){
+                event.preventDefault();
+                params = {};
+                params['action'] = $(this).data('service_action');
+                params['service'] = $(this).data('service');
+                params['id'] = $(this).data('service_id');
+                $.post('/status_services.php',params, function(data) {
+                    // refresh page after service action
+                    location.reload();
+                });
+              });
+          });
+      </script>
+    ";
 
     if (get_service_status($service)) {
-        /* restart service button */
-        $output .= "<a href='status_services.php?action=restart&amp;service={$service['name']}";
         if (isset($service['id'])) {
-            $output .= "&amp;id={$service['id']}";
+            $service_id = $service['id'];
+        } else {
+            $service_id = "";
         }
-        $output .= "' class=\"btn btn-default\">";
-        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Restart %sService"),$stitle) . "' class=\"glyphicon glyphicon-refresh\"></span></a>\n";
+        $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"restart\" data-service=\"{$service['name']}\"";
+        $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
+        $output .= sprintf(gettext("Restart %sService"),$stitle) ;
+        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-refresh\"></span></i>\n";
 
-	/* stop service button */
-        $output .= "<a href='status_services.php?action=stop&amp;service={$service['name']}";
-        if (isset($service['id'])) {
-            $output .= "&amp;id={$service['id']}";
-        }
-        $output .= "' class=\"btn btn-default\">";
-        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Stop %sService"),$stitle) . "' class=\"glyphicon glyphicon-stop\"></span></a>";
+        $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"stop\" data-service=\"{$service['name']}\"";
+        $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
+        $output .= sprintf(gettext("Stop %sService"),$stitle) ;
+        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-stop\"></span></i>\n";
       } else {
         /* start service button */
-        $output .= "<a href='status_services.php?action=start&amp;service={$service['name']}";
-        if (isset($service['id'])) {
-            $output .= "&amp;id={$service['id']}";
-        }
-        $output .= "' class=\"btn btn-default\">";
-        $output .= "<span data-toggle=\"tooltip\" data-placement=\"bottom\" title='" . sprintf(gettext("Start %sService"),$stitle) . "' class=\"glyphicon glyphicon-play\"/></a>\n";
+        $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"start\" data-service=\"{$service['name']}\"";
+        $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
+        $output .= sprintf(gettext("Start %sService"),$stitle) ;
+        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-play\"></span></i>\n";
     }
 
     return $output;

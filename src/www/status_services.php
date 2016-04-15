@@ -41,34 +41,27 @@ require_once("ipsec.inc");
 require_once("interfaces.inc");
 require_once("rrd.inc");
 
-if (!empty($_GET['service'])) {
-    $service_name = $_GET['service'];
-    switch ($_GET['action']) {
+if (!empty($_POST['service'])) {
+    $service_name = $_POST['service'];
+    switch ($_POST['action']) {
         case 'restart':
-          $savemsg = service_control_restart($service_name, $_GET);
+          service_control_restart($service_name, $_POST);
           break;
         case 'start':
-          $savemsg = service_control_start($service_name, $_GET);
+          service_control_start($service_name, $_POST);
           break;
         case 'stop':
-          $savemsg = service_control_stop($service_name, $_GET);
+          service_control_stop($service_name, $_POST);
           break;
     }
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        $referer = $_SERVER['HTTP_REFERER'];
-        if (strpos($referer, $_SERVER['PHP_SELF']) === false) {
-            /* redirect only if launched from somewhere else */
-            header('Location: '. $referer);
-            exit;
-        }
-    }
+    exit;
 }
 
 function service_control_start($name, $extras)
 {
     $msg = sprintf(gettext('%s has been started.'), htmlspecialchars($name));
 
-    if (isset($extras['id'])) {
+    if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
 
@@ -107,7 +100,7 @@ function service_control_stop($name, $extras)
     $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
     $filter = array();
 
-    if (isset($extras['id'])) {
+    if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
 
@@ -142,7 +135,7 @@ function service_control_restart($name, $extras)
 {
     $msg = sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
 
-    if (isset($extras['id'])) {
+    if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
 
