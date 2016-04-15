@@ -94,6 +94,8 @@ class NetworkinsightController extends ApiControllerBase
                             $measure_val = $payload['packets'];
                         } elseif ($measure == "octets_ps") {
                             $measure_val = $payload['octets'] / $payload['resolution'];
+                        } elseif ($measure == "bps") {
+                            $measure_val = ($payload['octets'] / $payload['resolution']) * 8;
                         } elseif ($measure == "packets_ps") {
                             $measure_val = $payload['packets'] / $payload['resolution'];
                         }
