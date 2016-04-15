@@ -87,6 +87,11 @@ if valid_params:
                     if record_key not in dimension_keys:
                         dimension_keys.append(record_key)
 
+        # add first measure point if it doesn't exist in the data (graph starting point)
+        if start_time not in timeseries:
+            timeseries[start_time] = dict()
+            for dimension_key in dimension_keys:
+                timeseries[start_time][dimension_key] = {'octets': 0, 'packets': 0, 'resolution': resolution}
         # make sure all measure points exists for all given keys
         for timeserie in sorted(timeseries):
             for dimension_key in dimension_keys:
