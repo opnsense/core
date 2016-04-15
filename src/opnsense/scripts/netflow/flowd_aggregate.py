@@ -33,6 +33,9 @@ import os
 import sys
 import signal
 import glob
+import copy
+import syslog
+import traceback
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib.parse import parse_flow
 from lib.aggregate import AggMetadata
@@ -69,7 +72,10 @@ def aggregate_flowd(do_vacuum=False):
         if flow_record is not None:
             # send to aggregator
             for stream_agg_object in stream_agg_objects:
-                stream_agg_object.add(flow_record)
+                # class add() may change the flow contents for processing, its better to isolate
+                # paremeters here.
+                flow_record_cpy = copy.deepcopy(flow_record)
+                stream_agg_object.add(flow_record_cpy)
             prev_recv = flow_record['recv']
 
     # expire old data
@@ -131,8 +137,13 @@ class Main(object):
                 do_vacuum = True
             else:
                 do_vacuum = False
+
             # run aggregate
-            aggregate_flowd(do_vacuum)
+            try:
+                aggregate_flowd(do_vacuum)
+            except:
+                syslog.syslog(syslog.LOG_ERR, 'flowd aggregate died with message %s' % (traceback.format_exc()))
+                return
             # rotate if needed
             check_rotate()
             # wait for next pass, exit on sigterm
