@@ -66,9 +66,8 @@ class FlowInterfaceTotals(BaseFlowAggregator):
         :return: None
         """
         flow['if'] = flow['if_in']
-        flow['direction'] = 'out'
-        flow_copy = self.copy_reverse_flow(flow)
-        flow_copy['if'] = flow_copy['if_in']
-        flow_copy['direction'] = 'in'
+        flow['direction'] = 'in'
         super(FlowInterfaceTotals, self).add(flow)
-        super(FlowInterfaceTotals, self).add(flow_copy)
+        flow['if'] = flow['if_out']
+        flow['direction'] = 'out'
+        super(FlowInterfaceTotals, self).add(flow)
