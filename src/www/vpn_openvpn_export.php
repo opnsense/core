@@ -676,7 +676,7 @@ endif; ?>
             <td >
                   <select name="verifyservercn" id="verifyservercn" class="formselect">
                     <option value="auto"><?=gettext("Automatic - Use verify-x509-name (OpenVPN 2.3+) where possible");?></option>
-                    <option value="tls-remote"><?=gettext("Use tls-remote (Deprecated, use only on old clients &lt;= OpenVPN 2.2.x");?>)</option>
+                    <option value="tls-remote"><?=gettext("Use tls-remote (deprecated, use only on clients prior to OpenVPN 2.3)");?></option>
                     <option value="tls-remote-quote"><?=gettext("Use tls-remote and quote the server CN");?></option>
                     <option value="none"><?=gettext("Do not verify the server CN");?></option>
                   </select>
