@@ -2812,18 +2812,18 @@ function get_service_control_links($service, $addname = false)
         $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"restart\" data-service=\"{$service['name']}\"";
         $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
         $output .= sprintf(gettext("Restart %sService"),$stitle) ;
-        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-refresh\"></span></i>\n";
+        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-refresh\"></span>\n";
 
         $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"stop\" data-service=\"{$service['name']}\"";
         $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
         $output .= sprintf(gettext("Stop %sService"),$stitle) ;
-        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-stop\"></span></i>\n";
+        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-stop\"></span>\n";
       } else {
         /* start service button */
         $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"start\" data-service=\"{$service['name']}\"";
         $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
         $output .= sprintf(gettext("Start %sService"),$stitle) ;
-        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-play\"></span></i>\n";
+        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-play\"></span>\n";
     }
 
     return $output;
