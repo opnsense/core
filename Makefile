@@ -147,8 +147,11 @@ manifest: force
 	@echo "prefix: /usr/local"
 	@echo "deps: {"
 	@for CORE_DEPEND in ${CORE_DEPENDS}; do \
-		${PKG} query '  %n: { version: "%v", origin: "%o" }' \
-		    $${CORE_DEPEND}; \
+		if ! ${PKG} query '  %n: { version: "%v", origin: "%o" }' \
+		    $${CORE_DEPEND}; then \
+			echo ">>> Missing dependency: $${CORE_DEPEND}" >&2; \
+			exit 1; \
+		fi; \
 	done
 	@echo "}"
 
