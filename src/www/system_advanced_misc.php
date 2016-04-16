@@ -263,19 +263,6 @@ include("head.inc");
         $('#srctrack').attr('disabled','true');
       }
     }
-    function tmpvar_checked(obj) {
-      if (obj.checked) {
-        $('#rrdbackup').attr('disabled',false);
-        $('#dhcpbackup').attr('disabled',false);
-        $('#rrdbackup').selectpicker('refresh');
-        $('#dhcpbackup').selectpicker('refresh');
-      } else {
-        $('#rrdbackup').attr('disabled','true');
-        $('#dhcpbackup').attr('disabled','true');
-        $('#rrdbackup').selectpicker('refresh');
-        $('#dhcpbackup').selectpicker('refresh');
-      }
-    }
 //]]>
 </script>
 
@@ -552,23 +539,12 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_use_mfs_tmpvar" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use RAM Disks"); ?></td>
-                <td>
-                  <input name="use_mfs_tmpvar" type="checkbox" id="use_mfs_tmpvar" value="yes" <?=!empty($pconfig['use_mfs_tmpvar']) ? "checked=\"checked\"" : "";?> onclick="tmpvar_checked(this)" />
-                  <div class="hidden" for="help_for_use_mfs_tmpvar">
-                    <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong><br />
-                    <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
-                                        "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."); ?>
-                  </div>
-                </td>
+                <th colspan="2" valign="top" class="listtopic"><?=gettext("Periodic Backups)"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
                   <td>
-                    <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup" <?=empty($pconfig['use_mfs_tmpvar']) ? "disabled=\"disabled\"" : "";?> >
+                    <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
                       <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? "selected='selected'" : "";?>>
                         <?=gettext("Disable"); ?>
                       </option>
@@ -589,7 +565,7 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
                 <td>
-                  <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup" <?=empty($pconfig['use_mfs_tmpvar']) ? "disabled=\"disabled\"" : "";?> >
+                  <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup">
                     <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
 <?php
                     for ($x=1; $x<=24; $x++):?>
@@ -601,6 +577,20 @@ include("head.inc");
                   </select>
                   <div class="hidden" for="help_for_dhcpbackup">
                     <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes will happen to your media.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></th>
+              </tr>
+              <tr>
+                <td><a id="help_for_use_mfs_tmpvar" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use RAM Disks"); ?></td>
+                <td>
+                  <input name="use_mfs_tmpvar" type="checkbox" id="use_mfs_tmpvar" value="yes" <?=!empty($pconfig['use_mfs_tmpvar']) ? "checked=\"checked\"" : "";?>/>
+                  <div class="hidden" for="help_for_use_mfs_tmpvar">
+                    <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong><br />
+                    <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
+                                        "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."); ?>
                   </div>
                 </td>
               </tr>
