@@ -179,21 +179,6 @@ include("head.inc");
 ?>
 
 <body>
-  <script type='text/javascript'>
-      $( document ).ready(function() {
-          $('.srv_status_act').click(function(event){
-            event.preventDefault();
-            params = {};
-            params['action'] = $(this).data('service_action');
-            params['service'] = $(this).data('service');
-            params['id'] = $(this).data('service_id');
-            $.post('/status_services.php',params, function(data) {
-                // refresh page after service action
-                location.reload();
-            });
-          });
-      });
-  </script>
 
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
@@ -220,7 +205,7 @@ include("head.inc");
                     <td><?=$service['description'];?></td>
                     <td>
                       <?=get_service_status_icon($service, true, true);?>
-                      <?=get_service_control_links($service, false, false);?>
+                      <?=get_service_control_links($service, false);?>
                     </td>
                 </tr>
 <?php

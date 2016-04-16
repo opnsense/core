@@ -2782,50 +2782,64 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
     return $output;
 }
 
-function get_service_control_links($service, $addname = false, $add_script = true)
+function get_service_control_links($service, $addname = false)
 {
-    $stitle = $addname ? $service['name'] . ' ' : '';
-    if ($add_script) {
-        $output = "
+    $service_id = isset($service['id']) ? $service['id'] : '';
+    $service_act = sprintf('srv_status_act_%s%s', $service['name'], $service_id);
+    $service_title = $addname ? $service['name'] . ' ' : '';
+
+    $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
+    $template .= 'data-toggle="tooltip" data-placement="bottom" title="%s" ';
+    $template .= 'class="btn btn-default %s %s"></span>' . PHP_EOL;
+
+    $output = "
           <script type='text/javascript'>
               $( document ).ready(function() {
-                  $('.srv_status_act').click(function(event){
+                  $('.{$service_act}').click(function(event){
                     event.preventDefault();
                     params = {};
                     params['action'] = $(this).data('service_action');
                     params['service'] = $(this).data('service');
                     params['id'] = $(this).data('service_id');
                     $.post('/status_services.php',params, function(data) {
-                        // refresh page after service action
-                        //location.reload();
+                        // refresh page after service action via server
+                        location.reload(true);
                     });
                   });
               });
           </script>
-        ";
-    }
+    ";
 
     if (get_service_status($service)) {
-        if (isset($service['id'])) {
-            $service_id = $service['id'];
-        } else {
-            $service_id = "";
-        }
-        $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"restart\" data-service=\"{$service['name']}\"";
-        $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
-        $output .= sprintf(gettext("Restart %sService"),$stitle) ;
-        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-refresh\"></span>\n";
+        $output .= sprintf(
+            $template,
+            $service_id,
+            'restart',
+            $service['name'],
+            sprintf(gettext('Restart %sService'), $service_title),
+            $service_act,
+            'glyphicon glyphicon-refresh'
+        );
 
-        $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"stop\" data-service=\"{$service['name']}\"";
-        $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
-        $output .= sprintf(gettext("Stop %sService"),$stitle) ;
-        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-stop\"></span>\n";
-      } else {
-        /* start service button */
-        $output .= "<span data-service_id=\"{$service_id}\" data-service_action=\"start\" data-service=\"{$service['name']}\"";
-        $output .= " data-toggle=\"tooltip\" data-placement=\"bottom\" title=\"";
-        $output .= sprintf(gettext("Start %sService"),$stitle) ;
-        $output .= "\" class=\"btn btn-default srv_status_act glyphicon glyphicon-play\"></span>\n";
+        $output .= sprintf(
+            $template,
+            $service_id,
+            'stop',
+            $service['name'],
+            sprintf(gettext('Stop %sService'), $service_title),
+            $service_act,
+            'glyphicon glyphicon-stop'
+        );
+    } else {
+        $output .= sprintf(
+            $template,
+            $service_id,
+            'start',
+            $service['name'],
+            sprintf(gettext('Start %sService'), $service_title),
+            $service_act,
+            'glyphicon glyphicon-play'
+        );
     }
 
     return $output;
