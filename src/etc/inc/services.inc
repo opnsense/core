@@ -2687,7 +2687,7 @@ function services_get()
             $services[] = array(
                 'pidfile' => '/var/run/lighttpd-api-dispatcher.pid',
                 'description' => gettext('Captive Portal'),
-                'confidg' => array(
+                'configd' => array(
                     'restart' => array('captiveportal restart'),
                     'start' => array('captiveportal start'),
                     'stop' => array('captiveportal stop'),
@@ -2782,26 +2782,28 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
     return $output;
 }
 
-function get_service_control_links($service, $addname = false)
+function get_service_control_links($service, $addname = false, $add_script = true)
 {
     $stitle = $addname ? $service['name'] . ' ' : '';
-    $output = "
-      <script type='text/javascript'>
-          $( document ).ready(function() {
-              $('.srv_status_act').click(function(event){
-                event.preventDefault();
-                params = {};
-                params['action'] = $(this).data('service_action');
-                params['service'] = $(this).data('service');
-                params['id'] = $(this).data('service_id');
-                $.post('/status_services.php',params, function(data) {
-                    // refresh page after service action
-                    location.reload();
-                });
+    if ($add_script) {
+        $output = "
+          <script type='text/javascript'>
+              $( document ).ready(function() {
+                  $('.srv_status_act').click(function(event){
+                    event.preventDefault();
+                    params = {};
+                    params['action'] = $(this).data('service_action');
+                    params['service'] = $(this).data('service');
+                    params['id'] = $(this).data('service_id');
+                    $.post('/status_services.php',params, function(data) {
+                        // refresh page after service action
+                        //location.reload();
+                    });
+                  });
               });
-          });
-      </script>
-    ";
+          </script>
+        ";
+    }
 
     if (get_service_status($service)) {
         if (isset($service['id'])) {

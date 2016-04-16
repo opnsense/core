@@ -45,13 +45,13 @@ if (!empty($_POST['service'])) {
     $service_name = $_POST['service'];
     switch ($_POST['action']) {
         case 'restart':
-          service_control_restart($service_name, $_POST);
+          echo service_control_restart($service_name, $_POST);
           break;
         case 'start':
-          service_control_start($service_name, $_POST);
+          echo service_control_start($service_name, $_POST);
           break;
         case 'stop':
-          service_control_stop($service_name, $_POST);
+          echo service_control_stop($service_name, $_POST);
           break;
     }
     exit;
@@ -69,7 +69,6 @@ function service_control_start($name, $extras)
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
     }
-
     if (isset($service['configd']['start'])) {
         foreach ($service['configd']['start'] as $cmd) {
             configd_run($cmd);
@@ -180,6 +179,22 @@ include("head.inc");
 ?>
 
 <body>
+  <script type='text/javascript'>
+      $( document ).ready(function() {
+          $('.srv_status_act').click(function(event){
+            event.preventDefault();
+            params = {};
+            params['action'] = $(this).data('service_action');
+            params['service'] = $(this).data('service');
+            params['id'] = $(this).data('service_id');
+            $.post('/status_services.php',params, function(data) {
+                // refresh page after service action
+                location.reload();
+            });
+          });
+      });
+  </script>
+
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
     <div class="container-fluid">
@@ -205,7 +220,7 @@ include("head.inc");
                     <td><?=$service['description'];?></td>
                     <td>
                       <?=get_service_status_icon($service, true, true);?>
-                      <?=get_service_control_links($service);?>
+                      <?=get_service_control_links($service, false, false);?>
                     </td>
                 </tr>
 <?php
