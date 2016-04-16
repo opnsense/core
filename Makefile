@@ -122,7 +122,6 @@ CORE_DEPENDS?=		apinger \
 			relayd \
 			rrdtool12 \
 			samplicator \
-			smartmontools \
 			squid \
 			sshlockout_pf \
 			strongswan \

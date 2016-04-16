@@ -266,7 +266,6 @@
             <Status order="40" url="/status_ntpd.php"/>
             <Log order="50" VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <SMART url="/diag_smart.php" cssClass="fa fa-stethoscope fa-fw"/>
         <SNMP url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
         <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug fa-fw">
             <Settings url="/services_upnp.php">
