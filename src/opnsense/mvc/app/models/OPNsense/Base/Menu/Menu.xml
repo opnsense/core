@@ -25,12 +25,12 @@
             </History>
             <Backups url="/diag_backup.php"/>
         </Configuration>
-        <CrashReporter order="90" VisibleName="Crash Reporter" url="/crash_reporter.php" cssClass="fa fa-bug fa-fw"/>
         <Firmware order="5" cssClass="fa fa-building-o fa-fw">
             <Updates order="10" url="/ui/core/firmware/"/>
-            <Reboot order="20" url="/reboot.php"/>
-            <Halt order="30" url="/diag_halt.php"/>
-            <Defaults order="40" url="/diag_defaults.php"/>
+            <Reporter order="20" url="/crash_reporter.php"/>
+            <Reboot order="30" url="/reboot.php"/>
+            <Halt order="40" url="/diag_halt.php"/>
+            <Defaults order="50" url="/diag_defaults.php"/>
         </Firmware>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Synchronization url="/system_hasync.php"/>
