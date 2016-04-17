@@ -2785,30 +2785,13 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
 function get_service_control_links($service, $addname = false)
 {
     $service_id = isset($service['id']) ? $service['id'] : '';
-    $service_act = sprintf('srv_status_act_%s%s', $service['name'], $service_id);
     $service_title = $addname ? $service['name'] . ' ' : '';
 
     $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
     $template .= 'data-toggle="tooltip" data-placement="bottom" title="%s" ';
     $template .= 'class="btn btn-default %s %s"></span>' . PHP_EOL;
 
-    $output = "
-          <script type='text/javascript'>
-              $( document ).ready(function() {
-                  $('.{$service_act}').click(function(event){
-                    event.preventDefault();
-                    params = {};
-                    params['action'] = $(this).data('service_action');
-                    params['service'] = $(this).data('service');
-                    params['id'] = $(this).data('service_id');
-                    $.post('/status_services.php',params, function(data) {
-                        // refresh page after service action via server
-                        location.reload(true);
-                    });
-                  });
-              });
-          </script>
-    ";
+    $output = '';
 
     if (get_service_status($service)) {
         $output .= sprintf(
@@ -2817,7 +2800,7 @@ function get_service_control_links($service, $addname = false)
             'restart',
             $service['name'],
             sprintf(gettext('Restart %sService'), $service_title),
-            $service_act,
+            'srv_status_act',
             'glyphicon glyphicon-refresh'
         );
 
@@ -2827,7 +2810,7 @@ function get_service_control_links($service, $addname = false)
             'stop',
             $service['name'],
             sprintf(gettext('Stop %sService'), $service_title),
-            $service_act,
+            'srv_status_act',
             'glyphicon glyphicon-stop'
         );
     } else {
@@ -2837,7 +2820,7 @@ function get_service_control_links($service, $addname = false)
             'start',
             $service['name'],
             sprintf(gettext('Start %sService'), $service_title),
-            $service_act,
+            'srv_status_act',
             'glyphicon glyphicon-play'
         );
     }

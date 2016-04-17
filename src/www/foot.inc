@@ -63,11 +63,27 @@
 <?php
     endif; ?>
 
-  <!-- bootstrap script -->
-  <script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
-  <!-- Fancy select with search options -->
-  <script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
-  <!-- bootstrap dialog -->
-  <script src="/ui/js/bootstrap-dialog.min.js"></script>
+    <!-- bootstrap script -->
+    <script type="text/javascript" src="/ui/js/bootstrap.min.js"></script>
+    <!-- Fancy select with search options -->
+    <script type="text/javascript" src="/ui/js/bootstrap-select.min.js"></script>
+    <!-- bootstrap dialog -->
+    <script type="text/javascript" src="/ui/js/bootstrap-dialog.min.js"></script>
+    <!-- service control hook -->
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        $('.srv_status_act').click(function(event){
+          event.preventDefault();
+          params = {};
+          params['action'] = $(this).data('service_action');
+          params['service'] = $(this).data('service');
+          params['id'] = $(this).data('service_id');
+          $.post('/status_services.php',params, function(data) {
+            // refresh page after service action via server
+            location.reload(true);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
