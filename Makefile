@@ -184,14 +184,22 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/lang plist
 	@${MAKE} -C ${.CURDIR}/src plist
 
+package-keywords: force
+	@if [ ! -f /usr/ports/Keywords/sample.ucl ]; then \
+		mkdir -p /usr/ports/Keywords; \
+		cd /usr/ports/Keywords; \
+		fetch https://raw.githubusercontent.com/opnsense/ports/master/Keywords/sample.ucl; \
+	fi
+	@echo ">>> Installed /usr/ports/Keywords/sample.ucl"
+
 package: force
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
-	    echo "Cannot continue with live mount"; exit 1; \
+		echo ">>> Cannot continue with live mount.  Please run 'make umount'." >&2; \
+		exit 1; \
 	fi
 	@if [ ! -f /usr/ports/Keywords/sample.ucl ]; then \
-	    mkdir -p /usr/ports/Keywords; \
-	    cd /usr/ports/Keywords; \
-	    fetch -q https://raw.githubusercontent.com/opnsense/ports/master/Keywords/sample.ucl; \
+		echo ">>> Missing required file(s).  Please run 'make package-keywords'" >&2; \
+		exit 1; \
 	fi
 	@${PKG} info gettext-tools > /dev/null
 	@${PKG} info git > /dev/null
