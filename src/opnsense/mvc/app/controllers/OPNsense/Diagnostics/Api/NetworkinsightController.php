@@ -143,7 +143,8 @@ class NetworkinsightController extends ApiControllerBase
             if ($this->request->get("filter_field") != null && $this->request->get("filter_value") != null) {
                 $data_filter = $this->request->get("filter_field") . "=" . $this->request->get("filter_value");
             } else {
-                $data_filter = "";
+                // no filter, empty parameter
+                $data_filter = "''";
             }
             $backend = new Backend();
             $configd_cmd = "netflow aggregate top {$provider} {$from_date} {$to_date} {$field}";
@@ -154,6 +155,7 @@ class NetworkinsightController extends ApiControllerBase
                 return $graph_data;
             }
         }
+        return array();
     }
 
     /**
