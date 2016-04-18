@@ -32,7 +32,7 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
     """ collect interface totals
     """
     target_filename = '/var/netflow/src_addr_%06d.sqlite'
-    agg_fields = ['if', 'src_addr']
+    agg_fields = ['if', 'src_addr', 'direction']
 
     @classmethod
     def resolutions(cls):
@@ -64,7 +64,9 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
     def add(self, flow):
         # most likely service (destination) port
         flow['if'] = flow['if_in']
+        flow['direction'] = 'in'
         super(FlowSourceAddrTotals, self).add(flow)
         flow['src_addr'] = flow['dst_addr']
         flow['if'] = flow['if_out']
+        flow['direction'] = 'out'
         super(FlowSourceAddrTotals, self).add(flow)
