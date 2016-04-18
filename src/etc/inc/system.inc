@@ -963,6 +963,7 @@ function system_webgui_start()
     global $config;
 
     chdir('/usr/local/www');
+    @unlink('/usr/local/www/csrf/csrf-secret.php');
 
     /* defaults */
     $portarg = "80";

@@ -425,6 +425,8 @@ function csrf_get_secret()
     }
     if (is_writable($dir)) {
         $secret = csrf_generate_secret();
+        touch($file);
+        chmod($file, 0600);
         $fh = fopen($file, 'w');
         fwrite($fh, '<?php $secret = "'.$secret.'";' . PHP_EOL);
         fclose($fh);

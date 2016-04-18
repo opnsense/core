@@ -183,7 +183,7 @@ echo "done."
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-rm -f /usr/local/www/csrf/csrf-secret.php /root/lighttpd*
+rm -f /root/lighttpd*
 touch /var/run/booting
 /usr/local/etc/rc.bootup
 rm /var/run/booting
