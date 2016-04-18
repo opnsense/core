@@ -7,6 +7,7 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
+use OPNsense\Core\Config;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework
@@ -75,6 +76,15 @@ $di->set('modelsMetadata', function () {
 $di->setShared('session', function () {
     $session = new SessionAdapter();
     $session->start();
+    // Set session response cookie, unfortunalty we need to read the config here to determine if secure option is
+    // a valid choice.
+    $cnf = Config::getInstance();
+    if ((string)$cnf->object()->system->webgui->protocol == 'https') {
+        $secure = true;
+    } else {
+        $secure = false;
+    }
+    setcookie(session_name(), session_id(), null, '/', null, $secure, true);
 
     return $session;
 });

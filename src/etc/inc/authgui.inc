@@ -168,7 +168,10 @@ function session_auth(&$Login_Error)
     );
 
     if (session_status() == PHP_SESSION_NONE) {
-        session_start();
+        if (session_start()) {
+            $sess_name = session_name();
+            setcookie($sess_name, session_id(), null, '/', null, null, ($config['system']['webgui']['protocol'] == "https"));
+        }
     }
 
     // Detect protocol change
