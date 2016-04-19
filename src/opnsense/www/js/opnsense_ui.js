@@ -29,6 +29,20 @@
  *    User interface shared components, requires opnsense.js for supporting functions.
  */
 
+ /**
+  * format bytes
+  * @param bytes number of bytes to format
+  * @param decimals decimal places
+  * @return string
+  */
+ function byteFormat(bytes, decimals=0)
+ {
+     var kb = 1024;
+     var ndx = Math.floor( Math.log(bytes) / Math.log(kb) );
+     var fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+     return (bytes / Math.pow(kb, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
+ }
+
 /**
  * save form to server
  * @param url endpoint url
