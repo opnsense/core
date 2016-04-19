@@ -30,6 +30,7 @@
 """
 import time
 import datetime
+import calendar
 import os
 import sys
 import ujson
@@ -78,7 +79,7 @@ if valid_params:
                         else:
                             record_key.append('')
                     record_key = ','.join(record_key)
-                    start_time_stamp = time.mktime(record['start_time'].timetuple())
+                    start_time_stamp = calendar.timegm(record['start_time'].timetuple())
                     if start_time_stamp not in timeseries:
                         timeseries[start_time_stamp] = dict()
                     timeseries[start_time_stamp][record_key] = {'octets': record['octets'],
