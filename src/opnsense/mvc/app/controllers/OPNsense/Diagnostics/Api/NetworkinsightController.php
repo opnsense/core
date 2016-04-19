@@ -141,7 +141,18 @@ class NetworkinsightController extends ApiControllerBase
         $result = array();
         if ($this->request->isGet()) {
             if ($this->request->get("filter_field") != null && $this->request->get("filter_value") != null) {
-                $data_filter = $this->request->get("filter_field") . "=" . $this->request->get("filter_value");
+                $filter_fields = explode(',', $this->request->get("filter_field"));
+                $filter_values = explode(',', $this->request->get("filter_value"));
+                $data_filter="";
+                foreach ($filter_fields as $field_indx => $filter_field) {
+                    if ($data_filter != '') {
+                        $data_filter .= ',';
+                    }
+                    if (isset($filter_values[$field_indx])) {
+                        $data_filter .= $filter_field.'='.$filter_values[$field_indx] ;
+                    }
+                }
+                $data_filter = "'{$data_filter}'";
             } else {
                 // no filter, empty parameter
                 $data_filter = "''";
