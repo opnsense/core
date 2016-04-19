@@ -31,6 +31,16 @@
  */
 
  /**
+  * html decode text into textarea tag and return decoded value.
+  *
+  * @param value encoded text
+  * @return string decoded text
+  */
+ function htmlDecode(value) {
+     return $("<textarea/>").html(value).text();
+ }
+
+ /**
  *
  * Map input fields from given parent tag to structure of named arrays.
  *
@@ -130,11 +140,11 @@ function setFormData(parent,data) {
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
                             targetNode.text("");
-                            targetNode.append($.parseHTML(String(node[keypart])));
+                            targetNode.append(htmlDecode(node[keypart]));
                         }
                     } else {
                         // regular input type
-                        targetNode.val(node[keypart]);
+                        targetNode.val(htmlDecode(node[keypart]));
                     }
                 }
             }
