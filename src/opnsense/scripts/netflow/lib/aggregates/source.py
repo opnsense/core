@@ -29,7 +29,7 @@
 from lib.aggregate import BaseFlowAggregator
 
 class FlowSourceAddrTotals(BaseFlowAggregator):
-    """ collect interface totals
+    """ collect source totals
     """
     target_filename = '/var/netflow/src_addr_%06d.sqlite'
     agg_fields = ['if', 'src_addr', 'direction']
@@ -70,3 +70,44 @@ class FlowSourceAddrTotals(BaseFlowAggregator):
         flow['if'] = flow['if_out']
         flow['direction'] = 'out'
         super(FlowSourceAddrTotals, self).add(flow)
+
+class FlowSourceAddrDetails(BaseFlowAggregator):
+    """ collect source details on a daily resolution
+    """
+    target_filename = '/var/netflow/src_addr_details_%06d.sqlite'
+    agg_fields = ['if', 'direction', 'src_addr', 'dst_addr', 'service_port', 'protocol']
+
+    @classmethod
+    def resolutions(cls):
+        """
+        :return: list of sample resolutions
+        """
+        return  [86400]
+
+    @classmethod
+    def history_per_resolution(cls):
+        """
+        :return: dict sample resolution / expire time (seconds)
+        """
+        return  {86400: cls.seconds_per_day(365)}
+
+    def __init__(self, resolution):
+        """
+        :param resolution: sample resultion (seconds)
+        :return: None
+        """
+        super(FlowSourceAddrDetails, self).__init__(resolution)
+
+    def add(self, flow):
+        # most likely service (destination) port
+        flow['service_port'] = min(flow['dst_port'], flow['src_port'])
+        flow['if'] = flow['if_in']
+        flow['direction'] = 'in'
+        super(FlowSourceAddrDetails, self).add(flow)
+        # swap source and destination addresses for outgoing traffic
+        src_addr = flow['dst_addr']
+        flow['dst_addr'] = flow['src_addr']
+        flow['src_addr'] = src_addr
+        flow['if'] = flow['if_out']
+        flow['direction'] = 'out'
+        super(FlowSourceAddrDetails, self).add(flow)
