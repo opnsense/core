@@ -224,7 +224,7 @@ class BaseFlowAggregator(object):
                 # upsert data
                 flow['octets_consumed'] = consume_perc * flow['octets']
                 flow['packets_consumed'] = consume_perc * flow['packets']
-                flow['mtime'] = datetime.datetime.fromtimestamp(start_time)
+                flow['mtime'] = datetime.datetime.utcfromtimestamp(start_time)
                 self._update_cur.execute(self._update_stmt, flow)
                 if self._update_cur.rowcount == 0:
                     self._update_cur.execute(self._insert_stmt, flow)
@@ -256,9 +256,9 @@ class BaseFlowAggregator(object):
         :return: datetime.datetime object
         """
         if type(timestamp) in (int, float):
-            return datetime.datetime.fromtimestamp(timestamp)
+            return datetime.datetime.utcfromtimestamp(timestamp)
         elif type(timestamp) != datetime.datetime:
-            return datetime.datetime.fromtimestamp(0)
+            return datetime.datetime.utcfromtimestamp(0)
         else:
             return timestamp
 
@@ -312,7 +312,7 @@ class BaseFlowAggregator(object):
             # close cursor
             cur.close()
 
-    def get_top_data(self, start_time, end_time, fields, value_field, data_filter=None, max_hits=100):
+    def get_top_data(self, start_time, end_time, fields, value_field, data_filters=None, max_hits=100):
         """ Retrieve top (usage) from this aggregation.
             Fetch data from aggregation source, groups by selected fields, sorts by value_field descending
             use data_filter to filter before grouping.
@@ -338,11 +338,12 @@ class BaseFlowAggregator(object):
         # query filters, correct start_time for resolution
         query_params['start_time'] = self._parse_timestamp((int(start_time/self.resolution))*self.resolution)
         query_params['end_time'] = self._parse_timestamp(end_time)
-        if data_filter:
-            tmp = data_filter.split('=')[0].strip()
-            if tmp in self.agg_fields and data_filter.find('=') > -1:
-                filter_fields.append(tmp)
-                query_params[tmp] = '='.join(data_filter.split('=')[1:])
+        if data_filters:
+            for data_filter in data_filters.split(','):
+                tmp = data_filter.split('=')[0].strip()
+                if tmp in self.agg_fields and data_filter.find('=') > -1:
+                    filter_fields.append(tmp)
+                    query_params[tmp] = '='.join(data_filter.split('=')[1:])
 
         if len(select_fields) > 0:
             # construct sql query to filter and select data
