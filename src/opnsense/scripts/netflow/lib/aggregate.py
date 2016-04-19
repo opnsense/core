@@ -121,10 +121,12 @@ class BaseFlowAggregator(object):
         self._update_cur = None
         self._known_targets = list()
         # construct update and insert sql statements
-        tmp = 'update timeserie set octets = octets + :octets_consumed, packets = packets + :packets_consumed '
+        tmp = 'update timeserie set  last_seen = :flow_end, '
+        tmp += 'octets = octets + :octets_consumed, packets = packets + :packets_consumed '
         tmp += 'where mtime = :mtime and %s '
         self._update_stmt = tmp % (' and '.join(map(lambda x: '%s = :%s' % (x, x), self.agg_fields)))
-        tmp = 'insert into timeserie (mtime, octets, packets, %s) values (:mtime, :octets_consumed, :packets_consumed, %s)'
+        tmp = 'insert into timeserie (mtime, last_seen, octets, packets, %s) '
+        tmp += 'values (:mtime, :flow_end, :octets_consumed, :packets_consumed, %s)'
         self._insert_stmt = tmp % (','.join(self.agg_fields), ','.join(map(lambda x: ':%s' % x, self.agg_fields)))
         # open database
         self._open_db()
@@ -157,7 +159,8 @@ class BaseFlowAggregator(object):
             # construct new aggregate table
             sql_text = list()
             sql_text.append('create table timeserie ( ')
-            sql_text.append('  mtime timestamp')
+            sql_text.append('   mtime timestamp')
+            sql_text.append(',  last_seen timestamp')
             for agg_field in self.agg_fields:
                 sql_text.append(', %s varchar(255)' % agg_field)
             sql_text.append(',  octets numeric')
@@ -348,7 +351,7 @@ class BaseFlowAggregator(object):
         if len(select_fields) > 0:
             # construct sql query to filter and select data
             sql_select = 'select %s' % ','.join(select_fields)
-            sql_select += ', %s as total \n' % value_sql
+            sql_select += ', %s as total, max(last_seen) last_seen \n' % value_sql
             sql_select += 'from timeserie \n'
             sql_select += 'where mtime >= :start_time and mtime < :end_time\n'
             for filter_field in filter_fields:
