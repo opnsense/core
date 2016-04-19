@@ -142,6 +142,8 @@
                     $("#menu_search_box").css('width', '250px');
                     $("#menu_messages").show();
                 });
+                // enable bootstrap tooltips
+                $('[data-toggle="tooltip"]').tooltip();
             });
         </script>
 
