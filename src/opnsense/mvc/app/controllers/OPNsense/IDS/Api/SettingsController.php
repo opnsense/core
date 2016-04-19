@@ -146,8 +146,6 @@ class SettingsController extends ApiControllerBase
      */
     public function getRuleInfoAction($sid)
     {
-        // disable output cleansing, this method delivers html formatted output.
-        $this->disableOutputCleansing();
         // request list of installed rules
         $backend = new Backend();
         $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/'.$sid));
@@ -225,8 +223,6 @@ class SettingsController extends ApiControllerBase
      */
     private function listInstallableRules()
     {
-        // disable output cleansing, almost all data is preset in static xmls, the rest is strictly validated
-        $this->disableOutputCleansing();
         $result = array();
         $backend = new Backend();
         $response = $backend->configdRun("ids list installablerulesets");
