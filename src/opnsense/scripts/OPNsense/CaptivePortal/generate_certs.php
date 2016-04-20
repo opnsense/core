@@ -48,8 +48,10 @@ if (isset($configObj->OPNsense->captiveportal->zones)) {
             foreach ($configObj->cert as $cert) {
                 if ($cert_refid == (string)$cert->refid) {
                     // generate cert pem file
-                    $pem_content = str_replace("\n\n", "\n", str_replace("\r", "", base64_decode((string)$cert->crt)));
-                    $pem_content .= str_replace("\n\n", "\n", str_replace("\r", "", base64_decode((string)$cert->prv)));
+                    $pem_content = trim(str_replace("\n\n", "\n", str_replace("\r", "", base64_decode((string)$cert->crt))));
+                    $pem_content .= "\n";
+                    $pem_content .= trim(str_replace("\n\n", "\n", str_replace("\r", "", base64_decode((string)$cert->prv))));
+                    $pem_content .= "\n";
                     $output_pem_filename = "/var/etc/cert-cp-zone" . $zone_id . ".pem" ;
                     file_put_contents($output_pem_filename, $pem_content);
                     chmod($output_pem_filename, 0600);
