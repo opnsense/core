@@ -211,7 +211,7 @@ POSSIBILITY OF SUCH DAMAGE.
         }
         var selected_time = get_time_select();
         var time_url = selected_time.from + '/' + selected_time.to;
-        ajaxGet('/api/diagnostics/networkinsight/top/FlowDstPortTotals/'+time_url+'/dst_port,protocol/octets/10/',
+        ajaxGet('/api/diagnostics/networkinsight/top/FlowDstPortTotals/'+time_url+'/dst_port,protocol/octets/25/',
             {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
             if (status == 'success'){
               nv.addGraph(function() {
@@ -280,7 +280,7 @@ POSSIBILITY OF SUCH DAMAGE.
         }
         var selected_time = get_time_select();
         var time_url = selected_time.from + '/' + selected_time.to;
-        ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrTotals/'+time_url+'/src_addr/octets/10/',
+        ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrTotals/'+time_url+'/src_addr/octets/25/',
             {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
             if (status == 'success'){
               nv.addGraph(function() {
@@ -346,8 +346,7 @@ POSSIBILITY OF SUCH DAMAGE.
             filters['filter_value'].push($("#address_detail").val());
         }
 
-        var time_url = $("#date_detail").val().replace('-', '/');
-        console.log(service_names);
+        var time_url = $("#date_detail_from").val() + '/' +  $("#date_detail_to").val();
         ajaxGet('/api/diagnostics/networkinsight/top/FlowSourceAddrDetails/'+time_url+'/service_port,protocol,if,src_addr,dst_addr/octets/100/',
             {'filter_field': filters['filter_field'].join(','), 'filter_value': filters['filter_value'].join(',')}, function(data, status){
             if (status == 'success'){
@@ -468,15 +467,22 @@ POSSIBILITY OF SUCH DAMAGE.
           var date_begin = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0);
           var date_end  = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 0);
           var tmp_date = new Date();
-          for (i=0; i < 200; i++) {
+          for (i=0; i < 62; i++) {
               from_date_ts = (date_begin - (24*60*60*1000 * i)) / 1000;
               to_date_ts = parseInt((date_end - (24*60*60*1000 * i)) / 1000);
               tmp_date = new Date(from_date_ts*1000);
               tmp = tmp_date.getDate() + '/' + (tmp_date.getMonth()+1) + '/' + tmp_date.getFullYear();
-              $("#date_detail").append($("<option/>").val(from_date_ts+'-'+to_date_ts).text(tmp));
+              $("#date_detail_from").append($("<option/>").val(from_date_ts).text(tmp));
+              $("#date_detail_to").append($("<option/>").val(to_date_ts).text(tmp));
           }
 
-          $("#date_detail").selectpicker('refresh');
+          $("#date_detail_from").selectpicker('refresh');
+          $("#date_detail_to").selectpicker('refresh');
+          $("#date_detail_from").change(function(){
+              // change to date on change from date.
+              $("#date_detail_to").prop('selectedIndex', $("#date_detail_from").prop('selectedIndex'));
+              $("#date_detail_to").selectpicker('refresh');
+          });
 
           chart_interface_totals();
           chart_top_dst_port_usage();
@@ -553,7 +559,7 @@ POSSIBILITY OF SUCH DAMAGE.
       <table class="table table-condensed">
         <thead>
           <tr>
-            <th>{{ lang._('Date') }}</th>
+            <th>{{ lang._('Date (from/to)') }}</th>
             <th>{{ lang._('Interface') }}</th>
             <th>{{ lang._('(dst) Port') }}</th>
             <th>{{ lang._('(src) Address') }}</th>
@@ -562,7 +568,9 @@ POSSIBILITY OF SUCH DAMAGE.
         <tbody>
           <tr>
             <td>
-              <select class="selectpicker" id="date_detail"  data-live-search="true" data-size="10">
+              <select class="selectpicker" id="date_detail_from"  data-live-search="true" data-size="10">
+              </select>
+              <select class="selectpicker" id="date_detail_to"  data-live-search="true" data-size="10">
               </select>
             </td>
             <td>
