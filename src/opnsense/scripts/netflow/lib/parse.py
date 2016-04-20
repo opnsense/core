@@ -59,12 +59,12 @@ class Interfaces(object):
         """
         self._ifIndex = dict()
         with tempfile.NamedTemporaryFile() as output_stream:
-            subprocess.call(['/usr/bin/netstat', '-i', '-n'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
+            subprocess.call(['/sbin/ifconfig', '-l'], stdout=output_stream, stderr=open(os.devnull, 'wb'))
             output_stream.seek(0)
-            for line in output_stream.read().split('\n'):
-                parts = line.split()
-                if len(parts) > 2 and parts[2].find('<Link#') > -1:
-                    self._ifIndex[parts[2].split('#')[1].split('>')[0]] = parts[0]
+            ifIndex=1
+            for line in output_stream.read().split('\n')[0].split():
+                self._ifIndex[str(ifIndex)] = line
+                ifIndex += 1
 
     def if_device(self, ifIndex):
         """ convert index to device (if found)
