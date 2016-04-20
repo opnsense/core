@@ -34,7 +34,7 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help><![CDATA[Type subnets/addresses you want to ignore for the access.log <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type subnet adresses (ex. 192.168.2.0/24)</hint>
+                <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -44,7 +44,7 @@
                 <type>select_multiple</type>
                 <style>tokenize</style>
                 <help><![CDATA[Type IPs of alternative DNS servers you like to use. <div class="text-info"><b>TIP: </b>You can also paste a comma seperated list into this field.</div>]]></help>
-                <hint>Type IP adresses, followed by Enter or comma.</hint>
+                <hint>Type IP addresses, followed by Enter or comma.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
             </field>
@@ -299,26 +299,26 @@
                 <label>Allowed Subnets</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type subnets you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type subnet adresses (ex. 192.168.2.0/24)</hint>
+                <help><![CDATA[Type subnets you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <hint>Type subnet addresses (ex. 192.168.2.0/24)</hint>
                 <allownew>true</allownew>
             </field>
             <field>
                 <id>proxy.forward.acl.unrestricted</id>
-                <label>Unrestricted IP adresses</label>
+                <label>Unrestricted IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP adresses you want to allow acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type IP adresses (ex. 192.168.1.100)</hint>
+                <help><![CDATA[Type IP addresses you want to allow access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
             <field>
                 <id>proxy.forward.acl.bannedHosts</id>
-                <label>Banned host IP adresses</label>
+                <label>Banned host IP addresses</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Type IP adresses you want to deny acces to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
-                <hint>Type IP adresses (ex. 192.168.1.100)</hint>
+                <help><![CDATA[Type IP addresses you want to deny access to the proxy server, use a comma or press Enter for new item. <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
+                <hint>Type IP addresses (ex. 192.168.1.100)</hint>
                 <allownew>true</allownew>
             </field>
             <field>
@@ -396,7 +396,7 @@
                 <label>Allowed destination TCP port</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with collon (ex. 22:ssh).<br/>
+                <help><![CDATA[Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
         <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
@@ -407,7 +407,7 @@
                 <label>Allowed SSL ports</label>
                 <type>select_multiple</type>
                 <style>tokenize</style>
-                <help><![CDATA[Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with collon (ex. 22:ssh).<br/>
+                <help><![CDATA[Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh).<br/>
         <div class="text-info"><b>TIP: </b>You can also paste a comma separated list into this field.</div>]]></help>
                 <hint>Type port number or range.</hint>
                 <allownew>true</allownew>
