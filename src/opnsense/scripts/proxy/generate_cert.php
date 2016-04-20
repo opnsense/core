@@ -44,8 +44,8 @@ if (is_file('/usr/local/etc/squid/ca.pem.id')) {
         foreach ($config['ca'] as $ca) {
             if (isset($ca['refid']) && $ca['refid'] == $cert_refid) {
                 $pem_contents = '';
-                $pem_contents .= base64_decode($ca['prv']);
-                $pem_contents .= base64_decode($ca['crt']);
+                $pem_contents .= trim(base64_decode($ca['prv'])) . "\n";
+                $pem_contents .= trim(base64_decode($ca['crt'])) . "\n";
                 $pem_contents .= ca_chain($ca);
                 echo "certificate generated\n";
                 file_put_contents('/var/squid/ssl/ca.pem', $pem_contents);
