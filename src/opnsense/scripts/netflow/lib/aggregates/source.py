@@ -89,7 +89,7 @@ class FlowSourceAddrDetails(BaseFlowAggregator):
         """
         :return: dict sample resolution / expire time (seconds)
         """
-        return  {86400: cls.seconds_per_day(365)}
+        return  {86400: cls.seconds_per_day(62)}
 
     def __init__(self, resolution):
         """
