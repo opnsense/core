@@ -53,12 +53,24 @@ setup_interface()
         nfversion=""
     fi
     interface=$1
+
     # determine (snmp) ifIndex
-    ifIndex=$(/usr/bin/netstat -Win | /usr/bin/grep Link# | awk '{if ( $1 == "'"$interface"'" ) {print $3 }}' | /usr/bin/sed 's/<Link#//g' | /usr/bin/sed 's/>//g')
-    if [ "$ifIndex" == "" ]; then
+    ifIndex=0
+    found=0
+    for item in `/sbin/ifconfig -l`
+    do
+       let ifIndex = ifIndex + 1  > /dev/null 2>&1
+       if [ "$item" = "$interface" ]; then
+           found=1
+           break
+       fi
+    done
+
+    if [ "$found" == "0" ]; then
         echo "error : interface $interface not found"
         return
     fi
+
     # disable ingress (traffic to this host) for selected interfaces
     # avoids counting traffic going through this firewall double when using nat
     if [ ! -z "`echo " $netflow_egress_only " | grep " $interface "`" ]; then
