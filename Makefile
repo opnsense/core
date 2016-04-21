@@ -200,7 +200,6 @@ package: force
 		echo ">>> Missing required file(s).  Please run 'make package-keywords'" >&2; \
 		exit 1; \
 	fi
-	@${PKG} info gettext-tools > /dev/null
 	@${PKG} info git > /dev/null
 	@rm -rf ${WRKSRC} ${PKGDIR}
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
