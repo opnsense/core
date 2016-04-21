@@ -50,41 +50,65 @@ function find_alias_type($type)
     return $type;
 }
 
-function find_alias_reference($section, $field, $origname, &$is_alias_referenced, &$referenced_by) {
+function find_alias_reference($section, $field, $origname, &$is_alias_referenced, &$referenced_by)
+{
     global $config;
-    if(!$origname || $is_alias_referenced)
+    if (!$origname || $is_alias_referenced) {
         return;
+    }
 
     $sectionref = &$config;
     foreach($section as $sectionname) {
-        if(is_array($sectionref) && isset($sectionref[$sectionname]))
+        if (is_array($sectionref) && isset($sectionref[$sectionname])) {
             $sectionref = &$sectionref[$sectionname];
-        else
+        } else {
             return;
+        }
     }
 
-    if(is_array($sectionref)) {
-      foreach($sectionref as $itemkey => $item) {
-        $fieldfound = true;
-        $fieldref = &$sectionref[$itemkey];
-        foreach($field as $fieldname) {
-            if(is_array($fieldref) && isset($fieldref[$fieldname]))
-                $fieldref = &$fieldref[$fieldname];
-            else {
-                $fieldfound = false;
+    if (is_array($sectionref)) {
+        foreach($sectionref as $itemkey => $item) {
+            $fieldfound = true;
+            $fieldref = &$sectionref[$itemkey];
+            foreach($field as $fieldname) {
+                if (is_array($fieldref) && isset($fieldref[$fieldname])) {
+                    $fieldref = &$fieldref[$fieldname];
+                } else {
+                    $fieldfound = false;
+                    break;
+                }
+            }
+            if ($fieldfound && $fieldref == $origname) {
+                $is_alias_referenced = true;
+                $referenced_by = '';
+                if (is_array($item)) {
+                    if (isset($item['descr'])) {
+                        $referenced_by .= $item['descr'];
+                    } else {
+                        $referenced_by .= implode(',', $section) . ' / '. implode(',', $field);
+                    }
+                }
                 break;
             }
         }
-        if($fieldfound && $fieldref == $origname) {
-            $is_alias_referenced = true;
-            if(is_array($item))
-                $referenced_by = $item['descr'];
-            break;
-        }
-      }
     }
 }
 
+function alias_used_recursive($origname)
+{
+    global $config;
+    if (!empty($config['aliases']['alias'])) {
+        foreach($config['aliases']['alias'] as $alias) {
+            // exclude geoips and urltypes, they don't support nesting.
+            if ($alias['type'] != 'geoip' && !preg_match("/urltable/i",$alias['type'])) {
+                if ($origname == $alias['address']) {
+                    return empty($alias['description']) ? $alias['name'] : $alias['description'];
+                }
+            }
+        }
+    }
+    return null;
+}
 
 if (!isset($config['aliases']) || !is_array($config['aliases'])) {
     $config['aliases'] = array();
@@ -129,14 +153,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('destination', 'address'), $alias_name, $is_alias_referenced, $referenced_by);
             find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('dstport'), $alias_name, $is_alias_referenced, $referenced_by);
             find_alias_reference(array('nat', 'advancedoutbound', 'rule'), array('target'), $alias_name, $is_alias_referenced, $referenced_by);
-            // Alias in an alias
-            find_alias_reference(array('aliases', 'alias'), array('address'), $alias_name, $is_alias_referenced, $referenced_by);
+            // Alias in an alias, only for selected types
+            $alias_recursive_used = alias_used_recursive($alias_name);
+            if  ($alias_recursive_used != null) {
+                $is_alias_referenced = true;
+                $referenced_by = $alias_recursive_used;
+            }
             // Load Balancer
             find_alias_reference(array('load_balancer', 'lbpool'),         array('port'), $alias_name, $is_alias_referenced, $referenced_by);
             find_alias_reference(array('load_balancer', 'virtual_server'), array('port'), $alias_name, $is_alias_referenced, $referenced_by);
             // Static routes
             find_alias_reference(array('staticroutes', 'route'), array('network'), $alias_name, $is_alias_referenced, $referenced_by);
-            if($is_alias_referenced) {
+            if ($is_alias_referenced) {
                 $savemsg = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $referenced_by);
             } else {
                 configd_run("filter kill table {$alias_name}");
@@ -223,14 +251,14 @@ $( document ).ready(function() {
                         $alias_values = '';
                         if (!empty($alias["url"])) {
                             $alias_values = $alias["url"];
-                        } elseif(isset($alias["aliasurl"])) {
+                        } elseif (isset($alias["aliasurl"])) {
                             $alias_values = implode(", ", array_slice($alias['aliasurl'], 0, 5));
-                            if(count($alias['aliasurl']) > 5) {
+                            if (count($alias['aliasurl']) > 5) {
                                 $alias_values .= "...";
                             }
                         } else {
                             $alias_values = implode(", ", array_slice(explode(" ", $alias['address']), 0, 5));
-                            if(count(explode(" ", $alias['address'])) > 5) {
+                            if (count(explode(" ", $alias['address'])) > 5) {
                                 $alias_values .= "...";
                             }
                       }
