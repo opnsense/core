@@ -139,6 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if($is_alias_referenced) {
                 $savemsg = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $referenced_by);
             } else {
+                configd_run("filter kill table {$alias_name}");
                 unset($a_aliases[$_POST['id']]);
                 if (write_config()) {
                     filter_configure();
