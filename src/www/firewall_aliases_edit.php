@@ -529,7 +529,7 @@ endforeach;
                           <td>
                             <select class="geoip_list hidden">
                             </select>
-                            <input type="text" class="host_url" name="host_url[]" value="<?=$aliasurl;?>"/>
+                            <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
                           </td>
                           <td>
                             <input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$aliasid])?$detail_desc[$aliasid]:"";?>">
