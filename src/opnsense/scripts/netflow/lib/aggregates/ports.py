@@ -39,7 +39,7 @@ class FlowDstPortTotals(BaseFlowAggregator):
         """
         :return: list of sample resolutions
         """
-        return  [30, 300, 3600, 86400]
+        return  [300, 3600, 86400]
 
     @classmethod
     def history_per_resolution(cls):
@@ -48,8 +48,7 @@ class FlowDstPortTotals(BaseFlowAggregator):
         """
         # only save daily totals for a longer period of time, we probably only want to answer questions like
         # "top usage over the last 30 seconds, 5 minutes, etc.."
-        return  {30: 300,
-                 300: 3600,
+        return  {300: 3600,
                  3600: 86400,
                  86400: cls.seconds_per_day(365)
                  }
