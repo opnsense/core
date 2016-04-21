@@ -75,7 +75,27 @@ POSSIBILITY OF SUCH DAMAGE.
                   // fetch service names
                   ajaxGet('/api/diagnostics/networkinsight/getServices',{}, function(services, status) {
                       service_names = services;
+                      // return promise, no need to wait for getMetadata
                       dfObj.resolve();
+                      // fetch aggregators
+                      ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
+                        Object.keys(metadata['aggregators']).forEach(function (agg_name) {
+                          var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
+                          $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
+                        });
+                        $("#export_collection").change(function(){
+                            //alert($(this).find('option:selected').data('resolutions'));
+                            $("#export_resolution").html("");
+                            var resolutions = String($(this).find('option:selected').data('resolutions'));
+                            resolutions.split(',').map(function(item) {
+                                $("#export_resolution").append($("<option/>").val(item).text(item));
+                                console.log(item);
+                            });
+                            $("#export_resolution").selectpicker('refresh');
+                        });
+                        $("#export_collection").change();
+                        $("#export_collection").selectpicker('refresh');
+                      });
                   });
               });
           });
@@ -227,27 +247,27 @@ POSSIBILITY OF SUCH DAMAGE.
                     .valueFormat(d3.format(',.2s'));
                     ;
 
-                  chart_data = [];
-                  data.map(function(item){
-                      var label = "(other)";
-                      var proto = "";
-                      if (item.protocol != "") {
-                          if (item.protocol in protocol_names) {
-                              proto = ' (' + protocol_names[item.protocol] + ')';
-                          }
-                          if (item.dst_port in service_names) {
-                              label = service_names[item.dst_port];
-                          } else {
-                              label = item.dst_port
-                          }
-                      }
-                      chart_data.push({'label': label + proto, 'value': item.total});
-                  });
+                chart_data = [];
+                data.map(function(item){
+                    var label = "(other)";
+                    var proto = "";
+                    if (item.protocol != "") {
+                        if (item.protocol in protocol_names) {
+                            proto = ' (' + protocol_names[item.protocol] + ')';
+                        }
+                        if (item.dst_port in service_names) {
+                            label = service_names[item.dst_port];
+                        } else {
+                            label = item.dst_port
+                        }
+                    }
+                    chart_data.push({'label': label + proto, 'value': item.total});
+                });
 
-                  d3.select("#chart_top_ports svg")
-                      .datum(chart_data)
-                      .transition().duration(350)
-                      .call(chart);
+                var diag = d3.select("#chart_top_ports svg")
+                    .datum(chart_data)
+                    .transition().duration(350)
+                    .call(chart);
                 pageCharts["chart_top_ports"] = chart;
 
                 // copy selection to detail page and query results
@@ -295,19 +315,19 @@ POSSIBILITY OF SUCH DAMAGE.
                     .legendPosition("right")
                     .valueFormat(d3.format(',.2s'));
 
-                  chart_data = [];
-                  data.map(function(item){
-                      var label = "(other)";
-                      if (item.src_addr != "") {
-                          label = item.src_addr;
-                      }
-                      chart_data.push({'label': label, 'value': item.total});
-                  });
+                chart_data = [];
+                data.map(function(item){
+                    var label = "(other)";
+                    if (item.src_addr != "") {
+                        label = item.src_addr;
+                    }
+                    chart_data.push({'label': label, 'value': item.total});
+                });
 
-                  d3.select("#chart_top_sources svg")
-                      .datum(chart_data)
-                      .transition().duration(350)
-                      .call(chart);
+                d3.select("#chart_top_sources svg")
+                    .datum(chart_data)
+                    .transition().duration(350)
+                    .call(chart);
                 pageCharts["chart_top_sources"] = chart;
 
                 // copy selection to detail tab and query results
@@ -408,6 +428,21 @@ POSSIBILITY OF SUCH DAMAGE.
         });
       }
 
+      /**
+       * export detailed data (generate download link and click)
+       */
+      function export_flow_data()
+      {
+          var time_url = $("#export_date_from").val() + '/' +  $("#export_date_to").val();
+          var url = '/api/diagnostics/networkinsight/export/'+$("#export_collection").val()+'/'+time_url+'/'+$("#export_resolution").val();
+          var link = document.createElement("a");
+          $(link).click(function(e) {
+              e.preventDefault();
+              window.location.href = url;
+          });
+          $(link).click();
+      }
+
       // hide heading
       $(".page-content-head").addClass("hidden");
 
@@ -472,17 +507,26 @@ POSSIBILITY OF SUCH DAMAGE.
               to_date_ts = parseInt((date_end - (24*60*60*1000 * i)) / 1000);
               tmp_date = new Date(from_date_ts*1000);
               tmp = tmp_date.getDate() + '/' + (tmp_date.getMonth()+1) + '/' + tmp_date.getFullYear();
-              $("#date_detail_from").append($("<option/>").val(from_date_ts).text(tmp));
-              $("#date_detail_to").append($("<option/>").val(to_date_ts).text(tmp));
+              if (i < 62) {
+                  $("#date_detail_from").append($("<option/>").val(from_date_ts).text(tmp));
+                  $("#date_detail_to").append($("<option/>").val(to_date_ts).text(tmp));
+              }
+              $("#export_date_from").append($("<option/>").val(from_date_ts).text(tmp));
+              $("#export_date_to").append($("<option/>").val(to_date_ts).text(tmp));
+
           }
 
           $("#date_detail_from").selectpicker('refresh');
           $("#date_detail_to").selectpicker('refresh');
           $("#date_detail_from").change(function(){
               // change to date on change from date.
-              $("#date_detail_to").prop('selectedIndex', $("#date_detail_from").prop('selectedIndex'));
-              $("#date_detail_to").selectpicker('refresh');
+              if ($("#date_detail_to").prop('selectedIndex') > $("#date_detail_from").prop('selectedIndex')) {
+                  $("#date_detail_to").prop('selectedIndex', $("#date_detail_from").prop('selectedIndex'));
+                  $("#date_detail_to").selectpicker('refresh');
+              }
           });
+          $("#export_date_from").selectpicker('refresh');
+          $("#export_date_to").selectpicker('refresh');
 
           chart_interface_totals();
           chart_top_dst_port_usage();
@@ -491,6 +535,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 
       $("#refresh_details").click(grid_details);
+      $("#export_btn").click(export_flow_data);
 
     });
 </script>
@@ -498,6 +543,7 @@ POSSIBILITY OF SUCH DAMAGE.
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="totals_tab" href="#totals">{{ lang._('Totals') }}</a></li>
     <li><a data-toggle="tab" id="details_tab" href="#details">{{ lang._('Details') }}</a></li>
+    <li><a data-toggle="tab" id="export_tab" href="#export">{{ lang._('Export') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content" style="padding: 10px;">
     <div id="totals" class="tab-pane fade in active">
@@ -603,6 +649,51 @@ POSSIBILITY OF SUCH DAMAGE.
             <td id="netflow_details_total"></td>
           </tr>
         </tfoot>
+      </table>
+    </div>
+    <div id="export" class="tab-pane fade in">
+      <br/>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <tr>
+            <th>{{ lang._('Attribute') }}</th>
+            <th>{{ lang._('Value') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ lang._('Collection') }}</td>
+            <td>
+              <select class="selectpicker" id="export_collection">
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>{{ lang._('Resolution (seconds)') }}</td>
+            <td>
+              <select class="selectpicker" id="export_resolution">
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>{{ lang._('From date') }}</td>
+            <td>
+              <select class="selectpicker" id="export_date_from"  data-live-search="true" data-size="10"></select>
+            </td>
+          </tr>
+          <tr>
+            <td>{{ lang._('To date') }}</td>
+            <td>
+              <select class="selectpicker" id="export_date_to"  data-live-search="true" data-size="10"></select>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <button id="export_btn" class="btn btn-default btn-xs"><i class="fa fa-cloud-download"></i> {{ lang._('Export')}}</button>
+            </td>
+          </tr>
+        </tbody>
       </table>
     </div>
 </div>

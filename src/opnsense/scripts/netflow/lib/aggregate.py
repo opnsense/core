@@ -31,6 +31,33 @@ import os
 import datetime
 import sqlite3
 
+def convert_timestamp(val):
+    """ convert timestamps from string (internal sqlite type) or seconds since epoch
+    """
+    if val.find('-') > -1:
+        # formatted date/time
+        if val.find(" ") > -1:
+            datepart, timepart = val.split(" ")
+        else:
+            datepart = val
+            timepart = "0:0:0,0"
+        year, month, day = map(int, datepart.split("-"))
+        timepart_full = timepart.split(".")
+        hours, minutes, seconds = map(int, timepart_full[0].split(":"))
+        if len(timepart_full) == 2:
+            microseconds = int('{:0<6.6}'.format(timepart_full[1].decode()))
+        else:
+            microseconds = 0
+
+        val = datetime.datetime(year, month, day, hours, minutes, seconds, microseconds)
+    else:
+        # timestamp stored as seconds since epoch, convert to utc
+        val = datetime.datetime.utcfromtimestamp(float(val))
+
+    return val
+
+sqlite3.register_converter('timestamp', convert_timestamp)
+
 class AggMetadata(object):
     """ store some metadata needed to keep track of parse progress
     """
@@ -384,3 +411,32 @@ class BaseFlowAggregator(object):
             cur.close()
 
         return result
+
+    def get_data(self, start_time, end_time):
+        """ get detail data
+        :param start_time: start timestamp
+        :param end_time: end timestamp
+        :return: iterator
+        """
+        query_params = {}
+        query_params['start_time'] = self._parse_timestamp((int(start_time/self.resolution))*self.resolution)
+        query_params['end_time'] = self._parse_timestamp(end_time)
+        sql_select = 'select mtime start_time, '
+        sql_select += '%s, octets, packets, last_seen as "last_seen [timestamp]"  \n' % ','.join(self.agg_fields)
+        sql_select += 'from timeserie \n'
+        sql_select += 'where mtime >= :start_time and mtime < :end_time\n'
+        cur = self._db_connection.cursor()
+        cur.execute(sql_select, query_params)
+
+        # fetch all data, to a max of [max_hits] rows.
+        field_names = (map(lambda x:x[0], cur.description))
+        while True:
+            record = cur.fetchone()
+            if record is None:
+                break
+            else:
+                result_record=dict()
+                for field_indx in range(len(field_names)):
+                    if len(record) > field_indx:
+                        result_record[field_names[field_indx]] = record[field_indx]
+                yield result_record

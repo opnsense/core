@@ -170,6 +170,24 @@ class NetworkinsightController extends ApiControllerBase
     }
 
     /**
+     * get metadata from backend aggregation process
+     * @return array timeseries
+     */
+    public function getMetadataAction()
+    {
+        if ($this->request->isGet()) {
+            $backend = new Backend();
+            $configd_cmd = "netflow aggregate metadata json";
+            $response = $backend->configdRun($configd_cmd);
+            $metadata = json_decode($response, true);
+            if ($metadata != null) {
+                return $metadata;
+            }
+        }
+        return array();
+    }
+
+    /**
      * return interface map (device / name)
      * @return array interfaces
      */
@@ -219,5 +237,35 @@ class NetworkinsightController extends ApiControllerBase
             }
         }
         return $result;
+    }
+
+    /**
+     * request timeserie data to use for reporting
+     * @param string $provider provider class name
+     * @param string $from_date from timestamp
+     * @param string $to_date to timestamp
+     * @param string $resolution resolution in seconds
+     * @return string csv output
+     */
+     public function exportAction(
+        $provider = null,
+        $from_date = null,
+        $to_date = null,
+        $resolution = null
+    ) {
+        $this->response->setContentType('application/CSV', 'UTF-8');
+        $this->response->setHeader(
+                'Content-Disposition:',
+                "Attachment; filename=\"" . $provider . ".csv\""
+            );
+        if ($this->request->isGet()) {
+            $backend = new Backend();
+            $configd_cmd = "netflow aggregate export {$provider} {$from_date} {$to_date} {$resolution}" ;
+            $response = $backend->configdRun($configd_cmd);
+            return $response;
+        } else {
+            return "";
+        }
+
     }
 }
