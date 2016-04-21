@@ -118,7 +118,7 @@
                 <label>Enable local cache (requires service restart)</label>
                 <type>checkbox</type>
                 <help><![CDATA[Enable or disable the local cache.<br/>
-        Curently only ufs directory cache type is supported.<br/>
+        Currently only ufs directory cache type is supported.<br/>
         <b class="text-danger">Do not enable on embedded systems with SD or CF cards as this may break your drive.</b>]]></help>
             </field>
             <field>
