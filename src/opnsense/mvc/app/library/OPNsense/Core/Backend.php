@@ -119,7 +119,6 @@ class Backend
                 $this->getLogger()->error("Timeout (".$timeout.") executing : ".$event);
                 return null;
             }
-
         }
 
         return  str_replace($endOfStream, "", $resp);

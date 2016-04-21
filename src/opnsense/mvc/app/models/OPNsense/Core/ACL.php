@@ -127,7 +127,6 @@ class ACL
 
                             $this->ACLtags[$aclID] = $aclPayload;
                         }
-
                     }
                 }
             }

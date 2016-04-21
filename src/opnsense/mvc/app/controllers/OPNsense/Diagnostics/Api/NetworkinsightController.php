@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -52,7 +53,7 @@ class NetworkinsightController extends ApiControllerBase
      * @param string $field field name to aggregate
      * @return array timeseries
      */
-     public function timeserieAction(
+    public function timeserieAction(
         $provider = null,
         $measure = null,
         $from_date = null,
@@ -74,9 +75,14 @@ class NetworkinsightController extends ApiControllerBase
         if ($this->request->isGet()) {
             $backend = new Backend();
             // request current data
-            $response = $backend->configdRun("netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field}"); //
+            $response = $backend->configdRun(
+                "netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field}"
+            );
             // for test, request random data
-            //$response = $backend->configdRun("netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field} em0,in~em0,out~em1,in~em1,out~em2,in~em2,out~em3,in~em3,out"); //
+            //$response = $backend->configdRun(
+            //    "netflow aggregate fetch {$provider} {$from_date} {$to_date} {$resolution} {$field} " .
+            //    "em0,in~em0,out~em1,in~em1,out~em2,in~em2,out~em3,in~em3,out"
+            //);
             $graph_data = json_decode($response, true);
             if ($graph_data != null) {
                 ksort($graph_data);
@@ -121,7 +127,7 @@ class NetworkinsightController extends ApiControllerBase
      * @param string $max_hits maximum number of results
      * @return array timeseries
      */
-     public function topAction(
+    public function topAction(
         $provider = null,
         $from_date = null,
         $to_date = null,
@@ -208,7 +214,7 @@ class NetworkinsightController extends ApiControllerBase
     public function getProtocolsAction()
     {
         $result = array();
-        foreach (explode ("\n", file_get_contents('/etc/protocols')) as $line) {
+        foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
             if (strlen($line) > 1 && $line[0] != '#') {
                 $parts = preg_split('/\s+/', $line);
                 if (count($parts) >= 4) {
@@ -225,7 +231,7 @@ class NetworkinsightController extends ApiControllerBase
     public function getServicesAction()
     {
         $result = array();
-        foreach (explode ("\n", file_get_contents('/etc/services')) as $line) {
+        foreach (explode("\n", file_get_contents('/etc/services')) as $line) {
             if (strlen($line) > 1 && $line[0] != '#') {
                 // there a few ports which have different names for different protocols, but to not overcomplicate
                 // things here, we ignore those exceptions.
@@ -247,7 +253,7 @@ class NetworkinsightController extends ApiControllerBase
      * @param string $resolution resolution in seconds
      * @return string csv output
      */
-     public function exportAction(
+    public function exportAction(
         $provider = null,
         $from_date = null,
         $to_date = null,
@@ -255,9 +261,9 @@ class NetworkinsightController extends ApiControllerBase
     ) {
         $this->response->setContentType('application/CSV', 'UTF-8');
         $this->response->setHeader(
-                'Content-Disposition:',
-                "Attachment; filename=\"" . $provider . ".csv\""
-            );
+            'Content-Disposition:',
+            "Attachment; filename=\"" . $provider . ".csv\""
+        );
         if ($this->request->isGet()) {
             $backend = new Backend();
             $configd_cmd = "netflow aggregate export {$provider} {$from_date} {$to_date} {$resolution}" ;
