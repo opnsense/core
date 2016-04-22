@@ -42,6 +42,22 @@ use \OPNsense\Core\Backend;
 class NetflowController extends ApiControllerBase
 {
     /**
+     *
+     */
+    public function isEnabledAction()
+    {
+        $result = array('netflow' => 0, "local" => 0);
+        $mdlNetflow = new Netflow();
+        if ((string)$mdlNetflow->capture->targets != "" && (string)$mdlNetflow->capture->interfaces != "") {
+            $result['netflow'] = 1;
+            if ((string)$mdlNetflow->collect->enable == 1) {
+                $result['local'] = 1;
+            }
+        }
+        return $result;
+     }
+
+    /**
      * retrieve Netflow settings
      * @return array
      */
