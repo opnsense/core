@@ -61,8 +61,8 @@ else
 	done
 fi
 
-# regenerate groups and users
-/usr/local/etc/rc.recover > /dev/null
+# regenerate groups and users for base
+/usr/local/etc/rc.recover base > /dev/null
 
 # rewrite message of the day
 /etc/rc.d/motd onestart
@@ -168,6 +168,9 @@ if [ -f "/dev/kbdmux0" ]; then
 fi
 
 echo "done."
+
+# regenerate groups and users for packages
+/usr/local/etc/rc.recover pkg > /dev/null
 
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf

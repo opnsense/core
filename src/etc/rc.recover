@@ -148,12 +148,31 @@ function recover_rebuild()
 	passthru('/bin/sync');
 }
 
-/* first stage recovers the base system state */
-file_put_contents('/etc/group', $etc_group);
-file_put_contents('/etc/master.passwd', $etc_master_passwd);
-file_put_contents('/etc/shells', $etc_shells);
-recover_rebuild();
+function recover_base()
+{
+	file_put_contents('/etc/group', $etc_group);
+	file_put_contents('/etc/master.passwd', $etc_master_passwd);
+	file_put_contents('/etc/shells', $etc_shells);
+	recover_rebuild();
+}
 
-/* second stage recovers the ports system state */
-recover_ports();
-recover_rebuild();
+function recover_pkg()
+{
+	recover_ports();
+	recover_rebuild();
+}
+
+$stage = isset($argv[1]) ? $argv[1] : 'both';
+
+switch ($stage) {
+	case 'base':
+		recover_base();
+		break;
+	case 'pkg':
+		recover_pkg();
+		break;
+	default:
+		recover_base();
+		recover_pkg();
+		break;
+}
