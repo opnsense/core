@@ -461,12 +461,52 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
 
     // If the file doesn't exist or is older than update_freq days, fetch a new copy.
     if (!file_exists($urltable_filename) || ((time() - filemtime($urltable_filename)) > ($freq * 86400 - 90)) || $forceupdate) {
+        // open file handle to output file, in case the process takes a lot of time, make sure there's a file before
+        // filter starts to load. Also helps for tracking progress.
+        //
+        // todo: rethink alias_expand_urltable in filter.inc , its probably not a very good idea to download and
+        //       process files during boot.
+        $output_file_handle = fopen($urltable_filename, 'w');
+        $alias_type = alias_get_type($name);
         // Try to fetch the URL supplied
         @unlink("{$urltable_filename}.tmp");
         $verify_ssl = isset($config['system']['checkaliasesurlcert']);
         if (download_file($url, "{$urltable_filename}.tmp", $verify_ssl)) {
-            mwexec("/usr/bin/sed -E 's/\;.*//g; /^[[:space:]]*($|#)/d' ". escapeshellarg($urltable_filename . ".tmp") . " > " . escapeshellarg($urltable_filename));
-            if (alias_get_type($name) == "urltable_ports") {
+            foreach (preg_split('/[\n\r]+/', file_get_contents("{$urltable_filename}.tmp"), -1, PREG_SPLIT_NO_EMPTY) as $line) {
+                $line = trim($line); // remove leading spaces
+                if ($line[0] != '#') {
+                    // cleanse line item
+                    $line = preg_split('/\s+/', $line)[0];
+                    if ($alias_type == "urltable_ports") {
+                        // todo: add proper validation for ports here
+                        fwrite($output_file_handle, "{$line}\n");
+                    } else {
+                        // validate or resolve line items, skip unparseable content
+                        if (is_subnet($line) || is_ipaddr($line)) {
+                            fwrite($output_file_handle, "{$line}\n");
+                        } elseif (is_hostname($line)) {
+                            foreach (array(DNS_AAAA, DNS_A) as $dns_type) {
+                                // normally dns_get_record should be able to use DNS_A + DNS_AAAA
+                                // but for some strange reason not on our platform...
+                                $dns_records = @dns_get_record($line, $dns_type);
+                                if ($dns_records) {
+                                    foreach ($dns_records as $dns_record) {
+                                        if (!empty($dns_record['ipv6'])) {
+                                            fwrite($output_file_handle, $dns_record['ipv6'] . "\n");
+                                        } elseif (!empty($dns_record['ip'])) {
+                                            fwrite($output_file_handle, $dns_record['ip'] . "\n");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        fflush($output_file_handle);
+                    }
+                }
+            }
+            fclose($output_file_handle);
+
+            if ($alias_type == "urltable_ports") {
                 $ports = explode("\n", file_get_contents($urltable_filename));
                 $ports = group_ports($ports);
                 file_put_contents($urltable_filename, implode("\n", $ports));
