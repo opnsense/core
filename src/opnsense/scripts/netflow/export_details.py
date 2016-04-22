@@ -76,7 +76,7 @@ if valid_params:
                         if type(record[item]) == datetime.datetime:
                             # dates are stored in utc, return in timezone configured on this machine
                             record[item] = record[item].replace(tzinfo=pytz.utc).astimezone(tzlocal())
-                            line.append('%s+00:00'%record[item].strftime('%Y/%m/%d %H:%M:%S'))
+                            line.append(record[item].strftime('%Y/%m/%d %H:%M:%S'))
                         elif type(record[item]) == float:
                             line.append('%.4f' % record[item])
                         elif type(record[item]) == int:
