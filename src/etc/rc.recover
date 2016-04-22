@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2015 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -62,6 +62,7 @@ www:*:80:
 hast:*:845:
 nogroup:*:65533:
 nobody:*:65534:
+
 EOF;
 
 $etc_master_passwd = <<<EOF
@@ -91,6 +92,7 @@ auditdistd:*:78:77::0:0:Auditdistd unprivileged user:/var/empty:/usr/sbin/nologi
 www:*:80:80::0:0:World Wide Web Owner:/nonexistent:/usr/sbin/nologin
 hast:*:845:845::0:0:HAST unprivileged user:/var/empty:/usr/sbin/nologin
 nobody:*:65534:65534::0:0:Unprivileged user:/nonexistent:/usr/sbin/nologin
+
 EOF;
 
 $etc_shells = <<<EOF
@@ -104,6 +106,7 @@ $etc_shells = <<<EOF
 /bin/csh
 /bin/tcsh
 /usr/local/etc/rc.initial
+
 EOF;
 
 function recover_ports()
@@ -148,12 +151,37 @@ function recover_rebuild()
 	passthru('/bin/sync');
 }
 
-/* first stage recovers the base system state */
-file_put_contents('/etc/group', $etc_group);
-file_put_contents('/etc/master.passwd', $etc_master_passwd);
-file_put_contents('/etc/shells', $etc_shells);
-recover_rebuild();
+function recover_base($etc_group, $etc_master_passwd, $etc_shells)
+{
+	echo "===> Restoring /etc/group\n";
+	file_put_contents('/etc/group', $etc_group);
 
-/* second stage recovers the ports system state */
-recover_ports();
-recover_rebuild();
+	echo "===> Restoring /etc/master.passwd\n";
+	file_put_contents('/etc/master.passwd', $etc_master_passwd);
+
+	echo "===> Restoring /etc/shells\n";
+	file_put_contents('/etc/shells', $etc_shells);
+
+	recover_rebuild();
+}
+
+function recover_pkg()
+{
+	recover_ports();
+	recover_rebuild();
+}
+
+$stage = isset($argv[1]) ? $argv[1] : 'both';
+
+switch ($stage) {
+	case 'base':
+		recover_base($etc_group, $etc_master_passwd, $etc_shells);
+		break;
+	case 'pkg':
+		recover_pkg();
+		break;
+	default:
+		recover_base($etc_group, $etc_master_passwd, $etc_shells);
+		recover_pkg();
+		break;
+}
