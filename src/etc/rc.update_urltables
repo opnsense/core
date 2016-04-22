@@ -35,6 +35,7 @@ if (count($todo) > 0) {
     $filter_reload = false;
     foreach ($todo as $alias) {
         if (preg_match('/urltable/i', $alias['type'])) {
+            log_error("{$argv[0]}: start update {$alias['name']} ");
             $r = process_alias_urltable($alias['name'], $alias['url'], $alias['updatefreq']);
             if ($r == 1) {
                 if ($alias['type'] == "urltable") {
