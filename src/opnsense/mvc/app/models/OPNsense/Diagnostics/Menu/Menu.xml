@@ -1,6 +1,9 @@
 <menu>
+    <Reporting order="15" VisibleName="Reporting" cssClass="fa fa-area-chart">
+        <Health order="10" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
+        <NetworkInsight VisibleName="Network Insight" order="20" url="/ui/diagnostics/networkinsight/" cssClass="fa fa-exchange" />
+    </Reporting>
     <System>
-        <Health order="0" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
         <Diagnostics order="160" url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
         <Routes>
             <Status order="20" url="/ui/diagnostics/interface/routes/"/>
