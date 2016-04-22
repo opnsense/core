@@ -459,7 +459,7 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
         mkdir($urltable_prefix);
     }
     if (empty($freq)) {
-        $update_freq = 86400 - 90;
+        $update_freq = 86310;
     } else {
         $update_freq = $freq * 86400 - 90;
     }
