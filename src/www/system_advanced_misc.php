@@ -78,10 +78,6 @@ function thermal_modules()
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['proxyurl'] = !empty($config['system']['proxyurl']) ? $config['system']['proxyurl'] : null;
-    $pconfig['proxyport'] = !empty($config['system']['proxyport']) ? $config['system']['proxyport'] : null;
-    $pconfig['proxyuser'] = !empty($config['system']['proxyuser']) ? $config['system']['proxyuser'] : null;
-    $pconfig['proxypass'] = !empty($config['system']['proxypass']) ? $config['system']['proxypass'] : null;
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
@@ -117,30 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        if (!empty($pconfig['proxyurl'])) {
-            $config['system']['proxyurl'] = $_POST['proxyurl'];
-        } elseif (isset($config['system']['proxyurl'])) {
-            unset($config['system']['proxyurl']);
-        }
-
-        if (!empty($pconfig['proxyport'])) {
-            $config['system']['proxyport'] = $pconfig['proxyport'];
-        } elseif (isset($config['system']['proxyport'])) {
-            unset($config['system']['proxyport']);
-        }
-
-        if (!empty($pconfig['proxyuser'])) {
-            $config['system']['proxyuser'] = $pconfig['proxyuser'];
-        } elseif (isset($config['system']['proxyuser'])) {
-            unset($config['system']['proxyuser']);
-        }
-
-        if (!empty($pconfig['proxypass'])) {
-            $config['system']['proxypass'] = $pconfig['proxypass'];
-        } elseif (isset($config['system']['proxypass'])) {
-            unset($config['system']['proxypass']);
-        }
-
         $need_relayd_restart = false;
         if (!empty($pconfig['lb_use_sticky'])) {
             if (!isset($config['system']['lb_use_sticky'])) {
@@ -282,50 +254,11 @@ include("head.inc");
           <form action="system_advanced_misc.php" method="post" name="iform" id="iform">
             <table class="table table-striped">
               <tr>
-                <td width="22%"><strong><?=gettext("Proxy support"); ?></strong></td>
-                <td  width="78%" align="right">
+                <td width="22%"><strong><?= gettext('Load Balancing') ?></strong></td>
+                <td width="78%" align="right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_proxyurl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Proxy URL"); ?></td>
-                <td>
-                  <input name="proxyurl" id="proxyurl" type="text" value="<?=!empty($pconfig['proxyurl']) ? $pconfig['proxyurl'] : ""; ?>"/>
-                  <div class="hidden" for="help_for_proxyurl">
-                    <?php printf(gettext("Proxy url for allowing %s to use this proxy to connect outside."), $g['product']); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_proxyport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Proxy Port"); ?></td>
-                <td>
-                  <input name="proxyport" id="proxyport" type="text" value="<?=!empty($pconfig['proxyport']) ? $pconfig['proxyport'] :"";?>"/>
-                  <div class="hidden" for="help_for_proxyport">
-                    <?php printf(gettext("Proxy port to use when %s connects to the proxy URL configured above. Default is 8080 for http protocol or 443 for ssl."), $g['product']); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_proxyuser" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Proxy Username"); ?></td>
-                <td>
-                  <input name="proxyuser" id="proxyuser" type="text" value="<?= !empty($pconfig['proxyuser']) ? $pconfig['proxyuser'] : "";?>"/>
-                  <div class="hidden" for="help_for_proxyuser">
-                    <?php printf(gettext("Proxy username for allowing %s to use this proxy to connect outside"), $g['product']); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_proxypassword" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Proxy Pass"); ?></td>
-                <td>
-                  <input type="password" name="proxypass" id="proxypass" value="<?= !empty($pconfig['proxypass']) ? $pconfig['proxypass'] : "";?>"/>
-                  <div class="hidden" for="help_for_proxypassword">
-                    <?php printf(gettext("Proxy password for allowing %s to use this proxy to connect outside"), $g['product']); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Load Balancing"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway switching");?> </td>
