@@ -402,21 +402,11 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
     curl_setopt($ch, CURLOPT_USERAGENT, $g['product_name'] . '/' . rtrim(file_get_contents("/usr/local/opnsense/version/opnsense")));
 
-    if (!empty($config['system']['proxyurl'])) {
-        curl_setopt($ch, CURLOPT_PROXY, $config['system']['proxyurl']);
-        if (!empty($config['system']['proxyport'])) {
-            curl_setopt($ch, CURLOPT_PROXYPORT, $config['system']['proxyport']);
-        }
-        if (!empty($config['system']['proxyuser']) && !empty($config['system']['proxypass'])) {
-            @curl_setopt($ch, CURLOPT_PROXYAUTH, CURLAUTH_ANY | CURLAUTH_ANYSAFE);
-            curl_setopt($ch, CURLOPT_PROXYUSERPWD, "{$config['system']['proxyuser']}:{$config['system']['proxypass']}");
-        }
-    }
-
     @curl_exec($ch);
     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     fclose($fp);
     curl_close($ch);
+
     return ($http_code == 200) ? true : $http_code;
 }
 
