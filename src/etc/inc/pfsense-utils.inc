@@ -458,9 +458,13 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
         unlink($urltable_prefix);
         mkdir($urltable_prefix);
     }
-
+    if (empty($freq)) {
+        $update_freq = 86400 - 90;
+    } else {
+        $update_freq = $freq * 86400 - 90;
+    }
     // If the file doesn't exist or is older than update_freq days, fetch a new copy.
-    if (!file_exists($urltable_filename) || ((time() - filemtime($urltable_filename)) > ($freq * 86400 - 90)) || $forceupdate) {
+    if (!file_exists($urltable_filename) || ((time() - filemtime($urltable_filename)) > $update_freq) || $forceupdate) {
         // open file handle to output file, in case the process takes a lot of time, make sure there's a file before
         // filter starts to load. Also helps for tracking progress.
         //
