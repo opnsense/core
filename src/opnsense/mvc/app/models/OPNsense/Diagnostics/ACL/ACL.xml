@@ -40,6 +40,14 @@
             <pattern>api/diagnostics/systemhealth/*</pattern>
         </patterns>
     </page-diagnostics-health>
+    <page-diagnostics-networkinsight>
+        <name>WebCfg - Diagnostics: Network Insight</name>
+        <description>Allows access to the 'Diagnostics: Network Insight' page</description>
+        <patterns>
+            <pattern>ui/diagnostics/networkinsight/*</pattern>
+            <pattern>api/diagnostics/networkinsight/*</pattern>
+        </patterns>
+    </page-diagnostics-networkinsight>
     <page-diagnostics-netflow>
         <name>WebCfg - Diagnostics: Netflow configuration</name>
         <description>Allows access to the Netflow configuration</description>
