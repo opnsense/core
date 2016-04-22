@@ -407,10 +407,9 @@ POSSIBILITY OF SUCH DAMAGE.
                   percentage = parseInt((item['total'] /grand_total) * 100);
                   perc_text = ((item['total'] /grand_total) * 100).toFixed(2);
                   tr_str += '<td>';
-                  tr_str += '<div class="progress">';
-                  tr_str += '<div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" ';
-                  tr_str += 'aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width:' ;
-                  tr_str += percentage+'%;">'+perc_text+'%</div></div>';
+                  tr_str += '<div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" ';
+                  tr_str += 'aria-valuenow="'+percentage+'" aria-valuemin="0" aria-valuemax="100" style="color: black; min-width: 2em; width:' ;
+                  tr_str += percentage+'%;">'+perc_text+'&nbsp;%</div>';
                   tr_str += '</td>';
                   tr_str += '</tr>';
                   html.push(tr_str);
