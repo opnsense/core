@@ -66,39 +66,45 @@ POSSIBILITY OF SUCH DAMAGE.
       function get_metadata()
       {
           var dfObj = new $.Deferred();
-          // fetch interface names
-          ajaxGet('/api/diagnostics/networkinsight/getInterfaces',{},function(intf_names,status){
-              interface_names = intf_names;
-              // fetch protocol names
-              ajaxGet('/api/diagnostics/networkinsight/getProtocols',{}, function(protocols, status) {
-                  protocol_names = protocols;
-                  // fetch service names
-                  ajaxGet('/api/diagnostics/networkinsight/getServices',{}, function(services, status) {
-                      service_names = services;
-                      // return promise, no need to wait for getMetadata
-                      dfObj.resolve();
-                      // fetch aggregators
-                      ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
-                        Object.keys(metadata['aggregators']).forEach(function (agg_name) {
-                          var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
-                          $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
-                        });
-                        $("#export_collection").change(function(){
-                            //alert($(this).find('option:selected').data('resolutions'));
-                            $("#export_resolution").html("");
-                            var resolutions = String($(this).find('option:selected').data('resolutions'));
-                            resolutions.split(',').map(function(item) {
-                                $("#export_resolution").append($("<option/>").val(item).text(item));
-                                console.log(item);
+          ajaxGet('/api/diagnostics/netflow/isEnabled',{}, function(is_enabled, status){
+              if (is_enabled['local'] == 0) {
+                  dfObj.reject();
+                  return;
+              }
+              // fetch interface names
+              ajaxGet('/api/diagnostics/networkinsight/getInterfaces',{}, function(intf_names, status){
+                  interface_names = intf_names;
+                  // fetch protocol names
+                  ajaxGet('/api/diagnostics/networkinsight/getProtocols',{}, function(protocols, status) {
+                      protocol_names = protocols;
+                      // fetch service names
+                      ajaxGet('/api/diagnostics/networkinsight/getServices',{}, function(services, status) {
+                          service_names = services;
+                          // return promise, no need to wait for getMetadata
+                          dfObj.resolve();
+                          // fetch aggregators
+                          ajaxGet('/api/diagnostics/networkinsight/getMetadata',{}, function(metadata, status) {
+                            Object.keys(metadata['aggregators']).forEach(function (agg_name) {
+                              var res = metadata['aggregators'][agg_name]['resolutions'].join(',');
+                              $("#export_collection").append($("<option data-resolutions='"+res+"'/>").val(agg_name).text(agg_name));
                             });
-                            $("#export_resolution").selectpicker('refresh');
-                        });
-                        $("#export_collection").change();
-                        $("#export_collection").selectpicker('refresh');
+                            $("#export_collection").change(function(){
+                                //alert($(this).find('option:selected').data('resolutions'));
+                                $("#export_resolution").html("");
+                                var resolutions = String($(this).find('option:selected').data('resolutions'));
+                                resolutions.split(',').map(function(item) {
+                                    $("#export_resolution").append($("<option/>").val(item).text(item));
+                                });
+                                $("#export_resolution").selectpicker('refresh');
+                            });
+                            $("#export_collection").change();
+                            $("#export_collection").selectpicker('refresh');
+                          });
                       });
                   });
               });
           });
+
           return dfObj;
       }
 
@@ -530,6 +536,10 @@ POSSIBILITY OF SUCH DAMAGE.
           chart_interface_totals();
           chart_top_dst_port_usage();
           chart_top_src_addr_usage();
+      }).fail(function(){
+          // netflow / local collection not active.
+          $("#info_tab").show();
+          $("#info_tab").click();
       });
 
 
@@ -540,11 +550,20 @@ POSSIBILITY OF SUCH DAMAGE.
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li><a data-toggle="tab" id="info_tab" style="display:none;" href="#info">{{ lang._('Info') }}</a></li>
     <li class="active"><a data-toggle="tab" id="totals_tab" href="#totals">{{ lang._('Totals') }}</a></li>
     <li><a data-toggle="tab" id="details_tab" href="#details">{{ lang._('Details') }}</a></li>
     <li><a data-toggle="tab" id="export_tab" href="#export">{{ lang._('Export') }}</a></li>
 </ul>
 <div class="tab-content content-box tab-content" style="padding: 10px;">
+    <div id="info" class="tab-pane fade in">
+      <br/>
+      <div class="alert alert-warning" role="alert">
+        {{ lang._('Local data collection is not enabled at the moment, please configure netflow first') }}
+        <br/>
+        <a href="/ui/diagnostics/netflow/">{{ lang._('Go to netflow configuration') }} </a>
+      </div>
+    </div>
     <div id="totals" class="tab-pane fade in active">
       <div class="pull-right">
         <select class="selectpicker" id="total_time_select">
