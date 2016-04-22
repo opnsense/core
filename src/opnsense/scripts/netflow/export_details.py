@@ -30,7 +30,6 @@
 """
 import time
 import datetime
-from dateutil.tz import tzlocal
 import pytz
 import os
 import sys
@@ -57,6 +56,10 @@ if app_params['start_time'].isdigit():
             valid_params = True
 
 if valid_params:
+    # calculate time offset between localtime and utc
+    now_timestamp = time.time()
+    time_offset = datetime.datetime.fromtimestamp(now_timestamp) - datetime.datetime.utcfromtimestamp(now_timestamp)
+
     for agg_class in lib.aggregates.get_aggregators():
         if app_params['provider'] == agg_class.__name__:
             if resolution in agg_class.resolutions():
@@ -75,7 +78,7 @@ if valid_params:
                             line.append("")
                         if type(record[item]) == datetime.datetime:
                             # dates are stored in utc, return in timezone configured on this machine
-                            record[item] = record[item].replace(tzinfo=pytz.utc).astimezone(tzlocal())
+                            record[item] = record[item].replace(tzinfo=pytz.utc) + time_offset
                             line.append(record[item].strftime('%Y/%m/%d %H:%M:%S'))
                         elif type(record[item]) == float:
                             line.append('%.4f' % record[item])
