@@ -1,0 +1,16 @@
+<model>
+    <mount>//tests/OPNsense/TestModel</mount>
+    <description>
+        OPNsense RecursiveModel test
+    </description>
+    <items>
+        <!-- container -->
+        <general>
+            <!-- fields -->
+            <FromEmail type="EmailField">
+                <default>sample@example.com</default>
+                <Required>Y</Required>
+            </FromEmail>
+        </general>
+    </items>
+</model>

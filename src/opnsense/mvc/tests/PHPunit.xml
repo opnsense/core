@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./setup.php"
+         backupGlobals="false"
+         backupStaticAttributes="false"
+         verbose="true"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         processIsolation="false"
+         stopOnFailure="false"
+         syntaxCheck="true">
+    <groups>
+        <exclude>
+            <group>Ignore</group>
+        </exclude>
+    </groups>
+    <testsuite name="OPNsense - Testsuite">
+        <directory suffix="Test.php">./app</directory>
+    </testsuite>
+</phpunit>
