@@ -46,7 +46,7 @@ class ArrayField extends BaseField
     protected function actionPostLoadingEvent()
     {
         // always make sure there's a node to copy our structure from
-        if ($this->internalTemplateNode ==null) {
+        if ($this->internalTemplateNode == null) {
             $firstKey = array_keys($this->internalChildnodes)[0];
             $this->internalTemplateNode = $this->internalChildnodes[$firstKey];
             /**
