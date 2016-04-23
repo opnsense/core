@@ -3181,7 +3181,7 @@ EOD;
 pass in {$log['pass']} quick on {$lanif} proto tcp from any to ({$lanif}) port { {$alports} } keep state label "anti-lockout rule"
 
 EOD;
-        } else if (count($config['interfaces']) == 1) {
+        } elseif (count($config['interfaces']) == 1  && !empty($FilterIflist['wan']['if'])) {
             /* single-interface deployment, add to WAN  */
             $wanif = $FilterIflist["wan"]['if'];
             $ipfrules .= <<<EOD
