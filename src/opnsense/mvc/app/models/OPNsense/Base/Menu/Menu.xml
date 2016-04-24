@@ -32,7 +32,7 @@
             <Updates order="10" url="/ui/core/firmware/"/>
             <Reporter order="20" url="/crash_reporter.php"/>
             <Reboot order="30" url="/reboot.php"/>
-            <Halt order="40" url="/diag_halt.php"/>
+            <PowerOff VisibleName="Power Off" order="40" url="/diag_halt.php"/>
             <Defaults order="50" url="/diag_defaults.php"/>
         </Firmware>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">

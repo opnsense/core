@@ -43,11 +43,11 @@ include('head.inc');
       <section class="col-xs-12">
 <?php
       if (!empty($_POST['Submit'])):
-        print_info_box(gettext("The system is halting now. This may take one minute.")); ?>
+        print_info_box(gettext("The system is powering off now.")); ?>
 <?php
       else: ?>
         <form method="post">
-          <p><strong><?=gettext("Are you sure you want to halt the system?");?></strong></p>
+          <p><strong><?=gettext("Are you sure you want to power off the system?");?></strong></p>
           <div class="btn-group">
              <input type="submit" name="Submit" class="btn btn-primary" value="<?=gettext("Yes");?>" />
             <a href="/" class="btn btn-default"><?=gettext("No");?></a>
@@ -61,10 +61,9 @@ include('head.inc');
 </section>
 
 <?php include("foot.inc");
-// system halt, when submit pressed
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['Submit'])) {
         system_halt();
     }
 }
-?>
