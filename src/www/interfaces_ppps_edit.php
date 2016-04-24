@@ -800,7 +800,7 @@ include("head.inc");
                         <td>
                           <input name="idletimeout" type="text" id="idletimeout" value="<?=$pconfig['idletimeout'];?>" />
                           <div class="hidden" for="help_for_idletimeout">
-                            <?= gettext("(seconds) Default is 0, which disables the timeout feature."); ?></br><br/>
+                            <?= gettext("(seconds) Default is 0, which disables the timeout feature."); ?><br /><br />
                             <?= gettext("If no incoming or outgoing packets are transmitted for the entered number of seconds the connection is brought down.");?>
                             <br /><?=gettext("When the idle timeout occurs, if the dial-on-demand option is enabled, mpd goes back into dial-on-demand mode. Otherwise, the interface is brought down and all associated routes removed."); ?>
                           </div>
@@ -900,10 +900,10 @@ include("head.inc");
                           </table>
                           <div class="hidden" for="help_for_link_<?=$intf_idx;?>">
                             <ul>
-                              <li><?=gettext("Bandwidth");?> : <?=gettext("Set ONLY for MLPPP connections and ONLY when links have different bandwidths.");?></li>
-                              <li><?=gettext("MTU"); ?> : <?=gettext("MTU will default to 1492.");?></li>
-                              <li><?=gettext("MRU"); ?> : <?=gettext("MRU");?> <?=gettext("will be auto-negotiated by default.");?></li>
-                              <li><?=gettext("MRRU"); ?> : <?=gettext("Set ONLY for MLPPP connections.");?> <?=gettext("MRRU");?> <?=gettext("will be auto-negotiated by default.");?></li>
+                              <li><?=gettext("Bandwidth: Set ONLY for MLPPP connections and ONLY when links have different bandwidths.");?></li>
+                              <li><?=gettext("MTU: MTU will default to 1492.");?></li>
+                              <li><?=gettext("MRU: MRU will be auto-negotiated by default.");?></li>
+                              <li><?=gettext("MRRU: Set ONLY for MLPPP connections. MRRU will be auto-negotiated by default.");?></li>
                             </ul>
                           </div>
                         </td>
@@ -918,7 +918,7 @@ include("head.inc");
                         <td width="22%" valign="top">&nbsp;</td>
                         <td width="78%">
                           <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                          <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/interfaces_ppps.php');?>'" />
+                          <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? html_safe($_SERVER['HTTP_REFERER']) : '/interfaces_ppps.php');?>'" />
                           <input name="ptpid" type="hidden" value="<?=$pconfig['ptpid'];?>" />
                           <?php if (isset($id)): ?>
                             <input name="id" type="hidden" value="<?=$id;?>" />
