@@ -153,16 +153,16 @@
         </Rules>
         <NAT order="30" cssClass="fa fa-exchange fa-fw">
             <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
-              <NatEdit url="/firewall_nat_edit.php*" visibility="hidden"/>
+              <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
             </PortForward>
-            <OneOnOne order="200" VisibleName="1:1" url="/firewall_nat_1to1.php">
-              <OneOnOneEdit url="/firewall_nat_1to1_edit.php*" visibility="hidden"/>
-            </OneOnOne>
+            <OneToOne order="200" VisibleName="One-to-One" url="/firewall_nat_1to1.php">
+              <Edit url="/firewall_nat_1to1_edit.php*" visibility="hidden"/>
+            </OneToOne>
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
-              <OutboundEdit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
+              <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
             <NPT VisibleName="NPT (IPv6)" order="400" url="/firewall_nat_npt.php">
-                <NPTEdit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
+                <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPT>
         </NAT>
         <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone fa-fw">
