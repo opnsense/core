@@ -223,20 +223,8 @@ include("head.inc");
 ?>
 
 <body>
-    <?php
-    include("fbegin.inc");
-    ?>
-    <script type="text/javascript">
-    //<![CDATA[
-    function sticky_checked(obj) {
-      if (obj.checked) {
-        $('#srctrack').attr('disabled',false);
-      } else {
-        $('#srctrack').attr('disabled','true');
-      }
-    }
-//]]>
-</script>
+
+<?php include("fbegin.inc"); ?>
 
 <section class="page-content-main">
   <div class="container-fluid">
@@ -274,7 +262,7 @@ include("head.inc");
               <tr>
                 <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
                 <td>
-                  <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? "checked=\"checked\"" :"";?> onclick="sticky_checked(this)" />
+                  <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
                   <strong><?=gettext("Use sticky connections"); ?></strong><br />
                   <div class="hidden" for="help_for_lb_use_sticky">
                     <?=gettext("Successive connections will be redirected to the servers " .
@@ -285,8 +273,8 @@ include("head.inc");
                                         "the sticky connection. Further connections from that host " .
                                         "will be redirected to the next web server in the round " .
                                         "robin. Changing this option will restart the Load Balancing service."); ?>
-                  </div>
-                  <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" data-toggle="tooltip" data-placement="left" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>" <?= empty($pconfig['lb_use_sticky']) ? "disabled=\"disabled\"" : "";?> />
+                  </div><br/>
+                  <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
 
                   <div class="hidden" for="help_for_lb_use_sticky">
                     <?=gettext("Set the source tracking timeout for sticky connections. " .
