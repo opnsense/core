@@ -31,20 +31,41 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
-require_once("rrd.inc");
 require_once("filter.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
 
-
 function clear_all_log_files()
 {
     killbyname('syslogd');
 
-    $clog_files = array('dhcpd', 'filter', 'gateways', 'ipsec', 'l2tps', 'lighttpd', 'ntpd', 'openvpn', 'poes',
-                        'portalauth', 'ppps', 'pptps', 'relayd', 'resolver', 'routing', 'system','vpn','wireless');
-    $log_files = array('squid/access', 'squid/cache', 'squid/store');
+    $clog_files = array(
+        'dhcpd',
+        'filter',
+        'gateways',
+        'ipsec',
+        'l2tps',
+        'lighttpd',
+        'ntpd',
+        'openvpn',
+        'poes',
+        'portalauth',
+        'ppps',
+        'pptps',
+        'relayd',
+        'resolver',
+        'routing',
+        'system',
+        'vpn',
+        'wireless',
+    );
+
+    $log_files = array(
+        'squid/access',
+        'squid/cache',
+        'squid/store',
+    );
 
     foreach ($clog_files as $lfile) {
         clear_clog("/var/log/{$lfile}.log", false);
@@ -69,7 +90,6 @@ function is_valid_syslog_server($target) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['rrdenable'] = isset($config['rrd']['enable']);
     $pconfig['reverse'] = isset($config['syslog']['reverse']);
     $pconfig['nentries'] = !empty($config['syslog']['nentries']) ? $config['syslog']['nentries'] : 50;
     $pconfig['remoteserver'] = !empty($config['syslog']['remoteserver']) ? $config['syslog']['remoteserver'] : null;
@@ -99,11 +119,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_POST['action']) && $_POST['action'] == "resetlogs") {
         clear_all_log_files();
         $savemsg = gettext("The log files have been reset.");
-    } elseif (!empty($_POST['action']) && $_POST['action'] == "ResetRRD") {
-        $savemsg = gettext('RRD data has been cleared.');
-        mwexec('/bin/rm /var/db/rrd/*');
-        enable_rrd_graphing();
-        setup_gateways_monitor();
     } else {
         $input_errors = array();
         $pconfig = $_POST;
@@ -168,8 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($config['syslog']['filterdescriptions']);
             }
 
-            $config['rrd']['enable'] = !empty($pconfig['rrdenable']);
-
             write_config();
 
             system_syslogd_start();
@@ -190,7 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             filter_pflog_start();
-            enable_rrd_graphing();
             setup_gateways_monitor();
         }
     }
@@ -268,13 +280,13 @@ function check_everything() {
 $(document).ready(function() {
     enable_change(false);
 
-    // messagebox, flush all rrd graphs
-    $("#ResetRRD").click(function(event){
+    // messagebox, flush all log files
+    $("#resetlogs").click(function(event){
         event.preventDefault();
         BootstrapDialog.show({
             type:BootstrapDialog.TYPE_DANGER,
             title: "<?= gettext("Syslog");?>",
-            message: "<?=gettext('Do you really want to reset the RRD graphs? This will erase all graph data.');?>",
+            message: "<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>",
             buttons: [{
                     label: "<?= gettext("No");?>",
                     action: function(dialogRef) {
@@ -282,34 +294,12 @@ $(document).ready(function() {
                     }}, {
                       label: "<?= gettext("Yes");?>",
                       action: function(dialogRef) {
-                        $("#action").val("ResetRRD");
+                        $("#action").val("resetlogs");
                         $("#iform").submit()
                     }
                 }]
         });
     });
-
-      // messagebox, flush all log files
-      $("#resetlogs").click(function(event){
-          event.preventDefault();
-          BootstrapDialog.show({
-              type:BootstrapDialog.TYPE_DANGER,
-              title: "<?= gettext("Syslog");?>",
-              message: "<?=gettext('Do you really want to reset the log files? This will erase all local log data.');?>",
-              buttons: [{
-                      label: "<?= gettext("No");?>",
-                      action: function(dialogRef) {
-                          dialogRef.close();
-                      }}, {
-                        label: "<?= gettext("Yes");?>",
-                        action: function(dialogRef) {
-                          $("#action").val("resetlogs");
-                          $("#iform").submit()
-                      }
-                  }]
-          });
-      });
-
 });
 
 //]]>
@@ -330,35 +320,6 @@ $(document).ready(function() {
           <form action="diag_logs_settings.php" method="post" name="iform" id="iform">
             <input type="hidden" id="action" name="action" value="" />
             <div class="tab-content content-box col-xs-12 __mb">
-              <div class="table-responsive">
-                <table class="table table-striped">
-                  <tr>
-                    <td colspan="2"><strong><?=gettext('Reporting Database Options');?></strong></td>
-                  </tr>
-                  <tr>
-                    <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Round-Robin-Database");?></td>
-                    <td>
-                      <input name="rrdenable" type="checkbox" id="rrdenable" value="yes" <?=!empty($pconfig['rrdenable']) ? "checked=\"checked\"" : ""?> onclick="enable_change(false)" />
-                      &nbsp;<strong><?=gettext("Enables the RRD graphing backend.");?></strong>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
-                      <input type="button" name="ResetRRD" id="ResetRRD" class="btn btn-default" value="<?=gettext("Reset RRD Data");?>" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <?=gettext("Graphs will not be allowed to be recreated within a 1 minute interval, please " .
-                        "take this into account after changing the style.");?>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-             <div class="tab-content content-box col-xs-12 __mb">
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>

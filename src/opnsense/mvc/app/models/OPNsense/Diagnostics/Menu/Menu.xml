@@ -1,16 +1,14 @@
 <menu>
-    <Reporting order="15" VisibleName="Reporting" cssClass="fa fa-area-chart">
+    <Reports>
         <Health order="10" url="/ui/diagnostics/systemhealth/" cssClass="fa fa-heartbeat fa-fw"/>
-        <NetworkInsight VisibleName="Network Insight" order="20" url="/ui/diagnostics/networkinsight/" cssClass="fa fa-exchange" />
-    </Reporting>
+        <Insight order="20" url="/ui/diagnostics/networkinsight/" cssClass="fa fa-binoculars fa-fw" />
+        <NetFlow order="30" url="/ui/diagnostics/netflow/" cssClass="fa fa-rss fa-fw"/>
+    </Reports>
     <System>
         <Diagnostics order="160" url="/ui/diagnostics/activity/" cssClass="fa fa-medkit fa-fw"/>
         <Routes>
             <Status order="20" url="/ui/diagnostics/interface/routes/"/>
         </Routes>
-        <Settings>
-          <Netflow order="1000" VisibleName="NetFlow" url="/ui/diagnostics/netflow/"/>
-        </Settings>
     </System>
     <Interfaces>
         <Diagnostics>
