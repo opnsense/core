@@ -284,57 +284,12 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Power savings"); ?></th>
+                <th colspan="2" valign="top" class="listtopic"><?=gettext("Power Savings"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
                 <td>
                   <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
-                  <hr/>
-                  <table class="table table-condensed">
-                      <thead>
-                        <tr>
-                          <th><?=gettext("On AC Power Mode"); ?></th>
-                          <th><?=gettext("On Battery Power Mode"); ?></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default" data-width="auto">
-                              <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Hiadaptive");?>
-                              </option>
-                              <option value="adp" <?=$pconfig['powerd_ac_mode']=="adp" ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Adaptive");?>
-                              </option>
-                              <option value="min" <?=$pconfig['powerd_ac_mode']=="min" ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Minimum");?>
-                              </option>
-                              <option value="max" <?=$pconfig['powerd_ac_mode']=="max" ? " selected=\"selected\"" : "";?>>
-                                <?=gettext("Maximum");?>
-                              </option>
-                            </select>
-                          </td>
-                          <td>
-                            <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default" data-width="auto">
-                              <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Hiadaptive");?>
-                              </option>
-                              <option value="adp" <?=$pconfig['powerd_battery_mode']=="adp" ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Adaptive");?>
-                              </option>
-                              <option value="min" <?=$pconfig['powerd_battery_mode']=="min" ? "selected=\"selected\"" :"";?>>
-                                <?=gettext("Minimum");?>
-                              </option>
-                              <option value="max" <?=$pconfig['powerd_battery_mode']=="max" ? "selected=\"selected\"" : "";?>>
-                                <?=gettext("Maximum");?>
-                              </option>
-                            </select>
-                          </td>
-                        </tr>
-                      </tbody>
-                  </table>
                   <div class="hidden" for="help_for_powerd_enable">
                     <?=gettext("The powerd utility monitors the system state and sets various power control " .
                                         "options accordingly.  It offers four modes (maximum, minimum, adaptive " .
@@ -350,6 +305,43 @@ include("head.inc");
                                         "than power consumption.  It raises frequency faster, drops slower and " .
                                         "keeps twice lower CPU load."); ?>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On AC Power Mode') ?></td>
+                <td>
+                  <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                    <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Hiadaptive");?>
+                    </option>
+                    <option value="adp" <?=$pconfig['powerd_ac_mode']=="adp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Adaptive");?>
+                    </option>
+                    <option value="min" <?=$pconfig['powerd_ac_mode']=="min" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Minimum");?>
+                    </option>
+                    <option value="max" <?=$pconfig['powerd_ac_mode']=="max" ? " selected=\"selected\"" : "";?>>
+                      <?=gettext("Maximum");?>
+                    </option>
+                  </select>
+                </td>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On Battery Power Mode') ?></td>
+                <td>
+                  <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                    <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Hiadaptive");?>
+                    </option>
+                    <option value="adp" <?=$pconfig['powerd_battery_mode']=="adp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Adaptive");?>
+                    </option>
+                    <option value="min" <?=$pconfig['powerd_battery_mode']=="min" ? "selected=\"selected\"" :"";?>>
+                      <?=gettext("Minimum");?>
+                    </option>
+                    <option value="max" <?=$pconfig['powerd_battery_mode']=="max" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Maximum");?>
+                    </option>
+                  </select>
                 </td>
               </tr>
               <tr>
@@ -460,7 +452,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Periodic Backups)"); ?></th>
+                <th colspan="2" valign="top" class="listtopic"><?=gettext("Periodic Backups"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
@@ -508,8 +500,8 @@ include("head.inc");
                 <td><a id="help_for_use_mfs_tmpvar" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use RAM Disks"); ?></td>
                 <td>
                   <input name="use_mfs_tmpvar" type="checkbox" id="use_mfs_tmpvar" value="yes" <?=!empty($pconfig['use_mfs_tmpvar']) ? "checked=\"checked\"" : "";?>/>
+                  <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong>
                   <div class="hidden" for="help_for_use_mfs_tmpvar">
-                    <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong><br />
                     <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
                                         "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."); ?>
                   </div>
