@@ -33,9 +33,9 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
-use \OPNsense\Base\FieldTypes\IntegerField;
+use \OPNsense\Base\FieldTypes\BooleanField;
 
-class IntegerFieldTest extends Field_Framework_TestCase
+class BooleanFieldTest extends Field_Framework_TestCase
 {
 
     /**
@@ -43,62 +43,31 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testCanBeCreated()
     {
-        $this->assertInstanceOf('\OPNsense\Base\FieldTypes\IntegerField', new IntegerField());
+        $this->assertInstanceOf('\OPNsense\Base\FieldTypes\BooleanField', new BooleanField());
     }
 
     /**
      * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage MaxMinValidator
+     * @expectedExceptionMessage Regex
      */
-    public function testValueLargerThenMax()
+    public function testShouldNotBeANumber()
     {
-        $field = new IntegerField();
-        $field->setMaximumValue(100);
-        $field->setMinimumValue(10);
-        $field->setValue("120");
-
+        $field = new BooleanField();
+        $field->setValue("90");
         $this->validateThrow($field);
     }
 
     /**
      * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage MaxMinValidator
+     * @expectedExceptionMessage Regex
      */
-    public function testValueSmallerThenMin()
+    public function testShouldNotBeAString()
     {
-        $field = new IntegerField();
-        $field->setMaximumValue(100);
-        $field->setMinimumValue(10);
-        $field->setValue("5");
-
+        $field = new BooleanField();
+        $field->setValue("xx");
         $this->validateThrow($field);
     }
 
-    /**
-     * not a number
-     */
-    public function testNotANumber()
-    {
-        $field = new IntegerField();
-        $field->setMaximumValue(100);
-        $field->setMinimumValue(10);
-        $field->setValue("5x1");
-
-        $this->assertContains('IntegerValidator', $this->validate($field));
-    }
-
-    /**
-     * number contains decimals
-     */
-    public function testDecimalNumber()
-    {
-        $field = new IntegerField();
-        $field->setMaximumValue(100);
-        $field->setMinimumValue(10);
-        $field->setValue("99.1");
-
-        $this->assertContains('IntegerValidator', $this->validate($field));
-    }
 
     /**
      * @expectedException \Phalcon\Validation\Exception
@@ -106,7 +75,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredEmpty()
     {
-        $field = new IntegerField();
+        $field = new BooleanField();
         $field->setRequired("Y");
         $field->setValue("");
         $this->validateThrow($field);
@@ -117,10 +86,22 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testRequiredNotEmpty()
     {
-        $field = new IntegerField();
+        $field = new BooleanField();
         $field->setRequired("Y");
         $field->setValue("1");
         $this->assertEmpty($this->validate($field));
+    }
+
+    /**
+     * required not empty
+     */
+    public function testValidValues()
+    {
+        $field = new BooleanField();
+        foreach (array("0", "1") as $value) {
+            $field->setValue($value);
+            $this->assertEmpty($this->validate($field));
+        }
     }
 
     /**
@@ -128,7 +109,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
      */
     public function testIsContainer()
     {
-        $field = new IntegerField();
+        $field = new BooleanField();
         $this->assertFalse($field->isContainer());
     }
 }
