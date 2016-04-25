@@ -3119,12 +3119,6 @@ function upgrade_098_to_099() {
 	}
 }
 
-function upgrade_099_to_100()
-{
-	install_cron_job("newsyslog", false);
-	configure_cron();
-}
-
 function upgrade_100_to_101()
 {
 	global $config;

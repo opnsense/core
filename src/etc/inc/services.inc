@@ -2350,6 +2350,8 @@ function configure_cron()
         '/usr/local/etc/rc.backup_netflow',
         '/usr/local/etc/rc.backup_rrd',
         '/usr/local/etc/rc.update_bogons',
+        '/usr/local/opnsense/scripts/remote_backup.php',
+        'newsyslog', /* old config migration for extra care */
     );
 
     foreach ($obsoletes as $obsolete) {
@@ -2372,6 +2374,10 @@ function configure_cron()
 
     if (!empty($config['system']['netflowbackup'])) {
         $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', $minute = '0', '*/' . $config['system']['netflowbackup']);
+    }
+
+    if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
+        $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
     }
 
     /* bogons fetch always set in default config.xml */

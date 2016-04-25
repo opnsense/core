@@ -44,20 +44,6 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 
-/**
- * check if cron exists
- */
-function cron_job_exists($command) {
-    global $config;
-    foreach($config['cron']['item'] as $item) {
-        if(strstr($item['command'], $command)) {
-            return true;
-        }
-    }
-    return false;
-}
-
-
 function rrd_data_xml() {
     $rrddbpath = '/var/db/rrd';
 
@@ -426,7 +412,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (is_numeric($_POST['GDriveBackupCount'])) {
             $config['system']['remotebackup']['GDriveBackupCount'] = $_POST['GDriveBackupCount'];
         } else {
-            $config['system']['remotebackup']['GDriveBackupCount'] = 30;
+            $config['system']['remotebackup']['GDriveBackupCount'] = 60;
         }
 
         if ( $_POST['GDrivePasswordConfirm'] != $_POST['GDrivePassword'] ) {
@@ -434,34 +420,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The supplied 'Password' and 'Confirm' field values must match.");
         }
 
-        if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {
-            $data = file_get_contents($_FILES['GDriveP12file']['tmp_name']);
-            $config['system']['remotebackup']['GDriveP12key'] = base64_encode($data);
-        } elseif ($config['system']['remotebackup']['GDriveEnabled'] != "on") {
-            unset($config['system']['remotebackup']['GDriveP12key']);
+        if (count($input_errors) == 0) {
+            if (is_uploaded_file($_FILES['GDriveP12file']['tmp_name'])) {
+                $data = file_get_contents($_FILES['GDriveP12file']['tmp_name']);
+                $config['system']['remotebackup']['GDriveP12key'] = base64_encode($data);
+            } elseif ($config['system']['remotebackup']['GDriveEnabled'] != "on") {
+                unset($config['system']['remotebackup']['GDriveP12key']);
+            }
+
+            $savemsg = gettext("Google Drive backup settings have been saved.");
+
+            write_config();
+            configure_cron();
+
+            try {
+                $filesInBackup = backup_to_google_drive();
+            } catch (Exception $e) {
+                $filesInBackup = array();
+            }
+
+            if (empty($config['system']['remotebackup']['GDriveEnabled'])) {
+                /* unused */
+            } elseif (count($filesInBackup) == 0) {
+                $input_errors[] = gettext("Google Drive communication failure");
+            } else {
+                $input_messages = gettext("Backup successful, current file list:") . "<br>";
+                foreach ($filesInBackup as $filename => $file) {
+                     $input_messages = $input_messages . "<br>" . $filename;
+                }
+            }
         }
 
-        write_config();
-        // test / perform backup
-        try {
-            $filesInBackup = backup_to_google_drive();
-            $cron_job = "/usr/local/opnsense/scripts/remote_backup.php";
-            if (!cron_job_exists($cron_job)) {
-                install_cron_job($cron_job, true, 0, 1);
-                configure_cron();
-            }
-        } catch (Exception $e) {
-            $filesInBackup = array() ;
-        }
-
-        if (count($filesInBackup) == 0) {
-             $input_errors[] = gettext("Google Drive communication failure");
-        } else {
-             $input_messages = gettext("Backup succesfull, current filelist:");
-            foreach ($filesInBackup as $filename => $file) {
-                 $input_messages = $input_messages . "<br>" . $filename ;
-            }
-        }
     }
 }
 
