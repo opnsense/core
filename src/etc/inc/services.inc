@@ -2345,6 +2345,34 @@ function configure_cron()
 {
     global $config;
 
+    $obsoletes = array(
+        '/usr/local/etc/rc.backup_dhcpleases',
+        '/usr/local/etc/rc.backup_netflow',
+        '/usr/local/etc/rc.backup_rrd',
+    );
+
+    foreach ($obsoletes as $obsolete) {
+       /*
+        * Strip old cron jobs that we no longer save explicitly.
+        * This can be savely removed on our final road to 17.1.
+        */
+       install_cron_job($obsolete, false);
+    }
+
+    $autocron = array();
+
+    if (!empty($config['system']['rrdbackup'])) {
+       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', $minute = '0', '*/' . $config['system']['rrdbackup']);
+    }
+
+    if (!empty($config['system']['dhcpbackup'])) {
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', $minute = '0', '*/' . $config['system']['dhcpbackup']);
+    }
+
+    if (!empty($config['system']['netflowbackup'])) {
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', $minute = '0', '*/' . $config['system']['netflowbackup']);
+    }
+
     $anchor = '# custom crontab entries';
 
     /* preserve existing crontab entries */
@@ -2367,7 +2395,7 @@ function configure_cron()
         $crontab_contents .= '# auto-generated at ' . date('F j, Y, g:i a') . "\n";
         $crontab_contents .= "#\n";
 
-        foreach ($config['cron']['item'] as $item) {
+        foreach (array_merge($config['cron']['item'], $autocron) as $item) {
             $crontab_contents .= "\n{$item['minute']}\t";
             $crontab_contents .= "{$item['hour']}\t";
             $crontab_contents .= "{$item['mday']}\t";
@@ -2387,6 +2415,21 @@ function configure_cron()
     unset($crontab_contents);
 
     killbypid('/var/run/cron.pid', 'HUP');
+}
+
+function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*', $who = 'root')
+{
+    $cron_item = array();
+
+    $cron_item['minute'] = $minute;
+    $cron_item['hour'] = $hour;
+    $cron_item['mday'] = $monthday;
+    $cron_item['month'] = $month;
+    $cron_item['wday'] = $weekday;
+    $cron_item['who'] = $who;
+    $cron_item['command'] = $command;
+
+    return $cron_item;
 }
 
 function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {
@@ -2411,14 +2454,7 @@ function install_cron_job($command, $active=false, $minute="0", $hour="*", $mont
     }
 
     if ($active) {
-        $cron_item = array();
-        $cron_item['minute'] = $minute;
-        $cron_item['hour'] = $hour;
-        $cron_item['mday'] = $monthday;
-        $cron_item['month'] = $month;
-        $cron_item['wday'] = $weekday;
-        $cron_item['who'] = $who;
-        $cron_item['command'] = $command;
+        $cron_item = generate_cron_job($command, $minute, $hour, $monthday, $month, $weekday, $who);
         if (!$is_installed) {
             $config['cron']['item'][] = $cron_item;
             write_config(sprintf(gettext("Installed cron job for %s"), $command));
