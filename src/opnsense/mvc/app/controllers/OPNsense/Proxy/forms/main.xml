@@ -63,8 +63,7 @@
                 <id>proxy.general.useViaHeader</id>
                 <label>Use Via header</label>
                 <type>checkbox</type>
-                <help><![CDATA[If set (default), Squid will include a Via header in requests and
-            replies as required by RFC2616.]]></help>
+                <help><![CDATA[If set (default), Squid will include a Via header in requests and replies as required by RFC2616.]]></help>
                 <advanced>true</advanced>
             </field>
             <field>
