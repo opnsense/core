@@ -44,6 +44,13 @@
         ]]></help>
     </field>
     <field>
+        <id>pipe.scheduler</id>
+        <label>Scheduler type</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Specify the scheduling algorithm to use</help>
+    </field>
+    <field>
         <id>pipe.description</id>
         <label>description</label>
         <type>text</type>
