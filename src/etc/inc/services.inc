@@ -2354,12 +2354,28 @@ function configure_cron()
         'newsyslog', /* old config migration for extra care */
     );
 
-    foreach ($obsoletes as $obsolete) {
-       /*
-        * Strip old cron jobs that we no longer save explicitly.
-        * This can be safely removed on our final road to 17.1.
-        */
-       install_cron_job($obsolete, false);
+    /*
+     * Strip old cron jobs that we no longer save explicitly.
+     * This can be safely removed on our final road to 17.1.
+     */
+    if (isset($config['cron']['item'])) {
+        foreach ($obsoletes as $obsolete) {
+            $is_installed = false;
+            $x = 0;
+
+            foreach($config['cron']['item'] as $item) {
+                if (strstr($item['command'], $obsolete)) {
+                    $is_installed = true;
+                    break;
+                }
+                $x++;
+            }
+
+            if ($is_installed == true) {
+                unset($config['cron']['item'][$x]);
+                write_config(sprintf(gettext('Removed cron job for %s'), $obsolete));
+            }
+        }
     }
 
     $autocron = array();
@@ -2453,47 +2469,6 @@ function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*'
     return $cron_item;
 }
 
-function install_cron_job($command, $active=false, $minute="0", $hour="*", $monthday="*", $month="*", $weekday="*", $who="root") {
-    global $config;
-
-    $is_installed = false;
-
-    if (!is_array($config['cron'])) {
-        $config['cron'] = array();
-    }
-    if (!is_array($config['cron']['item'])) {
-        $config['cron']['item'] = array();
-    }
-
-    $x=0;
-    foreach($config['cron']['item'] as $item) {
-        if (strstr($item['command'], $command)) {
-            $is_installed = true;
-            break;
-        }
-        $x++;
-    }
-
-    if ($active) {
-        $cron_item = generate_cron_job($command, $minute, $hour, $monthday, $month, $weekday, $who);
-        if (!$is_installed) {
-            $config['cron']['item'][] = $cron_item;
-            write_config(sprintf(gettext("Installed cron job for %s"), $command));
-        } else {
-            $config['cron']['item'][$x] = $cron_item;
-            write_config(sprintf(gettext("Updated cron job for %s"), $command));
-        }
-    } else {
-        if ($is_installed == true) {
-            unset($config['cron']['item'][$x]);
-            write_config(sprintf(gettext("Removed cron job for %s"), $command));
-        }
-    }
-}
-
-/**
- * check if apinger service is enabled
- */
 function is_apinger_enabled()
 {
     global $config;
