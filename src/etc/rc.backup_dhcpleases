@@ -1,6 +1,14 @@
 #!/bin/sh
 
-# Save the DHCP lease database to the config path.
-if [ -d "/var/dhcpd/var/db" ]; then
-	cd / && tar -czf /conf/dhcpleases.tgz -C / var/dhcpd/var/db/
+BACKUPFILE="/conf/dhcpleases.tgz"
+BACKUPDIR="/var/dhcpd/var/db"
+
+if [ "${1}" == "restore" ]; then
+	if [ -f "${BACKUPFILE}" ]; then
+		tar -C / -xzf "${BACKUPFILE}"
+	fi
+else
+	if [ -d "${BACKUPDIR}" ]; then
+		tar -C / -czf "${BACKUPFILE}" "${BACKUPDIR}"
+	fi
 fi

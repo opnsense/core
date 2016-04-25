@@ -11,6 +11,7 @@
 
 # backup volatile internals
 /usr/local/etc/rc.backup_dhcpleases
+/usr/local/etc/rc.backup_netflow
 /usr/local/etc/rc.backup_rrd
 
 # wait for config lock to release

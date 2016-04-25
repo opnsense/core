@@ -26,46 +26,8 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function restore_rrd()
+function create_new_rrd($rrdcreatecmd)
 {
-    global $config;
-
-    $rrddbpath = '/var/db/rrd/';
-    $rrdtool = '/usr/local/bin/rrdtool';
-
-    $rrdrestore = "";
-    $rrdreturn = "";
-    if (file_exists('/conf/rrd.tgz')) {
-        foreach (glob("{$rrddbpath}/*.xml") as $xml_file) {
-            @unlink($xml_file);
-        }
-        $_gb = exec('cd /;LANG=C /usr/bin/tar -xzf /conf/rrd.tgz 2>&1', $rrdrestore, $rrdreturn);
-        $rrdrestore = implode(" ", $rrdrestore);
-        if ($rrdreturn != 0) {
-            log_error("RRD restore failed exited with $rrdreturn, the error is: $rrdrestore\n");
-        }
-        unset($rrdrestore);
-        foreach (glob("{$rrddbpath}/*.xml") as $xml_file) {
-            $rrd_file = preg_replace('/\.xml$/', ".rrd", $xml_file);
-            if (file_exists("{$rrd_file}")) {
-                @unlink($rrd_file);
-            }
-            $output = array();
-            $status = null;
-            $_gb = exec("$rrdtool restore -f '{$xml_file}' '{$rrd_file}'", $output, $status);
-            if ($status) {
-                log_error("rrdtool restore -f '{$xml_file}' '{$rrd_file}' failed returning {$status}.");
-                continue;
-            }
-            unset($output);
-            @unlink($xml_file);
-        }
-        return true;
-    }
-    return false;
-}
-
-function create_new_rrd($rrdcreatecmd) {
     $rrdcreateoutput = array();
     $rrdcreatereturn = 0;
     $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
@@ -76,7 +38,6 @@ function create_new_rrd($rrdcreatecmd) {
     unset($rrdcreateoutput);
     return $rrdcreatereturn;
 }
-
 
 function enable_rrd_graphing()
 {
@@ -148,10 +109,6 @@ function enable_rrd_graphing()
             mkdir($rrddbpath, 0775);
         }
         chown($rrddbpath, "nobody");
-
-        if (file_exists("/var/run/booting")) {
-            restore_rrd();
-        }
 
         /* db update script */
         $rrdupdatesh = "#!/bin/sh\n";
