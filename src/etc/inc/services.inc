@@ -2351,6 +2351,7 @@ function configure_cron()
         '/usr/local/etc/rc.backup_rrd',
         '/usr/local/etc/rc.update_bogons',
         '/usr/local/opnsense/scripts/remote_backup.php',
+        'adjkerntz -a',
         'newsyslog', /* old config migration for extra care */
     );
 
@@ -2379,6 +2380,8 @@ function configure_cron()
     }
 
     $autocron = array();
+
+    $autocron[] = generate_cron_job('adjkerntz -a', '1,31', '0-5');
 
     if (!empty($config['system']['rrdbackup'])) {
        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', $minute = '0', '*/' . $config['system']['rrdbackup']);

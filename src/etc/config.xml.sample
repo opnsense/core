@@ -312,15 +312,6 @@
   </filter>
   <cron>
     <item>
-      <minute>1,31</minute>
-      <hour>0-5</hour>
-      <mday>*</mday>
-      <month>*</month>
-      <wday>*</wday>
-      <who>root</who>
-      <command>adjkerntz -a</command>
-    </item>
-    <item>
       <minute>1</minute>
       <hour>3</hour>
       <mday>1</mday>
