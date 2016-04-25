@@ -214,18 +214,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['bogonsinterval'] != $config['system']['bogons']['interval']) {
-            switch ($pconfig['bogonsinterval']) {
-                case 'daily':
-                    install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "*");
-                    break;
-                case 'weekly':
-                    install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "0");
-                    break;
-                case 'monthly':
-                default:
-                    install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "1", "*", "*");
-                    break;
-            }
             $config['system']['bogons']['interval'] = $pconfig['bogonsinterval'];
         }
 

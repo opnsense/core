@@ -2349,12 +2349,13 @@ function configure_cron()
         '/usr/local/etc/rc.backup_dhcpleases',
         '/usr/local/etc/rc.backup_netflow',
         '/usr/local/etc/rc.backup_rrd',
+        '/usr/local/etc/rc.update_bogons',
     );
 
     foreach ($obsoletes as $obsolete) {
        /*
         * Strip old cron jobs that we no longer save explicitly.
-        * This can be savely removed on our final road to 17.1.
+        * This can be safely removed on our final road to 17.1.
         */
        install_cron_job($obsolete, false);
     }
@@ -2371,6 +2372,20 @@ function configure_cron()
 
     if (!empty($config['system']['netflowbackup'])) {
         $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', $minute = '0', '*/' . $config['system']['netflowbackup']);
+    }
+
+    /* bogons fetch always set in default config.xml */
+    switch ($config['system']['bogons']['interval']) {
+        case 'daily':
+            install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "*");
+            break;
+        case 'weekly':
+            install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "*", "*", "0");
+            break;
+        case 'monthly':
+        default:
+            install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "1", "*", "*");
+            break;
     }
 
     $anchor = '# custom crontab entries';
