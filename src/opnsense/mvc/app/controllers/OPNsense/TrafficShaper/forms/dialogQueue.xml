@@ -27,6 +27,34 @@
         ]]></help>
     </field>
     <field>
+        <id>queue.codel_enable</id>
+        <label>Enable CoDel</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Enable CoDel active queue management</help>
+    </field>
+    <field>
+        <id>queue.codel_target</id>
+        <label>(FQ-)CoDel target</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Minimum acceptable persistent queue delay (in ms), leave empty for default</help>
+    </field>
+    <field>
+        <id>queue.codel_interval</id>
+        <label>(FQ-)CoDel interval</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Interval before dropping packets (in ms), leave empty for default</help>
+    </field>
+    <field>
+        <id>queue.codel_ecn_enable</id>
+        <label>(FQ-)CoDel ECN</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Explicit Congestion Notification</help>
+    </field>
+    <field>
         <id>queue.description</id>
         <label>description</label>
         <type>text</type>

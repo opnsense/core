@@ -59,8 +59,42 @@
                       <fifo>FIFO</fifo>
                       <rr>Deficit Round Robin</rr>
                       <qfq>QFQ</qfq>
+                      <fq_codel>FlowQueue-CoDel</fq_codel>
                   </OptionValues>
                 </scheduler>
+                <codel_enable type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+                </codel_enable>
+                <codel_target type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>10000</MaximumValue>
+                </codel_target>
+                <codel_interval type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>10000</MaximumValue>
+                </codel_interval>
+                <codel_ecn_enable type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+                </codel_ecn_enable>
+                <fqcodel_quantum type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>65535</MaximumValue>
+                </fqcodel_quantum>
+                <fqcodel_limit type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>65535</MaximumValue>
+                </fqcodel_limit>
+                <fqcodel_flows type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>65535</MaximumValue>
+                </fqcodel_flows>
                 <origin type="TextField">
                     <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
@@ -112,6 +146,24 @@
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
+                <codel_enable type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+                </codel_enable>
+                <codel_target type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>10000</MaximumValue>
+                </codel_target>
+                <codel_interval type="IntegerField">
+                  <Required>N</Required>
+                  <MinimumValue>1</MinimumValue>
+                  <MaximumValue>10000</MaximumValue>
+                </codel_interval>
+                <codel_ecn_enable type="BooleanField">
+                  <default>0</default>
+                  <Required>Y</Required>
+                </codel_ecn_enable>
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
