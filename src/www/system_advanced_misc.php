@@ -486,16 +486,14 @@ include("head.inc");
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
-                  <td>
-                    <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
-                      <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? "selected='selected'" : "";?>>
-                        <?=gettext("Disable"); ?>
-                      </option>
+                <td>
+                  <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
+                    <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext("Disabled"); ?></option>
 <?php
-                      for ($x=1; $x<=24; $x++):?>
-                      <option value='<?= $x ?>' <?= $pconfig['rrdbackup'] == $x ? "selected='selected'" : "";?>>
-                        <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
-                      </option>
+                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value="<?= $x ?>" <?= $pconfig['rrdbackup'] == $x ? 'selected="selected"' : ''; ?>>
+                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
+                    </option>
 <?php
                       endfor; ?>
                   </select>
@@ -509,11 +507,11 @@ include("head.inc");
                 <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
                 <td>
                   <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup">
-                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
+                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ''; ?>><?=gettext('Disabled'); ?></option>
 <?php
-                    for ($x=1; $x<=24; $x++):?>
-                    <option value='<?= $x ?>' <?= $pconfig['dhcpbackup'] == $x ? "selected='selected'" : "";?>>
-                      <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
+                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value="<?= $x ?>" <?= $pconfig['dhcpbackup'] == $x ? 'selected="selected"' : '';?>>
+                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
 <?php
                     endfor; ?>
@@ -527,11 +525,11 @@ include("head.inc");
                 <td><a id="help_for_netflowbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic NetFlow Backup");?></td>
                 <td>
                   <select name="netflowbackup" class="selectpicker" data-style="btn-default" id="netflowbackup">
-                    <option value='0' <?= $pconfig['netflowbackup'] == 0 ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
+                    <option value='0' <?= $pconfig['netflowbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext('Disabled'); ?></option>
 <?php
-                    for ($x=1; $x<=24; $x++):?>
-                    <option value='<?= $x ?>' <?= $pconfig['netflowbackup'] == $x ? "selected='selected'" : "";?>>
-                      <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
+                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value="<?= $x ?>" <?= $pconfig['netflowbackup'] == $x ? 'selected="selected"' : '';?>>
+                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
 <?php
                     endfor; ?>
