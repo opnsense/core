@@ -51,6 +51,55 @@
         <help>Specify the scheduling algorithm to use</help>
     </field>
     <field>
+        <id>pipe.codel_enable</id>
+        <label>Enable CoDel</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Enable CoDel active queue management</help>
+    </field>
+    <field>
+        <id>pipe.codel_target</id>
+        <label>(FQ-)CoDel target</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Minimum acceptable persistent queue delay (in ms), leave empty for default</help>
+    </field>
+    <field>
+        <id>pipe.codel_interval</id>
+        <label>(FQ-)CoDel interval</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Interval before dropping packets (in ms), leave empty for default</help>
+    </field>
+    <field>
+        <id>pipe.codel_ecn_enable</id>
+        <label>(FQ-)CoDel ECN</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Explicit Congestion Notification</help>
+    </field>
+    <field>
+        <id>pipe.fqcodel_quantum</id>
+        <label>FQ-CoDel quantum</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>The number of bytes a queue can serve before being moved to the tail of old queues list (bytes), leave empty for defaults</help>
+    </field>
+    <field>
+        <id>pipe.fqcodel_limit</id>
+        <label>FQ-CoDel limit</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>The hard size limit of all queues managed by this instance, leave empty for defaults</help>
+    </field>
+    <field>
+        <id>pipe.fqcodel_flows</id>
+        <label>FQ-CoDel flows</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>The number of flow queues that are created and managed, leave empty for defaults</help>
+    </field>
+    <field>
         <id>pipe.description</id>
         <label>description</label>
         <type>text</type>
