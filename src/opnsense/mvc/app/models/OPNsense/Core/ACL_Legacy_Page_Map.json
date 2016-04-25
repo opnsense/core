@@ -9,11 +9,11 @@
     },
     "user-ipsec-xauth-dialin": {
         "name": "User - VPN - IPsec xauth Dialin",
-        "descr": "Indicates whether the user is allowed to dial in via IPsec xauth (Note: Does not allow shell access, but may allow the user to create ssh tunnels)"
+        "descr": "Indicates whether the user is allowed to dial in via IPsec xauth."
     },
     "user-proxy-auth": {
         "name": "User - Proxy - Login",
-        "descr": "Indicates whether the user is allowed to use the proxy"
+        "descr": "Indicates whether the user is allowed to authenticate with the proxy."
     },
     "page-getserviceproviders": {
         "name": "WebCfg - AJAX: Get Service Providers",
@@ -437,7 +437,7 @@
     },
     "page-interfaces-groups": {
         "name": "WebCfg - Interfaces: Groups page",
-        "descr": "Create interface groups",
+        "descr": "Allow access to the 'Interfaces: Groups' page.",
         "match": [
             "interfaces_groups.php*"
         ]
@@ -457,8 +457,8 @@
         ]
     },
     "page-interfaces-lagg": {
-        "name": "WebCfg - Interfaces: LAGG: page",
-        "descr": "Edit Interface LAGG",
+        "name": "WebCfg - Interfaces: LAGG page",
+        "descr": "Allow access to the 'Interfaces: LAGG' page.",
         "match": [
             "interfaces_lagg.php*"
         ]
