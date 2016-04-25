@@ -184,6 +184,9 @@ echo "done."
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early
 
+# Restore backups from previous shutdown (if any)
+/usr/local/etc/rc.backup_netflow restore
+
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
 rm -f /root/lighttpd*

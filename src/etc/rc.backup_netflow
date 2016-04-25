@@ -1,0 +1,14 @@
+#!/bin/sh
+
+BACKUPFILE="/conf/netflow.tgz"
+BACKUPDIR="/var/netflow"
+
+if [ "${1}" == "restore" ]; then
+	if [ -f "${BACKUPFILE}" ]; then
+		tar -C / -xzf "${BACKUPFILE}"
+	fi
+else
+	if [ -d "${BACKUPDIR}" ]; then
+		tar -C / -czf "${BACKUPFILE}" "${BACKUPDIR}"
+	fi
+fi

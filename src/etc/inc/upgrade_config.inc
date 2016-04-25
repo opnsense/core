@@ -2125,8 +2125,7 @@ function upgrade_054_to_055()
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
-	mwexec('/bin/rm /var/db/rrd/*.xml');
+	exec("cd /; LANG=C RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
 	if (file_exists("/var/run/booting")) {
 		echo "Updating configuration...";
 	}
@@ -2790,7 +2789,7 @@ function upgrade_080_to_081()
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
+	exec("cd /; LANG=C RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
 	if (file_exists("/var/run/booting"))
 		echo "Updating configuration...";
 	foreach($config['filter']['rule'] as & $rule) {
@@ -3096,7 +3095,7 @@ function upgrade_095_to_096()
 	enable_rrd_graphing();
 	/* Let's save the RRD graphs after we run enable RRD graphing */
 	/* The function will restore the rrd.tgz so we will save it after */
-	exec("cd /; LANG=C NO_REMOUNT=1 RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
+	exec("cd /; LANG=C RRDDBPATH='{$rrddbpath}' CF_CONF_PATH='/conf' /usr/local/etc/rc.backup_rrd");
 }
 
 function upgrade_096_to_097()
