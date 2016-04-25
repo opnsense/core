@@ -38,6 +38,31 @@ require_once("pfsense-utils.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
+function install_backup_cron_jobs()
+{
+        global $config;
+
+        /* XXX still not overly pretty */
+
+        if (!empty($config['rrdbackup'])) {
+            install_cron_job("/usr/local/etc/rc.backup_rrd", ($config['system']['rrdbackup'] > 0), $minute = "0", "*/{$config['system']['rrdbackup']}");
+        } else {
+            install_cron_job("/usr/local/etc/rc.backup_rrd", false, $minute = "0", "*/{$config['system']['rrdbackup']}");
+        }
+
+        if (!empty($config['dhcpbackup'])) {
+            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", ($config['system']['dhcpbackup'] > 0), $minute = "0", "*/{$config['system']['dhcpbackup']}");
+        } else {
+            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", false, $minute = "0", "*/{$config['system']['dhcpbackup']}");
+        }
+
+        if (!empty($config['netflowbackup'])) {
+            install_cron_job("/usr/local/etc/rc.backup_netflow", ($config['system']['netflowbackup'] > 0), $minute = "0", "*/{$config['system']['netflowbackup']}");
+        } else {
+            install_cron_job("/usr/local/etc/rc.backup_netflow", false, $minute = "0", "*/{$config['system']['netflowbackup']}");
+        }
+}
+
 function crypto_modules()
 {
     $modules = array(
@@ -92,6 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['powerd_ac_mode'] = "hadp";
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
+    $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
     if (!empty($config['system']['powerd_ac_mode'])) {
         $pconfig['powerd_ac_mode'] = $config['system']['powerd_ac_mode'];
     }
@@ -188,24 +214,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($pconfig['rrdbackup'])) {
-            $config['system']['rrdbackup'] = $_POST['rrdbackup'];
-            install_cron_job("/usr/local/etc/rc.backup_rrd", ($config['system']['rrdbackup'] > 0), $minute = "0", "*/{$config['system']['rrdbackup']}");
+            $config['system']['rrdbackup'] = $pconfig['rrdbackup'];
         } elseif (isset($config['system']['rrdbackup'])) {
-            install_cron_job("/usr/local/etc/rc.backup_rrd", false, $minute = "0", "*/{$config['system']['rrdbackup']}");
             unset($config['system']['rrdbackup']);
         }
+
         if (!empty($pconfig['dhcpbackup'])) {
             $config['system']['dhcpbackup'] = $pconfig['dhcpbackup'];
-            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", ($config['system']['dhcpbackup'] > 0), $minute = "0", "*/{$config['system']['dhcpbackup']}");
         } elseif (isset($config['system']['dhcpbackup'])) {
-            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", false, $minute = "0", "*/{$config['system']['dhcpbackup']}");
             unset($config['system']['dhcpbackup']);
+        }
+
+        if (!empty($pconfig['netflowbackup'])) {
+            $config['system']['netflowbackup'] = $pconfig['netflowbackup'];
+        } elseif (isset($config['system']['netflowbackup'])) {
+            unset($config['system']['netflowbackup']);
         }
 
         write_config();
         $savemsg = get_std_save_message();
 
         system_resolvconf_generate(true);
+        install_backup_cron_jobs();
         filter_configure();
         activate_powerd();
         load_crypto_module();
@@ -471,7 +501,7 @@ include("head.inc");
                   </select>
                   <br />
                   <div class="hidden" for="help_for_rrdbackup">
-                    <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes will happen to your media.");?>
+                    <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>
@@ -489,7 +519,25 @@ include("head.inc");
                     endfor; ?>
                   </select>
                   <div class="hidden" for="help_for_dhcpbackup">
-                    <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes will happen to your media.");?>
+                    <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot.");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_netflowbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic NetFlow Backup");?></td>
+                <td>
+                  <select name="netflowbackup" class="selectpicker" data-style="btn-default" id="netflowbackup">
+                    <option value='0' <?= $pconfig['netflowbackup'] == 0 ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
+<?php
+                    for ($x=1; $x<=24; $x++):?>
+                    <option value='<?= $x ?>' <?= $pconfig['netflowbackup'] == $x ? "selected='selected'" : "";?>>
+                      <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
+                    </option>
+<?php
+                    endfor; ?>
+                  </select>
+                  <div class="hidden" for="help_for_netflowbackup">
+                    <?=gettext("This will periodically backup the NetFlow data aggregation so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>
@@ -503,7 +551,7 @@ include("head.inc");
                   <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong>
                   <div class="hidden" for="help_for_use_mfs_tmpvar">
                     <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
-                                        "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."); ?>
+                      "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost on reboot, including log data."); ?>
                   </div>
                 </td>
               </tr>
