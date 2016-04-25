@@ -185,7 +185,9 @@ echo "done."
 /usr/local/etc/rc.syshook early
 
 # Restore backups from previous shutdown (if any)
+/usr/local/etc/rc.backup_dhcpleases restore
 /usr/local/etc/rc.backup_netflow restore
+/usr/local/etc/rc.backup_rrd restore
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."

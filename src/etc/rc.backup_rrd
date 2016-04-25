@@ -1,14 +1,26 @@
 #!/bin/sh
 
-: ${RRDDBPATH:=/var/db/rrd}
-: ${CF_CONF_PATH:=/conf}
+BACKUPDIR="/var/db/rrd"
+BACKUPFILE="/conf/rrd.tgz"
 
-# Save the rrd databases to the config path.
-if [ -d "${RRDDBPATH}" ]; then
-	for rrdfile in "${RRDDBPATH}"/*.rrd ; do
-		xmlfile="${rrdfile%.rrd}.xml"
-		/usr/local/bin/rrdtool dump "$rrdfile" "$xmlfile"
-	done
-	cd / && tar -czf "${CF_CONF_PATH}"/rrd.tgz -C / "${RRDDBPATH#/}"/*.xml
-	rm "${RRDDBPATH}"/*.xml
+if [ "${1}" == "restore" ]; then
+	if [ -f "${BACKUPFILE}" ]; then
+		rm -f "${BACKUPDIR}"/*.xml
+		tar -C / -xzf "${BACKUPFILE}"
+		for XML in "${BACKUPDIR}"/*.xml; do
+			RRD="${XML%.xml}.rrd"
+			rm -f "${RRD}"
+			/usr/local/bin/rrdtool restore -f "${XML}" "${RRD}"
+		done
+		rm -f "${BACKUPDIR}"/*.xml
+	fi
+else
+	if [ -d "${BACKUPDIR}" ]; then
+		for RRD in "${BACKUPDIR}"/*.rrd; do
+			XML="${RRD%.rrd}.xml"
+			/usr/local/bin/rrdtool dump "${RRD}" "${XML}"
+		done
+		tar -C / -czf "${BACKUPFILE}" "${BACKUPDIR}"/*.xml
+		rm -f "${BACKUPDIR}"/*.xml
+	fi
 fi

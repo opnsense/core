@@ -443,19 +443,6 @@ function services_dhcpdv4_configure()
         return 0;
     }
 
-    if (file_exists("/var/run/booting")) {
-        /* restore the leases, if we have them */
-        if (file_exists('/conf/dhcpleases.tgz')) {
-            $dhcprestore = '';
-            $dhcpreturn = '';
-            exec('cd /;LANG=C /usr/bin/tar -xzf /conf/dhcpleases.tgz 2>&1', $dhcprestore, $dhcpreturn);
-            $dhcprestore = implode(' ', $dhcprestore);
-            if ($dhcpreturn <> 0) {
-                log_error(sprintf(gettext('DHCP leases restore failed exited with %s, the error is: %s'), $dhcpreturn, $dhcprestore));
-            }
-        }
-    }
-
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
     $dns_arrv4 = array();
     if (!empty($config['system']['dnsserver'])) {
