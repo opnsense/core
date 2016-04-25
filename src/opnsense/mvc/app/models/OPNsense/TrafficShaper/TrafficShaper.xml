@@ -51,6 +51,16 @@
                         <dst-ip>destination</dst-ip>
                     </OptionValues>
                 </mask>
+                <scheduler type="OptionField">
+                  <Required>N</Required>
+                  <default></default>
+                  <BlankDesc>Weighted Fair Queueing</BlankDesc>
+                  <OptionValues>
+                      <fifo>FIFO</fifo>
+                      <rr>Deficit Round Robin</rr>
+                      <qfq>QFQ</qfq>
+                  </OptionValues>
+                </scheduler>
                 <origin type="TextField">
                     <Required>N</Required>
                     <mask>/^([a-z,A-Z,1-9]){0,30}$/</mask>
