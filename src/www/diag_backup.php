@@ -444,11 +444,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         // test / perform backup
         try {
-            $filesInBackup = backup_to_google_drive() ;
+            $filesInBackup = backup_to_google_drive();
             $cron_job = "/usr/local/opnsense/scripts/remote_backup.php";
             if (!cron_job_exists($cron_job)) {
-                // initial cron job install
-                install_cron_job($cron_job,true,0,1);
+                install_cron_job($cron_job, true, 0, 1);
+                configure_cron();
             }
         } catch (Exception $e) {
             $filesInBackup = array() ;

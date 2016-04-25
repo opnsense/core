@@ -2432,7 +2432,6 @@ function install_cron_job($command, $active=false, $minute="0", $hour="*", $mont
             write_config(sprintf(gettext("Removed cron job for %s"), $command));
         }
     }
-    configure_cron();
 }
 
 /**

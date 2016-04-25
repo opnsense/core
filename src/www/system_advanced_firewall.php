@@ -224,6 +224,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case 'monthly':
                 default:
                     install_cron_job("/usr/local/etc/rc.update_bogons", true, "1", "3", "1", "*", "*");
+                    break;
             }
             $config['system']['bogons']['interval'] = $pconfig['bogonsinterval'];
         }
@@ -237,6 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $savemsg = get_std_save_message();
 
+        configure_cron();
         filter_configure();
     }
 }
