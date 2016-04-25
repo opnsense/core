@@ -2349,10 +2349,16 @@ function configure_cron()
         '/usr/local/etc/rc.backup_dhcpleases',
         '/usr/local/etc/rc.backup_netflow',
         '/usr/local/etc/rc.backup_rrd',
+        '/usr/local/etc/rc.dyndns.update',
         '/usr/local/etc/rc.update_bogons',
+        '/usr/local/etc/rc.update_urltables',
         '/usr/local/opnsense/scripts/remote_backup.php',
+        '/usr/local/sbin/expiretable -v -t 3600 sshlockout',
+        '/usr/local/sbin/expiretable -v -t 3600 virusprot',
         'adjkerntz -a',
-        'newsyslog', /* old config migration for extra care */
+        /* old config migration for extra care: */
+        'checkreload.sh',
+        'newsyslog',
     );
 
     /*
@@ -2382,6 +2388,10 @@ function configure_cron()
     $autocron = array();
 
     $autocron[] = generate_cron_job('adjkerntz -a', '1,31', '0-5');
+    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '*/60');
+    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '*/60');
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '1', '1');
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '30', '12');
 
     if (!empty($config['system']['rrdbackup'])) {
        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', $minute = '0', '*/' . $config['system']['rrdbackup']);

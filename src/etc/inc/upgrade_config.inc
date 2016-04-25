@@ -501,76 +501,6 @@ function upgrade_024_to_025() {
 	unset($config['system']['use_rrd_gateway']);
 }
 
-function upgrade_025_to_026()
-{
-	global $config;
-	$cron_item = array();
-	$cron_item['minute'] = "0";
-	$cron_item['hour'] = "*";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "newsyslog";
-
-	$config['cron']['item'][] = $cron_item;
-
-	$cron_item = array();
-	$cron_item['minute'] = "1,31";
-	$cron_item['hour'] = "0-5";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "adjkerntz -a";
-
-	$config['cron']['item'][] = $cron_item;
-
-	$cron_item = array();
-	$cron_item['minute'] = "1";
-	$cron_item['hour'] = "*";
-	$cron_item['mday'] = "1";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/etc/rc.update_bogons";
-
-	$config['cron']['item'][] = $cron_item;
-
-	$cron_item = array();
-	$cron_item['minute'] = "*/60";
-	$cron_item['hour'] = "*";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/sbin/expiretable -v -t 3600 sshlockout";
-
-	$config['cron']['item'][] = $cron_item;
-
-	$cron_item = array();
-	$cron_item['minute'] = "1";
-	$cron_item['hour'] = "1";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/etc/rc.dyndns.update";
-
-	$config['cron']['item'][] = $cron_item;
-
-	$cron_item = array();
-	$cron_item['minute'] = "*/60";
-	$cron_item['hour'] = "*";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/sbin/expiretable -v -t 3600 virusprot";
-
-	$config['cron']['item'][] = $cron_item;
-}
-
 function upgrade_028_to_029() {
 	global $config;
 	$rule_item = array();
@@ -583,7 +513,6 @@ function upgrade_028_to_029() {
 	$rule_item['statetype'] = "keep state";
 	$a_filter[] = $rule_item;
 }
-
 
 function upgrade_029_to_030() {
 	global $config;
@@ -2504,19 +2433,6 @@ function upgrade_069_to_070() {
 	}
 }
 
-function upgrade_070_to_071() {
-	global $config;
-
-	if (is_array($config['cron']['item'])) {
-		foreach($config['cron']['item'] as $idx => $cronitem) {
-			if(stristr($cronitem['command'], "checkreload.sh")) {
-				unset($config['cron']['item'][$idx]);
-				break;
-			}
-		}
-	}
-}
-
 function rename_field(& $section, $oldname, $newname) {
 	if (is_array($section)) {
 		foreach($section as & $item) {
@@ -2568,19 +2484,6 @@ function upgrade_074_to_075() {
 		rename_field($config['cert'], 'name', 'descr');
 	if (is_array($config['crl']))
 		rename_field($config['crl'], 'name', 'descr');
-}
-
-function upgrade_075_to_076() {
-	global $config;
-	$cron_item = array();
-	$cron_item['minute'] = "30";
-	$cron_item['hour'] = "12";
-	$cron_item['mday'] = "*";
-	$cron_item['month'] = "*";
-	$cron_item['wday'] = "*";
-	$cron_item['who'] = "root";
-	$cron_item['command'] = "/usr/local/etc/rc.update_urltables";
-	$config['cron']['item'][] = $cron_item;
 }
 
 function upgrade_076_to_077() {
