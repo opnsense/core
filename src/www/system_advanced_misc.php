@@ -44,19 +44,19 @@ function install_backup_cron_jobs()
 
         /* XXX still not overly pretty */
 
-        if (!empty($config['rrdbackup'])) {
+        if (!empty($config['system']['rrdbackup'])) {
             install_cron_job("/usr/local/etc/rc.backup_rrd", ($config['system']['rrdbackup'] > 0), $minute = "0", "*/{$config['system']['rrdbackup']}");
         } else {
             install_cron_job("/usr/local/etc/rc.backup_rrd", false, $minute = "0", "*/{$config['system']['rrdbackup']}");
         }
 
-        if (!empty($config['dhcpbackup'])) {
+        if (!empty($config['system']['dhcpbackup'])) {
             install_cron_job("/usr/local/etc/rc.backup_dhcpleases", ($config['system']['dhcpbackup'] > 0), $minute = "0", "*/{$config['system']['dhcpbackup']}");
         } else {
             install_cron_job("/usr/local/etc/rc.backup_dhcpleases", false, $minute = "0", "*/{$config['system']['dhcpbackup']}");
         }
 
-        if (!empty($config['netflowbackup'])) {
+        if (!empty($config['system']['netflowbackup'])) {
             install_cron_job("/usr/local/etc/rc.backup_netflow", ($config['system']['netflowbackup'] > 0), $minute = "0", "*/{$config['system']['netflowbackup']}");
         } else {
             install_cron_job("/usr/local/etc/rc.backup_netflow", false, $minute = "0", "*/{$config['system']['netflowbackup']}");
