@@ -216,17 +216,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (!empty($pconfig['rrdbackup'])) {
-            $config['system']['rrdbackup'] = $_POST['rrdbackup'];
-            install_cron_job("/usr/local/etc/rc.backup_rrd", ($config['system']['rrdbackup'] > 0), $minute = "0", "*/{$config['system']['rrdbackup']}");
+            $config['system']['rrdbackup'] = $pconfig['rrdbackup'];
         } elseif (isset($config['system']['rrdbackup'])) {
-            install_cron_job("/usr/local/etc/rc.backup_rrd", false, $minute = "0", "*/{$config['system']['rrdbackup']}");
             unset($config['system']['rrdbackup']);
         }
+
         if (!empty($pconfig['dhcpbackup'])) {
             $config['system']['dhcpbackup'] = $pconfig['dhcpbackup'];
-            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", ($config['system']['dhcpbackup'] > 0), $minute = "0", "*/{$config['system']['dhcpbackup']}");
         } elseif (isset($config['system']['dhcpbackup'])) {
-            install_cron_job("/usr/local/etc/rc.backup_dhcpleases", false, $minute = "0", "*/{$config['system']['dhcpbackup']}");
             unset($config['system']['dhcpbackup']);
         }
 
@@ -234,6 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = get_std_save_message();
 
         system_resolvconf_generate(true);
+        configure_cron();
         filter_configure();
         activate_powerd();
         load_crypto_module();
@@ -523,22 +521,20 @@ include("head.inc");
               </tr>
               <tr>
                 <td><a id="help_for_rrdbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic RRD Backup");?></td>
-                  <td>
-                    <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
-                      <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? "selected='selected'" : "";?>>
-                        <?=gettext("Disable"); ?>
-                      </option>
+                <td>
+                  <select name="rrdbackup" class="selectpicker" data-style="btn-default" id="rrdbackup">
+                    <option value='0' <?=!$pconfig['rrdbackup'] == 0 ? 'selected="selected"' : ''; ?>><?=gettext("Disabled"); ?></option>
 <?php
-                      for ($x=1; $x<=24; $x++):?>
-                      <option value='<?= $x ?>' <?= $pconfig['rrdbackup'] == $x ? "selected='selected'" : "";?>>
-                        <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
-                      </option>
+                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value="<?= $x ?>" <?= $pconfig['rrdbackup'] == $x ? 'selected="selected"' : ''; ?>>
+                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
+                    </option>
 <?php
                       endfor; ?>
                   </select>
                   <br />
                   <div class="hidden" for="help_for_rrdbackup">
-                    <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes will happen to your media.");?>
+                    <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>
@@ -546,17 +542,17 @@ include("head.inc");
                 <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
                 <td>
                   <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup">
-                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ""; ?>><?=gettext("Disable"); ?></option>
+                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : ''; ?>><?=gettext('Disabled'); ?></option>
 <?php
-                    for ($x=1; $x<=24; $x++):?>
-                    <option value='<?= $x ?>' <?= $pconfig['dhcpbackup'] == $x ? "selected='selected'" : "";?>>
-                      <?= $x ?> <?=gettext("hour"); ?><?=($x>1) ? "s" : "";?>
+                    for ($x = 1; $x <= 24; $x++): ?>
+                    <option value="<?= $x ?>" <?= $pconfig['dhcpbackup'] == $x ? 'selected="selected"' : '';?>>
+                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
                     </option>
 <?php
                     endfor; ?>
                   </select>
                   <div class="hidden" for="help_for_dhcpbackup">
-                    <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot. Keep in mind that the more frequent the backup, the more writes will happen to your media.");?>
+                    <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>
@@ -570,7 +566,7 @@ include("head.inc");
                   <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong>
                   <div class="hidden" for="help_for_use_mfs_tmpvar">
                     <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
-                                        "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost at reboot, including log data. RRD and DHCP Leases will be retained."); ?>
+                      "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost on reboot, including log data."); ?>
                   </div>
                 </td>
               </tr>

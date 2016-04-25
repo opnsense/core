@@ -116,21 +116,6 @@ function convert_config()
         return;
     }
 
-    /* special case upgrades */
-    /* fix every minute crontab bogons entry */
-    if (is_array($config['cron'])) {
-        $cron_item_count = count($config['cron']['item']);
-        for($x=0; $x<$cron_item_count; $x++) {
-            if(stristr($config['cron']['item'][$x]['command'], 'rc.update_bogons')) {
-                if($config['cron']['item'][$x]['hour'] == "*" ) {
-                    $config['cron']['item'][$x]['hour'] = "3";
-                    write_config(gettext("Updated bogon update frequency to 3am"));
-                    log_error(gettext("Updated bogon update frequency to 3am"));
-                }
-            }
-        }
-    }
-
     // Save off config version
     $prev_version = $config['version'];
     /* Loop and run upgrade_VER_to_VER() until we're at current version */
