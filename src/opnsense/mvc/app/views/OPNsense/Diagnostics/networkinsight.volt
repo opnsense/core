@@ -623,7 +623,8 @@ POSSIBILITY OF SUCH DAMAGE.
       <table class="table table-condensed">
         <thead>
           <tr>
-            <th>{{ lang._('Date (from/to)') }}</th>
+            <th>{{ lang._('Date from') }}</th>
+            <th>{{ lang._('Date to') }}</th>
             <th>{{ lang._('Interface') }}</th>
             <th>{{ lang._('(dst) Port') }}</th>
             <th>{{ lang._('(src) Address') }}</th>
@@ -632,14 +633,13 @@ POSSIBILITY OF SUCH DAMAGE.
         <tbody>
           <tr>
             <td>
-              <select class="selectpicker" id="date_detail_from"  data-live-search="true" data-size="10">
-              </select>
-              <select class="selectpicker" id="date_detail_to"  data-live-search="true" data-size="10">
-              </select>
+              <select class="selectpicker" id="date_detail_from"  data-live-search="true" data-size="10" data-width="120px"></select>
             </td>
             <td>
-              <select class="selectpicker" id="interface_select_detail">
-              </select>
+              <select class="selectpicker" id="date_detail_to"  data-live-search="true" data-size="10" data-width="120px"></select>
+            </td>
+            <td>
+              <select class="selectpicker" id="interface_select_detail" data-width="150px"></select>
             </td>
             <td><input type="text" id="service_port_detail"></td>
             <td><input type="text" id="address_detail"></td>
