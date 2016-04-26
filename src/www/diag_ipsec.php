@@ -86,6 +86,7 @@ $service_hook = 'ipsec';
 include("head.inc");
 
 ?>
+<body>
 <script type="text/javascript">
   $( document ).ready(function() {
       // show / hide connection details
@@ -114,7 +115,6 @@ include("head.inc");
       });
   });
 </script>
-<body>
 
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
@@ -173,7 +173,7 @@ include("head.inc");
                             <form method="post">
                               <input type="hidden" value="<?=$ipsec_conn_key;?>" name="connid"/>
                               <button type="submit" class="btn btn-xs" name="action" value="connect">
-                                <span class="glyphicon glyphicon-play text-warning"/>
+                                <span class="glyphicon glyphicon-play text-warning"></span>
                               </button>
                             </form>
                             <?php endif;
