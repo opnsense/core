@@ -2366,26 +2366,28 @@ function configure_cron()
      * This can be safely removed on our final road to 17.1.
      */
     if (isset($config['cron']['item'])) {
-        foreach ($obsoletes as $obsolete) {
-            $is_installed = false;
-            $x = 0;
+        $flush = false;
+        $index = 0;
 
-            foreach($config['cron']['item'] as $item) {
-                if (strstr($item['command'], $obsolete)) {
-                    $is_installed = true;
-                    break;
+        /* PHP retains the index, can iterate all and unset */
+        foreach ($config['cron']['item'] as $item) {
+            foreach ($obsoletes as $obsolete) {
+                if ($item['command'] === $obsolete) {
+                    unset($config['cron']['item'][$index]);
+                    $flush = true;
                 }
-                $x++;
             }
-
-            if ($is_installed == true) {
-                unset($config['cron']['item'][$x]);
-            }
+            $index++;
         }
+
         if (!count($config['cron']['item'])) {
             unset($config['cron']);
+            $flush = true;
         }
-        write_config(gettext('Removed obsolete cron job'));
+
+        if ($flush) {
+            write_config(gettext('Removed obsolete cron jobs'));
+        }
     }
 
     $autocron = array();
