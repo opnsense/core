@@ -2380,9 +2380,12 @@ function configure_cron()
 
             if ($is_installed == true) {
                 unset($config['cron']['item'][$x]);
-                write_config(sprintf(gettext('Removed cron job for %s'), $obsolete));
             }
         }
+        if (!count($config['cron']['item'])) {
+            unset($config['cron']);
+        }
+        write_config(gettext('Removed obsolete cron job'));
     }
 
     $autocron = array();
