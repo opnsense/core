@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<opnsense>
+    <system>
+        <authserver>
+            <name>testcase 1</name>
+            <type>test</type>
+        </authserver>
+        <authserver>
+            <name>testcase 2</name>
+            <type>test</type>
+        </authserver>
+    </system>
+</opnsense>
