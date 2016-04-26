@@ -2392,7 +2392,6 @@ function configure_cron()
 
     $autocron = array();
 
-    $autocron[] = generate_cron_job('adjkerntz -a', '1,31', '0-5');
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '*/60');
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '*/60');
     $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '1', '1');
@@ -2454,16 +2453,16 @@ function configure_cron()
     }
 
     foreach ($autocron as $item) {
-        $crontab_contents .= "\n{$item['minute']}\t";
+        $crontab_contents .= "{$item['minute']}\t";
         $crontab_contents .= "{$item['hour']}\t";
         $crontab_contents .= "{$item['mday']}\t";
         $crontab_contents .= "{$item['month']}\t";
         $crontab_contents .= "{$item['wday']}\t";
         $crontab_contents .= "{$item['who']}\t";
-        $crontab_contents .= "{$item['command']}";
+        $crontab_contents .= "{$item['command']}\n";
     }
 
-    $crontab_contents .= "\n#\n";
+    $crontab_contents .= "#\n";
     $crontab_contents .= "# If possible do not add items to this file manually.\n";
     $crontab_contents .= "# If you do so, this file must be terminated with a blank line (e.g. new line)\n";
     $crontab_contents .= "#\n\n";
