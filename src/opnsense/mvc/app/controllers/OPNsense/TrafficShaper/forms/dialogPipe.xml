@@ -54,7 +54,6 @@
         <id>pipe.codel_enable</id>
         <label>Enable CoDel</label>
         <type>checkbox</type>
-        <advanced>true</advanced>
         <help>Enable CoDel active queue management</help>
     </field>
     <field>
