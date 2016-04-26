@@ -2444,27 +2444,29 @@ function configure_cron()
     /* please maintain the newline at the end of file */
     $crontab_contents = implode("\n", $crontab_contents) . "\n";
 
+    $crontab_contents .= "#\n";
+    $crontab_contents .= $anchor . "\n";
+    $crontab_contents .= '# auto-generated at ' . date('F j, Y, g:i a') . "\n";
+    $crontab_contents .= "#\n";
+
     if (isset($config['cron']['item'])) {
-        $crontab_contents .= "#\n";
-        $crontab_contents .= $anchor . "\n";
-        $crontab_contents .= '# auto-generated at ' . date('F j, Y, g:i a') . "\n";
-        $crontab_contents .= "#\n";
-
-        foreach (array_merge($config['cron']['item'], $autocron) as $item) {
-            $crontab_contents .= "\n{$item['minute']}\t";
-            $crontab_contents .= "{$item['hour']}\t";
-            $crontab_contents .= "{$item['mday']}\t";
-            $crontab_contents .= "{$item['month']}\t";
-            $crontab_contents .= "{$item['wday']}\t";
-            $crontab_contents .= "{$item['who']}\t";
-            $crontab_contents .= "{$item['command']}";
-        }
-
-        $crontab_contents .= "\n#\n";
-        $crontab_contents .= "# If possible do not add items to this file manually.\n";
-        $crontab_contents .= "# If you do so, this file must be terminated with a blank line (e.g. new line)\n";
-        $crontab_contents .= "#\n\n";
+        $autocron = array_merge($config['cron']['item'], $autocron);
     }
+
+    foreach ($autocron as $item) {
+        $crontab_contents .= "\n{$item['minute']}\t";
+        $crontab_contents .= "{$item['hour']}\t";
+        $crontab_contents .= "{$item['mday']}\t";
+        $crontab_contents .= "{$item['month']}\t";
+        $crontab_contents .= "{$item['wday']}\t";
+        $crontab_contents .= "{$item['who']}\t";
+        $crontab_contents .= "{$item['command']}";
+    }
+
+    $crontab_contents .= "\n#\n";
+    $crontab_contents .= "# If possible do not add items to this file manually.\n";
+    $crontab_contents .= "# If you do so, this file must be terminated with a blank line (e.g. new line)\n";
+    $crontab_contents .= "#\n\n";
 
     file_put_contents('/etc/crontab', $crontab_contents);
     unset($crontab_contents);
