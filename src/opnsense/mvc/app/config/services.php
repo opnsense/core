@@ -3,7 +3,6 @@
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Url as UrlResolver;
-use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
 use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
 use Phalcon\Session\Adapter\Files as SessionAdapter;
@@ -50,18 +49,6 @@ $di->set('view', function () use ($config) {
 
     return $view;
 }, true);
-
-/**
- * Database connection is created based in the parameters defined in the configuration file
- */
-$di->set('db', function () use ($config) {
-    return new DbAdapter(array(
-        'host' => $config->database->host,
-        'username' => $config->database->username,
-        'password' => $config->database->password,
-        'dbname' => $config->database->dbname
-    ));
-});
 
 /**
  * If the configuration specify the use of metadata adapter use it or use memory otherwise
