@@ -373,9 +373,8 @@ function interfaces_qinq_configure()
     if (file_exists("/var/run/booting")) {
         echo gettext("Configuring QinQ interfaces...");
     }
-    if (isset($config['qinqs']['qinqentry']) && is_array($config['qinqs']['qinqentry'])) {
+    if (isset($config['qinqs']['qinqentry'])) {
         foreach ($config['qinqs']['qinqentry'] as $qinq) {
-            /* XXX: Maybe we should report any errors?! */
             interface_qinq_configure($qinq);
         }
     }
@@ -447,7 +446,7 @@ function interfaces_create_wireless_clones()
         }
     }
 
-    if (isset($config['wireless']['clone']) && is_array($config['wireless']['clone']) && count($config['wireless']['clone'])) {
+    if (isset($config['wireless']['clone'])) {
         foreach ($config['wireless']['clone'] as $clone) {
             if (empty($clone['cloneif'])) {
                 continue;
@@ -802,7 +801,7 @@ function interfaces_gre_configure($checkparent = 0, $realif = "")
 {
     global $config;
 
-    if (isset($config['gres']['gre']) && is_array($config['gres']['gre'])) {
+    if (isset($config['gres']['gre'])) {
         foreach ($config['gres']['gre'] as $i => $gre) {
             if (empty($gre['greif'])) {
                 $gre['greif'] = "gre{$i}";
@@ -904,7 +903,7 @@ function interfaces_gif_configure($checkparent = 0, $realif = "")
 {
     global $config;
 
-    if (isset($config['gifs']['gif']) && count($config['gifs']['gif'])) {
+    if (isset($config['gifs']['gif'])) {
         foreach ($config['gifs']['gif'] as $i => $gif) {
             if (empty($gif['gifif'])) {
                 $gre['gifif'] = "gif{$i}";
@@ -1397,7 +1396,7 @@ function interfaces_ptpid_used($ptpid)
 {
     global $config;
 
-    if (is_array($config['ppps']['ppp'])) {
+    if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as & $settings) {
             if ($ptpid == $settings['ptpid']) {
                 return true;
@@ -1424,7 +1423,8 @@ function getMPDCRONSettings($pppif)
     global $config;
 
     $cron_cmd_file = "/var/etc/pppoe_restart_{$pppif}";
-    if (isset($config['cron']['item']) && is_array($config['cron']['item'])) {
+
+    if (isset($config['cron']['item'])) {
         foreach ($config['cron']['item'] as $i => $item) {
             if (stripos($item['command'], $cron_cmd_file) !== false) {
                 return array("ID" => $i, "ITEM" => $item);
@@ -1545,7 +1545,7 @@ function interface_ppps_configure($interface)
         symlink('/usr/local/sbin/mpd.script', '/var/etc/mpd.script');
     }
 
-    if (isset($config['ppps']['ppp']) && is_array($config['ppps']['ppp'])) {
+    if (isset($config['ppps']['ppp'])) {
         foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
             if ($ifcfg['if'] == $ppp['if']) {
                 break;
@@ -1980,7 +1980,7 @@ function interface_proxyarp_configure($interface = '')
     }
 
     $paa = array();
-    if (isset($config['virtualip']['vip']) && is_array($config['virtualip']['vip'])) {
+    if (isset($config['virtualip']['vip'])) {
         /* group by interface */
         foreach ($config['virtualip']['vip'] as $vipent) {
             if ($vipent['mode'] === "proxyarp") {
@@ -2700,7 +2700,7 @@ EOD;
         if (does_interface_exist(interface_get_wireless_clone($baseif))) {
             $clone_list[] = interface_get_wireless_clone($baseif);
         }
-        if (isset($config['wireless']['clone']) && is_array($config['wireless']['clone'])) {
+        if (isset($config['wireless']['clone'])) {
             foreach ($config['wireless']['clone'] as $clone) {
                 if ($clone['if'] == $baseif) {
                     $clone_list[] = $clone['cloneif'];
@@ -2811,7 +2811,7 @@ function interface_vlan_mtu_configured($realhwif, $mtu)
 {
     global $config;
 
-    if (isset($config['vlans']['vlan']) && is_array($config['vlans']['vlan'])) {
+    if (isset($config['vlans']['vlan'])) {
         foreach ($config['vlans']['vlan'] as $vlan) {
             if ($vlan['if'] != $realhwif) {
                 continue;
@@ -2839,7 +2839,7 @@ function interface_virtual_create($interface)
     } elseif (substr($interface, 0, 3) == "gif") {
         interfaces_gif_configure(0, $interface);
     } elseif (substr($interface, 0, 5) == "ovpns") {
-        if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-server'])) {
+        if (isset($config['openvpn']['openvpn-server'])) {
             foreach ($config['openvpn']['openvpn-server'] as $server) {
                 if ($interface == "ovpns{$server['vpnid']}") {
                     log_error("OpenVPN: Resync server {$server['description']}");
@@ -2849,7 +2849,7 @@ function interface_virtual_create($interface)
             unset($server);
         }
     } elseif (substr($interface, 0, 5) == "ovpnc") {
-        if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'])) {
+        if (isset($config['openvpn']['openvpn-client'])) {
             foreach ($config['openvpn']['openvpn-client'] as $client) {
                 if ($interface == "ovpnc{$client['vpnid']}") {
                     log_error("OpenVPN: Resync server {$client['description']}");
@@ -2977,7 +2977,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
          * All vlans need to spoof their parent mac address, too.  see
          * ticket #1514: http://cvstrac.pfsense.com/tktview?tn=1514,33
          */
-        if (isset($config['vlans']['vlan']) && is_array($config['vlans']['vlan'])) {
+        if (isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 if ($vlan['if'] == $realhwif) {
                     mwexec("/sbin/ifconfig " . escapeshellarg($vlan['vlanif']) .
@@ -4253,7 +4253,7 @@ function get_parent_interface($interface, $avoidrecurse = false)
             case "pptp":
             case "l2tp":
                 if (empty($parents)) {
-                    if (is_array($config['ppps']['ppp'])) {
+                    if (isset($config['ppps']['ppp'])) {
                         foreach ($config['ppps']['ppp'] as $pppidx => $ppp) {
                             if ($ifcfg['if'] == $ppp['if']) {
                                 $ports = explode(',', $ppp['ports']);
@@ -4271,7 +4271,7 @@ function get_parent_interface($interface, $avoidrecurse = false)
             default:
                 // Handle _vlans
                 if (stristr($realif, "_vlan")) {
-                    if (is_array($config['vlans']['vlan'])) {
+                    if (isset($config['vlans']['vlan'])) {
                         foreach ($config['vlans']['vlan'] as $vlanidx => $vlan) {
                             if ($ifcfg['if'] == $vlan['vlanif']) {
                                 $parents[0] = $vlan['if'];
@@ -4718,7 +4718,7 @@ function ip_in_interface_alias_subnet($interface, $ipalias)
     if (empty($interface) || !is_ipaddr($ipalias)) {
         return false;
     }
-    if (is_array($config['virtualip']['vip'])) {
+    if (isset($config['virtualip']['vip'])) {
         foreach ($config['virtualip']['vip'] as $vip) {
             switch ($vip['mode']) {
                 case "ipalias":
@@ -4773,7 +4773,7 @@ function get_interface_ipv6($interface = "wan", $flush = false)
      * NOTE: On the case when only the prefix is requested,
      * the communication on WAN will be done over link-local.
      */
-    if (is_array($config['interfaces'][$interface])) {
+    if (isset($config['interfaces'][$interface])) {
         switch ($config['interfaces'][$interface]['ipaddr']) {
             case 'pppoe':
             case 'l2tp':
@@ -5043,7 +5043,7 @@ function interfaces_staticarp_configure($if)
     if (isset($config['dhcpd'][$if]['staticarp'])) {
         mwexecf('/sbin/ifconfig %s staticarp', array($ifcfg['if']));
         mwexecf('/usr/sbin/arp -d -i %s  -a > /dev/null 2>&1', array($ifcfg['if']));
-        if (is_array($config['dhcpd'][$if]['staticmap'])) {
+        if (isset($config['dhcpd'][$if]['staticmap'])) {
             foreach ($config['dhcpd'][$if]['staticmap'] as $arpent) {
                 if (isset($arpent['ipaddr'])) {
                     mwexecf(
@@ -5076,13 +5076,13 @@ function get_failover_interface($interface, $family = "all")
     global $config;
 
     /* shortcut to get_real_interface if we find it in the config */
-    if (isset($config['interfaces'][$interface]) && is_array($config['interfaces'][$interface])) {
+    if (isset($config['interfaces'][$interface])) {
         return get_real_interface($interface, $family);
     }
 
     /* compare against gateway groups */
     $a_groups = return_gateway_groups_array();
-    if (isset($a_groups[$interface]) && is_array($a_groups[$interface])) {
+    if (isset($a_groups[$interface])) {
         /* we found a gateway group, fetch the interface or vip */
         if ($a_groups[$interface][0]['vip'] <> "") {
             return $a_groups[$interface][0]['vip'];
@@ -5206,7 +5206,7 @@ function get_interface_info($ifdescr)
                 $ifinfo['status'] = "down";
             }
 
-            if (is_array($config['ppps']['ppp']) && count($config['ppps']['ppp'])) {
+            if (isset($config['ppps']['ppp'])) {
                 foreach ($config['ppps']['ppp'] as $pppid => $ppp) {
                     if ($config['interfaces'][$ifdescr]['if'] == $ppp['if']) {
                         break;
