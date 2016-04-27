@@ -72,27 +72,33 @@ if (isset($config['ipsec']['phase1'])) {
     }
 
     $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
+    if ($ipsec_leases == null) {
+        $ipsec_leases = array();
+    }
+
+    $ipsec_status = json_decode(configd_run("ipsec list status"), true);
+    if ($ipsec_status == null) {
+        $ipsec_status = array();
+    }
 
     // parse configured tunnels
-    $ipsec_status = json_decode(configd_run("ipsec list status"), true);
     $activetunnels = 0;
-    if ($ipsec_status != null) {
-        foreach ($ipsec_status as $status_key => $status_value) {
-            if (isset($status_value['children'])) {
-              foreach($status_value['children'] as $child_status_key => $child_status_value) {
-                  $ipsec_tunnels[$child_status_key] = array('active' => false,
-                                                            'local-addrs' => $status_value['local-addrs'],
-                                                            'remote-addrs' => $status_value['remote-addrs'],
-                                                          );
-                  $ipsec_tunnels[$child_status_key]['local-ts'] = implode(',', $child_status_value['local-ts']);
-                  $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(',', $child_status_value['remote-ts']);
-              }
-            }
-            foreach ($status_value['sas'] as $sas_key => $sas_value) {
-                foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
-                    $ipsec_tunnels[$child_sa_key]['active'] = true;
-                    $activetunnels++;
-                }
+
+    foreach ($ipsec_status as $status_key => $status_value) {
+        if (isset($status_value['children'])) {
+          foreach($status_value['children'] as $child_status_key => $child_status_value) {
+              $ipsec_tunnels[$child_status_key] = array('active' => false,
+                                                        'local-addrs' => $status_value['local-addrs'],
+                                                        'remote-addrs' => $status_value['remote-addrs'],
+                                                      );
+              $ipsec_tunnels[$child_status_key]['local-ts'] = implode(',', $child_status_value['local-ts']);
+              $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(',', $child_status_value['remote-ts']);
+          }
+        }
+        foreach ($status_value['sas'] as $sas_key => $sas_value) {
+            foreach ($sas_value['child-sas'] as $child_sa_key => $child_sa_value) {
+                $ipsec_tunnels[$child_sa_key]['active'] = true;
+                $activetunnels++;
             }
         }
     }
