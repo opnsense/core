@@ -139,10 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!is_array($pconfig['members']) || count($_POST['members']) < 2) {
-        $input_errors[] = gettext("You must select at least 2 member interfaces for a bridge.");
-    }
-
     if (is_array($pconfig['members'])) {
         foreach($pconfig['members'] as $ifmembers) {
             if (empty($config['interfaces'][$ifmembers])) {
