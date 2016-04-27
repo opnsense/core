@@ -71,7 +71,6 @@ class SystemhealthController extends ApiControllerBase
                     "recorded_time" => ($step * (int)$value->pdp_per_row) *
                         ($this->countRows($value) - $firstValue_rowNumber)
                 ]);
-
             }
         }
         return ($info);
@@ -224,7 +223,6 @@ class SystemhealthController extends ApiControllerBase
             $last = $rra_info[0]["firstValue_timestamp"];
             $first = $rra_info[$last_rra_key]["firstValue_timestamp"] + $rra_info[$last_rra_key]["recorded_time"] -
                 $rra_info[$last_rra_key]["full_step"];
-
         } else {
             $first = 0;
             $last = 0;
@@ -370,7 +368,6 @@ class SystemhealthController extends ApiControllerBase
                                             $skip_nan = true;
 
                                             $condensed_row_values[$count_values][$column_counter] = "NaN";
-
                                         } elseif ($skip_nan == false) {
                                             if ($archValue["type"] == "overview") {
                                                 // overwrite this values and skip averaging, looks better for overview
@@ -424,12 +421,9 @@ class SystemhealthController extends ApiControllerBase
                                 }
                             }
                             $rowCount++;
-
                         }
                     }
-
                 }
-
             }
 
             $key_counter++;
@@ -555,7 +549,6 @@ class SystemhealthController extends ApiControllerBase
                 if (trim((string)$xml->rra[$count]->cf) != "AVERAGE") {
                     unset($xml->rra[$count]);
                 }
-
             }
             $data_sets_full = $this->getDataSetInfo($xml); // get dataSet information to include in answer
 

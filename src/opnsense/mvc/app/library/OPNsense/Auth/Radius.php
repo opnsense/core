@@ -171,7 +171,6 @@ class Radius implements IAuthConnector
                         break;
                     default:
                         syslog(LOG_ERR, "Unexpected return value:$radius\n");
-
                 }
                 radius_close($radius);
             }
@@ -240,7 +239,6 @@ class Radius implements IAuthConnector
                         break;
                     default:
                         syslog(LOG_ERR, "Unexpected return value:$radius\n");
-
                 }
                 radius_close($radius);
             }
@@ -310,7 +308,6 @@ class Radius implements IAuthConnector
                         break;
                     default:
                         syslog(LOG_ERR, "Unexpected return value:$radius\n");
-
                 }
                 radius_close($radius);
             }
@@ -388,7 +385,6 @@ class Radius implements IAuthConnector
                                 default:
                                     break;
                             }
-
                         }
                         return true;
                         break;

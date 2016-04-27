@@ -166,7 +166,6 @@ class ServiceController extends ApiControllerBase
             } else {
                 $status = "error generating ids template (".$bckresult.")";
             }
-
         }
         return array("status" => $status);
     }

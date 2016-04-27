@@ -499,8 +499,6 @@ abstract class BaseField
             foreach ($this->getAttributes() as $AttrKey => $AttrValue) {
                 $subnode->addAttribute($AttrKey, $AttrValue);
             }
-
-
         }
 
         foreach ($this->__items as $key => $FieldNode) {

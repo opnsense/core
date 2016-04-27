@@ -199,7 +199,6 @@ class ApiControllerBase extends ControllerRoot
                 } else {
                     echo json_encode($data);
                 }
-
             } else {
                 // output raw data
                 echo $data;

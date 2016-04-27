@@ -189,7 +189,6 @@ abstract class BaseModel
                 // add object as child to this node
                 $internal_data->addChildNode($xmlNode->getName(), $fieldObject);
             }
-
         }
 
     }
@@ -401,7 +400,6 @@ abstract class BaseModel
                 } else {
                     $target_node = $target_node->xpath($str_parts[$i])[0];
                 }
-
             }
         }
 
@@ -466,7 +464,6 @@ abstract class BaseModel
             } else {
                 return null;
             }
-
         }
         return $node;
     }

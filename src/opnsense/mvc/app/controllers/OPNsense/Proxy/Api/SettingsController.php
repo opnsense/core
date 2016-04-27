@@ -85,7 +85,6 @@ class SettingsController extends ApiControllerBase
                 $cnf->save();
                 $result["result"] = "saved";
             }
-
         }
 
         return $result;

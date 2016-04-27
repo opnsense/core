@@ -134,7 +134,6 @@ $di->set('router', function () {
             "action" => 2,
             "params" => 3
         ));
-
     }
 
     $router->handle();
