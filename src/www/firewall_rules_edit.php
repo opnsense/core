@@ -37,6 +37,9 @@ $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
 
 /* OS types, request from backend */
 $ostypes = json_decode(configd_run('filter list osfp json'));
+if ($ostypes == null) {
+    $ostypes = array();
+}
 
 /**
  * build array with interface options for this form

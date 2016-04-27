@@ -2678,7 +2678,7 @@ function services_get()
           $pconfig = array();
           $pconfig['name'] = "relayd";
           $pconfig['description'] = gettext("Server load balancing daemon");
-          $pconfig['php']['restart'] = array('relayd_configure_full', 'filter_configure');
+          $pconfig['php']['restart'] = array('relayd_configure', 'filter_configure');
           $pconfig['php']['start'] = array('relayd_configure', 'filter_configure');
           $services[] = $pconfig;
     }
