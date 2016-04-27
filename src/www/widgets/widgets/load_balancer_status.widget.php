@@ -56,10 +56,8 @@ $rdr_a = get_lb_redirects();
 $relay_hosts = get_lb_summary();
 
 $lb_logfile = '/var/log/relayd.log';
-$nentries = $config['syslog']['nentries'];
-if (!$nentries) {
-    $nentries = 50;
-}
+
+$nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries'] : 50;
 
 ?>
 
