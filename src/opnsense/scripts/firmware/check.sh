@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -222,8 +222,11 @@ if [ "$pkg_running" == "" ]; then
             killall pkg
           fi
       fi
-      # Get date/timestamp
-      last_check=`date`
+
+      product_version=$(cat /usr/local/opnsense/version/opnsense)
+      os_version=$(uname -sr)
+      last_check=$(date)
+
       # Write our json structure to disk
-      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
+      echo "{\"connection\":\"$connection\",\"repository\":\"$repository\",\"product_version\":\"$product_version\",\"os_version\":\"$os_version\",\"last_check\":\"$last_check\",\"updates\":\"$updates\",\"download_size\":\"$download_size\",\"extra_space_required\":\"$required_space\",\"new_packages\":[$packages_new],\"reinstall_packages\":[$packages_reinstall],\"upgrade_packages\":[$packages_upgraded],\"upgrade_needs_reboot\":\"$upgrade_needs_reboot\"}"
 fi
