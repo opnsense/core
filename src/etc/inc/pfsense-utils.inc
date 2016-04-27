@@ -445,7 +445,8 @@ function update_alias_names_upon_change($section, $field, $new_alias_name, $orig
     }
 }
 
-function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
+function process_alias_urltable($name, $url, $freq, $forceupdate = false)
+{
     global $config;
 
     $urltable_prefix = "/var/db/aliastables/";
@@ -459,10 +460,9 @@ function process_alias_urltable($name, $url, $freq, $forceupdate=false) {
         mkdir($urltable_prefix);
     }
     if (empty($freq)) {
-        $update_freq = 86310;
-    } else {
-        $update_freq = $freq * 86400 - 90;
+        $freq = 1;
     }
+    $update_freq = ($freq * 86400) - 90;
     // If the file doesn't exist or is older than update_freq days, fetch a new copy.
     if (!file_exists($urltable_filename) || ((time() - filemtime($urltable_filename)) > $update_freq) || $forceupdate) {
         // open file handle to output file, in case the process takes a lot of time, make sure there's a file before
