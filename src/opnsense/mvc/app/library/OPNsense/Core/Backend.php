@@ -70,16 +70,17 @@ class Backend
      * @param string $event event string
      * @param bool $detach detach process
      * @param int $timeout timeout in seconds
+     * @param int $connect_timeout connect timeout in seconds
      * @return string
      * @throws \Exception
      */
-    public function configdRun($event, $detach = false, $timeout = 120)
+    public function configdRun($event, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         $endOfStream = chr(0).chr(0).chr(0);
         $poll_timeout = 2 ; // poll timeout interval
 
-        // wait until socket exist for a maximum of $timeout
-        $timeout_wait = $timeout;
+        // wait until socket exist for a maximum of $connect_timeout
+        $timeout_wait = $connect_timeout;
         while (!file_exists($this->configdSocket)) {
             sleep(1);
             $timeout_wait -= 1;
