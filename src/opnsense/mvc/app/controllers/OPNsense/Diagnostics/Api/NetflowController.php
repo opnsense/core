@@ -55,7 +55,7 @@ class NetflowController extends ApiControllerBase
             }
         }
         return $result;
-     }
+    }
 
     /**
      * retrieve Netflow settings

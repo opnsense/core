@@ -67,5 +67,4 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     {
         BaseModelTest::$model->general->FromEmailXXX = "test@test.nl";
     }
-
 }

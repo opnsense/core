@@ -28,7 +28,6 @@
  */
 namespace tests\OPNsense\Base\FieldTypes;
 
-
 /**
  * Class Field_Framework_TestCase
  * @package tests\OPNsense\Base\FieldTypes
