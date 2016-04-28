@@ -705,17 +705,7 @@ function interface_bridge_add_member($bridgeif, $interface)
         legacy_interface_mtu($interface, $mtu);
     }
 
-    $options = pfSense_get_interface_addresses($bridgeif);
-    $flags = sprintf(
-        '%stxcsum %srxcsum %stso4 %stso6 %slro',
-        isset($options['encaps']['txcsum']) ? '' : '-',
-        isset($options['encaps']['rxcsum']) ? '' : '-',
-        isset($options['encaps']['tso4']) ? '' : '-',
-        isset($options['encaps']['tso6']) ? '' : '-',
-        isset($options['encaps']['lro']) ? '' : '-'
-    );
-
-    legacy_interface_flags($interface, $flags);
+    configure_interface_hardware($interface);
     interfaces_bring_up($interface);
     legacy_bridge_member($bridgeif, $interface);
 }
