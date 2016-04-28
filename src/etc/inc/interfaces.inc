@@ -2699,10 +2699,10 @@ EOD;
         }
 
         /* find which clones are up and bring them down */
+        $ifup = legacy_interface_listget('up');
         $clones_up = array();
         foreach ($clone_list as $clone_if) {
-            $clone_status = legacy_interface_stats($clone_if);
-            if ($clone_status['link state'] == '2') {
+            if (in_array($clone_if, $ifup)) {
                 $clones_up[] = $clone_if;
                 mwexec("{$ifconfig} " . escapeshellarg($clone_if) . " down");
             }
@@ -5104,12 +5104,14 @@ function get_interface_info($ifdescr)
         $link0 = 'down';
     }
 
+    $ifup = legacy_interface_listget('up');
+    $ifinfo['status'] = in_array($chkif, $ifup) ? 'up' : 'down';
+
     $ifinfo['linklocal'] = get_interface_linklocal($ifdescr);
     $ifinfo['ipaddrv6'] = get_interface_ipv6($ifdescr);
     $ifinfo['subnetv6'] = get_interface_subnetv6($ifdescr);
 
     $ifinfotmp = legacy_interface_stats($chkif);
-    $ifinfo['status'] = $ifinfotmp['link state'] == '2' ? 'up' : 'down';
     $ifinfo['inerrs'] = $ifinfotmp['input errors'];
     $ifinfo['outerrs'] = $ifinfotmp['output errors'];
     $ifinfo['collisions'] = $ifinfotmp['collisions'];
