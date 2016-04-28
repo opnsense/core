@@ -210,17 +210,17 @@ function legacy_interface_details($intf)
 
 function legacy_netgraph_attach($ifs)
 {
-	mwexecf('/usr/local/sbin/ngattach %s', array($ifs));
+    mwexecf('/usr/local/sbin/ngattach %s', array($ifs));
 }
 
 function legacy_netgraph_detach($ifs)
 {
-        mwexecf('/usr/sbin/ngctl msg %s: detach', array($ifs), true);
+    mwexecf('/usr/sbin/ngctl msg %s: detach', array($ifs), true);
 }
 
 function legacy_netgraph_rename($tmpifs, $ifs)
 {
-        mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpifs, $ifs));
+    mwexecf('/usr/sbin/ngctl name %s: %s', array($tmpifs, $ifs));
 }
 
 /**
@@ -258,4 +258,41 @@ function configure_interface_hardware($ifs)
             legacy_interface_flags($ifs, 'lro', false);
         }
     }
+}
+
+function legacy_getall_interface_addresses($ifs)
+{
+    $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs);
+    $addrs = array();
+
+    exec($cmd . ' 2>&1', $out, $ret);
+    if ($ret) {
+        log_error('The command `' . $cmd . '\' failed to execute');
+        return $stats;
+    }
+
+    if (count($out)) {
+        foreach ($out as $line) {
+            if ($line[0] != "\t") {
+                continue;
+            }
+            $stat = explode(' ', $line);
+            if (isset($stat[0])) {
+                switch (trim($stat[0])) {
+                    case 'inet':
+                        $mask = substr_count(base_convert(hexdec($stat[3]), 10, 2), '1');
+                        $addrs[] = $stat[1] . '/' . $mask;
+                        break;
+                    case 'inet6':
+                        $addrs[] = strtok($stat[1], '%') . '/' . $stat[3];
+                        break;
+                    default:
+                        /* not relevant to our interest */
+                        break;
+                }
+            }
+        }
+    }
+
+    return $addrs;
 }
