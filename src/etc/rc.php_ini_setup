@@ -62,8 +62,6 @@ PHPMODULES="$PHPMODULES radius"
 PHPMODULES="$PHPMODULES pfSense"
 # json
 PHPMODULES="$PHPMODULES json"
-# bcmath
-PHPMODULES="$PHPMODULES bcmath"
 # filter
 PHPMODULES="$PHPMODULES filter"
 # OPNsense
