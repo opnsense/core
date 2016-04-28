@@ -529,7 +529,7 @@ function interface_bridge_configure(&$bridge, $checkmember = 0)
     $foundgif = false;
     foreach ($members as $member) {
         $realif = get_real_interface($member);
-        $opts = pfSense_get_interface_addresses($realif);
+        $opts = legacy_interface_stats($realif);
         if (substr($realif, 0, 3) == "gif") {
             $foundgif = true;
             if ($checkmember == 1) {
@@ -772,7 +772,7 @@ function interface_lagg_configure(&$lagg)
     /* Calculate smaller mtu and enforce it */
     $mtu = null;
     foreach ($members as $member) {
-        $opts = pfSense_get_interface_addresses($member);
+        $opts = legacy_interface_stats($member);
         if (!empty($opts['mtu']) && ($mtu == null || $opts['mtu'] < $mtu)) {
             $mtu = $opts['mtu'];
         }
