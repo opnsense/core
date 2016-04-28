@@ -268,7 +268,7 @@ function legacy_getall_interface_addresses($ifs)
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
         log_error('The command `' . $cmd . '\' failed to execute');
-        return $stats;
+        return $addrs;
     }
 
     if (count($out)) {
