@@ -260,10 +260,13 @@ function configure_interface_hardware($ifs)
     }
 }
 
-function legacy_getall_interface_addresses($ifs)
+function _legacy_getall_interface_addresses($ifs)
 {
     $cmd = '/sbin/ifconfig ' . escapeshellarg($ifs);
-    $addrs = array();
+    $addrs = array(
+        'macaddr' => '00:00:00:00:00:00',
+        'compat' => array(),
+    );
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
@@ -281,10 +284,23 @@ function legacy_getall_interface_addresses($ifs)
                 switch (trim($stat[0])) {
                     case 'inet':
                         $mask = substr_count(base_convert(hexdec($stat[3]), 10, 2), '1');
-                        $addrs[] = $stat[1] . '/' . $mask;
+                        $addrs['compat'][] = $stat[1] . '/' . $mask;
+                        if (!isset($addrs['ipaddr'])) {
+                            $addrs['ipaddr'] = $stat[1];
+                            $addrs['subnetbits'] = $mask;
+                        }
                         break;
                     case 'inet6':
-                        $addrs[] = strtok($stat[1], '%') . '/' . $stat[3];
+                        $addr = strtok($stat[1], '%');
+                        $addrs['compat'][] = $addr . '/' . $stat[3];
+                        if (!isset($addrs['ipaddr6']) && strpos($addr, 'fe80:') !== 0) {
+                            /* does not pick up link-local */
+                            $addrs['ipaddr6'] = $addr;
+                            $addrs['subnetbits6'] = intval($stat[3]);
+                        }
+                        break;
+                    case 'ether':
+                        $addrs['macaddr'] = $stat[1];
                         break;
                     default:
                         /* not relevant to our interest */
@@ -294,5 +310,18 @@ function legacy_getall_interface_addresses($ifs)
         }
     }
 
+    return $addrs;
+}
+
+function legacy_getall_interface_addresses($ifs)
+{
+    $addrs = _legacy_getall_interface_addresses($ifs);
+    return $addrs['compat'];
+}
+
+function legacy_get_interface_addresses($ifs)
+{
+    $addrs = _legacy_getall_interface_addresses($ifs);
+    unset($addrs['compat']);
     return $addrs;
 }

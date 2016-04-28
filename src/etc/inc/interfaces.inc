@@ -4631,7 +4631,7 @@ function find_interface_ip($interface)
 {
     $interface = trim($interface);
     if (does_interface_exist($interface)) {
-        $ifinfo = pfSense_get_interface_addresses($interface);
+        $ifinfo = legacy_get_interface_addresses($interface);
         if (isset($ifinfo['ipaddr'])) {
             return $ifinfo['ipaddr'];
         }
@@ -4647,7 +4647,7 @@ function find_interface_ipv6($interface)
     // a bit obscure, why should this be different then find_interface_ip?
     $interface = get_real_interface(trim($interface));
     if (does_interface_exist($interface)) {
-        $ifinfo = pfSense_get_interface_addresses($interface);
+        $ifinfo = legacy_get_interface_addresses($interface);
         if (isset($ifinfo['ipaddr6'])) {
             return $ifinfo['ipaddr6'];
         }
@@ -4679,7 +4679,7 @@ function find_interface_subnet($interface)
 {
     $interface = trim($interface);
     if (does_interface_exist($interface)) {
-        $ifinfo = pfSense_get_interface_addresses($interface);
+        $ifinfo = legacy_get_interface_addresses($interface);
         if (isset($ifinfo['subnetbits'])) {
             return $ifinfo['subnetbits'];
         }
@@ -4691,7 +4691,7 @@ function find_interface_subnetv6($interface)
 {
     $interface = trim($interface);
     if (does_interface_exist($interface)) {
-        $ifinfo = pfSense_get_interface_addresses($interface);
+        $ifinfo = legacy_get_interface_addresses($interface);
         if (isset($ifinfo['subnetbits6'])) {
             return $ifinfo['subnetbits6'];
         }
@@ -4944,10 +4944,10 @@ function is_interface_wireless($interface)
     return true;
 }
 
-
 function get_interface_mac($interface)
 {
-    $macinfo = pfSense_get_interface_addresses($interface);
+    $macinfo = legacy_get_interface_addresses($interface);
+
     return $macinfo["macaddr"];
 }
 
@@ -5096,13 +5096,10 @@ function get_interface_info($ifdescr)
     $ifinfo['if'] = get_real_interface($ifdescr);
 
     $chkif = $ifinfo['if'];
-    $ifinfotmp = pfSense_get_interface_addresses($chkif);
+    $ifinfotmp = legacy_get_interface_addresses($chkif);
     $ifinfo['macaddr'] = $ifinfotmp['macaddr'];
     $ifinfo['ipaddr'] = $ifinfotmp['ipaddr'];
     $ifinfo['subnet'] = $ifinfotmp['subnet'];
-    if (isset($ifinfotmp['link0'])) {
-        $link0 = 'down';
-    }
 
     $ifup = legacy_interface_listget('up');
     $ifinfo['status'] = in_array($chkif, $ifup) ? 'up' : 'down';
@@ -5176,8 +5173,8 @@ function get_interface_info($ifdescr)
         case "pppoe":
         case "pptp":
         case "l2tp":
-            if ($ifinfo['status'] == "up" && !isset($link0)) {
-                /* get PPPoE link status for dial on demand */
+            if ($ifinfo['status'] == "up") {
+                /* XXX get PPPoE link status for dial on demand */
                 $ifinfo["{$link_type}link"] = "up";
             } else {
                 $ifinfo["{$link_type}link"] = "down";

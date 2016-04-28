@@ -58,8 +58,6 @@ PHPMODULES="$PHPMODULES zlib"
 PHPMODULES="$PHPMODULES sqlite3"
 # RADIUS
 PHPMODULES="$PHPMODULES radius"
-# pfSense extensions
-PHPMODULES="$PHPMODULES pfSense"
 # json
 PHPMODULES="$PHPMODULES json"
 # filter
