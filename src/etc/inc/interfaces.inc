@@ -2914,22 +2914,20 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
     if (!file_exists("/var/run/booting") && !(substr($realif, 0, 4) == "ovpn")) {
         /* remove all IPv4 and IPv6 addresses */
-        $tmpifaces = pfSense_getall_interface_addresses($realif);
-        if (is_array($tmpifaces)) {
-            foreach ($tmpifaces as $tmpiface) {
-                if (is_ipaddrv6($tmpiface) || is_subnetv6($tmpiface)) {
-                    if (!is_linklocal($tmpiface)) {
-                        mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$tmpiface} delete");
-                    }
-                } else {
-                    if (is_subnetv4($tmpiface)) {
-                        $tmpip = explode('/', $tmpiface);
-                        $tmpip = $tmpip[0];
-                    } else {
-                        $tmpip = $tmpiface;
-                    }
-                    legacy_interface_deladdress($realif, $tmpip);
+        $tmpifaces = legacy_getall_interface_addresses($realif);
+        foreach ($tmpifaces as $tmpiface) {
+            if (is_ipaddrv6($tmpiface) || is_subnetv6($tmpiface)) {
+                if (!is_linklocal($tmpiface)) {
+                    mwexec("/sbin/ifconfig " . escapeshellarg($realif) . " inet6 {$tmpiface} delete");
                 }
+            } else {
+                if (is_subnetv4($tmpiface)) {
+                    $tmpip = explode('/', $tmpiface);
+                    $tmpip = $tmpip[0];
+                } else {
+                    $tmpip = $tmpiface;
+                }
+                legacy_interface_deladdress($realif, $tmpip);
             }
         }
 
@@ -4674,7 +4672,7 @@ function find_interface_ipv6_ll($interface)
 {
     $interface = trim($interface);
     if (does_interface_exist($interface)) {
-        $ifinfo = pfSense_getall_interface_addresses($interface);
+        $ifinfo = legacy_getall_interface_addresses($interface);
         foreach ($ifinfo as $line) {
             if (strstr($line, ":")) {
                 $parts = explode("/", $line);
