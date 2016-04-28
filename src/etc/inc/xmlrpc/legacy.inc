@@ -64,7 +64,7 @@ function does_vip_exist($vip) {
             return false;
     }
 
-    $ifacedata = pfSense_getall_interface_addresses($realif);
+    $ifacedata = legacy_getall_interface_addresses($realif);
     foreach ($ifacedata as $vipips) {
         if ($vipips == "{$vip['subnet']}/{$vip['subnet_bits']}") {
             return true;
