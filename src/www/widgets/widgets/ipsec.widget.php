@@ -106,7 +106,45 @@ if (isset($config['ipsec']['phase1'])) {
 
 if (isset($config['ipsec']['phase2'])) {
 ?>
-
+<script type="text/javascript">
+  function changeTabDIV(selectedDiv){
+    var dashpos = selectedDiv.indexOf("-");
+    var tabclass = selectedDiv.substring(0,dashpos);
+    d = document;
+    //get deactive tabs first
+    tabclass = tabclass + "-class-tabdeactive";
+    var tabs = document.getElementsByClassName(tabclass);
+    var incTabSelected = selectedDiv + "-deactive";
+    for (i=0; i<tabs.length; i++){
+      var tab = tabs[i].id;
+      dashpos = tab.lastIndexOf("-");
+      var tab2 = tab.substring(0,dashpos) + "-deactive";
+      if (tab2 == incTabSelected){
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "none";
+        tab2 = tab.substring(0,dashpos) + "-active";
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "table-cell";
+        //now show main div associated with link clicked
+        tabmain = d.getElementById(selectedDiv);
+        tabmain.style.display = "block";
+      }
+      else
+      {
+        tab2 = tab.substring(0,dashpos) + "-deactive";
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "table-cell";
+        tab2 = tab.substring(0,dashpos) + "-active";
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "none";
+        //hide sections we don't want to see
+        tab2 = tab.substring(0,dashpos);
+        tabmain = d.getElementById(tab2);
+        tabmain.style.display = "none";
+      }
+    }
+  }
+</script>
 <div id="ipsec-Overview" style="display:block;background-color:#EEEEEE;">
   <table class="table table-striped">
     <thead>

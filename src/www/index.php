@@ -72,7 +72,7 @@ sort($widgetfiles);
 array_unshift($widgetfiles, "system_information.widget.php");
 
 ##if no config entry found, initialize config entry
-if (!is_array($config['widgets'])) {
+if (empty($config['widgets']) || !is_array($config['widgets'])) {
     $config['widgets'] = array();
 }
 
@@ -160,38 +160,14 @@ foreach ($phpincludefiles as $includename) {
     include($directory . $includename);
 }
 
-##begin AJAX
-$jscriptstr = <<<EOD
+include("head.inc");
+
+?>
+
+<body>
+<script src='/javascript/index/ajax.js'></script>
 <script type="text/javascript">
 //<![CDATA[
-
-function widgetAjax(widget) {
-  uri = "widgets/widgets/" + widget + ".widget.php";
-  var opt = {
-    // Use GET
-    type: 'get',
-    async: true,
-    // Handle 404
-    statusCode: {
-    404: function(t) {
-      alert('Error 404: location "' + t.statusText + '" was not found.');
-    }
-    },
-    // Handle other errors
-    error: function(t) {
-      alert('Error ' + t.status + ' -- ' + t.statusText);
-    },
-    success: function(data) {
-      widget2 = '#' + widget + "-loader";
-      jQuery(widget2).fadeOut(1000,function(){
-        jQuery('#' + widget).show();
-      });
-      jQuery('#' + widget).html(data);
-    }
-  }
-  jQuery.ajax(uri, opt);
-}
-
 
 function addWidget(selectedDiv){
   container  =  $('#'+selectedDiv);
@@ -281,57 +257,11 @@ function updatePref(){
   return false;
 }
 
-function changeTabDIV(selectedDiv){
-  var dashpos = selectedDiv.indexOf("-");
-  var tabclass = selectedDiv.substring(0,dashpos);
-  d = document;
-  //get deactive tabs first
-  tabclass = tabclass + "-class-tabdeactive";
-  var tabs = document.getElementsByClassName(tabclass);
-  var incTabSelected = selectedDiv + "-deactive";
-  for (i=0; i<tabs.length; i++){
-    var tab = tabs[i].id;
-    dashpos = tab.lastIndexOf("-");
-    var tab2 = tab.substring(0,dashpos) + "-deactive";
-    if (tab2 == incTabSelected){
-      tablink = d.getElementById(tab2);
-      tablink.style.display = "none";
-      tab2 = tab.substring(0,dashpos) + "-active";
-      tablink = d.getElementById(tab2);
-      tablink.style.display = "table-cell";
-      //now show main div associated with link clicked
-      tabmain = d.getElementById(selectedDiv);
-      tabmain.style.display = "block";
-    }
-    else
-    {
-      tab2 = tab.substring(0,dashpos) + "-deactive";
-      tablink = d.getElementById(tab2);
-      tablink.style.display = "table-cell";
-      tab2 = tab.substring(0,dashpos) + "-active";
-      tablink = d.getElementById(tab2);
-      tablink.style.display = "none";
-      //hide sections we don't want to see
-      tab2 = tab.substring(0,dashpos);
-      tabmain = d.getElementById(tab2);
-      tabmain.style.display = "none";
-    }
-  }
-}
+
 //]]>
 </script>
-EOD;
-
-include("head.inc");
-
-?>
-
-<body>
-
 <?php
 include("fbegin.inc");
-echo "\n\t<script type=\"text/javascript\" src=\"/javascript/index/ajax.js\"></script>\n";
-echo $jscriptstr;
 ?>
 
 <?php
