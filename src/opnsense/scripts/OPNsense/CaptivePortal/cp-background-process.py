@@ -220,7 +220,11 @@ def main():
             bgprocess.db.close()
 
             # process accounting messages (uses php script, for reuse of Auth classes)
-            subprocess.call(['/usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php'])
+            try:
+                subprocess.call(['/usr/local/opnsense/scripts/OPNsense/CaptivePortal/process_accounting_messages.php'])
+            except OSError:
+                # if accounting script crashes don't exit backgroung process
+                pass
 
             # sleep
             time.sleep(5)
