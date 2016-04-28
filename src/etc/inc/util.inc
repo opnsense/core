@@ -916,7 +916,7 @@ function get_interface_list($only_active = false)
             continue;
         }
 
-        $ifdata = pfSense_get_interface_addresses($ifname);
+        $ifdata = legacy_get_interface_addresses($ifname);
 
         $toput = array(
           'up' => in_array($ifname, $ifnames_up),

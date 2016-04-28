@@ -98,7 +98,6 @@ CORE_DEPENDS?=		apinger \
 			pecl-radius \
 			pftop \
 			phalcon \
-			php-pfSense \
 			php-suhosin \
 			php56 \
 			php56-ctype \
