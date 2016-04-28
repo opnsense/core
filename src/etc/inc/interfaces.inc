@@ -2688,10 +2688,10 @@ EOD;
         }
 
         /* find which clones are up and bring them down */
+        $ifup = legacy_interface_listget('up');
         $clones_up = array();
         foreach ($clone_list as $clone_if) {
-            $clone_status = pfSense_get_interface_addresses($clone_if);
-            if ($clone_status['status'] == 'up') {
+            if (in_array($clone_if, $ifup)) {
                 $clones_up[] = $clone_if;
                 mwexec("{$ifconfig} " . escapeshellarg($clone_if) . " down");
             }
@@ -5086,19 +5086,20 @@ function get_interface_info($ifdescr)
 
     $chkif = $ifinfo['if'];
     $ifinfotmp = pfSense_get_interface_addresses($chkif);
-    $ifinfo['status'] = $ifinfotmp['status'];
-    if (empty($ifinfo['status'])) {
-        $ifinfo['status'] = 'down';
-    }
     $ifinfo['macaddr'] = $ifinfotmp['macaddr'];
     $ifinfo['ipaddr'] = $ifinfotmp['ipaddr'];
     $ifinfo['subnet'] = $ifinfotmp['subnet'];
-    $ifinfo['linklocal'] = get_interface_linklocal($ifdescr);
-    $ifinfo['ipaddrv6'] = get_interface_ipv6($ifdescr);
-    $ifinfo['subnetv6'] = get_interface_subnetv6($ifdescr);
     if (isset($ifinfotmp['link0'])) {
         $link0 = 'down';
     }
+
+    $ifup = legacy_interface_listget('up');
+    $ifinfo['status'] = in_array($chkif, $ifup) ? 'up' : 'down';
+
+    $ifinfo['linklocal'] = get_interface_linklocal($ifdescr);
+    $ifinfo['ipaddrv6'] = get_interface_ipv6($ifdescr);
+    $ifinfo['subnetv6'] = get_interface_subnetv6($ifdescr);
+
     $ifinfotmp = legacy_interface_stats($chkif);
     $ifinfo['inerrs'] = $ifinfotmp['input errors'];
     $ifinfo['outerrs'] = $ifinfotmp['output errors'];

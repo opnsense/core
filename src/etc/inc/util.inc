@@ -902,10 +902,8 @@ function get_interface_list($only_active = false)
 
         foreach ($ifnames as $ifname) {
             $ifinfo = legacy_interface_stats($ifname);
-            if (isset($ifinfo['link state'])) {
-                if ($ifinfo['link state'] == '2') {
-                    $_ifnames[] = $ifname;
-                }
+            if ($ifinfo['link state'] == '2') {
+                $_ifnames[] = $ifname;
             }
         }
 
