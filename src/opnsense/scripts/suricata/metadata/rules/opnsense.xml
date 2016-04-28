@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ruleset documentation_url="http://docs.opnsense.org/">
+    <location url="https://rulesets.opnsense.org/suricata/" prefix="OPNsense"/>
+    <files>
+        <file description="test rules">opnsense.test.rules</file>
+    </files>
+</ruleset>
