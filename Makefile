@@ -117,6 +117,7 @@ CORE_DEPENDS?=		apinger \
 			phalcon \
 			php-suhosin \
 			php56 \
+			php56-ctype \
 			php56-curl \
 			php56-dom \
 			php56-filter \

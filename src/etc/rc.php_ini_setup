@@ -52,6 +52,8 @@ PHPMODULES="$PHPMODULES hash mcrypt"
 PHPMODULES="$PHPMODULES session"
 # Extra sanity seatbelts
 PHPMODULES="$PHPMODULES suhosin"
+# Firewall rules edit
+PHPMODULES="$PHPMODULES ctype"
 # Page compression
 PHPMODULES="$PHPMODULES zlib"
 # Databases

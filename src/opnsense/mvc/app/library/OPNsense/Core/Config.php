@@ -76,12 +76,13 @@ class Config extends Singleton
     private function isArraySequential($arrayData)
     {
         foreach ($arrayData as $key => $value) {
-            if (!is_numeric(strval($key))) {
+            if (!ctype_digit(strval($key))) {
                 return false;
             }
         }
 
         return true;
+
     }
 
     /**
