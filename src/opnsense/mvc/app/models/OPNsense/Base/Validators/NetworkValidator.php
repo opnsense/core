@@ -84,8 +84,8 @@ class NetworkValidator extends Validator implements ValidatorInterface
         // split network
         if (strpos($value, "/") !== false) {
             $parts = explode("/", $value);
-            if (count($parts) > 2 || !ctype_digit($parts[1])) {
-                // more parts then expected or second part is not numeric
+            if (count($parts) > 2 || !is_numeric($parts[1])) {
+                // more parts than expected or second part is not numeric
                 $result = false;
             } else {
                 $mask = $parts[1];

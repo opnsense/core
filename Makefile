@@ -119,7 +119,6 @@ CORE_DEPENDS?=		apinger \
 			php-suhosin \
 			php56 \
 			php56-bcmath \
-			php56-ctype \
 			php56-curl \
 			php56-dom \
 			php56-filter \

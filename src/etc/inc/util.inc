@@ -119,7 +119,7 @@ function unlock($cfglckkey = null)
 /* validate non-negative numeric string, or equivalent numeric variable */
 function is_numericint($arg)
 {
-    return (((is_int($arg) && $arg >= 0) || (is_string($arg) && strlen($arg) > 0 && ctype_digit($arg))) ? true : false);
+    return (((is_int($arg) && $arg >= 0) || (is_string($arg) && strlen($arg) > 0 && is_numeric($arg))) ? true : false);
 }
 
 /* return the subnet address given a host address and a subnet bit count */
@@ -523,7 +523,7 @@ function is_port($port)
     if (getservbyname($port, "tcp") || getservbyname($port, "udp")) {
         return true;
     }
-    if (!ctype_digit($port)) {
+    if (!is_numeric($port)) {
         return false;
     } elseif ((intval($port) < 1) || (intval($port) > 65535)) {
         return false;
