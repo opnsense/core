@@ -14,13 +14,13 @@ as there may be workarounds or ideas available.
 
 When creating bug reports, please make sure you provide the following:
 
-* Current OPNsense version where the bug first appeared
-* The last OPNsense version where the bug did not appear
+* The current OPNsense version where the bug first appeared
+* The last OPNsense version where the bug did not exist
 * The exact URL of the GUI page involved (if any)
 * A list of steps to replicate the bug
 
 All issues reported will have to be triaged and prioritised.  As we
-are a small time we may not always have the time to implement and help,
+are a small team we may not always have the time to implement and help,
 but reporting an issue may help others to fill in.
 
 Feature requests that are in line with project goals will eventually
@@ -28,8 +28,8 @@ be added to our roadmap:
 
 https://opnsense.org/about/road-map/
 
-Feature requests beyond the scope of OPNsense may still be doable using
-the plugin framework:
+Feature requests beyond the scope of OPNsense may still be provided
+using the plugin framework:
 
 https://github.com/opnsense/plugins
 
@@ -40,9 +40,9 @@ And above all: stay kind and open.  :)
 Pull requests
 -------------
 
-When creating pull request, please heed these points:
+When creating pull request, please heed the following:
 
-* Base your code on the latest master branch to avoid manual merges.
-* Code review may ensue in order to help shape your proposal.
-* Pull request must adhere to 2-Clause BSD licensing.
-* Explain the problem and your proposed solution.
+* Base your code on the latest master branch to avoid manual merges
+* Code review may ensue in order to help shape your proposal
+* Pull request must adhere to 2-Clause BSD licensing
+* Explain the problem and your proposed solution
