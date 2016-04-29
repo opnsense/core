@@ -34,6 +34,16 @@ require_once("pfsense-utils.inc");
 require_once("system.inc");
 require_once("stats.inc");
 
+## Check to see if we have a swap space,
+## if true, display, if false, hide it ...
+$swapinfo = `/usr/sbin/swapinfo`;
+if (stristr($swapinfo, '%')) {
+    $showswap = true;
+} else {
+    $showswap = false;
+}
+
+
 if (isset($_REQUEST['getupdatestatus'])) {
     $pkg_json = trim(configd_run('firmware check'));
     if ($pkg_json != '') {

@@ -194,7 +194,7 @@ if($need_alert_display == true) {
               <a href="<?=$button['href'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?=$button['label'];?></a>
             <?php endforeach; endif; ?>
 
-            <?php if (isset($widgetfiles)): ?>
+            <?php if (isset($widgetCollection)): ?>
               <a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
               <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?= gettext('Add widget') ?></button>
             <?php endif; ?>
