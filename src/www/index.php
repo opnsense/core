@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2004-2012 Scott Ullrich
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // set default dashboard view
         $pconfig['sequence'] = 'system_information-container:col1:show,interface_list-container:col1:show,traffic_graphs-container:col1:show';
     }
-    ##build list of widgets
+    // build list of widgets
     $widgetCollection = array();
     $widgetSeqParts = explode(",", $pconfig['sequence']);
     foreach (glob('/usr/local/www/widgets/widgets/*.widget.php') as $php_file) {
@@ -144,7 +144,6 @@ include("fbegin.inc");?>
 <script src='/javascript/index/ajax.js'></script>
 <script type="text/javascript">
 //<![CDATA[
-
 function addWidget(selectedDiv) {
     $('#'+selectedDiv).show();
     $('#'+selectedDiv+'-config').val('show');
@@ -195,8 +194,6 @@ function updatePref() {
     $("#iform").submit();
     return false;
 }
-
-
 //]]>
 </script>
 <section class="page-content-main">
@@ -245,33 +242,15 @@ function updatePref() {
                   <ul class="list-inline __nomb">
                     <li><h3>
 <?php
-                      if (isset($$widgettitle)) {
-                          //only show link if defined
-                          if (!empty($$widgettitlelink)) {
-?>
-                              <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
-                              <?php
-                          }
-                              //echo widget title
-                              echo $$widgettitle;
-                          if (isset($$widgettitlelink)) {
-?>
-                              </span></u>
-                              <?php
-                          }
-                      } else {
-                          if (isset($$widgettitlelink)) {
-?>
-                              <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
-                              <?php
-                          }
-                          echo $widgetItem['display_name'];
-                          if (isset($$widgettitlelink)) {
-?>
+                      if (isset($$widgettitlelink)):?>
+                          <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
+<?php
+                      endif;
+                          echo !empty($$widgettitle) ?  $$widgettitle : $widgetItem['display_name'];
+                      if (isset($$widgettitlelink)):?>
                           </span></u>
-                          <?php
-                          }
-                      }?>
+<?php
+                      endif;?>
                     </h3></li>
                     <li class="pull-right">
                       <div class="btn-group">
