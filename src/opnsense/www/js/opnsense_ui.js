@@ -35,8 +35,11 @@
   * @param decimals decimal places
   * @return string
   */
- function byteFormat(bytes, decimals=0)
+ function byteFormat(bytes, decimals)
  {
+     if (decimals == undefined) {
+        decimals = 0;
+     }
      var kb = 1024;
      var ndx = Math.floor( Math.log(bytes) / Math.log(kb) );
      var fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
