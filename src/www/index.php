@@ -34,7 +34,6 @@ ini_set('output_buffering', 'true');
 // Start buffering with a cache size of 100000
 ob_start(null, "1000");
 
-
 // Load Essential Includes
 require_once('guiconfig.inc');
 
@@ -65,11 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $widgetItem['display_name'] = ucwords(str_replace("_", " ", $widgetItem['name']));
         $widgetItem['filename'] = $php_file;
         $widgetItem['state'] = "none";
-        $widgetItem['sortKey'] = $widgetItem['name'] == 'system_information' ? "" : $widgetItem['name'];
+        /// default sort order
+        $widgetItem['sortKey'] = $widgetItem['name'] == 'system_information' ? "00000000" : "99999999";
         foreach ($widgetSeqParts as $seqPart) {
             $tmp = explode(':', $seqPart);
             if (count($tmp) == 3 && explode('-', $tmp[0])[0] == $widgetItem['name']) {
                 $widgetItem['state'] = $tmp[2];
+                $widgetItem['sortKey'] = $tmp[1];
             }
         }
         $widgetCollection[] = $widgetItem;
@@ -94,7 +95,6 @@ foreach (glob("/usr/local/www/widgets/include/*.inc") as $filename) {
 
 include("head.inc");
 ?>
-
 <body>
 <?php
 include("fbegin.inc");?>
@@ -113,7 +113,6 @@ include("fbegin.inc");?>
       <h1><?= gettext("Starting initial configuration!") ?></h1>
     </div>
   </header>
-
   <section class="page-content-main">
     <div class="container-fluid col-xs-12 col-sm-10 col-md-9">
       <div class="row">
@@ -142,63 +141,93 @@ include("fbegin.inc");?>
   else:?>
 
 <script src='/javascript/index/ajax.js'></script>
+<script src='/ui/js/jquery-sortable.js'></script>
 <script type="text/javascript">
-//<![CDATA[
-function addWidget(selectedDiv) {
-    $('#'+selectedDiv).show();
-    $('#'+selectedDiv+'-config').val('show');
-    showSave();
-}
+  function addWidget(selectedDiv) {
+      $('#'+selectedDiv).show();
+      $('#'+selectedDiv+'-config').val('show');
+      showSave();
+  }
 
-function configureWidget(selectedDiv) {
-    selectIntLink = '#' + selectedDiv + "-settings";
-    if ($(selectIntLink).css('display') == "none") {
-        $(selectIntLink).show();
-    } else {
-        $(selectIntLink).hide();
-    }
-}
+  function configureWidget(selectedDiv) {
+      selectIntLink = '#' + selectedDiv + "-settings";
+      if ($(selectIntLink).css('display') == "none") {
+          $(selectIntLink).show();
+      } else {
+          $(selectIntLink).hide();
+      }
+  }
 
-function showWidget(selectedDiv,swapButtons) {
-    $('#'+selectedDiv+'-container').show();
-    $('#'+selectedDiv+'-min').show();
-    $('#'+selectedDiv+'-max').hide();
-    $('#'+selectedDiv+'-config').val('show');
-    showSave();
-}
+  function showWidget(selectedDiv,swapButtons) {
+      $('#'+selectedDiv+'-container').show();
+      $('#'+selectedDiv+'-min').show();
+      $('#'+selectedDiv+'-max').hide();
+      $('#'+selectedDiv+'-config').val('show');
+      showSave();
+  }
 
-function minimizeWidget(selectedDiv,swapButtons) {
-    $('#'+selectedDiv+'-container').hide();
-    $('#'+selectedDiv+'-min').hide();
-    $('#'+selectedDiv+'-max').show();
-    $('#'+selectedDiv+'-config').val('hide');
-    showSave();
-}
+  function minimizeWidget(selectedDiv, swapButtons) {
+      $('#'+selectedDiv+'-container').hide();
+      $('#'+selectedDiv+'-min').hide();
+      $('#'+selectedDiv+'-max').show();
+      $('#'+selectedDiv+'-config').val('hide');
+      showSave();
+  }
 
-function closeWidget(selectedDiv) {
-    $('#'+selectedDiv).hide();
-    $('#'+selectedDiv+'-config').val('close');
-    showSave();
-}
+  function closeWidget(selectedDiv) {
+      $('#'+selectedDiv).hide();
+      $('#'+selectedDiv+'-config').val('close');
+      showSave();
+  }
 
-function showSave() {
-    $('#updatepref').show();
-}
+  function showSave() {
+      $('#updatepref').show();
+  }
 
-function updatePref() {
-    var widgetInfo = [];
-    $('.widgetdiv').each(function(key) {
-        widgetInfo.push($(this).attr('id')+'-container:col1:'+$('input[name='+$(this).attr('id')+'-config]').val());
-    });
-    $("#sequence").val(widgetInfo.join(','));
-    $("#iform").submit();
-    return false;
-}
-//]]>
+  function updatePref() {
+      var widgetInfo = [];
+      var index = 0;
+      $('.widgetdiv').each(function(key) {
+          if ($(this).is(':visible')) {
+              // only capture visible widgets
+              var index_str = "0000000" + index;
+              index_str = index_str.substr(index_str.length-8);
+              widgetInfo.push($(this).attr('id')+'-container:'+index_str+':'+$('input[name='+$(this).attr('id')+'-config]').val());
+              index++;
+          }
+      });
+      $("#sequence").val(widgetInfo.join(','));
+      $("#iform").submit();
+      return false;
+  }
 </script>
+
+<script type="text/javascript">
+  $( document ).ready(function() {
+      // move non visible items to bottom
+      $(".widgetdiv").each(function(){
+        if (!$(this).is(':visible')) {
+            $(this).insertBefore($("#end_of_block"));
+        }
+      });
+      // sortable widgets
+      $(".sortable").sortable({
+        handle: '.content-box-head',
+        itemSelector: '.widgetdiv',
+        containerSelector: '.sortable',
+        placeholder: '<div class="placeholder"><i class="fa fa-hand-o-right" aria-hidden="true"></i></div>',
+        afterMove: function (placeholder, container, closestItemOrContainer) {
+            showSave();
+        }
+      });
+  });
+</script>
+
 <section class="page-content-main">
-  <div class="container-fluid">
-    <div class="row">
+  <form method="post" id="iform">
+    <input type="hidden" value="" name="sequence" id="sequence" />
+    <div class="container-fluid">
+      <div class="row sortable">
 <?php
       $crash_report = get_crash_report();
       if ($crash_report != '') {
@@ -236,34 +265,31 @@ function updatePref() {
           }?>
           <section class="col-xs-12 col-md-6 widgetdiv" id="<?= $widgetItem['name'] ?>"  style="display:<?= $divdisplay ?>;">
             <div class="content-box">
-              <form method="post" id="iform">
-              <input type="hidden" value="" name="sequence" id="sequence" />
-                <header class="content-box-head container-fluid">
-                  <ul class="list-inline __nomb">
-                    <li><h3>
+              <header class="content-box-head container-fluid">
+                <ul class="list-inline __nomb">
+                  <li><h3>
 <?php
-                      if (isset($$widgettitlelink)):?>
-                          <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
+                    if (isset($$widgettitlelink)):?>
+                        <u><span onclick="location.href='/<?= $$widgettitlelink ?>'" style="cursor:pointer">
 <?php
-                      endif;
-                          echo !empty($$widgettitle) ?  $$widgettitle : $widgetItem['display_name'];
-                      if (isset($$widgettitlelink)):?>
-                          </span></u>
+                    endif;
+                        echo empty($$widgettitle) ?   $widgetItem['display_name'] : $$widgettitle;
+                    if (isset($$widgettitlelink)):?>
+                        </span></u>
 <?php
-                      endif;?>
-                    </h3></li>
-                    <li class="pull-right">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?= $widgetItem['name'] ?>-min" onclick='return minimizeWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv ?>;"><span class="glyphicon glyphicon-minus"></span></button>
-                        <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?= $widgetItem['name'] ?>-max" onclick='return showWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv == 'none' ? 'inline' : 'none' ?>;"><span class="glyphicon glyphicon-plus"></span></button>
-                        <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?= $widgetItem['name'] ?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
-                        <button type="button" class="btn btn-default btn-xs" id="<?= $widgetItem['name'] ?>-configure" onclick='return configureWidget("<?=  $widgetItem['name'] ?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
-                      </div>
-                    </li>
-                  </ul>
-                </header>
-              </form>
-              <div class="content-box-main collapse in" id="<?= $widgetItem['name'] ?>-container" style="display:<?= $mindiv ?>">
+                    endif;?>
+                  </h3></li>
+                  <li class="pull-right">
+                    <div class="btn-group">
+                      <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?= $widgetItem['name'] ?>-min" onclick='return minimizeWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv ?>;"><span class="glyphicon glyphicon-minus"></span></button>
+                      <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?= $widgetItem['name'] ?>-max" onclick='return showWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv == 'none' ? 'inline' : 'none' ?>;"><span class="glyphicon glyphicon-plus"></span></button>
+                      <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?= $widgetItem['name'] ?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
+                      <button type="button" class="btn btn-default btn-xs" id="<?= $widgetItem['name'] ?>-configure" onclick='return configureWidget("<?=  $widgetItem['name'] ?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
+                    </div>
+                  </li>
+                </ul>
+              </header>
+              <div class="content-box-main collapse in container" id="<?= $widgetItem['name'] ?>-container" style="display:<?= $mindiv ?>">
                 <input type="hidden" value="<?= $inputdisplay ?>" id="<?= $widgetItem['name'] ?>-config" name="<?= $widgetItem['name'] ?>-config" />
 <?php
                 if ($divdisplay != "block"):?>
@@ -274,9 +300,7 @@ function updatePref() {
                   </div>
 <?php
                 else:
-                  if ($divdisplay == 'block') {
-                      include($widgetItem['filename']);
-                  }
+                    include($widgetItem['filename']);
                 endif;
 ?>
               </div>
@@ -284,10 +308,13 @@ function updatePref() {
           </section>
 <?php
           endforeach;?>
+          <section id="end_of_block"></section>
       </div>
     </div>
+  </form>
 </section>
 <?php
+    // include widget javascripts
     foreach (glob("/usr/local/www/widgets/javascript/*.js") as $filename):?>
       <script src="/widgets/javascript/<?=basename($filename);?>" type="text/javascript"></script>
 <?php
