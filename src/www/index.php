@@ -65,12 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $widgetItem['filename'] = $php_file;
         $widgetItem['state'] = "none";
         /// default sort order
-        $widgetItem['sortKey'] = $widgetItem['name'] == 'system_information' ? "00000000" : "99999999";
+        $widgetItem['sortKey'] = $widgetItem['name'] == 'system_information' ? "00000000" : "99999999" . $widgetItem['name'];
         foreach ($widgetSeqParts as $seqPart) {
             $tmp = explode(':', $seqPart);
             if (count($tmp) == 3 && explode('-', $tmp[0])[0] == $widgetItem['name']) {
                 $widgetItem['state'] = $tmp[2];
-                $widgetItem['sortKey'] = $tmp[1];
+                if (is_numeric($tmp[1])) {
+                    $widgetItem['sortKey'] = $tmp[1];
+                }
             }
         }
         $widgetCollection[] = $widgetItem;
@@ -204,12 +206,6 @@ include("fbegin.inc");?>
 
 <script type="text/javascript">
   $( document ).ready(function() {
-      // move non visible items to bottom
-      $(".widgetdiv").each(function(){
-        if (!$(this).is(':visible')) {
-            $(this).insertBefore($("#end_of_block"));
-        }
-      });
       // sortable widgets
       $(".sortable").sortable({
         handle: '.content-box-head',
@@ -308,7 +304,6 @@ include("fbegin.inc");?>
           </section>
 <?php
           endforeach;?>
-          <section id="end_of_block"></section>
       </div>
     </div>
   </form>
