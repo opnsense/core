@@ -75,6 +75,24 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
       .typeahead {
         overflow: hidden;
       }
+
+      /** jquery-sortable styles **/
+      body.dragging, body.dragging * {
+        cursor: move !important;
+      }
+
+      .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+      }
+
+      ol.example li.placeholder {
+        position: relative;
+      }
+      ol.example li.placeholder:before {
+        position: absolute;
+      }
     </style>
 
     <!-- Favicon -->
@@ -85,7 +103,6 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
 
     <!-- bootstrap dialog -->
     <link href="/ui/themes/<?= $themename ?>/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
-
 
     <!-- Font awesome -->
     <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
