@@ -207,6 +207,39 @@ include("fbegin.inc");?>
       $("#iform").submit();
       return false;
   }
+
+  /**
+   * ajax update widget data, searches data-plugin attributes and use function in data-callback to update widget
+   */
+  function process_widget_data()
+  {
+      var plugins = [];
+      var callbacks = [];
+      // collect plugins and callbacks
+      $("[data-plugin]").each(function(){
+          if (plugins.indexOf($(this).data('plugin')) < 0) {
+              plugins.push($(this).data('plugin'));
+          }
+          if ($(this).data('callback') != undefined) {
+              callbacks.push({'function' : $(this).data('callback'), 'plugin': $(this).data('plugin'), 'sender': $(this)});
+          }
+      })
+      // collect data for provided plugins
+      $.ajax("/widgets/api/get.php",{type: 'get', cache: false, dataType: "json", data: {'load': plugins.join(',')}})
+        .done(function(response) {
+            callbacks.map( function(callback) {
+                try {
+                    if (response['data'][callback['plugin']] != undefined) {
+                        window[callback['function']](callback['sender'], response['data'][callback['plugin']]);
+                    }
+                } catch (err) {
+                    console.log(err);
+                }
+            });
+            // schedule next update
+            setTimeout('process_widget_data()', 30000);
+      });
+  }
 </script>
 
 <script type="text/javascript">
@@ -221,6 +254,7 @@ include("fbegin.inc");?>
             showSave();
         }
       });
+      // select number of columns
       $("#column_count").change(function(){
           if ($("#column_count_input").val() != $("#column_count").val()) {
               showSave();
@@ -237,6 +271,8 @@ include("fbegin.inc");?>
          });
       });
       $("#column_count").change();
+      // trigger initial ajax data poller
+      process_widget_data();
   });
 </script>
 
