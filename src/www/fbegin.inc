@@ -197,6 +197,12 @@ if($need_alert_display == true) {
             <?php if (isset($widgetCollection)): ?>
               <a href="#" id="updatepref" style="display:none" onclick="return updatePref();" class="btn btn-primary"><?=gettext("Save Settings");?></a>
               <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modal_widgets"><span class="glyphicon glyphicon-plus-sign __iconspacer"></span><?= gettext('Add widget') ?></button>
+              <select class="selectpicker" data-width="120px" id="column_count">
+                  <option value="1" <?=$pconfig['column_count'] == "1" ? 'selected="selected"' : "";?>><?=gettext("1 column");?></option>
+                  <option value="2" <?=$pconfig['column_count'] == "2" ? 'selected="selected"' : "";?>><?=gettext("2 columns");?></option>
+                  <option value="3" <?=$pconfig['column_count'] == "3" ? 'selected="selected"' : "";?>><?=gettext("3 columns");?></option>
+                  <option value="4" <?=$pconfig['column_count'] == "4" ? 'selected="selected"' : "";?>><?=gettext("4 columns");?></option>
+              </select>
             <?php endif; ?>
           </li>
         </ul>

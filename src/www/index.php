@@ -55,6 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // set default dashboard view
         $pconfig['sequence'] = 'system_information-container:col1:show,interface_list-container:col1:show,traffic_graphs-container:col1:show';
     }
+    // default 2 column grid layout
+    $pconfig['column_count'] = !empty($pconfig['column_count']) ? $pconfig['column_count'] : 2;
     // build list of widgets
     $widgetCollection = array();
     $widgetSeqParts = explode(",", $pconfig['sequence']);
@@ -84,6 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['sequence'])) {
         $config['widgets']['sequence'] = $_POST['sequence'];
+        if (!empty($_POST['column_count'])) {
+            $config['widgets']['column_count'] = $_POST['column_count'];
+        }
         write_config(gettext("Widget configuration has been changed."));
     }
     header("Location: index.php");
@@ -216,12 +221,29 @@ include("fbegin.inc");?>
             showSave();
         }
       });
+      $("#column_count").change(function(){
+          if ($("#column_count_input").val() != $("#column_count").val()) {
+              showSave();
+          }
+         $("#column_count_input").val($("#column_count").val());
+         $(".widgetdiv").each(function(){
+             var widget = $(this);
+             $.each(widget.attr("class").split(' '), function(index, classname) {
+                if (classname.indexOf('col-md') > -1) {
+                    widget.removeClass(classname);
+                }
+             });;
+             widget.addClass('col-md-'+(12 / $("#column_count_input").val()));
+         });
+      });
+      $("#column_count").change();
   });
 </script>
 
 <section class="page-content-main">
   <form method="post" id="iform">
     <input type="hidden" value="" name="sequence" id="sequence" />
+    <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
     <div class="container-fluid">
       <div class="row sortable">
 <?php
