@@ -37,7 +37,7 @@ if (!isset($config['virtualip']['vip'])) {
 }
 
 ?>
-<table class="table table-striped">
+<table class="table table-striped table-condensed">
 <?php
     foreach ($config['virtualip']['vip'] as $carp):
         if ($carp['mode'] != "carp") {
