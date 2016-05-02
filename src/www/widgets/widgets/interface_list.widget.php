@@ -1,138 +1,108 @@
 <?php
 
 /*
-        Copyright (C) 2014 Deciso B.V.
-        Copyright (C) 2007 Scott Dale
-        Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
-        and Jonathan Watt <jwatt@jwatt.org>.
-        All rights reserved.
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2007 Scott Dale
+    Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
+    and Jonathan Watt <jwatt@jwatt.org>.
+    All rights reserved.
 
-        Redistribution and use in source and binary forms, with or without
-        modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-        1. Redistributions of source code must retain the above copyright notice,
-           this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-        2. Redistributions in binary form must reproduce the above copyright
-           notice, this list of conditions and the following disclaimer in the
-           documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-        THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-        INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-        AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-        AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-        OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-        SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-        POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
-
-$nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("widgets/include/interfaces.inc");
 require_once("interfaces.inc");
 
-        $i = 0;
-	$iswireless=false;
-        $ifdescrs = get_configured_interface_with_descr();
 ?>
 
-	         <table class="table table-striped">
-				<?php
-                foreach ($ifdescrs as $ifdescr => $ifname) {
-                    $ifinfo = get_interface_info($ifdescr);
-                    $iswireless = is_interface_wireless($ifdescr);
-                ?>
-				<tr>
-				<td class="vncellt" >
-				<?php
-                if (isset($ifinfo['ppplink'])) {
-                    ?> <span alt="3g" class="glyphicon glyphicon-phone text-success"></span> <?php
-                } elseif ($iswireless) {
-                    if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up') {
-?>
-						<span alt="wlan" class="glyphicon glyphicon-signal text-success"></span>
-					<?php
-                    } else {
-                    ?>
-						<span alt="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
-					<?php
-                    } ?>
-				<?php
-                } else {
-                ?>
-						<?php if ($ifinfo['status'] == "up") {
-?>
-							<span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-success"></span>
-						<?php
-} else {
-?>
-            <span alt="cablenic" id="<?php echo $ifname . 'icon';?>" class="glyphicon glyphicon-transfer text-danger"></span>
-        <?php
-} ?>
-				<?php
-                } ?>&nbsp;
-				<strong><u>
-				<span onclick="location.href='/interfaces.php?if=<?=$ifdescr; ?>'" style="cursor:pointer">
-				<?=htmlspecialchars($ifname);?></span></u></strong>
-				<?php
-                if (isset($ifinfo['dhcplink'])) {
-                    echo "&nbsp;(DHCP)";
-                }
-                ?>
-				</td>
-				<?php if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") {
-?>
-							<td class="listr" align="center">
-								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-up text-success"></span>
-
-							</td>
-		                <?php
-} elseif ($ifinfo['status'] == "no carrier") {
-?>
-							<td class="listr" align="center">
-								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-down text-danger"></span>
-
-							</td>
-				<?php
-} elseif ($ifinfo['status'] == "down") {
-?>
-							<td class="listr" align="center">
-								<span id="<?php echo $ifname;?>" class="glyphicon glyphicon-arrow-remove text-danger"></span>
-							</td>
-		                <?php
-} else {
-?><?=htmlspecialchars($ifinfo['status']);
-}?>
-							<td class="listr">
-								<div id="<?php echo $ifname; ?>" style="display:inline"><?php
-									$media = $ifinfo['media'];
-									if (empty($media)) {
-										$media = $ifinfo['cell_mode'];
-									}
-									echo htmlspecialchars($media);
-								?></div>
-							</td>
-							<td class="vncellt">
-								<?php if ($ifinfo['ipaddr'] != "") {
-?>
-									<div id="<?php echo $ifname;
-?>-ip" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddr']);?> </div>
-									<br />
-								<?php
-}
-if ($ifinfo['ipaddrv6'] != "") {
-?>
-									<div id="<?php echo $ifname;
-?>-ipv6" style="display:inline"><?=htmlspecialchars($ifinfo['ipaddrv6']);?> </div>
-								<?php
-} ?>
-							</td>
-						</tr>
-				<?php
-                }//end for each ?>
-			</table>
+<table class="table table-striped table-condensed">
+  <tbody>
+<?php
+    foreach (get_configured_interface_with_descr() as $ifdescr => $ifname):
+      $ifinfo = get_interface_info($ifdescr);
+      $iswireless = is_interface_wireless($ifdescr);?>
+      <tr>
+        <td>
+<?php
+          if (isset($ifinfo['ppplink'])):?>
+            <span alt="3g" class="glyphicon glyphicon-phone text-success"></span>
+<?php
+          elseif ($iswireless):
+            if ($ifinfo['status'] == 'associated' || $ifinfo['status'] == 'up'):?>
+            <span alt="wlan" class="glyphicon glyphicon-signal text-success"></span>
+<?php
+            else:?>
+            <span alt="wlan_d" class="glyphicon glyphicon-signal text-danger"></span>
+<?php
+            endif;?>
+<?php
+          else:?>
+<?php
+            if ($ifinfo['status'] == "up"):?>
+              <span alt="cablenic" class="glyphicon glyphicon-transfer text-success"></span>
+<?php
+            else:?>
+              <span alt="cablenic" class="glyphicon glyphicon-transfer text-danger"></span>
+<?php
+            endif;?>
+<?php
+          endif;?>
+          &nbsp;
+          <strong>
+            <u>
+              <span onclick="location.href='/interfaces.php?if=<?=htmlspecialchars($ifdescr); ?>'" style="cursor:pointer">
+                <?=htmlspecialchars($ifname);?>
+              </span>
+            </u>
+          </strong>
+          <?=isset($ifinfo['dhcplink']) ? "&nbsp;(DHCP)" : "";?>
+        </td>
+        <td>
+<?php
+        if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated"):?>
+          <span class="glyphicon glyphicon-arrow-up text-success"></span>
+<?php
+        elseif ($ifinfo['status'] == "no carrier"):?>
+          <span class="glyphicon glyphicon-arrow-down text-danger"></span>
+<?php
+        elseif ($ifinfo['status'] == "down"):?>
+          <span class="glyphicon glyphicon-arrow-remove text-danger"></span>
+<?php
+        else:?>
+          <?=htmlspecialchars($ifinfo['status']);?>
+<?php
+        endif;?>
+        <td>
+          <?=empty($ifinfo['media']) ? htmlspecialchars($ifinfo['cell_mode']) : htmlspecialchars($ifinfo['media']);?>
+        </td>
+        <td>
+          <?=htmlspecialchars($ifinfo['ipaddr']);?>
+          <?=!empty($ifinfo['ipaddr']) ? "<br/>" : "";?>
+          <?=htmlspecialchars($ifinfo['ipaddrv6']);?>
+        </td>
+      </tr>
+<?php
+    endforeach;?>
+  </tbody>
+</table>
