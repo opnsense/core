@@ -141,7 +141,7 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
 ?>
       </td>
       <td>
-        <div id='dyndnsstatus<?php echo $i; ?>'><?php echo gettext("Checking ..."); ?></div>
+        <div id='dyndnsstatus<?=$i;?>'><?=gettext("Checking ...");?></div>
       </td>
     </tr>
 <?php
