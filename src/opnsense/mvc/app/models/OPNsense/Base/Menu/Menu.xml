@@ -7,9 +7,7 @@
         <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw"/>
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
-    <Reporting order="15" cssClass="fa fa-area-chart">
-        <Settings order="100" url="/reporting_settings.php" cssClass="fa fa-cog fa-fw"/>
-    </Reporting>
+    <Reporting order="15" cssClass="fa fa-area-chart"/>
     <System order="20" cssClass="fa fa-server">
         <Trust order="120" cssClass="fa fa-certificate fa-fw">
             <Certificates url="/system_certmanager.php">
