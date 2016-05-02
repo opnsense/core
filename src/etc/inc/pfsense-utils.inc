@@ -352,6 +352,17 @@ function is_fqdn($fqdn) {
     return($hostname);
 }
 
+function load_kernel_module()
+{
+    $mods = array(
+        'carp',
+    );
+
+    foreach ($mods as $mod) {
+        mwexecf('/sbin/kldload %s', $mod);
+    }
+}
+
 function load_crypto_module()
 {
     global $config;
