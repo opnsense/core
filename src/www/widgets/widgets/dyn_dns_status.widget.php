@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2008 Ermal Luci
     Copyright (C) 2013 Stanley P. Miller \ stan-qaz
     All rights reserved.
@@ -28,8 +28,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-$nocsrf = true;
-
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("widgets/include/dyn_dns_status.inc");
@@ -42,7 +40,7 @@ if (!isset($config['dyndnses']['dyndns'])) {
 
 $a_dyndns = &$config['dyndnses']['dyndns'];
 
-if ($_REQUEST['getdyndnsstatus']) {
+if (!empty($_REQUEST['getdyndnsstatus'])) {
     $first_entry = true;
     foreach ($a_dyndns as $dyndns) {
         if ($first_entry) {
@@ -85,18 +83,22 @@ if ($_REQUEST['getdyndnsstatus']) {
 
 ?>
 
-<table class="table table-triped" width="100%" border="0" cellpadding="0" cellspacing="0">
-	<tr>
-		<td width="5%"  class="listhdrr"><b><?=gettext("Int.");?></b></td>
-		<td width="15%" class="listhdrr"><b><?=gettext("Service");?></b></td>
-		<td width="20%" class="listhdrr"><b><?=gettext("Hostname");?></b></td>
-		<td width="20%" class="listhdrr"><b><?=gettext("Cached IP");?></b></td>
-	</tr>
-	<?php $i = 0; foreach ($a_dyndns as $dyndns) :
-?>
-	<tr ondblclick="document.location='services_dyndns_edit.php?id=<?=$i;?>'">
-		<td class="listlr">
-		<?php $iflist = get_configured_interface_with_descr();
+<table class="table table-striped table-condensed">
+  <thead>
+    <th><?=gettext("Int.");?></th>
+    <th><?=gettext("Service");?></th>
+    <th><?=gettext("Hostname");?></th>
+    <th><?=gettext("Cached IP");?></th>
+  </thead>
+  <tbody>
+<?php
+  $iflist = get_configured_interface_with_descr();
+  $types = services_dyndns_list();
+  $groupslist = return_gateway_groups_array();
+  foreach ($a_dyndns as $i => $dyndns) :?>
+    <tr ondblclick="document.location='services_dyndns_edit.php?id=<?=$i;?>'">
+      <td>
+<?php
         foreach ($iflist as $if => $ifdesc) {
             if ($dyndns['interface'] == $if) {
                 if (!isset($dyndns['enable'])) {
@@ -107,7 +109,6 @@ if ($_REQUEST['getdyndnsstatus']) {
                 break;
             }
         }
-        $groupslist = return_gateway_groups_array();
         foreach ($groupslist as $if => $group) {
             if ($dyndns['interface'] == $if) {
                 if (!isset($dyndns['enable'])) {
@@ -117,12 +118,10 @@ if ($_REQUEST['getdyndnsstatus']) {
                 }
                 break;
             }
-        }
-        ?>
-		</td>
-		<td class="listr">
-		<?php
-        $types = services_dyndns_list();
+        }?>
+      </td>
+      <td>
+<?php
         if (isset($types[$dyndns['type']])) {
             if (!isset($dyndns['enable'])) {
                 echo '<span class="text-muted">' . htmlspecialchars($types[$dyndns['type']]) . '</span>';
@@ -130,51 +129,46 @@ if ($_REQUEST['getdyndnsstatus']) {
                 echo htmlspecialchars($types[$dyndns['type']]);
             }
         }
-        ?>
-		</td>
-		<td class="listr">
-		<?php
+?>
+      </td>
+      <td>
+<?php
         if (!isset($dyndns['enable'])) {
             echo "<span class=\"text-muted\">".htmlspecialchars($dyndns['host'])."</span>";
         } else {
             echo htmlspecialchars($dyndns['host']);
         }
-        ?>
-		</td>
-		<td class="listr">
-		<div id='dyndnsstatus<?php echo $i; ?>'><?php echo gettext("Checking ..."); ?></div>
-		</td>
-	</tr>
-	<?php $i++;
-
-endforeach; ?>
+?>
+      </td>
+      <td>
+        <div id='dyndnsstatus<?php echo $i; ?>'><?php echo gettext("Checking ..."); ?></div>
+      </td>
+    </tr>
+<?php
+  endforeach;?>
+  </tbody>
 </table>
 <script type="text/javascript">
-//<![CDATA[
-	function dyndns_getstatus() {
-		scroll(0,0);
-		var url = "/widgets/widgets/dyn_dns_status.widget.php";
-		var pars = 'getdyndnsstatus=yes';
-		jQuery.ajax(
-			url,
-			{
-				type: 'get',
-				data: pars,
-				complete: dyndnscallback
-			});
-		// Refresh the status every 5 minutes
-		setTimeout('dyndns_getstatus()', 5*60*1000);
-	}
-	function dyndnscallback(transport) {
-		// The server returns a string of statuses separated by vertical bars
-		var responseStrings = transport.responseText.split("|");
-		for (var count=0; count<responseStrings.length; count++)
-		{
-			var divlabel = '#dyndnsstatus' + count;
-			jQuery(divlabel).prop('innerHTML',responseStrings[count]);
-		}
-	}
-	// Do the first status check 2 seconds after the dashboard opens
-	setTimeout('dyndns_getstatus()', 2000);
-//]]>
+  function dyndns_getstatus()
+  {
+      scroll(0,0);
+      var url = "/widgets/widgets/dyn_dns_status.widget.php";
+      var pars = 'getdyndnsstatus=yes';
+      jQuery.ajax(url, {type: 'get', data: pars, complete: dyndnscallback});
+      // Refresh the status every 5 minutes
+      setTimeout('dyndns_getstatus()', 5*60*1000);
+  }
+  function dyndnscallback(transport)
+  {
+      // The server returns a string of statuses separated by vertical bars
+      var responseStrings = transport.responseText.split("|");
+      for (var count=0; count<responseStrings.length; count++) {
+          var divlabel = '#dyndnsstatus' + count;
+          jQuery(divlabel).prop('innerHTML',responseStrings[count]);
+      }
+  }
+  $( document ).ready(function() {
+    // Do the first status check 2 seconds after the dashboard opens
+    setTimeout('dyndns_getstatus()', 2000);
+  });
 </script>
