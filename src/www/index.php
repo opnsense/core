@@ -307,7 +307,7 @@ include("fbegin.inc");?>
                   </li>
                 </ul>
               </header>
-              <div class="content-box-main collapse in container" id="<?= $widgetItem['name'] ?>-container" style="display:<?= $mindiv ?>">
+              <div class="content-box-main collapse in" id="<?= $widgetItem['name'] ?>-container" style="display:<?= $mindiv ?>">
                 <input type="hidden" value="<?= $inputdisplay ?>" id="<?= $widgetItem['name'] ?>-config" name="<?= $widgetItem['name'] ?>-config" />
 <?php
                 if ($divdisplay != "block"):?>
