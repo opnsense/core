@@ -70,23 +70,23 @@ $gateways_status = return_gateways_status(true);
         $class="info";
         if (!empty($gateways_status[$gname])) {
             if (stristr($gateways_status[$gname]['status'], "force_down")) {
-                $online = "Offline (forced)";
-                $class="danger";
+                $online = gettext("Offline (forced)");
+                $class = "danger";
             } elseif (stristr($gateways_status[$gname]['status'], "down")) {
-                $online = "Offline";
-                $class="danger";
+                $online = gettext("Offline");
+                $class = "danger";
             } elseif (stristr($gateways_status[$gname]['status'], "loss")) {
-                $online = "Packetloss";
-                $class="warning";
+                $online = gettext("Packetloss");
+                $class = "warning";
             } elseif (stristr($gateways_status[$gname]['status'], "delay")) {
-                $online = "Latency";
-                $class="warning";
+                $online = gettext("Latency");
+                $class = "warning";
             } elseif ($gateways_status[$gname]['status'] == "none") {
-                $online = "Online";
-                $class="success";
+                $online = gettext("Online");
+                $class = "success";
             } elseif ($gateways_status[$gname]['status'] == "") {
-                $online = "Pending";
-                $class="info";
+                $online = gettext("Pending");
+                $class = "info";
             }
         }?>
       <td style="width:160px;">
