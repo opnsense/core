@@ -76,7 +76,6 @@ require_once("interfaces.inc");
               </span>
             </u>
           </strong>
-          <?=isset($ifinfo['dhcplink']) ? "&nbsp;".gettext("(DHCP)") : "";?>
         </td>
         <td>
 <?php
