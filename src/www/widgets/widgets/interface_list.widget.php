@@ -36,13 +36,43 @@ require_once("interfaces.inc");
 
 ?>
 
-<table class="table table-striped table-condensed">
+<script type="text/javascript">
+  /**
+   * Hybrid widget only update interface status using ajax
+   */
+  function interface_widget_update(sender, data)
+  {
+      var tbody = sender.find('tbody');
+      data.map(function(interface_data) {
+          var tr_id = 'interface_widget_item_' + interface_data['name'];
+          if (tbody.find("#"+tr_id).length != 0) {
+              switch (interface_data['status']) {
+                  case 'up':
+                    $("#"+tr_id).find('.text-danger').removeClass('text-danger').addClass('text-success');
+                    $("#"+tr_id).find('.glyphicon-arrow-down').removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-up');
+                    $("#"+tr_id).find('.glyphicon-arrow-remove').removeClass('glyphicon-arrow-remove').addClass('glyphicon-arrow-up');
+                    break;
+                  case 'down':
+                    $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
+                    $("#"+tr_id).find('.glyphicon-arrow-up').removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-down');
+                    $("#"+tr_id).find('.glyphicon-arrow-remove').removeClass('glyphicon-arrow-remove').addClass('glyphicon-arrow-down');
+                    break;
+                  default:
+                    $("#"+tr_id).find('.text-success').removeClass('text-success').addClass('text-danger');
+                    $("#"+tr_id).find('.glyphicon-arrow-down').removeClass('glyphicon-arrow-down').addClass('glyphicon-arrow-remove');
+                    $("#"+tr_id).find('.glyphicon-arrow-up').removeClass('glyphicon-arrow-up').addClass('glyphicon-arrow-remove');
+              }
+          }
+      });
+  }
+</script>
+<table class="table table-striped table-condensed" data-plugin="interfaces" data-callback="interface_widget_update">
   <tbody>
 <?php
     foreach (get_configured_interface_with_descr() as $ifdescr => $ifname):
       $ifinfo = get_interface_info($ifdescr);
       $iswireless = is_interface_wireless($ifdescr);?>
-      <tr>
+      <tr id="interface_widget_item_<?=$ifname;?>">
         <td>
 <?php
           if (isset($ifinfo['ppplink'])):?>
