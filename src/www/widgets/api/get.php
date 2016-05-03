@@ -60,8 +60,8 @@ $result['plugins'] = array();
 $result['data'] = array();
 
 // probe plugins
-foreach (glob(__DIR__."/plugins/*.php") as $filename) {
-    $pluginName = basename($filename, '.php');
+foreach (glob(__DIR__."/plugins/*.inc") as $filename) {
+    $pluginName = basename($filename, '.inc');
     $result['plugins'][] = $pluginName;
     if (in_array($pluginName, $loadPluginsList)) {
         require $filename;
