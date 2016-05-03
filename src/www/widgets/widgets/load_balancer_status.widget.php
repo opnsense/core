@@ -1,37 +1,35 @@
 <?php
 
 /*
-	Copyright (C) 2014 Deciso B.V.
-	Copyright (C) 2010 Jim Pingle
-	Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
-	Copyright (C) 2005-2008 Bill Marquette
-	Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
-	and Jonathan Watt <jwatt@jwatt.org>.
-	All rights reserved.
+  Copyright (C) 2014 Deciso B.V.
+  Copyright (C) 2010 Jim Pingle
+  Copyright (C) 2010 Seth Mos <seth.mos@dds.nl>
+  Copyright (C) 2005-2008 Bill Marquette
+  Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
+  and Jonathan Watt <jwatt@jwatt.org>.
+  All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+  AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE.
 */
-
-$nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
@@ -62,15 +60,15 @@ $nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries']
 ?>
 
 <table class="table table-stiped" bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="load balancer">
-	<thead>
+  <thead>
     <td width="10%" class="listhdrr"><?= gettext('Server') ?></td>
     <td width="10%" class="listhdrr"><?= gettext('Pool') ?></td>
     <td width="30%" class="listhdr"><?= gettext('Description') ?></td>
-	</thead>
-	<?php $i = 0; foreach ($a_vs as $vsent) :
+  </thead>
+  <?php $i = 0; foreach ($a_vs as $vsent) :
 ?>
-	<tr>
-		<?php
+  <tr>
+    <?php
         switch (trim($rdr_a[$vsent['name']]['status'])) {
             case 'active':
                 $bgcolor = "#90EE90";  // lightgreen
@@ -85,14 +83,14 @@ $nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries']
                  $rdr_a[$vsent['name']]['status'] = gettext('Unknown - relayd not running?');
         }
         ?>
-		<td class="listlr">
-			<?=$vsent['name'];?><br />
-			<span style="background-color: <?=$bgcolor?>; display: block"><i><?= $rdr_a[$vsent['name']]['status'] ?></i></span>
-			<?=$vsent['ipaddr'].":".$vsent['port'];?><br />
-		</td>
-		<td class="listr" align="center" >
-		<table border="0" cellpadding="0" cellspacing="2" summary="status">
-		<?php
+    <td class="listlr">
+      <?=$vsent['name'];?><br />
+      <span style="background-color: <?=$bgcolor?>; display: block"><i><?= $rdr_a[$vsent['name']]['status'] ?></i></span>
+      <?=$vsent['ipaddr'].":".$vsent['port'];?><br />
+    </td>
+    <td class="listr" align="center" >
+    <table border="0" cellpadding="0" cellspacing="2" summary="status">
+    <?php
         foreach ($a_pool as $pool) {
             if ($pool['name'] == $vsent['poolname']) {
                 $pool_hosts=array();
@@ -135,13 +133,13 @@ $nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries']
             }
         }
         ?>
-		</table>
-		</td>
-		<td class="listbg" >
-			<?=$vsent['descr'];?>
-		</td>
-	</tr>
-	<?php $i++;
+    </table>
+    </td>
+    <td class="listbg" >
+      <?=$vsent['descr'];?>
+    </td>
+  </tr>
+  <?php $i++;
 
 endforeach; ?>
 </table>
