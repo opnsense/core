@@ -29,73 +29,82 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-$nocsrf = true;
-
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once('plugins.inc');
 require_once("ipsec.inc");
 require_once("interfaces.inc");
-require_once("widgets/include/services_status.inc");
 
 $services = services_get();
 
 if (isset($_POST['servicestatusfilter'])) {
     $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved Service Status Filter via Dashboard");
-    header("Location: ../../index.php");
+    header("Location: /index.php");
 }
 ?>
-<input type="hidden" id="services_status-config" name="services_status-config" value="" />
 <div id="services_status-settings" class="widgetconfigdiv" style="display:none;">
-	<form action="/widgets/widgets/services_status.widget.php" method="post" name="iformd">
-    <?= gettext('Comma separated list of services to NOT display in the widget') ?><br />
-		<input type="text" size="30" name="servicestatusfilter" class="formfld unknown" id="servicestatusfilter" value="<?= $config['widgets']['servicestatusfilter'] ?>" />
-		<input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="Save" />
-    </form>
+  <form action="/widgets/widgets/services_status.widget.php" method="post" name="iformd">
+    <table class="table table-condensed">
+      <thead>
+        <tr>
+            <th><?= gettext('Comma separated list of services to NOT display in the widget') ?></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" name="servicestatusfilter" id="servicestatusfilter" value="<?= $config['widgets']['servicestatusfilter'] ?>" /></td>
+        </tr>
+        <tr>
+          <td>
+            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="Save" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
 </div>
 
-<table class="table table-striped" width="100%" border="0" cellpadding="0" cellspacing="0" summary="services">
-	<tr>
-	  <td class="widgetsubheader" align="center"><b><?= gettext('Service') ?></b></td>
-    <td class="widgetsubheader" align="center"><b><?= gettext('Description') ?></b></td>
-    <td class="widgetsubheader" align="center"><b><?= gettext('Status') ?></b></td>
-	  <td class="widgetsubheader">&nbsp;</td>
-	</tr>
+<table class="table table-striped table-condensed">
+  <thead>
+    <tr>
+      <th><?= gettext('Service') ?></th>
+      <th><?= gettext('Description') ?></th>
+      <th><?= gettext('Status') ?></th>
+    </tr>
+  </thead>
+  <tbody>
 <?php
-$skipservices = explode(",", $config['widgets']['servicestatusfilter']);
-
-if (count($services) > 0) {
-    uasort($services, "service_name_compare");
-    foreach ($services as $service) {
-        if (!$service['name'] || in_array($service['name'], $skipservices)) {
-            continue;
-        }
-        $service_desc = explode(".", $service['description']);
-        echo "<tr><td class=\"listlr\">" . $service['name'] . "</td>\n";
-        echo "<td class=\"listr\">" . $service_desc[0] . "</td>\n";
-        // if service is running then listr else listbg
-        $bgclass = null;
-        if (get_service_status($service)) {
-            $bgclass = "listr";
-        } else {
-            $bgclass = "listbg";
-        }
-        echo "<td class=\"" . $bgclass . "\" align=\"center\">" . str_replace('btn ', 'btn btn-xs ', get_service_status_icon($service, false, true)) . "</td>\n";
-        echo "<td valign=\"middle\" class=\"list nowrap\">" . str_replace('btn ', 'btn btn-xs ', get_service_control_links($service)) . "</td></tr>\n";
-    }
-} else {
-    echo "<tr><td colspan=\"3\" align=\"center\">" . gettext("No services found") . " . </td></tr>\n";
-}
-?>
+  $skipservices = explode(",", $config['widgets']['servicestatusfilter']);
+  if (count($services) > 0):
+      uasort($services, "service_name_compare");
+      foreach ($services as $service):
+          if (!$service['name'] || in_array($service['name'], $skipservices)) {
+              continue;
+          }
+          $service_desc = explode(".", $service['description']);?>
+        <tr>
+          <td><?=$service['name'];?></td>
+          <td><?=$service_desc[0];?></td>
+          <td><?=str_replace('btn ', 'btn btn-xs ', get_service_status_icon($service, false, true));?>
+              <?=str_replace('btn ', 'btn btn-xs ', get_service_control_links($service));?>
+          </td>
+        </tr>
+<?php
+      endforeach;
+  else:?>
+  <tr><td colspan="3"><?=gettext("No services found");?></td></tr>
+<?php
+  endif;?>
+  </tbody>
 </table>
 
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-	selectIntLink = "services_status-configure";
-	textlink = document.getElementById(selectIntLink);
-	textlink.style.display = "inline";
+  selectIntLink = "services_status-configure";
+  textlink = document.getElementById(selectIntLink);
+  textlink.style.display = "inline";
 //]]>
 </script>
