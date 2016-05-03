@@ -72,4 +72,5 @@ foreach (glob(__DIR__."/plugins/*.php") as $filename) {
     }
 }
 // output result
+legacy_html_escape_form_data($result);
 echo json_encode($result);
