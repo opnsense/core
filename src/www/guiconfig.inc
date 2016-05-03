@@ -34,18 +34,17 @@ require_once("config.inc");
 
 /* THIS MUST BE ABOVE ALL OTHER CODE */
 if (empty($nocsrf)) {
-    function csrf_startup()
-    {
-      csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
-      $timeout_minutes = isset($config['system']['webgui']['session_timeout']) ?  $config['system']['webgui']['session_timeout'] : 240;
-      csrf_conf('expires', $timeout_minutes * 60);
-    }
-    require_once('csrf/csrf-magic.php');
+    function csrf_startup() {
+        global $config;
 
-    // make sure the session is closed after executing csrf-magic
-    if (session_status() != PHP_SESSION_NONE) {
-        session_write_close();
+        csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
+        $timeout_minutes = isset($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : 240;
+        csrf_conf('expires', $timeout_minutes * 60);
     }
+
+    session_start();
+    require_once('csrf/csrf-magic.php');
+    session_write_close();
 }
 
 function set_language()
