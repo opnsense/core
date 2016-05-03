@@ -68,6 +68,7 @@ if (isset($config['ipsec']['phase1'])) {
         echo "&nbsp;&nbsp;&nbsp;</b>";
         echo "</div>";
     }
+    echo "</div>";
 
     $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
     if ($ipsec_leases == null) {
