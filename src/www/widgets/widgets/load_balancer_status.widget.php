@@ -59,11 +59,13 @@ $nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries']
 
 ?>
 
-<table class="table table-stiped" bgcolor="#990000" width="100%" border="0" cellspacing="0" cellpadding="0" summary="load balancer">
+<table class="table table-striped table-condensed">
   <thead>
-    <td width="10%" class="listhdrr"><?= gettext('Server') ?></td>
-    <td width="10%" class="listhdrr"><?= gettext('Pool') ?></td>
-    <td width="30%" class="listhdr"><?= gettext('Description') ?></td>
+    <tr>
+      <th width="10%" class="listhdrr"><?= gettext('Server') ?></th>
+      <th width="10%" class="listhdrr"><?= gettext('Pool') ?></th>
+      <th width="30%" class="listhdr"><?= gettext('Description') ?></th>
+    </tr>
   </thead>
   <?php $i = 0; foreach ($a_vs as $vsent) :
 ?>
@@ -89,7 +91,7 @@ $nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries']
       <?=$vsent['ipaddr'].":".$vsent['port'];?><br />
     </td>
     <td class="listr" align="center" >
-    <table border="0" cellpadding="0" cellspacing="2" summary="status">
+    <table>
     <?php
         foreach ($a_pool as $pool) {
             if ($pool['name'] == $vsent['poolname']) {
