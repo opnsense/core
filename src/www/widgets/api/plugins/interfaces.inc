@@ -40,7 +40,9 @@ function interfaces_api()
         $interfaceItem['outbytes'] = $ifinfo['outbytes'];
         $interfaceItem['inbytes_frmt'] = format_bytes($ifinfo['inbytes']);
         $interfaceItem['outbytes_frmt'] = format_bytes($ifinfo['outbytes']);
-
+        $interfaceItem['inerrs'] = isset($ifinfo['inerrs']) ? $ifinfo['inerrs'] : "0";
+        $interfaceItem['outerrs'] = isset($ifinfo['outerrs']) ? $ifinfo['outerrs'] : "0";
+        $interfaceItem['collisions'] = isset($ifinfo['collisions']) ? $ifinfo['collisions'] : "0";
         $interfaceItem['name'] = $ifname;
         if ($ifinfo['status'] == "up" || $ifinfo['status'] == "associated") {
             $interfaceItem['status'] = "up";
