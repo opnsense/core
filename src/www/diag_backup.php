@@ -34,7 +34,6 @@ ini_set('max_input_time', '0');
 
 /* omit no-cache headers because it confuses IE with file downloads */
 $omit_nocacheheaders = true;
-$nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
