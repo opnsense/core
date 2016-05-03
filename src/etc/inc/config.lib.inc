@@ -153,19 +153,14 @@ function write_config($desc = '', $backup = true)
     global $config;
 
     if (!empty($_SERVER['REMOTE_ADDR'])) {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         if (!empty($_SESSION['Username']) && ($_SESSION['Username'] != 'root')) {
             $user = getUserEntry($_SESSION['Username']);
             if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
-                session_write_close();
                 // okay, it's not very nice to check permissions here, but let's make it explicit while we do...
                 log_error(gettext("WARNING: User")." ".$_SESSION['Username']." ".gettext("may not write config (user-config-readonly set)"));
                 return false;
             }
         }
-        session_write_close();
     }
 
     if (!isset($config['version'])) {
