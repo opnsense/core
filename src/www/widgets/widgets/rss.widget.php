@@ -80,11 +80,9 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
 }
 ?>
 
-<input type="hidden" id="rss-config" name="rss-config" value="" />
-
 <div id="rss-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/rss.widget.php" method="post" name="iformc">
-    <table class="table table-striped" summary="rss widget">
+    <table class="table table-striped">
       <tr>
         <td colspan="2">
           <textarea name="rssfeed" class="formfld unknown textarea_widget" id="rssfeed" cols="40" rows="3" style="max-width:100%;"><?=$textarea_txt;?></textarea>
