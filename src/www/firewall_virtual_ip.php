@@ -127,22 +127,6 @@ function deleteVIPEntry($id) {
     return $input_errors;
 }
 
-/**
- * redirect user if config may not be saved.
- */
-function redirectReadOnlyUser() {
-    if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-    }
-    $user = getUserEntry($_SESSION['Username']);
-    if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
-        header("Location: firewall_virtual_ip.php");
-        exit;
-    }
-    session_write_close();
-}
-
-
 if (!isset($config['virtualip']['vip'])) {
     $config['virtualip']['vip'] = array();
 }
@@ -183,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('vip');
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
-        redirectReadOnlyUser();
         $input_errors = deleteVIPEntry($id);
         if (count($input_errors) == 0) {
             write_config();
@@ -192,7 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }  elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // delete selected VIPs, sort rule in reverse order to delete the highest item sequences first
-        redirectReadOnlyUser();
         foreach (array_reverse($pconfig['rule']) as $ruleId) {
             if (isset($a_vip[$ruleId])) {
                 deleteVIPEntry($ruleId);
@@ -202,7 +184,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: firewall_virtual_ip.php");
         exit;
     }  elseif (isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
-        redirectReadOnlyUser();
         // move selected rules
         if (!isset($id)) {
             // if rule not set/found, move to end
