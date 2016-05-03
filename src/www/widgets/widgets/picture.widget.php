@@ -26,8 +26,6 @@
         POSSIBILITY OF SUCH DAMAGE.
 */
 
-$nocsrf = true;
-
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 
@@ -69,40 +67,38 @@ if ($_POST) {
 
 ?>
 
-<input type="hidden" id="picture-config" name="picture-config" value="" />
-
 <div id="picture-settings" class="widgetconfigdiv" style="display:none;">
-	<form action="/widgets/widgets/picture.widget.php" method="post" name="iforma" enctype="multipart/form-data">
-		<table class="table table-striped">
-			<tr>
-				<td>
-					<input name="pictfile" type="file" class="btn btn-primary formbtn" id="pictfile" size="20" />
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Upload') ?>" />
-				</td>
-			</tr>
-		</table>
-	</form>
+  <form action="/widgets/widgets/picture.widget.php" method="post" name="iforma" enctype="multipart/form-data">
+    <table class="table table-striped">
+      <tr>
+        <td>
+          <input name="pictfile" type="file" class="btn btn-primary formbtn" id="pictfile" size="20" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input id="submita" name="submita" type="submit" class="btn btn-primary formbtn" value="<?= gettext('Upload') ?>" />
+        </td>
+      </tr>
+    </table>
+  </form>
 </div>
 
 <!-- hide picture if none is defined in the configuration  -->
-<?php if ($config['widgets']['picturewidget_filename'] != "") :
-?>
-<div id="picture-widgets" style="padding: 5px">
-	<a href='/widgets/widgets/picture.widget.php?getpic=true' target='_blank'>
-		<img border="0" width="100%" height="100%" src="/widgets/widgets/picture.widget.php?getpic=true" alt="picture" />
-	</a>
-</div>
+<?php
+if ($config['widgets']['picturewidget_filename'] != "") :?>
+  <div id="picture-widgets" style="padding: 5px">
+    <a href='/widgets/widgets/picture.widget.php?getpic=true' target='_blank'>
+      <img border="0" width="100%" height="100%" src="/widgets/widgets/picture.widget.php?getpic=true" alt="picture" />
+    </a>
+  </div>
 <?php
 endif ?>
 <!-- needed to show the settings widget icon -->
 <script type="text/javascript">
 //<![CDATA[
-	selectIntLink = "picture-configure";
-	textlink = document.getElementById(selectIntLink);
-	textlink.style.display = "inline";
+  selectIntLink = "picture-configure";
+  textlink = document.getElementById(selectIntLink);
+  textlink.style.display = "inline";
 //]]>
 </script>
