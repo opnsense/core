@@ -280,6 +280,7 @@ include("fbegin.inc");?>
   <form method="post" id="iform">
     <input type="hidden" value="" name="sequence" id="sequence" />
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
+  </form>
     <div class="container-fluid">
       <div class="row sortable">
 <?php
@@ -364,7 +365,6 @@ include("fbegin.inc");?>
           endforeach;?>
       </div>
     </div>
-  </form>
 </section>
 <?php
     // include widget javascripts
