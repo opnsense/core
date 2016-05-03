@@ -58,7 +58,7 @@ if (isset($_POST['servicestatusfilter'])) {
         </tr>
         <tr>
           <td>
-            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="Save" />
+            <input id="submitd" name="submitd" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
           </td>
         </tr>
       </tbody>
