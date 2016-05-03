@@ -29,9 +29,6 @@
 
 require_once("guiconfig.inc");
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 $username = $_SESSION['Username'];
 
 if (isset($_POST['save'])) {
@@ -69,8 +66,6 @@ if (isset($_POST['save'])) {
         $savemsg = gettext("Password successfully changed") . "<br />";
     }
 }
-
-session_write_close();
 
 include("head.inc");
 ?>
