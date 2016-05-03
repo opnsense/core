@@ -190,7 +190,6 @@ function format_log_line(row) {
 </script>
 <script src="/javascript/filter_log.js" type="text/javascript"></script>
 
-<input type="hidden" id="log-config" name="log-config" value="" />
 <div id="log-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/log.widget.php" method="post" name="iforma">
         <table class="table table-striped">
