@@ -348,7 +348,7 @@ include("fbegin.inc");?>
                 <input type="hidden" value="<?= $inputdisplay ?>" id="<?= $widgetItem['name'] ?>-config" name="<?= $widgetItem['name'] ?>-config" />
 <?php
                 if ($divdisplay != "block"):?>
-                  <div id="<?= $widgetItem['name'] ?>-loader" style="display:<?= $display ?>;" align="center">
+                  <div id="<?= $widgetItem['name'] ?>-loader" style="display:<?= $display ?>;">
                     <br />
                       <span class="glyphicon glyphicon-refresh"></span> <?= gettext("Loading selected widget") ?>
                     <br />
