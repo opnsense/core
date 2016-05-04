@@ -319,7 +319,7 @@ include("head.inc");
       BootstrapDialog.show({
         type:BootstrapDialog.TYPE_DANGER,
         title: "<?=gettext("Certificates");?>",
-        message: "<?=gettext("Delete this certificate from the CRL ");?>",
+        message: "<?=gettext("Delete this certificate from the CRL?");?>",
         buttons: [{
                   label: "<?=gettext("No");?>",
                   action: function(dialogRef) {
@@ -534,7 +534,7 @@ include("head.inc");
                   <td><?=$openssl_crl_status[$cert["reason"]]; ?></td>
                   <td><?=date("D M j G:i:s T Y", $cert["revoke_time"]); ?></td>
                   <td>
-                    <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL ");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
+                    <a id="del_cert_<?=$thiscrl['refid'];?>" data-id="<?=$thiscrl['refid'];?>" data-certref="<?=$cert['refid'];?>" title="<?=gettext("Delete this certificate from the CRL");?>" data-toggle="tooltip"  class="act_delete_cert btn btn-default btn-xs">
                       <span class="fa fa-trash text-muted"></span>
                     </a>
                   </td>

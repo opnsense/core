@@ -228,7 +228,7 @@ endforeach; ?>
 ?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
                         <div class="hidden" for="help_for_maxmss_enable">
                         <?=gettext("Enable MSS clamping on TCP flows over VPN. " .
-                                                  "This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes. "); ?>
+                                                  "This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes."); ?>
                         </div>
                       </td>
                     </tr>
