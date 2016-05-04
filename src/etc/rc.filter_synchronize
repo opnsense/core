@@ -291,6 +291,7 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     $section_cnf['synchronizeusers'] = 'system.user,system.group';
     $section_cnf['synchronizeauthservers'] = 'system.authserver';
     $section_cnf['synchronizednsforwarder'] = 'dnsmasq';
+    $section_cnf['synchronizednsresolver'] = 'unbound';
     $section_cnf['synchronizeschedules'] = 'schedules';
     $section_cnf['synchronizeshaper'] = 'OPNsense.TrafficShaper';
     $section_cnf['synchronizecaptiveportal'] = 'OPNsense.captiveportal';
