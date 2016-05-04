@@ -168,9 +168,9 @@ $( document ).ready(function() {
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <td><?=gettext("Group Name");?></td>
-                      <td class="hidden-xs"><?=gettext("Gateways");?></td>
-                      <td class="hidden-xs"><?=gettext("Priority");?></td>
+                      <td><?= gettext("Group Name") ?></td>
+                      <td class="hidden-xs"><?= gettext("Gateways") ?></td>
+                      <td class="hidden-xs"><?= gettext("Priority") ?></td>
                       <td><?=gettext("Description");?></td>
                       <td></td>
                     </tr>
@@ -192,21 +192,21 @@ $( document ).ready(function() {
                       <td class="hidden-xs">
 <?php
                         foreach ($gateway_group['item'] as $item):?>
-                             <?=gettext('Tier ');?><?=explode("|", $item)[1];?> <br/>
+                             <?= sprintf(gettext('Tier %s'),explode("|", $item)[1]) ?> <br/>
 <?php
                         endforeach;?>
                       </td>
                       <td><?=$gateway_group['descr'];?></td>
                       <td>
-                        <a href="system_gateway_groups_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs"
+                        <a href="system_gateway_groups_edit.php?id=<?= $i ?>" class="btn btn-default btn-xs"
                             title="edit group" data-toggle="tooltip">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                         <button type="button" class="btn btn-default btn-xs act-del-group"
-                            data-id="<?=$i?>" title="<?=gettext("delete group");?>" data-toggle="tooltip">
+                            data-id="<?= $i ?>" title="<?= gettext("delete group") ?>" data-toggle="tooltip">
                           <span class="fa fa-trash text-muted"></span>
                         </button>
-                        <a href="system_gateway_groups_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs"
+                        <a href="system_gateway_groups_edit.php?dup=<?= $i ?>" class="btn btn-default btn-xs"
                             title="clone group" data-toggle="tooltip">
                           <span class="fa fa-clone text-muted"></span>
                         </a>
@@ -216,7 +216,7 @@ $( document ).ready(function() {
                     endforeach; ?>
                     <tr class="hidden-xs">
                       <td colspan="5">
-                        <?=gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.");?>
+                        <?= gettext("Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.") ?>
                       </td>
                     </tr>
                   </tbody>
