@@ -58,7 +58,7 @@ if (isset($config['wol']['wolentry'])) {
           <?=$is_active == 1 ? gettext("Online") : gettext("Offline");?>
         </td>
         <td>
-          <a href="services_wol.php?mac=<?=$wolent['mac'];?>&if=<?=$wolent['interface'];?>">
+          <a href="services_wol.php?mac=<?=$wolent['mac'];?>&amp;if=<?=$wolent['interface'];?>">
             <span class="glyphicon glyphicon-flash" title="<?=gettext("Wake Up");?>"></span>
           </a>
         </td>
