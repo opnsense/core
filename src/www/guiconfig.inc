@@ -32,20 +32,22 @@
 require_once("util.inc");
 require_once("config.inc");
 
-/* THIS MUST BE ABOVE ALL OTHER CODE */
-if (empty($nocsrf)) {
-    function csrf_startup() {
-        global $config;
+/* CSRF BEGIN: CHECK MUST BE EXECUTED FIRST; NO EXCEPTIONS */
 
-        csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
-        $timeout_minutes = isset($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : 240;
-        csrf_conf('expires', $timeout_minutes * 60);
-    }
+function csrf_startup()
+{
+    global $config;
 
-    session_start();
-    require_once('csrf/csrf-magic.php');
-    session_write_close();
+    csrf_conf('rewrite-js', '/csrf/csrf-magic.js');
+    $timeout_minutes = isset($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] : 240;
+    csrf_conf('expires', $timeout_minutes * 60);
 }
+
+session_start();
+require_once('csrf/csrf-magic.php');
+session_write_close();
+
+/* CSRF END: THANK YOU FOR YOUR COOPERATION */
 
 function set_language()
 {
