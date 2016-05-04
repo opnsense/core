@@ -39,7 +39,7 @@ $checkbox_names = array('pfsyncenabled', 'synchronizeusers', 'synchronizeauthser
                         'synchronizerules', 'synchronizeschedules', 'synchronizealiases', 'synchronizenat',
                         'synchronizeipsec', 'synchronizeopenvpn', 'synchronizedhcpd', 'synchronizewol',
                         'synchronizestaticroutes', 'synchronizelb', 'synchronizevirtualip',
-                        'synchronizednsforwarder', 'synchronizeshaper', 'synchronizecaptiveportal'
+                        'synchronizednsforwarder','synchronizednsresolver', 'synchronizeshaper', 'synchronizecaptiveportal'
 );
 
 
@@ -325,6 +325,15 @@ include("head.inc");
                     <input type="checkbox" name="synchronizednsforwarder" value="on" <?=!empty($pconfig['synchronizednsforwarder']) ? "checked=\"checked\"" :"";?> />
                     <div class="hidden" for="help_for_synchronizednsforwarder">
                       <?=gettext('Automatically sync the DNS Forwarder configuration to the other HA host when changes are made.') ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_synchronizednsresolver" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('DNS Resolver') ?></td>
+                  <td>
+                    <input type="checkbox" name="synchronizednsresolver" value="on" <?=!empty($pconfig['synchronizednsresolver']) ? "checked=\"checked\"" :"";?> />
+                    <div class="hidden" for="help_for_synchronizednsresolver">
+                      <?=gettext('Automatically sync the DNS Resolver configuration to the other HA host when changes are made.') ?>
                     </div>
                   </td>
                 </tr>
