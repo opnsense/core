@@ -323,18 +323,16 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol"); ?></td>
                   <td>
-                    <input name="webguiproto" id="http_proto" type="radio" value="http" <?=$pconfig['webguiproto'] == "http" ? "checked=\"checked\"" :"";?> onclick="prot_change()" />
+                    <input name="webguiproto" id="http_proto" type="radio" value="http" <?= $pconfig['webguiproto'] == "http" ? 'checked="checked"' :'' ?> onclick="prot_change()" />
                     <?=gettext("HTTP"); ?>
                     &nbsp;&nbsp;&nbsp;
-                    <input name="webguiproto" id="https_proto" type="radio" value="https" <?=$pconfig['webguiproto'] == "https" ? "checked=\"checked\"" :"";?> <?=!$certs_available ? "disabled=\"disabled\"": "";?> onclick="prot_change()" />
+                    <input name="webguiproto" id="https_proto" type="radio" value="https" <?= $pconfig['webguiproto'] == "https" ? 'checked="checked"' : '' ?> <?=$certs_available ? '' : 'disabled="disabled"' ?> onclick="prot_change()" />
                     <?=gettext("HTTPS"); ?>
 
 <?php
                     if (!$certs_available) :?>
                     <br />
-                    <?=gettext("No Certificates have been defined. You must"); ?>
-                    <a href="system_certmanager.php"><?=gettext("Create or Import"); ?></a>
-                    <?=gettext("a Certificate before SSL can be enabled."); ?>
+                    <?= sprintf(gettext("No Certificates have been defined. You must %sCreate or Import%s a Certificate before SSL can be enabled."),'<a href="system_certmanager.php">','</a>') ?>
 <?php
                     endif; ?>
                   </td>
@@ -374,12 +372,12 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_disablehttpredirect" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI redirect"); ?></td>
                   <td width="78%">
-                    <input name="disablehttpredirect" type="checkbox" value="yes" <?=!empty($pconfig['disablehttpredirect']) ? "checked=\"checked\"" : "";?> />
+                    <input name="disablehttpredirect" type="checkbox" value="yes" <?= empty($pconfig['disablehttpredirect']) ? '' : 'checked="checked"';?> />
                     <strong><?=gettext("Disable webConfigurator redirect rule"); ?></strong>
                     <div class="hidden" for="help_for_disablehttpredirect">
                       <?= gettext("When this is unchecked, access to the webConfigurator " .
                                           "is always permitted even on port 80, regardless of the listening port configured. " .
-                                          "Check this box to disable this automatically added redirect rule. ");
+                                          "Check this box to disable this automatically added redirect rule.");
                                           ?>
                     </div>
                   </td>
@@ -387,19 +385,19 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_loginautocomplete" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI Login Autocomplete"); ?></td>
                   <td>
-                    <input name="loginautocomplete" type="checkbox" value="yes" <?= !empty($pconfig['loginautocomplete']) ? "checked=\"checked\"" : "";?> />
+                    <input name="loginautocomplete" type="checkbox" value="yes" <?= empty($pconfig['loginautocomplete']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Enable webConfigurator login autocomplete"); ?></strong>
                     <div class="hidden" for="help_for_loginautocomplete">
                       <?= gettext("When this is checked, login credentials for the webConfigurator " .
                                           "may be saved by the browser. While convenient, some security standards require this to be disabled. " .
-                                          "Check this box to enable autocomplete on the login form so that browsers will prompt to save credentials (NOTE: Some browsers do not respect this option). ");?>
+                                          "Check this box to enable autocomplete on the login form so that browsers will prompt to save credentials (NOTE: Some browsers do not respect this option).");?>
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI login messages"); ?></td>
+                  <td><a id="help_for_quietlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("WebGUI login messages") ?></td>
                   <td>
-                    <input name="quietlogin" type="checkbox" value="yes" <?=!empty($pconfig['quietlogin']) ? "checked=\"checked\"" : ""; ?>/>
+                    <input name="quietlogin" type="checkbox" value="yes" <?= empty($pconfig['quietlogin']) ? '' : 'checked="checked"' ?>/>
                     <strong><?=gettext("Disable logging of webConfigurator successful logins"); ?></strong>
                     <div class="hidden" for="help_for_quietlogin">
                       <?=gettext("When this is checked, successful logins to the webConfigurator " .
@@ -410,7 +408,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_noantilockout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Anti-lockout"); ?></td>
                   <td>
-                    <input name="noantilockout" type="checkbox" value="yes" <?=!empty($pconfig['noantilockout'])? "checked=\"checked\"" : "";?>/>
+                    <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
                     <strong><?=gettext("Disable webConfigurator anti-lockout rule"); ?></strong>
                     <div class="hidden" for="help_for_noantilockout">
                       <?php printf(gettext("When this is unchecked, access to the webConfigurator " .
@@ -418,39 +416,38 @@ include("head.inc");
                                           "rule set. Check this box to disable this automatically added rule, so access " .
                                           "to the webConfigurator is controlled by the user-defined firewall rules " .
                                           "(ensure you have a firewall rule in place that allows you in, or you will " .
-                                          "lock yourself out!)"), (!empty($config['interfaces']['lan']) ? "LAN" : "WAN")); ?>
-                      <em> <?=gettext("Hint: the &quot;Set interface(s) IP address&quot; option in the console menu resets this setting as well."); ?> </em>
+                                          "lock yourself out!)"), (empty($config['interfaces']['lan']) ? gettext("WAN") : gettext("LAN"))); ?>
+                      <em> <?= gettext('Hint: the "Set interface(s) IP address" option in the console menu resets this setting as well.'); ?> </em>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_nodnsrebindcheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Rebind Check"); ?></td>
                   <td>
-                    <input name="nodnsrebindcheck" type="checkbox" value="yes" <?=!empty($pconfig['nodnsrebindcheck']) ? "checked=\"checked\"" : "";?>/>
+                    <input name="nodnsrebindcheck" type="checkbox" value="yes" <?= empty($pconfig['nodnsrebindcheck']) ? '' : 'checked="checked"';?>/>
                     <strong><?=gettext("Disable DNS Rebinding Checks"); ?></strong>
                     <div class="hidden" for="help_for_nodnsrebindcheck">
-                      <?= gettext("When this is unchecked, your system " .
-                                          "is protected against <a href=\"http://en.wikipedia.org/wiki/DNS_rebinding\">DNS Rebinding attacks</a>. " .
+                      <?= sprintf(gettext("When this is unchecked, your system is protected against %sDNS Rebinding attacks%s. " .
                                           "This blocks private IP responses from your configured DNS servers. Check this box to disable this protection if it interferes with " .
-                                          "webConfigurator access or name resolution in your environment. "); ?>
+                                          "webConfigurator access or name resolution in your environment."),'<a href="http://en.wikipedia.org/wiki/DNS_rebinding">','</a>') ?>
                     </div>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_althostnames" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Alternate Hostnames"); ?></td>
+                  <td><a id="help_for_althostnames" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Alternate Hostnames") ?></td>
                   <td>
-                    <input name="althostnames" type="text" value="<?=$pconfig['althostnames'];?>"/>
+                    <input name="althostnames" type="text" value="<?= $pconfig['althostnames'] ?>"/>
                     <strong><?=gettext("Alternate Hostnames for DNS Rebinding and HTTP_REFERER Checks"); ?></strong>
                     <div class="hidden" for="help_for_althostnames">
-                      <?=gettext("Here you can specify alternate hostnames by which the router may be queried, to " .
-                                          "bypass the DNS Rebinding Attack checks. Separate hostnames with spaces."); ?>
+                      <?= gettext("Here you can specify alternate hostnames by which the router may be queried, to " .
+                                          "bypass the DNS Rebinding Attack checks. Separate hostnames with spaces.") ?>
                     </div>
                   </td>
                 </tr>
                 <tr>
                   <td><a id="help_for_nohttpreferercheck" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("HTTP_REFERER enforcement"); ?></td>
                   <td>
-                    <input name="nohttpreferercheck" type="checkbox" value="yes" <?= !empty($pconfig['nohttpreferercheck']) ? "checked=\"checked\"" : "";?> />
+                    <input name="nohttpreferercheck" type="checkbox" value="yes" <?= empty($pconfig['nohttpreferercheck']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Disable HTTP_REFERER enforcement check"); ?></strong>
                     <div class="hidden" for="help_for_nohttpreferercheck">
                       <?=sprintf(gettext("When this is unchecked, access to the webConfigurator " .
@@ -467,14 +464,14 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Secure Shell Server"); ?></td>
                   <td>
-                    <input name="enablesshd" type="checkbox" value="yes" <?=!empty($pconfig['enablesshd']) ? "checked=\"checked\"" : "";?> />
+                    <input name="enablesshd" type="checkbox" value="yes" <?= empty($pconfig['enablesshd']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Enable Secure Shell"); ?></strong>
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Root Login"); ?></td>
+                  <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
                   <td>
-                    <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?=!empty($pconfig['sshdpermitrootlogin']) ? "checked=\"checked\"" : "";?> />
+                    <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? 'checked="checked"' : '' ?> />
                     <strong><?=gettext("Permit root user login"); ?></strong>
                     <div class="hidden" for="help_for_sshdpermitrootlogin">
                       <?= gettext(
@@ -485,14 +482,13 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><a id="help_for_passwordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication Method"); ?></td>
+                  <td><a id="help_for_passwordauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Authentication Method") ?></td>
                   <td>
-                    <input name="passwordauth" type="checkbox" value="yes" <?=!empty($pconfig['passwordauth']) ? "checked=\"checked\"" : "";?> />
+                    <input name="passwordauth" type="checkbox" value="yes" <?= empty($pconfig['passwordauth']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit password login"); ?></strong>
                     <div class="hidden" for="help_for_passwordauth">
-                      <?=gettext("When disabled, authorized keys need to be configured for each"); ?>
-                      <a href="system_usermanager.php"><?=gettext("user"); ?></a>
-                      <?=gettext("that has been granted secure shell access."); ?>
+                      <?=sprintf(gettext("When disabled, authorized keys need to be configured for each %sUser%s that has been granted secure shell access."),
+                                '<a href="system_usermanager.php">', '</a>') ?>
                     </div>
                   </td>
                 </tr>
@@ -522,12 +518,12 @@ include("head.inc");
                   <td><a id="help_for_serialspeed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Speed")?></td>
                   <td>
                     <select name="serialspeed" id="serialspeed" class="formselect selectpicker">
-                      <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? "selected=\"selected\"" : "";?>>115200</option>
-                      <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? "selected=\"selected\"" : "";?>>57600</option>
-                      <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? "selected=\"selected\"" : "";?>>38400</option>
-                      <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? "selected=\"selected\"" : "";?>>19200</option>
-                      <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? "selected=\"selected\"" : "";?>>14400</option>
-                      <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? "selected=\"selected\"" : "";?>>9600</option>
+                      <option value="115200" <?=$pconfig['serialspeed'] == "115200" ? 'selected="selected"' : '' ?>>115200</option>
+                      <option value="57600" <?=$pconfig['serialspeed'] == "57600" ? 'selected="selected"' : '' ?>>57600</option>
+                      <option value="38400" <?=$pconfig['serialspeed'] == "38400" ? 'selected="selected"' : '' ?>>38400</option>
+                      <option value="19200" <?=$pconfig['serialspeed'] == "19200" ? 'selected="selected"' : '' ?>>19200</option>
+                      <option value="14400" <?=$pconfig['serialspeed'] == "14400" ? 'selected="selected"' : '' ?>>14400</option>
+                      <option value="9600" <?=$pconfig['serialspeed'] == "9600" ? 'selected="selected"' : '' ?>>9600</option>
                     </select> <?=gettext("bps");?>
                     <div class="hidden" for="help_for_serialspeed">
                       <?=gettext("Allows selection of different speeds for the serial console port."); ?>
@@ -538,10 +534,10 @@ include("head.inc");
                   <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
                   <td width="78%">
                     <select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
-                      <option value="serial"   <?=$pconfig['primaryconsole'] == "serial" ? "selected=\"selected\"" : "";?>>
+                      <option value="serial"   <?=$pconfig['primaryconsole'] == "serial" ? 'selected="selected"' : '';?>>
                         <?=gettext("Serial Console");?>
                       </option>
-                      <option value="video"  <?=$pconfig['primaryconsole'] == "video" ? "selected=\"selected\"" : "";?>>
+                      <option value="video"  <?=$pconfig['primaryconsole'] == "video" ? 'selected="selected"' : '';?>>
                         <?=gettext("VGA Console");?>
                       </option>
                     </select>
@@ -554,9 +550,9 @@ include("head.inc");
                   <th colspan="2"><?=gettext("Console Options"); ?></th>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disableconsolemenu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Console menu"); ?></td>
+                  <td><a id="help_for_disableconsolemenu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Console menu") ?></td>
                   <td width="78%">
-                    <input name="disableconsolemenu" type="checkbox"  value="yes" <?= !empty($pconfig['disableconsolemenu']) ? "checked=\"checked\"" :"";?>  />
+                    <input name="disableconsolemenu" type="checkbox"  value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                     <strong><?=gettext("Password protect the console menu"); ?></strong>
                     <div class="hidden" for="help_for_disableconsolemenu">
                       <?=gettext("Changes to this option will take effect after a reboot."); ?>
@@ -565,7 +561,7 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td width="22%" valign="top">&nbsp;</td>
-                  <td width="78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" /></td>
+                  <td width="78%"><input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save") ?>" /></td>
                 </tr>
             </table>
           </form>

@@ -57,7 +57,7 @@ if (isset($_REQUEST['getupdatestatus'])) {
     } elseif ($pkg_status["updates"]=="0") {
         echo "<span class='text-info'>".gettext("Your system is up to date.")."</span><br/><span class='btn-link' onclick='checkupdate()'>".gettext('Click to check for updates')."</span>";
     } else {
-        echo "<span class='text-info'>".gettext("There are ").$pkg_status["updates"].gettext(" update(s) available.")."</span><br/><a href='/ui/core/firmware/#checkupdate'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='checkupdate()'>".gettext('Re-check now')."</span>";
+        echo "<span class='text-info'>".sprintf(gettext("There are %s update(s) available."),$pkg_status["updates"])."</span><br/><a href='/ui/core/firmware/#checkupdate'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='checkupdate()'>".gettext('Re-check now')."</span>";
     }
 
     exit;
