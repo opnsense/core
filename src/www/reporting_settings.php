@@ -45,9 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         mwexec('/bin/rm /var/db/rrd/*');
     } else {
         $pconfig = $_POST;
-
-        $config['rrd']['enable'] = !empty($pconfig['rrdenable']);
-
+        $config['rrd']['enable'] = !empty($_POST['rrdenable']);
         $savemsg = get_std_save_message();
         write_config();
     }
@@ -100,7 +98,7 @@ $(document).ready(function() {
       }
 ?>
         <section class="col-xs-12">
-          <form action="diag_logs_settings.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <input type="hidden" id="action" name="action" value="" />
             <div class="tab-content content-box col-xs-12 __mb">
               <div class="table-responsive">
