@@ -231,13 +231,12 @@ function configure_interface_hardware($ifs)
 {
     global $config;
     $intf_details = legacy_interface_details($ifs);
-    /* skip vlans for checksumming and polling */
+    /* skip vlans for checksumming  */
     if (!stristr($ifs, "_vlan") && is_array($intf_details)) {
         // get current settings
         $csum_set = in_array('rxcsum', $intf_details['options']) || in_array('txcsum', $intf_details['options']);
         $tso_set = in_array('tso4', $intf_details['options']) || in_array('tso6', $intf_details['options']);
         $lro_set = in_array('lro', $intf_details['options']);
-        $polling_set = in_array('polling', $intf_details['options']);
 
         // hardware checksum offloading offloading
         if (isset($config['system']['disablechecksumoffloading']) && $csum_set) {
@@ -257,13 +256,6 @@ function configure_interface_hardware($ifs)
             legacy_interface_flags($ifs, '-lro', false);
         } elseif (!isset($config['system']['disablelargereceiveoffloading']) && !$lro_set) {
             legacy_interface_flags($ifs, 'lro', false);
-        }
-
-        // polling
-        if (isset($config['system']['polling']) && !$polling_set) {
-            legacy_interface_flags($ifs, 'polling', false);
-        } elseif (!isset($config['system']['polling']) && $polling_set) {
-            legacy_interface_flags($ifs, '-polling', false);
         }
     }
 }

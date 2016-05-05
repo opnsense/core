@@ -37,7 +37,6 @@ require_once("pfsense-utils.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['polling'] = isset($config['system']['polling']);
     $pconfig['disablechecksumoffloading'] = isset($config['system']['disablechecksumoffloading']);
     $pconfig['disablesegmentationoffloading'] = isset($config['system']['disablesegmentationoffloading']);
     $pconfig['disablelargereceiveoffloading'] = isset($config['system']['disablelargereceiveoffloading']);
@@ -54,12 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['sharednet'] = true;
     } elseif (isset($config['system']['sharednet'])) {
         unset($config['system']['sharednet']);
-    }
-
-    if (!empty($pconfig['polling'])) {
-        $config['system']['polling'] = true;
-    } elseif (isset($config['system']['polling'])) {
-        unset($config['system']['polling']);
     }
 
     if (!empty($pconfig['disablechecksumoffloading'])) {
@@ -87,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     write_config();
-    setup_polling();
     system_arp_wrong_if();
 }
 
@@ -115,19 +107,6 @@ include("head.inc");
           <table class="table table-striped">
               <tr>
                 <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Interfaces"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_polling" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Device polling"); ?></td>
-                <td>
-                  <input name="polling" type="checkbox" id="polling_enable" value="yes" <?= !empty($pconfig['polling']) ? "checked=\"checked\"" :"";?> />
-                  <strong><?=gettext("Enable device polling"); ?></strong>
-                  <div class="hidden" for="help_for_polling">
-                    <?php printf(gettext("Device polling is a technique that lets the system periodically poll network devices for new data instead of relying on interrupts. This prevents your webConfigurator, SSH, etc. from being inaccessible due to interrupt floods when under extreme load. Generally this is not recommended. Not all NICs support polling; see the %s homepage for a list of supported cards."), $g['product_name']); ?>
-                    <br />
-                    <span class="text-warning"><strong><?=gettext("Note:");?>&nbsp;</strong></span>
-                    <?=gettext("This will take effect after you reboot the machine or re-configure each interface.");?>
-                  </div>
-                </td>
               </tr>
               <tr>
                 <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
