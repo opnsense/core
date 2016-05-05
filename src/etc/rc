@@ -122,7 +122,7 @@ install_mfs_link()
 	ln -s "${ROOT}${MFS}/${NAME}" "${MFS}"
 }
 
-delete_mfs_link()
+remove_mfs_link()
 {
 	ROOT=${1}
 	MFS=${2}
