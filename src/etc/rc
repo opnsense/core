@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2016 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -91,51 +91,78 @@ fi
 # Enable console output if its muted.
 /sbin/conscontrol mute off >/dev/null
 
+setup_mfs_link()
+{
+	ROOT=${1}
+	MFS=${2}
+	NAME=${3}
+
+	# Create dummy directory to for MFS-bound
+	# directories that require a persistant
+	# storage underneath to run.
+
+	if [ ! -d "${ROOT}${MFS}/${NAME}" ]; then
+		mkdir -p "${ROOT}/${MFS}"
+		mv "${MFS}/${NAME}" "${ROOT}/${MFS}"
+		# create a symlink underneath as well
+		ln -s "${ROOT}${MFS}/${NAME}" "${MFS}/${NAME}"
+	fi
+}
+
+install_mfs_link()
+{
+	ROOT=${1}
+	MFS=${2}
+	NAME=${3}
+
+	# Redirect persistent, but MFS-bound
+	# directory after tmpfs mount.
+
+	mkdir -p "${MFS}/${NAME}"
+	ln -s "${ROOT}${MFS}/${NAME}" "${MFS}"
+}
+
+delete_mfs_link()
+{
+	ROOT=${1}
+	MFS=${2}
+	NAME=${3}
+
+	# Persistent copies of MFS-bound directories
+	# still there must be moved back into place.
+
+	if [ -d "${ROOT}${MFS}/${NAME}" ]; then
+		mkdir -p "${MFS}"
+		# reverse the recovery symlink before
+		# moving back the original database
+		rm -f "${MFS}/${NAME}"
+		mv "${ROOT}${MFS}/${NAME}" "${MFS}/"
+	fi
+}
+
 USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
 if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 	echo -n "Setting up memory disks..."
 
-	if [ ! -d /root/var/db/pkg ]; then
-		mkdir -p /root/var/db
-		mv /var/db/pkg /root/var/db
-		# create a symlink underneath as well
-		# to fix early boot pkg(8) issues:
-		ln -s /root/var/db/pkg /var/db/pkg
-	fi
-
-	if [ ! -d /root/var/crash ]; then
-		mkdir -p /root/var
-		mv /var/crash /root/var
-		ln -s /root/var/crash /var/crash
-	fi
+	setup_mfs_link /root /var/cache opnsense-update
+	setup_mfs_link /root /var/cache pkg
+	setup_mfs_link /root /var/db pkg
+	setup_mfs_link /root /var crash
 
 	mount -t tmpfs -o mode=01777 tmpfs /tmp
 	mount -t tmpfs tmpfs /var
 
-	mkdir -p /var/db
-	ln -s /root/var/db/pkg /var/db/pkg
-
-	mkdir -p /var
-	ln -s /root/var/crash /var/crash
+	install_mfs_link /root /var/cache opnsense-update
+	install_mfs_link /root /var/cache pkg
+	install_mfs_link /root /var/db pkg
+	install_mfs_link /root /var crash
 
 	echo "done."
 else
-	# User must have just disabled RAM disks,
-	# let's move these back into place.
-
-	if [ -d /root/var/db/pkg ]; then
-		mkdir -p /var/db
-		# reverse the recovery symlink before moving
-		# back the original database:
-		rm -f /var/db/pkg
-		mv /root/var/db/pkg /var/db/
-	fi
-
-	if [ -d /root/var/crash ]; then
-		mkdir -p /var
-		rm -f /var/crash
-		mv /root/var/crash /var/crash
-	fi
+	remove_mfs_link /root /var/cache opnsense-update
+	remove_mfs_link /root /var/cache pkg
+	remove_mfs_link /root /var/db pkg
+	remove_mfs_link /root /var crash
 fi
 
 # make some directories in /var
