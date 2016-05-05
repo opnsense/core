@@ -459,7 +459,7 @@ function vlan_setup($iflist, $fp)
 
 	$yes_no_prompt = '[y|n]? ';
 
-	if (is_array($config['vlans']['vlan']) && count($config['vlans']['vlan'])) {
+	if (isset($config['vlans']['vlan'])) {
 
 	echo <<<EOD
 
@@ -468,8 +468,9 @@ WARNING: all existing VLANs will be cleared if you proceed!
 Do you want to proceed ${yes_no_prompt}
 EOD;
 
-	if (strcasecmp(chop(fgets($fp)), "y") != 0)
-		return;
+		if (strcasecmp(chop(fgets($fp)), "y") != 0) {
+			return;
+		}
 	}
 
 	$config['vlans']['vlan'] = array();
