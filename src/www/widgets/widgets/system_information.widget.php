@@ -133,7 +133,20 @@ $filesystems = get_mounted_filesystems();
       $("#system_information_widget_states .progress-bar").css("width",  states_perc + "%").attr("aria-valuenow", states_perc + "%");
       var states_text = states_perc + " % " + "( " + data['kernel']['pf']['states'] + "/" + data['kernel']['pf']['maxstates'] + " )"
       $("#system_information_widget_states .state_text").html(states_text);
-      //$("#system_information_widget_states").html(states_perc);
+
+      var mbuf_perc = parseInt((parseInt(data['kernel']['mbuf']['total']) / parseInt(data['kernel']['mbuf']['max']))*100);
+      $("#system_information_widget_mbuf .progress-bar").css("width",  mbuf_perc + "%").attr("aria-valuenow", mbuf_perc + "%");
+      var mbuf_text = mbuf_perc + " % " + "( " + data['kernel']['mbuf']['total'] + "/" + data['kernel']['mbuf']['max'] + " )"
+      $("#system_information_widget_mbuf .state_text").html(mbuf_text);
+
+      $("#system_information_widget_load").html(data['cpu']['load'].join(','));
+
+      var mem_perc = parseInt(data['kernel']['memory']['used'] / data['kernel']['memory']['total']*100);
+      $("#system_information_widget_memory .progress-bar").css("width",  mem_perc + "%").attr("aria-valuenow", mem_perc + "%");
+      var mem_text = mem_perc + " % " + "( " + parseInt(data['kernel']['memory']['used']/1024/1024) + "/";
+      mem_text += parseInt(data['kernel']['memory']['total']/1024/1024) + " MB )"
+      $("#system_information_widget_memory .state_text").html(mem_text);
+
    }
 
   /**
@@ -157,29 +170,6 @@ $filesystems = get_mounted_filesystems();
           system_information_widget_cpu_chart_data.transition().duration(500).call(system_information_widget_cpu_chart);
       });
   });
-</script>
-
-<script type="text/javascript">
-//<![CDATA[
-  jQuery(function() {
-    jQuery("#statePB").css( { width: '<?php echo get_pfstate(true); ?>%' } );
-    jQuery("#mbufPB").css( { width: '<?php echo get_mbuf(true); ?>%' } );
-    jQuery("#cpuPB").css( { width:0 } );
-    jQuery("#memUsagePB").css( { width: '<?php echo mem_usage(); ?>%' } );
-
-<?php $d = 0; ?>
-<?php foreach ($filesystems as $fs) : ?>
-    jQuery("#diskUsagePB<?php echo $d++; ?>").css( { width: '<?php echo $fs['percent_used']; ?>%' } );
-<?php endforeach; ?>
-
-    <?php if ($showswap == true) : ?>
-      jQuery("#swapUsagePB").css( { width: '<?php echo swap_usage(); ?>%' } );
-    <?php endif; ?>
-    <?php if (get_temp() != "") : ?>
-      jQuery("#tempPB").css( { width: '<?php echo get_temp(); ?>%' } );
-    <?php endif; ?>
-  });
-//]]>
 </script>
 
 <table class="table table-striped table-condensed" data-plugin="system" data-callback="system_information_widget_update">
@@ -235,59 +225,30 @@ $filesystems = get_mounted_filesystems();
         </div>
       </td>
     </tr>
-
-
-
     <tr>
       <td><?=gettext("MBUF Usage");?></td>
-      <td>
-        <?php
-                    $mbufstext = get_mbuf();
-                    $mbufusage = get_mbuf(true);
-                ?>
-
-        <div class="progress">
-          <div id="mbufPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            <span class="sr-only"></span>
-          </div>
+      <td id="system_information_widget_mbuf">
+        <div class="progress" style="text-align:center;">
+          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
         </div>
-        <span id="mbufusagemeter"><?= $mbufusage.'%'; ?></span> (<span id="mbuf"><?= $mbufstext ?></span>)
       </td>
     </tr>
-                <?php if (get_temp() != "") :
-?>
-                <tr>
-                        <td><?=gettext("Temperature");?></td>
-      <td>
-        <?php $TempMeter = $temp = get_temp(); ?>
-
-        <div class="progress">
-          <div id="tempPB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            <span class="sr-only"></span>
-          </div>
-        </div>
-        <span id="tempmeter"><?= $temp."&#176;C"; ?></span>
-      </td>
-                </tr>
-                <?php endif; ?>
     <tr>
       <td><?=gettext("Load average");?></td>
-      <td>
-      <div id="load_average" title="Last 1, 5 and 15 minutes"><?= get_load_average(); ?></div>
-      </td>
+      <td id="system_information_widget_load"></td>
     </tr>
     <tr>
       <td><?=gettext("Memory usage");?></td>
-      <td>
-        <?php $memUsage = mem_usage(); ?>
-        <div class="progress">
-          <div id="memUsagePB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            <span class="sr-only"></span>
-          </div>
+      <td id="system_information_widget_memory">
+        <div class="progress" style="text-align:center;">
+          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
         </div>
-        <span id="memusagemeter"><?= $memUsage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", $memUsage/100.0 * get_single_sysctl('hw.physmem') / (1024*1024), get_single_sysctl('hw.physmem') / (1024*1024)) ?> MB
       </td>
     </tr>
+
+
     <?php if ($showswap == true) :
 ?>
     <tr>

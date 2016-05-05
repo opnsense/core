@@ -57,6 +57,10 @@ function system_api_cpu_stats()
     $cpustats['cur.freq'] = !empty($tmp) ? $tmp : "-";
     $cpustats['freq_translate'] = sprintf(gettext("Current: %s MHz, Max: %s MHz"), $cpustats['cur.freq'], $cpustats['max.freq']);
 
+    // system load
+    exec("/usr/bin/uptime | /usr/bin/sed 's/^.*: //'", $load_average);
+    $cpustats['load'] = explode(',', $load_average[0]);
+
     return $cpustats;
 }
 
@@ -72,10 +76,25 @@ function system_api_config()
 function system_api_kernel()
 {
     global $config;
-    $result = array("pf" => array());
+    $result = array();
+
+    $result['pf'] = array();
     $result['pf']['maxstates'] = !empty($config['system']['maximumstates']) ? $config['system']['maximumstates'] : default_state_size();
     exec('/sbin/pfctl -si |grep "current entries" 2>/dev/null', $states);
     $result['pf']['states'] = count($states) >  0 ? filter_var($states[0], FILTER_SANITIZE_NUMBER_INT) : 0;
+
+    $result['mbuf'] = array();
+    exec('/usr/bin/netstat -mb | /usr/bin/grep "mbuf clusters in use"', $mbufs);
+    $result['mbuf']['total'] = count($mbufs) > 0 ? explode('/', $mbufs[0])[2] : 0;
+    $result['mbuf']['max'] = count($mbufs) > 0 ? explode(' ', explode('/', $mbufs[0])[3])[0] : 0;
+
+    $totalMem = get_single_sysctl("vm.stats.vm.v_page_count");
+    $inactiveMem = get_single_sysctl("vm.stats.vm.v_inactive_count");
+    $cachedMem = get_single_sysctl("vm.stats.vm.v_cache_count");
+    $freeMem = get_single_sysctl("vm.stats.vm.v_free_count");
+    $result['memory']['total'] = get_single_sysctl('hw.physmem') ;
+    $result['memory']['used'] = round(((($totalMem - ($inactiveMem + $cachedMem + $freeMem))) / $totalMem)*$result['memory']['total'], 0);
+
     return $result;
 }
 
