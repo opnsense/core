@@ -128,6 +128,7 @@ CORE_DEPENDS?=		apinger \
 			php56-ldap \
 			php56-mcrypt \
 			php56-openssl \
+			php56-pdo \
 			php56-session \
 			php56-simplexml \
 			php56-sockets \
