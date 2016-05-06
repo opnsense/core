@@ -102,8 +102,8 @@ setup_mfs_link()
 	# storage underneath to run.
 
 	if [ ! -d "${ROOT}${MFS}/${NAME}" ]; then
-		mkdir -p "${ROOT}/${MFS}"
-		mv "${MFS}/${NAME}" "${ROOT}/${MFS}"
+		mkdir -p "${ROOT}${MFS}"
+		mv "${MFS}/${NAME}" "${ROOT}${MFS}"
 		# create a symlink underneath as well
 		ln -s "${ROOT}${MFS}/${NAME}" "${MFS}/${NAME}"
 	fi
