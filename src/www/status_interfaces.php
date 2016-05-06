@@ -80,13 +80,13 @@ include("head.inc");
                     <thead>
                       <tr>
                         <th colspan="2">
-                          <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?=htmlspecialchars($ifname);?>"></i>
-                          <?=htmlspecialchars($ifname);?> <?=gettext("interface"); ?> (<?=htmlspecialchars($ifdescr);?>, <?=htmlspecialchars($ifinfo['hwif']);?>)
+                          <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>"></i>
+                          <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['hwif']) ?>)
   <?php
                           if (!isset($first_row)):
-                            $first_row=false;?>
+                            $first_row=false; ?>
                           <div class="pull-right">
-                            <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?=gettext("collapse/expand all");?>"></i> &nbsp;
+                            <i class="fa fa-expand" id="collapse_all" style="cursor: pointer;"  data-toggle="tooltip" title="<?= gettext("collapse/expand all") ?>"></i> &nbsp;
                           </div>
   <?php
                           endif;?>
@@ -95,12 +95,12 @@ include("head.inc");
                     </thead>
                   </table>
                 </div>
-                <div class="interface_details collapse table-responsive"  id="<?=htmlspecialchars($ifname);?>">
+                <div class="interface_details collapse table-responsive"  id="<?= htmlspecialchars($ifname) ?>">
                   <table class="table table-striped">
                   <tbody>
                     <tr>
-                      <td width="22%"><?=gettext("Status"); ?></td>
-                      <td width="78%"><?=$ifinfo['status'];?></td>
+                      <td width="22%"><?= gettext("Status") ?></td>
+                      <td width="78%"><?= $ifinfo['status'] ?></td>
                     </tr>
 <?php
                     if (!empty($ifinfo['dhcplink'])): ?>
@@ -108,10 +108,10 @@ include("head.inc");
                       <td> <?=gettext("DHCP");?></td>
                       <td>
                         <form name="dhcplink_form" method="post">
-                          <input type="hidden" name="if" value="<?=$ifdescr; ?>" />
-                          <input type="hidden" name="status" value="<?=$ifinfo['dhcplink']; ?>" />
-                          <?=$ifinfo['dhcplink'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?=$ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
+                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="status" value="<?= $ifinfo['dhcplink'] ?>" />
+                          <?= $ifinfo['dhcplink'] ?>&nbsp;&nbsp;
+                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcplink'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
                         </form>
                       </td>
                     </tr>
@@ -122,10 +122,10 @@ include("head.inc");
                       <td> <?=gettext("DHCP6");?></td>
                       <td>
                         <form name="dhcp6link_form" method="post">
-                          <input type="hidden" name="if" value="<?=$ifdescr; ?>" />
-                          <input type="hidden" name="status" value="<?=$ifinfo['dhcp6link']; ?>" />
-                          <?=$ifinfo['dhcp6link'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew"); ?>" />
+                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="status" value="<?= $ifinfo['dhcp6link'] ?>" />
+                          <?= $ifinfo['dhcp6link'] ?>&nbsp;&nbsp;
+                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['dhcp6link'] == "up" ? gettext("Release") : gettext("Renew") ?>" />
                         </form>
                       </td>
                     </tr>
@@ -136,10 +136,10 @@ include("head.inc");
                       <td><?=gettext("PPPoE"); ?></td>
                       <td>
                         <form name="pppoelink_form" method="post">
-                          <input type="hidden" name="if" value="<?=$ifdescr; ?>" />
-                          <input type="hidden" name="status" value="<?=$ifinfo['pppoelink']; ?>" />
-                          <?=$ifinfo['pppoelink'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?=$ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect"); ?>" />
+                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="status" value="<?= $ifinfo['pppoelink'] ?>" />
+                          <?= $ifinfo['pppoelink'] ?>&nbsp;&nbsp;
+                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pppoelink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
                         </form>
                       </td>
                     </tr>
@@ -147,13 +147,13 @@ include("head.inc");
                     endif;
                     if (!empty($ifinfo['pptplink'])): ?>
                     <tr>
-                      <td><?=gettext("PPTP"); ?></td>
+                      <td><?= gettext("PPTP") ?></td>
                       <td>
                         <form name="pptplink_form" method="post">
-                          <input type="hidden" name="if" value="<?=$ifdescr; ?>" />
-                          <input type="hidden" name="status" value="<?=$ifinfo['pptplink']; ?>" />
-                          <?=$ifinfo['pptplink'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?=$ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect");?>" />
+                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="status" value="<?= $ifinfo['pptplink'] ?>" />
+                          <?= $ifinfo['pptplink'] ?>&nbsp;&nbsp;
+                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['pptplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
                         </form>
                       </td>
                     </tr>
@@ -164,10 +164,10 @@ include("head.inc");
                       <td><?=gettext("L2TP"); ?></td>
                       <td>
                         <form name="l2tplink_form" method="post">
-                          <input type="hidden" name="if" value="<?=$ifdescr; ?>" />
-                          <input type="hidden" name="status" value="<?=$ifinfo['l2tplink']; ?>" />
+                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="status" value="<?= $ifinfo['l2tplink'] ?>" />
                           <?=$ifinfo['l2tplink'];?>&nbsp;&nbsp;
-                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?=$ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect");?>" />
+                          <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= $ifinfo['l2tplink'] == "up" ? gettext("Disconnect") : gettext("Connect") ?>" />
                         </form>
                       </td>
                     </tr>
@@ -178,14 +178,14 @@ include("head.inc");
                       <td><?=gettext("PPP"); ?></td>
                       <td>
                         <form name="ppplink_form" method="post">
-                          <input type="hidden" name="if" value="<?=$ifdescr; ?>" />
-                          <input type="hidden" name="status" value="<?=$ifinfo['ppplink']; ?>" />
-                          <?=$ifinfo['pppinfo'];?>
+                          <input type="hidden" name="if" value="<?= $ifdescr ?>" />
+                          <input type="hidden" name="status" value="<?= $ifinfo['ppplink'] ?>" />
+                          <?= $ifinfo['pppinfo'] ?>
                           <?php if ($ifinfo['ppplink'] == "up"): ?>
-                            <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?=gettext("Disconnect"); ?>" />
+                            <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= gettext("Disconnect") ?>" />
                           <?php else: ?>
                             <?php if (!$ifinfo['nodevice']): ?>
-                              <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?=gettext("Connect"); ?>" />
+                              <input type="submit" name="submit" class="btn btn-primary btn-xs" value="<?= gettext("Connect") ?>" />
                             <?php endif; ?>
                           <?php endif; ?>
                         </form>
@@ -195,64 +195,64 @@ include("head.inc");
                     endif;
                     if (!empty($ifinfo['ppp_uptime']) || !empty($ifinfo['ppp_uptime_accumulated'])): ?>
                     <tr>
-                      <td><?=gettext("Uptime ");?><?=!empty($ifinfo['ppp_uptime_accumulated']) ? "(historical)" : ""; ?></td>
-                      <td><?=$ifinfo['ppp_uptime'];?> <?=$ifinfo['ppp_uptime_accumulated'];?></td>
+                      <td><?= empty($ifinfo['ppp_uptime_accumulated']) ? gettext("Uptime") : gettext("Uptime (historical)") ?></td>
+                      <td><?= $ifinfo['ppp_uptime_accumulated'] ?> <?= $ifinfo['ppp_uptime'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_rssi'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Signal (RSSI)");?></td>
-                      <td><?=$ifinfo['cell_rssi'];?></td>
+                      <td><?= gettext("Cell Signal (RSSI)") ?></td>
+                      <td><?= $ifinfo['cell_rssi'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_mode'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Mode");?></td>
-                      <td><?=$ifinfo['cell_mode'];?></td>
+                      <td><?= gettext("Cell Mode") ?></td>
+                      <td><?= $ifinfo['cell_mode'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_simstate'])): ?>
                     <tr>
-                      <td><?=gettext("Cell SIM State");?></td>
-                      <td><?=$ifinfo['cell_simstate'];?></td>
+                      <td><?= gettext("Cell SIM State") ?></td>
+                      <td><?= $ifinfo['cell_simstate'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_service'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Service");?></td>
-                      <td><?=$ifinfo['cell_service'];?></td>
+                      <td><?= gettext("Cell Service") ?></td>
+                      <td><?= $ifinfo['cell_service'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_bwupstream'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Upstream");?></td>
-                      <td><?=$ifinfo['cell_bwupstream'];?> <?=gettext("kbit/s");?></td>
+                      <td><?= gettext("Cell Upstream");?></td>
+                      <td><?= sprintf(gettext("%s kbit/s"),$ifinfo['cell_bwupstream']) ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_bwdownstream'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Downstream");?></td>
-                      <td><?=$ifinfo['cell_bwdownstream'];?> <?=gettext("kbit/s");?></td>
+                      <td><?= gettext("Cell Downstream") ?></td>
+                      <td><?= sprintf(gettext("%s kbit/s"),$ifinfo['cell_bwdownstream']) ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_upstream'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Current Up");?></td>
-                      <td><?=$ifinfo['cell_upstream'];?> <?=gettext("kbit/s");?></td>
+                      <td><?= gettext("Cell Current Up");?></td>
+                      <td><?= sprintf(gettext("%s kbit/s"), $ifinfo['cell_upstream']) ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['cell_downstream'])): ?>
                     <tr>
-                      <td><?=gettext("Cell Current Down");?></td>
-                      <td><?=$ifinfo['cell_downstream'];?> <?=gettext("kbit/s");?></td>
+                      <td><?= gettext("Cell Current Down") ?></td>
+                      <td><?= sprintf(gettext("%s kbit/s"),$ifinfo['cell_downstream']) ?></td>
                     </tr>
 <?php
                     endif;
@@ -274,61 +274,61 @@ include("head.inc");
                   if ($ifinfo['dhcplink'] != "down" && $ifinfo['pppoelink'] != "down" && $ifinfo['pptplink'] != "down"):
                     if ($ifinfo['ipaddr']):?>
                     <tr>
-                      <td><?=gettext("IPv4 address");?></td>
-                      <td><?=$ifinfo['ipaddr'];?></td>
+                      <td><?= gettext("IPv4 address") ?></td>
+                      <td><?= $ifinfo['ipaddr'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['subnet'])):?>
                     <tr>
-                      <td><?=gettext("Subnet mask IPv4");?></td>
-                      <td><?=$ifinfo['subnet'];?></td>
+                      <td><?= gettext("Subnet mask IPv4") ?></td>
+                      <td><?= $ifinfo['subnet'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['gateway'])): ?>
                     <tr>
-                      <td><?=gettext("Gateway IPv4");?></td>
-                      <td><?=htmlspecialchars($config['interfaces'][$ifdescr]['gateway']);?> <?=$ifinfo['gateway'];?></td>
+                      <td><?= gettext("Gateway IPv4") ?></td>
+                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gateway']) ?> <?= $ifinfo['gateway'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['linklocal'])): ?>
                     <tr>
-                      <td><?=gettext("IPv6 Link Local");?></td>
-                      <td><?=$ifinfo['linklocal'];?></td>
+                      <td><?= gettext("IPv6 Link Local") ?></td>
+                      <td><?= $ifinfo['linklocal'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['ipaddrv6'])): ?>
                     <tr>
-                      <td><?=gettext("IPv6 address");?></td>
-                      <td><?=$ifinfo['ipaddrv6'];?></td>
+                      <td><?= gettext("IPv6 address") ?></td>
+                      <td><?= $ifinfo['ipaddrv6'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['subnetv6'])): ?>
                     <tr>
-                      <td><?=gettext("Subnet mask IPv6");?></td>
-                      <td><?=$ifinfo['subnetv6'];?></td>
+                      <td><?= gettext("Subnet mask IPv6") ?></td>
+                      <td><?= $ifinfo['subnetv6'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['gatewayv6'])): ?>
                     <tr>
-                      <td><?=gettext("Gateway IPv6");?></td>
-                      <td><?=htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']);?> <?=$ifinfo['gatewayv6'];?></td>
+                      <td><?= gettext("Gateway IPv6") ?></td>
+                      <td><?= htmlspecialchars($config['interfaces'][$ifdescr]['gatewayv6']) ?> <?= $ifinfo['gatewayv6'] ?></td>
                     </tr>
 <?php
                     endif;
                     if ($ifdescr == 'wan' && file_exists('/etc/resolv.conf')): ?>
                     <tr>
-                      <td><?=gettext("ISP DNS servers");?></td>
+                      <td><?= gettext("ISP DNS servers") ?></td>
                       <td>
 <?php
-                        foreach(get_dns_servers() as $dns) {
+                        foreach(get_dns_servers() as $dns):
                           echo "{$dns}<br />";
-                        }?>
+                        endforeach; ?>
                       </td>
                     </tr>
 <?php
@@ -336,15 +336,15 @@ include("head.inc");
                   endif;
                   if (!empty($ifinfo['media'])): ?>
                     <tr>
-                      <td><?=gettext("Media");?></td>
-                      <td><?=$ifinfo['media'];?></td>
+                      <td><?= gettext("Media") ?></td>
+                      <td><?= $ifinfo['media'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['laggproto'])):?>
                     <tr>
-                      <td><?=gettext("LAGG Protocol");?></td>
-                      <td><?=$ifinfo['laggproto'];?></td>
+                      <td><?= gettext("LAGG Protocol") ?></td>
+                      <td><?= $ifinfo['laggproto'] ?></td>
                     </tr>
 <?php
                     endif;
@@ -352,87 +352,87 @@ include("head.inc");
                     <tr>
                       <td><?=gettext("LAGG Ports");?></td>
                       <td>
-                        <?php  foreach ($ifinfo['laggport'] as $laggport) { ?>
-                            <?=$laggport;?><br />
-                        <?php  } ?>
+                        <?php  foreach ($ifinfo['laggport'] as $laggport): ?>
+                            <?= $laggport ?><br />
+                        <?php  endforeach; ?>
                       </td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['channel'])): ?>
                     <tr>
-                      <td><?=gettext("Channel");?></td>
-                      <td><?=$ifinfo['channel'];?></td>
+                      <td><?= gettext("Channel") ?></td>
+                      <td><?= $ifinfo['channel'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['ssid'])):?>
                     <tr>
-                      <td><?=gettext("SSID");?></td>
-                      <td><?=$ifinfo['ssid'];?></td>
+                      <td><?= gettext("SSID") ?></td>
+                      <td><?= $ifinfo['ssid'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['bssid'])):?>
                     <tr>
-                      <td><?=gettext("BSSID");?></td>
-                      <td><?=$ifinfo['bssid'];?></td>
+                      <td><?= gettext("BSSID") ?></td>
+                      <td><?= $ifinfo['bssid'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['rate'])):?>
                     <tr>
-                      <td><?=gettext("Rate");?></td>
-                      <td><?=$ifinfo['rate'];?></td>
+                      <td><?= gettext("Rate") ?></td>
+                      <td><?= $ifinfo['rate'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (!empty($ifinfo['rssi'])): ?>
                     <tr>
-                      <td><?=gettext("RSSI");?></td>
-                      <td><?=$ifinfo['rssi'];?></td>
+                      <td><?= gettext("RSSI") ?></td>
+                      <td><?= $ifinfo['rssi'] ?></td>
                     </tr>
 <?php
                     endif; ?>
                     <tr>
-                      <td><?=gettext("In/out packets");?></td>
-                      <td> <?=$ifinfo['inpkts'];?> / <?=$ifinfo['outpkts'];?>
-                          (<?=format_bytes($ifinfo['inbytes']);?> / <?=format_bytes($ifinfo['outbytes']);?> )
+                      <td><?= gettext("In/out packets") ?></td>
+                      <td> <?= $ifinfo['inpkts'] ?> / <?= $ifinfo['outpkts'] ?>
+                          (<?= format_bytes($ifinfo['inbytes']);?> / <?=format_bytes($ifinfo['outbytes']);?> )
                       </td>
                     </tr>
                     <tr>
-                      <td><?=gettext("In/out packets (pass)");?></td>
-                      <td> <?=$ifinfo['inpktspass'];?> / <?=$ifinfo['outpktspass'];?>
-                          (<?=format_bytes($ifinfo['inbytespass']);?> / <?=format_bytes($ifinfo['outbytespass']);?> )
+                      <td><?= gettext("In/out packets (pass)") ?></td>
+                      <td> <?= $ifinfo['inpktspass'] ?> / <?= $ifinfo['outpktspass'] ?>
+                          (<?= format_bytes($ifinfo['inbytespass']) ?> / <?= format_bytes($ifinfo['outbytespass']) ?> )
                       </td>
                     </tr>
                     <tr>
-                      <td><?=gettext("In/out packets (block)");?></td>
-                      <td> <?=$ifinfo['inpktsblock'];?> / <?=$ifinfo['outpktsblock'];?>
-                          (<?=format_bytes($ifinfo['inbytesblock']);?> / <?=format_bytes($ifinfo['outbytesblock']);?> )
+                      <td><?= gettext("In/out packets (block)") ?></td>
+                      <td> <?= $ifinfo['inpktsblock'] ?> / <?= $ifinfo['outpktsblock'] ?>
+                          (<?= format_bytes($ifinfo['inbytesblock']) ?> / <?= format_bytes($ifinfo['outbytesblock']) ?> )
                       </td>
                     </tr>
 <?php
                     if (isset($ifinfo['inerrs'])): ?>
                     <tr>
-                      <td><?=gettext("In/out errors");?></td>
-                      <td><?=$ifinfo['inerrs'] . "/" . $ifinfo['outerrs'];?></td>
+                      <td><?= gettext("In/out errors") ?></td>
+                      <td><?= $ifinfo['inerrs'] . "/" . $ifinfo['outerrs'] ?></td>
                     </tr>
 <?php
                     endif;
                     if (isset($ifinfo['collisions'])): ?>
                     <tr>
-                      <td><?=gettext("Collisions");?></td>
-                      <td><?=$ifinfo['collisions'];?></td>
+                      <td><?= gettext("Collisions") ?></td>
+                      <td><?= $ifinfo['collisions'] ?></td>
                     </tr>
 <?php
                     endif;
                   endif;
                   if (!empty($ifinfo['bridge'])): ?>
                     <tr>
-                      <td><?php printf(gettext("Bridge (%s)"),$ifinfo['bridgeint']);?></td>
+                      <td><?php printf(gettext("Bridge (%s)"),$ifinfo['bridgeint']) ?></td>
                       <td>
-                        <?=$ifinfo['bridge'];?>
+                        <?= $ifinfo['bridge'] ?>
                       </td>
                     </tr>
 <?php
@@ -451,12 +451,12 @@ include("head.inc");
                     unset($interrupt_total); // XXX: FIX ME!  Need a regex and parse correct data 100% of the time.
                     if($interrupt_total): ?>
                     <tr>
-                      <td><?=gettext("Interrupts/Second");?></td>
+                      <td><?= gettext("Interrupts per Second") ?></td>
                       <td>
                         <?php
-                          echo $interrupt_total . " " . gettext("total");
+                          printf(gettext("%s total"),$interrupt_total);
                           echo "<br />";
-                          echo $interrupt_sec . " " . gettext("rate");
+                          printf(gettext("%s rate"),$interrupt_sec);
                         ?>
                       </td>
                     </tr>
