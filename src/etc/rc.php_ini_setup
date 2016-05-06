@@ -48,6 +48,8 @@ PHPMODULES="$PHPMODULES gettext"
 # User manager
 PHPMODULES="$PHPMODULES ldap openssl"
 PHPMODULES="$PHPMODULES hash mcrypt"
+# Socket magic
+PHPMODULES="$PHPMODULES sockets"
 # Login sessions
 PHPMODULES="$PHPMODULES session"
 # Extra sanity seatbelts
@@ -64,8 +66,8 @@ PHPMODULES="$PHPMODULES radius"
 PHPMODULES="$PHPMODULES json"
 # filter
 PHPMODULES="$PHPMODULES filter"
-# OPNsense
-PHPMODULES="$PHPMODULES phalcon"
+# MVC framework
+PHPMODULES="$PHPMODULES pdo phalcon"
 
 _EXTENSIONS_INI=$(mktemp -q /tmp/extensions_ini.XXXXXX)
 EXTENSIONS_INI=/usr/local/etc/php/extensions.ini
