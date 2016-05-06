@@ -102,7 +102,7 @@ setup_mfs_link()
 	# storage underneath to run.
 
 	if [ ! -d "${ROOT}${MFS}/${NAME}" ]; then
-		mkdir -p "${ROOT}${MFS}"
+		mkdir -p "${ROOT}${MFS}" "${MFS}/${NAME}"
 		mv "${MFS}/${NAME}" "${ROOT}${MFS}"
 		# create a symlink underneath as well
 		ln -s "${ROOT}${MFS}/${NAME}" "${MFS}/${NAME}"
@@ -118,8 +118,8 @@ install_mfs_link()
 	# Redirect persistent, but MFS-bound
 	# directory after tmpfs mount.
 
-	mkdir -p "${MFS}/${NAME}"
-	ln -s "${ROOT}${MFS}/${NAME}" "${MFS}"
+	mkdir -p "${MFS}"
+	ln -s "${ROOT}${MFS}/${NAME}" "${MFS}/${NAME}"
 }
 
 remove_mfs_link()
