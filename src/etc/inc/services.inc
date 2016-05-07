@@ -2349,6 +2349,7 @@ function configure_cron()
         '/usr/local/etc/rc.backup_dhcpleases',
         '/usr/local/etc/rc.backup_netflow',
         '/usr/local/etc/rc.backup_rrd',
+        '/usr/local/etc/rc.filter_configure_sync',
         '/usr/local/etc/rc.dyndns.update',
         '/usr/local/etc/rc.update_bogons',
         '/usr/local/etc/rc.update_urltables',
@@ -2398,19 +2399,28 @@ function configure_cron()
     $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '30', '12');
 
     if (!empty($config['system']['rrdbackup'])) {
-       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', $minute = '0', '*/' . $config['system']['rrdbackup']);
+       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', '0', '*/' . $config['system']['rrdbackup']);
     }
 
     if (!empty($config['system']['dhcpbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', $minute = '0', '*/' . $config['system']['dhcpbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
     }
 
     if (!empty($config['system']['netflowbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', $minute = '0', '*/' . $config['system']['netflowbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', '0', '*/' . $config['system']['netflowbackup']);
     }
 
     if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
         $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
+    }
+
+    if (isset($config['filter']['rule'])) {
+        foreach ($config['filter']['rule'] as $rule) {
+            if (!empty($rule['sched'])) {
+                $autocron[] = generate_cron_job('/usr/local/etc/rc.filter_configure_sync', '0,15,30,45');
+                break;
+            }
+        }
     }
 
     /* bogons fetch always set in default config.xml */

@@ -164,9 +164,6 @@ function filter_configure_sync()
     /* holds the tables to be flushed *AFTER* the filter is fully loaded */
     $after_filter_configure_run = array();
 
-    /* For installing cron job of schedules */
-    $time_based_rules = false;
-
     $FilterIflist = filter_generate_optcfg_array();
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
@@ -361,17 +358,6 @@ function filter_configure_sync()
     /* run items scheduled for after filter configure run */
     foreach ($after_filter_configure_run as $afcr) {
         mwexecf('/sbin/pfctl -T flush -t %s', $afcr);
-    }
-
-    /* if time based rules are enabled then swap in the set */
-    if (isset($config['filter']['rule'])) {
-        foreach ($config['filter']['rule'] as $rule) {
-            if (isset($rule['sched']) && !empty($rule['sched'])) {
-                $time_based_rules = true;
-                break;
-            }
-        }
-        filter_tdr_install_cron($time_based_rules);
     }
 
     if (file_exists("/var/run/booting")) {
@@ -3369,66 +3355,6 @@ function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log)
     $ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} \n";
 
     return $ipfrules;
-}
-
-/****f* filter/filter_tdr_install_cron
- * NAME
- *   filter_tdr_install_cron
- * INPUTS
- *   $should_install true if the cron entry should be installed, false
- *   if the entry should be removed if it is present
- * RESULT
- *   none
- ******/
-function filter_tdr_install_cron($should_install)
-{
-    global $config;
-
-    if (file_exists("/var/run/booting")) {
-        return;
-    }
-
-    if (!is_array($config['cron'])) {
-        $config['cron'] = array();
-    }
-    if (!is_array($config['cron']['item'])) {
-        $config['cron']['item'] = array();
-    }
-
-    $x=0;
-    $is_installed = false;
-    foreach($config['cron']['item'] as $item) {
-        if (strstr($item['command'], "filter_configure_sync")) {
-            $is_installed = true;
-            break;
-        }
-        $x++;
-    }
-
-    switch($should_install) {
-        case true:
-            if (!$is_installed) {
-                $cron_item = array();
-                $cron_item['minute'] = "0,15,30,45";
-                $cron_item['hour'] = "*";
-                $cron_item['mday'] = "*";
-                $cron_item['month'] = "*";
-                $cron_item['wday'] = "*";
-                $cron_item['who'] = "root";
-                $cron_item['command'] = "/usr/local/etc/rc.filter_configure_sync";
-                $config['cron']['item'][] = $cron_item;
-                write_config(gettext("Installed 15 minute filter reload for Time Based Rules"));
-                configure_cron();
-            }
-            break;
-        case false:
-            if ($is_installed == true) {
-                unset($config['cron']['item'][$x]);
-                write_config(gettext("Removed 15 minute filter reload for Time Based Rules"));
-                configure_cron();
-            }
-            break;
-    }
 }
 
 /****f* filter/filter_get_time_based_rule_status
