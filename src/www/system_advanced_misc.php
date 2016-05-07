@@ -85,7 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
-    $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
@@ -162,12 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['thermal_hardware'] = $pconfig['thermal_hardware'];
         } elseif (isset($config['system']['thermal_hardware'])) {
             unset($config['system']['thermal_hardware']);
-        }
-
-        if (!empty($pconfig['schedule_states'])) {
-            $config['system']['schedule_states'] = true;
-        } elseif (isset($config['system']['schedule_states'])) {
-            unset($config['system']['schedule_states']);
         }
 
         if (!empty($pconfig['kill_states'])) {
@@ -415,19 +408,6 @@ include("head.inc");
                     <br /><br />
                     <?=gettext("If you do not have a supported thermal sensor chip in your system, this option will have no " .
                                           "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Schedules"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
-                <td>
-                  <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
-                  <div class="hidden" for="help_for_schedule_states">
-                    <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
-                                        "This option overrides that behavior by not clearing states for existing connections."); ?>
                   </div>
                 </td>
               </tr>

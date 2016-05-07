@@ -2702,9 +2702,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         foreach ($config['schedules']['schedule'] as $sched) {
             if ($sched['name'] == $rule['sched']) {
                 if (!filter_get_time_based_rule_status($sched)) {
-                    if (!isset($config['system']['schedule_states'])) {
-                        mwexec("/sbin/pfctl -y {$sched['schedlabel']}");
-                    }
+                    /* looks weird but is fine: printed in rules for traceability */
                     return "# schedule finished - {$rule['descr']}";
                 }
                 $aline['schedlabel'] = " schedule \"{$sched['schedlabel']}\" ";
