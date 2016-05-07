@@ -98,6 +98,43 @@ function system_api_kernel()
     return $result;
 }
 
+function system_api_disk()
+{
+    $result = array();
+    $result['swap'] = array();
+    $result['swap']['device'] = null;
+    $result['swap']['total'] = null;
+    $result['swap']['used'] = null;
+    exec("/usr/sbin/swapinfo -k", $swap_info);
+    foreach ($swap_info as $line) {
+        if (strpos($line,'/dev/') !== false) {
+            $parts = preg_split('/\s+/', $line);
+            $result['swap']['device'] = $parts[0];
+            $result['swap']['total'] = $parts[1];
+            $result['swap']['used'] = $parts[2];
+        }
+    }
+
+    $result['devices'] = array();
+    exec("/bin/df -Tht ufs,tmpfs,zfs,cd9660", $disk_info);
+    foreach ($disk_info as $line) {
+        if (strpos($line,'/dev/') !== false) {
+            $parts = preg_split('/\s+/', $line);
+            $diskItem = array();
+            $diskItem['device'] = $parts[0];
+            $diskItem['type'] = $parts[1];
+            $diskItem['size'] = $parts[2];
+            $diskItem['used'] = $parts[3];
+            $diskItem['available'] = $parts[4];
+            $diskItem['capacity'] = $parts[5];
+            $diskItem['mountpoint'] = $parts[6];
+            $result['devices'][] = $diskItem;
+        }
+    }
+
+    return $result;
+}
+
 /**
  * widget system data
  */
@@ -111,6 +148,7 @@ function system_api()
     $result['date_frmt'] = date("D M j G:i:s T Y");
     $result['config'] = system_api_config();
     $result['kernel'] = system_api_kernel();
+    $result['disk'] = system_api_disk();
 
     return $result;
 }

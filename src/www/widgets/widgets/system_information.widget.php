@@ -34,15 +34,6 @@ require_once("pfsense-utils.inc");
 require_once("system.inc");
 require_once("stats.inc");
 
-## Check to see if we have a swap space,
-## if true, display, if false, hide it ...
-$swapinfo = `/usr/sbin/swapinfo`;
-if (stristr($swapinfo, '%')) {
-    $showswap = true;
-} else {
-    $showswap = false;
-}
-
 
 if (isset($_POST['getupdatestatus'])) {
     $pkg_json = trim(configd_run('firmware check'));
@@ -116,7 +107,9 @@ $filesystems = get_mounted_filesystems();
    */
    function system_information_widget_update(sender, data)
    {
+      // update cpu usage chart
       system_information_widget_cpu_update(sender, data);
+
       $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ( '+data['cpu']['cpus']+' cores )');
       var uptime_days = parseInt(moment.duration(parseInt(data['uptime']), 'seconds').asDays());
       var uptime_str = "";
@@ -146,6 +139,33 @@ $filesystems = get_mounted_filesystems();
       var mem_text = mem_perc + " % " + "( " + parseInt(data['kernel']['memory']['used']/1024/1024) + "/";
       mem_text += parseInt(data['kernel']['memory']['total']/1024/1024) + " MB )"
       $("#system_information_widget_memory .state_text").html(mem_text);
+
+
+      // swap usage
+      if (data['disk']['swap']['used'] != "") {
+          var swap_perc = parseInt(data['disk']['swap']['used'] / data['disk']['swap']['total']*100);
+          $("#system_information_widget_swap .progress-bar").css("width",  swap_perc + "%").attr("aria-valuenow", swap_perc + "%");
+          var swap_text = swap_perc + " % " + "( " + parseInt(data['disk']['swap']['used']/1024) + "/";
+          swap_text += parseInt(data['disk']['swap']['total']/1024) + " MB )"
+          $("#system_information_widget_swap .state_text").html(swap_text);
+          $("#system_information_widget_swap").show();
+      } else {
+          $("#system_information_widget_swap").hide();
+      }
+
+      // disk usage
+      counter = 0;
+      $("#system_information_widget_disk .disk_devices").html("");
+      data['disk']['devices'].map(function(device) {
+          var html = $("#system_information_widget_disk .disk_template").html();
+          html = html.replace('disk_id_sequence', 'system_information_widget_disk_'+counter);
+          $("#system_information_widget_disk .disk_devices").html($("#system_information_widget_disk .disk_devices").html() + html);
+          var disk_perc = device['capacity'].replace('%', '');
+          $("#system_information_widget_disk_"+counter+' .progress-bar').css("width",  disk_perc + "%").attr("aria-valuenow", disk_perc + "%");
+          var disk_text =  device['capacity'] + ' ' + device['mountpoint'] + ' ['+device['type']+'] (' + device['used'] +'/' + device['size'] + ')';
+          $("#system_information_widget_disk_"+counter+" .state_text").html(disk_text);
+          counter += 1;
+      });
 
    }
 
@@ -247,41 +267,29 @@ $filesystems = get_mounted_filesystems();
         </div>
       </td>
     </tr>
-
-
-    <?php if ($showswap == true) :
-?>
-    <tr>
+    <tr id="system_information_widget_swap">
       <td><?=gettext("SWAP usage");?></td>
       <td>
-        <?php $swapusage = swap_usage(); ?>
-        <div class="progress">
-          <div id="swapUsagePB" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            <span class="sr-only"></span>
-          </div>
+        <div class="progress" style="text-align:center;">
+          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
         </div>
-        <span id="swapusagemeter"><?= $swapusage.'%'; ?></span> used <?= sprintf("%.0f/%.0f", `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $3;}'`, `/usr/sbin/swapinfo -m | /usr/bin/grep -v Device | /usr/bin/awk '{ print $2;}'`) ?> MB
       </td>
     </tr>
-    <?php endif; ?>
     <tr>
       <td><?=gettext("Disk usage");?></td>
-      <td>
-<?php $d = 0; ?>
-<?php foreach ($filesystems as $fs) : ?>
-        <div class="progress">
-          <div id="diskUsagePB<?php echo $d; ?>" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-            <span class="sr-only"></span>
+      <td id="system_information_widget_disk">
+          <div style="display:none" class="disk_template">
+            <!-- template -->
+            <div id="disk_id_sequence" class="progress" style="text-align:center;">
+              <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+            </div>
+            <div style="height:1px;">
+            </div>
           </div>
-        </div>
-        <?php if (substr(basename($fs['device']), 0, 5) == "tmpfs") {
-                    $fs['type'] .= " in RAM";
-} ?>
-        <?php echo "{$fs['mountpoint']} ({$fs['type']})";?>: <span id="diskusagemeter<?php echo $d++ ?>"><?= $fs['percent_used'].'%'; ?></span> used <?php echo $fs['used_size'] ."/". $fs['total_size'];
-        if ($d != count($filesystems)) {
-          echo '<br/><br/>';
-        }
-endforeach; ?>
+          <div class="disk_devices">
+          </div>
       </td>
     </tr>
   </tbody>
