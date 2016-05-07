@@ -2705,7 +2705,6 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
                     /* looks weird but is fine: printed in rules for traceability */
                     return "# schedule finished - {$rule['descr']}";
                 }
-                $aline['schedlabel'] = " schedule \"{$sched['schedlabel']}\" ";
                 break;
             }
         }
