@@ -202,7 +202,7 @@ include("head.inc");
                     <tfoot>
                         <tr>
                           <td colspan="2">
-                            <?=gettext("Wake all clients at once: ");?>
+                            <?=gettext("Wake all clients at once:");?>
                             <button type="button" class="btn btn-default btn-xs" id="act_wake_all">
                               <span class="glyphicon glyphicon-time"></span>
                             </button>
