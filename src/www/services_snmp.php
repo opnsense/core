@@ -168,7 +168,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_pollport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Polling Port ");?></td>
+                      <td><a id="help_for_pollport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Polling Port") ?></td>
                       <td>
                         <input name="pollport" type="text" value="<?=$pconfig['pollport'];?>" />
                         <div class="hidden" for="help_for_pollport">
@@ -228,7 +228,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_trapserverport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Trap server port ");?></td>
+                      <td><a id="help_for_trapserverport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Trap server port") ?></td>
                       <td>
                         <input name="trapserverport" type="text" id="trapserverport" size="40" value="<?=htmlspecialchars($pconfig['trapserverport']) ? htmlspecialchars($pconfig['trapserverport']) : htmlspecialchars(162);?>" />
                         <div class="hidden" for="help_for_trapserverport">
