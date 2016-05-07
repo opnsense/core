@@ -31,6 +31,7 @@
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
+require_once("services.inc");
 
 /* TCP flags */
 $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
@@ -517,6 +518,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         // sort filter items per interface, not really necessary but leaves a bit nicer sorted config.xml behind.
         filter_rules_sort();
+        configure_cron();
         // write to config
         if (write_config()) {
             mark_subsystem_dirty('filter');

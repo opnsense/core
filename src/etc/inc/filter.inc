@@ -30,12 +30,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* holds the items that will be executed *AFTER* the filter is fully loaded */
-$after_filter_configure_run = array();
-
-/* For installing cron job of schedules */
-$time_based_rules = false;
-
 /* Create a global array to avoid errors on rulesets. */
 $GatewaysList = array();
 
@@ -73,9 +67,8 @@ function alias_expand_urltable($name) {
     return null;
 }
 
-
-
-function fix_rule_label($descr) {
+function fix_rule_label($descr)
+{
     $descr = str_replace('"', '', $descr);
     if (strlen($descr) > 63) {
         return substr($descr, 0, 60) . "...";
@@ -165,8 +158,10 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync()
 {
-    global $config, $after_filter_configure_run;
-    global $time_based_rules, $filterdns, $aliases;
+    global $config, $filterdns, $aliases;
+
+    /* holds the tables to be flushed *AFTER* the filter is fully loaded */
+    $after_filter_configure_run = array();
 
     $FilterIflist = filter_generate_optcfg_array();
 
@@ -186,7 +181,7 @@ function filter_configure_sync()
         echo ".";
     }
     update_filter_reload_status(gettext("Creating aliases"));
-    $aliases = filter_generate_aliases($FilterIflist);
+    $aliases = filter_generate_aliases($FilterIflist, $after_filter_configure_run);
     $gateways = filter_generate_gateways();
     if (file_exists("/var/run/booting")) {
         echo ".";
@@ -360,28 +355,8 @@ function filter_configure_sync()
     }
 
     /* run items scheduled for after filter configure run */
-    $fda = fopen('/tmp/commands.txt', 'w');
-    if ($fda) {
-        if ($after_filter_configure_run) {
-            foreach($after_filter_configure_run as $afcr) {
-                fwrite($fda, $afcr . " >/dev/null 2>&1 \n");
-            }
-            unset($after_filter_configure_run);
-        }
-        fclose($fda);
-    }
-
-    if (file_exists('/tmp/commands.txt')) {
-        /* XXX eh, sorry, what are you doing? */
-        mwexec('sh /tmp/commands.txt &');
-        unlink('/tmp/commands.txt');
-    }
-
-    /* if time based rules are enabled then swap in the set */
-    if ($time_based_rules == true) {
-        filter_tdr_install_cron(true);
-    } else {
-        filter_tdr_install_cron(false);
+    foreach ($after_filter_configure_run as $afcr) {
+        mwexecf('/sbin/pfctl -T flush -t %s', $afcr);
     }
 
     if (file_exists("/var/run/booting")) {
@@ -524,9 +499,9 @@ function filter_expand_alias_array($alias_name) {
     return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases(&$FilterIflist)
+function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
 {
-    global $config, $after_filter_configure_run;
+    global $config;
 
     $alias = "#System aliases\n ";
     $aliases = "loopback = \"{ lo0 }\"\n";
@@ -585,13 +560,6 @@ function filter_generate_aliases(&$FilterIflist)
     /* Setup pf groups */
     if (isset($config['aliases']['alias'])) {
         foreach ($config['aliases']['alias'] as $aliased) {
-            $extralias = "";
-            /*
-             * XXX: i am not sure what this does so i am commenting it out for now, because as it is
-             * its quite dangerous!
-             * $ip = find_interface_ip($aliased['address']);
-             * $extraalias = " " . link_ip_to_carp_interface($ip);
-             */
             $aliasnesting = array();
             $aliasaddrnesting = array();
             $addrlist = filter_generate_nested_alias($aliased['name'], $aliased['address'], $aliasnesting, $aliasaddrnesting);
@@ -599,14 +567,14 @@ function filter_generate_aliases(&$FilterIflist)
                 case "host":
                 case "network":
                 case "url":
-                    $tableaddrs = "{$addrlist}{$extralias}";
+                    $tableaddrs = "{$addrlist}";
                     if (empty($tableaddrs)) {
                         $aliases .= "table <{$aliased['name']}> persist\n";
                         if (empty($aliased['address'])) {
-                            $after_filter_configure_run[] = "/sbin/pfctl -T flush -t " . escapeshellarg($aliased['name']);
+                            $after_filter_configure_run[] = $aliased['name'];
                         }
                     } else {
-                        $aliases .= "table <{$aliased['name']}> { {$addrlist}{$extralias} } \n";
+                        $aliases .= "table <{$aliased['name']}> { {$addrlist} } \n";
                     }
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                     break;
@@ -629,7 +597,7 @@ function filter_generate_aliases(&$FilterIflist)
                             }
                         }
                     }
-                    $aliases .= "table <{$aliased['name']}> { {$newaddress}{$extralias} } \n";
+                    $aliases .= "table <{$aliased['name']}> { {$newaddress} } \n";
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                     break;
                 case "urltable":
@@ -652,7 +620,7 @@ function filter_generate_aliases(&$FilterIflist)
                     $aliases .= "{$aliased['name']} = \"{ {$addrlist} }\"\n";
                     break;
                 default:
-                    $aliases .= "{$aliased['name']} = \"{ {$aliased['address']}{$extralias} }\"\n";
+                    $aliases .= "{$aliased['name']} = \"{ {$aliased['address']} }\"\n";
                     break;
             }
         }
@@ -1642,7 +1610,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
 
 function filter_nat_rules_generate(&$FilterIflist)
 {
-    global $config, $after_filter_configure_run, $GatewaysList, $aliases;
+    global $config, $GatewaysList, $aliases;
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";
@@ -2156,14 +2124,21 @@ function filter_generate_user_rule_arr(&$FilterIflist, $rule)
     update_filter_reload_status(sprintf(gettext("Creating filter rule %s ..."), $rule['descr']));
 
     $ret = array();
+    $sched = '';
+    $descr = '';
+
+    if (!empty($rule['sched'])) {
+        $sched = "({$rule['sched']})";
+    }
+    if (!empty($rule['descr'])) {
+        $descr = ": {$rule['descr']}";
+    }
+
     $line = filter_generate_user_rule($FilterIflist, $rule);
+
     $ret['rule'] = $line;
     $ret['interface'] = $rule['interface'];
-    if ($rule['descr'] != "" and $line != "") {
-        $ret['descr'] = "label \"" . fix_rule_label("USER_RULE: {$rule['descr']}") . "\"";
-    } else {
-        $ret['descr'] = "label \"USER_RULE\"";
-    }
+    $ret['descr'] = 'label "' . fix_rule_label("USER_RULE{$sched}{$descr}") . '"';
 
     return $ret;
 }
@@ -2744,11 +2719,18 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
             if ($sched['name'] == $rule['sched']) {
                 if (!filter_get_time_based_rule_status($sched)) {
                     if (!isset($config['system']['schedule_states'])) {
-                        mwexec("/sbin/pfctl -y {$sched['schedlabel']}");
+                        $descr = '';
+                        if (!empty($rule['descr'])) {
+                            $descr = ": {$rule['descr']}";
+                        }
+                        mwexecf(
+                            '/sbin/pfctl -k label -k %s',
+                            fix_rule_label("USER_RULE({$rule['sched']}){$descr}")
+                        );
                     }
-                    return "# schedule finished - {$rule['descr']}";
+                    /* looks weird but is fine: printed in rules for traceability */
+                    return "# schedule finished for";
                 }
-                $aline['schedlabel'] = " schedule \"{$sched['schedlabel']}\" ";
                 break;
             }
         }
@@ -2779,7 +2761,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
 
 function filter_rules_generate(&$FilterIflist)
 {
-    global $config, $time_based_rules, $GatewaysList;
+    global $config, $GatewaysList;
 
     $fix_rule_label = 'fix_rule_label';
 
@@ -3287,9 +3269,6 @@ EOD;
                     $rule_arr3[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 }
             }
-            if (isset($rule['sched']) && !empty($rule['sched'])) {
-                $time_based_rules = true;
-            }
         }
 
         $ipfrules .= "\n# User-defined rules follow\n";
@@ -3407,66 +3386,6 @@ function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log)
     $ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} \n";
 
     return $ipfrules;
-}
-
-/****f* filter/filter_tdr_install_cron
- * NAME
- *   filter_tdr_install_cron
- * INPUTS
- *   $should_install true if the cron entry should be installed, false
- *   if the entry should be removed if it is present
- * RESULT
- *   none
- ******/
-function filter_tdr_install_cron($should_install)
-{
-    global $config;
-
-    if (file_exists("/var/run/booting")) {
-        return;
-    }
-
-    if (!is_array($config['cron'])) {
-        $config['cron'] = array();
-    }
-    if (!is_array($config['cron']['item'])) {
-        $config['cron']['item'] = array();
-    }
-
-    $x=0;
-    $is_installed = false;
-    foreach($config['cron']['item'] as $item) {
-        if (strstr($item['command'], "filter_configure_sync")) {
-            $is_installed = true;
-            break;
-        }
-        $x++;
-    }
-
-    switch($should_install) {
-        case true:
-            if (!$is_installed) {
-                $cron_item = array();
-                $cron_item['minute'] = "0,15,30,45";
-                $cron_item['hour'] = "*";
-                $cron_item['mday'] = "*";
-                $cron_item['month'] = "*";
-                $cron_item['wday'] = "*";
-                $cron_item['who'] = "root";
-                $cron_item['command'] = "/usr/local/etc/rc.filter_configure_sync";
-                $config['cron']['item'][] = $cron_item;
-                write_config(gettext("Installed 15 minute filter reload for Time Based Rules"));
-                configure_cron();
-            }
-            break;
-        case false:
-            if ($is_installed == true) {
-                unset($config['cron']['item'][$x]);
-                write_config(gettext("Removed 15 minute filter reload for Time Based Rules"));
-                configure_cron();
-            }
-            break;
-    }
 }
 
 /****f* filter/filter_get_time_based_rule_status

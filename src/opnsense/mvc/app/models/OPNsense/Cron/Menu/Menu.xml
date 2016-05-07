@@ -1,0 +1,7 @@
+<menu>
+    <System>
+        <Settings>
+            <Cron order="1000" url="/ui/cron/"/>
+        </Settings>
+    </System>
+</menu>

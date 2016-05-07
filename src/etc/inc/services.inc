@@ -2346,24 +2346,8 @@ function configure_cron()
 {
     global $config;
 
-    $obsoletes = array(
-        '/usr/local/etc/rc.backup_dhcpleases',
-        '/usr/local/etc/rc.backup_netflow',
-        '/usr/local/etc/rc.backup_rrd',
-        '/usr/local/etc/rc.dyndns.update',
-        '/usr/local/etc/rc.update_bogons',
-        '/usr/local/etc/rc.update_urltables',
-        '/usr/local/opnsense/scripts/remote_backup.php',
-        '/usr/local/sbin/expiretable -v -t 3600 sshlockout',
-        '/usr/local/sbin/expiretable -v -t 3600 virusprot',
-        'adjkerntz -a',
-        /* old config migration for extra care: */
-        'checkreload.sh',
-        'newsyslog',
-    );
-
     /*
-     * Strip old cron jobs that we no longer save explicitly.
+     * Strip the cron jobs that we no longer save explicitly.
      * This can be safely removed on our final road to 17.1.
      */
     if (isset($config['cron']['item'])) {
@@ -2372,12 +2356,8 @@ function configure_cron()
 
         /* PHP retains the index, can iterate all and unset */
         foreach ($config['cron']['item'] as $item) {
-            foreach ($obsoletes as $obsolete) {
-                if ($item['command'] === $obsolete) {
-                    unset($config['cron']['item'][$index]);
-                    $flush = true;
-                }
-            }
+            unset($config['cron']['item'][$index]);
+            $flush = true;
             $index++;
         }
 
@@ -2393,26 +2373,43 @@ function configure_cron()
 
     $autocron = array();
 
-    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '*/60');
-    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '*/60');
-    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '*/60');
-    $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '1', '1');
-    $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '30', '12');
+    /* hourly */
+    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '1');
+    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '2');
+    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '3');
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.expireaccounts', '5');
+
+    /* daily */
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.update_alias_url_data', '1', '1');
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '5', '1');
+    $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '11', '1');
+
+    /* every now and then */
+    $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
 
     if (!empty($config['system']['rrdbackup'])) {
-       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', $minute = '0', '*/' . $config['system']['rrdbackup']);
+       $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', '0', '*/' . $config['system']['rrdbackup']);
     }
 
     if (!empty($config['system']['dhcpbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', $minute = '0', '*/' . $config['system']['dhcpbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_dhcpleases', '0', '*/' . $config['system']['dhcpbackup']);
     }
 
     if (!empty($config['system']['netflowbackup'])) {
-        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', $minute = '0', '*/' . $config['system']['netflowbackup']);
+        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_netflow', '0', '*/' . $config['system']['netflowbackup']);
     }
 
     if (!empty($config['system']['remotebackup']['GDriveEnabled'])) {
         $autocron[] = generate_cron_job('/usr/local/opnsense/scripts/remote_backup.php', 0, 1);
+    }
+
+    if (isset($config['filter']['rule'])) {
+        foreach ($config['filter']['rule'] as $rule) {
+            if (!empty($rule['sched'])) {
+                $autocron[] = generate_cron_job('/usr/local/etc/rc.filter_configure_sync', '0,15,30,45');
+                break;
+            }
+        }
     }
 
     /* bogons fetch always set in default config.xml */
@@ -2429,30 +2426,11 @@ function configure_cron()
             break;
     }
 
-    $anchor = '# custom crontab entries';
-
-    /* preserve existing crontab entries */
-    $crontab_contents = file('/etc/crontab', FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-
-    for ($i = 0; $i < count($crontab_contents); $i++) {
-        $cron_item = &$crontab_contents[$i];
-        if (strpos($cron_item, $anchor) !== false) {
-            array_splice($crontab_contents, $i - 1);
-            break;
-        }
-    }
-
-    /* please maintain the newline at the end of file */
-    $crontab_contents = implode("\n", $crontab_contents) . "\n";
-
-    $crontab_contents .= "#\n";
-    $crontab_contents .= $anchor . "\n";
-    $crontab_contents .= '# auto-generated at ' . date('F j, Y, g:i a') . "\n";
-    $crontab_contents .= "#\n";
-
-    if (isset($config['cron']['item'])) {
-        $autocron = array_merge($config['cron']['item'], $autocron);
-    }
+    $crontab_contents = "# DO NOT EDIT THIS FILE -- OPNsense auto-generated file\n";
+    $crontab_contents .= "# Please use /etc/crontab for your overrides instead.\n";
+    $crontab_contents .= "SHELL=/bin/sh\n";
+    $crontab_contents .= "PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin\n";
+    $crontab_contents .= "#minute\thour\tmday\tmonth\twday\tcommand\n";
 
     foreach ($autocron as $item) {
         $crontab_contents .= "{$item['minute']}\t";
@@ -2460,22 +2438,14 @@ function configure_cron()
         $crontab_contents .= "{$item['mday']}\t";
         $crontab_contents .= "{$item['month']}\t";
         $crontab_contents .= "{$item['wday']}\t";
-        $crontab_contents .= "{$item['who']}\t";
         $crontab_contents .= "{$item['command']}\n";
     }
 
-    $crontab_contents .= "#\n";
-    $crontab_contents .= "# If possible do not add items to this file manually.\n";
-    $crontab_contents .= "# If you do so, this file must be terminated with a blank line (e.g. new line)\n";
-    $crontab_contents .= "#\n\n";
-
-    file_put_contents('/etc/crontab', $crontab_contents);
-    unset($crontab_contents);
-
+    file_put_contents('/var/cron/tabs/root', $crontab_contents);
     killbypid('/var/run/cron.pid', 'HUP');
 }
 
-function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*', $who = 'root')
+function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*')
 {
     $cron_item = array();
 
@@ -2484,7 +2454,6 @@ function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*'
     $cron_item['mday'] = $monthday;
     $cron_item['month'] = $month;
     $cron_item['wday'] = $weekday;
-    $cron_item['who'] = $who;
     $cron_item['command'] = $command;
 
     return $cron_item;
