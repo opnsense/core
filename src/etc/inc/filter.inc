@@ -30,9 +30,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* For installing cron job of schedules */
-$time_based_rules = false;
-
 /* Create a global array to avoid errors on rulesets. */
 $GatewaysList = array();
 
@@ -162,10 +159,13 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync()
 {
-    global $config, $time_based_rules, $filterdns, $aliases;
+    global $config, $filterdns, $aliases;
 
     /* holds the tables to be flushed *AFTER* the filter is fully loaded */
     $after_filter_configure_run = array();
+
+    /* For installing cron job of schedules */
+    $time_based_rules = false;
 
     $FilterIflist = filter_generate_optcfg_array();
 
@@ -364,10 +364,14 @@ function filter_configure_sync()
     }
 
     /* if time based rules are enabled then swap in the set */
-    if ($time_based_rules == true) {
-        filter_tdr_install_cron(true);
-    } else {
-        filter_tdr_install_cron(false);
+    if (isset($config['filter']['rule'])) {
+        foreach ($config['filter']['rule'] as $rule) {
+            if (isset($rule['sched']) && !empty($rule['sched'])) {
+                $time_based_rules = true;
+                break;
+            }
+        }
+        filter_tdr_install_cron($time_based_rules);
     }
 
     if (file_exists("/var/run/booting")) {
@@ -2748,7 +2752,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
 
 function filter_rules_generate(&$FilterIflist)
 {
-    global $config, $time_based_rules, $GatewaysList;
+    global $config, $GatewaysList;
 
     $fix_rule_label = 'fix_rule_label';
 
@@ -3247,9 +3251,6 @@ EOD;
                 } else {
                     $rule_arr3[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                 }
-            }
-            if (isset($rule['sched']) && !empty($rule['sched'])) {
-                $time_based_rules = true;
             }
         }
 
