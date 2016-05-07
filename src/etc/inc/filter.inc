@@ -30,9 +30,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* holds the items that will be executed *AFTER* the filter is fully loaded */
-$after_filter_configure_run = array();
-
 /* For installing cron job of schedules */
 $time_based_rules = false;
 
@@ -165,8 +162,10 @@ function filter_delete_states_for_down_gateways()
 
 function filter_configure_sync()
 {
-    global $config, $after_filter_configure_run;
-    global $time_based_rules, $filterdns, $aliases;
+    global $config, $time_based_rules, $filterdns, $aliases;
+
+    /* holds the tables to be flushed *AFTER* the filter is fully loaded */
+    $after_filter_configure_run = array();
 
     $FilterIflist = filter_generate_optcfg_array();
 
@@ -186,7 +185,7 @@ function filter_configure_sync()
         echo ".";
     }
     update_filter_reload_status(gettext("Creating aliases"));
-    $aliases = filter_generate_aliases($FilterIflist);
+    $aliases = filter_generate_aliases($FilterIflist, $after_filter_configure_run);
     $gateways = filter_generate_gateways();
     if (file_exists("/var/run/booting")) {
         echo ".";
@@ -360,21 +359,8 @@ function filter_configure_sync()
     }
 
     /* run items scheduled for after filter configure run */
-    $fda = fopen('/tmp/commands.txt', 'w');
-    if ($fda) {
-        if ($after_filter_configure_run) {
-            foreach($after_filter_configure_run as $afcr) {
-                fwrite($fda, $afcr . " >/dev/null 2>&1 \n");
-            }
-            unset($after_filter_configure_run);
-        }
-        fclose($fda);
-    }
-
-    if (file_exists('/tmp/commands.txt')) {
-        /* XXX eh, sorry, what are you doing? */
-        mwexec('sh /tmp/commands.txt &');
-        unlink('/tmp/commands.txt');
+    foreach ($after_filter_configure_run as $afcr) {
+        mwexecf('/sbin/pfctl -T flush -t %s', $afcr);
     }
 
     /* if time based rules are enabled then swap in the set */
@@ -524,9 +510,9 @@ function filter_expand_alias_array($alias_name) {
     return explode(" ", preg_replace('/\s+/', ' ', trim($expansion)));
 }
 
-function filter_generate_aliases(&$FilterIflist)
+function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
 {
-    global $config, $after_filter_configure_run;
+    global $config;
 
     $alias = "#System aliases\n ";
     $aliases = "loopback = \"{ lo0 }\"\n";
@@ -585,13 +571,6 @@ function filter_generate_aliases(&$FilterIflist)
     /* Setup pf groups */
     if (isset($config['aliases']['alias'])) {
         foreach ($config['aliases']['alias'] as $aliased) {
-            $extralias = "";
-            /*
-             * XXX: i am not sure what this does so i am commenting it out for now, because as it is
-             * its quite dangerous!
-             * $ip = find_interface_ip($aliased['address']);
-             * $extraalias = " " . link_ip_to_carp_interface($ip);
-             */
             $aliasnesting = array();
             $aliasaddrnesting = array();
             $addrlist = filter_generate_nested_alias($aliased['name'], $aliased['address'], $aliasnesting, $aliasaddrnesting);
@@ -599,14 +578,14 @@ function filter_generate_aliases(&$FilterIflist)
                 case "host":
                 case "network":
                 case "url":
-                    $tableaddrs = "{$addrlist}{$extralias}";
+                    $tableaddrs = "{$addrlist}";
                     if (empty($tableaddrs)) {
                         $aliases .= "table <{$aliased['name']}> persist\n";
                         if (empty($aliased['address'])) {
-                            $after_filter_configure_run[] = "/sbin/pfctl -T flush -t " . escapeshellarg($aliased['name']);
+                            $after_filter_configure_run[] = $aliased['name'];
                         }
                     } else {
-                        $aliases .= "table <{$aliased['name']}> { {$addrlist}{$extralias} } \n";
+                        $aliases .= "table <{$aliased['name']}> { {$addrlist} } \n";
                     }
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                     break;
@@ -629,7 +608,7 @@ function filter_generate_aliases(&$FilterIflist)
                             }
                         }
                     }
-                    $aliases .= "table <{$aliased['name']}> { {$newaddress}{$extralias} } \n";
+                    $aliases .= "table <{$aliased['name']}> { {$newaddress} } \n";
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                     break;
                 case "urltable":
@@ -652,7 +631,7 @@ function filter_generate_aliases(&$FilterIflist)
                     $aliases .= "{$aliased['name']} = \"{ {$addrlist} }\"\n";
                     break;
                 default:
-                    $aliases .= "{$aliased['name']} = \"{ {$aliased['address']}{$extralias} }\"\n";
+                    $aliases .= "{$aliased['name']} = \"{ {$aliased['address']}\"\n";
                     break;
             }
         }
@@ -1642,7 +1621,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
 
 function filter_nat_rules_generate(&$FilterIflist)
 {
-    global $config, $after_filter_configure_run, $GatewaysList, $aliases;
+    global $config, $GatewaysList, $aliases;
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";
