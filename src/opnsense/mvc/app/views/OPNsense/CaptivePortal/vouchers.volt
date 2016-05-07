@@ -49,7 +49,7 @@ POSSIBILITY OF SUCH DAMAGE.
                         updateVoucherGroupList();
                     } else {
                         // A voucher server is needed before we can add vouchers, alert user
-                        BootstrapDialog.alert('{{ lang._('Please setup a voucher server first ') }} (<a href="/system_authservers.php">{{ lang._('goto auth servers') }}</a> )');
+                        BootstrapDialog.alert('{{ lang._('Please setup a voucher server first (%sgoto auth servers%s)') | format('<a href="/system_authservers.php">','</a>') }}');
                     }
                 }
             });

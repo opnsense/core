@@ -282,9 +282,8 @@ $( document ).ready(function() {
                     <strong><?=gettext("Query DNS servers sequentially");?></strong>
                     <div class="hidden" for="help_for_strict_order">
                       <?php printf(gettext("If this option is set, %s DNS Forwarder (dnsmasq) will ".
-                          "query the DNS servers sequentially in the order specified (<i>System - General Setup - DNS Servers</i>), ".
-                          "rather than all at once in parallel. ".
-                          ""), $g['product_name']); ?>
+                          "query the DNS servers sequentially in the order specified (%sSystem - General Setup - DNS Servers%s), ".
+                          "rather than all at once in parallel."), $g['product_name'],'<i>','</i>'); ?>
                     </div>
                   </td>
                 </tr>
@@ -294,9 +293,8 @@ $( document ).ready(function() {
                     <strong><?=gettext("Require domain");?></strong>
                     <div class="hidden" for="help_for_strict_order">
                       <?php printf(gettext("If this option is set, %s DNS Forwarder (dnsmasq) will ".
-                          "not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers.  ".
-                          "If the name is not known from /etc/hosts or DHCP then a \"not found\" answer is returned. ".
-                          ""), $g['product_name']); ?>
+                          "not forward A or AAAA queries for plain names, without dots or domain parts, to upstream name servers. ".
+                          'If the name is not known from /etc/hosts or DHCP then a "not found" answer is returned.'), $g['product_name']); ?>
                     </div>
                   </td>
                 </tr>
@@ -306,10 +304,9 @@ $( document ).ready(function() {
                     <strong><?=gettext("Do not forward private reverse lookups");?></strong>
                     <div class="hidden" for="help_for_strict_order">
                       <?php printf(gettext("If this option is set, %s DNS Forwarder (dnsmasq) will ".
-                          "not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers.  ".
-                          "Any entries in the Domain Overrides section forwarding private \"n.n.n.in-addr.arpa\" names to a specific server are still forwarded. ".
-                          "If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a \"not found\" answer is immediately returned. ".
-                          ""), $g['product_name']); ?>
+                          "not forward reverse DNS lookups (PTR) for private addresses (RFC 1918) to upstream name servers. ".
+                          'Any entries in the Domain Overrides section forwarding private "n.n.n.in-addr.arpa" names to a specific server are still forwarded. '.
+                          'If the IP to name is not known from /etc/hosts, DHCP or a specific domain override then a "not found" answer is immediately returned.'), $g['product_name']); ?>
                     </div>
                   </td>
                 </tr>
@@ -497,7 +494,7 @@ $( document ).ready(function() {
               <tfoot>
                 <tr>
                   <td colspan="4">
-                    <?=gettext("Entries in this area override an entire domain, and subdomains, by specifying an"." authoritative DNS server to be queried for that domain.");?>
+                    <?=gettext("Entries in this area override an entire domain, and subdomains, by specifying an authoritative DNS server to be queried for that domain.");?>
                   </td>
                 </tr>
               </tfoot>

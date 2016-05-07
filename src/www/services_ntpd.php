@@ -321,7 +321,7 @@ include("head.inc");
                         <input class="btn btn-default btn-xs" type="button" onclick="show_advanced('showstatisticsbox', 'showstatistics')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
                       </div>
                       <div id="showstatistics" style="display:none">
-                      <strong><?=gettext("Warning: ")?></strong><?=gettext("these options will create persistant daily log files in /var/log/ntp."); ?>
+                      <?= gettext("These options will create persistent daily log files in /var/log/ntp.") ?>
                       <br /><br />
                       <input name="clockstats" type="checkbox" id="clockstats"<?=!empty($pconfig['clockstats']) ? " checked=\"checked\"" : ""; ?> />
                       <?=gettext("Enable logging of reference clock statistics (default: disabled)."); ?>
