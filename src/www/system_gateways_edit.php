@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                if (!$found) {
+                if (!$found && !isset($pconfig['fargw'])) {
                     $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
                 }
             }
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
-                    if (!$found) {
+                    if (!$found && !isset($pconfig['fargw'])) {
                         $input_errors[] = sprintf(gettext("The gateway address %1\$s does not lie within one of the chosen interface's subnets."), $pconfig['gateway']);
                     }
                 }
@@ -402,10 +402,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $gateway[$fieldname] = $pconfig[$fieldname];
             }
         }
+
         if (isset($_POST['disabled'])) {
             $gateway['disabled'] = true;
-        } else {
+        } elseif (isset($gateway['disabled'])) {
             unset($gateway['disabled']);
+        }
+
+        if (isset($_POST['fargw'])) {
+            $gateway['fargw'] = true;
+        } elseif (isset($gateway['fargw'])) {
+            unset($gateway['fargw']);
         }
 
         /* when saving the manual gateway we use the attribute which has the corresponding id */
@@ -459,7 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $copy_fields = array(
       'name', 'weight', 'interval', 'avg_delay_samples', 'avg_loss_samples', 'avg_loss_delay_samples',
       'interface', 'friendlyiface', 'ipprotocol', 'gateway', 'latencylow', 'latencyhigh', 'losslow', 'losshigh',
-      'down', 'monitor', 'descr', 'avg_delay_samples_calculated', 'avg_loss_samples_calculated',
+      'down', 'monitor', 'descr', 'avg_delay_samples_calculated', 'avg_loss_samples_calculated', 'fargw',
       'avg_loss_delay_samples_calculated', 'monitor_disable', 'dynamic', 'defaultgw', 'force_down', 'disabled'
     );
     foreach ($copy_fields as $fieldname) {
@@ -630,6 +637,15 @@ $( document ).ready(function() {
                     <input name="defaultgw" type="checkbox" value="yes" <?=!empty($pconfig['defaultgw']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" for="help_for_defaultgw">
                       <?=gettext("This will select the above gateway as the default gateway"); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_fargw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Far Gateway"); ?></td>
+                  <td>
+                    <input name="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
+                    <div class="hidden" for="help_for_fargw">
+                      <?=gettext("This will allow the gateway to exist outside of the interface subnet."); ?>
                     </div>
                   </td>
                 </tr>

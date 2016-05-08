@@ -526,6 +526,8 @@ function system_routing_configure($interface = '')
     $gatewayipv6 = "";
     $interfacegwv6 = "";
     $foundgwv6 = false;
+    $fargw = false;
+
     /* tack on all the hard defined gateways as well */
     if (isset($config['gateways']['gateway_item'])) {
         array_map('unlink', glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE));
@@ -538,6 +540,7 @@ function system_routing_configure($interface = '')
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway($gateway['interface']);
                     }
+                    $fargw = isset($gateway['fargw']);
                     $gatewayip = $gateway['gateway'];
                     $interfacegw = $gateway['interface'];
                     if (!empty($gateway['interface'])) {
@@ -551,6 +554,7 @@ function system_routing_configure($interface = '')
                     if ($gateway['gateway'] == "dynamic") {
                         $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
                     }
+                    $fargw = isset($gateway['fargw']);
                     $gatewayipv6 = $gateway['gateway'];
                     $interfacegwv6 = $gateway['interface'];
                     if (!empty($gateway['interface'])) {
@@ -583,22 +587,28 @@ function system_routing_configure($interface = '')
     if (!empty($interface) && $interface != $interfacegw)
         ;
     elseif (is_ipaddrv4($gatewayip)) {
-        log_error("ROUTING: remove current default route to $gatewayip");
-        mwexec("/sbin/route delete default");
-        log_error("ROUTING: setting default route to $gatewayip");
-        mwexec("/sbin/route add -inet default " . escapeshellarg($gatewayip));
+        log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
+        mwexecf('/sbin/route delete -inet %s', 'default');
+        if ($fargw) {
+            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $interfacegw));
+            mwexecf('/sbin/route add -inet %s -interface %s', array($gatewayip, $interfacegw));
+        }
+        mwexecf('/sbin/route add -inet %s %s', array('default', $gatewayip));
     }
 
     if (!empty($interface) && $interface != $interfacegwv6)
       ;
     elseif (is_ipaddrv6($gatewayipv6)) {
-        $ifscope = "";
         if (is_linklocal($gatewayipv6)) {
-            $ifscope = "%{$defaultifv6}";
+            $gatewayipv6 .= "%{$defaultifv6}";
         }
-        log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}{$ifscope}");
-        mwexec("/sbin/route delete -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
-        mwexec("/sbin/route add -inet6 default " . escapeshellarg("{$gatewayipv6}{$ifscope}"));
+        log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
+        mwexecf('/sbin/route delete -inet6 %s %s', array('default', $gatewayipv6));
+        if ($fargw) {
+            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $interfacegwv6));
+            mwexecf('/sbin/route add -inet6 %s -interface %s', array($gatewayipv6, $interfacegwv6));
+        }
+        mwexecf('/sbin/route add -inet6 %s %s', array('default', $gatewayipv6));
     }
 
     system_staticroutes_configure($interface, false);
@@ -671,6 +681,7 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
             }
 
             $gatewayip = $gateway['gateway'];
+            $fargw = isset($gateway['fargw']);
             $interfacegw = $gateway['interface'];
 
             $blackhole = "";
@@ -728,10 +739,14 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                 if (is_subnet($ip)) {
                     if (is_ipaddr($gatewayip)) {
                         mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
+                        if ($fargw) {
+                            mwexecf('/sbin/route delete %s %s -interface %s', array($inet, $ip, $interfacegw));
+                            mwexecf('/sbin/route add %s %s -interface %s', array($inet, $ip, $interfacegw));
+                        }
                         mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
                     } elseif (!empty($interfacegw)) {
-                        mwexec("/sbin/route delete".$cmd . "-iface " . escapeshellarg($interfacegw));
-                        mwexec("/sbin/route add".$cmd . "-iface " . escapeshellarg($interfacegw));
+                        mwexec("/sbin/route delete".$cmd . "-interface " . escapeshellarg($interfacegw));
+                        mwexec("/sbin/route add".$cmd . "-interface " . escapeshellarg($interfacegw));
                     }
                 }
             }
