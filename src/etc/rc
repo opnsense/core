@@ -98,7 +98,7 @@ setup_mfs_link()
 	NAME=${3}
 
 	# Create dummy directory to for MFS-bound
-	# directories that require a persistant
+	# directories that require a persistent
 	# storage underneath to run.
 
 	if [ ! -d "${ROOT}${MFS}/${NAME}" ]; then

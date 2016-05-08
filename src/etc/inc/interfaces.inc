@@ -5180,7 +5180,7 @@ function get_interface_info($ifdescr)
                 $ifinfo["{$link_type}link"] = "down";
             }
             break;
-        /* PPP interface? -> get uptime for this session and cumulative uptime from the persistant log file in conf */
+        /* PPP interface? -> get uptime for this session and cumulative uptime from the persistent log file in conf */
         case "ppp":
             if ($ifinfo['status'] == "up") {
                 $ifinfo['ppplink'] = "up";
