@@ -295,8 +295,7 @@ include("head.inc");
                     <td>
                       <input name="host" type="text" id="host" value="<?= $pconfig['host'] ?>" />
                       <div class="hidden" for="help_for_host">
-                        <span class="text-danger"><strong><?= gettext("Note:") ?><br /></strong></span>
-                        <?= gettext("Enter the complete host/domain name.  example:  myhost.dyndns.org") ?><br />
+                        <?= gettext("Enter the complete host/domain name. example: myhost.dyndns.org") ?><br />
                         <?= gettext("For he.net tunnelbroker, enter your tunnel ID") ?>
                       </div>
                     </td>
