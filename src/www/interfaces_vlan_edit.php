@@ -194,11 +194,11 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN tag ");?></td>
+                    <td><a id="help_for_tag" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("VLAN tag");?></td>
                     <td>
                       <input name="tag" type="text" value="<?=$pconfig['tag'];?>" />
                       <div class="hidden" for="help_for_tag">
-                        <?=gettext("802.1Q VLAN tag (between 1 and 4094) ");?>
+                        <?=gettext("802.1Q VLAN tag (between 1 and 4094)");?>
                       </div>
                     </td>
                   </tr>
