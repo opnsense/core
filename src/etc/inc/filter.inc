@@ -67,9 +67,8 @@ function alias_expand_urltable($name) {
     return null;
 }
 
-
-
-function fix_rule_label($descr) {
+function fix_rule_label($descr)
+{
     $descr = str_replace('"', '', $descr);
     if (strlen($descr) > 63) {
         return substr($descr, 0, 60) . "...";
@@ -2115,14 +2114,21 @@ function filter_generate_user_rule_arr(&$FilterIflist, $rule)
     update_filter_reload_status(sprintf(gettext("Creating filter rule %s ..."), $rule['descr']));
 
     $ret = array();
+    $sched = '';
+    $descr = '';
+
+    if (!empty($rule['sched'])) {
+        $sched = "({$rule['sched']})";
+    }
+    if (!empty($rule['descr'])) {
+        $descr = ": {$rule['descr']}";
+    }
+
     $line = filter_generate_user_rule($FilterIflist, $rule);
+
     $ret['rule'] = $line;
     $ret['interface'] = $rule['interface'];
-    if ($rule['descr'] != "" and $line != "") {
-        $ret['descr'] = "label \"" . fix_rule_label("USER_RULE: {$rule['descr']}") . "\"";
-    } else {
-        $ret['descr'] = "label \"USER_RULE\"";
-    }
+    $ret['descr'] = 'label "' . fix_rule_label("USER_RULE{$sched}{$descr}") . '"';
 
     return $ret;
 }
@@ -2702,8 +2708,18 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         foreach ($config['schedules']['schedule'] as $sched) {
             if ($sched['name'] == $rule['sched']) {
                 if (!filter_get_time_based_rule_status($sched)) {
+                    if (!isset($config['system']['schedule_states'])) {
+                        $descr = '';
+                        if (!empty($rule['descr'])) {
+                            $descr = ": {$rule['descr']}";
+                        }
+                        mwexecf(
+                            '/sbin/pfctl -k label -k %s',
+                            fix_rule_label("USER_RULE({$rule['sched']}){$descr}")
+                        );
+                    }
                     /* looks weird but is fine: printed in rules for traceability */
-                    return "# schedule finished - {$rule['descr']}";
+                    return "# schedule finished for";
                 }
                 break;
             }

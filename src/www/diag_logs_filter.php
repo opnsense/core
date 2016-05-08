@@ -498,6 +498,7 @@ function find_rule_by_number_buffer($rulenum, $type)
     } else {
         $ruleString = $buffer_rules_normal[$lookup_key];
         list(,$rulename,) = explode("\"",$ruleString);
+        /* XXX 'USER_RULE' may be just that, or 'USER_RULE(<SCHEDULENAME>): ' */
         $rulename = str_replace("USER_RULE: ",'<span class="glyphicon glyphicon-user" title="USER_RULE" alt="USER_RULE"></span>',$rulename);
     }
     return "{$rulename} ({$lookup_key})";
