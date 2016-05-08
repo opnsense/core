@@ -227,26 +227,26 @@ include("head.inc");
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>
-                    <td width="22%"><strong><?=gettext("Dynamic DNS client");?></strong></td>
+                    <td width="22%"><strong><?= gettext("Dynamic DNS client") ?></strong></td>
                     <td width="78%" align="right">
-                      <small><?=gettext("full help"); ?> </small>
+                      <small><?= gettext("full help") ?> </small>
                       <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Enable") ?></td>
                     <td>
-                      <input name="enable" type="checkbox" id="enable" value="<?=gettext("yes");?>" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
+                      <input name="enable" type="checkbox" id="enable" value="<?= gettext("yes") ?>" <?= empty($pconfig['enable']) ? '' : 'checked="checked"' ?> />
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Service type");?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Service type") ?></td>
                     <td>
                       <select name="type" class="selectpicker" id="type" onchange="_onTypeChange(this.options[this.selectedIndex].value);">
 <?php
                         foreach (services_dyndns_list() as $value => $type):?>
-                                <option value="<?=$value;?>" <?= $value == $pconfig['type'] ? 'selected="selected"' : "";?>>
-                                  <?=$type;?>
+                                <option value="<?= $value ?>" <?= $value == $pconfig['type'] ? '' : 'selected="selected"'?>>
+                                  <?= $type ?>
                                 </option>
 <?php
                         endforeach;?>
@@ -254,15 +254,15 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Interface to monitor");?></td>
+                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Interface to monitor") ?></td>
                      <td>
                        <select name="interface" class="selectpicker" id="interface">
 <?php
                         $iflist = get_configured_interface_with_descr();
                         $iflist = array_merge($iflist, return_gateway_groups_array());
                         foreach ($iflist as $if => $ifdesc):?>
-                          <option value="<?=$if;?>" <?=$pconfig['interface'] == $if ? "selected=\"selected\"" : "";?>>
-                            <?=is_array($ifdesc) ? $if : htmlspecialchars($ifdesc);?>
+                          <option value="<?= $if ?>" <?=$pconfig['interface'] == $if ? 'selected="selected"' : '';?>>
+                            <?= is_array($ifdesc) ? $if : htmlspecialchars($ifdesc) ?>
                           </option>
 
 <?php
@@ -271,15 +271,15 @@ include("head.inc");
                       </td>
                   </tr>
                   <tr id="_requestiftr">
-                    <td><a id="help_for_requestif" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface to send update from");?></td>
+                    <td><a id="help_for_requestif" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Interface to send update from") ?></td>
                     <td>
                       <select name="requestif" class="selectpicker" id="requestif">
 <?php
                        $iflist = get_configured_interface_with_descr();
                        $iflist = array_merge($iflist, return_gateway_groups_array());
                        foreach ($iflist as $if => $ifdesc):?>
-                         <option value="<?=$if;?>" <?=$pconfig['requestif'] == $if ? "selected=\"selected\"" : "";?>>
-                           <?=is_array($ifdesc) ? $if : htmlspecialchars($ifdesc);?>
+                         <option value="<?= $if ?>" <?= $pconfig['requestif'] == $if ? 'selected="selected"' : '' ?>>
+                           <?= is_array($ifdesc) ? $if : htmlspecialchars($ifdesc) ?>
                          </option>
 
 <?php
@@ -291,141 +291,140 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr id="_hostnametr">
-                    <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname");?></td>
+                    <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Hostname") ?></td>
                     <td>
-                      <input name="host" type="text" id="host" value="<?=$pconfig['host'];?>" />
+                      <input name="host" type="text" id="host" value="<?= $pconfig['host'] ?>" />
                       <div class="hidden" for="help_for_host">
-                        <span class="text-danger"><strong><?=gettext("Note:");?><br /></strong></span>
-                        <?=gettext("Enter the complete host/domain name.  example:  myhost.dyndns.org");?><br />
-                        <?=gettext("For he.net tunnelbroker, enter your tunnel ID");?>
+                        <?= gettext("Enter the complete host/domain name. example: myhost.dyndns.org") ?><br />
+                        <?= gettext("For he.net tunnelbroker, enter your tunnel ID") ?>
                       </div>
                     </td>
                   </tr>
                   <tr id="_mxtr">
-                    <td><a id="help_for_mx" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MX"); ?></td>
+                    <td><a id="help_for_mx" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("MX") ?></td>
                     <td>
-                      <input name="mx" type="text" id="mx" value="<?=$pconfig['mx'];?>" />
+                      <input name="mx" type="text" id="mx" value="<?= $pconfig['mx'] ?>" />
                       <div class="hidden" for="help_for_mx">
-                        <?=gettext("Note: With a dynamic DNS service you can only use a hostname, not an IP address.");?>
+                        <?= gettext("Note: With a dynamic DNS service you can only use a hostname, not an IP address.") ?>
                         <br />
-                        <?=gettext("Set this option only if you need a special MX record. Not"." all services support this.");?>
+                        <?= gettext("Set this option only if you need a special MX record. Not all services support this.") ?>
                       </div>
                     </td>
                   </tr>
                   <tr id="_wildcardtr">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Wildcards"); ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Wildcards") ?></td>
                     <td>
-                      <input name="wildcard" type="checkbox" id="wildcard" value="yes" <?=!empty($pconfig['wildcard']) ? "checked=\"checked\"" : ""; ?> />
-                      <strong><?=gettext("Enable ");?><?=gettext("Wildcard"); ?></strong>
+                      <input name="wildcard" type="checkbox" id="wildcard" value="yes" <?= empty($pconfig['wildcard']) ? '' : 'checked="checked"' ?> />
+                      <strong><?= gettext("Enable Wildcard") ?></strong>
                     </td>
                   </tr>
                   <tr id="_verboselogtr">
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Verbose logging"); ?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Verbose logging") ?></td>
                     <td>
-                      <input name="verboselog" type="checkbox" id="verboselog" value="yes" <?=!empty($pconfig['verboselog']) ? "checked=\"checked\"" : ""; ?> />
-                      <strong><?=gettext("Enable ");?><?=gettext("verbose logging"); ?></strong>
+                      <input name="verboselog" type="checkbox" id="verboselog" value="yes" <?= empty($pconfig['verboselog']) ? '' : 'checked="checked"' ?> />
+                      <strong><?= gettext("Enable verbose logging") ?></strong>
                     </td>
                   </tr>
                   <tr id="_curloptions">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("CURL options"); ?></td>
                     <td>
-                      <input name="curl_ipresolve_v4" type="checkbox" id="curl_ipresolve_v4" value="yes" <?=!empty($pconfig['curl_ipresolve_v4']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Force IPv4 resolving"); ?><br />
-                      <input name="curl_ssl_verifypeer" type="checkbox" id="curl_ssl_verifypeer" value="yes" <?=!empty($pconfig['curl_ssl_verifypeer']) ? "checked=\"checked\"" : ""; ?> />
-                      <?=gettext("Verify SSL peer"); ?>
+                      <input name="curl_ipresolve_v4" type="checkbox" id="curl_ipresolve_v4" value="yes" <?= empty($pconfig['curl_ipresolve_v4']) ? '' : 'checked="checked"' ?> />
+                      <?= gettext("Force IPv4 resolving") ?><br />
+                      <input name="curl_ssl_verifypeer" type="checkbox" id="curl_ssl_verifypeer" value="yes" <?= empty($pconfig['curl_ssl_verifypeer']) ? '' : 'checked="checked"'  ?> />
+                      <?= gettext("Verify SSL peer") ?>
                     </td>
                   </tr>
                   <tr id="_usernametr">
-                    <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Username");?></td>
+                    <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Username") ?></td>
                     <td>
-                      <input name="username" type="text" id="username" value="<?=$pconfig['username'];?>" />
+                      <input name="username" type="text" id="username" value="<?= $pconfig['username'] ?>" />
                       <div class="hidden" for="help_for_username">
                         <?= gettext("Username is required for all types except Namecheap, FreeDNS and Custom Entries.");?>
-                        <br /><?= gettext("Route 53: Enter your Access Key ID.");?>
-                        <br /><?= gettext("Duck DNS: Enter your Token.");?>
-                        <br /><?= gettext("For Custom Entries, Username and Password represent HTTP Authentication username and passwords.");?>
+                        <br /><?= gettext('Route 53: Enter your Access Key ID.') ?>
+                        <br /><?= gettext('Duck DNS: Enter your Token.') ?>
+                        <br /><?= gettext('For Custom Entries, Username and Password represent HTTP Authentication username and passwords.') ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Password");?></td>
+                    <td><a id="help_for_password" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Password") ?></td>
                     <td>
-                      <input name="password" type="password" id="password" value="<?=$pconfig['password'];?>" />
+                      <input name="password" type="password" id="password" value="<?= $pconfig['password'] ?>" />
                       <div class="hidden" for="help_for_password">
-                        <?=gettext("FreeDNS (freedns.afraid.org): Enter your \"Authentication Token\" provided by FreeDNS.");?>
-                        <br /><?= gettext("Route 53: Enter your Secret Access Key.");?>
-                        <br /><?= gettext("Duck DNS: Leave blank.");?>
+                        <?=gettext('FreeDNS (freedns.afraid.org): Enter your "Authentication Token" provided by FreeDNS.') ?>
+                        <br /><?= gettext('Route 53: Enter your Secret Access Key.') ?>
+                        <br /><?= gettext('Duck DNS: Leave blank.') ?>
                       </div>
                     </td>
                   </tr>
                   <tr id="r53_zoneid" style="display:none">
-                    <td><a id="help_for_zoneid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Zone ID");?></td>
+                    <td><a id="help_for_zoneid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Zone ID") ?></td>
                     <td>
-                      <input name="zoneid" type="text" id="zoneid" value="<?=$pconfig['zoneid'];?>" />
+                      <input name="zoneid" type="text" id="zoneid" value="<?= $pconfig['zoneid'] ?>" />
                       <div class="hidden" for="help_for_zoneid">
-                        <?= gettext("Enter Zone ID that you received when you created your domain in Route 53.");?>
+                        <?= gettext("Enter Zone ID that you received when you created your domain in Route 53.") ?>
                       </div>
                     </td>
                   </tr>
                   <tr id="_urltr">
-                    <td><a id="help_for_updateurl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update URL");?></td>
+                    <td><a id="help_for_updateurl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update URL") ?></td>
                     <td>
-                      <input name="updateurl" type="text" id="updateurl" value="<?=$pconfig['updateurl'];?>" />
+                      <input name="updateurl" type="text" id="updateurl" value="<?= $pconfig['updateurl'] ?>" />
                       <div class="hidden" for="help_for_updateurl">
-                        <?= gettext("This is the only field required by for Custom Dynamic DNS, and is only used by Custom Entries.");?>
+                        <?= gettext("This is the only field required by for Custom Dynamic DNS, and is only used by Custom Entries.") ?>
                         <br />
-                        <?= gettext("If you need the new IP to be included in the request, put %IP% in its place.");?>
+                        <?= gettext("If you need the new IP to be included in the request, put %IP% in its place.") ?>
                       </div>
                     </td>
                   </tr>
                   <tr id="_resulttr">
-                    <td><a id="help_for_resultmatch" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Result Match");?></td>
+                    <td><a id="help_for_resultmatch" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Result Match") ?></td>
                     <td>
-                      <textarea name="resultmatch" class="formpre" id="resultmatch" cols="65" rows="7"><?=$pconfig['resultmatch'];?></textarea>
+                      <textarea name="resultmatch" class="formpre" id="resultmatch" cols="65" rows="7"><?= $pconfig['resultmatch'] ?></textarea>
                       <div class="hidden" for="help_for_resultmatch">
-                        <?= gettext("This field is only used by Custom Dynamic DNS Entries.");?>
+                        <?= gettext("This field is only used by Custom Dynamic DNS Entries.") ?>
                         <br />
                         <?= gettext("This field should be identical to what your dynamic DNS Provider will return if the update succeeds, leave it blank to disable checking of returned results.");?>
                         <br />
-                        <?= gettext("If you need the new IP to be included in the request, put %IP% in its place.");?>
+                        <?= gettext("If you need the new IP to be included in the request, put %IP% in its place.") ?>
                         <br />
-                        <?= gettext("If you need to include multiple possible values, separate them with a |.  If your provider includes a |, escape it with \\|");?>
+                        <?= gettext("If you need to include multiple possible values, separate them with a |.  If your provider includes a |, escape it with \\|") ?>
                         <br />
-                        <?= gettext("Tabs (\\t), newlines (\\n) and carriage returns (\\r) at the beginning or end of the returned results are removed before comparison.");?>
+                        <?= gettext("Tabs (\\t), newlines (\\n) and carriage returns (\\r) at the beginning or end of the returned results are removed before comparison.") ?>
                       </div>
                     </td>
                   </tr>
                   <tr id="r53_ttl" style="display:none">
                     <td><a id="help_for_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TTL");?></td>
                     <td>
-                      <input name="ttl" type="text" id="ttl" value="<?=$pconfig['ttl'];?>" />
+                      <input name="ttl" type="text" id="ttl" value="<?= $pconfig['ttl'] ?>" />
                       <div class="hidden" for="help_for_ttl">
-                        <?= gettext("Choose TTL for your dns record.");?>
+                        <?= gettext("Choose TTL for your dns record.") ?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Description");?></td>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Description") ?></td>
                     <td>
-                      <input name="descr" type="text" id="descr" value="<?=$pconfig['descr'];?>" />
+                      <input name="descr" type="text" id="descr" value="<?= $pconfig['descr'] ?>" />
                     </td>
                   </tr>
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" onclick="enable_change(true)" />
+                      <input name="Submit" type="submit" class="btn btn-primary" value="<?= gettext("Save") ?>" onclick="enable_change(true)" />
 <?php
                       if (isset($id)): ?>
-                        <input name="id" type="hidden" value="<?=$id;?>" />
-                        <input name="force" type="submit" class="btn btn-primary" value="<?=gettext("Save & Force Update");?>" onclick="enable_change(true)" />
+                        <input name="id" type="hidden" value="<?= $id ?>" />
+                        <input name="force" type="submit" class="btn btn-primary" value="<?= gettext("Save & Force Update") ?>" onclick="enable_change(true)" />
 <?php
                       endif; ?>
-                        <a href="services_dyndns.php" class="btn btn-default"><?=gettext("Cancel");?></a>
+                        <a href="services_dyndns.php" class="btn btn-default"><?= gettext("Cancel") ?></a>
                     </td>
                   </tr>
                   <tr>
                     <td>&nbsp;</td>
-                    <td><span class="vexpl"><span class="red"><strong><?=gettext("Note:");?><br />
+                    <td><span class="vexpl"><span class="red"><strong><?= gettext("Note:") ?><br />
                       </strong></span><?php printf(gettext("You must configure a DNS server in %sSystem:
                       General setup%s or allow the DNS server list to be overridden
                       by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system_general.php">','</a>');?></span></td>
@@ -440,7 +439,7 @@ include("head.inc");
   </section>
 <script type="text/javascript">
 //<![CDATA[
-  _onTypeChange("<?=$pconfig['type']; ?>");
+  _onTypeChange("<?= $pconfig['type'] ?>");
 //]]>
 </script>
 <?php include("foot.inc"); ?>
