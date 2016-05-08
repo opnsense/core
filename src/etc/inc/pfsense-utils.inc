@@ -373,9 +373,8 @@ function load_crypto_module()
     }
 
     if (isset($config['system']['cryptodev_enable'])) {
+        log_error(gettext('Loading cryptodev kernel module.'));
         mwexecf('/sbin/kldload %s', 'cryptodev', true);
-    } else {
-        mwexecf('/sbin/kldunload %s', 'cryptodev', true);
     }
 }
 
