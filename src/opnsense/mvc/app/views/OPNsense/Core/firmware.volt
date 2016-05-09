@@ -91,6 +91,8 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
             $('#updatelist').empty();
             setTimeout(trackStatus, 500);
+        }).fail(function () {
+            setTimeout(trackStatus, 500);
         });
     }
 
@@ -104,6 +106,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
             $('#updatelist').empty();
+            setTimeout(trackStatus, 500);
+        }).fail(function () {
             setTimeout(trackStatus, 500);
         });
     }
