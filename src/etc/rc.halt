@@ -1,7 +1,5 @@
 #!/bin/sh
 
-# invoke shared powerdown routines
 . /usr/local/etc/rc.halt.common
 
-# power down the system
 /sbin/shutdown -op now

@@ -115,6 +115,44 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * perform reboot
+     * @return array status
+     * @throws \Exception
+     */
+    public function rebootAction()
+    {
+        $backend = new Backend();
+        $response = array();
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun('firmware reboot', true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
+     * perform poweroff
+     * @return array status
+     * @throws \Exception
+     */
+    public function poweroffAction()
+    {
+        $backend = new Backend();
+        $response = array();
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $response['msg_uuid'] = trim($backend->configdRun('firmware poweroff', true));
+        } else {
+            $response['status'] = 'failure';
+        }
+
+        return $response;
+    }
+
+    /**
      * perform actual upgrade
      * @return array status
      * @throws \Exception
