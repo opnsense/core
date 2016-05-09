@@ -322,6 +322,6 @@ endforeach;
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  $("#log-configure").toggleClass("disabled");
+  $("#log-configure").removeClass("disabled");
 //]]>
 </script>

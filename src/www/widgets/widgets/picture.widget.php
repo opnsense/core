@@ -97,6 +97,6 @@ endif ?>
 <!-- needed to show the settings widget icon -->
 <script type="text/javascript">
 //<![CDATA[
-  $("#picture-configure").toggleClass("disabled");
+  $("#picture-configure").removeClass("disabled");
 //]]>
 </script>

@@ -75,6 +75,6 @@ if(is_numeric($_POST['logfiltercount'])) {
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  $("#system_log-configure").toggleClass("disabled");
+  $("#system_log-configure").removeClass("disabled");
 //]]>
 </script>

@@ -103,6 +103,6 @@ if (isset($_POST['servicestatusfilter'])) {
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  $("#services_status-configure").toggleClass("disabled");
+  $("#services_status-configure").removeClass("disabled");
 //]]>
 </script>

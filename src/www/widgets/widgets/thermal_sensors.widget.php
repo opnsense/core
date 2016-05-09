@@ -174,6 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  $("#thermal_sensors-configure").toggleClass("disabled");
+  $("#thermal_sensors-configure").removeClass("disabled");
 //]]>
 </script>
