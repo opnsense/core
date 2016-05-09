@@ -365,10 +365,10 @@ include("fbegin.inc");?>
                   </h3></li>
                   <li class="pull-right">
                     <div class="btn-group">
+                      <button type="button" class="btn btn-default btn-xs disabled" id="<?= $widgetItem['name'] ?>-configure" onclick='return configureWidget("<?=  $widgetItem['name'] ?>")' style="cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
                       <button type="button" class="btn btn-default btn-xs" title="minimize" id="<?= $widgetItem['name'] ?>-min" onclick='return minimizeWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv ?>;"><span class="glyphicon glyphicon-minus"></span></button>
                       <button type="button" class="btn btn-default btn-xs" title="maximize" id="<?= $widgetItem['name'] ?>-max" onclick='return showWidget("<?= $widgetItem['name'] ?>",true)' style="display:<?= $mindiv == 'none' ? 'inline' : 'none' ?>;"><span class="glyphicon glyphicon-plus"></span></button>
                       <button type="button" class="btn btn-default btn-xs" title="remove widget" onclick='return closeWidget("<?= $widgetItem['name'] ?>",true)'><span class="glyphicon glyphicon-remove"></span></button>
-                      <button type="button" class="btn btn-default btn-xs" id="<?= $widgetItem['name'] ?>-configure" onclick='return configureWidget("<?=  $widgetItem['name'] ?>")' style="display:none; cursor:pointer" ><span class="glyphicon glyphicon-pencil"></span></button>
                     </div>
                   </li>
                 </ul>

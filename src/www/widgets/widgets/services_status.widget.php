@@ -103,8 +103,6 @@ if (isset($_POST['servicestatusfilter'])) {
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  selectIntLink = "services_status-configure";
-  textlink = document.getElementById(selectIntLink);
-  textlink.style.display = "inline";
+  $("#services_status-configure").toggleClass("disabled");
 //]]>
 </script>

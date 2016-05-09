@@ -322,8 +322,6 @@ endforeach;
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  selectIntLink = "log-configure";
-  textlink = document.getElementById(selectIntLink);
-  textlink.style.display = "inline";
+  $("#log-configure").toggleClass("disabled");
 //]]>
 </script>

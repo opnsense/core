@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2016 Deciso B.V.
 
@@ -113,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     <table class="table table-striped">
       <thead>
         <tr>
-          <th colspan="2"><?= gettext('Thresholds in &deg;C (1 to 100):') ?></th>
+          <th colspan="2"><?= gettext('Thresholds in °C (1 to 100):') ?></th>
         </tr>
       </thead>
       <tbody>
@@ -159,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <!-- template progress bar used for all constructed items in thermal_sensors_widget_update() -->
 <div style="display:none" id="thermal_sensors_widget_progress_bar">
   <div class="progress">
-    <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
   </div>
   <span class="info">
   </span>
@@ -173,6 +174,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-  $("#thermal_sensors-configure").css({display: "inline"});
+  $("#thermal_sensors-configure").toggleClass("disabled");
 //]]>
 </script>

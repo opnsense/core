@@ -97,8 +97,6 @@ endif ?>
 <!-- needed to show the settings widget icon -->
 <script type="text/javascript">
 //<![CDATA[
-  selectIntLink = "picture-configure";
-  textlink = document.getElementById(selectIntLink);
-  textlink.style.display = "inline";
+  $("#picture-configure").toggleClass("disabled");
 //]]>
 </script>
