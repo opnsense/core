@@ -236,7 +236,7 @@ include("fbegin.inc");?>
                 }
             });
             // schedule next update
-            setTimeout('process_widget_data()', 10000);
+            setTimeout('process_widget_data()', 5000);
       });
   }
 </script>
@@ -378,9 +378,7 @@ include("fbegin.inc");?>
 <?php
                 if ($divdisplay != "block"):?>
                   <div id="<?= $widgetItem['name'] ?>-loader" style="display:<?= $display ?>;">
-                    <br />
-                      <span class="glyphicon glyphicon-refresh"></span> <?= gettext("Loading selected widget") ?>
-                    <br />
+                      &nbsp;&nbsp;<span class="glyphicon glyphicon-refresh"></span> <?= gettext("Save to load widget") ?>
                   </div>
 <?php
                 else:
@@ -399,12 +397,6 @@ include("fbegin.inc");?>
       </div>
     </div>
 </section>
-<?php
-    // include widget javascripts
-    foreach (glob("/usr/local/www/widgets/javascript/*.js") as $filename):?>
-      <script src="/widgets/javascript/<?=basename($filename);?>" type="text/javascript"></script>
-<?php
-    endforeach;?>
 <?php
   endif;
 include("foot.inc");?>
