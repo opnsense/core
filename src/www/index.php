@@ -72,9 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $tmp = explode(':', $seqPart);
             if (count($tmp) == 3 && explode('-', $tmp[0])[0] == $widgetItem['name']) {
                 $widgetItem['state'] = $tmp[2];
-                if (is_numeric($tmp[1])) {
-                    $widgetItem['sortKey'] = $tmp[1];
-                }
+                $widgetItem['sortKey'] = $tmp[1];
             }
         }
         $widgetCollection[] = $widgetItem;
@@ -151,6 +149,7 @@ include("fbegin.inc");?>
 <script type="text/javascript">
   function addWidget(selectedDiv) {
       $('#'+selectedDiv).show();
+      $('#add_widget_'+selectedDiv).hide();
       $('#'+selectedDiv+'-config').val('show');
       showSave();
   }
@@ -198,7 +197,8 @@ include("fbegin.inc");?>
               // only capture visible widgets
               var index_str = "0000000" + index;
               index_str = index_str.substr(index_str.length-8);
-              widgetInfo.push($(this).attr('id')+'-container:'+index_str+':'+$('input[name='+$(this).attr('id')+'-config]').val());
+              col_index = $(this).parent().attr("id").split('_')[1];
+              widgetInfo.push($(this).attr('id')+'-container:'+index_str+'-'+col_index+':'+$('input[name='+$(this).attr('id')+'-config]').val());
               index++;
           }
       });
@@ -243,35 +243,63 @@ include("fbegin.inc");?>
 
 <script type="text/javascript">
   $( document ).ready(function() {
+      // rearrange widgets to stored column
+      $(".widgetdiv").each(function(){
+          var widget = $(this);
+          var container = $(this).parent();
+          var target_col = widget.data('sortkey').split('-')[1];
+          if (target_col != undefined) {
+              if (container.attr('id').split('_')[1] != target_col) {
+                  widget.remove().appendTo("#dashboard_"+target_col);
+              }
+          }
+      });
+      // show dashboard widgets after initial rendering
+      $("#dashboard_container").show();
+
       // sortable widgets
-      $(".sortable").sortable({
+      $(".dashboard_grid_column").sortable({
         handle: '.content-box-head',
+        group: 'dashboard_grid_column',
         itemSelector: '.widgetdiv',
-        containerSelector: '.sortable',
+        containerSelector: '.dashboard_grid_column',
         placeholder: '<div class="placeholder"><i class="fa fa-hand-o-right" aria-hidden="true"></i></div>',
         afterMove: function (placeholder, container, closestItemOrContainer) {
             showSave();
         }
       });
+
       // select number of columns
       $("#column_count").change(function(){
           if ($("#column_count_input").val() != $("#column_count").val()) {
               showSave();
           }
          $("#column_count_input").val($("#column_count").val());
-         $(".widgetdiv").each(function(){
-             var widget = $(this);
-             $.each(widget.attr("class").split(' '), function(index, classname) {
-                if (classname.indexOf('col-md') > -1) {
-                    widget.removeClass(classname);
-                }
-             });;
-             widget.addClass('col-md-'+(12 / $("#column_count_input").val()));
+         $(".dashboard_grid_column").each(function(){
+           var widget_col = $(this);
+           $.each(widget_col.attr("class").split(' '), function(index, classname) {
+              if (classname.indexOf('col-md') > -1) {
+                  widget_col.removeClass(classname);
+              }
+           });;
+           widget_col.addClass('col-md-'+(12 / $("#column_count_input").val()));
          });
       });
       $("#column_count").change();
       // trigger initial ajax data poller
       process_widget_data();
+
+      // in "Add Widget" dialog, hide widgets already on screen
+      $("#add_widget_btn").click(function(){
+          $(".widgetdiv").each(function(widget){
+              if ($(this).is(':visible')) {
+                  $("#add_widget_" + $(this).attr('id')).hide();
+              } else {
+                  $("#add_widget_" + $(this).attr('id')).show();
+              }
+
+          });
+      });
   });
 </script>
 
@@ -281,7 +309,9 @@ include("fbegin.inc");?>
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
   </form>
     <div class="container-fluid">
-      <div class="row sortable">
+      <div id="dashboard_container" class="row" style="display:none">
+        <div class="col-md-4 dashboard_grid_column" id="dashboard_col1">
+
 <?php
       $crash_report = get_crash_report();
       if ($crash_report != '') {
@@ -317,7 +347,7 @@ include("fbegin.inc");?>
                   $mindiv = "inline";
                   break;
           }?>
-          <section class="col-xs-12 col-md-6 widgetdiv" id="<?= $widgetItem['name'] ?>"  style="display:<?= $divdisplay ?>;">
+          <section class="widgetdiv" data-sortkey="<?=$widgetItem['sortKey'] ?>" id="<?=$widgetItem['name'];?>"  style="display:<?=$divdisplay;?>;">
             <div class="content-box">
               <header class="content-box-head container-fluid">
                 <ul class="list-inline __nomb">
@@ -362,6 +392,10 @@ include("fbegin.inc");?>
           </section>
 <?php
           endforeach;?>
+          </div>
+          <div class="col-md-4 dashboard_grid_column" id="dashboard_col2"></div>
+          <div class="col-md-4 dashboard_grid_column" id="dashboard_col3"></div>
+          <div class="col-md-4 dashboard_grid_column" id="dashboard_col4"></div>
       </div>
     </div>
 </section>

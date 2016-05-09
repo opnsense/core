@@ -28,22 +28,22 @@
               <h4 class="modal-title" id="modal_widgets_label"><?=gettext("Available Widgets"); ?></h4>
           </div>
           <div class="modal-body">
-              <table class="table table-striped table-hover">
+              <table class="table table-condensed table-hover">
 <?php
           foreach($widgetCollection as $widgetItem):
               $widgettitle = $widgetItem['name'] . "_title";
-              $widgettitlelink = $widgetItem['name'] . "_title_link";
+              $widgettitlelink = $widgetItem['name'] . "_title_link";?>
+              <tr id="add_widget_<?=$widgetItem['name']; ?>">
+<?php
               if (isset($$widgettitle)):?>
-                <tr>
                   <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?=$$widgettitle; ?></td>
-                </tr>
 <?php
               elseif (!empty($widgetItem['display_name'])): ?>
-                <tr>
                   <td style="cursor: pointer;" onclick='return addWidget("<?=$widgetItem['name']; ?>")'><?=$widgetItem['display_name']; ?></td>
-                </tr>
 <?php
-              endif;
+              endif;?>
+              </tr>
+<?php
           endforeach; ?>
               </table>
           </div>
