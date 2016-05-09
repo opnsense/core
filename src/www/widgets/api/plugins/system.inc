@@ -118,7 +118,7 @@ function system_api_disk()
     $result['devices'] = array();
     exec("/bin/df -Tht ufs,tmpfs,zfs,cd9660", $disk_info);
     foreach ($disk_info as $line) {
-        if (strpos($line,'/dev/') !== false) {
+        if (strpos($line,'Mounted on') === false) {
             $parts = preg_split('/\s+/', $line);
             $diskItem = array();
             $diskItem['device'] = $parts[0];
