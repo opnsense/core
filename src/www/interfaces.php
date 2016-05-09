@@ -1868,11 +1868,9 @@ include("head.inc");
                                   <select name="subnet" class="selectpicker" data-style="btn-default" data-width="auto" data-size="10" data-id="subnet">
 
 <?php
-                                    for ($i = 32; $i > 0; $i--):
-                                      if ($i <> 31):?>
+                                    for ($i = 32; $i > 0; $i--):?>
                                     <option value="<?=$i;?>" <?=$i == $pconfig['subnet'] ? "selected=\"selected\"" : "";?>><?=$i;?></option>
 <?php
-                                      endif;
                                     endfor;?>
                                   </select>
                                 </td>
@@ -1996,13 +1994,11 @@ include("head.inc");
                                 <td>
                                   <select name="alias-subnet" class="selectpicker" data-style="btn-default" id="alias-subnet" data-width="auto"  data-size="10">
 <?php
-                                    for ($i = 32; $i > 0; $i--):
-                                      if ($i <> 31):?>
+                                    for ($i = 32; $i > 0; $i--):?>
                                         <option value="<?=$i;?>" <?=$i == $pconfig['alias-subnet'] ?  "selected=\"selected\"" : "";?> >
                                             <?=$i;?>
                                         </option>
 <?php
-                                      endif;
                                     endfor;?>
                                   </select>
                                 </td>
