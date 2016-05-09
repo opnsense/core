@@ -222,6 +222,10 @@ if (isset($_POST['getupdatestatus'])) {
       </td>
     </tr>
     <tr>
+      <td><?=gettext("Load average");?></td>
+      <td id="system_information_widget_load"></td>
+    </tr>
+    <tr>
       <td><?=gettext("Uptime");?></td>
       <td id="system_information_widget_uptime"></td>
     </tr>
@@ -250,10 +254,6 @@ if (isset($_POST['getupdatestatus'])) {
           <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
         </div>
       </td>
-    </tr>
-    <tr>
-      <td><?=gettext("Load average");?></td>
-      <td id="system_information_widget_load"></td>
     </tr>
     <tr>
       <td><?=gettext("Memory usage");?></td>
