@@ -645,8 +645,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="fargw" type="checkbox" value="yes" <?=!empty($pconfig['fargw']) ? 'checked="checked"' : '';?> />
                     <div class="hidden" for="help_for_fargw">
-                      <?=gettext("This will allow the gateway to exist outside of the interface subnet. " .
-                        "A corresponding route must bet set up for this gateway in order for it to operate correctly."); ?>
+                      <?=gettext("This will allow the gateway to exist outside of the interface subnet."); ?>
                     </div>
                   </td>
                 </tr>

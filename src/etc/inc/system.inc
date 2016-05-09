@@ -672,7 +672,7 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
             }
 
             $gatewayip = $gateway['gateway'];
-            $needs_iface = isset($gateway['fargw']);
+            $fargw = isset($gateway['fargw']);
             $interfacegw = $gateway['interface'];
 
             $blackhole = "";
@@ -726,12 +726,15 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                     $ip .= "/128";
                 }
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                $iface = $needs_iface ? ' -interface ' . escapeshellarg($interfacegw) . ' ' : '';
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
                 if (is_subnet($ip)) {
                     if (is_ipaddr($gatewayip)) {
-                        mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip) . $iface);
-                        mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip) . $iface);
+                        mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
+                        if ($fargw) {
+                            mwexecf('/sbin/route delete %s %s -interface %s', array($inet, $ip, $interfacegw));
+                            mwexecf('/sbin/route add %s %s -interface %s', array($inet, $ip, $interfacegw));
+                        }
+                        mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
                     } elseif (!empty($interfacegw)) {
                         mwexec("/sbin/route delete".$cmd . "-interface " . escapeshellarg($interfacegw));
                         mwexec("/sbin/route add".$cmd . "-interface " . escapeshellarg($interfacegw));
