@@ -149,9 +149,15 @@ function legacy_vlan_tag($ifs, $member, $tag)
     }
 }
 
-function legacy_interface_stats($ifs)
+function legacy_interface_stats($ifs=null)
 {
-    $cmd = '/usr/local/sbin/ifinfo ' . escapeshellarg($ifs);
+    if ($ifs != null) {
+        // only request data for selected interface
+        $cmd = '/usr/local/sbin/ifinfo '. escapeshellarg($ifs);
+    } else {
+        // all interfaces
+        $cmd = '/usr/local/sbin/ifinfo';
+    }
     $stats = array();
 
     exec($cmd . ' 2>&1', $out, $ret);
@@ -160,17 +166,21 @@ function legacy_interface_stats($ifs)
         return $stats;
     }
 
-    if (count($out)) {
-        /* first one is header */
-        array_shift($out);
-
-        foreach ($out as $line) {
+    $current_interface = "";
+    foreach ($out as $line) {
+        if (strpos($line, 'Interface') === 0) {
+            $current_interface = explode(')', explode('(', $line)[1])[0];
+            $stats[$current_interface] = array();
+        } elseif ($current_interface != "") {
             $stat = explode(':', $line);
-            $stats[trim($stat[0])] = trim($stat[1]);
+            $stats[$current_interface][trim($stat[0])] = trim($stat[1]);
         }
     }
-
-    return $stats;
+    if ($ifs != null) {
+        return $stats[$current_interface];
+    } else {
+        return $stats;
+    }
 }
 
 /**
