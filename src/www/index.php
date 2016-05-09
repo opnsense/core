@@ -309,15 +309,19 @@ include("fbegin.inc");?>
     <input type="hidden" value="<?= $pconfig['column_count'];?>" name="column_count" id="column_count_input" />
   </form>
     <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12 col-xs-12">
+<?php
+          $crash_report = get_crash_report();
+          if ($crash_report != '') {
+              print_info_box($crash_report);
+          }?>
+        </div>
+      </div>
       <div id="dashboard_container" class="row" style="display:none">
-        <div class="col-md-4 dashboard_grid_column" id="dashboard_col1">
+        <div class="col-xs-12 col-md-4 dashboard_grid_column" id="dashboard_col1">
 
 <?php
-      $crash_report = get_crash_report();
-      if ($crash_report != '') {
-          print_info_box($crash_report);
-      }
-
       foreach ($widgetCollection as $widgetItem):
           $widgettitle = $widgetItem['name'] . "_title";
           $widgettitlelink = $widgetItem['name'] . "_title_link";
