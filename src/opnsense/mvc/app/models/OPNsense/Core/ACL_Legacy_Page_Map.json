@@ -28,7 +28,7 @@
         "descr": "Allow access to the 'AJAX: Get Stats' page.",
         "match": [
             "license.php",
-            "getstats.php*"
+            "widgets/api/get.php*"
         ]
     },
     "page-all": {
@@ -52,7 +52,7 @@
             "index.php*",
             "*.widget.php*",
             "graph.php*",
-            "getstats.php*",
+            "widgets/api/get.php*",
             "legacy_traffic_stats.php*",
             "diag_logs_filter_dynamic.php*"
         ]

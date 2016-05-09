@@ -147,7 +147,6 @@ include("fbegin.inc");?>
   // normal dashboard
   else:?>
 
-<script src='/javascript/index/ajax.js'></script>
 <script src='/ui/js/jquery-sortable.js'></script>
 <script type="text/javascript">
   function addWidget(selectedDiv) {
@@ -237,7 +236,7 @@ include("fbegin.inc");?>
                 }
             });
             // schedule next update
-            setTimeout('process_widget_data()', 30000);
+            setTimeout('process_widget_data()', 10000);
       });
   }
 </script>

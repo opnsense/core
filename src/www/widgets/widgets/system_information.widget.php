@@ -32,7 +32,6 @@
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("system.inc");
-require_once("stats.inc");
 
 
 if (isset($_POST['getupdatestatus'])) {
@@ -53,8 +52,6 @@ if (isset($_POST['getupdatestatus'])) {
 
     exit;
 }
-
-$filesystems = get_mounted_filesystems();
 ?>
 
 <script src="/ui/js/moment-with-locales.min.js" type="text/javascript"></script>
