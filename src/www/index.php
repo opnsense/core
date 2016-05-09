@@ -297,7 +297,6 @@ include("fbegin.inc");?>
               } else {
                   $("#add_widget_" + $(this).attr('id')).show();
               }
-
           });
       });
   });
