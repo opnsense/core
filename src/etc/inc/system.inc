@@ -662,6 +662,7 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
             }
 
             $gatewayip = $gateway['gateway'];
+            $needs_iface = isset($gateway['fargw']);
             $interfacegw = $gateway['interface'];
 
             $blackhole = "";
@@ -715,11 +716,12 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                     $ip .= "/128";
                 }
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
+                $iface = $needs_iface ? ' -iface ' . escapeshellarg($interfacegw) . ' ' : '';
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
                 if (is_subnet($ip)) {
                     if (is_ipaddr($gatewayip)) {
-                        mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
-                        mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
+                        mwexec("/sbin/route delete".$cmd . $iface . escapeshellarg($gatewayip));
+                        mwexec("/sbin/route add".$cmd . $iface . escapeshellarg($gatewayip));
                     } elseif (!empty($interfacegw)) {
                         mwexec("/sbin/route delete".$cmd . "-iface " . escapeshellarg($interfacegw));
                         mwexec("/sbin/route add".$cmd . "-iface " . escapeshellarg($interfacegw));
