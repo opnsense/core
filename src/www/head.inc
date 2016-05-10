@@ -112,6 +112,9 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <!-- nvd3 -->
     <link rel="stylesheet" href="/ui/css/nv.d3.css">
 
+    <!-- datepicker css -->
+    <link  href="/ui/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
     <script>var theme = "<?= $themename ?>"; </script>
 
     <!-- JQuery -->
@@ -119,6 +122,9 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
 
     <!-- Ticker used for notices-->
     <script type="text/javascript" src="/javascript/ticker.js"></script>
+
+    <!-- datepicker -->
+    <script src="/ui/js/bootstrap-datepicker.min.js"></script>
 
     <!-- d3 -->
     <script type="text/javascript" src="/ui/js/d3.min.js"></script>
@@ -128,6 +134,7 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
 
     <!-- append some helper functions to integrate into the legacy code -->
     <script type="text/javascript" src="/javascript/opnsense_legacy.js"></script>
+
     <!-- opnsense non legacy helper functions -->
     <script type="text/javascript" src="/ui/js/opnsense.js"></script>
 
