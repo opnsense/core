@@ -107,7 +107,7 @@ include("head.inc");
   $( document ).ready(function() {
       function update_bandwidth_stats() {
         $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
-            traffic_widget_update($("[data-plugin=traffic]")[0], data, 360);
+            traffic_widget_update($("[data-plugin=traffic]")[0], data);
         });
         $.ajax("legacy_traffic_stats.php", {
           type: 'get',
@@ -131,7 +131,7 @@ include("head.inc");
             $("#bandwidth_details").html(html.join(''));
           }
         });
-        setTimeout(update_bandwidth_stats, 1000);
+        setTimeout(update_bandwidth_stats, 2000);
       }
       update_bandwidth_stats();
 
