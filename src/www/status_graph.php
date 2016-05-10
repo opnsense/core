@@ -29,6 +29,8 @@
 */
 
 require_once("guiconfig.inc");
+require_once('interfaces.inc');
+require_once("/usr/local/www/widgets/api/plugins/traffic.inc");
 
 // Get configured interface list
 $ifdescrs = get_configured_interface_with_descr();
@@ -45,7 +47,6 @@ foreach (array('server', 'client') as $mode) {
     }
 }
 
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // load initial form data
     $pconfig = array();
@@ -59,6 +60,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['sort'] = !empty($_GET['sort']) ? $_GET['sort'] : "";
     $pconfig['filter'] = !empty($_GET['filter']) ? $_GET['filter'] : "";
     $pconfig['hostipformat'] = !empty($_GET['hostipformat']) ? $_GET['hostipformat'] : "";
+    $pconfig['act'] = !empty($_GET['act']) ? $_GET['act'] : "";
+    if ($pconfig['act'] == "traffic") {
+        // traffic graph data
+        echo json_encode(traffic_api());
+        exit;
+    } elseif ($pconfig['act'] == 'top') {
+        // top data
+        $result = array();
+        $real_interface = get_real_interface($pconfig['if']);
+        if (does_interface_exist($real_interface)) {
+            $netmask = find_interface_subnet($real_interface);
+            $intsubnet = gen_subnet(find_interface_ip($real_interface), $netmask) . "/$netmask";
+            $cmd_args = $pconfig['filter'] == "local" ? " -c " . $intsubnet . " " : " -lc 0.0.0.0/0 ";
+            $cmd_args .= $pconfig['sort'] == "out" ? " -T " : " -R ";
+            $cmd_action = "/usr/local/bin/rate -i {$real_interface} -nlq 1 -Aba 20 {$cmd_args} | tr \"|\" \" \" | awk '{ printf \"%s:%s:%s:%s:%s\\n\", $1,  $2,  $4,  $6,  $8 }'";
+            exec($cmd_action, $listedIPs);
+            for ($idx = 2 ; $idx < count($listedIPs) ; ++$idx) {
+                $fields = explode(':', $listedIPs[$idx]);
+                if (!empty($pconfig['hostipformat'])) {
+                    $addrdata = gethostbyaddr($fields[0]);
+                    if ($pconfig['hostipformat'] == 'hostname' && $addrdata != $fields[0]){
+                        $addrdata = explode(".", $addrdata)[0];
+                    }
+                } else {
+                    $addrdata = $fields[0];
+                }
+                $result[] = array('host' => $addrdata, 'in' => $fields[1], 'out' => $fields[2]);
+            }
+        }
+        echo json_encode($result);
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: status_graph.php");
     exit;
@@ -74,6 +106,9 @@ include("head.inc");
 <script type="text/javascript">
   $( document ).ready(function() {
       function update_bandwidth_stats() {
+        $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
+            traffic_widget_update($("[data-plugin=traffic]")[0], data, 360);
+        });
         $.ajax("legacy_traffic_stats.php", {
           type: 'get',
           cache: false,
@@ -99,6 +134,7 @@ include("head.inc");
         setTimeout(update_bandwidth_stats, 1000);
       }
       update_bandwidth_stats();
+
   });
 </script>
 
@@ -121,7 +157,7 @@ include("head.inc");
                 <tbody>
                   <tr>
                     <td>
-                      <select id="if" name="if" onchange="document.form1.submit()">
+                      <select id="if" name="if">
 <?php
                       foreach ($ifdescrs as $ifn => $ifd):?>
                         <option value="<?=$ifn;?>" <?=$ifn == $pconfig['if'] ?  " selected=\"selected\"" : "";?>>
@@ -132,7 +168,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="sort" name="sort" onchange="document.form1.submit()">
+                      <select id="sort" name="sort">
                         <option value="">
                           <?= gettext('Bw In') ?>
                         </option>
@@ -142,7 +178,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="filter" name="filter" onchange="document.form1.submit()">
+                      <select id="filter" name="filter">
                         <option value="local" <?=$pconfig['filter'] == "local" ? " selected=\"selected\"" : "";?>>
                           <?= gettext('Local') ?>
                         </option>
@@ -152,7 +188,7 @@ include("head.inc");
                       </select>
                     </td>
                     <td>
-                      <select id="hostipformat" name="hostipformat" onchange="document.form1.submit()">
+                      <select id="hostipformat" name="hostipformat">
                         <option value=""><?= gettext('IP Address') ?></option>
                         <option value="hostname" <?=$pconfig['hostipformat'] == "hostname" ? " selected" : "";?>>
                           <?= gettext('Host Name') ?>
@@ -172,16 +208,9 @@ include("head.inc");
       <section class="col-xs-12">
         <div class="content-box">
           <div class="col-sm-6 col-xs-12">
-            <div>
-                <br/>
-                <object  data="graph.php?ifnum=<?=htmlspecialchars($pconfig['if']);?>&amp;ifname=<?=rawurlencode($ifdescrs[htmlspecialchars($pconfig['if'])]);?>">
-                  <param name="id" value="graph" />
-                  <param name="type" value="image/svg+xml" />
-                  <param name="width" value="100%" />
-                  <param name="height" value="100%" />
-                  <param name="pluginspage" value="http://www.adobe.com/svg/viewer/install/auto" />
-                </object>
-            </div>
+<?php
+            // plugin dashboard widget
+            include ('/usr/local/www/widgets/widgets/traffic_graphs.widget.php');?>
           </div>
           <div class="col-sm-6 col-xs-12">
             <div class="table-responsive" >
@@ -197,9 +226,6 @@ include("head.inc");
                 </tbody>
               </table>
             </div>
-          </div>
-          <div class="col-xs-12">
-            <p><?=gettext("Note:"); ?> <?=sprintf(gettext('The %sAdobe SVG Viewer%s, Firefox 1.5 or later or other browser supporting SVG is required to view the graph.'),'<a href="http://www.adobe.com/svg/viewer/install/" target="_blank">','</a>'); ?></p>
           </div>
         </div>
       </section>
