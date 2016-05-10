@@ -671,13 +671,18 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                 continue;
             }
 
+            $interfacegw = $gateway['interface'];
             $gatewayip = $gateway['gateway'];
             $fargw = isset($gateway['fargw']);
-            $interfacegw = $gateway['interface'];
+            $blackhole = '';
 
-            $blackhole = "";
-            if (!strcasecmp("Null", substr($rtent['gateway'], 0, 3))) {
-                $blackhole = "-blackhole";
+            switch ($rtent['gateway']) {
+                case 'Null4':
+                case 'Null6':
+                    $blackhole = '-blackhole';
+                    break;
+                default:
+                    break;
             }
 
             if (!is_fqdn($rtent['network']) && !is_subnet($rtent['network'])) {
@@ -703,30 +708,52 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                 }
                 $ips = add_hostname_to_watch($rtent['network']);
             }
-
             foreach ($dnscache as $ip) {
                 if (in_array($ip, $ips)) {
                     continue;
                 }
-                mwexec("/sbin/route delete " . escapeshellarg($ip), true);
+
+                if (!is_subnet($ip)) {
+                    if (is_ipaddrv4($ip)) {
+                        $ip .= "/32";
+                    } elseif (is_ipaddrv6($ip)) {
+                        $ip .= "/128";
+                    }
+                }
+
+                $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
+
+                mwexec("/sbin/route delete {$inet}" . escapeshellarg($ip));
             }
 
             if (isset($rtent['disabled'])) {
-                /* XXX: This is a bit dangerous in case of routing daemons!? */
                 foreach ($ips as $ip) {
-                    mwexec("/sbin/route delete " . escapeshellarg($ip), true);
+                    if (!is_subnet($ip)) {
+                        if (is_ipaddrv4($ip)) {
+                            $ip .= "/32";
+                        } elseif (is_ipaddrv6($ip)) {
+                            $ip .= "/128";
+                        }
+                    }
+
+                    $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
+                    mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip));
                 }
                 continue;
             }
 
             foreach ($ips as $ip) {
-                if (is_ipaddrv4($ip)) {
-                    $ip .= "/32";
-                } elseif (is_ipaddrv6($ip)) {
-                    $ip .= "/128";
+                if (!is_subnet($ip)) {
+                    if (is_ipaddrv4($ip)) {
+                        $ip .= "/32";
+                    } elseif (is_ipaddrv6($ip)) {
+                        $ip .= "/128";
+                    }
                 }
+
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
                 $cmd = " {$inet} {$blackhole} " . escapeshellarg($ip) . " ";
+
                 if (is_subnet($ip)) {
                     if (is_ipaddr($gatewayip)) {
                         mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
@@ -739,6 +766,8 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                         mwexec("/sbin/route delete".$cmd . "-interface " . escapeshellarg($interfacegw));
                         mwexec("/sbin/route add".$cmd . "-interface " . escapeshellarg($interfacegw));
                     }
+                } else {
+                    log_error(sprintf('Cannot add static route to: %s', $ip));
                 }
             }
         }
