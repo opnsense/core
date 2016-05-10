@@ -144,7 +144,15 @@ include("head.inc");
     <div class="row">
       <section class="col-xs-12">
         <div class="content-box">
-          <form name="form1" method="get">
+          <div class="col-xs=-12">
+<?php
+            // plugin dashboard widget
+            include ('/usr/local/www/widgets/widgets/traffic_graphs.widget.php');?>
+          </div>
+        </div>
+      </section>
+      <section class="col-xs-12">
+        <div class="content-box">
             <div class="table-responsive" >
               <table class="table table-striped">
                 <thead>
@@ -203,17 +211,11 @@ include("head.inc");
                 </tbody>
               </table>
             </div>
-          </form>
         </div>
       </section>
       <section class="col-xs-12">
         <div class="content-box">
-          <div class="col-sm-6 col-xs-12">
-<?php
-            // plugin dashboard widget
-            include ('/usr/local/www/widgets/widgets/traffic_graphs.widget.php');?>
-          </div>
-          <div class="col-sm-6 col-xs-12">
+          <div class="col-sm-12 col-xs-12">
             <div class="table-responsive" >
               <table class="table table-condensed">
                 <thead>
