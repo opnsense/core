@@ -579,6 +579,7 @@ $( document ).ready(function() {
         });
     });
 
+    $('.datepicker').datepicker();
 });
 </script>
 
@@ -664,10 +665,11 @@ $( document ).ready(function() {
                   <tr>
                     <td><a id="help_for_expires" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Expiration date"); ?></td>
                     <td>
-                      <input name="expires" type="text" id="expires" size="10" value="<?=$pconfig['expires'];?>" />
+                      <input name="expires" type="text" id="expires" class="datepicker" data-date-format="mm/dd/yyyy" value="<?=$pconfig['expires'];?>" />
                       <div class="hidden" for="help_for_expires">
                           <?=gettext("Leave blank if the account shouldn't expire, otherwise enter the expiration date in the following format: mm/dd/yyyy"); ?>
                       </div>
+                    </td>
                   </tr>
                   <tr>
                     <td><a id="help_for_groups" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group Memberships");?></td>
@@ -855,7 +857,7 @@ $( document ).ready(function() {
                                           <?php // listtags always changes our key item to an array.. ?>
                                           <?php // don't want to change "key" to something less sane. ?>
                                           <?=$userApiKey['key'][0];?>
-                                        <small>
+                                        </small>
                                       </td>
                                       <td>
                                         <button data-key="<?=$userApiKey['key'][0];?>" type="button" class="btn btn-default btn-xs act-del-api-key"
