@@ -203,7 +203,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             filter_pflog_start();
-            setup_gateways_monitor();
         }
     }
 }
