@@ -720,10 +720,8 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                         $ip .= "/128";
                     }
                 }
-
                 $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-
-                mwexec("/sbin/route delete {$inet}" . escapeshellarg($ip));
+                mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip));
             }
 
             if (isset($rtent['disabled'])) {
@@ -735,7 +733,6 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                             $ip .= "/128";
                         }
                     }
-
                     $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
                     mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip));
                 }
