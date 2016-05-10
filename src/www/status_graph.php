@@ -90,6 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         echo json_encode($result);
+        exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: status_graph.php");
@@ -109,7 +110,7 @@ include("head.inc");
         $.ajax("status_graph.php", {'type': 'get', 'cache': false, 'dataType': 'json', 'data': {'act': 'traffic'}}).done(function(data){
             traffic_widget_update($("[data-plugin=traffic]")[0], data);
         });
-        $.ajax("legacy_traffic_stats.php", {
+        $.ajax("status_graph.php", {
           type: 'get',
           cache: false,
           dataType: "json",
