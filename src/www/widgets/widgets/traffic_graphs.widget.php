@@ -38,11 +38,14 @@
   var traffic_graph_widget_chart_out = null;
   var traffic_graph_widget_chart_data_out = null;
 
-  function traffic_widget_update(sender, data)
+  function traffic_widget_update(sender, data, max_measures)
   {
-      // push new measurement, keep a maximum of 100 measures in
+      if (max_measures == undefined) {
+          max_measures = 100;
+      }
+      // push new measurement, keep a maximum of max_measures measures in
       traffic_graph_widget_data.push(data);
-      if (traffic_graph_widget_data.length > 100) {
+      if (traffic_graph_widget_data.length > max_measures) {
           traffic_graph_widget_data.shift();
       } else if (traffic_graph_widget_data.length == 1) {
           traffic_graph_widget_data.push(data);
