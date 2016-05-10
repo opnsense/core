@@ -136,12 +136,32 @@ POSSIBILITY OF SUCH DAMAGE.
                 duration = 60*60*8;
                 resolution = 300;
                 break;
-              case "1w":
+              case "24h":
+                duration = 60*60*24;
+                resolution = 300;
+                break;
+              case "7d":
                 duration = 60*60*24*7;
                 resolution = 3600;
                 break;
-              case "1m":
-                duration = 60*60*24*31;
+              case "14d":
+                duration = 60*60*24*14;
+                resolution = 3600;
+                break;
+              case "30d":
+                duration = 60*60*24*30;
+                resolution = 86400;
+                break;
+              case "60d":
+                duration = 60*60*24*60;
+                resolution = 86400;
+                break;
+              case "90d":
+                duration = 60*60*24*90;
+                resolution = 86400;
+                break;
+              case "182d":
+                duration = 60*60*24*182;
                 resolution = 86400;
                 break;
               case "1y":
@@ -354,6 +374,48 @@ POSSIBILITY OF SUCH DAMAGE.
       }
 
       /**
+       * total traffic for selected interface and time period
+       */
+      function grid_totals()
+      {
+        var fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+        var measures = ['octets', 'packets'];
+        var selected_time = get_time_select();
+        var time_url = selected_time.from + '/' + selected_time.to;
+        measures.map(function(measure){
+          ajaxGet('/api/diagnostics/networkinsight/top/FlowInterfaceTotals/'+time_url+'/direction/'+measure+'/25/',
+              {'filter_field': 'if', 'filter_value': $('#interface_select').val()}, function(data, status){
+                var total_in = 0;
+                var total_out = 0;
+                var total = 0;
+                if (measure == 'octets') {
+                    var kb = 1024; // 1 KB = 1024 bytes
+                } else {
+                    var kb = 1000; // 1 K = 1000 (packets)
+                }
+
+                data.map(function(item) {
+                    var ndx = Math.floor( Math.log(item.total) / Math.log(kb) );
+                    var formated_total =  (item.total / Math.pow(kb, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+                    if (item.direction == "in") {
+                        total_in = formated_total;
+                    } else {
+                        total_out = formated_total;
+                    }
+                    total += item.total;
+                });
+                if (total > 0) {
+                    var ndx = Math.floor( Math.log(total) / Math.log(kb) );
+                    var total =  (total / Math.pow(kb, ndx)).toFixed(2) + ' ' + fileSizeTypes[ndx];
+                }
+                $("#total_interface_"+measure+" > td:eq(1)").html(total_in);
+                $("#total_interface_"+measure+" > td:eq(2)").html(total_out);
+                $("#total_interface_"+measure+" > td:eq(3)").html(total);
+          });
+        });
+      }
+
+      /**
        * collect netflow details
        */
       function grid_details()
@@ -464,12 +526,14 @@ POSSIBILITY OF SUCH DAMAGE.
           chart_interface_totals();
           chart_top_dst_port_usage();
           chart_top_src_addr_usage();
+          grid_totals();
       });
 
       // event change interface selection
       $('#interface_select').change(function(){
           chart_top_dst_port_usage();
           chart_top_src_addr_usage();
+          grid_totals();
       });
 
       $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
@@ -536,6 +600,7 @@ POSSIBILITY OF SUCH DAMAGE.
           chart_interface_totals();
           chart_top_dst_port_usage();
           chart_top_src_addr_usage();
+          grid_totals();
       }).fail(function(){
           // netflow / local collection not active.
           $("#info_tab").show();
@@ -569,8 +634,13 @@ POSSIBILITY OF SUCH DAMAGE.
         <select class="selectpicker" id="total_time_select">
           <option value="2h">{{ lang._('Last 2 hours, 30 second average') }}</option>
           <option value="8h">{{ lang._('Last 8 hours, 5 minute average') }}</option>
-          <option value="1w">{{ lang._('Last week, 1 hour average') }}</option>
-          <option value="1m">{{ lang._('Last month, 24 hour average') }}</option>
+          <option value="24h">{{ lang._('Last 24 hours, 5 minute average') }}</option>
+          <option value="7d">{{ lang._('7 days, 1 hour average') }}</option>
+          <option value="14d">{{ lang._('14 days, 1 hour average') }}</option>
+          <option value="30d">{{ lang._('30 days, 24 hour average') }}</option>
+          <option value="60d">{{ lang._('60 days, 24 hour average') }}</option>
+          <option value="90d">{{ lang._('90 days, 24 hour average') }}</option>
+          <option value="182d">{{ lang._('182 days, 24 hour average') }}</option>
           <option value="1y">{{ lang._('Last year, 24 hour average') }}</option>
         </select>
       </div>
@@ -615,7 +685,33 @@ POSSIBILITY OF SUCH DAMAGE.
           <div class="col-xs-12">
             <small>{{ lang._('click on pie for details') }}</small>
           </div>
-
+          <hr/>
+          <div class="col-sm-6 col-xs-12">
+            <table class="table table-condensed">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>{{ lang._('In') }}</th>
+                  <th>{{ lang._('Out') }}</th>
+                  <th>{{ lang._('Total') }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id="total_interface_packets">
+                  <td>{{ lang._('Packets') }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr id="total_interface_octets">
+                  <td>{{ lang._('Bytes') }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
