@@ -110,7 +110,7 @@
                     <queues>
                         <source>OPNsense.Cron.Cron</source>
                         <items>jobs.job</items>
-                        <display>Description</display>
+                        <display>description</display>
                         <filters>
                             <origin>/IDS/</origin>
                         </filters>
