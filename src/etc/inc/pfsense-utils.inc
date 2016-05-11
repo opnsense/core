@@ -178,79 +178,54 @@ function setup_serial_port($sync = true)
 {
     global $config;
 
-    $serialspeed = (is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
+    $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
     $serial_enabled = isset($config['system']['enableserial']);
 
-    $loader_conf_file = '/boot/loader.conf';
-    $boot_config_file = '/boot.config';
-
-    /* serial console - write out /boot.config */
-    if (file_exists($boot_config_file)) {
-        $boot_config = file_get_contents($boot_config_file);
+    // ** serial console - write out /boot.config
+    if ($serial_enabled) {
+        file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
     } else {
-        $boot_config = '';
+        file_put_contents('/boot.config', "");
     }
 
-    $boot_config_split = explode("\n", $boot_config);
-    $fd = @fopen($boot_config_file, 'w');
-    if ($fd) {
-        foreach ($boot_config_split as $bcs) {
-            if (stristr($bcs, '-D') || stristr($bcs, '-h')) {
-                continue;
-            }
-            if ($bcs != '') {
-                @fwrite($fd, "{$bcs}\n");
-            }
+    // ** console settings in /boot/loader.conf
+    $new_boot_config = array();
+    $new_boot_config['boot_multicons'] = $serial_enabled ? '"YES"' : null;
+    $new_boot_config['boot_serial'] = $serial_enabled ? '"YES"' : null;
+    if ($serial_enabled) {
+        $primaryconsole = !empty($config['system']['primaryconsole']) ? $config['system']['primaryconsole'] : "";
+        $new_boot_config['console'] = $primaryconsole == "video" ? '"vidconsole,comconsole"' : '"comconsole,vidconsole"';
+    } else {
+        $new_boot_config['console'] = null;
+    }
+    $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
+    $new_boot_config['hw.usb.no_pf'] = '"1"';
+    $new_boot_config['autoboot_delay'] = '"3"';
+
+    $new_loader_conf = "";
+    // construct OPNsense config for /boot/loader.conf
+    foreach ($new_boot_config as $param => $value) {
+        if (!empty($value)) {
+            $new_loader_conf .= "{$param}={$value}\n";
         }
-        if ($serial_enabled) {
-            @fwrite($fd, "-S{$serialspeed} -D\n");
+    }
+    // copy non matched settings in /boot/loader.conf
+    foreach (explode("\n", @file_get_contents('/boot/loader.conf')) as $line) {
+        if (!empty($line) && !array_key_exists(trim(explode('=', $line)[0]), $new_boot_config)) {
+            $new_loader_conf .= $line . "\n";
         }
-        fclose($fd);
+    }
+    @file_put_contents('/boot/loader.conf', $new_loader_conf);
+
+    // ** setup /etc/ttys
+
+    // minimize chances of /etc/ttys corruption, keep a copy of the original ttys file
+    if (!file_exists('/etc/ttys.opnsense') || filesize('/etc/ttys.opnsense') < 100) {
+        copy('/etc/ttys', '/etc/ttys.opnsense');
     }
 
-    $boot_config = @file_get_contents($loader_conf_file);
-    $boot_config_split = explode("\n", $boot_config);
-    if(count($boot_config_split) > 0) {
-        $new_boot_config = array();
-        // Loop through and only add lines that are not empty, and which
-        //  do not contain a console directive.
-        foreach($boot_config_split as $bcs) {
-            if(!empty($bcs)
-              && (stripos($bcs, "console") === false)
-              && (stripos($bcs, "boot_multicons") === false)
-              && (stripos($bcs, "boot_serial") === false)
-              && (stripos($bcs, "hw.usb.no_pf") === false)
-              && (stripos($bcs, "autoboot_delay") === false)) {
-                $new_boot_config[] = $bcs;
-            }
-        }
-
-        if ($serial_enabled) {
-            $new_boot_config[] = 'boot_multicons="YES"';
-            $new_boot_config[] = 'boot_serial="YES"';
-            $primaryconsole = $config['system']['primaryconsole'];
-            switch ($primaryconsole) {
-                case "video":
-                    $new_boot_config[] = 'console="vidconsole,comconsole"';
-                    break;
-                case "serial":
-                default:
-                    $new_boot_config[] = 'console="comconsole,vidconsole"';
-            }
-        }
-        $new_boot_config[] = 'comconsole_speed="' . $serialspeed . '"';
-        $new_boot_config[] = 'hw.usb.no_pf="1"';
-        $new_boot_config[] = 'autoboot_delay="3"';
-
-        @file_put_contents($loader_conf_file, implode("\n", $new_boot_config) . "\n");
-    }
-
-    $ttys = file_get_contents("/etc/ttys");
-    $ttys_split = explode("\n", $ttys);
     $fd = fopen("/etc/ttys", "w");
-
     $on_off = $serial_enabled ? 'on' : 'off';
-
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
         $serial_type = 'std.' . $serialspeed;
@@ -258,18 +233,15 @@ function setup_serial_port($sync = true)
         $console_type = 'al.Pc';
         $serial_type = 'al.' . $serialspeed;
     }
-
-    foreach($ttys_split as $tty) {
+    foreach(explode("\n", file_get_contents("/etc/ttys.opnsense")) as $tty) {
         if (stristr($tty, "ttyv0")) {
             fwrite($fd, "ttyv0  \"/usr/libexec/getty {$console_type}\"  cons25  on  secure\n");
         } elseif (stristr($tty, "ttyu0")) {
             fwrite($fd, "ttyu0  \"/usr/libexec/getty {$serial_type}\"  cons25  {$on_off}  secure\n");
-        } else {
+        } elseif (!empty($tty)) {
             fwrite($fd, $tty . "\n");
         }
     }
-
-    unset($on_off, $console_type, $serial_type);
     fclose($fd);
 
     if ($sync) {
