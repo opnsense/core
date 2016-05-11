@@ -92,10 +92,15 @@
                 <default>0</default>
                 <Required>Y</Required>
             </ips>
+            <promisc type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </promisc>
             <interfaces type="InterfaceField">
                 <Required>Y</Required>
                 <default>wan</default>
                 <multiple>Y</multiple>
+                <AddParentDevices>Y</AddParentDevices>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
                 </filters>
