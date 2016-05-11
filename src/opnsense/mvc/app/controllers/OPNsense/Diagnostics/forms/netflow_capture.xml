@@ -4,7 +4,7 @@
         <label>Interfaces</label>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Select interface(s) to enable netflow on.]]></help>
+        <help><![CDATA[Select interface(s) to enable NetFlow on.]]></help>
         <hint>Type or select interface.</hint>
     </field>
     <field>
@@ -12,27 +12,27 @@
         <label>Egress only</label>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Select interfaces used for wan traffic to avoid counting nat traffic twice]]></help>
+        <help><![CDATA[Select interfaces used for WAN traffic to avoid counting NAT traffic twice.]]></help>
         <hint>Type or select interface.</hint>
     </field>
     <field>
         <id>netflow.collect.enable</id>
         <label>Capture local</label>
         <type>checkbox</type>
-        <help>Collect netflow data on this firewall, this will automatically append localhost as netflow target</help>
+        <help>Collect NetFlow data on this firewall, this will automatically append localhost as NetFlow target.</help>
     </field>
     <field>
         <id>netflow.capture.version</id>
         <label>Version</label>
         <type>dropdown</type>
-        <help><![CDATA[Select netflow version to use.]]></help>
+        <help><![CDATA[Select NetFlow version to use.]]></help>
     </field>
     <field>
         <id>netflow.capture.targets</id>
         <label>Destinations</label>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Select destinations to send netflow data to (ip address:port, eg 192.168.0.1:2550).]]></help>
+        <help><![CDATA[Select destinations to send NetFlow data to (ip address:port, eg 192.168.0.1:2550).]]></help>
         <hint>Type or select destinations.</hint>
         <allownew>true</allownew>
     </field>

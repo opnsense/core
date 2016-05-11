@@ -7,7 +7,7 @@
         <rules>
             <rule type="ArrayField">
                 <sid type="IntegerField">
-                    <ValidationMessage>sid should be a number</ValidationMessage>
+                    <ValidationMessage>Sid should be a number.</ValidationMessage>
                     <Required>Y</Required>
                 </sid>
                 <enabled type="BooleanField">
@@ -34,7 +34,7 @@
                 <fingerprint type="TextField">
                     <Required>N</Required>
                     <mask>/^([0-9a-fA-F:]){59,59}$/u</mask>
-                    <ValidationMessage>A SSL fingerprint should be a 59 character long hex value</ValidationMessage>
+                    <ValidationMessage>A SSL fingerprint should be a 59 character long hex value.</ValidationMessage>
                 </fingerprint>
                 <geoip type="CountryField">
                     <Required>N</Required>
@@ -53,7 +53,7 @@
                 <description type="TextField">
                     <Required>Y</Required>
                     <mask>/^([\t\n\v\f\r 0-9a-zA-Z.\-,_\x{00A0}-\x{FFFF}]){1,255}$/u</mask>
-                    <ValidationMessage>Description should be a string between 1 and 255 characters</ValidationMessage>
+                    <ValidationMessage>Description should be a string between 1 and 255 characters.</ValidationMessage>
                 </description>
                 <action type="OptionField">
                     <Required>Y</Required>
@@ -116,7 +116,7 @@
                         </filters>
                     </queues>
                 </Model>
-                <ValidationMessage>Related cron not found</ValidationMessage>
+                <ValidationMessage>Related cron not found.</ValidationMessage>
                 <Required>N</Required>
             </UpdateCron>
         </general>
