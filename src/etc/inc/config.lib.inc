@@ -193,25 +193,6 @@ function write_config($desc = '', $backup = true)
     return $config;
 }
 
-/****f* config/reset_factory_defaults
- * NAME
- *   reset_factory_defaults - Reset the system to its default configuration.
- ******/
-function reset_factory_defaults($sync = true)
-{
-    mwexec('/bin/rm -r /conf/*');
-    disable_security_checks();
-    setup_serial_port(false);
-
-    /* as we go through a special case directly reboot */
-    $shutdown_cmd = '/sbin/shutdown -or now';
-    if ($sync) {
-        mwexec($shutdown_cmd);
-    } else {
-        mwexec_bg($shutdown_cmd);
-    }
-}
-
 function config_restore($conffile)
 {
     global $config;
