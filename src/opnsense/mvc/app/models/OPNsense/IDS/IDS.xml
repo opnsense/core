@@ -74,7 +74,7 @@
                 <filter type="OptionField">
                     <Required>N</Required>
                     <OptionValues>
-                        <drop>Change all alerts to drop actions.</drop>
+                        <drop>Change all alerts to drop actions</drop>
                     </OptionValues>
                 </filter>
                 <enabled type="BooleanField">

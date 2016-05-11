@@ -17,7 +17,7 @@
         <id>ids.general.promisc</id>
         <label>Promiscuous mode</label>
         <type>checkbox</type>
-        <help><![CDATA[Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface
+        <help><![CDATA[Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.
         ]]></help>
     </field>
     <field>
