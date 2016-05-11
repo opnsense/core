@@ -1,28 +1,25 @@
 <form>
     <field>
         <id>ids.general.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
-        <help>enable IDS</help>
+        <help>Enable intrusion detection system.</help>
     </field>
     <field>
         <id>ids.general.ips</id>
         <label>IPS mode</label>
         <type>checkbox</type>
-        <help><![CDATA[enable protection mode (block traffic).
-        before enabling, please disable all hardware offloading first. <br><a href="/system_advanced_network.php">in advanced network</a>
-        ]]></help>
+        <help><![CDATA[Enable protection mode (block traffic).<br />Before enabling, please disable all hardware offloading first <a href="/system_advanced_network.php">in advanced network</a>.]]></help>
     </field>
     <field>
         <id>ids.general.promisc</id>
-        <label>promiscuous mode</label>
+        <label>Promiscuous mode</label>
         <type>checkbox</type>
-        <help><![CDATA[enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface
-        ]]></help>
+        <help><![CDATA[Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.]]></help>
     </field>
     <field>
         <id>ids.general.interfaces</id>
-        <label>interfaces</label>
+        <label>Interfaces</label>
         <type>select_multiple</type>
         <style>tokenize</style>
         <help><![CDATA[Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).]]></help>

@@ -1,24 +1,24 @@
 <form>
     <field>
         <id>enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
-        <help>enable ruleset</help>
+        <help>Enable ruleset</help>
     </field>
     <field>
         <id>filename</id>
-        <label>filename</label>
+        <label>Filename</label>
         <type>info</type>
     </field>
     <field>
         <id>documentation</id>
-        <label>source</label>
+        <label>Source</label>
         <type>info</type>
     </field>
     <field>
         <id>filter</id>
         <label>Input Filter</label>
         <type>dropdown</type>
-        <help>Filter to use when downloading this ruleset, applies this action to all incoming lines</help>
+        <help>Filter to use when downloading this ruleset, applies this action to all incoming lines.</help>
     </field>
 </form>

@@ -1,37 +1,37 @@
 <form>
     <field>
         <id>timestamp</id>
-        <label>timestamp</label>
+        <label>Timestamp</label>
         <type>info</type>
     </field>
     <field>
         <id>alert</id>
-        <label>alert</label>
+        <label>Alert</label>
         <type>info</type>
     </field>
     <field>
         <id>alert_sid</id>
-        <label>alert sid</label>
+        <label>Alert sid</label>
         <type>info</type>
     </field>
     <field>
         <id>src_ip</id>
-        <label>source ip</label>
+        <label>Source IP</label>
         <type>info</type>
     </field>
     <field>
         <id>dest_ip</id>
-        <label>destination ip</label>
+        <label>Destination IP</label>
         <type>info</type>
     </field>
     <field>
         <id>src_port</id>
-        <label>source port</label>
+        <label>Source port</label>
         <type>info</type>
     </field>
     <field>
         <id>dest_port</id>
-        <label>destination port</label>
+        <label>Destination port</label>
         <type>info</type>
     </field>
 </form>
