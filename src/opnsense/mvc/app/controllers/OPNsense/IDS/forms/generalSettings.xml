@@ -14,11 +14,18 @@
         ]]></help>
     </field>
     <field>
+        <id>ids.general.promisc</id>
+        <label>promiscuous mode</label>
+        <type>checkbox</type>
+        <help><![CDATA[enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface
+        ]]></help>
+    </field>
+    <field>
         <id>ids.general.interfaces</id>
         <label>interfaces</label>
         <type>select_multiple</type>
         <style>tokenize</style>
-        <help><![CDATA[Select interface(s) to use.]]></help>
+        <help><![CDATA[Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).]]></help>
         <hint>Type or select interface.</hint>
     </field>
 </form>
