@@ -6,5 +6,6 @@
 %}{{
       helpers.getNodeByTag('interfaces.'+name+'.if')
 }}{%
+else %}{{name}}{%
 endif
 %}{%- endmacro %}
