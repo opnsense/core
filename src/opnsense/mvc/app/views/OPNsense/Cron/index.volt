@@ -131,7 +131,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="command" data-type="string">{{ lang._('Command') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">ID</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             </tr>
             </thead>
             <tbody>
