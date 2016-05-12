@@ -339,7 +339,7 @@ include("head.inc");
                 <table class="table table-striped table-condensed">
                   <thead>
                     <tr>
-                      <th><?=gettext("DNS Server"); ?></th>
+                      <th style="width:350px;"><?=gettext("DNS Server"); ?></th>
                       <th><?=gettext("Use gateway"); ?></th>
                     </tr>
                   </thead>
