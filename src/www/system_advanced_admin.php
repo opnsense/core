@@ -471,7 +471,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_sshdpermitrootlogin" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Root Login") ?></td>
                   <td>
-                    <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? 'checked="checked"' : '' ?> />
+                    <input name="sshdpermitrootlogin" type="checkbox" value="yes" <?= empty($pconfig['sshdpermitrootlogin']) ? '' : 'checked="checked"' ?> />
                     <strong><?=gettext("Permit root user login"); ?></strong>
                     <div class="hidden" for="help_for_sshdpermitrootlogin">
                       <?= gettext(
