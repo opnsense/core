@@ -311,7 +311,7 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <div class="content-box tab-content table-responsive">
-          <form action="system_advanced_admin.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <table class="table table-striped">
               <tr>
                 <td width="22%"><strong><?=gettext("webConfigurator");?></strong></td>

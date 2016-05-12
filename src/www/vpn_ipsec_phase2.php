@@ -645,7 +645,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
     <div class="row">
         <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
-          <form action="vpn_ipsec_phase2.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <div class="table-responsive">
               <table class="table table-striped">
                 <tr>

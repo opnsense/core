@@ -294,7 +294,7 @@ $( document ).ready(function() {
       <section class="col-xs-12">
         <div class="content-box">
           <div class="table-responsive">
-            <form action="system_gateways.php" method="post"  name="iform" id="iform">
+            <form method="post"  name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <table class="table table-striped">

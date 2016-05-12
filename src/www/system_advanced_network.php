@@ -103,7 +103,7 @@ include("head.inc");
 ?>
     <section class="col-xs-12">
       <div class="content-box tab-content table-responsive">
-        <form action="system_advanced_network.php" method="post" name="iform" id="iform">
+        <form method="post" name="iform" id="iform">
           <table class="table table-striped">
               <tr>
                 <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Interfaces"); ?></th>

@@ -311,7 +311,7 @@ $( document ).ready(function() {
         <div class="tab-content content-box col-xs-12 table-responsive">
 <?php
         if ($act == "new" || $act == "edit") :?>
-          <form action="system_groupmanager.php" method="post" name="iform" id="iform" onsubmit="presubmit()">
+          <form method="post" name="iform" id="iform" onsubmit="presubmit()">
             <input type="hidden" id="act" name="act" value="" />
             <input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
             <input type="hidden" id="privid" name="privid" value="" />
@@ -458,7 +458,7 @@ $( document ).ready(function() {
           </form>
 <?php
           else :?>
-          <form action="system_groupmanager.php" method="post" name="iform2" id="iform2">
+          <form method="post" name="iform2" id="iform2">
             <input type="hidden" id="act" name="act" value="" />
             <input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : "");?>" />
             <input type="hidden" id="groupname" name="groupname" value="" />

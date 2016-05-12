@@ -781,7 +781,7 @@ function removeRow(el) {
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
             <div class="content-box tab-content">
-              <form action="firewall_schedule_edit.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                 <input type="hidden" name="schedlabel" value="<?=$pconfig['schedlabel'];?>"/>
                   <table class="table table-striped">
                     <tbody>

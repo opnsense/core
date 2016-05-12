@@ -280,7 +280,7 @@ include("head.inc");
 ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <form action="firewall_nat_1to1_edit.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>

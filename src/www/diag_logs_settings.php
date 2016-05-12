@@ -316,7 +316,7 @@ $(document).ready(function() {
       }
 ?>
         <section class="col-xs-12">
-          <form action="diag_logs_settings.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <input type="hidden" id="action" name="action" value="" />
             <div class="tab-content content-box col-xs-12 __mb">
               <div class="table-responsive">

@@ -682,7 +682,7 @@ include("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
             <div class="content-box">
-              <form action="firewall_rules_edit.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                 <input type='hidden' name="id" value="<?=isset($id) ? $id:''?>" />
                 <input name="after" type="hidden" value="<?=isset($after) ? $after :'';?>" />
                 <input type="hidden" name="floating" value="<?=$pconfig['floating'];?>" />

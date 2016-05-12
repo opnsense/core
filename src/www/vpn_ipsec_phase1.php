@@ -581,7 +581,7 @@ function dpdchkbox_change() {
 
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
-          <form action="vpn_ipsec_phase1.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <div class="table-responsive">
               <table class="table table-striped">
                   <tr>

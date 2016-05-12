@@ -129,7 +129,7 @@ $( document ).ready(function() {
         <header class="content-box-head container-fluid"> <h3><?=gettext("OpenVPN Status");?></h3>
         </header>
         <div class="content-box-main col-xs-12">
-          <form action="status_openvpn.php" method="get" name="iform">
+          <form method="get" name="iform">
             <div class="table-responsive">
               <table class="table table-striped">
 <?php

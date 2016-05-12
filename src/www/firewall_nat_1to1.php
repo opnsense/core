@@ -191,7 +191,7 @@ $main_buttons = array(
 ?>
           <section class="col-xs-12">
           <div class="content-box">
-            <form action="firewall_nat_1to1.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="action" value="" />
               <table class="table table-striped">

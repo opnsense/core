@@ -433,7 +433,7 @@ $( document ).ready(function() {
           <div class="tab-content content-box col-xs-12 table-responsive">
             <?php if ($act == "new" || $act == "edit") :
 ?>
-            <form id="iform" name="iform" action="system_authservers.php" method="post">
+            <form id="iform" name="iform" method="post">
               <table class="table table-striped">
                 <tr>
                   <td width="22%"></td>

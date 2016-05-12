@@ -92,7 +92,7 @@ include("head.inc");
       <section class="col-xs-12">
         <div class="content-box">
           <div class="table-responsive">
-            <form action="system_hasync.php" method="post">
+            <form method="post">
               <table class="table table-striped">
                 <tr>
                   <td width="22%"><strong><?=gettext('State Synchronization') ?></strong></td>

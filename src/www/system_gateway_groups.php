@@ -161,7 +161,7 @@ $( document ).ready(function() {
       <section class="col-xs-12">
         <div class="container-fluid">
           <div class="tab-content content-box">
-            <form action="system_gateway_groups.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">

@@ -175,7 +175,7 @@ $( document ).ready(function() {
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
             <div class="table-responsive">
-              <form action="system_gateway_groups_edit.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                 <table class="table table-striped" summary="system groups edit">
                   <tr>
                     <td width="22%"></td>

@@ -82,7 +82,7 @@ include("head.inc");
           <section class="col-xs-12">
             <div class="content-box ">
               <div class="col-xs-12">
-                <p><form action="status_filter_reload.php" method="post" name="filter">
+                <p><form method="post" name="filter">
                 <input type="submit" value="<?= gettext('Reload Filter') ?>" class="btn btn-primary" name="reloadfilter" id="reloadfilter" />
                 <?php if (!empty($config['hasync']['synchronizetoip'])): ?>
                 <input type="submit" value="<?= gettext('Force Config Sync') ?>" class="btn btn-primary" name="syncfilter" id="syncfilter" />

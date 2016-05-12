@@ -115,7 +115,7 @@ $main_buttons = array(
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <div class="content-box tab-content">
-            <form action="firewall_schedule.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <table class="table table-striped">

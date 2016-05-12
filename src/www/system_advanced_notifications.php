@@ -143,7 +143,7 @@ include("head.inc");
 <section class="page-content-main">
   <div class="container-fluid">
     <div class="row">
-      <form action="system_advanced_notifications.php" method="post">
+      <form method="post">
 <?php
       if (isset($savemsg)) {
           print_info_box($savemsg);
@@ -152,7 +152,7 @@ include("head.inc");
       </form>
         <section class="col-xs-12">
           <div class="content-box tab-content table-responsive">
-            <form action="system_advanced_notifications.php" method="post" name="iform">
+            <form method="post" name="iform">
             <table class="table table-striped">
               <tr>
                 <td width="22%"><strong><?=gettext("Growl");?></strong></td>

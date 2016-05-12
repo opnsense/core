@@ -309,7 +309,7 @@ $( document ).ready(function() {
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <section class="col-xs-12">
           <div class="content-box tab-content">
-            <form action="firewall_virtual_ip_edit.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <table class="table table-striped">
                 <thead></thead>
                 <tbody>

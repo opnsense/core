@@ -623,7 +623,7 @@ include("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
-            <form id="filterlogentries" name="filterlogentries" action="diag_logs_filter.php" method="post">
+            <form id="filterlogentries" name="filterlogentries" method="post">
 <?php
               $Include_Act = explode(",", str_replace(" ", ",", $filterfieldsarray['act']));
               if ($filterfieldsarray['interface'] == "All") $interface = "";

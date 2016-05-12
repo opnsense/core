@@ -166,7 +166,7 @@ include("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <section class="col-xs-12">
           <div class="content-box tab-content">
-            <form action="firewall_aliases_import.php" method="post" name="iform">
+            <form method="post" name="iform">
               <table class="table table-striped">
                 <tr>
                   <td width="22%"><strong><?=gettext("Alias Import");?></strong></td>
