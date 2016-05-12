@@ -482,7 +482,7 @@ $main_buttons = array(
         <?php if ($act == "new" || $act == "edit") :
 ?>
 
-        <form action="system_camanager.php" method="post" name="iform" id="iform">
+        <form method="post" name="iform" id="iform">
           <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
           <table class="table table-striped">
@@ -699,7 +699,7 @@ $main_buttons = array(
 
 <?php
         else :?>
-        <form action="system_camanager.php" method="post" name="iform" id="iform">
+        <form method="post" name="iform" id="iform">
           <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
         </form>

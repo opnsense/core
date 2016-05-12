@@ -187,7 +187,7 @@ $main_buttons = array(
         <?php endif; ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <form action="firewall_nat_npt.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive">

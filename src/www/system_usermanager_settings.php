@@ -97,7 +97,7 @@ endif;?>
 ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12 table-responsive">
-            <form action="system_usermanager_settings.php" method="post">
+            <form method="post">
               <table class="table table-striped table-sort">
                 <tr>
                   <td width="22%"><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Session Timeout"); ?></td>

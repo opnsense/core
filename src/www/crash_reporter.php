@@ -187,7 +187,7 @@ if (isset($_POST['Submit'])) {
     <div class="row">
       <section class="col-xs-12">
         <div class="content-box">
-          <form action="/crash_reporter.php" method="post">
+          <form method="post">
             <div class="col-xs-12">
 <?php
             if ($has_crashed):?>

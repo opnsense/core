@@ -540,7 +540,7 @@ endif;?>
       </section>
 
       <section class="col-xs-12">
-          <form action="status_dhcpv6_leases.php" method="get">
+          <form method="get">
           <input type="hidden" name="order" value="<?=htmlspecialchars($_GET['order']);?>" />
           <?php if ($_GET['all']): ?>
           <input type="hidden" name="all" value="0" />

@@ -117,7 +117,7 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
-          <form action="system_usermanager_addprivs.php" method="post" name="iform">
+          <form method="post" name="iform">
             <table class="table table-striped">
               <tr>
                 <td width="22%"><?=gettext("System Privileges");?></td>

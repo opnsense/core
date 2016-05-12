@@ -530,7 +530,7 @@ endif; ?>
         <div class="tab-content content-box col-xs-12">
 <?php
         if ($act=="new" || $act=="edit") :?>
-        <form action="vpn_openvpn_client.php" method="post" name="iform" id="iform">
+        <form method="post" name="iform" id="iform">
           <div class="table-responsive">
           <table class="table table-striped">
             <tr>

@@ -85,7 +85,7 @@ include("head.inc");
 ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <form action="system_usermanager_passwordmg.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>

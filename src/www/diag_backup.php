@@ -503,7 +503,7 @@ $( document ).ready(function() {
       <?php endif; ?>
       <?php if ($input_messages) print_info_box($input_messages); ?>
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
-      <form action="diag_backup.php" method="post" enctype="multipart/form-data">
+      <form method="post" enctype="multipart/form-data">
         <section class="col-xs-12">
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped ">

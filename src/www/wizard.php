@@ -376,7 +376,7 @@ function showchange() {
 		    <section class="col-xs-12">
 			     <div class="content-box">
 
-					 <form action="wizard.php" method="post" name="iform" id="iform">
+					 <form method="post" name="iform" id="iform">
 						<input type="hidden" name="xml" value="<?= htmlspecialchars($xml) ?>" />
 						<input type="hidden" name="stepid" value="<?= htmlspecialchars($stepid) ?>" />
 

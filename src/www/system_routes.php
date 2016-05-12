@@ -230,7 +230,7 @@ $( document ).ready(function() {
 endif; ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
-            <form action="system_routes.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">

@@ -150,7 +150,7 @@ $( document ).ready(function() {
             print_info_box_apply(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
         }
 ?>
-      <form action="system_advanced_sysctl.php" method="post" id="iform">
+      <form method="post" id="iform">
         <input type="hidden" id="id" name="id" value="" />
         <input type="hidden" id="action" name="act" value="" />
       </form>
@@ -193,7 +193,7 @@ $( document ).ready(function() {
             </table>
 <?php
             else : ?>
-            <form action="system_advanced_sysctl.php" method="post">
+            <form method="post">
               <table class="table table-striped">
                 <thead>
                   <tr>

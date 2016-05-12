@@ -242,7 +242,7 @@ include("head.inc");
 } ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <form action="system_routes_edit.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <div class="table-responsive">
                 <table class="table table-striped">
                   <tr>

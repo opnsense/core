@@ -455,7 +455,7 @@ include("head.inc");?>
         </div>
       </section>
       <section class="col-xs-12">
-        <form action="status_dhcp_leases.php" method="get">
+        <form method="get">
         <input type="hidden" name="order" value="<?=htmlspecialchars($_GET['order']);?>" />
 <?php
         if (!empty($_GET['all'])): ?>

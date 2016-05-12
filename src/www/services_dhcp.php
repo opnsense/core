@@ -692,7 +692,7 @@ include("head.inc");
             <?php else: ?>
               <?php display_top_tabs($tab_array); ?>
             <div class="tab-content content-box col-xs-12">
-              <form action="services_dhcp.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
                   <table class="table table-striped">
                     <tr>

@@ -223,7 +223,7 @@ $( document ).ready(function() {
 <?php endif; ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <form action="firewall_aliases.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" name="tab" value="<?=$selected_tab;?>" />
               <input type="hidden" name="id" value="" id="delId"/>
               <input type="hidden" name="act" value="del"/>

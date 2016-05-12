@@ -445,7 +445,7 @@ include("head.inc");
         <div class="row">
           <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
-            <form action="interfaces_ppps_edit.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                   <table class="table table-striped">

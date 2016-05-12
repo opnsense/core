@@ -685,7 +685,7 @@ $( document ).ready(function() {
 
 <?php
         if ($act == "new") :?>
-          <form action="system_certmanager.php" method="post" name="iform" id="iform" >
+          <form method="post" name="iform" id="iform" >
             <input type="hidden" name="act" value="<?=$act;?>"/>
 <?php
             if (isset($userid)) :?>
@@ -1131,7 +1131,7 @@ $( document ).ready(function() {
           elseif ($act == "csr") :
 ?>
 
-          <form action="system_certmanager.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <input name="act" type="hidden" value="csr" />
 <?php
             if (isset($id)) :?>
@@ -1177,7 +1177,7 @@ $( document ).ready(function() {
           </form>
 <?php
           else :?>
-          <form action="system_certmanager.php" method="post" name="iform" id="iform">
+          <form method="post" name="iform" id="iform">
             <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
             <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
           </form>

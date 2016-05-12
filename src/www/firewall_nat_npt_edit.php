@@ -173,7 +173,7 @@ include("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <section class="col-xs-12">
             <div class="content-box">
-              <form action="firewall_nat_npt_edit.php" method="post" name="iform" id="iform">
+              <form method="post" name="iform" id="iform">
                 <table class="table table-striped">
                   <tr>
                     <td><?=gettext("Edit NAT NPT entry"); ?></td>

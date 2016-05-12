@@ -72,7 +72,7 @@ if (isset($_GET['basedn']) && isset($_GET['host'])) {
         window.close();
       }
   </script>
- <form method="post" action="system_usermanager_settings_ldapacpicker.php">
+ <form method="post">
 <?php
   if (empty($ous)) :?>
   <p><?=gettext("Could not connect to the LDAP server. Please check your LDAP configuration.");?></p>

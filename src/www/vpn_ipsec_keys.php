@@ -117,7 +117,7 @@ if (is_subsystem_dirty('ipsec')) {
 ?>
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
-          <form action="vpn_ipsec_keys.php" method="post">
+          <form method="post">
             <div class="table-responsive">
               <table class="table table-striped">
                 <tr>
