@@ -48,7 +48,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
 
     /**
      * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage MaxMinValidator
+     * @expectedExceptionMessage MinMaxValidator
      */
     public function testValueLargerThenMax()
     {
@@ -62,7 +62,7 @@ class IntegerFieldTest extends Field_Framework_TestCase
 
     /**
      * @expectedException \Phalcon\Validation\Exception
-     * @expectedExceptionMessage MaxMinValidator
+     * @expectedExceptionMessage MinMaxValidator
      */
     public function testValueSmallerThenMin()
     {
