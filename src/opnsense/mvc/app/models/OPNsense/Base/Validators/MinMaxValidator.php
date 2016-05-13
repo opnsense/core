@@ -55,7 +55,7 @@ class MinMaxValidator extends Validator implements ValidatorInterface
         $msg = $this->getOption('message');
 
         if (is_numeric($value) == false || $value < $min || $value > $max) {
-            $validator->appendMessage(new Message($msg, $attribute, 'MaxMinValidator'));
+            $validator->appendMessage(new Message($msg, $attribute, 'MinMaxValidator'));
             return false;
         }
         return true;
