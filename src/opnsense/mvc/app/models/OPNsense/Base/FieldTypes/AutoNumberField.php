@@ -130,11 +130,11 @@ class AutoNumberField extends BaseField
         $validators = parent::getValidators();
 
         if ($this->internalValue != null) {
+            $validators[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
             $validators[] = new MinMaxValidator(array('message' => $this->internalValidationMessage,
                 "min" => $this->minimum_value,
                 "max" => $this->maximum_value
                 ));
-            $validators[] = new IntegerValidator(array('message' => $this->internalValidationMessage));
         }
         return $validators;
     }
