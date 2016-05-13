@@ -39,9 +39,6 @@ $ipsec_loglevels = array("dmn" => "Daemon", "mgr" => "SA Manager", "ike" => "IKE
 
 $p1_ealgos = array(
     'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
-    'aes128gcm' => array( 'name' => 'AES128-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
-    'aes192gcm' => array( 'name' => 'AES192-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
-    'aes256gcm' => array( 'name' => 'AES256-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
     'blowfish' => array( 'name' => 'Blowfish', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
     '3des' => array( 'name' => '3DES' ),
     'cast128' => array( 'name' => 'CAST128' ),
@@ -50,13 +47,11 @@ $p1_ealgos = array(
 
 $p2_ealgos = array(
     'aes' => array( 'name' => 'AES', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
-    'aes128gcm' => array( 'name' => 'AES128-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
-    'aes192gcm' => array( 'name' => 'AES192-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
-    'aes256gcm' => array( 'name' => 'AES256-GCM', 'keysel' => array( 'lo' => 64, 'hi' => 128, 'step' => 32 ) ),
     'blowfish' => array( 'name' => 'Blowfish', 'keysel' => array( 'lo' => 128, 'hi' => 256, 'step' => 64 ) ),
     '3des' => array( 'name' => '3DES' ),
     'cast128' => array( 'name' => 'CAST128' ),
-    'des' => array( 'name' => 'DES' )
+    'des' => array( 'name' => 'DES' ),
+    'null' => array( 'name' => gettext("NULL (no encryption)"))
 );
 
 $p2_halgos = array(
@@ -1200,7 +1195,7 @@ EOD;
                             $tmpconf .= "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . "!\n";
                         }
                         if (!empty($ealgoAHsp2arr[$idx])) {
-                            $connEntry .= "\tah = " . join(',', $ealgoAHsp2arr[$idx]) . "!\n";
+                            $tmpconf .= "\tah = " . join(',', $ealgoAHsp2arr[$idx]) . "!\n";
                         }
                         $ipsecconf .= $tmpconf;
                     }

@@ -189,7 +189,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         idinfo_to_pconfig("local", $config['ipsec']['phase2'][$p2index]['localid'], $pconfig);
         idinfo_to_pconfig("remote", $config['ipsec']['phase2'][$p2index]['remoteid'], $pconfig);
-        ealgos_to_pconfig($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'], $pconfig);
+        if (!empty($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'])) {
+            ealgos_to_pconfig($config['ipsec']['phase2'][$p2index]['encryption-algorithm-option'], $pconfig);
+        } else {
+            $pconfig['ealgos'] = array();
+        }
+
         if (isset($config['ipsec']['phase2'][$p2index]['mobile'])) {
             $pconfig['mobile'] = true;
         }
