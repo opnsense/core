@@ -536,6 +536,7 @@ $( document ).ready(function() {
                                 endif;?>
                                 <td class="hidden-xs">
 <?php
+                                if (!empty($ph2ent['encryption-algorithm-option'])) {
                                   foreach ($ph2ent['encryption-algorithm-option'] as $k => $ph2ea) {
                                       if ($k > 0) {
                                           echo ", ";
@@ -548,7 +549,8 @@ $( document ).ready(function() {
                                               echo " ({$ph2ea['keylen']} " . gettext("bits") . ")";
                                           }
                                       }
-                                  }?>
+                                  }
+                                }?>
                                 </td>
                                 <td class="hidden-xs">
 <?php
