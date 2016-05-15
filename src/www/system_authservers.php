@@ -32,9 +32,10 @@ require_once("auth.inc");
 
 
 $auth_server_types = array(
-    'ldap' => "LDAP",
-    'radius' => "Radius",
-    'voucher' => "Voucher"
+    'ldap' => gettext("LDAP"),
+    'radius' => gettext("Radius"),
+    'voucher' => gettext("Voucher"),
+    'totp' => gettext("Local + Timebased One Time Password")
 );
 
 
@@ -110,9 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['simplePasswords'] = $a_server[$id]['simplePasswords'];
             $pconfig['usernameLength'] = $a_server[$id]['usernameLength'];
             $pconfig['passwordLength'] = $a_server[$id]['passwordLength'];
+        } elseif ($pconfig['type'] == 'totp') {
+            $pconfig['graceperiod'] = $a_server[$id]['graceperiod'];
+            $pconfig['timeWindow'] = $a_server[$id]['timeWindow'];
         }
     }
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -252,6 +255,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['simplePasswords'] = !empty($pconfig['simplePasswords']);
               $server['usernameLength'] = $pconfig['usernameLength'];
               $server['passwordLength'] = $pconfig['passwordLength'];
+          } elseif ($server['type'] == 'totp') {
+              $server['timeWindow'] = filter_var($pconfig['timeWindow'], FILTER_SANITIZE_NUMBER_INT);
+              $server['graceperiod'] = filter_var($pconfig['graceperiod'], FILTER_SANITIZE_NUMBER_INT);
           }
 
           if (isset($id) && isset($config['system']['authserver'][$id])) {
@@ -347,12 +353,15 @@ $( document ).ready(function() {
         $(".auth_radius").addClass('hidden');
         $(".auth_ldap").addClass('hidden');
         $(".auth_voucher").addClass('hidden');
+        $(".auth_totp").addClass('hidden');
         if ($("#type").val() == 'ldap') {
             $(".auth_ldap").removeClass('hidden');
         } else if ($("#type").val() == 'radius') {
             $(".auth_radius").removeClass('hidden');
         } else if ($("#type").val() == 'voucher') {
           $(".auth_voucher").removeClass('hidden');
+      } else if ($("#type").val() == 'totp') {
+          $(".auth_totp").removeClass('hidden');
         }
     });
 
@@ -692,6 +701,37 @@ endif; ?>
                     <input name="passwordLength" type="text" value="<?=$pconfig['passwordLength'];?>"/>
                     <div class="hidden" for="help_for_voucher_passwordLength">
                       <?= gettext("Specify alternative password length for generating vouchers") ?>
+                    </div>
+                  </td>
+                </tr>
+                <!-- TOTP -->
+                <tr class="auth_totp hidden">
+                  <td><a id="help_for_totp_otpLength" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Token length");?></td>
+                  <td>
+                    <select name="otpLength" class="selectpicker" data-style="btn-default">
+                      <option value="6" <?=empty($pconfig['otpLength']) || $pconfig['otpLength'] == "6" ? "selected=\"selected\"" : "";?> >6</option>
+                      <option value="8" <?=!empty($pconfig['otpLength']) && $pconfig['otpLength'] == "8" ? "selected=\"selected\"" : "";?> >8</option>
+                    </select>
+                    <div class="hidden" for="help_for_totp_otpLength">
+                      <?= gettext("Token length to use") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_totp hidden">
+                  <td><a id="help_for_totp_timeWindow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time window");?></td>
+                  <td>
+                    <input name="timeWindow" type="text" value="<?=$pconfig['timeWindow'];?>"/>
+                    <div class="hidden" for="help_for_totp_timeWindow">
+                      <?= gettext("The time period in which the token will be valid, default is 30 seconds (google authenticator)") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_totp hidden">
+                  <td><a id="help_for_totp_graceperiod" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Grace period");?></td>
+                  <td>
+                    <input name="graceperiod" type="text" value="<?=$pconfig['graceperiod'];?>"/>
+                    <div class="hidden" for="help_for_totp_graceperiod">
+                      <?= gettext("Time in seconds in which this server and the token may differ, default is 10 seconds. Set higher for a less secure easier match.") ?>
                     </div>
                   </td>
                 </tr>
