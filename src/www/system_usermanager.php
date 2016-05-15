@@ -29,6 +29,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 require_once("guiconfig.inc");
+require_once("Base32.php");
 
 function get_user_privdesc(& $user)
 {
@@ -120,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == 'new' || $act == 'edit') {
         // edit user, load or init data
-        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime');
+        $fieldnames = array('user_dn', 'descr', 'expires', 'scope', 'uid', 'priv', 'ipsecpsk', 'lifetime', 'otp_seed');
         if (isset($id)) {
             if (isset($a_user[$id]['authorizedkeys'])) {
                 $pconfig['authorizedkeys'] = base64_decode($a_user[$id]['authorizedkeys']);
@@ -332,6 +333,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $userent['expires'] = $pconfig['expires'];
             $userent['authorizedkeys'] = base64_encode($pconfig['authorizedkeys']);
             $userent['ipsecpsk'] = $pconfig['ipsecpsk'];
+            if (!empty($pconfig['gen_otp_seed'])) {
+                // generate 160bit base32 encoded secret
+                $userent['otp_seed'] = Base32\Base32::encode(openssl_random_pseudo_bytes(20));
+            } else {
+                $userent['otp_seed'] = trim($pconfig['otp_seed']);
+            }
 
             if (!empty($pconfig['disabled'])) {
                 $userent['disabled'] = true;
@@ -898,6 +905,28 @@ $( document ).ready(function() {
                   </tr>
 <?php
                 endif;?>
+                  <tr>
+                    <td><a id="help_for_otp_seed" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("OTP seed");?></td>
+                    <td>
+                      <input name="otp_seed" type="text" value="<?=$pconfig['otp_seed'];?>"/>
+                      <input type="checkbox" name="gen_otp_seed"/>&nbsp;<small><?=gettext("generate new (160bit) secret");?></small>
+                      <div class="hidden" for="help_for_otp_seed">
+                        <?=gettext("OTP (base32) seed to use when a one time password authenticator is used");?><br/>
+<?php
+                        if (!empty($pconfig['otp_seed'])):
+                            // construct google url, using token, username and this machines hostname
+                            $google_otp_url = "https://www.google.com/chart?chs=200x200&amp;chld=M|0&amp;cht=qr&amp;chl=otpauth://totp/";
+                            $google_otp_url .= $pconfig['usernamefld']."@".htmlspecialchars($config['system']['hostname'])."%3Fsecret%3D";
+                            $google_otp_url .= $pconfig['otp_seed'];
+                        ?>
+                            <br/>
+                            <?=gettext("When using google authenticator, the following link provides a qrcode for easy setup");?><br/>
+                            <a href="<?=$google_otp_url;?>" target="_blank"><?=$google_otp_url;?></a>
+<?php
+                        endif;?>
+                      </div>
+                    </td>
+                  </tr>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authorized keys");?></td>
                     <td>

@@ -56,12 +56,11 @@ class Local implements IAuthConnector
     }
 
     /**
-     * authenticate user against local database (in config.xml)
-     * @param string $username username to authenticate
-     * @param string $password user password
-     * @return bool authentication status
+     * find user settings in local database
+     * @param string $username username to find
+     * @return SimpleXMLElement|null user settings (xml section)
      */
-    public function authenticate($username, $password)
+    protected function getUser($username)
     {
         // search local user in database
         $configObj = Config::getInstance()->object();
@@ -73,7 +72,24 @@ class Local implements IAuthConnector
                 break;
             }
         }
+        return $userObject;
+    }
 
+    /**
+     * authenticate user against local database (in config.xml)
+     * @param string|SimpleXMLElement $username username (or xml object) to authenticate
+     * @param string $password user password
+     * @return bool authentication status
+     */
+    public function authenticate($username, $password)
+    {
+        if (is_a($username, 'SimpleXMLElement')) {
+            // user xml section provided
+            $userObject = $username;
+        } else {
+            // get xml section from config
+            $userObject = $this->getUser($username);
+        }
         if ($userObject != null) {
             if (isset($userObject->disabled)) {
                 // disabled user

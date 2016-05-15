@@ -110,6 +110,9 @@ class AuthenticationFactory
                 case 'api':
                     $authObject = new API();
                     break;
+                case 'totp':
+                    $authObject = new LocalTOTP();
+                    break;
                 default:
                     $authObject = null;
             }
