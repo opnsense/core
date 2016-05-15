@@ -3171,7 +3171,7 @@ function interface_track6_configure($interface = 'lan', $wancfg, $linkupevent = 
 
     $trackcfg = $config['interfaces'][$wancfg['track6-interface']];
     if (!isset($trackcfg['enable'])) {
-        log_error("Interface {$interface} tracking non-existant interface {$wancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking non-existent interface {$wancfg['track6-interface']}");
         return;
     }
 
@@ -3221,7 +3221,7 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
     if (empty($wancfg)) {
-        log_error("Interface {$interface} tracking non-existant interface {$lancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
     }
 
@@ -3282,7 +3282,7 @@ function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 
     $wancfg = $config['interfaces'][$lancfg['track6-interface']];
     if (empty($wancfg)) {
-        log_error("Interface {$interface} tracking non-existant interface {$lancfg['track6-interface']}");
+        log_error("Interface {$interface} tracking non-existent interface {$lancfg['track6-interface']}");
         return;
     }
 
@@ -3604,7 +3604,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
     /* Add wide-dhcp6c shell script here. Because we can not pass a argument to it. */
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
-        printf("Error: cannot open rtsold_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
+        printf("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
         unset($rtsoldscript);
         return 1;
     }
