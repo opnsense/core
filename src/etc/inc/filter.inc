@@ -620,7 +620,7 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
                     $aliases .= "{$aliased['name']} = \"{ {$addrlist} }\"\n";
                     break;
                 default:
-                    $aliases .= "{$aliased['name']} = \"{ {$aliased['address']}\"\n";
+                    $aliases .= "{$aliased['name']} = \"{ {$aliased['address']} }\"\n";
                     break;
             }
         }
