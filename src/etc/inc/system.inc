@@ -644,7 +644,7 @@ function compare_hostname_to_dnscache($hostname) {
     }
 
     if(trim($oldcontents) != trim($contents)) {
-        log_error(sprintf(gettext('DNSCACHE: Found old IP %s and new IP %s'), $oldcontents, $contents));
+        log_error(sprintf('DNSCACHE: Found old IP %s and new IP %s', $oldcontents, $contents));
         return ($oldcontents);
     } else {
         return false;
@@ -663,7 +663,7 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
 
         foreach ($static_routes as $rtent) {
             if (empty($gateways_arr[$rtent['gateway']])) {
-                log_error(sprintf(gettext("Static Routes: Gateway IP could not be found for %s"), $rtent['network']));
+                log_error(sprintf('Static Routes: Gateway IP could not be found for %s', $rtent['network']));
                 continue;
             }
             $gateway = $gateways_arr[$rtent['gateway']];

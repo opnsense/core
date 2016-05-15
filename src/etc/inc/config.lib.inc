@@ -157,7 +157,7 @@ function write_config($desc = '', $backup = true)
             $user = getUserEntry($_SESSION['Username']);
             if (is_array($user) && userHasPrivilege($user, "user-config-readonly")) {
                 // okay, it's not very nice to check permissions here, but let's make it explicit while we do...
-                log_error(gettext("WARNING: User")." ".$_SESSION['Username']." ".gettext("may not write config (user-config-readonly set)"));
+                log_error("WARNING: User {$_SESSION['Username']} may not write config (user-config-readonly set)");
                 return false;
             }
         }
@@ -165,7 +165,7 @@ function write_config($desc = '', $backup = true)
 
     if (!isset($config['version'])) {
         // Examine config.xml, if for some strange reason the content is unexpected : exit directly.
-        log_error(gettext("WARNING: Corrupt config!"));
+        log_error('WARNING: Corrupt config!');
         return -1;
     }
 
@@ -176,7 +176,7 @@ function write_config($desc = '', $backup = true)
         $cnf->save($revision_info, $backup);
     } catch (OPNsense\Core\ConfigException $e) {
         // write failure
-        syslog(LOG_ERR, gettext('WARNING: Config contents could not be saved. Could not open file!'));
+        syslog(LOG_ERR, 'WARNING: Config contents could not be saved. Could not open file!');
         return -1;
     }
 

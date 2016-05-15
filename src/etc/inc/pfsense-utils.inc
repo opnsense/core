@@ -340,12 +340,12 @@ function load_crypto_module()
     global $config;
 
     if (!empty($config['system']['crypto_hardware'])) {
-        log_error(sprintf(gettext('Loading %s cryptographic accelerator module.'), $config['system']['crypto_hardware']));
+        log_error(sprintf('Loading %s cryptographic accelerator module.', $config['system']['crypto_hardware']));
         mwexecf('/sbin/kldload %s', $config['system']['crypto_hardware'], true);
     }
 
     if (isset($config['system']['cryptodev_enable'])) {
-        log_error(gettext('Loading cryptodev kernel module.'));
+        log_error('Loading cryptodev kernel module.');
         mwexecf('/sbin/kldload %s', 'cryptodev', true);
     }
 }
@@ -355,7 +355,7 @@ function load_thermal_module()
     global $config;
 
     if (!empty($config['system']['thermal_hardware'])) {
-        log_error(sprintf(gettext('Loading %s thermal monitor module.'), $config['system']['thermal_hardware']));
+        log_error(sprintf('Loading %s thermal monitor module.', $config['system']['thermal_hardware']));
         mwexecf('/sbin/kldload %s', $config['system']['thermal_hardware'], true);
     }
 }

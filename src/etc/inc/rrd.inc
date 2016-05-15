@@ -33,7 +33,7 @@ function create_new_rrd($rrdcreatecmd)
     $_gb = exec("$rrdcreatecmd 2>&1", $rrdcreateoutput, $rrdcreatereturn);
     if ($rrdcreatereturn <> 0) {
         $rrdcreateoutput = implode(" ", $rrdcreateoutput);
-        log_error(sprintf(gettext('RRD create failed exited with %s, the error is: %s'), $rrdcreatereturn, $rrdcreateoutput));
+        log_error(sprintf('RRD create failed exited with %s, the error is: %s', $rrdcreatereturn, $rrdcreateoutput));
     }
     unset($rrdcreateoutput);
     return $rrdcreatereturn;
@@ -526,7 +526,7 @@ function enable_rrd_graphing()
 
         $rrdupdatesh .= "sleep 60\n";
         $rrdupdatesh .= "done\n";
-        log_error(gettext("Creating rrd update script"));
+
         /* write the rrd update script */
         $updaterrdscript = '/var/db/rrd/updaterrd.sh';
         $fd = fopen("$updaterrdscript", "w");

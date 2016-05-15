@@ -636,7 +636,7 @@ function ldap_setup_caenv($authcfg)
 
     $caref = lookup_ca($authcfg['ldap_caref']);
     if (!$caref) {
-        log_error(sprintf(gettext("LDAP: Could not lookup CA by reference for host %s."), $authcfg['ldap_caref']));
+        log_error(sprintf('LDAP: Could not lookup CA by reference for host %s.', $authcfg['ldap_caref']));
         /* XXX: Prevent for credential leaking since we cannot setup the CA env. Better way? */
         putenv('LDAPTLS_REQCERT=hard');
         return;

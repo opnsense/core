@@ -1010,7 +1010,7 @@ function mwexec($command, $mute = false)
 
     if ($retval != 0 && $mute == false) {
         $output = implode(' ', $oarr);
-        log_error(sprintf(gettext("The command '%s' returned exit code '%d', the output was '%s'"), $command, $retval, $output));
+        log_error(sprintf("The command '%s' returned exit code '%d', the output was '%s'", $command, $retval, $output));
         unset($output);
     }
 

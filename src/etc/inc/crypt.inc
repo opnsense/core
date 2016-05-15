@@ -44,7 +44,7 @@ function _crypt_data($val, $pass, $opt)
     if (file_exists("{$file}.enc")) {
         $result = file_get_contents("{$file}.enc");
     } else {
-        log_error(gettext('Failed to encrypt/decrypt data!'));
+        log_error('Failed to encrypt/decrypt data!');
     }
 
     @unlink($file);

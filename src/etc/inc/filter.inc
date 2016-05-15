@@ -682,7 +682,7 @@ function filter_generate_gateways()
                         }
                         $foundlb++;
                     } else {
-                        log_error(sprintf(gettext("An error occurred while trying to find the interface got %s .  The rule has not been added."), $gatewayip));
+                        log_error(sprintf('An error occurred while trying to find the interface got %s. The rule has not been added.', $gatewayip));
                     }
                 }
                 $route = "";
@@ -2144,7 +2144,7 @@ function filter_generate_port(& $rule, $target = "source", $isnat = false) {
             $srcport = explode("-", $rule[$target]['port']);
             $srcporta = alias_expand($srcport[0]);
             if (!$srcporta) {
-                log_error(sprintf(gettext('filter_generate_port: %s is not a valid %s port.'), $srcport[0], $target));
+                log_error(sprintf('filter_generate_port: %s is not a valid %s port.', $srcport[0], $target));
             } elseif (empty($srcport[1]) || $srcport[0] == $srcport[1]) {
                 $src .= " port {$srcporta} ";
             } elseif (($srcport[0] == 1) && ($srcport[1] == 65535)) {
@@ -2508,7 +2508,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
             if (is_ipaddrv4($rg)) {
                 $aline['reply'] = "reply-to ( {$ifcfg['if']} {$rg} ) ";
             } elseif ($rule['interface'] <> "pptp") {
-                log_error(sprintf(gettext("Could not find IPv4 gateway for interface (%s)."), $rule['interface']));
+                log_error(sprintf('Could not find IPv4 gateway for interface (%s).', $rule['interface']));
             }
         }
     } elseif (!empty($rule['gateway']) && $type == "pass") {

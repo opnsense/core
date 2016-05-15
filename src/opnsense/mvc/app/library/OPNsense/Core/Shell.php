@@ -102,8 +102,6 @@ class Shell
             exec("$command 2>&1", $output, $retval);
 
             if (($retval <> 0) && ($mute === false)) {
-                //log_error(sprintf(gettext("The command '%1\$s'
-                // returned exit code '%2\$d', the output was '%3\$s' "),  implode(" ", $output);
                 // TODO: log
                 unset($output);
             }

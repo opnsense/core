@@ -746,18 +746,18 @@ EOD;
         if (isset($config['ca'])) {
             foreach ($config['ca'] as $ca) {
                 if (!isset($ca['crt'])) {
-                    log_error(sprintf(gettext("Error: Invalid certificate info for %s"), $ca['descr']));
+                    log_error(sprintf('Error: Invalid certificate info for %s', $ca['descr']));
                     continue;
                 }
                 $cert = base64_decode($ca['crt']);
                 $x509cert = openssl_x509_parse(openssl_x509_read($cert));
                 if (!is_array($x509cert) || !isset($x509cert['hash'])) {
-                    log_error(sprintf(gettext("Error: Invalid certificate hash info for %s"), $ca['descr']));
+                    log_error(sprintf('Error: Invalid certificate hash info for %s', $ca['descr']));
                     continue;
                 }
                 $fname = "{$capath}/{$x509cert['hash']}.0.crt";
                 if (!@file_put_contents($fname, $cert)) {
-                    log_error(sprintf(gettext("Error: Cannot write IPsec CA file for %s"), $ca['descr']));
+                    log_error(sprintf('Error: Cannot write IPsec CA file for %s', $ca['descr']));
                     continue;
                 }
                 unset($cert);
@@ -775,7 +775,7 @@ EOD;
                 $cert = lookup_cert($ph1ent['certref']);
 
                 if (empty($cert)) {
-                    log_error(sprintf(gettext("Error: Invalid phase1 certificate reference for %s"), $ph1ent['name']));
+                    log_error(sprintf('Error: Invalid phase1 certificate reference for %s', $ph1ent['name']));
                     continue;
                 }
 
@@ -783,14 +783,14 @@ EOD;
 
                 $ph1keyfile = "{$keypath}/cert-{$ph1ent['ikeid']}.key";
                 if (!file_put_contents($ph1keyfile, base64_decode($cert['prv']))) {
-                    log_error(sprintf(gettext("Error: Cannot write phase1 key file for %s"), $ph1ent['name']));
+                    log_error(sprintf('Error: Cannot write phase1 key file for %s', $ph1ent['name']));
                     continue;
                 }
                 @chmod($ph1keyfile, 0600);
 
                 $ph1certfile = "{$certpath}/cert-{$ph1ent['ikeid']}.crt";
                 if (!file_put_contents($ph1certfile, base64_decode($cert['crt']))) {
-                    log_error(sprintf(gettext("Error: Cannot write phase1 certificate file for %s"), $ph1ent['name']));
+                    log_error(sprintf('Error: Cannot write phase1 certificate file for %s', $ph1ent['name']));
                     @unlink($ph1keyfile);
                     continue;
                 }
@@ -1308,14 +1308,14 @@ function ipsec_force_reload($interface = '')
             }
         }
         if (!$found) {
-            log_error(sprintf(gettext("Ignoring IPsec reload since there are no tunnels on interface %s"), $interface));
+            log_error(sprintf('Ignoring IPsec reload since there are no tunnels on interface %s', $interface));
             return;
         }
     }
 
     /* if ipsec is enabled, start up again */
     if (isset($ipseccfg['enable'])) {
-        log_error(gettext("Forcefully reloading IPsec"));
+        log_error('Forcefully reloading IPsec');
         ipsec_configure();
     }
 }
