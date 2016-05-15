@@ -271,7 +271,7 @@ class SettingsController extends ApiControllerBase
         $result['rows'] = $this->listInstallableRules();
         // sort by description
         usort($result['rows'], function ($item1, $item2) {
-          return strcmp(strtolower($item1['description']), strtolower($item2['description']));
+            return strcmp(strtolower($item1['description']), strtolower($item2['description']));
         });
         $result['rowCount'] = count($result['rows']);
         $result['total'] = count($result['rows']);

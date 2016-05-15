@@ -85,7 +85,7 @@ class LocalTOTP extends Local
             $start = -1 * $this->graceperiod;
         }
         $now = time();
-        for ($count = $start ; $count <= $this->graceperiod ; $count += $step) {
+        for ($count = $start; $count <= $this->graceperiod; $count += $step) {
             $result[] = $now + $count;
             if ($this->graceperiod == 0) {
                 // special case, we expect the clocks to match 100%, so step and target are both 0
@@ -104,10 +104,10 @@ class LocalTOTP extends Local
     {
         // calculate binary 8 character time for provided window
         $binary_time = pack("N", (int)($moment/$this->timeWindow));
-        $binary_time = str_pad($binary_time,8, chr(0), STR_PAD_LEFT);
+        $binary_time = str_pad($binary_time, 8, chr(0), STR_PAD_LEFT);
 
         // Generate the hash using the SHA1 algorithm
-        $hash = hash_hmac ('sha1', $binary_time, $secret, true);
+        $hash = hash_hmac('sha1', $binary_time, $secret, true);
         $offset = ord($hash[19]) & 0xf;
         $otp = (
                 ((ord($hash[$offset+0]) & 0x7f) << 24 ) |
