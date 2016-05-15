@@ -142,7 +142,7 @@ function parse_filter_line($line)
     list($all, $flent['time'], $host, $rule) = $log_split;
 
     if (trim($flent['time']) == '') {
-        log_error(sprintf(gettext('There was an error parsing a rule: no time (`%s\')'), $log_split));
+        log_error(sprintf('There was an error parsing a rule: no time (%s)', $log_split));
         return '';
     }
 

@@ -140,7 +140,7 @@ if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['ope
 
 $openvpnlck = try_lock('openvpn', 10);
 if (!$openvpnlck) {
-	log_error(gettext("Could not obtain openvpn lock for executing rc.openvpn for more than 10 seconds continuing..."));
+	log_error('Could not obtain openvpn lock for executing rc.openvpn for more than 10 seconds continuing...');
 	@unlink("/tmp/openvpn.lock");
 	$openvpnlck = lock('openvpn', LOCK_EX);
 }

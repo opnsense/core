@@ -197,7 +197,7 @@ function session_auth(&$Login_Error)
             $_SESSION['last_access'] = time();
             $_SESSION['protocol'] = $config['system']['webgui']['protocol'];
             if (!isset($config['system']['webgui']['quietlogin'])) {
-              log_error(sprintf(gettext("Successful login for user '%1\$s' from: %2\$s"), $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
+              log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
             header("Location: {$_SERVER['REQUEST_URI']}");
             exit;
@@ -238,9 +238,9 @@ function session_auth(&$Login_Error)
     /* user hit the logout button */
     if (isset($_GET['logout'])) {
         if (isset($_SESSION['Logout'])) {
-            log_error(sprintf(gettext("Session timed out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+            log_error(sprintf("Session timed out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
         } else {
-            log_error(sprintf(gettext("User logged out for user '%1\$s' from: %2\$s"), $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
+            log_error(sprintf("User logged out for user '%s' from: %s", $_SESSION['Username'], $_SERVER['REMOTE_ADDR']));
         }
 
         /* wipe out $_SESSION */

@@ -242,12 +242,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($restart_sshd) {
-            log_error(gettext('Secure Shell configuration has changed. Applying now...'));
             configd_run('sshd restart', true);
         }
 
         if ($restart_webgui) {
-            log_error(gettext('webConfigurator configuration has changed. Applying now...'));
             mwexec_bg('/usr/local/etc/rc.restart_webgui 2');
         }
     }

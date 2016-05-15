@@ -530,7 +530,7 @@ EOD;
                     }
                 }
             } else {
-                log_error(gettext("Warning! DHCP Failover setup and no CARP virtual IPs defined!"));
+                log_error('Warning! DHCP Failover setup and no CARP virtual IPs defined!');
             }
             $dhcpdconf_pri = "";
             if ($skew > 10) {
@@ -1459,7 +1459,7 @@ EOD;
 
     $igmpfl = fopen('/usr/local/etc/igmpproxy.conf', 'w');
     if (!$igmpfl) {
-        log_error(gettext("Could not write Igmpproxy configuration file!"));
+        log_error('Could not write Igmpproxy configuration file!');
         return;
     }
     fwrite($igmpfl, $igmpconf);
@@ -1467,7 +1467,7 @@ EOD;
     unset($igmpconf);
 
     mwexec('/usr/local/etc/rc.d/igmpproxy onestart');
-    log_error(gettext("Started IGMP proxy service."));
+    log_error('Started IGMP proxy service.');
 
     return 0;
 }

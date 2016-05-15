@@ -61,7 +61,7 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
 	$queue[$queuekey] = $toqueue;
 	$queueout = fopen('/tmp/notices', 'w');
 	if(!$queueout) {
-		log_error(printf(gettext("Could not open %s for writing"), '/tmp/notices'));
+		log_error(sprintf('Could not open %s for writing', '/tmp/notices'));
 		return;
 	}
 	fwrite($queueout, serialize($queue));
@@ -290,10 +290,10 @@ function send_smtp_message($message, $subject = "(no subject)") {
 	);
 
 	if($smtp->SendMessage($from, preg_split('/\s*,\s*/', trim($to)), $headers, $message)) {
-		log_error(sprintf(gettext("Message sent to %s OK"), $to));
+		log_error(sprintf('Message sent to %s OK', $to));
 		return;
 	} else {
-		$msg = sprintf(gettext('Could not send the message to %s -- Error: %s'), $to, $smtp->error);
+		$msg = sprintf('Could not send the message to %s -- Error: %s', $to, $smtp->error);
 		log_error($msg);
 		return ($msg);
 	}
