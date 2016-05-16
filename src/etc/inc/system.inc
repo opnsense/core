@@ -1065,7 +1065,7 @@ function system_webgui_configure()
       $crt, $key, $ca, "lighty-webConfigurator.pid", $portarg, "/usr/local/www/",
       "cert.pem", "ca.pem");
 
-    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', $sync);
+    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', true);
 
     /*
      * Force reloading all php-cgi children to
