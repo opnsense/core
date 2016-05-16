@@ -16,20 +16,7 @@ system_firmware_configure();
 
 echo 'Restarting webConfigurator...';
 
-killbyname('lighttpd');
-
-/*
- * Force reloading all php-cgi children to
- * avoid hiccups with moved include files.
- */
-killbyname('php-cgi', 'HUP');
-
-while (is_process_running('lighttpd')) {
-        echo '.';
-        sleep(1);
-}
-
-system_webgui_start();
+system_webgui_configure();
 enable_rrd_graphing();
 
 echo 'done.' . PHP_EOL;

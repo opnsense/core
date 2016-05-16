@@ -999,7 +999,7 @@ EOD;
     return $retval;
 }
 
-function system_webgui_start()
+function system_webgui_configure()
 {
     global $config;
 
@@ -1065,10 +1065,13 @@ function system_webgui_start()
       $crt, $key, $ca, "lighty-webConfigurator.pid", $portarg, "/usr/local/www/",
       "cert.pem", "ca.pem");
 
-    /* kill any running lighttpd */
-    killbypid('/var/run/lighty-webConfigurator.pid');
+    killbypid('/var/run/lighty-webConfigurator.pid', 'TERM', $sync);
 
-    sleep(1);
+    /*
+     * Force reloading all php-cgi children to
+     * avoid hiccups with moved include files.
+     */
+    killbyname('php-cgi', 'HUP');
 
     /* regenerate the php.ini files in case the setup has changed */
     mwexec('/usr/local/etc/rc.php_ini_setup');
@@ -1325,7 +1328,7 @@ EOD;
     if($cert <> "" and $key <> "") {
         $fd = fopen("/var/etc/{$cert_location}", "w");
         if (!$fd) {
-            printf(gettext("Error: cannot open cert.pem in system_webgui_start().%s"), "\n");
+            log_error('Error: cannot open cert.pem in system_webgui_configure()');
             return 1;
         }
         chmod("/var/etc/{$cert_location}", 0600);
@@ -1336,7 +1339,7 @@ EOD;
         if(!(empty($ca) || (strlen(trim($ca)) == 0))) {
             $fd = fopen("/var/etc/{$ca_location}", "w");
             if (!$fd) {
-                printf(gettext("Error: cannot open ca.pem in system_webgui_start().%s"), "\n");
+                log_error('Error: cannot open ca.pem in system_webgui_configure()');
                 return 1;
             }
             chmod("/var/etc/{$ca_location}", 0600);
@@ -1381,7 +1384,7 @@ EOD;
 
     $fd = fopen("{$filename}", "w");
     if (!$fd) {
-        printf(gettext("Error: cannot open %s in system_generate_lighty_config().%s"), $filename, "\n");
+        log_error(sprintf('Error: cannot open %s in system_webgui_configure()', $filename));
         return 1;
     }
     fwrite($fd, $lighty_config);

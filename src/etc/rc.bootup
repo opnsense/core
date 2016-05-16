@@ -265,7 +265,7 @@ local_sync_accounts();
 echo "done.\n";
 
 /* start web server */
-echo 'Starting webConfigurator...'. (system_webgui_start() ? 'done.' : 'failed.') . PHP_EOL;
+echo 'Starting webConfigurator...'. (system_webgui_configure() ? 'done.' : 'failed.') . PHP_EOL;
 
 /* configure cron service */
 echo "Configuring CRON...";
