@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -29,7 +30,7 @@
 
 namespace OPNsense\Auth;
 
-require_once("Base32.php");
+require_once 'base32/Base32.php';
 
 /**
  * RFC 6238 TOTP: Time-Based One-Time Password Authenticator

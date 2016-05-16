@@ -28,8 +28,9 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
-require_once("guiconfig.inc");
-require_once("Base32.php");
+
+require_once 'guiconfig.inc';
+require_once 'base32/Base32.php';
 
 function get_user_privdesc(& $user)
 {
