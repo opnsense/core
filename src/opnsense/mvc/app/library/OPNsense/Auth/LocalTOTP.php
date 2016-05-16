@@ -66,7 +66,7 @@ class LocalTOTP extends Local
             $this->otpLength = $config['otpLength'];
         }
         if (!empty($config['graceperiod'])) {
-            $this->otpLength = $config['graceperiod'];
+            $this->graceperiod = $config['graceperiod'];
         }
     }
 
