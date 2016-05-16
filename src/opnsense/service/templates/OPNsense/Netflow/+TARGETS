@@ -1,0 +1,5 @@
+netflow.conf:/usr/local/etc/netflow.conf
+rc.conf.d:/etc/rc.conf.d/netflow
+flowd.rc.conf.d:/etc/rc.conf.d/flowd
+flowd_aggregate.rc.conf.d:/etc/rc.conf.d/flowd_aggregate
+flowd.conf:/usr/local/etc/flowd.conf

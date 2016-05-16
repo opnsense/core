@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# $FreeBSD$
+#
+# PROVIDE: flowd_aggregate
+# REQUIRE: SERVERS
+# KEYWORD: shutdown
+#
+
+. /etc/rc.subr
+
+name=flowd_aggregate
+rcvar=flowd_aggregate_enable
+command=/usr/local/opnsense/scripts/netflow/flowd_aggregate.py
+command_interpreter=/usr/local/bin/python2.7
+pidfile="/var/run/${name}.pid"
+load_rc_config $name
+
+# Set defaults
+: ${flowd_aggregate_enable:=NO}
+
+stop_cmd=flowd_aggregate_stop
+
+# kill configd
+flowd_aggregate_stop()
+{
+    if [ -z "$rc_pid" ]; then
+      [ -n "$rc_fast" ] && return 0
+      _run_rc_notrunning
+      return 1
+    fi
+
+    echo -n "Stopping ${name}."
+    # first ask gently to exit
+    kill -15 ${rc_pid}
+
+    # wait max 5 seconds for gentle exit
+    for i in $(seq 1 50);
+    do
+        if [ -z "`/bin/ps -ax | /usr/bin/awk '{print $1;}' | /usr/bin/grep "^${rc_pid}"`" ]; then
+            break
+        fi
+        sleep 0.1
+    done
+
+    # kill any remaining configd processes (if still running)
+    for flowd_aggregate_pid in `/bin/ps -ax | grep 'flowd_aggregate.py' | /usr/bin/awk '{print $1;}' `
+    do
+       kill -9 $flowd_aggregate_pid >/dev/null 2>&1
+    done
+
+    echo  "..done"
+}
+
+run_rc_command $1

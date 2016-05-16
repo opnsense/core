@@ -7,7 +7,8 @@
         <Password order="2" url="/system_usermanager_passwordmg.php" cssClass="fa fa-key fa-fw"/>
         <Logout order="3" url="/index.php?logout" cssClass="fa fa-sign-out fa-fw"/>
     </Lobby>
-    <System order="20" VisibleName="System" cssClass="fa fa-server">
+    <Reporting order="15" cssClass="fa fa-area-chart"/>
+    <System order="20" cssClass="fa fa-server">
         <Trust order="120" cssClass="fa fa-certificate fa-fw">
             <Certificates url="/system_certmanager.php">
                 <workAround url="/system_certmanager.php*" visibility="hidden"/>
@@ -60,7 +61,7 @@
             <Networking order="300" url="/system_advanced_network.php"/>
             <FirewallNAT VisibleName="Firewall/NAT" order="400" url="/system_advanced_firewall.php"/>
             <Notifications order="500" url="/system_advanced_notifications.php"/>
-            <LogFiles VisibleName="Logs/Reports" order="600" url="/diag_logs_settings.php"/>
+            <Logging order="600" url="/diag_logs_settings.php"/>
             <Miscellaneous order="700" url="/system_advanced_misc.php"/>
             <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
@@ -116,7 +117,7 @@
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File"  url="/diag_logs_ppp.php"/>
+            <LogFile VisibleName="Log File" url="/diag_logs_ppp.php"/>
         </PPP>
         <Wireless order="930" cssClass="fa fa-wifi fa-fw">
             <Devices url="/interfaces_wireless.php">
@@ -139,7 +140,7 @@
     </Interfaces>
     <Firewall order="40" cssClass="glyphicon glyphicon-fire">
         <Aliases order="10" cssClass="fa fa-list-alt fa-fw">
-            <View order="100"  url="/firewall_aliases.php">
+            <View order="100" url="/firewall_aliases.php">
                 <Edit url="/firewall_aliases_edit.php*" visibility="hidden"/>
             </View>
             <Import order="200" url="/firewall_aliases_import.php"/>
@@ -159,8 +160,8 @@
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
               <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
-            <NPT VisibleName="NPT (IPv6)"  order="400" url="/firewall_nat_npt.php">
-                <NPTEdit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
+            <NPT VisibleName="NPT (IPv6)" order="400" url="/firewall_nat_npt.php">
+                <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPT>
         </NAT>
         <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone fa-fw">

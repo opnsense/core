@@ -1,0 +1,147 @@
+#!/bin/sh
+
+# Copyright (C) 2016 Deciso B.V.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+# OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# load standard rc
+. /etc/rc.subr
+
+# load netflow config
+if [ -f /usr/local/etc/netflow.conf ]; then
+    . /usr/local/etc/netflow.conf
+fi
+
+name=netflow
+rcvar=netflow_enable
+start_cmd="${name}_start"
+stop_cmd="${name}_stop"
+status_cmd="${name}_status"
+extra_commands="status"
+
+[ -z "$netflow_enable" ] && netflow_enable="NO"
+[ -z "$netflow_egress_only" ] && netflow_egress_only=""
+
+# setup_interface (interface)
+# - use netgraph + ng_netflow in combination with samplicate to record netflow data and send it to multiple locations
+setup_interface()
+{
+    # set netflow version (export keyword)
+    if [ "$netflow_version" == "9" ]; then
+        nfversion="9"
+    else
+        nfversion=""
+    fi
+    interface=$1
+
+    # determine (snmp) ifIndex
+    ifIndex=0
+    found=0
+    for item in `/sbin/ifconfig -l`
+    do
+       let ifIndex = ifIndex + 1  > /dev/null 2>&1
+       if [ "$item" = "$interface" ]; then
+           found=1
+           break
+       fi
+    done
+
+    if [ "$found" == "0" ]; then
+        echo "error : interface $interface not found"
+        return
+    fi
+
+    # disable ingress (traffic to this host) for selected interfaces
+    # avoids counting traffic going through this firewall double when using nat
+    if [ ! -z "`echo " $netflow_egress_only " | grep " $interface "`" ]; then
+        conf="10"
+        echo "setup $interface [egress only]"
+    else
+        conf="11"
+        echo "setup $interface"
+    fi;
+
+    # make sure netgraph is attached
+    /usr/local/sbin/ngattach $interface
+    # remove earlier setup (if any)
+    /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
+    # configure netflow for this interface, sending all to localhost
+    /usr/sbin/ngctl -f-  <<-SEQ
+       mkpeer $interface: netflow	lower iface$ifIndex
+       name	$interface:lower netflow_$interface
+       connect $interface: netflow_$interface: upper	out$ifIndex
+       mkpeer netflow_$interface: ksocket export$nfversion inet/dgram/udp
+       msg netflow_$interface: setconfig {iface=$ifIndex conf=$conf}
+       msg netflow_$interface:export$nfversion connect inet/$netflow_int_destination
+SEQ
+}
+
+netflow_start()
+{
+    is_running=`ngctl list | grep netflow_ | wc -l`
+    if [ $is_running -ne 0 ]; then
+        echo "already running"
+        return
+    fi
+    # configure interfaces
+    for interface in $netflow_interfaces
+    do
+          setup_interface "$interface"
+    done
+    # forward netflow packets, make sure $netflow_int_destination forwards to localhost (127.0.0.1)
+    if [ "$netflow_destinations" != "" ]; then
+        netflow_port=`echo $netflow_int_destination | /usr/bin/sed 's/:/ /g' | /usr/bin/awk '{print $2}'`
+        destinations=`echo $netflow_destinations | /usr/bin/sed 's/:/\//g'`
+        /usr/sbin/daemon -p /var/run/netflow_samplicate.pid -u nobody /usr/local/bin/samplicate  -s 127.0.0.1 -p $netflow_port $destinations
+    fi
+
+}
+
+# stop netflow collect and distribution
+netflow_stop()
+{
+    # kill all samplicate process
+    if [ -f /var/run/netflow_samplicate.pid ]; then
+        kill -9 `cat /var/run/netflow_samplicate.pid`
+    fi
+
+    # cleanup netflow processes
+    for netflow_node in `/usr/sbin/ngctl list | grep netflow_ | awk '{print $2;}'`
+    do
+        /usr/sbin/ngctl shutdown  $netflow_node:
+    done
+}
+
+# netflow status
+netflow_status()
+{
+    flows=`/usr/sbin/ngctl list | grep netflow_ | wc -l | /usr/bin/awk '{print $1}'`
+    if [ $flows -eq 0 ]; then
+        echo "netflow is not active"
+    else
+        echo "netflow is active (flows : $flows)"
+    fi
+}
+
+load_rc_config $name
+run_rc_command $1

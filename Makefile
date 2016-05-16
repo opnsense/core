@@ -96,6 +96,7 @@ CORE_DEPENDS?=		apinger \
 			filterdns \
 			filterlog \
 			ifinfo \
+			flowd \
 			igmpproxy \
 			isc-dhcp43-client \
 			isc-dhcp43-relay \
@@ -145,6 +146,7 @@ CORE_DEPENDS?=		apinger \
 			rate \
 			relayd \
 			rrdtool12 \
+			samplicator \
 			squid \
 			sshlockout_pf \
 			strongswan \

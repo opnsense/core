@@ -1,0 +1,14 @@
+# Sample configuration for netflow daemon (/usr/local/etc/netflow.conf)
+# The configuration below sends flows captured from em0 and em1 to multiple locations
+
+# define interfaces to configure
+netflow_interfaces="em0 em1"
+
+# select version [5|9]
+netflow_version="5"
+
+# send data to
+netflow_int_destination="127.0.0.1:3001"
+
+# route to the following endpoints
+netflow_destinations="10.211.55.101:2055 10.211.55.100:4444"
