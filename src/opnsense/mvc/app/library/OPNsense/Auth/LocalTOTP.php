@@ -122,6 +122,17 @@ class LocalTOTP extends Local
     }
 
     /**
+     * return current token code
+     * @param $base32seed secret to use
+     * @return string token code
+     */
+    public function testToken($base32seed)
+    {
+        $otp_seed = \Base32\Base32::decode($base32seed);
+        return $this->calculateToken(time(), $otp_seed);
+    }
+
+    /**
      * authenticate TOTP RFC 6238
      * @param string $secret secret seed to use
      * @param string $code provided code
