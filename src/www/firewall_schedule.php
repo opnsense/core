@@ -115,7 +115,7 @@ $main_buttons = array(
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <div class="content-box tab-content">
-            <form action="firewall_schedule.php" method="post" name="iform" id="iform">
+            <form method="post" name="iform" id="iform">
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <table class="table table-striped">
@@ -237,7 +237,7 @@ $main_buttons = array(
                     <a id="del_<?=$i;?>" title="<?=gettext("delete schedule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                       <span class="fa fa-trash text-muted"></span>
                     </a>
-                    <a href="firewall_schedule.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
+                    <a href="firewall_schedule_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
                       <span class="fa fa-clone text-muted"></span>
                     </a>
                   </td>
