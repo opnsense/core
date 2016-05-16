@@ -237,7 +237,7 @@ $main_buttons = array(
                     <a id="del_<?=$i;?>" title="<?=gettext("delete schedule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
                       <span class="fa fa-trash text-muted"></span>
                     </a>
-                    <a href="firewall_schedule.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
+                    <a href="firewall_schedule_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone schedule");?>">
                       <span class="fa fa-clone text-muted"></span>
                     </a>
                   </td>
