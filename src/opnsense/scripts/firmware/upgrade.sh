@@ -41,17 +41,17 @@ echo "***GOT REQUEST TO UPGRADE: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
 
 if [ "$PACKAGE" == "all" ]; then
 	# update all installed packages
-	opnsense-update -p >> ${PKG_PROGRESS_FILE}
+	opnsense-update -p 2>&1 >> ${PKG_PROGRESS_FILE}
 	# restart the web server
-	/usr/local/etc/rc.restart_webgui >> ${PKG_PROGRESS_FILE}
+	/usr/local/etc/rc.restart_webgui 2>&1 >> ${PKG_PROGRESS_FILE}
 	# if we can update base, we'll do that as well
 	if opnsense-update -c; then
-		if opnsense-update -bk >> ${PKG_PROGRESS_FILE}; then
+		if opnsense-update -bk 2>&1 >> ${PKG_PROGRESS_FILE}; then
 			REBOOT=1
 		fi
 	fi
 elif [ "$PACKAGE" == "pkg" ]; then
-	pkg upgrade -y $PACKAGE >> ${PKG_PROGRESS_FILE}
+	pkg upgrade -y $PACKAGE 2>&1 >> ${PKG_PROGRESS_FILE}
 	echo  "*** PLEASE CHECK FOR MORE UPGRADES"
 else
 	echo "Cannot update $PACKAGE" >> ${PKG_PROGRESS_FILE}
