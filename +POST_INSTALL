@@ -30,3 +30,9 @@ fi
 
 echo "Flush Phalcon volt templates"
 rm -f /usr/local/opnsense/mvc/app/cache/*.php
+
+echo "Reloading GUI configuration"
+/usr/local/etc/rc.php_ini_setup
+if pgrep -q php-cgi; then
+	pkill -HUP php-cgi
+fi
