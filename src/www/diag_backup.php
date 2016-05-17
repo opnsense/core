@@ -118,7 +118,6 @@ $areas = array(
     'bridges' => gettext('Bridge Devices'),
     'ca' => gettext('SSL Certificate Authorities'),
     'cert' => gettext('SSL Certificates'),
-    'cron' => gettext('Scheduled Tasks'),
     'dhcpd' => gettext('DHCP Server'),
     'dhcpdv6' => gettext('DHCPv6 Server'),
     'dhcrelay' => gettext('DHCP Relay'),
