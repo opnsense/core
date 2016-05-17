@@ -37,7 +37,6 @@ require_once("filter.inc");
 require_once("util.inc");
 require_once("interfaces.inc");
 require_once("XMLRPC_Client.inc") ;
-require_once("util.inc");
 
 /**
  * fetch carp vips from config with modified advskew for the backup host to use
