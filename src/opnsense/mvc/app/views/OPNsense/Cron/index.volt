@@ -121,17 +121,17 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-jobs" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogEdit">
             <thead>
             <tr>
-                <th data-column-id="origin" data-type="string" data-visible="false">Origin</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">Enabled</th>
-                <th data-column-id="minutes" data-type="string">Minutes</th>
-                <th data-column-id="hours" data-type="string">Hours</th>
-                <th data-column-id="days" data-type="string">Days</th>
-                <th data-column-id="months" data-type="string">Months</th>
-                <th data-column-id="weekdays" data-type="string">Weekdays</th>
-                <th data-column-id="description" data-type="string">Description</th>
-                <th data-column-id="command" data-type="string">Command</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">Edit | Delete</th>
-                <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">ID</th>
+                <th data-column-id="origin" data-type="string" data-visible="false">{{ lang._('Origin') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="minutes" data-type="string">{{ lang._('Minutes') }}</th>
+                <th data-column-id="hours" data-type="string">{{ lang._('Hours') }}</th>
+                <th data-column-id="days" data-type="string">{{ lang._('Days') }}</th>
+                <th data-column-id="months" data-type="string">{{ lang._('Months') }}</th>
+                <th data-column-id="weekdays" data-type="string">{{ lang._('Weekdays') }}</th>
+                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                <th data-column-id="command" data-type="string">{{ lang._('Command') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Edit') }} | {{ lang._('Delete') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
             </tr>
             </thead>
             <tbody>

@@ -452,17 +452,17 @@ POSSIBILITY OF SUCH DAMAGE.
             <tr>
                 <td><div class="control-label">
                     <i class="fa fa-info-circle text-muted"></i>
-                    <b>{{ lang._('rulesets') }}</b>
+                    <b>{{ lang._('Rulesets') }}</b>
                     </div>
                 </td>
                 <td>
                 <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
                     <thead>
                     <tr>
-                        <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">filename</th>
+                        <th data-column-id="filename" data-type="string" data-visible="false" data-identifier="true">{{ lang._('Filename') }}</th>
                         <th data-column-id="description" data-type="string" data-sortable="false"  data-visible="true">{{ lang._('Description') }}</th>
                         <th data-column-id="modified_local" data-type="rulets" data-sortable="false" data-visible="true">{{ lang._('Last updated') }}</th>
-                        <th data-column-id="filter_str" data-type="string" data-identifier="true">Filter</th>
+                        <th data-column-id="filter_str" data-type="string" data-identifier="true">{{ lang._('Filter') }}</th>
                         <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
                     </tr>
                     </thead>
@@ -472,8 +472,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     <tr>
                         <td></td>
                         <td>
-                            <button title="{{ lang._('disable selected') }}" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
-                            <button title="{{ lang._('enable selected') }}" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
+                            <button title="{{ lang._('Disable selected') }}" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
+                            <button title="{{ lang._('Enable selected') }}" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
                         </td>
                     </tr>
                     </tfoot>
@@ -487,7 +487,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
             <button class="btn btn-primary"  id="updateRulesAct" type="button"><b>{{ lang._('Download & Update Rules') }}</b><i id="updateRulesAct_progress" class=""></i></button>
             <br/>
-            <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download') }} </i>
+            <i>{{ lang._('Please use "Download & Update Rules" to fetch your initial ruleset, automatic updating can be scheduled after the first download.') }} </i>
         </div>
     </div>
     <div id="rules" class="tab-pane fade in">
@@ -509,7 +509,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <th data-column-id="source" data-type="string">{{ lang._('Source') }}</th>
                 <th data-column-id="classtype" data-type="string">{{ lang._('ClassType') }}</th>
                 <th data-column-id="msg" data-type="string">{{ lang._('Message') }}</th>
-                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Info / enabled') }}</th>
+                <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Info / Enabled') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -517,8 +517,8 @@ POSSIBILITY OF SUCH DAMAGE.
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
-                    <button title="{{ lang._('enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
+                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o command-toggle"></span></button>
+                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
                 </td>
                 <td></td>
             </tr>
@@ -536,7 +536,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <table id="grid-userrules" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUserDefined">
             <thead>
                 <tr>
-                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false"  data-width="10em">{{ lang._('Enabled') }}</th>
+                    <th data-column-id="enabled" data-formatter="rowtoggle" data-sortable="false" data-width="10em">{{ lang._('Enabled') }}</th>
                     <th data-column-id="action" data-type="string" data-sortable="true">{{ lang._('Action') }}</th>
                     <th data-column-id="description" data-type="string" data-sortable="true">{{ lang._('Description') }}</th>
                     <th data-column-id="uuid" data-type="string" data-identifier="true"  data-visible="false">{{ lang._('ID') }}</th>
