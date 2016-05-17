@@ -2937,10 +2937,8 @@ EOD;
         }
     }
 
-  foreach ($FilterIflist as $on => $oc) {
-      /* block bogon networks */
-      /* http://www.cymru.com/Documents/bogon-bn-nonagg.txt */
-      /* file is automatically in cron every 3000 minutes */
+    foreach ($FilterIflist as $on => $oc) {
+      /* block bogon networks via http://www.cymru.com/Documents/bogon-bn-nonagg.txt */
       if (!isset($config['syslog']['nologbogons'])) {
           $bogonlog = 'log';
       } else {
