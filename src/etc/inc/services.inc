@@ -2927,8 +2927,6 @@ function is_radvd_enabled() {
 
 function service_control_start($name, $extras)
 {
-    $msg = sprintf(gettext('%s has been started.'), htmlspecialchars($name));
-
     if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
@@ -2937,6 +2935,7 @@ function service_control_start($name, $extras)
     if (!isset($service['name'])) {
         return sprintf(gettext("Could not start unknown service `%s'"), htmlspecialchars($name));
     }
+
     if (isset($service['configd']['start'])) {
         foreach ($service['configd']['start'] as $cmd) {
             configd_run($cmd);
@@ -2956,15 +2955,14 @@ function service_control_start($name, $extras)
             mwexec($cmd);
         }
     } else {
-        $msg = sprintf(gettext("Could not start service `%s'"), htmlspecialchars($name));
+        return sprintf(gettext("Could not start service `%s'"), htmlspecialchars($name));
     }
 
-    return $msg;
+    return sprintf(gettext('%s has been started.'), htmlspecialchars($name));
 }
 
 function service_control_stop($name, $extras)
 {
-    $msg = sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
     $filter = array();
 
     if (!empty($extras['id'])) {
@@ -2995,13 +2993,11 @@ function service_control_stop($name, $extras)
         killbyname($service['name']);
     }
 
-    return $msg;
+    return sprintf(gettext("%s has been stopped."), htmlspecialchars($name));
 }
 
 function service_control_restart($name, $extras)
 {
-    $msg = sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
-
     if (!empty($extras['id'])) {
         $filter['id'] = $extras['id'];
     }
@@ -3030,8 +3026,8 @@ function service_control_restart($name, $extras)
             mwexec($cmd);
         }
     } else {
-        $msg = sprintf(gettext("Could not restart service `%s'"), htmlspecialchars($name));
+        return sprintf(gettext("Could not restart service `%s'"), htmlspecialchars($name));
     }
 
-    return $msg;
+    return sprintf(gettext("%s has been restarted."), htmlspecialchars($name));
 }
