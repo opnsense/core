@@ -182,14 +182,31 @@ function session_auth(&$Login_Error)
 
     /* Validate incoming login request */
     if (isset($_POST['login']) && !empty($_POST['usernamefld']) && !empty($_POST['passwordfld'])) {
+        $authcfg = auth_get_authserver("Local Database");
+        $authcfg_fallback = auth_get_authserver("Local Database");
+
         if (isset($config['system']['webgui']['authmode'])) {
             $authcfg = auth_get_authserver($config['system']['webgui']['authmode']);
-        } else {
-            $authcfg = null;
         }
+
+        if (!empty($config['system']['webgui']['authmode_fallback'])) {
+            if ($config['system']['webgui']['authmode_fallback'] == "__NO_FALLBACK__") {
+                // no fallback
+                $authcfg_fallback = false;
+            } else {
+                $authcfg_fallback = auth_get_authserver($config['system']['webgui']['authmode_fallback']);
+            }
+        }
+
+        if ($authcfg == $authcfg_fallback) {
+            // it doesn't make sense to fallback to the same authenticator
+            $authcfg_fallback = false;
+        }
+
         // authenticate using config settings, or local if failed
         if (authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg) ||
-          authenticate_user($_POST['usernamefld'], $_POST['passwordfld'])) {
+            ($authcfg_fallback !== false && authenticate_user($_POST['usernamefld'], $_POST['passwordfld'], $authcfg_fallback))
+            ) {
             // Generate a new id to avoid session fixation
             session_regenerate_id();
             $_SESSION['Logged_In'] = "True";

@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['session_timeout'] = $config['system']['webgui']['session_timeout'];
     $pconfig['authmode'] = $config['system']['webgui']['authmode'];
+    $pconfig['authmode_fallback'] = !empty($config['system']['webgui']['authmode_fallback']) ? $config['system']['webgui']['authmode_fallback'] : "Local Database";
     $pconfig['backend'] = $config['system']['webgui']['backend'];
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -63,6 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['authmode'] = $pconfig['authmode'];
         } elseif (isset($config['system']['webgui']['authmode'])) {
             unset($config['system']['webgui']['authmode']);
+        }
+
+        if (!empty($pconfig['authmode_fallback'])) {
+            $config['system']['webgui']['authmode_fallback'] = $pconfig['authmode_fallback'];
+        } elseif (isset($config['system']['webgui']['authmode_fallback'])) {
+            unset($config['system']['webgui']['authmode_fallback']);
         }
 
         write_config();
@@ -123,6 +130,23 @@ endif;?>
                       </select>
                     </td>
                   </tr>
+                  <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication Server (fallback)"); ?></td>
+                    <td>
+                        <select name="authmode_fallback" class="selectpicker" data-style="btn-default" >
+<?php
+                        foreach (auth_get_authserver_list() as $auth_key => $auth_server) :?>
+                          <option value="<?=$auth_key; ?>" <?=$auth_key == $pconfig['authmode_fallback'] ? "selected=\"selected\"" : "";?>>
+                            <?=htmlspecialchars($auth_server['name']);?>
+                          </option>
+ <?php
+                        endforeach; ?>
+                          <option value="__NO_FALLBACK__" <?= $pconfig['authmode_fallback'] == "__NO_FALLBACK__" ? "selected=\"selected\"" : "";?> >
+                            <?=gettext("--No Fallback--");?>
+                          </option>
+                        </select>
+                      </td>
+                    </tr>
                   <tr>
                     <td></td>
                     <td>
