@@ -166,8 +166,8 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "# Generated for DHCPv6 Server $dhcpv6if\n";
         $radvdconf .= "interface {$realif} {\n";
         $radvdconf .= "\tAdvSendAdvert on;\n";
-        $radvdconf .= "\tMinRtrAdvInterval 5;\n";
-        $radvdconf .= "\tMaxRtrAdvInterval 20;\n";
+        $radvdconf .= "\tMinRtrAdvInterval 225;\n";
+        $radvdconf .= "\tMaxRtrAdvInterval 300;\n";
         $mtu = legacy_interface_stats($realif)['mtu'];
         if (is_numeric($mtu)) {
             $radvdconf .= "\tAdvLinkMTU {$mtu};\n";
