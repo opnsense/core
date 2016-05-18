@@ -134,17 +134,17 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
-     * perform powerdown
+     * perform poweroff
      * @return array status
      * @throws \Exception
      */
-    public function powerdownAction()
+    public function poweroffAction()
     {
         $backend = new Backend();
         $response = array();
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
-            $response['msg_uuid'] = trim($backend->configdRun('firmware powerdown', true));
+            $response['msg_uuid'] = trim($backend->configdRun('firmware poweroff', true));
         } else {
             $response['status'] = 'failure';
         }
