@@ -623,8 +623,8 @@ if ($act!="new" && $act!="edit") {
                         Scope ID:&nbsp;
                         <input name="netbios_scope" type="text" id="netbios_scope" value="<?=$pconfig['netbios_scope'];?>" />
                         <div class="hidden" for="help_for_netbios_enable">
-                          <?=gettext("A NetBIOS Scope  ID provides an extended naming " .
-                                                    "service for  NetBIOS over TCP/IP. The NetBIOS " .
+                          <?=gettext("A NetBIOS Scope ID provides an extended naming " .
+                                                    "service for NetBIOS over TCP/IP. The NetBIOS " .
                                                     "scope ID isolates NetBIOS traffic on a single " .
                                                     "network to only those nodes with the same " .
                                                     "NetBIOS scope ID."); ?>

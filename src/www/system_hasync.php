@@ -133,7 +133,7 @@ include("head.inc");
                       <?=gettext('If Synchronize States is enabled, it will utilize this interface for communication.') ?><br/><br/>
                       <div class="well">
                         <lu>
-                        <li><?=gettext('We recommend setting this to a interface other than LAN!  A dedicated interface works the best.') ?></li>
+                        <li><?=gettext('We recommend setting this to a interface other than LAN! A dedicated interface works the best.') ?></li>
                         <li><?=gettext('You must define a IP on each machine participating in this failover group.') ?></li>
                         <li><?=gettext('You must have an IP assigned to the interface on any participating sync nodes.') ?></li>
                         </lu>
@@ -146,7 +146,7 @@ include("head.inc");
                   <td>
                     <input name="pfsyncpeerip" type="text" value="<?=$pconfig['pfsyncpeerip']; ?>" />
                     <div class="hidden" for="help_for_pfsyncpeerip">
-                      <?=gettext('Setting this option will force pfsync to synchronize its state table to this IP address.  The default is directed multicast.') ?>
+                      <?=gettext('Setting this option will force pfsync to synchronize its state table to this IP address. The default is directed multicast.') ?>
                     </div>
                   </td>
                 </tr>

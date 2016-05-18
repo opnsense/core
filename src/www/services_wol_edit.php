@@ -139,7 +139,7 @@ legacy_html_escape_form_data($pconfig);
                     <td>
                       <input name="mac" type="text" value="<?=$pconfig['mac'];?>" />
                       <div class="hidden" for="help_for_mac">
-                        <?=gettext("Enter a MAC address  in the following format: xx:xx:xx:xx:xx:xx");?>
+                        <?=gettext("Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx");?>
                       </div>
                     </td>
                   </tr>

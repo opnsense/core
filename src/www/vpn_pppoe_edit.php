@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = sprintf(gettext("No password specified for username %s"), $usr);
         }
         if ($pconfig['users_ip'][$item_idx] <> "" && !is_ipaddr($pconfig['users_ip'][$item_idx])) {
-            $input_errors[] = sprintf(gettext("Incorrect ip address  specified for username %s"), $usr);
+            $input_errors[] = sprintf(gettext("Incorrect ip address specified for username %s"), $usr);
         }
     }
 
