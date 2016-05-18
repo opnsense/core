@@ -769,6 +769,13 @@
             "carp_status.php*"
         ]
     },
+    "page-status-habackup": {
+        "name": "WebCfg - Status: HA backup page",
+        "descr": "Allow access to the 'Status: HA backup' page.",
+        "match": [
+            "status_habackup.php"
+        ]
+    },
     "page-status-dhcpleases": {
         "name": "WebCfg - Status: DHCP leases page",
         "descr": "Allow access to the 'Status: DHCP leases' page.",
