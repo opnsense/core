@@ -174,6 +174,9 @@ include("head.inc");
         if ($carp_backup_version === false):?>
         <?=print_info_box(gettext('The backup firewall is not accessible or not configured.'));?>
 <?php
+        elseif (!is_array($carp_backup_version)):?>
+        <?=print_info_box(gettext('The backup firewall is not accessible (check user credentials).'));?>
+<?php
         else:?>
         <section class="col-xs-12">
           <div class="content-box">
