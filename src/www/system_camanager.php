@@ -726,19 +726,24 @@ $main_buttons = array(
               } else {
                   $issuer_name = "<em>" . gettext("external") . "</em>";
               }
-              $certcount = 0;
 
               if (isset($ca['caref'])) {
                   $issuer_ca = lookup_ca($ca['caref']);
                   if ($issuer_ca) {
                       $issuer_name = $issuer_ca['descr'];
                   }
-                  foreach ($config['cert'] as $cert) {
-                      if ($cert['caref'] == $ca['refid']) {
-                          $certcount++;
-                      }
+              }
+
+              $certcount = 0;
+
+              foreach ($config['cert'] as $cert) {
+                  if ($cert['caref'] == $ca['refid']) {
+                      $certcount++;
                   }
-                  foreach ($a_ca as $cert) {
+              }
+
+              foreach ($a_ca as $cert) {
+                  if (isset($cert['caref'])) {
                       if ($cert['caref'] == $ca['refid']) {
                           $certcount++;
                       }
