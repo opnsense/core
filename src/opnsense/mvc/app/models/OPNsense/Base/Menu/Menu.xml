@@ -36,6 +36,7 @@
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Synchronization url="/system_hasync.php"/>
             <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
+            <HAStatus order="200" VisibleName="HA backup status" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes order="40" cssClass="fa fa-map-signs fa-fw">
             <All order="10" url="/system_routes.php">
