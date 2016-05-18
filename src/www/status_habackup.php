@@ -172,7 +172,7 @@ include("head.inc");
     <div class="row">
 <?php
         if ($carp_backup_version === false):?>
-        <?=print_info_box(gettext("The backup firewall doesn't seem to be accesible or is not configured"));?>
+        <?=print_info_box(gettext('The backup firewall is not accessible or not configured.'));?>
 <?php
         else:?>
         <section class="col-xs-12">
