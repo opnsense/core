@@ -41,7 +41,10 @@ function http_basic_auth($http_auth_header)
     if (count($tags) >= 2) {
         $userinfo= explode(":", base64_decode($tags[1])) ;
         if (count($userinfo)>=2) {
-            return authenticate_user($userinfo[0], $userinfo[1]);
+            if (authenticate_user($userinfo[0], $userinfo[1])) {
+                $aclObj = new \OPNsense\Core\ACL();
+                return $aclObj->isPageAccessible($userinfo[0], "/xmlrpc.php");
+            }
         }
     }
 
