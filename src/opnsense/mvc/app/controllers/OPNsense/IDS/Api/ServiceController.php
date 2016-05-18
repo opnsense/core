@@ -88,7 +88,7 @@ class ServiceController extends ApiControllerBase
     }
 
     /**
-     * retrieve status of squid proxy
+     * retrieve status of the IDS
      * @return array
      * @throws \Exception
      */
