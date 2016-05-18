@@ -313,7 +313,7 @@ netmap:
   - interface: default
     threads: auto
     copy-mode: ips
-    disable-promisc: {% if OPNsense.IDS.general.promisc|default('0') == '0' %}yes{% else %}no{% endif %} #  promiscuous mode
+    disable-promisc: {% if helpers.exists('OPNsense.IDS.general.promisc') and OPNsense.IDS.general.promisc|default('0') == '0' %}yes{% else %}no{% endif %} #  promiscuous mode
     checksum-checks: auto
 
   {% if helpers.exists('OPNsense.IDS.general.interfaces') %}
@@ -745,7 +745,7 @@ logging:
 
 pcap:
   - interface: default
-    promisc: {% if OPNsense.IDS.general.promisc|default('0') == '1' %}yes{% else %}no{% endif %} #  promiscuous mode
+    promisc: {% if helpers.exists('OPNsense.IDS.general.promisc') and OPNsense.IDS.general.promisc|default('0') == '1' %}yes{% else %}no{% endif %} #  promiscuous mode
 
 pcap-file:
   # Possible values are:
