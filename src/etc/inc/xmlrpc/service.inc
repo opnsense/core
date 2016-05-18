@@ -27,6 +27,7 @@
  *
  */
 require_once("services.inc");
+require_once("system.inc");
 
 /**
  * @return array
