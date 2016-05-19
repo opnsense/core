@@ -78,16 +78,11 @@ function thermal_modules()
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
-    $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
-    $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
-    $pconfig['kill_states'] = isset($config['system']['kill_states']);
-    $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
     $pconfig['powerd_ac_mode'] = "hadp";
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
@@ -114,23 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        $need_relayd_restart = false;
-        if (!empty($pconfig['lb_use_sticky'])) {
-            if (!isset($config['system']['lb_use_sticky'])) {
-                $config['system']['lb_use_sticky'] = true;
-                $need_relayd_restart = true;
-            }
-        } elseif (isset($config['system']['lb_use_sticky'])) {
-            unset($config['system']['lb_use_sticky']);
-            $need_relayd_restart = true;
-        }
-        if (!empty($pconfig['srctrack'])) {
-            $config['system']['srctrack'] = $pconfig['srctrack'];
-        } elseif (isset($config['system']['srctrack'])) {
-            unset($config['system']['srctrack']);
-        }
-
-
         if (!empty($pconfig['gw_switch_default'])) {
             $config['system']['gw_switch_default'] = true;
         } elseif (isset($config['system']['gw_switch_default'])) {
@@ -164,24 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['thermal_hardware']);
         }
 
-        if (!empty($pconfig['schedule_states'])) {
-            $config['system']['schedule_states'] = true;
-        } elseif (isset($config['system']['schedule_states'])) {
-            unset($config['system']['schedule_states']);
-        }
-
-        if (!empty($pconfig['kill_states'])) {
-            $config['system']['kill_states'] = true;
-        } elseif (isset($config['system']['kill_states'])) {
-            unset($config['system']['kill_states']);
-        }
-
-        if (!empty($pconfig['skip_rules_gw_down'])) {
-            $config['system']['skip_rules_gw_down'] = true;
-        } elseif (isset($config['system']['skip_rules_gw_down'])) {
-            unset($config['system']['skip_rules_gw_down']);
-        }
-
         if (!empty($pconfig['use_mfs_tmpvar'])) {
             $config['system']['use_mfs_tmpvar'] = true;
         } elseif (isset($config['system']['use_mfs_tmpvar'])) {
@@ -211,13 +171,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_resolvconf_generate(true);
         configure_cron();
-        filter_configure();
         activate_powerd();
         load_crypto_module();
         load_thermal_module();
-        if ($need_relayd_restart) {
-            relayd_configure();
-        }
     }
 }
 
@@ -261,30 +217,6 @@ include("head.inc");
                   <div class="hidden" for="help_for_gw_switch_default">
                     <?=gettext("If the link where the default gateway resides fails " .
                                         "switch the default gateway to another available one."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
-                <td>
-                  <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
-                  <strong><?=gettext("Use sticky connections"); ?></strong><br />
-                  <div class="hidden" for="help_for_lb_use_sticky">
-                    <?=gettext("Successive connections will be redirected to the servers " .
-                                        "in a round-robin manner with connections from the same " .
-                                        "source being sent to the same web server. This 'sticky " .
-                                        "connection' will exist as long as there are states that " .
-                                        "refer to this connection. Once the states expire, so will " .
-                                        "the sticky connection. Further connections from that host " .
-                                        "will be redirected to the next web server in the round " .
-                                        "robin. Changing this option will restart the Load Balancing service."); ?>
-                  </div><br/>
-                  <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
-
-                  <div class="hidden" for="help_for_lb_use_sticky">
-                    <?=gettext("Set the source tracking timeout for sticky connections. " .
-                                        "By default this is 0, so source tracking is removed as soon as the state expires. " .
-                                        "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
                   </div>
                 </td>
               </tr>
@@ -415,44 +347,6 @@ include("head.inc");
                     <br /><br />
                     <?=gettext("If you do not have a supported thermal sensor chip in your system, this option will have no " .
                                           "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Schedules"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
-                <td>
-                  <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
-                  <div class="hidden" for="help_for_schedule_states">
-                    <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
-                                        "This option overrides that behavior by not clearing states for existing connections."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
-                <td>
-                  <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("State Killing on Gateway Failure"); ?></strong>
-                  <div class="hidden" for="help_for_kill_states">
-                    <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
-                <td>
-                  <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("Skip rules when gateway is down"); ?></strong>
-                  <div class="hidden" for="help_for_skip_rules_gw_down">
-                    <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
-                                        "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
-                                        "and the rule is not created when gateway is down"); ?>
                   </div>
                 </td>
               </tr>
