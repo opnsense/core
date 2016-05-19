@@ -103,78 +103,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfieldsn = array(gettext("Type"));
     do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
 
-    if (isset($pconfig['subnet'])) {
-        $pconfig['subnet'] = trim($pconfig['subnet']);
-        if (!is_ipaddr($pconfig['subnet'])) {
-            $input_errors[] = gettext("A valid IP address must be specified.");
-        } else {
-            $ignore_if = isset($id) ? $a_vip[$id]['interface'] : $pconfig['interface'];
-            if ($pconfig['mode'] == 'carp') {
-                $ignore_if .= "_vip{$pconfig['vhid']}";
+    if (isset($id) && $pconfig['mode'] != $a_vip[$id]['mode']) {
+        $input_errors[] = gettext("Virtual IP mode may not be changed for an existing entry.");
+    } else {
+        if (isset($pconfig['subnet'])) {
+            $pconfig['subnet'] = trim($pconfig['subnet']);
+            if (!is_ipaddr($pconfig['subnet'])) {
+                $input_errors[] = gettext("A valid IP address must be specified.");
+            } else {
+                $ignore_if = isset($id) ? $a_vip[$id]['interface'] : $pconfig['interface'];
+                if ($pconfig['mode'] == 'carp') {
+                    $ignore_if .= "_vip{$pconfig['vhid']}";
+                }
+                if (is_ipaddr_configured($pconfig['subnet'], $ignore_if)) {
+                    $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
+                }
             }
-            if (is_ipaddr_configured($pconfig['subnet'], $ignore_if)) {
-                $input_errors[] = gettext("This IP address is being used by another interface or VIP.");
+        }
+
+        $natiflist = get_configured_interface_with_descr();
+        foreach ($natiflist as $natif => $natdescr) {
+            if ($pconfig['interface'] == $natif && (empty($config['interfaces'][$natif]['ipaddr']) && empty($config['interfaces'][$natif]['ipaddrv6']))) {
+                $input_errors[] = gettext("The interface chosen for the VIP has no IPv4 or IPv6 address configured so it cannot be used as a parent for the VIP.");
             }
         }
-    }
-    $natiflist = get_configured_interface_with_descr();
-    foreach ($natiflist as $natif => $natdescr) {
-        if ($pconfig['interface'] == $natif && (empty($config['interfaces'][$natif]['ipaddr']) && empty($config['interfaces'][$natif]['ipaddrv6']))) {
-            $input_errors[] = gettext("The interface chosen for the VIP has no IPv4 or IPv6 address configured so it cannot be used as a parent for the VIP.");
-        }
-    }
-    /* ipalias and carp should not use network or broadcast address */
-    if ($pconfig['mode'] == "ipalias" || $pconfig['mode'] == "carp") {
-        if (is_ipaddrv4($pconfig['subnet']) && $pconfig['subnet_bits'] != "32") {
-            $network_addr = gen_subnet($pconfig['subnet'], $pconfig['subnet_bits']);
-            $broadcast_addr = gen_subnet_max($pconfig['subnet'], $pconfig['subnet_bits']);
-        } else if (is_ipaddrv6($pconfig['subnet']) && $_POST['subnet_bits'] != "128" ) {
-            $network_addr = gen_subnetv6($pconfig['subnet'], $pconfig['subnet_bits']);
-            $broadcast_addr = gen_subnetv6_max($pconfig['subnet'], $pconfig['subnet_bits']);
-        }
-        if (isset($network_addr) && $pconfig['subnet'] == $network_addr) {
-            $input_errors[] = gettext("You cannot use the network address for this VIP");
-        } else if (isset($broadcast_addr) && $pconfig['subnet'] == $broadcast_addr) {
-            $input_errors[] = gettext("You cannot use the broadcast address for this VIP");
-        }
-    }
 
-    /* make sure new ip is within the subnet of a valid ip
-     * on one of our interfaces (wan, lan optX)
-     */
-    if ($pconfig['mode'] == 'carp') {
-        /* verify against reusage of vhids */
-        foreach($config['virtualip']['vip'] as $vipId => $vip) {
-          if(isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['interface'] == $pconfig['interface'] && $vipId <> $id) {
-              $input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
-          }
-        }
-        if (empty($pconfig['password'])) {
-            $input_errors[] = gettext("You must specify a CARP password that is shared between the two VHID members.");
+        /* ipalias and carp should not use network or broadcast address */
+        if ($pconfig['mode'] == "ipalias" || $pconfig['mode'] == "carp") {
+            if (is_ipaddrv4($pconfig['subnet']) && $pconfig['subnet_bits'] != "32") {
+                $network_addr = gen_subnet($pconfig['subnet'], $pconfig['subnet_bits']);
+                $broadcast_addr = gen_subnet_max($pconfig['subnet'], $pconfig['subnet_bits']);
+            } else if (is_ipaddrv6($pconfig['subnet']) && $_POST['subnet_bits'] != "128" ) {
+                $network_addr = gen_subnetv6($pconfig['subnet'], $pconfig['subnet_bits']);
+                $broadcast_addr = gen_subnetv6_max($pconfig['subnet'], $pconfig['subnet_bits']);
+            }
+            if (isset($network_addr) && $pconfig['subnet'] == $network_addr) {
+                $input_errors[] = gettext("You cannot use the network address for this VIP");
+            } else if (isset($broadcast_addr) && $pconfig['subnet'] == $broadcast_addr) {
+                $input_errors[] = gettext("You cannot use the broadcast address for this VIP");
+            }
         }
 
-        if (is_ipaddrv4($pconfig['subnet'])) {
-            $parent_ip = get_interface_ip($pconfig['interface']);
-            $parent_sn = get_interface_subnet($pconfig['interface']);
-            $subnet = gen_subnet($parent_ip, $parent_sn);
-        } else if (is_ipaddrv6($pconfig['subnet'])) {
-            $parent_ip = get_interface_ipv6($pconfig['interface']);
-            $parent_sn = get_interface_subnetv6($pconfig['interface']);
-            $subnet = gen_subnetv6($parent_ip, $parent_sn);
-        }
+        /* make sure new ip is within the subnet of a valid ip
+         * on one of our interfaces (wan, lan optX)
+         */
+        if ($pconfig['mode'] == 'carp') {
+            /* verify against reusage of vhids */
+            foreach($config['virtualip']['vip'] as $vipId => $vip) {
+              if(isset($vip['vhid']) &&  $vip['vhid'] == $pconfig['vhid'] && $vip['interface'] == $pconfig['interface'] && $vipId <> $id) {
+                  $input_errors[] = sprintf(gettext("VHID %s is already in use on interface %s. Pick a unique number on this interface."),$pconfig['vhid'], convert_friendly_interface_to_friendly_descr($pconfig['interface']));
+              }
+            }
+            if (empty($pconfig['password'])) {
+                $input_errors[] = gettext("You must specify a CARP password that is shared between the two VHID members.");
+            }
 
-        if (isset($parent_ip) && !ip_in_subnet($pconfig['subnet'], "{$subnet}/{$parent_sn}") && !ip_in_interface_alias_subnet($pconfig['interface'], $pconfig['subnet'])) {
-            $cannot_find = $pconfig['subnet'] . "/" . $pconfig['subnet_bits'] ;
-            $input_errors[] = sprintf(gettext("Sorry, we could not locate an interface with a matching subnet for %s.  Please add an IP alias in this subnet on this interface."),$cannot_find);
-        }
+            if (is_ipaddrv4($pconfig['subnet'])) {
+                $parent_ip = get_interface_ip($pconfig['interface']);
+                $parent_sn = get_interface_subnet($pconfig['interface']);
+                $subnet = gen_subnet($parent_ip, $parent_sn);
+            } else if (is_ipaddrv6($pconfig['subnet'])) {
+                $parent_ip = get_interface_ipv6($pconfig['interface']);
+                $parent_sn = get_interface_subnetv6($pconfig['interface']);
+                $subnet = gen_subnetv6($parent_ip, $parent_sn);
+            }
 
-        if ($pconfig['interface'] == "lo0") {
+            if (isset($parent_ip) && !ip_in_subnet($pconfig['subnet'], "{$subnet}/{$parent_sn}") && !ip_in_interface_alias_subnet($pconfig['interface'], $pconfig['subnet'])) {
+                $cannot_find = $pconfig['subnet'] . "/" . $pconfig['subnet_bits'] ;
+                $input_errors[] = sprintf(gettext("Sorry, we could not locate an interface with a matching subnet for %s.  Please add an IP alias in this subnet on this interface."),$cannot_find);
+            }
+
+            if ($pconfig['interface'] == "lo0") {
+                $input_errors[] = gettext("For this type of vip localhost is not allowed.");
+            }
+        } else if ($pconfig['mode'] != 'ipalias' && $pconfig['interface'] == "lo0") {
             $input_errors[] = gettext("For this type of vip localhost is not allowed.");
         }
-    } else if ($pconfig['mode'] != 'ipalias' && $pconfig['interface'] == "lo0") {
-        $input_errors[] = gettext("For this type of vip localhost is not allowed.");
     }
-
 
     if (count($input_errors) == 0) {
         $vipent = array();
@@ -321,7 +326,7 @@ $( document ).ready(function() {
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Type');?></td>
+                    <td><a id="help_for_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Mode');?></td>
                     <td>
                       <select id="mode" name="mode" class="selectpicker" data-width="auto" data-live-search="true">
                         <option value="ipalias" <?=$pconfig['mode'] == "ipalias" ? "selected=\"selected\"" : ""; ?>><?=gettext("IP Alias");?></option>
