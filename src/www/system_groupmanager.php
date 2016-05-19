@@ -1,32 +1,32 @@
 <?php
 
 /*
-	Copyright (C) 2014-2015 Deciso B.V.
-	Copyright (C) 2008 Shrew Soft Inc.
-	Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>.
-	Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
-	All rights reserved.
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2008 Shrew Soft Inc.
+    Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>.
+    Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>.
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 require_once("guiconfig.inc");
@@ -78,26 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // reload page
         header("Location: system_groupmanager.php");
         exit;
-    } elseif (isset($id) && $act == "delpriv" && isset($a_group[$id]['priv']) && is_array($a_group[$id]['priv'])) {
-        // remove by privid
-        foreach ($a_group[$id]['priv'] as $key => $value) {
-            if ($value == $pconfig['privid']) {
-                unset($a_group[$id]['priv'][$key]);
-            }
-        }
-        if (isset($a_group[$id]['member']) && is_array($a_group[$id]['member'])) {
-            foreach ($a_group[$id]['member'] as $uid) {
-                $user = getUserEntryByUID($uid);
-                if ($user) {
-                    local_user_set($user);
-                }
-            }
-        }
-        write_config();
-        // reload page
-        header("Location: system_groupmanager.php?act=edit&groupid={$id}");
-        exit;
-    } elseif (isset($pconfig['save'])) {
+    }  elseif (isset($pconfig['save'])) {
         $input_errors = array();
 
         /* input validation */
@@ -245,30 +226,6 @@ function presubmit() {
 
 
 $( document ).ready(function() {
-  // delete privilege
-  $(".act-del-priv").click(function(event){
-      event.preventDefault();
-      var priv_name = $(this).data('privname');
-      var privid = $(this).data('privid');
-      BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("Group");?>",
-          message: "<?=gettext("Do you really want to delete this privilege?");?> " + "<br/>("+priv_name+")",
-          buttons: [{
-                  label: "<?= gettext("No");?>",
-                  action: function(dialogRef) {
-                    dialogRef.close();
-                  }}, {
-                    label: "<?= gettext("Yes");?>",
-                    action: function(dialogRef) {
-                      $("#privid").val(privid);
-                      $("#act").val("delpriv");
-                      $("#iform").submit();
-                  }
-          }]
-      });
-    });
-
     // remove group
     $(".act-del-group").click(function(event){
       var groupid = $(this).data('groupid');
@@ -402,15 +359,12 @@ $( document ).ready(function() {
 <?php
               if ($act != "new") :?>
               <tr>
-                <td colspan="2"><b><?=gettext("Assigned Privileges");?></b></td>
-              </tr>
-              <tr>
-                <td colspan="2">
-                  <table class="table table-striped table-condensed">
+                <td><b><?=gettext("Assigned Privileges");?></b></td>
+                <td>
+                  <table class="table table-hover table-condensed">
                     <tr>
                       <td><b><?=gettext("Name");?></b></td>
                       <td><b><?=gettext("Description");?></b></td>
-                      <td></td>
                     </tr>
 <?php
                     if (isset($pconfig['priv']) && is_array($pconfig['priv'])) :
@@ -419,20 +373,14 @@ $( document ).ready(function() {
                     <tr>
                       <td><?=$priv_list[$priv]['name'];?></td>
                       <td><?=$priv_list[$priv]['descr'];?></td>
-                      <td>
-                          <button type="button" data-privid="<?=$priv;?>" data-privname="<?=$priv_list[$priv]['name']?>" class="btn btn-default btn-xs act-del-priv" title="<?=gettext("delete privilege");?>" data-toggle="tooltip">
-                            <span class="fa fa-trash text-muted"></span>
-                          </button>
-                      </td>
                     </tr>
 <?php
                         endforeach;
                     endif;?>
                     <tr>
-                      <td colspan="2"></td>
-                      <td>
-                        <a href="system_groupmanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
-                          <span class="glyphicon glyphicon-plus"></span>
+                      <td colspan="2">
+                        <a href="system_usermanager_addprivs.php?groupid=<?=htmlspecialchars($id)?>" class="btn btn-default btn-xs">
+                          <span class="fa fa-pencil"></span>
                         </a>
                       </td>
                     </tr>
