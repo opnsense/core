@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
     $pconfig['disablenegate'] = isset($config['system']['disablenegate']);
     $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
+    $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     if (!isset($config['system']['disablenatreflection']) && !isset($config['system']['enablenatreflectionpurenat'])) {
         $pconfig['natreflection'] = "proxy";
     } elseif (isset($config['system']['enablenatreflectionpurenat'])) {
@@ -215,6 +216,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if ($pconfig['bogonsinterval'] != $config['system']['bogons']['interval']) {
             $config['system']['bogons']['interval'] = $pconfig['bogonsinterval'];
+        }
+
+        if (!empty($pconfig['schedule_states'])) {
+            $config['system']['schedule_states'] = true;
+        } elseif (isset($config['system']['schedule_states'])) {
+            unset($config['system']['schedule_states']);
         }
 
         write_config();
@@ -389,6 +396,19 @@ include("head.inc");
                     </select>
                     <div class="hidden" for="help_for_bogonsinterval">
                       <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Schedules"); ?></th>
+                </tr>
+                <tr>
+                  <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
+                  <td>
+                    <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
+                    <div class="hidden" for="help_for_schedule_states">
+                      <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
+                                          "This option overrides that behavior by not clearing states for existing connections."); ?>
                     </div>
                   </td>
                 </tr>
