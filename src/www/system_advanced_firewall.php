@@ -61,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
+    $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
+    $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     if (!isset($config['system']['disablenatreflection']) && !isset($config['system']['enablenatreflectionpurenat'])) {
         $pconfig['natreflection'] = "proxy";
     } elseif (isset($config['system']['enablenatreflectionpurenat'])) {
@@ -106,6 +108,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The Reflection timeout must be an integer.");
     }
     if (count($input_errors) == 0) {
+        $need_relayd_restart = false;
+
+        if (!empty($pconfig['lb_use_sticky'])) {
+            if (!isset($config['system']['lb_use_sticky'])) {
+                $config['system']['lb_use_sticky'] = true;
+                $need_relayd_restart = true;
+            }
+        } elseif (isset($config['system']['lb_use_sticky'])) {
+            unset($config['system']['lb_use_sticky']);
+            $need_relayd_restart = true;
+        }
+
+        if (!empty($pconfig['srctrack'])) {
+            $config['system']['srctrack'] = $pconfig['srctrack'];
+        } elseif (isset($config['system']['srctrack'])) {
+            unset($config['system']['srctrack']);
+        }
+
         if (!empty($pconfig['ipv6nat_enable'])) {
             $config['diag']['ipv6nat'] = array();
             $config['diag']['ipv6nat']['enable'] = true;
@@ -249,6 +269,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         configure_cron();
         filter_configure();
+        if ($need_relayd_restart) {
+            relayd_configure();
+        }
     }
 }
 
@@ -435,6 +458,32 @@ include("head.inc");
                       <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
                                           "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
                                           "and the rule is not created when gateway is down"); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic"><?= gettext('Load Balancing') ?></th>
+                </tr>
+                <tr>
+                  <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
+                  <td>
+                    <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
+                    <strong><?=gettext("Use sticky connections"); ?></strong><br />
+                    <div class="hidden" for="help_for_lb_use_sticky">
+                      <?=gettext("Successive connections will be redirected to the servers " .
+                                          "in a round-robin manner with connections from the same " .
+                                          "source being sent to the same web server. This 'sticky " .
+                                          "connection' will exist as long as there are states that " .
+                                          "refer to this connection. Once the states expire, so will " .
+                                          "the sticky connection. Further connections from that host " .
+                                          "will be redirected to the next web server in the round " .
+                                          "robin. Changing this option will restart the Load Balancing service."); ?>
+                    </div><br/>
+                    <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
+                    <div class="hidden" for="help_for_lb_use_sticky">
+                      <?=gettext("Set the source tracking timeout for sticky connections. " .
+                                          "By default this is 0, so source tracking is removed as soon as the state expires. " .
+                                          "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
                     </div>
                   </td>
                 </tr>
