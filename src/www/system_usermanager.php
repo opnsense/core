@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2008 Shrew Soft Inc.
     Copyright (C) 2005 Paul Taylor <paultaylor@winn-dixie.com>
     Copyright (C) 2003-2005 Manuel Kasper <mk@neon1.net>
@@ -171,30 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         $savemsg = gettext("User")." {$userdeleted} ". gettext("successfully deleted");
         header("Location: system_usermanager.php?savemsg=".$savemsg);
-        exit;
-    } elseif ($act == "delpriv" && !empty($pconfig['priv_delete']) && isset($id)) {
-        // drop privilege from user
-        // search for priv id to delete
-        $privid = null;
-        if (!empty($a_user[$id]['priv'])) {
-            foreach ($a_user[$id]['priv'] as $key => $value) {
-                if ($value == $pconfig['priv_delete']) {
-                    $privid = $key;
-                    $privdeleted = $value;
-                }
-            }
-        }
-
-        if ($privid !== null) {
-            unset($a_user[$id]['priv'][$privid]);
-            local_user_set($a_user[$id]);
-            write_config();
-            $savemsg = gettext("Privilege")." {$privdeleted} ".
-                        gettext("successfully deleted");
-            header("Location: system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
-        } else {
-            header("Location: system_usermanager.php?act=edit&userid=".$id);
-        }
         exit;
     } elseif ($act == "delcert" && isset($id)) {
         // remove certificate association
@@ -456,29 +432,6 @@ function presubmit() {
 
 <script type="text/javascript">
 $( document ).ready(function() {
-  // delete privilege
-  $(".act-del-priv").click(function(event){
-      event.preventDefault();
-      var priv_name = $(this).data('priv');
-      BootstrapDialog.show({
-          type:BootstrapDialog.TYPE_DANGER,
-          title: "<?= gettext("User");?>",
-          message: "<?=gettext("Do you really want to delete this privilege?");?> " + "<br/>("+priv_name+")",
-          buttons: [{
-                  label: "<?= gettext("No");?>",
-                  action: function(dialogRef) {
-                    dialogRef.close();
-                  }}, {
-                    label: "<?= gettext("Yes");?>",
-                    action: function(dialogRef) {
-                      $("#priv_delete").val(priv_name);
-                      $("#act").val("delpriv");
-                      $("#iform").submit();
-                  }
-          }]
-      });
-    });
-
     // remove certificate association
     $(".act-del-cert").click(function(event){
       var certid = $(this).data('certid');
@@ -745,16 +698,13 @@ $( document ).ready(function() {
 <?php
                   if ($pconfig['uid'] != "") :?>
                   <tr>
-                    <td colspan="2"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Effective Privileges");?></td>
-                  </tr>
-                  <tr>
-                    <td colspan="2">
-                      <table class="table table-striped table-condensed">
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Effective Privileges");?></td>
+                    <td>
+                      <table class="table table-hover table-condensed">
                         <tr>
-                          <td width="20%"><b><?=gettext("Inherited From");?></b></td>
-                          <td width="30%"><b><?=gettext("Name");?></b></td>
-                          <td width="40%"><b><?=gettext("Description");?></b></td>
-                          <td></td>
+                          <td><b><?=gettext("Inherited From");?></b></td>
+                          <td><b><?=gettext("Name");?></b></td>
+                          <td><b><?=gettext("Description");?></b></td>
                         </tr>
 <?php
                         foreach (get_user_privdesc($a_user[$id]) as $priv) :?>
@@ -762,26 +712,15 @@ $( document ).ready(function() {
                             <td><?=!empty($priv['group']) ? $priv['group'] : ""?></td>
                             <td><?=$priv['name']?></td>
                             <td><?=!empty($priv['descr']) ? $priv['descr'] : ""?></td>
-                            <td class="text-center">
-<?php
-                            if (empty($priv['group'])) :?>
-                              <button type="button" data-priv="<?=$priv['id']?>" class="btn btn-default btn-xs act-del-priv"
-                                  title="<?=gettext("revoke privilege");?>" data-toggle="tooltip">
-                                <span class="fa fa-trash text-muted"></span>
-                              </button>
-<?php
-                            endif;?>
-                            </td>
                         </tr>
 <?php
                         endforeach;?>
                         <tr>
-                          <td colspan="3"></td>
-                          <td>
-                            <a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-xs btn-default"
-                                title="<?=gettext("assign privileges");?>" data-toggle="tooltip">
-                              <span class="glyphicon glyphicon-plus"></span>
-                            </a>
+                          <td colspan="3">
+                              <a href="system_usermanager_addprivs.php?userid=<?=$id?>" class="btn btn-xs btn-default"
+                                  title="<?=gettext("edit privileges");?>" data-toggle="tooltip">
+                                <span class="fa fa-pencil"></span>
+                              </a>
                           </td>
                         </tr>
                       </table>

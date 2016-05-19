@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014-2015 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2006 Daniel S. Haischt
     All rights reserved.
 
@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 
-function admusercmp($a, $b)
+function cpusercmp($a, $b)
 {
     return strcasecmp($a['name'], $b['name']);
 }
@@ -46,39 +46,35 @@ function sort_user_privs($privs) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_GET['userid']) && isset($config['system']['user'][$_GET['userid']]['name'])) {
-        $userid = $_GET['userid'];
+        $input_type = "user";
+        $id = $_GET['userid'];
+    } elseif (isset($_GET['groupid']) &&  isset($config['system']['group'][$_GET['groupid']])) {
+        $input_type = "group";
+        $id = $_GET['groupid'];
     } else {
         header("Location: system_usermanager.php");
         exit;
     }
-    $a_user = & $config['system']['user'][$userid];
-    if (!isset($a_user['priv']) || !is_array($a_user['priv'])) {
-        $a_user['priv'] = array();
+    if ($input_type == "group") {
+        if (!isset($config['system']['group'][$id]['priv']) || !is_array($config['system']['group'][$id]['priv'])) {
+            $a_privs = array();
+        } else {
+            $a_privs = & $config['system']['group'][$id]['priv'];
+        }
+    } else {
+        if (!isset($config['system']['user'][$id]['priv']) || !is_array($config['system']['user'][$id]['priv'])) {
+            $a_privs = array();
+        } else {
+            $a_privs = $config['system']['user'][$id]['priv'];
+        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['userid']) && isset($config['system']['user'][$_POST['userid']]['name'])) {
-        $userid = $_POST['userid'];
-        $input_errors = array();
-        $pconfig = $_POST;
-
-        /* input validation */
-        $reqdfields = explode(" ", "sysprivs");
-        $reqdfieldsn = array(gettext("Selected priveleges"));
-
-        do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
-
-        if (count($input_errors) == 0) {
+    $pconfig = $_POST;
+    if (isset($pconfig['input_type']) && isset($pconfig['id'])) {
+        if ($pconfig['input_type'] == 'user' && isset($config['system']['user'][$pconfig['id']]['name'])) {
+            $userid = $_POST['id'];
             $a_user = & $config['system']['user'][$userid];
-            if (!is_array($pconfig['sysprivs'])) {
-                $pconfig['sysprivs'] = array();
-            }
-
-            if (!isset($a_user['priv']) || !count($a_user['priv'])) {
-                $a_user['priv'] = $pconfig['sysprivs'];
-            } else {
-                $a_user['priv'] = array_merge($a_user['priv'], $pconfig['sysprivs']);
-            }
-
+            $a_user['priv'] = is_array($pconfig['sysprivs']) ? $pconfig['sysprivs'] : array();
             $a_user['priv'] = sort_user_privs($a_user['priv']);
             local_user_set($a_user);
             $retval = write_config();
@@ -86,23 +82,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             header("Location: system_usermanager.php?act=edit&userid=".$userid."&savemsg=".$savemsg);
             exit;
+        } elseif ($_POST['input_type'] == 'group' && isset($config['system']['group'][$pconfig['id']]['name'])) {
+            $groupid = $_POST['id'];
+            $a_group = & $config['system']['group'][$groupid];
+            $a_group['priv'] = is_array($pconfig['sysprivs']) ? $pconfig['sysprivs'] : array();
+            $a_group['priv'] = sort_user_privs($a_group['priv']);
+            if (is_array($a_group['member'])) {
+                foreach ($a_group['member'] as $uid) {
+                    $user = getUserEntryByUID($uid);
+                    if ($user) {
+                        local_user_set($user);
+                    }
+                }
+            }
+
+            if (isset($config['system']['group']) && is_array($config['system']['group'])) {
+                usort($config['system']['group'], "cpusercmp");
+            }
+
+            write_config();
+            header("Location: system_groupmanager.php?act=edit&groupid={$groupid}");
+            exit;
         }
-    } else {
-        header("Location: system_usermanager.php");
-        exit;
     }
+    header("Location: system_usermanager.php");
+    exit;
 }
 
 include("head.inc");
-
 ?>
 
-<body link="#0000CC" vlink="#0000CC" alink="#0000CC" >
+<body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
     $( document ).ready(function() {
-        $("#sysprivs").change(function(){
-            $("#pdesc").html($(this).find(':selected').data('descr'));
+        $("#search").keyup(function(event){
+            event.preventDefault();
+            $(".acl_item").each(function(){
+                if ($(this).data('search-phrase').toLowerCase().indexOf($("#search").val().toLowerCase()) > -1) {
+                    if ($("#search_selected:checked").val() != undefined) {
+                        if ($(this).find('td > input:checked').val() != undefined) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    } else {
+                        $(this).show();
+                    }
+                } else {
+                    $(this).hide();
+                }
+
+                $("#priv_container").scrollTop(0);
+            })
+        });
+
+        $("#selectall").click(function(event){
+            event.preventDefault();
+            $(".acl_item").each(function(){
+                if ($(this).is(':visible')) {
+                    $(this).find('td > input').prop('checked', true);
+                }
+            });
+        });
+
+        $("#deselectall").click(function(event){
+            event.preventDefault();
+            $(".acl_item").each(function(){
+                if ($(this).is(':visible')) {
+                    $(this).find('td > input').prop('checked', false);
+                }
+            });
+        });
+
+        $("#search_selected").click(function(){
+            $("#search").keyup();
         });
     });
 </script>
@@ -118,31 +172,62 @@ include("head.inc");
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform">
+            <input name="id" type="hidden" value="<?=$id;?>" />
+            <input name="input_type" type="hidden" value="<?=$input_type;?>" />
             <table class="table table-striped">
               <tr>
                 <td width="22%"><?=gettext("System Privileges");?></td>
                 <td width="78%">
-                  <select name="sysprivs[]" id="sysprivs" class="formselect" multiple="multiple" size="35">
+                    <table class="table table-condensed table-hoover">
+                        <thead>
+                            <tr>
+                                <th style="width:70px;"><?=gettext("Allowed");?></th>
+                                <th><?=gettext("Description");?></th>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="search_selected"> <small><?=gettext("(filter)");?></small>
+                                </th>
+                                <th>
+                                    <input type="text" placeholder="<?=gettext("search");?>" id="search">
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <div style="max-height: 400px; width: 100%; margin: 0; overflow-y: auto;" id="priv_container">
+                        <table class="table table-condensed table-hoover">
+                            <thead>
+                                <tr>
+                                    <th style="width:70px;"></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
 <?php
-                  foreach ($priv_list as $pname => $pdata) :
-                      if (in_array($pname, $a_user['priv'])) {
-                          continue;
-                      }
-?>
-                    <option data-descr="<?=!empty($pdata['descr']) ? $pdata['descr'] : "";?>" value="<?=$pname;?>">
-                      <?=$pdata['name'];?>
-                    </option>
+                            foreach ($priv_list as $pname => $pdata) :?>
+                                <tr class="acl_item" data-search-phrase="<?=$pdata['name'];?> <?=!empty($pdata['descr']) ? $pdata['descr'] : "";?>">
+                                    <td>
+                                        <input name="sysprivs[]" type="checkbox" value="<?=$pname;?>" <?=in_array($pname, $a_privs) ?  "checked=\"checked\"" : "";?>>
+                                    </td>
+                                    <td><small data-toggle="tooltip" title="<?=!empty($pdata['descr']) ? $pdata['descr'] : "";?>"><?=!empty($pdata['name']) ? $pdata['name'] : $pname;?></small></td>
+                                </tr>
 <?php
-                  endforeach; ?>
-                  </select>
-                  <br />
-                  <?=gettext("Hold down CTRL (pc)/COMMAND (mac) key to select multiple items");?>
-                </td>
-              </tr>
-              <tr>
-                <td><?=gettext("Description");?></td>
-                <td id="pdesc">
-                  <em><?=gettext("Select a privilege from the list above for a description"); ?></em>
+                            endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <table class="table table-condensed table-hoover">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;"><input type="checkbox" id="selectall"></th>
+                                <th><?=gettext("Select all (visible)");?></th>
+                            </tr>
+                            <tr>
+                                <th style="width:50px;"><input type="checkbox" id="deselectall"></th>
+                                <th><?=gettext("Deselect all (visible)");?></th>
+                            </tr>
+                        </thead>
+                    </table>
                 </td>
               </tr>
               <tr>
@@ -150,7 +235,6 @@ include("head.inc");
                 <td>
                   <input type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                   <input class="btn btn-default" type="button" value="<?=gettext("Cancel");?>" onclick="history.back()" />
-                  <input name="userid" type="hidden" value="<?=$userid;?>" />
                 </td>
               </tr>
             </table>

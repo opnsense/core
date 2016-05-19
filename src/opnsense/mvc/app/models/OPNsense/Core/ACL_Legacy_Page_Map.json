@@ -1111,7 +1111,7 @@
         "name": "WebCfg - System: Group Manager: Add Privileges page",
         "descr": "Allow access to the 'System: Group Manager: Add Privileges' page.",
         "match": [
-            "system_groupmanager_addprivs.php*"
+            "system_usermanager_addprivs.php?group*"
         ]
     },
     "page-system-hasync": {
@@ -1153,7 +1153,7 @@
         "name": "WebCfg - System: User Manager: Add Privileges page",
         "descr": "Allow access to the 'System: User Manager: Add Privileges' page.",
         "match": [
-            "system_usermanager_addprivs.php*"
+            "system_usermanager_addprivs.php?user*"
         ]
     },
     "page-system-usermanager-settings": {
