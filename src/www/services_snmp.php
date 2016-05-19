@@ -66,10 +66,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // input validation
     if (strstr($pconfig['syslocation'],"#")) {
         $input_errors[] = gettext("Invalid character '#' in system location");
+    } elseif (preg_match('/[^\x20-\x7f]/', $pconfig['syslocation'])) {
+        $input_errors[] = gettext("Invalid character (non ascii) in system location");
     }
+
     if (strstr($pconfig['syscontact'],"#")) {
         $input_errors[] = gettext("Invalid character '#' in system contact");
+    } elseif (preg_match('/[^\x20-\x7f]/', $pconfig['syscontact'])) {
+        $input_errors[] = gettext("Invalid character (non ascii) in system contact");
     }
+
     if (strstr($pconfig['rocommunity'],"#")) {
         $input_errors[] = gettext("Invalid character '#' in read community string");
     }
