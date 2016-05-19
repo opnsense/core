@@ -171,7 +171,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_resolvconf_generate(true);
         configure_cron();
-        filter_configure();
         activate_powerd();
         load_crypto_module();
         load_thermal_module();
