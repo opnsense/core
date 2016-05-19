@@ -309,7 +309,15 @@ class Template(object):
                 if result is None:
                     result = list()
                 syslog.syslog(syslog.LOG_NOTICE, "generate template container %s" % template_name)
-                for filename in self._generate(template_name, create_directory):
-                    result.append(filename)
+                try:
+                    for filename in self._generate(template_name, create_directory):
+                        result.append(filename)
+                except Exception as render_exception:
+                    if wildcard_pos > -1:
+                        # log failure, but proceed processing when doing a wildcard search
+                        syslog.syslog(syslog.LOG_NOTICE, "error generating template %s" % template_name)
+                    else:
+                        raise render_exception
+
 
         return result
