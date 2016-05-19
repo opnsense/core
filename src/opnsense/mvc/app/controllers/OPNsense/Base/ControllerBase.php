@@ -230,9 +230,9 @@ class ControllerBase extends ControllerRoot
         }
 
         // info about the current user and box
+        $this->view->session_username = !empty($_SESSION['Username']) ? $_SESSION['Username'] : '(unknown)';
         $this->view->system_hostname = $cnf->object()->system->hostname;
         $this->view->system_domain = $cnf->object()->system->domain;
-        $this->view->session_username = $_SESSION['Username'];
 
         // append ACL object to view
         $this->view->acl = new \OPNsense\Core\ACL();
