@@ -59,6 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['disablenegate'] = isset($config['system']['disablenegate']);
     $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
+    $pconfig['kill_states'] = isset($config['system']['kill_states']);
+    $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     if (!isset($config['system']['disablenatreflection']) && !isset($config['system']['enablenatreflectionpurenat'])) {
         $pconfig['natreflection'] = "proxy";
     } elseif (isset($config['system']['enablenatreflectionpurenat'])) {
@@ -222,6 +224,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['schedule_states'] = true;
         } elseif (isset($config['system']['schedule_states'])) {
             unset($config['system']['schedule_states']);
+        }
+
+        if (!empty($pconfig['kill_states'])) {
+            $config['system']['kill_states'] = true;
+        } elseif (isset($config['system']['kill_states'])) {
+            unset($config['system']['kill_states']);
+        }
+
+        if (!empty($pconfig['skip_rules_gw_down'])) {
+            $config['system']['skip_rules_gw_down'] = true;
+        } elseif (isset($config['system']['skip_rules_gw_down'])) {
+            unset($config['system']['skip_rules_gw_down']);
         }
 
         write_config();
@@ -396,6 +410,31 @@ include("head.inc");
                     </select>
                     <div class="hidden" for="help_for_bogonsinterval">
                       <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="2" valign="top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
+                </tr>
+                <tr>
+                  <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
+                  <td>
+                    <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
+                    <strong><?=gettext("State Killing on Gateway Failure"); ?></strong>
+                    <div class="hidden" for="help_for_kill_states">
+                      <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
+                  <td>
+                    <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
+                    <strong><?=gettext("Skip rules when gateway is down"); ?></strong>
+                    <div class="hidden" for="help_for_skip_rules_gw_down">
+                      <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
+                                          "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
+                                          "and the rule is not created when gateway is down"); ?>
                     </div>
                   </td>
                 </tr>

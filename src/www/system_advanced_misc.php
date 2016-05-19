@@ -85,8 +85,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
-    $pconfig['kill_states'] = isset($config['system']['kill_states']);
-    $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
     $pconfig['powerd_ac_mode'] = "hadp";
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
@@ -161,18 +159,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['thermal_hardware'] = $pconfig['thermal_hardware'];
         } elseif (isset($config['system']['thermal_hardware'])) {
             unset($config['system']['thermal_hardware']);
-        }
-
-        if (!empty($pconfig['kill_states'])) {
-            $config['system']['kill_states'] = true;
-        } elseif (isset($config['system']['kill_states'])) {
-            unset($config['system']['kill_states']);
-        }
-
-        if (!empty($pconfig['skip_rules_gw_down'])) {
-            $config['system']['skip_rules_gw_down'] = true;
-        } elseif (isset($config['system']['skip_rules_gw_down'])) {
-            unset($config['system']['skip_rules_gw_down']);
         }
 
         if (!empty($pconfig['use_mfs_tmpvar'])) {
@@ -408,31 +394,6 @@ include("head.inc");
                     <br /><br />
                     <?=gettext("If you do not have a supported thermal sensor chip in your system, this option will have no " .
                                           "effect. To unload the selected module, set this option to 'none' and then reboot."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Gateway Monitoring"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
-                <td>
-                  <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("State Killing on Gateway Failure"); ?></strong>
-                  <div class="hidden" for="help_for_kill_states">
-                    <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
-                <td>
-                  <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("Skip rules when gateway is down"); ?></strong>
-                  <div class="hidden" for="help_for_skip_rules_gw_down">
-                    <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
-                                        "rule is created and traffic is sent to default gateway.This option overrides that behavior ".
-                                        "and the rule is not created when gateway is down"); ?>
                   </div>
                 </td>
               </tr>
