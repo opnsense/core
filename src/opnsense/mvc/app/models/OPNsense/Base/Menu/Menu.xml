@@ -34,9 +34,8 @@
             <Defaults order="50" url="/diag_defaults.php"/>
         </Firmware>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
-            <Synchronization url="/system_hasync.php"/>
-            <CARPStatus order="100" VisibleName="CARP Status" url="/carp_status.php"/>
-            <HAStatus order="200" VisibleName="HA backup status" url="/status_habackup.php"/>
+            <Settings order="100" url="/system_hasync.php"/>
+            <Status order="200" url="/status_habackup.php"/>
         </HighAvailability>
         <Routes order="40" cssClass="fa fa-map-signs fa-fw">
             <All order="10" url="/system_routes.php">
@@ -164,9 +163,12 @@
                 <Edit url="/firewall_nat_npt_edit.php*" visibility="hidden"/>
             </NPT>
         </NAT>
-        <VirtualIPs order="50" VisibleName="Virtual IPs" url="/firewall_virtual_ip.php" cssClass="fa fa-clone fa-fw">
-            <VirtualIPEdit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
-        </VirtualIPs>
+        <VIP order="50" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">
+            <Settings url="/firewall_virtual_ip.php">
+                <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
+            </Settings>
+            <Status url="/carp_status.php"/>
+        </VIP>
         <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar fa-fw">
             <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
         </Schedules>
