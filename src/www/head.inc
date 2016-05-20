@@ -250,6 +250,8 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
           $("#menu_search_box").css('width', '250px');
           $("#menu_messages").show();
       });
+      // convert input form tables for better mobile experience
+      hook_stacked_form_tables(".opnsense_standard_table_form");
     });
     //]]>
     </script>
