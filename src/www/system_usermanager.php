@@ -769,8 +769,7 @@ $( document ).ready(function() {
                             endforeach;
                         endif;?>
                         <tr>
-                          <td colspan="2"></td>
-                          <td>
+                          <td colspan="3">
                             <a href="system_certmanager.php?act=new&amp;userid=<?=$id?>" class="btn btn-default btn-xs"
                                 title="<?=gettext("create or link user certificate");?>" data-toggle="tooltip">
                               <span class="glyphicon glyphicon-plus"></span>
@@ -819,8 +818,7 @@ $( document ).ready(function() {
                               </tbody>
                               <tfoot>
                                   <tr>
-                                    <td></td>
-                                    <td>
+                                    <td colspan="2">
                                       <button type="button" class="btn btn-default btn-xs" id="newApiKey"
                                           title="<?=gettext("create API key");?>" data-toggle="tooltip">
                                         <span class="glyphicon glyphicon-plus"></span>
