@@ -94,7 +94,7 @@ include("head.inc");
         <section class="col-xs-12">
           <div class="content-box tab-content">
             <form id="iform" name="iform"  method="post">
-            <table class="table table-striped __nomb">
+            <table class="table table-striped opnsense_standard_table_form">
               <tbody>
                 <tr>
                   <td width="22%"><?=gettext("Authentication Server"); ?></td>

@@ -93,7 +93,7 @@ include("head.inc");
         <div class="content-box">
           <div class="table-responsive">
             <form method="post">
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><strong><?=gettext('State Synchronization') ?></strong></td>
                   <td  width="78%" align="right">

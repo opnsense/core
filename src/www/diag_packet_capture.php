@@ -295,7 +295,7 @@ include("fbegin.inc");
           <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
           <div class="table-responsive">
             <form method="post" name="iform" id="iform">
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
                     <td width="22%"><strong><?=gettext("Packet capture");?></strong></td>

@@ -697,7 +697,7 @@ $( document ).ready(function() {
             <input name="id" type="hidden" value="<?=$id;?>" />
 <?php
             endif;?>
-            <table class="table table-striped">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td width="22%"></td>
                 <td  width="78%" align="right">
@@ -727,7 +727,7 @@ $( document ).ready(function() {
               </tr>
             </table>
             <!-- existing cert -->
-            <table id="import" class="table table-striped">
+            <table id="import" class="table table-striped opnsense_standard_table_form">
               <thead>
                 <tr>
                   <th colspan="2"><?=gettext("Import Certificate");?></th>
@@ -755,7 +755,7 @@ $( document ).ready(function() {
               </tbody>
             </table>
             <!-- internal cert -->
-            <table id="internal" class="table table-striped">
+            <table id="internal" class="table table-striped opnsense_standard_table_form">
               <thead>
                 <tr>
                   <th colspan="2"><?=gettext("Internal Certificate");?></th>
@@ -969,7 +969,7 @@ $( document ).ready(function() {
               </tbody>
             </table>
             <!-- external cert -->
-            <table id="external" class="table table-striped">
+            <table id="external" class="table table-striped opnsense_standard_table_form">
               <thead>
                 <tr>
                   <td colspan="2"><?=gettext("External Signing Request");?></td>

@@ -166,7 +166,7 @@ include("head.inc");
           <div class="content-box">
             <form method="post" name="iform" id="iform">
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td width="22%" valign="top"><strong><?=gettext("Static DHCPv6 Mapping");?></strong></td>
                     <td width="78%" align="right">

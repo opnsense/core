@@ -608,7 +608,7 @@ $( document ).ready(function() {
             </table>
           </div>
           <div class="content-box tab-content table-responsive">
-            <table class="table table-striped ">
+            <table class="table table-striped opnsense_standard_table_form">
               <thead style="display: none;">
                 <tr>
                   <th class="col-sm-1"></th>

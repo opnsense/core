@@ -163,7 +163,7 @@ include("head.inc");
         <div class="content-box">
           <div class="table-responsive">
             <form method="post" name="iform" id="iform">
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
                     <td width="22%"><strong><?=gettext("GIF configuration");?></strong></td>
