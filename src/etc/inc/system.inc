@@ -278,7 +278,16 @@ function get_firmware_flavours()
 
 function get_zoneinfo()
 {
-    return timezone_identifiers_list(DateTimeZone::ALL ^ DateTimeZone::UTC);
+    $zones = timezone_identifiers_list(DateTimeZone::ALL ^ DateTimeZone::UTC);
+
+    $etcs = glob('/usr/share/zoneinfo/Etc/*');
+    foreach ($etcs as $etc) {
+        $zones[] = ltrim($etc, '/usr/share/zoneinfo/');
+    }
+
+    natsort($zones);
+
+    return $zones;
 }
 
 function get_searchdomains()
