@@ -57,6 +57,7 @@ function get_locale_list()
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
+
     $pconfig['dns1gw'] = null;
     $pconfig['dns2gw'] = null;
     $pconfig['dns3gw'] = null;
@@ -66,10 +67,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['timezone'] = "Etc/UTC";
     $pconfig['mirror'] = 'default';
     $pconfig['flavour'] = 'default';
-
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
+    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['hostname'] = $config['system']['hostname'];
     $pconfig['domain'] = $config['system']['domain'];
+
     if (isset($config['system']['dnsserver'])) {
         list($pconfig['dns1'],$pconfig['dns2'],$pconfig['dns3'],$pconfig['dns4']) = $config['system']['dnsserver'];
     } else {
@@ -194,6 +196,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $config['system']['prefer_ipv4'] = true;
       } elseif (isset($config['system']['prefer_ipv4'])) {
           unset($config['system']['prefer_ipv4']);
+      }
+
+      if (!empty($pconfig['gw_switch_default'])) {
+          $config['system']['gw_switch_default'] = true;
+      } elseif (isset($config['system']['gw_switch_default'])) {
+          unset($config['system']['gw_switch_default']);
       }
 
       $olddnsservers = $config['system']['dnsserver'];
@@ -339,6 +347,107 @@ include("head.inc");
               </td>
             </tr>
             <tr>
+              <td><a id="help_for_timezone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time zone"); ?></td>
+              <td>
+                <select name="timezone" id="timezone" data-size="10" class="selectpicker" data-style="btn-default" data-live-search="true">
+<?php
+                  foreach (get_zoneinfo() as $value): ?>
+                  <option value="<?=htmlspecialchars($value);?>" <?= $value == $pconfig['timezone'] ? 'selected="selected"' : '' ?>>
+                    <?=htmlspecialchars($value);?>
+                  </option>
+<?php
+                  endforeach; ?>
+                </select>
+                <div class="hidden" for="help_for_timezone">
+                  <?=gettext("Select the location closest to you"); ?>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2" valign="top" class="listtopic"><?=gettext("Firmware"); ?></th>
+            </tr>
+            <tr>
+              <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
+              <td>
+                <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
+<?php
+                  foreach (get_locale_list() as $lcode => $ldesc):?>
+                  <option value="<?=$lcode;?>" <?=$lcode == $pconfig['language'] ? "selected=\"selected\"" : "";?>>
+                    <?=$ldesc;?>
+                  </option>
+<?php
+                  endforeach;?>
+                </select>
+                <div class="hidden" for="help_for_language">
+                  <strong>
+                    <?=gettext("Choose a language for the webConfigurator"); ?>
+                  </strong>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><a id="help_for_theme" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Theme"); ?></td>
+              <td>
+                <select name="theme" class="selectpicker" data-size="10" data-width="auto">
+<?php
+                  $curtheme = get_current_theme();
+                  foreach (return_dir_as_array('/usr/local/opnsense/www/themes/') as $file):?>
+                  <option <?=$file == $curtheme ? "selected=\"selected\"" : "";?>>
+                    <?=$file;?>
+                  </option>
+<?php
+                  endforeach; ?>
+                </select>
+                <div class="hidden" for="help_for_theme">
+                  <strong>
+                    <?=gettext("This will change the look and feel of"); ?>
+                    <?=$g['product_name'];?>.
+                  </strong>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Mirror"); ?></td>
+              <td>
+                <select name="mirror" class="selectpicker" data-size="10" data-width="auto">
+<?php
+                foreach (get_firmware_mirrors() as $mcode => $mdesc):?>
+                  <option value="<?=$mcode;?>" <?=$mcode == $pconfig['mirror'] ? "selected=\"selected\"":"";?>>
+                    <?=$mdesc;?>
+                  </option>
+<?php
+                 endforeach;?>
+                </select>
+                <div class="hidden" for="help_for_mirror">
+                  <strong>
+                    <?=gettext("Select an alternate firmware mirror."); ?>
+                  </strong>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Flavour"); ?></td>
+              <td width="78%" class="vtable">
+                <select name="flavour" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
+<?php
+                foreach (get_firmware_flavours() as $fcode => $fdesc):?>
+                  <option value="<?=$fcode;?>" <?=$fcode == $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
+                    <?=$fdesc;?>
+                  </option>
+<?php
+                 endforeach;?>
+                </select>
+                <div class="hidden" for="help_for_flavour">
+                  <strong>
+                    <?=gettext("Select the firmware cryptography flavour."); ?>
+                  </strong>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="2" valign="top" class="listtopic"><?=gettext("Name resolution"); ?></th>
+            </tr>
+            <tr>
               <td><a id="help_for_dnsservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers"); ?></td>
               <td>
                 <table class="table table-striped table-condensed">
@@ -418,6 +527,9 @@ include("head.inc");
               </td>
             </tr>
             <tr>
+              <th colspan="2" valign="top" class="listtopic"><?=gettext("Networking"); ?></th>
+            </tr>
+            <tr>
               <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
               <td>
                 <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
@@ -430,100 +542,13 @@ include("head.inc");
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_timezone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time zone"); ?></td>
+              <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway switching");?> </td>
               <td>
-                <select name="timezone" id="timezone" data-size="10" class="selectpicker" data-style="btn-default" data-live-search="true">
-<?php
-                  foreach (get_zoneinfo() as $value):
-                    if(strstr($value, "GMT")) {
-                      continue;
-                    }?>
-                  <option value="<?=htmlspecialchars($value);?>" <?=$value == $pconfig['timezone'] ? "selected=\"selected\"" :"";?>>
-                    <?=htmlspecialchars($value);?>
-                  </option>
-<?php
-                  endforeach; ?>
-                </select>
-                <div class="hidden" for="help_for_timezone">
-                  <?=gettext("Select the location closest to you"); ?>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
-              <td>
-                <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
-<?php
-                  foreach (get_locale_list() as $lcode => $ldesc):?>
-                  <option value="<?=$lcode;?>" <?=$lcode == $pconfig['language'] ? "selected=\"selected\"" : "";?>>
-                    <?=$ldesc;?>
-                  </option>
-<?php
-                  endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_language">
-                  <strong>
-                    <?=gettext("Choose a language for the webConfigurator"); ?>
-                  </strong>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_theme" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Theme"); ?></td>
-              <td>
-                <select name="theme" class="selectpicker" data-size="10" data-width="auto">
-<?php
-                  $curtheme = get_current_theme();
-                  foreach (return_dir_as_array('/usr/local/opnsense/www/themes/') as $file):?>
-                  <option <?=$file == $curtheme ? "selected=\"selected\"" : "";?>>
-                    <?=$file;?>
-                  </option>
-<?php
-                  endforeach; ?>
-                </select>
-                <div class="hidden" for="help_for_theme">
-                  <strong>
-                    <?=gettext("This will change the look and feel of"); ?>
-                    <?=$g['product_name'];?>.
-                  </strong>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Mirror"); ?></td>
-              <td>
-                <select name="mirror" class="selectpicker" data-size="10" data-width="auto">
-<?php
-                foreach (get_firmware_mirrors() as $mcode => $mdesc):?>
-                  <option value="<?=$mcode;?>" <?=$mcode == $pconfig['mirror'] ? "selected=\"selected\"":"";?>>
-                    <?=$mdesc;?>
-                  </option>
-<?php
-                 endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_mirror">
-                  <strong>
-                    <?=gettext("Select an alternate firmware mirror."); ?>
-                  </strong>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Flavour"); ?></td>
-              <td width="78%" class="vtable">
-                <select name="flavour" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
-<?php
-                foreach (get_firmware_flavours() as $fcode => $fdesc):?>
-                  <option value="<?=$fcode;?>" <?=$fcode == $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
-                    <?=$fdesc;?>
-                  </option>
-<?php
-                 endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_flavour">
-                  <strong>
-                    <?=gettext("Select the firmware cryptography flavour."); ?>
-                  </strong>
+                <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? "checked=\"checked\"" : "";?> />
+                <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
+                <div class="hidden" for="help_for_gw_switch_default">
+                  <?=gettext("If the link where the default gateway resides fails " .
+                                      "switch the default gateway to another available one."); ?>
                 </div>
               </td>
             </tr>

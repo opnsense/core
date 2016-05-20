@@ -78,7 +78,6 @@ function thermal_modules()
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? $config['system']['crypto_hardware'] : null;
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
@@ -109,12 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-        if (!empty($pconfig['gw_switch_default'])) {
-            $config['system']['gw_switch_default'] = true;
-        } elseif (isset($config['system']['gw_switch_default'])) {
-            unset($config['system']['gw_switch_default']);
-        }
-
         if (!empty($pconfig['powerd_enable'])) {
             $config['system']['powerd_enable'] = true;
         } elseif (isset($config['system']['powerd_enable'])) {
@@ -203,86 +196,11 @@ include("head.inc");
           <form method="post" name="iform" id="iform">
             <table class="table table-striped">
               <tr>
-                <td width="22%"><strong><?= gettext('Load Balancing') ?></strong></td>
+                <td width="22%"><strong><?= gettext('Cryptographic Hardware Acceleration') ?></strong></td>
                 <td width="78%" align="right">
                   <small><?=gettext("full help"); ?> </small>
                   <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway switching");?> </td>
-                <td>
-                  <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? "checked=\"checked\"" : "";?> />
-                  <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
-                  <div class="hidden" for="help_for_gw_switch_default">
-                    <?=gettext("If the link where the default gateway resides fails " .
-                                        "switch the default gateway to another available one."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Power Savings"); ?></th>
-              </tr>
-              <tr>
-                <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
-                <td>
-                  <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
-                  <div class="hidden" for="help_for_powerd_enable">
-                    <?=gettext("The powerd utility monitors the system state and sets various power control " .
-                                        "options accordingly.  It offers four modes (maximum, minimum, adaptive " .
-                                        "and hiadaptive) that can be individually selected while on AC power or batteries. " .
-                                        "The modes maximum, minimum, adaptive and hiadaptive may be abbreviated max, " .
-                                        "min, adp, hadp.  Maximum mode chooses the highest performance values.  Minimum " .
-                                        "mode selects the lowest performance values to get the most power savings. " .
-                                        "Adaptive mode attempts to strike a balance by degrading performance when " .
-                                        "the system appears idle and increasing it when the system is busy.  It " .
-                                        "offers a good balance between a small performance loss for greatly " .
-                                        "increased power savings.  Hiadaptive mode is alike adaptive mode, but " .
-                                        "tuned for systems where performance and interactivity are more important " .
-                                        "than power consumption.  It raises frequency faster, drops slower and " .
-                                        "keeps twice lower CPU load."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On AC Power Mode') ?></td>
-                <td>
-                  <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default" data-width="auto">
-                    <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Hiadaptive");?>
-                    </option>
-                    <option value="adp" <?=$pconfig['powerd_ac_mode']=="adp" ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Adaptive");?>
-                    </option>
-                    <option value="min" <?=$pconfig['powerd_ac_mode']=="min" ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Minimum");?>
-                    </option>
-                    <option value="max" <?=$pconfig['powerd_ac_mode']=="max" ? " selected=\"selected\"" : "";?>>
-                      <?=gettext("Maximum");?>
-                    </option>
-                  </select>
-                </td>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On Battery Power Mode') ?></td>
-                <td>
-                  <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default" data-width="auto">
-                    <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Hiadaptive");?>
-                    </option>
-                    <option value="adp" <?=$pconfig['powerd_battery_mode']=="adp" ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Adaptive");?>
-                    </option>
-                    <option value="min" <?=$pconfig['powerd_battery_mode']=="min" ? "selected=\"selected\"" :"";?>>
-                      <?=gettext("Minimum");?>
-                    </option>
-                    <option value="max" <?=$pconfig['powerd_battery_mode']=="max" ? "selected=\"selected\"" : "";?>>
-                      <?=gettext("Maximum");?>
-                    </option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Cryptographic Hardware Acceleration"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_crypto_hardware" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware");?></td>
@@ -406,6 +324,67 @@ include("head.inc");
                   <div class="hidden" for="help_for_netflowbackup">
                     <?=gettext("This will periodically backup the NetFlow data aggregation so it can be restored automatically on the next boot.");?>
                   </div>
+                </td>
+              </tr>
+              <tr>
+                <th colspan="2" valign="top" class="listtopic"><?=gettext("Power Savings"); ?></th>
+              </tr>
+              <tr>
+                <td><a id="help_for_powerd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use PowerD"); ?></td>
+                <td>
+                  <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
+                  <div class="hidden" for="help_for_powerd_enable">
+                    <?=gettext("The powerd utility monitors the system state and sets various power control " .
+                                        "options accordingly.  It offers four modes (maximum, minimum, adaptive " .
+                                        "and hiadaptive) that can be individually selected while on AC power or batteries. " .
+                                        "The modes maximum, minimum, adaptive and hiadaptive may be abbreviated max, " .
+                                        "min, adp, hadp.  Maximum mode chooses the highest performance values.  Minimum " .
+                                        "mode selects the lowest performance values to get the most power savings. " .
+                                        "Adaptive mode attempts to strike a balance by degrading performance when " .
+                                        "the system appears idle and increasing it when the system is busy.  It " .
+                                        "offers a good balance between a small performance loss for greatly " .
+                                        "increased power savings.  Hiadaptive mode is alike adaptive mode, but " .
+                                        "tuned for systems where performance and interactivity are more important " .
+                                        "than power consumption.  It raises frequency faster, drops slower and " .
+                                        "keeps twice lower CPU load."); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On AC Power Mode') ?></td>
+                <td>
+                  <select name="powerd_ac_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                    <option value="hadp" <?=$pconfig['powerd_ac_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Hiadaptive");?>
+                    </option>
+                    <option value="adp" <?=$pconfig['powerd_ac_mode']=="adp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Adaptive");?>
+                    </option>
+                    <option value="min" <?=$pconfig['powerd_ac_mode']=="min" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Minimum");?>
+                    </option>
+                    <option value="max" <?=$pconfig['powerd_ac_mode']=="max" ? " selected=\"selected\"" : "";?>>
+                      <?=gettext("Maximum");?>
+                    </option>
+                  </select>
+                </td>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext('On Battery Power Mode') ?></td>
+                <td>
+                  <select name="powerd_battery_mode" class="selectpicker" data-style="btn-default" data-width="auto">
+                    <option value="hadp"<?=$pconfig['powerd_battery_mode']=="hadp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Hiadaptive");?>
+                    </option>
+                    <option value="adp" <?=$pconfig['powerd_battery_mode']=="adp" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Adaptive");?>
+                    </option>
+                    <option value="min" <?=$pconfig['powerd_battery_mode']=="min" ? "selected=\"selected\"" :"";?>>
+                      <?=gettext("Minimum");?>
+                    </option>
+                    <option value="max" <?=$pconfig['powerd_battery_mode']=="max" ? "selected=\"selected\"" : "";?>>
+                      <?=gettext("Maximum");?>
+                    </option>
+                  </select>
                 </td>
               </tr>
               <tr>
