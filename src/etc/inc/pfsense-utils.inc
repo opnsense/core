@@ -184,8 +184,8 @@ function setup_serial_port($sync = true)
     // ** serial console - write out /boot.config
     if ($serial_enabled) {
         file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
-    } else {
-        file_put_contents('/boot.config', "");
+    } elseif (file_exists('/boot.config')) {
+        unlink('/boot.config');
     }
 
     // ** console settings in /boot/loader.conf
