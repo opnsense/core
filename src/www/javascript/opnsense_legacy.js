@@ -57,3 +57,65 @@ function hook_ipv4v6(classname, data_id) {
       $("#"+$(this).data(data_id)).change();
   });
 }
+
+/**
+ * transform input forms for better mobile experience (stack description on top)
+ * @param match: query pattern to match tables
+ */
+function hook_stacked_form_tables(match)
+{
+  $(match).each(function(){
+      var root_node = $(this);
+      if (root_node.is('table')) {
+          row_number = 0;
+          // traverse all <tr> tags
+          root_node.find('tr').each(function(){
+              var children = $(this).children();
+              // copy zebra color on striped table
+              if (root_node.hasClass('table-striped')) {
+                  if ( $(this).children(0).css("background-color") != 'transparent') {
+                      root_node.data('stripe-color', $(this).children(0).css("background-color"));
+                  }
+              }
+              if (children.length == 1) {
+                  // simple seperator line, colspan = 2
+                  $(this).before($(this).clone().attr('colspan', 1).addClass('hidden-sm hidden-md hidden-lg'));
+                  $(this).addClass('hidden-xs');
+              } else if (children.length == 2) {
+                  // form input row, create new <tr> for mobile header containing first <td> content
+                  var mobile_header = $("<tr/>").addClass('hidden-sm hidden-md hidden-lg');
+                  mobile_header.append($('<td/>').append(children.first().clone(true, true)));
+                  // hide "all help" on mobile
+                  if (row_number == 0 && $(this).find('td:eq(1) > i').length == 1) {
+                      $(this).addClass('hidden-xs');
+                  } else {
+                      // annotate mobile header with a classname
+                      mobile_header.addClass('opnsense-table-mobile-header');
+                  }
+                  $(this).before(mobile_header);
+                  children.first().addClass('hidden-xs');
+              }
+              row_number++;
+          });
+          // hook in re-apply zebra when table-striped was selected.. (on window resize and initial load)
+          if (root_node.data('stripe-color') != undefined) {
+              root_node.do_resize = function() {
+                  var index = 0;
+                  root_node.find('tr:visible').each(function () {
+                      $(this).css("background-color", "inherit");
+                      $(this).children().css("background-color", "inherit");
+                      if ( index % 2 == 0) {
+                          $(this).css("background-color", root_node.data('stripe-color'));
+                      }
+                      // skip generated mobile headers (group header+content on mobile)
+                      if (!$(this).hasClass('opnsense-table-mobile-header')) {
+                          ++index;
+                      }
+                  });
+              }
+              $( window ).resize(root_node.do_resize);
+              root_node.do_resize();
+          }
+      }
+  });
+}
