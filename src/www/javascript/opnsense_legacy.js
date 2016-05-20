@@ -85,7 +85,7 @@ function hook_stacked_form_tables(match)
                       $(this).addClass('hidden-xs');
                   } else if (children.length == 2) {
                       // form input row, create new <tr> for mobile header containing first <td> content
-                      var mobile_header = $("<tr/>").addClass('hidden-sm hidden-md hidden-lg');
+                      var mobile_header = $(this).clone().html("").addClass('hidden-sm hidden-md hidden-lg');
                       mobile_header.append($('<td/>').append(children.first().clone(true, true)));
                       // hide "all help" on mobile
                       if (row_number == 0 && $(this).find('td:eq(1) > i').length == 1) {
