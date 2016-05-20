@@ -105,7 +105,7 @@ endif;?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12 table-responsive">
             <form method="post">
-              <table class="table table-striped table-sort">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><a id="help_for_session_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Session Timeout"); ?></td>
                   <td width="78%">

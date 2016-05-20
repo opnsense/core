@@ -517,7 +517,7 @@ $main_buttons = array(
             </tr>
           </table>
           <!-- existing ca -->
-          <table id="existing" class="table table-striped">
+          <table id="existing" class="table table-striped opnsense_standard_table_form">
             <thead>
               <tr>
                 <th colspan="2"><?=gettext("Existing Certificate Authority");?></th>
@@ -557,7 +557,7 @@ $main_buttons = array(
               </tbody>
             </table>
             <!-- internal ca -->
-            <table  id="internal" class="table table-striped">
+            <table  id="internal" class="table table-striped opnsense_standard_table_form">
               <thead>
                 <tr>
                   <th colspan="2"><?=gettext("Internal Certificate Authority");?></th>
@@ -687,7 +687,7 @@ $main_buttons = array(
               </tbody>
             </table>
 
-            <table class="table">
+            <table class="table opnsense_standard_table_form">
             <tr>
               <td width="22%">&nbsp;</td>
               <td width="78%">

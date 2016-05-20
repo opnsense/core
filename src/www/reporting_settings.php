@@ -102,7 +102,7 @@ $(document).ready(function() {
             <input type="hidden" id="action" name="action" value="" />
             <div class="tab-content content-box col-xs-12 __mb">
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td colspan="2"><strong><?=gettext('Reporting Database Options');?></strong></td>
                   </tr>

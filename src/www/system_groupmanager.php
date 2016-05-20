@@ -272,7 +272,7 @@ $( document ).ready(function() {
             <input type="hidden" id="act" name="act" value="" />
             <input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : '');?>" />
             <input type="hidden" id="privid" name="privid" value="" />
-            <table class="table table-striped">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Defined by");?></td>
                 <td>
