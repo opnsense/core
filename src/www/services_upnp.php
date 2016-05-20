@@ -170,7 +170,7 @@ include("head.inc");
           <section class="col-xs-12">
             <div class="content-box">
               <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped opnsense_standard_table_form">
                   <thead>
                     <tr>
                       <td width="22%">

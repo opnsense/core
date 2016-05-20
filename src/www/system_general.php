@@ -316,7 +316,7 @@ include("head.inc");
     <section class="col-xs-12">
       <div class="content-box tab-content">
         <form method="post">
-          <table class="table table-striped">
+          <table class="table table-striped opnsense_standard_table_form">
             <tr>
               <td width="22%"><strong><?=gettext("System");?></strong></td>
               <td  width="78%" align="right">

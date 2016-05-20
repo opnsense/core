@@ -115,7 +115,7 @@ include("head.inc");
               <?php else: ?>
               <div>
                 <div class="table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped opnsense_standard_table_form">
                     <tr>
                       <td width="22%" valign="top"><strong><?=gettext("DHCPv6 Relay configuration"); ?></strong></td>
                       <td width="78%" align="right">

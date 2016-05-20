@@ -652,7 +652,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform" id="iform">
             <div class="table-responsive">
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><b><?=gettext("General information"); ?></b></td>
                   <td width="78%" align="right">

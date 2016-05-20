@@ -697,7 +697,7 @@ $( document ).ready(function() {
             <input name="id" type="hidden" value="<?=$id;?>" />
 <?php
             endif;?>
-            <table class="table table-striped">
+            <table class="table table-striped opnsense_standard_table_form">
               <tr>
                 <td width="22%"></td>
                 <td  width="78%" align="right">

@@ -174,7 +174,7 @@ include("head.inc");
           <section class="col-xs-12">
             <div class="content-box">
               <form method="post" name="iform" id="iform">
-                <table class="table table-striped">
+                <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td><?=gettext("Edit NAT NPT entry"); ?></td>
                     <td align="right">

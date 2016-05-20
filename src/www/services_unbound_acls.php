@@ -203,7 +203,7 @@ include("head.inc");
               if($act=="new" || $act=="edit"): ?>
               <input name="id" type="hidden" value="<?=$id;?>" />
               <input name="act" type="hidden" value="<?=$act;?>" />
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><strong><?=ucwords(sprintf(gettext("%s Access List"),$act));?></strong></td>
                   <td width="78%" align="right">

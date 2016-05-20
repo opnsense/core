@@ -566,7 +566,7 @@ $( document ).ready(function() {
                 <input type="hidden" id="priv_delete" name="priv_delete" value="" /> <!-- delete priv action -->
                 <input type="hidden" id="api_delete" name="api_delete" value="" /> <!-- delete api ke action -->
                 <input type="hidden" id="certid" name="certid" value="" /> <!-- remove cert association action -->
-                <table class="table table-striped">
+                <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td width="22%"></td>
                     <td width="78%" align="right">

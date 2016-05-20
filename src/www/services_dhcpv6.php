@@ -468,7 +468,7 @@ include("head.inc");
               <?php print_content_box(gettext('No interfaces found with a static IPv6 address.')); ?>
               <?php else: ?>
                 <div class="table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped opnsense_standard_table_form">
                     <tr>
                       <td width="22%" valign="top"></td>
                       <td width="78%" align="right">

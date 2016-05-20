@@ -524,7 +524,7 @@ $( document ).ready(function() {
         <section class="col-xs-12">
           <div class="content-box">
             <form method="post" name="iform" id="iform">
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><?=gettext("Edit Redirect entry"); ?></td>
                   <td  width="78%" align="right">

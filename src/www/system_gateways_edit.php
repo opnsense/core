@@ -562,7 +562,7 @@ $( document ).ready(function() {
 <?php
             endif;?>
               <input type='hidden' name='friendlyiface' id='friendlyiface' value="<?=$pconfig['friendlyiface'];?>"/>
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <tr>
                   <td width="22%"><?=gettext("Edit gateway");?></td>
                   <td  width="78%" align="right">

@@ -145,7 +145,7 @@ include("head.inc");
             <div class="content-box-main ">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped opnsense_standard_table_form">
                     <thead>
                       <tr>
                         <td width="22%">

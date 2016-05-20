@@ -188,7 +188,7 @@ include("head.inc");
             <div class="content-box">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped opnsense_standard_table_form">
                     <tr>
                       <td width="22%">
                         <strong><?=gettext("Add/edit -  Virtual Server entry"); ?></strong>

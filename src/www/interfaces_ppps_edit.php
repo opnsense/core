@@ -448,7 +448,7 @@ include("head.inc");
             <form method="post" name="iform" id="iform">
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
-                  <table class="table table-striped">
+                  <table class="table table-striped opnsense_standard_table_form">
                     <thead>
                       <tr>
                         <td width="22%"><strong><?=gettext("PPPs configuration");?></strong></td>

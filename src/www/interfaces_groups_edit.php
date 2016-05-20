@@ -142,7 +142,7 @@ legacy_html_escape_form_data($pconfig);
         <div class="content-box">
           <div class="table-responsive">
             <form method="post" name="iform" id="iform">
-              <table class="table table-striped">
+              <table class="table table-striped opnsense_standard_table_form">
                 <thead>
                   <tr>
                     <td width="22%"><strong><?=gettext("Interface Groups Edit");?></strong></td>

@@ -381,7 +381,7 @@ if ($act!="new" && $act!="edit") {
           if ($act=="new" || $act=="edit") :?>
               <form method="post" name="iform" id="iform">
                <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped opnsense_standard_table_form">
                   <tr>
                     <td><?=gettext("General information"); ?></td>
                     <td align="right">

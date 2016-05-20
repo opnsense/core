@@ -295,7 +295,7 @@ if (isset($savemsg)) {
       <section class="col-xs-12">
         <div class="tab-content content-box col-xs-12">
           <div class="table-responsive">
-            <table width="100%" border="0" class="table table-striped" cellpadding="0" cellspacing="0">
+            <table width="100%" border="0" class="table table-striped opnsense_standard_table_form" cellpadding="0" cellspacing="0">
               <tr>
                 <td width="22%"></td>
                 <td width="78%" align="right">

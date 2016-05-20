@@ -485,7 +485,7 @@ $main_buttons = array(
         <form method="post" name="iform" id="iform">
           <input type="hidden" name="id" id="id" value="<?=isset($id) ? $id :"";?>"/>
           <input type="hidden" name="act" id="action" value="<?=$act;?>"/>
-          <table class="table table-striped">
+          <table class="table table-striped opnsense_standard_table_form">
             <tr>
               <td width="22%"></td>
               <td  width="78%" align="right">
