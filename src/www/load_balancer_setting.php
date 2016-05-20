@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['timeout'] = !empty($config['load_balancer']['setting']['timeout']) ? $config['load_balancer']['setting']['timeout'] : null;
     $pconfig['interval'] = !empty($config['load_balancer']['setting']['interval']) ? $config['load_balancer']['setting']['interval'] : null;
     $pconfig['prefork'] = !empty($config['load_balancer']['setting']['prefork']) ? $config['load_balancer']['setting']['prefork'] : null;
+    $pconfig['lb_use_sticky'] = isset($config['load_balancer']['setting']['lb_use_sticky']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -78,6 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['load_balancer']['setting']['timeout'] = $pconfig['timeout'];
             $config['load_balancer']['setting']['interval'] = $pconfig['interval'];
             $config['load_balancer']['setting']['prefork'] = $pconfig['prefork'];
+
+            if (!empty($pconfig['lb_use_sticky'])) {
+                $config['load_balancer']['setting']['lb_use_sticky'] = true;
+            } elseif (isset($config['load_balancer']['setting']['lb_use_sticky'])) {
+                unset($config['load_balancer']['setting']['lb_use_sticky']);
+            }
+
             write_config();
             mark_subsystem_dirty('loadbalancer');
             header("Location: load_balancer_setting.php");
@@ -116,7 +124,7 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                       <td><a id="help_for_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("timeout") ; ?></td>
+                       <td><a id="help_for_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Timeout") ; ?></td>
                        <td>
                          <input type="text" name="timeout" id="timeout" value="<?=$pconfig['timeout'];?>" />
                          <div class="hidden" for="help_for_timeout">
@@ -125,7 +133,7 @@ include("head.inc");
                        </td>
                     </tr>
                     <tr>
-                       <td><a id="help_for_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("interval") ; ?></td>
+                       <td><a id="help_for_interval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interval") ; ?></td>
                        <td>
                          <input type="text" name="interval" id="interval" value="<?=$pconfig['interval']; ?>"/>
                          <div class="hidden" for="help_for_interval">
@@ -134,13 +142,29 @@ include("head.inc");
                       </td>
                    </tr>
                     <tr>
-                       <td><a id="help_for_prefork" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("prefork") ; ?></td>
+                       <td><a id="help_for_prefork" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefork") ; ?></td>
                        <td>
                          <input type="text" name="prefork" id="prefork" value="<?=$pconfig['prefork']; ?>"/>
                          <div class="hidden" for="help_for_prefork">
                            <?=gettext("Number of processes used by relayd for dns protocol. Leave blank to use the default value of 5 processes"); ?>
                          </div>
                       </td>
+                   </tr>
+                   <tr>
+                     <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
+                     <td>
+                       <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
+                       <strong><?=gettext("Use sticky connections"); ?></strong><br />
+                       <div class="hidden" for="help_for_lb_use_sticky">
+                         <?=gettext("Successive connections will be redirected to the servers " .
+                                             "in a round-robin manner with connections from the same " .
+                                             "source being sent to the same web server. This 'sticky " .
+                                             "connection' will exist as long as there are states that " .
+                                             "refer to this connection. Once the states expire, so will " .
+                                             "the sticky connection. Further connections from that host " .
+                                             "will be redirected to the next web server in the round-robin."); ?>
+                       </div>
+                     </td>
                    </tr>
                    <tr>
                        <td>&nbsp;</td>
