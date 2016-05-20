@@ -108,16 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("The Reflection timeout must be an integer.");
     }
     if (count($input_errors) == 0) {
-        $need_relayd_restart = false;
 
         if (!empty($pconfig['lb_use_sticky'])) {
-            if (!isset($config['system']['lb_use_sticky'])) {
-                $config['system']['lb_use_sticky'] = true;
-                $need_relayd_restart = true;
-            }
+            $config['system']['lb_use_sticky'] = true;
         } elseif (isset($config['system']['lb_use_sticky'])) {
             unset($config['system']['lb_use_sticky']);
-            $need_relayd_restart = true;
         }
 
         if (!empty($pconfig['srctrack'])) {
@@ -269,9 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         configure_cron();
         filter_configure();
-        if ($need_relayd_restart) {
-            relayd_configure();
-        }
     }
 }
 
@@ -462,7 +454,7 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <th colspan="2" valign="top" class="listtopic"><?= gettext('Load Balancing') ?></th>
+                  <th colspan="2" valign="top" class="listtopic"><?= gettext('Multi-WAN') ?></th>
                 </tr>
                 <tr>
                   <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
@@ -472,16 +464,15 @@ include("head.inc");
                     <div class="hidden" for="help_for_lb_use_sticky">
                       <?=gettext("Successive connections will be redirected to the servers " .
                                           "in a round-robin manner with connections from the same " .
-                                          "source being sent to the same web server. This 'sticky " .
+                                          "source being sent to the same gateway. This 'sticky " .
                                           "connection' will exist as long as there are states that " .
                                           "refer to this connection. Once the states expire, so will " .
                                           "the sticky connection. Further connections from that host " .
-                                          "will be redirected to the next web server in the round " .
-                                          "robin. Changing this option will restart the Load Balancing service."); ?>
+                                          "will be redirected to the next gateway in the round-robin."); ?>
                     </div><br/>
                     <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
                     <div class="hidden" for="help_for_lb_use_sticky">
-                      <?=gettext("Set the source tracking timeout for sticky connections. " .
+                      <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
                                           "By default this is 0, so source tracking is removed as soon as the state expires. " .
                                           "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
                     </div>

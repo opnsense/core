@@ -220,7 +220,7 @@ function relayd_configure($kill_first = false)
                     $conf .= "  listen on {$ip} port {$src_port}\n";
                     $conf .= "  forward to <{$vs_a[$i]['poolname']}> port {$dest_port} {$check_a[$pools[$vs_a[$i]['poolname']]['monitor']]} \n";
 
-                    if (isset($config['system']['lb_use_sticky'])) {
+                    if (isset($config['load_balancer']['setting']['lb_use_sticky'])) {
                         $conf .= "  sticky-address\n";
                     }
 
