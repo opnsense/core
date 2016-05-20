@@ -1120,7 +1120,7 @@ endif; ?>
                     <a data-id="<?=$i;?>" title="<?=gettext("delete client"); ?>" class="act_delete btn btn-default btn-xs">
                       <span class="fa fa-trash text-muted"></span>
                     </a>
-                    <a href="vpn_openvpn_client.php?act=new&dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
+                    <a href="vpn_openvpn_client.php?act=new&amp;dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone client");?>">
                       <span class="fa fa-clone text-muted"></span>
                     </a>
                 </td>
