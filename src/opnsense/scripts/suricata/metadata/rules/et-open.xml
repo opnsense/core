@@ -49,7 +49,6 @@
         <file description="emerging-worm">emerging-worm.rules</file>
         <file description="files">files.rules</file>
         <file description="http-events">http-events.rules</file>
-        <file description="rbn-malvertisers">rbn-malvertisers.rules</file>
         <file description="rbn">rbn.rules</file>
         <file description="smtp-events">smtp-events.rules</file>
         <file description="stream-events">stream-events.rules</file>
