@@ -764,8 +764,8 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                     if (is_ipaddr($gatewayip)) {
                         mwexec("/sbin/route delete".$cmd . escapeshellarg($gatewayip));
                         if ($fargw) {
-                            mwexecf('/sbin/route delete %s %s -interface %s', array($inet, $ip, $interfacegw));
-                            mwexecf('/sbin/route add %s %s -interface %s', array($inet, $ip, $interfacegw));
+                            mwexecf('/sbin/route delete %s %s -interface %s', array($inet, $gatewayip, $interfacegw));
+                            mwexecf('/sbin/route add %s %s -interface %s', array($inet, $gatewayip, $interfacegw));
                         }
                         mwexec("/sbin/route add".$cmd . escapeshellarg($gatewayip));
                     } elseif (!empty($interfacegw)) {
