@@ -32,6 +32,7 @@ import os
 import os.path
 import syslog
 import collections
+import traceback
 import copy
 import codecs
 import jinja2
@@ -315,7 +316,8 @@ class Template(object):
                 except Exception as render_exception:
                     if wildcard_pos > -1:
                         # log failure, but proceed processing when doing a wildcard search
-                        syslog.syslog(syslog.LOG_NOTICE, "error generating template %s" % template_name)
+                        syslog.syslog(syslog.LOG_ERR, 'error generating template %s : %s' % (template_name,
+                                                                                             traceback.format_exc()))
                     else:
                         raise render_exception
 
