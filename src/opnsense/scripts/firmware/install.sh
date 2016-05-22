@@ -37,7 +37,7 @@ fi
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO INSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-pkg install -y $PACKAGE 2>&1 >> ${PKG_PROGRESS_FILE}
-pkg autoremove -y 2>&1 >> ${PKG_PROGRESS_FILE}
-pkg clean -ya 2>&1 >> ${PKG_PROGRESS_FILE}
+pkg install -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
+pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
+pkg clean -ya >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}

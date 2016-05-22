@@ -37,5 +37,5 @@ fi
 : > ${PKG_PROGRESS_FILE}
 
 echo "***GOT REQUEST TO LOCK: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-pkg lock -y $PACKAGE 2>&1 >> ${PKG_PROGRESS_FILE}
+pkg lock -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
