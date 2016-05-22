@@ -460,7 +460,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
         $std_wl_copy_fieldnames = array(
-          'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna', 'distance',
+          'standard', 'mode','protmode', 'ssid', 'channel', 'txpower', 'diversity', 'txantenna', 'rxantenna',
           'regdomain', 'regcountry', 'reglocation', 'authmode', 'auth_server_addr', 'auth_server_port', 'auth_server_shared_secret',
           'auth_server_addr2', 'auth_server_port2', 'auth_server_shared_secret2', 'mac_acl'
         );
@@ -1154,7 +1154,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['wireless']['channel'] = $pconfig['channel'];
                 $new_config['wireless']['authmode'] = $pconfig['authmode'];
                 $new_config['wireless']['txpower'] = $pconfig['txpower'];
-                $new_config['wireless']['distance'] = $pconfig['distance'];
                 $new_config['wireless']['regdomain'] = $pconfig['regdomain'];
                 $new_config['wireless']['regcountry'] = $pconfig['regcountry'];
                 $new_config['wireless']['reglocation'] = $pconfig['reglocation'];
@@ -1310,8 +1309,7 @@ if (isset($a_interfaces[$if]['wireless'])) {
     $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
     preg_match("/^(.*?)([0-9]*)$/", $wlanbaseif, $wlanbaseif_split);
     $wl_sysctl_prefix = 'dev.' . $wlanbaseif_split[1] . '.' . $wlanbaseif_split[2];
-    $wl_sysctl = get_sysctl(array("{$wl_sysctl_prefix}.diversity", "{$wl_sysctl_prefix}.txantenna", "{$wl_sysctl_prefix}.rxantenna",
-                "{$wl_sysctl_prefix}.slottime", "{$wl_sysctl_prefix}.acktimeout", "{$wl_sysctl_prefix}.ctstimeout"));
+    $wl_sysctl = get_sysctl(array("{$wl_sysctl_prefix}.diversity", "{$wl_sysctl_prefix}.txantenna", "{$wl_sysctl_prefix}.rxantenna"));
     $wl_regdomain_xml_attr = array();
     $wl_regdomain_xml = parse_xml_regdomain($wl_regdomain_xml_attr);
     $wl_regdomains = &$wl_regdomain_xml['regulatory-domains']['rd'];
@@ -2974,19 +2972,6 @@ include("head.inc");
                             </table>
                             <div class="hidden" for="help_for_antenna_settings">
                               <?=gettext("Note: The antenna numbers do not always match up with the labels on the card."); ?>
-                            </div>
-                          </td>
-                        </tr>
-<?php
-                        endif;
-                        if (isset($wl_sysctl["{$wl_sysctl_prefix}.slottime"]) && isset($wl_sysctl["{$wl_sysctl_prefix}.acktimeout"]) && isset($wl_sysctl["{$wl_sysctl_prefix}.ctstimeout"])): ?>
-                        <tr>
-                          <td><a id="help_for_distance" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Distance setting"); ?></td>
-                          <td>
-                            <input name="distance" type="text" id="distance" size="5" value="<?=$pconfig['distance'];?>" />
-                            <div class="hidden" for="help_for_distance">
-                              <?=gettext("Note: This field can be used to tune ACK/CTS timers to fit the distance between AP and Client"); ?><br />
-                              <?=gettext("(measured in Meters and works only for Atheros based cards !)"); ?>
                             </div>
                           </td>
                         </tr>
