@@ -590,8 +590,8 @@ function system_routing_configure($interface = '')
         log_error("ROUTING: setting IPv4 default route to {$gatewayip}");
         mwexecf('/sbin/route delete -inet %s', 'default');
         if ($fargw) {
-            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $interfacegw));
-            mwexecf('/sbin/route add -inet %s -interface %s', array($gatewayip, $interfacegw));
+            mwexecf('/sbin/route delete -inet %s -interface %s', array($gatewayip, $defaultif));
+            mwexecf('/sbin/route add -inet %s -interface %s', array($gatewayip, $defaultif));
         }
         mwexecf('/sbin/route add -inet %s %s', array('default', $gatewayip));
     }
@@ -605,8 +605,8 @@ function system_routing_configure($interface = '')
         log_error("ROUTING: setting IPv6 default route to {$gatewayipv6}");
         mwexecf('/sbin/route delete -inet6 %s %s', array('default', $gatewayipv6));
         if ($fargw) {
-            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $interfacegwv6));
-            mwexecf('/sbin/route add -inet6 %s -interface %s', array($gatewayipv6, $interfacegwv6));
+            mwexecf('/sbin/route delete -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
+            mwexecf('/sbin/route add -inet6 %s -interface %s', array($gatewayipv6, $defaultifv6));
         }
         mwexecf('/sbin/route add -inet6 %s %s', array('default', $gatewayipv6));
     }
