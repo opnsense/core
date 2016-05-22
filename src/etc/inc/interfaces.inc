@@ -2243,7 +2243,7 @@ function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false)
     global $config;
 
     $shared_settings = array('standard', 'turbo', 'protmode', 'txpower', 'channel',
-        'diversity', 'txantenna', 'rxantenna', 'distance',
+        'diversity', 'txantenna', 'rxantenna',
         'regdomain', 'regcountry', 'reglocation');
 
     if (!is_interface_wireless($ifcfg['if'])) {
@@ -2391,11 +2391,6 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
     /* Set rxantenna value */
     if (isset($wlcfg['rxantenna'])) {
         $wl_sysctl[] = "rxantenna=" . escapeshellarg($wlcfg['rxantenna']);
-    }
-
-    /* set Distance value */
-    if ($wlcfg['distance']) {
-        $distance = escapeshellarg($wlcfg['distance']);
     }
 
     /* Set wireless hostap mode */
@@ -2605,12 +2600,6 @@ EOD;
         foreach ($wl_sysctl as $wl_sysctl_line) {
             fwrite($fd_set, "{$sysctl} {$wl_sysctl_prefix}.{$wl_sysctl_line}\n");
         }
-    }
-
-    /* set ack timers according to users preference (if he/she has any) */
-    if ($distance) {
-        fwrite($fd_set, "# Enable ATH distance settings\n");
-        fwrite($fd_set, "/usr/local/sbin/athctrl -i {$baseif} -d {$distance}\n");
     }
 
     if (isset($wlcfg['wpa']['enable'])) {
