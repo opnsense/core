@@ -1707,7 +1707,7 @@ function filter_nat_rules_generate(&$FilterIflist)
             $natif = $FilterIflist[$natif]['descr'];
 
             $natrules .= "binat on \${$natif} from {$srcaddr} to any -> {$dstaddr}\n";
-            $natrules .= "binat on \${$natif} from any to {$dstaddr} -> {$srcaddr}\n";
+            $natrules .= "binat on \${$natif} from {$dstaddr} to any -> {$srcaddr}\n";
         }
     }
 
