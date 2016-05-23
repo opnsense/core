@@ -32,6 +32,22 @@ global $buffer_rules_rdr, $buffer_rules_normal;
 $buffer_rules_rdr = array();
 $buffer_rules_normal = array();
 
+function conv_log_interface_names()
+{
+    global $config;
+
+    // collect interface names
+    $interface_names = array();
+    $interface_names['enc0'] = gettext("IPsec");
+
+    if (!empty($config['interfaces'])) {
+        foreach ($config['interfaces'] as $intfkey => $interface) {
+            $interface_names[$interface['if']] = !empty($interface['descr']) ? $interface['descr'] : $intfkey;
+        }
+    }
+    return $interface_names;
+}
+
 /* format filter logs */
 function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $filterinterface = null)
 {
@@ -53,13 +69,13 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $fil
 
     $filterlog = array();
     $counter = 0;
-
+    $interface_names = conv_log_interface_names();
     foreach ($logarr as $logent) {
         if ($counter >= $nentries) {
             break;
         }
 
-        $flent = parse_filter_line($logent);
+        $flent = parse_filter_line($logent, $interface_names);
         if (isset($flent) && is_array($flent)) {
             if ($filterinterface == null || strtoupper($filterinterface) == $flent['interface']) {
                 if ( (!is_array($filtertext) && match_filter_line ($flent, $filtertext)) ||
@@ -130,7 +146,7 @@ function in_arrayi($needle, $haystack)
     return in_array(strtolower($needle), array_map('strtolower', $haystack));
 }
 
-function parse_filter_line($line)
+function parse_filter_line($line, $interface_names = array())
 {
     $flent = array();
     $log_split = '';
@@ -154,7 +170,7 @@ function parse_filter_line($line)
     $flent['anchor'] = $rule_data[$field++];
     $field++; // skip field
     $flent['realint'] = $rule_data[$field++];
-    $flent['interface']  = convert_real_interface_to_friendly_descr($flent['realint']);
+    $flent['interface']  = !empty($interface_names[$flent['realint']]) ? $interface_names[$flent['realint']] : $flent['realint'] ;
     $flent['reason'] = $rule_data[$field++];
     $flent['act'] = $rule_data[$field++];
     $flent['direction'] = $rule_data[$field++];
