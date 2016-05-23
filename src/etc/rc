@@ -35,7 +35,13 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /\/dev\/([a-z]+[0-9]+)/) { print substr( $0, RSTART, RLENGTH )}')
 	FS_TRIM=$(camcontrol identify ${FS_DEV} | grep TRIM | awk '{ print $5; }')
 	if [ "${FS_TRIM}" = "yes" ]; then
-		tunefs -t enable ${FS_MNT}
+		# appending "# notrim" to the /etc/fstab entry
+		# will allow to strip trim and leave it disabled
+		if echo "${FS_MORE}" | grep -iq notrim; then
+			tunefs -t disable ${FS_MNT}
+		else
+			tunefs -t enable ${FS_MNT}
+		fi
 	fi
 done < /etc/fstab
 
