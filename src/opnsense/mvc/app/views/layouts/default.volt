@@ -198,7 +198,7 @@
     </nav>
   </header>
 
-  <main class="page-content col-sm-10 col-sm-push-2 ">
+  <main class="page-content col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2">
 
     <!-- menu system -->
     {{ partial("layout_partials/base_menu_system") }}

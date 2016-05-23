@@ -1,4 +1,4 @@
-<aside id="navigation" class="page-side col-xs-12 col-sm-2 hidden-xs">
+<aside id="navigation" class="page-side col-xs-12 col-sm-3 col-lg-2 hidden-xs">
     <div class="row">
         <nav class="page-side-nav" role="navigation">
             <div id="mainmenu" class="panel" style="border:0px" >
