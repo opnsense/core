@@ -1839,7 +1839,6 @@ function dyndnsCheckIP($int)
 function services_dnsmasq_configure()
 {
     global $config;
-    $return = 0;
 
     // hard coded args: will be removed to avoid duplication if specified in custom_options
     $standard_args = array(
@@ -1935,9 +1934,10 @@ function services_dnsmasq_configure()
         /* Setup forwarded domains */
         if (isset($config['dnsmasq']['domainoverrides']) && is_array($config['dnsmasq']['domainoverrides'])) {
           foreach($config['dnsmasq']['domainoverrides'] as $override) {
-            if ($override['ip'] == "!")
-              $override[ip] = "";
-            $args .= ' --server=/' . $override['domain'] . '/' . $override['ip'];
+            if ($override['ip'] == "!") {
+                $override['ip'] = "";
+            }
+            $args .= ' --server='. escapeshellarg('/' . $override['domain'] . '/' . $override['ip']);
           }
         }
 
@@ -1945,7 +1945,7 @@ function services_dnsmasq_configure()
         if (isset($config['dnsmasq']['domainoverrides']) && is_array($config['dnsmasq']['domainoverrides'])) {
             if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
                 foreach($config['dnsmasq']['domainoverrides'] as $override) {
-                    $args .= ' --rebind-domain-ok=/' . $override['domain'] . '/ ';
+                    $args .= ' --rebind-domain-ok=' . escapeshellarg('/'.$override['domain'].'/') . ' ' ;
                 }
             }
         }
@@ -1975,7 +1975,6 @@ function services_dnsmasq_configure()
 
         /* run dnsmasq */
         $cmd = "/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}";
-        //log_error("dnsmasq command: {$cmd}");
         mwexec_bg($cmd);
         system_dhcpleases_configure();
         unset($args);
@@ -1987,11 +1986,11 @@ function services_dnsmasq_configure()
 
     if (!file_exists("/var/run/booting")) {
         if (services_dhcpd_configure()!=0) {
-            $return = 1;
+            return 1;
         }
     }
 
-    return $return;
+    return 0;
 }
 
 function services_unbound_configure()
