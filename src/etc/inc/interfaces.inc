@@ -3589,7 +3589,8 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
     $rtsoldscript .= "\t/bin/sleep 1\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "/usr/local/sbin/dhcp6c -d -c /var/etc/dhcp6c_{$interface}.conf -p /var/run/dhcp6c_{$wanif}.pid {$wanif}\n";
+    $rtsoldscript .= "/usr/local/sbin/dhcp6c " . (empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D') ;
+    $rtsoldscript .= "  -c /var/etc/dhcp6c_{$interface}.conf -p /var/run/dhcp6c_{$wanif}.pid {$wanif}\n";
     $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
     /* Add wide-dhcp6c shell script here. Because we can not pass a argument to it. */
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
