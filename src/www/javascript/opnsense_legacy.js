@@ -45,12 +45,15 @@ function hook_ipv4v6(classname, data_id) {
               } else {
                   $(this).removeClass('hidden');
               }
-          }).promise().done(function(){
-            // when select list uses selectpicker, refresh
-            if ($("#"+selectlist_id).hasClass('selectpicker')) {
-                $("#"+selectlist_id).selectpicker('refresh');
-            }
           });
+          // select highest visible option
+          if (parseInt($("#"+selectlist_id).val()) > 32 && itemValue.indexOf(":") == -1) {
+            $("#"+selectlist_id+' option[value=32]').attr('selected','selected');
+          }
+          // when select list uses selectpicker, refresh
+          if ($("#"+selectlist_id).hasClass('selectpicker')) {
+            $("#"+selectlist_id).selectpicker('refresh');
+          }
         });
       }
       // trigger initial onChange event
