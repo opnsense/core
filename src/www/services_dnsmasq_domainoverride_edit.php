@@ -51,13 +51,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!isset($id) || empty($a_domainOverrides[$id]['ip'])) {
         $pconfig['ip'] = null;
         $pconfig['dnssrcip'] = null;
-    } elseif (!empty($a_domainOverrides[$id]['ip']) && is_ipaddr($a_domainOverrides[$id]['ip']) && ($a_domainOverrides[$id]['ip'] != '#')) {
-         $pconfig['ip'] = $a_domainOverrides[$id]['ip'];
-         $pconfig['dnssrcip'] = null;
-    } else {
-        $dnsmasqpieces = explode('@', $a_domainOverrides[$id]['ip'], 2);
-        $pconfig['ip'] = !empty($dnsmasqpieces[0]) ? $dnsmasqpieces[0] : null;
-        $pconfig['dnssrcip'] = !empty($dnsmasqpieces[1]) ? $dnsmasqpieces[1] : null;
+    } elseif (!empty($a_domainOverrides[$id]['ip'])) {
+        // parse ip string, it would be better to have different fields here, but we don't want to break backwards
+        // compatibility.
+        $parts = explode("@", $a_domainOverrides[$id]['ip']);
+        if (count($parts) > 1) {
+            $pconfig['dnssrcip'] = $parts[1];
+        } else {
+            $pconfig['dnssrcip'] = null;
+        }
+        $parts = explode("#", $parts[0]);
+        if (count($parts) > 1) {
+            $pconfig['port'] = $parts[1];
+        } else {
+            $pconfig['port'] =  null;
+        }
+        $pconfig['ip'] = $parts[0];
+
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_GET['id']) && !empty($a_domainOverrides[$_POST['id']])) {
@@ -83,16 +93,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['ip']) && !is_ipaddr($pconfig['ip']) && ($pconfig['ip'] != '#') && ($pconfig['ip'] != '!')) {
         $input_errors[] = gettext("A valid IP address must be specified, or # for an exclusion or ! to not forward at all.");
     }
+    if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
+        $input_errors[] = gettext("A valid portnumber must be specified.");
+    }
     if (!empty($pconfig['dnssrcip']) && !in_array($pconfig['dnssrcip'], get_configured_ip_addresses())) {
         $input_errors[] = gettext("An interface IP address must be specified for the DNS query source.");
     }
     if (count($input_errors) == 0) {
         $doment = array();
         $doment['domain'] = $pconfig['domain'];
-        if (empty($pconfig['dnssrcip'])) {
-            $doment['ip'] = $pconfig['ip'];
-        } else {
-            $doment['ip'] = $pconfig['ip'] . "@" . $pconfig['dnssrcip'];
+        $doment['ip'] = $pconfig['ip'];
+        if (!empty($pconfig['port'])) {
+            $doment['ip'] .= "#" . $pconfig['port'];
+        }
+        if (!empty($pconfig['dnssrcip'])) {
+            $doment['ip'] .= "@" . $pconfig['dnssrcip'];
         }
         $doment['descr'] = $pconfig['descr'];
 
@@ -148,6 +163,15 @@ include("head.inc");
                         <div class="hidden" for="help_for_ip">
                           <?=gettext("IP address of the authoritative DNS server for this domain"); ?><br />
                           <?=gettext("e.g."); ?> <em>192.168.100.100</em><br /><?=gettext("Or enter # for an exclusion to pass through this host/subdomain to standard nameservers instead of a previous override."); ?><br /><?=gettext("Or enter ! for lookups for this host/subdomain to NOT be forwarded anywhere."); ?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Port");?></td>
+                      <td>
+                        <input name="port" type="text" value="<?=$pconfig['port'];?>" />
+                        <div class="hidden" for="help_for_port">
+                          <?=gettext("Specify a non standard port number here, leave blank for default"); ?><br />
                         </div>
                       </td>
                     </tr>
