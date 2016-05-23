@@ -470,7 +470,6 @@ class Action(object):
                                                                                                traceback.format_exc()))
                     return 'Execute error'
             elif self.type.lower() == 'script_output':
-                script_output = ""
                 try:
                     with tempfile.NamedTemporaryFile() as error_stream:
                         with tempfile.NamedTemporaryFile() as output_stream:
@@ -490,7 +489,7 @@ class Action(object):
                     syslog.syslog(syslog.LOG_ERR, '[%s] Script action failed with %s at %s' % (message_uuid,
                                                                                                script_exception,
                                                                                                traceback.format_exc()))
-                    return script_output
+                    return 'Execute error'
 
             # fallback should never get here
             return "type error"
