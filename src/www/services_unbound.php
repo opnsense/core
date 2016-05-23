@@ -117,12 +117,17 @@ include_once("head.inc");
 
 <body>
 <script type="text/javascript">
-//<![CDATA[
-function show_advanced_dns() {
-  $("#showadv").show();
-  $("#showadvbox").hide();
-}
-//]]>
+    $( document ).ready(function() {
+        $("#show_advanced_dns").click(function(){
+            $(this).parent().parent().hide();
+            $(".showadv").show();
+            $(window).trigger('resize');
+        })
+        // show advanced when option set
+        if ($("#outgoing_interface").val() != "" || $("#custom_options").val() != "") {
+            $("#show_advanced_dns").click();
+        }
+    });
 </script>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">
@@ -181,25 +186,6 @@ function show_advanced_dns() {
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_outgoing_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Outgoing Network Interfaces"); ?></td>
-                        <td>
-                          <select name="outgoing_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
-                            <option value="" <?=empty($pconfig['outgoing_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
-<?php
-                            foreach (get_possible_listen_ips(true) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['outgoing_interface']) ? 'selected="selected"' : "";?>>
-                              <?=htmlspecialchars($laddr['name']);?>
-                            </option>
-<?php
-                            endforeach; ?>
-
-                          </select>
-                          <div class="hidden" for="help_for_outgoing_interface">
-                            <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used.");?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DNSSEC");?></td>
                         <td>
                           <input name="dnssec" type="checkbox" value="yes" <?=!empty($pconfig['dnssec']) ? "checked=\"checked\"" : "";?> />
@@ -252,13 +238,33 @@ function show_advanced_dns() {
                       <tr>
                         <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                         <td>
-                          <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                            <input type="button" class="btn btn-xs btn-default" onclick="show_advanced_dns()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
-                          </div>
-                          <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                            <strong><?=gettext("Advanced");?><br /></strong>
-                            <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
-                            <?=gettext("Enter any additional options you would like to add to the DNS Resolver configuration here, separated by a space or newline"); ?><br />
+                          <input id="show_advanced_dns" type="button" class="btn btn-xs btn-default"  value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                        </td>
+                      </tr>
+                      <tr class="showadv" style="display:none">
+                          <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
+                          <td>
+                              <strong><?=gettext("Advanced");?><br /></strong>
+                              <textarea rows="6" cols="78" name="custom_options" id="custom_options"><?=$pconfig['custom_options'];?></textarea><br />
+                              <?=gettext("Enter any additional options you would like to add to the DNS Resolver configuration here, separated by a space or newline"); ?><br />
+                          </td>
+                      </tr>
+                      <tr class="showadv" style="display:none">
+                        <td><a id="help_for_outgoing_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Outgoing Network Interfaces"); ?></td>
+                        <td>
+                          <select id="outgoing_interface" name="outgoing_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
+                            <option value="" <?=empty($pconfig['outgoing_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
+<?php
+                            foreach (get_possible_listen_ips(true) as $laddr):?>
+                            <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['outgoing_interface']) ? 'selected="selected"' : "";?>>
+                              <?=htmlspecialchars($laddr['name']);?>
+                            </option>
+<?php
+                            endforeach; ?>
+
+                          </select>
+                          <div class="hidden" for="help_for_outgoing_interface">
+                            <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used.");?>
                           </div>
                         </td>
                       </tr>
