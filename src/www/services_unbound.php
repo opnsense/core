@@ -264,7 +264,7 @@ include_once("head.inc");
 
                           </select>
                           <div class="hidden" for="help_for_outgoing_interface">
-                            <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used.");?>
+                            <?=gettext("Utilize different network interface(s) that the DNS Resolver will use to send queries to authoritative servers and receive their replies. By default all interfaces are used. Note that setting explicit outgoing interfaces only works when they are statically configured.");?>
                           </div>
                         </td>
                       </tr>
