@@ -121,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize form and set defaults
     $pconfig = array();
     $pconfig['protocol'] = "tcp";
-    $pconfig['ipprotocol'] = "inet";
     $pconfig['srcbeginport'] = "any";
     $pconfig['srcendport'] = "any";
     $pconfig['interface'] = "wan";
@@ -131,9 +130,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($configId)) {
         // copy 1-on-1
         foreach (array('protocol','target','local-port','descr','interface','associated-rule-id','nosync'
-                      ,'natreflection','created','updated','ipprotocol') as $fieldname) {
+                      ,'natreflection','created','updated','ipprotocol', 'ipprotocol') as $fieldname) {
             if (isset($a_nat[$configId][$fieldname])) {
                 $pconfig[$fieldname] = $a_nat[$configId][$fieldname];
+            } else {
+                $pconfig[$fieldname] = null;
             }
         }
         // fields with some kind of logic.
@@ -146,11 +147,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         address_to_pconfig($a_nat[$configId]['destination'], $pconfig['dst'],
           $pconfig['dstmask'], $pconfig['dstnot'],
           $pconfig['dstbeginport'], $pconfig['dstendport']);
+          if (empty($pconfig['ipprotocol'])) {
+              if (strpos($pconfig['src'].$pconfig['dst'].$pconfig['target'], ":") !== false) {
+                  $pconfig['ipprotocol'] = 'inet6';
+              } else {
+                  $pconfig['ipprotocol'] = 'inet';
+              }
+          }
     } elseif (isset($_GET['template']) && $_GET['template'] == 'transparant_proxy') {
         // new rule for transparant proxy reflection, to use as sample
         $pconfig['interface'] = "lan";
         $pconfig['src'] = "lan";
         $pconfig['dst'] = "any";
+        $pconfig['ipprotocol'] = "inet";
         if (isset($_GET['https'])){
             $pconfig['dstbeginport'] = 443;
             $pconfig['dstendport'] = 443;
@@ -179,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['src'] = "any";
     }
     // init empty fields
-    foreach (array("dst","dstmask","srcmask","dstbeginport","dstendport","target","local-port","natreflection","descr","disabled","nosync") as $fieldname) {
+    foreach (array("dst","dstmask","srcmask","dstbeginport","dstendport","target","local-port","natreflection","descr","disabled","nosync", "ipprotocol") as $fieldname) {
         if (!isset($pconfig[$fieldname])) {
             $pconfig[$fieldname] = null;
         }
