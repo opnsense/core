@@ -1944,6 +1944,7 @@ function filter_nat_rules_generate(&$FilterIflist)
                 case "icmp":
                     $protocol = $address_family == 'inet6' ? "ipv6-icmp" : $protocol;
                     $localport = "";
+                    break;
                 default:
                     $protocol = strtolower($rule['protocol']);
                     $localport = "";
