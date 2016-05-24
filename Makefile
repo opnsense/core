@@ -32,30 +32,12 @@ all:
 
 force:
 
-WRKDIR?=${.CURDIR}/work
-WRKSRC=	${WRKDIR}/src
-PKGDIR=	${WRKDIR}/pkg
+WANTS=		git pear-PHP_CodeSniffer phpunit
 
-mount: force
-	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Enabling core.git live mount..."; \
-	    ${.CURDIR}/scripts/version.sh > \
-	        ${.CURDIR}/src/opnsense/version/opnsense; \
-	    mount_unionfs ${.CURDIR}/src /usr/local; \
-	    touch ${WRKDIR}/.mount_done; \
-	    echo "done"; \
-	    service configd restart; \
-	fi
-
-umount: force
-	@if [ -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Disabling core.git live mount..."; \
-	    umount -f "<above>:${.CURDIR}/src"; \
-	    rm ${.CURDIR}/src/opnsense/version/opnsense; \
-	    rm ${WRKDIR}/.mount_done; \
-	    echo "done"; \
-	    service configd restart; \
-	fi
+.for WANT in ${WANTS}
+want-${WANT}: force
+	@${PKG} info ${WANT} > /dev/null
+.endfor
 
 .if ${GIT} != true
 CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
@@ -155,11 +137,31 @@ CORE_DEPENDS?=		apinger \
 			wol \
 			zip
 
-want-git: force
-	@${PKG} info git > /dev/null
+WRKDIR?=${.CURDIR}/work
+WRKSRC=	${WRKDIR}/src
+PKGDIR=	${WRKDIR}/pkg
 
-want-pear-PHP_CodeSniffer: force
-	@${PKG} info pear-PHP_CodeSniffer > /dev/null
+mount: want-git
+	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
+	    echo -n "Enabling core.git live mount..."; \
+	    echo "${CORE_COMMIT}" > \
+	        ${.CURDIR}/src/opnsense/version/opnsense; \
+	    mount_unionfs ${.CURDIR}/src /usr/local; \
+	    touch ${WRKDIR}/.mount_done; \
+	    echo "done"; \
+	    service configd restart; \
+	fi
+
+umount: force
+	@if [ -f ${WRKDIR}/.mount_done ]; then \
+	    echo -n "Disabling core.git live mount..."; \
+	    umount -f "<above>:${.CURDIR}/src"; \
+	    rm ${.CURDIR}/src/opnsense/version/opnsense; \
+	    rm ${WRKDIR}/.mount_done; \
+	    echo "done"; \
+	    service configd restart; \
+	fi
+
 
 manifest: want-git
 	@echo "name: \"${CORE_NAME}\""
@@ -190,7 +192,7 @@ name: force
 depends: force
 	@echo ${CORE_DEPENDS}
 
-scripts: force
+scripts: want-git
 	@mkdir -p ${DESTDIR}
 	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}
 	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
