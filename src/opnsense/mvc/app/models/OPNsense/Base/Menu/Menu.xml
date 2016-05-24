@@ -57,13 +57,11 @@
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php"/>
-            <AdminAccess VisibleName="Admin Access" order="200" url="/system_advanced_admin.php"/>
-            <Networking order="300" url="/system_advanced_network.php"/>
-            <FirewallNAT VisibleName="Firewall/NAT" order="400" url="/system_advanced_firewall.php"/>
-            <Notifications order="500" url="/system_advanced_notifications.php"/>
-            <Logging order="600" url="/diag_logs_settings.php"/>
-            <Miscellaneous order="700" url="/system_advanced_misc.php"/>
-            <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php">
+            <Administration order="200" url="/system_advanced_admin.php"/>
+            <Logging order="300" url="/diag_logs_settings.php"/>
+            <Notifications order="400" url="/system_advanced_notifications.php"/>
+            <Miscellaneous order="500" url="/system_advanced_misc.php"/>
+            <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
@@ -90,6 +88,7 @@
     <Interfaces order="30" cssClass="fa fa-sitemap">
         <Overview order="900" url="/status_interfaces.php" cssClass="fa fa-tasks fa-fw"/>
         <Assignments order="910" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
+        <Settings order="920" url="/system_advanced_network.php" cssClass="fa fa-cogs fa-fw"/>
         <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
                 <Edit url="/interfaces_bridge_edit.php*" visibility="hidden"/>
@@ -173,6 +172,7 @@
         <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar fa-fw">
             <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
         </Schedules>
+        <Settings order="200" url="/system_advanced_firewall.php" cssClass="fa fa-cogs fa-fw"/>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>
