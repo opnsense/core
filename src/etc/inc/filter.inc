@@ -1516,10 +1516,6 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
 {
     global $config;
 
-    /* XXX: billm - any idea if this code is needed? */
-    if ($src == "/32" || $src{0} == "/") {
-        return "# src incorrectly specified\n";
-    }
     if ($natip != "") {
         if (is_subnet($natip)) {
             $tgt = $natip;
