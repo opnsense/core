@@ -30,8 +30,8 @@
 namespace OPNsense\Base;
 
 use OPNsense\Core\Config;
+use OPNsense\Base\ViewTranslator;
 use Phalcon\Mvc\Controller;
-use Phalcon\Translate\Adapter\Gettext;
 
 /**
  * Class ControllerBase implements core controller for OPNsense framework
@@ -42,7 +42,7 @@ class ControllerBase extends ControllerRoot
     /**
      * translate a text
      * @param OPNsense\Core\Config $cnf config handle
-     * @return Gettext
+     * @return ViewTranslator
      */
     public function getTranslator($cnf)
     {
@@ -57,7 +57,7 @@ class ControllerBase extends ControllerRoot
 
         $lang_encoding = $lang . '.UTF-8';
 
-        $ret = new Gettext(array(
+        $ret = new ViewTranslator(array(
             'directory' => '/usr/local/share/locale',
             'defaultDomain' => 'OPNsense',
             'locale' => $lang_encoding,
