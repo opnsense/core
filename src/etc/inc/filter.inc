@@ -1932,6 +1932,7 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $localport = " port {$localport}";
             }
 
+            $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "";
             switch(strtolower($rule['protocol'])) {
                 case "tcp/udp":
                     $protocol = "{ tcp udp }";
@@ -1940,12 +1941,14 @@ function filter_nat_rules_generate(&$FilterIflist)
                 case "udp":
                     $protocol = strtolower($rule['protocol']);
                     break;
+                case "icmp":
+                    $protocol = $address_family == 'inet6' ? "ipv6-icmp" : $protocol;
+                    $localport = "";
                 default:
                     $protocol = strtolower($rule['protocol']);
                     $localport = "";
                     break;
             }
-            $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "";
 
             $target = alias_expand($rule['target']);
             if (!$target && !isset($rule['nordr'])) {
