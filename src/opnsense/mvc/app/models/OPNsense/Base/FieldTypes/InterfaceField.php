@@ -162,7 +162,6 @@ class InterfaceField extends BaseField
                         $allInterfaces[$interface] = $interfaceNode;
                     }
                 }
-
             }
 
             // collect this items options
