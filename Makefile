@@ -155,7 +155,13 @@ CORE_DEPENDS?=		apinger \
 			wol \
 			zip
 
-manifest: force
+want-git: force
+	@${PKG} info git > /dev/null
+
+want-pear-PHP_CodeSniffer: force
+	@${PKG} info pear-PHP_CodeSniffer > /dev/null
+
+manifest: want-git
 	@echo "name: \"${CORE_NAME}\""
 	@echo "version: \"${CORE_VERSION}\""
 	@echo "origin: \"${CORE_ORIGIN}\""
@@ -222,7 +228,6 @@ package: force
 		echo ">>> Missing required file(s).  Please run 'make package-keywords'" >&2; \
 		exit 1; \
 	fi
-	@${PKG} info git > /dev/null
 	@rm -rf ${WRKSRC} ${PKGDIR}
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@${MAKE} DESTDIR=${WRKSRC} scripts
@@ -258,7 +263,7 @@ sweep: force
 	find ${.CURDIR}/scripts -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 
-style: force
+style: want-pear-PHP_CodeSniffer
 	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense/mvc \
 	    || true) > ${.CURDIR}/.style.out
 	@echo -n "Total number of style warnings: "
@@ -268,7 +273,7 @@ style: force
 	@cat ${.CURDIR}/.style.out
 	@rm ${.CURDIR}/.style.out
 
-stylefix: force
+stylefix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=PSR2 ${.CURDIR}/src/opnsense/mvc || true
 
 setup: force
@@ -278,7 +283,7 @@ health: force
 	# check test script output and advertise a failure...
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
-clean:
+clean: want-git
 	${GIT} reset --hard HEAD && ${GIT} clean -xdqf .
 
 .PHONY: force
