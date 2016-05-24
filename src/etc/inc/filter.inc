@@ -1945,7 +1945,7 @@ function filter_nat_rules_generate(&$FilterIflist)
                     $localport = "";
                     break;
             }
-            $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "inet";
+            $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "";
 
             $target = alias_expand($rule['target']);
             if (!$target && !isset($rule['nordr'])) {
