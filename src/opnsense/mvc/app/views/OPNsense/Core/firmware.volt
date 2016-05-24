@@ -213,13 +213,13 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
-                    '  data-toggle="tooltip" data-placement="left" title="Reinstall ' + row['name'] + '">' +
+                    '  data-toggle="tooltip" title="Reinstall ' + row['name'] + '">' +
                     '<span class="fa fa-recycle"></span></button> ' + (row['locked'] === '1' ?
-                        '<button data-toggle="tooltip" data-placement="left" title="Unlock ' + row['name'] + '" class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
+                        '<button data-toggle="tooltip" title="Unlock ' + row['name'] + '" class="btn btn-default btn-xs act_unlock" data-package="' + row['name'] + '">' +
                         '<span class="fa fa-lock">' +
                         '</span></button>' :
                         '<button class="btn btn-default btn-xs act_lock" data-package="' + row['name'] + '" ' +
-                        '  data-toggle="tooltip" data-placement="left" title="Lock ' + row['name'] + '" >' +
+                        '  data-toggle="tooltip" title="Lock ' + row['name'] + '" >' +
                         '<span class="fa fa-unlock"></span></button>'
                     ) + '</td>' +
                     '</tr>'
@@ -241,11 +241,11 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' + (row['name'] in installed ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
-                        '  data-toggle="tooltip" data-placement="left" title="Remove ' + row['name'] + '">' +
+                        '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
                         '</span></button>' :
                         '<button class="btn btn-default btn-xs act_install" data-package="' + row['name'] + '" ' +
-                        ' data-toggle="tooltip" data-placement="left" title="Install ' + row['name'] + '">' +
+                        ' data-toggle="tooltip" title="Install ' + row['name'] + '">' +
                         '<span class="fa fa-plus">' +
                         '</span></button>'
                     ) + '</td>' + '</tr>'
