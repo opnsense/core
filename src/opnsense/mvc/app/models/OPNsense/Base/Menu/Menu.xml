@@ -57,10 +57,11 @@
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
             <General order="100" url="/system_general.php"/>
-            <Notifications order="500" url="/system_advanced_notifications.php"/>
-            <Logging order="600" url="/diag_logs_settings.php"/>
-            <Miscellaneous order="700" url="/system_advanced_misc.php"/>
-            <Tunables VisibleName="Tunables" order="800" url="/system_advanced_sysctl.php">
+            <Administration order="200" url="/system_advanced_admin.php"/>
+            <Logging order="300" url="/diag_logs_settings.php"/>
+            <Notifications order="400" url="/system_advanced_notifications.php"/>
+            <Miscellaneous order="500" url="/system_advanced_misc.php"/>
+            <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
@@ -69,7 +70,6 @@
             <Step url="/wizard.php*" visibility="hidden"/>
         </Wizard>
         <Access order="10" cssClass="fa fa-users fa-fw">
-            <Administration order="0" url="/system_advanced_admin.php"/>
             <Users order="10" url="/system_usermanager.php">
                 <All url="/system_usermanager.php*" visibility="hidden"/>
                 <Privileges url="/system_usermanager_addprivs.php*" visibility="hidden"/>
