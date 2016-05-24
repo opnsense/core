@@ -44,6 +44,56 @@ function plugins_services()
     return $services;
 }
 
+/**
+ * Register new or changed interfaces into config's interfaces section.
+ * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
+ *
+ */
+function plugins_register_interfaces()
+{
+    global $config;
+    $changed_interfaces = array();
+
+    // register / update interfaces
+    foreach (plugin_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_interface', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $intf_ref => $intf_data) {
+                if (is_array($intf_data)) {
+                    if (empty($config['interfaces'][$intf_ref])) {
+                        $config['interfaces'][$intf_ref] = array();
+                    }
+                    $config['interfaces'][$intf_ref]['internal_dynamic'] = true;
+                    // traverse and diff interface properties with known configuration
+                    $intf_config = &$config['interfaces'][$intf_ref];
+                    foreach ($intf_data as $prop_name => $prop_value) {
+                        if (empty($intf_config[$prop_name]) || $intf_config[$prop_name] != $prop_value) {
+                            $intf_config[$prop_name] = $prop_value;
+                            if (!in_array($intf_ref, $changed_interfaces)) {
+                                $changed_interfaces[] = $intf_ref;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // cleanup registrations
+    foreach ($config['interfaces'] as $intf => $intf_data) {
+        if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $changed_interfaces)) {
+            $changed_interfaces[] = $intf;
+            unset($config['interfaces'][$intf]);
+        }
+    }
+
+    // configuration changed, materialize
+    if (count($changed_interfaces) > 0) {
+        write_config();
+    }
+}
+
 function plugins_configure()
 {
     foreach (plugin_scan() as $name => $path) {
