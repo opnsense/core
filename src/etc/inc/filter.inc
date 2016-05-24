@@ -1525,6 +1525,8 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
             $tgt = $natip;
         } elseif (is_alias($natip)) {
             $tgt = "\${$natip}";
+        } elseif (is_ipaddrv6($natip)) {
+            $tgt = "{$natip}/128";
         } else {
             $tgt = "{$natip}/32";
         }
@@ -1545,13 +1547,6 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
         }
     } else {
         $protocol = "";
-    }
-    /* Set tgt for IPv6 */
-    if ($proto == "ipv6") {
-        $natip = get_interface_ipv6($if);
-        if (is_ipaddrv6($natip)) {
-            $tgt = "{$natip}/128";
-        }
     }
     /* Add the hard set source port (useful for ISAKMP) */
     if ($natport != "") {

@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // load data from config
         foreach (array('protocol','sourceport','dstport','natport','target','targetip'
                 ,'targetip_subnet','poolopts','interface','descr','nonat'
-                ,'disabled','staticnatport','nosync') as $fieldname) {
+                ,'disabled','staticnatport','nosync','ipprotocol') as $fieldname) {
               if (isset($a_out[$configId][$fieldname])) {
                   $pconfig[$fieldname] = $a_out[$configId][$fieldname];
               }
@@ -163,13 +163,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // initialize unused elements
     foreach (array('protocol','sourceport','dstport','natport','target','targetip'
             ,'targetip_subnet','poolopts','interface','descr','nonat'
-            ,'disabled','staticnatport','nosync','source','source_subnet') as $fieldname) {
+            ,'disabled','staticnatport','nosync','source','source_subnet','ipprotocol') as $fieldname) {
           if (!isset($pconfig[$fieldname])) {
               $pconfig[$fieldname] = null;
           }
     }
-
-
+    if (empty($pconfig['ipprotocol'])) {
+        if (strpos($pconfig['source'].$pconfig['destination'].$pconfig['targetip'], ":") !== false) {
+            $pconfig['ipprotocol'] = 'inet6';
+        } else {
+            $pconfig['ipprotocol'] = 'inet';
+        }
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -222,6 +227,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("Only Round Robin pool options may be chosen when selecting an alias.");
     }
 
+    // validate ipv4/v6, addresses should use selected address family
+    foreach (array('source', 'destination', 'targetip') as $fieldname) {
+        if (is_ipaddrv6($pconfig[$fieldname]) && $pconfig['ipprotocol'] != 'inet6') {
+            $input_errors[] = sprintf(gettext("%s is not a valid IPv4 address."), $pconfig[$fieldname]);
+        }
+        if (is_ipaddrv4($pconfig[$fieldname]) && $pconfig['ipprotocol'] != 'inet') {
+            $input_errors[] = sprintf(gettext("%s is not a valid IPv6 address."), $pconfig[$fieldname]);
+        }
+    }
+
     if (count($input_errors) == 0) {
         $natent = array();
         $natent['source'] = array();
@@ -229,6 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['descr'] = $pconfig['descr'];
         $natent['interface'] = $pconfig['interface'];
         $natent['poolopts'] = $pconfig['poolopts'];
+        $natent['ipprotocol'] = $pconfig['ipprotocol'];
 
         if ( isset($a_out[$id]['created']) && is_array($a_out[$id]['created']) ){
             $natent['created'] = $a_out[$id]['created'];
@@ -279,7 +295,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else if(is_alias($pconfig['source'])) {
             $natent['source']['network'] = trim($pconfig['source']);
         } else {
-            $natent['source']['network'] = gen_subnet(trim($pconfig['source']), $pconfig['source_subnet']) . "/" . $pconfig['source_subnet'];
+            if (is_ipaddrv6($pconfig['source'])) {
+                $natent['source']['network'] = gen_subnetv6(trim($pconfig['source']), $pconfig['source_subnet']) . "/" . $pconfig['source_subnet'];
+            } else {
+                $natent['source']['network'] = gen_subnet(trim($pconfig['source']), $pconfig['source_subnet']) . "/" . $pconfig['source_subnet'];
+            }
         }
 
         // destination address
@@ -288,7 +308,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (is_alias($pconfig['destination'])){
             $natent['destination']['address'] = trim($pconfig['destination']) ;
         } else {
-            $natent['destination']['address'] = gen_subnet(trim($pconfig['destination']), $pconfig['destination_subnet']) . "/" . $pconfig['destination_subnet'];;
+            if (is_ipaddrv6($pconfig['destination'])) {
+                $natent['destination']['address'] = gen_subnetv6(trim($pconfig['destination']), $pconfig['destination_subnet']) . "/" . $pconfig['destination_subnet'];;
+            } else {
+                $natent['destination']['address'] = gen_subnet(trim($pconfig['destination']), $pconfig['destination_subnet']) . "/" . $pconfig['destination_subnet'];;
+            }
         }
 
         // boolean fields
@@ -375,6 +399,8 @@ include("head.inc");
         }
     });
 
+    // IPv4/IPv6 select
+    hook_ipv4v6('ipv4v6net', 'network-id');
   });
   </script>
 
@@ -440,6 +466,23 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
+                  <td><a id="help_for_ipv46" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TCP/IP Version");?></td>
+                  <td>
+                    <select name="ipprotocol" class="selectpicker" data-width="auto" data-live-search="true" data-size="5" >
+<?php
+                    foreach (array('inet' => 'IPv4','inet6' => 'IPv6') as $proto => $name): ?>
+                    <option value="<?=$proto;?>" <?= $proto == $pconfig['ipprotocol'] ? "selected=\"selected\"" : "";?>>
+                      <?=$name;?>
+                    </option>
+<?php
+                    endforeach; ?>
+                    </select>
+                    <div class="hidden" for="help_for_ipv46">
+                      <?=gettext("Select the Internet Protocol version this rule applies to");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td>
                     <div class="input-group">
@@ -479,9 +522,9 @@ include("head.inc");
                         <td>
                           <div class="input-group">
                           <!-- updates to "other" option in  source -->
-                          <input type="text" for="source" value="<?=$pconfig['source'];?>" aria-label="<?=gettext("Source address");?>"/>
-                          <select name="source_subnet" class="selectpicker" data-size="5" id="srcmask"  data-width="auto" for="source" >
-                          <?php for ($i = 32; $i > 0; $i--): ?>
+                          <input type="text" for="source" id="src_address" value="<?=$pconfig['source'];?>" aria-label="<?=gettext("Source address");?>"/>
+                          <select name="source_subnet"  data-network-id="src_address" class="selectpicker ipv4v6net" data-size="5" id="srcmask"  data-width="auto" for="source" >
+                          <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['source_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
@@ -534,9 +577,9 @@ include("head.inc");
                         <td>
                           <div class="input-group">
                           <!-- updates to "other" option in  source -->
-                          <input type="text" for="destination" value="<?=$pconfig['destination'];?>" aria-label="<?=gettext("Destination address");?>"/>
-                          <select name="destination_subnet" class="selectpicker" data-size="5" data-width="auto" for="destination" >
-                          <?php for ($i = 32; $i > 0; $i--): ?>
+                          <input type="text" id="dst_address" for="destination" value="<?=$pconfig['destination'];?>" aria-label="<?=gettext("Destination address");?>"/>
+                          <select name="destination_subnet" data-network-id="dst_address" class="selectpicker ipv4v6net" id="dstmask" data-size="5" data-width="auto" for="destination" >
+                          <?php for ($i = 128; $i > 0; $i--): ?>
                             <option value="<?=$i;?>" <?= $i == $pconfig['destination_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                           <?php endfor; ?>
                           </select>
@@ -579,9 +622,9 @@ include("head.inc");
                           <td>
                             <div class="input-group">
                               <!-- updates to "other" option in  source -->
-                              <input type="text" for="targetip" value="<?=$pconfig['targetip'];?>" aria-label="<?=gettext("Translation address");?>"/>
-                              <select name="targetip_subnet" class="selectpicker" data-size="5" data-width="auto" for="targetip" >
-                              <?php for ($i = 32; $i > 0; $i--): ?>
+                              <input type="text" id="targetip_text" for="targetip" value="<?=$pconfig['targetip'];?>" aria-label="<?=gettext("Translation address");?>"/>
+                              <select name="targetip_subnet" data-network-id="targetip_text" class="selectpicker ipv4v6net" id="targetip_subnet" data-size="5" data-width="auto" for="targetip" >
+                              <?php for ($i = 128; $i > 0; $i--): ?>
                                 <option value="<?=$i;?>" <?= $i == $pconfig['targetip_subnet'] ? "selected=\"selected\"" : ""; ?>><?=$i;?></option>
                               <?php endfor; ?>
                               </select>
