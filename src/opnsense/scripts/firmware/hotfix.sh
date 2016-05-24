@@ -25,7 +25,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PATCHES=${@}
+PATCHES=${1}
 
 # Check if another pkg process is already running
 # (not strictly necessary, but we're modifying pkg files)
