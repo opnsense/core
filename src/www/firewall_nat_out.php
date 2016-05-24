@@ -518,8 +518,9 @@ include("head.inc");
 <?php
       // when automatic or hybrid, display "auto" table.
       if ($mode == "automatic" || $mode == "hybrid"):
-        if(empty($GatewaysList))
-          filter_generate_gateways();
+        if (empty($GatewaysList)) {
+            filter_generate_gateways();
+        }
         /* XXX cranky low-level call, please refactor */
         $FilterIflist = filter_generate_optcfg_array();
         $automatic_rules = filter_nat_rules_outbound_automatic(
