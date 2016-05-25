@@ -1677,25 +1677,29 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $dstport = explode("-", $rule['destination']['port']);
             }
 
-            /* if item is an alias, expand */
-            $localport = alias_expand($rule['local-port']);
-            if (!$localport || $dstport[0] == $localport) {
-                $localport = "";
-            } else if (is_alias($rule['local-port'])) {
-                $localport = filter_expand_alias($rule['local-port']);
-                if ($localport) {
-                    $localport = explode(" ", trim($localport));
-                    $localport = $localport[0];
+
+            if (!empty($rule['protocol']) && in_array($rule['protocol'], array('tcp/udp', 'udp', 'tcp', 'sctp', 'dccp'))) {
+                $localport = alias_expand($rule['local-port']);
+                if (!$localport || $dstport[0] == $localport) {
+                    $localport = "";
+                } else if (is_alias($rule['local-port'])) {
+                    $localport = filter_expand_alias($rule['local-port']);
+                    if ($localport) {
+                        $localport = explode(" ", trim($localport));
+                        $localport = $localport[0];
+                        $localport = " port {$localport}";
+                    }
+                } elseif (is_alias($rule['destination']['port'])) {
+                    $localport = " port {$localport}";
+                } else {
+                    if (($dstport[1]) && ($dstport[0] != $dstport[1])) {
+                        $localendport = $localport + ($dstport[1] - $dstport[0]);
+                        $localport .= ":$localendport";
+                    }
                     $localport = " port {$localport}";
                 }
-            } elseif (is_alias($rule['destination']['port'])) {
-                $localport = " port {$localport}";
             } else {
-                if (($dstport[1]) && ($dstport[0] != $dstport[1])) {
-                    $localendport = $localport + ($dstport[1] - $dstport[0]);
-                    $localport .= ":$localendport";
-                }
-                $localport = " port {$localport}";
+                $localport = "";
             }
 
             $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "";
@@ -1703,17 +1707,8 @@ function filter_nat_rules_generate(&$FilterIflist)
                 case "tcp/udp":
                     $protocol = "{ tcp udp }";
                     break;
-                case "tcp":
-                case "udp":
-                    $protocol = strtolower($rule['protocol']);
-                    break;
-                case "icmp":
-                    $protocol = $address_family == 'inet6' ? "ipv6-icmp" : $protocol;
-                    $localport = "";
-                    break;
                 default:
                     $protocol = strtolower($rule['protocol']);
-                    $localport = "";
                     break;
             }
 
@@ -1786,7 +1781,6 @@ function filter_nat_rules_generate(&$FilterIflist)
             if (empty($localport_nat) && $dstaddr_port[2]) {
                 $localport_nat = " port " . $dstaddr_port[2];
             }
-
 
             if ($srcaddr <> "" && $dstaddr <> "" && $natif) {
                 $protocol_keyword = !empty($protocol) ? "proto" : "";
