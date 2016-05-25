@@ -1023,23 +1023,14 @@ function filter_generate_optcfg_array()
 }
 
 
-function filter_get_reflection_interfaces(&$FilterIflist, $natif = '')
+function filter_get_reflection_interfaces(&$FilterIflist, $natif)
 {
     $nat_if_list = array();
-
     foreach ($FilterIflist as $ifent => $ifname) {
-        if ($ifname['if'] == $natif) {
-            continue;
+        if ($ifname['if'] != $natif && !interface_has_gateway($ifent)) {
+            $nat_if_list[] = $ifname['if'];
         }
-
-        /* Do not add reflection redirects for interfaces with gateways */
-        if (interface_has_gateway($ifent)) {
-            continue;
-        }
-
-        $nat_if_list[] = $ifname['if'];
     }
-
     return $nat_if_list;
 }
 
