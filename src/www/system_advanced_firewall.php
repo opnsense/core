@@ -61,9 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
-    if (!isset($config['system']['disablenatreflection']) && !isset($config['system']['enablenatreflectionpurenat'])) {
-        $pconfig['natreflection'] = "proxy";
-    } elseif (isset($config['system']['enablenatreflectionpurenat'])) {
+    if (!isset($config['system']['disablenatreflection'])) {
         $pconfig['natreflection'] = "purenat";
     } else {
         $pconfig['natreflection'] = "disable";
@@ -162,17 +160,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['checkaliasesurlcert']);
         }
 
-        if ($pconfig['natreflection'] == "proxy") {
-            unset($config['system']['disablenatreflection']);
-            unset($config['system']['enablenatreflectionpurenat']);
-        } elseif ($pconfig['natreflection'] == "purenat") {
-            unset($config['system']['disablenatreflection']);
-            $config['system']['enablenatreflectionpurenat'] = "yes";
+        if ($pconfig['natreflection'] == "purenat") {
+            if (isset($config['system']['disablenatreflection'])) {
+                unset($config['system']['disablenatreflection']);
+            }
         } else {
             $config['system']['disablenatreflection'] = "yes";
-            if (isset($config['system']['enablenatreflectionpurenat'])) {
-                unset($config['system']['enablenatreflectionpurenat']);
-            }
         }
 
         if (!empty($pconfig['enablebinatreflection'])) {
@@ -304,9 +297,6 @@ include("head.inc");
                     <select name="natreflection" class="formselect selectpicker" data-style="btn-default">
                       <option value="disable" <?=$pconfig['natreflection'] == "disable" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Disable"); ?>
-                      </option>
-                      <option value="proxy" <?=$pconfig['natreflection'] == "proxy" ? "selected=\"selected\"" : "";?>>
-                        <?=gettext("Enable (NAT + Proxy)"); ?>
                       </option>
                       <option value="purenat" <?=$pconfig['natreflection'] == "purenat" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Enable (Pure NAT)"); ?>

@@ -312,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $natent['associated-rule-id'] = "pass";
         }
 
-        if ($pconfig['natreflection'] == "enable" || $pconfig['natreflection'] == "purenat" || $pconfig['natreflection'] == "disable") {
+        if ($pconfig['natreflection'] == "purenat" || $pconfig['natreflection'] == "disable") {
             $natent['natreflection'] = $pconfig['natreflection'];
         }
 
@@ -968,7 +968,6 @@ $( document ).ready(function() {
                   <td>
                     <select name="natreflection" class="selectpicker">
                     <option value="default" <?=$pconfig['natreflection'] != "enable" && $pconfig['natreflection'] != "purenat" && $pconfig['natreflection'] != "disable" ? "selected=\"selected\"" : ""; ?>><?=gettext("Use system default"); ?></option>
-                    <option value="enable" <?=$pconfig['natreflection'] == "enable" ? "selected=\"selected\"" : ""; ?>><?=gettext("Enable (NAT + Proxy)"); ?></option>
                     <option value="purenat" <?=$pconfig['natreflection'] == "purenat" ? "selected=\"selected\"" : ""; ?>><?=gettext("Enable (Pure NAT)"); ?></option>
                     <option value="disable" <?=$pconfig['natreflection'] == "disable" ? "selected=\"selected\"" : ""; ?>><?=gettext("Disable"); ?></option>
                     </select>
