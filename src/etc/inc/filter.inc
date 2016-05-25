@@ -1678,7 +1678,7 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
 
 
-            if (!empty($rule['protocol']) && in_array($rule['protocol'], array('tcp/udp', 'udp', 'tcp', 'sctp', 'dccp'))) {
+            if (!empty($rule['protocol']) && in_array($rule['protocol'], array('tcp/udp', 'udp', 'tcp'))) {
                 $localport = alias_expand($rule['local-port']);
                 if (!$localport || $dstport[0] == $localport) {
                     $localport = "";
