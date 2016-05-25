@@ -324,7 +324,7 @@ endif; ?>
                   </tr>
                   <tr>
                     <td colspan="7">
-                      <?=gettext("Do not enter static routes for networks assigned on any interface of this firewall.  Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?>
+                      <?=gettext("Do not enter static routes for networks assigned on any interface of this firewall. Static routes are only used for networks reachable via a different router, and not reachable via your default gateway.");?>
                     </td>
                   </tr>
                 </table>

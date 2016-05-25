@@ -328,8 +328,8 @@ include("head.inc");
                       </table>
                       <div class="hidden" for="help_for_subnets">
                         <?=gettext("Subnets are specified in CIDR format.  " .
-                              "Select the CIDR mask that pertains to each entry.  " .
-                              "/128 specifies a single IPv6 host; /64 specifies a normal IPv6 network; etc.  " .
+                              "Select the CIDR mask that pertains to each entry. " .
+                              "/128 specifies a single IPv6 host; /64 specifies a normal IPv6 network; etc. " .
                               "If no subnets are specified here, the Router Advertisement (RA) Daemon will advertise to the subnet to which the router's interface is assigned.");?>
                       </div>
                     </td>

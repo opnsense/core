@@ -1218,7 +1218,7 @@ endif; ?>
                                                   "communications between this server and client " .
                                                   "hosts expressed using CIDR (eg. 10.0.8.0/24). " .
                                                   "The first network address will be assigned to " .
-                                                  "the  server virtual interface. The remaining " .
+                                                  "the server virtual interface. The remaining " .
                                                   "network addresses can optionally be assigned " .
                                                   "to connecting clients. (see Address Pool)"); ?>
                         </div>
@@ -1603,8 +1603,8 @@ endif; ?>
                           </span>
                           <input name="netbios_scope" type="text" class="form-control unknown" id="netbios_scope" size="30" value="<?=$pconfig['netbios_scope'];?>" />
                           <div class="hidden" for="help_for_netbios_enable">
-                            <?=gettext("A NetBIOS Scope  ID provides an extended naming " .
-                                                        "service for  NetBIOS over TCP/IP. The NetBIOS " .
+                            <?=gettext("A NetBIOS Scope ID provides an extended naming " .
+                                                        "service for NetBIOS over TCP/IP. The NetBIOS " .
                                                         "scope ID isolates NetBIOS traffic on a single " .
                                                         "network to only those nodes with the same " .
                                                         "NetBIOS scope ID."); ?>

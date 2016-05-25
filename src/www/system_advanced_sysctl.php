@@ -147,7 +147,7 @@ $( document ).ready(function() {
             print_info_box($savemsg);
         }
         if (is_subsystem_dirty('sysctl') && ($act != "edit" )) {
-            print_info_box_apply(gettext("The firewall tunables have changed.  You must apply the configuration to take affect."));
+            print_info_box_apply(gettext("The firewall tunables have changed. You must apply the configuration to take affect."));
         }
 ?>
       <form method="post" id="iform">
@@ -223,7 +223,7 @@ $( document ).ready(function() {
                     <td>&nbsp;</td>
                     <td>
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
-                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_advanced_sysctl.php');?>'" />
+                      <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>" onclick="window.location.href='<?=(isset($_SERVER['HTTP_REFERER']) ? html_safe($_SERVER['HTTP_REFERER']) : '/system_advanced_sysctl.php');?>'" />
 
 <?php
                       if (isset($id)) :?>

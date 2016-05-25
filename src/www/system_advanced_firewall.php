@@ -485,19 +485,19 @@ include("head.inc");
                       <table class="table table-condensed">
                         <tr>
                           <td><strong><?=gettext("normal");?></strong></td>
-                          <td><?=gettext("as the name says, it is the normal optimization algorithm");?></td>
+                          <td><?=gettext("As the name says, it is the normal optimization algorithm");?></td>
                         </tr>
                         <tr>
                           <td><strong><?=gettext("high-latency");?></strong></td>
-                          <td><?=gettext("used for high latency links, such as satellite links.  Expires idle connections later than default");?></td>
+                          <td><?=gettext("Used for high latency links, such as satellite links. Expires idle connections later than default");?></td>
                         </tr>
                         <tr>
                           <td><strong><?=gettext("aggressive");?></strong></td>
-                          <td><?=gettext("expires idle connections quicker. More efficient use of CPU and memory but can drop legitimate idle connections");?></td>
+                          <td><?=gettext("Expires idle connections quicker. More efficient use of CPU and memory but can drop legitimate idle connections");?></td>
                         </tr>
                         <tr>
                           <td><strong><?=gettext("conservative");?></strong></td>
-                          <td><?=gettext("tries to avoid dropping any legitimate idle connections at the expense of increased memory usage and CPU utilization.");?></td>
+                          <td><?=gettext("Tries to avoid dropping any legitimate idle connections at the expense of increased memory usage and CPU utilization.");?></td>
                         </tr>
                       </table>
                       <hr/>
@@ -555,7 +555,7 @@ include("head.inc");
                       <strong><?=gettext("start");?></strong></br>
                       <?=gettext("When the number of state entries exceeds this value, adaptive scaling begins. All timeout values are scaled linearly with factor (adaptive.end - number of states) / (adaptive.end - adaptive.start).");?><br/>
                       <strong><?=gettext("end");?></strong></br>
-                      <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.  This value is used to define the scale factor, it should not actually be reached (set a lower state limit, see below).");?>
+                      <?=gettext("When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately. This value is used to define the scale factor, it should not actually be reached (set a lower state limit, see below).");?>
                       <br/>
                       <strong><?=gettext("Note: Leave this blank for the default(0).");?></strong>
                     </div>
