@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("filter.inc");
 
 /* TCP flags */
 $tcpflags = array("syn", "ack", "fin", "rst", "psh", "urg", "ece", "cwr");
@@ -837,8 +838,7 @@ include("head.inc");
                     <td>
                       <select <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?> name="protocol" id="proto" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
-                      $protocols = explode(" ", "any TCP UDP TCP/UDP ICMP ESP AH GRE IGMP PIM OSPF carp pfsync");
-                      foreach ($protocols as $proto): ?>
+                      foreach (get_protocols() as $proto): ?>
                         <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" :""; ?>>
                           <?=$proto;?>
                         </option>

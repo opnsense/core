@@ -1699,7 +1699,7 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
 
             $address_family = !empty($rule['ipprotocol']) ? $rule['ipprotocol'] : "";
-            switch(strtolower($rule['protocol'])) {
+            switch(strtolower(!empty($rule['protocol']) ? $rule['protocol'] : "")) {
                 case "tcp/udp":
                     $protocol = "{ tcp udp }";
                     break;
@@ -1789,7 +1789,8 @@ function filter_nat_rules_generate(&$FilterIflist)
 
 
             if ($srcaddr <> "" && $dstaddr <> "" && $natif) {
-                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} proto {$protocol} from {$srcaddr} to {$dstaddr}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
+                $protocol_keyword = !empty($protocol) ? "proto" : "";
+                $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
                 /* Does this rule redirect back to a internal host? */
                 if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper']) && !interface_has_gateway($rule['interface'])) {
                     $rule_interface_ip = find_interface_ip($natif);
@@ -1812,7 +1813,8 @@ function filter_nat_rules_generate(&$FilterIflist)
                                 $rdr_if_list = "{ {$rdr_if_list} }";
                             }
                             $natrules .= "\n# Reflection redirect\n";
-                            $natrules .= "{$nordr}rdr {$rdrpass}on {$rdr_if_list} {$address_family} proto {$protocol} from {$srcaddr} to {$dstaddr_reflect}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
+                            $protocol_keyword = !empty($protocol) ? "proto" : "";
+                            $natrules .= "{$nordr}rdr {$rdrpass}on {$rdr_if_list} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr_reflect}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
                             $nat_if_list = array_merge(array($natif), $nat_if_list);
                         }
                     }
@@ -3424,4 +3426,22 @@ function default_state_size()
     $max_states = (int) ($physmem/10)*1000;
 
     return $max_states;
+}
+
+function get_protocols()
+{
+    $protocols = array("any", "TCP", "UDP", "TCP/UDP", "ICMP", "ESP", "AH", "GRE", "IGMP", "PIM", "OSPF");
+
+    foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
+        if (substr($line,0, 1) != "#") {
+            $parts = preg_split('/\s+/', $line);
+            if (count($parts) >= 4 && $parts[1] > 0) {
+                $protocol = trim(strtoupper($parts[0]));
+                if (!in_array($protocol, $protocols)) {
+                    $protocols[] = $protocol;
+                }
+            }
+        }
+    }
+    return $protocols;
 }

@@ -30,7 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
-
+require_once("filter.inc");
 
 /**
  * build array with interface options for this form
@@ -487,9 +487,9 @@ include("head.inc");
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php                foreach (array("any" => gettext("any"), "TCP" => gettext("TCP"), "UDP" => gettext("UDP"), "TCP/UDP" => gettext("TCP/UDP"), "ICMP" => gettext("ICMP"), "ESP" => gettext("ESP"), "AH" => gettext("AH"), "GRE" => gettext("GRE"), "IGMP" => gettext("IGMP"), "PIM" => gettext("PIM"), " OSPF" => gettext("OSPF")) as $proto => $proto_translated):
+<?php                foreach (get_protocols() as $proto):
 ?>
-              <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>><?=$proto_translated?></option>
+              <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>><?=$proto;?></option>
 <?php                endforeach; ?>
               </select>
                     </div>

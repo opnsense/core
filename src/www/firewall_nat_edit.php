@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
+require_once("filter.inc");
 
 /**
  * build array with interface options for this form
@@ -278,7 +279,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent = array();
 
         // 1-on-1 copy
-        $natent['protocol'] = $pconfig['protocol'];
+        if ($pconfig['protocol'] != 'any') {
+            $natent['protocol'] = $pconfig['protocol'];
+        }
         $natent['interface'] = $pconfig['interface'];
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
         $natent['descr'] = $pconfig['descr'];
@@ -368,9 +371,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $pconfig['srcbeginport'], $pconfig['srcendport']);
 
             // Update interface, protocol and destination
-            $filterent['interface'] = $pconfig['interface'];
-            $filterent['protocol'] = $pconfig['protocol'];
-            $filterent['ipprotocol'] = $pconfig['ipprotocol'];
+            $filterent['interface'] = $natent['interface'];
+            if (!empty($natent['protocol'])) {
+                $filterent['protocol'] = $natent['protocol'];
+            } elseif (isset($filterent['protocol'])) {
+                unset($filterent['protocol']);
+            }
+            $filterent['ipprotocol'] = $natent['ipprotocol'];
             if (!isset($filterent['destination'])) {
                 $filterent['destination'] = array();
             }
@@ -618,7 +625,7 @@ $( document ).ready(function() {
                   <td>
                     <div class="input-group">
                       <select id="proto" name="protocol" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-<?php                foreach (explode(" ", "TCP UDP TCP/UDP ICMP ESP AH GRE IGMP PIM OSPF") as $proto):
+<?php                foreach (get_protocols() as $proto):
 ?>
               <option value="<?=strtolower($proto);?>" <?= strtolower($proto) == $pconfig['protocol'] ? "selected=\"selected\"" : ""; ?>>
                           <?=$proto;?>
