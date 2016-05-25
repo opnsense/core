@@ -43,8 +43,6 @@ function default_table_entries_size()
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
-    $pconfig['ipv6nat_enable'] = isset($config['diag']['ipv6nat']['enable']);
-    $pconfig['ipv6nat_ipaddr'] = isset($config['diag']['ipv6nat']['ipaddr']) ? $config['diag']['ipv6nat']['ipaddr']:"" ;
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
     $pconfig['scrubnodf'] = !empty($config['system']['scrubnodf']);
     $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
@@ -82,10 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
 
     /* input validation */
-    if (!empty($pconfig['ipv6nat_enable']) && !is_ipaddr($_POST['ipv6nat_ipaddr'])) {
-        $input_errors[] = gettext("You must specify an IP address to NAT IPv6 packets.");
-    }
-
     if ((empty($pconfig['adaptivestart']) && !empty($pconfig['adaptiveend'])) || (!empty($pconfig['adaptivestart']) && empty($pconfig['adaptiveend']))) {
         $input_errors[] = gettext("The Firewall Adaptive values must be set together.");
     }
@@ -119,14 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['srctrack'] = $pconfig['srctrack'];
         } elseif (isset($config['system']['srctrack'])) {
             unset($config['system']['srctrack']);
-        }
-
-        if (!empty($pconfig['ipv6nat_enable'])) {
-            $config['diag']['ipv6nat'] = array();
-            $config['diag']['ipv6nat']['enable'] = true;
-            $config['diag']['ipv6nat']['ipaddr'] = $_POST['ipv6nat_ipaddr'];
-        } elseif (isset($config['diag']['ipv6nat'])) {
-            unset($config['diag']['ipv6nat']);
         }
 
         if (!empty($pconfig['ipv6allow'])) {
@@ -270,28 +256,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
-
 ?>
 
 <body>
 <?php include("fbegin.inc"); ?>
-
-  <script type="text/javascript">
-  //<![CDATA[
-  function enable_change(enable_over) {
-    if (document.iform.ipv6nat_enable.checked || enable_over) {
-        document.iform.ipv6nat_ipaddr.disabled = 0;
-    } else {
-      document.iform.ipv6nat_ipaddr.disabled = 1;
-    }
-  }
-
-  $( document ).ready(function() {
-    enable_change(false);
-  });
-  //]]>
-  </script>
-
   <!-- row -->
 <section class="page-content-main">
   <div class="container-fluid">
@@ -324,21 +292,6 @@ include("head.inc");
                       <?=gettext("All IPv6 traffic will be blocked by the firewall unless this box is checked."); ?><br />
                       <?=gettext("NOTE: This does not disable any IPv6 features on the firewall, it only blocks traffic."); ?><br />
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_ipv6nat_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 over IPv4 Tunneling"); ?></td>
-                  <td>
-                    <input name="ipv6nat_enable" type="checkbox" id="ipv6nat_enable" value="yes" <?=!empty($pconfig['ipv6nat_enable']) ? "checked=\"checked\"" : "";?> onclick="enable_change(false)" />
-                    <strong><?=gettext("Enable IPv4 NAT encapsulation of IPv6 packets"); ?></strong><br />
-                    <div class="hidden" for="help_for_ipv6nat_enable">
-                      <?=gettext("This provides an RFC 2893 compatibility mechanism ".
-                                          "that can be used to tunneling IPv6 packets over IPv4 ".
-                                          "routing infrastructures. If enabled, don't forget to ".
-                                          "add a firewall rule to permit IPv6 packets."); ?>
-                    </div>
-                    <?=gettext("IP address"); ?>&nbsp;:&nbsp;
-                    <input name="ipv6nat_ipaddr" type="text" class="formfld unknown" id="ipv6nat_ipaddr" size="20" value="<?=$pconfig['ipv6nat_ipaddr'];?>" />
                   </td>
                 </tr>
 <?php           if (count($config['interfaces']) > 1): ?>
