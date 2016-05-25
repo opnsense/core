@@ -49,7 +49,7 @@ function plugins_services()
  * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
  *
  */
-function plugins_register_interfaces()
+function plugins_interfaces()
 {
     global $config;
     $changed_interfaces = array();
