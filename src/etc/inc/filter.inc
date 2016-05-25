@@ -1642,15 +1642,6 @@ function filter_nat_rules_generate(&$FilterIflist)
     $natrules .= "\n# Load balancing\n";
     $natrules .= "rdr-anchor \"relayd/*\"\n";
 
-    /* DIAG: add ipv6 NAT, if requested */
-    if (isset($config['diag']['ipv6nat']['enable']) &&
-      is_ipaddr($config['diag']['ipv6nat']['ipaddr']) &&
-      is_array($FilterIflist['wan'])) {
-        /* XXX: FIX ME!   IPV6 */
-        $natrules .= "rdr on \${$FilterIflist['wan']['descr']} proto ipv6 from any to any -> {$config['diag']['ipv6nat']['ipaddr']}\n";
-    }
-
-
     // prevent redirection on ports with "lock out" protection
     if (!isset($config['system']['webgui']['noantilockout'])) {
         $alports = filter_get_antilockout_ports();
