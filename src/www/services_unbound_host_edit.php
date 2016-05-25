@@ -109,8 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $hostent = array();
         $hostent['host'] = $pconfig['host'];
         $hostent['domain'] = $pconfig['domain'];
-        /* Destinguish between A and AAAA by parsing the passed IP address */
-        $hostent['rr'] = $pconfig['rr'] == "A" && is_ipaddrv6($pconfig['ip']) ? "AAA" : $pconfig['rr'];
+        /* distinguish between A and AAAA by parsing the passed IP address */
+        $hostent['rr'] = ($pconfig['rr'] == 'A' && is_ipaddrv6($pconfig['ip'])) ? 'AAAA' : $pconfig['rr'];
         $hostent['ip'] = $pconfig['ip'];
         $hostent['mxprio'] = $pconfig['mxprio'];
         $hostent['mx'] = $pconfig['mx'];
