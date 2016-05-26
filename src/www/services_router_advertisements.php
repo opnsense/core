@@ -150,8 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
         services_radvd_configure();
-        get_std_save_message();
-        header("Location: services_router_advertisements.php?if={$if}");
+        $savemsg = get_std_save_message();
         exit;
     }
 }
