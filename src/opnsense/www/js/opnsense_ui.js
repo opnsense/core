@@ -138,17 +138,15 @@ function mapDataToFormUI(data_get_map) {
  */
 function updateServiceStatusUI(status) {
 
-    var status_html = '';
+    var status_html = '<span class="glyphicon glyphicon-play btn ';
 
     if (status == "running") {
-        status_html += '<span class="btn btn-success">' ;
+        status_html += 'btn-success' ;
     } else if (status == "stopped") {
-        status_html += '<span class="btn btn-danger">' ;
-    } else {
-        status_html += '<span class="btn">' ;
+        status_html += 'btn-danger' ;
     }
 
-    status_html += '<span class="glyphicon glyphicon-play"  data-placement="bottom"></span> </span>&nbsp;';
+    status_html += '"></span>';
 
     $('#service_status_container').html(status_html);
 }
