@@ -409,7 +409,7 @@ include("head.inc");
                   </thead>
                   <tbody>
 <?php
-                  foreach ($config['interfaces'] as $ifname => $iface):?>
+                  foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $iface):?>
                       <tr>
                         <td>
                           <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=!empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);?></span></u></strong>
