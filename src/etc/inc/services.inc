@@ -2354,10 +2354,8 @@ function configure_cron()
 
         /* PHP retains the index, can iterate all and unset */
         foreach ($config['cron']['item'] as $item) {
-            foreach ($obsoletes as $obsolete) {
-                unset($config['cron']['item'][$index]);
-                $flush = true;
-            }
+            unset($config['cron']['item'][$index]);
+            $flush = true;
             $index++;
         }
 
