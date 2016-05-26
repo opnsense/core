@@ -62,10 +62,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // defaults
     if (empty($pconfig['ramininterval'])) {
-        $pconfig['ramininterval'] = 225;
+        $pconfig['ramininterval'] = 200;
     }
     if (empty($pconfig['ramaxinterval'])) {
-        $pconfig['ramaxinterval'] = 300;
+        $pconfig['ramaxinterval'] = 600;
     }
 
     // arrays
@@ -107,11 +107,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (!is_numericint($pconfig['ramaxinterval']) || $pconfig['ramaxnterval'] < 4 || $pconfig['ramaxinterval'] > 1800) {
+        $input_errors[] = gettext(sprintf('Maximum interval must be between %s and %s seconds.', 4, 1800));
+    // chain this validation, we use the former value for calculation */
+    } elseif (!is_numericint($pconfig['ramininterval']) || $pconfig['ramininterval'] < 3 || $pconfig['ramininterval'] > int($pconfig['ramaxinterval'] * 0.75)) {
+        $input_errors[] = gettext(sprintf('Minimum interval must be between %s and %s seconds.', 3, int($pconfig['ramaxinterval'] * 0.75)));
+    }
+
     if (count($input_errors) == 0) {
         if (!is_array($config['dhcpdv6'][$if])) {
             $config['dhcpdv6'][$if] = array();
         }
-
 
         $config['dhcpdv6'][$if]['ramode'] = $pconfig['ramode'];
         $config['dhcpdv6'][$if]['rapriority'] = $pconfig['rapriority'];
