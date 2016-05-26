@@ -151,7 +151,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         services_radvd_configure();
         $savemsg = get_std_save_message();
-        exit;
     }
 }
 
