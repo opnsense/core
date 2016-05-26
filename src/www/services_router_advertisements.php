@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if (!is_numericint($pconfig['ramaxinterval']) || $pconfig['ramaxnterval'] < 4 || $pconfig['ramaxinterval'] > 1800) {
+    if (!is_numericint($pconfig['ramaxinterval']) || $pconfig['ramaxinterval'] < 4 || $pconfig['ramaxinterval'] > 1800) {
         $input_errors[] = gettext(sprintf('Maximum interval must be between %s and %s seconds.', 4, 1800));
     // chain this validation, we use the former value for calculation */
     } elseif (!is_numericint($pconfig['ramininterval']) || $pconfig['ramininterval'] < 3 || $pconfig['ramininterval'] > int($pconfig['ramaxinterval'] * 0.75)) {
