@@ -33,7 +33,7 @@ function traffic_api()
     $temp = gettimeofday();
     $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
     // collect user friendly interface names
-    foreach ($config['interfaces'] as $interfaceKey => $interfaceData) {
+    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $interfaceKey => $interfaceData) {
         if (array_key_exists($interfaceData['if'], $result['interfaces'])) {
             $result['interfaces'][$interfaceData['if']]['name'] = !empty($interfaceData['descr']) ? $interfaceData['descr'] : $interfaceKey;
         }

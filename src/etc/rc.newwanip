@@ -163,7 +163,7 @@ if (isset($config['interfaces'][$interface]['ipaddrv6'])) {
 if(isset($config['gifs']['gif']) && is_array($config['gifs']['gif'])){
     foreach($config['gifs']['gif'] as $gif) {
         if($gif['if'] == $interface) {
-            foreach($config['interfaces'] as $ifname => $ifparent) {
+            foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifparent) {
                 if(($ifparent['if'] == $gif['gifif']) && (isset($ifparent['enable']))) {
                   $gif['gifif'] = interface_gif_configure($gif);
                   $confif = convert_real_interface_to_friendly_interface_name($gif['gifif']);

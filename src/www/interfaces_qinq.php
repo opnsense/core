@@ -32,7 +32,7 @@ require_once("interfaces.inc");
 
 function qinq_inuse($qinq_intf) {
     global $config;
-    foreach ($config['interfaces'] as $if => $intf) {
+    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $intf) {
         if ($intf['if'] == $qinq_intf) {
             return true;
         }

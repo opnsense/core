@@ -51,7 +51,7 @@ function dhcp_clean_leases()
 
     /* Build list of static MACs */
     $staticmacs = array();
-    foreach($config['interfaces'] as $ifname => $ifarr) {
+    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
         if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
                 $staticmacs[] = $static['mac'];
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     /* If no interface is provided, choose first one from interfaces */
     if (!isset($if)) {
-        foreach ($config['interfaces'] as $if_id => $intf) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
             if (!empty($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
                 $if = $if_id;
                 break;
@@ -675,7 +675,7 @@ include("head.inc");
 <?php
             /* active tabs */
             $tab_array = array();
-            foreach ($config['interfaces'] as $if_id => $intf) {
+            foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
                 if (isset($intf['enable']) && is_ipaddrv4($intf['ipaddr'])) {
                     $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
                     if ($if_id == $if) {

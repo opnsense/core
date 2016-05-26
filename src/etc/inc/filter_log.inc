@@ -41,7 +41,7 @@ function conv_log_interface_names()
     $interface_names['enc0'] = gettext("IPsec");
 
     if (!empty($config['interfaces'])) {
-        foreach ($config['interfaces'] as $intfkey => $interface) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $intfkey => $interface) {
             $interface_names[$interface['if']] = !empty($interface['descr']) ? $interface['descr'] : $intfkey;
         }
     }

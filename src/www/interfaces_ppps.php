@@ -33,7 +33,7 @@ require_once("interfaces.inc");
 function ppp_inuse($ppp_intf) {
     global $config;
     if (isset($config['ppps']['ppp']) && !is_array($config['ppps']['ppp'])) {
-        foreach ($config['interfaces'] as $intf) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $intf) {
             if ($intf['if'] == $ppp_intf) {
                 return true;
             }

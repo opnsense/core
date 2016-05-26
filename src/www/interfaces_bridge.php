@@ -39,8 +39,7 @@ if (!isset($config['bridges']['bridged']) || !is_array($config['bridges']['bridg
 
 
 function bridge_inuse($bridge_if) {
-    global $config;
-    foreach ($config['interfaces'] as $if => $intf) {
+    foreach (legacy_config_get_interfaces() as $if => $intf) {
         if ($intf['if'] == $bridge_if) {
             return true;
         }

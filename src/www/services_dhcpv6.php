@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           "The DHCPv6 Server can only be enabled on interfaces configured with static " .
           "IP addresses. Only interfaces configured with a static IP will be shown."
         );
-        foreach ($config['interfaces'] as $if_id => $intf) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
             if (!empty($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($intf['ipaddrv6'])) {
                 $if = $if_id;
                 break;
@@ -443,7 +443,7 @@ include("head.inc");
 <?php
         /* active tabs */
         $tab_array_main = array();
-        foreach ($config['interfaces'] as $if_id => $intf) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
             if (isset($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6'])) {
                 $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
                 if ($if_id == $if) {

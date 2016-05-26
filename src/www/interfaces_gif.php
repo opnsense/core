@@ -31,8 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
 function gif_inuse($gif_intf) {
-    global $config;
-    foreach ($config['interfaces'] as $if => $intf) {
+    foreach (legacy_config_get_interfaces() as $if => $intf) {
         if ($intf['if'] == $gif_intf) {
             return true;
         }

@@ -1066,7 +1066,7 @@ function is_dhcpv6_server_enabled()
     global $config;
 
     if (is_array($config['interfaces'])) {
-        foreach ($config['interfaces'] as $ifcfg) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifcfg) {
             if (isset($ifcfg['enable']) && !empty($ifcfg['track6-interface'])) {
                 return true;
             }

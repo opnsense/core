@@ -227,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         asort($pools);
     }
 
-    foreach($config['interfaces'] as $ifname => $ifarr) {
+    foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifarr) {
         if (isset($config['dhcpd'][$ifname]['staticmap'])) {
             foreach($config['dhcpd'][$ifname]['staticmap'] as $static) {
                 $slease = array();

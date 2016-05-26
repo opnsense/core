@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (is_array($config['interfaces'])) {
-        foreach ($config['interfaces'] as $if) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if) {
             if (is_ipaddrv4($pconfig['network'])
                 && isset($if['ipaddr']) && isset($if['subnet'])
                 && is_ipaddrv4($if['ipaddr']) && is_numeric($if['subnet'])

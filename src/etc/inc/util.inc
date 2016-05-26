@@ -732,7 +732,7 @@ function get_configured_interface_list($only_opt = false, $withdisabled = false)
 
     /* if list */
     if (isset($config['interfaces'])) {
-        foreach($config['interfaces'] as $if => $ifdetail) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $ifdetail) {
             if ($only_opt && ($if == "wan" || $if == "lan")) {
                 continue;
             }
@@ -753,7 +753,7 @@ function get_configured_interface_list_by_realif ($only_opt = false, $withdisabl
     $iflist = array();
     /* if list */
     if (isset($config['interfaces'])) {
-        foreach($config['interfaces'] as $if => $ifdetail) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $ifdetail) {
             if ($only_opt && ($if == "wan" || $if == "lan")) {
                 continue;
             }
@@ -776,17 +776,13 @@ function get_configured_interface_with_descr($only_opt = false, $withdisabled = 
     $iflist = array();
     /* if list */
     if (isset($config['interfaces'])) {
-        foreach($config['interfaces'] as $if => $ifdetail) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if => $ifdetail) {
             if ($only_opt && ($if == "wan" || $if == "lan")) {
                 continue;
             }
 
             if (isset($ifdetail['enable']) || $withdisabled == true) {
-                if (empty($ifdetail['descr'])) {
-                    $iflist[$if] = strtoupper($if);
-                } else {
-                    $iflist[$if] = strtoupper($ifdetail['descr']);
-                }
+                $iflist[$if] = strtoupper($ifdetail['descr']);
             }
         }
     }
@@ -925,7 +921,7 @@ function get_interface_list($only_active = false)
         );
 
         if (isset($config['interfaces'])) {
-            foreach($config['interfaces'] as $name => $int) {
+            foreach (legacy_config_get_interfaces(array("virtual" => false)) as $name => $int) {
                 if ($int['if'] == $ifname) {
                     $toput['friendly'] = $name;
                     break;

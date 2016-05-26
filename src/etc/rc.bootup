@@ -55,7 +55,7 @@ function is_interface_mismatch()
 	$i = 0;
 
 	if (isset($config['interfaces'])) {
-		foreach ($config['interfaces'] as $ifname => $ifcfg) {
+		foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
 			if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
 				/* Do not check these interfaces */
 				$i++;

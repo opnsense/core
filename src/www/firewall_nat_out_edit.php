@@ -38,8 +38,8 @@ require_once("filter.inc");
 function formInterfaces() {
     global $config;
     $interfaces = array();
-    foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc) {
-        $interfaces[$if] = $ifdesc;
+    foreach (legacy_config_get_interfaces() as $if => $ifdata) {
+        $interfaces[$if] = $ifdata['descr'];
     }
 
     if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server") {

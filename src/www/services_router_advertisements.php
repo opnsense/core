@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         $savemsg = "<p><b>" . gettext("The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses") . ".</b></p>" .
              "<p><b>" . gettext("Only interfaces configured with a static IP will be shown") . ".</b></p>";
-         foreach ($config['interfaces'] as $if_id => $intf) {
+         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
              if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($oc['ipaddrv6'])) {
                  $if = $if_id;
                  break;
@@ -173,7 +173,7 @@ include("head.inc");
 <?php
           /* active tabs */
           $tab_array_main = array();
-          foreach ($config['interfaces'] as $if_id => $intf) {
+          foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
               if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6'])) {
                   $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
                   if ($if_id == $if) {
