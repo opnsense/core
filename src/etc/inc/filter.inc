@@ -2580,7 +2580,14 @@ EOD;
     }
 
     foreach ($FilterIflist as $on => $oc) {
-      /* block bogon networks via http://www.cymru.com/Documents/bogon-bn-nonagg.txt */
+      /*
+       * Block bogon networks via the following list.  Note that "bogons"
+       * are excluding the four private address ranges for one reason or
+       * another.  They exist in the upstream files but are stripped during
+       * the upgrade stage.
+       *
+       * http://www.cymru.com/Documents/bogon-bn-nonagg.txt
+       */
       if (!isset($config['syslog']['nologbogons'])) {
           $bogonlog = 'log';
       } else {
