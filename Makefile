@@ -213,6 +213,11 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/contrib plist
 	@${MAKE} -C ${.CURDIR}/src plist
 
+metadata: force
+	@${MAKE} DESTDIR=${DESTDIR} scripts
+	@${MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
+	@${MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
+
 package-keywords: force
 	@if [ ! -f /usr/ports/Keywords/sample.ucl ]; then \
 		mkdir -p /usr/ports/Keywords; \
@@ -231,10 +236,8 @@ package: force
 		exit 1; \
 	fi
 	@rm -rf ${WRKSRC} ${PKGDIR}
+	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
-	@${MAKE} DESTDIR=${WRKSRC} scripts
-	@${MAKE} DESTDIR=${WRKSRC} manifest > ${WRKSRC}/+MANIFEST
-	@${MAKE} DESTDIR=${WRKSRC} plist > ${WRKSRC}/plist
 	@${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
 	@echo -n "Sucessfully built "
