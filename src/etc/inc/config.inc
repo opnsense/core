@@ -73,6 +73,7 @@ function legacy_config_get_interfaces($filters = array())
                 }
             }
             if ($iface_match) {
+                $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
                 $interfaces[$ifname] = $iface;
             }
         }
