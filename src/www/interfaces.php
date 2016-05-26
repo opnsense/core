@@ -1896,7 +1896,7 @@ include("head.inc");
                                 endforeach;
                               endif;?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?=gettext("add a new one.");?>"  data-toggle="tooltip" data-placement="right" ><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?=gettext("add a new one.");?>"  data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span></button>
                             <div class="hidden" id="addgateway">
                               <br/>
                               <table class="table table-striped table-condensed">
@@ -2476,7 +2476,7 @@ include("head.inc");
                                 endforeach;
                               endif;?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?=gettext("add a new one.");?>"  data-toggle="tooltip" data-placement="right" ><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?=gettext("add a new one.");?>"  data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span></button>
                             <div class="hidden" for="help_for_gatewayv6">
                               <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
                               <?=gettext("On local LANs the upstream gateway should be \"none\"."); ?>

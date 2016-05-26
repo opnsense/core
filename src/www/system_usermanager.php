@@ -662,11 +662,11 @@ $( document ).ready(function() {
                             </td>
                             <td class="text-center">
                               <br />
-                              <a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("add groups"); ?>">
+                              <a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add groups"); ?>">
                                   <span class="glyphicon glyphicon-arrow-right"></span>
                               </a>
                               <br /><br />
-                              <a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left"  title="<?=gettext("remove groups"); ?>">
+                              <a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove groups"); ?>">
                                   <span class="glyphicon glyphicon-arrow-left"></span>
                               </a>
                             </td>

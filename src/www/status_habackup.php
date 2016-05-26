@@ -238,7 +238,6 @@ include("head.inc");
                                             data-service_id="<?=!empty($service['id']) ? $service['id'] : "";?>"
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
-                                            data-placement="bottom"
                                             title="<?=sprintf(gettext('Restart %sService'), $service['name']);?>"
                                             class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-refresh">
                                         </span>
@@ -247,7 +246,6 @@ include("head.inc");
                                             data-service_id="<?=!empty($service['id']) ? $service['id'] : "";?>"
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
-                                            data-placement="bottom"
                                             title="<?=sprintf(gettext('Stop %sService'), $service['name']);?>"
                                             class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-stop">
                                         </span>
@@ -258,7 +256,6 @@ include("head.inc");
                                             data-service_id="<?=!empty($service['id']) ? $service['id'] : "";?>"
                                             data-service_name="<?=$service['name'];?>"
                                             data-toggle="tooltip"
-                                            data-placement="bottom"
                                             title="<?=sprintf(gettext('Start %sService'), $service['name']);?>"
                                             class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-play">
                                         </span>
@@ -298,7 +295,6 @@ include("head.inc");
                                             data-service_action="restart_all"
                                             data-service_name="all"
                                             data-toggle="tooltip"
-                                            data-placement="bottom"
                                             title="<?=gettext('Restart all services');?>"
                                             class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-refresh">
                                         </span>

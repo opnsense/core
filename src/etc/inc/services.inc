@@ -2820,10 +2820,10 @@ function get_service_status_icon($service, $withtext = true, $smallicon = false)
     $output = "";
     if (get_service_status($service)) {
         $statustext = gettext("Running");
-        $output .= '<span class="btn btn-success"><span class="glyphicon glyphicon-play" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+        $output .= '<span class="btn btn-success glyphicon glyphicon-play" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip"></span>' . PHP_EOL;
     } else {
         $statustext = gettext("Stopped") ;
-        $output .= '<span class="btn btn-danger"><span class="glyphicon glyphicon-stop" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip" data-placement="bottom" ></span></span>&nbsp;';
+        $output .= '<span class="btn btn-danger glyphicon glyphicon-stop" title="'.sprintf(gettext('%s Service is'),$service['name']).' '.$statustext.'" data-toggle="tooltip"></span>' . PHP_EOL;
     }
     return $output;
 }
@@ -2834,8 +2834,7 @@ function get_service_control_links($service, $addname = false)
     $service_title = $addname ? $service['name'] . ' ' : '';
 
     $template  = '<span data-service_id="%s" data-service_action="%s" data-service="%s" ';
-    $template .= 'data-toggle="tooltip" data-placement="bottom" title="%s" ';
-    $template .= 'class="btn btn-default %s %s"></span>' . PHP_EOL;
+    $template .= 'data-toggle="tooltip" title="%s" class="btn btn-default %s %s"></span>' . PHP_EOL;
 
     $output = '';
 

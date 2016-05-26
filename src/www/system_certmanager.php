@@ -1273,19 +1273,19 @@ $( document ).ready(function() {
 <?php
                 endif; ?>
 
-                  <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" data-placement="left" title="<?=gettext("show certificate info");?>">
+                  <a href="#" class="btn btn-default btn-xs act_info" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=gettext("show certificate info");?>">
                     <span class="glyphicon glyphicon-info-sign"></span>
                   </a>
 
-                  <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca");?>">
+                  <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca");?>">
                       <span class="glyphicon glyphicon-download"></span>
                   </a>
 
-                  <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export key");?>">
+                  <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export key");?>">
                     <span class="glyphicon glyphicon-download"></span>
                   </a>
 
-                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
+                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
                       <span class="glyphicon glyphicon-download"></span>
                   </a>
 <?php
@@ -1297,7 +1297,7 @@ $( document ).ready(function() {
 <?php
                   endif;
                   if (isset($cert['csr'])) :?>
-                  <a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="<?=gettext("update csr");?>">
+                  <a href="system_certmanager.php?act=csr&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("update csr");?>">
                     <span class="glyphicon glyphicon-edit"></span>
                   </a>
 <?php
