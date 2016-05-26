@@ -53,6 +53,7 @@ function plugins_interfaces()
 {
     global $config;
     $changed_interfaces = array();
+    $registered_interfaces = array();
 
     // register / update interfaces
     foreach (plugin_scan() as $name => $path) {
@@ -61,6 +62,9 @@ function plugins_interfaces()
         if (function_exists($func)) {
             foreach ($func() as $intf_ref => $intf_data) {
                 if (is_array($intf_data)) {
+                    if (!in_array($intf_ref, $registered_interfaces)) {
+                        $registered_interfaces[] = $intf_ref;
+                    }
                     if (empty($config['interfaces'][$intf_ref])) {
                         $config['interfaces'][$intf_ref] = array();
                     }
@@ -82,7 +86,7 @@ function plugins_interfaces()
 
     // cleanup registrations
     foreach ($config['interfaces'] as $intf => $intf_data) {
-        if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $changed_interfaces)) {
+        if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $registered_interfaces)) {
             $changed_interfaces[] = $intf;
             unset($config['interfaces'][$intf]);
         }
