@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
          }
     }
     $pconfig = array();
-    $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'radomainsearchlist', 'subnets');
+    $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist', 'subnets');
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if][$fieldname];
@@ -56,6 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
+    if (empty($config['ranosend'])) {
+        $config['rasend'] = true;
+    }
+
+    // defaults
+    if (empty($pconfig['ramininterval'])) {
+        $pconfig['ramininterval'] = 225;
+    }
+    if (empty($pconfig['ramaxinterval'])) {
+        $pconfig['ramaxinterval'] = 300;
+    }
+
     // arrays
     $pconfig['radns1'] = !empty($config['dhcpdv6'][$if]['radnsserver'][0]) ? $config['dhcpdv6'][$if]['radnsserver'][0] : null;
     $pconfig['radns2'] = !empty($config['dhcpdv6'][$if]['radnsserver'][1]) ? $config['dhcpdv6'][$if]['radnsserver'][1] : null;
@@ -104,6 +116,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['dhcpdv6'][$if]['ramode'] = $pconfig['ramode'];
         $config['dhcpdv6'][$if]['rapriority'] = $pconfig['rapriority'];
         $config['dhcpdv6'][$if]['rainterface'] = $pconfig['rainterface'];
+        $config['dhcpdv6'][$if]['ramininterval'] = $pconfig['ramininterval'];
+        $config['dhcpdv6'][$if]['ramaxinterval'] = $pconfig['ramaxinterval'];
+
+        # flipped in GUI on purpose
+        if (empty($pconfig['rasend'])) {
+            $config['dhcpdv6'][$if]['ranosend'] = true;
+        } elseif (isset($config['dhcpdv6'][$if]['ranosend'])) {
+            unset($config['dhcpdv6'][$if]['ranosend']);
+        }
 
         $config['dhcpdv6'][$if]['radomainsearchlist'] = $pconfig['radomainsearchlist'];
         $config['dhcpdv6'][$if]['radnsserver'] = array();
@@ -350,6 +371,33 @@ include("head.inc");
                       <input name="radomainsearchlist" type="text" id="radomainsearchlist" size="28" value="<?=$pconfig['radomainsearchlist'];?>" />
                       <div class="hidden" for="help_for_radomainsearchlist">
                         <?=gettext("The RA server can optionally provide a domain search list. Use the semicolon character as separator");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_rasend" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('RA Sending') ?></td>
+                    <td>
+                      <input id="rasend" name="rasend" type="checkbox" value="yes" <?= !empty($pconfig['rasend']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" for="help_for_rasend">
+                        <?= gettext('Enable the periodic sending of router advertisements and responding to router solicitations.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_ramininterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Minimum Interval') ?></td>
+                    <td>
+                      <input name="ramininterval" type="text" id="ramininterval" size="28" value="<?=$pconfig['ramininterval'];?>" />
+                      <div class="hidden" for="help_for_ramininterval">
+                        <?= gettext('The minimum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.') ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_ramaxinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Maximum Interval') ?></td>
+                    <td>
+                      <input name="ramaxinterval" type="text" id="ramaxinterval" size="28" value="<?=$pconfig['ramaxinterval'];?>" />
+                      <div class="hidden" for="help_for_ramaxinterval">
+                        <?= gettext('The maximum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.') ?>
                       </div>
                     </td>
                   </tr>
