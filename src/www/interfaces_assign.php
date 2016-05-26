@@ -412,7 +412,7 @@ include("head.inc");
                   foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $iface):?>
                       <tr>
                         <td>
-                          <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=!empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);?></span></u></strong>
+                          <strong><u><span onclick="location.href='/interfaces.php?if=<?=$ifname;?>'" style="cursor: pointer;"><?=$iface['descr'];?></span></u></strong>
                         </td>
                         <td>
                           <select name="<?=$ifname;?>" id="<?=$ifname;?>">
