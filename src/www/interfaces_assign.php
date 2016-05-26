@@ -133,8 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_x']) && isset($_POST['if_add'])) {
         // ** Add new **
         // if interface is already used, redirect.
-        foreach ($config['interfaces'] as $ifname => $ifdata) {
-            if ($ifdata['if'] == $_PORT['if_add']) {
+        foreach (legacy_config_get_interfaces() as $ifname => $ifdata) {
+            if ($ifdata['if'] == $_POST['if_add']) {
                 header("Location: interfaces_assign.php");
                 exit;
             }
@@ -341,7 +341,7 @@ legacy_html_escape_form_data($interfaces);
 $unused_interfaces= array();
 foreach ($interfaces as $portname => $portinfo) {
     $portused = false;
-    foreach ($config['interfaces'] as $ifname => $ifdata) {
+    foreach (legacy_config_get_interfaces() as $ifname => $ifdata) {
         if ($ifdata['if'] == $portname) {
             $portused = true;
             break;
