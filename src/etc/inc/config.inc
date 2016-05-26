@@ -46,3 +46,36 @@ if (!$timezone) {
 }
 
 date_default_timezone_set($timezone);
+
+/**
+ * find list of registered interfaces
+ * @param array $filters list of filters to apply
+ * @return array interfaces
+ */
+function legacy_config_get_interfaces($filters = array())
+{
+    global $config;
+    $interfaces = array();
+    if (isset($config['interfaces'])) {
+        foreach ($config['interfaces'] as $ifname => $iface) {
+            // undo stupid listags() turning our item into a new array, preventing certain names to be used as interface.
+            // see src/etc/inc/xmlparse.inc
+            if (isset($iface[0])) {
+                $iface = $iface[0];
+            }
+            // apply filters
+            $iface_match = true;
+            foreach ($filters as $filter_key => $filter_value) {
+                $field_value = isset($iface[$filter_key]) ? $iface[$filter_key] : false;
+                if ($field_value != $filter_value) {
+                    $iface_match = false;
+                    break;
+                }
+            }
+            if ($iface_match) {
+                $interfaces[$ifname] = $iface;
+            }
+        }
+    }
+    return $interfaces;
+}
