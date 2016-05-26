@@ -2344,25 +2344,8 @@ function configure_cron()
 {
     global $config;
 
-    $obsoletes = array(
-        '/usr/local/etc/rc.backup_dhcpleases',
-        '/usr/local/etc/rc.backup_netflow',
-        '/usr/local/etc/rc.backup_rrd',
-        '/usr/local/etc/rc.filter_configure_sync',
-        '/usr/local/etc/rc.dyndns.update',
-        '/usr/local/etc/rc.update_bogons',
-        '/usr/local/etc/rc.update_urltables',
-        '/usr/local/opnsense/scripts/remote_backup.php',
-        '/usr/local/sbin/expiretable -v -t 3600 sshlockout',
-        '/usr/local/sbin/expiretable -v -t 3600 virusprot',
-        'adjkerntz -a',
-        /* old config migration for extra care: */
-        'checkreload.sh',
-        'newsyslog',
-    );
-
     /*
-     * Strip old cron jobs that we no longer save explicitly.
+     * Strip the cron jobs that we no longer save explicitly.
      * This can be safely removed on our final road to 17.1.
      */
     if (isset($config['cron']['item'])) {
@@ -2372,10 +2355,8 @@ function configure_cron()
         /* PHP retains the index, can iterate all and unset */
         foreach ($config['cron']['item'] as $item) {
             foreach ($obsoletes as $obsolete) {
-                if ($item['command'] === $obsolete) {
-                    unset($config['cron']['item'][$index]);
-                    $flush = true;
-                }
+                unset($config['cron']['item'][$index]);
+                $flush = true;
             }
             $index++;
         }
@@ -2456,10 +2437,6 @@ function configure_cron()
     $crontab_contents .= $anchor . "\n";
     $crontab_contents .= '# auto-generated at ' . date('F j, Y, g:i a') . "\n";
     $crontab_contents .= "#\n";
-
-    if (isset($config['cron']['item'])) {
-        $autocron = array_merge($config['cron']['item'], $autocron);
-    }
 
     foreach ($autocron as $item) {
         $crontab_contents .= "{$item['minute']}\t";

@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // plain 1-on-1 copy
     $copy_fields = array('ptpid', 'type', 'username', 'idletimeout', 'uptime', 'descr', 'simpin', 'pin-wait',
-                        'apn', 'apnum', 'phone', 'connect-timeout', 'provider', 'pppoe-reset-type');
+                        'apn', 'apnum', 'phone', 'connect-timeout', 'provider');
     foreach ($copy_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {
             $pconfig[$fieldname] = $a_ppps[$id][$fieldname];
@@ -77,24 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['initstr'] = isset($a_ppps[$id]['initstr']) ? base64_decode($a_ppps[$id]['initstr']) : null;
     $pconfig['null_service'] = (isset($a_ppps[$id]['provider']) && empty($a_ppps[$id]['provider']));
 
-    // init resetpppoe_reset vars
-    $pconfig['pppoe_resetminute'] = null;
-    $pconfig['pppoe_resethour'] = null;
-    $pconfig['pppoe_resetmday'] = null;
-    $pconfig['pppoe_resetmonth'] = null;
-    $pconfig['pppoe_resetwday'] = null;
-    // read resetpppoe_reset vars
-    if (!empty($a_ppps[$id]['pppoe-reset-type'])) {
-        $itemhash = getMPDCRONSettings($a_ppps[$id]['if']);
-        if (!empty($itemhash)) {
-            $cronitem = $itemhash['ITEM'];
-            $pconfig['pppoe_resetminute'] = $cronitem['minute'];
-            $pconfig['pppoe_resethour'] = $cronitem['hour'];
-            $pconfig['pppoe_resetmday'] = $cronitem['mday'];
-            $pconfig['pppoe_resetmonth'] = $cronitem['month'];
-            $pconfig['pppoe_resetwday'] = $cronitem['wday'];
-        }
-    }
     if ($pconfig['ptpid'] == null) {
         $pconfig['ptpid'] = interfaces_ptpid_next();
     }
@@ -154,18 +136,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (($pconfig['idletimeout'] != "") && !is_numericint($pconfig['idletimeout'])) {
         $input_errors[] = gettext("The idle timeout value must be an integer.");
-    }
-
-    if (!empty($pconfig['pppoe-reset-type'])) {
-        if (!empty($pconfig['pppoe_resethour']) && (!is_numericint($pconfig['pppoe_resethour']) || $pconfig['pppoe_resethour'] < 0 || $pconfig['pppoe_resethour']  > 23)) {
-            $input_errors[] = gettext("A valid PPPoE reset hour must be specified (0-23).");
-        }
-        if (!empty($pconfig['pppoe_resetminute']) && (!is_numericint($pconfig['pppoe_resetminute']) || $pconfig['pppoe_resetminute'] < 0 || $pconfig['pppoe_resetminute'] > 59)) {
-            $input_errors[] = gettext("A valid PPPoE reset minute must be specified (0-59).");
-        }
-        if (!empty($pconfig['pppoe_resetdate']) && !is_numeric(str_replace("/", "", $pconfig['pppoe_resetdate']))) {
-            $input_errors[] = gettext("A valid PPPoE reset date must be specified (mm/dd/yyyy).");
-        }
     }
 
     foreach($pconfig['ports'] as $iface_idx => $iface){
@@ -243,9 +213,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 } else {
                     $ppp['provider'] = !empty($pconfig['null_service']);
                 }
-                if (!empty($pconfig['pppoe-reset-type'])) {
-                    $ppp['pppoe-reset-type'] = $pconfig['pppoe-reset-type'];
-                }
                 break;
             case "pptp":
             case "l2tp":
@@ -271,11 +238,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_dir('/var/spool/lock')) {
             mwexec('/bin/mkdir -p /var/spool/lock');
         }
-        /* handle_pppoe_reset is called here because if user changes Link Type from PPPoE to another type we
-           must be able to clear the config data in the <cron> section of config.xml if it exists
-        */
-        // yak... room for improvement here.... (see interfaces.php as well)
-        handle_pppoe_reset($pconfig);
 
         if (isset($id)) {
             $a_ppps[$id] = $ppp;
@@ -284,7 +246,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        configure_cron();
         $iflist = get_configured_interface_with_descr();
         foreach ($iflist as $pppif => $ifdescr) {
           if ($config['interfaces'][$pppif]['if'] == $ppp['if'])
@@ -305,7 +266,7 @@ include("head.inc");
     $(document).ready(function() {
         // change type
         $("#type").change(function(){
-          $('#ppp,#ppp_adv,#pppoe,#pppoe_adv,#ppp_provider,#phone_num,#apn_').hide();
+          $('#ppp,#ppp_adv,#pppoe,#ppp_provider,#phone_num,#apn_').hide();
           $('#ports > [data-type="serial"]').hide();
           $('#ports > [data-type="serial"]').prop('disabled', true);
           $('#ports > [data-type="interface"]').hide();
@@ -333,7 +294,6 @@ include("head.inc");
               break;
             case "pppoe":
               $('#pppoe').show();
-              $('#pppoe_adv').show();
               // fall through to show interface items
             default:
               $('#ports > [data-type="interface"]').show();
@@ -643,81 +603,6 @@ include("head.inc");
               </div>
               <div class="tab-content content-box col-xs-12 __mb" >
                 <div class="table-responsive">
-                  <!-- Advanced PPOE -->
-                  <table class="table table-striped" id="pppoe_adv" style="display:none">
-                    <thead>
-                      <tr style="display:none" class="act_show_advanced">
-                        <th colspan="2"><?= gettext("Advanced Options"); ?></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr style="display:none" class="act_show_advanced">
-                        <td width="22%"><a id="help_for_reset_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic reset");?></td>
-                        <td width="78%">
-                            <select style="vertical-align:top" id="reset_type" name="pppoe-reset-type" class="selectpicker" data-style="btn-default"  onchange="show_reset_settings(this.value);">
-                              <option value=""><?=gettext("Disabled"); ?></option>
-                              <option value="custom" <?=$pconfig['pppoe-reset-type'] == "custom" ? "selected=\"selected\"" : ""; ?>><?=gettext("Custom"); ?></option>
-                              <option value="preset" <?=$pconfig['pppoe-reset-type'] == "preset" ? "selected=\"selected\"" : ""; ?>><?=gettext("Pre-Set"); ?></option>
-                            </select>
-                            <div class="hidden" for="help_for_reset_type">
-                                <?=gettext("Select a reset timing type"); ?>
-                            </div>
-                            <div style="<?=$pconfig['pppoe-reset-type'] != "custom" ? "display: none;" :"";?>" id="pppoecustomwrap">
-                              <hr/>
-                              <input type="text" name="pppoe_resethour" id="pppoe_resethour" value="<?=$pconfig['pppoe_resethour']; ?>" />
-                              <?= gettext("hour (0-23)"); ?><br />
-                              <input type="text" name="pppoe_resetminute"  id="pppoe_resetminute" value="<?=$pconfig['pppoe_resetminute']; ?>" />
-                              <?= gettext("minute (0-59)"); ?><br />
-                              <?php
-                              if (!empty($pconfig['pppoe_resetmday']) && $pconfig['pppoe_resetmday'] <> "*" && $pconfig['pppoe_resetmonth'] <> "*") {
-                                  $pconfig['pppoe_resetdate'] = "{$pconfig['pppoe_resetmonth']}/{$pconfig['pppoe_resetmday']}/" . date("Y");
-                              } elseif (!isset($pconfig['pppoe_resetdate'])) {
-                                  $pconfig['pppoe_resetdate'] = null;
-                              }
-                              ?>
-                              <input name="pppoe_resetdate" type="text"  id="pppoe_resetdate" value="<?=$pconfig['pppoe_resetdate'];?>" />
-                              <?= gettext("reset at a specific date (mm/dd/yyyy)"); ?>
-
-                              <div class="hidden" for="help_for_reset_type">
-                                  <span class="text-warning"><strong><?=gettext("Note:");?></strong></span><br/>
-                                  <?= gettext("If you leave the date field empty, the reset will be executed each day at the time you did specify using the minutes and hour field."); ?>
-                              </div>
-                            </div>
-<?php
-                            if ($pconfig['pppoe-reset-type'] == "preset") {
-                              $resetTime = "{$pconfig['pppoe_resetminute']} {$pconfig['pppoe_resethour']} {$pconfig['pppoe_resetmday']} {$pconfig['pppoe_resetmonth']} {$pconfig['pppoe_resetwday']}";
-                              switch ($resetTime) {
-                                case "0 0 1 * *": // CRON_MONTHLY_PATTERN
-                                  $pconfig['pppoe_monthly'] = true;
-                                  break;
-                                case "0 0 * * 0": // CRON_WEEKLY_PATTERN
-                                  $pconfig['pppoe_weekly'] = true;
-                                  break;
-                                case "0 0 * * *": // CRON_DAILY_PATTERN
-                                  $pconfig['pppoe_daily'] = true;
-                                  break;
-                                case "0 * * * *": //CRON_HOURLY_PATTERN
-                                  $pconfig['pppoe_hourly'] = true;
-                                  break;
-                              }
-                            }?>
-                            <div style="<?=$pconfig['pppoe-reset-type'] != "preset" ? "display: none;" :"";?>"  id="pppoepresetwrap">
-                              <input name="pppoe_pr_preset_val" type="radio" id="pppoe_monthly" value="monthly" <?=!empty($pconfig['pppoe_monthly']) ? "checked=\"checked\"" : ""; ?> />
-                              <?=gettext("reset at each month ('0 0 1 * *')"); ?>
-                              <br />
-                              <input name="pppoe_pr_preset_val" type="radio" id="pppoe_weekly" value="weekly" <?=!empty($pconfig['pppoe_weekly']) ? "checked=\"checked\"" : ""; ?> />
-                              <?=gettext("reset at each week ('0 0 * * 0')"); ?>
-                              <br />
-                              <input name="pppoe_pr_preset_val" type="radio" id="pppoe_daily" value="daily" <?=!empty($pconfig['pppoe_daily']) ? "checked=\"checked\"" : ""; ?> />
-                              <?=gettext("reset at each day ('0 0 * * *')"); ?>
-                              <br />
-                              <input name="pppoe_pr_preset_val" type="radio" id="pppoe_hourly" value="hourly" <?=!empty($pconfig['pppoe_hourly']) ? "checked=\"checked\"" : ""; ?> />
-                              <?=gettext("reset at each hour ('0 * * * *')"); ?>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
                   <!-- Advanced PPP -->
                   <table class="table table-striped" id="ppp_adv" style="display:none">
                     <thead>

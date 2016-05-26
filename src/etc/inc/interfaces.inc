@@ -1408,108 +1408,6 @@ function interfaces_ptpid_next()
     return $ptpid;
 }
 
-function getMPDCRONSettings($pppif)
-{
-    global $config;
-
-    $cron_cmd_file = "/var/etc/pppoe_restart_{$pppif}";
-
-    if (isset($config['cron']['item'])) {
-        foreach ($config['cron']['item'] as $i => $item) {
-            if (stripos($item['command'], $cron_cmd_file) !== false) {
-                return array("ID" => $i, "ITEM" => $item);
-            }
-        }
-    }
-
-    return null;
-}
-
-function handle_pppoe_reset($post_array)
-{
-    global $config;
-
-    $pppif = "{$post_array['type']}{$post_array['ptpid']}";
-    $cron_cmd_file = "/var/etc/pppoe_restart_{$pppif}";
-
-    if (!isset($config['cron']['item']) || !is_array($config['cron']['item'])) {
-        $config['cron']['item'] = array();
-    }
-
-    $itemhash = getMPDCRONSettings($pppif);
-
-    // reset cron items if necessary and return
-    if (empty($post_array['pppoe-reset-type'])) {
-        if (isset($itemhash)) {
-            unset($config['cron']['item'][$itemhash['ID']]);
-        }
-        killbypid('/var/run/cron.pid', 'HUP');
-        return;
-    }
-
-    if (empty($itemhash)) {
-        $itemhash = array();
-    }
-
-    $item = array();
-    if (isset($post_array['pppoe-reset-type']) && $post_array['pppoe-reset-type'] == "custom") {
-        $item['minute'] = $post_array['pppoe_resetminute'];
-        $item['hour'] = $post_array['pppoe_resethour'];
-        if (isset($post_array['pppoe_resetdate']) && $post_array['pppoe_resetdate'] <> "") {
-            $date = explode("/", $post_array['pppoe_resetdate']);
-            $item['mday'] = $date[1];
-            $item['month'] = $date[0];
-        } else {
-            $item['mday'] = "*";
-            $item['month'] = "*";
-        }
-        $item['wday'] = "*";
-        $item['who'] = "root";
-        $item['command'] = $cron_cmd_file;
-    } elseif (isset($post_array['pppoe-reset-type']) && $post_array['pppoe-reset-type'] == "preset") {
-        switch ($post_array['pppoe_pr_preset_val']) {
-            case "monthly":
-                $item['minute'] = "0";
-                $item['hour'] = "0";
-                $item['mday'] = "1";
-                $item['month'] = "*";
-                $item['wday'] = "*";
-                break;
-            case "weekly":
-                $item['minute'] = "0";
-                $item['hour'] = "0";
-                $item['mday'] = "*";
-                $item['month'] = "*";
-                $item['wday'] = "0";
-                break;
-            case "daily":
-                $item['minute'] = "0";
-                $item['hour'] = "0";
-                $item['mday'] = "*";
-                $item['month'] = "*";
-                $item['wday'] = "*";
-                break;
-            case "hourly":
-                $item['minute'] = "0";
-                $item['hour'] = "*";
-                $item['mday'] = "*";
-                $item['month'] = "*";
-                $item['wday'] = "*";
-                break;
-        } // end switch
-        $item['who'] = "root";
-        $item['command'] = $cron_cmd_file;
-    }
-    if (empty($item)) {
-        return;
-    }
-    if (isset($itemhash['ID'])) {
-        $config['cron']['item'][$itemhash['ID']] = $item;
-    } else {
-        $config['cron']['item'][] = $item;
-    }
-}
-
 /*
  * This function can configure PPPoE, MLPPP (PPPoE), PPTP.
  * It writes the mpd config file to /var/etc every time the link is opened.
@@ -1839,14 +1737,6 @@ EOD;
     mwexec("/usr/local/sbin/mpd5 -b -k -d /var/etc -f mpd_{$interface}.conf -p /var/run/" .
         escapeshellarg($ppp['type']) . "_{$interface}.pid -s ppp " . escapeshellarg($ppp['type']) . "client");
 
-    // Check for PPPoE periodic reset request
-    if ($ppp['type'] == "pppoe") {
-        if (!empty($ppp['pppoe-reset-type'])) {
-            interface_setup_pppoe_reset_file($ppp['if'], $interface);
-        } else {
-            interface_setup_pppoe_reset_file($ppp['if']);
-        }
-    }
     /* wait for up to 10 seconds for the interface to appear (ppp(oe)) */
     $i = 0;
     while ($i < 10) {
@@ -4962,26 +4852,6 @@ function is_jumbo_capable($iface)
         return true;
     } else {
         return false;
-    }
-}
-
-function interface_setup_pppoe_reset_file($pppif, $iface = '')
-{
-    $cron_file = "/var/etc/pppoe_restart_{$pppif}";
-
-    if (!empty($iface) && !empty($pppif)) {
-        $cron_cmd = <<<EOD
-#!/bin/sh
-/usr/local/opnsense/service/configd_ctl.py  interface reconfigure {$iface}
-/usr/bin/logger -t {$pppif} "PPPoE periodic reset executed on {$iface}"
-
-EOD;
-
-        @file_put_contents($cron_file, $cron_cmd);
-        chmod($cron_file, 0755);
-        killbypid('/var/run/cron.pid', 'HUP');
-    } else {
-        @unlink($cron_file);
     }
 }
 

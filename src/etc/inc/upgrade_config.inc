@@ -2287,16 +2287,6 @@ function upgrade_063_to_064() {
 				$ppp['ondemand'] = true;
 			if (isset($ifinfo['timeout']))
 				$ppp['idletimeout'] = $ifinfo['timeout'];
-			if (isset($ifinfo['pppoe']['pppoe-reset-type'])){
-				$ppp['pppoe-reset-type'] = $ifinfo['pppoe']['pppoe-reset-type'];
-				if (is_array($config['cron']['item'])) {
-					for ($i = 0; $i < count($config['cron']['item']); $i++) {
-						$item = $config['cron']['item'][$i];
-						if (strpos($item['command'], "/conf/pppoe{$ifname}restart") !== false)
-							$config['cron']['item'][$i]['command'] = "/var/etc/pppoe_restart_" . $ppp['if'];
-					}
-				}
-			}
 			if (isset($ifinfo['local']))
 				$ppp['localip'] = $ifinfo['local'];
 			if (isset($ifinfo['subnet']))
@@ -2312,8 +2302,6 @@ function upgrade_063_to_064() {
 			unset($ifcfg[$ifname]['provider']);
 			unset($ifcfg[$ifname]['ondemand']);
 			unset($ifcfg[$ifname]['timeout']);
-			unset($ifcfg[$ifname]['pppoe_reset']);
-			unset($ifcfg[$ifname]['pppoe_preset']);
 			unset($ifcfg[$ifname]['pppoe']);
 			unset($ifcfg[$ifname]['pptp_username']);
 			unset($ifcfg[$ifname]['pptp_password']);
