@@ -56,8 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     // boolean
     $pconfig['rasamednsasdhcp6'] = isset($config['dhcpdv6'][$if]['rasamednsasdhcp6']);
-    if (empty($config['ranosend'])) {
-        $config['rasend'] = true;
+    if (empty($config['dhcpdv6'][$if]['ranosend'])) {
+        $pconfig['rasend'] = true;
     }
 
     // defaults
