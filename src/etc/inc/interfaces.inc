@@ -4104,7 +4104,7 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
         return null;
     }
 
-    foreach ($config['interfaces'] as $if => $ifname) {
+    foreach (legacy_config_get_interfaces() as $if => $ifname) {
         if ($if == $interface || $ifname['if'] == $interface) {
             return $if;
         }
@@ -4295,24 +4295,13 @@ function get_real_interface($interface = "wan", $family = "all", $realv6iface = 
     $wanif = null;
 
     switch ($interface) {
-        case "l2tp":
-            $wanif = "l2tp";
-            break;
-        case "pptp":
-            $wanif = "pptp";
-            break;
-        case "pppoe":
-            $wanif = "pppoe";
-            break;
         case "openvpn":
-            $wanif = "openvpn";
+        case "ppp":
+            $wanif = $interface;
             break;
         case "ipsec":
         case "enc0":
             $wanif = "enc0";
-            break;
-        case "ppp":
-            $wanif = "ppp";
             break;
         default:
             // If a real interface was alread passed simply
@@ -4482,7 +4471,7 @@ function link_interface_to_track6($int, $action = '')
 
     if (isset($config['interfaces'])) {
         $list = array();
-        foreach ($config['interfaces'] as $ifname => $ifcfg) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
             if (!isset($ifcfg['enable'])) {
                 continue;
             }

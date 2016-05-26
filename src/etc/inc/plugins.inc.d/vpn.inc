@@ -657,3 +657,71 @@ EOD;
 
     return 0;
 }
+
+function vpn_interface()
+{
+    global $config;
+    $interfaces = array();
+
+    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
+        $oic = array("enable" => true);
+        $oic['if'] = 'pptp';
+        $oic['descr'] = 'pptp';
+        $oic['ip'] = $config['pptpd']['localip'];
+        $oic['sa'] = $config['pptpd']['remoteip'];
+        if (!empty($config['pptpd']['pptp_subnet'])) {
+            $oic['sn'] = $config['pptpd']['pptp_subnet'];
+        } else {
+            $oic['sn'] = "32";
+        }
+        $oic['mode'] = $config['pptpd']['mode'];
+        $oic['virtual'] = true;
+        $interfaces['pptp'] = $oic;
+    }
+
+    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == 'server') {
+        $oic = array("enable" => true);
+        $oic['if'] = 'l2tp';
+        $oic['descr'] = 'L2TP';
+        $oic['ip'] = $config['l2tp']['localip'];
+        $oic['sa'] = $config['l2tp']['remoteip'];
+        if (!empty($config['l2tp']['l2tp_subnet'])) {
+            $oic['sn'] = $config['l2tp']['l2tp_subnet'];
+        } else {
+            $oic['sn'] = "32";
+        }
+        $oic['mode'] = $config['l2tp']['mode'];
+        $oic['virtual'] = true;
+        $interfaces['l2tp'] = $oic;
+    }
+
+    if (isset($config['pppoes']['pppoe'])) {
+        $pppoeifs = array('networks' => array());
+        foreach($config['pppoes']['pppoe'] as $pppoe) {
+            if ($pppoe['mode'] == "server") {
+                $oic = array();
+                $oic['sa'] = $pppoe['remoteip'];
+                if ($pppoe['pppoe_subnet'] <> "") {
+                    $oic['sn'] = $pppoe['pppoe_subnet'];
+                } else {
+                    $oic['sn'] = "32";
+                }
+                $oic['ip'] = $pppoe['localip'];
+                $pppoeifs['networks'][] = $oic;
+            }
+        }
+        if (count($pppoeifs['networks'])) {
+            $pppoeifs['enable'] = true;
+            $pppoeifs['if'] = 'pppoe';
+            $pppoeifs['descr'] = 'pppoe';
+            $pppoeifs['ip'] = "";
+            $pppoeifs['sa'] = "";
+            $pppoeifs['sn'] = "32";
+            $pppoeifs['mode'] = "";
+            $pppoeifs['virtual'] = true;
+            $interfaces['pppoe'] = $pppoeifs;
+        }
+    }
+
+    return $interfaces;
+}

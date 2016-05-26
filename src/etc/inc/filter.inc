@@ -848,146 +848,96 @@ function filter_generate_optcfg_array()
 
     $FilterIflist = array();
 
-    /* if list */
-    $iflist = get_configured_interface_with_descr();
-    foreach ($iflist as $if => $ifdetail) {
-        $oc = $config['interfaces'][$if];
-        $oic = array();
-        $oic['if'] = get_real_interface($if);
-        if (!does_interface_exist($oic['if'])) {
-            continue;
-        }
-        $oic['ifv6'] = get_real_interface($if, "inet6");
-        $oic['ip'] = get_interface_ip($if);
-        $oic['ipv6'] = get_interface_ipv6($if);
-        if (!is_ipaddrv4($oc['ipaddr']) && !empty($oc['ipaddr'])) {
-            $oic['type'] = $oc['ipaddr'];
-        }
-        if (isset($oc['ipaddrv6'])) {
-            if ( !is_ipaddrv6($oc['ipaddrv6']) && !empty($oc['ipaddrv6'])) {
-                $oic['type6'] = $oc['ipaddrv6'];
+    /* traverse interfaces */
+    foreach (legacy_config_get_interfaces(array("enable" => true)) as $if => $ifdetail) {
+        if (isset($ifdetail['internal_dynamic'])) {
+            // plugin is responsible for its own config
+            $FilterIflist[$if] = $ifdetail;
+        } else {
+            // XXX needs cleanup, original content
+            $oic = array();
+            $oic['if'] = get_real_interface($if);
+            if (!does_interface_exist($oic['if'])) {
+                continue;
             }
-        } else {
-            $oic['type6'] = null;
-        }
-        if (!empty($oc['track6-interface'])) {
-            $oic['track6-interface'] = $oc['track6-interface'];
-        }
-        $oic['sn'] = get_interface_subnet($if);
-        $oic['snv6'] = get_interface_subnetv6($if);
-        $oic['mtu'] = empty($oc['mtu']) ? 1500 : $oc['mtu'];
-        $oic['mss'] = empty($oc['mss']) ? '' : $oc['mss'];
-        $oic['descr'] = $ifdetail;
-        $oic['sa'] = gen_subnet($oic['ip'], $oic['sn']);
-        $oic['sav6'] = gen_subnetv6($oic['ipv6'], $oic['snv6']);
-        if (isset($oc['nonat'])) {
-            $oic['nonat'] = $oc['nonat'];
-        } else {
-            $oic['nonat'] = null;
-        }
-        if (isset($oc['alias-address'])) {
-            $oic['alias-address'] = $oc['alias-address'];
-        } else {
-            $oic['alias-address'] = null;
-        }
-        if (isset($oc['alias-subnet'])) {
-            $oic['alias-subnet'] = $oc['alias-subnet'];
-        } else {
-            $oic['alias-subnet'] = null;
-        }
-        if (isset($oc['gateway'])) {
-            $oic['gateway'] = $oc['gateway'];
-        } else {
-            $oic['gateway'] = null ;
-        }
-        if (isset($oc['gatewayv6'])) {
-            $oic['gatewayv6'] = $oc['gatewayv6'];
-        } else {
-            $oic['gatewayv6'] = null;
-        }
-        $oic['spoofcheck'] = "yes";
-        $oic['bridge'] = link_interface_to_bridge($if);
-        $vips = link_interface_to_vips($if);
-        if (!empty($vips)) {
-            foreach ($vips as $vipidx => $vip) {
-                if (is_ipaddrv4($vip['subnet'])) {
-                    if (!isset($oic['vips'])) {
-                        $oic['vips'] = array();
-                    }
-                    $oic['vips'][$vipidx]['ip'] = $vip['subnet'];
-                    if (empty($vip['subnet_bits'])) {
-                        $oic['vips'][$vipidx]['sn'] = 32;
-                    } else {
-                        $oic['vips'][$vipidx]['sn'] = $vip['subnet_bits'];
-                    }
-                } else if (is_ipaddrv6($vip['subnet'])) {
-                    if (!is_array($oic['vips6'])) {
-                        $oic['vips6'] = array();
-                    }
-                    $oic['vips6'][$vipidx]['ip'] = $vip['subnet'];
-                    if (empty($vip['subnet_bits'])) {
-                        $oic['vips6'][$vipidx]['sn'] = 128;
-                    } else {
-                        $oic['vips6'][$vipidx]['sn'] = $vip['subnet_bits'];
+            $oic['ifv6'] = get_real_interface($if, "inet6");
+            $oic['ip'] = get_interface_ip($if);
+            $oic['ipv6'] = get_interface_ipv6($if);
+            if (!is_ipaddrv4($ifdetail['ipaddr']) && !empty($ifdetail['ipaddr'])) {
+                $oic['type'] = $ifdetail['ipaddr'];
+            }
+            if (isset($ifdetail['ipaddrv6'])) {
+                if ( !is_ipaddrv6($ifdetail['ipaddrv6']) && !empty($ifdetail['ipaddrv6'])) {
+                    $oic['type6'] = $ifdetail['ipaddrv6'];
+                }
+            } else {
+                $oic['type6'] = null;
+            }
+            if (!empty($ifdetail['track6-interface'])) {
+                $oic['track6-interface'] = $ifdetail['track6-interface'];
+            }
+            $oic['sn'] = get_interface_subnet($if);
+            $oic['snv6'] = get_interface_subnetv6($if);
+            $oic['mtu'] = empty($ifdetail['mtu']) ? 1500 : $ifdetail['mtu'];
+            $oic['mss'] = empty($ifdetail['mss']) ? '' : $ifdetail['mss'];
+            $oic['descr'] = !empty($ifdetail['descr']) ? $ifdetail['descr'] : $if;
+            $oic['sa'] = gen_subnet($oic['ip'], $oic['sn']);
+            $oic['sav6'] = gen_subnetv6($oic['ipv6'], $oic['snv6']);
+            if (isset($ifdetail['nonat'])) {
+                $oic['nonat'] = $ifdetail['nonat'];
+            } else {
+                $oic['nonat'] = null;
+            }
+            if (isset($ifdetail['alias-address'])) {
+                $oic['alias-address'] = $ifdetail['alias-address'];
+            } else {
+                $oic['alias-address'] = null;
+            }
+            if (isset($ifdetail['alias-subnet'])) {
+                $oic['alias-subnet'] = $ifdetail['alias-subnet'];
+            } else {
+                $oic['alias-subnet'] = null;
+            }
+            if (isset($ifdetail['gateway'])) {
+                $oic['gateway'] = $ifdetail['gateway'];
+            } else {
+                $oic['gateway'] = null ;
+            }
+            if (isset($ifdetail['gatewayv6'])) {
+                $oic['gatewayv6'] = $ifdetail['gatewayv6'];
+            } else {
+                $oic['gatewayv6'] = null;
+            }
+            $oic['spoofcheck'] = "yes";
+            $oic['bridge'] = link_interface_to_bridge($if);
+            $vips = link_interface_to_vips($if);
+            if (!empty($vips)) {
+                foreach ($vips as $vipidx => $vip) {
+                    if (is_ipaddrv4($vip['subnet'])) {
+                        if (!isset($oic['vips'])) {
+                            $oic['vips'] = array();
+                        }
+                        $oic['vips'][$vipidx]['ip'] = $vip['subnet'];
+                        if (empty($vip['subnet_bits'])) {
+                            $oic['vips'][$vipidx]['sn'] = 32;
+                        } else {
+                            $oic['vips'][$vipidx]['sn'] = $vip['subnet_bits'];
+                        }
+                    } else if (is_ipaddrv6($vip['subnet'])) {
+                        if (!is_array($oic['vips6'])) {
+                            $oic['vips6'] = array();
+                        }
+                        $oic['vips6'][$vipidx]['ip'] = $vip['subnet'];
+                        if (empty($vip['subnet_bits'])) {
+                            $oic['vips6'][$vipidx]['sn'] = 128;
+                        } else {
+                            $oic['vips6'][$vipidx]['sn'] = $vip['subnet_bits'];
+                        }
                     }
                 }
             }
-        }
-        unset($vips);
-        $FilterIflist[$if] = $oic;
-    }
-
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
-        $oic = array();
-        $oic['if'] = 'pptp';
-        $oic['descr'] = 'pptp';
-        $oic['ip'] = $config['pptpd']['localip'];
-        $oic['sa'] = $config['pptpd']['remoteip'];
-        $oic['mode'] = $config['pptpd']['mode'];
-        $oic['virtual'] = true;
-        if ($config['pptpd']['pptp_subnet'] <> "") {
-            $oic['sn'] = $config['pptpd']['pptp_subnet'];
-        } else {
-            $oic['sn'] = "32";
-        }
-        $FilterIflist['pptp'] = $oic;
-    }
-    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == 'server') {
-        $oic = array();
-        $oic['if'] = 'l2tp';
-        $oic['descr'] = 'L2TP';
-        $oic['ip'] = $config['l2tp']['localip'];
-        $oic['sa'] = $config['l2tp']['remoteip'];
-        if ($config['l2tp']['l2tp_subnet'] <> "") {
-            $oic['sn'] = $config['l2tp']['l2tp_subnet'];
-        } else {
-            $oic['sn'] = "32";
-        }
-        $oic['mode'] = $config['l2tp']['mode'];
-        $oic['virtual'] = true;
-        $FilterIflist['l2tp'] = $oic;
-    }
-    if (isset($config['pppoes']['pppoe'])) {
-        $pppoeifs = array();
-        foreach($config['pppoes']['pppoe'] as $pppoe) {
-            if ($pppoe['mode'] == "server") {
-                $oic = array();
-                $oic['if'] = 'pppoe';
-                $oic['descr'] = 'pppoe';
-                $oic['ip'] = $pppoe['localip'];
-                $oic['sa'] = $pppoe['remoteip'];
-                $oic['mode'] = $pppoe['mode'];
-                $oic['virtual'] = true;
-                if ($pppoe['pppoe_subnet'] <> "") {
-                    $oic['sn'] = $pppoe['pppoe_subnet'];
-                } else {
-                    $oic['sn'] = "32";
-                }
-                $pppoeifs[] = $oic;
-            }
-        }
-        if (count($pppoeifs)) {
-            $FilterIflist['pppoe'] = $pppoeifs;
+            unset($vips);
+            $FilterIflist[$if] = $oic;
         }
     }
     /* add ipsec interfaces */
@@ -1196,8 +1146,8 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
     }
 
     /* PPPoE subnet */
-    if (isset($FilterIflist['pppoe']) && is_array($FilterIflist['pppoe']))
-        foreach ($FilterIflist['pppoe'] as $pppoe) {
+    if (isset($FilterIflist['pppoe']['networks']) && is_array($FilterIflist['pppoe']['networks']))
+        foreach ($FilterIflist['pppoe']['networks'] as $pppoe) {
             if (is_private_ip($pppoe['ip'])) {
                 $tonathosts[] = "{$pppoe['sa']}/{$pppoe['sn']}";
                 $descriptions[] = gettext("PPPoE server");
