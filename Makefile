@@ -193,8 +193,8 @@ depends: force
 	@echo ${CORE_DEPENDS}
 
 scripts: want-git
-	@mkdir -p ${DESTDIR}
-	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}
+	# XXX should extend to all possible scripts
+	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}/
 	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
 	    ${DESTDIR}/+POST_INSTALL
 
@@ -214,6 +214,7 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/src plist
 
 metadata: force
+	@mkdir -p ${DESTDIR}
 	@${MAKE} DESTDIR=${DESTDIR} scripts
 	@${MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
