@@ -29,6 +29,8 @@
  */
 namespace OPNsense\Base\Menu;
 
+use OPNsense\Core\Config;
+
 /**
  * Class MenuSystem
  * @package OPNsense\Base\Menu
@@ -101,6 +103,23 @@ class MenuSystem
                 }
             }
         }
+        // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
+        $ifarr = array();
+        foreach (Config::getInstance()->object()->interfaces->children() as $key => $node) {
+            $ifarr[$key] = !empty($node->descr) ? $node->descr->__toString() : strtoupper($key);
+        }
+        natcasesort($ifarr);
+        $ordid = 0;
+        foreach ($ifarr as $key => $descr) {
+            $this->appendItem('Interfaces', $key, array(
+                'url' => '/interfaces.php?if='. $key,
+                'visiblename' => '[' . $descr . ']',
+                'cssclass' => 'fa fa-sitemap',
+                'order' => $ordid++,
+            ));
+        }
+        unset($ifarr);
+
     }
 
     /**
