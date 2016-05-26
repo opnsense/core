@@ -195,8 +195,8 @@ depends: force
 	@echo ${CORE_DEPENDS}
 
 scripts: want-git
-	@mkdir -p ${DESTDIR}
-	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}
+	# XXX should extend to all possible scripts
+	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}/
 	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
 	    ${DESTDIR}/+POST_INSTALL
 
@@ -214,6 +214,12 @@ bootstrap: force
 plist: force
 	@${MAKE} -C ${.CURDIR}/contrib plist
 	@${MAKE} -C ${.CURDIR}/src plist
+
+metadata: force
+	@mkdir -p ${DESTDIR}
+	@${MAKE} DESTDIR=${DESTDIR} scripts
+	@${MAKE} DESTDIR=${DESTDIR} manifest > ${DESTDIR}/+MANIFEST
+	@${MAKE} DESTDIR=${DESTDIR} plist > ${DESTDIR}/plist
 
 package-keywords: force
 	@if [ ! -f /usr/ports/Keywords/sample.ucl ]; then \
@@ -233,10 +239,8 @@ package: force
 		exit 1; \
 	fi
 	@rm -rf ${WRKSRC} ${PKGDIR}
+	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
-	@${MAKE} DESTDIR=${WRKSRC} scripts
-	@${MAKE} DESTDIR=${WRKSRC} manifest > ${WRKSRC}/+MANIFEST
-	@${MAKE} DESTDIR=${WRKSRC} plist > ${WRKSRC}/plist
 	@${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
 	@echo -n "Sucessfully built "
