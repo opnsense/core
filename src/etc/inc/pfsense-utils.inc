@@ -169,11 +169,6 @@ function reload_all()
     configd_run('service reload all', true);
 }
 
-function reload_interfaces()
-{
-    configd_run('interface reload');
-}
-
 function setup_serial_port($sync = true)
 {
     global $config;
