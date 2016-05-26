@@ -883,11 +883,6 @@ function filter_generate_optcfg_array()
             $oic['descr'] = !empty($ifdetail['descr']) ? $ifdetail['descr'] : $if;
             $oic['sa'] = gen_subnet($oic['ip'], $oic['sn']);
             $oic['sav6'] = gen_subnetv6($oic['ipv6'], $oic['snv6']);
-            if (isset($ifdetail['nonat'])) {
-                $oic['nonat'] = $ifdetail['nonat'];
-            } else {
-                $oic['nonat'] = null;
-            }
             if (isset($ifdetail['alias-address'])) {
                 $oic['alias-address'] = $ifdetail['alias-address'];
             } else {
@@ -908,7 +903,6 @@ function filter_generate_optcfg_array()
             } else {
                 $oic['gatewayv6'] = null;
             }
-            $oic['spoofcheck'] = "yes";
             $oic['bridge'] = link_interface_to_bridge($if);
             $vips = link_interface_to_vips($if);
             if (!empty($vips)) {
@@ -1238,9 +1232,6 @@ function filter_nat_rules_outbound_automatic(&$FilterIflist, $src)
         $natent['destination']['any'] = true;
         $natent['natport'] = '';
         $natent['descr'] = gettext('Auto created rule');
-        if (isset($ifcfg['nonat'])) {
-            $natent['nonat'] = true;
-        }
         $rules[] = $natent;
     }
 
@@ -2636,7 +2627,7 @@ EOD;
           }
       }
 
-      if ($oc['ip'] && !($isbridged) && isset($oc['spoofcheck'])) {
+      if ($oc['ip'] && !($isbridged) && !isset($oc['internal_dynamic'])) {
           $ipfrules .= filter_rules_spoofcheck_generate($on, $oc, $log);
       }
 
