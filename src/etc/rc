@@ -202,25 +202,30 @@ fi
 
 echo "done."
 
+# restore pkg database if bootstrapped
+if [ -f /conf/pkg.db ]; then
+	if pkg -N; then pkg backup -qr /conf/pkg.db; fi
+fi
+
 # regenerate groups and users for packages
 /usr/local/etc/rc.recover pkg > /dev/null
 
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
 
-# Set up the correct php.ini content
-/usr/local/etc/rc.php_ini_setup
-
 # startup configd
 /usr/local/etc/rc.d/configd start
-
-# Execute the early syshook / plugin commands
-/usr/local/etc/rc.syshook early
 
 # Restore backups from previous shutdown (if any)
 /usr/local/etc/rc.backup_dhcpleases restore
 /usr/local/etc/rc.backup_netflow restore
 /usr/local/etc/rc.backup_rrd restore
+
+# Set up the correct php.ini content
+/usr/local/etc/rc.php_ini_setup
+
+# Execute the early syshook / plugin commands
+/usr/local/etc/rc.syshook early
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."

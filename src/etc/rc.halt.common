@@ -14,6 +14,9 @@
 /usr/local/etc/rc.backup_netflow
 /usr/local/etc/rc.backup_rrd
 
+# dump pkg database if bootstrapped
+if pkg -N; then pkg backup -qd /conf/pkg.db; fi
+
 # wait for config lock to release
 php -a >/dev/null  << EOF
 \$fp = fopen('/conf/config.xml', "a+");
