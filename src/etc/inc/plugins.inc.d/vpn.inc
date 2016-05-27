@@ -699,27 +699,20 @@ function vpn_interface()
         $pppoeifs = array('networks' => array());
         foreach($config['pppoes']['pppoe'] as $pppoe) {
             if ($pppoe['mode'] == "server") {
-                $oic = array();
-                $oic['sa'] = $pppoe['remoteip'];
-                if ($pppoe['pppoe_subnet'] <> "") {
-                    $oic['sn'] = $pppoe['pppoe_subnet'];
-                } else {
-                    $oic['sn'] = "32";
+                if (count($pppoeifs['networks'])) {
+                    $pppoeifs = array();
+                    $pppoeifs['enable'] = true;
+                    $pppoeifs['if'] = 'pppoe';
+                    $pppoeifs['descr'] = 'pppoe';
+                    $pppoeifs['ip'] = "";
+                    $pppoeifs['sa'] = "";
+                    $pppoeifs['sn'] = "32";
+                    $pppoeifs['mode'] = "";
+                    $pppoeifs['virtual'] = true;
+                    $interfaces['pppoe'] = $pppoeifs;
+                    break;
                 }
-                $oic['ip'] = $pppoe['localip'];
-                $pppoeifs['networks'][] = $oic;
             }
-        }
-        if (count($pppoeifs['networks'])) {
-            $pppoeifs['enable'] = true;
-            $pppoeifs['if'] = 'pppoe';
-            $pppoeifs['descr'] = 'pppoe';
-            $pppoeifs['ip'] = "";
-            $pppoeifs['sa'] = "";
-            $pppoeifs['sn'] = "32";
-            $pppoeifs['mode'] = "";
-            $pppoeifs['virtual'] = true;
-            $interfaces['pppoe'] = $pppoeifs;
         }
     }
 

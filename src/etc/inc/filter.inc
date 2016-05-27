@@ -758,19 +758,6 @@ function filter_get_vpns_list() {
             }
         }
     }
-    /* pppoe */
-    if (isset($config['pppoes']['pppoe']) && is_array($config['pppoes']['pppoe'])) {
-        foreach($config['pppoes']['pppoe'] as $pppoe) {
-            if ($pppoe['mode'] == "server") {
-                if (is_ipaddr($pppoe['remoteip'])) {
-                    $pppoesub = gen_subnet($pppoe['remoteip'], $pppoe['pppoe_subnet']);
-                    if (is_subnet($pppoesub)) {
-                        $vpns_arr[] = $pppoesub;
-                    }
-                }
-            }
-        }
-    }
 
     if (!empty($vpns_arr)) {
         $vpns = implode(" ", $vpns_arr);
