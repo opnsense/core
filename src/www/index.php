@@ -252,8 +252,12 @@ include("fbegin.inc");?>
               if (container.attr('id').split('_')[1] != target_col) {
                   widget.remove().appendTo("#dashboard_"+target_col);
               }
+          } else {
+              // dashboard_colx (source) is not visible, move other items to col4
+              widget.remove().appendTo("#dashboard_col4");
           }
       });
+
       // show dashboard widgets after initial rendering
       $("#dashboard_container").show();
 
@@ -318,7 +322,7 @@ include("fbegin.inc");?>
         </div>
       </div>
       <div id="dashboard_container" class="row" style="display:none">
-        <div class="col-xs-12 col-md-4 dashboard_grid_column" id="dashboard_col1">
+        <div class="col-xs-12 col-md-4 dashboard_grid_column hidden" id="dashboard_colx">
 
 <?php
       foreach ($widgetCollection as $widgetItem):
@@ -394,6 +398,7 @@ include("fbegin.inc");?>
 <?php
           endforeach;?>
           </div>
+          <div class="col-md-4 dashboard_grid_column" id="dashboard_col1"></div>
           <div class="col-md-4 dashboard_grid_column" id="dashboard_col2"></div>
           <div class="col-md-4 dashboard_grid_column" id="dashboard_col3"></div>
           <div class="col-md-4 dashboard_grid_column" id="dashboard_col4"></div>
