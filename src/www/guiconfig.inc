@@ -292,18 +292,19 @@ function get_std_save_message()
     return $to_return;
 }
 
-function pprint_address($adr) {
-    if (!isset($specialnets)) {
-        global $specialnets;
-        $specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
-
-        $spiflist = get_configured_interface_with_descr(false, true);
-        foreach ($spiflist as $ifgui => $ifdesc) {
-            $specialnets[$ifgui] = $ifdesc . " net";
-            $specialnets[$ifgui . 'ip'] = $ifdesc . " address";
-        }
+function get_specialnets()
+{
+    $specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
+    $spiflist = get_configured_interface_with_descr(false, true);
+    foreach ($spiflist as $ifgui => $ifdesc) {
+        $specialnets[$ifgui] = $ifdesc . " net";
+        $specialnets[$ifgui . 'ip'] = $ifdesc . " address";
     }
+    return $specialnets;
+}
 
+function pprint_address($adr) {
+    $specialnets = get_specialnets();
     if (isset($adr['any'])) {
         $padr = "*";
     } elseif (isset($adr['network'])) {
