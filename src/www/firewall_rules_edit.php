@@ -536,8 +536,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 legacy_html_escape_form_data($pconfig);
 
-$page_filename = "firewall_rules_edit.php";
-
 include("head.inc");
 ?>
 
