@@ -213,6 +213,9 @@ fi
 # Recreate capabilities DB
 /usr/bin/cap_mkdb /etc/login.conf
 
+# Set up the correct php.ini content
+/usr/local/etc/rc.php_ini_setup
+
 # startup configd
 /usr/local/etc/rc.d/configd start
 
@@ -221,15 +224,11 @@ fi
 /usr/local/etc/rc.backup_netflow restore
 /usr/local/etc/rc.backup_rrd restore
 
-# Set up the correct php.ini content
-/usr/local/etc/rc.php_ini_setup
-
 # Execute the early syshook / plugin commands
 /usr/local/etc/rc.syshook early
 
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
-rm -f /root/lighttpd*
 touch /var/run/booting
 /usr/local/etc/rc.bootup
 rm /var/run/booting
@@ -243,10 +242,6 @@ fi
 
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start
-
-# 16.1 migration code for stale captive portal files to be removed in 16.7
-rm -rf /var/db/rrd/*-concurrent.rrd
-rm -rf /var/db/rrd/*-loggedin.rrd
 
 echo -n "Starting CRON... "
 cd /tmp && /usr/sbin/cron -s 2>/dev/null
