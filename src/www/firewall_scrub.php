@@ -1,0 +1,302 @@
+<?php
+
+/*
+    Copyright (C) 2016 Deciso B.V.
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+*/
+
+require_once("guiconfig.inc");
+require_once("filter.inc");
+
+if (!isset($config['filter']['scrub']['rule'])) {
+    $config['filter']['scrub'] = array();
+    $config['filter']['scrub']['rule'] = array();
+}
+$a_scrub = &$config['filter']['scrub']['rule'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
+    if (isset($pconfig['id']) && isset($a_scrub[$pconfig['id']])) {
+        $id = $pconfig['id'];
+    }
+    if (isset($pconfig['apply'])) {
+        filter_configure();
+        clear_subsystem_dirty('filter');
+        $savemsg = sprintf(
+            gettext(
+                'The settings have been applied and the rules are now reloading ' .
+                'in the background. You can monitor the reload progress %shere%s.'
+            ),
+            '<a href="status_filter_reload.php">',
+            '</a>'
+        );
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
+        // delete single item
+        unset($a_scrub[$id]);
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_scrub.php");
+        exit;
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        // delete selected rules
+        foreach ($pconfig['rule'] as $rule_index) {
+            unset($a_scrub[$rule_index]);
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_scrub.php");
+        exit;
+    } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        // move selected rules
+        if (!isset($id)) {
+            // if rule not set/found, move to end
+            $id = count($a_scrub);
+        }
+        $a_scrub = legacy_move_config_list_items($a_scrub, $id,  $pconfig['rule']);
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_scrub.php");
+        exit;
+
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
+        // toggle item
+        if(isset($a_scrub[$id]['disabled'])) {
+            unset($a_scrub[$id]['disabled']);
+        } else {
+            $a_scrub[$id]['disabled'] = true;
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_scrub.php");
+        exit;
+    }
+}
+legacy_html_escape_form_data($a_scrub);
+include("head.inc");
+?>
+<body>
+<script type="text/javascript">
+$( document ).ready(function() {
+  // link delete buttons
+  $(".act_delete").click(function(event){
+    event.preventDefault();
+    var id = $(this).data("id");
+    if (id != 'x') {
+      // delete single
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_DANGER,
+        title: "<?= gettext("Rules");?>",
+        message: "<?=gettext("Do you really want to delete this rule?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val(id);
+                    $("#action").val("del");
+                    $("#iform").submit()
+                }
+              }]
+    });
+    } else {
+      // delete selected
+      BootstrapDialog.show({
+        type:BootstrapDialog.TYPE_DANGER,
+        title: "<?= gettext("Rules");?>",
+        message: "<?=gettext("Do you really want to delete the selected rules?");?>",
+        buttons: [{
+                  label: "<?= gettext("No");?>",
+                  action: function(dialogRef) {
+                      dialogRef.close();
+                  }}, {
+                  label: "<?= gettext("Yes");?>",
+                  action: function(dialogRef) {
+                    $("#id").val("");
+                    $("#action").val("del_x");
+                    $("#iform").submit()
+                }
+              }]
+      });
+    }
+  });
+
+  // link move buttons
+  $(".act_move").click(function(event){
+    event.preventDefault();
+    $("#id").val($(this).data("id"));
+    $("#action").val("move");
+    $("#iform").submit();
+  });
+
+  // link toggle buttons
+  $(".act_toggle").click(function(event){
+    event.preventDefault();
+    $("#id").val($(this).data("id"));
+    $("#action").val("toggle");
+    $("#iform").submit();
+  });
+
+  // watch scroll position and set to last known on page load
+  watchScrollPosition();
+
+});
+</script>
+
+<?php include("fbegin.inc"); ?>
+  <section class="page-content-main">
+    <div class="container-fluid">
+      <div class="row">
+        <?php print_service_banner('firewall'); ?>
+        <?php if (isset($savemsg)) print_info_box($savemsg); ?>
+        <?php if (is_subsystem_dirty('filter')): ?><p>
+        <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
+        <?php endif; ?>
+        <section class="col-xs-12">
+          <div class="content-box">
+            <form method="post" name="iform" id="iform">
+              <input type="hidden" id="id" name="id" value="" />
+              <input type="hidden" id="action" name="act" value="" />
+              <div class="table-responsive" >
+                <table class="table table-striped table-hover" id="rules">
+                  <thead>
+                    <tr>
+                      <th>&nbsp;</th>
+                      <th><?=gettext("Interfaces");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Source");?></th>
+                      <th class="hidden-xs hidden-sm"><?=gettext("Destination");?></th>
+                      <th><?=gettext("Description");?></th>
+                      <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+<?php
+                $special_nets = get_specialnets();
+                legacy_html_escape_form_data($special_nets);
+                foreach ($a_scrub as $i => $scrubEntry):?>
+                  <tr>
+                    <td>
+                        <input type="checkbox" name="rule[]" value="<?=$i;?>"  />
+                        <a href="#" class="act_toggle" data-id="<?=$i;?>" data-toggle="tooltip" title="<?=(empty($scrubEntry['disabled'])) ? gettext("disable") : gettext("enable");?>">
+                          <span class="glyphicon glyphicon-play <?=(empty($scrubEntry['disabled'])) ? "text-success" : "text-muted";?>"></span>
+                        </a>
+                    </td>
+                    <td><?=strtoupper($scrubEntry['interface']);?></td>
+                    <td class="hidden-xs hidden-sm">
+<?php
+                        if (is_alias($scrubEntry['src'])):?>
+                        <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['src']));?>" data-toggle="tooltip">
+                          <?=$scrubEntry['src'];?>&nbsp;
+                        </span>
+                        <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['src'];?>"
+                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                          <i class="fa fa-list"></i>
+                        </a>
+<?php
+                        elseif (!empty($special_nets[$scrubEntry['src']])):?>
+                        <?=$special_nets[$scrubEntry['src']];?>
+<?php
+                        else:?>
+                        <?=$scrubEntry['src'];?>
+<?php
+                        endif;?>
+
+                    </td>
+                    <td class="hidden-xs hidden-sm">
+<?php
+                        if (is_alias($scrubEntry['dst'])):?>
+                        <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['dst']));?>" data-toggle="tooltip">
+                          <?=$scrubEntry['src'];?>&nbsp;
+                        </span>
+                        <a href="/firewall_aliases_edit.php?name=<?=$scrubEntry['dst'];?>"
+                            title="<?=gettext("edit alias");?>" data-toggle="tooltip">
+                          <i class="fa fa-list"></i>
+                        </a>
+<?php
+                        elseif (!empty($special_nets[$scrubEntry['dst']])):?>
+                        <?=$special_nets[$scrubEntry['dst']];?>
+<?php
+                        else:?>
+                        <?=$scrubEntry['dst'];?>
+<?php
+                        endif;?>
+
+                    </td>
+                    <td>
+                        <?=$scrubEntry['descr'];?>
+                    </td>
+                    <td>
+                        <a href="firewall_scrub_edit.php?id=<?=$i;?>" data-toggle="tooltip" title="<?=gettext("edit rule");?>" class="btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a data-id="<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        </a>
+                        <a data-id="<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash text-muted"></span>
+                        </a>
+                        <a href="firewall_scrub_edit.php?dup=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("clone rule");?>">
+                          <span class="fa fa-clone text-muted"></span>
+                        </a>
+                    </td>
+                  </tr>
+<?php
+                  endforeach;
+?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                      <td colspan="2" class="hidden-xs hidden-sm"></td>
+                      <td colspan="3"></td>
+                      <td>
+                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
+                          <span class="glyphicon glyphicon-arrow-left"></span>
+                        </a>
+                        <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
+                          <span class="fa fa-trash text-muted"></span>
+                        </a>
+                        <a href="firewall_scrub_edit.php" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("add new rule");?>">
+                          <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </td>
+                    </tr>
+                    <tr class="hidden-xs hidden-sm">
+                        <td><a><i class="fa fa-list"></i></a></td>
+                        <td colspan="6"><?=gettext("Alias (click to view/edit)");?></td>
+                    </tr>
+                </tfoot>
+              </table>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </div>
+</section>
+<?php include("foot.inc"); ?>
