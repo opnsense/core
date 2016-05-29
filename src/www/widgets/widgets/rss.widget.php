@@ -26,8 +26,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-$nocsrf = true;
-
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("simplepie/autoloader.php");
@@ -80,11 +78,9 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
 }
 ?>
 
-<input type="hidden" id="rss-config" name="rss-config" value="" />
-
 <div id="rss-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/rss.widget.php" method="post" name="iformc">
-    <table class="table table-striped" summary="rss widget">
+    <table class="table table-striped">
       <tr>
         <td colspan="2">
           <textarea name="rssfeed" class="formfld unknown textarea_widget" id="rssfeed" cols="40" rows="3" style="max-width:100%;"><?=$textarea_txt;?></textarea>
@@ -174,8 +170,6 @@ if (!empty($config['widgets']['rsswidgettextlength']) && is_numeric($config['wid
 <!-- needed to display the widget settings menu -->
 <script type="text/javascript">
 //<![CDATA[
-    selectIntLink = "rss-configure";
-    textlink = document.getElementById(selectIntLink);
-    textlink.style.display = "inline";
+  $("#rss-configure").removeClass("disabled");
 //]]>
 </script>

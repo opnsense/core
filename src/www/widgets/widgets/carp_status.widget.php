@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Copyright (C) 2014 Deciso B.V.
+    Copyright (C) 2014-2016 Deciso B.V.
     Copyright (C) 2007 Sam Wenham
     All rights reserved.
 
@@ -27,61 +27,60 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-$nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
-require_once("widgets/include/carp_status.inc");
 
-$carp_enabled = (get_single_sysctl('net.inet.carp.allow') > 0);
+if (!isset($config['virtualip']['vip'])) {
+   $config['virtualip']['vip'] = array();
+}
 
 ?>
-<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="carp status">
+<table class="table table-striped table-condensed">
 <?php
-if (isset($config['virtualip']['vip'])) {
-    $carpint=0;
-    foreach ($config['virtualip']['vip'] as $carp) {
+    foreach ($config['virtualip']['vip'] as $carp):
         if ($carp['mode'] != "carp") {
             continue;
         }
-        $ipaddress = $carp['subnet'];
-        $password = $carp['password'];
-        $netmask = $carp['subnet_bits'];
-        $vhid = $carp['vhid'];
-        $advskew = $carp['advskew'];
-        $status = get_carp_interface_status("{$carp['interface']}_vip{$vhid}");
-?>
-<tr>
-<td class="vncellt" width="35%">
-    <span alt="cablenic" class="glyphicon glyphicon-transfer text-success"></span>&nbsp;
-    <strong><a href="/system_hasync.php">
-    <span><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$vhid}");?></span></a></strong>
-</td>
-<td width="65%"  class="listr">
+        $status = get_carp_interface_status("{$carp['interface']}_vip{$carp['vhid']}");?>
+    <tr>
+      <td>
+          <span class="glyphicon glyphicon-transfer text-success"></span>&nbsp;
+          <strong>
+            <a href="/system_hasync.php">
+              <span><?=htmlspecialchars(convert_friendly_interface_to_friendly_descr($carp['interface']) . "@{$carp['vhid']}");?></span>
+            </a>
+          </strong>
+      </td>
+      <td>
 <?php
-if ($carp_enabled == false) {
-    $status = gettext("DISABLED");
-    echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
-} else {
-    if ($status == gettext("MASTER")) {
-        echo "<span class=\"glyphicon glyphicon-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
-    } elseif ($status == gettext("BACKUP")) {
-        echo "<span class=\"glyphicon glyphicon-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
-    } elseif ($status == gettext("INIT")) {
-        echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
-    }
-}
-if ($ipaddress) {
-?> &nbsp;
+      if (get_single_sysctl('net.inet.carp.allow') <= 0 ) {
+          $status = gettext("DISABLED");
+          echo "<span class=\"glyphicon glyphicon-remove text-danger\" title=\"$status\" alt=\"$status\" ></span>";
+      } elseif ($status == gettext("MASTER")) {
+          echo "<span class=\"glyphicon glyphicon-play text-success\" title=\"$status\" alt=\"$status\" ></span>";
+      } elseif ($status == gettext("BACKUP")) {
+          echo "<span class=\"glyphicon glyphicon-play text-muted\" title=\"$status\" alt=\"$status\" ></span>";
+      } elseif ($status == gettext("INIT")) {
+          echo "<span class=\"glyphicon glyphicon-info-sign\" title=\"$status\" alt=\"$status\" ></span>";
+      }
+      if (!empty($carp['subnet'])):?>
+        &nbsp;
         <?=htmlspecialchars($status);?> &nbsp;
-        <?=htmlspecialchars($ipaddress);
-}?>
-</td></tr><?php
-    }
-} else {
-?>
-  <tr><td class="listr"><?= sprintf(gettext('No CARP Interfaces Defined. Click %shere%s to configure CARP.'), '<a href="carp_status.php">', '</a>'); ?></td></tr>
+        <?=htmlspecialchars($carp['subnet']);?>
 <?php
-} ?>
+      endif;?>
+      </td>
+    </tr>
+<?php
+    endforeach;
+    if (count($config['virtualip']['vip']) == 0):?>
+    <tr>
+      <td>
+        <?= sprintf(gettext('No CARP Interfaces Defined. Click %shere%s to configure CARP.'), '<a href="carp_status.php">', '</a>'); ?>
+      </td>
+    </tr>
+<?php
+    endif;?>
 </table>

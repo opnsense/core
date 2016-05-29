@@ -15,24 +15,6 @@ function system_get_language_code() {
 
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
-
-// add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
-$cnf = OPNsense\Core\Config::getInstance();
-$ifarr = array();
-foreach ($cnf->object()->interfaces->children() as $key => $node) {
-    $ifarr[$key] = !empty($node->descr) ? $node->descr->__toString() : strtoupper($key);
-}
-natcasesort($ifarr);
-$ordid = 0;
-foreach ($ifarr as $key => $descr) {
-    $menu->appendItem('Interfaces', $key, array(
-        'url' => '/interfaces.php?if=' . $key,
-        'visiblename' => '[' . $descr . ']',
-        'cssclass' => 'fa fa-sitemap',
-        'order' => $ordid++,
-    ));
-}
-unset($ifarr);
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
 
 /* XXX workaround for dashboard */
@@ -75,6 +57,24 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
       .typeahead {
         overflow: hidden;
       }
+
+      /** jquery-sortable styles **/
+      body.dragging, body.dragging * {
+        cursor: move !important;
+      }
+
+      .dragged {
+        position: absolute;
+        opacity: 0.5;
+        z-index: 2000;
+      }
+
+      ol.example li.placeholder {
+        position: relative;
+      }
+      ol.example li.placeholder:before {
+        position: absolute;
+      }
     </style>
 
     <!-- Favicon -->
@@ -85,7 +85,6 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
 
     <!-- bootstrap dialog -->
     <link href="/ui/themes/<?= $themename ?>/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
-
 
     <!-- Font awesome -->
     <link rel="stylesheet" href="/ui/css/font-awesome.min.css">

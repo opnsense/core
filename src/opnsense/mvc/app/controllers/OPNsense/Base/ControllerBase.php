@@ -203,23 +203,6 @@ class ControllerBase extends ControllerRoot
 
         // set translator
         $this->view->setVar('lang', $this->getTranslator($cnf));
-
-        $ifarr = array();
-        foreach ($cnf->object()->interfaces->children() as $key => $node) {
-            $ifarr[$key] = !empty($node->descr) ? $node->descr->__toString() : strtoupper($key);
-        }
-        natcasesort($ifarr);
-        $ordid = 0;
-        foreach ($ifarr as $key => $descr) {
-            $menu->appendItem('Interfaces', $key, array(
-                'url' => '/interfaces.php?if='. $key,
-                'visiblename' => '[' . $descr . ']',
-                'cssclass' => 'fa fa-sitemap',
-                'order' => $ordid++,
-            ));
-        }
-        unset($ifarr);
-
         $this->view->menuSystem = $menu->getItems("/ui".$this->router->getRewriteUri());
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).

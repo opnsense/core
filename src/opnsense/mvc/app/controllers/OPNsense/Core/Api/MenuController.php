@@ -33,7 +33,6 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\Menu;
 use OPNsense\Core\ACL;
-use OPNsense\Core\Config;
 
 /**
  * Class MenuController
@@ -124,25 +123,6 @@ class MenuController extends ApiControllerBase
         if ($this->session->has("Username")) {
             $this->username = $this->session->get("Username");
         }
-
-        // add interfaces to "Interfaces" menu tab... kind of a hack, may need some improvement.
-        $cnf = Config::getInstance();
-
-        $ifarr = array();
-        foreach ($cnf->object()->interfaces->children() as $key => $node) {
-            $ifarr[$key] = !empty($node->descr) ? $node->descr->__toString() : strtoupper($key);
-        }
-        natcasesort($ifarr);
-        $ordid = 0;
-        foreach ($ifarr as $key => $descr) {
-            $menu->appendItem('Interfaces', $key, array(
-                'url' => '/interfaces.php?if='. $key,
-                'visiblename' => '[' . $descr . ']',
-                'cssclass' => 'fa fa-sitemap',
-                'order' => $ordid++,
-            ));
-        }
-        unset($ifarr);
 
         // fetch menu items and apply acl
         $menu_items = $menu->getItems($selected_uri);

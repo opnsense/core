@@ -28,7 +28,7 @@
         "descr": "Allow access to the 'AJAX: Get Stats' page.",
         "match": [
             "license.php",
-            "getstats.php*"
+            "widgets/api/get.php*"
         ]
     },
     "page-all": {
@@ -51,9 +51,7 @@
         "match": [
             "index.php*",
             "*.widget.php*",
-            "graph.php*",
-            "getstats.php*",
-            "legacy_traffic_stats.php*",
+            "widgets/api/get.php*",
             "diag_logs_filter_dynamic.php*"
         ]
     },
@@ -97,13 +95,6 @@
         "descr": "Allow access to the 'Diagnostics: Halt system' page.",
         "match": [
             "diag_halt.php*"
-        ]
-    },
-    "page-diagnostics-interfacetraffic": {
-        "name": "WebCfg - Diagnostics: Interface Traffic page",
-        "descr": "Allow access to the 'Diagnostics: Interface Traffic' page.",
-        "match": [
-            "graph.php*"
         ]
     },
     "page-diagnostics-limiter-info": {
@@ -964,9 +955,7 @@
         "name": "WebCfg - Status: Traffic Graph page",
         "descr": "Allow access to the 'Status: Traffic Graph' page.",
         "match": [
-            "status_graph.php*",
-            "graph.php*",
-            "legacy_traffic_stats.php*"
+            "status_graph.php*"
         ]
     },
     "page-service-upnp": {
@@ -1256,13 +1245,6 @@
         "descr": "Allow access to the 'VPN: OpenVPN: Server' page.",
         "match": [
             "vpn_openvpn_server.php*"
-        ]
-    },
-    "page-xmlrpcinterfacestats": {
-        "name": "WebCfg - XMLRPC Interface Stats page",
-        "descr": "Allow access to the 'XMLRPC Interface Stats' page.",
-        "match": [
-            "legacy_traffic_stats.php*"
         ]
     },
     "page-xmlrpclibrary": {

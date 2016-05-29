@@ -1,35 +1,33 @@
 <?php
 
 /*
-        Copyright (C) 2014 Deciso B.V.
-        Copyright (c) 2007 Scott Dale
-        Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
-        and Jonathan Watt <jwatt@jwatt.org>.
-        All rights reserved.
+    Copyright (C) 2014 Deciso B.V.
+    Copyright (c) 2007 Scott Dale
+    Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
+    and Jonathan Watt <jwatt@jwatt.org>.
+    All rights reserved.
 
-        Redistribution and use in source and binary forms, with or without
-        modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-        1. Redistributions of source code must retain the above copyright notice,
-           this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-        2. Redistributions in binary form must reproduce the above copyright
-           notice, this list of conditions and the following disclaimer in the
-           documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-        THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-        INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-        AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-        AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-        OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-        SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-        POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
-
-$nocsrf = true;
 
 require_once("guiconfig.inc");
 require_once("pfsense-utils.inc");
@@ -125,42 +123,42 @@ if ($_REQUEST['updateme']) {
     }
 ?>
 
-<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
-	<tbody>
-		<tr>
-			<td width="40%" class="vncellt">Sync Source</td>
-			<td width="60%" class="listr">
-			<?php if ($ntpq_counter == 0) :
+<table >
+  <tbody>
+    <tr>
+      <td width="40%" class="vncellt">Sync Source</td>
+      <td width="60%" class="listr">
+      <?php if ($ntpq_counter == 0) :
 ?>
         <?= gettext('No active peers available') ?>
-			<?php
+      <?php
 else :
 ?>
-				<?php echo $syncsource; ?>
-			<?php
+        <?php echo $syncsource; ?>
+      <?php
 endif; ?>
-			</td>
-		</tr>
-		<?php if (($gps_ok) && ($gps_lat) && ($gps_lon)) :
+      </td>
+    </tr>
+    <?php if (($gps_ok) && ($gps_lat) && ($gps_lon)) :
 ?>
-			<tr>
+      <tr>
         <td width="40%" class="vncellt"><?= gettext('Clock location') ?></td>
-				<td width="60%" class="listr">
-					<a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">
-					<?php
+        <td width="60%" class="listr">
+          <a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">
+          <?php
                     echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
-					</a>
-					<?php if (isset($gps_alt)) {
+          </a>
+          <?php if (isset($gps_alt)) {
                         echo " (" . $gps_alt . " " . $gps_alt_unit . " alt.)";
 } ?>
-				</td>
-			</tr>
-			<?php if (isset($gps_sat) || isset($gps_satview)) :
+        </td>
+      </tr>
+      <?php if (isset($gps_sat) || isset($gps_satview)) :
 ?>
-				<tr>
+        <tr>
         <td width="40%" class="vncellt"><?= gettext('Satellites') ?></td>
-					<td width="60%" class="listr">
-					<?php
+          <td width="60%" class="listr">
+          <?php
                     if (isset($gps_satview)) {
                         echo gettext('in view ') . intval($gps_satview);
                     }
@@ -171,13 +169,13 @@ endif; ?>
                         echo gettext('in use ') . $gps_sat;
                     }
                     ?>
-					</td>
-				</tr>
-			<?php
+          </td>
+        </tr>
+      <?php
 endif; ?>
-		<?php
+    <?php
 endif; ?>
-	</tbody>
+  </tbody>
 </table>
 <?php
     exit;
@@ -246,9 +244,9 @@ classic Netscape, or Netscape 6/W3C DOM methods is available.
 The optional inLayer argument helps Netscape 4 find objects in
 the named layer or floating DIV. */
 function simpleFindObj(name, inLayer) {
-	return document[name] || (document.all && document.all[name])
-		|| (document.getElementById && document.getElementById(name))
-		|| (document.layers && inLayer && document.layers[inLayer].document[name]);
+  return document[name] || (document.all && document.all[name])
+    || (document.getElementById && document.getElementById(name))
+    || (document.layers && inLayer && document.layers[inLayer].document[name]);
 }
 
 /*** Beginning of Clock 2.1.2, by Andrew Shearer
@@ -279,12 +277,12 @@ Compatibility: IE 4.x and 5.0, Netscape 4.x and 6.0, Mozilla 1.0. Mac & Windows.
 History:  1.0   2000-05-09 GIF-image digits
           2.0   2000-06-29 Uses text DIV layers (so 4.0 browsers req'd), &
                          cookies to work around Win IE stale-time bug
-		  2.1   2002-10-12 Noted Mozilla 1.0 compatibility; released PHP version.
-		  2.1.1 2002-10-20 Fixed octal bug in the PHP translation; the number of
-						minutes & seconds were misinterpretes when less than 10
-		  2.1.2 2003-08-07 The previous fix had introduced a bug when the
-		                minutes or seconds were exactly 0. Thanks to Man Bui
-		                for reporting the bug.
+      2.1   2002-10-12 Noted Mozilla 1.0 compatibility; released PHP version.
+      2.1.1 2002-10-20 Fixed octal bug in the PHP translation; the number of
+            minutes & seconds were misinterpretes when less than 10
+      2.1.2 2003-08-07 The previous fix had introduced a bug when the
+                    minutes or seconds were exactly 0. Thanks to Man Bui
+                    for reporting the bug.
 */
 var clockIncrementMillis = 1000;
 var localTime;
@@ -365,9 +363,9 @@ function clockToggleSeconds()
 }
 
 function clockTimeString(inHours, inMinutes, inSeconds) {
-	return inHours
-	+ (inMinutes < 10 ? ":0" : ":") + inMinutes
-	+ (inSeconds < 10 ? ":0" : ":") + inSeconds;
+  return inHours
+  + (inMinutes < 10 ? ":0" : ":") + inMinutes
+  + (inSeconds < 10 ? ":0" : ":") + inSeconds;
 }
 
 function clockDisplayTime(inHours, inMinutes, inSeconds) {
@@ -465,51 +463,45 @@ function clockUpdate()
 </script>
 
 
-<table class="table table-striped" width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
-	<tbody>
-		<tr>
-			<td width="40%" class="vncellt">Server Time</td>
-			<td width="60%" class="listr">
-				<div id="ClockTime">
-					<b><?php echo(clockTimeString($gDate, $gClockShowsSeconds));?></b>
-				</div>
-			</td>
-		</tr>
-	</tbody>
+<table class="table table-striped table-condensed">
+  <tbody>
+    <tr>
+      <td width="40%" class="vncellt">Server Time</td>
+      <td width="60%" class="listr">
+        <div id="ClockTime">
+          <b><?php echo(clockTimeString($gDate, $gClockShowsSeconds));?></b>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" id="ntpstatus">
+          <?=gettext("Updating...");?>
+      </td>
+    </tr>
+  </tbody>
 </table>
 
-<div id='ntpstatus'>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="clock">
-	<tbody>
-		<tr>
-			<td width="100%" class="listr">
-				Updating...
-			</td>
-		</tr>
-	</tbody>
-</table>
-</div>
 
 <script type="text/javascript">
-	function ntp_getstatus() {
-		scroll(0,0);
-		var url = "/widgets/widgets/ntp_status.widget.php";
-		var pars = 'updateme=yes';
-		jQuery.ajax(
-			url,
-			{
-				type: 'get',
-				data: pars,
-				complete: ntpstatuscallback
-			});
-		// Refresh the status every 1 minute
-		setTimeout('ntp_getstatus()', 1*60*1000);
-	}
-	function ntpstatuscallback(transport) {
-		// The server returns formatted html code
-		var responseStringNtp = transport.responseText
-		jQuery('#ntpstatus').prop('innerHTML',responseStringNtp);
-	}
-	// Do the first status check 1 second after the dashboard opens
-	setTimeout('ntp_getstatus()', 1000);
+  function ntp_getstatus() {
+    scroll(0,0);
+    var url = "/widgets/widgets/ntp_status.widget.php";
+    var pars = 'updateme=yes';
+    jQuery.ajax(
+      url,
+      {
+        type: 'get',
+        data: pars,
+        complete: ntpstatuscallback
+      });
+    // Refresh the status every 1 minute
+    setTimeout('ntp_getstatus()', 1*60*1000);
+  }
+  function ntpstatuscallback(transport) {
+    // The server returns formatted html code
+    var responseStringNtp = transport.responseText
+    jQuery('#ntpstatus').prop('innerHTML',responseStringNtp);
+  }
+  // Do the first status check 1 second after the dashboard opens
+  setTimeout('ntp_getstatus()', 1000);
 </script>

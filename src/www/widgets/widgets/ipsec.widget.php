@@ -1,35 +1,33 @@
 <?php
 
 /*
-      Copyright (C) 2014-2016 Deciso B.V.
-      Copyright (C) 2007 Scott Dale
-      Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
-      and Jonathan Watt <jwatt@jwatt.org>.
-      All rights reserved.
+    Copyright (C) 2014-2016 Deciso B.V.
+    Copyright (C) 2007 Scott Dale
+    Copyright (C) 2004-2005 T. Lechat <dev@lechat.org>, Manuel Kasper <mk@neon1.net>
+    and Jonathan Watt <jwatt@jwatt.org>.
+    All rights reserved.
 
-      Redistribution and use in source and binary forms, with or without
-      modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-      1. Redistributions of source code must retain the above copyright notice,
-         this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-      2. Redistributions in binary form must reproduce the above copyright
-         notice, this list of conditions and the following disclaimer in the
-         documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-      THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-      INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-      AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-      AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-      OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-      SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-      INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-      CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-      ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-      POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
-
-$nocsrf = true;
 
 require_once("guiconfig.inc");
 
@@ -70,6 +68,7 @@ if (isset($config['ipsec']['phase1'])) {
         echo "&nbsp;&nbsp;&nbsp;</b>";
         echo "</div>";
     }
+    echo "</div>";
 
     $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
     if ($ipsec_leases == null) {
@@ -106,7 +105,45 @@ if (isset($config['ipsec']['phase1'])) {
 
 if (isset($config['ipsec']['phase2'])) {
 ?>
-
+<script type="text/javascript">
+  function changeTabDIV(selectedDiv){
+    var dashpos = selectedDiv.indexOf("-");
+    var tabclass = selectedDiv.substring(0,dashpos);
+    d = document;
+    //get deactive tabs first
+    tabclass = tabclass + "-class-tabdeactive";
+    var tabs = document.getElementsByClassName(tabclass);
+    var incTabSelected = selectedDiv + "-deactive";
+    for (i=0; i<tabs.length; i++){
+      var tab = tabs[i].id;
+      dashpos = tab.lastIndexOf("-");
+      var tab2 = tab.substring(0,dashpos) + "-deactive";
+      if (tab2 == incTabSelected){
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "none";
+        tab2 = tab.substring(0,dashpos) + "-active";
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "table-cell";
+        //now show main div associated with link clicked
+        tabmain = d.getElementById(selectedDiv);
+        tabmain.style.display = "block";
+      }
+      else
+      {
+        tab2 = tab.substring(0,dashpos) + "-deactive";
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "table-cell";
+        tab2 = tab.substring(0,dashpos) + "-active";
+        tablink = d.getElementById(tab2);
+        tablink.style.display = "none";
+        //hide sections we don't want to see
+        tab2 = tab.substring(0,dashpos);
+        tabmain = d.getElementById(tab2);
+        tabmain.style.display = "none";
+      }
+    }
+  }
+</script>
 <div id="ipsec-Overview" style="display:block;background-color:#EEEEEE;">
   <table class="table table-striped">
     <thead>
