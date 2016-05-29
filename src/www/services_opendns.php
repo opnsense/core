@@ -149,12 +149,12 @@ include 'head.inc';
                     <input name="enable" type="checkbox" id="enable" value="yes" <?=!empty($pconfig['enable']) ? 'checked="checked"' : "";?> />
                     <strong><?=gettext('Filter DNS requests using OpenDNS'); ?></strong>
                     <div class="hidden" for="help_for_enable">
-                      <?=gettext(sprintf(
+                      <?= sprintf(gettext(
                         'Enabling the OpenDNS service will overwrite DNS servers configured ' .
                         'via the General Setup page as well as ignore any DNS servers learned ' .
-                        'by DHCP/PPP on WAN and use the DNS servers from %s instead.',
+                        'by DHCP/PPP on WAN and use the DNS servers from %s instead.'),
                         '<a href="http://www.opendns.com" target="_blank">OpenDNS.com</a>'
-                      )); ?>
+                      ) ?>
                     </div>
                   </td>
                 </tr>
@@ -182,13 +182,13 @@ include 'head.inc';
                   <td>
                     <input name="host" type="text" id="host" size="30" value="<?=$pconfig['host'];?>" />
                     <div class="hidden" for="help_for_host">
-                      <?=gettext(sprintf(
-                        'Enter the network name configured on the %s under ' .
-                        '\'Manage your networks\'. Used to update the node\'s ' .
-                        'IP address whenever the WAN interface changes its IP address.',
-                        '<a href="https://www.opendns.com/dashboard/networks/" target="_blank">' .
-                        gettext('Networks Dashboard of OpenDNS') .'</a>'
-                      )); ?>
+                      <?= sprintf(gettext(
+                        'Enter the network name configured on the %sNetworks ' .
+                        'Dashboard of OpenDNS%s under \'Manage your networks\'. ' .
+                        'Used to update the node\'s IP address whenever the ' .
+                        'WAN interface changes its IP address.'),
+                        '<a href="https://www.opendns.com/dashboard/networks/" target="_blank">', '</a>'
+                      ) ?>
                     </div>
                   </td>
                 </tr>

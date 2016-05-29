@@ -328,7 +328,7 @@ function notify_via_growl($message, $force=false) {
 		$growl_notification = $config['notifications']['growl']['notification_name'];
 
 		$growl = new Growl($growl_ip, $growl_password, $growl_name);
-		$growl->notify("{$growl_notification}", gettext(sprintf("%s (%s) - Notification", $g['product_name'], $hostname)), "{$message}");
+		$growl->notify("{$growl_notification}", sprintf(gettext('%s (%s) - Notification'), $g['product_name'], $hostname), "{$message}");
 	}
 
 	/* Store last message sent to avoid spamming */
