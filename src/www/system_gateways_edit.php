@@ -239,11 +239,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (!empty($pconfig['latencylow'])) {
         if (is_numeric($pconfig['latencylow']) && $pconfig['latencylow'] > $apinger_default['latencyhigh']) {
-            $input_errors[] = gettext(sprintf("The low latency threshold needs to be less than the default high latency threshold (%d)", $apinger_default['latencyhigh']));
+            $input_errors[] = sprintf(gettext('The low latency threshold needs to be less than the default high latency threshold (%d)'), $apinger_default['latencyhigh']);
         }
     } elseif (!empty($pconfig['latencyhigh'])) {
         if (is_numeric($_POST['latencyhigh']) && $_POST['latencyhigh'] < $apinger_default['latencylow']) {
-            $input_errors[] = gettext(sprintf("The high latency threshold needs to be higher than the default low latency threshold (%d)", $apinger_default['latencylow']));
+            $input_errors[] = sprintf(gettext('The high latency threshold needs to be higher than the default low latency threshold (%d)'), $apinger_default['latencylow']);
         }
     }
 
@@ -253,11 +253,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (!empty($pconfig['losslow'])) {
         if (is_numeric($pconfig['losslow']) && $pconfig['losslow'] > $apinger_default['losshigh']) {
-            $input_errors[] = gettext(sprintf("The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)", $apinger_default['losshigh']));
+            $input_errors[] = sprintf(gettext('The low Packet Loss threshold needs to be less than the default high Packet Loss threshold (%d)'), $apinger_default['losshigh']);
         }
     } elseif (!empty($pconfig['losshigh'])) {
         if (is_numeric($pconfig['losshigh']) && $pconfig['losshigh'] < $apinger_default['losslow']) {
-            $input_errors[] = gettext(sprintf("The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)", $apinger_default['losslow']));
+            $input_errors[] = sprintf(gettext('The high Packet Loss threshold needs to be higher than the default low Packet Loss threshold (%d)'), $apinger_default['losslow']);
         }
     }
 
@@ -283,11 +283,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (!empty($pconfig['interval'])) {
         if (is_numeric($pconfig['interval']) && $pconfig['interval'] > $apinger_default['down']) {
-            $input_errors[] = gettext(sprintf("The probe interval needs to be less than the default down time setting (%d)", $apinger_default['down']));
+            $input_errors[] = sprintf(gettext('The probe interval needs to be less than the default down time setting (%d)'), $apinger_default['down']);
         }
     } elseif (!empty($pconfig['down'])) {
         if (is_numeric($pconfig['down']) && $pconfig['down'] < $apinger_default['interval']) {
-            $input_errors[] = gettext(sprintf("The down time setting needs to be higher than the default probe interval (%d)", $apinger_default['interval']));
+            $input_errors[] = sprintf(gettext('The down time setting needs to be higher than the default probe interval (%d)'), $apinger_default['interval']);
         }
     }
 
@@ -728,7 +728,7 @@ $( document ).ready(function() {
                         </tbody>
                     </table>
                     <div class="hidden" for="help_for_latency">
-                        <?=gettext(sprintf("Low and high thresholds for latency in milliseconds. Default is %d/%d.", $apinger_default['latencylow'], $apinger_default['latencyhigh']));?>
+                        <?= sprintf(gettext('Low and high thresholds for latency in milliseconds. Default is %d/%d.'), $apinger_default['latencylow'], $apinger_default['latencyhigh']) ?>
                     </div>
                   </td>
                 </tr>
@@ -754,7 +754,7 @@ $( document ).ready(function() {
                         </tbody>
                     </table>
                     <div class="hidden" for="help_for_loss">
-                      <?=gettext(sprintf("Low and high thresholds for packet loss in %%. Default is %d/%d.", $apinger_default['losslow'], $apinger_default['losshigh']));?>
+                      <?= sprintf(gettext('Low and high thresholds for packet loss in %%. Default is %d/%d.'), $apinger_default['losslow'], $apinger_default['losshigh']) ?>
                     </div>
                   </td>
                 </tr>
@@ -763,7 +763,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="interval" id="interval" type="text" value="<?=$pconfig['interval'];?>" onclick="calculated_change()" />
                     <div class="hidden" for="help_for_interval">
-                      <?=gettext(sprintf("How often that an ICMP probe will be sent in seconds. Default is %d.", $apinger_default['interval']));?><br /><br />
+                      <?= sprintf(gettext('How often that an ICMP probe will be sent in seconds. Default is %d.'), $apinger_default['interval']) ?><br /><br />
                       <?=gettext("NOTE: The quality graph is averaged over seconds, not intervals, so as the probe interval is increased the accuracy of the quality graph is decreased.");?>
                     </div>
                   </td>
@@ -773,7 +773,7 @@ $( document ).ready(function() {
                   <td>
                     <input name="down" type="text" value="<?=$pconfig['down'];?>" />
                     <div class="hidden" for="help_for_down">
-                      <?=gettext(sprintf("The number of seconds of failed probes before the alarm will fire. Default is %d.", $apinger_default['down']));?>
+                      <?= sprintf(gettext('The number of seconds of failed probes before the alarm will fire. Default is %d.'), $apinger_default['down']) ?>
                     </div>
                   </td>
                 </tr>
@@ -784,7 +784,7 @@ $( document ).ready(function() {
                     <input name="avg_delay_samples_calculated" type="checkbox" id="avg_delay_samples_calculated" value="yes" <?=!empty($pconfig['avg_delay_samples_calculated']) ? "checked=\"checked\"" : "";?> onclick="calculated_change()" />
                     <?=gettext("Use calculated value."); ?>
                     <div class="hidden" for="help_for_avg_delay_samples">
-                      <?=gettext(sprintf("How many replies should be used to compute average delay for controlling \"delay\" alarms?  Default is %d.", $apinger_default['avg_delay_samples']));?>
+                      <?= sprintf(gettext('How many replies should be used to compute average delay for controlling "delay" alarms? Default is %d.'), $apinger_default['avg_delay_samples']) ?>
                     </div>
                   </td>
                 </tr>
@@ -796,7 +796,7 @@ $( document ).ready(function() {
                     <?=gettext("Use calculated value."); ?>
 
                     <div class="hidden" for="help_for_avg_loss_samples">
-                      <?=gettext(sprintf("How many probes should be used to compute average packet loss?  Default is %d.", $apinger_default['avg_loss_samples']));?>
+                      <?= sprintf(gettext('How many probes should be used to compute average packet loss? Default is %d.'), $apinger_default['avg_loss_samples']) ?>
                     </div>
                   </td>
                 </tr>
@@ -808,7 +808,7 @@ $( document ).ready(function() {
                     <?=gettext("Use calculated value."); ?>
 
                     <div class="hidden" for="help_for_avg_loss_delay_samples">
-                      <?=gettext(sprintf("The delay (in qty of probe samples) after which loss is computed.  Without this, delays longer than the probe interval would be treated as packet loss.  Default is %d.", $apinger_default['avg_loss_delay_samples']));?>
+                      <?= sprintf(gettext('The delay (in qty of probe samples) after which loss is computed. Without this, delays longer than the probe interval would be treated as packet loss. Default is %d.'), $apinger_default['avg_loss_delay_samples']) ?>
                     </div>
                   </td>
                 </tr>
