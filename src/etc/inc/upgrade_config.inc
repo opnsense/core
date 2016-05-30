@@ -2100,37 +2100,6 @@ function upgrade_055_to_056() {
 	}
 }
 
-
-function upgrade_056_to_057() {
-	global $config;
-
-	if (!is_array($config['system']['user']))
-		$config['system']['user'] = array();
-	/* migrate captivate portal to user manager */
-	if (is_array($config['captiveportal']['user'])) {
-		foreach($config['captiveportal']['user'] as $user) {
-			// avoid user conflicts
-			$found = false;
-			foreach ($config['system']['user'] as $userent) {
-				if ($userent['name'] == $user['name']) {
-					$found = true;
-					break;
-				}
-			}
-			if ($found)
-				continue;
-			$user['scope'] = "user";
-			if (isset($user['expirationdate'])) {
-				$user['expires'] = $user['expirationdate'];
-				unset($user['expirationdate']);
-			}
-			$user['uid'] = $config['system']['nextuid']++;
-			$config['system']['user'][] = $user;
-		}
-		unset($config['captiveportal']['user']);
-	}
-}
-
 function upgrade_057_to_058() {
 	global $config;
 	/* set all phase2 entries to tunnel mode */
@@ -2503,11 +2472,6 @@ function upgrade_077_to_078() {
 		$config['pptpd']['n_pptp_units'] = empty($config['pptpd']['n_pptp_units']) ? 16 : $config['pptpd']['n_pptp_units'];
 	}
 }
-function upgrade_078_to_079()
-{
-	/* Delete old and unused RRD file */
-	@unlink('/var/db/rrd/captiveportal-totalusers.rrd');
-}
 
 function upgrade_079_to_080() {
 	global $config;
@@ -2681,28 +2645,6 @@ function upgrade_080_to_081()
 	unset($rule);
 }
 
-function upgrade_082_to_083() {
-	global $config;
-
-	/* Upgrade captiveportal config */
-	if (!empty($config['captiveportal'])) {
-		$tmpcp = $config['captiveportal'];
-		$config['captiveportal'] = array();
-		$config['captiveportal']['cpzone'] = array();
-		$config['captiveportal']['cpzone'] = $tmpcp;
-		$config['captiveportal']['cpzone']['zoneid'] = 8000;
-		$config['captiveportal']['cpzone']['zone'] = "cpzone";
-		if ($config['captiveportal']['cpzone']['auth_method'] == "radius")
-			$config['captiveportal']['cpzone']['radius_protocol'] = "PAP";
-	}
-	if (!empty($config['voucher'])) {
-		$tmpcp = $config['voucher'];
-		$config['voucher'] = array();
-		$config['voucher']['cpzone'] = array();
-		$config['voucher']['cpzone'] = $tmpcp;
-	}
-}
-
 function upgrade_083_to_084() {
 	global $config;
 	if (!isset($config['hasync'])) {
@@ -2826,42 +2768,6 @@ function upgrade_088_to_089() {
 		$config['ca'] = array();
 	if (!is_array($config['cert']))
 		$config['cert'] = array();
-
-	/* migrate captive portal ssl to certifcate mngr */
-	if (is_array($config['captiveportal'])) {
-		foreach ($config['captiveportal'] as $id => &$setting) {
-			if (isset($setting['httpslogin'])) {
-				/* create cert entry */
-				$cert = array();
-				$cert['refid'] = uniqid();
-				$cert['descr'] = "Captive Portal Cert - {$setting['zone']}";
-				$cert['crt'] = $setting['certificate'];
-				$cert['prv'] = $setting['private-key'];
-
-				if (!empty($setting['cacertificate'])) {
-					/* create ca entry */
-					$ca = array();
-					$ca['refid'] = uniqid();
-					$ca['descr'] = "Captive Portal CA - {$setting['zone']}";
-					$ca['crt'] = $setting['cacertificate'];
-					$config['ca'][] = $ca;
-
-					/* add ca reference to certificate */
-					$cert['caref'] = $ca['refid'];
-				}
-
-				$config['cert'][] = $cert;
-
-				/* create cert reference */
-				$setting['certref'] = $cert['refid'];
-
-				unset($setting['certificate']);
-				unset($setting['private-key']);
-				unset($setting['cacertificate']);
-
-			}
-		}
-	}
 }
 
 function upgrade_089_to_090() {
@@ -2909,22 +2815,6 @@ function upgrade_091_to_092() {
 			}
 		}
 	}
-}
-
-function upgrade_092_to_093()
-{
-	$suffixes = array("concurrent", "loggedin");
-
-	foreach ($suffixes as $suffix) {
-		if (file_exists("/var/db/rrd/captiveportal-{$suffix}.rrd")) {
-			rename(
-				"/var/db/rrd/captiveportal-{$suffix}.rrd",
-				"/var/db/rrd/captiveportal-cpZone-{$suffix}.rrd"
-			);
-		}
-	}
-
-	enable_rrd_graphing();
 }
 
 function upgrade_093_to_094() {
@@ -3010,36 +2900,9 @@ function upgrade_098_to_099() {
 	}
 }
 
-function upgrade_100_to_101()
-{
-	global $config;
-
-	if (!is_array($config['voucher']))
-		return;
-
-	foreach ($config['voucher'] as $cpzone => $cp) {
-		if (!is_array($cp['roll']))
-			continue;
-		foreach ($cp['roll'] as $ridx => $rcfg) {
-			if (!empty($rcfg['comment']))
-				$config['voucher'][$cpzone]['roll'][$ridx]['descr'] = $rcfg['comment'];
-		}
-	}
-}
-
 function upgrade_101_to_102()
 {
 	global $config;
-
-	if (is_array($config['captiveportal'])) {
-		foreach ($config['captiveportal'] as $cpzone => $cp) {
-			if (!is_array($cp['passthrumac']))
-				continue;
-
-			foreach ($cp['passthrumac'] as $idx => $passthrumac)
-				$config['captiveportal'][$cpzone]['passthrumac'][$idx]['action'] = 'pass';
-		}
-	}
 
 	/* Convert OpenVPN Compression option to the new style */
 	// Nothing to do if there is no OpenVPN tag
@@ -3106,23 +2969,6 @@ function upgrade_103_to_104() {
 
 	/* sync all local account information */
 	local_sync_accounts();
-}
-
-function upgrade_104_to_105() {
-	global $config;
-
-	if (is_array($config['captiveportal'])) {
-		$zoneid = 2;
-		foreach ($config['captiveportal'] as $cpzone => $cpcfg) {
-			if (empty($cpfg['zoneid'])) {
-				$config['captiveportal'][$cpzone]['zoneid'] = $zoneid;
-				$zoneid += 2;
-			} else if ($cpcfg['zoneid'] > 4000) {
-				$config['captiveportal'][$cpzone]['zoneid'] = $zoneid;
-				$zoneid += 2;
-			}
-		}
-	}
 }
 
 function upgrade_105_to_106() {
