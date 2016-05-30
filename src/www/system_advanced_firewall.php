@@ -52,7 +52,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['checkaliasesurlcert'] = isset($config['system']['checkaliasesurlcert']);
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
-    $pconfig['disablenegate'] = isset($config['system']['disablenegate']);
     $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['kill_states'] = isset($config['system']['kill_states']);
@@ -163,12 +162,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disablereplyto'] = $pconfig['disablereplyto'];
         } elseif (isset($config['system']['disablereplyto'])) {
             unset($config['system']['disablereplyto']);
-        }
-
-        if (!empty($pconfig['disablenegate'])) {
-            $config['system']['disablenegate'] = $pconfig['disablenegate'];
-        } elseif (isset($config['system']['disablenegate'])) {
-            unset($config['system']['disablenegate']);
         }
 
         if (!empty($pconfig['enablenatreflectionhelper'])) {
@@ -562,16 +555,6 @@ include("head.inc");
                     <div class="hidden" for="help_for_disablereplyto">
                       <?=gettext("With Multi-WAN you generally want to ensure traffic leaves the same interface it arrives on, hence reply-to is added automatically by default. " .
                                           "When using bridging, you must disable this behavior if the WAN gateway IP is different from the gateway IP of the hosts behind the bridged interface.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_disablenegate" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable Negate rules') ?></td>
-                  <td>
-                    <input name="disablenegate" type="checkbox" value="yes" <?=!empty($pconfig['disablenegate']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Disable Negate rule on policy routing rules");?></strong>
-                    <div class="hidden" for="help_for_disablenegate">
-                      <?=gettext("With Multi-WAN you generally want to ensure traffic reaches directly connected networks and VPN networks when using policy routing. You can disable this for special purposes but it requires manually creating rules for these networks");?>
                     </div>
                   </td>
                 </tr>

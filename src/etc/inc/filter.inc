@@ -579,13 +579,6 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
         $aliases .= "table <vpn_networks> { $vpns_list }\n";
     }
 
-    /* add a Negate_networks table */
-    $aliases .= "table <negate_networks> ";
-    if ($vpns_list) {
-        $aliases .= "{ $vpns_list }";
-    }
-    $aliases .= "\n";
-
     $aliases .= "\n# User Aliases \n";
     /* Setup pf groups */
     if (isset($config['aliases']['alias'])) {
@@ -2414,17 +2407,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     }
 
     $line = "";
-    /* exception(s) to a user rules can go here. */
-    /* rules with a gateway or pool should create another rule for routing to vpns */
-    if (!empty($aline['route']) && trim($aline['type']) == "pass" && strstr($dst, "any") && !isset($config['system']['disablenegate'])) {
-        /* negate VPN/PPTP/PPPoE/Static Route networks for load balancer/gateway rules */
-        $negate_networks = " to <negate_networks> " . filter_generate_port($rule, "destination");
-        $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] .
-          $aline['interface'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] .
-          $negate_networks . $aline['icmp-type'] . $aline['icmp6-type'] . $aline['tag'] . $aline['tagged'] .
-          $aline['allowopts'] . $aline['flags'] . $aline['schedlabel'] .
-          " label \"NEGATE_ROUTE: Negate policy routing for destination\"\n";
-    }
+
     /* piece together the actual user rule */
     $line .= $aline['type'] . $aline['direction'] . $aline['log'] . $aline['quick'] . $aline['interface'] .
       $aline['reply'] . $aline['route'] . $aline['ipprotocol'] . $aline['prot'] . $aline['src'] . $aline['os'] . $aline['dst'] .
