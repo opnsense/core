@@ -381,14 +381,6 @@ function filter_generate_scrubing(&$FilterIflist)
 
     $scrubrules = '';
 
-    if (isset($config['system']['maxmss_enable'])) {
-        $maxmss = 1400;
-        if (!empty($config['system']['maxmss'])) {
-            $maxmss = $config['system']['maxmss'];
-        }
-        $scrubrules .= "scrub from any to <vpn_networks> max-mss {$maxmss}\n";
-    }
-
     /* scrub per interface options */
     foreach ($FilterIflist as $scrubif => $scrubcfg) {
         if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
@@ -574,11 +566,6 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
         $aliases .= "table <bogonsv6> persist file \"/usr/local/etc/bogonsv6\"\n";
     }
 
-    $vpns_list = filter_get_vpns_list();
-    if ($vpns_list) {
-        $aliases .= "table <vpn_networks> { $vpns_list }\n";
-    }
-
     $aliases .= "\n# User Aliases \n";
     /* Setup pf groups */
     if (isset($config['aliases']['alias'])) {
@@ -735,58 +722,6 @@ function filter_generate_gateways()
     return $rules;
 }
 
-/* returns space separated list of vpn subnets */
-function filter_get_vpns_list() {
-    global $config;
-
-    $vpns = "";
-    $vpns_arr = array();
-
-    /* ipsec */
-    if (isset($config['ipsec']['enable'])) {
-        if (isset($config['ipsec']['phase2'])) {
-            foreach ($config['ipsec']['phase2'] as $ph2ent) {
-                if ((!$ph2ent['mobile']) && ($ph2ent['mode'] != 'transport')) {
-                    if (!is_array($ph2ent['remoteid'])) {
-                        continue;
-                    }
-                    $ph2ent['remoteid']['mode'] = $ph2ent['mode'];
-                    $vpns_subnet = ipsec_idinfo_to_cidr($ph2ent['remoteid']);
-                    if ($vpns_subnet == "0.0.0.0/0") {
-                        continue;
-                    }
-                    $vpns_arr[] = $vpns_subnet;
-                }
-            }
-        }
-    }
-
-    /* openvpn */
-    foreach (array('client', 'server') as $type) {
-        if (isset($config['openvpn']['openvpn-' . $type])) {
-            foreach ($config['openvpn']['openvpn-' . $type] as $settings) {
-                if (is_array($settings)) {
-                    if (!isset($settings['disable'])) {
-                        $remote_networks = explode(',', $settings['remote_network']);
-                        foreach ($remote_networks as $remote_network) {
-                            if (is_subnet($remote_network) && ($remote_network <> "0.0.0.0/0")) {
-                                $vpns_arr[] = $remote_network;
-                            }
-                        }
-                        if (is_subnet($settings['tunnel_network']) && $settings['tunnel_network'] <> "0.0.0.0/0") {
-                            $vpns_arr[] = $settings['tunnel_network'];
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (!empty($vpns_arr)) {
-        $vpns = implode(" ", $vpns_arr);
-    }
-    return $vpns;
-}
 
 /* returns space separated list of directly connected networks
  * optionally returns an array instead, including friendly interface and gateway (if applicable)

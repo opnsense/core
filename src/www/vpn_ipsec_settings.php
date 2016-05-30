@@ -51,8 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     $pconfig['failoverforcereload'] = isset($config['ipsec']['failoverforcereload']);
-    $pconfig['maxmss_enable'] = isset($config['system']['maxmss_enable']);
-    $pconfig['maxmss'] = isset($config['system']['maxmss']) ? $config['system']['maxmss'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // save form data
     $pconfig = $_POST;
@@ -80,21 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (isset($pconfig['failoverforcereload']) && $pconfig['failoverforcereload'] == "yes") {
         $config['ipsec']['failoverforcereload'] = true;
-    } elseif (isset($config['ipsec']['failoverforcereload']))
+    } elseif (isset($config['ipsec']['failoverforcereload'])) {
         unset($config['ipsec']['failoverforcereload']);
-
-    if (isset($pconfig['maxmss_enable']) && $pconfig['maxmss_enable'] == "yes") {
-        $config['system']['maxmss_enable'] = true;
-        if (!empty($pconfig['maxmss']) && is_numericint($pconfig['maxmss'])) {
-            $config['system']['maxmss'] = $pconfig['maxmss'];
-        }
-    } else {
-        if (isset($config['system']['maxmss_enable'])) {
-            unset($config['system']['maxmss_enable']);
-        }
-        if (isset($config['system']['maxmss'])) {
-            unset($config['system']['maxmss']);
-        }
     }
 
     write_config();
@@ -111,28 +96,6 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-
-<script type="text/javascript">
-//<![CDATA[
-$( document ).ready(function() {
-    maxmss_checked()
-});
-
-function maxmss_checked(obj) {
-  if ($('#maxmss_enable').is(":checked")) {
-    $('#maxmss').attr('disabled',false);
-    $("#maxmss").addClass('show');
-    $("#maxmss").removeClass('hidden');
-  } else {
-    $('#maxmss').attr('disabled',true);
-    $("#maxmss").addClass('hidden');
-    $("#maxmss").removeClass('show');
-  }
-
-}
-
-//]]>
-</script>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
@@ -216,19 +179,6 @@ endforeach; ?>
                                                   "an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded " .
                                                   "when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior" .
                                                   " is disabled by default. Check this box to force IPsec to fully reload on failover."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_maxmss_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum MSS"); ?></td>
-                      <td>
-                        <input name="maxmss_enable" type="checkbox" id="maxmss_enable" value="yes" <?= !empty($pconfig['maxmss_enable']) ? "checked=\"checked\"" : "" ;?> onclick="maxmss_checked()" />
-                        <strong><?=gettext("Enable MSS clamping on VPN traffic"); ?></strong>
-                        <input name="maxmss" id="maxmss" type="text" value="<?= !empty($pconfig['maxmss']) ? $pconfig['maxmss'] : "1400";
-?>" <?= !empty($pconfig['maxmss_enable']) ? "disabled=\"disabled\"" : "" ;?> />
-                        <div class="hidden" for="help_for_maxmss_enable">
-                        <?=gettext("Enable MSS clamping on TCP flows over VPN. " .
-                                                  "This helps overcome problems with PMTUD on IPsec VPN links. If left blank, the default value is 1400 bytes."); ?>
                         </div>
                       </td>
                     </tr>

@@ -97,11 +97,9 @@ require_once("authgui.inc");
 $reserved_table_names = array(
     "bogons",
     "bogonsv6",
-    "negate_networks",
     "sshlockout",
     "tonatsubnets",
     "virusprot",
-    "vpn_networks",
     "webConfiguratorlockout"
 );
 
