@@ -2531,55 +2531,6 @@ EOD;
      */
     $ipfrules .= "block in {$log['block']} quick from <virusprot> to any label \"virusprot overload table\"\n";
 
-
-    /* if captive portal is enabled, ensure that access to this port
-     * is allowed on a locked down interface
-     */
-    if (is_array($config['captiveportal'])) {
-        foreach ($config['captiveportal'] as $cpcfg) {
-            if (!isset($cpcfg['enable'])) {
-                continue;
-            }
-            $cpinterfaces = explode(",", $cpcfg['interface']);
-            $cpiflist = array();
-            $cpiplist = array();
-            foreach ($cpinterfaces as $cpifgrp) {
-                if (!isset($FilterIflist[$cpifgrp])) {
-                    continue;
-                }
-                $tmpif = get_real_interface($cpifgrp);
-                if (!empty($tmpif)) {
-                    $cpiflist[] = "{$tmpif}";
-                    $cpipm = get_interface_ip($cpifgrp);
-                    if (is_ipaddr($cpipm)) {
-                        $carpif = link_ip_to_carp_interface($cpipm);
-                        if (!empty($carpif)) {
-                            $cpiflist[] = $carpif;
-                            $carpsif = explode(" ", $carpif);
-                            foreach ($carpsif as $cpcarp) {
-                                $carpip = find_interface_ip($cpcarp);
-                                if (is_ipaddr($carpip)) {
-                                    $cpiplist[] = $carpip;
-                                }
-                            }
-                        }
-                        $cpiplist[] = $cpipm;
-                    }
-                }
-            }
-            if (count($cpiplist) > 0 && count($cpiflist) > 0) {
-                $cpinterface = implode(" ", $cpiflist);
-                $cpaddresses = implode(" ", $cpiplist);
-                $listenporthttps = !empty($cpcfg['listenporthttps']) ? $cpcfg['listenporthttps'] : ($cpcfg['zoneid'] + 1);
-                $listenporthttp  = !empty($cpcfg['listenporthttp'])  ? $cpcfg['listenporthttp']  : $cpcfg['zoneid'];
-                $portalias = $listenporthttps;
-                $portalias .= " {$listenporthttp}";
-                $ipfrules .= "pass in {$log['pass']} quick on { {$cpinterface} } proto tcp from any to { {$cpaddresses} } port { {$portalias} }  keep state(sloppy)\n";
-                $ipfrules .= "pass out {$log['pass']} quick on { {$cpinterface} } proto tcp from any to any flags any  keep state(sloppy)\n";
-            }
-        }
-    }
-
     foreach ($FilterIflist as $on => $oc) {
       /*
        * Block bogon networks via the following list.  Note that "bogons"
