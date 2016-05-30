@@ -156,7 +156,7 @@ include("head.inc");
                           <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
                           <strong><?=gettext("Append circuit ID and agent ID to requests"); ?></strong><br />
                           <div class="hidden" for="help_for_agentoption">
-                            <?php printf(gettext("If this is checked, the DHCP relay will append the circuit ID (%s interface number) and the agent ID to the DHCP request."), $g['product_name']); ?>
+                            <?= gettext('If this is checked, the DHCP relay will append the circuit ID (interface number) and the agent ID to the DHCP request.') ?>
                           </div>
                       </td>
                     </tr>

@@ -83,10 +83,6 @@ if (isset($_GET['xml'])) {
 	$xml = htmlspecialchars($_POST['xml']);
 }
 
-/*
- * XXX If we don't want hardcoding we could
- * probe /usr/local/wizard for viable files.
- */
 switch ($xml) {
 	case 'openvpn':
 		break;
@@ -95,7 +91,7 @@ switch ($xml) {
 		break;
 }
 
-global $g, $listtags;
+global $listtags;
 
 $listtags = array_flip(array(
 	'additional_files_needed',
@@ -127,8 +123,8 @@ if (!is_array($pkg)) {
 	die;
 }
 
-$description = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['description']);
-$title = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
+$description = $pkg['step'][$stepid]['description'];
+$title = $pkg['step'][$stepid]['title'];
 $totalsteps = $pkg['totalsteps'];
 
 if ($pkg['includefile']) {
@@ -206,14 +202,12 @@ function update_config_field($field, $updatetext, $unset, $arraynum, $field_type
 	eval($text);
 }
 
-$title       = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['title']);
-$description = preg_replace("/pfSense/i", $g['product_name'], $pkg['step'][$stepid]['description']);
-
 // handle before form display event.
 do {
 	$oldstepid = $stepid;
-	if($pkg['step'][$stepid]['stepbeforeformdisplay'] <> "")
+	if ($pkg['step'][$stepid]['stepbeforeformdisplay'] != '') {
 		eval($pkg['step'][$stepid]['stepbeforeformdisplay']);
+	}
 } while ($oldstepid != $stepid);
 
 

@@ -107,7 +107,7 @@ if (isset($_POST['getupdatestatus'])) {
       // update cpu usage chart
       system_information_widget_cpu_update(sender, data);
 
-      $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ( '+data['cpu']['cpus']+' cores )');
+      $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ('+data['cpu']['cpus']+' cores )');
       var uptime_days = parseInt(moment.duration(parseInt(data['uptime']), 'seconds').asDays());
       var uptime_str = "";
       if (uptime_days > 0) {
@@ -118,6 +118,7 @@ if (isset($_POST['getupdatestatus'])) {
       $("#system_information_widget_uptime").html(uptime_str);
       $("#system_information_widget_datetime").html(data['date_frmt']);
       $("#system_information_widget_last_config_change").html(data['config']['last_change_frmt']);
+      $("#system_information_widget_versions").html(data['versions'].join('<br/>'));
 
       var states_perc = parseInt((parseInt(data['kernel']['pf']['states']) / parseInt(data['kernel']['pf']['maxstates']))*100);
       $("#system_information_widget_states .progress-bar").css("width",  states_perc + "%").attr("aria-valuenow", states_perc + "%");
@@ -197,16 +198,12 @@ if (isset($_POST['getupdatestatus'])) {
     </tr>
     <tr>
       <td><?=gettext("Versions");?></td>
-      <td>
-          <?=sprintf('%s %s-%s', $g['product_name'], explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')))[0], php_uname('m'));?><br/>
-          <?=php_uname('s') . ' ' . php_uname('r'); ?><br/>
-          <?=exec('/usr/local/bin/openssl version'); ?>
-      </td>
+      <td id="system_information_widget_versions"></td>
     </tr>
     <tr>
       <td><?= gettext('Updates') ?></td>
       <td>
-        <div id='updatestatus'><span class='btn-link' onclick='system_information_widget_checkupdate()'><?=gettext("Click to check for updates");?></span></div>
+        <div id="updatestatus"><span class='btn-link' onclick='system_information_widget_checkupdate()'><?=gettext("Click to check for updates");?></span></div>
       </td>
     </tr>
     <tr>

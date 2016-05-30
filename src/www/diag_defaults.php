@@ -54,8 +54,8 @@ include("head.inc");
             <li><?=gettext("System will be configured as a DHCP server on the default LAN interface");?></li>
             <li><?=gettext("Reboot after changes are installed");?></li>
             <li><?=gettext("WAN interface will be set to obtain an address automatically from a DHCP server");?></li>
-            <li><?=gettext("webConfigurator admin username will be reset to 'root'");?></li>
-            <li><?=gettext("webConfigurator admin password will be reset to");?> '<?=$g['factory_shipped_password']?>'</li>
+            <li><?= sprintf(gettext('Admin username will be reset to: %s'), $g['factory_shipped_username']) ?></li>
+            <li><?= sprintf(gettext('Admin password will be reset to: %s'), $g['factory_shipped_password']) ?></li>
           </ul>
           <p><strong><?=gettext("Are you sure you want to proceed?");?></strong></p>
           <div class="btn-group">
