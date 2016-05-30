@@ -64,7 +64,7 @@ if (isset($_POST['getupdatestatus'])) {
    * check for updates
    */
   function system_information_widget_checkupdate() {
-      $('#updatestatus').html('<span class="text-info"><?= html_safe(gettext('Fetching... (may take up to 30 seconds)')) ?></span>');
+      $('#updatestatus').html('<span class="text-info"><?= html_safe(gettext('Checking... (may take up to 30 seconds)')) ?></span>');
       $.ajax({
         type: "POST",
         url: '/widgets/widgets/system_information.widget.php',

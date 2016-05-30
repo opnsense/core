@@ -36,7 +36,7 @@ POSSIBILITY OF SUCH DAMAGE.
         $('#updatelist').empty();
         $('#updatetab > a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Fetching... (may take up to 30 seconds)') }}");
+        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
