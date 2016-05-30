@@ -944,34 +944,6 @@ function filter_generate_optcfg_array()
             $FilterIflist[$if] = $oic;
         }
     }
-    /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
-        $oic = array();
-        $oic['if'] = 'enc0';
-        $oic['descr'] = 'IPsec';
-        $oic['type'] = "none";
-        $oic['virtual'] = true;
-        $FilterIflist['enc0'] = $oic;
-    }
-    /* add openvpn interfaces */
-    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-        $oic = array();
-        $oic['if'] = "openvpn";
-        $oic['descr'] = 'OpenVPN';
-        $oic['type'] = "none";
-        $oic['virtual'] = true;
-        $FilterIflist['openvpn'] = $oic;
-    }
-    /* add interface groups */
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
-            $oc = array();
-            $oc['if'] = $ifgen['ifname'];
-            $oc['descr'] = $ifgen['ifname'];
-            $oc['virtual'] = true;
-            $FilterIflist[$ifgen['ifname']] = $oc;
-        }
-    }
 
     return $FilterIflist ;
 }
