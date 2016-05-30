@@ -2372,6 +2372,7 @@ function configure_cron()
     $autocron = array();
 
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 sshlockout', '*/60');
+    $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '*/60');
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 virusprot', '*/60');
     $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '1', '1');
     $autocron[] = generate_cron_job('/usr/local/etc/rc.update_urltables', '30', '12');
