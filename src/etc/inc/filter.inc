@@ -1150,12 +1150,10 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
     }
 
     /* PPPoE subnet */
-    if (isset($FilterIflist['pppoe']['items']) && is_array($FilterIflist['pppoe']['items'])) {
-        foreach ($FilterIflist['pppoe']['items'] as $pppoe) {
-            if (is_private_ip($pppoe['ip'])) {
-                $tonathosts[] = "{$pppoe['sa']}/{$pppoe['sn']}";
-                $descriptions[] = gettext("PPPoE server");
-            }
+    foreach (array($FilterIflist['pppoe']['items']) as $pppoe) {
+        if (is_private_ip($pppoe['ip'])) {
+            $tonathosts[] = "{$pppoe['sa']}/{$pppoe['sn']}";
+            $descriptions[] = gettext("PPPoE server");
         }
     }
 
@@ -1170,21 +1168,17 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
     }
 
     /* add openvpn interfaces */
-    if (isset($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as $ovpnsrv) {
-            if (!isset($ovpnsrv['disable']) && !empty($ovpnsrv['tunnel_network'])) {
-                $tonathosts[] = $ovpnsrv['tunnel_network'];
-                $descriptions[] = gettext("OpenVPN server");
-            }
+    foreach (array($config['openvpn']['openvpn-server']) as $ovpnsrv) {
+        if (!isset($ovpnsrv['disable']) && !empty($ovpnsrv['tunnel_network'])) {
+            $tonathosts[] = $ovpnsrv['tunnel_network'];
+            $descriptions[] = gettext("OpenVPN server");
         }
     }
 
-    if (isset($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as $ovpncli) {
-            if (!isset($ovpncli['disable']) && !empty($ovpncli['tunnel_network'])) {
-                $tonathosts[] = $ovpncli['tunnel_network'];
-                $descriptions[] = gettext("OpenVPN client");
-            }
+    foreach (array($config['openvpn']['openvpn-client']) as $ovpncli) {
+        if (!isset($ovpncli['disable']) && !empty($ovpncli['tunnel_network'])) {
+            $tonathosts[] = $ovpncli['tunnel_network'];
+            $descriptions[] = gettext("OpenVPN client");
         }
     }
 
