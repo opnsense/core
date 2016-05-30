@@ -169,10 +169,15 @@
             </Settings>
             <Status url="/carp_status.php"/>
         </VIP>
-        <Schedules order="100" url="/firewall_schedule.php" cssClass="fa fa-calendar fa-fw">
-            <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
-        </Schedules>
-        <Settings order="200" url="/system_advanced_firewall.php" cssClass="fa fa-cogs fa-fw"/>
+        <Settings order="200" cssClass="fa fa-cogs fa-fw">
+            <Schedules order="100" url="/firewall_schedule.php">
+                <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
+            </Schedules>
+            <Normalization order="200" url="/firewall_scrub.php">
+                <NormalizationEdit url="/firewall_scrub_edit.php*" visibility="hidden"/>
+            </Normalization>
+            <Advanced order="300" url="/system_advanced_firewall.php"/>
+        </Settings>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <FilterReload order="20"  VisibleName="Filter Reload" url="/status_filter_reload.php"/>
             <pfInfo order="30" url="/diag_pf_info.php" VisibleName="pfInfo"/>

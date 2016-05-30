@@ -328,6 +328,14 @@
             "firewall_schedule.php*"
         ]
     },
+    "page-firewall-scrub": {
+        "name": "WebCfg - Firewall: Normalization page",
+        "descr": "Allow access to the 'Firewall: Normalization' page.",
+        "match": [
+            "firewall_scrub.php*",
+            "firewall_scrub_edit.php*"
+        ]
+    },
     "page-firewall-schedules-edit": {
         "name": "WebCfg - Firewall: Schedules: Edit page",
         "descr": "Allow access to the 'Firewall: Schedules: Edit' page.",
