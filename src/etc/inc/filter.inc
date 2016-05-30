@@ -525,16 +525,11 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
 {
     global $config;
 
-    $alias = "#System aliases\n ";
-    $aliases = "loopback = \"{ lo0 }\"\n";
+    $aliases = "#System aliases\n";
+    $aliases .= "loopback = \"{ lo0 }\"\n";
 
     foreach ($FilterIflist as $if => $ifcfg) {
-        if (isset($ifcfg[0]) && is_array($ifcfg[0])) {
-            if ($ifcfg[0]['if'] == 'pppoe') {
-                $aliases .= "{$ifcfg[0]['descr']} = \"{ {$ifcfg[0]['if']}";
-                $aliases .= " }\"\n";
-            }
-        } elseif (!empty($ifcfg['descr']) && !empty($ifcfg['if'])) {
+        if (!empty($ifcfg['descr']) && !empty($ifcfg['if'])) {
             if (isset($ifcfg['type6']) && $ifcfg['type6'] == '6rd') {
                 $aliases .= "{$ifcfg['descr']} = \"{ {$ifcfg['if']} {$if}_stf";
             } elseif (isset($ifcfg['type6']) && $ifcfg['type6'] == '6to4') {
@@ -588,28 +583,6 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
                     }
                     $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
                     break;
-                case "openvpn":
-                    $openvpncfg = array();
-                    if ($config['openvpn']['user']) {
-                        /* XXX: Check if we have a correct ip? */
-                        foreach ($config['openvpn']['user'] as $openvpn) {
-                            $openvpncfg[$openvpn['name']] = $openvpn['ip'];
-                        }
-                    }
-                    $vpn_lines = explode("\n", $addrlist);
-                    foreach ($vpn_lines as $vpn_line) {
-                        $vpn_address_split = explode(" ", $vpn_line);
-                        foreach($vpn_address_split as $vpnsplit) {
-                            if (isset($openvpncfg[$vpnsplit])) {
-                                $newaddress .= " ";
-                                $newaddress .= $openvpn[$vpnsplit];
-                                break;
-                            }
-                        }
-                    }
-                    $aliases .= "table <{$aliased['name']}> { {$newaddress} } \n";
-                    $aliases .= "{$aliased['name']} = \"<{$aliased['name']}>\"\n";
-                    break;
                 case "urltable":
                 case "geoip":
                     $urlfn = alias_expand_urltable($aliased['name']);
@@ -619,7 +592,6 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
                     }
                     break;
                 case "urltable_ports":
-                    // TODO: Change it when pf supports tables with ports
                     $urlfn = alias_expand_urltable($aliased['name']);
                     if ($urlfn) {
                         $aliases .= "{$aliased['name']} = \"{ " . preg_replace("/\n/", " ", file_get_contents($urlfn)) . " }\"\n";
@@ -635,10 +607,8 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
             }
         }
     }
-    $result = "{$alias} \n";
-    $result .= "{$aliases}";
 
-    return $result;
+    return $aliases;
 }
 
 function filter_generate_gateways()
