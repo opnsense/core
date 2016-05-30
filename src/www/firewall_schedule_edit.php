@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     /* check for name conflicts */
     foreach ($a_schedules as $schedId => $schedule) {
-        if ( $schedId != $id && $schedule['name'] == $pconfig['name']) {
+        if ((!isset($id) || $schedId != $id) && $schedule['name'] == $pconfig['name']) {
             $input_errors[] = gettext("A Schedule with this name already exists.");
             break;
         }
@@ -796,11 +796,11 @@ function removeRow(el) {
                         <td><a id="help_for_name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule Name");?></td>
                         <td>
 <?php
-                            if(is_schedule_inuse($pconfig['name']) == true):?>
+                            if (is_schedule_inuse($pconfig['name']) && isset($id)): ?>
                           <input name="name" type="hidden" id="name" value="<?=htmlspecialchars($pconfig['name']);?>" />
                           <?=$pconfig['name']; ?>
                           <p>
-                            <?=gettext("NOTE: This schedule is in use so the name may not be modified!");?>
+                            <?=gettext("This schedule is in use so the name may not be modified!");?>
                           </p>
 <?php
                             else: ?>
