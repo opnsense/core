@@ -400,8 +400,7 @@ include("head.inc");
                 </select>
                 <div class="hidden" for="help_for_theme">
                   <strong>
-                    <?=gettext("This will change the look and feel of"); ?>
-                    <?=$g['product_name'];?>.
+                    <?= gettext('This will change the look and feel of the GUI.') ?>
                   </strong>
                 </div>
               </td>
@@ -509,11 +508,11 @@ include("head.inc");
                   <?=gettext("Allow DNS server list to be overridden by DHCP/PPP on WAN"); ?>
                 </strong>
                 <div class="hidden" for="help_for_dnsservers_opt">
-                  <?php printf(gettext("If this option is set, %s will " .
-                  "use DNS servers assigned by a DHCP/PPP server on WAN " .
+                  <?= gettext("If this option is set, DNS servers " .
+                  "assigned by a DHCP/PPP server on WAN will be used " .
                   "for its own purposes (including the DNS forwarder). " .
                   "However, they will not be assigned to DHCP and PPTP " .
-                  "VPN clients."), $g['product_name']); ?>
+                  "VPN clients.") ?>
                 </div>
                 <br/>
                 <input name="dnslocalhost" type="checkbox" value="yes" <?=$pconfig['dnslocalhost'] ? "checked=\"checked\"" : ""; ?> />

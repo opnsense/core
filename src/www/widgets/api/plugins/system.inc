@@ -135,6 +135,19 @@ function system_api_disk()
     return $result;
 }
 
+function system_api_versions()
+{
+    global $g;
+
+    $result = array();
+
+    $result[] = sprintf('%s %s-%s', $g['product_name'], explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')))[0], php_uname('m'));
+    $result[] = php_uname('s') . ' ' . php_uname('r');
+    $result[] = exec('/usr/local/bin/openssl version');
+
+    return $result;
+}
+
 /**
  * widget system data
  */
@@ -142,6 +155,7 @@ function system_api()
 {
     $result = array();
 
+    $result['versions'] = system_api_versions();
     $result['cpu'] = system_api_cpu_stats();
     preg_match("/sec = (\d+)/", get_single_sysctl("kern.boottime"), $matches);
     $result['uptime'] = time() - $matches[1];

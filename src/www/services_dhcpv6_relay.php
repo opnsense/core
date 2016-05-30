@@ -157,7 +157,7 @@ include("head.inc");
                       <td>
                         <input name="agentoption" type="checkbox" value="yes" <?=!empty($pconfig['agentoption']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" for="help_for_agentoption">
-                          <?php printf(gettext("If this is checked, the DHCPv6 relay will append the circuit ID (%s interface number) and the agent ID to the DHCPv6 request."), $g['product_name']); ?>
+                          <?= gettext('If this is checked, the DHCPv6 relay will append the circuit ID (interface number) and the agent ID to the DHCPv6 request.') ?>
                         </div>
                       </td>
                     </tr>

@@ -510,8 +510,8 @@ include("head.inc");
                     <input name="disablefilter" type="checkbox" value="yes" <?= !empty($pconfig['disablefilter']) ? "checked=\"checked\"" : "";?>/>
                     <strong><?=gettext("Disable all packet filtering.");?></strong>
                     <div class="hidden" for="help_for_disablefilter">
-                      <?php printf(gettext("Warning: This converts %s into a routing only platform!"), $g['product_name']);?>
-                      <?=gettext("Warning: This will also turn off NAT!");?><br />
+                      <?= gettext('Warning: This will convert into a routing-only platform!') ?><br />
+                      <?= gettext('Warning: This will also turn off NAT!') ?><br />
                       <?=sprintf(
                         gettext('If you only want to disable NAT, and not firewall rules, visit the %sOutbound NAT%s page.'),
                         '<a href="/firewall_nat_out.php">', '</a>'

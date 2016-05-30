@@ -57,7 +57,7 @@ if (isset($config['system']['authserver'][0]['host'])) {
       else:?>
       <tr>
         <td colspan='2'>
-          <?=sprintf(gettext("Testing %s LDAP settings... One moment please..."), $g['product_name']);?>
+          <?= gettext('Testing LDAP settings... One moment please...') ?>
         </td>
       </tr>
       <tr>
