@@ -254,7 +254,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
             if (!data['remote'].length) {
                 $('#pluginlist').append(
-                    '<tr><td colspan=5>{{ lang._('Fetch updates to view available plugins.') }}</td></tr>'
+                    '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
             }
 
@@ -307,7 +307,7 @@ POSSIBILITY OF SUCH DAMAGE.
         <div id="message" style="display:none" class="alert alert-warning" role="alert"><?= @file_get_contents('/usr/local/opnsense/firmware-message') ?></div>
         <div class="alert alert-info" role="alert" style="min-height: 65px;">
             <button class='btn btn-primary pull-right' id="upgrade" style="display:none"><i id="upgrade_progress" class=""></i> {{ lang._('Upgrade now') }}</button>
-            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Fetch updates')}}</button>
+            <button class='btn btn-default pull-right' id="checkupdate" style="margin-right: 8px;"><i id="checkupdate_progress" class=""></i> {{ lang._('Check for updates')}}</button>
             <div style="margin-top: 8px;" id="updatestatus">{{ lang._('Click to check for updates.')}}</div>
         </div>
     </div>
