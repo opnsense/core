@@ -1,5 +1,4 @@
 <?php
-
 /*
     Copyright (C) 2016 Deciso B.V.
     All rights reserved.
@@ -26,19 +25,20 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function ipsec_interface()
+
+function plugin_openvpn_interface()
 {
     global $config;
     $interfaces = array();
 
-    /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
+    /* add openvpn interfaces */
+    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
         $oic = array("enable" => true);
-        $oic['if'] = 'enc0';
-        $oic['descr'] = 'IPsec';
+        $oic['if'] = "openvpn";
+        $oic['descr'] = 'OpenVPN';
         $oic['type'] = "none";
         $oic['virtual'] = true;
-        $interfaces['enc0'] = $oic;
+        $interfaces['openvpn'] = $oic;
     }
 
     return $interfaces;

@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2016 Deciso B.V.
     All rights reserved.
@@ -25,20 +26,20 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-function openvpn_interface()
+function plugin_ifgroups_interface()
 {
     global $config;
     $interfaces = array();
 
-    /* add openvpn interfaces */
-    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-        $oic = array("enable" => true);
-        $oic['if'] = "openvpn";
-        $oic['descr'] = 'OpenVPN';
-        $oic['type'] = "none";
-        $oic['virtual'] = true;
-        $interfaces['openvpn'] = $oic;
+    /* add interface groups */
+    if (isset($config['ifgroups']['ifgroupentry'])) {
+        foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
+            $oc = array("enable" => true);
+            $oc['if'] = $ifgen['ifname'];
+            $oc['descr'] = $ifgen['ifname'];
+            $oc['virtual'] = true;
+            $interfaces[$ifgen['ifname']] = $oc;
+        }
     }
 
     return $interfaces;

@@ -26,20 +26,19 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function ifgroups_interface()
+function plugin_ipsec_interface()
 {
     global $config;
     $interfaces = array();
 
-    /* add interface groups */
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
-            $oc = array("enable" => true);
-            $oc['if'] = $ifgen['ifname'];
-            $oc['descr'] = $ifgen['ifname'];
-            $oc['virtual'] = true;
-            $interfaces[$ifgen['ifname']] = $oc;
-        }
+    /* add ipsec interfaces */
+    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
+        $oic = array("enable" => true);
+        $oic['if'] = 'enc0';
+        $oic['descr'] = 'IPsec';
+        $oic['type'] = "none";
+        $oic['virtual'] = true;
+        $interfaces['enc0'] = $oic;
     }
 
     return $interfaces;
