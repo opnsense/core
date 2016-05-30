@@ -2357,15 +2357,15 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         }
 
         if ($noadvoptions == false) {
-            if ((isset($rule['max']) and $rule['max'] <> "") or
-              (isset($rule['max-src-nodes']) and $rule['max-src-nodes'] <> "") or
-              (isset($rule['max-src-states']) and $rule['max-src-states'] <> "") or
-              ((isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","tcp/udp"))) and
-              ((isset($rule['statetimeout']) and $rule['statetimeout'] <> "") or
-              (isset($rule['max-src-conn']) and $rule['max-src-conn'] <> "") or
-              (isset($rule['max-src-conn-rate']) and $rule['max-src-conn-rate'] <> "") or
-              (isset($rule['max-src-conn-rates']) and $rule['max-src-conn-rates'] <> ""))) or
-              isset($rule['sloppy']) or isset($rule['nopfsync'])) {
+            if ((isset($rule['max']) && $rule['max'] <> "") ||
+              (isset($rule['max-src-nodes']) && $rule['max-src-nodes'] <> "") ||
+              (isset($rule['max-src-states']) && $rule['max-src-states'] <> "") ||
+              ((isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","tcp/udp"))) &&
+              ((isset($rule['statetimeout']) && $rule['statetimeout'] <> "") ||
+              (isset($rule['max-src-conn']) && $rule['max-src-conn'] <> "") ||
+              (isset($rule['max-src-conn-rate']) && $rule['max-src-conn-rate'] <> "") ||
+              (isset($rule['max-src-conn-rates']) && $rule['max-src-conn-rates'] <> ""))) ||
+              isset($rule['sloppy']) || isset($rule['nopfsync'])) {
                 $aline['flags'] .= "( ";
                 if (isset($rule['sloppy'])) {
                     $aline['flags'] .= "sloppy ";
@@ -2373,30 +2373,30 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
                 if (isset($rule['nopfsync'])) {
                     $aline['flags'] .= "no-sync ";
                 }
-                if (isset($rule['max']) and $rule['max'] <> "") {
+                if (isset($rule['max']) && $rule['max'] <> "") {
                     $aline['flags'] .= "max " . $rule['max'] . " ";
                 }
-                if (isset($rule['max-src-nodes']) and $rule['max-src-nodes'] <> "") {
+                if (isset($rule['max-src-nodes']) && $rule['max-src-nodes'] <> "") {
                     $aline['flags'] .= "max-src-nodes " . $rule['max-src-nodes'] . " ";
                 }
                 if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
-                  and isset($rule['max-src-conn'])
-                  and $rule['max-src-conn'] <> "") {
+                  && isset($rule['max-src-conn'])
+                  && $rule['max-src-conn'] <> "") {
                     $aline['flags'] .= "max-src-conn " . $rule['max-src-conn'] . " ";
                 }
-                if (isset($rule['max-src-states']) and $rule['max-src-states'] <> "") {
+                if (isset($rule['max-src-states']) && $rule['max-src-states'] <> "") {
                     $aline['flags'] .= "max-src-states " . $rule['max-src-states'] . " ";
                 }
                 if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
-                  and isset($rule['statetimeout'])
-                  and $rule['statetimeout'] <> "") {
+                  && isset($rule['statetimeout'])
+                  && $rule['statetimeout'] <> "") {
                   $aline['flags'] .= "tcp.established " . $rule['statetimeout'] . " ";
                 }
                 if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
-                  and isset($rule['max-src-conn-rate'])
-                  and $rule['max-src-conn-rate'] <> ""
-                  and isset($rule['max-src-conn-rates'])
-                  and $rule['max-src-conn-rates'] <> "") {
+                  && isset($rule['max-src-conn-rate'])
+                  && $rule['max-src-conn-rate'] <> ""
+                  && isset($rule['max-src-conn-rates'])
+                  && $rule['max-src-conn-rates'] <> "") {
                     $aline['flags'] .= "max-src-conn-rate " . $rule['max-src-conn-rate'] . " ";
                     $aline['flags'] .= "/" . $rule['max-src-conn-rates'] . ", overload <virusprot> flush global ";
                 }
@@ -2886,7 +2886,7 @@ EOD;
         if ($pptpdcfg['mode'] == "server") {
             $pptpdtarget = get_interface_ip();
         }
-        if (is_ipaddr($pptpdtarget) and is_array($FilterIflist['wan'])) {
+        if (is_ipaddr($pptpdtarget) && is_array($FilterIflist['wan'])) {
             $ipfrules .= <<<EOD
 # PPTPd rules
 pass in {$log['pass']} on \${$FilterIflist['wan']['descr']} proto tcp from any to $pptpdtarget port = 1723 modulate state label "{$fix_rule_label("allow pptpd {$pptpdtarget}")}"
@@ -3163,7 +3163,7 @@ function filter_tdr_hour($schedule)
     $starting_time = strtotime($tmp[0]);
     $ending_time = strtotime($tmp[1]);
     $now = strtotime("now");
-    if ($now >= $starting_time and $now < $ending_time) {
+    if ($now >= $starting_time && $now < $ending_time) {
         return true;
     }
     return false;
@@ -3225,7 +3225,7 @@ function filter_process_carp_rules($log)
 
     $lines = '';
     /* return if there are no carp configured items */
-    if (!empty($config['hasync']) or !empty($config['virtualip']['vip'])) {
+    if (!empty($config['hasync']) || !empty($config['virtualip']['vip'])) {
         $lines .= "block in {$log['block']} quick proto carp from (self) to any \n";
         $lines .= "pass {$log['pass']} quick proto carp \n";
     }
