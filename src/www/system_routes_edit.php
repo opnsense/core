@@ -231,9 +231,28 @@ include("head.inc");
     $( document ).ready(function() {
         // hook in, ipv4/ipv6 selector events
         hook_ipv4v6('ipv4v6net', 'network-id');
+        // collect aliases
+        var all_aliases = [];
+        $("#aliases > option").each(function(){
+            all_aliases.push($(this).val())
+        });
+        $("#network").typeahead({ source: all_aliases});
     });
   </script>
   <?php include("fbegin.inc"); ?>
+  <!-- push all available aliases in a hidden select box -->
+  <select class="hidden" id="aliases">
+  <?php
+      if (!empty($config['aliases']['alias'])):
+        foreach ($config['aliases']['alias'] as $alias):
+          if ($alias['type'] == 'network' || $alias['type'] == 'host'):?>
+          <option value="<?=$alias['name'];?>"></option>
+  <?php
+          endif;
+        endforeach;
+      endif;
+  ?>
+  </select>
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">

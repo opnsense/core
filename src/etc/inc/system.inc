@@ -611,7 +611,7 @@ function system_routing_configure($interface = '')
         mwexecf('/sbin/route add -inet6 %s %s', array('default', $gatewayipv6));
     }
 
-    system_staticroutes_configure($interface, false);
+    system_staticroutes_configure($interface);
 
     return 0;
 }
@@ -660,7 +660,7 @@ function compare_hostname_to_dnscache($hostname) {
     }
 }
 
-function system_staticroutes_configure($interface = '', $update_dns = false)
+function system_staticroutes_configure($interface = '')
 {
     global $config, $aliastable;
 
@@ -698,17 +698,6 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                 continue;
             }
 
-            $dnscache = array();
-            if ($update_dns === true) {
-                if (is_subnet($rtent['network'])) {
-                    continue;
-                }
-                $dnscache = explode("\n", trim(compare_hostname_to_dnscache($rtent['network'])));
-                if (empty($dnscache)) {
-                    continue;
-                }
-            }
-
             if (is_subnet($rtent['network'])) {
                 $ips = array($rtent['network']);
             } else {
@@ -716,21 +705,6 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                     $filterdns_list[] = $rtent['network'];
                 }
                 $ips = add_hostname_to_watch($rtent['network']);
-            }
-            foreach ($dnscache as $ip) {
-                if (in_array($ip, $ips)) {
-                    continue;
-                }
-
-                if (!is_subnet($ip)) {
-                    if (is_ipaddrv4($ip)) {
-                        $ip .= "/32";
-                    } elseif (is_ipaddrv6($ip)) {
-                        $ip .= "/128";
-                    }
-                }
-                $inet = (is_subnetv6($ip) ? "-inet6" : "-inet");
-                mwexec("/sbin/route delete {$inet} " . escapeshellarg($ip));
             }
 
             if (isset($rtent['disabled'])) {
@@ -777,31 +751,21 @@ function system_staticroutes_configure($interface = '', $update_dns = false)
                 }
             }
         }
-        unset($gateways_arr);
     }
-    unset($static_routes);
 
-    if ($update_dns === false) {
-        if (count($filterdns_list)) {
-            $interval = 60;
-            $hostnames = "";
-            array_unique($filterdns_list);
-            foreach ($filterdns_list as $hostname) {
-                $hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py routedns reload'\n";
-            }
-            file_put_contents("/var/etc/filterdns-route.hosts", $hostnames);
-            unset($hostnames);
-
-            if (isvalidpid('/var/run/filterdns-route.pid')) {
-                killbypid('/var/run/filterdns-route.pid', 'HUP');
-            } else {
-                mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i {$interval} -c /var/etc/filterdns-route.hosts -d 1");
-            }
+    if (count($filterdns_list)) {
+        $hostnames = "";
+        array_unique($filterdns_list);
+        foreach ($filterdns_list as $hostname) {
+            $hostnames .= "cmd {$hostname} '/usr/local/opnsense/service/configd_ctl.py routedns reload'\n";
+        }
+        file_put_contents("/var/etc/filterdns-route.hosts", $hostnames);
+        if (isvalidpid('/var/run/filterdns-route.pid')) {
+            killbypid('/var/run/filterdns-route.pid', 'HUP');
         } else {
-            killbypid('/var/run/filterdns-route.pid');
+            mwexec("/usr/local/sbin/filterdns -p /var/run/filterdns-route.pid -i 60 -c /var/etc/filterdns-route.hosts -d 1");
         }
     }
-    unset($filterdns_list);
 
     return 0;
 }
