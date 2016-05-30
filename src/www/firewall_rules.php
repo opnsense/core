@@ -710,9 +710,6 @@ $( document ).ready(function() {
                           <td width="16"><span class="glyphicon glyphicon-play text-success"></span></td>
                           <td width="100"><?=gettext("pass");?></td>
                           <td width="14"></td>
-                          <td width="16"><span class="glyphicon glyphicon-ok text-info"></span></td>
-                          <td width="100"><?=gettext("match");?></td>
-                          <td width="14"></td>
                           <td width="16"><span class="glyphicon glyphicon-remove text-danger"></span></td>
                           <td width="100"><?=gettext("block");?></td>
                           <td width="14"></td>
@@ -731,9 +728,6 @@ $( document ).ready(function() {
                         <tr>
                           <td><span class="glyphicon glyphicon-play text-muted"></span></td>
                           <td class="nowrap"><?=gettext("pass (disabled)");?></td>
-                          <td>&nbsp;</td>
-                          <td><span class="glyphicon glyphicon-ok text-muted"></span></td>
-                          <td class="nowrap"><?=gettext("match (disabled)");?></td>
                           <td>&nbsp;</td>
                           <td><span class="glyphicon glyphicon-remove text-muted"></span></td>
                           <td class="nowrap"><?=gettext("block (disabled)");?></td>

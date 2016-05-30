@@ -2147,7 +2147,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     } else {
         $type = null;
     }
-    if ($type != "pass" && $type != "block" && $type != "reject" && $type != "match") {
+    if ($type != "pass" && $type != "block" && $type != "reject") {
         /* default (for older rules) is pass */
         $type = "pass";
     }
@@ -2175,7 +2175,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     update_filter_reload_status(sprintf(gettext("Setting up pass/block rules %s"), $rule['descr']));
 
     /* do not process reply-to for gateway'd rules */
-    if ( empty($rule['gateway']) && !empty($aline['direction']) && (interface_has_gateway($rule['interface']) || interface_has_gatewayv6($rule['interface'])) && !isset($config['system']['disablereplyto']) && !isset($rule['disablereplyto']) && $type != "match") {
+    if ( empty($rule['gateway']) && !empty($aline['direction']) && (interface_has_gateway($rule['interface']) || interface_has_gatewayv6($rule['interface'])) && !isset($config['system']['disablereplyto']) && !isset($rule['disablereplyto'])) {
         if (isset($rule['ipprotocol']) && $rule['ipprotocol'] == "inet6") {
             $rg = get_interface_gateway_v6($rule['interface']);
             if (is_ipaddrv6($rg)) {

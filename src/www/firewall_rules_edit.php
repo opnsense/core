@@ -700,9 +700,6 @@ include("head.inc");
                       <select name="type" class="selectpicker" data-live-search="true" data-size="5" >
 <?php
                         $type_options = array('Pass' => gettext('Pass'), 'Block' => gettext('Block'), 'Reject' => gettext('Reject'));
-                        if (!empty($pconfig['floating'])) {
-                            $type_options['Match'] = gettext('Match');
-                        }
                         foreach ($type_options as $type => $type_translated): ?>
                         <option value="<?=strtolower($type);?>" <?= strtolower($type) == strtolower($pconfig['type']) ? "selected=\"selected\"" :""; ?>>
                           <?=$type_translated;?>
