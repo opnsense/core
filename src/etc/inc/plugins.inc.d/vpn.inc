@@ -696,15 +696,15 @@ function vpn_interface()
     }
 
     if (isset($config['pppoes']['pppoe'])) {
-        $pppoeifs = array('items' => array());
+        $pppoeifs = array('item' => array());
         foreach($config['pppoes']['pppoe'] as $pppoe) {
             if ($pppoe['mode'] == "server") {
                 $item = array('ip' => $pppoe['localip'], 'sa' => $pppoe['remoteip']);
                 $item['sn'] = !empty($pppoe['pppoe_subnet']) ?  $pppoe['pppoe_subnet'] : "32";
-                $pppoeifs['items'][] = $item;
+                $pppoeifs['item'][] = $item;
             }
         }
-        if (count($pppoeifs['items'])) {
+        if (count($pppoeifs['item'])) {
             $pppoeifs['enable'] = true;
             $pppoeifs['if'] = 'pppoe';
             $pppoeifs['descr'] = 'pppoe';

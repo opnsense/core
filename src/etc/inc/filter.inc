@@ -1150,8 +1150,8 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
     }
 
     /* PPPoE subnet */
-    if (isset($FilterIflist['pppoe']['items']) && is_array($FilterIflist['pppoe']['items'])) {
-        foreach ($FilterIflist['pppoe']['items'] as $pppoe) {
+    if (isset($FilterIflist['pppoe']['item']) && is_array($FilterIflist['pppoe']['item'])) {
+        foreach ($FilterIflist['pppoe']['item'] as $pppoe) {
             if (is_private_ip($pppoe['ip'])) {
                 $tonathosts[] = "{$pppoe['sa']}/{$pppoe['sn']}";
                 $descriptions[] = gettext("PPPoE server");
