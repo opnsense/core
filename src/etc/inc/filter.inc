@@ -1150,16 +1150,16 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
     }
 
     /* PPPoE subnet */
-    if (isset($FilterIflist['pppoe']['networks']) && is_array($FilterIflist['pppoe']['networks']))
-        foreach ($FilterIflist['pppoe']['networks'] as $pppoe) {
+    if (isset($FilterIflist['pppoe']['items']) && is_array($FilterIflist['pppoe']['items']))
+        foreach ($FilterIflist['pppoe']['items'] as $pppoe) {
             if (is_private_ip($pppoe['ip'])) {
                 $tonathosts[] = "{$pppoe['sa']}/{$pppoe['sn']}";
                 $descriptions[] = gettext("PPPoE server");
             }
         }
 
-      /* L2TP subnet */
-      if (isset($FilterIflist['l2tp']) && $FilterIflist['l2tp']['mode'] == "server") {
+    /* L2TP subnet */
+    if (isset($FilterIflist['l2tp']) && $FilterIflist['l2tp']['mode'] == "server") {
           $l2tp_sa = $FilterIflist['l2tp']['sa'];
           $l2tp_sn = $FilterIflist['l2tp']['sn'];
           if (is_private_ip($l2tp_sa) && !empty($l2tp_sn)) {
