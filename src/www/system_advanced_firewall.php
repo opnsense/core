@@ -44,8 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['ipv6allow'] = isset($config['system']['ipv6allow']);
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
-    $pconfig['scrubnodf'] = !empty($config['system']['scrubnodf']);
-    $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
     $pconfig['optimization'] = isset($config['system']['optimization']) ? $config['system']['optimization'] : "normal";
     $pconfig['maximumstates'] = isset($config['system']['maximumstates']) ? $config['system']['maximumstates'] : null;
     $pconfig['adaptivestart'] = isset($config['system']['adaptivestart']) ? $config['system']['adaptivestart'] : null;
@@ -70,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['reflectiontimeout'] = !empty($config['system']['reflectiontimeout']) ? $config['system']['reflectiontimeout'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
-    $pconfig['disablescrub'] = isset($config['system']['disablescrub']);
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -129,18 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disablevpnrules'] = true;
         }  elseif (isset($config['system']['disablevpnrules'])) {
             unset($config['system']['disablevpnrules']);
-        }
-
-        if (!empty($pconfig['scrubnodf'])) {
-            $config['system']['scrubnodf'] = "enabled";
-        } elseif (isset($config['system']['scrubnodf'])) {
-            unset($config['system']['scrubnodf']);
-        }
-
-        if (!empty($pconfig['scrubrnid'])) {
-            $config['system']['scrubrnid'] = "enabled";
-        } elseif (isset($config['system']['scrubrnid'])) {
-            unset($config['system']['scrubrnid']);
         }
 
         if (!empty($pconfig['adaptiveend'])) {
@@ -202,12 +187,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['filter']['bypassstaticroutes'] = $pconfig['bypassstaticroutes'];
         } elseif (isset($config['filter']['bypassstaticroutes'])) {
             unset($config['filter']['bypassstaticroutes']);
-        }
-
-        if (!empty($pconfig['disablescrub'])) {
-            $config['system']['disablescrub'] = $pconfig['disablescrub'];
-        } elseif (isset($config['system']['disablescrub'])) {
-            unset($config['system']['disablescrub']);
         }
 
         if ($pconfig['bogonsinterval'] != $config['system']['bogons']['interval']) {
@@ -438,32 +417,6 @@ include("head.inc");
                   <th colspan="2" valign="top" class="listtopic"><?=gettext("Miscellaneous");?></th>
                 </tr>
                 <tr>
-                  <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
-                  <td>
-                    <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
-                    <strong><?=gettext("Clear invalid DF bits instead of dropping the packets");?></strong>
-                    <div class="hidden" for="help_for_scrubnodf">
-                      <?=gettext("This allows for communications with hosts that generate fragmented " .
-                                          "packets with the don't fragment (DF) bit set. Linux NFS is known to " .
-                                          "do this. This will cause the filter to not drop such packets but " .
-                                          "instead clear the don't fragment bit.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
-                  <td>
-                    <input name="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Insert a stronger id into IP header of packets passing through the filter.");?></strong>
-                    <div class="hidden" for="help_for_scrubrnid">
-                      <?=gettext("Replaces the IP identification field of packets with random values to " .
-                                          "compensate for operating systems that use predictable values. " .
-                                          "This option only applies to packets that are not fragmented after the " .
-                                          "optional packet reassembly.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
                   <td><a id="help_for_optimization" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firewall Optimization");?></td>
                   <td>
                     <select onchange="update_description(this.selectedIndex);" name="optimization" id="optimization" class="selectpicker" data-style="btn-default">
@@ -516,15 +469,6 @@ include("head.inc");
                         gettext('If you only want to disable NAT, and not firewall rules, visit the %sOutbound NAT%s page.'),
                         '<a href="/firewall_nat_out.php">', '</a>'
                       )?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_disablescrub" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable Firewall Scrub");?></td>
-                  <td>
-                    <input name="disablescrub" type="checkbox" value="yes" <?=!empty($pconfig['disablescrub']) ? "checked=\"checked\"" : "";?>/>
-                    <div class="hidden" for="help_for_disablescrub">
-                      <?=gettext("Disables the PF scrubbing option which can sometimes interfere with NFS and PPTP traffic.");?>
                     </div>
                   </td>
                 </tr>

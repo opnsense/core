@@ -388,37 +388,22 @@ function filter_generate_scrubing(&$FilterIflist)
         }
         $scrubrules .= "scrub from any to <vpn_networks> max-mss {$maxmss}\n";
     }
-    /* disable scrub option */
+
+    /* scrub per interface options */
     foreach ($FilterIflist as $scrubif => $scrubcfg) {
         if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
             continue;
         } else {
             /* set up MSS clamping */
-            $mssclamp = '';
-            if (
-                $scrubcfg['mss'] != '' && is_numeric($scrubcfg['mss']) &&
-                $scrubcfg['if'] != 'pppoe' && $scrubcfg['if'] != 'pptp' &&
-                $scrubcfg['if'] != 'l2tp'
-            ) {
+            if (!empty($scrubcfg['mss']) && is_numeric($scrubcfg['mss']) &&
+                !in_array($scrubcfg['if'], array('pppoe', 'pptp', 'l2tp'))) {
                 $mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
-            }
-
-            /* configure no-df for linux nfs and others */
-            if (!empty($config['system']['scrubnodf'])) {
-                $scrubnodf = "no-df";
             } else {
-                $scrubnodf = "";
+                $mssclamp = '';
             }
-            if (!empty($config['system']['scrubrnid'])) {
-                $scrubrnid = "random-id";
-            } else {
-                $scrubrnid = "";
-            }
-            if (!isset($config['system']['disablescrub'])) {
-                $scrubrules .= "scrub on \${$scrubcfg['descr']} all {$scrubnodf} {$scrubrnid} {$mssclamp} fragment reassemble\n"; // reassemble all directions
-            } else if (!empty($mssclamp)) {
-                $scrubrules .= "scrub on \${$scrubcfg['descr']} {$mssclamp}\n";
-            }
+            $scrubnodf = !empty($config['system']['scrubnodf']) ? "no-df" : "";
+            $scrubrnid = !empty($config['system']['scrubrnid']) ? "random-id" : "";
+            $scrubrules .= "scrub on \${$scrubcfg['descr']} all {$scrubnodf} {$scrubrnid} {$mssclamp}\n";
         }
     }
 

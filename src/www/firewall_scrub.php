@@ -35,12 +35,34 @@ if (!isset($config['filter']['scrub']['rule'])) {
 }
 $a_scrub = &$config['filter']['scrub']['rule'];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    $pconfig = array();
+    $pconfig['scrubnodf'] = !empty($config['system']['scrubnodf']);
+    $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($pconfig['id']) && isset($a_scrub[$pconfig['id']])) {
         $id = $pconfig['id'];
     }
-    if (isset($pconfig['apply'])) {
+
+    if (isset($pconfig['act']) && $pconfig['act'] == 'edit') {
+        // update general settings
+        if (!empty($pconfig['scrubnodf'])) {
+            $config['system']['scrubnodf'] = "enabled";
+        } elseif (isset($config['system']['scrubnodf'])) {
+            unset($config['system']['scrubnodf']);
+        }
+        if (!empty($pconfig['scrubrnid'])) {
+            $config['system']['scrubrnid'] = "enabled";
+        } elseif (isset($config['system']['scrubrnid'])) {
+            unset($config['system']['scrubrnid']);
+        }
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
+        header("Location: firewall_scrub.php");
+        exit;
+    } elseif (isset($pconfig['apply'])) {
         filter_configure();
         clear_subsystem_dirty('filter');
         $savemsg = sprintf(
@@ -163,6 +185,12 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
+  $("#save").click(function(event){
+    event.preventDefault();
+    $("#action").val("edit");
+    $("#iform").submit();
+  });
+
   // watch scroll position and set to last known on page load
   watchScrollPosition();
 
@@ -178,14 +206,68 @@ $( document ).ready(function() {
         <?php if (is_subsystem_dirty('filter')): ?><p>
         <?php print_info_box_apply(gettext("The firewall rule configuration has been changed.<br />You must apply the changes in order for them to take effect."));?>
         <?php endif; ?>
-        <section class="col-xs-12">
-          <div class="content-box">
-            <form method="post" name="iform" id="iform">
-              <input type="hidden" id="id" name="id" value="" />
-              <input type="hidden" id="action" name="act" value="" />
+        <form method="post" name="iform" id="iform">
+          <input type="hidden" id="id" name="id" value="" />
+          <input type="hidden" id="action" name="act" value="" />
+          <section class="col-xs-12">
+            <div class="content-box">
+              <div class="table-responsive" >
+                <table class="table table-striped table-hover opnsense_standard_table_form">
+                  <thead>
+                    <tr>
+                      <td width="22%"><strong><?=gettext("General settings");?></strong></td>
+                      <td  width="78%" align="right">
+                           <small><?=gettext("full help"); ?> </small>
+                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button">&nbsp;</i>
+                      </td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
+                      <td>
+                        <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
+                        <div class="hidden" for="help_for_scrubnodf">
+                          <?=gettext("This allows for communications with hosts that generate fragmented " .
+                                              "packets with the don't fragment (DF) bit set. Linux NFS is known to " .
+                                              "do this. This will cause the filter to not drop such packets but " .
+                                              "instead clear the don't fragment bit.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
+                      <td>
+                        <input name="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
+                        <div class="hidden" for="help_for_scrubrnid">
+                          <?=gettext("Replaces the IP identification field of packets with random values to " .
+                                              "compensate for operating systems that use predictable values. " .
+                                              "This option only applies to packets that are not fragmented after the " .
+                                              "optional packet reassembly.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td></td>
+                      <td>
+                          <input name="Submit" id="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+              </div>
+            </div>
+          </section>
+          <section class="col-xs-12">
+            <div class="content-box">
               <div class="table-responsive" >
                 <table class="table table-striped table-hover" id="rules">
                   <thead>
+                     <tr>
+                         <th colspan="2"><?=gettext("Detailed settings");?></th>
+                         <th colspan="2" class="hidden-xs hidden-sm"> </th>
+                         <th colspan="2"> </th>
+                     </tr>
                     <tr>
                       <th>&nbsp;</th>
                       <th><?=gettext("Interfaces");?></th>
@@ -194,7 +276,7 @@ $( document ).ready(function() {
                       <th><?=gettext("Description");?></th>
                       <th></th>
                     </tr>
-                </thead>
+                  </thead>
                 <tbody>
 <?php
                 $special_nets = get_specialnets();
@@ -293,9 +375,9 @@ $( document ).ready(function() {
                 </tfoot>
               </table>
             </div>
-          </form>
-        </div>
-      </section>
+          </div>
+        </section>
+      </form>
     </div>
   </div>
 </section>
