@@ -867,12 +867,6 @@ function filter_get_reflection_interfaces(&$FilterIflist, $natif)
 
 function filter_generate_reflection_nat(&$FilterIflist, $rule, &$route_table, $nat_ifs, $protocol, $target, $target_ip, $target_subnet = '')
 {
-    global $config;
-
-    if (!isset($config['system']['enablenatreflectionhelper'])) {
-        return '';
-    }
-
     // Initialize natrules holder string
     $natrules = '';
 
@@ -1287,7 +1281,9 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
 
             $nat_if_list = array_merge(array($natif), $nat_if_list);
-            $reflection_txt .= filter_generate_reflection_nat($FilterIflist, $rule, $route_table, $nat_if_list, '', $srcaddr, $srcip, $sn);
+            if (!isset($config['system']['enablenatreflectionhelper'])) {
+                $reflection_txt .= filter_generate_reflection_nat($FilterIflist, $rule, $route_table, $nat_if_list, '', $srcaddr, $srcip, $sn);
+            }
         }
     }
 
@@ -1648,7 +1644,8 @@ function filter_nat_rules_generate(&$FilterIflist)
                 }
 
                 $natrules .= "\n";
-                if (!isset($rule['nordr'])) {
+
+                if (!isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
                     $natrules .= filter_generate_reflection_nat($FilterIflist, $rule, $route_table, $nat_if_list, $protocol, "{$target}{$localport_nat}", $target_ip);
                 }
             }
