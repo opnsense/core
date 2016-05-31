@@ -1841,16 +1841,11 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
                     case '(self)':
                         $src = "(self)";
                         break;
-                    case 'pptp':
-                        $pptpsav6 = gen_subnetv6($FilterIflist['pptp']['sav6'], $FilterIflist['pptp']['snv6']);
-                        $pptpsnv6 = $FilterIflist['pptp']['snv6'];
-                        $src = "{$pptpsav6}/{$pptpsnv6}";
-                        break;
-                    case 'pppoe':
-                        if (is_array($FilterIflist['pppoe'])) {
-                            $pppoesav6 = gen_subnetv6($FilterIflist['pppoe'][0]['ipv6'], $FilterIflist['pppoe'][0]['snv6']);
-                            $pppoesnv6 = $FilterIflist['pppoe'][0]['snv6'];
-                            $src = "{$pppoesav6}/{$pppoesnv6}";
+                    default:
+                        if (!empty($FilterIflist[$rule[$target]['network']]['sav6'])) {
+                            $src = $FilterIflist[$rule[$target]['network']]['sav6'] . "/" . $FilterIflist[$rule[$target]['network']]['snv6'];
+                        } else {
+                            return "";
                         }
                 }
                 if (isset($rule[$target]['not']) && !is_subnet($src)) {
@@ -1883,30 +1878,12 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
                     case '(self)':
                         $src = "(self)";
                         break;
-                    case 'pptp':
-                        if (isset($config['pptpd']['n_pptp_units']) && is_numeric($config['pptpd']['n_pptp_units'])) {
-                            $pptp_subnets = ip_range_to_subnet_array($config['pptpd']['remoteip'], long2ip32(ip2long($config['pptpd']['remoteip'])+($config['pptpd']['n_pptp_units']-1)));
+                    default:
+                        if (!empty($FilterIflist[$rule[$target]['network']]['sa'])) {
+                            $src = $FilterIflist[$rule[$target]['network']]['sa'] . "/" . $FilterIflist[$rule[$target]['network']]['sn'];
                         } else {
-                            $pptp_subnets = ip_range_to_subnet_array($config['pptpd']['remoteip'], long2ip32(ip2long($config['pptpd']['remoteip'])));
-                        }
-                        if (empty($pptp_subnets)) {
                             return "";
                         }
-                        if (isset($rule[$target]['not'])) {
-                            array_walk($pptp_subnets, function (&$value, $key) {
-                                $value="!{$value}";
-                            });
-                        }
-                        $src = "{ " . implode(" ", $pptp_subnets) . " }";
-                        break;
-                    case 'pppoe':
-                        /* XXX: This needs to be fixed somehow! */
-                        if (is_array($FilterIflist['pppoe'])) {
-                            $pppoesa = gen_subnet($FilterIflist['pppoe'][0]['ip'], $FilterIflist['pppoe'][0]['sn']);
-                            $pppoesn = $FilterIflist['pppoe'][0]['sn'];
-                            $src = "{$pppoesa}/{$pppoesn}";
-                        }
-                        break;
                 }
                 if (isset($rule[$target]['not']) && !is_subnet($src) &&
                   (strpos($src, '{') === false)) {
@@ -1950,42 +1927,27 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
 
     /* Check to see if the interface is in our list */
     if (isset($rule['floating'])) {
+        $aline['interface'] = "";
         if (isset($rule['interface']) && $rule['interface'] <> "") {
-            $interfaces = explode(",", $rule['interface']);
             $ifliste = "";
-            foreach ($interfaces as $iface) {
+            foreach (explode(",", $rule['interface']) as $iface) {
                 if (array_key_exists($iface, $FilterIflist)) {
                     $ifliste .= " " . $FilterIflist[$iface]['if'] . " ";
                 }
             }
             if ($ifliste <> "") {
                 $aline['interface'] = " on { {$ifliste} } ";
-            } else {
-                $aline['interface'] = "";
             }
-        } else {
-            $aline['interface'] = "";
         }
-    } else if (!array_key_exists($rule['interface'], $FilterIflist)) {
+    } elseif (!array_key_exists($rule['interface'], $FilterIflist)) {
         foreach($FilterIflist as $oc) {
             $items .= $oc['descr'] . " ";
         }
         return "# array key \"{$rule['interface']}\" does not exist for \"" . $rule['descr'] . "\" in array: {{$items}}";
-    } else if ((array_key_exists($rule['interface'], $FilterIflist))
-      && (isset($FilterIflist[$rule['interface']][0]))
-      && (is_array($FilterIflist[$rule['interface']][0]))) {
-        /* Currently this only case for this is the pppoe server. There should be an existing macro with this name. */
-        $aline['interface'] = " on \$" . $rule['interface'] . " ";
     } else {
         $aline['interface'] = " on \$" . $FilterIflist[$rule['interface']]['descr'] . " ";
     }
     $ifcfg = $FilterIflist[$rule['interface']];
-    if ($pptpdcfg['mode'] != "server") {
-        if ((isset($rule['source']['network']) && $rule['source']['network'] == "pptp") ||
-          (isset($rule['destination']['network']) && $rule['destination']['network'] == "pptp")) {
-              return "# source network or destination network == pptp on " . $rule['descr'];
-          }
-    }
 
     switch(isset($rule['ipprotocol']) ? $rule['ipprotocol'] : null) {
         case "inet":
@@ -2025,10 +1987,8 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     } else {
         $aline['type'] = $type . " ";
     }
-    if (isset($rule['floating']) && $rule['floating'] == "yes") {
-        if ($rule['direction'] != "any") {
-            $aline['direction'] = " " . $rule['direction'] . " ";
-        }
+    if (isset($rule['floating']) && $rule['floating'] == "yes" && $rule['direction'] != "any") {
+        $aline['direction'] = " " . $rule['direction'] . " ";
     } else {
         /* ensure the direction is in */
         $aline['direction'] = " in ";
@@ -2092,7 +2052,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     /* source address */
     $src = trim(filter_generate_address($FilterIflist, $rule, "source"));
     if (empty($src) || ($src == "/")) {
-        return "# at the break!";
+        return "# source not found : " . implode(" ", $aline);
     }
     $aline['src'] = " from $src ";
 
@@ -2104,7 +2064,7 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     /* destination address */
     $dst = trim(filter_generate_address($FilterIflist, $rule, "destination"));
     if (empty($dst) || ($dst == "/")) {
-        return "# returning at dst $dst == \"/\"";
+        return "# destination not found : " . implode(" ", $aline);
     }
     $aline['dst'] = "to $dst ";
 
