@@ -2455,7 +2455,7 @@ EOD;
       }
 
       if ($oc['ip'] && !($isbridged) && !isset($oc['internal_dynamic'])) {
-          $ipfrules .= filter_rules_spoofcheck_generate($on, $oc, $log);
+          $ipfrules .= "antispoof {$log['block']} for \${$oc['descr']} \n";
       }
 
       /* block private networks ? */
@@ -2856,14 +2856,6 @@ EOD;
     return $ipfrules;
 }
 
-function filter_rules_spoofcheck_generate($ifname, $ifcfg, $log)
-{
-    global $config;
-
-    $ipfrules = "antispoof {$log['block']} for \${$ifcfg['descr']} \n";
-
-    return $ipfrules;
-}
 
 /****f* filter/filter_get_time_based_rule_status
  * NAME
