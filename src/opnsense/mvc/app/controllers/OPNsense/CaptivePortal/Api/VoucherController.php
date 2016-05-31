@@ -105,6 +105,24 @@ class VoucherController extends ApiControllerBase
         return array("status" => "error");
     }
 
+    /**
+     * drop expired vouchers from group
+     * @param string $provider auth provider
+     * @param string $group group name
+     * @return array status
+     */
+    public function dropExpiredVouchersAction($provider, $group)
+    {
+        if ($this->request->isPost()) {
+            $authFactory = new AuthenticationFactory();
+            $auth = $authFactory->get($provider);
+            if ($auth != null && method_exists($auth, 'dropExpired')) {
+                return array("status" => "drop", "count" => $auth->dropExpired($group));
+            }
+        }
+        return array("status" => "error");
+    }
+
 
     /**
      * generate new vouchers
