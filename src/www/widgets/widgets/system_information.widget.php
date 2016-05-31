@@ -107,7 +107,7 @@ if (isset($_POST['getupdatestatus'])) {
       // update cpu usage chart
       system_information_widget_cpu_update(sender, data);
 
-      $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ('+data['cpu']['cpus']+' cores )');
+      $("#system_information_widget_cpu_type").html(data['cpu']['model'] + ' ('+data['cpu']['cpus']+' cores)');
       var uptime_days = parseInt(moment.duration(parseInt(data['uptime']), 'seconds').asDays());
       var uptime_str = "";
       if (uptime_days > 0) {
