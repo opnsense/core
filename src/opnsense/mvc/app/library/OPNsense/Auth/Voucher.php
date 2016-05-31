@@ -308,7 +308,7 @@ class Voucher implements IAuthConnector
     }
 
     /**
-     * drop vouchers in group
+     * drop expired vouchers in group
      * @param $vouchergroup voucher group name
      * @return int number of deleted vouchers
      */
