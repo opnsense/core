@@ -1281,7 +1281,7 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
 
             $nat_if_list = array_merge(array($natif), $nat_if_list);
-            if (!isset($config['system']['enablenatreflectionhelper'])) {
+            if (isset($config['system']['enablenatreflectionhelper'])) {
                 $reflection_txt .= filter_generate_reflection_nat($FilterIflist, $rule, $route_table, $nat_if_list, '', $srcaddr, $srcip, $sn);
             }
         }
@@ -1645,7 +1645,7 @@ function filter_nat_rules_generate(&$FilterIflist)
 
                 $natrules .= "\n";
 
-                if (!isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
+                if (!isset($rule['nordr']) && isset($config['system']['enablenatreflectionhelper'])) {
                     $natrules .= filter_generate_reflection_nat($FilterIflist, $rule, $route_table, $nat_if_list, $protocol, "{$target}{$localport_nat}", $target_ip);
                 }
             }
