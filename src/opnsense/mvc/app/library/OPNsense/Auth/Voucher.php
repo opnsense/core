@@ -308,6 +308,28 @@ class Voucher implements IAuthConnector
     }
 
     /**
+     * drop expired vouchers in group
+     * @param $vouchergroup voucher group name
+     * @return int number of deleted vouchers
+     */
+    public function dropExpired($vouchergroup)
+    {
+        $stmt = $this->dbHandle->prepare('
+                  delete
+                  from vouchers
+                  where vouchergroup = :vouchergroup
+                  and starttime is not null
+                  and starttime + validity < :endtime
+                  ');
+        $stmt->bindParam(':vouchergroup', $vouchergroup);
+        $endtime = time();
+        $stmt->bindParam(':endtime', $endtime, SQLITE3_INTEGER);
+        $stmt->execute();
+
+        return $this->dbHandle->changes();
+    }
+
+    /**
      * return session info
      * @return array mixed named list of authentication properties
      */

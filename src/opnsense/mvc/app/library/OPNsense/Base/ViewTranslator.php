@@ -1,4 +1,4 @@
-<?
+<?php
 
 /**
  *    Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>

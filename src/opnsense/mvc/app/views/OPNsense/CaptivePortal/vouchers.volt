@@ -219,6 +219,36 @@ POSSIBILITY OF SUCH DAMAGE.
 
         });
 
+        $("#dropExpired").click(function(){
+            var voucher_group = $('#voucher-groups').find("option:selected").val();
+            var voucher_provider = $('#voucher-providers').find("option:selected").val();
+            if (voucher_group != undefined) {
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_DANGER,
+                    title: '{{ lang._('Remove expired vouchers') }} "' + voucher_group + '" @ ' + voucher_provider,
+                    message: '{{ lang._('All expired vouchers within this group will be deleted') }}',
+                    buttons: [{
+                        icon: 'fa fa-trash-o',
+                        label: '{{ lang._('Yes') }}',
+                        cssClass: 'btn-primary',
+                        action: function(dlg){
+                            ajaxCall(url="/api/captiveportal/voucher/dropExpiredVouchers/" + voucher_provider + "/" + voucher_group + '/',
+                                    sendData={}, callback=function(data,status){
+                                        // reload grid after delete
+                                        updateVoucherGroupList();
+                                    });
+                            dlg.close();
+                        }
+                    }, {
+                        label: 'Close',
+                        action: function(dlg){
+                            dlg.close();
+                        }
+                    }]
+                });
+            }
+        });
+
         updateVoucherProviders();
         $('.selectpicker').selectpicker('refresh');
     });
@@ -259,6 +289,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right">
+                            <button id="dropExpired" type="button" class="btn btn-default">
+                                <span>{{ lang._('Drop expired vouchers') }}</span>
+                                <span class="fa fa-trash"></span>
+                            </button>
+
                             <button id="showVoucherModal" type="button" class="btn btn-default">
                                 <span>{{ lang._('Create vouchers') }}</span>
                                 <span class="fa fa-ticket"></span>
