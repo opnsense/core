@@ -126,11 +126,6 @@ function filter_delete_states_for_down_gateways()
 {
     global $config, $GatewaysList;
 
-    if (isset($config['system']['kill_states'])) {
-        return;
-    }
-
-
     $any_gateway_down = false;
     $a_gateways = return_gateways_status();
     if (is_array($GatewaysList)) {
@@ -364,7 +359,9 @@ function filter_configure_sync()
     }
 
     update_filter_reload_status(gettext("Processing down interface states"));
-    filter_delete_states_for_down_gateways();
+    if (!isset($config['system']['kill_states'])) {
+        filter_delete_states_for_down_gateways();
+    }
 
     update_filter_reload_status(gettext("Done"));
     if (file_exists("/var/run/booting")) {

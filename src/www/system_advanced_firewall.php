@@ -350,7 +350,7 @@ include("head.inc");
                   <td><a id="help_for_kill_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Kill states");?> </td>
                   <td>
                     <input name="kill_states" type="checkbox" id="kill_states" value="yes" <?= !empty($pconfig['kill_states']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("State Killing on Gateway Failure"); ?></strong>
+                    <strong><?=gettext("Disable State Killing on Gateway Failure"); ?></strong>
                     <div class="hidden" for="help_for_kill_states">
                       <?=gettext("The monitoring process will flush states for a gateway that goes down if this box is not checked. Check this box to disable this behavior."); ?>
                     </div>
