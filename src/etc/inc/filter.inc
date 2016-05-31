@@ -1732,38 +1732,31 @@ function filter_address_add_vips_subnets(&$FilterIflist, &$subnets, $if, $not)
         $subnets = "!{$subnets}";
     }
 
-    if (!isset($FilterIflist[$if]['vips']) || !is_array($FilterIflist[$if]['vips'])) {
-        return;
-    }
-
-    foreach ($FilterIflist[$if]['vips'] as $vip) {
-        foreach ($if_subnets as $subnet) {
-            if (ip_in_subnet($vip['ip'], $subnet)) {
-                continue 2;
+    if (!empty($FilterIflist[$if]['vips']) || !empty($FilterIflist[$if]['vips6'])) {
+        $all_vips = array();
+        $all_vips = array_merge($all_vips, !empty($FilterIflist[$if]['vips']) ?  $FilterIflist[$if]['vips'] : array());
+        $all_vips = array_merge($all_vips, !empty($FilterIflist[$if]['vips6']) ?  $FilterIflist[$if]['vips6'] : array());
+        foreach ($all_vips as $vip) {
+            foreach ($if_subnets as $subnet) {
+                if (ip_in_subnet($vip['ip'], $subnet)) {
+                    continue 2;
+                }
+            }
+            $network = null;
+            if (is_ipaddrv4($vip['ip']) && is_subnetv4($if_subnets[0])) {
+                $network = gen_subnet($vip['ip'], $vip['sn']);
+            } elseif (is_ipaddrv6($vip['ip']) && is_subnetv6($if_subnets[0])) {
+                $network = gen_subnetv6($vip['ip'], $vip['sn']);
+            }
+            if (!empty($network)) {
+                $subnets .= ' ' . ($not == true ? '!' : '') . $network . '/' . $vip['sn'];
+                $if_subnets[] = $network . '/' . $vip['sn'];
             }
         }
 
-        if (is_ipaddrv4($vip['ip'])) {
-            if (!is_subnetv4($if_subnets[0])) {
-                continue;
-            }
-            $network = gen_subnet($vip['ip'], $vip['sn']);
-        } else if (is_ipaddrv6($vip['ip'])) {
-            if (!is_subnetv6($if_subnets[0])) {
-                continue;
-            }
-            $network = gen_subnetv6($vip['ip'], $vip['sn']);
-        } else {
-            continue;
+        if (strpos($subnets, ' ') !== false) {
+            $subnets = "{ {$subnets} }";
         }
-
-        $subnets .= ' ' . ($not == true ? '!' : '') . $network . '/' . $vip['sn'];
-        $if_subnets[] = $network . '/' . $vip['sn'];
-    }
-    unset($if_subnets);
-
-    if (strpos($subnets, ' ') !== false) {
-        $subnets = "{ {$subnets} }";
     }
 }
 
