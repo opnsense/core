@@ -763,8 +763,42 @@ function filter_generate_optcfg_array()
     /* traverse interfaces */
     foreach (legacy_config_get_interfaces(array("enable" => true)) as $if => $ifdetail) {
         if (isset($ifdetail['internal_dynamic'])) {
-            // plugin is responsible for its own config
-            $FilterIflist[$if] = $ifdetail;
+            // transform plugin configuration
+            $oic = array();
+            $oic['internal_dynamic'] = true;
+            $oic['vips'] = array();
+            $oic['vips6'] = array();
+            $oic['descr'] = $ifdetail['descr'];
+            $oic['if'] = $ifdetail['if'];
+            if (isset($ifdetail['virtual'])) {
+                $oic['virtual'] = $ifdetail['virtual'];
+            }
+            if (!empty($ifdetail['networks'])) {
+                foreach (isset($ifdetail['networks'][0]) ? $ifdetail['networks'] : array($ifdetail['networks']) as $indx => $network) {
+                    if (is_ipaddrv4($network['network'])) {
+                        if ($indx == 0) {
+                            $oic['sa'] = $network['network'];
+                            $oic['sn'] = $network['mask'];
+                        } else {
+                            $vip = array();
+                            $vip['sa'] = $network['network'];
+                            $vip['sn'] = $network['mask'];
+                            $oic['vips'][] = $vip;
+                        }
+                    } elseif (is_ipaddrv6($network['network'])) {
+                        if ($indx == 0) {
+                            $oic['sav6'] = $network['network'];
+                            $oic['snv6'] = $network['mask'];
+                        } else {
+                            $vip = array();
+                            $vip['sa'] = $network['network'];
+                            $vip['sn'] = $network['mask'];
+                            $oic['vips6'][] = $vip;
+                        }
+                    }
+                }
+            }
+            $FilterIflist[$if] = $oic;
         } else {
             // XXX needs cleanup, original content
             $oic = array();
@@ -980,7 +1014,12 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
         if (!empty($oc['sa'])) {
             $tonathosts[] = "{$oc['sa']}/{$oc['sn']}";
             $descriptions[] = $oc['descr'];
-            if (isset($oc['vips']) && is_array($oc['vips'])) {
+            if (!empty($oc['vips']) && !empty($oc['internal_dynamic'])) {
+                foreach ($oc['vips'] as $vip) {
+                    $tonathosts[] = "{$vip['sa']}/{$vip['sn']}";
+                    $descriptions[] = $oc['descr'];
+                }
+            } elseif (isset($oc['vips']) && is_array($oc['vips'])) {
                 $if_subnets = array("{$oc['sa']}/{$oc['sn']}");
                 foreach ($oc['vips'] as $vip) {
                     if (!is_ipaddrv4($vip['ip'])) {
@@ -1000,41 +1039,6 @@ function filter_nat_rules_automatic_tonathosts(&$FilterIflist, $with_descr = fal
                 unset($if_subnets);
             }
         }
-    }
-
-    /* PPTP subnet */
-    if (($config['pptpd']['mode'] == "server" ) && is_private_ip($config['pptpd']['remoteip'])) {
-        if (isset($config['pptpd']['n_pptp_units']) && is_numeric($config['pptpd']['n_pptp_units'])) {
-            $pptp_subnets = ip_range_to_subnet_array($config['pptpd']['remoteip'],
-              long2ip32(ip2long($config['pptpd']['remoteip'])+($config['pptpd']['n_pptp_units']-1)));
-        } else {
-            $pptp_subnets = ip_range_to_subnet_array($config['pptpd']['remoteip'],
-              long2ip32(ip2long($config['pptpd']['remoteip'])));
-        }
-        foreach ($pptp_subnets as $subnet) {
-            $tonathosts[] = $subnet;
-            $descriptions[] = gettext("PPTP server");
-        }
-    }
-
-    /* PPPoE subnet */
-    if (isset($FilterIflist['pppoe']['item']) && is_array($FilterIflist['pppoe']['item'])) {
-        foreach ($FilterIflist['pppoe']['item'] as $pppoe) {
-            if (is_private_ip($pppoe['ip'])) {
-                $tonathosts[] = "{$pppoe['sa']}/{$pppoe['sn']}";
-                $descriptions[] = gettext("PPPoE server");
-            }
-        }
-    }
-
-    /* L2TP subnet */
-    if (isset($FilterIflist['l2tp']) && $FilterIflist['l2tp']['mode'] == "server") {
-          $l2tp_sa = $FilterIflist['l2tp']['sa'];
-          $l2tp_sn = $FilterIflist['l2tp']['sn'];
-          if (is_private_ip($l2tp_sa) && !empty($l2tp_sn)) {
-              $tonathosts[] = "{$l2tp_sa}/{$l2tp_sn}";
-              $descriptions[] = gettext("L2TP server");
-          }
     }
 
     /* add openvpn interfaces */
@@ -1920,7 +1924,7 @@ function filter_generate_address(&$FilterIflist, &$rule, $target = 'source', $is
         if (is_subnet($src)) {
             filter_address_add_vips_subnets($FilterIflist, $src, $rule[$target]['network'], isset($rule[$target]['not']));
         }
-    } else if ($rule[$target]['address']) {
+    } elseif ($rule[$target]['address']) {
         $expsrc = alias_expand($rule[$target]['address']);
         if (isset($rule[$target]['not'])) {
             $not = "!";

@@ -38,6 +38,7 @@ function plugin_openvpn_interface()
         $oic['descr'] = 'OpenVPN';
         $oic['type'] = "none";
         $oic['virtual'] = true;
+        $oic['networks'] = array();
         $interfaces['openvpn'] = $oic;
     }
 

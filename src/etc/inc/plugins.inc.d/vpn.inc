@@ -665,54 +665,49 @@ function vpn_interface()
 
     if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == 'server') {
         $oic = array("enable" => true);
+        $oic['networks'] =  array();
+        $oic['virtual'] = true;
         $oic['if'] = 'pptp';
         $oic['descr'] = 'pptp';
-        $oic['ip'] = $config['pptpd']['localip'];
-        $oic['sa'] = $config['pptpd']['remoteip'];
-        if (!empty($config['pptpd']['pptp_subnet'])) {
-            $oic['sn'] = $config['pptpd']['pptp_subnet'];
+        $mask = !empty($config['pptpd']['pptp_subnet']) ? $config['pptpd']['pptp_subnet'] : 32;
+        if (isset($config['pptpd']['n_pptp_units']) && is_numeric($config['pptpd']['n_pptp_units'])) {
+            $pptp_subnets = ip_range_to_subnet_array($config['pptpd']['remoteip'],
+              long2ip32(ip2long($config['pptpd']['remoteip'])+($config['pptpd']['n_pptp_units']-1)));
         } else {
-            $oic['sn'] = "32";
+            $pptp_subnets = ip_range_to_subnet_array($config['pptpd']['remoteip'],
+              long2ip32(ip2long($config['pptpd']['remoteip'])));
         }
-        $oic['mode'] = $config['pptpd']['mode'];
-        $oic['virtual'] = true;
+        foreach ($pptp_subnets as $pptp_subnet) {
+            $snparts = explode("/", $pptp_subnet);
+            $oic['networks'][] = array("network" => $snparts[0], "mask" => $snparts[1]);
+        }
         $interfaces['pptp'] = $oic;
     }
 
     if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == 'server') {
         $oic = array("enable" => true);
+        $oic['virtual'] = true;
+        $oic['networks'] =  array();
         $oic['if'] = 'l2tp';
         $oic['descr'] = 'L2TP';
-        $oic['ip'] = $config['l2tp']['localip'];
-        $oic['sa'] = $config['l2tp']['remoteip'];
-        if (!empty($config['l2tp']['l2tp_subnet'])) {
-            $oic['sn'] = $config['l2tp']['l2tp_subnet'];
-        } else {
-            $oic['sn'] = "32";
-        }
-        $oic['mode'] = $config['l2tp']['mode'];
-        $oic['virtual'] = true;
+        $mask = !empty($config['l2tp']['l2tp_subnet']) ? $config['l2tp']['l2tp_subnet'] : 32;
+        $oic['networks'][] = array("network" => gen_subnet($config['l2tp']['remoteip'], $mask), "mask" => $mask);
         $interfaces['l2tp'] = $oic;
     }
 
     if (isset($config['pppoes']['pppoe'])) {
-        $pppoeifs = array('item' => array());
+        $pppoeifs = array('networks' => array());
         foreach($config['pppoes']['pppoe'] as $pppoe) {
             if ($pppoe['mode'] == "server") {
-                $item = array('ip' => $pppoe['localip'], 'sa' => $pppoe['remoteip']);
-                $item['sn'] = !empty($pppoe['pppoe_subnet']) ?  $pppoe['pppoe_subnet'] : "32";
-                $pppoeifs['item'][] = $item;
+                $mask = !empty($pppoe['pppoe_subnet']) ?  $pppoe['pppoe_subnet'] : 32;
+                $pppoeifs['networks'][] = array("network" => gen_subnet($pppoe['remoteip'], $mask), "mask" => $mask);
             }
         }
-        if (count($pppoeifs['item'])) {
+        if (count($pppoeifs['networks'])) {
             $pppoeifs['enable'] = true;
+            $pppoeifs['virtual'] = true;
             $pppoeifs['if'] = 'pppoe';
             $pppoeifs['descr'] = 'pppoe';
-            $pppoeifs['ip'] = "";
-            $pppoeifs['sa'] = "";
-            $pppoeifs['sn'] = "32";
-            $pppoeifs['mode'] = "";
-            $pppoeifs['virtual'] = true;
             $interfaces['pppoe'] = $pppoeifs;
         }
     }

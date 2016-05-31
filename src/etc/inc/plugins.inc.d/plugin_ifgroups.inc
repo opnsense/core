@@ -35,6 +35,7 @@ function plugin_ifgroups_interface()
     if (isset($config['ifgroups']['ifgroupentry'])) {
         foreach($config['ifgroups']['ifgroupentry'] as $ifgen) {
             $oc = array("enable" => true);
+            $oc['networks'] = array();
             $oc['if'] = $ifgen['ifname'];
             $oc['descr'] = $ifgen['ifname'];
             $oc['virtual'] = true;

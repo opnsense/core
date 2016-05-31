@@ -38,6 +38,7 @@ function plugin_ipsec_interface()
         $oic['descr'] = 'IPsec';
         $oic['type'] = "none";
         $oic['virtual'] = true;
+        $oic['networks'] = array();
         $interfaces['enc0'] = $oic;
     }
 
