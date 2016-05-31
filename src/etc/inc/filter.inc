@@ -2204,50 +2204,34 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         }
 
         if ($noadvoptions == false) {
-            if ((isset($rule['max']) && $rule['max'] <> "") ||
-              (isset($rule['max-src-nodes']) && $rule['max-src-nodes'] <> "") ||
-              (isset($rule['max-src-states']) && $rule['max-src-states'] <> "") ||
-              ((isset($rule['protocol']) && in_array($rule['protocol'], array("tcp","tcp/udp"))) &&
-              ((isset($rule['statetimeout']) && $rule['statetimeout'] <> "") ||
-              (isset($rule['max-src-conn']) && $rule['max-src-conn'] <> "") ||
-              (isset($rule['max-src-conn-rate']) && $rule['max-src-conn-rate'] <> "") ||
-              (isset($rule['max-src-conn-rates']) && $rule['max-src-conn-rates'] <> ""))) ||
-              isset($rule['sloppy']) || isset($rule['nopfsync'])) {
-                $aline['flags'] .= "( ";
-                if (isset($rule['sloppy'])) {
-                    $aline['flags'] .= "sloppy ";
-                }
-                if (isset($rule['nopfsync'])) {
-                    $aline['flags'] .= "no-sync ";
-                }
-                if (isset($rule['max']) && $rule['max'] <> "") {
-                    $aline['flags'] .= "max " . $rule['max'] . " ";
-                }
-                if (isset($rule['max-src-nodes']) && $rule['max-src-nodes'] <> "") {
-                    $aline['flags'] .= "max-src-nodes " . $rule['max-src-nodes'] . " ";
-                }
-                if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
-                  && isset($rule['max-src-conn'])
-                  && $rule['max-src-conn'] <> "") {
-                    $aline['flags'] .= "max-src-conn " . $rule['max-src-conn'] . " ";
-                }
-                if (isset($rule['max-src-states']) && $rule['max-src-states'] <> "") {
-                    $aline['flags'] .= "max-src-states " . $rule['max-src-states'] . " ";
-                }
-                if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
-                  && isset($rule['statetimeout'])
-                  && $rule['statetimeout'] <> "") {
-                  $aline['flags'] .= "tcp.established " . $rule['statetimeout'] . " ";
-                }
-                if ((in_array($rule['protocol'], array("tcp","tcp/udp")))
-                  && isset($rule['max-src-conn-rate'])
-                  && $rule['max-src-conn-rate'] <> ""
-                  && isset($rule['max-src-conn-rates'])
-                  && $rule['max-src-conn-rates'] <> "") {
-                    $aline['flags'] .= "max-src-conn-rate " . $rule['max-src-conn-rate'] . " ";
-                    $aline['flags'] .= "/" . $rule['max-src-conn-rates'] . ", overload <virusprot> flush global ";
-                }
-                $aline['flags'] .= " ) ";
+            $advanced_options = array();
+            if (isset($rule['sloppy'])) {
+                $advanced_options[] = "sloppy ";
+            }
+            if (isset($rule['nopfsync'])) {
+                $advanced_options[] = "no-sync ";
+            }
+            if (isset($rule['max']) && $rule['max'] <> "") {
+                $advanced_options[] = "max " . $rule['max'] . " ";
+            }
+            if (isset($rule['max-src-nodes']) && $rule['max-src-nodes'] <> "") {
+                $advanced_options[] = "max-src-nodes " . $rule['max-src-nodes'] . " ";
+            }
+            if ((in_array($rule['protocol'], array("tcp","tcp/udp"))) && !empty($rule['max-src-conn'])) {
+                $advanced_options[] = "max-src-conn " . $rule['max-src-conn'] . " ";
+            }
+            if (isset($rule['max-src-states']) && $rule['max-src-states'] <> "") {
+                $advanced_options[] = "max-src-states " . $rule['max-src-states'] . " ";
+            }
+            if ((in_array($rule['protocol'], array("tcp","tcp/udp"))) && !empty($rule['statetimeout'])) {
+                $advanced_options[] = "tcp.established " . $rule['statetimeout'] . " ";
+            }
+            if ((in_array($rule['protocol'], array("tcp","tcp/udp"))) && !empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
+                $advanced_options[] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
+                                      "/" . $rule['max-src-conn-rates'] . ", overload <virusprot> flush global ";
+            }
+            if (count($advanced_options) > 0) {
+                $aline['flags'] .= "( " . implode(" ", $advanced_options) .  " ) ";
             }
         }
     }
