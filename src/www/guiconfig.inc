@@ -554,16 +554,16 @@ function pconfig_to_address(&$adr, $padr, $pmask, $pnot=false, $pbeginport=0, $p
 
 function is_specialnet($net)
 {
-    global $specialsrcdst;
-
-    if (!$net) {
-        return false;
-    }
-    if (is_array($specialsrcdst) && in_array($net, $specialsrcdst)) {
+    if (in_array($net, array('any','(self)'))) {
         return true;
     } else {
-        return false;
+        foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifent => $ifdetail) {
+            if ($ifent == $net || (!isset($ifdetail['virtual']) &&  $ifent."ip" == $net)) {
+                return true;
+            }
+        }
     }
+    return false;
 }
 
 
