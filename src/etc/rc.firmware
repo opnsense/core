@@ -26,6 +26,15 @@
 # SUCH DAMAGE.
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n -o"
+FLOCK="/usr/local/bin/flock"
+ARGS="-n -o ${LOCKFILE}"
 
-${FLOCK} ${LOCKFILE} /usr/local/etc/rc.firmware.subr
+if [ ! -f ${FLOCK} ]; then
+	# backwards-compat to be removed post-16.7
+	/usr/local/etc/rc.firmware.subr "${@}"
+	exit 0
+fi
+
+if ! ${FLOCK} ${ARGS} /usr/local/etc/rc.firmware.subr "${@}"; then
+	echo "A firmware update is currently in progress."
+fi
