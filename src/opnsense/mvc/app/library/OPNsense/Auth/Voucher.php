@@ -318,7 +318,7 @@ class Voucher implements IAuthConnector
                   delete
                   from vouchers
                   where vouchergroup = :vouchergroup
-                  and starttime is not null 
+                  and starttime is not null
                   and starttime + validity < :endtime
                   ');
         $stmt->bindParam(':vouchergroup', $vouchergroup);
