@@ -25,10 +25,18 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
-FLOCK="/usr/local/bin/flock -n"
+FLOCK="/usr/local/bin/flock"
+
+if [ ! -f ${FLOCK} ]; then
+	# backwards-compat
+	echo "ready"
+	exit 0
+fi
+
+touch ${LOCKFILE}
 
 (
-	if ${FLOCK} 9; then
+	if ${FLOCK} -n 9; then
 		echo "ready"
 	else
 		echo "busy"
