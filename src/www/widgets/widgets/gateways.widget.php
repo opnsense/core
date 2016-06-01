@@ -37,10 +37,10 @@
           if (tbody.find("#"+tr_id).length == 0) {
               // add new gateway
               tr_content.push('<tr id="'+tr_id+'">');
-              tr_content.push('<td><strong>'+gateway['name']+'</strong><br/><small>'+gateway['address']+'<small></td>');
+              tr_content.push('<td><small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small></td>');
               tr_content.push('<td>'+gateway['delay']+'</td>');
               tr_content.push('<td>'+gateway['loss']+'</td>');
-              tr_content.push('<td><div class="" style="width:150px;">'+gateway['status_translated']+'</div></td>');
+              tr_content.push('<td><div class="" style="width:40px;">'+gateway['status_translated']+'</div></td>');
               tr_content.push('</tr>');
               tbody.append(tr_content.join(''));
           } else {
