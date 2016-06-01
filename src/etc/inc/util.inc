@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
     All rights reserved.
 
@@ -980,22 +981,6 @@ function exec_command($command)
     return(implode("\n", $output));
 }
 
-/* wrapper for mwexec() ;) */
-function mwexecf($format, $args = array(), $mute = false)
-{
-    if (!is_array($args)) {
-        /* just in case there's only one argument */
-        $args = array($args);
-    }
-
-    foreach ($args as $id => $arg) {
-        $args[$id] = escapeshellarg($arg);
-    }
-
-    return mwexec(vsprintf($format, $args), $mute);
-}
-
-/* wrapper for exec() */
 function mwexec($command, $mute = false)
 {
     $oarr = array();
@@ -1015,10 +1000,33 @@ function mwexec($command, $mute = false)
     return $retval;
 }
 
-/* wrapper for exec() in background */
 function mwexec_bg($command, $mute = false)
 {
     mwexec("/usr/sbin/daemon -f {$command}", $mute);
+}
+
+function exec_safe($format, $args = array())
+{
+    if (!is_array($args)) {
+        /* just in case there's only one argument */
+        $args = array($args);
+    }
+
+    foreach ($args as $id => $arg) {
+        $args[$id] = escapeshellarg($arg);
+    }
+
+    return vsprintf($format, $args);
+}
+
+function mwexecf($format, $args = array(), $mute = false)
+{
+    return mwexec(exec_safe($format, $args), $mute);
+}
+
+function mwexecf_bg($format, $args = array(), $mute = false)
+{
+    mwexec_bg(exec_safe($format, $args), $mute);
 }
 
 

@@ -810,7 +810,6 @@ function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
 function system_syslogd_start()
 {
     global $config, $g;
-    $retval = null;
 
     /* XXX temporary hook for newsyslog.conf regeneration */
     configd_run('template reload OPNsense.Syslog');
@@ -927,7 +926,6 @@ EOD;
             exec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/run");
         }
 
-        $sourceip = "";
         if (!empty($syslogcfg['sourceip'])) {
             if ($syslogcfg['ipproto'] == "ipv6") {
                 $ifaddr = is_ipaddr($syslogcfg['sourceip']) ? $syslogcfg['sourceip'] : get_interface_ipv6($syslogcfg['sourceip']);
@@ -941,11 +939,12 @@ EOD;
                 }
             }
             if (is_ipaddr($ifaddr)) {
-                $sourceip = "-b {$ifaddr}";
+                $syslogd_extra .= exec_safe('-b %s ', $ifaddr);
             }
         }
 
-        $syslogd_extra = "-f /var/etc/syslog.conf {$sourceip}";
+        $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
+
         // setup log files for all facilities including default
         $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
         $syslog_files = array_keys($syslogconfs);
@@ -962,14 +961,15 @@ EOD;
     if (isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
     } else {
-        $retval = mwexec_bg("/usr/local/sbin/syslogd -s -c -c -l {$g['dhcpd_chroot_path']}/var/run/log -P /var/run/syslog.pid {$syslogd_extra}");
+        mwexecf_bg(
+            "/usr/local/sbin/syslogd -s -c -c -l %s -P %s {$syslogd_extra}",
+            array("{$g['dhcpd_chroot_path']}/var/run/log", '/var/run/syslog.pid')
+        );
     }
 
     if (file_exists("/var/run/booting")) {
         echo gettext("done.") . "\n";
     }
-
-    return $retval;
 }
 
 function system_webgui_configure()
