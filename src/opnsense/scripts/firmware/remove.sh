@@ -28,11 +28,6 @@
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
 PACKAGE=$1
 
-# Check if another pkg process is already running
-if [ -n "$(pgrep pkg)" ]; then
-	exit 0
-fi
-
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 

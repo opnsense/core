@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
-# Copyright (C) 2014 Deciso B.V.
+# Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,14 +24,30 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PACKAGE=$1
+BASEDIR="/usr/local/opnsense/scripts/firmware"
+LOCKFILE="/tmp/pkg_upgrade.progress"
+FLOCK="/usr/local/bin/flock -n -o"
+COMMANDS="
+hotfix
+install
+lock
+reinstall
+remove
+unlock
+upgrade
+"
 
-# Truncate upgrade progress file
-: > ${PKG_PROGRESS_FILE}
+SELECTED=${1}
+ARGUMENT=${2}
 
-echo "***GOT REQUEST TO INSTALL: $PACKAGE***" >> ${PKG_PROGRESS_FILE}
-pkg install -y $PACKAGE >> ${PKG_PROGRESS_FILE} 2>&1
-pkg autoremove -y >> ${PKG_PROGRESS_FILE} 2>&1
-pkg clean -ya >> ${PKG_PROGRESS_FILE} 2>&1
-echo '***DONE***' >> ${PKG_PROGRESS_FILE}
+for COMMAND in ${COMMANDS}; do
+	if [ "${SELECTED}" != ${COMMAND} ]; then
+		continue
+	fi
+
+	if [ -n "$(pgrep pkg)" ]; then
+		break
+	fi
+
+	${FLOCK} ${LOCKFILE} ${BASEDIR}/${COMMAND}.sh ${ARGUMENT}
+done

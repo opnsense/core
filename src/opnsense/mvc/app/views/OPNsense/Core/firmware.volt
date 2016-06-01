@@ -85,7 +85,8 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function upgrade(){
         $('#progresstab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Upgrading... (do not leave this page while upgrade is in progress)') }}");
+        $('#updatestatus').html("{{ lang._('Upgrading...') }}");
+        $("#upgrade").attr("style","");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
@@ -102,7 +103,7 @@ POSSIBILITY OF SUCH DAMAGE.
     function action(pkg_act, pkg_name)
     {
         $('#progresstab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Executing... (do not leave this page while execute is in progress)') }}");
+        $('#updatestatus').html("{{ lang._('Executing...') }}");
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
             $('#updatelist').empty();
@@ -136,7 +137,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 }]
 
             });
-
         } else {
             upgrade();
         }
@@ -178,7 +178,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
                             ' <i class="fa fa-cog fa-spin"></i>'
                         );
-                        setTimeout(rebootWait, 30000);
+                        setTimeout(rebootWait, 45000);
                     },
                 });
             } else {
@@ -288,14 +288,98 @@ POSSIBILITY OF SUCH DAMAGE.
         if ($('#message').html() != '') {
             $('#message').attr('style', '');
         }
+
         // repopulate package information
         packagesInfo();
-        // dashboard link: run check automatically
-        if (window.location.hash == '#checkupdate') {
-            updateStatus();
-        }
-    });
 
+        ajaxGet('/api/core/firmware/running',{},function(data, status) {
+            // if action is already running reattach now...
+            if (data['status'] == 'busy') {
+                upgrade();
+            // dashboard link: run check automatically
+            } else if (window.location.hash == '#checkupdate') {
+                updateStatus();
+            }
+        });
+
+        // handle firmware config options
+        ajaxGet('/api/core/firmware/getFirmwareOptions',{},function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/getFirmwareConfig',{},function(firmwareconfig, status) {
+                var other_selected = true;
+                $.each(firmwareoptions.mirrors, function(key, value) {
+                    var selected = false;
+                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) == 0) || key == firmwareconfig['mirror']) {
+                        selected = true;
+                        other_selected = false;
+                    }
+                    $("#firmware_mirror").append($("<option/>")
+                            .attr("value",key)
+                            .text(value)
+                            .prop('selected', selected)
+                    );
+                });
+                $("#firmware_mirror").prepend($("<option/>")
+                        .attr("value", firmwareconfig['mirror'])
+                        .text("(other)")
+                        .data("other", 1)
+                        .prop('selected', other_selected)
+                );
+                $("#firmware_mirror").selectpicker('refresh');
+                $("#firmware_mirror").change();
+
+                other_selected = true;
+                $.each(firmwareoptions.flavours, function(key, value) {
+                    var selected = false;
+                    if (key == firmwareconfig['flavour']) {
+                        selected = true;
+                        other_selected = false;
+                    }
+                    $("#firmware_flavour").append($("<option/>")
+                            .attr("value",key)
+                            .text(value)
+                            .prop('selected', selected)
+                    );
+                });
+                $("#firmware_flavour").prepend($("<option/>")
+                        .attr("value",firmwareconfig['flavour'])
+                        .text("(other)")
+                        .data("other", 1)
+                        .prop('selected', other_selected)
+                );
+                $("#firmware_flavour").selectpicker('refresh');
+                $("#firmware_flavour").change();
+            });
+        });
+
+        $("#firmware_mirror").change(function(){
+            $("#firmware_mirror_value").val($(this).val());
+            if ($(this).find(':selected').data("other") == 1) {
+                $("#firmware_mirror_other").show();
+            } else {
+                $("#firmware_mirror_other").hide();
+            }
+        });
+        $("#firmware_flavour").change(function() {
+            $("#firmware_flavour_value").val($(this).val());
+            if ($(this).find(':selected').data("other") == 1) {
+                $("#firmware_flavour_other").show();
+            } else {
+                $("#firmware_flavour_other").hide();
+            }
+        });
+
+        $("#change_mirror").click(function(){
+            $("#change_mirror_progress").addClass("fa fa-spinner fa-pulse");
+            var confopt = {};
+            confopt.mirror = $("#firmware_mirror_value").val()
+            confopt.flavour = $("#firmware_flavour_value").val()
+            ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt, callback=function(data,status) {
+                $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
+            });
+        });
+
+
+    });
 </script>
 
 <div class="container-fluid">
@@ -310,13 +394,64 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="packagestab" class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="settingstab" class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
+                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
-                <div id="packages" class="tab-pane fade in active">
+                <div id="settings" class="tab-pane fade in active">
+                    <table class="table table-striped table-responsive">
+                        <tbody>
+                            <tr>
+                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Mirror') }}</td>
+                                <td>
+                                    <select class="selectpicker" id="firmware_mirror">
+                                    </select>
+                                    <div style="display:none;" id="firmware_mirror_other">
+                                        <input type="text" id="firmware_mirror_value">
+                                    </div>
+                                    <div class="hidden" for="help_for_mirror">
+                                        <strong>
+                                            {{ lang._("Select an alternate firmware mirror.") }}
+                                        </strong>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Flavour') }}</td>
+                                <td>
+                                    <select class="selectpicker" id="firmware_flavour">
+                                    </select>
+                                    <div style="display:none;" id="firmware_flavour_other">
+                                        <input type="text" id="firmware_flavour_value">
+                                    </div>
+                                    <div class="hidden" for="help_for_flavour">
+                                        <strong>
+                                            {{ lang._("Select the firmware cryptography flavour.") }}
+                                        </strong>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Save') }}</b><i id="change_mirror_progress" class=""></i></button>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="packages" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
                     </table>
                 </div>

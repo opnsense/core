@@ -32,6 +32,7 @@ namespace OPNsense\Core\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\Core\Config;
 
 /**
  * Class FirmwareController
@@ -317,6 +318,19 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * retrieve exectution status
+     */
+    public function runningAction()
+    {
+        $backend = new Backend();
+
+        $result = array(
+            'status' => trim($backend->configdRun('firmware running'))
+        );
+
+        return $result;
+    }
+    /**
      * retrieve upgrade status (and log file of current process)
      */
     public function upgradestatusAction()
@@ -367,6 +381,94 @@ class FirmwareController extends ApiControllerBase
                 }
                 $response[$type][] = $translated;
             }
+        }
+
+        return $response;
+    }
+
+    /**
+     * list firmware mirror and flavour options
+     * @return array
+     */
+    public function getFirmwareOptionsAction()
+    {
+        // todo: we might want to move these into configuration files later
+        $mirrors = array();
+        $mirrors[''] = '(default)';
+        $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
+        $mirrors['https://mirror.auf-feindgebiet.de/opnsense'] = 'auf-feindgebiet.de (Karlsruhe, DE)';
+        $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
+        $mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
+        $mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
+        $mirrors['http://mirror.fra10.de.leaseweb.net/opnsense'] = 'LeaseWeb (Frankfurt, DE)';
+        $mirrors['http://mirror.sfo12.us.leaseweb.net/opnsense'] = 'LeaseWeb (San Francisco, US)';
+        $mirrors['http://mirror.wdc1.us.leaseweb.net/opnsense'] = 'LeaseWeb (Washington, D.C., US)';
+        $mirrors['http://mirrors.nycbug.org/pub/opnsense'] = 'NYC*BUG (New York, US)';
+        $mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
+        $mirrors['http://mirror.ragenetwork.de/opnsense'] = 'RageNetwork (Munich, DE)';
+        $mirrors['http://mirrors.supranet.net/pub/opnsense'] = 'Supranet Communications (Middleton, US)';
+        $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
+
+        $flavours = array();
+        $flavours[''] = '(default)';
+        $flavours['libressl'] = 'LibreSSL';
+        $flavours['latest'] = 'OpenSSL';
+
+        return array("mirrors"=>$mirrors, "flavours" => $flavours);
+    }
+
+    /**
+     * retrieve current firmware configuration options
+     * @return array
+     */
+    function getFirmwareConfigAction()
+    {
+        $result = array();
+        $result['mirror'] = '';
+        $result['flavour'] = '';
+
+        if (!empty(Config::getInstance()->object()->system->firmware->mirror)) {
+            $result['mirror'] = (string)Config::getInstance()->object()->system->firmware->mirror;
+        }
+        if (!empty(Config::getInstance()->object()->system->firmware->flavour)) {
+            $result['flavour'] = (string)Config::getInstance()->object()->system->firmware->flavour;
+        }
+
+        return $result;
+    }
+
+    /**
+     * set firmware configuration options
+     * @return array status
+     */
+    function setFirmwareConfigAction()
+    {
+        $response = array("status" => "failure");
+
+        if ($this->request->isPost()) {
+            $response['status'] = 'ok';
+            $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
+            $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
+
+            // config data without model, prepare xml structure and write data
+            if (!isset(Config::getInstance()->object()->system->firmware)) {
+                Config::getInstance()->object()->system->addChild('firmware');
+            }
+
+            if (!isset(Config::getInstance()->object()->system->firmware->mirror)) {
+                Config::getInstance()->object()->system->firmware->addChild('mirror');
+            }
+            Config::getInstance()->object()->system->firmware->mirror = $selectedMirror;
+
+            if (!isset(Config::getInstance()->object()->system->firmware->flavour)) {
+                Config::getInstance()->object()->system->firmware->addChild('flavour');
+            }
+            Config::getInstance()->object()->system->firmware->flavour = $selectedFlavour;
+
+            Config::getInstance()->save();
+
+            $backend = new Backend();
+            $backend->configdRun("firmware configure");
         }
 
         return $response;

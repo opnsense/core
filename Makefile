@@ -78,6 +78,7 @@ CORE_DEPENDS?=		apinger \
 			filterdns \
 			filterlog \
 			ifinfo \
+			flock \
 			flowd \
 			igmpproxy \
 			isc-dhcp43-client \

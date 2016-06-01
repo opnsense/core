@@ -60,8 +60,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['theme'] = null;
     $pconfig['language'] = null;
     $pconfig['timezone'] = "Etc/UTC";
-    $pconfig['mirror'] = 'default';
-    $pconfig['flavour'] = 'default';
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['hostname'] = $config['system']['hostname'];
@@ -89,14 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['language'] = $config['system']['language'];
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
-
-    if (isset($config['system']['firmware']['mirror'])) {
-        $pconfig['mirror'] = $config['system']['firmware']['mirror'];
-    }
-
-    if (isset($config['system']['firmware']['flavour'])) {
-        $pconfig['flavour'] = $config['system']['firmware']['flavour'];
-    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['timezone']) && $pconfig['timezone'] <> $_POST['timezone']) {
         filter_pflog_start();
@@ -165,26 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $config['system']['language'] = $pconfig['language'];
           /* XXX while this is very proactive, we should defer in favour of a unified language transition point ;) */
           set_language();
-      }
-
-      if (!isset($config['system']['firmware'])) {
-          $config['system']['firmware'] = array();
-      }
-      if ($pconfig['mirror'] == 'default') {
-          if (isset($config['system']['firmware']['mirror'])) {
-              /* default does not set anything for backwards compat */
-              unset($config['system']['firmware']['mirror']);
-          }
-      } else {
-          $config['system']['firmware']['mirror'] = $pconfig['mirror'];
-      }
-      if ($pconfig['flavour'] == 'default') {
-          if (isset($config['system']['firmware']['flavour'])) {
-              /* default does not set anything for backwards compat */
-              unset($config['system']['firmware']['flavour']);
-          }
-      } else {
-          $config['system']['firmware']['flavour'] = $pconfig['flavour'];
       }
 
       if (!empty($pconfig['prefer_ipv4'])) {
@@ -273,7 +243,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       services_dnsmasq_configure();
       services_unbound_configure();
       system_timezone_configure();
-      system_firmware_configure();
 
       if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
           configd_run("dns reload");
@@ -359,9 +328,6 @@ include("head.inc");
               </td>
             </tr>
             <tr>
-              <th colspan="2" valign="top" class="listtopic"><?=gettext("Firmware"); ?></th>
-            </tr>
-            <tr>
               <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
               <td>
                 <select name="language" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
@@ -401,45 +367,30 @@ include("head.inc");
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Mirror"); ?></td>
+              <th colspan="2" valign="top" class="listtopic"><?=gettext("Networking"); ?></th>
+            </tr>
+            <tr>
+              <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
               <td>
-                <select name="mirror" class="selectpicker" data-size="10" data-width="auto">
-<?php
-                foreach (get_firmware_mirrors() as $mcode => $mdesc):?>
-                  <option value="<?=$mcode;?>" <?=$mcode == $pconfig['mirror'] ? "selected=\"selected\"":"";?>>
-                    <?=$mdesc;?>
-                  </option>
-<?php
-                 endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_mirror">
-                  <strong>
-                    <?=gettext("Select an alternate firmware mirror."); ?>
-                  </strong>
+                <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
+                <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
+                <div class="hidden" for="help_for_prefer_ipv4">
+                  <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
+                                      "IPv6 will be used, if you check this option, IPv4 will be " .
+                                      "used instead of IPv6."); ?>
                 </div>
               </td>
             </tr>
             <tr>
-              <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Flavour"); ?></td>
-              <td width="78%" class="vtable">
-                <select name="flavour" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
-<?php
-                foreach (get_firmware_flavours() as $fcode => $fdesc):?>
-                  <option value="<?=$fcode;?>" <?=$fcode == $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
-                    <?=$fdesc;?>
-                  </option>
-<?php
-                 endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_flavour">
-                  <strong>
-                    <?=gettext("Select the firmware cryptography flavour."); ?>
-                  </strong>
+              <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway switching");?> </td>
+              <td>
+                <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? "checked=\"checked\"" : "";?> />
+                <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
+                <div class="hidden" for="help_for_gw_switch_default">
+                  <?=gettext("If the link where the default gateway resides fails " .
+                                      "switch the default gateway to another available one."); ?>
                 </div>
               </td>
-            </tr>
-            <tr>
-              <th colspan="2" valign="top" class="listtopic"><?=gettext("Name resolution"); ?></th>
             </tr>
             <tr>
               <td><a id="help_for_dnsservers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers"); ?></td>
@@ -517,32 +468,6 @@ include("head.inc");
                 <div class="hidden" for="help_for_dnsservers_opt">
                   <?=gettext("By default localhost (127.0.0.1) will be used as the first DNS server where the DNS Forwarder or DNS Resolver is enabled and set to listen on Localhost, so system can use the local DNS service to perform lookups. ".
                   "Checking this box omits localhost from the list of DNS servers."); ?>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th colspan="2" valign="top" class="listtopic"><?=gettext("Networking"); ?></th>
-            </tr>
-            <tr>
-              <td><a id="help_for_prefer_ipv4" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefer IPv4 over IPv6"); ?></td>
-              <td>
-                <input name="prefer_ipv4" type="checkbox" id="prefer_ipv4" value="yes" <?= !empty($pconfig['prefer_ipv4']) ? "checked=\"checked\"" : "";?> />
-                <strong><?=gettext("Prefer to use IPv4 even if IPv6 is available"); ?></strong>
-                <div class="hidden" for="help_for_prefer_ipv4">
-                  <?=gettext("By default, if a hostname resolves IPv6 and IPv4 addresses ".
-                                      "IPv6 will be used, if you check this option, IPv4 will be " .
-                                      "used instead of IPv6."); ?>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_gw_switch_default" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Gateway switching");?> </td>
-              <td>
-                <input name="gw_switch_default" type="checkbox" id="gw_switch_default" value="yes" <?= !empty($pconfig['gw_switch_default']) ? "checked=\"checked\"" : "";?> />
-                <strong><?=gettext("Allow default gateway switching"); ?></strong><br />
-                <div class="hidden" for="help_for_gw_switch_default">
-                  <?=gettext("If the link where the default gateway resides fails " .
-                                      "switch the default gateway to another available one."); ?>
                 </div>
               </td>
             </tr>
