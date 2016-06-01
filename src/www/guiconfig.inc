@@ -290,14 +290,19 @@ function get_std_save_message()
     return $to_return;
 }
 
-function get_specialnets()
+function get_specialnets($only_enabled=false)
 {
-    $specialnets = array("(self)" => "This Firewall", "pptp" => "PPTP clients", "pppoe" => "PPPoE clients", "l2tp" => "L2TP clients");
-    $spiflist = get_configured_interface_with_descr(false, true);
-    foreach ($spiflist as $ifgui => $ifdesc) {
-        $specialnets[$ifgui] = $ifdesc . " net";
-        $specialnets[$ifgui . 'ip'] = $ifdesc . " address";
+    $specialnets = array();
+    $specialnets["any"] = gettext("any");
+    $specialnets["(self)"] = gettext("This Firewall");
+    $filter = $only_enabled ? array("enable" => true) : array();
+    foreach (legacy_config_get_interfaces($filter) as $ifent => $ifdetail) {
+        $specialnets[$ifent] = htmlspecialchars($ifdetail['descr']) . " " . gettext("net");
+        if (!isset($ifdetail['virtual'])) {
+            $specialnets[$ifent."ip"] = htmlspecialchars($ifdetail['descr']). " ". gettext("address");
+        }
     }
+
     return $specialnets;
 }
 
