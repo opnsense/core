@@ -173,7 +173,7 @@ fi
 
 # make some directories in /var
 mkdir -p /var/run /var/log /var/etc /var/db/entropy /var/at/jobs \
-    /var/empty /var/tmp /var/crash
+    /var/empty /var/tmp /var/crash /var/cron/tabs
 
 # work around the fact that shutdown(8) doesn't clean up this file
 rm -f /var/run/nologin
