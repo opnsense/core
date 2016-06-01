@@ -43,45 +43,6 @@ if ($ostypes == null) {
     $ostypes = array();
 }
 
-/**
- * build array with interface options for this form
- */
-function formInterfaces() {
-    global $config;
-    $interfaces = array();
-    foreach ( get_configured_interface_with_descr(false, true) as $if => $ifdesc) {
-        $interfaces[$if] = $ifdesc;
-    }
-
-    if (!empty($config['ifgroups']['ifgroupentry']) && is_array($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $ifgrp) {
-            $interfaces[$ifgrp['ifname']] = $ifgrp['descr'];
-        }
-    }
-
-    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server") {
-        $interfaces['l2tp'] = "L2TP VPN";
-    }
-
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server") {
-        $interfaces['pptp'] = "PPTP VPN";
-    }
-
-    if (is_pppoe_server_enabled()) {
-        $interfaces['pppoe'] = "PPPoE VPN";
-    }
-
-    /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
-        $interfaces["enc0"] = "IPsec";
-    }
-
-    /* add openvpn/tun interfaces */
-    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-        $interfaces['openvpn'] = 'OpenVPN';
-    }
-    return $interfaces;
-}
 
 /**
  * fetch list of selectable networks to use in form
@@ -89,12 +50,11 @@ function formInterfaces() {
 function formNetworks() {
     $networks = array();
     $networks["any"] = gettext("any");
-    $networks["pptp"] = gettext("PPTP clients");
-    $networks["pppoe"] = gettext("PPPoE clients");
-    $networks["l2tp"] = gettext("L2TP clients");
-    foreach (get_configured_interface_with_descr() as $ifent => $ifdesc) {
-        $networks[$ifent] = htmlspecialchars($ifdesc) . " " . gettext("net");
-        $networks[$ifent."ip"] = htmlspecialchars($ifdesc). " ". gettext("address");
+    foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifent => $ifdetail) {
+        $networks[$ifent] = htmlspecialchars($ifdetail['descr']) . " " . gettext("net");
+        if (!isset($ifdetail['virtual'])) {
+            $networks[$ifent."ip"] = htmlspecialchars($ifdetail['descr']). " ". gettext("address");
+        }
     }
     return $networks;
 }
@@ -123,18 +83,6 @@ function is_posnumericint($arg) {
     return (is_numericint($arg) && $arg[0] != '0' && $arg > 0);
 }
 
-
-
-/**
- * obscured by clouds, is_specialnet uses this.. so let's hide it in here.
- * let's kill this another day.
- */
-$specialsrcdst = explode(" ", "any (self) pptp pppoe l2tp openvpn");
-$ifdisp = get_configured_interface_with_descr();
-foreach ($ifdisp as $kif => $kdescr) {
-    $specialsrcdst[] = "{$kif}";
-    $specialsrcdst[] = "{$kif}ip";
-}
 
 if (!isset($config['filter']['rule'])) {
     $config['filter']['rule'] = array();
@@ -775,7 +723,8 @@ include("head.inc");
                       <select name="interface" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
 <?php
                     endif;
-                    foreach (formInterfaces() as $iface => $ifacename): ?>
+
+                    foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>"
                             <?= !empty($pconfig['interface']) && (
                                   $iface == $pconfig['interface'] ||
@@ -783,7 +732,7 @@ include("head.inc");
                                   (!is_array($pconfig['interface']) && in_array($iface, explode(',', $pconfig['interface']))) ||
                                   (is_array($pconfig['interface']) && in_array($iface, $pconfig['interface']))
                                 ) ? 'selected="selected"' : ''; ?>>
-                          <?=htmlspecialchars($ifacename);?>
+                          <?=htmlspecialchars(strtoupper($ifdetail['descr']));?>
                         </option>
 <?php
                     endforeach; ?>

@@ -33,40 +33,6 @@ require_once("pfsense-utils.inc");
 require_once("filter.inc");
 
 /**
- * build array with interface options for this form
- */
-function formInterfaces() {
-    global $config;
-    $interfaces = array();
-    foreach (legacy_config_get_interfaces() as $if => $ifdata) {
-        $interfaces[$if] = $ifdata['descr'];
-    }
-
-    if (isset($config['l2tp']['mode']) && $config['l2tp']['mode'] == "server") {
-        $interfaces['l2tp'] = "L2TP VPN";
-    }
-
-    if (isset($config['pptpd']['mode']) && $config['pptpd']['mode'] == "server") {
-        $interfaces['pptp'] = "PPTP VPN";
-    }
-
-    if (is_pppoe_server_enabled()) {
-        $interfaces['pppoe'] = "PPPoE VPN";
-    }
-
-    /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
-        $interfaces["enc0"] = "IPsec";
-    }
-
-    /* add openvpn/tun interfaces */
-    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
-      $interfaces['openvpn'] = 'OpenVPN';
-    }
-    return $interfaces;
-}
-
-/**
  * return option array for valid translation networks
  */
 function formTranslateAddresses() {
@@ -452,9 +418,9 @@ include("head.inc");
                     <div class="input-group">
                       <select name="interface" class="selectpicker" data-width="auto" data-live-search="true">
 <?php
-                        foreach (formInterfaces() as $iface => $ifacename): ?>
+                        foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifdetail): ?>
                         <option value="<?=$iface;?>" <?= $iface == $pconfig['interface'] ? "selected=\"selected\"" : ""; ?>>
-                          <?=htmlspecialchars($ifacename);?>
+                          <?=htmlspecialchars($ifdetail['descr']);?>
                         </option>
                         <?php endforeach; ?>
                       </select>
