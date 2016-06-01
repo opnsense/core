@@ -2634,20 +2634,6 @@ EOD;
         }
     }
 
-    if (isset($config['nat']['rule']) && is_array($config['nat']['rule'])) {
-        foreach ($config['nat']['rule'] as $rule) {
-            if ((!isset($config['system']['disablenatreflection']) || (isset($rule['natreflection']) && $rule['natreflection'] == "enable"))
-               && $rule['natreflection'] != "disable") {
-                $ipfrules .= "# NAT Reflection rules\n";
-                $ipfrules .= <<<EOD
-pass in {$log['pass']} inet tagged PFREFLECT keep state label "NAT REFLECT: Allow traffic to localhost"
-
-EOD;
-                break;
-            }
-        }
-    }
-
     if (isset($config['filter']['rule'])) {
         /* Pre-cache all our rules so we only have to generate them once */
         $rule_arr1 = array();
