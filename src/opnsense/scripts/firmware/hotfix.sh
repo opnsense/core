@@ -25,17 +25,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 PKG_PROGRESS_FILE=/tmp/pkg_upgrade.progress
-PATCHES=${1}
-
-# Check if another pkg process is already running
-# (not strictly necessary, but we're modifying pkg files)
-if [ -n "$(pgrep pkg)" ]; then
-	exit 0
-fi
+PATCH=${1}
 
 # Truncate upgrade progress file
 : > ${PKG_PROGRESS_FILE}
 
-echo "***GOT REQUEST TO HOTFIX: ${PATCHES}***" >> ${PKG_PROGRESS_FILE}
-/usr/local/sbin/opnsense-patch ${PATCHES} >> ${PKG_PROGRESS_FILE} 2>&1
+echo "***GOT REQUEST TO HOTFIX: ${PATCH}***" >> ${PKG_PROGRESS_FILE}
+/usr/local/sbin/opnsense-patch ${PATCH} >> ${PKG_PROGRESS_FILE} 2>&1
 echo '***DONE***' >> ${PKG_PROGRESS_FILE}
