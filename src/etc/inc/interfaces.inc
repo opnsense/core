@@ -1851,12 +1851,9 @@ function interface_proxyarp_configure($interface = '')
 {
     global $config;
 
-    /* kill any running choparp */
+    /* kill any running choparp, on restart "all" */
     if (empty($interface)) {
         killbyname('choparp');
-    } else {
-        $vipif = get_real_interface($interface);
-        killbypid("/var/run/choparp_{$vipif}.pid");
     }
 
     $paa = array();
@@ -1864,56 +1861,31 @@ function interface_proxyarp_configure($interface = '')
         /* group by interface */
         foreach ($config['virtualip']['vip'] as $vipent) {
             if ($vipent['mode'] === "proxyarp") {
-                if ($vipent['interface']) {
-                    $proxyif = $vipent['interface'];
-                } else {
-                    $proxyif = "wan";
+                if (empty($interface) || $interface == $vipent['interface']) {
+                    if (empty($paa[$vipent['interface']])) {
+                        $paa[$proxyif] = array();
+                    }
+                    $paa[$vipent['interface']][] = $vipent;
                 }
-
-                if (!empty($interface) && $interface != $proxyif) {
-                    continue;
-                }
-
-                if (!isset($paa[$proxyif]) || !is_array($paa[$proxyif])) {
-                    $paa[$proxyif] = array();
-                }
-                $paa[$proxyif][] = $vipent;
             }
         }
     }
 
-    if (!empty($interface)) {
-        if (isset($paa[$interface]) && is_array($paa[$interface])) {
-            $paaifip = get_interface_ip($interface);
-            if (!is_ipaddr($paaifip)) {
-                return;
-            }
-            $args = get_real_interface($interface) . " auto";
-            foreach ($paa[$interface] as $paent) {
-                if (isset($paent['subnet'])) {
-                    $args .= " " . escapeshellarg("{$paent['subnet']}/{$paent['subnet_bits']}");
-                } elseif (isset($paent['range'])) {
-                    $args .= " " . escapeshellarg($paent['range']['from'] . "-" . $paent['range']['to']);
-                }
-            }
-            mwexec_bg("/usr/local/sbin/choparp " . $args);
+    foreach ($paa as $paif => $paents) {
+        $paaifip = get_interface_ip($paif);
+        if (!is_ipaddr($paaifip)) {
+            continue;
         }
-    } elseif (count($paa) > 0) {
-        foreach ($paa as $paif => $paents) {
-            $paaifip = get_interface_ip($paif);
-            if (!is_ipaddr($paaifip)) {
-                continue;
-            }
-            $args = get_real_interface($paif) . " auto";
-            foreach ($paents as $paent) {
-                if (isset($paent['subnet'])) {
-                    $args .= " " . escapeshellarg("{$paent['subnet']}/{$paent['subnet_bits']}");
-                } elseif (isset($paent['range'])) {
-                    $args .= " " . escapeshellarg($paent['range']['from'] . "-" . $paent['range']['to']);
-                }
-            }
-            mwexec_bg("/usr/local/sbin/choparp " . $args);
+        $vipif = get_real_interface($paif);
+        $pid_filename = "/var/run/choparp_{$vipif}.pid";
+        $args = "-p {$pid_filename} {$vipif} auto";
+        foreach ($paents as $paent) {
+            $args .= " " . escapeshellarg("{$paent['subnet']}/{$paent['subnet_bits']}");
         }
+        if (!empty($interface)) {
+            killbypid($pid_filename);
+        }
+        mwexec_bg("/usr/local/sbin/choparp " . $args);
     }
 }
 
