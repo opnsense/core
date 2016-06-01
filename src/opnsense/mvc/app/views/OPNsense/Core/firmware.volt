@@ -85,7 +85,8 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function upgrade(){
         $('#progresstab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Upgrading... (do not leave this page while upgrade is in progress)') }}");
+        $('#updatestatus').html("{{ lang._('Upgrading...') }}");
+        $("#upgrade").attr("style","");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
 
         ajaxCall('/api/core/firmware/upgrade',{upgrade:$.upgrade_action},function() {
@@ -102,7 +103,7 @@ POSSIBILITY OF SUCH DAMAGE.
     function action(pkg_act, pkg_name)
     {
         $('#progresstab > a').tab('show');
-        $('#updatestatus').html("{{ lang._('Executing... (do not leave this page while execute is in progress)') }}");
+        $('#updatestatus').html("{{ lang._('Executing...') }}");
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
             $('#updatelist').empty();
@@ -136,7 +137,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 }]
 
             });
-
         } else {
             upgrade();
         }
@@ -178,7 +178,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             "{{ lang._('The upgrade has finished and your device is being rebooted at the moment, please wait...') }}" +
                             ' <i class="fa fa-cog fa-spin"></i>'
                         );
-                        setTimeout(rebootWait, 30000);
+                        setTimeout(rebootWait, 45000);
                     },
                 });
             } else {
@@ -292,14 +292,20 @@ POSSIBILITY OF SUCH DAMAGE.
         if ($('#message').html() != '') {
             $('#message').attr('style', '');
         }
+
         // repopulate package information
         packagesInfo();
-        // dashboard link: run check automatically
-        if (window.location.hash == '#checkupdate') {
-            updateStatus();
-        }
-    });
 
+        ajaxGet('/api/core/firmware/running',{},function(data, status) {
+            // if action is already running reattach now...
+            if (data['status'] == 'busy') {
+                upgrade();
+            // dashboard link: run check automatically
+            } else if (window.location.hash == '#checkupdate') {
+                updateStatus();
+            }
+        });
+    });
 </script>
 
 <div class="container-fluid">

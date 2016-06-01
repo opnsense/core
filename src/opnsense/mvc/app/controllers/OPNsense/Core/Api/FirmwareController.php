@@ -317,6 +317,19 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * retrieve exectution status
+     */
+    public function runningAction()
+    {
+        $backend = new Backend();
+
+        $result = array(
+            'status' => trim($backend->configdRun('firmware running'))
+        );
+
+        return $result;
+    }
+    /**
      * retrieve upgrade status (and log file of current process)
      */
     public function upgradestatusAction()
