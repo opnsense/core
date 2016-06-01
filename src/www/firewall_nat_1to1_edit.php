@@ -31,21 +31,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("pfsense-utils.inc");
 
-/**
- * fetch list of selectable networks to use in form
- */
-function formNetworks() {
-    $networks = array();
-    $networks["any"] = gettext("any");
-    foreach (legacy_config_get_interfaces(array("enable" => true)) as $ifent => $ifdetail) {
-        $networks[$ifent] = htmlspecialchars($ifdetail['descr']) . " " . gettext("net");
-        if (!isset($ifdetail['virtual'])) {
-            $networks[$ifent."ip"] = htmlspecialchars($ifdetail['descr']). " ". gettext("address");
-        }
-    }
-    return $networks;
-}
-
 
 if (!isset($config['nat']['onetoone'])) {
     $config['nat']['onetoone'] = array();
@@ -310,7 +295,7 @@ include("head.inc");
   <?php                          endforeach; ?>
                                 </optgroup>
                                 <optgroup label="<?=gettext("Networks");?>">
-  <?php                          foreach (formNetworks() as $ifent => $ifdesc):
+  <?php                          foreach (get_specialnets(true) as $ifent => $ifdesc):
   ?>
                                   <option value="<?=$ifent;?>" <?= $pconfig['src'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
   <?php                            endforeach; ?>
@@ -361,7 +346,7 @@ include("head.inc");
   <?php                          endforeach; ?>
                               </optgroup>
                               <optgroup label="<?=gettext("Networks");?>">
-  <?php                          foreach (formNetworks() as $ifent => $ifdesc):
+  <?php                          foreach (get_specialnets(true) as $ifent => $ifdesc):
   ?>
                                 <option value="<?=$ifent;?>" <?= $pconfig['dst'] == $ifent ? "selected=\"selected\"" : ""; ?>><?=$ifdesc;?></option>
   <?php                            endforeach; ?>
