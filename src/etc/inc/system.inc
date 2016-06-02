@@ -807,6 +807,19 @@ function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
     return $remote_servers;
 }
 
+function system_syslogd_extra_local($logsocket)
+{
+    $logdir = dirname($logsocket);
+
+    if (!is_dir($logdir)) {
+        /* create if needed to avoid startup error */
+        mwexecf('/bin/mkdir -p %s', $logdir);
+    }
+
+    /* emit extra args for syslogd invoke */
+    return exec_safe('-l %s ', $logsocket);
+}
+
 function system_syslogd_start()
 {
     global $config, $g;
@@ -842,6 +855,7 @@ function system_syslogd_start()
         $syslogconfs['filter'] = array("facility" => array('filterlog'), "remote" => "filter");
         $syslogconfs['portalauth'] = array("facility" => array('captiveportal'), "remote" => "portalauth");
 
+        // XXX should be in plugins.inc
         // probe syslog facilities in plugins
         foreach (plugin_scan() as $name => $path) {
             require_once $path;
@@ -853,6 +867,9 @@ function system_syslogd_start()
                         $syslogconfs[$plugin_syslog] = array();
                         $syslogconfs[$plugin_syslog]['facility'] = array();
                         $syslogconfs[$plugin_syslog]['remote'] = $plugin_details['remote'];
+                        if (isset($plugin_details['local'])) {
+                            $syslogd_extra .= system_syslogd_extra_local($plugin_details['local']);
+                        }
                     }
                     $tmp = array_merge($syslogconfs[$plugin_syslog]['facility'], $plugin_details['facility']);
                     $syslogconfs[$plugin_syslog]['facility'] = $tmp;
@@ -921,10 +938,7 @@ EOD;
         }
         unset($syslogconf);
 
-        // Ensure that the log directory exists
-        if (!is_dir("{$g['dhcpd_chroot_path']}/var/run")) {
-            exec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/run");
-        }
+        $syslogd_extra .= system_syslogd_extra_local("{$g['dhcpd_chroot_path']}/var/run/log");
 
         if (!empty($syslogcfg['sourceip'])) {
             if ($syslogcfg['ipproto'] == "ipv6") {
@@ -961,10 +975,7 @@ EOD;
     if (isvalidpid('/var/run/syslog.pid')) {
         killbypid('/var/run/syslog.pid', 'HUP');
     } else {
-        mwexecf_bg(
-            "/usr/local/sbin/syslogd -s -c -c -l %s -P %s {$syslogd_extra}",
-            array("{$g['dhcpd_chroot_path']}/var/run/log", '/var/run/syslog.pid')
-        );
+        mwexecf_bg("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
     }
 
     if (file_exists("/var/run/booting")) {
