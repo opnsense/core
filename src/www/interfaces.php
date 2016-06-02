@@ -1849,7 +1849,7 @@ include("head.inc");
                                 endforeach;
                               endif;?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?=gettext("add a new one.");?>"  data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-sm" id="btn_show_add_gateway" title="<?=gettext("Add a new one.");?>"  data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span></button>
                             <div class="hidden" id="addgateway">
                               <br/>
                               <table class="table table-striped table-condensed">
@@ -1888,7 +1888,7 @@ include("head.inc");
                             <div class="hidden" for="help_for_gateway">
                               <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
                               <?=gettext("On local LANs the upstream gateway should be \"none\"."); ?>
-                              <p><strong><?=gettext("NOTE:"); ?></strong> <?=gettext("You can manage Gateways"); ?> <a target='_blank' href='system_gateways.php'><?=gettext("here"); ?></a>.</p>
+                              <p><?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
                             </div>
                           </td>
                         </tr>
@@ -1999,7 +1999,7 @@ include("head.inc");
                               </label>
                             </div>
                             <div class="hidden" for="help_for_dhcpprotocol_timing">
-                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease. "),'<a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
+                              <?=sprintf(gettext("The values in these fields are DHCP %sprotocol timings%s used when requesting a lease."),'<a target="_blank" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5#PROTOCOL_TIMING">','</a>') ?>
                             </div>
                           </td>
                         </tr>
@@ -2013,23 +2013,23 @@ include("head.inc");
                             <?=gettext("Send Options"); ?><br />
                             <input name="adv_dhcp_send_options" type="text" id="adv_dhcp_send_options" value="<?=$pconfig['adv_dhcp_send_options'];?>" />
                             <div class="hidden" for="help_for_dhcp_lease_requirements_and_requests">
-                              <?=gettext("The values in this field are DHCP options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />" .
+                              <?=gettext("The values in this field are DHCP options to be sent when requesting a DHCP lease. [option declaration [, ...]] <br />" .
                               "Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
                               "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />" .
-                              "Some ISPs may require certain options be or not be sent. "); ?>
+                              "Some ISPs may require certain options be or not be sent."); ?>
                             </div>
                             <hr/>
                             <?=gettext("Request Options");?>
                             <input name="adv_dhcp_request_options" type="text" id="adv_dhcp_request_options" value="<?=$pconfig['adv_dhcp_request_options'];?>" />
                             <div class="hidden" for="help_for_dhcp_lease_requirements_and_requests">
-                              <?=gettext("The values in this field are DHCP option 55 to be sent when requesting a DHCP lease.  [option [, ...]] <br />" .
-                              "Some ISPs may require certain options be or not be requested. "); ?>
+                              <?=gettext("The values in this field are DHCP option 55 to be sent when requesting a DHCP lease. [option [, ...]] <br />" .
+                              "Some ISPs may require certain options be or not be requested."); ?>
                             </div>
                             <hr/>
                             <?=gettext("Require Options");?>
                             <input name="adv_dhcp_required_options" type="text" id="adv_dhcp_required_options" value="<?=htmlspecialchars($pconfig['adv_dhcp_required_options']);?>" />
                             <div class="hidden" for="help_for_dhcp_lease_requirements_and_requests">
-                              <?=gettext("The values in this field are DHCP options required by the client when requesting a DHCP lease.  [option [, ...]] "); ?>
+                              <?=gettext("The values in this field are DHCP options required by the client when requesting a DHCP lease. [option [, ...]]"); ?>
                             </div>
                           </td>
                         </tr>
@@ -2038,7 +2038,7 @@ include("head.inc");
                           <td>
                             <input name="adv_dhcp_option_modifiers" type="text" id="adv_dhcp_option_modifiers" value="<?=$pconfig['adv_dhcp_option_modifiers'];?>" />
                             <div class="hidden" for="help_for_dhcp_option_modifiers">
-                              <?=gettext("The values in this field are DHCP option modifiers applied to obtained DHCP lease.  [modifier option declaration [, ...]] <br /> " .
+                              <?=gettext("The values in this field are DHCP option modifiers applied to obtained DHCP lease. [modifier option declaration [, ...]] <br />" .
                               "modifiers: (default, supersede, prepend, append)"); ?><br/>
                               <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhcp-options&amp;sektion=5"><?=gettext("FreeBSD manual");?></a>
                             </div>
@@ -2052,7 +2052,7 @@ include("head.inc");
                               <?=gettext("The value in this field is the full absolute path to a DHCP client configuration file.  [/[dirname/[.../]]filename[.ext]] <br /> " .
                               "Value Substitutions in Config File: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
                               "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />" .
-                              "Some ISPs may require certain options be or not be sent. "); ?>
+                              "Some ISPs may require certain options be or not be sent."); ?>
                               <a target="FreeBSD_DHCP" href="http://www.freebsd.org/cgi/man.cgi?query=dhclient.conf&amp;sektion=5"><?=gettext("FreeBSD manual");?></a>
                             </div>
                           </td>
@@ -2359,11 +2359,11 @@ include("head.inc");
                                 endforeach;
                               endif;?>
                             </select>
-                            <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?=gettext("add a new one.");?>"  data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span></button>
+                            <button type="button" class="btn btn-sm" id="btn_show_add_gatewayv6" title="<?=gettext("Add a new one.");?>"  data-toggle="tooltip"><span class="glyphicon glyphicon-plus"></span></button>
                             <div class="hidden" for="help_for_gatewayv6">
                               <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
-                              <?=gettext("On local LANs the upstream gateway should be \"none\"."); ?>
-                              <p><strong><?=gettext("NOTE:"); ?></strong> <?=gettext("You can manage Gateways"); ?> <a target='_blank' href='system_gateways.php'><?=gettext("here"); ?></a>.</p>
+                              <?=gettext('On local LANs the upstream gateway should be "none".'); ?>
+                              <p><?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
                             </div>
                             <div class="hidden" id="addgatewayv6">
                               <br/>

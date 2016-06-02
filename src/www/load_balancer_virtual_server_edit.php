@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     for ($i=0; isset($config['load_balancer']['virtual_server'][$i]); $i++) {
         if (($pconfig['name'] == $config['load_balancer']['virtual_server'][$i]['name']) && ($i != $id)) {
-            $input_errors[] = gettext("This virtual server name has already been used.  Virtual server names must be unique.");
+            $input_errors[] = gettext("This virtual server name has already been used. Virtual server names must be unique.");
         }
     }
 
@@ -191,7 +191,7 @@ include("head.inc");
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
                       <td width="22%">
-                        <strong><?=gettext("Add/edit -  Virtual Server entry"); ?></strong>
+                        <strong><?=gettext("Add/edit - Virtual Server entry"); ?></strong>
                       </td>
                       <td width="78%" align="right">
                         <small><?=gettext("full help"); ?> </small>
@@ -215,7 +215,7 @@ include("head.inc");
                       <td>
                         <input type="text" id="ipadd" name="ipaddr" value="<?=$pconfig['ipaddr'];?>" />
                         <div class="hidden" for="help_for_ipaddr">
-                          <?=gettext("This is normally the WAN IP address that you would like the server to listen on.  All connections to this IP and port will be forwarded to the pool cluster."); ?>
+                          <?=gettext("This is normally the WAN IP address that you would like the server to listen on. All connections to this IP and port will be forwarded to the pool cluster."); ?>
                           <br /><?=gettext("You may also specify a host alias listed in Firewall -&gt; Aliases here."); ?>
                         </div>
                       </td>
@@ -225,7 +225,7 @@ include("head.inc");
                       <td>
                         <input type="text" name="port" id="port" value="<?=$pconfig['port'];?>" />
                         <div class="hidden" for="help_for_port">
-                          <?=gettext("This is the port that the clients will connect to.  All connections to this port will be forwarded to the pool cluster."); ?>
+                          <?=gettext("This is the port that the clients will connect to. All connections to this port will be forwarded to the pool cluster."); ?>
                           <br /><?=gettext("If left blank, listening ports from the pool will be used."); ?>
                           <br /><?=gettext("You may also specify a port alias listed in Firewall -&gt; Aliases here."); ?>
                         </div>

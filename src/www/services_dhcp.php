@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pool = $_GET['pool'];
         }
     } else {
-        $savemsg = gettext("The DHCP Server can only be enabled on interfaces configured with static IP addresses") . ".<br/><br/>" . gettext("Only interfaces configured with a static IP will be shown") . ".";
+        $savemsg = gettext("The DHCP Server can only be enabled on interfaces configured with static IP addresses.") . "<br/><br/>" . gettext("Only interfaces configured with a static IP will be shown.");
     }
 
     /* If no interface is provided, choose first one from interfaces */
@@ -708,7 +708,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
                       <td>
                         <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?php printf(gettext("Enable DHCP server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        <strong><?php printf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
                     </tr>
 <?php
@@ -729,7 +729,7 @@ include("head.inc");
                       <td>
                         <input name="denyunknown" type="checkbox" value="yes" <?=!empty($pconfig['denyunknown']) ? "checked=\"checked\"" : ""; ?> />
                         <div class="hidden" for="help_for_denyunknown">
-                          <?=gettext("If this is checked, only the clients defined below will get DHCP leases from this server. ");?>
+                          <?=gettext("If this is checked, only the clients defined below will get DHCP leases from this server.");?>
                         </div>
                       </td>
                     </tr>
@@ -843,7 +843,7 @@ include("head.inc");
                       <td>
                         <input name="gateway" type="text" class="form-control host" value="<?=$pconfig['gateway'];?>" />
                         <div class="hidden" for="help_for_gateway">
-                          <?=gettext("The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type \"none\" for no gateway assignment.");?>
+                          <?=gettext('The default is to use the IP on this interface of the firewall as the gateway. Specify an alternate gateway here if this is not the correct gateway for your network. Type "none" for no gateway assignment.');?>
                         </div>
                       </td>
                     </tr>
@@ -861,16 +861,16 @@ include("head.inc");
                       <td>
                         <input name="domainsearchlist" type="text" id="domainsearchlist" value="<?=$pconfig['domainsearchlist'];?>" />
                         <div class="hidden" for="help_for_domainsearchlist">
-                          <?=gettext("The DHCP server can optionally provide a domain search list. Use the semicolon character as separator ");?>
+                          <?=gettext("The DHCP server can optionally provide a domain search list. Use the semicolon character as separator.");?>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time");?> (<?=gettext("seconds");?>)</td>
+                      <td><a id="help_for_defaultleasetime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Default lease time (seconds)")?></td>
                       <td>
                         <input name="defaultleasetime" type="text" id="defaultleasetime" value="<?=$pconfig['defaultleasetime'];?>" />
                         <div class="hidden" for="help_for_defaultleasetime">
-                          <?=gettext("This is used for clients that do not ask for a specific " . "expiration time."); ?><br />
+                          <?=gettext("This is used for clients that do not ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 7200 seconds.");?>
                         </div>
                       </td>
@@ -880,7 +880,7 @@ include("head.inc");
                       <td>
                         <input name="maxleasetime" type="text" id="maxleasetime" value="<?=$pconfig['maxleasetime'];?>" />
                         <div class="hidden" for="help_for_maxleasetime">
-                          <?=gettext("This is the maximum lease time for clients that ask"." for a specific expiration time."); ?><br />
+                          <?=gettext("This is the maximum lease time for clients that ask for a specific expiration time."); ?><br />
                           <?=gettext("The default is 86400 seconds.");?>
                         </div>
                       </td>
@@ -892,7 +892,7 @@ include("head.inc");
                       <td>
                         <input name="failover_peerip" type="text" class="form-control host" id="failover_peerip" value="<?=$pconfig['failover_peerip'];?>" />
                         <div class="hidden" for="help_for_failover_peerip">
-                          <?=gettext("Leave blank to disable.  Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
+                          <?=gettext("Leave blank to disable. Enter the interface IP address of the other machine. Machines must be using CARP. Interface's advskew determines whether the DHCPd process is Primary or Secondary. Ensure one machine's advskew<20 (and the other is >20).");?>
                         </div>
                       </td>
                     </tr>

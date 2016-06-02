@@ -55,17 +55,17 @@ $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
                       <tr>
                         <th></th>
                         <th colspan="3">
-                          <?=gettext("Pool: ");?> <?=$pool;?>
-                          <?=gettext("usage: ");?> <?=$pool_data['usage'];?>
-                          <?=gettext("online: ");?> <?=$pool_data['online'];?>
+                          <?= gettext("Pool:") ?> <?= $pool ?>
+                          <?= gettext("Usage:") ?> <?= $pool_data['usage'] ?>
+                          <?= gettext("Online:") ?> <?= $pool_data['online'] ?>
                         </th>
                         <th></th>
                       </tr>
                       <tr>
                         <th></th>
-                        <th><?=gettext("User");?></th>
-                        <th><?=gettext("Host");?></th>
-                        <th><?=gettext("Status");?></th>
+                        <th><?= gettext("User") ?></th>
+                        <th><?= gettext("Host") ?></th>
+                        <th><?= gettext("Status") ?></th>
                         <th></th>
                       </tr>
                     </thead>
@@ -76,11 +76,11 @@ $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
                     foreach ($pool_data['items'] as $lease): ?>
                     <tr>
                       <td></td>
-                      <td><?=htmlspecialchars($lease['user']);?></td>
-                      <td><?=htmlspecialchars($lease['address']);?></td>
+                      <td><?= htmlspecialchars($lease['user']) ?></td>
+                      <td><?= htmlspecialchars($lease['address']) ?></td>
                       <td>
-                        <span class='glyphicon glyphicon-transfer text-<?=$lease['status'] == 'online' ?  "success" : "danger";?>'></span>
-                        (<?=htmlspecialchars($lease['status']);?>)
+                        <span class='glyphicon glyphicon-transfer text-<?= $lease['status'] == 'online' ?  "success" : "danger" ?>'></span>
+                        (<?= htmlspecialchars($lease['status']) ?>)
                       </td>
                       <td></td>
                     </tr>
@@ -90,7 +90,7 @@ $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
                     <tr>
                       <td></td>
                       <td colspan="3">
-                        <?=gettext("No leases from this pool yet.");?>
+                        <?= gettext("No leases from this pool yet.") ?>
                       </td>
                       <td></td>
                     </tr>
@@ -109,7 +109,7 @@ $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
                 <table class="table table-striped">
                   <thead>
                     <tr>
-                      <th><?=gettext("No IPsec pools.");?></th>
+                      <th><?= gettext("No IPsec pools.") ?></th>
                     </tr>
                   </thead>
                 </table>
