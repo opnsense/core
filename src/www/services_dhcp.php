@@ -708,7 +708,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
                       <td>
                         <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?php printf(gettext("Enable DHCP server on %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        <strong><?php printf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
                     </tr>
 <?php

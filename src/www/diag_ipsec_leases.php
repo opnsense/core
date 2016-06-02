@@ -56,8 +56,8 @@ $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
                         <th></th>
                         <th colspan="3">
                           <?= gettext("Pool:") ?> <?= $pool ?>
-                          <?= gettext("usage:") ?> <?= $pool_data['usage'] ?>
-                          <?= gettext("online:") ?> <?= $pool_data['online'] ?>
+                          <?= gettext("Usage:") ?> <?= $pool_data['usage'] ?>
+                          <?= gettext("Online:") ?> <?= $pool_data['online'] ?>
                         </th>
                         <th></th>
                       </tr>

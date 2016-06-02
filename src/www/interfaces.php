@@ -1888,7 +1888,7 @@ include("head.inc");
                             <div class="hidden" for="help_for_gateway">
                               <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
                               <?=gettext("On local LANs the upstream gateway should be \"none\"."); ?>
-                              <p><strong><?=gettext("NOTE:"); ?></strong> <?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
+                              <p><?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
                             </div>
                           </td>
                         </tr>
@@ -2363,7 +2363,7 @@ include("head.inc");
                             <div class="hidden" for="help_for_gatewayv6">
                               <?=gettext("If this interface is an Internet connection, select an existing Gateway from the list or add a new one using the link above."); ?><br />
                               <?=gettext('On local LANs the upstream gateway should be "none".'); ?>
-                              <p><strong><?=gettext("NOTE:"); ?></strong> <?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
+                              <p><?= sprintf(gettext("You can manage Gateways %shere%s."),'<a target="_blank" href="system_gateways.php">','</a>') ?></p>
                             </div>
                             <div class="hidden" id="addgatewayv6">
                               <br/>
