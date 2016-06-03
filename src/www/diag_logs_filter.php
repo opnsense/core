@@ -36,6 +36,7 @@ require_once("filter_log.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 /********************************************************************************************************************
  * imported from easyrule.inc/php
@@ -608,7 +609,7 @@ if (isset($filterlogentries_qty) && $filterlogentries_qty != null) {
 }
 
 if (isset($_POST['clear'])) {
-    clear_clog($filter_logfile);
+    system_clear_clog($filter_logfile);
 }
 
 include("head.inc");

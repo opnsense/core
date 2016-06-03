@@ -842,9 +842,6 @@ function system_syslogd_start()
 
         $syslogconfs = array();
 
-        /* XXX remove after the call path is safe */
-        require_once 'plugins.inc';
-
         if (function_exists('plugins_syslog')) {
             /* only pull plugins if plugins.inc was included before */
             foreach (plugins_syslog() as $plugin_name => $plugin_details) {
@@ -976,6 +973,47 @@ EOD;
         echo gettext("done.") . "\n";
     }
 }
+
+function system_clear_log($logfile, $restart_syslogd = true)
+{
+    if ($restart_syslogd) {
+        killbyname('syslogd');
+    }
+
+    foreach (glob($logfile . '.*') as $rotated) {
+        @unlink($rotated);
+    }
+
+    /* preserve file ownership and permissions */
+    if (file_exists($logfile)) {
+        $handle = fopen($logfile, 'r+');
+        if ($handle) {
+            ftruncate($handle, 0);
+            fclose($handle);
+        }
+    }
+
+    if ($restart_syslogd) {
+        system_syslogd_start();
+    }
+}
+
+function system_clear_clog($logfile, $restart_syslogd = true)
+{
+    global $config;
+
+    if ($restart_syslogd) {
+        killbyname('syslogd');
+    }
+
+    $log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
+    mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
+
+    if ($restart_syslogd) {
+        system_syslogd_start();
+    }
+}
+
 
 function system_webgui_configure()
 {

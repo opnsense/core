@@ -35,6 +35,7 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 require_once("services.inc");
+require_once("plugins.inc");
 
 function clear_all_log_files()
 {
@@ -68,12 +69,12 @@ function clear_all_log_files()
     );
 
     foreach ($clog_files as $lfile) {
-        clear_clog("/var/log/{$lfile}.log", false);
+        system_clear_clog("/var/log/{$lfile}.log", false);
     }
 
 
     foreach ($log_files as $lfile) {
-        clear_log("/var/log/{$lfile}.log", false);
+        system_clear_log("/var/log/{$lfile}.log", false);
     }
 
     system_syslogd_start();
