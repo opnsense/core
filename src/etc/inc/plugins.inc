@@ -75,7 +75,7 @@ function plugins_syslog()
 {
     $syslogs = array();
 
-    foreach (plugin_scan() as $name => $path) {
+    foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_syslog', $name);
         if (function_exists($func)) {
