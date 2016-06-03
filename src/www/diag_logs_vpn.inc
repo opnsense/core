@@ -40,7 +40,7 @@ if (empty($config['syslog']['nentries'])) {
 }
 
 if ($_POST['clear']) {
-    clear_clog($logfile);
+    system_clear_clog($logfile);
 }
 
 function dump_clog_vpn($logfile, $tail, $logtype)

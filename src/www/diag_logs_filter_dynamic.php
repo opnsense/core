@@ -32,6 +32,7 @@ require_once("guiconfig.inc");
 require_once("filter_log.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 $filter_logfile = '/var/log/filter.log';
 
@@ -42,7 +43,7 @@ $nentries = 50;
 handle_ajax($nentries, $nentries + 20);
 
 if (isset($_POST['clear'])) {
-    clear_clog($filter_logfile);
+    system_clear_clog($filter_logfile);
 }
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);

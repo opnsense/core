@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("filter_log.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 $filter_logfile = '/var/log/filter.log';
 $lines = 5000; // Maximum number of log entries to fetch
@@ -38,7 +39,7 @@ $entriesperblock = 10; // Maximum elements to show individually
 
 // flush log file
 if (!empty($_POST['clear'])) {
-    clear_clog($filter_logfile);
+    system_clear_clog($filter_logfile);
 }
 
 // Retrieve filter log data

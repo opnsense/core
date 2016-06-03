@@ -32,6 +32,7 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 /* expects $logfile to point to the system path */
 /* expects $logclog to be true or false */
@@ -45,9 +46,9 @@ if (isset($config['syslog']['nentries'])) {
 
 if (!empty($_POST['clear'])) {
     if ($logclog) {
-        clear_clog($logfile);
+        system_clear_clog($logfile);
     } else {
-        clear_log($logfile);
+        system_clear_log($logfile);
     }
     if (function_exists(clear_hook)) {
         clear_hook();
