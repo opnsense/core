@@ -874,10 +874,10 @@ function system_syslogd_start()
             if (!isset($syslogcfg['disablelocallogging'])) {
                 $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
             }
-            if (isset($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
+            if (!empty($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
             }
-            if (isset($logConfig['local'])) {
+            if (!empty($logConfig['local'])) {
                 $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
             }
         }
