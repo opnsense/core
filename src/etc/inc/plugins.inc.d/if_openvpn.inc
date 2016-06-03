@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2016 Deciso B.V.
     All rights reserved.
@@ -25,10 +26,39 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-function plugin_openvpn_interface()
+function if_openvpn_services()
 {
     global $config;
+
+    $services = array();
+
+    foreach (array('server', 'client') as $mode) {
+        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
+                if (!isset($setting['disable'])) {
+                    $pconfig = array();
+                    /* XXX clean up name print */
+                    $pconfig['description'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
+                    $pconfig['php']['restart'] = array('openvpn_restart_by_id');
+                    $pconfig['php']['start'] = array('openvpn_restart_by_id');
+                    $pconfig['php']['args'] = array('mode', 'id');
+                    $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
+                    $pconfig['id'] = $setting['vpnid'];
+                    $pconfig['name'] = 'openvpn';
+                    $pconfig['mode'] = $mode;
+                    $services[] = $pconfig;
+                }
+            }
+        }
+    }
+
+    return $services;
+}
+
+function if_openvpn_interfaces()
+{
+    global $config;
+
     $interfaces = array();
 
     /* add openvpn interfaces */

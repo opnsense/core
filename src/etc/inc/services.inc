@@ -2596,17 +2596,6 @@ function services_get()
         $services[] = $pconfig;
     }
 
-    if (isset($config['ipsec']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "ipsec";
-        $pconfig['description'] = gettext("IPsec VPN");
-        $pconfig['pidfile'] = '/var/run/charon.pid';
-        $pconfig['php']['restart'] = array('ipsec_force_reload');
-        $pconfig['php']['start'] = array('ipsec_force_reload');
-        $pconfig['mwexec']['stop'] = array('/usr/local/sbin/ipsec stop');
-        $services[] = $pconfig;
-    }
-
     if (isset($config['system']['ssh']['enabled'])) {
         $pconfig = array();
         $pconfig['name'] = 'sshd';
@@ -2614,25 +2603,6 @@ function services_get()
         $pconfig['configd']['restart'] = array('sshd restart');
         $pconfig['configd']['start'] = array('sshd restart');
         $services[] = $pconfig;
-    }
-
-    foreach (array('server', 'client') as $mode) {
-        if (isset($config['openvpn']["openvpn-{$mode}"])) {
-            foreach ($config['openvpn']["openvpn-{$mode}"] as $setting) {
-                if (!isset($setting['disable'])) {
-                    $pconfig = array();
-                    $pconfig['description'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
-                    $pconfig['php']['restart'] = array('openvpn_restart_by_id');
-                    $pconfig['php']['start'] = array('openvpn_restart_by_id');
-                    $pconfig['php']['args'] = array('mode', 'id');
-                    $pconfig['pidfile'] = "/var/run/openvpn_{$mode}{$setting['vpnid']}.pid";
-                    $pconfig['id'] = $setting['vpnid'];
-                    $pconfig['name'] = 'openvpn';
-                    $pconfig['mode'] = $mode;
-                    $services[] = $pconfig;
-                }
-            }
-        }
     }
 
     if (isset($config['load_balancer']['virtual_server']) && isset($config['load_balancer']['lbpool']) && count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {

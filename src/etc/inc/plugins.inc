@@ -58,7 +58,7 @@ function plugins_interfaces()
     // register / update interfaces
     foreach (plugin_scan() as $name => $path) {
         require_once $path;
-        $func = sprintf('%s_interface', $name);
+        $func = sprintf('%s_interfaces', $name);
         if (function_exists($func)) {
             foreach ($func() as $intf_ref => $intf_data) {
                 if (is_array($intf_data)) {
