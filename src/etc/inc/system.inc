@@ -840,42 +840,35 @@ function system_syslogd_start()
     if (isset($syslogcfg)) {
         $syslogconf = '';
 
-        // create structure with log section definitions and config tags for remote usage
         $syslogconfs = array();
-        $syslogconfs['routing'] = array("facility" => array('radvd', 'routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd') , "remote" => null);
-        $syslogconfs['ntpd'] = array("facility" => array('ntp', 'ntpd', 'ntpdate'), "remote" => null);
-        $syslogconfs['ppps'] = array("facility" => array('ppp'), "remote" => null);
-        $syslogconfs['ipsec'] = array("facility" => array('charon'), "remote" => null);
-        $syslogconfs['openvpn'] = array("facility" => array('openvpn'), "remote" => "vpn");
-        $syslogconfs['gateways'] = array("facility" => array('apinger'), "remote" => "apinger");
-        $syslogconfs['resolver'] = array("facility" => array('dnsmasq','filterdns','unbound'), "remote" => null);
-        $syslogconfs['dhcpd'] = array("facility" => array('dhcpd','dhcrelay','dhclient','dhcp6c'), "remote" => "dhcp");
-        $syslogconfs['relayd'] = array("facility" => array('relayd'), "remote" => "relayd");
-        $syslogconfs['wireless'] = array("facility" => array('hostapd'), "remote" => "hostapd");
-        $syslogconfs['filter'] = array("facility" => array('filterlog'), "remote" => "filter");
-        $syslogconfs['portalauth'] = array("facility" => array('captiveportal'), "remote" => "portalauth");
 
-        // XXX should be in plugins.inc
-        // probe syslog facilities in plugins
-        foreach (plugin_scan() as $name => $path) {
-            require_once $path;
-            $func = sprintf('%s_syslog', $name);
-            if (function_exists($func)) {
-                $workers = $func();
-                foreach ($workers as $plugin_syslog => $plugin_details) {
-                    if (!array_key_exists($plugin_syslog, $syslogconfs)) {
-                        $syslogconfs[$plugin_syslog] = array();
-                        $syslogconfs[$plugin_syslog]['facility'] = array();
-                        $syslogconfs[$plugin_syslog]['remote'] = $plugin_details['remote'];
-                        if (isset($plugin_details['local'])) {
-                            $syslogd_extra .= system_syslogd_extra_local($plugin_details['local']);
-                        }
-                    }
-                    $tmp = array_merge($syslogconfs[$plugin_syslog]['facility'], $plugin_details['facility']);
-                    $syslogconfs[$plugin_syslog]['facility'] = $tmp;
-                }
+        /* XXX remove after the call path is safe */
+        require_once 'plugins.inc';
+
+        if (function_exists('plugins_syslog')) {
+            /* only pull plugins if plugins.inc was included before */
+            foreach (plugins_syslog() as $plugin_name => $plugin_details) {
+                $syslogconfs[$plugin_name] = $plugin_details;
             }
         }
+
+        /*
+         * XXX Standard syslog configs overwrite plugins, but we can
+         * get rid of this behaviour by wrapping this local array using
+         * the key as a "name" entry in the array...
+         */
+        $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => "{$g['dhcpd_chroot_path']}/var/run/log", 'remote' => 'dhcp');
+        $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
+        $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
+        $syslogconfs['ipsec'] = array('facility' => array('charon'));
+        $syslogconfs['ntpd'] = array('facility' => array('ntp', 'ntpd', 'ntpdate'));
+        $syslogconfs['openvpn'] = array('facility' => array('openvpn'), 'remote' => 'vpn');
+        $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
+        $syslogconfs['ppps'] = array('facility' => array('ppp'));
+        $syslogconfs['relayd'] = array('facility' => array('relayd'), 'remote' => 'relayd');
+        $syslogconfs['resolver'] = array('facility' => array('dnsmasq', 'filterdns', 'unbound'));
+        $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
+        $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 
         $separatelogfacilities = array();
         foreach ($syslogconfs as $logTopic => $logConfig) {
@@ -884,8 +877,11 @@ function system_syslogd_start()
             if (!isset($syslogcfg['disablelocallogging'])) {
                 $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
             }
-            if ($logConfig['remote'] != null && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
+            if (isset($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
                 $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
+            }
+            if (isset($logConfig['local'])) {
+                $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
             }
         }
 
@@ -937,8 +933,6 @@ EOD;
             return 1;
         }
         unset($syslogconf);
-
-        $syslogd_extra .= system_syslogd_extra_local("{$g['dhcpd_chroot_path']}/var/run/log");
 
         if (!empty($syslogcfg['sourceip'])) {
             if ($syslogcfg['ipproto'] == "ipv6") {
@@ -1862,31 +1856,4 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
         }
     }
     return $sourceips;
-}
-
-/**
- * scan plugins for legacy system
- * @return array
- */
-function plugin_scan()
-{
-    $path = '/usr/local/etc/inc/plugins.inc.d/';
-    $ext = '.inc';
-
-    $ret = array();
-
-    $plugins = glob($path . '*' . $ext);
-    if (!is_array($plugins)) {
-        return $ret;
-    }
-
-    sort($plugins);
-
-    foreach ($plugins as $plugin) {
-        $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
-        $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
-        $ret[$name] = $plugin;
-    }
-
-    return $ret;
 }

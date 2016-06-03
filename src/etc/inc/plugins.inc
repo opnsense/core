@@ -26,11 +26,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * scan plugins for legacy system
+ * @return array
+ */
+function plugins_scan()
+{
+    $path = '/usr/local/etc/inc/plugins.inc.d/';
+    $ext = '.inc';
+
+    $ret = array();
+
+    $plugins = glob($path . '*' . $ext);
+    if (!is_array($plugins)) {
+        return $ret;
+    }
+
+    sort($plugins);
+
+    foreach ($plugins as $plugin) {
+        $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
+        $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
+        $ret[$name] = $plugin;
+    }
+
+    return $ret;
+}
+
 function plugins_services()
 {
     $services = array();
 
-    foreach (plugin_scan() as $name => $path) {
+    foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
@@ -42,6 +69,24 @@ function plugins_services()
     }
 
     return $services;
+}
+
+function plugins_syslog()
+{
+    $syslogs = array();
+
+    foreach (plugin_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_syslog', $name);
+        if (function_exists($func)) {
+            $workers = $func();
+            foreach ($workers as $plugin_syslog => $plugin_details) {
+                $syslogs[$plugin_syslog] = $plugin_details;
+            }
+        }
+    }
+
+    return $syslogs;
 }
 
 /**
@@ -56,7 +101,7 @@ function plugins_interfaces()
     $registered_interfaces = array();
 
     // register / update interfaces
-    foreach (plugin_scan() as $name => $path) {
+    foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_interfaces', $name);
         if (function_exists($func)) {
@@ -105,7 +150,7 @@ function plugins_interfaces()
 
 function plugins_configure()
 {
-    foreach (plugin_scan() as $name => $path) {
+    foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
