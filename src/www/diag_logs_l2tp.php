@@ -22,4 +22,4 @@ $tab_array[] = array(gettext("L2TP Raw"), $mode == "raw", "/diag_logs_l2tp.php?m
 
 $service_hook = 'l2tpd';
 
-require_once 'diag_logs_vpn.inc';
+require_once 'diag_logs_l2tp.inc';

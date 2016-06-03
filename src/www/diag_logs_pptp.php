@@ -22,4 +22,4 @@ $tab_array[] = array(gettext("PPTP Raw"), $mode == "raw", "/diag_logs_pptp.php?m
 
 $service_hook = 'pptpd';
 
-require_once 'diag_logs_vpn.inc';
+require_once 'diag_logs_pptp.inc';
