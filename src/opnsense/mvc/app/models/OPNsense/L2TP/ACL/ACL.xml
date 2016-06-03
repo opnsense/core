@@ -1,0 +1,31 @@
+<acl>
+    <!-- unique acl key, must be globally unique for all acl's  -->
+    <page-diagnostics-logs-l2tp>
+        <name>WebCfg - Diagnostics: Logs: L2TP page</name>
+        <description>Allow access to the 'Diagnostics: Logs: L2TP' page.</description>
+        <patterns>
+            <pattern>diag_logs_l2tp.php*</pattern>
+        </patterns>
+    </page-diagnostics-logs-l2tp>
+    <page-vpn-vpnl2tp>
+        <name>WebCfg - VPN: L2TP page</name>
+        <description>Allow access to the 'VPN: L2TP' page.</description>
+        <patterns>
+            <pattern>vpn_l2tp.php*</pattern>
+        </patterns>
+    </page-vpn-vpnl2tp>
+    <page-vpn-vpnl2tp-users-edit>
+        <name>WebCfg - VPN: L2TP: Users : Edit page</name>
+        <description>Allow access to the 'VPN: L2TP: Users : Edit' page.</description>
+        <patterns>
+            <pattern>vpn_l2tp_users_edit.php*</pattern>
+        </patterns>
+    </page-vpn-vpnl2tp-users-edit>
+    <page-vpn-vpnl2tp-users>
+        <name>WebCfg - VPN: L2TP: Users page</name>
+        <description>Allow access to the 'VPN: L2TP : Users' page.</description>
+        <patterns>
+            <pattern>vpn_l2tp_users.php*</pattern>
+        </patterns>
+    </page-vpn-vpnl2tp-users>
+</acl>

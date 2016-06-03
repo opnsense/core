@@ -1,0 +1,13 @@
+<menu>
+    <VPN>
+        <PPTP cssClass="fa fa-unlock fa-fw" order="120">
+            <Settings order="10" url="/vpn_pptp.php"/>
+            <Users order="20" url="/vpn_pptp_users.php">
+                <Edit url="/vpn_pptp_users_edit.php*" visibility="hidden"/>
+            </Users>
+            <LogFile order="30" VisibleName="Log File" url="/diag_logs_pptp.php">
+                <Type url="/diag_logs_pptp.php*" visibility="hidden"/>
+            </LogFile>
+        </PPTP>
+    </VPN>
+</menu>
