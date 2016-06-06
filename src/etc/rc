@@ -250,15 +250,6 @@ echo "done."
 # starting standard rc scripts
 /usr/local/etc/rc.opnsense start
 
-# Start ping handler every 240 seconds
-/usr/local/bin/minicron 240 /var/run/ping_hosts.pid /usr/local/sbin/ping_hosts.sh
-
-# Start account expire handler every hour
-/usr/local/bin/minicron 3600 /var/run/expire_accounts.pid /usr/local/etc/rc.expireaccounts
-
-# Start alias url updater every 24 hours
-/usr/local/bin/minicron 86400 /var/run/update_alias_url_data.pid /usr/local/etc/rc.update_alias_url_data
-
 /usr/local/sbin/beep.sh start
 
 /usr/local/etc/rc.initial.banner

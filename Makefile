@@ -85,7 +85,6 @@ CORE_DEPENDS?=		apinger \
 			isc-dhcp43-relay \
 			isc-dhcp43-server \
 			lighttpd \
-			minicron \
 			miniupnpd \
 			mpd5 \
 			ngattach \
