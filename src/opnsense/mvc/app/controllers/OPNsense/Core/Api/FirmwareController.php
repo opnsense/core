@@ -424,16 +424,16 @@ class FirmwareController extends ApiControllerBase
     function getFirmwareConfigAction()
     {
         $result = array();
+        $result['mirror'] = '';
+        $result['flavour'] = '';
+
         if (!empty(Config::getInstance()->object()->system->firmware->mirror)) {
             $result['mirror'] = (string)Config::getInstance()->object()->system->firmware->mirror;
-        } else {
-            $result['mirror'] = '(default)';
         }
         if (!empty(Config::getInstance()->object()->system->firmware->flavour)) {
             $result['flavour'] = (string)Config::getInstance()->object()->system->firmware->flavour;
-        } else {
-            $result['flavour'] = '(default)';
         }
+        
         return $result;
     }
 
