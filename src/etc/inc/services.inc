@@ -2383,7 +2383,7 @@ function configure_cron()
     $autocron[] = generate_cron_job('/usr/local/etc/rc.dyndns.update', '11', '1');
 
     /* every now and then */
-    $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
+    $autocron[] = generate_cron_job('/usr/local/sbin/ping_hosts.sh', '*/4');
 
     if (!empty($config['system']['rrdbackup'])) {
        $autocron[] = generate_cron_job('/usr/local/etc/rc.backup_rrd', '0', '*/' . $config['system']['rrdbackup']);

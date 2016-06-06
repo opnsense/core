@@ -71,46 +71,45 @@ function is_interface_mismatch()
 	return $do_assign;
 }
 
-
-
 function rescue_detect_keypress()
 {
-	$timeout = 9;
+	$timer = 7;
 
 	echo "\n";
 	echo "(I)nstaller will be invoked by default.\n\n";
 	echo "(C)ontinue with LiveCD bootup instead.\n\n";
 	echo "(R)ecovery mode escapes to a root shell.\n\n";
-	echo "Timeout before auto boot continues (seconds): {$timeout}";
+	echo "Timeout before auto boot continues (seconds):  ";
 
 	$key = null;
-	exec("/bin/stty erase " . chr(8));
-	while (!in_array($key, array("c", "C", "r","R", "i", "I"))) {
-	        echo chr(8) . "{$timeout}";
-	        `/bin/stty -icanon min 0 time 25`;
-	        $key = trim(`KEY=\`dd count=1 2>/dev/null\`; echo \$KEY`);
-	        `/bin/stty icanon`;
-	        // Decrement our timeout value
-	        $timeout--;
-	        // If we have reached 0 exit and continue on
-	        if ($timeout == 0) {
+	while (!isset($key) || !in_array($key, array('c', 'C', 'r', 'R', 'i', 'I'))) {
+		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
+		else { echo chr(8). "{$timer}"; }
+		shell_exec('/bin/stty -icanon min 0 time 25');
+		$key = shell_exec('/bin/dd count=1 status=none');
+		shell_exec('/bin/stty icanon');
+		if ($key == '') {
+			unset($key);
+		}
+		$timer--;
+		if ($timer == 0) {
 			break;
 		}
 	}
 
 	echo "\n\n";
 
-	if (in_array($key, array("r", "R"))) {
+	if (in_array($key, array('r', 'R'))) {
 		echo "Recovery shell selected...\n\n";
-		touch("/tmp/donotbootup");
+		touch('/tmp/donotbootup');
 		exit;
-	} elseif (in_array($key, array("c", "C"))) {
+	} elseif (in_array($key, array('c', 'C'))) {
 		/* nothing */
 	} else {
 		echo "Installer mode selected...\n";
-		passthru("/usr/local/etc/rc.installer");
-		if (file_exists("/tmp/install_complete")) {
-			passthru("/usr/local/etc/rc.reboot");
+		passthru('/usr/local/etc/rc.installer');
+		if (file_exists('/tmp/install_complete')) {
+			passthru('/usr/local/etc/rc.reboot');
 			exit;
 		}
 	}
