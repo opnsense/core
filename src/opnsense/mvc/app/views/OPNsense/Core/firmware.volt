@@ -305,38 +305,83 @@ POSSIBILITY OF SUCH DAMAGE.
                 updateStatus();
             }
         });
-        // fetch firmware options
+
+        // handle firmware config options
         ajaxGet('/api/core/firmware/getFirmwareOptions',{},function(firmwareoptions, status) {
             ajaxGet('/api/core/firmware/getFirmwareConfig',{},function(firmwareconfig, status) {
+                var other_selected = true;
                 $.each(firmwareoptions.mirrors, function(key, value) {
                     var selected = false;
-                    if (firmwareconfig['mirror'].indexOf(key) == 0) {
+                    if ((key != "" && firmwareconfig['mirror'].indexOf(key) == 0) || key == firmwareconfig['mirror']) {
                         selected = true;
+                        other_selected = false;
                     }
-                    $("#firmware_mirror").append($("<option/>").attr("value",key).text(value).prop('selected', selected));
+                    $("#firmware_mirror").append($("<option/>")
+                            .attr("value",key)
+                            .text(value)
+                            .prop('selected', selected)
+                    );
                 });
+                $("#firmware_mirror").prepend($("<option/>")
+                        .attr("value", firmwareconfig['mirror'])
+                        .text("(other)")
+                        .data("other", 1)
+                        .prop('selected', other_selected)
+                );
                 $("#firmware_mirror").selectpicker('refresh');
+                $("#firmware_mirror").change();
 
+                other_selected = true;
                 $.each(firmwareoptions.flavours, function(key, value) {
                     var selected = false;
                     if (key == firmwareconfig['flavour']) {
                         selected = true;
+                        other_selected = false;
                     }
-                    $("#firmware_flavour").append($("<option/>").attr("value",key).text(value).prop('selected', selected));
+                    $("#firmware_flavour").append($("<option/>")
+                            .attr("value",key)
+                            .text(value)
+                            .prop('selected', selected)
+                    );
                 });
+                $("#firmware_flavour").prepend($("<option/>")
+                        .attr("value",firmwareconfig['flavour'])
+                        .text("(other)")
+                        .data("other", 1)
+                        .prop('selected', other_selected)
+                );
                 $("#firmware_flavour").selectpicker('refresh');
+                $("#firmware_flavour").change();
             });
+        });
+
+        $("#firmware_mirror").change(function(){
+            $("#firmware_mirror_value").val($(this).val());
+            if ($(this).find(':selected').data("other") == 1) {
+                $("#firmware_mirror_other").show();
+            } else {
+                $("#firmware_mirror_other").hide();
+            }
+        });
+        $("#firmware_flavour").change(function() {
+            $("#firmware_flavour_value").val($(this).val());
+            if ($(this).find(':selected').data("other") == 1) {
+                $("#firmware_flavour_other").show();
+            } else {
+                $("#firmware_flavour_other").hide();
+            }
         });
 
         $("#change_mirror").click(function(){
             $("#change_mirror_progress").addClass("fa fa-spinner fa-pulse");
             var confopt = {};
-            confopt.mirror = $("#firmware_mirror").val()
-            confopt.flavour = $("#firmware_flavour").val()
+            confopt.mirror = $("#firmware_mirror_value").val()
+            confopt.flavour = $("#firmware_flavour_value").val()
             ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt, callback=function(data,status) {
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });
+
 
     });
 </script>
@@ -368,6 +413,10 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror">
                                     </select>
+                                    <div style="display:none;" id="firmware_mirror_other">
+                                        <br/>
+                                        <input type="text" id="firmware_mirror_value">
+                                    </div>
                                     <div class="hidden" for="help_for_mirror">
                                         <strong>
                                             {{ lang._("Select an alternate firmware mirror.") }}
@@ -381,6 +430,10 @@ POSSIBILITY OF SUCH DAMAGE.
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
+                                    <div style="display:none;" id="firmware_flavour_other">
+                                        <br/>
+                                        <input type="text" id="firmware_flavour_value">
+                                    </div>
                                     <div class="hidden" for="help_for_flavour">
                                         <strong>
                                             {{ lang._("Select the firmware cryptography flavour.") }}
