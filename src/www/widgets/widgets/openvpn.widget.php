@@ -66,11 +66,6 @@ $clients = openvpn_get_active_clients();
       </thead>
       <tbody>
 <?php
-        $server['conns'] = array();
-        $server['conns'][] = array('remote_host' => 'xxx1', 'common_name' => 'cn1');
-        $server['conns'][] = array('remote_host' => 'xxx2', 'common_name' => 'cn2');
-        $server['conns'][] = array('remote_host' => 'xxx3', 'common_name' => 'cn3');
-
         foreach ($server['conns'] as $conn) :?>
           <tr>
             <td><?=$conn['common_name'];?><br/><?=$conn['connect_time'];?></td>
