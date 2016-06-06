@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function timeout($timer = 9)
+function timeout($timer = 7)
 {
 	while (!isset($key)) {
 		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
@@ -64,7 +64,7 @@ function set_networking_interfaces_ports($probe = false)
 	if ($probe) {
 		echo PHP_EOL . gettext('Press any key to start the manual interface assignment:  ');
 
-		$key = timeout(7);
+		$key = timeout();
 		if (!isset($key)) {
 			$interactive = false;
 		}
