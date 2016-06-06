@@ -853,7 +853,7 @@ $( document ).ready(function() {
 <?php
                         if (!empty($pconfig['otp_seed'])):
                             // construct google url, using token, username and this machines hostname
-                            $google_otp_url = "https://www.google.com/chart?chs=200x200&amp;chld=M|0&amp;cht=qr&amp;chl=otpauth://totp/";
+                            $google_otp_url = "https://chart.googleapis.com/chart?chs=200x200&amp;chld=M|0&amp;cht=qr&amp;chl=otpauth://totp/";
                             $google_otp_url .= $pconfig['usernamefld']."@".htmlspecialchars($config['system']['hostname'])."%3Fsecret%3D";
                             $google_otp_url .= $pconfig['otp_seed'];
                         ?>
