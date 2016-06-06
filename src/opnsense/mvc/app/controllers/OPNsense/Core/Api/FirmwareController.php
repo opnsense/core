@@ -394,7 +394,7 @@ class FirmwareController extends ApiControllerBase
     {
         // todo: we might want to move these into configuration files later
         $mirrors = array();
-        $mirrors['default'] = '(default)';
+        $mirrors[''] = '(default)';
         $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
         $mirrors['https://mirror.auf-feindgebiet.de/opnsense'] = 'auf-feindgebiet.de (Karlsruhe, DE)';
         $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
@@ -410,7 +410,7 @@ class FirmwareController extends ApiControllerBase
         $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
 
         $flavours = array();
-        $flavours['default'] = '(default)';
+        $flavours[''] = '(default)';
         $flavours['libressl'] = 'LibreSSL';
         $flavours['latest'] = 'OpenSSL';
 
@@ -447,29 +447,23 @@ class FirmwareController extends ApiControllerBase
 
         if ($this->request->isPost()) {
             $response['status'] = 'ok';
+            $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
+            $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
+
             // config data without model, prepare xml structure and write data
             if (!isset(Config::getInstance()->object()->system->firmware)) {
                 Config::getInstance()->object()->system->addChild('firmware');
             }
+
             if (!isset(Config::getInstance()->object()->system->firmware->mirror)) {
                 Config::getInstance()->object()->system->firmware->addChild('mirror');
             }
+            Config::getInstance()->object()->system->firmware->mirror = $selectedMirror;
+
             if (!isset(Config::getInstance()->object()->system->firmware->flavour)) {
                 Config::getInstance()->object()->system->firmware->addChild('flavour');
             }
-
-            $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
-            $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
-            if (!empty($selectedMirror)) {
-                Config::getInstance()->object()->system->firmware->mirror = $selectedMirror;
-            } else {
-                Config::getInstance()->object()->system->firmware->mirror = 'default';
-            }
-            if (!empty($selectedFlavour)) {
-                Config::getInstance()->object()->system->firmware->flavour = $selectedFlavour;
-            } else {
-                Config::getInstance()->object()->system->firmware->mirror = 'default';
-            }
+            Config::getInstance()->object()->system->firmware->flavour = $selectedFlavour;
 
             Config::getInstance()->save();
         }
