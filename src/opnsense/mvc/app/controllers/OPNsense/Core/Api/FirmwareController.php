@@ -466,6 +466,9 @@ class FirmwareController extends ApiControllerBase
             Config::getInstance()->object()->system->firmware->flavour = $selectedFlavour;
 
             Config::getInstance()->save();
+
+            $backend = new Backend();
+            $backend->configdRun("firmware configure");
         }
 
         return $response;

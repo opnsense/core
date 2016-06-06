@@ -65,8 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['theme'] = null;
     $pconfig['language'] = null;
     $pconfig['timezone'] = "Etc/UTC";
-    $pconfig['mirror'] = 'default';
-    $pconfig['flavour'] = 'default';
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['gw_switch_default'] = isset($config['system']['gw_switch_default']);
     $pconfig['hostname'] = $config['system']['hostname'];
@@ -94,14 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['language'] = $config['system']['language'];
     }
     $pconfig['dnslocalhost'] = isset($config['system']['dnslocalhost']);
-
-    if (isset($config['system']['firmware']['mirror'])) {
-        $pconfig['mirror'] = $config['system']['firmware']['mirror'];
-    }
-
-    if (isset($config['system']['firmware']['flavour'])) {
-        $pconfig['flavour'] = $config['system']['firmware']['flavour'];
-    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['timezone']) && $pconfig['timezone'] <> $_POST['timezone']) {
         filter_pflog_start();
@@ -170,26 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           $config['system']['language'] = $pconfig['language'];
           /* XXX while this is very proactive, we should defer in favour of a unified language transition point ;) */
           set_language();
-      }
-
-      if (!isset($config['system']['firmware'])) {
-          $config['system']['firmware'] = array();
-      }
-      if ($pconfig['mirror'] == 'default') {
-          if (isset($config['system']['firmware']['mirror'])) {
-              /* default does not set anything for backwards compat */
-              unset($config['system']['firmware']['mirror']);
-          }
-      } else {
-          $config['system']['firmware']['mirror'] = $pconfig['mirror'];
-      }
-      if ($pconfig['flavour'] == 'default') {
-          if (isset($config['system']['firmware']['flavour'])) {
-              /* default does not set anything for backwards compat */
-              unset($config['system']['firmware']['flavour']);
-          }
-      } else {
-          $config['system']['firmware']['flavour'] = $pconfig['flavour'];
       }
 
       if (!empty($pconfig['prefer_ipv4'])) {
@@ -278,7 +248,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       services_dnsmasq_configure();
       services_unbound_configure();
       system_timezone_configure();
-      system_firmware_configure();
 
       if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
           configd_run("dns reload");
@@ -401,44 +370,6 @@ include("head.inc");
                 <div class="hidden" for="help_for_theme">
                   <strong>
                     <?= gettext('This will change the look and feel of the GUI.') ?>
-                  </strong>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Mirror"); ?></td>
-              <td>
-                <select name="mirror" class="selectpicker" data-size="10" data-width="auto">
-<?php
-                foreach (get_firmware_mirrors() as $mcode => $mdesc):?>
-                  <option value="<?=$mcode;?>" <?=$mcode == $pconfig['mirror'] ? "selected=\"selected\"":"";?>>
-                    <?=$mdesc;?>
-                  </option>
-<?php
-                 endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_mirror">
-                  <strong>
-                    <?=gettext("Select an alternate firmware mirror."); ?>
-                  </strong>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Firmware Flavour"); ?></td>
-              <td width="78%" class="vtable">
-                <select name="flavour" class="selectpicker" data-size="10" data-style="btn-default" data-width="auto">
-<?php
-                foreach (get_firmware_flavours() as $fcode => $fdesc):?>
-                  <option value="<?=$fcode;?>" <?=$fcode == $pconfig['flavour'] ? "selected=\"selected\"" : "" ;?>>
-                    <?=$fdesc;?>
-                  </option>
-<?php
-                 endforeach;?>
-                </select>
-                <div class="hidden" for="help_for_flavour">
-                  <strong>
-                    <?=gettext("Select the firmware cryptography flavour."); ?>
                   </strong>
                 </div>
               </td>

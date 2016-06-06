@@ -329,10 +329,13 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         $("#change_mirror").click(function(){
+            $("#change_mirror_progress").addClass("fa fa-spinner fa-pulse");
             var confopt = {};
             confopt.mirror = $("#firmware_mirror").val()
             confopt.flavour = $("#firmware_flavour").val()
-            ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt);
+            ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt, callback=function(data,status) {
+                $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
+            });
         });
 
     });
@@ -389,7 +392,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Change') }}</b></button>
+                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Change') }}</b><i id="change_mirror_progress" class=""></i></button>
                                 </td>
                                 <td></td>
                             </tr>
