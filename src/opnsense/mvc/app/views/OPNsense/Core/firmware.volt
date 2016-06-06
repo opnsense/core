@@ -361,18 +361,28 @@ POSSIBILITY OF SUCH DAMAGE.
                     <table class="table table-striped table-responsive">
                         <tbody>
                             <tr>
-                                <td style="width: 150px;">{{ lang._('Firmware Mirror') }}</td>
+                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Mirror') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_mirror">
                                     </select>
+                                    <div class="hidden" for="help_for_mirror">
+                                        <strong>
+                                            {{ lang._("Select an alternate firmware mirror.") }}
+                                        </strong>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <td>{{ lang._('Firmware Flavour') }}</td>
+                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Firmware Flavour') }}</td>
                                 <td>
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
+                                    <div class="hidden" for="help_for_flavour">
+                                        <strong>
+                                            {{ lang._("Select the firmware cryptography flavour.") }}
+                                        </strong>
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>
