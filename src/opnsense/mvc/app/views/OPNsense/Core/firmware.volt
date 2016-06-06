@@ -305,6 +305,36 @@ POSSIBILITY OF SUCH DAMAGE.
                 updateStatus();
             }
         });
+        // fetch firmware options
+        ajaxGet('/api/core/firmware/getFirmwareOptions',{},function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/getFirmwareConfig',{},function(firmwareconfig, status) {
+                $.each(firmwareoptions.mirrors, function(key, value) {
+                    var selected = false;
+                    if (firmwareconfig['mirror'].indexOf(key) == 0) {
+                        selected = true;
+                    }
+                    $("#firmware_mirror").append($("<option/>").attr("value",key).text(value).prop('selected', selected));
+                });
+                $("#firmware_mirror").selectpicker('refresh');
+
+                $.each(firmwareoptions.flavours, function(key, value) {
+                    var selected = false;
+                    if (key == firmwareconfig['flavour']) {
+                        selected = true;
+                    }
+                    $("#firmware_flavour").append($("<option/>").attr("value",key).text(value).prop('selected', selected));
+                });
+                $("#firmware_flavour").selectpicker('refresh');
+            });
+        });
+
+        $("#change_mirror").click(function(){
+            var confopt = {};
+            confopt.mirror = $("#firmware_mirror").val()
+            confopt.flavour = $("#firmware_flavour").val()
+            ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt);
+        });
+
     });
 </script>
 
@@ -320,13 +350,43 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="packagestab" class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="settingstab" class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
+                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
-                <div id="packages" class="tab-pane fade in active">
+                <div id="settings" class="tab-pane fade in active">
+                    <table class="table table-striped table-responsive">
+                        <tbody>
+                            <tr>
+                                <td style="width: 150px;">{{ lang._('Firmware Mirror') }}</td>
+                                <td>
+                                    <select class="selectpicker" id="firmware_mirror">
+                                    </select>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>{{ lang._('Firmware Flavour') }}</td>
+                                <td>
+                                    <select class="selectpicker" id="firmware_flavour">
+                                    </select>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Change') }}</b></button>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="packages" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="packageslist">
                     </table>
                 </div>
