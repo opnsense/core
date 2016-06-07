@@ -209,13 +209,9 @@ EOF;
     unbound_acls_config();
 
     // Add custom Unbound options
-    if ($config['unbound']['custom_options']) {
-        $custom_options = "# Unbound custom option\n";
-        foreach (preg_split('/\s+/', $config['unbound']['custom_options']) as $ent) {
-            $custom_options .= $ent."\n";
-        }
-    } else {
-	     $custom_options = "";
+    $custom_options = '';
+    if (!empty($config['unbound']['custom_options'])) {
+        $custom_options = "# Unbound custom options\n{$config['unbound']['custom_options']}\n";
     }
 
     // Server configuration variables
