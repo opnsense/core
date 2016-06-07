@@ -602,7 +602,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        if (empty($ifcfg['ipaddr']) || is_ipaddrv4($ifcfg['ipaddr'])) {
+        if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
             continue;
         }
 
@@ -610,13 +610,13 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        $ctype = "";
+        $ctype = '';
         switch($ifcfg['ipaddr']) {
             case "dhcp":
             case "pppoe":
             case "pptp":
             case "ppp":
-                $ctype = strtoupper($ifcfg['ipaddr']);
+                $ctype = $ifcfg['ipaddr'];
                 break;
             default:
                 if (substr($ifcfg['if'], 0, 4) ==  "ovpn") {
@@ -629,6 +629,11 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                 }
                 break;
         }
+
+        if (empty($ctype)) {
+            continue;
+        }
+
         $ctype = "_". strtoupper($ctype);
 
         $gateway = array();
@@ -688,7 +693,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        if (empty($ifcfg['ipaddrv6']) || is_ipaddrv6($ifcfg['ipaddrv6'])) {
+        if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
             continue;
         }
 
@@ -696,13 +701,13 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        $ctype = "";
+        $ctype = '';
         switch($ifcfg['ipaddrv6']) {
             case "slaac":
             case "dhcp6":
             case "6to4":
             case "6rd":
-                $ctype = strtoupper($ifcfg['ipaddrv6']);
+                $ctype = $ifcfg['ipaddrv6'];
                 break;
             default:
                 $tunnelif = substr($ifcfg['if'], 0, 3);
@@ -718,6 +723,11 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
                 }
                 break;
         }
+
+        if (empty($ctype)) {
+            continue;
+        }
+
         $ctype = "_". strtoupper($ctype);
 
         $gateway = array();
