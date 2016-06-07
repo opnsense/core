@@ -602,7 +602,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        if (!empty($ifcfg['ipaddr']) && is_ipaddrv4($ifcfg['ipaddr'])) {
+        if (empty($ifcfg['ipaddr']) || is_ipaddrv4($ifcfg['ipaddr'])) {
             continue;
         }
 
@@ -688,7 +688,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
             continue;
         }
 
-        if (!empty($ifcfg['ipaddrv6']) && is_ipaddrv6($ifcfg['ipaddrv6'])) {
+        if (empty($ifcfg['ipaddrv6']) || is_ipaddrv6($ifcfg['ipaddrv6'])) {
             continue;
         }
 
