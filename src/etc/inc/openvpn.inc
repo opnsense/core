@@ -382,7 +382,7 @@ function openvpn_add_keyfile(&$data, &$conf, $mode_id, $directive, $opt = '')
     $conf .= "{$directive} {$fpath} {$opt}\n";
 }
 
-function openvpn_reconfigure($mode, $settings)
+function openvpn_reconfigure($mode, $settings, $device_only = false)
 {
     global $config;
 
@@ -423,6 +423,10 @@ function openvpn_reconfigure($mode, $settings)
         mwexec("/sbin/ifconfig " . escapeshellarg($tunname) . " name " . escapeshellarg($devname));
         /* add the device to the openvpn group */
         mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " group openvpn");
+    }
+
+    if ($device_only) {
+        return;
     }
 
     $proto = strtolower($settings['protocol']);
@@ -1005,6 +1009,24 @@ function openvpn_resync_csc()
     }
 }
 
+function openvpn_prepare_all()
+{
+    global $config;
+
+    if (!isset($config['openvpn'])) {
+        return;
+    }
+
+    log_error('Creating OpenVPN instances.');
+
+    foreach (array('server', 'client') as $mode) {
+        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+                openvpn_reconfigure($mode, $settings, true);
+            }
+        }
+    }
+}
 
 function openvpn_resync($mode, $settings)
 {
@@ -1012,42 +1034,37 @@ function openvpn_resync($mode, $settings)
     openvpn_restart($mode, $settings);
 }
 
-function openvpn_resync_all($interface = '')
+function openvpn_resync_all($interface = null)
 {
     global $config;
 
     openvpn_create_dirs();
 
-    if (!isset($config['openvpn']) || !is_array($config['openvpn'])) {
+    if (!isset($config['openvpn'])) {
         return;
     }
 
-    if ($interface <> "") {
-        log_error("Resyncing OpenVPN instances for interface " . convert_friendly_interface_to_friendly_descr($interface) . ".");
+    if (!empty($interface)) {
+        log_error(sprintf(
+            'Resyncing OpenVPN instances for interface %s.',
+            convert_friendly_interface_to_friendly_descr($interface)
+        ));
     } else {
-        log_error("Resyncing OpenVPN instances.");
+        log_error('Resyncing OpenVPN instances.');
     }
 
-    if (is_array($config['openvpn']['openvpn-server'])) {
-        foreach ($config['openvpn']['openvpn-server'] as & $settings) {
-            if ($interface <> "" && $interface != $settings['interface']) {
-                continue;
+    foreach (array('server', 'client') as $mode) {
+        if (isset($config['openvpn']["openvpn-{$mode}"])) {
+            foreach ($config['openvpn']["openvpn-{$mode}"] as &$settings) {
+                if (empty($interface) || $interface == $settings['interface']) {
+                    openvpn_resync($mode, $settings);
+                }
             }
-            openvpn_resync('server', $settings);
         }
     }
 
-    if (is_array($config['openvpn']['openvpn-client'])) {
-        foreach ($config['openvpn']['openvpn-client'] as & $settings) {
-            if ($interface <> "" && $interface != $settings['interface']) {
-                continue;
-            }
-            openvpn_resync('client', $settings);
-        }
-    }
     openvpn_resync_csc();
 }
-
 
 function openvpn_get_active_servers($type = 'multipoint')
 {

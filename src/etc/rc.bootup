@@ -232,6 +232,7 @@ echo "done.\n";
 
 /* set up interfaces */
 mute_kernel_msgs();
+openvpn_prepare_all();
 interfaces_configure();
 unmute_kernel_msgs();
 
