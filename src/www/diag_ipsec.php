@@ -31,6 +31,7 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
+require_once("plugins.inc");
 
 /**
  * search config for phase 1 description
