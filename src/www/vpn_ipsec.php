@@ -34,6 +34,7 @@ require_once("ipsec.inc");
 require_once("services.inc");
 require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 /*
  *  Return phase2 idinfo in text format
