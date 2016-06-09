@@ -245,7 +245,7 @@ include("head.inc");
                       <select name="type" class="selectpicker" id="type" onchange="_onTypeChange(this.options[this.selectedIndex].value);">
 <?php
                         foreach (services_dyndns_list() as $value => $type):?>
-                                <option value="<?= $value ?>" <?= $value == $pconfig['type'] ? '' : 'selected="selected"'?>>
+                                <option value="<?= $value ?>" <?= $value == $pconfig['type'] ? 'selected="selected"' : '' ?>>
                                   <?= $type ?>
                                 </option>
 <?php
