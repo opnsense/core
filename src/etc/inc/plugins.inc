@@ -26,11 +26,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * scan plugins for legacy system
+ * @return array
+ */
+function plugins_scan()
+{
+    $path = '/usr/local/etc/inc/plugins.inc.d/';
+    $ext = '.inc';
+
+    $ret = array();
+
+    $plugins = glob($path . '*' . $ext);
+    if (!is_array($plugins)) {
+        return $ret;
+    }
+
+    sort($plugins);
+
+    foreach ($plugins as $plugin) {
+        $name = preg_replace('/' . preg_quote($path, '/') . '/', '', $plugin);
+        $name = preg_replace('/' . preg_quote($ext, '/') . '/', '', $name);
+        $ret[$name] = $plugin;
+    }
+
+    return $ret;
+}
+
 function plugins_services()
 {
     $services = array();
 
-    foreach (plugin_scan() as $name => $path) {
+    foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
@@ -44,9 +71,86 @@ function plugins_services()
     return $services;
 }
 
+function plugins_syslog()
+{
+    $syslogs = array();
+
+    foreach (plugins_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_syslog', $name);
+        if (function_exists($func)) {
+            $workers = $func();
+            foreach ($workers as $plugin_syslog => $plugin_details) {
+                $syslogs[$plugin_syslog] = $plugin_details;
+            }
+        }
+    }
+
+    return $syslogs;
+}
+
+/**
+ * Register new or changed interfaces into config's interfaces section.
+ * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
+ *
+ */
+function plugins_interfaces()
+{
+    global $config;
+    $changed_interfaces = array();
+    $registered_interfaces = array();
+
+    // register / update interfaces
+    foreach (plugins_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_interfaces', $name);
+        if (function_exists($func)) {
+            foreach ($func() as $intf_ref => $intf_data) {
+                if (is_array($intf_data)) {
+                    if (!in_array($intf_ref, $registered_interfaces)) {
+                        $registered_interfaces[] = $intf_ref;
+                    }
+                    if (empty($config['interfaces'][$intf_ref])) {
+                        $config['interfaces'][$intf_ref] = array();
+                    }
+                    if (isset($config['interfaces'][$intf_ref][0])) {
+                        // undo stupid listags() turning our item into a new array, see src/etc/inc/xmlparse.inc
+                        $intf_config = &$config['interfaces'][$intf_ref][0];
+                    } else {
+                        $intf_config = &$config['interfaces'][$intf_ref];
+                    }
+                    $intf_config['internal_dynamic'] = true;
+                    // traverse and diff interface properties with known configuration
+                    foreach ($intf_data as $prop_name => $prop_value) {
+                        if (empty($intf_config[$prop_name]) || $intf_config[$prop_name] != $prop_value) {
+                            $intf_config[$prop_name] = $prop_value;
+                            if (!in_array($intf_ref, $changed_interfaces)) {
+                                $changed_interfaces[] = $intf_ref;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // cleanup registrations
+    foreach ($config['interfaces'] as $intf => $intf_data) {
+        if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $registered_interfaces)) {
+            $changed_interfaces[] = $intf;
+            unset($config['interfaces'][$intf]);
+        }
+    }
+
+    // configuration changed, materialize
+    if (count($changed_interfaces) > 0) {
+        write_config();
+    }
+}
+
 function plugins_configure()
 {
-    foreach (plugin_scan() as $name => $path) {
+    foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
