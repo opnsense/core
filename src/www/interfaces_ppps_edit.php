@@ -301,6 +301,7 @@ include("head.inc");
               $("#interface_details").show();
               break;
           }
+          $("#ports").selectpicker('refresh');
         });
         $("#type").change();
 
@@ -436,12 +437,11 @@ include("head.inc");
                       <tr>
                         <td><a id="help_for_ports" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?= gettext("Link interface(s)"); ?></td>
                         <td>
-                          <select style="vertical-align:top" name="ports[]" id="ports" multiple="multiple" class="form-control" size="4">
+                          <select class="selectpicker" multiple="multiple" size="3" name="ports[]" id="ports" >
 <?php
-                          $serialports = glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE);
-                          foreach ($serialports as $port):?>
+                          foreach (legacy_serial_devices() as $port => $port_info):?>
                             <option data-type="serial" value="<?=$port;?>" <?=in_array($port, $pconfig['ports']) ? "selected=\"selected\"" : "";?> >
-                              <?=$port;?>
+                              <?=$port;?>  <?=!empty($port_info['descr']) ?  "(".$port_info['descr'].")" : "" ;?>
                             </option>
 <?php
                           endforeach;?>
