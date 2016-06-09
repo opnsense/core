@@ -119,6 +119,23 @@
                 <ValidationMessage>Related cron not found.</ValidationMessage>
                 <Required>N</Required>
             </UpdateCron>
+            <AlertLogrotate type="OptionField">
+              <Required>N</Required>
+              <default>W0D23</default>
+              <BlankDesc>Default</BlankDesc>
+              <OptionValues>
+                  <W0D23>Weekly</W0D23>
+                  <D0>Daily</D0>
+              </OptionValues>
+              <ValidationMessage>Please select a valid rotation</ValidationMessage>
+            </AlertLogrotate>
+            <AlertSaveLogs type="IntegerField">
+                <Required>N</Required>
+                <default>4</default>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>1000</MaximumValue>
+                <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
+            </AlertSaveLogs>
         </general>
     </items>
 </model>

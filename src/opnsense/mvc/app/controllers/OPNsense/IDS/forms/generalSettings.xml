@@ -25,4 +25,16 @@
         <help><![CDATA[Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc).]]></help>
         <hint>Type or select interface.</hint>
     </field>
+    <field>
+        <id>ids.general.AlertLogrotate</id>
+        <label>Rotate log</label>
+        <type>dropdown</type>
+        <help><![CDATA[Rotate alert logs at provided interval.]]></help>
+    </field>
+    <field>
+        <id>ids.general.AlertSaveLogs</id>
+        <label>Save logs</label>
+        <type>text</type>
+        <help><![CDATA[Number of logs to keep.]]></help>
+    </field>
 </form>
