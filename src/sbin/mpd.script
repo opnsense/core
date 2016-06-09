@@ -382,6 +382,8 @@ ModemIdent:
 	print "ATI\r\n"
 	match "ADTRAN EXPRESS XR" ModemIdentAdtranXRT
 	match "Model: Ovation MC950D Card" ModemIdentMC950D
+	match "Manufacturer: Huawei Technologies Co., Ltd." ModemIdentHuawei
+	match "Manufacturer: Sierra Wireless, Incorporated" ModemIdentSierra
 	match "ERR" ModemIdentGeneric
 	match "OK\r\n" ModemIdentGeneric
 	wait 3
@@ -434,6 +436,8 @@ ModemIdentCustom:
 	set $ModemDescription "Custom modem"
 	set $ModemSetupFunc CustomSetup
 	return
+
+
 
 ModemIdentUsr:
 	set $SportsterHack "no"
@@ -1668,3 +1672,33 @@ AutoLoginTimeout:
 	log "Auto-login timeout."
 	cancel all
 	return
+
+#====================================================================================================================
+#
+# OPNsense additional 3g/4g modems
+#
+#====================================================================================================================
+
+ModemIdentHuawei:
+	set $ModemDescription "Huawei Modem"
+	if $SimPin != "" call DialPeerSetPin
+	if $APN != "" call DialPeerSetAPN
+	set $ModemSetupFunc HuaweiSetup
+	return
+
+HuaweiSetup:
+	set $modemCmd "&F&C1&D2E0$M0"
+	call ModemCmd2
+	return
+
+ModemIdentSierra:
+        set $ModemDescription "Sierra Wireless Modem"
+        if $SimPin != "" call DialPeerSetPin
+        if $APN != "" call DialPeerSetAPN
+        set $ModemSetupFunc SierraSetup
+        return
+
+SierraSetup:
+        set $modemCmd "&F&C1&D2E0$M0"
+        call ModemCmd2
+        return
