@@ -597,7 +597,7 @@ $( document ).ready(function() {
                         <tr>
                           <td>
                             <select name="src" id="src" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                              <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
+                              <option data-other=true value="<?=$pconfig['src'];?>" <?=!is_specialnet($pconfig['src']) && !is_alias($pconfig['src']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                               <optgroup label="<?=gettext("Aliases");?>">
 <?php                        foreach (legacy_list_aliases("network") as $alias):
 ?>
@@ -698,7 +698,7 @@ $( document ).ready(function() {
                 <tr>
                   <td> <a id="help_for_dst_invert" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Destination") . " / ".gettext("Invert");?> </td>
                   <td>
-                    <input name="dstnot" type="checkbox" id="srcnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
+                    <input name="dstnot" type="checkbox" id="dstnot" value="yes" <?= !empty($pconfig['dstnot']) ? "checked=\"checked\"" : "";?> />
                     <div class="hidden" for="help_for_dst_invert">
                       <?=gettext("Use this option to invert the sense of the match."); ?>
                     </div>
@@ -711,7 +711,7 @@ $( document ).ready(function() {
                       <tr>
                         <td>
                           <select name="dst" id="dst" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
-                            <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
+                            <option data-other=true value="<?=$pconfig['dst'];?>" <?=!is_specialnet($pconfig['dst']) && !is_alias($pconfig['dst']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host or Network"); ?></option>
                             <optgroup label="<?=gettext("Aliases");?>">
 <?php                        foreach (legacy_list_aliases("network") as $alias):
 ?>
@@ -835,8 +835,7 @@ $( document ).ready(function() {
                     </div>
                   </td>
                 </tr>
-                <tr>
-                  <tr class="act_no_rdr">
+                <tr class="act_no_rdr">
                   <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
                   <td>
                     <input name="target" type="text" class="formfldalias" size="20" value="<?=$pconfig['target'];?>" />
@@ -1010,7 +1009,6 @@ $( document ).ready(function() {
               </table>
             </form>
           </div>
-        </div>
       </section>
     </div>
   </div>
