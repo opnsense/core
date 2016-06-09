@@ -311,4 +311,24 @@ class ServiceController extends ApiControllerBase
             return array();
         }
     }
+
+    /**
+     * drop alert log
+     * @return array status
+     */
+    public function dropAlertLogAction()
+    {
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+            $backend = new Backend();
+            $filename = $this->request->getPost('filename', 'string', null);
+            if ($filename != null) {
+                $filename = basename($filename);
+                $backend->configdpRun("ids drop alertlog", array($filename));
+                return array("status" => "ok");
+            }
+        }
+        return array("status" => "failed");
+    }
 }

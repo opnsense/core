@@ -69,9 +69,9 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#alert-logfile').html("");
                     $.each(data, function(key, value) {
                         if (value['sequence'] == undefined) {
-                            $('#alert-logfile').append($("<option></option>").attr("value",'none').text(value['modified']));
+                            $('#alert-logfile').append($("<option/>").data('filename', value['filename']).attr("value",'none').text(value['modified']));
                         } else {
-                            $('#alert-logfile').append($("<option></option>").attr("value",value['sequence']).text(value['modified']));
+                            $('#alert-logfile').append($("<option/>").data('filename', value['filename']).attr("value",value['sequence']).text(value['modified']));
                         }
                     });
                     $('.selectpicker').selectpicker('refresh');
@@ -427,6 +427,34 @@ POSSIBILITY OF SUCH DAMAGE.
             history.pushState(null, null, e.target.hash);
         });
 
+        // delete selected alert log
+        $("#actDeleteLog").click(function(){
+            var selected_log = $("#alert-logfile > option:selected");
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: '{{ lang._('Remove log file ') }} ' + selected_log.html(),
+                message: '{{ lang._('Removing this file will cleanup disk space, but cannot be undone.') }}',
+                buttons: [{
+                    icon: 'fa fa-trash-o',
+                    label: '{{ lang._('Yes') }}',
+                    cssClass: 'btn-primary',
+                    action: function(dlg){
+                        ajaxCall(url="/api/ids/service/dropAlertLog/",sendData={filename: selected_log.data('filename')},
+                                callback=function(data,status){
+                                    updateAlertLogs();
+                                });
+                        dlg.close();
+                    }
+                }, {
+                    label: 'Close',
+                    action: function(dlg){
+                        dlg.close();
+                    }
+                }]
+            });
+
+        });
+
     });
 
 
@@ -568,6 +596,7 @@ POSSIBILITY OF SUCH DAMAGE.
             <div class="row">
                 <div class="col-sm-12 actionBar">
                     <select id="alert-logfile" class="selectpicker" data-width="200px"></select>
+                    <span  id="actDeleteLog" class="btn btn-lg fa fa-trash" style="cursor: pointer;"></span>
                     <select id="alert-logfile-max" class="selectpicker" data-width="80px">
                         <option value="7">7</option>
                         <option value="50">50</option>
