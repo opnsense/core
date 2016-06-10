@@ -379,20 +379,22 @@ function filter_generate_scrubing(&$FilterIflist)
     $scrubrules = '';
 
     /* scrub per interface options */
-    foreach ($FilterIflist as $scrubif => $scrubcfg) {
-        if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
-            continue;
-        } else {
-            /* set up MSS clamping */
-            if (!empty($scrubcfg['mss']) && is_numeric($scrubcfg['mss']) &&
-                !in_array($scrubcfg['if'], array('pppoe', 'pptp', 'l2tp'))) {
-                $mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
+    if (empty($config['system']['scrub_interface_disable'])) {
+        foreach ($FilterIflist as $scrubif => $scrubcfg) {
+            if (isset($scrubcfg['virtual']) || empty($scrubcfg['descr'])) {
+                continue;
             } else {
-                $mssclamp = '';
+                /* set up MSS clamping */
+                if (!empty($scrubcfg['mss']) && is_numeric($scrubcfg['mss']) &&
+                    !in_array($scrubcfg['if'], array('pppoe', 'pptp', 'l2tp'))) {
+                    $mssclamp = "max-mss " . (intval($scrubcfg['mss'] - 40));
+                } else {
+                    $mssclamp = '';
+                }
+                $scrubnodf = !empty($config['system']['scrubnodf']) ? "no-df" : "";
+                $scrubrnid = !empty($config['system']['scrubrnid']) ? "random-id" : "";
+                $scrubrules .= "scrub on \${$scrubcfg['descr']} all {$scrubnodf} {$scrubrnid} {$mssclamp}\n";
             }
-            $scrubnodf = !empty($config['system']['scrubnodf']) ? "no-df" : "";
-            $scrubrnid = !empty($config['system']['scrubrnid']) ? "random-id" : "";
-            $scrubrules .= "scrub on \${$scrubcfg['descr']} all {$scrubnodf} {$scrubrnid} {$mssclamp}\n";
         }
     }
 

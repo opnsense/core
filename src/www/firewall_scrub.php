@@ -39,6 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['scrubnodf'] = !empty($config['system']['scrubnodf']);
     $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
+    $pconfig['scrub_interface_disable'] = !empty($config['system']['scrub_interface_disable']);
+    if (!empty($_GET['savemsg'])) {
+        $savemsg = sprintf(
+            gettext(
+                'The settings have been applied and the rules are now reloading ' .
+                'in the background. You can monitor the reload progress %shere%s.'
+            ),
+            '<a href="status_filter_reload.php">',
+            '</a>'
+        );
+    }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($pconfig['id']) && isset($a_scrub[$pconfig['id']])) {
@@ -57,6 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['scrubrnid'])) {
             unset($config['system']['scrubrnid']);
         }
+        if (!empty($pconfig['scrub_interface_disable'])) {
+            $config['system']['scrub_interface_disable'] = "enabled";
+        } elseif (isset($config['system']['scrub_interface_disable'])) {
+            unset($config['system']['scrub_interface_disable']);
+        }
         if (write_config()) {
             mark_subsystem_dirty('filter');
         }
@@ -65,14 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($pconfig['apply'])) {
         filter_configure();
         clear_subsystem_dirty('filter');
-        $savemsg = sprintf(
-            gettext(
-                'The settings have been applied and the rules are now reloading ' .
-                'in the background. You can monitor the reload progress %shere%s.'
-            ),
-            '<a href="status_filter_reload.php">',
-            '</a>'
-        );
+        header("Location: firewall_scrub.php?savemsg=yes");
+        exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single item
         unset($a_scrub[$id]);
@@ -191,6 +201,16 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
+  $("#scrub_interface_disable").change(function(){
+    if ($("#scrub_interface_disable:checked").val() == undefined) {
+        $(".scrub_settings").show();
+    } else{
+        $(".scrub_settings").hide();
+    }
+  });
+  $("#scrub_interface_disable").change();
+
+
   // watch scroll position and set to last known on page load
   watchScrollPosition();
 
@@ -224,6 +244,17 @@ $( document ).ready(function() {
                   </thead>
                   <tbody>
                     <tr>
+                      <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable interface scrub");?></td>
+                      <td>
+                        <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? "checked=\"checked\"" : "";?> />
+                        <div class="hidden" for="help_for_scrub_interface_disable">
+                          <?=gettext("Disable all default interface scrubing rules,".
+                                     " mss clamping will also be disabled when you check this.".
+                                     " Detailed settings specified below will still be used.");?>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="scrub_settings">
                       <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
                       <td>
                         <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
@@ -235,7 +266,7 @@ $( document ).ready(function() {
                         </div>
                       </td>
                     </tr>
-                    <tr>
+                    <tr class="scrub_settings">
                       <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
                       <td>
                         <input name="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
@@ -357,7 +388,7 @@ $( document ).ready(function() {
                       <td colspan="2" class="hidden-xs hidden-sm"></td>
                       <td colspan="3"></td>
                       <td>
-                        <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
+                        <a id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules to end");?>" class="act_move btn btn-default btn-xs">
                           <span class="glyphicon glyphicon-arrow-left"></span>
                         </a>
                         <a data-id="x" title="<?=gettext("delete selected rules"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
@@ -370,7 +401,7 @@ $( document ).ready(function() {
                     </tr>
                     <tr class="hidden-xs hidden-sm">
                         <td><a><i class="fa fa-list"></i></a></td>
-                        <td colspan="6"><?=gettext("Alias (click to view/edit)");?></td>
+                        <td colspan="5"><?=gettext("Alias (click to view/edit)");?></td>
                     </tr>
                 </tfoot>
               </table>
