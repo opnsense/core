@@ -506,7 +506,7 @@ $( document ).ready(function() {
           <div class="table-responsive">
           <table class="table table-striped opnsense_standard_table_form">
             <tr>
-              <td width="22%"><?=gettext("General information"); ?></td>
+              <td width="22%"><strong><?=gettext("General information"); ?></strong></td>
               <td width="78%" align="right">
                 <small><?=gettext("full help"); ?> </small>
                 <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
