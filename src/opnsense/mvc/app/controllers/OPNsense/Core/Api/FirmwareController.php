@@ -421,7 +421,7 @@ class FirmwareController extends ApiControllerBase
      * retrieve current firmware configuration options
      * @return array
      */
-    function getFirmwareConfigAction()
+    public function getFirmwareConfigAction()
     {
         $result = array();
         $result['mirror'] = '';
@@ -433,7 +433,7 @@ class FirmwareController extends ApiControllerBase
         if (!empty(Config::getInstance()->object()->system->firmware->flavour)) {
             $result['flavour'] = (string)Config::getInstance()->object()->system->firmware->flavour;
         }
-        
+
         return $result;
     }
 
@@ -441,7 +441,7 @@ class FirmwareController extends ApiControllerBase
      * set firmware configuration options
      * @return array status
      */
-    function setFirmwareConfigAction()
+    public function setFirmwareConfigAction()
     {
         $response = array("status" => "failure");
 
