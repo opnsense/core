@@ -40,7 +40,7 @@
               tr_content.push('<td><small><strong>'+gateway['name']+'</strong><br/>'+gateway['address']+'</small></td>');
               tr_content.push('<td>'+gateway['delay']+'</td>');
               tr_content.push('<td>'+gateway['loss']+'</td>');
-              tr_content.push('<td><div class="" style="width:40px;">'+gateway['status_translated']+'</div></td>');
+              tr_content.push('<td><font>'+gateway['status_translated']+'</font></td>');
               tr_content.push('</tr>');
               tbody.append(tr_content.join(''));
           } else {
@@ -51,24 +51,28 @@
           // set color on status text
           switch (gateway['status']) {
             case 'force_down':
-              status_color = 'danger';
+              status_color = 'red';
               break;
             case 'down':
-              status_color = 'danger';
+              status_color = 'red';
               break;
             case 'loss':
-              status_color = 'warning';
+              status_color = 'purple';
               break;
             case 'delay':
-              status_color = 'warning';
+              status_color = 'purple';
               break;
             case 'none':
-              status_color = 'success';
+              status_color = 'green';
               break;
             default:
-              status_color = 'info';
+              status_color = '';
+              break;
           }
-          $("#"+tr_id+" > td:eq(3) > div").removeClass().addClass('bg-'+status_color);
+          $("#"+tr_id+" > td:eq(3) > font").removeAttr('color');
+          if (status_color != '') {
+            $("#"+tr_id+" > td:eq(3) > font").attr('color', status_color);
+          }
       });
   }
 </script>
@@ -80,7 +84,7 @@
             <th><?=gettext('Name')?></th>
             <th><?=gettext('RTT')?></th>
             <th><?=gettext('Loss')?></th>
-            <th style="width:160px;"><?=gettext('Status')?></th>
+            <th><?=gettext('Status')?></th>
         </tr>
     </thead>
     <tbody>
