@@ -404,7 +404,7 @@ include("head.inc");
                     <tr>
                       <th><?=gettext("Interface"); ?></th>
                       <th><?=gettext("Network port"); ?></th>
-                      <th colspan="2"></th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -426,22 +426,16 @@ include("head.inc");
                           </select>
                         </td>
                         <td>
-<?php
-                        if ($ifname != 'wan'):?>
                           <button title="<?=gettext("delete interface");?>" data-toggle="tooltip" data-id="<?=$ifname;?>" class="btn btn-default act_delete" type="submit">
                             <span class="fa fa-trash text-muted"></span>
                           </button>
-<?php
-                        endif;?>
                         </td>
                       </tr>
 <?php
                       endforeach;
                       if (count($unused_interfaces) > 0):?>
                       <tr>
-                        <td>
-                          <strong><?=gettext("Available network ports:");?></strong>
-                        </td>
+                        <td><?= gettext('New interface:') ?></td>
                         <td>
                           <select name="if_add" id="if_add">
 <?php
@@ -458,9 +452,7 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td colspan="2">
-                          <?= gettext('Interfaces that are configured as members of a LAGG interface will not be shown.') ?>
-                        </td>
+                        <td colspan="2"></td>
                         <td>
                           <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                         </td>
