@@ -33,9 +33,12 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc");
+require_once 'services.inc';
 
 /* expects $logfile to point to the system path */
 /* expects $logclog to be true or false */
+
+require_once 'diag_logs_common.inc';
 
 $filtertext = '';
 $nentries = 50;
@@ -69,9 +72,21 @@ include("head.inc");
     <div class="container-fluid">
       <div class="row">
         <section class="col-xs-12">
+          <p>
+            <form method="post">
+              <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?=$filtertext;?>"/>
+              </div>
+            </form>
+          </p>
           <div class="tab-content content-box col-xs-12">
             <div class="table-responsive">
               <table class="table table-striped table-sort">
+                <tr>
+                  <td class="col-md-2 col-sm-3 col-xs-4"><?= gettext('Date') ?></td>
+                  <td class="col-md-10 col-sm-9 col-xs-8"><?= gettext('Message') ?></td>
+                </tr>
                 <?php if (isset($logpills)): ?>
                 <tr>
                   <td colspan="2">
@@ -83,14 +98,6 @@ include("head.inc");
                   </td>
                 </tr>
                 <?php endif; ?>
-                <tr>
-                  <td colspan="2">
-                    <form id="clearform" name="clearform" action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
-                      <input id="filtertext" name="filtertext" value="<?=$filtertext;?>"/>
-                      <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
-                    </form>
-                  </td>
-                </tr>
                 <?php
                   if ($logclog) {
                       dump_clog($logfile, $nentries, $filtertext);
@@ -100,8 +107,11 @@ include("head.inc");
                 ?>
                 <tr>
                   <td colspan="2">
-                    <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
-                      <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+                    <form method="post">
+<?php                 if (isset($mode)): ?>
+                        <input type="hidden" name="mode" id="mode" value="<?= html_safe($mode) ?>"/>
+<?php                 endif ?>
+                      <input name="clear" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Clear log')) ?>"/>
                     </form>
                   </td>
                 </tr>

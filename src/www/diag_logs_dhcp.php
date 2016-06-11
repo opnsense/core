@@ -9,7 +9,6 @@ function clear_hook()
 	services_dhcpd_configure();
 }
 
-require_once 'services.inc';
 $service_hook = 'dhcpd';
 
 require_once 'diag_logs_template.inc';

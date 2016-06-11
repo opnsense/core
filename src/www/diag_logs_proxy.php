@@ -13,7 +13,6 @@ $logpills[] = array(gettext('Cache'), true, '/diag_logs_proxy.php?type=cache');
 $logpills[] = array(gettext('Access'), false, '/diag_logs_proxy.php?type=access');
 $logpills[] = array(gettext('Store'), false, '/diag_logs_proxy.php?type=store');
 
-require_once 'services.inc';
 $service_hook = 'squid';
 
 require_once 'diag_logs_template.inc';

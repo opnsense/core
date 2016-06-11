@@ -39,6 +39,8 @@ if (empty($config['syslog']['nentries'])) {
     $nentries = $config['syslog']['nentries'];
 }
 
+require_once 'diag_logs_common.inc';
+
 if ($_POST['clear']) {
     system_clear_clog($logfile);
 }
