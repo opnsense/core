@@ -386,7 +386,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
 {
     global $config;
 
-    if (empty($settings) || isset($settings['disable'])) {
+    if (empty($settings)) {
         return;
     }
 
@@ -425,7 +425,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
         mwexec("/sbin/ifconfig " . escapeshellarg($devname) . " group openvpn");
     }
 
-    if ($device_only) {
+    if ($device_only || isset($settings['disable'])) {
         return;
     }
 
