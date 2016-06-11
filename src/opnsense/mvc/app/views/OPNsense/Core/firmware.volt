@@ -414,7 +414,6 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <select class="selectpicker" id="firmware_mirror">
                                     </select>
                                     <div style="display:none;" id="firmware_mirror_other">
-                                        <br/>
                                         <input type="text" id="firmware_mirror_value">
                                     </div>
                                     <div class="hidden" for="help_for_mirror">
@@ -431,7 +430,6 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <select class="selectpicker" id="firmware_flavour">
                                     </select>
                                     <div style="display:none;" id="firmware_flavour_other">
-                                        <br/>
                                         <input type="text" id="firmware_flavour_value">
                                     </div>
                                     <div class="hidden" for="help_for_flavour">
@@ -445,9 +443,14 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Change') }}</b><i id="change_mirror_progress" class=""></i></button>
+                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Save') }}</b><i id="change_mirror_progress" class=""></i></button>
                                 </td>
                                 <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
