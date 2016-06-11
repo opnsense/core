@@ -134,8 +134,7 @@ CORE_DEPENDS?=		apinger \
 			suricata \
 			syslogd \
 			unbound \
-			wol \
-			zip
+			wol
 
 WRKDIR?=${.CURDIR}/work
 WRKSRC=	${WRKDIR}/src
