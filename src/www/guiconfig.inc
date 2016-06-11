@@ -364,20 +364,20 @@ function print_dump($logarr)
     global $config;
 
     if (!is_array($logarr)) {
-        echo "<tr valign=\"top\">\n";
-        echo "<td class=\"listlr\" colspan=\"2\">" . htmlspecialchars($logarr) . "</td>\n";
+        echo "<tr>\n";
+        echo "<td colspan=\"2\">" . htmlspecialchars($logarr) . "</td>\n";
         echo "</tr>\n";
         return;
     }
 
     foreach ($logarr as $logent) {
         $logent = preg_split("/\s+/", $logent, 6);
-        echo "<tr valign=\"top\">\n";
+        echo "<tr>\n";
         $entry_date_time = htmlspecialchars(join(" ", array_slice($logent, 0, 3)));
         $entry_text = ($logent[3] ==  $config['system']['hostname']) ? "" : $logent[3] . " ";
         $entry_text .= htmlspecialchars($logent[4] . " " . $logent[5]);
-        echo "<td class=\"listlr nowrap\">{$entry_date_time}</td>\n";
-        echo "<td class=\"listr\">{$entry_text}</td>\n";
+        echo "<td>{$entry_date_time}</td>\n";
+        echo "<td>{$entry_text}</td>\n";
         echo "</tr>\n";
     }
 }

@@ -69,9 +69,18 @@ include("head.inc");
     <div class="container-fluid">
       <div class="row">
         <section class="col-xs-12">
+          <p>
+            <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
+              <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?=$filtertext;?>"/>
+            </form>
+          </p>
           <div class="tab-content content-box col-xs-12">
             <div class="table-responsive">
               <table class="table table-striped table-sort">
+                <tr>
+                  <td class="col-md-2 col-sm-3 col-xs-4"><?= gettext('Date') ?></td>
+                  <td class="col-md-10 col-sm-9 col-xs-8"><?= gettext('Message') ?></td>
+                </tr>
                 <?php if (isset($logpills)): ?>
                 <tr>
                   <td colspan="2">
@@ -83,14 +92,6 @@ include("head.inc");
                   </td>
                 </tr>
                 <?php endif; ?>
-                <tr>
-                  <td colspan="2">
-                    <form id="clearform" name="clearform" action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
-                      <input id="filtertext" name="filtertext" value="<?=$filtertext;?>"/>
-                      <input id="filtersubmit" name="filtersubmit" type="submit" class="btn btn-primary" value="<?=gettext("Filter");?>" />
-                    </form>
-                  </td>
-                </tr>
                 <?php
                   if ($logclog) {
                       dump_clog($logfile, $nentries, $filtertext);
@@ -101,7 +102,7 @@ include("head.inc");
                 <tr>
                   <td colspan="2">
                     <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
-                      <input name="clear" type="submit" class="btn" value="<?= gettext("Clear log");?>" />
+                      <input name="clear" type="submit" class="btn btn-primary" value="<?= gettext("Clear log");?>" />
                     </form>
                   </td>
                 </tr>

@@ -62,6 +62,13 @@ function hook_ipv4v6(classname, data_id) {
 }
 
 /**
+ * return the current viewport size from: http://stackoverflow.com/questions/18575582/how-to-detect-responsive-breakpoints-of-twitter-bootstrap-3-using-javascript
+ * @param alias: the bootstrap viewport name, e.g. 'xs'
+ */
+function isBreakpoint( alias ) {
+    return $('.device-' + alias).is(':visible');
+}
+/**
  * transform input forms for better mobile experience (stack description on top)
  * @param match: query pattern to match tables
  */
@@ -118,6 +125,11 @@ function hook_stacked_form_tables(match)
                           ++index;
                       }
                   });
+                  if (isBreakpoint('xs')) {
+                      root_node.css('table-layout', 'auto');
+                  } else {
+                      root_node.css('table-layout', 'fixed');
+                  }
               }
               $( window ).resize(root_node.do_resize);
               root_node.do_resize();
