@@ -1130,7 +1130,7 @@ endif; ?>
                         endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_digest">
-                            <?php echo gettext("NOTE: Leave this set to SHA1 unless all clients are set to match. SHA1 is the default for OpenVPN."); ?>
+                            <?= gettext('Leave this set to SHA1 unless all clients are set to match. SHA1 is the default for OpenVPN.') ?>
                         </div>
                       </td>
                     </tr>

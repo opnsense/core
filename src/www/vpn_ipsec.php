@@ -481,7 +481,7 @@ $( document ).ready(function() {
                         }?>
                         <div id="shph2but-<?=$i?>">
                           <button class="act_show_p2 btn btn-xs" type="button" data-id="<?=$i?>">
-                            <i class="fa fa-plus"></i> <?php printf(gettext("Show %s Phase-2 entries"), $phase2count); ?>
+                            <i class="fa fa-plus"></i> <?= sprintf(gettext('Show %s Phase-2 entries'), $phase2count) ?>
                           </button>
                         </div>
                         <div id="tdph2-<?=$i?>" style="display:none">

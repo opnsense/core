@@ -480,7 +480,7 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Enable");?></td>
                       <td>
                         <input name="enable" type="checkbox" value="yes" <?php if ($pconfig['enable']) echo "checked=\"checked\""; ?> />
-                        <strong><?php printf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        <strong><?= sprintf(gettext("Enable DHCPv6 server on " . "%s " ."interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
                     </tr>
                     <tr>

@@ -468,7 +468,7 @@ function server_changed() {
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlineios\"," + i + ", -1)'>OpenVPN Connect (iOS/Android)</button>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinline\"," + i + ", -1)'>Others</button>";
-    cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
+    cell2.innerHTML += "<br\/>- Windows Installers (<?= $current_openvpn_version . '-Ix' . $current_openvpn_version_rev ?>):<br\/>";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-xp\"," + i + ", -1)'>x86-xp</button>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x64-xp\"," + i + ", -1)'>x64-xp</button>";
@@ -502,7 +502,7 @@ function server_changed() {
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinlineios\",-1," + j + ")'>OpenVPN Connect (iOS/Android)</button>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinline\",-1," + j + ")'>Others</button>";
-    cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
+    cell2.innerHTML += "<br\/>- Windows Installers (<?= $current_openvpn_version . '-Ix' . $current_openvpn_version_rev ?>):<br\/>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-xp\",-1," + j + ")'>x86-xp</button>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
@@ -550,7 +550,7 @@ function server_changed() {
     cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"confinline\"," + i + ")'>Others</button>";
     cell2.innerHTML += "<a href='javascript:download_begin(\"confinline\"," + i + ")'>Others<\/a>";
-    cell2.innerHTML += "<br\/>- Windows Installers (<?php echo $current_openvpn_version . '-Ix' . $current_openvpn_version_rev;?>):<br\/>";
+    cell2.innerHTML += "<br\/>- Windows Installers (<?= $current_openvpn_version . '-Ix' . $current_openvpn_version_rev ?>):<br\/>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
     cell2.innerHTML += "<button type='button' class='btn btn-primary btn-xs' onclick='download_begin(\"inst-x86-xp\"," + i + ")'>x86-xp</button>";
     cell2.innerHTML += "&nbsp;&nbsp; ";
@@ -645,7 +645,7 @@ endforeach; ?>
 ?>
                         <?php foreach ($config['dyndnses']['dyndns'] as $ddns) :
 ?>
-                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("Dynamic DNS");
+                        <option value="<?= $ddns["host"] ?>"><?=gettext("Dynamic DNS");
 ?>: <?= htmlspecialchars($ddns["host"]); ?></option>
                         <?php
 endforeach; ?>
@@ -655,7 +655,7 @@ endif; ?>
 ?>
                         <?php foreach ($config['dnsupdates']['dnsupdate'] as $ddns) :
 ?>
-                        <option value="<?php echo $ddns["host"] ?>"><?=gettext("Dynamic DNS");
+                        <option value="<?= $ddns["host"] ?>"><?=gettext("Dynamic DNS");
 ?>: <?= htmlspecialchars($ddns["host"]); ?></option>
                         <?php
 endforeach; ?>

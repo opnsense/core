@@ -151,13 +151,13 @@ handle_ajax($nentries, $nentries + 20);
 
 <script type="text/javascript">
 //<![CDATA[
-lastsawtime = '<?php echo time(); ?>';
+lastsawtime = '<?= html_safe(time()) ?>';
 var lines = Array();
 var timer;
 var updateDelay = 30000;
 var isBusy = false;
 var isPaused = false;
-var nentries = <?php echo $nentries; ?>;
+var nentries = <?= html_safe($nentries) ?>;
 
 <?php
 if (isset($config['syslog']['reverse'])) {
@@ -175,8 +175,8 @@ function format_log_line(row) {
     '<td class="listMRr ellipsis" title="' + row[3] + '">' + row[3] + '<\/td>' +
     '<td class="listMRr ellipsis" title="' + row[4] + '">' + row[4] + '<\/td>';
 
-  var nentriesacts = "<?php echo $nentriesacts; ?>";
-  var nentriesinterfaces = "<?php echo $nentriesinterfaces; ?>";
+  var nentriesacts = "<?= html_safe($nentriesacts) ?>";
+  var nentriesinterfaces = "<?= html_safe($nentriesinterfaces) ?>";
 
   var Action = row[0].match(/alt=.*?(pass|block|reject)/i).join("").match(/pass|block|reject/i).join("");
   var Interface = row[2];
@@ -204,9 +204,9 @@ function format_log_line(row) {
         <select name="filterlogentries" class="formfld unknown" id="filterlogentries">
         <?php for ($i = 1; $i <= 20; $i++) {
 ?>
-          <option value="<?php echo $i;?>" <?php if ($nentries == $i) {
+          <option value="<?= html_safe($i) ?>" <?php if ($nentries == $i) {
                         echo "selected=\"selected\"";
-}?>><?php echo $i;?></option>
+}?>><?= html_safe($i) ?></option>
         <?php
 } ?>
         </select>
@@ -293,20 +293,20 @@ endforeach;
     ?>
     <tr class="<?=$evenRowClass?>">
       <td class="listMRlr nowrap" align="center">
-      <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);">
-      <span class="<?php echo find_action_image($filterent['act']);?>" alt="<?php echo $filterent['act'];?>" title="<?php echo $filterent['act'];?>" ></span>
+      <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?= html_safe("{$filterent['rulenum']},{$filterent['act']}") ?>', outputrule);">
+      <span class="<?= html_safe(find_action_image($filterent['act'])) ?>" alt="<?= html_safe($filterent['act']) ?>" title="<?= html_safe($filterent['act']) ?>"></span>
       </a>
       </td>
-      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['time']);?>"><?php echo substr(htmlspecialchars($filterent['time']), 0, -3);?></td>
-      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['interface']);?>"><?php echo htmlspecialchars($filterent['interface']);?></td>
-      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['src']);?>">
-        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?php echo "{$filterent['srcip']}";
-?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
-        <?php echo htmlspecialchars($filterent['srcip']);?></a></td>
-      <td class="listMRr ellipsis nowrap" title="<?php echo htmlspecialchars($filterent['dst']);?>">
-        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?php echo "{$filterent['dstip']}";
-?>&amp;dialog_output=true', outputrule);" title="<?=gettext("Reverse Resolve with DNS");?>">
-        <?php echo htmlspecialchars($filterent['dstip']);?></a><?php echo ":" . htmlspecialchars($filterent['dstport']);?></td>
+      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['time']) ?>"><?= html_safe(substr($filterent['time'], 0, -3)) ?></td>
+      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['interface']) ?>"><?= html_safe($filterent['interface']) ?></td>
+      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['src']) ?>">
+        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?= html_safe($filterent['srcip']) ?>&amp;dialog_output=true', outputrule);"
+          title="<?= html_safe(gettext('Reverse Resolve with DNS')) ?>"><?= html_safe($filterent['srcip']) ?></a>
+      </td>
+      <td class="listMRr ellipsis nowrap" title="<?= html_safe($filterent['dst']) ?>">
+        <a href="#" onclick="javascript:getURL('widgets/widgets/log.widget.php?host=<?= html_safe($filterent['dstip']) ?>&amp;dialog_output=true', outputrule);"
+          title="<?= html_safe(gettext('Reverse Resolve with DNS')) ?>"><?= html_safe($filterent['dstip']) ?></a>:<?= html_safe($filterent['dstport']) ?>
+      </td>
       <?php
             if ($filterent['proto'] == "TCP") {
                 $filterent['proto'] .= ":{$filterent['tcpflags']}";

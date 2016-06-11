@@ -221,8 +221,8 @@ include("head.inc");
                 </thead>
                 <tbody>
                   <tr>
-                    <td><?php echo sprintf("%.5f", $gps_lat); ?> (<?php echo sprintf("%d", $gps_lat_deg); ?>&deg; <?php echo sprintf("%.5f", $gps_lat_min*60); ?><?php echo $gps_vars[4]; ?>)</td>
-                    <td><?php echo sprintf("%.5f", $gps_lon); ?> (<?php echo sprintf("%d", $gps_lon_deg); ?>&deg; <?php echo sprintf("%.5f", $gps_lon_min*60); ?><?php echo $gps_vars[6]; ?>)</td>
+                    <td><?= sprintf("%.5f", $gps_lat); ?> (<?= sprintf("%d", $gps_lat_deg); ?>&deg; <?= sprintf("%.5f", $gps_lat_min*60); ?><?= $gps_vars[4]; ?>)</td>
+                    <td><?= sprintf("%.5f", $gps_lon); ?> (<?= sprintf("%d", $gps_lon_deg); ?>&deg; <?= sprintf("%.5f", $gps_lon_min*60); ?><?= $gps_vars[6]; ?>)</td>
                     <?php if (isset($gps_alt)) { echo '<td>' . $gps_alt . ' ' . $gps_alt_unit . '</td>';}?>
                     <td>
 <?php
@@ -233,7 +233,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td colspan="<?php echo $gps_goo_lnk; ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">Google Maps Link</a></td>
+                    <td colspan="<?= html_safe($gps_goo_lnk) ?>"><a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">Google Maps Link</a></td>
                   </tr>
                 </tbody>
               </table>

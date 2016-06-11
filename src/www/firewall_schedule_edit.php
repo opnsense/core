@@ -882,13 +882,15 @@ function removeRow(el) {
                                       }
                                       if ($firstdayofmonth == $positioncounter){?>
                                         <td align="center" style="cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
-                                          <?php echo $daycounter;
+                                        <?php
+                                          echo $daycounter;
                                           $daycounter++;
                                           $firstdayprinted = TRUE;
                                           echo "</td>";
                                       } elseif ($firstdayprinted == TRUE && $daycounter <= $numberofdays){?>
                                       <td align="center" style="cursor: pointer;" class="listr" id="w<?=$weekcounter;?>p<?=$positioncounter;?>" onclick="daytoggle('w<?=$weekcounter;?>p<?=$positioncounter;?>-m<?=$monthcounter;?>d<?=$daycounter;?>');">
-                                          <?php echo $daycounter;
+                                        <?php
+                                          echo $daycounter;
                                           $daycounter++;
                                           echo "</td>";
                                       } else {

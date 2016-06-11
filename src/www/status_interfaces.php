@@ -430,7 +430,7 @@ include("head.inc");
                   endif;
                   if (!empty($ifinfo['bridge'])): ?>
                     <tr>
-                      <td><?php printf(gettext("Bridge (%s)"),$ifinfo['bridgeint']) ?></td>
+                      <td><?= sprintf(gettext('Bridge (%s)'), $ifinfo['bridgeint']) ?></td>
                       <td>
                         <?= $ifinfo['bridge'] ?>
                       </td>

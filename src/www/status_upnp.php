@@ -57,7 +57,7 @@ include("head.inc");
 <?php
           if (empty($config['installedpackages']['miniupnpd']['config'][0]['iface_array']) || empty($config['installedpackages']['miniupnpd']['config'][0]['enable'])): ?>
           <header class="content-box-head container-fluid">
-            <h3><?php echo gettext("UPnP is currently disabled."); ?></h3>
+            <h3><?= gettext('UPnP is currently disabled.') ?></h3>
           </header>
 <?php
           else: ?>
