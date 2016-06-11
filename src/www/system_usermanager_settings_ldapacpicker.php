@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2014-2015 Deciso B.V.
     Copyright (C) 2007 Scott Ullrich <sullrich@gmail.com>
@@ -28,6 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("auth.inc");
+
 include('head.inc');
 
 $ous = array();
@@ -63,7 +65,7 @@ if (isset($_GET['basedn']) && isset($_GET['host'])) {
  <body>
   <script type="text/javascript">
       function post_choices() {
-        var ous = <?php echo count($ous); ?>;
+        var ous = <?= html_safe(count($ous)) ?>;
         var i;
         var values = $("#ou:checked").map(function(){
                         return $(this).val();

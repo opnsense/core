@@ -54,7 +54,7 @@ if(is_numeric($_POST['logfiltercount'])) {
         <td>
           <select name="logfiltercount" id="logfiltercount">
             <?php for ($i = 1; $i <= 50; $i++) {?>
-            <option value="<?php echo $i;?>" <?php if ($syslogEntriesToFetch == $i) { echo "selected=\"selected\"";}?>><?php echo $i;?></option>
+            <option value="<?= html_safe($i) ?>" <?php if ($syslogEntriesToFetch == $i) { echo "selected=\"selected\"";}?>><?= html_safe($i) ?></option>
             <?php } ?>
           </select>
         </td>

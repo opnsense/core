@@ -409,13 +409,13 @@ include("head.inc");
                     <input name="noantilockout" type="checkbox" value="yes" <?= empty($pconfig['noantilockout']) ? '' : 'checked="checked"' ?>/>
                     <strong><?=gettext("Disable webConfigurator anti-lockout rule"); ?></strong>
                     <div class="hidden" for="help_for_noantilockout">
-                      <?php printf(gettext("When this is unchecked, access to the webConfigurator " .
+                      <?= sprintf(gettext("When this is unchecked, access to the webConfigurator " .
                                           "on the %s interface is always permitted, regardless of the user-defined firewall " .
                                           "rule set. Check this box to disable this automatically added rule, so access " .
                                           "to the webConfigurator is controlled by the user-defined firewall rules " .
                                           "(ensure you have a firewall rule in place that allows you in, or you will " .
                                           "lock yourself out!)"), (empty($config['interfaces']['lan']) ? gettext("WAN") : gettext("LAN"))); ?>
-                      <em> <?= gettext('Hint: the "Set interface(s) IP address" option in the console menu resets this setting as well.'); ?> </em>
+                      <em><?= gettext('Hint: the "Set interface(s) IP address" option in the console menu resets this setting as well.'); ?></em>
                     </div>
                   </td>
                 </tr>

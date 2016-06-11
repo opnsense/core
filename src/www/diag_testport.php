@@ -114,9 +114,9 @@ include("head.inc"); ?>
     <div class="row">
       <section class="col-xs-12">
         <div id="message" style="" class="alert alert-warning" role="alert">
-          <?php echo gettext("This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner."); ?>
+          <?= gettext('This page allows you to perform a simple TCP connection test to determine if a host is up and accepting connections on a given port. This test does not function for UDP since there is no way to reliably determine if a UDP port accepts connections in this manner.') ?>
           <br /><br />
-          <?php echo gettext("No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server."); ?>
+          <?= gettext('No data is transmitted to the remote host during this test, it will only attempt to open a connection and optionally display the data sent back from the server.') ?>
         </div>
         <div class="content-box">
           <div class="content-box-main ">

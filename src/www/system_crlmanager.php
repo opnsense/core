@@ -627,12 +627,12 @@ include("head.inc");
                   <td>
 <?php
                   if (!empty($ca['prv'])) :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" title="<?php printf(gettext("Add or Import CRL for %s"), htmlspecialchars($ca['descr']));?>" class="btn btn-default btn-xs">
+                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Add or Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
 <?php
                   else :?>
-                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?php printf(gettext("Import CRL for %s"), htmlspecialchars($ca['descr']));?>" class="btn btn-default btn-xs">
+                    <a href="system_crlmanager.php?act=new&amp;caref=<?=$ca['refid']; ?>&amp;importonly=yes" data-toggle="tooltip" title="<?= html_safe(sprintf(gettext('Import CRL for %s'), $ca['descr'])) ?>" class="btn btn-default btn-xs">
                       <span class="glyphicon glyphicon-plus"></span>
                     </a>
 <?php

@@ -761,7 +761,7 @@ include("head.inc");
             $rowIndex++;?>
             <tr class="<?=$evenRowClass?>">
               <td>
-                <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?php echo "{$filterent['rulenum']},{$filterent['act']}"; ?>', outputrule);" title="<?php echo $filterent['act'];?>">
+                <a href="#" onclick="javascript:getURL('diag_logs_filter.php?getrulenum=<?= html_safe("{$filterent['rulenum']},{$filterent['act']}") ?>', outputrule);" title="<?= html_safe($filterent['act']) ?>">
                   <span class="glyphicon glyphicon-<?php switch ($filterent['act']) {
                     case 'pass':
                         echo "play";  /* icon triangle */
@@ -778,7 +778,7 @@ include("head.inc");
                   </span>
                 </a>
               </td>
-              <td><?php echo htmlspecialchars($filterent['time']);?></td>
+              <td><?= htmlspecialchars($filterent['time']) ?></td>
               <td>
 <?php
                 if ($filterent['direction'] == "out"): ?>
@@ -813,16 +813,16 @@ include("head.inc");
               $dst_htmlclass = str_replace(array('.', ':'), '-', $filterent['dstip']);
 ?>
               <td>
-                <span onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['srcip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs glyphicon glyphicon-info-sign"></span></span>
+                <span onclick="javascript:resolve_with_ajax('<?= html_safe($filterent['srcip']) ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $src_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs glyphicon glyphicon-info-sign"></span></span>
                 <a title="<?=gettext("Easy Rule: Add to Block List");?>" href="#blockEasy" class="btn btn-danger btn-xs easy_block">
                 <input type="hidden" value="<?= $filterent['srcip']; ?>" class="srcip"/>
                 <input type="hidden" value="<?= $int;?>" class="intf"/>
                 <input type="hidden" value="<?= $ipproto;?>" class="ipproto"/>
                 <span class="glyphicon glyphicon-remove" alt="Icon Easy Rule: Add to Block List"></span></a>
-                <?php echo $srcstr . '<span class="RESOLVE-' . $src_htmlclass . '"></span>';?>
+                <?= html_safe($srcstr) ?><span class="RESOLVE-<?= html_safe($src_htmlclass) ?>"></span>
               </td>
               <td>
-                <span onclick="javascript:resolve_with_ajax('<?php echo "{$filterent['dstip']}"; ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs  glyphicon glyphicon-info-sign"></span></span>
+                <span onclick="javascript:resolve_with_ajax('<?= html_safe($filterent['dstip']) ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs  glyphicon glyphicon-info-sign"></span></span>
                 <a title="<?=gettext("Easy Rule: Pass this traffic");?>" href="#blockEasy" class="btn btn-success btn-xs easy_pass">
                 <input type="hidden" value="<?= $filterent['srcip']; ?>" class="srcip"/>
                 <input type="hidden" value="<?= $filterent['dstip']; ?>" class="dstip"/>
@@ -831,14 +831,14 @@ include("head.inc");
                 <input type="hidden" value="<?= $proto;?>" class="proto"/>
                 <input type="hidden" value="<?= $ipproto;?>" class="ipproto"/>
                 <span  class="glyphicon glyphicon-play" alt="<?= gettext('Icon Easy Rule: Pass this traffic') ?>"></span></a>
-                <?php echo $dststr . '<span class="RESOLVE-' . $dst_htmlclass . '"></span>';?>
+                <?= html_safe($dststr) ?><span class="RESOLVE-<?= html_safe($dst_htmlclass) ?>"></span>
               </td>
 <?php
               if ($filterent['proto'] == "TCP") {
                   $filterent['proto'] .= ":{$filterent['tcpflags']}";
               }?>
               <td>
-                <?php echo htmlspecialchars($filterent['proto']);?>
+                <?= htmlspecialchars($filterent['proto']);?>
               </td>
             </tr>
 <?php

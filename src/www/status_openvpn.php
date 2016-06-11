@@ -152,7 +152,7 @@ $( document ).ready(function() {
                 </tr>
 <?php
                 foreach ($server['conns'] as $conn): ?>
-                <tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
+                <tr id="<?= html_safe("r:{$server['mgmt']}:{$conn['remote_host']}") ?>">
                   <td><?=$conn['common_name'];?></td>
                   <td><?=$conn['remote_host'];?></td>
                   <td><?=$conn['virtual_addr'];?></td>
@@ -202,7 +202,7 @@ $( document ).ready(function() {
                         <tbody>
 <?php
                           foreach ($server['routes'] as $conn): ?>
-                          <tr id="<?php echo "r:{$server['mgmt']}:{$conn['remote_host']}"; ?>">
+                          <tr id="<?= html_safe("r:{$server['mgmt']}:{$conn['remote_host']}") ?>">
                             <td><?=$conn['common_name'];?></td>
                             <td><?=$conn['remote_host'];?></td>
                             <td><?=$conn['virtual_addr'];?></td>
@@ -242,7 +242,7 @@ $( document ).ready(function() {
                 </tr>
 <?php
                 foreach ($sk_servers as $sk_server): ?>
-                <tr id="<?php echo "r:{$sk_server['port']}:{$sk_server['vpnid']}"; ?>">
+                <tr id="<?= html_safe("r:{$sk_server['port']}:{$sk_server['vpnid']}") ?>">
                   <td><?=$sk_server['name'];?></td>
                   <td><?=$sk_server['remote_host'];?></td>
                   <td><?=$sk_server['virtual_addr'];?></td>
@@ -282,7 +282,7 @@ $( document ).ready(function() {
                 </tr>
 <?php
                 foreach ($clients as $client): ?>
-                <tr id="<?php echo "r:{$client['port']}:{$client['vpnid']}"; ?>">
+                <tr id="<?= html_safe("r:{$client['port']}:{$client['vpnid']}") ?>">
                   <td><?=$client['name'];?></td>
                   <td><?=$client['connect_time'];?></td>
                   <td><?=$client['virtual_addr'];?></td>

@@ -134,7 +134,7 @@ if ($_REQUEST['updateme']) {
       <?php
 else :
 ?>
-        <?php echo $syncsource; ?>
+        <?= $syncsource ?>
       <?php
 endif; ?>
       </td>
@@ -144,7 +144,7 @@ endif; ?>
       <tr>
         <td width="40%" class="vncellt"><?= gettext('Clock location') ?></td>
         <td width="60%" class="listr">
-          <a target="_gmaps" href="http://maps.google.com/?q=<?php echo $gps_lat; ?>,<?php echo $gps_lon; ?>">
+          <a target="_gmaps" href="http://maps.google.com/?q=<?= html_safe($gps_lat) ?>,<?= html_safe($gps_lon) ?>">
           <?php
                     echo sprintf("%.5f", $gps_lat) . " " . $gps_la . ", " . sprintf("%.5f", $gps_lon) . " " . $gps_lo; ?>
           </a>
@@ -225,7 +225,7 @@ function clockTimeString($inDate, $showSeconds)
 /* set up variables used to init clock in BODY's onLoad handler;
    should be done as early as possible */
 var clockLocalStartTime = new Date();
-var clockServerStartTime = new Date(<?php echo(getServerDateItems($gDate))?>);
+var clockServerStartTime = new Date(<?= html_safe(getServerDateItems($gDate)) ?>);
 
 /* stub functions for older browsers;
    will be overridden by next JavaScript1.2 block */
@@ -469,7 +469,7 @@ function clockUpdate()
       <td width="40%" class="vncellt">Server Time</td>
       <td width="60%" class="listr">
         <div id="ClockTime">
-          <b><?php echo(clockTimeString($gDate, $gClockShowsSeconds));?></b>
+          <b><?= clockTimeString($gDate, $gClockShowsSeconds) ?></b>
         </div>
       </td>
     </tr>

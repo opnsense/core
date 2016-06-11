@@ -708,13 +708,13 @@ include("head.inc");
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Enable");?> </td>
                       <td>
                         <input name="enable" id="enable" type="checkbox" value="yes" <?=!empty($pconfig['enable']) ? "checked=\"checked\"" : ""; ?> />
-                        <strong><?php printf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
+                        <strong><?= sprintf(gettext("Enable DHCP server on the %s interface"),!empty($config['interfaces'][$if]['descr']) ? htmlspecialchars($config['interfaces'][$if]['descr']) : strtoupper($if));?></strong>
                       </td>
                     </tr>
 <?php
                     else: ?>
                     <tr>
-                      <td colspan="2"><?php echo gettext("Editing Pool-Specific Options. To return to the Interface, click its tab above."); ?></td>
+                      <td colspan="2"><?= gettext('Editing Pool-Specific Options. To return to the Interface, click its tab above.') ?></td>
                     </tr>
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Pool Description");?></td>

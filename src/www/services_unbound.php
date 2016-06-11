@@ -205,7 +205,7 @@ include_once("head.inc");
                           <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Register DHCP leases in the DNS Resolver");?></strong>
                           <div class="hidden" for="help_for_regdhcp">
-                            <?php printf(gettext("If this option is set, then machines that specify".
+                            <?= sprintf(gettext("If this option is set, then machines that specify".
                             " their hostname when requesting a DHCP lease will be registered".
                             " in the DNS Resolver, so that their name can be resolved.".
                             " You should also set the domain in %sSystem:".
@@ -219,7 +219,7 @@ include_once("head.inc");
                           <input name="regdhcpstatic" type="checkbox" id="regdhcpstatic" value="yes" <?=!empty($pconfig['regdhcpstatic']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Register DHCP static mappings in the DNS Resolver");?></strong>
                           <div class="hidden" for="help_for_regdhcpstatic">
-                            <?php printf(gettext("If this option is set, then DHCP static mappings will ".
+                            <?= sprintf(gettext("If this option is set, then DHCP static mappings will ".
                                 "be registered in the DNS Resolver, so that their name can be ".
                                 "resolved. You should also set the domain in %s".
                                 "System: General setup%s to the proper value."),'<a href="system_general.php">','</a>');?>

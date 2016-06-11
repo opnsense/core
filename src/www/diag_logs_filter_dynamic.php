@@ -92,7 +92,7 @@ include("head.inc");
                 <thead>
                   <tr>
                     <td colspan="6">
-                    <strong><?php printf(gettext("Showing last %s records."),$nentries);?></strong>
+                    <strong><?= sprintf(gettext('Showing last %s records.'), $nentries) ?></strong>
                     </td>
                   </tr>
                   <tr>

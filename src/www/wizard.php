@@ -857,7 +857,7 @@ function showchange() {
 	}
 ?>
 
-	var customarray=new Array(<?php echo $aliases; ?>);
+	var customarray=new Array(<?= $aliases ?>);
 
 	window.onload = function () {
 

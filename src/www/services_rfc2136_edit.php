@@ -242,7 +242,7 @@ include("head.inc");
                     <td>&nbsp;</td>
                     <td>
                       <span class="text-danger"><strong><?=gettext("Note:");?><br />
-                      </strong></span><?php printf(gettext("You must configure a DNS server in %sSystem: " .
+                      </strong></span><?= sprintf(gettext("You must configure a DNS server in %sSystem: " .
                       "General setup %sor allow the DNS server list to be overridden " .
                       "by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system_general.php">', '</a>');?>
                     </td>

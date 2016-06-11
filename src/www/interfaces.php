@@ -1715,7 +1715,7 @@ include("head.inc");
                         <tr>
                           <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("IPv6 Configuration Type"); ?></td>
                           <td>
-                            <select name="type6" <?php echo (substr($pconfig['if'], 0, 3) == 'gre') ? 'disabled="disabled"' : ''; ?> class="selectpicker" data-style="btn-default" id="type6">
+                            <select name="type6" <?= (substr($pconfig['if'], 0, 3) == 'gre') ? 'disabled="disabled"' : '' ?> class="selectpicker" data-style="btn-default" id="type6">
 <?php
                             $types6 = array("none" => gettext("None"), "staticv6" => gettext("Static IPv6"), "dhcp6" => gettext("DHCPv6"), "slaac" => gettext("SLAAC"), "6rd" => gettext("6rd Tunnel"), "6to4" => gettext("6to4 Tunnel"), "track6" => gettext("Track Interface"));
                             foreach ($types6 as $key => $opt):?>
@@ -1736,14 +1736,12 @@ include("head.inc");
                               $mac = str_replace("\n","",$mac);
                               if (!empty($mac)):
 ?>
-                              <a onclick="document.getElementById('spoofmac').value='<?=$mac?>';" href="#"><?=gettext("Insert my local MAC address"); ?></a><br />
+                              <a onclick="document.getElementById('spoofmac').value='<?= html_safe($mac) ?>';" href="#"><?=gettext("Insert my local MAC address"); ?></a><br />
 <?php
                               endif; ?>
-                              <?=gettext("This field can be used to modify (\"spoof\") the MAC " .
-                              "address of this interface"); ?><br />
-                              <?=gettext("(may be required with some cable connections)"); ?><br />
-                              <?=gettext("Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx " .
-                              "or leave blank"); ?>
+                              <?= gettext('This field can be used to modify ("spoof") the MAC address of ' .
+                                    'this interface. This may be required with some cable connections.') ?><br />
+                              <?=gettext('Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank.') ?>
                             </div>
                           </td>
                         </tr>
