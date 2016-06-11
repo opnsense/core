@@ -1,3 +1,6 @@
-squid_enable={% if helpers.exists('OPNsense.proxy.general.enabled') and OPNsense.proxy.general.enabled|default("0") == "1" %}YES{% else %}NO{% endif %}
-
+{% if helpers.exists('OPNsense.proxy.general.enabled') and OPNsense.proxy.general.enabled|default("0") == "1" %}
+squid_enable=YES
 squid_opnsense_bootup_run="/usr/local/opnsense/scripts/proxy/setup.sh"
+{% else %}
+squid_enable=NO
+{% endif %}
