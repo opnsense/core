@@ -368,6 +368,8 @@ legacy_html_escape_form_data($a_user);
 include("head.inc");
 
 ?>
+<script type="text/javascript" src="/ui/js/jquery.qrcode.js"></script>
+<script type="text/javascript" src="/ui/js/qrcode.js"></script>
 
 <body>
 
@@ -853,13 +855,16 @@ $( document ).ready(function() {
 <?php
                         if (!empty($pconfig['otp_seed'])):
                             // construct google url, using token, username and this machines hostname
-                            $google_otp_url = "https://chart.googleapis.com/chart?chs=200x200&amp;chld=M|0&amp;cht=qr&amp;chl=otpauth://totp/";
-                            $google_otp_url .= $pconfig['usernamefld']."@".htmlspecialchars($config['system']['hostname'])."%3Fsecret%3D";
-                            $google_otp_url .= $pconfig['otp_seed'];
+                            $otp_url = "otpauth://totp/";
+                            $otp_url .= $pconfig['usernamefld']."@".htmlspecialchars($config['system']['hostname'])."?secret=";
+                            $otp_url .= $pconfig['otp_seed'];
                         ?>
                             <br/>
-                            <?=gettext("When using google authenticator, the following link provides a qrcode for easy setup");?><br/>
-                            <a href="<?=$google_otp_url;?>" target="_blank"><?=$google_otp_url;?></a>
+                            <?=gettext("When using google authenticator, scan the following qrcode for easy setup:");?><br/>
+                            <div id="otp_qrcode"></div>
+                            <script type="text/javascript">
+                                $('#otp_qrcode').qrcode('<?= $otp_url ?>');
+                            </script>
 <?php
                         endif;?>
                       </div>
