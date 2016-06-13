@@ -824,9 +824,7 @@ function system_syslogd_start()
         $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => "{$g['dhcpd_chroot_path']}/var/run/log", 'remote' => 'dhcp');
         $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
         $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
-        $syslogconfs['ipsec'] = array('facility' => array('charon'));
         $syslogconfs['ntpd'] = array('facility' => array('ntp', 'ntpd', 'ntpdate'));
-        $syslogconfs['openvpn'] = array('facility' => array('openvpn'), 'remote' => 'vpn');
         $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
         $syslogconfs['relayd'] = array('facility' => array('relayd'), 'remote' => 'relayd');

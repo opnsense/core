@@ -26,6 +26,18 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+function if_ipsec_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['ipsec'] = array(
+        'facility' => array('charon'),
+        'remote' => 'vpn',
+    );
+
+    return $logfacilities;
+}
+
 function if_ipsec_services()
 {
     global $config;

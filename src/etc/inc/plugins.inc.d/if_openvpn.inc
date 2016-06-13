@@ -26,6 +26,18 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+function if_openvpn_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['openvpn'] = array(
+        'facility' => array('openvpn'),
+        'remote' => 'vpn',
+    );
+
+    return $logfacilities;
+}
+
 function if_openvpn_services()
 {
     global $config;
