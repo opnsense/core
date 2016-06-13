@@ -74,7 +74,10 @@ include("head.inc");
         <section class="col-xs-12">
           <p>
             <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
-              <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?=$filtertext;?>"/>
+              <div class="input-group">
+                <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?=$filtertext;?>"/>
+              </div>
             </form>
           </p>
           <div class="tab-content content-box col-xs-12">
