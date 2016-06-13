@@ -37,6 +37,8 @@ require_once("plugins.inc");
 /* expects $logfile to point to the system path */
 /* expects $logclog to be true or false */
 
+require_once 'diag_logs_common.inc';
+
 $filtertext = '';
 $nentries = 50;
 
@@ -101,8 +103,11 @@ include("head.inc");
                 ?>
                 <tr>
                   <td colspan="2">
-                    <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
-                      <input name="clear" type="submit" class="btn btn-primary" value="<?= gettext("Clear log");?>" />
+                    <form action="<? html_safe($_SERVER['REQUEST_URI']) ?>" method="post">
+<?php                 if (isset($mode)): ?>
+                        <input type="hidden" name="mode" id="mode" value="<?= html_safe($mode) ?>"/>
+<?php                 endif ?>
+                      <input name="clear" type="submit" class="btn btn-primary" value="<?= html_safe(gettext('Clear log')) ?>"/>
                     </form>
                   </td>
                 </tr>
