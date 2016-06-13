@@ -27,9 +27,6 @@
       .typeahead {
         overflow: hidden;
       }
-      table {
-        table-layout: fixed;
-      }
     </style>
 
     <!-- Favicon -->

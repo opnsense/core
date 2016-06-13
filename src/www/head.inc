@@ -69,10 +69,6 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
         z-index: 2000;
       }
 
-      table {
-        table-layout: fixed;
-      }
-
       ol.example li.placeholder {
         position: relative;
       }
