@@ -241,7 +241,7 @@ include("head.inc");
                   <tr>
                     <td colspan="2">
                       <?= sprintf(gettext("You must configure a DNS server in %sSystem: " .
-                      "General setup %sor allow the DNS server list to be overridden " .
+                      "General setup%s or allow the DNS server list to be overridden " .
                       "by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system_general.php">', '</a>');?>
                     </td>
                   </tr>
