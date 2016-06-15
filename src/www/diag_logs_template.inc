@@ -59,7 +59,7 @@ if (!empty($_POST['clear'])) {
 }
 
 if (isset($_POST['filtertext'])) {
-    $filtertext = htmlspecialchars($_POST['filtertext']);
+    $filtertext = html_safe($_POST['filtertext']);
 }
 
 include("head.inc");
