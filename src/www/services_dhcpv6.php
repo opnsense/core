@@ -348,6 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $service_hook = 'dhcpd';
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
+
 ?>
 
 <body>
