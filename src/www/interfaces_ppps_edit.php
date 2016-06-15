@@ -694,7 +694,7 @@ include("head.inc");
                       <tr style="display:none" class="act_show_advanced">
                         <td><a id="help_for_vjcomp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Compression"); ?></td>
                         <td>
-                          <input type="checkbox" value="on" id="vjcomp" name="vjcomp" <?!empty($pconfig['vjcomp']) ? "checked=\"checked\"" :""; ?> />
+                          <input type="checkbox" value="on" id="vjcomp" name="vjcomp" <?= !empty($pconfig['vjcomp']) ? 'checked="checked"' : '' ?> />
                           <?= gettext("Disable vjcomp(compression) (auto-negotiated by default)."); ?>
                           <div class="hidden" for="help_for_vjcomp">
                             <?=gettext("This option enables Van Jacobson TCP header compression, which saves several bytes per TCP data packet. " .

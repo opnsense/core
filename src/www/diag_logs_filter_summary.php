@@ -196,7 +196,7 @@ include("head.inc"); ?>
             ;
 
           d3.select("[id='"+ selected_id + "'].piechart svg")
-              .datum(<? echo json_encode($data); ?>[selected_id])
+              .datum(<?= json_encode($data) ?>[selected_id])
               .transition().duration(350)
               .call(chart);
 

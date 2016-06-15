@@ -430,8 +430,8 @@ include("head.inc");
                             if(is_ipaddrv6(lookup_gateway_ip_by_name($pconfig[$dnsgw])) && is_ipaddrv4($gwitem['gateway'])) {
                               continue;
                             }?>
-                            <option value="<?=$gwname;?>" <?=$pconfig[$dnsgw] == $gwname ? "selected=\"selected\"" : "" ;?>>
-                              <?=$gwname;?> - <?=$gwitem['friendlyiface'];?> - <?$gwitem['gateway'];?>
+                            <option value="<?=$gwname;?>" <?=$pconfig[$dnsgw] == $gwname ? 'selected="selected"' : '' ?>>
+                              <?=$gwname;?> - <?=$gwitem['friendlyiface'];?> - <?=$gwitem['gateway'];?>
                             </option>
 <?php
                              endforeach;?>
