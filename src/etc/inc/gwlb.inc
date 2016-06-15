@@ -494,92 +494,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     $interfaces_v4 = array();
     $interfaces_v6 = array();
 
-    $i = -1;
-    /* Process/add all the configured gateways. */
-    if (isset($config['gateways']['gateway_item'])) {
-        foreach ($config['gateways']['gateway_item'] as $gateway) {
-            /* Increment it here to do not skip items */
-            $i++;
-
-            if (empty($config['interfaces'][$gateway['interface']])) {
-              if ($inactive === false) {
-                  continue;
-              } else {
-                  $gateway['inactive'] = true;
-              }
-            }
-            $wancfg = $config['interfaces'][$gateway['interface']];
-
-            /* skip disabled interfaces */
-            if ($disabled === false && (!isset($wancfg['enable']) || isset($gateway['disabled']))) {
-                continue;
-            }
-
-            /* if the gateway is dynamic and we can find the IPv4, Great! */
-            if (empty($gateway['gateway']) || $gateway['gateway'] == "dynamic") {
-                if ($gateway['ipprotocol'] == "inet") {
-                    /* we know which interfaces is dynamic, this should be made a function */
-                    $gateway['gateway'] = get_interface_gateway($gateway['interface']);
-                    /* no IP address found, set to dynamic */
-                    if (!is_ipaddrv4($gateway['gateway'])) {
-                        $gateway['gateway'] = "dynamic";
-                    }
-                    $gateway['dynamic'] = true;
-                } elseif ($gateway['ipprotocol'] == "inet6") {
-                    /* if the gateway is dynamic and we can find the IPv6, Great! */
-                    /* we know which interfaces is dynamic, this should be made a function, and for v6 too */
-                    $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
-                    /* no IPv6 address found, set to dynamic */
-                    if (!is_ipaddrv6($gateway['gateway'])) {
-                        $gateway['gateway'] = "dynamic";
-                    }
-                    $gateway['dynamic'] = true;
-                }
-            } else {
-                /* getting this detection right is hard at this point because we still don't
-                 * store the address family in the gateway item */
-                if (is_ipaddrv4($gateway['gateway'])) {
-                    $gateway['ipprotocol'] = "inet";
-                } elseif (is_ipaddrv6($gateway['gateway'])) {
-                    $gateway['ipprotocol'] = "inet6";
-                }
-            }
-
-            if (isset($gateway['monitor_disable'])) {
-                $gateway['monitor_disable'] = true;
-            } elseif (empty($gateway['monitor'])) {
-                $gateway['monitor'] = $gateway['gateway'];
-            }
-
-            $gateway['friendlyiface'] = $gateway['interface'];
-
-            /* special treatment for tunnel interfaces */
-            if ($gateway['ipprotocol'] == "inet6") {
-                $gateway['interface'] = get_real_interface($gateway['interface'], "inet6", false, false);
-                $interfaces_v6[$gateway['friendlyiface']] = $gateway['friendlyiface'];
-            } else {
-                $gateway['interface'] = get_real_interface($gateway['interface'], "all", false, false);
-                $interfaces_v4[$gateway['friendlyiface']] = $gateway['friendlyiface'];
-            }
-
-            /* entry has a default flag, use it */
-            if (isset($gateway['defaultgw'])) {
-                if ($gateway['ipprotocol'] == "inet") {
-                    $gateway['defaultgw'] = true;
-                    $found_defaultv4 = 1;
-                } else if ($gateway['ipprotocol'] == "inet6") {
-                    $gateway['defaultgw'] = true;
-                    $found_defaultv6 = 1;
-                }
-            }
-            /* include the gateway index as the attribute */
-            $gateway['attribute'] = $i;
-
-            $gateways_arr[$gateway['name']] = $gateway;
-        }
-    }
-    unset($gateway);
-
     /* Loop through all interfaces with a gateway and add it to a array */
     if ($disabled == false) {
         $iflist = get_configured_interface_with_descr();
@@ -588,8 +502,8 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     }
 
     /* Process/add dynamic v4 gateways. */
-    foreach($iflist as $ifname => $friendly ) {
-        if (! interface_has_gateway($ifname)) {
+    foreach ($iflist as $ifname => $friendly) {
+        if (!interface_has_gateway($ifname)) {
             continue;
         }
 
@@ -656,7 +570,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         }
 
         /* automatically skip known static and dynamic gateways we have a array entry for */
-        foreach($gateways_arr as $gateway_item) {
+        foreach ($gateways_arr as $gateway_item) {
             if ((($ifname == $gateway_item['friendlyiface'] && $friendly == $gateway_item['name'])&& ($gateway['ipprotocol'] == $gateway_item['ipprotocol'])) ||
               ($ifname == $gateway_item['friendlyiface'] && $gateway_item['dynamic'] == true) && ($gateway['ipprotocol'] == $gateway_item['ipprotocol'])) {
                 continue 2;
@@ -674,7 +588,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     unset($gateway);
 
     /* Process/add dynamic v6 gateways. */
-    foreach($iflist as $ifname => $friendly ) {
+    foreach ($iflist as $ifname => $friendly) {
         /* If the user has disabled IPv6, they probably don't want any IPv6 gateways. */
         if (!isset($config['system']['ipv6allow'])) {
             break;
@@ -771,6 +685,95 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateway['descr'] = "Interface {$friendly}{$ctype} Gateway";
         $gateway['monitor_disable'] = true;
         $gateways_arr[$gateway['name']] = $gateway;
+    }
+    unset($gateway);
+
+    $i = -1;
+    /* Process/add all the configured gateways. */
+    if (isset($config['gateways']['gateway_item'])) {
+        foreach ($config['gateways']['gateway_item'] as $gateway) {
+            /* Increment it here to do not skip items */
+            $i++;
+
+            if (empty($config['interfaces'][$gateway['interface']])) {
+              if ($inactive === false) {
+                  continue;
+              } else {
+                  $gateway['inactive'] = true;
+              }
+            }
+            $wancfg = $config['interfaces'][$gateway['interface']];
+
+            /* skip disabled interfaces */
+            if ($disabled === false && (!isset($wancfg['enable']) || isset($gateway['disabled']))) {
+                if (isset($gateways_arr[$gateway['name']])) {
+                    unset($gateways_arr[$gateway['name']]);
+                }
+                continue;
+            }
+
+            /* if the gateway is dynamic and we can find the IPv4, Great! */
+            if (empty($gateway['gateway']) || $gateway['gateway'] == "dynamic") {
+                if ($gateway['ipprotocol'] == "inet") {
+                    /* we know which interfaces is dynamic, this should be made a function */
+                    $gateway['gateway'] = get_interface_gateway($gateway['interface']);
+                    /* no IP address found, set to dynamic */
+                    if (!is_ipaddrv4($gateway['gateway'])) {
+                        $gateway['gateway'] = "dynamic";
+                    }
+                    $gateway['dynamic'] = true;
+                } elseif ($gateway['ipprotocol'] == "inet6") {
+                    /* if the gateway is dynamic and we can find the IPv6, Great! */
+                    /* we know which interfaces is dynamic, this should be made a function, and for v6 too */
+                    $gateway['gateway'] = get_interface_gateway_v6($gateway['interface']);
+                    /* no IPv6 address found, set to dynamic */
+                    if (!is_ipaddrv6($gateway['gateway'])) {
+                        $gateway['gateway'] = "dynamic";
+                    }
+                    $gateway['dynamic'] = true;
+                }
+            } else {
+                /* getting this detection right is hard at this point because we still don't
+                 * store the address family in the gateway item */
+                if (is_ipaddrv4($gateway['gateway'])) {
+                    $gateway['ipprotocol'] = "inet";
+                } elseif (is_ipaddrv6($gateway['gateway'])) {
+                    $gateway['ipprotocol'] = "inet6";
+                }
+            }
+
+            if (isset($gateway['monitor_disable'])) {
+                $gateway['monitor_disable'] = true;
+            } elseif (empty($gateway['monitor'])) {
+                $gateway['monitor'] = $gateway['gateway'];
+            }
+
+            $gateway['friendlyiface'] = $gateway['interface'];
+
+            /* special treatment for tunnel interfaces */
+            if ($gateway['ipprotocol'] == "inet6") {
+                $gateway['interface'] = get_real_interface($gateway['interface'], "inet6", false, false);
+                $interfaces_v6[$gateway['friendlyiface']] = $gateway['friendlyiface'];
+            } else {
+                $gateway['interface'] = get_real_interface($gateway['interface'], "all", false, false);
+                $interfaces_v4[$gateway['friendlyiface']] = $gateway['friendlyiface'];
+            }
+
+            /* entry has a default flag, use it */
+            if (isset($gateway['defaultgw'])) {
+                if ($gateway['ipprotocol'] == "inet") {
+                    $gateway['defaultgw'] = true;
+                    $found_defaultv4 = 1;
+                } else if ($gateway['ipprotocol'] == "inet6") {
+                    $gateway['defaultgw'] = true;
+                    $found_defaultv6 = 1;
+                }
+            }
+            /* include the gateway index as the attribute */
+            $gateway['attribute'] = $i;
+
+            $gateways_arr[$gateway['name']] = $gateway;
+        }
     }
     unset($gateway);
 
