@@ -211,10 +211,12 @@
             <LogFile VisibleName="Log File" order="400" url="/diag_logs_dhcp.php"/>
         </DHCP>
         <DHCPv6 cssClass="fa fa-bullseye fa-fw">
-            <Server order="100" url="/services_dhcpv6.php">
+            <Advertisements order="100" url="/services_router_advertisements.php">
+                <Interface url="/services_router_advertisements.php?*" visibility="hidden"/>
+            </Advertisements>
+            <Server order="200" url="/services_dhcpv6.php">
                 <Interface url="/services_dhcpv6.php?*" visibility="hidden"/>
                 <Edit url="/services_dhcpv6_edit.php?*" visibility="hidden"/>
-                <RA url="/services_router_advertisements.php?*" visibility="hidden"/>
             </Server>
             <Relay order="300" url="/services_dhcpv6_relay.php"/>
             <Leases order="400" url="/status_dhcpv6_leases.php">

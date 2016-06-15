@@ -443,29 +443,21 @@ include("head.inc");
         <section class="col-xs-12">
 <?php
         /* active tabs */
-        $tab_array_main = array();
+        $tab_array = array();
         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $if_id => $intf) {
             if (isset($intf['enable']) && isset($intf['ipaddrv6']) && is_ipaddrv6($intf['ipaddrv6'])) {
                 $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
-                if ($if_id == $if) {
-                    $tab_array_main[] = array($ifname, true, "services_dhcpv6.php?if={$if_id}");
-                } else {
-                    $tab_array_main[] = array($ifname, false, "services_dhcpv6.php?if={$if_id}");
-                }
+                $tab_array[] = array($ifname, $if_id == $if, "services_dhcpv6.php?if={$if_id}");
             }
         }
 
-        $tab_array = array();
-        $tab_array[] = array(gettext("DHCPv6 Server"),         true,  "services_dhcpv6.php?if={$if}");
-        $tab_array[] = array(gettext("Router Advertisements"), false, "services_router_advertisements.php?if={$if}");
-        display_top_tabs($tab_array_main);
         display_top_tabs($tab_array);
         ?>
         <div class="tab-content content-box col-xs-12">
           <form method="post" name="iform" id="iform">
               <?php if (!empty($config['dhcrelay6']['enabled'])): ?>
               <?php print_content_box(gettext('DHCP Relay is currently enabled. Cannot enable the DHCP Server service while the DHCP Relay is enabled on any interface.')); ?>
-              <?php elseif (count($tab_array_main) == 0):?>
+              <?php elseif (count($tab_array) == 0):?>
               <?php print_content_box(gettext('No interfaces found with a static IPv6 address.')); ?>
               <?php else: ?>
                 <div class="table-responsive">
@@ -772,18 +764,6 @@ include("head.inc");
                       <td>
                         <input name="if" type="hidden" value="<?=$if;?>" />
                         <input name="submit" type="submit" class="formbtn btn btn-primary" value="<?=gettext("Save");?>"/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>&nbsp;</td>
-                      <td> <p><span class="vexpl"><span class="text-danger"><strong><?=gettext("Note:");?><br />
-                        </strong></span><?=gettext("The DNS servers entered in"); ?> <a href="system_general.php"><?=gettext("System: " .
-                        "General setup"); ?></a> <?=gettext("(or the"); ?> <a href="services_dnsmasq.php"><?=gettext("DNS " .
-                        "forwarder"); ?></a>, <?=gettext("if enabled)"); ?> </span><span class="vexpl"><?=gettext("will " .
-                        "be assigned to clients by the DHCP server."); ?><br />
-                        <?=gettext("The DHCP lease table can be viewed on the"); ?> <a href="status_dhcpv6_leases.php"><?=gettext("Status: " .
-                        "DHCPv6 leases"); ?></a> <?=gettext("page."); ?><br />
-                        </span></p>
                       </td>
                     </tr>
                   </table>
