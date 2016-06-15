@@ -238,8 +238,8 @@ if (isset($_POST['getupdatestatus'])) {
       <td><?=gettext("State table size");?></td>
       <td id="system_information_widget_states">
         <div class="progress" style="text-align:center;">
-          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+          <span class="state_text" style="position:absolute;right:0;left:0;"></span>
         </div>
       </td>
     </tr>
@@ -247,8 +247,8 @@ if (isset($_POST['getupdatestatus'])) {
       <td><?=gettext("MBUF Usage");?></td>
       <td id="system_information_widget_mbuf">
         <div class="progress" style="text-align:center;">
-          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+          <span class="state_text" style="position:absolute;right:0;left:0;"></span>
         </div>
       </td>
     </tr>
@@ -256,8 +256,8 @@ if (isset($_POST['getupdatestatus'])) {
       <td><?=gettext("Memory usage");?></td>
       <td id="system_information_widget_memory">
         <div class="progress" style="text-align:center;">
-          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+          <span class="state_text" style="position:absolute;right:0;left:0;"></span>
         </div>
       </td>
     </tr>
@@ -265,8 +265,8 @@ if (isset($_POST['getupdatestatus'])) {
       <td><?=gettext("SWAP usage");?></td>
       <td>
         <div class="progress" style="text-align:center;">
-          <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
-          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+          <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+          <span class="state_text" style="position:absolute;right:0;left:0;"></span>
         </div>
       </td>
     </tr>
@@ -276,8 +276,8 @@ if (isset($_POST['getupdatestatus'])) {
           <div style="display:none" class="disk_template">
             <!-- template -->
             <div id="disk_id_sequence" class="progress" style="text-align:center;">
-              <span class="state_text" style="position:absolute;right:0;left:0;z-index:200;"></span>
-              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%; z-index: 0;"></div>
+              <span class="state_text" style="position:absolute;right:0;left:0;"></span>
             </div>
             <div style="height:1px;">
             </div>
