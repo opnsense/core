@@ -36,8 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
         $if = $_GET['if'];
     } else {
-        $savemsg = "<p><b>" . gettext("The DHCPv6 Server can only be enabled on interfaces configured with static IP addresses") . ".</b></p>" .
-             "<p><b>" . gettext("Only interfaces configured with a static IP will be shown") . ".</b></p>";
+        $savemsg = gettext(
+            'Router Advertisements can only be enabled on interfaces configured with static ' .
+            'IP addresses. Only interfaces configured with a static IP will be shown.'
+         );
          foreach ($config['interfaces'] as $if_id => $intf) {
              if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6']) && !is_linklocal($oc['ipaddrv6'])) {
                  $if = $if_id;
@@ -154,6 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+$service_hook = 'radvd';
 
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
@@ -197,27 +200,19 @@ include("head.inc");
         <section class="col-xs-12">
 <?php
           /* active tabs */
-          $tab_array_main = array();
+          $tab_array = array();
           foreach ($config['interfaces'] as $if_id => $intf) {
               if (!empty($intf['enable']) && is_ipaddrv6($intf['ipaddrv6'])) {
                   $ifname = !empty($intf['descr']) ? htmlspecialchars($intf['descr']) : strtoupper($if_id);
-                  if ($if_id == $if) {
-                      $tab_array_main[] = array($ifname, true, "services_dhcpv6.php?if={$if_id}");
-                  } else {
-                      $tab_array_main[] = array($ifname, false, "services_dhcpv6.php?if={$if_id}");
-                  }
+                  $tab_array[] = array($ifname, $if_id == $if, "services_router_advertisements.php?if={$if_id}");
               }
           }
 
-          $tab_array = array();
-          $tab_array[] = array(gettext("DHCPv6 Server"),         false, "services_dhcpv6.php?if={$if}");
-          $tab_array[] = array(gettext("Router Advertisements"), true,  "services_router_advertisements.php?if={$if}");
-          display_top_tabs($tab_array_main);
           display_top_tabs($tab_array);
           ?>
           <div class="tab-content content-box col-xs-12">
             <form method="post" name="iform" id="iform">
-            <?php if (count($tab_array_main) == 0):?>
+            <?php if (count($tab_array) == 0):?>
             <?php print_content_box(gettext('No interfaces found with a static IPv6 address.')); ?>
             <?php else: ?>
               <div class="table-responsive">
@@ -367,6 +362,9 @@ include("head.inc");
                       <div class="hidden" for="help_for_radns">
                         <?=gettext("NOTE: leave blank to use the system default DNS servers - this interface's IP if DNS forwarder is enabled, otherwise the servers configured on the General page.");?>
                       </div>
+                      <br />
+                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
+                      <strong><?= gettext("Use the DNS settings of the DHCPv6 server"); ?></strong>
                     </td>
                   </tr>
                   <tr>
@@ -403,13 +401,6 @@ include("head.inc");
                       <div class="hidden" for="help_for_ramaxinterval">
                         <?= gettext('The maximum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.') ?>
                       </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <input id="rasamednsasdhcp6" name="rasamednsasdhcp6" type="checkbox" value="yes" <?=!empty($pconfig['rasamednsasdhcp6']) ? "checked='checked'" : "";?> />
-                      <strong><?= gettext("Use same settings as DHCPv6 server"); ?></strong>
                     </td>
                   </tr>
                   <tr>
