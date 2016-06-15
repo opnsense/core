@@ -326,7 +326,7 @@ $(document).ready(function() {
                         <select name="stp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                         foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?$ifn;?>" <?=!empty($pconfig['stp']) && in_array($ifn, $pconfig['stp']) ? "selected=\"selected\"" : "";?> >
+                          <option value="<?= $ifn ?>" <?= !empty($pconfig['stp']) && in_array($ifn, $pconfig['stp']) ? 'selected="selected"' : '' ?> >
                               <?=$ifdescr;?>
                           </option>
 <?php
