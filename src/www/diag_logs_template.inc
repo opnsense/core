@@ -73,7 +73,7 @@ include("head.inc");
       <div class="row">
         <section class="col-xs-12">
           <p>
-            <form action="<? $_SERVER['REQUEST_URI'] ?>" method="post">
+            <form method="post">
               <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
                 <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?=$filtertext;?>"/>
@@ -107,7 +107,7 @@ include("head.inc");
                 ?>
                 <tr>
                   <td colspan="2">
-                    <form action="<? html_safe($_SERVER['REQUEST_URI']) ?>" method="post">
+                    <form method="post">
 <?php                 if (isset($mode)): ?>
                         <input type="hidden" name="mode" id="mode" value="<?= html_safe($mode) ?>"/>
 <?php                 endif ?>
