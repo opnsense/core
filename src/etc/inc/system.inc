@@ -1925,3 +1925,103 @@ function load_thermal_module()
         mwexecf('/sbin/kldload %s', $config['system']['thermal_hardware'], true);
     }
 }
+
+function setup_serial_port($sync = true)
+{
+    global $config;
+
+    $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
+    $serial_enabled = isset($config['system']['enableserial']);
+
+    // ** serial console - write out /boot.config
+    if ($serial_enabled) {
+        file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
+    } elseif (file_exists('/boot.config')) {
+        unlink('/boot.config');
+    }
+
+    // ** console settings in /boot/loader.conf
+    $new_boot_config = array();
+    $new_boot_config['boot_multicons'] = $serial_enabled ? '"YES"' : null;
+    $new_boot_config['boot_serial'] = $serial_enabled ? '"YES"' : null;
+    if ($serial_enabled) {
+        $primaryconsole = !empty($config['system']['primaryconsole']) ? $config['system']['primaryconsole'] : "";
+        $new_boot_config['console'] = $primaryconsole == "video" ? '"vidconsole,comconsole"' : '"comconsole,vidconsole"';
+    } else {
+        $new_boot_config['console'] = null;
+    }
+    $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
+    $new_boot_config['hw.usb.no_pf'] = '"1"';
+    $new_boot_config['autoboot_delay'] = '"3"';
+
+    $new_loader_conf = "";
+    // construct OPNsense config for /boot/loader.conf
+    foreach ($new_boot_config as $param => $value) {
+        if (!empty($value)) {
+            $new_loader_conf .= "{$param}={$value}\n";
+        }
+    }
+    // copy non matched settings in /boot/loader.conf
+    foreach (explode("\n", @file_get_contents('/boot/loader.conf')) as $line) {
+        if (!empty($line) && !array_key_exists(trim(explode('=', $line)[0]), $new_boot_config)) {
+            $new_loader_conf .= $line . "\n";
+        }
+    }
+    @file_put_contents('/boot/loader.conf', $new_loader_conf);
+
+    // ** setup /etc/ttys
+
+    // minimize chances of /etc/ttys corruption, keep a copy of the original ttys file
+    if (!file_exists('/etc/ttys.opnsense') || filesize('/etc/ttys.opnsense') < 100) {
+        copy('/etc/ttys', '/etc/ttys.opnsense');
+    }
+
+    $fd = fopen("/etc/ttys", "w");
+    $on_off = $serial_enabled ? 'on' : 'off';
+    if (isset($config['system']['disableconsolemenu'])) {
+        $console_type = 'Pc';
+        $serial_type = 'std.' . $serialspeed;
+    } else {
+        $console_type = 'al.Pc';
+        $serial_type = 'al.' . $serialspeed;
+    }
+    foreach(explode("\n", file_get_contents("/etc/ttys.opnsense")) as $tty) {
+        if (stristr($tty, "ttyv0")) {
+            fwrite($fd, "ttyv0  \"/usr/libexec/getty {$console_type}\"  cons25  on  secure\n");
+        } elseif (stristr($tty, "ttyu0")) {
+            fwrite($fd, "ttyu0  \"/usr/libexec/getty {$serial_type}\"  cons25  {$on_off}  secure\n");
+        } elseif (!empty($tty)) {
+            fwrite($fd, $tty . "\n");
+        }
+    }
+    fclose($fd);
+
+    if ($sync) {
+        reload_ttys();
+    }
+}
+
+function reload_ttys()
+{
+    /* force init(8) to reload /etc/ttys */
+    exec('/bin/kill -HUP 1');
+}
+
+/****f* config/reset_factory_defaults
+ * NAME
+ *   reset_factory_defaults - Reset the system to its default configuration.
+ ******/
+function reset_factory_defaults($sync = true)
+{
+    mwexec('/bin/rm -r /conf/*');
+    disable_security_checks();
+    setup_serial_port(false);
+
+    /* as we go through a special case directly reboot */
+    $shutdown_cmd = '/sbin/shutdown -or now';
+    if ($sync) {
+        mwexec($shutdown_cmd);
+    } else {
+        mwexec_bg($shutdown_cmd);
+    }
+}

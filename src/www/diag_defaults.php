@@ -29,11 +29,11 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
+require_once("system.inc");
 
 include("head.inc");
-?>
 
+?>
 <body>
 
 <?php include("fbegin.inc"); ?>
@@ -69,11 +69,12 @@ include("head.inc");
     </div>
   </div>
 </section>
-<?php include("foot.inc");
-// reset to factory defaults when submit is pressed.
+<?php
+
+include("foot.inc");
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['Submit'])) {
         reset_factory_defaults(false);
     }
 }
-?>

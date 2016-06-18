@@ -27,10 +27,9 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* parse the configuration and include all functions used below */
 require_once("util.inc");
 require_once("config.lib.inc");
-require_once("pfsense-utils.inc");
+require_once("system.inc");
 
 $fp = fopen('php://stdin', 'r');
 $yes_no_prompt = '[y|n]? ';
