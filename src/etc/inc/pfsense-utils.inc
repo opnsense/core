@@ -577,36 +577,6 @@ function xml2array($contents, $get_attributes = 1, $priority = 'tag')
     return ($xml_array);
 }
 
-/* sort by interface only, retain the original order of rules that apply to
-   the same interface */
-function filter_rules_sort() {
-    global $config;
-
-    /* mark each rule with the sequence number (to retain the order while sorting) */
-    for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
-        $config['filter']['rule'][$i]['seq'] = $i;
-    }
-    usort($config['filter']['rule'], "filter_rules_compare");
-    /* strip the sequence numbers again */
-    for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
-        unset($config['filter']['rule'][$i]['seq']);
-    }
-}
-function filter_rules_compare($a, $b) {
-    if (isset($a['floating']) && isset($b['floating'])) {
-        return $a['seq'] - $b['seq'];
-    } elseif (isset($a['floating'])) {
-        return -1;
-    } elseif (isset($b['floating'])) {
-        return 1;
-    } elseif ($a['interface'] == $b['interface']) {
-        return $a['seq'] - $b['seq'];
-    } else {
-        return compare_interface_friendly_names($a['interface'], $b['interface']);
-    }
-}
-
-
 /****f* legacy/load_mac_manufacturer_table
  * NAME
  *   load_mac_manufacturer_table
