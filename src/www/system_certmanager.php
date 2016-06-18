@@ -1277,15 +1277,15 @@ $( document ).ready(function() {
                     <span class="glyphicon glyphicon-info-sign"></span>
                   </a>
 
-                  <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca");?>">
+                  <a href="system_certmanager.php?act=exp&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user cert");?>">
                       <span class="glyphicon glyphicon-download"></span>
                   </a>
 
-                  <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export key");?>">
+                  <a href="system_certmanager.php?act=key&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export user key");?>">
                     <span class="glyphicon glyphicon-download"></span>
                   </a>
 
-                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca cert+user cert+user cert key in .p12 format");?>">
+                  <a href="system_certmanager.php?act=p12&amp;id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("export ca+user cert+user key in .p12 format");?>">
                       <span class="glyphicon glyphicon-download"></span>
                   </a>
 <?php
@@ -1308,9 +1308,6 @@ $( document ).ready(function() {
               $i++;
               endforeach; ?>
 
-              <tr>
-                <td colspan="4"><?=gettext("Note: You can only delete a certificate if it is not currently in use.");?></td>
-              </tr>
             </tbody>
           </table>
 <?php

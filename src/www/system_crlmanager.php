@@ -680,11 +680,6 @@ include("head.inc");
                   endif; ?>
 <?php
                 endforeach; ?>
-                <tr>
-                  <td colspan="5">
-                      <?=gettext("Additional Certificate Revocation Lists can be added here.");?>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </form>
