@@ -52,28 +52,6 @@ function is_private_ip($iptocheck)
 }
 
 /*
- * get_carp_interface_status($carpinterface): returns the status of a carp ip
- */
-function get_carp_interface_status($carpinterface) {
-    $carp_query = "";
-
-    /* XXX: Need to fidn a better way for this! */
-    list ($interface, $vhid) = explode("_vip", $carpinterface);
-    $interface = get_real_interface($interface);
-    exec("/sbin/ifconfig $interface | /usr/bin/grep -v grep | /usr/bin/grep carp: | /usr/bin/grep 'vhid {$vhid}'", $carp_query);
-    foreach($carp_query as $int) {
-        if (stristr($int, "MASTER")) {
-            return gettext("MASTER");
-        } elseif (stristr($int, "BACKUP")) {
-            return gettext("BACKUP");
-        } elseif(stristr($int, "INIT")) {
-            return gettext("INIT");
-        }
-    }
-    return;
-}
-
-/*
  *  restore_config_section($section_name, new_contents): restore a configuration section,
  *                                                  and write the configuration out
  *                                                  to disk/cf.
