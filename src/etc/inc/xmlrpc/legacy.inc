@@ -121,8 +121,10 @@ function firmware_version_xmlrpc()
 function filter_configure_xmlrpc()
 {
     global $config;
+
     require_once("filter.inc");
     require_once("system.inc");
+    require_once("util.inc");
     require_once("interfaces.inc");
     require_once("vslb.inc");
     require_once("openvpn.inc");

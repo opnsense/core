@@ -215,23 +215,6 @@ function reload_ttys()
     exec('/bin/kill -HUP 1');
 }
 
-function is_fqdn($fqdn) {
-    $hostname = false;
-    if (preg_match("/[-A-Z0-9\.]+\.[-A-Z0-9\.]+/i", $fqdn)) {
-        $hostname = true;
-    }
-    if (preg_match("/\.\./", $fqdn)) {
-        $hostname = false;
-    }
-    if (preg_match("/^\./i", $fqdn)) {
-        $hostname = false;
-    }
-    if (preg_match("/\//i", $fqdn)) {
-        $hostname = false;
-    }
-    return($hostname);
-}
-
 /* This xml 2 array function is courtesy of the php.net comment section on xml_parse.
  * it is roughly 4 times faster then our existing pfSense parser but due to the large
  * size of the RRD xml dumps this is required.

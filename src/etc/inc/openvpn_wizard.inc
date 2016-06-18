@@ -25,7 +25,9 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("openvpn.inc");
+require_once("util.inc");
 require_once("pfsense-utils.inc");
 
 function cert_get_subject_hash($crt)
