@@ -118,15 +118,6 @@ function rescue_detect_keypress()
 echo " done.\n";
 
 echo "Initializing...";
-echo ".";
-require_once("led.inc");
-led_normalize();
-echo ".";
-if (led_count() >= 3) {
-	led_kitt();
-}
-
-/* parse the configuration and include all functions used below */
 require_once("config.inc");
 echo ".";
 require_once("config.console.inc");
@@ -188,10 +179,7 @@ echo "done.\n";
  */
 if (is_interface_mismatch()) {
 	echo PHP_EOL . gettext('Default interfaces not found -- Running interface assignment option.') . PHP_EOL;
-
-	led_assigninterfaces();
 	while (!set_networking_interfaces_ports(true));
-	led_kitt();
 }
 
 /* load extra modules not in GENERIC */
@@ -365,5 +353,3 @@ if ($ipsec_dynamic_hosts) {
 
 // generate configuration data for all installed templates
 configd_run('template reload *');
-
-led_normalize();

@@ -28,7 +28,6 @@
  *
  */
 
-require_once("led.inc");
 require_once("notices.growl.class");
 require_once("notices.sasl.inc");
 require_once("notices.smtp.inc");
@@ -67,12 +66,6 @@ function file_notice($id, $notice, $category = "General", $url = "", $priority =
 	fwrite($queueout, serialize($queue));
 	fclose($queueout);
 	log_error("New alert found: $notice");
-	/* soekris */
-	if(file_exists("/dev/led/error"))
-		exec("/bin/echo 1 > /dev/led/error");
-	/* wrap & alix */
-	led_normalize();
-	led_morse(1, 'sos');
 	notify_via_growl($notice);
 	notify_via_smtp($notice);
 	return $queuekey;
@@ -119,11 +112,6 @@ function get_notices($category = 'all')
 function close_notice($id)
 {
 
-	/* soekris */
-	if(file_exists("/dev/led/error"))
-		exec("/bin/echo 0 > /dev/led/error");
-	/* wrap & alix */
-	led_normalize();
 	$ids = array();
 	if(!$notices = get_notices()) return;
 	if($id == "all") {
