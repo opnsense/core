@@ -632,7 +632,7 @@
 	</description>
 	<stepafterformdisplay>
 		<![CDATA[
-		reload_all();
+		configd_run('service reload all', true);
 		]]>
 	</stepafterformdisplay>
 </step>

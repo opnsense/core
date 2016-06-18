@@ -1,7 +1,7 @@
 <?php
 /*
     Copyright (C) 2015-2016 Deciso B.V.
-    Copyright (C) 2009, 2010 Scott Ullrich
+    Copyright (C) 2004-2010 Scott Ullrich
     Copyright (C) 2005 Colin Smith
     All rights reserved.
 
@@ -100,14 +100,19 @@ function merge_config_attributes(&$cnf_source, &$cnf_dest)
 
 /**
  * retrieve firmware version
- * @return mixed
+ * @return array
  */
 function firmware_version_xmlrpc()
 {
-    require_once("pfsense-utils.inc");
-    return host_firmware_version();
-}
+    global $config;
 
+    return array(
+      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.kernel')),
+      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.base')),
+      'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
+      'config_version' => $config['version'],
+    );
+}
 
 /**
  * filter reconfigure

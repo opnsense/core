@@ -40,6 +40,21 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 
+/*
+ *  backup_config_section($section): returns as an xml file string of
+ *                                   the configuration section
+ */
+function backup_config_section($section_name) {
+    global $config;
+    $new_section = &$config[$section_name];
+    /* generate configuration XML */
+    $xmlconfig = dump_xml_config($new_section, $section_name);
+    $xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
+    return $xmlconfig;
+}
+
+/* KEEP THIS: unbreaks syntax highlighting <?php */
+
 function rrd_data_xml() {
     $rrddbpath = '/var/db/rrd';
 

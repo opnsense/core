@@ -94,21 +94,6 @@ function get_carp_interface_status($carpinterface) {
 }
 
 /*
- *  backup_config_section($section): returns as an xml file string of
- *                                   the configuration section
- */
-function backup_config_section($section_name) {
-    global $config;
-    $new_section = &$config[$section_name];
-    /* generate configuration XML */
-    $xmlconfig = dump_xml_config($new_section, $section_name);
-    $xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
-    return $xmlconfig;
-}
-
-/* KEEP THIS: unbreaks syntax highlighting <?php */
-
-/*
  *  restore_config_section($section_name, new_contents): restore a configuration section,
  *                                                  and write the configuration out
  *                                                  to disk/cf.
@@ -147,26 +132,6 @@ function restore_config_section($section_name, $new_contents)
     disable_security_checks();
 
     return true;
-}
-
-/*
- * host_firmware_version(): Return the versions used in this install
- */
-function host_firmware_version()
-{
-    global $config;
-
-    return array(
-      'firmware' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense')),
-      'kernel' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.kernel')),
-      'base' => array('version' => file_get_contents('/usr/local/opnsense/version/opnsense-update.base')),
-      'config_version' => $config['version']
-    );
-}
-
-function reload_all()
-{
-    configd_run('service reload all', true);
 }
 
 function setup_serial_port($sync = true)
@@ -248,25 +213,6 @@ function reload_ttys()
 {
     /* force init(8) to reload /etc/ttys */
     exec('/bin/kill -HUP 1');
-}
-
-
-/* Any PPPoE servers enabled? */
-function is_pppoe_server_enabled()
-{
-    global $config;
-    $pppoeenable = false;
-    if (!isset($config['pppoes']['pppoe']) || !is_array($config['pppoes']['pppoe'])) {
-        return false;
-    }
-
-    foreach ($config['pppoes']['pppoe'] as $pppoes) {
-        if ($pppoes['mode'] == 'server') {
-            $pppoeenable = true;
-        }
-    }
-
-    return $pppoeenable;
 }
 
 function add_hostname_to_watch($hostname) {
