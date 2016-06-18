@@ -3,6 +3,7 @@
 /*
     Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
+    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -26,6 +27,26 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
+/****f* legacy/get_dns_servers
+ * NAME
+ *   get_dns_servers - get system dns servers
+ * INPUTS
+ *   $dns_servers - an array of the dns servers
+ * RESULT
+ *   null
+ ******/
+function get_dns_servers() {
+    $dns_servers = array();
+    $dns_s = file("/etc/resolv.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach($dns_s as $dns) {
+        $matches = "";
+        if (preg_match("/nameserver (.*)/", $dns, $matches)) {
+            $dns_servers[] = $matches[1];
+        }
+    }
+    return array_unique($dns_servers);
+}
 
 /* Optimize Unbound for environment */
 function unbound_optimization() {
