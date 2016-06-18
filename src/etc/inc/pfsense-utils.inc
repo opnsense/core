@@ -215,39 +215,6 @@ function reload_ttys()
     exec('/bin/kill -HUP 1');
 }
 
-function add_hostname_to_watch($hostname) {
-    if (!is_dir("/var/db/dnscache")) {
-        mkdir("/var/db/dnscache");
-    }
-    $result = array();
-    if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
-        $domrecords = array();
-        $domips = array();
-        exec("host -t A " . escapeshellarg($hostname), $domrecords, $rethost);
-        if($rethost == 0) {
-            foreach($domrecords as $domr) {
-                $doml = explode(" ", $domr);
-                $domip = $doml[3];
-                /* fill array with domain ip addresses */
-                if(is_ipaddr($domip)) {
-                    $domips[] = $domip;
-                }
-            }
-        }
-        sort($domips);
-        $contents = "";
-        if(! empty($domips)) {
-            foreach($domips as $ip) {
-                $contents .= "$ip\n";
-            }
-        }
-        file_put_contents("/var/db/dnscache/$hostname", $contents);
-        /* Remove empty elements */
-        $result = array_filter(explode("\n", $contents), 'strlen');
-    }
-    return $result;
-}
-
 function is_fqdn($fqdn) {
     $hostname = false;
     if (preg_match("/[-A-Z0-9\.]+\.[-A-Z0-9\.]+/i", $fqdn)) {

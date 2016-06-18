@@ -525,7 +525,6 @@ function ipsec_configure()
 
             if (!is_ipaddr($rg)) {
                 $filterdns_list[] = "{$rg}";
-                add_hostname_to_watch($rg);
                 if(! file_exists("/var/run/booting")) {
                     $rg = resolve_retry($rg);
                 }

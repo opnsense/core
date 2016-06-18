@@ -2,6 +2,7 @@
 
 /*
     Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
+    Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
     Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
     All rights reserved.
 
@@ -583,19 +584,10 @@ function system_routing_configure($interface = '')
     return 0;
 }
 
-/* Compare the current hostname DNS to the DNS cache we made
- * if it has changed we return the old records
- * if no change we return false */
-function compare_hostname_to_dnscache($hostname) {
-    if(!is_dir("/var/db/dnscache")) {
-        mkdir("/var/db/dnscache");
-    }
-    $hostname = trim($hostname);
-    if(is_readable("/var/db/dnscache/{$hostname}")) {
-        $oldcontents = file_get_contents("/var/db/dnscache/{$hostname}");
-    } else {
-        $oldcontents = "";
-    }
+function add_hostname_to_watch($hostname)
+{
+    $result = array();
+
     if((is_fqdn($hostname)) && (!is_ipaddr($hostname))) {
         $domrecords = array();
         $domips = array();
@@ -617,14 +609,12 @@ function compare_hostname_to_dnscache($hostname) {
                 $contents .= "$ip\n";
             }
         }
+
+        /* Remove empty elements */
+        $result = array_filter(explode("\n", $contents), 'strlen');
     }
 
-    if(trim($oldcontents) != trim($contents)) {
-        log_error(sprintf('DNSCACHE: Found old IP %s and new IP %s', $oldcontents, $contents));
-        return ($oldcontents);
-    } else {
-        return false;
-    }
+    return $result;
 }
 
 function system_staticroutes_configure($interface = '')
