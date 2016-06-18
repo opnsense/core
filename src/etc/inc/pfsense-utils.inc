@@ -323,6 +323,45 @@ function load_kernel_module()
 {
     $mods = array(
         'carp',
+        /*
+         * The netgraph(4) framework is loaded here
+         * for backwards compat with the pre-16.7
+         * kernel configuration that compiled all of
+         * these modules into the kernel.  This list
+         * needs further pruning and probing, it's
+         * possible we do not need frame relay anymore.
+         */
+        'netgraph',
+        'ng_UI',
+        'ng_async',
+        'ng_bpf',
+        'ng_bridge',
+        'ng_car',
+        'ng_cisco',
+        'ng_deflate',
+        'ng_echo',
+        'ng_eiface',
+        'ng_ether',
+        'ng_frame_relay',
+        'ng_hole',
+        'ng_iface',
+        'ng_ksocket',
+        'ng_l2tp',
+        'ng_lmi',
+        'ng_mppc',
+        'ng_one2many',
+        'ng_pipe',
+        'ng_ppp',
+        'ng_pppoe',
+        'ng_pptpgre',
+        'ng_pred1',
+        'ng_rfc1490',
+        'ng_socket',
+        'ng_tcpmss',
+        'ng_tee',
+        'ng_tty',
+        'ng_vjc',
+        'ng_vlan',
     );
 
     foreach ($mods as $mod) {
