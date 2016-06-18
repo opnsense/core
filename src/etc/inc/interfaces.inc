@@ -5325,3 +5325,75 @@ function load_mac_manufacturer_table() {
         return -1;
     }
 }
+
+/****f* legacy/is_ipaddr_configured
+ * NAME
+ *   is_ipaddr_configured
+ * INPUTS
+ *   IP Address to check.
+ * RESULT
+ *   returns true if the IP Address is
+ *   configured and present on this device.
+*/
+function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, $check_subnets = false) {
+    global $config;
+
+    $isipv6 = is_ipaddrv6($ipaddr);
+    if ($check_subnets) {
+        $iflist = get_configured_interface_list();
+        foreach ($iflist as $if => $ifname) {
+            if ($ignore_if == $if) {
+                continue;
+            }
+
+            if ($isipv6 === true) {
+                $bitmask = get_interface_subnetv6($if);
+                $subnet = gen_subnetv6(get_interface_ipv6($if), $bitmask);
+            } else {
+                $bitmask = get_interface_subnet($if);
+                $subnet = gen_subnet(get_interface_ip($if), $bitmask);
+            }
+
+            if (ip_in_subnet($ipaddr, $subnet . '/' . $bitmask)) {
+                return true;
+            }
+        }
+    } else {
+        if ($isipv6 === true) {
+            $interface_list_ips = get_configured_ipv6_addresses();
+        } else {
+            $interface_list_ips = get_configured_ip_addresses();
+        }
+        foreach($interface_list_ips as $if => $ilips) {
+            /* Also ignore CARP interfaces, it'll be checked below */
+            if ($ignore_if == $if || strstr($ignore_if, "_vip")) {
+                continue;
+            }
+            if (strcasecmp($ipaddr, $ilips) == 0) {
+                return true;
+            }
+        }
+    }
+
+    $interface_list_vips = get_configured_vips_list(true);
+    foreach ($interface_list_vips as $id => $vip) {
+        if ($ignore_if == $vip['if']) {
+            continue;
+        }
+        if (strcasecmp($ipaddr, $vip['ipaddr']) == 0) {
+            return true;
+        }
+    }
+
+    if ($check_localip) {
+        if (is_array($config['pptpd']) && !empty($config['pptpd']['localip']) && (strcasecmp($ipaddr, $config['pptpd']['localip']) == 0)) {
+            return true;
+        }
+
+        if (!is_array($config['l2tp']) && !empty($config['l2tp']['localip']) && (strcasecmp($ipaddr, $config['l2tp']['localip']) == 0)) {
+            return true;
+        }
+    }
+
+    return false;
+}
