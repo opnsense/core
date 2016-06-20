@@ -2,117 +2,112 @@
 <?php
 
 /*
-	Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
-	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
-	Copyright (C) 2009 Erik Kristensen
-	All rights reserved.
+    Copyright (C) 2004-2009 Scott Ullrich <sullrich@pfsense.org>.
+    Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>.
+    Copyright (C) 2009 Erik Kristensen
+    All rights reserved.
 
-	Redistribution and use in source and binary forms, with or without
-	modification, are permitted provided that the following conditions are met:
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	   this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above copyright
-	   notice, this list of conditions and the following disclaimer in the
-	   documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
-	THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
-	AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-	AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-	OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-	POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+    AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+    OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 */
 
 function is_install_media()
 {
-	/*
-	 * Despite unionfs underneath, / is still not writeable,
-	 * making the following the perfect test for install media.
-	 */
+    /*
+     * Despite unionfs underneath, / is still not writeable,
+     * making the following the perfect test for install media.
+     */
 
-	$file = '/.probe.for.install.media';
-	$fd = @fopen($file, 'w');
-	if ($fd) {
-		fclose($fd);
-		unlink($file);
-		return false;
-	}
-
-	return true;
+    $file = '/.probe.for.install.media';
+    $fd = @fopen($file, 'w');
+    if ($fd) {
+        fclose($fd);
+        unlink($file);
+        return false;
+    }
+    return true;
 }
 
 function is_interface_mismatch()
 {
-	global $config;
-
-	$do_assign = false;
-	$i = 0;
-
-	if (isset($config['interfaces'])) {
-		foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
-			if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
-				/* Do not check these interfaces */
-				$i++;
-				continue;
-			} elseif (does_interface_exist($ifcfg['if']) == false) {
-				$do_assign = true;
-			} else {
-				$i++;
-			}
-		}
-	}
-
-	return $do_assign;
+    global $config;
+    if (isset($config['interfaces'])) {
+        foreach (legacy_config_get_interfaces(array("virtual" => false)) as $ifname => $ifcfg) {
+            if (preg_match("/^enc|^cua|^tun|^tap|^l2tp|^pptp|^ppp|^ovpn|^gif|^gre|^lagg|^bridge|vlan|_wlan/i", $ifcfg['if'])) {
+                /* Do not check these interfaces */
+                continue;
+            } elseif (does_interface_exist($ifcfg['if']) == false) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
+
 
 function rescue_detect_keypress()
 {
-	$timer = 7;
+    $timer = 7;
 
-	echo "\n";
-	echo "(I)nstaller will be invoked by default.\n\n";
-	echo "(C)ontinue with LiveCD bootup instead.\n\n";
-	echo "(R)ecovery mode escapes to a root shell.\n\n";
-	echo "Timeout before auto boot continues (seconds):  ";
+    echo "\n";
+    echo "(I)nstaller will be invoked by default.\n\n";
+    echo "(C)ontinue with LiveCD bootup instead.\n\n";
+    echo "(R)ecovery mode escapes to a root shell.\n\n";
+    echo "Timeout before auto boot continues (seconds):  ";
 
-	$key = null;
-	while (!isset($key) || !in_array($key, array('c', 'C', 'r', 'R', 'i', 'I'))) {
-		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
-		else { echo chr(8). "{$timer}"; }
-		shell_exec('/bin/stty -icanon min 0 time 25');
-		$key = shell_exec('/bin/dd count=1 status=none');
-		shell_exec('/bin/stty icanon');
-		if ($key == '') {
-			unset($key);
-		}
-		$timer--;
-		if ($timer == 0) {
-			break;
-		}
-	}
+    $key = null;
+    while (!isset($key) || !in_array($key, array('c', 'C', 'r', 'R', 'i', 'I'))) {
+        if ($timer >= 9) {
+            echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";
+        } else {
+            echo chr(8). "{$timer}";
+        }
+        shell_exec('/bin/stty -icanon min 0 time 25');
+        $key = shell_exec('/bin/dd count=1 status=none');
+        shell_exec('/bin/stty icanon');
+        if ($key == '') {
+            unset($key);
+        }
+        $timer--;
+        if ($timer == 0) {
+            break;
+        }
+    }
 
-	echo "\n\n";
+    echo "\n\n";
 
-	if (in_array($key, array('r', 'R'))) {
-		echo "Recovery shell selected...\n\n";
-		touch('/tmp/donotbootup');
-		exit;
-	} elseif (in_array($key, array('c', 'C'))) {
-		/* nothing */
-	} else {
-		echo "Installer mode selected...\n";
-		passthru('/usr/local/etc/rc.installer');
-		if (file_exists('/tmp/install_complete')) {
-			passthru('/usr/local/etc/rc.reboot');
-			exit;
-		}
-	}
+    if (in_array($key, array('r', 'R'))) {
+        echo "Recovery shell selected...\n\n";
+        touch('/tmp/donotbootup');
+        exit;
+    } elseif (in_array($key, array('c', 'C'))) {
+        /* nothing */
+    } else {
+        echo "Installer mode selected...\n";
+        passthru('/usr/local/etc/rc.installer');
+        if (file_exists('/tmp/install_complete')) {
+            passthru('/usr/local/etc/rc.reboot');
+            exit;
+        }
+    }
 }
 
 echo " done.\n";
@@ -161,9 +156,9 @@ echo "done.\n";
 
 /* Display live system's early boot options */
 if (is_install_media()) {
-	rescue_detect_keypress();
-        // config may have changed (copied by installer)
-        OPNsense\Core\Config::getInstance()->forceReload();
+    rescue_detect_keypress();
+    // config may have changed (copied by installer)
+    OPNsense\Core\Config::getInstance()->forceReload();
 }
 
 echo "Loading configuration...";
@@ -178,8 +173,8 @@ echo "done.\n";
  *  avoid a reboot and thats a good thing.
  */
 if (is_interface_mismatch()) {
-	echo PHP_EOL . gettext('Default interfaces not found -- Running interface assignment option.') . PHP_EOL;
-	while (!set_networking_interfaces_ports(true));
+    echo PHP_EOL . gettext('Default interfaces not found -- Running interface assignment option.') . PHP_EOL;
+    while (!set_networking_interfaces_ports(true));
 }
 
 /* load extra modules not in GENERIC */
@@ -323,7 +318,7 @@ $kern_hz = get_single_sysctl('kern.clockrate');
 $kern_hz = substr($kern_hz, strpos($kern_hz, 'hz = ') + 5);
 $kern_hz = substr($kern_hz, 0, strpos($kern_hz, ','));
 if ($kern_hz == '1000') {
-	set_single_sysctl('net.inet.tcp.rexmit_min' , '30');
+    set_single_sysctl('net.inet.tcp.rexmit_min' , '30');
 }
 
 /* start the igmpproxy daemon */
@@ -347,8 +342,8 @@ system_syslogd_start();
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {
-	ipsec_configure();
-	filter_configure();
+    ipsec_configure();
+    filter_configure();
 }
 
 // generate configuration data for all installed templates
