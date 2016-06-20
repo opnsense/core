@@ -128,7 +128,7 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
     fclose($fp);
     curl_close($ch);
 
-    return ($http_code == 200) ? true : $http_code;
+    return ($http_code == 200);
 }
 
 function update_alias_names_upon_change($section, $field, $new_alias_name, $origname)
