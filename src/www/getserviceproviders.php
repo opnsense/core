@@ -29,13 +29,11 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
-require_once("pfsense-utils.inc");
 require_once("system.inc");
 
 $serviceproviders_xml = "/usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml";
 $serviceproviders_contents = file_get_contents($serviceproviders_xml);
 $serviceproviders_attr = xml2array($serviceproviders_contents,1,"attr");
-
 $serviceproviders = &$serviceproviders_attr['serviceproviders']['country'];
 
 function get_country_providers($country)
