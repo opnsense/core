@@ -27,7 +27,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
 
 if ($_GET['getpic']=="true") {
     $pic_type_s = explode(".", $config['widgets']['picturewidget_filename']);

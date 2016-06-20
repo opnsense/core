@@ -29,7 +29,6 @@
 
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
 if (!isset($config['virtualip']['vip'])) {

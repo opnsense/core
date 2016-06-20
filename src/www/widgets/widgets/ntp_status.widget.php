@@ -30,7 +30,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
 require_once("widgets/include/ntp_status.inc");
 
 if ($_REQUEST['updateme']) {

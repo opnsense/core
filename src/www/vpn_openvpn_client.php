@@ -31,7 +31,6 @@ require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-require_once('pfsense-utils.inc');
 
 if (!isset($config['openvpn']['openvpn-client'])) {
     $config['openvpn']['openvpn-client'] = array();

@@ -28,7 +28,6 @@
 
 require_once("openvpn.inc");
 require_once("util.inc");
-require_once("pfsense-utils.inc");
 
 function cert_get_subject_hash($crt)
 {

@@ -31,7 +31,6 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("interfaces.inc");
-require_once("pfsense-utils.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/system_routes.php');
 

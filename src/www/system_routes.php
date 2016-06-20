@@ -31,7 +31,6 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("pfsense-utils.inc");
 require_once("rrd.inc");
 
 function delete_static_route($id)

@@ -28,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
 function interfaces_carp_set_maintenancemode($carp_maintenancemode)

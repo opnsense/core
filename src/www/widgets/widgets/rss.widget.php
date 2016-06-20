@@ -27,7 +27,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("pfsense-utils.inc");
 require_once("simplepie/autoloader.php");
 require_once("simplepie/idn/idna_convert.class.php");
 

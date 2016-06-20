@@ -42,7 +42,6 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("config.inc");
 require_once("filter.inc");
-require_once("pfsense-utils.inc");
 require_once("interfaces.inc");
 
 // parse request, load parameter contains all plugins that should be loaded for this request

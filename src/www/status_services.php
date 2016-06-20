@@ -34,7 +34,6 @@ require_once('plugins.inc');
 require_once("vslb.inc");
 require_once("system.inc");
 require_once("unbound.inc");
-require_once("pfsense-utils.inc");
 require_once("openvpn.inc");
 require_once("filter.inc");
 require_once("ipsec.inc");

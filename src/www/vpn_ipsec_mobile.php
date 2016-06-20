@@ -32,7 +32,6 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("services.inc");
-require_once("pfsense-utils.inc");
 require_once("plugins.inc");
 
 if (!isset($config['ipsec']) || !is_array($config['ipsec'])) {
