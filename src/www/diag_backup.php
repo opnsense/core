@@ -40,6 +40,48 @@ require_once("rrd.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
 
+/**
+ * restore config section
+ * @param string $section_name config section name
+ * @param string $new_contents xml content
+ * @return bool status
+ */
+function restore_config_section($section_name, $new_contents)
+{
+    global $config;
+    $tmpxml = '/tmp/tmpxml';
+
+    $fout = fopen($tmpxml, 'w');
+    fwrite($fout, $new_contents);
+    fclose($fout);
+
+    $xml = parse_xml_config($tmpxml, null);
+    if (isset($xml['pfsense'])) {
+        $xml = $xml['pfsense'];
+    } elseif (isset($xml['m0n0wall'])) {
+        $xml = $xml['m0n0wall'];
+    } elseif (isset($xml['opnsense'])) {
+        $xml = $xml['opnsense'];
+    }
+    if (isset($xml[$section_name])) {
+        $section_xml = $xml[$section_name];
+    } else {
+        $section_xml = -1;
+    }
+
+    @unlink($tmpxml);
+
+    if ($section_xml === -1) {
+        return false;
+    }
+
+    $config[$section_name] = &$section_xml;
+    write_config(sprintf(gettext("Restored %s of config file"), $section_name));
+    disable_security_checks();
+
+    return true;
+}
+
 /*
  *  backup_config_section($section): returns as an xml file string of
  *                                   the configuration section

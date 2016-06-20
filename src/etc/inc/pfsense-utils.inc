@@ -26,46 +26,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
- *  restore_config_section($section_name, new_contents): restore a configuration section,
- *                                                  and write the configuration out
- *                                                  to disk/cf.
- */
-function restore_config_section($section_name, $new_contents)
-{
-    global $config;
-    $tmpxml = '/tmp/tmpxml';
-
-    $fout = fopen($tmpxml, 'w');
-    fwrite($fout, $new_contents);
-    fclose($fout);
-
-    $xml = parse_xml_config($tmpxml, null);
-    if (isset($xml['pfsense'])) {
-        $xml = $xml['pfsense'];
-    } elseif (isset($xml['m0n0wall'])) {
-        $xml = $xml['m0n0wall'];
-    } elseif (isset($xml['opnsense'])) {
-        $xml = $xml['opnsense'];
-    }
-    if (isset($xml[$section_name])) {
-        $section_xml = $xml[$section_name];
-    } else {
-        $section_xml = -1;
-    }
-
-    @unlink($tmpxml);
-
-    if ($section_xml === -1) {
-        return false;
-    }
-
-    $config[$section_name] = &$section_xml;
-    write_config(sprintf(gettext("Restored %s of config file (maybe from CARP partner)"), $section_name));
-    disable_security_checks();
-
-    return true;
-}
 
 /* This xml 2 array function is courtesy of the php.net comment section on xml_parse.
  * it is roughly 4 times faster then our existing pfSense parser but due to the large
