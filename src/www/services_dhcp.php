@@ -1126,13 +1126,12 @@ include("head.inc");
                       </td>
                     </tr>
                     <tr>
-                      <td>&nbsp;</td>
-                        <td> <p><?=gettext("Note:");?><br />
-                        <?=sprintf(gettext("The DNS servers entered in %sSystem: " .
-                        "General setup%s (or the %sDNS forwarder%s, if enabled), will be assigned to clients by the DHCP server."),'<a href="system_general.php">','</a>','<a href="services_dnsmasq.php">','</a>'); ?><br />
-                        <br />
-                        <?=sprintf(gettext("The DHCP lease table can be viewed on the %sStatus: DHCP leases%s page."),'<a href="status_dhcp_leases.php">','</a>') ?><br />
-                        </p>
+                      <td colspan="2">
+                        <?= sprintf(gettext('The DNS servers entered in %sSystem: ' .
+                          'General setup%s (or the %sDNS forwarder%s, if enabled), ' .
+                          'will be assigned to clients by the DHCP server.'),
+                          '<a href="system_general.php">', '</a>',
+                          '<a href="services_dnsmasq.php">','</a>'); ?>
                       </td>
                     </tr>
                   </table>
