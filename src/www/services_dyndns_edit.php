@@ -423,11 +423,12 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td>&nbsp;</td>
-                    <td><span class="vexpl"><span class="red"><strong><?= gettext("Note:") ?><br />
-                      </strong></span><?= sprintf(gettext("You must configure a DNS server in %sSystem:
-                      General setup%s or allow the DNS server list to be overridden
-                      by DHCP/PPP on WAN for dynamic DNS updates to work."),'<a href="system_general.php">','</a>');?></span></td>
+                    <td colspan="2">
+                      <?= sprintf(gettext('You must configure a DNS server in %sSystem: ' .
+                        'General setup%s or allow the DNS server list to be overridden ' .
+                        'by DHCP/PPP on WAN for dynamic DNS updates to work.'),
+                        '<a href="system_general.php">', '</a>'); ?>
+                    </td>
                   </tr>
                 </table>
               </div>
