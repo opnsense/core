@@ -33,6 +33,7 @@ require_once("unbound.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("util.inc");
 require_once("interfaces.inc");
 
 if (empty($config['unbound']) || !is_array($config['unbound'])) {

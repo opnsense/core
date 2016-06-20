@@ -33,6 +33,7 @@ require_once("filter.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("pfsense-utils.inc");
+require_once("util.inc");
 require_once("unbound.inc");
 
 if (empty($config['dnsmasq']['hosts']) || !is_array($config['dnsmasq']['hosts'])) {

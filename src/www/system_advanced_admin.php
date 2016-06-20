@@ -34,6 +34,7 @@ require_once("filter.inc");
 require_once("system.inc");
 require_once("unbound.inc");
 require_once("pfsense-utils.inc");
+require_once("util.inc");
 require_once("services.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
