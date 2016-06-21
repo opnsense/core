@@ -27,13 +27,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/*
- * Set the memory limit.  When someone has something like 500+
- * tunnels the parser needs quite a bit of RAM.   Do not remove
- * this line unless you know what you are doing.
- */
-ini_set('memory_limit', '256M');
-
 /* include globals from notices.inc /utility/XML parser files */
 require_once('config.lib.inc');
 
