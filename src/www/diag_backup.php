@@ -28,10 +28,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* Allow additional execution time 0 = no limit. */
-ini_set('max_execution_time', '0');
-ini_set('max_input_time', '0');
-
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("filter.inc");
