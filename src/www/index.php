@@ -28,13 +28,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-// Turn on buffering to speed up rendering
-ini_set('output_buffering', 'true');
-
-// Start buffering with a cache size of 100000
-ob_start(null, "1000");
-
-// Load Essential Includes
 require_once('guiconfig.inc');
 
 // closing should be $_POST, but the whole notice handling needs more attention. Leave it as is for now.
