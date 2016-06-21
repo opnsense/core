@@ -412,7 +412,7 @@ function services_dhcpd_configure($family = 'all', $blacklist = array())
     }
 }
 
-function is_dhcp_server_enabled()
+function is_dhcpv4_server_enabled()
 {
     global $config;
 
@@ -440,7 +440,7 @@ function services_dhcpdv4_configure()
     killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid");
 
     /* DHCP enabled on any interfaces? */
-    if (!is_dhcp_server_enabled()) {
+    if (!is_dhcpv4_server_enabled()) {
         return 0;
     }
 
@@ -2542,13 +2542,23 @@ function services_get()
         $services[] = $pconfig;
     }
 
-    if (is_dhcp_server_enabled()) {
+    if (is_dhcpv4_server_enabled()) {
         $pconfig = array();
-        $pconfig['name'] = "dhcpd";
-        $pconfig['description'] = gettext("DHCP Service");
-        $pconfig['php']['restart'] = array('services_dhcpd_configure');
-        $pconfig['php']['start'] = array('services_dhcpd_configure');
+        $pconfig['name'] = 'dhcpd';
+        $pconfig['description'] = gettext("DHCP Server");
+        $pconfig['php']['restart'] = array('services_dhcpdv4_configure');
+        $pconfig['php']['start'] = array('services_dhcpdv4_configure');
         $pconfig['pidfile'] = "{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid";
+        $services[] = $pconfig;
+    }
+
+    if (is_dhcpv6_server_enabled()) {
+        $pconfig = array();
+        $pconfig['name'] = 'dhcpd6';
+        $pconfig['description'] = gettext("DHCPv6 Server");
+        $pconfig['php']['restart'] = array('services_dhcpdv6_configure');
+        $pconfig['php']['start'] = array('services_dhcpdv6_configure');
+        $pconfig['pidfile'] = "{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid";
         $services[] = $pconfig;
     }
 

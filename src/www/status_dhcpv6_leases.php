@@ -369,10 +369,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-$service_hook = 'dhcpd';
-include("head.inc");
-?>
+$service_hook = 'dhcpd6';
 
+include("head.inc");
+
+?>
 <body>
   <script>
   $( document ).ready(function() {

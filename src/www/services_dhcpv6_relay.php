@@ -108,11 +108,11 @@ include("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
+          <?php if ($dhcpd_enabled):
+            print_info_box(gettext('The DHCPv6 server is currently enabled. Cannot enable the DHCPv6 relay while the DHCPv6 server is enabled on any interface.'));
+          else: ?>
           <div class="content-box">
             <form method="post" name="iform" id="iform">
-              <?php if ($dhcpd_enabled): ?>
-              <p><?= gettext('DHCPv6 Server is currently enabled.  Cannot enable the DHCPv6 Relay service while the DHCPv6 Server is enabled on any interface.') ?></p>
-              <?php else: ?>
               <div>
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
@@ -179,10 +179,10 @@ include("head.inc");
                   </table>
                 </div>
               </div>
-<?php
-              endif; ?>
             </form>
           </div>
+<?php
+          endif; ?>
         </section>
       </div>
     </div>
