@@ -1782,11 +1782,6 @@ function system_reboot($sync = false)
     }
 }
 
-function system_console_configure()
-{
-    setup_serial_port();
-}
-
 function system_setup_sysctl()
 {
     activate_sysctls();
@@ -1926,7 +1921,7 @@ function load_thermal_module()
     }
 }
 
-function setup_serial_port($sync = true)
+function system_console_configure()
 {
     global $config;
 
@@ -1936,8 +1931,8 @@ function setup_serial_port($sync = true)
     // ** serial console - write out /boot.config
     if ($serial_enabled) {
         file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
-    } elseif (file_exists('/boot.config')) {
-        unlink('/boot.config');
+    } else {
+        @unlink('/boot.config');
     }
 
     // ** console settings in /boot/loader.conf
@@ -1970,14 +1965,10 @@ function setup_serial_port($sync = true)
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
 
     // ** setup /etc/ttys
-
-    // minimize chances of /etc/ttys corruption, keep a copy of the original ttys file
-    if (!file_exists('/etc/ttys.opnsense') || filesize('/etc/ttys.opnsense') < 100) {
-        copy('/etc/ttys', '/etc/ttys.opnsense');
-    }
-
-    $fd = fopen("/etc/ttys", "w");
-    $on_off = $serial_enabled ? 'on' : 'off';
+    $etc_ttys_lines = explode("\n", file_get_contents('/etc/ttys'));
+    $fd = fopen('/etc/ttys', 'w');
+    $on_off_secure = $serial_enabled ? 'onifconsole secure' : 'off secure';
+    $terminal_type = 'cons25'; /* XXX standard is 'xterm' for virtual, 'vt100' for serial */
     if (isset($config['system']['disableconsolemenu'])) {
         $console_type = 'Pc';
         $serial_type = 'std.' . $serialspeed;
@@ -1985,24 +1976,28 @@ function setup_serial_port($sync = true)
         $console_type = 'al.Pc';
         $serial_type = 'al.' . $serialspeed;
     }
-    foreach(explode("\n", file_get_contents("/etc/ttys.opnsense")) as $tty) {
-        if (stristr($tty, "ttyv0")) {
-            fwrite($fd, "ttyv0  \"/usr/libexec/getty {$console_type}\"  cons25  on  secure\n");
-        } elseif (stristr($tty, "ttyu0")) {
-            fwrite($fd, "ttyu0  \"/usr/libexec/getty {$serial_type}\"  cons25  {$on_off}  secure\n");
-        } elseif (!empty($tty)) {
+    foreach ($etc_ttys_lines as $tty) {
+        if (strpos($tty, 'ttyv0') === 0) {
+            /* first virtual terminal */
+            fwrite($fd, "ttyv0\t\"/usr/libexec/getty {$console_type}\"\t\t{$terminal_type}\ton  secure\n");
+            continue;
+        }
+        foreach (array('ttyu0', 'ttyu1', 'ttyu2', 'ttyu3') as $serialport) {
+            if (strpos($tty, $serialport) === 0) {
+                /* each serial terminal */
+                fwrite($fd, "{$serialport}\t\"/usr/libexec/getty {$serial_type}\"\t{$terminal_type}\t{$on_off_secure}\n");
+                /* skip to next line in outer loop */
+                continue 2;
+            }
+        }
+
+        if (!empty($tty)) {
+            /* all other lines stay the same */
             fwrite($fd, $tty . "\n");
         }
     }
     fclose($fd);
 
-    if ($sync) {
-        reload_ttys();
-    }
-}
-
-function reload_ttys()
-{
     /* force init(8) to reload /etc/ttys */
     exec('/bin/kill -HUP 1');
 }
@@ -2015,7 +2010,6 @@ function reset_factory_defaults($sync = true)
 {
     mwexec('/bin/rm -r /conf/*');
     disable_security_checks();
-    setup_serial_port(false);
 
     /* as we go through a special case directly reboot */
     $shutdown_cmd = '/sbin/shutdown -or now';

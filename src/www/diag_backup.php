@@ -442,7 +442,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         convert_config();
                         $savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
                     }
-                    setup_serial_port();
                 } else {
                     $input_errors[] = gettext("The configuration could not be restored.");
                 }

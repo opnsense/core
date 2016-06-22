@@ -231,7 +231,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."), $url);
         }
 
-        setup_serial_port();
+        system_console_configure();
         system_hosts_generate();
 
         // Restart DNS in case dns rebinding toggled
@@ -506,7 +506,7 @@ include("head.inc");
                   <td><a id="help_for_enableserial" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Serial Terminal"); ?></td>
                   <td width="78%">
                     <input name="enableserial" type="checkbox" id="enableserial" value="yes" <?=!empty($pconfig['enableserial']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Enables the first serial port with 115200/8/N/1 by default, or another speed selectable below."); ?></strong>
+                    <strong><?=gettext("Enable serial ports with 115200/8/N/1 by default, or another speed selectable below."); ?></strong>
                     <div class="hidden" for="help_for_enableserial">
                       <?=gettext("Note: This will redirect the console output and messages to the serial port. You can still access the console menu from the internal video card/keyboard. A null modem serial cable or adapter is required to use the serial console."); ?>
                     </div>

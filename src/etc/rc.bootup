@@ -153,6 +153,9 @@ set_device_perms();
 unmute_kernel_msgs();
 echo "done.\n";
 
+/* configure console menu */
+system_console_configure();
+
 /* Display live system's early boot options */
 if (is_install_media()) {
     rescue_detect_keypress();
@@ -275,9 +278,6 @@ echo "done.\n";
 /* start load balancer daemon */
 relayd_configure();
 
-/* configure console menu */
-system_console_configure();
-
 /* start DHCP service */
 services_dhcpd_configure();
 
@@ -304,9 +304,6 @@ $ipsec_dynamic_hosts = ipsec_configure();
 
 /* start SNMP service */
 services_snmpd_configure();
-
-/* lock down console if necessary */
-reload_ttys();
 
 /* load graphing functions */
 enable_rrd_graphing();
