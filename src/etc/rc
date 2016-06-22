@@ -47,11 +47,12 @@ done < /etc/fstab
 
 attempts=0
 while [ ${attempts} -lt 3 ]; do
+	fsck -C -y /
+	fsck -C -y /
 	if mount -a 2>/dev/null; then
 		# bail if all is well
 		break
 	fi
-	fsck -y /
 	attempts=$((attempts+1))
 done
 
