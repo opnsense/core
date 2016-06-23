@@ -1475,6 +1475,7 @@ EOD;
 function services_dhcrelay_configure()
 {
     global $config;
+    $dhcrelayifs = array();
 
     /* kill any running dhcrelay */
     killbypid('/var/run/dhcrelay.pid');
@@ -1596,6 +1597,7 @@ function services_dhcrelay_configure()
 function services_dhcrelay6_configure()
 {
     global $config;
+    $dhcrelayifs = array();
 
     /* kill any running dhcrelay */
     killbypid('/var/run/dhcrelay6.pid');
