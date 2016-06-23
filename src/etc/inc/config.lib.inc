@@ -363,14 +363,19 @@ function backup_to_google_drive()
                     if ($bck_data == $confdata) {
                         $target_filename = null;
                     }
-                }  catch (Exception $e) {
+                } catch (Exception $e) {
                     log_error("unable to download " . $configfiles[array_keys($configfiles)[0]]->description . " from Google Drive (" . $e . ")");
                 }
             }
             if (!is_null($target_filename)) {
                 log_error("backup configuration as " . $target_filename);
-                $configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(),
-                $target_filename, $confdata_enc);
+                try {
+                    $configfiles[$target_filename] = $client->upload($config->system->remotebackup->GDriveFolderID->__toString(), $target_filename, $confdata_enc);
+                } catch (Exception $e) {
+                    log_error("unable to upload " . $target_filename . " to Google Drive (" . $e . ")");
+                    return array();
+                }
+
                 krsort($configfiles);
             }
 
