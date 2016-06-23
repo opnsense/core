@@ -1029,14 +1029,15 @@ function services_dhcpd_zones($ddns_zones)
                     if (is_ipaddrv4($secondary)) {
                         $dhcpdconf2 .= "  secondary {$secondary};\n";
                     }
-                    if (!empty($zone['ddnsdomainkeyname']) && !empty($zone['ddnsdomainkey']) &&
-                        !in_array($zone['ddnsdomainkeyname'], $added_keys)) {
+                    if (!empty($zone['ddnsdomainkeyname']) && !empty($zone['ddnsdomainkey'])) {
+                        if (!in_array($zone['ddnsdomainkeyname'], $added_keys)) {
+                            $dhcpdconf .= "key {$zone['ddnsdomainkeyname']} {\n";
+                            $dhcpdconf .= "  algorithm hmac-md5;\n";
+                            $dhcpdconf .= "  secret {$zone['ddnsdomainkey']};\n";
+                            $dhcpdconf .= "}\n";
+                            $added_keys[] = $zone['ddnsdomainkeyname'];
+                        }
                         $dhcpdconf2 .= "  key {$zone['ddnsdomainkeyname']};\n";
-                        $dhcpdconf .= "key {$zone['ddnsdomainkeyname']} {\n";
-                        $dhcpdconf .= "  algorithm hmac-md5;\n";
-                        $dhcpdconf .= "  secret {$zone['ddnsdomainkey']};\n";
-                        $dhcpdconf .= "}\n";
-                        $added_keys[] = $zone['ddnsdomainkeyname'];
                     }
                     $dhcpdconf2 .= "}\n";
                     $dhcpdconf .= $dhcpdconf2;
