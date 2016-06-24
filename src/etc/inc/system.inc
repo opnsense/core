@@ -819,7 +819,7 @@ function system_syslogd_start()
         $syslogconfs['ppps'] = array('facility' => array('ppp'));
         $syslogconfs['relayd'] = array('facility' => array('relayd'), 'remote' => 'relayd');
         $syslogconfs['resolver'] = array('facility' => array('dnsmasq', 'filterdns', 'unbound'));
-        $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
+        $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
         $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
 
         $separatelogfacilities = array();

@@ -3478,11 +3478,12 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
 
     mwexecf(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s',
+        '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
         array(
             "/var/run/rtsold_{$wanif}.pid",
             "/var/etc/rtsold_{$wanif}_script.sh",
             '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
+            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
             $wanif
         )
     );
