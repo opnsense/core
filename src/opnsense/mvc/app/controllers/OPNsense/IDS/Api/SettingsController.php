@@ -108,6 +108,12 @@ class SettingsController extends ApiControllerBase
                 $searchPhrase .= " classtype/".$searchTag.' ';
             }
 
+            // add filter for action
+            if ($this->request->getPost("action", "string", '') != "") {
+                $searchTag = $filter->sanitize($this->request->getPost('action'), "query");
+                $searchPhrase .= " installed_action/".$searchTag.' ';
+            }
+
             // request list of installed rules
             $backend = new Backend();
             $response = $backend->configdpRun("ids query rules", array($itemsPerPage,

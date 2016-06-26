@@ -30,28 +30,18 @@
     Install suricata ruleset into opnsense.rules directory
 """
 import os.path
-from ConfigParser import ConfigParser
 import lib.rulecache
 from lib import rule_source_directory
 
 if __name__ == '__main__':
     RuleCache = lib.rulecache.RuleCache()
 
-    rule_config_fn = ('%s../rules.config' % rule_source_directory)
     rule_target_dir = ('%s../opnsense.rules' % rule_source_directory)
     rule_yaml_list = ('%s../installed_rules.yaml' % rule_source_directory)
 
+    rule_config_fn = ('%s../rules.config' % rule_source_directory)
     # parse OPNsense rule config
-    rule_updates = {}
-    if os.path.exists(rule_config_fn):
-        cnf = ConfigParser()
-        cnf.read(rule_config_fn)
-        for section in cnf.sections():
-            if section[0:5] == 'rule_':
-                sid = section[5:]
-                rule_updates[sid] = {}
-                for rule_item in cnf.items(section):
-                    rule_updates[sid][rule_item[0]] = rule_item[1]
+    rule_updates = RuleCache.list_local_changes()
 
     # create target rule directory if not existing
     if not os.path.exists(rule_target_dir):

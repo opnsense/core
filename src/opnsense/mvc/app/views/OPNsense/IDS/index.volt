@@ -59,6 +59,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
             });
         }
+        /**
+         * link on change event for alert "action" selectionbox
+         */
+        $('#ruleaction').on('change', function(){
+            $('#grid-installedrules').bootgrid('reload');
+        });
 
         /**
          * update list of available alert logs
@@ -84,12 +90,16 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         /**
-         * Add classtype to rule filter
+         * Add classtype / action to rule filter
          */
         function addRuleFilters(request) {
             var selected =$('#ruleclass').find("option:selected").val();
             if ( selected != "") {
                 request['classtype'] = selected;
+            }
+            var selected =$('#ruleaction').find("option:selected").val();
+            if ( selected != "") {
+                request['action'] = selected;
             }
             return request;
         }
@@ -414,6 +424,41 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /**
+         * Change sid to action selector after DialogAlert show
+         */
+        $( "#DialogAlert" ).on('shown.bs.modal', function (e) {
+            // replace "sid" for sid + action
+            $("#alert_sid").show();
+            $("#alert_sid_action").remove();
+            var sid = $("#alert_sid").html();
+            ajaxGet(url="/api/ids/settings/getRuleInfo/"+sid,sendData={}, callback=function(data, status) {
+                if (status == "success") {
+                    $("#alert_sid").hide();
+                    var alert_select = $('<select class="selectpicker"/>');
+                    $.each(data['action'], function(key, value){
+                        var opt = $('<option/>').attr("value", key).text(value.value)
+                        if (value.selected == 1) {
+                            opt.attr('selected', 'selected');
+                        }
+                        alert_select.append(opt);
+                    });
+                    $("#alert_sid").parent().append($('<div id="alert_sid_action"/>'));
+                    $("#alert_sid_action").append($('<table style="width:200px;"/>')
+                        .append($('<tr/>')
+                            .append($('<td/>').html(sid))
+                            .append($('<td/>').append(alert_select))
+                    ));
+                    alert_select.change(function(){
+                        ajaxCall(url="/api/ids/settings/setRule/"+sid, sendData={action:$(this).val()}, callback=function(data,status) {
+                            $("#alert_sid_action > small").remove();
+                            $("#alert_sid_action").append($('<small/>').html("{{ lang._('Changes will be active after apply (rules tab)') }}"));
+                        });
+                    });
+                }
+            });
+        });
+
+        /**
          * Initialize
          */
         loadGeneralSettings();
@@ -522,8 +567,15 @@ POSSIBILITY OF SUCH DAMAGE.
         <div class="bootgrid-header container-fluid">
             <div class="row">
                 <div class="col-sm-12 actionBar">
-                    <b>Classtype &nbsp;</b>
+                    <b>{{ lang._('Classtype') }} &nbsp;</b>
                     <select id="ruleclass" class="selectpicker" data-width="200px"></select>
+                    &nbsp;
+                    <b>{{ lang._('Action') }} &nbsp;</b>
+                    <select id="ruleaction" class="selectpicker" data-width="100px">
+                        <option value="">{{ lang._('All') }}</option>
+                        <option value="drop">{{ lang._('Drop') }}</option>
+                        <option value="alert">{{ lang._('Alert') }}</option>
+                    </select>
                 </div>
             </div>
         </div>
