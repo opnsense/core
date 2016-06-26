@@ -414,6 +414,41 @@ POSSIBILITY OF SUCH DAMAGE.
         });
 
         /**
+         * Change sid to action selector after DialogAlert show
+         */
+        $( "#DialogAlert" ).on('shown.bs.modal', function (e) {
+            // replace "sid" for sid + action
+            $("#alert_sid").show();
+            $("#alert_sid_action").remove();
+            var sid = $("#alert_sid").html();
+            ajaxGet(url="/api/ids/settings/getRuleInfo/"+sid,sendData={}, callback=function(data, status) {
+                if (status == "success") {
+                    $("#alert_sid").hide();
+                    var alert_select = $('<select class="selectpicker"/>');
+                    $.each(data['action'], function(key, value){
+                        var opt = $('<option/>').attr("value", key).text(value.value)
+                        if (value.selected == 1) {
+                            opt.attr('selected', 'selected');
+                        }
+                        alert_select.append(opt);
+                    });
+                    $("#alert_sid").parent().append($('<div id="alert_sid_action"/>'));
+                    $("#alert_sid_action").append($('<table style="width:200px;"/>')
+                        .append($('<tr/>')
+                            .append($('<td/>').html(sid))
+                            .append($('<td/>').append(alert_select))
+                    ));
+                    alert_select.change(function(){
+                        ajaxCall(url="/api/ids/settings/setRule/"+sid, sendData={action:$(this).val()}, callback=function(data,status) {
+                            $("#alert_sid_action > small").remove();
+                            $("#alert_sid_action").append($('<small/>').html("{{ lang._('Changes will be active after apply (rules tab)') }}"));
+                        });
+                    });
+                }
+            });
+        });
+
+        /**
          * Initialize
          */
         loadGeneralSettings();

@@ -11,7 +11,7 @@
     </field>
     <field>
         <id>alert_sid</id>
-        <label>Alert sid</label>
+        <label>Alert action / sid</label>
         <type>info</type>
     </field>
     <field>
