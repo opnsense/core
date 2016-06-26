@@ -59,6 +59,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 }
             });
         }
+        /**
+         * link on change event for alert "action" selectionbox
+         */
+        $('#ruleaction').on('change', function(){
+            $('#grid-installedrules').bootgrid('reload');
+        });
 
         /**
          * update list of available alert logs
@@ -84,12 +90,16 @@ POSSIBILITY OF SUCH DAMAGE.
         }
 
         /**
-         * Add classtype to rule filter
+         * Add classtype / action to rule filter
          */
         function addRuleFilters(request) {
             var selected =$('#ruleclass').find("option:selected").val();
             if ( selected != "") {
                 request['classtype'] = selected;
+            }
+            var selected =$('#ruleaction').find("option:selected").val();
+            if ( selected != "") {
+                request['action'] = selected;
             }
             return request;
         }
@@ -557,8 +567,15 @@ POSSIBILITY OF SUCH DAMAGE.
         <div class="bootgrid-header container-fluid">
             <div class="row">
                 <div class="col-sm-12 actionBar">
-                    <b>Classtype &nbsp;</b>
+                    <b>{{ lang._('Classtype') }} &nbsp;</b>
                     <select id="ruleclass" class="selectpicker" data-width="200px"></select>
+                    &nbsp;
+                    <b>{{ lang._('Action') }} &nbsp;</b>
+                    <select id="ruleaction" class="selectpicker" data-width="100px">
+                        <option value="">{{ lang._('All') }}</option>
+                        <option value="drop">{{ lang._('Drop') }}</option>
+                        <option value="alert">{{ lang._('Alert') }}</option>
+                    </select>
                 </div>
             </div>
         </div>

@@ -34,6 +34,7 @@ import glob
 import sqlite3
 import shlex
 import fcntl
+from ConfigParser import ConfigParser
 from lib import rule_source_directory
 
 
@@ -54,6 +55,24 @@ class RuleCache(object):
             all_rule_files.append(filename)
 
         return all_rule_files
+
+    @staticmethod
+    def list_local_changes():
+        # parse OPNsense rule config
+        rule_config_fn = ('%s../rules.config' % rule_source_directory)
+        rule_config_mtime = os.stat(rule_config_fn).st_mtime
+        rule_updates = {}
+        if os.path.exists(rule_config_fn):
+            cnf = ConfigParser()
+            cnf.read(rule_config_fn)
+            for section in cnf.sections():
+                if section[0:5] == 'rule_':
+                    sid = section[5:]
+                    rule_updates[sid] = {'mtime': rule_config_mtime}
+                    for rule_item in cnf.items(section):
+                        rule_updates[sid][rule_item[0]] = rule_item[1]
+        return rule_updates
+
 
     def list_rules(self, filename):
         """ generator function to list rule file content including metadata
@@ -151,11 +170,11 @@ class RuleCache(object):
         db = sqlite3.connect(self.cachefile)
         cur = db.cursor()
 
-        cur.execute("CREATE TABLE stats (timestamp number, files number)")
-        cur.execute("""CREATE TABLE rules (sid number, msg TEXT, classtype TEXT,
+        cur.execute("create table stats (timestamp number, files number)")
+        cur.execute("""create table rules (sid number, msg TEXT, classtype TEXT,
                                            rev INTEGER, gid INTEGER, reference TEXT,
                                            enabled BOOLEAN, action text, source TEXT)""")
-
+        cur.execute("create table local_rule_changes(sid number primary key, action text, last_mtime number)")
         last_mtime = 0
         all_rule_files = self.list_local()
         for filename in all_rule_files:
@@ -175,6 +194,36 @@ class RuleCache(object):
         # release lock
         fcntl.flock(lock, fcntl.LOCK_UN)
 
+    def update_local_changes(self):
+        """ read local rules.config containing changes on installed ruleset and update to "local_rule_changes" table
+        """
+        if os.path.exists(self.cachefile):
+            db = sqlite3.connect(self.cachefile)
+            cur = db.cursor()
+            cur.execute('select max(last_mtime) from local_rule_changes')
+            last_mtime = cur.fetchall()[0][0]
+            rule_config_mtime = os.stat(('%s../rules.config' % rule_source_directory)).st_mtime
+            if rule_config_mtime != last_mtime:
+                # make sure only one process is updating this table
+                lock = open(self.cachefile + '.LCK', 'w')
+                try:
+                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                except IOError:
+                    # other process is already creating the cache, wait, let the other process do it's work and return.
+                    fcntl.flock(lock, fcntl.LOCK_EX)
+                    fcntl.flock(lock, fcntl.LOCK_UN)
+                    return
+                # delete and insert local changes
+                cur.execute('delete from local_rule_changes')
+                local_changes = self.list_local_changes()
+                for sid in local_changes:
+                    sql_params = (sid, local_changes[sid]['action'], local_changes[sid]['mtime'])
+                    cur.execute('insert into local_rule_changes(sid, action, last_mtime) values (?,?,?)', sql_params)
+                db.commit()
+                # release lock
+                fcntl.flock(lock, fcntl.LOCK_UN)
+
+
     def search(self, limit, offset, filter_txt, sort_by):
         """ search installed rules
         :param limit: limit number of rows
@@ -189,9 +238,15 @@ class RuleCache(object):
             cur = db.cursor()
 
             # construct query including filters
-            sql = 'select * from rules '
+            sql = """select *
+                     from (
+                         select rules.*, case when rc.action is null then rules.action else rc.action end installed_action
+                         from rules
+                         left join local_rule_changes rc on rules.sid = rc.sid
+                     ) a
+                     """
             sql_filters = {}
-
+            additional_search_fields = ['installed_action']
             for filtertag in shlex.split(filter_txt):
                 fieldnames = filtertag.split('/')[0]
                 searchcontent = '/'.join(filtertag.split('/')[1:])
@@ -200,7 +255,7 @@ class RuleCache(object):
                 else:
                     sql += ' where ( '
                 for fieldname in map(lambda x: x.lower().strip(), fieldnames.split(',')):
-                    if fieldname in self._rule_fields:
+                    if fieldname in self._rule_fields or fieldname in additional_search_fields:
                         if fieldname != fieldnames.split(',')[0].strip():
                             sql += ' or '
                         if searchcontent.find('*') == -1:
@@ -216,7 +271,7 @@ class RuleCache(object):
             # apply sort order (if any)
             sql_sort = []
             for sortField in sort_by.split(','):
-                if sortField.split(' ')[0] in self._rule_fields:
+                if sortField.split(' ')[0] in self._rule_fields or sortField.split(' ')[0] in additional_search_fields:
                     if sortField.split(' ')[-1].lower() == 'desc':
                         sql_sort.append('%s desc' % sortField.split()[0])
                     else:
