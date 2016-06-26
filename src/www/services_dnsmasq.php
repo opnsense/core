@@ -151,12 +151,14 @@ include("head.inc");
 
 <script type="text/javascript">
 //<![CDATA[
-function show_advanced_dns() {
-    document.getElementById("showadvbox").innerHTML='';
-    aodiv = document.getElementById('showadv');
-    aodiv.style.display = "block";
-}
 $( document ).ready(function() {
+  $("#show_advanced_dns").click(function(event){
+    $("#showadvbox").hide();
+    $("#showadv").show();
+  });
+  if ($("#custom_options").val() != "") {
+      $("#show_advanced_dns").click();
+  }
   // delete host action
   $(".act_delete_host").click(function(event){
     event.preventDefault();
@@ -358,7 +360,7 @@ $( document ).ready(function() {
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Advanced");?></td>
                   <td>
                     <div id="showadvbox" <?=!empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
-                      <input type="button" class="btn btn-default btn-xs" onclick="show_advanced_dns()" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
+                      <input type="button" class="btn btn-default btn-xs" id="show_advanced_dns" value="<?=gettext("Advanced"); ?>" /> - <?=gettext("Show advanced option");?>
                     </div>
                     <div id="showadv" <?=empty($pconfig['custom_options']) ? "style='display:none'" : ""; ?>>
                       <strong><?=gettext("Advanced");?><br /></strong>
