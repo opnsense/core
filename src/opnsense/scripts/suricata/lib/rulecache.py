@@ -140,9 +140,11 @@ class RuleCache(object):
             try:
                 db = sqlite3.connect(self.cachefile)
                 cur = db.cursor()
+                cur.execute("select count(*) from sqlite_master WHERE type='table'")
+                table_count = cur.fetchall()[0][0]
                 cur.execute('SELECT max(timestamp), max(files) FROM stats')
                 results = cur.fetchall()
-                if last_mtime == results[0][0] and len(all_rule_files) == results[0][1]:
+                if last_mtime == results[0][0] and len(all_rule_files) == results[0][1] and table_count == 3:
                     return False
             except sqlite3.DatabaseError:
                 # if some reason the cache is unreadble, continue and report changed
