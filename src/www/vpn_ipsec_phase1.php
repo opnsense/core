@@ -456,7 +456,7 @@ include("head.inc");
                     $(".auth_eap_tls").show();
                     break;
                 case 'pre_shared_key':
-                    if ($("#mobile") == undefined) {
+                    if ($("#mobile").val() == undefined) {
                         $(".auth_psk").show();
                     }
                     break;
