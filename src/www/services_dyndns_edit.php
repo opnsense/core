@@ -175,46 +175,26 @@ include("head.inc");
 
 <body>
 <?php include("fbegin.inc"); ?>
-  <script type="text/javascript">
-  //<![CDATA[
-  function _onTypeChange(type){
-    switch(type) {
-      case "custom":
-      case "custom-v6":
-        document.getElementById("_resulttr").style.display = '';
-        document.getElementById("_urltr").style.display = '';
-        document.getElementById("_requestiftr").style.display = '';
-        document.getElementById("_curloptions").style.display = '';
-        document.getElementById("_hostnametr").style.display = '';
-        document.getElementById("_mxtr").style.display = 'none';
-        document.getElementById("_wildcardtr").style.display = 'none';
-        document.getElementById("r53_zoneid").style.display='none';
-        document.getElementById("r53_ttl").style.display='none';
-        break;
-      case "route53":
-        document.getElementById("_resulttr").style.display = 'none';
-        document.getElementById("_urltr").style.display = 'none';
-        document.getElementById("_requestiftr").style.display = 'none';
-        document.getElementById("_curloptions").style.display = 'none';
-        document.getElementById("_hostnametr").style.display = '';
-        document.getElementById("_mxtr").style.display = '';
-        document.getElementById("_wildcardtr").style.display = '';
-        document.getElementById("r53_zoneid").style.display='';
-        document.getElementById("r53_ttl").style.display='';
-        break;
-      default:
-        document.getElementById("_resulttr").style.display = 'none';
-        document.getElementById("_urltr").style.display = 'none';
-        document.getElementById("_requestiftr").style.display = 'none';
-        document.getElementById("_curloptions").style.display = 'none';
-        document.getElementById("_hostnametr").style.display = '';
-        document.getElementById("_mxtr").style.display = '';
-        document.getElementById("_wildcardtr").style.display = '';
-        document.getElementById("r53_zoneid").style.display='none';
-        document.getElementById("r53_ttl").style.display='none';
-    }
-  }
-  //]]>
+ <script type="text/javascript">
+  $( document ).ready(function() {
+      $("#type").change(function(){
+          $(".opt_field").hide();
+          switch ($(this).val()) {
+              case "custom":
+              case "custom-v6":
+                $(".type_custom").show();
+                break;
+              case "route53":
+                $(".type_route53").show();
+                break;
+              default:
+                $(".type_default").show();
+                break;
+          }
+          $(window).resize(); // force zebra re-stripe (opnsense_standard_table_form)
+      });
+      $("#type").change();
+  });
   </script>
 
   <section class="page-content-main">
@@ -242,7 +222,7 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Service type") ?></td>
                     <td>
-                      <select name="type" class="selectpicker" id="type" onchange="_onTypeChange(this.options[this.selectedIndex].value);">
+                      <select name="type" class="selectpicker" id="type">
 <?php
                         foreach (services_dyndns_list() as $value => $type):?>
                                 <option value="<?= $value ?>" <?= $value == $pconfig['type'] ? 'selected="selected"' : '' ?>>
@@ -270,7 +250,7 @@ include("head.inc");
                         </select>
                       </td>
                   </tr>
-                  <tr id="_requestiftr">
+                  <tr class="opt_field type_custom">
                     <td><a id="help_for_requestif" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Interface to send update from") ?></td>
                     <td>
                       <select name="requestif" class="selectpicker" id="requestif">
@@ -290,7 +270,7 @@ include("head.inc");
                        </div>
                     </td>
                   </tr>
-                  <tr id="_hostnametr">
+                  <tr>
                     <td><a id="help_for_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Hostname") ?></td>
                     <td>
                       <input name="host" type="text" id="host" value="<?= $pconfig['host'] ?>" />
@@ -300,7 +280,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr id="_mxtr">
+                  <tr class="opt_field type_default type_route53">
                     <td><a id="help_for_mx" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("MX") ?></td>
                     <td>
                       <input name="mx" type="text" id="mx" value="<?= $pconfig['mx'] ?>" />
@@ -311,21 +291,21 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr id="_wildcardtr">
+                  <tr class="opt_field type_default type_route53">
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Wildcards") ?></td>
                     <td>
                       <input name="wildcard" type="checkbox" id="wildcard" value="yes" <?= empty($pconfig['wildcard']) ? '' : 'checked="checked"' ?> />
                       <strong><?= gettext("Enable Wildcard") ?></strong>
                     </td>
                   </tr>
-                  <tr id="_verboselogtr">
+                  <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Verbose logging") ?></td>
                     <td>
                       <input name="verboselog" type="checkbox" id="verboselog" value="yes" <?= empty($pconfig['verboselog']) ? '' : 'checked="checked"' ?> />
                       <strong><?= gettext("Enable verbose logging") ?></strong>
                     </td>
                   </tr>
-                  <tr id="_curloptions">
+                  <tr class="opt_field type_custom">
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("CURL options"); ?></td>
                     <td>
                       <input name="curl_ipresolve_v4" type="checkbox" id="curl_ipresolve_v4" value="yes" <?= empty($pconfig['curl_ipresolve_v4']) ? '' : 'checked="checked"' ?> />
@@ -334,7 +314,7 @@ include("head.inc");
                       <?= gettext("Verify SSL peer") ?>
                     </td>
                   </tr>
-                  <tr id="_usernametr">
+                  <tr>
                     <td><a id="help_for_username" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Username") ?></td>
                     <td>
                       <input name="username" type="text" id="username" value="<?= $pconfig['username'] ?>" />
@@ -357,7 +337,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr id="r53_zoneid" style="display:none">
+                  <tr class="opt_field type_route53">
                     <td><a id="help_for_zoneid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Zone ID") ?></td>
                     <td>
                       <input name="zoneid" type="text" id="zoneid" value="<?= $pconfig['zoneid'] ?>" />
@@ -366,7 +346,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr id="_urltr">
+                  <tr class="opt_field type_custom">
                     <td><a id="help_for_updateurl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update URL") ?></td>
                     <td>
                       <input name="updateurl" type="text" id="updateurl" value="<?= $pconfig['updateurl'] ?>" />
@@ -377,7 +357,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr id="_resulttr">
+                  <tr class="opt_field type_custom">
                     <td><a id="help_for_resultmatch" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Result Match") ?></td>
                     <td>
                       <textarea name="resultmatch" class="formpre" id="resultmatch" cols="65" rows="7"><?= $pconfig['resultmatch'] ?></textarea>
@@ -394,7 +374,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr id="r53_ttl" style="display:none">
+                  <tr class="opt_field type_route53">
                     <td><a id="help_for_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TTL");?></td>
                     <td>
                       <input name="ttl" type="text" id="ttl" value="<?= $pconfig['ttl'] ?>" />
@@ -438,9 +418,4 @@ include("head.inc");
       </div>
     </div>
   </section>
-<script type="text/javascript">
-//<![CDATA[
-  _onTypeChange("<?= $pconfig['type'] ?>");
-//]]>
-</script>
 <?php include("foot.inc"); ?>
