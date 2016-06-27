@@ -269,20 +269,17 @@ include("head.inc");
 ?>
 
 <body>
-
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
-//<![CDATA[
-  function prot_change() {
-      if (document.iform.https_proto.checked) {
-          document.getElementById("ssl_opts").style.display="";
-      } else {
-          document.getElementById("ssl_opts").style.display="none";
-      }
-  }
-
-  $( document ).ready(function() {
-      prot_change();
+  $(document).ready(function() {
+      $(".proto").change(function(){
+         if ($("#https_proto").prop('checked')) {
+             $(".ssl_opts").show();
+         } else {
+             $(".ssl_opts").hide();
+         }
+      });
+      $(".proto").change();
 
  <?php
     // reload page after 20 seconds if webserver is restarted
@@ -293,7 +290,6 @@ include("head.inc");
  <?php
     endif;?>
   });
-//]]>
 </script>
 
 <section class="page-content-main">
@@ -321,10 +317,10 @@ include("head.inc");
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol"); ?></td>
                   <td>
-                    <input name="webguiproto" id="http_proto" type="radio" value="http" <?= $pconfig['webguiproto'] == "http" ? 'checked="checked"' :'' ?> onclick="prot_change()" />
+                    <input name="webguiproto" class="proto" id="http_proto" type="radio" value="http" <?= $pconfig['webguiproto'] == "http" ? 'checked="checked"' :'' ?>/>
                     <?=gettext("HTTP"); ?>
                     &nbsp;&nbsp;&nbsp;
-                    <input name="webguiproto" id="https_proto" type="radio" value="https" <?= $pconfig['webguiproto'] == "https" ? 'checked="checked"' : '' ?> <?=$certs_available ? '' : 'disabled="disabled"' ?> onclick="prot_change()" />
+                    <input name="webguiproto" class="proto" id="https_proto" type="radio" value="https" <?= $pconfig['webguiproto'] == "https" ? 'checked="checked"' : '' ?> <?=$certs_available ? '' : 'disabled="disabled"' ?>/>
                     <?=gettext("HTTPS"); ?>
 
 <?php
@@ -335,7 +331,7 @@ include("head.inc");
                     endif; ?>
                   </td>
                 </tr>
-                <tr id="ssl_opts">
+                <tr class="ssl_opts">
                   <td><a id="help_for_sslcertref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSL Certificate"); ?></td>
                   <td>
                     <select name="ssl-certref" class="formselect selectpicker" data-style="btn-default">
