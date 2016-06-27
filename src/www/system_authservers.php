@@ -316,38 +316,6 @@ if (!isset($_GET['act']) || $_GET['act'] != 'new')
 <body>
 
 <script type="text/javascript">
-//<![CDATA[
-function select_clicked() {
-    if (document.getElementById("ldap_port").value == '' ||
-        document.getElementById("ldap_host").value == '' ||
-        document.getElementById("ldap_scope").value == '' ||
-        document.getElementById("ldap_basedn").value == '' ) {
-          alert("<?=gettext("Please fill the required values.");?>");
-          return;
-        }
-          var url = 'system_usermanager_settings_ldapacpicker.php?';
-          url += 'port=' + document.getElementById("ldap_port").value;
-          url += '&host=' + document.getElementById("ldap_host").value;
-          url += '&scope=' + document.getElementById("ldap_scope").value;
-          url += '&basedn=' + document.getElementById("ldap_basedn").value;
-          url += '&binddn=' + document.getElementById("ldap_binddn").value;
-          url += '&bindpw=' + document.getElementById("ldap_bindpw").value;
-          url += '&urltype=' + document.getElementById("ldap_urltype").value;
-          url += '&proto=' + document.getElementById("ldap_protver").value;
-          url += '&authcn=' + document.getElementById("ldapauthcontainers").value;
-          <?php if (count($config['ca']) > 0) :
-?>
-          url += '&cert=' + document.getElementById("ldap_caref").value;
-          <?php
-else :?>
-          url += '&cert=';
-          <?php
-endif; ?>
-        var oWin = window.open(url,"OPNsense","width=620,height=400,top=150,left=150, scrollbars=yes");
-        if (oWin==null || typeof(oWin)=="undefined")
-			alert("<?=gettext('Popup blocker detected. Action aborted.');?>");
-}
-
 $( document ).ready(function() {
     $("#type").change(function(){
         $(".auth_radius").addClass('hidden');
@@ -425,8 +393,34 @@ $( document ).ready(function() {
         $("#ldap_tmpltype").change();
     }
     $("#type").change();
+
+    $("#act_select").click(function() {
+        if ($("#ldap_port").val() == '' || $("#ldap_host").val() == '' || $("#ldap_scope").val() == '' || $("#ldap_basedn").val() == '') {
+            alert("<?=gettext("Please fill the required values.");?>");
+            return;
+        } else {
+            var url = 'system_usermanager_settings_ldapacpicker.php?';
+            url += 'port=' + $("#ldap_port").val();
+            url += '&host=' + $("#ldap_host").val();
+            url += '&scope=' + $("#ldap_scope").val();
+            url += '&basedn=' + $("#ldap_basedn").val();
+            url += '&binddn=' + $("#ldap_binddn").val();
+            url += '&bindpw=' + $("#ldap_bindpw").val();
+            url += '&urltype=' + $("#ldap_urltype").val();
+            url += '&proto=' + $("#ldap_protver").val();
+            url += '&authcn=' + $("#ldapauthcontainers").val();
+            if ($("#ldap_caref").val() != undefined) {
+                url += '&cert=' + $("#ldap_caref").val();
+            } else {
+                url += '&cert=';
+            }
+            var oWin = window.open(url, "OPNsense", "width=620,height=400,top=150,left=150, scrollbars=yes");
+            if (oWin==null || typeof(oWin)=="undefined") {
+                alert("<?=gettext('Popup blocker detected. Action aborted.');?>");
+            }
+        }
+    });
 });
-//]]>
 </script>
 
 <?php include("fbegin.inc");?>
@@ -588,7 +582,7 @@ endif; ?>
                   <td>
                     <ul class="list-inline">
                     <li><input name="ldapauthcontainers" type="text" id="ldapauthcontainers" size="40" value="<?=$pconfig['ldap_authcn'];?>"/></li>
-                    <li><input type="button" onclick="select_clicked();" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
+                    <li><input type="button" id="act_select" class="btn btn-default" value="<?=gettext("Select");?>" /></li>
                     </ul>
                     <br/>
                     <div class="hidden" for="help_for_ldapauthcontainers">
