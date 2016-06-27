@@ -195,12 +195,12 @@ $( document ).ready(function() {
         $("#members").append($("#notmembers option:selected"));
         $("#notmembers option:selected").remove();
         $("#members option:selected").prop('selected', false);
-    })
+    });
     $("#remove_groups").click(function(){
         $("#notmembers").append($("#members option:selected"));
         $("#members option:selected").remove();
         $("#notmembers option:selected").prop('selected', false);
-    })
+    });
     $("#save").click(function(){
         $("#members > option").prop('selected', true);
         $("#notmembers > option").prop('selected', false);
