@@ -461,184 +461,55 @@ include("head.inc");
 <body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
-//<![CDATA[
-$( document ).ready(function() {
-  // old js code..
-  change_mode('<?=$pconfig['mode']?>');
-  change_protocol('<?=$pconfig['protocol']?>');
-  typesel_change_local(<?=$pconfig['localid_netbits']?>);
-<?php if (isset($pconfig['natlocalid_netbits'])) :
-?>
-  typesel_change_natlocal(<?=$pconfig['natlocalid_netbits']?>);
-<?php endif;
-?>
-    <?php if (!isset($pconfig['mobile'])) :
-    ?>
-  typesel_change_remote(<?=$pconfig['remoteid_netbits']?>);
-    <?php
-endif; ?>
+    $( document ).ready(function() {
+        $("#mode").change(function(){
+            $(".opt_localid").hide();
+            $(".opt_remoteid").hide();
+            if ($(this).val() == 'tunnel' || $(this).val() == 'tunnel6') {
+                $(".opt_localid").show();
+                if ($("#mobile").val() == undefined) {
+                    $(".opt_remoteid").show();
+                }
+            }
+            $(window).resize();
+        });
+        $("#mode").change();
 
-  $( document ).ready(function() {
-      // hook in, ipv4/ipv6 selector events
-      hook_ipv4v6('ipv4v6net', 'network-id');
-  });
-});
+        $("#proto").change(function(){
+            if ($(this).val() == 'esp') {
+                $("#opt_enc").show();
+            } else {
+                $("#opt_enc").hide();
+            }
+            $(window).resize();
+        });
+        $("#proto").change();
 
-function change_mode() {
-  index = document.iform.mode.selectedIndex;
-  value = document.iform.mode.options[index].value;
-  if ((value == 'tunnel') || (value == 'tunnel6')) {
-    document.getElementById('opt_localid').style.display = '';
-<?php if (!isset($pconfig['mobile'])) :
-?>
-    document.getElementById('opt_remoteid').style.display = '';
-<?php
-endif; ?>
-  } else {
-    document.getElementById('opt_localid').style.display = 'none';
-<?php if (!isset($pconfig['mobile'])) :
-?>
-    document.getElementById('opt_remoteid').style.display = 'none';
-<?php
-endif; ?>
-  }
-}
+        ['localid', 'remoteid', 'natlocalid'].map(function(field){
+            $("#"+field+"_type").change(function(){
+                $("#"+field+"_netbits").prop("disabled", true);
+                $("#"+field+"_address").prop("disabled", true);
+                $("#"+field+"_netbits").parent().parent().show();
+                switch ($(this).val()) {
+                    case 'address':
+                        $("#"+field+"_address").prop("disabled", false);
+                        break;
+                    case 'network':
+                        $("#"+field+"_netbits").prop("disabled", false);
+                        $("#"+field+"_address").prop("disabled", false);
+                        break;
+                    default:
+                        $("#"+field+"_netbits").parent().parent().hide();
+                        break;
+                }
+                $(window).resize();
+            });
+            $("#"+field+"_type").change();
+        });
 
-function typesel_change_natlocal(bits) {
-  var value = document.iform.mode.options[index].value;
-  if (typeof(bits) === "undefined") {
-    if (value === "tunnel") {
-      bits = 24;
-    }
-    else if (value === "tunnel6") {
-      bits = 64;
-    }
-  }
-  var address_is_blank = !/\S/.test(document.iform.natlocalid_address.value);
-  switch (document.iform.natlocalid_type.selectedIndex) {
-    case 0:  /* single */
-      document.iform.natlocalid_address.disabled = 0;
-      if (address_is_blank) {
-        document.iform.natlocalid_netbits.value = 0;
-      }
-      document.iform.natlocalid_netbits.disabled = 1;
-      break;
-    case 1:  /* network */
-      document.iform.natlocalid_address.disabled = 0;
-      if (address_is_blank) {
-        document.iform.natlocalid_netbits.value = bits;
-      }
-      document.iform.natlocalid_netbits.disabled = 0;
-      break;
-    case 3:  /* none */
-      document.iform.natlocalid_address.disabled = 1;
-      document.iform.natlocalid_netbits.disabled = 1;
-      break;
-    default:
-      document.iform.natlocalid_address.value = "";
-      document.iform.natlocalid_address.disabled = 1;
-      if (address_is_blank) {
-        document.iform.natlocalid_netbits.value = 0;
-      }
-      document.iform.natlocalid_netbits.disabled = 1;
-      break;
-  }
-}
-
-function typesel_change_local(bits) {
-  var value = document.iform.mode.options[index].value;
-  if (typeof(bits) === "undefined") {
-    if (value === "tunnel") {
-      bits = 24;
-    }
-    else if (value === "tunnel6") {
-      bits = 64;
-    }
-  }
-  var address_is_blank = !/\S/.test(document.iform.localid_address.value);
-  switch (document.iform.localid_type.selectedIndex) {
-    case 0:  /* single */
-      document.iform.localid_address.disabled = 0;
-      if (address_is_blank) {
-        document.iform.localid_netbits.value = 0;
-      }
-      document.iform.localid_netbits.disabled = 1;
-      break;
-    case 1:  /* network */
-      document.iform.localid_address.disabled = 0;
-      if (address_is_blank) {
-        document.iform.localid_netbits.value = bits;
-      }
-      document.iform.localid_netbits.disabled = 0;
-      break;
-    case 3:  /* none */
-      document.iform.localid_address.disabled = 1;
-      document.iform.localid_netbits.disabled = 1;
-      break;
-    default:
-      document.iform.localid_address.value = "";
-      document.iform.localid_address.disabled = 1;
-      if (address_is_blank) {
-        document.iform.localid_netbits.value = 0;
-      }
-      document.iform.localid_netbits.disabled = 1;
-      break;
-  }
-}
-
-<?php if (!isset($pconfig['mobile'])) :
-?>
-
-function typesel_change_remote(bits) {
-  var value = document.iform.mode.options[index].value;
-  if (typeof(bits) === "undefined") {
-    if (value === "tunnel") {
-      bits = 24;
-    }
-    else if (value === "tunnel6") {
-      bits = 64;
-    }
-  }
-  var address_is_blank = !/\S/.test(document.iform.remoteid_address.value);
-  switch (document.iform.remoteid_type.selectedIndex) {
-    case 0:  /* single */
-      document.iform.remoteid_address.disabled = 0;
-      if (address_is_blank) {
-        document.iform.remoteid_netbits.value = 0;
-      }
-      document.iform.remoteid_netbits.disabled = 1;
-      break;
-    case 1:  /* network */
-      document.iform.remoteid_address.disabled = 0;
-      if (address_is_blank) {
-        document.iform.remoteid_netbits.value = bits;
-      }
-      document.iform.remoteid_netbits.disabled = 0;
-      break;
-    default:
-      document.iform.remoteid_address.value = "";
-      document.iform.remoteid_address.disabled = 1;
-      if (address_is_blank) {
-        document.iform.remoteid_netbits.value = 0;
-      }
-      document.iform.remoteid_netbits.disabled = 1;
-      break;
-  }
-}
-
-<?php
-endif; ?>
-
-function change_protocol() {
-  index = document.iform.proto.selectedIndex;
-  value = document.iform.proto.options[index].value;
-  if (value == 'esp')
-    document.getElementById('opt_enc').style.display = '';
-  else
-    document.getElementById('opt_enc').style.display = 'none';
-}
-
-//]]>
+        // hook in, ipv4/ipv6 selector events
+        hook_ipv4v6('ipv4v6net', 'network-id');
+    });
 </script>
 
 <?php
@@ -675,7 +546,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <tr>
                   <td><i class="fa fa-info-circle text-muted"></i>  <?=gettext("Mode"); ?></td>
                   <td>
-                    <select name="mode" class="formselect" onchange="change_mode()">
+                    <select name="mode" id="mode" class="formselect">
                         <?php
                         $p2_modes = array(
                         'tunnel' => 'Tunnel IPv4',
@@ -702,13 +573,13 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </div>
                   </td>
                 </tr>
-                <tr>
+                <tr class="opt_localid">
                   <td colspan="2"><b><?=gettext("Local Network");?></b></td>
                 </tr>
-                <tr id="opt_localid">
+                <tr class="opt_localid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?> </td>
                   <td>
-                    <select name="localid_type" class="formselect" onchange="typesel_change_local()">
+                    <select name="localid_type" id="localid_type">
                       <option value="address" <?=$pconfig['localid_type'] == "address" ? "selected=\"selected\"" : ""?> ><?=gettext("Address"); ?></option>
                       <option value="network" <?=$pconfig['localid_type'] == "network" ? "selected=\"selected\"" : ""?> ><?=gettext("Network"); ?></option>
 <?php
@@ -722,7 +593,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </select>
                   </td>
                 </tr>
-                <tr>
+                <tr class="opt_localid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address:");?>&nbsp;&nbsp;</td>
                   <td>
                     <input name="localid_address" type="text" id="localid_address" size="28" value="<?=$pconfig['localid_address'];?>" />
@@ -738,10 +609,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </select>
                   </td>
                 </tr>
-                <tr>
+                <tr class="opt_localid">
                   <td colspan="2"><b><?=gettext("NAT/BINAT");?></b></td>
                 </tr>
-                <tr>
+                <tr class="opt_localid">
                   <td><a id="help_for_natlocalid_nattype" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NAT Type"); ?></td>
                   <td>
                     <select name="natlocalid_nattype" class="formselect">
@@ -760,10 +631,10 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </div>
                   </td>
                 </tr>
-                <tr>
+                <tr class="opt_localid">
                   <td><a id="help_for_natlocalid_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Type"); ?></td>
                   <td>
-                    <select name="natlocalid_type" class="formselect" onchange="typesel_change_natlocal()">
+                    <select name="natlocalid_type" id="natlocalid_type">
                       <option value="address" <?=!empty($pconfig['natlocalid_type']) && $pconfig['natlocalid_type'] == "address" ? "selected=\"selected\"" : "";?> >
                         <?=gettext("Address"); ?>
                       </option>
@@ -779,12 +650,12 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </div>
                   </td>
                 </tr>
-                <tr>
+                <tr class="opt_localid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address:");?>&nbsp;&nbsp;</td>
                   <td>
                     <input name="natlocalid_address" type="text" class="formfld unknown ipv4v6" id="natlocalid_address" size="28" value="<?=isset($pconfig['natlocalid_address']) ? $pconfig['natlocalid_address'] : "";?>" />
                     /
-                    <select name="natlocalid_netbits"  data-network-id="natlocalid_address" class="formselect ipv4v6net" id="natlocalid_netbits">
+                    <select name="natlocalid_netbits" data-network-id="natlocalid_address" class="formselect ipv4v6net" id="natlocalid_netbits">
 <?php
                     for ($i = 128; $i >= 0; $i--) :?>
                       <option value="<?=$i;?>" <?= isset($pconfig['natlocalid_netbits']) && $i == $pconfig['natlocalid_netbits'] ? "selected=\"selected\"" : "";?>>
@@ -798,13 +669,13 @@ if (isset($input_errors) && count($input_errors) > 0) {
 
 <?php          if (!isset($pconfig['mobile'])) :
 ?>
-                <tr id="opt_remoteid">
+                <tr class="opt_remoteid">
                   <td colspan="2"><b><?=gettext("Remote Network");?></b></td>
                 </tr>
-                <tr>
+                <tr class="opt_remoteid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?>:&nbsp;&nbsp;</td>
                   <td>
-                    <select name="remoteid_type" class="formselect" onchange="typesel_change_remote()">
+                    <select name="remoteid_type" id="remoteid_type" class="formselect">
                       <option value="address" <?= $pconfig['remoteid_type'] == "address" ? "selected=\"selected\"" : "";?>>
                         <?=gettext("Address"); ?>
                       </option>
@@ -814,7 +685,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                     </select>
                   </td>
                 </tr>
-                <tr>
+                <tr class="opt_remoteid">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Address"); ?>:&nbsp;&nbsp;</td>
                   <td>
                     <input name="remoteid_address" type="text" class="formfld unknown ipv4v6" id="remoteid_address" size="28" value="<?=$pconfig['remoteid_address'];?>" />
@@ -841,7 +712,7 @@ endif; ?>
                 <tr>
                   <td><a id="help_for_proto" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol"); ?></td>
                   <td width="78%" class="vtable">
-                    <select name="protocol" id="proto" class="formselect" onchange="change_protocol()">
+                    <select name="protocol" id="proto">
 <?php
                     foreach (array('esp' => 'ESP','ah' => 'AH') as $proto => $protoname) :?>
                       <option value="<?=$proto;?>" <?= $proto == $pconfig['protocol'] ? "selected=\"selected\"" : "";?>>
@@ -953,12 +824,12 @@ endif; ?>
                 <tr>
                   <td>&nbsp;</td>
                   <td width="78%">
-<?php            if (isset($pconfig['mobile'])) :
-    ?>
+<?php
+                 if (isset($pconfig['mobile'])) :?>
                     <input name="mobile" type="hidden" value="true" />
                     <input name="remoteid_type" type="hidden" value="mobile" />
 <?php
-endif; ?>
+                 endif; ?>
                     <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
                     <input name="ikeid" type="hidden" value="<?=$pconfig['ikeid'];?>" />
                     <input name="uniqid" type="hidden" value="<?=$pconfig['uniqid'];?>" />
