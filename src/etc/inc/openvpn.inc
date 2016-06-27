@@ -193,6 +193,13 @@ function openvpn_get_digestlist()
 function openvpn_get_engines()
 {
     $openssl_engines = array('none' => 'No Hardware Crypto Acceleration');
+    exec('/usr/local/bin/openssl version', $openssl_version);
+    $is_libressl = explode(' ', $openssl_version[0])[0] == 'LibreSSL';
+    if ($is_libressl) {
+        /* LibreSSL does not have the engines command */
+        return $openssl_engines;
+    }
+    
     exec('/usr/local/bin/openssl engine -t -c', $openssl_engine_output);
 
     if (!count($openssl_engine_output)) {
