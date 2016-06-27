@@ -126,17 +126,20 @@ include("head.inc");
 <body>
 
 <script type="text/javascript">
-//<![CDATA[
-  //Generic show an advanced option function
-  function show_advanced(showboxID, configvalueID) {
-    document.getElementById(showboxID).innerHTML='';
-    aodiv = document.getElementById(configvalueID);
-    aodiv.style.display = "block";
-  }
-//]]>
-</script>
-<script type="text/javascript">
   $( document ).ready(function() {
+    $("#showstatisticsbox").click(function(event){
+        $("#showstatisticsbox").parent().hide();
+        $("#showstatistics").show();
+    });
+    $("#showrestrictbox").click(function(event){
+        $("#showrestrictbox").parent().hide();
+        $("#showrestrict").show();
+    });
+    $("#showleapsecbox").click(function(event){
+        $("#showleapsecbox").parent().hide();
+        $("#showleapsec").show();
+    });
+
     /**
      *  Aliases
      */
@@ -317,8 +320,8 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Statistics logging') ?></td>
                     <td>
-                      <div id="showstatisticsbox">
-                        <input class="btn btn-default btn-xs" type="button" onclick="show_advanced('showstatisticsbox', 'showstatistics')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
+                      <div>
+                        <input class="btn btn-default btn-xs" id="showstatisticsbox" type="button" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show statistics logging options");?>
                       </div>
                       <div id="showstatistics" style="display:none">
                       <?= gettext("These options will create persistent daily log files in /var/log/ntp.") ?>
@@ -337,8 +340,8 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Access restrictions') ?></td>
                     <td>
-                      <div id="showrestrictbox">
-                      <input type="button" class="btn btn-default btn-xs" onclick="show_advanced('showrestrictbox', 'showrestrict')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show access restriction options");?>
+                      <div>
+                      <input type="button" id="showrestrictbox" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show access restriction options");?>
                       </div>
                       <div id="showrestrict" style="display:none">
                       <?=gettext("these options control access to NTP from the WAN."); ?>
@@ -366,8 +369,8 @@ include("head.inc");
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Leap seconds') ?></td>
                     <td>
-                      <div id="showleapsecbox">
-                        <input type="button" class="btn btn-default btn-xs" onclick="show_advanced('showleapsecbox', 'showleapsec')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Leap second configuration");?>
+                      <div>
+                        <input type="button" id="showleapsecbox" class="btn btn-default btn-xs" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show Leap second configuration");?>
                       </div>
                       <div id="showleapsec" style="display:none">
                         <?=gettext("A leap second file allows NTP to advertize an upcoming leap second addition or subtraction.");?>
