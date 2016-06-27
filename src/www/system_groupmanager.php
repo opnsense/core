@@ -191,12 +191,12 @@ $( document ).ready(function() {
           }]
       });
     });
-    $("#add_groups").click(function(){
+    $("#add_users").click(function(){
         $("#members").append($("#notmembers option:selected"));
         $("#notmembers option:selected").remove();
         $("#members option:selected").prop('selected', false);
     });
-    $("#remove_groups").click(function(){
+    $("#add_groups").click(function(){
         $("#notmembers").append($("#members option:selected"));
         $("#members option:selected").remove();
         $("#notmembers option:selected").prop('selected', false);
@@ -279,11 +279,11 @@ $( document ).ready(function() {
                         </td>
                         <td class="text-center">
                           <br />
-                          <a id="add_groups" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add Groups"); ?>">
+                          <a id="add_users" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add Users"); ?>">
                               <span class="glyphicon glyphicon-arrow-right"></span>
                           </a>
                           <br /><br />
-                          <a id="remove_groups" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove Groups"); ?>">
+                          <a id="add_groups" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove Users"); ?>">
                               <span class="glyphicon glyphicon-arrow-left"></span>
                           </a>
                         </td>
