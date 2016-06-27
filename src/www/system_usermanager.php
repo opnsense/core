@@ -376,63 +376,6 @@ include("head.inc");
 <?php include("fbegin.inc"); ?>
 
 <script type="text/javascript">
-//<![CDATA[
-function clear_selected(id) {
-    selbox = document.getElementById(id);
-    count = selbox.options.length;
-    for (index = 0; index<count; index++) {
-        selbox.options[index].selected = false;
-    }
-}
-
-function remove_selected(id) {
-    selbox = document.getElementById(id);
-    index = selbox.options.length - 1;
-    for (; index >= 0; index--) {
-      if (selbox.options[index].selected) {
-          selbox.remove(index);
-      }
-    }
-}
-
-function copy_selected(srcid, dstid) {
-    src_selbox = document.getElementById(srcid);
-    dst_selbox = document.getElementById(dstid);
-    count = dst_selbox.options.length;
-    for (index = count - 1; index >= 0; index--) {
-        if (dst_selbox.options[index].value == '') {
-            dst_selbox.remove(index);
-        }
-    }
-    count = src_selbox.options.length;
-    for (index = 0; index < count; index++) {
-        if (src_selbox.options[index].selected) {
-            option = document.createElement('option');
-            option.text = src_selbox.options[index].text;
-            option.value = src_selbox.options[index].value;
-            dst_selbox.add(option, null);
-        }
-    }
-}
-
-function move_selected(srcid, dstid) {
-  copy_selected(srcid, dstid);
-  remove_selected(srcid);
-}
-
-function presubmit() {
-    clear_selected('notgroups');
-
-    selbox = document.getElementById("groups");
-    count = selbox.options.length;
-    for (index = 0; index<count; index++) {
-        selbox.options[index].selected = true;
-    }
-}
-//]]>
-</script>
-
-<script type="text/javascript">
 $( document ).ready(function() {
     // remove certificate association
     $(".act-del-cert").click(function(event){
@@ -543,6 +486,21 @@ $( document ).ready(function() {
     });
 
     $('.datepicker').datepicker();
+
+    $("#add_groups").click(function(){
+        $("#groups").append($("#notgroups option:selected"));
+        $("#notgroups option:selected").remove();
+        $("#groups option:selected").prop('selected', false);
+    });
+    $("#remove_groups").click(function(){
+        $("#notgroups").append($("#groups option:selected"));
+        $("#groups option:selected").remove();
+        $("#notgroups option:selected").prop('selected', false);
+    });
+    $("#save").click(function(){
+        $("#groups > option").prop('selected', true);
+        $("#notgroups > option").prop('selected', false);
+    });
 });
 </script>
 
@@ -562,7 +520,7 @@ $( document ).ready(function() {
             <div class="tab-content content-box col-xs-12 table-responsive">
 <?php
             if ($act == "new" || $act == "edit" ) :?>
-              <form method="post" name="iform" id="iform" onsubmit="presubmit()">
+              <form method="post" name="iform" id="iform">
                 <input type="hidden" id="act" name="act" value="<?=$act;?>" />
                 <input type="hidden" id="userid" name="userid" value="<?=(isset($id) ? $id : '');?>" />
                 <input type="hidden" id="priv_delete" name="priv_delete" value="" /> <!-- delete priv action -->
@@ -664,11 +622,11 @@ $( document ).ready(function() {
                             </td>
                             <td class="text-center">
                               <br />
-                              <a href="javascript:move_selected('notgroups','groups')" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add groups"); ?>">
+                              <a id="add_groups" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Add groups"); ?>">
                                   <span class="glyphicon glyphicon-arrow-right"></span>
                               </a>
                               <br /><br />
-                              <a href="javascript:move_selected('groups','notgroups')" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove groups"); ?>">
+                              <a id="remove_groups" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("Remove groups"); ?>">
                                   <span class="glyphicon glyphicon-arrow-left"></span>
                               </a>
                             </td>
@@ -885,7 +843,7 @@ $( document ).ready(function() {
                   <tr>
                     <td>&nbsp;</td>
                     <td>
-                      <input name="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
+                      <input name="save" id="save" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                       <input type="button" class="btn btn-default" value="<?=gettext("Cancel");?>"
                              onclick="window.location.href='<?=isset($_SERVER['HTTP_REFERER']) ?  $_SERVER['HTTP_REFERER'] : '/system_usermanager.php';?>'" />
 <?php
