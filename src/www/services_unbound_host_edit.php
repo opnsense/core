@@ -138,23 +138,24 @@ include("head.inc");
 
 <script type="text/javascript">
   $( document ).ready(function() {
-    $("#rr").change(function(){
+    $("#rr").change(function() {
+      $(".a_aaa_rec").hide();
+      $(".mx_rec").hide();
       switch ($(this).val()) {
         case 'A':
           $('#ip').prop('disabled', false);
           $('#mxprio').prop('disabled', true);
           $('#mx').prop('disabled', true);
+          $(".a_aaa_rec").show();
           break;
         case 'MX':
           $('#ip').prop('disabled', true);
           $('#mxprio').prop('disabled', false);
           $('#mx').prop('disabled', false);
+          $(".mx_rec").show();
           break;
-        default:
-          $('#ip').prop('disabled', false);
-          $('#mxprio').prop('disabled', false);
-          $('#mx').prop('disabled', false);
       }
+      $( window ).resize(); // call window resize, which will re-apply zebra
     });
     // trigger initial change
     $("#rr").change();
@@ -218,7 +219,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="a_aaa_rec">
                     <td><a id="help_for_ip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP");?></td>
                     <td>
                       <input name="ip" type="text" id="ip" value="<?=$pconfig['ip'];?>" />
@@ -228,7 +229,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="mx_rec">
                     <td><a id="help_for_mxprio" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MX Priority");?></td>
                     <td>
                       <input name="mxprio" type="text" id="mxprio" value="<?=$pconfig['mxprio'];?>" />
@@ -238,7 +239,7 @@ include("head.inc");
                       </div>
                     </td>
                   </tr>
-                  <tr>
+                  <tr class="mx_rec">
                     <td><a id="help_for_mx" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("MX Host");?></td>
                     <td>
                       <input name="mx" type="text" id="mx" size="6" value="<?=$pconfig['mx'];?>" />
