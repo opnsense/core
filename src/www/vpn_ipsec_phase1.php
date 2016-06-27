@@ -417,157 +417,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 $service_hook = 'ipsec';
 
 legacy_html_escape_form_data($pconfig);
-
 include("head.inc");
-
 ?>
 
 <body>
 <?php include("fbegin.inc"); ?>
 <script type="text/javascript">
-//<![CDATA[
+    $( document ).ready(function() {
+        $("#myid_type").change(function(){
+            if ($("#myid_type").val() == 'myaddress') {
+                $("#myid_data").removeClass('show');
+                $("#myid_data").addClass('hidden');
+            } else {
+                $("#myid_data").removeClass('hidden');
+                $("#myid_data").addClass('show');
+            }
+        });
+        $("#myid_type").change();
 
-<?php
-    /* determine if we should init the key length */
-    $keyset = '';
-    if (isset($pconfig['encryption-algorithm']['keylen'])) {
-        if (is_numeric($pconfig['encryption-algorithm']['keylen'])) {
-            $keyset = $pconfig['encryption-algorithm']['keylen'];
-        }
-    }
-?>
-$( document ).ready(function() {
-  // old js code..
-  myidsel_change();
-  peeridsel_change();
-  methodsel_change();
-  ealgosel_change(<?=$keyset;?>);
-  dpdchkbox_change();
-});
+        $("#peerid_type").change(function(){
+            if ($("#peerid_type").val() == 'peeraddress') {
+               $("#peerid_data").removeClass('show');
+               $("#peerid_data").addClass('hidden');
+            } else {
+               $("#peerid_data").removeClass('hidden');
+               $("#peerid_data").addClass('show');
+            }
+        });
+        $("#peerid_type").change();
 
+        $("#authentication_method").change(function(){
+            $(".auth_opt").hide();
+            switch ($("#authentication_method").val()) {
+                case 'eap-tls':
+                case 'hybrid_rsa_server':
+                case 'xauth_rsa_server':
+                case 'rsasig':
+                    $(".auth_eap_tls").show();
+                    break;
+                case 'pre_shared_key':
+                    if ($("#mobile") == undefined) {
+                        $(".auth_psk").show();
+                    }
+                    break;
+                default: /* psk modes*/
+                    $(".auth_psk").show();
+                    break;
+            }
+        });
+        $("#authentication_method").change();
 
-function myidsel_change() {
-  if ($("#myid_type").val() == 'myaddress') {
-    $("#myid_data").removeClass('show');
-    $("#myid_data").addClass('hidden');
-  } else {
-    $("#myid_data").removeClass('hidden');
-    $("#myid_data").addClass('show');
-  }
-}
+        $("#ealgo").change(function(){
+            if ($("#ealgo option:selected").data('lo') != "") {
+                $("#ealgo_keylen").show();
+                $("#ealgo_keylen").prop('disabled', false);
+                $("#ealgo_keylen option").remove();
+                for (var i = $("#ealgo option:selected").data('lo'); i <= $("#ealgo option:selected").data('hi'); i += $("#ealgo option:selected").data('step')) {
+                    $("#ealgo_keylen").append($("<option/>").attr('value',i).text(i));
+                }
+                $("#ealgo_keylen").val($("#ealgo").data("default-keylen"));
+            } else {
+                $("#ealgo_keylen").hide();
+                $("#ealgo_keylen").prop('disabled', true);
+            }
+        });
+        $("#ealgo").change();
 
-function peeridsel_change() {
-  if ($("#peerid_type").val() == 'peeraddress') {
-    $("#peerid_data").removeClass('show');
-    $("#peerid_data").addClass('hidden');
-  } else {
-    $("#peerid_data").removeClass('hidden');
-    $("#peerid_data").addClass('show');
-  }
-}
-
-function methodsel_change() {
-  index = document.iform.authentication_method.selectedIndex;
-  value = document.iform.authentication_method.options[index].value;
-
-  switch (value) {
-  case 'eap-tls':
-    document.getElementById('opt_psk').style.display = 'none';
-    document.getElementById('opt_peerid').style.display = '';
-    document.getElementById('opt_cert').style.display = '';
-    document.getElementById('opt_ca').style.display = '';
-    document.getElementById('opt_cert').disabled = false;
-    document.getElementById('opt_ca').disabled = false;
-    break;
-  case 'hybrid_rsa_server':
-    document.getElementById('opt_psk').style.display = 'none';
-    document.getElementById('opt_peerid').style.display = '';
-    document.getElementById('opt_cert').style.display = '';
-    document.getElementById('opt_ca').style.display = '';
-    document.getElementById('opt_cert').disabled = false;
-    document.getElementById('opt_ca').disabled = false;
-    break;
-  case 'xauth_rsa_server':
-  case 'rsasig':
-    document.getElementById('opt_psk').style.display = 'none';
-    document.getElementById('opt_peerid').style.display = '';
-    document.getElementById('opt_cert').style.display = '';
-    document.getElementById('opt_ca').style.display = '';
-    document.getElementById('opt_cert').disabled = false;
-    document.getElementById('opt_ca').disabled = false;
-    break;
-<?php if (!empty($pconfig['mobile'])) {
-?>
-  case 'pre_shared_key':
-    document.getElementById('opt_psk').style.display = 'none';
-    document.getElementById('opt_peerid').style.display = 'none';
-    document.getElementById('opt_cert').style.display = 'none';
-    document.getElementById('opt_ca').style.display = 'none';
-    document.getElementById('opt_cert').disabled = true;
-    document.getElementById('opt_ca').disabled = true;
-    break;
-<?php
-} ?>
-  default: /* psk modes*/
-    document.getElementById('opt_psk').style.display = '';
-    document.getElementById('opt_peerid').style.display = '';
-    document.getElementById('opt_cert').style.display = 'none';
-    document.getElementById('opt_ca').style.display = 'none';
-    document.getElementById('opt_cert').disabled = true;
-    document.getElementById('opt_ca').disabled = true;
-    break;
-  }
-}
-
-/* PHP generated java script for variable length keys */
-function ealgosel_change(bits) {
-  switch (document.iform.ealgo.selectedIndex) {
-<?php
-$i = 0;
-foreach ($p1_ealgos as $algo => $algodata) {
-    if (isset($algodata['keysel']) && is_array($algodata['keysel'])) {
-        echo "    case {$i}:\n";
-        echo "      document.iform.ealgo_keylen.style.visibility = 'visible';\n";
-        echo "      document.iform.ealgo_keylen.options.length = 0;\n";
-    //      echo "      document.iform.ealgo_keylen.options[document.iform.ealgo_keylen.options.length] = new Option( 'auto', 'auto' );\n";
-
-        $key_hi = $algodata['keysel']['hi'];
-        $key_lo = $algodata['keysel']['lo'];
-        $key_step = $algodata['keysel']['step'];
-
-        for ($keylen = $key_hi; $keylen >= $key_lo; $keylen -= $key_step) {
-            echo "      document.iform.ealgo_keylen.options[document.iform.ealgo_keylen.options.length] = new Option( '{$keylen} bits', '{$keylen}' );\n";
-        }
-        echo "      break;\n";
-    } else {
-        echo "    case {$i}:\n";
-        echo "      document.iform.ealgo_keylen.style.visibility = 'hidden';\n";
-        echo "      document.iform.ealgo_keylen.options.length = 0;\n";
-        echo "      break;\n";
-    }
-    $i++;
-}
-?>
-  }
-
-  if( bits )
-    document.iform.ealgo_keylen.value = bits;
-}
-
-function dpdchkbox_change() {
-  if( document.iform.dpd_enable.checked )
-    document.getElementById('opt_dpd').style.display = '';
-  else
-    document.getElementById('opt_dpd').style.display = 'none';
-
-  if (!document.iform.dpd_delay.value)
-    document.iform.dpd_delay.value = "10";
-
-  if (!document.iform.dpd_maxfail.value)
-    document.iform.dpd_maxfail.value = "5";
-}
-
-//]]>
+        $("#dpd_enable").change(function(){
+            if ($(this).prop('checked')) {
+                $("#opt_dpd").show();
+                if ($("#dpd_delay").val() == "") {
+                    $("#dpd_delay").val("10");
+                }
+                if ($("#dpd_maxfail").val() == "") {
+                    $("#dpd_maxfail").val("5");
+                }
+            } else {
+                $("#opt_dpd").hide();
+            }
+        });
+        $("#dpd_enable").change();
+    });
 </script>
 
 <section class="page-content-main">
@@ -729,7 +659,7 @@ function dpdchkbox_change() {
                   <tr>
                     <td><a id="help_for_authmethod" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication method"); ?></td>
                     <td>
-                      <select name="authentication_method" class="formselect" onchange="methodsel_change()">
+                      <select name="authentication_method" id="authentication_method" class="formselect">
 <?php
                       $p1_authentication_methods = array(
                         'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
@@ -776,7 +706,7 @@ function dpdchkbox_change() {
                   <tr>
                     <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("My identifier"); ?></td>
                     <td>
-                      <select name="myid_type" id="myid_type" class="formselect" onchange="myidsel_change()">
+                      <select name="myid_type" id="myid_type" class="formselect">
 <?php
                       $my_identifier_list = array(
                         'myaddress' => array( 'desc' => gettext('My IP address'), 'mobile' => true ),
@@ -801,10 +731,10 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>
-                  <tr id="opt_peerid">
+                  <tr class="auth_opt auth_eap_tls auth_psk">
                     <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
-                      <select name="peerid_type" id="peerid_type" class="formselect" onchange="peeridsel_change()">
+                      <select name="peerid_type" id="peerid_type" class="formselect">
 <?php
                       $peer_identifier_list = array(
                         'peeraddress' => array( 'desc' => gettext('Peer IP address'), 'mobile' => false ),
@@ -832,7 +762,7 @@ endforeach; ?>
 } ?>
                     </td>
                   </tr>
-                  <tr id="opt_psk">
+                  <tr class="auth_opt auth_psk">
                     <td ><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
                       <input name="pre-shared-key" type="text" class="formfld unknown" id="pskey" size="40"
@@ -842,7 +772,7 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>
-                  <tr id="opt_cert">
+                  <tr class="auth_opt auth_eap_tls">
                     <td ><a id="help_for_certref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate"); ?></td>
                     <td>
                       <select name="certref" class="formselect">
@@ -862,7 +792,7 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>
-                  <tr id="opt_ca">
+                  <tr class="auth_opt auth_eap_tls">
                     <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate Authority"); ?></td>
                     <td>
                       <select name="caref" class="formselect">
@@ -891,11 +821,15 @@ endforeach; ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Encryption algorithm"); ?></td>
                     <td>
-                      <select name="ealgo" id="ealgo" class="formselect" onchange="ealgosel_change()">
+                      <select name="ealgo" id="ealgo" data-default-keylen="<?=$pconfig['encryption-algorithm']['keylen'];?>">
 <?php
                       foreach ($p1_ealgos as $algo => $algodata) :
                       ?>
-                        <option value="<?=$algo;?>" <?= $algo == $pconfig['encryption-algorithm']['name'] ? "selected=\"selected\"" : "" ;?>>
+                        <option value="<?=$algo;?>" <?= $algo == $pconfig['encryption-algorithm']['name'] ? "selected=\"selected\"" : "" ;?>
+                                data-hi="<?=$algodata['keysel']['hi'];?>"
+                                data-lo="<?=$algodata['keysel']['lo'];?>"
+                                data-step="<?=$algodata['keysel']['step'];?>"
+                            >
                             <?=$algodata['name'];?>
                         </option>
 <?php
@@ -903,7 +837,7 @@ endforeach; ?>
 ?>
                       </select>
 
-                      <select name="ealgo_keylen" width="30" class="formselect">
+                      <select name="ealgo_keylen" id="ealgo_keylen" width="30" class="formselect">
                       </select>
                     </td>
                   </tr>
@@ -1017,7 +951,7 @@ endforeach; ?>
                   <tr>
                     <td><a id="help_for_dpd_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Dead Peer Detection"); ?></td>
                     <td>
-                      <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> onclick="dpdchkbox_change()" />
+                      <input name="dpd_enable" type="checkbox" id="dpd_enable" value="yes" <?=!empty($pconfig['dpd_delay']) && !empty($pconfig['dpd_maxfail'])?"checked=\"checked\"":"";?> />
                       <div class="hidden" for="help_for_dpd_enable">
                         <?=gettext("Enable DPD"); ?>
                       </div>
@@ -1047,7 +981,7 @@ endforeach; ?>
 endif; ?>
                       <?php if (!empty($pconfig['mobile'])) :
 ?>
-                      <input name="mobile" type="hidden" value="true" />
+                      <input id="mobile" name="mobile" type="hidden" value="true" />
                       <?php
 endif; ?>
                       <input name="ikeid" type="hidden" value="<?=$pconfig['ikeid'];?>" />
