@@ -82,18 +82,26 @@ include("head.inc");
 
 <script type="text/javascript">
 //<![CDATA[
-  function show_advanced(showboxID, configvalueID) {
-    document.getElementById(showboxID).innerHTML='';
-    aodiv = document.getElementById(configvalueID);
-    aodiv.style.display = "block";
-  }
-
-  function ToggleOther(clicked, checkOff) {
-    if (document.getElementById(clicked).checked) {
-      document.getElementById(checkOff).checked=false;
-    }
-  }
-
+  $( document ).ready(function() {
+    $("#gpsprefer").click(function(){
+        if ($(this).prop('checked')) {
+            $("#gpsselect").prop('checked', false);
+        } else {
+            $("#gpsselect").prop('checked', true);
+        }
+    })
+    $("#gpsselect").click(function(){
+        if ($(this).prop('checked')) {
+            $("#gpsprefer").prop('checked', false);
+        } else {
+            $("#gpsprefer").prop('checked', true);
+        }
+    })
+    $("#showgpsinitbox").click(function(event){
+        $("#showgpsinitbox").parent().hide();
+        $("#showgpsinit").show();
+    });
+  });
 /*
 init commands are Base64 encoded
 Default =  #Sponsored, probably a Ublox
@@ -172,12 +180,8 @@ SureGPS =    #Sure Electronics SKG16B
   function set_gps_default() {
     //This handles a new config and also a reset to a defined default config
     var gpsdef = new Object();
-    //get the text description of the selected type
-    var e = document.getElementById("gpstype");
-    var type = e.options[e.selectedIndex].value;
-
     //stuff the JS object as needed for each type
-    switch(type) {
+    switch($("#gpstype").val()) {
       case "Default":
         gpsdef['nmea'] = 0;
         gpsdef['speed'] = 0;
@@ -254,21 +258,6 @@ SureGPS =    #Sure Electronics SKG16B
     $('.selectpicker').selectpicker('refresh');
   }
 
-  //function to compute a NMEA checksum derived from the public domain function at http://www.hhhh.org/wiml/proj/nmeaxor.html
-  function NMEAChecksum(cmd) {
-    // Compute the checksum by XORing all the character values in the string.
-    var checksum = 0;
-    for (var i = 0; i < cmd.length; i++) {
-      checksum = checksum ^ cmd.charCodeAt(i);
-    }
-    // Convert it to hexadecimal (base-16, upper case, most significant byte first).
-    var hexsum = Number(checksum).toString(16).toUpperCase();
-    if (hexsum.length < 2) {
-      hexsum = ("00" + hexsum).slice(-2);
-    }
-    // Display the result
-    document.getElementById("nmeachecksum").innerHTML = hexsum;
-  }
   $( document ).ready(function() {
       $("#gpsnmea").change(function(){
           var nmea_id = 0;
@@ -278,6 +267,23 @@ SureGPS =    #Sure Electronics SKG16B
           $("#nmea").val(nmea_id);
       });
       $("#gpstype").change(set_gps_default);
+
+      // compute a NMEA checksum derived from the public domain function at http://www.hhhh.org/wiml/proj/nmeaxor.html
+      $("#calcnmeachk").click(function(){
+          var cmd = $("#nmeastring").val();
+          // Compute the checksum by XORing all the character values in the string.
+          var checksum = 0;
+          for (var i = 0; i < cmd.length; i++) {
+            checksum = checksum ^ cmd.charCodeAt(i);
+          }
+          // Convert it to hexadecimal (base-16, upper case, most significant byte first).
+          var hexsum = Number(checksum).toString(16).toUpperCase();
+          if (hexsum.length < 2) {
+            hexsum = ("00" + hexsum).slice(-2);
+          }
+          // Display the result
+          $("#nmeachecksum").html(hexsum);
+      });
   });
 
 //]]>
@@ -420,7 +426,7 @@ SureGPS =    #Sure Electronics SKG16B
                           </tr>
                           <tr>
                             <td>
-                              <input name="prefer" type="checkbox" id="gpsprefer" onclick="ToggleOther('gpsprefer', 'gpsselect')"<?=empty($pconfig['prefer']) ? " checked=\"checked\"" : ""; ?> />
+                              <input name="prefer" type="checkbox" id="gpsprefer" <?=empty($pconfig['prefer']) ? " checked=\"checked\"" : ""; ?> />
                             </td>
                             <td>
                               <?=gettext("NTP should prefer this clock (default: enabled)."); ?>
@@ -428,7 +434,7 @@ SureGPS =    #Sure Electronics SKG16B
                           </tr>
                           <tr>
                             <td>
-                              <input name="noselect" type="checkbox" id="gpsselect" onclick="ToggleOther('gpsselect', 'gpsprefer')"<?=!empty($pconfig['noselect']) ? " checked=\"checked\"" : ""; ?> />
+                              <input name="noselect" type="checkbox" id="gpsselect" <?=!empty($pconfig['noselect']) ? " checked=\"checked\"" : ""; ?> />
                             </td>
                             <td>
                               <?=gettext("NTP should not use this clock, it will be displayed for reference only(default: disabled)."); ?>
@@ -490,8 +496,8 @@ SureGPS =    #Sure Electronics SKG16B
                     <tr>
                       <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('GPS Initialization') ?></td>
                       <td>
-                        <div id="showgpsinitbox">
-                          <input type="button" onclick="show_advanced('showgpsinitbox', 'showgpsinit')" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show GPS Initialization commands");?>
+                        <div >
+                          <input type="button" id="showgpsinitbox" value="<?=gettext("Advanced");?>" /> - <?=gettext("Show GPS Initialization commands");?>
                         </div>
                         <div id="showgpsinit" style="display:none">
                           <textarea name="initcmd" class="formpre" id="gpsinitcmd" cols="65" rows="7"><?=base64_decode($pconfig['initcmd']);?></textarea><br />
@@ -499,7 +505,7 @@ SureGPS =    #Sure Electronics SKG16B
                           <strong><?=gettext("NMEA checksum calculator");?>:</strong>
                           <br />
                           <?=gettext("Enter the text between &quot;$&quot; and &quot;*&quot; of a NMEA command string:");?><br /> $<input name="nmeastring" type="text" id="nmeastring" size="30" value="" />*<span id="nmeachecksum"><?=gettext("checksum");?></span>&nbsp;&nbsp;
-                          <input type="button" onclick="NMEAChecksum(nmeastring.value)" value="<?=gettext("Calculate NMEA checksum");?>" />
+                          <input type="button" id="calcnmeachk" value="<?=gettext("Calculate NMEA checksum");?>" />
                         </div>
                       </td>
                     </tr>
