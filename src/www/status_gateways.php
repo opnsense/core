@@ -111,9 +111,6 @@ include("head.inc");
                         <i class="fa fa-globe"></i>
                         <?=$online;?>
                       </div>
-                      <div  class="hidden-xs">
-                        <?=!empty($gateways_status[$gname]['lastcheck']) ? gettext("Last check:") . '<br />' . $gateways_status[$gname]['lastcheck']  : "";?>
-                      </div>
                     </td>
                     <td>
                       <?=$gateway['descr']; ?>
