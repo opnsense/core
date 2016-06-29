@@ -1154,7 +1154,8 @@
         "name": "WebCfg - System: User Manager page",
         "descr": "Allow access to the 'System: User Manager' page.",
         "match": [
-            "system_usermanager.php*"
+            "system_usermanager.php*",
+            "system_usermanager_import_ldap.php*"
         ]
     },
     "page-system-usermanager-addprivs": {
