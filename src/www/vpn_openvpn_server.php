@@ -905,7 +905,7 @@ endif; ?>
                       </td>
                     </tr>
                     <tr class="opt_mode opt_mode_p2p_shared_key">
-                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Key"); ?></td>
+                      <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Key"); ?></td>
                       <td>
 <?php
                         if (empty($pconfig['shared_key'])) :?>
