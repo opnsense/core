@@ -34,42 +34,9 @@ require_once("guiconfig.inc");
 $ipsec_detail_array = array();
 $ipsec_tunnels = array();
 $ipsec_leases = array();
+$activetunnels = 0;
 
 if (isset($config['ipsec']['phase1'])) {
-    echo "<div>&nbsp;</div>\n";
-
-    $tab_array = array();
-    $tab_array[] = array(gettext("Overview"), true, "ipsec-Overview");
-    $tab_array[] = array(gettext("Tunnels"), false, "ipsec-tunnel");
-    $tab_array[] = array(gettext("Mobile"), false, "ipsec-mobile");
-
-    echo "<div id=\"tabs\">";
-
-    $tabscounter = 0;
-    foreach ($tab_array as $ta) {
-        $dashpos = strpos($ta[2],'-');
-        $tabname = $ta[2] . "-tab";
-        $tabclass = substr($ta[2],0,$dashpos);
-        $tabclass = $tabclass . "-class";
-        if ($ta[1] == true) {
-            $tabActive = "table-cell";
-            $tabNonActive = "none";
-        } else {
-            $tabActive = "none";
-            $tabNonActive = "table-cell";
-        }
-        echo "<div id=\"{$ta[2]}-active\" class=\"{$tabclass}-tabactive\" style=\"display:{$tabActive}; background-color:#EEEEEE; color:black;\">";
-        echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
-        echo "&nbsp;&nbsp;&nbsp;</b>";
-        echo "</div>";
-
-        echo "<div id=\"{$ta[2]}-deactive\" class=\"{$tabclass}-tabdeactive\" style=\"display:{$tabNonActive}; background-color:#777777; color:white; cursor: pointer;\" onclick=\"return changeTabDIV('{$ta[2]}')\">";
-        echo "<b>&nbsp;&nbsp;&nbsp;{$ta[0]}";
-        echo "&nbsp;&nbsp;&nbsp;</b>";
-        echo "</div>";
-    }
-    echo "</div>";
-
     $ipsec_leases = json_decode(configd_run("ipsec list leases"), true);
     if ($ipsec_leases == null) {
         $ipsec_leases = array();
@@ -81,8 +48,6 @@ if (isset($config['ipsec']['phase1'])) {
     }
 
     // parse configured tunnels
-    $activetunnels = 0;
-
     foreach ($ipsec_status as $status_key => $status_value) {
         if (isset($status_value['children'])) {
           foreach($status_value['children'] as $child_status_key => $child_status_value) {
@@ -90,8 +55,8 @@ if (isset($config['ipsec']['phase1'])) {
                                                         'local-addrs' => $status_value['local-addrs'],
                                                         'remote-addrs' => $status_value['remote-addrs'],
                                                       );
-              $ipsec_tunnels[$child_status_key]['local-ts'] = implode(',', $child_status_value['local-ts']);
-              $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(',', $child_status_value['remote-ts']);
+              $ipsec_tunnels[$child_status_key]['local-ts'] = implode(', ', $child_status_value['local-ts']);
+              $ipsec_tunnels[$child_status_key]['remote-ts'] = implode(', ', $child_status_value['remote-ts']);
           }
         }
         foreach ($status_value['sas'] as $sas_key => $sas_value) {
@@ -106,45 +71,30 @@ if (isset($config['ipsec']['phase1'])) {
 if (isset($config['ipsec']['phase2'])) {
 ?>
 <script type="text/javascript">
-  function changeTabDIV(selectedDiv){
-    var dashpos = selectedDiv.indexOf("-");
-    var tabclass = selectedDiv.substring(0,dashpos);
-    d = document;
-    //get deactive tabs first
-    tabclass = tabclass + "-class-tabdeactive";
-    var tabs = document.getElementsByClassName(tabclass);
-    var incTabSelected = selectedDiv + "-deactive";
-    for (i=0; i<tabs.length; i++){
-      var tab = tabs[i].id;
-      dashpos = tab.lastIndexOf("-");
-      var tab2 = tab.substring(0,dashpos) + "-deactive";
-      if (tab2 == incTabSelected){
-        tablink = d.getElementById(tab2);
-        tablink.style.display = "none";
-        tab2 = tab.substring(0,dashpos) + "-active";
-        tablink = d.getElementById(tab2);
-        tablink.style.display = "table-cell";
-        //now show main div associated with link clicked
-        tabmain = d.getElementById(selectedDiv);
-        tabmain.style.display = "block";
-      }
-      else
-      {
-        tab2 = tab.substring(0,dashpos) + "-deactive";
-        tablink = d.getElementById(tab2);
-        tablink.style.display = "table-cell";
-        tab2 = tab.substring(0,dashpos) + "-active";
-        tablink = d.getElementById(tab2);
-        tablink.style.display = "none";
-        //hide sections we don't want to see
-        tab2 = tab.substring(0,dashpos);
-        tabmain = d.getElementById(tab2);
-        tabmain.style.display = "none";
-      }
-    }
-  }
+    $(document).ready(function() {
+        $(".ipsec-tab").click(function(){
+            $(".ipsec-tab").css('background-color', '#777777');
+            $(".ipsec-tab").css('color', 'white');
+            $(this).css('background-color', '#EEEEEE');
+            $(this).css('color', 'black');
+            $(".ipsec-tab-content").hide();
+            $("#"+$(this).attr('for')).show();
+        });
+    });
 </script>
-<div id="ipsec-Overview" style="display:block;background-color:#EEEEEE;">
+<div id="tabs">
+    <div for="ipsec-Overview" class="ipsec-tab table-cell" style="background-color:#EEEEEE; color:black; cursor: pointer; display:table-cell">
+        <strong>&nbsp;&nbsp;<?=gettext("Overview");?>&nbsp;&nbsp;</strong>
+    </div>
+    <div for="ipsec-tunnel" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+        <strong>&nbsp;&nbsp;<?=gettext("Tunnels");?>&nbsp;&nbsp;</strong>
+    </div>
+    <div for="ipsec-mobile" class="ipsec-tab table-cell" style="background-color:#777777; color:white; cursor: pointer; display:table-cell">
+        <strong>&nbsp;&nbsp;<?=gettext("Mobile");?>&nbsp;&nbsp;</strong>
+    </div>
+</div>
+
+<div id="ipsec-Overview" class="ipsec-tab-content" style="display:block;background-color:#EEEEEE;">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -176,7 +126,7 @@ if (isset($config['ipsec']['phase2'])) {
   </table>
 </div>
 
-<div id="ipsec-tunnel" style="display:none;background-color:#EEEEEE;">
+<div id="ipsec-tunnel" class="ipsec-tab-content" style="display:none;background-color:#EEEEEE;">
   <table class="table table-striped">
     <thead>
       <tr>
@@ -212,7 +162,7 @@ if (isset($config['ipsec']['phase2'])) {
     </tbody>
   </table>
 </div>
-<div id="ipsec-mobile" style="display:none;background-color:#EEEEEE;">
+<div id="ipsec-mobile" class="ipsec-tab-content" style="display:none;background-color:#EEEEEE;">
   <table class="table table-striped">
     <thead>
       <tr>
