@@ -409,7 +409,7 @@ function get_port_with_service($port, $proto) {
     $service = getservbyport($port, $proto);
     $portstr = "";
     if ($service) {
-        $portstr = sprintf('<span title="Service %s/%s: %s">' . htmlspecialchars($port) . '</span>', $port, $proto, $service);
+        $portstr = sprintf('<span title="Service %s/%s: %s">' . html_safe($port) . '</span>', html_safe($port), html_safe($proto), html_safe($service));
     } else {
         $portstr = htmlspecialchars($port);
     }
@@ -818,7 +818,7 @@ include("head.inc");
                 <input type="hidden" value="<?= $int;?>" class="intf"/>
                 <input type="hidden" value="<?= $ipproto;?>" class="ipproto"/>
                 <span class="glyphicon glyphicon-remove" alt="Icon Easy Rule: Add to Block List"></span></a>
-                <?= html_safe($srcstr) ?><span class="RESOLVE-<?= html_safe($src_htmlclass) ?>"></span>
+                <?= $srcstr ?><span class="RESOLVE-<?= html_safe($src_htmlclass) ?>"></span>
               </td>
               <td>
                 <span onclick="javascript:resolve_with_ajax('<?= html_safe($filterent['dstip']) ?>');" title="<?=gettext("Click to resolve");?>" class="ICON-<?= $dst_htmlclass; ?>" alt="Icon Reverse Resolve with DNS"><span class="btn btn-default btn-xs  glyphicon glyphicon-info-sign"></span></span>
@@ -830,7 +830,7 @@ include("head.inc");
                 <input type="hidden" value="<?= $proto;?>" class="proto"/>
                 <input type="hidden" value="<?= $ipproto;?>" class="ipproto"/>
                 <span  class="glyphicon glyphicon-play" alt="<?= gettext('Icon Easy Rule: Pass this traffic') ?>"></span></a>
-                <?= html_safe($dststr) ?><span class="RESOLVE-<?= html_safe($dst_htmlclass) ?>"></span>
+                <?= $dststr ?><span class="RESOLVE-<?= html_safe($dst_htmlclass) ?>"></span>
               </td>
 <?php
               if ($filterent['proto'] == "TCP") {
