@@ -51,11 +51,8 @@ if (empty($config['widgets']) || !is_array($config['widgets'])) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $config['widgets'];
-    if (empty($pconfig['sequence'])) {
-        // set default dashboard view
-        $pconfig['sequence'] = 'system_information-container:col1:show,interface_list-container:col1:show,traffic_graphs-container:col1:show';
-    }
-    // default 2 column grid layout
+    // set default dashboard view
+    $pconfig['sequence'] = !empty($pconfig['sequence']) ? $pconfig['sequence'] : '';
     $pconfig['column_count'] = !empty($pconfig['column_count']) ? $pconfig['column_count'] : 2;
     // build list of widgets
     $widgetCollection = array();
@@ -84,12 +81,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['sequence'])) {
         $config['widgets']['sequence'] = $_POST['sequence'];
-        if (!empty($_POST['column_count'])) {
-            $config['widgets']['column_count'] = $_POST['column_count'];
-        }
-        write_config(gettext("Widget configuration has been changed."));
+    } elseif (isset($config['widgets']['sequence'])) {
+        unset($config['widgets']['sequence']);
     }
-    header("Location: index.php");
+    if (!empty($_POST['column_count'])) {
+        $config['widgets']['column_count'] = $_POST['column_count'];
+    } elseif(isset($config['widgets']['column_count'])) {
+        unset($config['widgets']['column_count']);
+    }
+    write_config(gettext('Widget configuration has been changed.'));
+    header('Location: index.php');
     exit;
 }
 
