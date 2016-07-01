@@ -15,6 +15,8 @@ install${TARGET}: force
 			sed -i '' \
 			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
 			    -e "s=%%CORE_REPOSITORY%%=${CORE_REPOSITORY}=g" \
+			    -e "s=%%CORE_NAME%%=${CORE_NAME}=g" \
+			    -e "s=%%CORE_ABI%%=${CORE_ABI}=g" \
 			    "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}"; \
 			mv -v "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE}" \
 			    "${DESTDIR}${ROOT${TARGET}}/${TREE}/$${FILE%%.in}"; \

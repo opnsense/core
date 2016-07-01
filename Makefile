@@ -45,10 +45,12 @@ CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
+CORE_ABI?=	16.1
+
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
-CORE_REPOSITORY?=	latest
+CORE_REPOSITORY?=	${CORE_ABI}/latest
 .elif "${FLAVOUR}" == LibreSSL
-CORE_REPOSITORY?=	libressl
+CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
@@ -195,17 +197,21 @@ scripts: want-git
 	# XXX should extend to all possible scripts
 	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}/
 	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
+	    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
+	    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
 	    ${DESTDIR}/+POST_INSTALL
 
 install: force
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
+	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
 	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 bootstrap: force
 	@${MAKE} -C ${.CURDIR}/src install_bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
+	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 plist: force

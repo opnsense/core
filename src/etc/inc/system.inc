@@ -1368,22 +1368,33 @@ function system_firmware_configure()
 {
     global $config;
 
-    /* our own ABI prefix on the mirror */
-    $osabi = '16.1';
-
     /* rewrite the config via the defaults */
     $origin_conf = '/usr/local/etc/pkg/repos/origin.conf';
     copy("${origin_conf}.sample", $origin_conf);
 
     if (!empty($config['system']['firmware']['mirror'])) {
-        mwexecf("/usr/local/sbin/opnsense-update %s %s",
-            array("-sm", str_replace('/', '\/', $config['system']['firmware']['mirror']))
+        mwexecf(
+            '/usr/local/sbin/opnsense-update %s %s',
+            array('-sm', str_replace('/', '\/', $config['system']['firmware']['mirror']))
         );
     }
 
     if (!empty($config['system']['firmware']['flavour'])) {
-        mwexecf("/usr/local/sbin/opnsense-update %s %s",
-            array("-sn", str_replace('/', '\/', $osabi . '/' . $config['system']['firmware']['flavour']))
+        $osabi = '';
+
+        switch ($config['system']['firmware']['flavour']) {
+            case 'libressl':
+            case 'latest':
+                /* if this is known flavour we treat it with ABI prefix */
+                $osabi = file_get_contents('/usr/local/opnsense/version/opnsense.abi') . '/';
+                break;
+            default:
+                break;
+        }
+
+        mwexecf(
+            '/usr/local/sbin/opnsense-update %s %s',
+            array('-sn', str_replace('/', '\/', $osabi . $config['system']['firmware']['flavour']))
         );
     }
 }
