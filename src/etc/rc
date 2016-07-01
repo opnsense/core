@@ -203,11 +203,6 @@ fi
 
 echo "done."
 
-# restore pkg database if bootstrapped
-if [ -f /conf/pkg.db ]; then
-	if pkg -N; then pkg backup -qr /conf/pkg.db; fi
-fi
-
 # regenerate groups and users for packages
 /usr/local/etc/rc.recover pkg > /dev/null
 
