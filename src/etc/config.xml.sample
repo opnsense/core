@@ -357,6 +357,7 @@
     </monitor_type>
   </load_balancer>
   <widgets>
-    <sequence>system_information-container:col1:show,gateways-container:col2:show,interface_list-container:col2:show,services_status-container:col2:show</sequence>
+    <sequence>system_information-container:00000000-col3:show,services_status-container:00000001-col4:show,gateways-container:00000002-col4:show,interface_list-container:00000003-col4:show</sequence>
+    <column_count>2</column_count>
   </widgets>
 </opnsense>
