@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
     $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
     $pconfig['loglighttpd'] = empty($config['syslog']['nologlighttpd']);
-    $pconfig['filterdescriptions'] = $config['syslog']['filterdescriptions'];
+    $pconfig['filterdescriptions'] = !empty($config['syslog']['filterdescriptions']) ? $config['syslog']['filterdescriptions'] : null;
     $pconfig['disablelocallogging'] = isset($config['syslog']['disablelocallogging']);
     $pconfig['logfilesize'] =  !empty($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : null;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
