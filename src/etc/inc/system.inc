@@ -1386,7 +1386,7 @@ function system_firmware_configure()
             case 'libressl':
             case 'latest':
                 /* if this is known flavour we treat it with ABI prefix */
-                $osabi = file_get_contents('/usr/local/opnsense/version/opnsense.abi') . '/';
+                $osabi = trim(file_get_contents('/usr/local/opnsense/version/opnsense.abi')) . '/';
                 break;
             default:
                 break;
