@@ -83,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['cryptodev_enable'] = isset($config['system']['cryptodev_enable']);
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
     $pconfig['use_mfs_tmpvar'] = isset($config['system']['use_mfs_tmpvar']);
+    $pconfig['use_mfs_tmp'] = isset($config['system']['use_mfs_tmp']);
     $pconfig['powerd_ac_mode'] = "hadp";
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
     $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
@@ -139,6 +140,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['use_mfs_tmpvar'] = true;
         } elseif (isset($config['system']['use_mfs_tmpvar'])) {
             unset($config['system']['use_mfs_tmpvar']);
+        }
+
+        if (!empty($pconfig['use_mfs_tmp'])) {
+            $config['system']['use_mfs_tmp'] = true;
+        } elseif (isset($config['system']['use_mfs_tmp'])) {
+            unset($config['system']['use_mfs_tmp']);
         }
 
         if (!empty($pconfig['rrdbackup'])) {
@@ -391,13 +398,23 @@ include("head.inc");
                 <th colspan="2" valign="top" class="listtopic"><?=gettext("RAM Disk Settings (Reboot to Apply Changes)"); ?></th>
               </tr>
               <tr>
-                <td><a id="help_for_use_mfs_tmpvar" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use RAM Disks"); ?></td>
+                <td><a id="help_for_use_mfs_tmpvar" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp and /var RAM disks'); ?></td>
                 <td>
-                  <input name="use_mfs_tmpvar" type="checkbox" id="use_mfs_tmpvar" value="yes" <?=!empty($pconfig['use_mfs_tmpvar']) ? "checked=\"checked\"" : "";?>/>
+                  <input name="use_mfs_tmpvar" type="checkbox" id="use_mfs_tmpvar" value="yes" <?=!empty($pconfig['use_mfs_tmpvar']) ? 'checked="checked"' : '';?>/>
                   <strong><?=gettext("Use memory file system for /tmp and /var"); ?></strong>
                   <div class="hidden" for="help_for_use_mfs_tmpvar">
-                    <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) on a full install " .
-                      "rather than use the hard disk. Setting this will cause the data in /tmp and /var to be lost on reboot, including log data."); ?>
+                    <?=gettext("Set this if you wish to use /tmp and /var as RAM disks (memory file system disks) " .
+                      "rather than use the hard disk. Setting this will cause the data /var to be lost on reboot, including log data."); ?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_use_mfs_tmp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('/tmp RAM disk'); ?></td>
+                <td>
+                  <input name="use_mfs_tmp" type="checkbox" id="use_mfs_tmp" value="yes" <?=!empty($pconfig['use_mfs_tmp']) ? 'checked="checked"' : '';?>/>
+                  <strong><?=gettext('Use memory file system for /tmp'); ?></strong>
+                  <div class="hidden" for="help_for_use_mfs_tmp">
+                    <?= gettext('Set this if you wish to use /tmp as a RAM disk (memory file system disk) rather than use the hard disk.') ?>
                   </div>
                 </td>
               </tr>

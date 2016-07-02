@@ -147,8 +147,16 @@ remove_mfs_link()
 	fi
 }
 
-USE_MFS_TMPVAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
-if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
+# USE_MFS_TMP also catches and overrides USE_MFS_VAR (pre-16.7 compat)
+# At some point we want to flip use_mfs_tmpvar to use_mfs_var instead.
+USE_MFS_VAR=`/usr/bin/grep -c use_mfs_tmpvar /conf/config.xml`
+USE_MFS_TMP=`/usr/bin/grep -c use_mfs_tmp /conf/config.xml`
+
+if [ ${USE_MFS_TMP} -ne 0 ]; then
+	mount -t tmpfs -o mode=01777 tmpfs /tmp
+fi
+
+if [ ${USE_MFS_VAR} -ne 0 ]; then
 	echo -n "Setting up memory disks..."
 
 	setup_mfs_link /root /var/cache opnsense-update
@@ -156,7 +164,6 @@ if [ ${USE_MFS_TMPVAR} -ne 0 ]; then
 	setup_mfs_link /root /var/db pkg
 	setup_mfs_link /root /var crash
 
-	mount -t tmpfs -o mode=01777 tmpfs /tmp
 	mount -t tmpfs tmpfs /var
 
 	install_mfs_link /root /var/cache opnsense-update
