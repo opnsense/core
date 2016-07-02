@@ -74,12 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['sequence'])) {
         $config['widgets']['sequence'] = $_POST['sequence'];
-    } else {
+    } elseif (isset($config['widgets']['sequence'])) {
         unset($config['widgets']['sequence']);
     }
     if (!empty($_POST['column_count'])) {
         $config['widgets']['column_count'] = $_POST['column_count'];
-    } else {
+    } elseif(isset($config['widgets']['column_count'])) {
         unset($config['widgets']['column_count']);
     }
     write_config(gettext('Widget configuration has been changed.'));
