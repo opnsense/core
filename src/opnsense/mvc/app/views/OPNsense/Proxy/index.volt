@@ -258,7 +258,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     Add an item to the table to fetch a remote acl for blacklisting.%s
                     You can enable or disable the blacklist list.%s
                     The active blacklists will be merged with the settings under %sForward Proxy -> Access Control List%s.
-                    ') | e | format('<br/>','<br/>','<b>','</b>') }}
+                    ') | format('<br/>','<br/>','<b>','</b>') }}
                 </small>
                 </td>
             </tr>
@@ -289,8 +289,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     <div class="col-md-12">
                         <hr/>
                         <button class="btn btn-primary" id="reconfigureAct" type="button"><b>{{ lang._('Apply') }}</b><i id="reconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="fetchandreconfigureAct" type="button"><b>{{ lang._('Download ACLs & Apply') | e }}</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
-                        <button class="btn btn-primary" id="downloadAct" type="button"><b>{{ lang._('Download ACLs') | e }}</b><i id="downloadAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="fetchandreconfigureAct" type="button"><b>{{ lang._('Download ACLs & Apply') }}</b><i id="fetchandreconfigureAct_progress" class=""></i></button>
+                        <button class="btn btn-primary" id="downloadAct" type="button"><b>{{ lang._('Download ACLs') }}</b><i id="downloadAct_progress" class=""></i></button>
                         <button class="btn btn-primary" id="ScheduleAct" type="button"><b>{{ lang._('Schedule with Cron') }}</b><i id="scheduleAct_progress" class=""></i></button>
                     </div>
                 </td>
