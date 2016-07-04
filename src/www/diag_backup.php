@@ -115,7 +115,6 @@ function rrd_data_xml() {
     return $result;
 }
 
-
 function restore_rrddata() {
     global $config;
     foreach($config['rrddata']['rrddatafile'] as $rrd) {
@@ -135,7 +134,7 @@ function restore_rrddata() {
             }
             unlink($xml_file);
         } elseif (!empty($rrd['data'])) {
-            // pfSense 2.0 rrd backup format
+            /* rrd backup format */
             $rrd_file = "/var/db/rrd/{$rrd['filename']}";
             $rrd_fd = fopen($rrd_file, "w");
             if (!$rrd_fd) {
@@ -314,8 +313,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (count($input_errors) == 0) {
             if(stristr($data, "<m0n0wall>")) {
                 log_error('Upgrading m0n0wall configuration to OPNsense.');
-                /* m0n0wall was found in config.  convert it. */
-                $data = str_replace("m0n0wall", "pfsense", $data);
+                $data = str_replace('m0n0wall', 'opnsense', $data);
                 $m0n0wall_upgrade = true;
             }
             if (!empty($_POST['restorearea'])) {

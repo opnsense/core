@@ -2812,10 +2812,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
         mwexec("/sbin/ifconfig " . escapeshellarg($realhwif) .
             " link " . escapeshellarg($wancfg['spoofmac']));
 
-        /*
-         * All vlans need to spoof their parent mac address, too.  see
-         * ticket #1514: http://cvstrac.pfsense.com/tktview?tn=1514,33
-         */
+        /* All vlans need to spoof their parent mac address, too. */
         if (isset($config['vlans']['vlan'])) {
             foreach ($config['vlans']['vlan'] as $vlan) {
                 if ($vlan['if'] == $realhwif) {

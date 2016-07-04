@@ -42,12 +42,7 @@ function dump_rrd_to_xml($rrddatabase, $xmldumpfile)
 	return($dumpret);
 }
 
-/* This xml 2 array function is courtesy of the php.net comment section on xml_parse.
- * it is roughly 4 times faster then our existing pfSense parser but due to the large
- * size of the RRD xml dumps this is required.
- * The reason we do not use it for pfSense is that it does not know about array fields
- * which causes it to fail on array fields with single items. Possible Todo?
- */
+/* This xml 2 array function is courtesy of the php.net comment section on xml_parse. */
 function xml2array($contents, $get_attributes = 1, $priority = 'tag')
 {
     if (!function_exists('xml_parser_create'))

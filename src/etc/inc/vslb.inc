@@ -92,11 +92,6 @@ function relayd_configure($kill_first = false)
     $fd = fopen('/var/etc/relayd.conf', 'w');
     $conf = "log updates \n";
 
-    /* Global timeout, interval and prefork settings
-       if not specified by the user:
-       - use a 1000 ms timeout value as in pfsense 2.0.1 and above
-       - leave interval and prefork empty, relayd will use its default values */
-
     if (!empty($setting['timeout'])) {
         $conf .= "timeout ".$setting['timeout']." \n";
     } else {
