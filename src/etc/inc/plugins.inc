@@ -135,10 +135,12 @@ function plugins_interfaces()
     }
 
     // cleanup registrations
-    foreach ($config['interfaces'] as $intf => $intf_data) {
-        if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $registered_interfaces)) {
-            $changed_interfaces[] = $intf;
-            unset($config['interfaces'][$intf]);
+    if (isset($config['interfaces'])) {
+        foreach ($config['interfaces'] as $intf => $intf_data) {
+            if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $registered_interfaces)) {
+                $changed_interfaces[] = $intf;
+                unset($config['interfaces'][$intf]);
+            }
         }
     }
 
