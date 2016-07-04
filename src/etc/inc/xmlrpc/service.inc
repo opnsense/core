@@ -32,6 +32,7 @@ require_once("services.inc");
 require_once("system.inc");
 require_once('plugins.inc');
 require_once("vslb.inc");
+require_once('util.inc');
 require_once("unbound.inc");
 require_once("openvpn.inc");
 require_once("filter.inc");
