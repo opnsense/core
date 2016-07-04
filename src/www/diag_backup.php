@@ -51,17 +51,26 @@ function restore_config_section($section_name, $new_contents)
     fclose($fout);
 
     $xml = parse_xml_config($tmpxml, null);
-    if (isset($xml['pfsense'])) {
-        $xml = $xml['pfsense'];
-    } elseif (isset($xml['m0n0wall'])) {
-        $xml = $xml['m0n0wall'];
-    } elseif (isset($xml['opnsense'])) {
-        $xml = $xml['opnsense'];
+    if ($xml === -1) {
+        return false;
     }
-    if (isset($xml[$section_name])) {
+
+    $section_xml = -1;
+
+    /*
+     * So, we're looking for a non-root tag written as a
+     * root tag, or a proper config where we cherry-pick
+     * a specific matching section... ok...
+     */
+    foreach ($xml as $xml_strip_root) {
+        if (isset($xml_strip_root[$section])) {
+            $section_xml = $xml_strip_root[$section];
+	    break;
+	}
+    }
+
+    if ($section_xml = -1 && isset($xml[$section_name])) {
         $section_xml = $xml[$section_name];
-    } else {
-        $section_xml = -1;
     }
 
     @unlink($tmpxml);
@@ -81,18 +90,22 @@ function restore_config_section($section_name, $new_contents)
  *  backup_config_section($section): returns as an xml file string of
  *                                   the configuration section
  */
-function backup_config_section($section_name) {
+function backup_config_section($section_name)
+{
     global $config;
+
     $new_section = &$config[$section_name];
-    /* generate configuration XML */
+
     $xmlconfig = dump_xml_config($new_section, $section_name);
     $xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
+
+    /* KEEP THIS: unbreaks syntax highlighting <?php */
+
     return $xmlconfig;
 }
 
-/* KEEP THIS: unbreaks syntax highlighting <?php */
-
-function rrd_data_xml() {
+function rrd_data_xml()
+{
     $rrddbpath = '/var/db/rrd';
 
     $result = "\t<rrddata>\n";
