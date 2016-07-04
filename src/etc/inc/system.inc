@@ -1941,7 +1941,7 @@ function system_console_configure()
 
     // ** serial console - write out /boot.config
     if ($serial_enabled) {
-        file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
+        @file_put_contents('/boot.config', "-S{$serialspeed} -D\n");
     } else {
         @unlink('/boot.config');
     }
