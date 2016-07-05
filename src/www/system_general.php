@@ -50,7 +50,7 @@ function get_locale_list()
     $locales['mn_MN'] = gettext('Mongolian');
     $locales['pt_BR'] = gettext('Portuguese');
     $locales['ru_RU'] = gettext('Russian');
-    $locales['es_CO'] = gettext('Spanish');
+    $locales['es_ES'] = gettext('Spanish');
     $locales['sv_SE'] = gettext('Swedish');
     $locales['tr_TR'] = gettext('Turkish');
 
