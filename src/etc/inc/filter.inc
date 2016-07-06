@@ -198,35 +198,36 @@ function process_alias_urltable($name, $url, $freq, $forceupdate = false)
         $verify_ssl = isset($config['system']['checkaliasesurlcert']);
         if (download_file($url, "{$urltable_filename}.tmp", $verify_ssl)) {
             foreach (preg_split('/[\n\r]+/', file_get_contents("{$urltable_filename}.tmp"), -1, PREG_SPLIT_NO_EMPTY) as $line) {
-                $line = trim($line); // remove leading spaces
-                if ($line[0] != '#') {
-                    // cleanse line item
-                    $line = preg_split('/\s+/', $line)[0];
-                    if ($alias_type == "urltable_ports") {
-                        // todo: add proper validation for ports here
+                $line = trim($line);
+                if (!strlen($line) || !strncmp($line, '#', 1) || !strncmp($line, '//', 2)) {
+                    continue;
+                }
+                // cleanse line item
+                $line = preg_split('/\s+/', $line)[0];
+                if ($alias_type == "urltable_ports") {
+                    // todo: add proper validation for ports here
+                    fwrite($output_file_handle, "{$line}\n");
+                } else {
+                    // validate or resolve line items, skip unparseable content
+                    if (is_subnet($line) || is_ipaddr($line)) {
                         fwrite($output_file_handle, "{$line}\n");
-                    } else {
-                        // validate or resolve line items, skip unparseable content
-                        if (is_subnet($line) || is_ipaddr($line)) {
-                            fwrite($output_file_handle, "{$line}\n");
-                        } elseif (is_hostname($line)) {
-                            foreach (array(DNS_AAAA, DNS_A) as $dns_type) {
-                                // normally dns_get_record should be able to use DNS_A + DNS_AAAA
-                                // but for some strange reason not on our platform...
-                                $dns_records = @dns_get_record($line, $dns_type);
-                                if ($dns_records) {
-                                    foreach ($dns_records as $dns_record) {
-                                        if (!empty($dns_record['ipv6'])) {
-                                            fwrite($output_file_handle, $dns_record['ipv6'] . "\n");
-                                        } elseif (!empty($dns_record['ip'])) {
-                                            fwrite($output_file_handle, $dns_record['ip'] . "\n");
-                                        }
+                    } elseif (is_hostname($line)) {
+                        foreach (array(DNS_AAAA, DNS_A) as $dns_type) {
+                            // normally dns_get_record should be able to use DNS_A + DNS_AAAA
+                            // but for some strange reason not on our platform...
+                            $dns_records = @dns_get_record($line, $dns_type);
+                            if ($dns_records) {
+                                foreach ($dns_records as $dns_record) {
+                                    if (!empty($dns_record['ipv6'])) {
+                                        fwrite($output_file_handle, $dns_record['ipv6'] . "\n");
+                                    } elseif (!empty($dns_record['ip'])) {
+                                        fwrite($output_file_handle, $dns_record['ip'] . "\n");
                                     }
                                 }
                             }
                         }
-                        fflush($output_file_handle);
                     }
+                    fflush($output_file_handle);
                 }
             }
             fclose($output_file_handle);
