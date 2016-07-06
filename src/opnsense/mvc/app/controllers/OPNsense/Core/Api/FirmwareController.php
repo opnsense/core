@@ -398,7 +398,7 @@ class FirmwareController extends ApiControllerBase
         $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
         $mirrors['https://mirror.auf-feindgebiet.de/opnsense'] = 'auf-feindgebiet.de (Karlsruhe, DE)';
         $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
-        $mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
+        //$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
         $mirrors['http://mirror.ams1.nl.leaseweb.net/opnsense'] = 'LeaseWeb (Amsterdam, NL)';
         $mirrors['http://mirror.fra10.de.leaseweb.net/opnsense'] = 'LeaseWeb (Frankfurt, DE)';
         $mirrors['http://mirror.sfo12.us.leaseweb.net/opnsense'] = 'LeaseWeb (San Francisco, US)';
@@ -406,7 +406,6 @@ class FirmwareController extends ApiControllerBase
         $mirrors['http://mirrors.nycbug.org/pub/opnsense'] = 'NYC*BUG (New York, US)';
         $mirrors['http://pkg.opnsense.org'] = 'OPNsense (Amsterdam, NL)';
         $mirrors['http://mirror.ragenetwork.de/opnsense'] = 'RageNetwork (Munich, DE)';
-        $mirrors['http://mirrors.supranet.net/pub/opnsense'] = 'Supranet Communications (Middleton, US)';
         $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
 
         $flavours = array();
