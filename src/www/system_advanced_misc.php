@@ -342,17 +342,17 @@ include("head.inc");
                   <input name="powerd_enable" type="checkbox" id="powerd_enable" value="yes" <?=!empty($pconfig['powerd_enable']) ? "checked=\"checked\"" : "";?> />
                   <div class="hidden" for="help_for_powerd_enable">
                     <?=gettext("The powerd utility monitors the system state and sets various power control " .
-                                        "options accordingly.  It offers four modes (maximum, minimum, adaptive " .
+                                        "options accordingly. It offers four modes (maximum, minimum, adaptive " .
                                         "and hiadaptive) that can be individually selected while on AC power or batteries. " .
                                         "The modes maximum, minimum, adaptive and hiadaptive may be abbreviated max, " .
-                                        "min, adp, hadp.  Maximum mode chooses the highest performance values.  Minimum " .
+                                        "min, adp, hadp. Maximum mode chooses the highest performance values. Minimum " .
                                         "mode selects the lowest performance values to get the most power savings. " .
                                         "Adaptive mode attempts to strike a balance by degrading performance when " .
-                                        "the system appears idle and increasing it when the system is busy.  It " .
+                                        "the system appears idle and increasing it when the system is busy. It " .
                                         "offers a good balance between a small performance loss for greatly " .
-                                        "increased power savings.  Hiadaptive mode is alike adaptive mode, but " .
+                                        "increased power savings. Hiadaptive mode is alike adaptive mode, but " .
                                         "tuned for systems where performance and interactivity are more important " .
-                                        "than power consumption.  It raises frequency faster, drops slower and " .
+                                        "than power consumption. It raises frequency faster, drops slower and " .
                                         "keeps twice lower CPU load."); ?>
                   </div>
                 </td>
