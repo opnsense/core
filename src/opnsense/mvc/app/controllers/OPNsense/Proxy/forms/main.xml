@@ -469,7 +469,7 @@
                 <label>Send Username</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames addresses. Note, that authentication is required to use usernames.]]></help>
+                <help><![CDATA[If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames. Note, that authentication is required to use usernames.]]></help>
                 <hint>Check if the username should be sent to the ICAP server.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -499,7 +499,7 @@
                 <label>Enable Preview</label>
                 <type>checkbox</type>
                 <style>tokenize</style>
-                <help><![CDATA[If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance. ]]></help>
+                <help><![CDATA[If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance.]]></help>
                 <hint>Enable if you want to use previews.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
@@ -509,7 +509,7 @@
                 <label>Preview Size</label>
                 <type>text</type>
                 <style>tokenize</style>
-                <help><![CDATA[Enter the size of the preview wich is sent to the ICAP server.]]></help>
+                <help><![CDATA[Enter the size of the preview which is sent to the ICAP server.]]></help>
                 <hint>Enter the size of the preview.</hint>
                 <allownew>true</allownew>
                 <advanced>true</advanced>
