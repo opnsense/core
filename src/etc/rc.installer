@@ -29,6 +29,8 @@ sysctl net.link.ether.inet.log_arp_wrong_iface=0 >/dev/null
 ifconfig lo0 127.0.0.1/24
 ifconfig lo0 up
 
+rm -f /tmp/install_complete
+
 # Start the backend in the background (must mute all the ouput)
 daemon -f lua50c51 /usr/local/share/dfuibe_lua/main.lua \
     /usr/local/share/dfuibe_lua/conf/BSDInstaller.lua \
