@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("A valid MAC address must be specified.");
     }
     if (isset($config['dhcpd'][$if]['staticarp']) && empty($pconfig['ipaddr'])) {
-        $input_errors[] = gettext("Static ARP is enabled.  You must specify an IP address.");
+        $input_errors[] = gettext("Static ARP is enabled. You must specify an IP address.");
     }
 
     /* check for overlaps */
