@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* Ensure that our pool names are unique */
     for ($i=0; isset($config['load_balancer']['lbpool'][$i]); $i++) {
         if ($pconfig['name'] == $config['load_balancer']['lbpool'][$i]['name'] && $i != $id) {
-            $input_errors[] = gettext("This pool name has already been used.  Pool names must be unique.");
+            $input_errors[] = gettext("This pool name has already been used. Pool names must be unique.");
         }
     }
 
@@ -143,7 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         mark_subsystem_dirty('loadbalancer');
         write_config();
         header("Location: load_balancer_pool.php");
-        exit;    }
+        exit;
+    }
 }
 
 
