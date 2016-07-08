@@ -70,11 +70,13 @@ function find_ip_interface($ip, $bits = null) {
 }
 
 
-$stepid = htmlspecialchars($_GET['stepid']);
-if (isset($_POST['stepid']))
+$stepid = '0';
+
+if (isset($_POST['stepid'])) {
 	$stepid = htmlspecialchars($_POST['stepid']);
-if (!$stepid)
-	$stepid = "0";
+} elseif (isset($_GET['stepid'])) {
+	$stepid = htmlspecialchars($_GET['stepid']);
+}
 
 $xml = '';
 if (isset($_GET['xml'])) {
@@ -123,8 +125,6 @@ if (!is_array($pkg)) {
 	die;
 }
 
-$description = $pkg['step'][$stepid]['description'];
-$title = $pkg['step'][$stepid]['title'];
 $totalsteps = $pkg['totalsteps'];
 
 if ($pkg['includefile']) {
@@ -155,16 +155,25 @@ if ($_POST && !$input_errors) {
 		}
 
 	}
+
 	// run custom php code embedded in xml config.
 	if($pkg['step'][$stepid]['stepsubmitphpaction'] <> "") {
 		eval($pkg['step'][$stepid]['stepsubmitphpaction']);
 	}
-	if (!$input_errors)
+
+	if (!$input_errors) {
 		write_config();
+	}
+
 	$stepid++;
-	if($stepid > $totalsteps)
+
+	if($stepid > $totalsteps) {
 		$stepid = $totalsteps;
+	}
 }
+
+$description = $pkg['step'][$stepid]['description'];
+$title = $pkg['step'][$stepid]['title'];
 
 function update_config_field($field, $updatetext, $unset, $arraynum, $field_type) {
 	global $config;
