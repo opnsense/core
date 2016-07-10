@@ -737,7 +737,7 @@ function upgrade_040_to_041() {
 		$config['sysctl']['item'][15]['value'] =   "default";
 
 		$config['sysctl']['item'][16]['tunable'] = "net.inet.tcp.inflight.enable";
-		$config['sysctl']['item'][16]['descr'] =    gettext("The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required to maintain optimum throughput. ");
+		$config['sysctl']['item'][16]['descr'] =    gettext("The system will attempt to calculate the bandwidth delay product for each connection and limit the amount of data queued to the network to just the amount required to maintain optimum throughput.");
 		$config['sysctl']['item'][16]['value'] =   "default";
 
 		$config['sysctl']['item'][17]['tunable'] = "net.inet.icmp.icmplim";
@@ -749,15 +749,15 @@ function upgrade_040_to_041() {
 		$config['sysctl']['item'][18]['value'] =   "default";
 
 		$config['sysctl']['item'][19]['tunable'] = "net.inet.ip.portrange.first";
-		$config['sysctl']['item'][19]['descr'] =    "Set the ephemeral port range starting port";
+		$config['sysctl']['item'][19]['descr'] =    gettext("Set the ephemeral port range starting port");
 		$config['sysctl']['item'][19]['value'] =   "default";
 
 		$config['sysctl']['item'][20]['tunable'] = "hw.syscons.kbd_reboot";
-		$config['sysctl']['item'][20]['descr'] =    "Enables ctrl+alt+delete";
+		$config['sysctl']['item'][20]['descr'] =    gettext("Enables ctrl+alt+delete");
 		$config['sysctl']['item'][20]['value'] =   "default";
 
 		$config['sysctl']['item'][21]['tunable'] = "kern.ipc.maxsockbuf";
-		$config['sysctl']['item'][21]['descr'] =    "Maximum socket buffer size";
+		$config['sysctl']['item'][21]['descr'] =    gettext("Maximum socket buffer size");
 		$config['sysctl']['item'][21]['value'] =   "default";
 
 	}

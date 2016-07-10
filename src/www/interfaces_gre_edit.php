@@ -183,12 +183,12 @@ include("head.inc");
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
                       <div class="hidden" for="help_for_remote-addr">
-                        <?=gettext("Peer address where encapsulated GRE packets will be sent ");?>
+                        <?=gettext("Peer address where encapsulated GRE packets will be sent");?>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE tunnel local address ");?></td>
+                    <td><a id="help_for_tunnel-local-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE tunnel local address");?></td>
                     <td>
                       <input name="tunnel-local-addr" type="text" value="<?=$pconfig['tunnel-local-addr'];?>" />
                       <div class="hidden" for="help_for_tunnel-local-addr">
@@ -197,7 +197,7 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE tunnel remote address ");?></td>
+                    <td><a id="help_for_tunnel-remote-addr" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("GRE tunnel remote address");?></td>
                     <td>
                       <table class="table table-condensed">
                         <tr>
@@ -227,7 +227,7 @@ include("head.inc");
                     <td>
                       <input name="link0" type="checkbox" id="link0" <?= !empty($pconfig['link0']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_link0">
-                        <?=gettext("Specify which encapsulation method the tunnel should use. ");?>
+                        <?=gettext("Specify which encapsulation method the tunnel should use.");?>
                       </div>
                     </td>
                   </tr>
@@ -236,10 +236,10 @@ include("head.inc");
                     <td>
                       <input name="link1" type="checkbox" id="link1" <?= !empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_link1">
-                        <?=gettext("For correct operation, the GRE device needs a route to the destination".
-                       " that is less specific than the one over the tunnel.  (Basically, there".
-                       " needs to be a route to the decapsulating host that does not run over the".
-                       " tunnel, as this would be a loop.");?>
+                        <?=gettext("For correct operation, the GRE device needs a route to the destination ".
+                       "that is less specific than the one over the tunnel. (Basically, there ".
+                       "needs to be a route to the decapsulating host that does not run over the ".
+                       "tunnel, as this would be a loop.");?>
                       </div>
                     </td>
                   </tr>
@@ -257,8 +257,7 @@ include("head.inc");
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" for="help_for_descr">
-                        <?=gettext("You may enter a description here " .
-                        "for your reference (not parsed)."); ?>
+                        <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>
                   </tr>

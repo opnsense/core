@@ -246,11 +246,11 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route caching  "); ?></td>
+                    <td><a id="help_for_link0" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Route caching"); ?></td>
                     <td>
                       <input name="link0" type="checkbox" id="link0" <?=!empty($pconfig['link0']) ? "checked=\"checked\"" :"";?> />
                       <div class="hidden" for="help_for_link0">
-                        <?=gettext("Specify if route caching can be enabled. Be careful with these settings on dynamic networks. "); ?>
+                        <?=gettext("Specify if route caching can be enabled. Be careful with these settings on dynamic networks."); ?>
                       </div>
                     </td>
                   </tr>
@@ -259,8 +259,7 @@ include("head.inc");
                     <td>
                       <input name="link1" type="checkbox" id="link1" <?=!empty($pconfig['link1']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_link1">
-                        <?=gettext("Note that the ECN friendly behavior violates RFC2893.  This should be " .
-                        "used in mutual agreement with the peer."); ?>
+                        <?=gettext("Note that the ECN friendly behavior violates RFC2893. This should be used in mutual agreement with the peer."); ?>
                       </div>
                     </td>
                   </tr>
@@ -269,8 +268,7 @@ include("head.inc");
                     <td>
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" for="help_for_descr">
-                        <?=gettext("You may enter a description here " .
-                        "for your reference (not parsed)."); ?>
+                        <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
                       </div>
                     </td>
                   </tr>
