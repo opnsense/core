@@ -193,13 +193,20 @@ name: force
 depends: force
 	@echo ${CORE_DEPENDS}
 
+PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
+		+PRE_UPGRADE +POST_UPGRADE \
+		+PRE_DEINSTALL +POST_DEINSTALL
+
 scripts: want-git
-	# XXX should extend to all possible scripts
-	@cp -v -- +PRE_DEINSTALL +POST_INSTALL ${DESTDIR}/
-	@sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
-	    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
-	    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
-	    ${DESTDIR}/+POST_INSTALL
+.for PKG_SCRIPT in ${PKG_SCRIPTS}
+	@if [ -e ${.CURDIR}/${PKG_SCRIPT} ]; then \
+		cp -v -- ${.CURDIR}/${PKG_SCRIPT} ${DESTDIR}/; \
+		sed -i '' -e "s/%%CORE_COMMIT%%/${CORE_COMMIT}/g" \
+		    -e "s/%%CORE_NAME%%/${CORE_NAME}/g" \
+		    -e "s/%%CORE_ABI%%/${CORE_ABI}/g" \
+		    ${DESTDIR}/${PKG_SCRIPT}; \
+	fi
+.endfor
 
 install: force
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
