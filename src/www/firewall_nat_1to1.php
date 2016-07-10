@@ -267,7 +267,7 @@ $main_buttons = array(
                       <a type="submit" id="move_<?=$i;?>" name="move_<?=$i;?>_x" data-toggle="tooltip" title="<?=gettext("move selected rules before this rule");?>" class="act_move btn btn-default btn-xs">
                         <span class="glyphicon glyphicon-arrow-left"></span>
                       </a>
-                      <a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit rule ");?>">
+                      <a href="firewall_nat_1to1_edit.php?id=<?=$i;?>" class="btn btn-default btn-xs" data-toggle="tooltip" title="<?=gettext("edit rule");?>">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </a>
                       <a id="del_<?=$i;?>" title="<?=gettext("delete rule"); ?>" data-toggle="tooltip"  class="act_delete btn btn-default btn-xs">
