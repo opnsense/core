@@ -18,6 +18,12 @@
         <help><![CDATA[Enable promiscuous mode, for certain setups (like IPS with vlans), this is required to actually capture data on the physical interface.]]></help>
     </field>
     <field>
+        <id>ids.general.MPMAlgo</id>
+        <label>Pattern matcher</label>
+        <type>dropdown</type>
+        <help><![CDATA[Choose the pattern matcher algoritm, default is Aho-Corasick.]]></help>
+    </field>
+    <field>
         <id>ids.general.interfaces</id>
         <label>Interfaces</label>
         <type>select_multiple</type>

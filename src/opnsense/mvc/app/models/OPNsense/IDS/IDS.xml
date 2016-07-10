@@ -136,6 +136,16 @@
                 <MaximumValue>1000</MaximumValue>
                 <ValidationMessage>Enter a valid number of logs to save</ValidationMessage>
             </AlertSaveLogs>
+            <MPMAlgo type="OptionField">
+              <Required>N</Required>
+              <default>ac</default>
+              <BlankDesc>Default</BlankDesc>
+              <OptionValues>
+                  <ac>Aho-Corasick</ac>
+                  <hs>Hyperscan</hs>
+              </OptionValues>
+              <ValidationMessage>Please select a valid pattern matcher algorithm</ValidationMessage>
+            </MPMAlgo>
         </general>
     </items>
 </model>
