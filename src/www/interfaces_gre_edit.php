@@ -183,7 +183,7 @@ include("head.inc");
                     <td>
                       <input name="remote-addr" type="text" value="<?=$pconfig['remote-addr'];?>" />
                       <div class="hidden" for="help_for_remote-addr">
-                        <?=gettext("Peer address where encapsulated GRE packets will be sent");?>
+                        <?=gettext("Peer address where encapsulated GRE packets will be sent.");?>
                       </div>
                     </td>
                   </tr>
