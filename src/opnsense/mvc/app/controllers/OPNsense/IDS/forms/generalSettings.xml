@@ -21,7 +21,7 @@
         <id>ids.general.MPMAlgo</id>
         <label>Pattern matcher</label>
         <type>dropdown</type>
-        <help><![CDATA[Choose the pattern matcher algoritm, default is Aho-Corasick.]]></help>
+        <help><![CDATA[Select the multi-pattern matcher algorithm to use.]]></help>
     </field>
     <field>
         <id>ids.general.interfaces</id>
