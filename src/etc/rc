@@ -28,19 +28,33 @@ while read FS_PART FS_MNT FS_TYPE FS_MORE; do
 		continue;
 	fi
 
-	# enables soft updates
-	tunefs -n enable ${FS_MNT}
-
-	# enables TRIM
-	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /\/dev\/([a-z]+[0-9]+)/) { print substr( $0, RSTART, RLENGTH )}')
-	FS_TRIM=$(camcontrol identify ${FS_DEV} | grep TRIM | awk '{ print $5; }')
-	if [ "${FS_TRIM}" = "yes" ]; then
-		# appending "# notrim" to the /etc/fstab entry
+	if echo "${FS_MORE}" | grep -iq nosoft; then
+		# appending "# nosoft" to the /etc/fstab entry
 		# will allow to strip trim and leave it disabled
-		if echo "${FS_MORE}" | grep -iq notrim; then
-			tunefs -t disable ${FS_MNT}
-		else
-			tunefs -t enable ${FS_MNT}
+		tunefs -n disable ${FS_MNT}
+	else
+		# enables soft updates
+		tunefs -n enable ${FS_MNT}
+	fi
+
+	FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/(gpt|ufs)\/.+$/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
+	if [ -n "${FS_DEV}" ]; then
+		FS_DEV=$(glabel status -as | grep ${FS_DEV} | awk 'match($3, /^[a-z]+[0-9]+/) { print substr( $3, RSTART, RLENGTH )}')
+	fi
+	if [ -z "${FS_DEV}" ]; then
+		FS_DEV=$(echo ${FS_PART} | awk 'match($0, /^\/dev\/[a-z]+[0-9]+/) { print substr( $0, RSTART + 5, RLENGTH - 5 )}')
+	fi
+	if [ -n "${FS_DEV}" ]; then
+		FS_TRIM=$(camcontrol identify ${FS_DEV} | grep TRIM | awk '{ print $5; }')
+		if [ "${FS_TRIM}" = "yes" ]; then
+			if echo "${FS_MORE}" | grep -iq notrim; then
+				# appending "# notrim" to the /etc/fstab entry
+				# will allow to strip trim and leave it disabled
+				tunefs -t disable ${FS_MNT}
+			else
+				# enables TRIM
+				tunefs -t enable ${FS_MNT}
+			fi
 		fi
 	fi
 done < /etc/fstab
