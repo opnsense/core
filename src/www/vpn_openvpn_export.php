@@ -490,9 +490,9 @@ if (isset($savemsg)) {
                         <?=gettext("Use a password to protect the pkcs12 file contents or key in Viscosity bundle.");?>
                       </div>
                       <div id="usepass_opts" style="display:none">
-                        <label ><?=gettext("Password");?> :</label>
+                        <label ><?=gettext("Password :");?></label>
                         <input name="pass" id="pass" class="form-control" type="password" value="" />
-                        <label ><?=gettext("Confirm");?> :</label>
+                        <label ><?=gettext("Confirm :");?></label>
                         <input name="conf" id="conf" class="form-control" type="password" value="" />
                       </div>
                 </td>
@@ -580,7 +580,7 @@ if (isset($savemsg)) {
                         <td>
                           <select class="selectpicker export_select" data-type="user" data-id="<?=$user['uindex'];?>" data-certid="<?=$user['cindex'];?>">
                             <optgroup label="">
-                                <option value=""><?=gettext("-");?></option>
+                                <option value="">-</option>
                             </optgroup>
                             <optgroup label="<?=gettext("Standard Configurations");?>">
                               <option value="confzip"><?=gettext("Archive");?></option>
@@ -612,7 +612,7 @@ if (isset($savemsg)) {
                         <td>
                           <select class="selectpicker export_select" data-type="cert" data-id="<?=$cert['cindex'];?>">
                             <optgroup label="">
-                                <option value=""><?=gettext("-");?></option>
+                                <option value="">-</option>
                             </optgroup>
                             <optgroup label="<?=gettext("Standard Configurations");?>">
                               <option value="confzip"><?=gettext("Archive");?></option>
@@ -637,7 +637,7 @@ if (isset($savemsg)) {
                             <optgroup label="<?=gettext("Yealink SIP Handsets");?>">
                               <option value="conf_yealink_t28"><?=gettext("T28");?></option>
                               <option value="conf_yealink_t38g"><?=gettext("T38G (1)");?></option>
-                              <option value="conf_yealink_t38g"><?=gettext("T38G (1)");?></option>
+                              <option value="conf_yealink_t38g2"><?=gettext("T38G (2)");?></option>
                               <option value="conf_snom"><?=gettext("SNOM SIP Handset");?></option>
 
                             </optgroup>
@@ -655,7 +655,7 @@ if (isset($savemsg)) {
                         <td>
                           <select class="selectpicker export_select" data-type="server">
                             <optgroup label="">
-                                <option value=""><?=gettext("-");?></option>
+                                <option value="">-</option>
                             </optgroup>
                             <optgroup label="<?=gettext("Standard Configurations");?>">
                               <option value="confzip"><?=gettext("Archive");?></option>
