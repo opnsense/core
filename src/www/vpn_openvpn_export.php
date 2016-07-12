@@ -490,9 +490,9 @@ if (isset($savemsg)) {
                         <?=gettext("Use a password to protect the pkcs12 file contents or key in Viscosity bundle.");?>
                       </div>
                       <div id="usepass_opts" style="display:none">
-                        <label ><?=gettext("Password :");?></label>
+                        <label for="pass"><?=gettext("Password:");?></label>
                         <input name="pass" id="pass" class="form-control" type="password" value="" />
-                        <label ><?=gettext("Confirm :");?></label>
+                        <label for="conf"><?=gettext("Confirm:");?></label>
                         <input name="conf" id="conf" class="form-control" type="password" value="" />
                       </div>
                 </td>
@@ -502,31 +502,31 @@ if (isset($savemsg)) {
                 <td >
                       <input name="useproxy" id="useproxy" type="checkbox" value="yes" />
                       <div class="hidden" for="help_for_http_proxy">
-                        <?=gettext("Use proxy to communicate with the server.");?>
+                        <?=gettext("Use a proxy to communicate with the server.");?>
                       </div>
                       <div id="useproxy_opts" style="display:none" >
-                        <?=gettext("Type");?>
+                        <label for="useproxytype"><?=gettext("Type:");?></label>
                         <select name="useproxytype" id="useproxytype" class="formselect">
                           <option value="http"><?=gettext("HTTP");?></option>
                           <option value="socks"><?=gettext("SOCKS");?></option>
                         </select>
-                        <?=gettext("IP Address");?>
+                        <label for="proxyaddr"><?=gettext("IP Address");?></label>
                         <input name="proxyaddr" id="proxyaddr" type="text" class="formfld unknown" size="30" value="" />
-                        <?=gettext("Port");?> :
+                        <label for="proxyport"><?=gettext("Port:");?></label>
                         <input name="proxyport" id="proxyport" type="text" class="formfld unknown" size="5" value="" />
                         <div>
-                            <?=gettext("Choose proxy authentication if any.");?>
+                          <label for="useproxypass"><?=gettext("Choose proxy authentication if any.");?></label>
                           <select name="useproxypass" id="useproxypass" class="formselect">
                             <option value="none"><?=gettext("none");?></option>
                             <option value="basic"><?=gettext("basic");?></option>
                             <option value="ntlm"><?=gettext("ntlm");?></option>
                           </select>
                           <div id="useproxypass_opts" style="display:none">
-                            <label><?=gettext("Username");?> :</label>
+                            <label for="proxyuser"><?=gettext("Username:");?></label>
                             <input name="proxyuser" id="proxyuser" type="text" class="formfld unknown" value="" />
-                            <label><?=gettext("Password");?> :</label>
+                            <label for="proxypass"><?=gettext("Password:");?></label>
                             <input name="proxypass" id="proxypass" type="password" class="form-control" value="" />
-                            <label><?=gettext("Confirm");?> :</label>
+                            <label for="proxyconf"><?=gettext("Confirm:");?></label>
                             <input name="proxyconf" id="proxyconf" type="password" class="form-control" value="" />
                           </div>
                         </div>
@@ -686,7 +686,7 @@ if (isset($savemsg)) {
                     <div class="hidden" for="help_for_clientpkg">
                       <br/>
                       <?= gettext("NOTES:") ?> <br/>
-                      <?= gettext("The &quot;XP&quot; Windows installers work on Windows XP and later versions. The &quot;win6&quot; Windows installers include a new tap-windows6 driver that works only on Windows Vista and later.") ?><br/>
+                      <?= gettext('The "XP" Windows installers work on Windows XP and later versions. The "win6" Windows installers include a new tap-windows6 driver that works only on Windows Vista and later.') ?><br/>
                       <br/><br/>
                       <strong><?= gettext("Links to OpenVPN clients for various platforms:") ?></strong><br/>
                       <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms. Packaged above in the Windows Installers")?><br/>
