@@ -156,12 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
     $old_ph1ent = $a_phase1[$p1index];
 
-    // Preperations to kill some settings which aren't left empty by the field.
-    // Unset ca and cert if not required to avoid storing in config
-    if ($pconfig['authentication_method'] == "pre_shared_key" || $pconfig['authentication_method'] == "xauth_psk_server") {
-        unset($pconfig['caref']);
-        unset($pconfig['certref']);
-    }
     // unset dpd on post
     if (!isset($pconfig['dpd_enable'])) {
         unset($pconfig['dpd_delay']);
@@ -184,10 +178,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // For RSA methods, require the CA/Cert.
     switch ($method) {
         case "eap-tls":
-            if ($pconfig['iketype'] != 'ikev2') {
-                $input_errors[] = gettext("EAP-TLS can only be used with IKEv2 type VPNs.");
-            }
-            break;
+        case 'eap-mschapv2':
+          if ($pconfig['iketype'] != 'ikev2') {
+              $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
+          }
+          break;
         case "pre_shared_key":
             // If this is a mobile PSK tunnel the user PSKs go on
             //    the PSK tab, not here, so skip the check.
@@ -448,20 +443,30 @@ include("head.inc");
 
         $("#authentication_method").change(function(){
             $(".auth_opt").hide();
+            $(".auth_opt select,input").prop( "disabled", true );
             switch ($("#authentication_method").val()) {
+                case 'eap-mschapv2':
+                    $(".auth_eap_tls").show();
+                    $(".auth_eap_tls select,input").prop( "disabled", false );
+                    break;
                 case 'eap-tls':
                 case 'hybrid_rsa_server':
                 case 'xauth_rsa_server':
                 case 'rsasig':
                     $(".auth_eap_tls").show();
+                    $(".auth_eap_tls select,input").prop( "disabled", false );
+                    $(".auth_eap_tls_caref").show();
+                    $(".auth_eap_tls_caref select,input").prop( "disabled", false );
                     break;
                 case 'pre_shared_key':
                     if ($("#mobile").val() == undefined) {
                         $(".auth_psk").show();
+                        $(".auth_psk select,input").prop( "disabled", false );
                     }
                     break;
                 default: /* psk modes*/
                     $(".auth_psk").show();
+                    $(".auth_psk select,input").prop( "disabled", false );
                     break;
             }
         });
@@ -666,6 +671,7 @@ include("head.inc");
                         'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
                         'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
                         'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+                        'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
                         'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
                         'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
                       foreach ($p1_authentication_methods as $method_type => $method_params) :
@@ -792,7 +798,7 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>
-                  <tr class="auth_opt auth_eap_tls">
+                  <tr class="auth_opt auth_eap_tls_caref">
                     <td><a id="help_for_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("My Certificate Authority"); ?></td>
                     <td>
                       <select name="caref" class="formselect">
