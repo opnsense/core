@@ -526,7 +526,7 @@ if (isset($savemsg)) {
                             <input name="proxyuser" id="proxyuser" type="text" class="formfld unknown" value="" />
                             <label for="proxypass"><?=gettext("Password:");?></label>
                             <input name="proxypass" id="proxypass" type="password" class="form-control" value="" />
-                            <label for="proxyconf"><?=gettext("Confirm:");?></label>
+                            <label for="proxyconf"><?=gettext("Confirmation:");?></label>
                             <input name="proxyconf" id="proxyconf" type="password" class="form-control" value="" />
                           </div>
                         </div>
