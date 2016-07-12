@@ -95,8 +95,8 @@ function convert_128bit_to_ipv6($ip6bin)
 
 function match_wireless_interface($int)
 {
-	$wireless_regex = '/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/';
-	return preg_match($wireless_regex, $int);
+    $wireless_regex = '/^(ndis|wi|ath|an|ral|ural|iwi|wlan|rum|run|bwn|zyd|mwl|bwi|ipw|iwn|malo|uath|upgt|urtw|wpi)/';
+    return preg_match($wireless_regex, $int);
 }
 
 function interfaces_bring_up($interface)
@@ -153,9 +153,9 @@ function interface_netgraph_needed($interface)
             case 'pppoe':
             case 'l2tp':
             case 'pptp':
-		return true;
+                return true;
             default:
-               break;
+                break;
         }
     }
 
@@ -1138,15 +1138,12 @@ function interfaces_configure()
         /* reload IPsec tunnels */
         ipsec_configure();
 
+        /* restart dns servers (defering dhcp restart) */
+        services_dnsmasq_configure(false);
+        services_unbound_configure(false);
+
         /* reload dhcpd (interface enabled/disabled status may have changed) */
         services_dhcpd_configure();
-
-        /* restart dnsmasq or unbound */
-        if (isset($config['dnsmasq']['enable'])) {
-            services_dnsmasq_configure();
-        } elseif (isset($config['unbound']['enable'])) {
-            services_unbound_configure();
-        }
     }
 
     return 0;
@@ -2952,7 +2949,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             array_walk($grouptmp, 'interface_group_add_member');
         }
 
-        if ($interface == "lan") {
+        if ($interface == 'lan') {
             /* make new hosts file */
             system_hosts_generate();
         }
@@ -2964,12 +2961,12 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             /* reload ipsec tunnels */
             ipsec_configure();
 
-            /* restart dnsmasq or unbound */
-            if (isset($config['dnsmasq']['enable'])) {
-                services_dnsmasq_configure();
-            } elseif (isset($config['unbound']['enable'])) {
-                services_unbound_configure();
-            }
+            /* restart dns servers (defering dhcp restart) */
+            services_dnsmasq_configure(false);
+            services_unbound_configure(false);
+
+            /* reload dhcpd (interface enabled/disabled status may have changed) */
+            services_dhcpd_configure();
 
             /* update dyndns */
             configd_run("dyndns reload {$interface}");
@@ -2977,6 +2974,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
     }
 
     interfaces_staticarp_configure($interface);
+
     return 0;
 }
 

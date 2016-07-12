@@ -1829,7 +1829,7 @@ function dyndnsCheckIP($int)
     return $ip_address;
 }
 
-function services_dnsmasq_configure()
+function services_dnsmasq_configure($dhcp_reload = true)
 {
     global $config;
 
@@ -1840,14 +1840,11 @@ function services_dnsmasq_configure()
         "local-ttl" => "--local-ttl=1"
     );
 
-    /* kill any running dnsmasq */
-    killbypid('/var/run/dnsmasq.pid');
+    killbypid('/var/run/dnsmasq.pid', 'TERM', true);
 
     if (isset($config['dnsmasq']['enable'])) {
         if (file_exists("/var/run/booting")) {
             echo gettext("Starting DNS forwarder...");
-        } else {
-            sleep(1);
         }
 
         $args = "";
@@ -1977,44 +1974,41 @@ function services_dnsmasq_configure()
         }
     }
 
-    if (!file_exists("/var/run/booting")) {
-        if (services_dhcpd_configure()!=0) {
-            return 1;
-        }
+    /*
+     * XXX this is overly convoluted, potentiall
+     * restarting all of dhcp up to three times ;)
+     */
+    if (!file_exists("/var/run/booting") && $dhcp_reload) {
+        services_dhcpd_configure();
     }
-
-    return 0;
 }
 
-function services_unbound_configure()
+function services_unbound_configure($dhcp_reload = true)
 {
     global $config;
-    $return = 0;
 
-    // kill any running Unbound instance
-    killbypid('/var/run/unbound.pid');
+    killbypid('/var/run/unbound.pid', 'TERM', true);
 
     if (isset($config['unbound']['enable'])) {
         if (file_exists("/var/run/booting")) {
             echo gettext("Starting DNS Resolver...");
-        } else {
-            sleep(1);
         }
 
         sync_unbound_service();
         system_dhcpleases_configure();
+
         if (file_exists("/var/run/booting")) {
             echo gettext("done.") . "\n";
         }
     }
 
-    if (!file_exists("/var/run/booting")) {
-        if (services_dhcpd_configure()!=0) {
-            $return = 1;
-        }
+    /*
+     * XXX this is overly convoluted, potentially
+     * restarting all of dhcp up to three times ;)
+     */
+    if (!file_exists("/var/run/booting") && $dhcp_reload) {
+        services_dhcpd_configure();
     }
-
-    return $return;
 }
 
 function services_snmpd_configure()

@@ -42,25 +42,18 @@ require_once("services.inc");
  */
 function reconfigure_dhcpd()
 {
-    /* services_dnsmasq_configure calls services_dhcpd_configure */
     if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        $retvaldns = services_dnsmasq_configure();
-        if ($retvaldns == 0) {
-            clear_subsystem_dirty('hosts');
-            clear_subsystem_dirty('staticmaps');
-        }
-    /* services_unbound_configure calls services_dhcpd_configure */
-    } elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        $retvaldns = services_unbound_configure();
-        if ($retvaldns == 0) {
-            clear_subsystem_dirty('unbound');
-        }
-    } else {
-        $retvaldhcp = services_dhcpd_configure();
-        if ($retvaldhcp == 0) {
-            clear_subsystem_dirty('staticmaps');
-        }
+        services_dnsmasq_configure(false);
+        clear_subsystem_dirty('hosts');
     }
+
+    if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
+        services_unbound_configure(false);
+        clear_subsystem_dirty('unbound');
+    }
+
+    services_dhcpd_configure();
+    clear_subsystem_dirty('staticmaps');
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
