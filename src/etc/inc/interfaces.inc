@@ -1052,34 +1052,31 @@ function interfaces_configure()
         $realif = $config['interfaces'][$if]['if'];
         if (strstr($realif, "bridge")) {
             $bridge_list[$if] = $ifname;
+        } elseif (strstr($realif, "gre")) {
+            $delayed_list[$if] = $ifname;
+        } elseif (strstr($realif, "gif")) {
+            $delayed_list[$if] = $ifname;
+        } elseif (strstr($realif, "ovpn")) {
+            //echo "Delaying OpenVPN interface configuration...done.\n";
+            continue;
+        } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == "track6") {
+            $track6_list[$if] = $ifname;
         } else {
-            if (strstr($realif, "gre")) {
-                $delayed_list[$if] = $ifname;
-            } elseif (strstr($realif, "gif")) {
-                $delayed_list[$if] = $ifname;
-            } elseif (strstr($realif, "ovpn")) {
-                //echo "Delaying OpenVPN interface configuration...done.\n";
-                continue;
-            } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == "track6") {
-                $track6_list[$if] = $ifname;
-            } else {
-                if (file_exists("/var/run/booting")) {
-                    printf(gettext("Configuring %s interface..."), $ifname);
-                }
-
-                interface_configure($if, $reload);
-                if (file_exists("/var/run/booting")) {
-                    echo gettext("done.") . "\n";
-                }
+            if (file_exists("/var/run/booting")) {
+                printf(gettext("Configuring %s interface..."), $ifname);
+            }
+            interface_configure($if, $reload);
+            if (file_exists("/var/run/booting")) {
+                echo gettext("done.") . "\n";
             }
         }
     }
 
     /*
-   * NOTE: The following function parameter consists of
-   *  1 - Do not load gre/gif/bridge with parent/member as vip
-   *  2 - Do load gre/gif/bridge with parent/member as vip
-   */
+     * NOTE: The following function parameter consists of
+     *  1 - Do not load gre/gif/bridge with parent/member as vip
+     *  2 - Do load gre/gif/bridge with parent/member as vip
+     */
 
     /* set up GRE virtual interfaces */
     interfaces_gre_configure(1);
@@ -1094,9 +1091,7 @@ function interfaces_configure()
         if (file_exists("/var/run/booting")) {
             printf(gettext("Configuring %s interface..."), $ifname);
         }
-
         interface_configure($if, $reload);
-
         if (file_exists("/var/run/booting")) {
             echo gettext("done.") . "\n";
         }
