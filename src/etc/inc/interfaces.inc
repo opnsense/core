@@ -1052,14 +1052,9 @@ function interfaces_configure()
         $realif = $config['interfaces'][$if]['if'];
         if (strstr($realif, "bridge")) {
             $bridge_list[$if] = $ifname;
-        } elseif (strstr($realif, "gre")) {
+        } elseif (strstr($realif, 'gre') || strstr($realif, 'gif') || strstr($realif, 'ovpn')) {
             $delayed_list[$if] = $ifname;
-        } elseif (strstr($realif, "gif")) {
-            $delayed_list[$if] = $ifname;
-        } elseif (strstr($realif, "ovpn")) {
-            //echo "Delaying OpenVPN interface configuration...done.\n";
-            continue;
-        } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == "track6") {
+        } elseif (!empty($config['interfaces'][$if]['ipaddrv6']) && $config['interfaces'][$if]['ipaddrv6'] == 'track6') {
             $track6_list[$if] = $ifname;
         } else {
             if (file_exists("/var/run/booting")) {
