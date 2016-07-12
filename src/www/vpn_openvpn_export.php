@@ -492,7 +492,7 @@ if (isset($savemsg)) {
                       <div id="usepass_opts" style="display:none">
                         <label for="pass"><?=gettext("Password:");?></label>
                         <input name="pass" id="pass" class="form-control" type="password" value="" />
-                        <label for="conf"><?=gettext("Confirm:");?></label>
+                        <label for="conf"><?=gettext("Confirmation:");?></label>
                         <input name="conf" id="conf" class="form-control" type="password" value="" />
                       </div>
                 </td>
