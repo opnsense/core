@@ -490,9 +490,9 @@ if (isset($savemsg)) {
                         <?=gettext("Use a password to protect the pkcs12 file contents or key in Viscosity bundle.");?>
                       </div>
                       <div id="usepass_opts" style="display:none">
-                        <label for="pass"><?=gettext("Password:");?></label>
+                        <label for="pass"><?=gettext("Password");?></label>
                         <input name="pass" id="pass" class="form-control" type="password" value="" />
-                        <label for="conf"><?=gettext("Confirmation:");?></label>
+                        <label for="conf"><?=gettext("Confirmation");?></label>
                         <input name="conf" id="conf" class="form-control" type="password" value="" />
                       </div>
                 </td>
@@ -505,14 +505,14 @@ if (isset($savemsg)) {
                         <?=gettext("Use a proxy to communicate with the server.");?>
                       </div>
                       <div id="useproxy_opts" style="display:none" >
-                        <label for="useproxytype"><?=gettext("Type:");?></label>
+                        <label for="useproxytype"><?=gettext("Type");?></label>
                         <select name="useproxytype" id="useproxytype" class="formselect">
                           <option value="http"><?=gettext("HTTP");?></option>
                           <option value="socks"><?=gettext("SOCKS");?></option>
                         </select>
                         <label for="proxyaddr"><?=gettext("IP Address");?></label>
                         <input name="proxyaddr" id="proxyaddr" type="text" class="formfld unknown" size="30" value="" />
-                        <label for="proxyport"><?=gettext("Port:");?></label>
+                        <label for="proxyport"><?=gettext("Port");?></label>
                         <input name="proxyport" id="proxyport" type="text" class="formfld unknown" size="5" value="" />
                         <div>
                           <label for="useproxypass"><?=gettext("Choose proxy authentication if any.");?></label>
@@ -522,11 +522,11 @@ if (isset($savemsg)) {
                             <option value="ntlm"><?=gettext("ntlm");?></option>
                           </select>
                           <div id="useproxypass_opts" style="display:none">
-                            <label for="proxyuser"><?=gettext("Username:");?></label>
+                            <label for="proxyuser"><?=gettext("Username");?></label>
                             <input name="proxyuser" id="proxyuser" type="text" class="formfld unknown" value="" />
-                            <label for="proxypass"><?=gettext("Password:");?></label>
+                            <label for="proxypass"><?=gettext("Password");?></label>
                             <input name="proxypass" id="proxypass" type="password" class="form-control" value="" />
-                            <label for="proxyconf"><?=gettext("Confirmation:");?></label>
+                            <label for="proxyconf"><?=gettext("Confirmation");?></label>
                             <input name="proxyconf" id="proxyconf" type="password" class="form-control" value="" />
                           </div>
                         </div>
@@ -685,7 +685,6 @@ if (isset($savemsg)) {
                     </table>
                     <div class="hidden" for="help_for_clientpkg">
                       <br/>
-                      <?= gettext("NOTES:") ?> <br/>
                       <?= gettext('The "XP" Windows installers work on Windows XP and later versions. The "win6" Windows installers include a new tap-windows6 driver that works only on Windows Vista and later.') ?><br/>
                       <br/><br/>
                       <strong><?= gettext("Links to OpenVPN clients for various platforms:") ?></strong><br/>
@@ -696,7 +695,6 @@ if (isset($savemsg)) {
                       <br/><a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX") ?>
                       <br/><a href="http://code.google.com/p/tunnelblick/"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
                       <br/><br/>
-                      <?= gettext("NOTES:") ?><br/>
                       <?= gettext("If you expect to see a certain client in the list but it is not there, it is usually due to a CA mismatch between the OpenVPN server instance and the client certificates found in the User Manager.") ?><br/>
                     </div>
                   </td>
