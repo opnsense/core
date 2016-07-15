@@ -46,7 +46,7 @@ if (isset($config['openvpn']['openvpn-server'])) {
         }
         $ras_user = array();
         $ras_certs = array();
-        if (stripos($server['mode'], "server") === false) {
+        if (stripos($server['mode'], "server") === false && $server['mode'] != "p2p_shared_key") {
             continue;
         }
         if (($server['mode'] == "server_tls_user") && ($server['authmode'] == "Local Database")) {
@@ -223,16 +223,18 @@ if (isset($config['openvpn']['openvpn-server'])) {
                     $expformat = "baseconf";
             }
             $exp_path = openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $nokeys, $proxy, $expformat, $password, false, false, $openvpnmanager, $advancedoptions);
-        }
-
-        if ($act == "visc") {
+        } elseif ($act == "visc") {
             $exp_name = urlencode($exp_name."-Viscosity.visc.zip");
             $exp_path = viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $password, $proxy, $openvpnmanager, $advancedoptions);
-        }
-
-        if (substr($act, 0, 4) == "inst") {
+        } elseif (substr($act, 0, 4) == "inst") {
             $exp_name = urlencode($exp_name."-install.exe");
             $exp_path = openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $password, $proxy, $openvpnmanager, $advancedoptions, substr($act, 5));
+        } elseif ( $act == 'skconf')  {
+            $exp_path = openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, false);
+            $exp_name = urlencode($exp_name."-config.ovpn");
+        } elseif ( $act == 'skzipconf')  {
+            $exp_path = openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, true);
+            $exp_name = urlencode(basename($exp_path));
         }
 
         if (!$exp_path) {
@@ -271,14 +273,26 @@ include("head.inc");
         $("#server").change(function(){
             $('.server_item').hide();
             $('tr[data-server-index="'+$(this).val()+'"]').show();
+            switch ($("#server :selected").data('mode')) {
+                case "p2p_shared_key":
+                    $(".mode_server select,input").prop( "disabled", true );
+                    $(".mode_server").hide();
+                    break;
+                default:
+                    $(".mode_server select,input").prop( "disabled", false );
+                    $(".mode_server").show();
+            }
+            $(window).resize(); // force zebra re-stripe (opnsense_standard_table_form)
         });
         $("#server").change();
 
         $("#useaddr").change(function(){
             if ($(this).val() == 'other') {
                 $('#HostName').show();
+                $("#useaddr_hostname").prop( "disabled", false );
             } else {
                 $('#HostName').hide();
+                $("#useaddr_hostname").prop( "disabled", true );
             }
         });
         $("#pass,#conf").keyup(function(){
@@ -410,7 +424,7 @@ if (isset($savemsg)) {
                   <select name="server" id="server" class="formselect">
 <?php
                     foreach ($ras_server as $server) :?>
-                    <option value="<?=$server['index'];?>"><?=htmlspecialchars($server['name']);?></option>
+                    <option value="<?=$server['index'];?>" data-mode="<?=$server['mode'];?>"><?=htmlspecialchars($server['name']);?></option>
 <?php
                     endforeach; ?>
                   </select>
@@ -452,7 +466,7 @@ if (isset($savemsg)) {
                       </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="mode_server">
                 <td valign="top"><a id="help_for_verify_server_cn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Verify Server CN");?></td>
                 <td >
                       <select name="verifyservercn" id="verifyservercn" class="formselect">
@@ -468,7 +482,7 @@ if (isset($savemsg)) {
                       </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="mode_server">
                 <td valign="top"><a id="help_for_random_local_port" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use Random Local Port");?></td>
                 <td >
                       <input name="randomlocalport" id="randomlocalport" type="checkbox" value="yes" checked="CHECKED" />
@@ -478,7 +492,7 @@ if (isset($savemsg)) {
                         <?=gettext("NOTE: Not supported on older clients. Automatically disabled for Yealink and Snom configurations."); ?>
                       </div>
               </tr>
-              <tr>
+              <tr class="mode_server">
                 <td valign="top"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Certificate Export Options");?></td>
                 <td >
                       <div>
@@ -533,7 +547,7 @@ if (isset($savemsg)) {
                       </div>
                 </td>
               </tr>
-              <tr>
+              <tr class="mode_server">
                 <td valign="top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPNManager");?></td>
                 <td >
                       <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
@@ -549,20 +563,20 @@ if (isset($savemsg)) {
               <tr>
                 <td colspan="2" class="list" height="12">&nbsp;</td>
               </tr>
-              <tr>
+              <tr class="mode_server">
                 <td valign="top"><a id="help_for_advancedoptions" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Additional configuration options");?></td>
                 <td >
                       <textarea rows="6" cols="68" name="advancedoptions" id="advancedoptions"></textarea><br/>
                       <div class="hidden" for="help_for_advancedoptions">
                         <?=gettext("Enter any additional options you would like to add to the OpenVPN client export configuration here, separated by a line break or semicolon"); ?><br/>
-                  <?=gettext("EXAMPLE: remote-random"); ?>;
+                        <?=gettext("EXAMPLE: remote-random"); ?>;
                       </div>
                 </td>
               </tr>
               <tr>
                 <td><a id="help_for_clientpkg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Client Install Packages");?></td>
                 <td>
-                  <table id="export_users" class="table table-striped">
+                  <table id="export_users" class="table table-striped table-condensed">
                     <thead>
                       <tr>
                         <td width="25%" ><b><?=gettext("User");?></b></td>
@@ -674,6 +688,24 @@ if (isset($savemsg)) {
                             </optgroup>
                             <optgroup label="<?=gettext("Mac OSX");?>">
                               <option value="visc"><?=gettext("Viscosity Bundle");?></option>
+                            </optgroup>
+                          </select>
+                        </td>
+                      </tr>
+<?php
+                      endif;
+                      if ($server['mode'] == 'p2p_shared_key'):?>
+                      <tr class="server_item" data-server-index="<?=$server['index'];?>" data-server-mode="<?=$server['mode'];?>">
+                        <td><?=gettext("Other Shared Key OS Client");?></td>
+                        <td><?=gettext("none");?></td>
+                        <td>
+                          <select class="selectpicker export_select" data-type="server">
+                            <optgroup label="">
+                                <option value="">-</option>
+                            </optgroup>
+                            <optgroup label="<?=gettext("Standard Configurations");?>">
+                              <option value="skconf"><?=gettext("Configuration");?></option>
+                              <option value="skzipconf"><?=gettext("Configuration archive");?></option>
                             </optgroup>
                           </select>
                         </td>

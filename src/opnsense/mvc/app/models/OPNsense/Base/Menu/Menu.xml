@@ -325,7 +325,6 @@
             <ClientExport order="40" VisibleName="Client Export" url="/vpn_openvpn_export.php">
                 <Edit url="/vpn_openvpn_export.php?*" visibility="hidden"/>
             </ClientExport>
-            <ClientSharedKeyExport order="50" VisibleName="Shared Key Export" url="/vpn_openvpn_export_shared.php"/>
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
             <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
         </OpenVPN>
