@@ -65,7 +65,7 @@ class ARP(object):
                     physical_intf = line.split('on')[-1].strip().split(' ')[0]
                     if address in self._arp_table:
                         self._arp_table[address]['intf'].append(physical_intf)
-                    else:
+                    elif mac.find('incomplete') == -1:
                         self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
 
     def list_items(self):
