@@ -291,6 +291,29 @@ include("head.inc");
             $(this).parent().parent().remove();
         }
     }
+
+    /**
+     * link alias typeahead to input, only return items not already on this form.
+     */
+    function addFieldTypeAhead() {
+        $(".fld_detail").typeahead({
+            source: document.all_aliases[$("#typeSelect").val()],
+            matcher: function(item){
+                var used = false;
+                $(".fld_detail").each(function(){
+                    if (item == $(this).val()) {
+                        used = true;
+                    }
+                });
+                if (used) {
+                    return false;
+                } else {
+                    return ~item.toLowerCase().indexOf(this.query)
+                }
+            }
+        });
+    }
+
     // add new detail record
     $("#addNew").click(function(){
         // copy last row and reset values
@@ -300,7 +323,7 @@ include("head.inc");
         });
         $(".act-removerow").click(removeRow);
         // link typeahead to new item
-        $(".fld_detail").typeahead({ source: document.all_aliases[$("#typeSelect").val()] });
+        addFieldTypeAhead();
         // link geoip list to new item
         $(".geoip_list").change(function(){
             $(this).parent().find('input').val($(this).val());
@@ -364,7 +387,7 @@ include("head.inc");
               break;
       }
       $(".fld_detail").typeahead("destroy");
-      $(".fld_detail").typeahead({ source: document.all_aliases[$("#typeSelect").val()] });
+      addFieldTypeAhead();
     }
 
     $("#typeSelect").change(function(){
