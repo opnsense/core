@@ -315,7 +315,7 @@ $( document ).ready(function() {
                     <td class="hidden-xs hidden-sm">&nbsp;</td>
                     <td><?=gettext("Block all IPv6 traffic");?></td>
                     <td>
-                      <a href="system_advanced_network.php" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a href="system_advanced_firewall.php" data-toggle="tooltip" title="<?=gettext("change configuration");?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                     </td>
                   </tr>
 <?php
