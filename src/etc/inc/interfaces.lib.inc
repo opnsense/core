@@ -310,8 +310,8 @@ function _legacy_getall_interface_addresses($ifs)
                                     $addrs['subnetbits6'] = intval($stat[$i+1]);
                                 }
                             }
+                            $addrs['compat'][] = $addr . '/' . $addrs['subnetbits6'];
                         }
-                        $addrs['compat'][] = $addr . '/' . $addrs['subnetbits6'];
                         break;
                     case 'ether':
                         $addrs['macaddr'] = $stat[1];
