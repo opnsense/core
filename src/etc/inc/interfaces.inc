@@ -3465,9 +3465,12 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
+    /* always kill rtsold in case of reconfigure */
     killbypid("/var/run/rtsold_{$wanif}.pid", 'TERM', true);
 
     if (isset($wancfg['dhcp6sendsolicit'])) {
+        /* dhcp6c from previous run can still be around */
+        killbypid("/var/run/dhcp6c_{$wanif}.pid", 'TERM', true);
         /* command is already exec_safe() */
         mwexec($dhcp6ccommand);
     } else {
