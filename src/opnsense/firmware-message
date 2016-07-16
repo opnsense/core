@@ -22,6 +22,9 @@ network.</li>
 scrub</em> option under <em>Firewall: Settings: Normalization</em>
 <li>The <em>NAT+proxy</em> reflection option was removed and will
 automatically switch to the more flexible firewall-based NAT.</li>
+<li>The <em>Disable Negate rule on policy routing rules</em> option is no
+longer available as automatic VPN skip rules for policy-based routing have
+been removed.  If you want to skip your VPN, please add an explicit rule.</li>
 <li>The <em>IPv6 over IPv4 tunneling</em> option was removed.  You can use
 a regular NAT rule to achieve the same result.</li></ul></p>
 <p>Please heed these points carefully before upgrading.  Backup your configs,
