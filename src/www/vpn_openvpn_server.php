@@ -817,21 +817,19 @@ endif; ?>
                           <option value="">None</option>
 <?php
                           foreach ($config['crl'] as $crl) :
-                              if (isset($acrl['refid'])) {
-                                  $selected = "";
-                                  $caname = "";
-                                  $ca = lookup_ca($crl['caref']);
-                                  if ($ca) {
-                                      $caname = " (CA: {$ca['descr']})";
-                                      if ($pconfig['crlref'] == $crl['refid']) {
-                                          $selected = "selected=\"selected\"";
-                                      }
-                                  }
-                              }?>
-                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>>
-                              <?=htmlspecialchars($crl['descr'] . $caname);?>
-                            </option>
+                              if (!isset($crl['refid'])) {
+                                  continue;
+                              }
+                              $ca = lookup_ca($crl['caref']);
+                              if ($ca) {
+                                  $caname = " (CA: {$ca['descr']})";
+                                  $selected = '';
+                                  if ($pconfig['crlref'] == $crl['refid']) {
+                                      $selected = 'selected="selected"';
+                                  }?>
+                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>><?=htmlspecialchars($crl['descr'] . $caname);?></option>
 <?php
+                              }
                           endforeach; ?>
                         </select>
 <?php
