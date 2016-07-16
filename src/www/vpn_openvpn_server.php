@@ -822,12 +822,8 @@ endif; ?>
                               }
                               $ca = lookup_ca($crl['caref']);
                               if ($ca) {
-                                  $caname = " (CA: {$ca['descr']})";
-                                  $selected = '';
-                                  if ($pconfig['crlref'] == $crl['refid']) {
-                                      $selected = 'selected="selected"';
-                                  }?>
-                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>><?=htmlspecialchars($crl['descr'] . $caname);?></option>
+                                  $selected = $pconfig['crlref'] == $crl['refid'] ? 'selected="selected"' : ''; ?>
+                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>><?=htmlspecialchars("{$crl['descr']} ({$ca['descr']})");?></option>
 <?php
                               }
                           endforeach; ?>
@@ -855,7 +851,7 @@ endif; ?>
                             if (isset($cert['caref'])) {
                                 $ca = lookup_ca($cert['caref']);
                                 if (!empty($ca)) {
-                                    $caname = " (CA: {$ca['descr']})";
+                                    $caname = " ({$ca['descr']})";
                                 }
                             }
                             if ($pconfig['certref'] == $cert['refid']) {
