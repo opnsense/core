@@ -975,21 +975,15 @@ endif; ?>
                           <option value="">None</option>
 <?php
                           foreach ($config['crl'] as $crl) :
-                              if (isset($acrl['refid'])) {
-                                  $selected = "";
-                                  $caname = "";
-                                  $ca = lookup_ca($crl['caref']);
-                                  if ($ca) {
-                                      $caname = " (CA: {$ca['descr']})";
-                                      if ($pconfig['crlref'] == $crl['refid']) {
-                                          $selected = "selected=\"selected\"";
-                                      }
-                                  }
-                              }?>
-                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>>
-                              <?=htmlspecialchars($crl['descr'] . $caname);?>
-                            </option>
+                              if (!isset($crl['refid'])) {
+                                  continue;
+                              }
+                              $ca = lookup_ca($crl['caref']);
+                              if ($ca) {
+                                  $selected = $pconfig['crlref'] == $crl['refid'] ? 'selected="selected"' : ''; ?>
+                            <option value="<?=htmlspecialchars($crl['refid']);?>" <?=$selected;?>><?=htmlspecialchars("{$crl['descr']} ({$ca['descr']})");?></option>
 <?php
+                              }
                           endforeach; ?>
                         </select>
 <?php
@@ -1015,7 +1009,7 @@ endif; ?>
                             if (isset($cert['caref'])) {
                                 $ca = lookup_ca($cert['caref']);
                                 if (!empty($ca)) {
-                                    $caname = " (CA: {$ca['descr']})";
+                                    $caname = " ({$ca['descr']})";
                                 }
                             }
                             if ($pconfig['certref'] == $cert['refid']) {
