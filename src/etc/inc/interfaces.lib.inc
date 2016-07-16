@@ -302,16 +302,19 @@ function _legacy_getall_interface_addresses($ifs)
                         break;
                     case 'inet6':
                         $addr = strtok($stat[1], '%');
+                        /* throw error on ifconfig output scan fail: */
+                        unset($mask);
+                        for ($i = 0; $i < count($stat) - 1; ++$i) {
+                            if ($stat[$i] == 'prefixlen') {
+                                $mask = intval($stat[$i + 1]);
+                            }
+                        }
                         if (!isset($addrs['ipaddr6']) && strpos($addr, 'fe80:') !== 0) {
                             /* does not pick up link-local */
+                            $addrs['subnetbits6'] = $mask;
                             $addrs['ipaddr6'] = $addr;
-                            for ($i = 0; $i < count($stat); ++$i) {
-                                if ($stat[$i] == 'prefixlen') {
-                                    $addrs['subnetbits6'] = intval($stat[$i+1]);
-                                }
-                            }
-                            $addrs['compat'][] = $addr . '/' . $addrs['subnetbits6'];
                         }
+                        $addrs['compat'][] = $addr . '/' . $mask;
                         break;
                     case 'ether':
                         $addrs['macaddr'] = $stat[1];
