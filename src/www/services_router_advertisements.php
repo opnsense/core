@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // validate and copy subnets
     $pconfig['subnets'] = array("item" => array());
-    foreach ($pconfig['subnet_address'] as $ids => $address) {
+    foreach ($pconfig['subnet_address'] as $idx => $address) {
         if (!empty($address)) {
             if (is_alias($address)) {
                 $pconfig['subnets']['item'][] = $address;
@@ -312,7 +312,7 @@ include("head.inc");
                         foreach($pconfig['subnets']['item'] as $item):
                           $parts = explode('/', $item);
                           if (count($parts) > 1) {
-                              $sn_bits = $parts[1];
+                              $sn_bits = intval($parts[1]);
                           } else {
                               $sn_bits = null;
                           }
