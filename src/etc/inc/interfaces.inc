@@ -3430,7 +3430,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
 
     $dhcp6ccommand = exec_safe(
         "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
-	array(
+        array(
             empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
             "/var/etc/dhcp6c_{$interface}.conf",
             "/var/run/dhcp6c_{$wanif}.pid",
