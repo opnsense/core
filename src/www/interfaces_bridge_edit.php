@@ -243,7 +243,7 @@ $(document).ready(function() {
                       <td width="22%"><strong><?=gettext("Bridge configuration");?></strong></td>
                       <td width="78%" align="right">
                         <small><?=gettext("full help"); ?> </small>
-                        <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                        <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                         &nbsp;
                       </td>
                     </tr>
@@ -255,7 +255,7 @@ $(document).ready(function() {
                         <select name="members[]" multiple="multiple" class="selectpicker" data-size="5" data-live-search="true">
 <?php
                         foreach ($ifacelist as $ifn => $ifinfo):?>
-                            <option value="<?=$ifn;?>" <?=!empty($pconfig['members']) && in_array($ifn, $pconfig['members']) ? "selected=\"selected\"" : "";?>>
+                            <option value="<?=$ifn;?>" <?=!empty($pconfig['members']) && in_array($ifn, $pconfig['members']) ? 'selected="selected"' : "";?>>
                                 <?=$ifinfo;?>
                             </option>
 <?php
@@ -298,7 +298,7 @@ $(document).ready(function() {
                     <tr>
                       <td width="22%"><a id="help_for_enablestp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Enable");?></td>
                       <td width="78%">
-                        <input type="checkbox" name="enablestp" <?= !empty($pconfig['enablestp']) ? "checked=\"checked\"" : "";?> />
+                        <input type="checkbox" name="enablestp" <?= !empty($pconfig['enablestp']) ? 'checked="checked"' : "";?> />
                         <div class="hidden" for="help_for_enablestp">
                           <?=gettext("Enable spanning tree options for this bridge."); ?>
                         </div>
@@ -333,9 +333,9 @@ $(document).ready(function() {
                         endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_stp" >
-                         <?=gettext("Enable Spanning Tree Protocol on interface.  The if_bridge(4) " .
+                         <?=gettext("Enable Spanning Tree Protocol on interface. The if_bridge(4) " .
                          "driver has support for the IEEE 802.1D Spanning Tree Protocol " .
-                         "(STP).  STP is used to detect and remove loops in a " .
+                         "(STP). STP is used to detect and remove loops in a " .
                          "network topology."); ?>
                         </div>
                       </td>
@@ -346,7 +346,7 @@ $(document).ready(function() {
                         <input name="maxage" type="text" value="<?=$pconfig['maxage'];?>" />
                         <div class="hidden" for="help_for_maxage">
                          <?=gettext("Set the time that a Spanning Tree Protocol configuration is " .
-                         "valid.  The default is 20 seconds.  The minimum is 6 seconds and " .
+                         "valid. The default is 20 seconds. The minimum is 6 seconds and " .
                          "the maximum is 40 seconds."); ?>
                         </div>
                       </td>
@@ -357,7 +357,7 @@ $(document).ready(function() {
                         <input name="fwdelay" type="text" value="<?=$pconfig['fwdelay'];?>" />
                         <div class="hidden" for="help_for_fwdelay">
                          <?=gettext("Set the time that must pass before an interface begins forwarding " .
-                         "packets when Spanning Tree is enabled.  The default is 15 seconds.  The minimum is 4 seconds and the maximum is 30 seconds."); ?>
+                         "packets when Spanning Tree is enabled. The default is 15 seconds. The minimum is 4 seconds and the maximum is 30 seconds."); ?>
                         </div>
                       </td>
                     </tr>
@@ -366,8 +366,8 @@ $(document).ready(function() {
                       <td>
                         <input name="hellotime" type="text" value="<?=$pconfig['hellotime'];?>" />
                         <div class="hidden" for="help_for_hellotime">
-                         <?=gettext("Set the time between broadcasting of Spanning Tree Protocol configuration messages.  The hello time may only be changed when " .
-                         "operating in legacy STP mode.  The default is 2 seconds.  The minimum is 1 second and the maximum is 2 seconds."); ?>
+                         <?=gettext("Set the time between broadcasting of Spanning Tree Protocol configuration messages. The hello time may only be changed when " .
+                         "operating in legacy STP mode. The default is 2 seconds. The minimum is 1 second and the maximum is 2 seconds."); ?>
                         </div>
                       </td>
                     </tr>
@@ -376,7 +376,7 @@ $(document).ready(function() {
                       <td>
                         <input name="priority" type="text" value="<?=$pconfig['priority'];?>" />
                         <div class="hidden" for="help_for_priority">
-                         <?=gettext("Set the bridge priority for Spanning Tree.  The default is 32768. " .
+                         <?=gettext("Set the bridge priority for Spanning Tree. The default is 32768. " .
                          "The minimum is 0 and the maximum is 61440."); ?>
                         </div>
                       </td>
@@ -386,9 +386,9 @@ $(document).ready(function() {
                       <td>
                         <input name="holdcnt" type="text" value="<?=$pconfig['holdcnt'];?>" />
                         <div class="hidden" for="help_for_holdcnt">
-                         <?=gettext("Set the transmit hold count for Spanning Tree.  This is the number" .
-                         " of packets transmitted before being rate limited.  The " .
-                         "default is 6.  The minimum is 1 and the maximum is 10."); ?>
+                         <?=gettext("Set the transmit hold count for Spanning Tree. This is the number " .
+                         "of packets transmitted before being rate limited. The " .
+                         "default is 6. The minimum is 1 and the maximum is 10."); ?>
                         </div>
                       </td>
                     </tr>
@@ -408,8 +408,8 @@ $(document).ready(function() {
                         endforeach;?>
                         </table>
                         <div class="hidden" for="help_for_intf_priority">
-                         <?=gettext("Set the Spanning Tree priority of interface to value.  The " .
-                         "default is 128.  The minimum is 0 and the maximum is 240.  Increments of 16."); ?>
+                         <?=gettext("Set the Spanning Tree priority of interface to value. " .
+                         "The default is 128. The minimum is 0 and the maximum is 240. Increments of 16."); ?>
                         </div>
                       </td>
                     </tr>
@@ -429,8 +429,8 @@ $(document).ready(function() {
                         endforeach;?>
                         </table>
                         <div class="hidden" for="help_for_intf_pathcost">
-                         <?=gettext("Set the Spanning Tree path cost of interface to value.  The " .
-                         "default is calculated from the link speed.  To change a previously selected path cost back to automatic, set the cost to 0. ".
+                         <?=gettext("Set the Spanning Tree path cost of interface to value. The " .
+                         "default is calculated from the link speed. To change a previously selected path cost back to automatic, set the cost to 0. ".
                          "The minimum is 1 and the maximum is 200000000."); ?>
                         </div>
                       </td>
@@ -454,7 +454,7 @@ $(document).ready(function() {
                       <td width="78%">
                         <input name="maxaddr" type="text" value="<?=$pconfig['maxaddr'];?>" />
                       <div class="hidden" for="help_for_maxaddr">
-                        <?=gettext("Set the size of the bridge address cache to size.  The default is .100 entries."); ?>
+                        <?=gettext("Set the size of the bridge address cache to size. The default is .100 entries."); ?>
                       </span>
                       </td>
                     </tr>
@@ -463,7 +463,7 @@ $(document).ready(function() {
                       <td>
                         <input name="timeout" type="text" value="<?=$pconfig['timeout'];?>" />
                         <div class="hidden" for="help_for_timeout">
-                         <?=gettext("Set the timeout of address cache entries to this number of seconds.  If " .
+                         <?=gettext("Set the timeout of address cache entries to this number of seconds. If " .
                          "seconds is zero, then address cache entries will not be expired. " .
                          "The default is 240 seconds."); ?>
                         </div>
@@ -484,8 +484,8 @@ $(document).ready(function() {
                         </select>
                         <div class="hidden" for="help_for_span">
                          <?=gettext("Add the interface named by interface as a span port on the " .
-                         "bridge.  Span ports transmit a copy of every frame received by " .
-                         "the bridge.  This is most useful for snooping a bridged network " .
+                         "bridge. Span ports transmit a copy of every frame received by " .
+                         "the bridge. This is most useful for snooping a bridged network " .
                          "passively on another host connected to one of the span ports of " .
                          "the bridge."); ?><br/>
                          <span class="text-warning"><strong><?=gettext("Note:"); ?><br /></strong></span>
@@ -506,7 +506,7 @@ $(document).ready(function() {
                           endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_edge">
-                          <?=gettext("Set interface as an edge port.  An edge port connects directly to " .
+                          <?=gettext("Set interface as an edge port. An edge port connects directly to " .
                           "end stations and cannot create bridging loops in the network; this " .
                           "allows it to transition straight to forwarding."); ?>
                         </div>
@@ -525,7 +525,7 @@ $(document).ready(function() {
                           endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_autoedge">
-                          <?=gettext("Allow interface to automatically detect edge status.  This is the " .
+                          <?=gettext("Allow interface to automatically detect edge status. This is the " .
                             "default for all interfaces added to a bridge."); ?><br/>
                             <span class="text-warning"><strong><?=gettext("Note:"); ?><br /></strong></span>
                             <?=gettext("This will disable the autoedge status of interfaces."); ?>
@@ -538,14 +538,14 @@ $(document).ready(function() {
                         <select name="ptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=!empty($pconfig['ptp']) && in_array($ifn, $pconfig['ptp']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['ptp']) && in_array($ifn, $pconfig['ptp']) ? 'selected="selected"' : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
                           endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_ptp">
-                         <?=gettext("Set the interface as a point-to-point link.  This is required for " .
+                         <?=gettext("Set the interface as a point-to-point link. This is required for " .
                          "straight transitions to forwarding and should be enabled on a " .
                          "direct link to another RSTP-capable switch."); ?>
                         </div>
@@ -557,7 +557,7 @@ $(document).ready(function() {
                         <select name="autoptp[]" class="selectpicker" multiple="multiple" size="3" data-live-search="true">
 <?php
                           foreach ($ifacelist as $ifn => $ifdescr):?>
-                          <option value="<?=$ifn;?>" <?=!empty($pconfig['autoptp']) && in_array($ifn, $pconfig['autoptp']) ? "selected=\"selected\"" : "";?>>
+                          <option value="<?=$ifn;?>" <?=!empty($pconfig['autoptp']) && in_array($ifn, $pconfig['autoptp']) ? 'selected="selected"' : "";?>>
                             <?=$ifdescr;?>
                           </option>
 <?php
@@ -565,7 +565,7 @@ $(document).ready(function() {
                         </select>
                         <div class="hidden" for="help_for_autoptp">
                          <?=gettext("Automatically detect the point-to-point status on interface by " .
-                         "checking the full duplex link status.  This is the default for " .
+                         "checking the full duplex link status. This is the default for " .
                          "interfaces added to the bridge."); ?><br/>
                          <span class="text-warning"><strong><?=gettext("Note:"); ?><br /></strong></span>
                          <?=gettext("The interfaces selected here will be removed from default autoedge status."); ?>
@@ -585,9 +585,9 @@ $(document).ready(function() {
                           endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_static">
-                          <?=gettext("Mark an interface as a \"sticky\" interface.  Dynamically learned " .
-                          "address entries are treated as static once entered into the " .
-                          "cache.  Sticky entries are never aged out of the cache or " .
+                          <?=gettext('Mark an interface as a "sticky" interface. Dynamically learned ' .
+                          "address entries are treated as static once entered into the cache. " .
+                          "Sticky entries are never aged out of the cache or " .
                           "replaced, even if the address is seen on a different interface."); ?>
                         </div>
                       </td>
@@ -605,7 +605,7 @@ $(document).ready(function() {
                           endforeach;?>
                         </select>
                         <div class="hidden" for="help_for_private">
-                          <?=gettext("Mark an interface as a \"private\" interface.  A private interface does not forward any traffic to any other port that is also " .
+                          <?=gettext('Mark an interface as a "private" interface. A private interface does not forward any traffic to any other port that is also ' .
                           "a private interface."); ?>
                         </div>
                       </td>

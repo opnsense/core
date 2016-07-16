@@ -174,7 +174,7 @@ include("head.inc");
                   <thead>
                     <tr>
                       <td width="22%">
-                        <strong><?=gettext("UPnP &amp; NAT-PMP Settings");?></strong>
+                        <strong><?=gettext("UPnP and NAT-PMP Settings");?></strong>
                       </td>
                       <td width="78%" align="right">
                         <small><?=gettext("full help"); ?> </small>
@@ -283,7 +283,7 @@ include("head.inc");
                       <td>
                        <input name="sysuptime" type="checkbox" value="yes" <?=!empty($pconfig['sysuptime']) ? "checked=\"checked\"" : ""; ?> />
                        <div class="hidden" for="help_for_sysuptime">
-                         <?=gettext("Use system uptime instead of UPnP &amp; NAT-PMP service uptime?");?>
+                         <?=gettext("Use system uptime instead of UPnP and NAT-PMP service uptime?");?>
                        </div>
                       </td>
                     </tr>
@@ -292,7 +292,7 @@ include("head.inc");
                       <td>
                        <input name="permdefault" type="checkbox" value="yes" <?=!empty($pconfig['permdefault']) ? "checked=\"checked\"" : ""; ?> />
                        <div class="hidden" for="help_for_permdefault">
-                         <?=gettext("By default deny access to UPnP &amp; NAT-PMP?");?>
+                         <?=gettext("By default deny access to UPnP and NAT-PMP?");?>
                        </div>
                       </td>
                     </tr>
