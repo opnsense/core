@@ -20,10 +20,10 @@ network.</li>
 <li>The <em>Disable firewall scrub</em> option was removed.  All scrubbing
 (including MSS clamping) can now be disabled using the <em>Disable interface
 scrub</em> option under <em>Firewall: Settings: Normalization</em>
-<li>The <em>NAT+proxy</em> option was removed and will automatically switch
-to the more flexible firewall NAT.</li>
+<li>The <em>NAT+proxy</em> reflection option was removed and will
+automatically switch to the more flexible firewall-based NAT.</li>
 <li>The <em>IPv6 over IPv4 tunneling</em> option was removed.  You can use
-regular NAT rules to achieve the same result.</li></ul></p>
+a regular NAT rule to achieve the same result.</li></ul></p>
 <p>Please heed these points carefully before upgrading.  Backup your configs,
 preview the new version via the live CD or in a virtual machine.  Create
 snapshots.  If all else fails, report back
