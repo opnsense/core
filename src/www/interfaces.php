@@ -371,6 +371,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['blockpriv'] = isset($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = isset($a_interfaces[$if]['blockbogons']);
     $pconfig['dhcp6-ia-pd-send-hint'] = isset($a_interfaces[$if]['dhcp6-ia-pd-send-hint']);
+    $pconfig['dhcp6sendsolicit'] = isset($a_interfaces[$if]['dhcp6sendsolicit']);
     $pconfig['dhcp6prefixonly'] = isset($a_interfaces[$if]['dhcp6prefixonly']);
     $pconfig['dhcp6usev4iface'] = isset($a_interfaces[$if]['dhcp6usev4iface']);
     $pconfig['adv_dhcp6_debug'] = isset($a_interfaces[$if]['adv_dhcp6_debug']);
@@ -1059,6 +1060,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['dhcp6prefixonly'])) {
                         $new_config['dhcp6prefixonly'] = true;
+                    }
+                    if (!empty($pconfig['dhcp6sendsolicit'])) {
+                        $new_config['dhcp6sendsolicit'] = true;
                     }
                     if (!empty($pconfig['dhcp6usev4iface'])) {
                         $new_config['dhcp6usev4iface'] = true;
@@ -2457,6 +2461,15 @@ include("head.inc");
                             <input name="dhcp6prefixonly" type="checkbox" id="dhcp6prefixonly" value="yes" <?=!empty($pconfig['dhcp6prefixonly']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" for="help_for_dhcp6prefixonly">
                               <?=gettext("Only request a IPv6 prefix, do not request a IPv6 address"); ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr class="dhcpv6_basic">
+                          <td><a id="help_for_dhcp6sendsolicit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Directly send SOLICIT'); ?></td>
+                          <td>
+                            <input name="dhcp6sendsolicit" type="checkbox" id="dhcp6sendsolicit" value="yes" <?= !empty($pconfig['dhcp6sendsolicit']) ? 'checked="checked"' : '' ?>/>
+                            <div class="hidden" for="help_for_dhcp6sendsolicit">
+                              <?= gettext('In case the ISP requires a SOLICIT message for authentication, select this option to prevent indefinite waiting for a router advertisement.') ?>
                             </div>
                           </td>
                         </tr>

@@ -3419,7 +3419,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $dhcp6cscript = "#!/bin/sh\n";
     $dhcp6cscript .= "# This shell script launches /usr/local/etc/rc.newwanipv6 with a interface argument.\n";
     $dhcp6cscript .= "/usr/local/etc/rc.newwanipv6 {$wanif} \n";
-    /* Add wide-dhcp6c shell script here. Because we can not pass a argument to it. */
+
     if (!@file_put_contents("/var/etc/dhcp6c_{$interface}_script.sh", $dhcp6cscript)) {
         printf("Error: cannot open dhcp6c_{$interface}_script.sh in interface_dhcpv6_configure() for writing.\n");
         unset($dhcp6cscript);
@@ -3427,6 +3427,16 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     }
     unset($dhcp6cscript);
     chmod("/var/etc/dhcp6c_{$interface}_script.sh", 0755);
+
+    $dhcp6ccommand = exec_safe(
+        "/usr/local/sbin/dhcp6c %s -c %s -p %s %s",
+	array(
+            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+            "/var/etc/dhcp6c_{$interface}.conf",
+            "/var/run/dhcp6c_{$wanif}.pid",
+            "{$wanif}"
+        )
+    );
 
     $rtsoldscript = "#!/bin/sh\n";
     $rtsoldscript .= "# This shell script launches dhcp6c and configured gateways for this interface.\n";
@@ -3436,10 +3446,9 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     $rtsoldscript .= "\t/bin/pkill -F /var/run/dhcp6c_{$wanif}.pid\n";
     $rtsoldscript .= "\t/bin/sleep 1\n";
     $rtsoldscript .= "fi\n";
-    $rtsoldscript .= "/usr/local/sbin/dhcp6c " . (empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D') ;
-    $rtsoldscript .= "  -c /var/etc/dhcp6c_{$interface}.conf -p /var/run/dhcp6c_{$wanif}.pid {$wanif}\n";
     $rtsoldscript .= "/usr/bin/logger -t rtsold \"Starting dhcp6 client for interface {$interface}({$wanif})\"\n";
-    /* Add wide-dhcp6c shell script here. Because we can not pass a argument to it. */
+    $rtsoldscript .= "$dhcp6ccommand\n";
+
     if (!@file_put_contents("/var/etc/rtsold_{$wanif}_script.sh", $rtsoldscript)) {
         printf("Error: cannot open rtsold_{$wanif}_script.sh in interface_dhcpv6_configure() for writing.\n");
         unset($rtsoldscript);
@@ -3456,26 +3465,24 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
     /* Enable RFC6204w support for IPv6 Customer Edge (CE) router */
     set_single_sysctl("net.inet6.ip6.rfc6204w3", "1");
 
-    /* fire up rtsold for IPv6 RAs first, this backgrounds immediately. It will call dhcp6c */
-    if (isvalidpid("/var/run/rtsold_{$wanif}.pid")) {
-        killbypid("/var/run/rtsold_{$wanif}.pid");
-        sleep(2);
+    killbypid("/var/run/rtsold_{$wanif}.pid", 'TERM', true);
+
+    if (isset($wancfg['dhcp6sendsolicit'])) {
+        /* command is already exec_safe() */
+        mwexec($dhcp6ccommand);
+    } else {
+        /* fire up rtsold for IPv6 RAs first, this backgrounds immediately. It will call dhcp6c */
+        mwexecf(
+            '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
+            array(
+                "/var/run/rtsold_{$wanif}.pid",
+                "/var/etc/rtsold_{$wanif}_script.sh",
+                '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
+                empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
+                $wanif
+            )
+        );
     }
-
-    mwexecf(
-        '/usr/sbin/rtsold -p %s -O %s -R %s %s %s',
-        array(
-            "/var/run/rtsold_{$wanif}.pid",
-            "/var/etc/rtsold_{$wanif}_script.sh",
-            '/usr/bin/true', /* XXX missing proper script to refresh resolv.conf */
-            empty($wancfg['adv_dhcp6_debug']) ? '-d' : '-D',
-            $wanif
-        )
-    );
-
-    /* NOTE: will be called from rtsold invoked script
-     * link_interface_to_track6($interface, "update");
-     */
 
     return 0;
 }
