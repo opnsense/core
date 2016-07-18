@@ -438,9 +438,7 @@ $( document ).ready(function() {
                             'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
                             'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
 ?>
-                          <?=!empty($p1_authentication_methods[$ph1ent['authentication_method']]['name']) ?
-                                  $p1_authentication_methods[$ph1ent['authentication_method']]['name'] :
-                                  strtoupper($ph1ent['authentication_method']);?>
+                          <?=$p1_authentication_methods[$ph1ent['authentication_method']]['name'];?>
                       </td>
                       <td>
                           <?=$ph1ent['descr'];?>&nbsp;
