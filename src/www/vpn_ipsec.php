@@ -429,16 +429,7 @@ $( document ).ready(function() {
                           <?=gettext("DH Group"); ?>&nbsp;<?=$p1_dhgroups[$ph1ent['dhgroup']];?>
                       </td>
                       <td class="hidden-xs">
-<?php
-                          $p1_authentication_methods = array(
-                            'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
-                            'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
-                            'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
-                            'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
-                            'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
-                            'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
-?>
-                          <?=$p1_authentication_methods[$ph1ent['authentication_method']]['name'];?>
+                          <?=str_replace('_', ' ', $ph1ent['authentication_method']);?>
                       </td>
                       <td>
                           <?=$ph1ent['descr'];?>&nbsp;
