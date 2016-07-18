@@ -169,7 +169,7 @@ function legacy_interface_stats($ifs=null)
     $current_interface = "";
     foreach ($out as $line) {
         if (strpos($line, 'Interface') === 0) {
-            $current_interface = explode(')', explode('(', $line)[1])[0];
+            $current_interface = explode('(', explode(' ', $line)[1])[0];
             $stats[$current_interface] = array();
         } elseif ($current_interface != "") {
             $stat = explode(':', $line);
