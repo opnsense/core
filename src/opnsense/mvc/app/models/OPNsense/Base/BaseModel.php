@@ -190,7 +190,6 @@ abstract class BaseModel
                 $internal_data->addChildNode($xmlNode->getName(), $fieldObject);
             }
         }
-
     }
 
     /**
@@ -371,7 +370,6 @@ abstract class BaseModel
         $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
 
         return $xml;
-
     }
 
     /**

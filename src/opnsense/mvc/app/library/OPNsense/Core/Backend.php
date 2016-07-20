@@ -155,6 +155,5 @@ class Backend
         } else {
             return 0;
         }
-
     }
 }

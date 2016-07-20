@@ -200,7 +200,6 @@ class SystemhealthController extends ApiControllerBase
         }
 
         return (["from" => $from_timestamp, "to" => $to_timestamp, "full_range" => $full_range, "data" => $archives]);
-
     }
 
     /**

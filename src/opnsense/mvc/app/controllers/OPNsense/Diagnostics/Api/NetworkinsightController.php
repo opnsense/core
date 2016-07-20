@@ -272,6 +272,5 @@ class NetworkinsightController extends ApiControllerBase
         } else {
             return "";
         }
-
     }
 }

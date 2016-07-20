@@ -59,7 +59,6 @@ class Shell
         // init, set simulation mode / debug autoput
         $this->simulate = FactoryDefault::getDefault()->get('config')->globals->simulate_mode;
         $this->debug = FactoryDefault::getDefault()->get('config')->globals->debug;
-
     }
 
     /**

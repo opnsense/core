@@ -82,7 +82,6 @@ class Config extends Singleton
         }
 
         return true;
-
     }
 
     /**
@@ -350,7 +349,6 @@ class Config extends Singleton
         $dom->loadXML($dom->saveXML());
 
         return $dom->saveXML();
-
     }
 
     /**
@@ -530,7 +528,5 @@ class Config extends Singleton
         } else {
             throw new ConfigException("Unable to lock config");
         }
-
-
     }
 }
