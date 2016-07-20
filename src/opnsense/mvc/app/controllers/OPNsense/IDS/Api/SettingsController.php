@@ -203,7 +203,6 @@ class SettingsController extends ApiControllerBase
         } else {
             return array();
         }
-
     }
 
     /**
@@ -263,7 +262,6 @@ class SettingsController extends ApiControllerBase
             }
         }
         return $result;
-
     }
 
     /**

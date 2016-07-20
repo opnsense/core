@@ -147,5 +147,4 @@ $di->set('router', function () {
     $router->handle();
 
     return $router;
-
 });

@@ -121,7 +121,6 @@ class MenuSystem
             ));
         }
         unset($ifarr);
-
     }
 
     /**

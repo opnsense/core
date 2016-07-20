@@ -104,7 +104,6 @@ class LDAP implements IAuthConnector
         if (!array_key_exists($attrName, $this->ldapSearchAttr)) {
             $this->ldapSearchAttr[] = $attrName;
         }
-
     }
 
     /**
@@ -323,6 +322,5 @@ class LDAP implements IAuthConnector
             }
             return false;
         }
-
     }
 }
