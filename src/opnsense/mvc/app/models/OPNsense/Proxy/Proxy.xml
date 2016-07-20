@@ -30,6 +30,13 @@
                     <Required>N</Required>
                     <mask>/^([\/0-9a-fA-F.:,])*/u</mask>
                 </ignoreLogACL>
+                <target type="OptionField">
+                    <Required>N</Required>
+                    <BlankDesc>File</BlankDesc>
+                    <OptionValues>
+                        <syslog>Syslog</syslog>
+                    </OptionValues>
+                </target>
             </logging>
             <alternateDNSservers type="CSVListField">
                 <Required>N</Required>

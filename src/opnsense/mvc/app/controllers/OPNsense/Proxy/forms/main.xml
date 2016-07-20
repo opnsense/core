@@ -22,6 +22,14 @@
                 <advanced>true</advanced>
             </field>
             <field>
+                <id>proxy.general.logging.target</id>
+                <label>Log target</label>
+                <type>dropdown</type>
+                <help>Send log data to.</help>
+                <advanced>true</advanced>
+            </field>
+
+            <field>
                 <id>proxy.general.logging.enable.storeLog</id>
                 <label>Enable store logging</label>
                 <type>checkbox</type>
