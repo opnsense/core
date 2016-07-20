@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('dstport'), $pconfig['name'], $origname);
                 update_alias_names_upon_change(array('nat', 'advancedoutbound', 'rule'), array('target'), $pconfig['name'], $origname);
                 // Alias in an alias
-                update_alias_names_upon_change(array('aliases', 'alias'), array('address'), $pconfig['name'], $origname);
+                update_alias_names_upon_change(array('aliases', 'alias'), array('address'), $pconfig['name'], $origname, ' ');
             }
 
 

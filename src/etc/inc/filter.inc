@@ -131,36 +131,48 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
     return ($http_code == 200);
 }
 
-function update_alias_names_upon_change($section, $field, $new_alias_name, $origname)
+function update_alias_names_upon_change($section, $field, $new_alias_name, $origname, $field_separator=null)
 {
     global $config;
-    if (!$origname) {
-        return;
-    }
-
-    $sectionref = &$config;
-    foreach($section as $sectionname) {
-        if (is_array($sectionref) && isset($sectionref[$sectionname])) {
-            $sectionref = &$sectionref[$sectionname];
-        } else {
-            return;
+    if (!empty($origname) && !empty($new_alias_name)) {
+        // find section, return if not found
+        $sectionref = &$config;
+        foreach ($section as $sectionname) {
+            if (!empty($sectionref[$sectionname]) && is_array($sectionref[$sectionname])) {
+                $sectionref = &$sectionref[$sectionname];
+            } else {
+                return;
+            }
         }
-    }
-
-    if (is_array($sectionref)) {
+        // traverse all found sections
         foreach($sectionref as $itemkey => $item) {
-            $fieldfound = true;
+            // locate field within structure
             $fieldref = &$sectionref[$itemkey];
             foreach($field as $fieldname) {
-                if (is_array($fieldref) && isset($fieldref[$fieldname])) {
+                if (!empty($fieldref[$fieldname])) {
                     $fieldref = &$fieldref[$fieldname];
                 } else {
-                    $fieldfound = false;
+                    unset($fieldref);
                     break;
                 }
             }
-            if ($fieldfound && $fieldref == $origname) {
-                $fieldref = $new_alias_name;
+            // if field is found, check and replace
+            if (isset($fieldref) && !is_array($fieldref)) {
+                if ($fieldref == $origname) {
+                    $fieldref = $new_alias_name;
+                } elseif ($field_separator != null) {
+                    // field contains more then one value
+                    $parts = explode($field_separator, $fieldref);
+                    foreach ($parts as &$part) {
+                        if ($part == $origname) {
+                            $part = $new_alias_name;
+                        }
+                    }
+                    $new_field_value = implode($field_separator, $parts);
+                    if ($new_field_value != $fieldref) {
+                        $fieldref = $new_field_value;
+                    }
+                }
             }
         }
     }
