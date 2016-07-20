@@ -12,8 +12,14 @@ problem.</li>
 to be installed in order to still make use of them.  Your configurations
 will persist, but may have to be adapted to adhere to the requirements of
 the MPD5 server daemon.  The most important change is that your listening
-address needs to be a known address, preferrably using a Virtual IP from
+address needs to be a known address, preferably using a Virtual IP from
 the firewall settings.</li>
+<li>The PPTP server redirection mode has been removed.  It can be emulated
+by the two following NAT port forward rules: <em>From incoming WAN interface,
+redirect all traffic to PPTP server IP target for protocol GRE.  From
+incoming WAN interface redirect all traffic to PPTP server IP target for
+protocol TCP, port 1723.</em>  Note that due to the design of GRE, only one
+server can be reached by incoming clients at any given time.</li>
 <li>The <em>Maximum MSS</em> option for VPN Networks moved to <em>Firewall:
 Settings: Normalization</em>, which can now be specified per interface and
 network.</li>
@@ -22,6 +28,9 @@ network.</li>
 scrub</em> option under <em>Firewall: Settings: Normalization</em>
 <li>The <em>NAT+proxy</em> reflection option was removed and will
 automatically switch to the more flexible firewall-based NAT.</li>
+<li>Due to lack of support in FreeBSD itself, the floating rules actions
+can no longer use <em>match</em>.  The custom kernel patch that previously
+enabled selection of this behaviour has been removed.</li>
 <li>The <em>Disable Negate rule on policy routing rules</em> option is no
 longer available as automatic VPN skip rules for policy-based routing have
 been removed.  If you want to skip your VPN, please add an explicit rule.</li>

@@ -1669,7 +1669,6 @@ function filter_nat_rules_generate(&$FilterIflist)
     }
 
     if (isset($config['nat']['rule'])) {
-        /* start reflection redirects on port 19000 of localhost */
         $natrules .= "# NAT Inbound Redirects\n";
           foreach ($config['nat']['rule'] as $rule) {
             update_filter_reload_status(sprintf(gettext("Creating NAT rule %s"), $rule['descr']));
