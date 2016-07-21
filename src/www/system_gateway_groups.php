@@ -32,6 +32,7 @@ require_once("interfaces.inc");
 require_once("openvpn.inc");
 require_once("system.inc");
 require_once("services.inc");
+require_once("util.inc");
 require_once("rrd.inc");
 
 // Resync and restart all VPNs using a gateway group.
