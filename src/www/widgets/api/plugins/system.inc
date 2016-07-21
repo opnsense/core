@@ -141,7 +141,7 @@ function system_api_versions()
 
     $result = array();
 
-    $result[] = sprintf('%s %s-%s', $g['product_name'], explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')))[0], php_uname('p'));
+    $result[] = sprintf('%s %s-%s', $g['product_name'], explode('-', trim(file_get_contents('/usr/local/opnsense/version/opnsense')))[0], trim(shell_exec('uname -p')));
     $result[] = php_uname('s') . ' ' . php_uname('r');
     $result[] = exec('/usr/local/bin/openssl version');
 
