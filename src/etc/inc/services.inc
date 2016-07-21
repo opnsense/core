@@ -2059,7 +2059,7 @@ EOD;
         $platform = $g['product_name'];
         $sysDescr = "{$g['product_name']} " . php_uname("n") .
                     " {$version} {$platform} " . php_uname("s") .
-                    " " . php_uname("r") . " " . php_uname("m");
+                    " " . php_uname("r") . " " . php_uname("p");
 
         $snmpdconf .= <<<EOD
 system := 1

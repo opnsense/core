@@ -69,7 +69,7 @@ $crash_report_header = sprintf(
     trim(file_get_contents('/usr/local/opnsense/version/opnsense')),
     file_exists($last_version) ? sprintf(' [%s]', trim(file_get_contents($last_version))) : '',
     trim(shell_exec('/usr/local/bin/openssl version')),
-    php_uname('m'),
+    php_uname('p'),
     shell_exec('/sbin/sysctl -b kern.hostuuid'),
     date('r')
 );
