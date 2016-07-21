@@ -1,0 +1,45 @@
+<p>Dearest user,</p>
+<p>This is the EOL announcement for the 16.1 series of OPNsense.  As such it
+will not receive any more updates, but the upgrade to the new 16.7 series is
+seamless, except for the following points:</p>
+<p><ul><li>The FreeBSD version changes from 10.2 to 10.3, mainly for driver
+updates and general sanity.  Due to kernel interface changes <strong>plugins
+or custom-built kernel modules may stop working</strong>.  Reinstalling the
+offending packages from the firmware pages or recompiling custom additions
+against the <em>stable/16.7</em> source branch will resolve this
+problem.</li>
+<li>Legacy VPN Servers for L2TP, PPPoE, and PPTP moved to plugins and need
+to be installed in order to still make use of them.  Your configurations
+will persist, but may have to be adapted to adhere to the requirements of
+the MPD5 server daemon.  The most important change is that your listening
+address needs to be a known address, preferably using a Virtual IP from
+the firewall settings.</li>
+<li>The PPTP server redirection mode has been removed.  It can be emulated
+by the two following NAT port forward rules: <em>From incoming WAN interface,
+redirect all traffic to PPTP server IP target for protocol GRE.  From
+incoming WAN interface redirect all traffic to PPTP server IP target for
+protocol TCP, port 1723.</em>  Note that due to the design of GRE, only one
+server can be reached by incoming clients at any given time.</li>
+<li>The <em>Maximum MSS</em> option for VPN Networks moved to <em>Firewall:
+Settings: Normalization</em>, which can now be specified per interface and
+network.</li>
+<li>The <em>Disable firewall scrub</em> option was removed.  All scrubbing
+(including MSS clamping) can now be disabled using the <em>Disable interface
+scrub</em> option under <em>Firewall: Settings: Normalization</em>
+<li>The <em>NAT+proxy</em> reflection option was removed and will
+automatically switch to the more flexible firewall-based NAT.</li>
+<li>Due to lack of support in FreeBSD itself, the floating rules actions
+can no longer use <em>match</em>.  The custom kernel patch that previously
+enabled selection of this behaviour has been removed.</li>
+<li>The <em>Disable Negate rule on policy routing rules</em> option is no
+longer available as automatic VPN skip rules for policy-based routing have
+been removed.  If you want to skip your VPN, please add an explicit rule.</li>
+<li>The <em>IPv6 over IPv4 tunneling</em> option was removed.  You can use
+a regular NAT rule to achieve the same result.</li></ul></p>
+<p>Please heed these points carefully before upgrading.  Backup your configs,
+preview the new version via the live CD or in a virtual machine.  Create
+snapshots.  If all else fails, report back
+<a href="https://forum.opnsense.org/" target="_blank">in the forums</a> for
+assistance.  You don't have to do this on your own.  :)</p>
+<p><em>Crafty Coyote</em>, you've served us well.</p>
+<p>See you on the other side,<br>Your OPNsense team</p>
