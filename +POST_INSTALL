@@ -26,6 +26,10 @@ cp /boot/loader.conf /boot/loader.conf.bak
 (grep -v loader_logo /boot/loader.conf.bak; \
     echo 'loader_logo="hourglass"') > /boot/loader.conf
 rm -f /boot/loader.conf.bak
+cp /boot/loader.conf /boot/loader.conf.bak
+(grep -v loader_menu_title /boot/loader.conf.bak; \
+    echo 'loader_menu_title=""') > /boot/loader.conf
+rm -f /boot/loader.conf.bak
 
 echo "Writing package version"
 mkdir -p /usr/local/opnsense/version
