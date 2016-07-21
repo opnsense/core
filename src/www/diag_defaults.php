@@ -47,7 +47,7 @@ include("head.inc");
 <?php
       else: ?>
         <form method="post">
-          <p><strong> <?=gettext('If you click "Yes", the firewall will:')?></strong></p>
+          <p><strong> <?=gettext('If you click "Yes", the system will:')?></strong></p>
           <ul>
             <li><?=gettext("Reset to factory defaults");?></li>
             <li><?=gettext("LAN IP address will be reset to 192.168.1.1");?></li>
