@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 if (!isset($config['ifgroups']['ifgroupentry'])) {
     $a_ifgroups = array();
@@ -51,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 mwexec("/sbin/ifconfig  " . escapeshellarg($realif) . " -group " . escapeshellarg($a_ifgroups[$id]['ifname']));
             }
         }
+        plugins_interfaces();
         unset($a_ifgroups[$id]);
         write_config();
         header("Location: interfaces_groups.php");

@@ -30,6 +30,7 @@
 
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc");
 
 if (!isset($config['ifgroups']) || !is_array($config['ifgroups'])) {
     $config['ifgroups'] = array();
@@ -121,6 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
       write_config();
       interface_group_setup($ifgroupentry);
+      plugins_interfaces();
       header("Location: interfaces_groups.php");
       exit;
     }
