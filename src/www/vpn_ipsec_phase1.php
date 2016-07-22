@@ -247,48 +247,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if ($pconfig['myid_type'] == "address" and $pconfig['myid_data'] == "") {
+    if ($pconfig['interface'] == 'any' && $pconfig['myid_type'] == "myaddress") {
+        $input_errors[] = gettext("Please select an identifier (My Identifier) other then 'any' when selecting 'Any' interface");
+    } elseif ($pconfig['myid_type'] == "address" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter an address for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "keyid tag" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "keyid tag" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a keyid tag for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "fqdn" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "fqdn" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a fully qualified domain name for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "user_fqdn" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "user_fqdn" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a user and fully qualified domain name for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "dyn_dns" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "dyn_dns" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a dynamic domain name for 'My Identifier'");
-    }
-
-    if ((($pconfig['myid_type'] == "address") && !is_ipaddr($pconfig['myid_data']))) {
+    } elseif ((($pconfig['myid_type'] == "address") && !is_ipaddr($pconfig['myid_data']))) {
         $input_errors[] = gettext("A valid IP address for 'My identifier' must be specified.");
-    }
-
-    if ((($pconfig['myid_type'] == "fqdn") && !is_domain($pconfig['myid_data']))) {
+    } elseif ((($pconfig['myid_type'] == "fqdn") && !is_domain($pconfig['myid_data']))) {
         $input_errors[] = gettext("A valid domain name for 'My identifier' must be specified.");
-    }
-
-    if ($pconfig['myid_type'] == "fqdn") {
-        if (is_domain($pconfig['myid_data']) == false) {
-            $input_errors[] = gettext("A valid FQDN for 'My identifier' must be specified.");
-        }
-    }
-
-    if ($pconfig['myid_type'] == "user_fqdn") {
+    } elseif ($pconfig['myid_type'] == "fqdn" && !is_domain($pconfig['myid_data'])) {
+        $input_errors[] = gettext("A valid FQDN for 'My identifier' must be specified.");
+    } elseif ($pconfig['myid_type'] == "user_fqdn") {
         $user_fqdn = explode("@", $pconfig['myid_data']);
         if (is_domain($user_fqdn[1]) == false) {
             $input_errors[] = gettext("A valid User FQDN in the form of user@my.domain.com for 'My identifier' must be specified.");
         }
-    }
-
-    if ($pconfig['myid_type'] == "dyn_dns") {
+    } elseif ($pconfig['myid_type'] == "dyn_dns") {
         if (is_domain($pconfig['myid_data']) == false) {
             $input_errors[] = gettext("A valid Dynamic DNS address for 'My identifier' must be specified.");
         }
@@ -620,6 +602,9 @@ include("head.inc");
                         </option>
 <?php                  endforeach;
 ?>
+                        <option value="any" <?= $pconfig['interface'] == "any" ? "selected=\"selected\"" : "" ?>>
+                            <?=gettext("Any");?>
+                        </option>
                       </select>
                       <div class="hidden" for="help_for_interface">
                         <?=gettext("Select the interface for the local endpoint of this phase1 entry."); ?>

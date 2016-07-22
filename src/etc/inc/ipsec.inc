@@ -86,7 +86,9 @@ $p2_pfskeygroups = array(
  */
 function ipsec_get_phase1_src(& $ph1ent) {
     if (!empty($ph1ent['interface'])) {
-        if (!is_ipaddr($ph1ent['interface'])) {
+        if ($ph1ent['interface'] == 'any') {
+            return '%any';
+        } elseif (!is_ipaddr($ph1ent['interface'])) {
           if (strpos($ph1ent['interface'],'_vip') !== false) {
               // if this is a vip, set the interface to $ph1ent['interface']
               $if = $ph1ent['interface'];
