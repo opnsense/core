@@ -31,7 +31,6 @@ require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-require_once("util.inc");
 
 $referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '/services_dnsmasq.php');
 

@@ -34,7 +34,6 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("plugins.inc");
 require_once("services.inc");
-require_once("util.inc");
 
 /* expects $logfile to point to the system path */
 /* expects $logclog to be true or false */

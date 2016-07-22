@@ -28,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("util.inc");
 require_once("services.inc") ;
 require_once("interfaces.inc");
 

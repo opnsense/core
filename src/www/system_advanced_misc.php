@@ -34,7 +34,6 @@ require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("vslb.inc");
 require_once("system.inc");
-require_once("util.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 

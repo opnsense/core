@@ -30,10 +30,8 @@
 */
 
 require_once("guiconfig.inc");
-require_once("util.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
-
 
 function leasecmp($a, $b) {
   return strcmp($a[$_GET['order']], $b[$_GET['order']]);

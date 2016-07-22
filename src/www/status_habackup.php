@@ -27,7 +27,6 @@
 */
 require_once("guiconfig.inc");
 require_once("XMLRPC_Client.inc") ;
-require_once("util.inc");
 
 function xmlrpc_exec($method, $params=array(), $debug=false)
 {
