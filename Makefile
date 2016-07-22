@@ -63,7 +63,7 @@ CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense ${CORE_FAMILY} package
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
-CORE_MESSAGE?=		ACME delivery for the crafty coyote!
+CORE_MESSAGE?=		Thanks for all the fish...
 CORE_DEPENDS?=		apinger \
 			beep \
 			bind910 \
