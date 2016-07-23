@@ -57,8 +57,8 @@ CORE_REPOSITORY?=	${FLAVOUR}
 
 CORE_PACKAGESITE?=	http://pkg.opnsense.org
 
-CORE_NAME?=		opnsense-devel
-CORE_FAMILY?=		development
+CORE_NAME?=		opnsense-stable
+CORE_FAMILY?=		stable
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_COMMENT?=		OPNsense ${CORE_FAMILY} package
 CORE_MAINTAINER?=	franco@opnsense.org
