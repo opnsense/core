@@ -650,8 +650,8 @@ include("head.inc");
                     <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                     <td>
                       <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                      <strong><?=gettext("Disable this rule"); ?></strong>
                       <div class="hidden" for="help_for_disabled">
-                        <strong><?=gettext("Disable this rule"); ?></strong><br />
                         <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                       </div>
                     </td>
@@ -663,8 +663,8 @@ include("head.inc");
                     </td>
                     <td>
                       <input name="quick" type="checkbox" id="quick" value="yes" <?php if ($pconfig['quick']) echo "checked=\"checked\""; ?> />
+                      <strong><?=gettext("Apply the action immediately on match.");?></strong>
                       <div class="hidden" for="help_for_quick">
-                        <strong><?=gettext("Apply the action immediately on match.");?></strong><br />
                         <?=gettext("Set this option if you need to apply this action to traffic that matches this rule immediately.");?>
                       </div>
                     </td>
@@ -1069,9 +1069,8 @@ include("head.inc");
                     <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Log");?></td>
                     <td>
                       <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
+                      <strong><?=gettext("Log packets that are handled by this rule");?></strong>
                       <div class="hidden" for="help_for_log">
-                        <strong><?=gettext("Log packets that are handled by this rule");?></strong>
-                        <br />
                         <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
                       </div>
                     </td>
