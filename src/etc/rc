@@ -174,21 +174,21 @@ if [ ${USE_MFS_VAR} -ne 0 ]; then
 	echo -n "Setting up memory disks..."
 
 	setup_mfs_link /root /var/cache opnsense-update
-	#setup_mfs_link /root /var/cache pkg
+	setup_mfs_link /root /var/cache pkg
 	setup_mfs_link /root /var/db pkg
 	setup_mfs_link /root /var crash
 
 	mount -t tmpfs tmpfs /var
 
 	install_mfs_link /root /var/cache opnsense-update
-	#install_mfs_link /root /var/cache pkg
+	install_mfs_link /root /var/cache pkg
 	install_mfs_link /root /var/db pkg
 	install_mfs_link /root /var crash
 
 	echo "done."
 else
 	remove_mfs_link /root /var/cache opnsense-update
-	#remove_mfs_link /root /var/cache pkg
+	remove_mfs_link /root /var/cache pkg
 	remove_mfs_link /root /var/db pkg
 	remove_mfs_link /root /var crash
 fi
