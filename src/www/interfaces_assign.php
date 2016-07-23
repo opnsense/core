@@ -113,16 +113,6 @@ function list_interfaces() {
         }
     }
 
-    /* add tun0 interface (required for sixxs-aiccu) */
-    //   This is a temporary solution to allow using sixxs-aiccu without manual code change
-    //   until the aiccu service is correctly included in the web interface.
-    //   (to avoid additional temporary code in the interface_assign_description function).
-    $tunfound = "";
-    exec("/sbin/ifconfig | /usr/bin/grep -c '^tun0'", $tunfound);
-    if (intval($tunfound[0]) > 0) {
-        $interfaces['tun0'] = array('descr' => 'sixxs-aiccu');
-    }
-
     return $interfaces;
 }
 
