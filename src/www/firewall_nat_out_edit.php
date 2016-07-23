@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($configId)) {
         // load data from config
         foreach (array('protocol','sourceport','dstport','natport','target','targetip'
-                ,'targetip_subnet','poolopts','interface','descr','nonat'
+                ,'targetip_subnet','poolopts','interface','descr','nonat','log'
                 ,'disabled','staticnatport','nosync','ipprotocol') as $fieldname) {
               if (isset($a_out[$configId][$fieldname])) {
                   $pconfig[$fieldname] = $a_out[$configId][$fieldname];
@@ -211,7 +211,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $natent['poolopts'] = $pconfig['poolopts'];
         $natent['ipprotocol'] = $pconfig['ipprotocol'];
 
-        if ( isset($a_out[$id]['created']) && is_array($a_out[$id]['created']) ){
+        if (isset($a_out[$id]['created']) && is_array($a_out[$id]['created']) ){
             $natent['created'] = $a_out[$id]['created'];
         }
 
@@ -286,6 +286,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if(!empty($pconfig['nonat'])) {
             $natent['nonat'] = true;
+        }
+        if (!empty($pconfig['log'])) {
+            $natent['log'] = true;
         }
 
         if(isset($pconfig['nosync'] ) && $pconfig['nosync'] == "yes") {
@@ -395,8 +398,8 @@ include("head.inc");
                   <td><a id="help_for_disabled" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disabled"); ?></td>
                   <td>
                     <input name="disabled" type="checkbox" id="disabled" value="yes" <?= !empty($pconfig['disabled']) ? "checked=\"checked\"" : ""; ?> />
+                    <strong><?=gettext("Disable this rule"); ?></strong>
                     <div class="hidden" for="help_for_disabled">
-                      <strong><?=gettext("Disable this rule"); ?></strong><br />
                       <?=gettext("Set this option to disable this rule without removing it from the list."); ?>
                     </div>
                   </td>
@@ -602,6 +605,16 @@ include("head.inc");
                         <?=sprintf(gettext("If you want this rule to apply to another IP address rather than the IP address of the interface chosen above, ".
                                 "select it here (you will need to define %sVirtual IP addresses%s on the interface first)."),'<a href="firewall_virtual_ip.php">','</a>')?>
                       </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_log" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Log");?></td>
+                  <td>
+                    <input name="log" type="checkbox" id="log" value="yes" <?= !empty($pconfig['log']) ? "checked=\"checked\"" : ""; ?> />
+                    <strong><?=gettext("Log packets that are handled by this rule");?></strong>
+                    <div class="hidden" for="help_for_log">
+                      <?=sprintf(gettext("Hint: the firewall has limited local log space. Don't turn on logging for everything. If you want to do a lot of logging, consider using a %sremote syslog server%s."),'<a href="diag_logs_settings.php">','</a>') ?>
+                    </div>
                   </td>
                 </tr>
                 <tr>
