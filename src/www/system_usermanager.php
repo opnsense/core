@@ -165,13 +165,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "deluser" && isset($id)) {
         // drop user
-        local_user_del($a_user[$id]);
-        $userdeleted = $a_user[$id]['name'];
-        unset($a_user[$id]);
-        write_config();
-        $savemsg = gettext("User")." {$userdeleted} ". gettext("successfully deleted");
-        header("Location: system_usermanager.php?savemsg=".$savemsg);
-        exit;
+        if ($_SESSION['Username'] === $a_user[$id]['name']) {
+            $input_errors[] = gettext('You cannot delete yourself.');
+        } else {
+            local_user_del($a_user[$id]);
+            $userdeleted = $a_user[$id]['name'];
+            unset($a_user[$id]);
+            write_config();
+            $savemsg = gettext("User")." {$userdeleted} ". gettext("successfully deleted");
+            header("Location: system_usermanager.php?savemsg=".$savemsg);
+            exit;
+        }
     } elseif ($act == "delcert" && isset($id)) {
         // remove certificate association
         $certdeleted = lookup_cert($a_user[$id]['cert'][$pconfig['certid']]);
