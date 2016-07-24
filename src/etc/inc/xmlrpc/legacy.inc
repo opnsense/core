@@ -134,20 +134,14 @@ function filter_configure_xmlrpc()
     filter_configure();
     system_routing_configure();
     setup_gateways_monitor();
+    system_hosts_generate();
+    services_dhcpleases_configure();
+    local_sync_accounts();
+    services_dnsmasq_configure(false);
+    services_unbound_configure(false);
+    services_dhcpd_configure();
     relayd_configure();
     openvpn_resync_all();
-    if (isset($config['dnsmasq']['enable'])) {
-        services_dnsmasq_configure();
-    } elseif (isset($config['unbound']['enable'])) {
-        services_unbound_configure();
-    } else {
-        # Both calls above run services_dhcpd_configure(), then we just
-        # need to call it when them are not called to avoid restart dhcpd
-        # twice, as described on ticket #3797
-        services_dhcpd_configure();
-    }
-    system_hosts_generate();
-    local_sync_accounts();
 
     return true;
 }

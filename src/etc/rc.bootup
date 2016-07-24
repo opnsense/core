@@ -125,7 +125,6 @@ require_once("interfaces.inc");
 echo ".";
 require_once("services.inc");
 echo ".";
-echo ".";
 require_once("system.inc");
 echo ".";
 require_once("unbound.inc");
@@ -265,10 +264,10 @@ system_routing_configure();
 system_routing_enable();
 
 /* start dnsmasq service */
-services_dnsmasq_configure();
+services_dnsmasq_configure(false);
 
 /* start unbound service */
-services_unbound_configure();
+services_unbound_configure(false);
 
 /* Do an initial time sync */
 echo "Starting NTP time client...";
@@ -282,7 +281,7 @@ relayd_configure();
 services_dhcpd_configure();
 
 /* start dhcpleases dhpcp hosts leases program */
-system_dhcpleases_configure();
+services_dhcpleases_configure();
 
 /* start DHCP relay */
 services_dhcrelay_configure();

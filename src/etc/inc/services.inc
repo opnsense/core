@@ -386,6 +386,31 @@ function services_dhcpdv6_leasesfile()
     return "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
 }
 
+function services_dhcpleases_configure()
+{
+    global $config, $g;
+
+    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
+
+    if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcp'])) {
+        mwexec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/db");
+        touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
+        if (isvalidpid('/var/run/dhcpleases.pid')) {
+            killbypid('/var/run/dhcpleases.pid', 'HUP');
+        } else {
+            mwexecf(
+                '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
+                array(
+                    "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases",
+                    $config['system']['domain'],
+                    '/var/run/dnsmasq.pid',
+                    '/etc/hosts'
+                )
+            );
+        }
+    }
+}
+
 function services_dhcpd_configure($family = 'all', $blacklist = array())
 {
     global $g;
@@ -1081,8 +1106,8 @@ function services_dhcpdv6_configure($blacklist = array())
     global $config, $g;
 
     /* kill any running dhcpd */
-    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
-    killbypid('/var/run/dhcpleases6.pid');
+    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid", 'TERM', true);
+    killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
 
     /* DHCP enabled on any interfaces? */
     if (!is_dhcpv6_server_enabled()) {
@@ -1966,7 +1991,7 @@ function services_dnsmasq_configure($dhcp_reload = true)
         /* run dnsmasq */
         $cmd = "/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}";
         mwexec_bg($cmd);
-        system_dhcpleases_configure();
+        services_dhcpleases_configure();
         unset($args);
 
         if (file_exists("/var/run/booting")) {
@@ -1978,7 +2003,7 @@ function services_dnsmasq_configure($dhcp_reload = true)
      * XXX this is overly convoluted, potentiall
      * restarting all of dhcp up to three times ;)
      */
-    if (!file_exists("/var/run/booting") && $dhcp_reload) {
+    if ($dhcp_reload) {
         services_dhcpd_configure();
     }
 }
@@ -1995,7 +2020,6 @@ function services_unbound_configure($dhcp_reload = true)
         }
 
         sync_unbound_service();
-        system_dhcpleases_configure();
 
         if (file_exists("/var/run/booting")) {
             echo gettext("done.") . "\n";
@@ -2006,7 +2030,7 @@ function services_unbound_configure($dhcp_reload = true)
      * XXX this is overly convoluted, potentially
      * restarting all of dhcp up to three times ;)
      */
-    if (!file_exists("/var/run/booting") && $dhcp_reload) {
+    if ($dhcp_reload) {
         services_dhcpd_configure();
     }
 }

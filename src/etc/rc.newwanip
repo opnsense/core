@@ -141,6 +141,7 @@ if (!empty($bridgetmp)) {
 
 /* make new hosts file */
 system_hosts_generate();
+services_dhcpleases_configure();
 
 /* check tunneled IPv6 interface tracking */
 if (isset($config['interfaces'][$interface]['ipaddrv6'])) {

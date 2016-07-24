@@ -519,46 +519,47 @@ function unbound_add_domain_overrides($pvt=false) {
     }
 }
 
-function unbound_add_host_entries() {
+function unbound_add_host_entries()
+{
     global $config, $g;
 
     $unbound_entries = "local-zone: \"{$config['system']['domain']}\" transparent\n";
+
     // IPv4 entries
     $unbound_entries .= "local-data-ptr: \"127.0.0.1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost A 127.0.0.1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} A 127.0.0.1\"\n";
+
     // IPv6 entries
     $unbound_entries .= "local-data-ptr: \"::1 localhost\"\n";
     $unbound_entries .= "local-data: \"localhost AAAA ::1\"\n";
     $unbound_entries .= "local-data: \"localhost.{$config['system']['domain']} AAAA ::1\"\n";
 
-    $listen_addresses = "";
-    if (isset($config['unbound']['interface'])) {
-        $interfaces = explode(",", $config['unbound']['interface']);
-        foreach ($interfaces as $interface) {
-            if (is_ipaddrv4($interface)) {
-                $unbound_entries .= "local-data-ptr: \"{$interface} {$config['system']['hostname']}.{$config['system']['domain']}\"\n";
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} A {$interface}\"\n";
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$interface}\"\n";
-            } else if (is_ipaddrv6($interface)) {
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} AAAA {$interface}\"\n";
-                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$interface}\"\n";
-            } else {
-                $if = get_real_interface($interface);
-                if (does_interface_exist($if)) {
-                    $laddr = find_interface_ip($if);
-                    if (is_ipaddrv4($laddr)) {
-                        $unbound_entries .= "local-data-ptr: \"{$laddr} {$config['system']['hostname']}.{$config['system']['domain']}\"\n";
-                        $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} A {$laddr}\"\n";
-                        $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
-                    }
-                    $laddr6 = find_interface_ipv6($if);
-                    if (is_ipaddrv6($laddr6) && !isset($config['dnsmasq']['strictbind'])) {
-                        $unbound_entries .= "local-data-ptr: \"{$laddr6} {$config['system']['hostname']}.{$config['system']['domain']}\"\n";
-                        $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} AAAA {$laddr}\"\n";
-                        $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr}\"\n";
-                    }
-                }
+    if (!empty($config['unbound']['active_interface'])) {
+        $interfaces = explode(",", $config['unbound']['active_interface']);
+    } else {
+        $interfaces = get_configured_interface_list();
+    }
+
+    foreach ($interfaces as $interface) {
+        $if = get_real_interface($interface);
+        if (does_interface_exist($if)) {
+            $laddr = find_interface_ip($if);
+            if (is_ipaddrv4($laddr)) {
+                $unbound_entries .= "local-data-ptr: \"{$laddr} {$config['system']['hostname']}.{$config['system']['domain']}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} A {$laddr}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} A {$laddr}\"\n";
+            }
+            $laddr6 = find_interface_ipv6($if);
+            if (is_ipaddrv6($laddr6)) {
+                $unbound_entries .= "local-data-ptr: \"{$laddr6} {$config['system']['hostname']}.{$config['system']['domain']}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} AAAA {$laddr6}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
+            }
+            $lladdr6 = find_interface_ipv6_ll($if);
+            if (is_ipaddrv6($lladdr6)) {
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} AAAA {$lladdr6}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
             }
         }
     }
