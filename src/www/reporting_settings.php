@@ -170,15 +170,13 @@ $(document).ready(function() {
 <?php
                         foreach ($all_rrd_files as $rrd_name => $rrd_file):?>
                         <tr>
-                          <td width="22%">
+                          <td>
                             <button class="act_flush btn btn-default btn-xs"
                                     title="<?=gettext("flush report");?>" data-toggle="tooltip"
                                     data-id="<?=$rrd_file['filename'];?>">
                               <span class="fa fa-trash text-muted"></span>
                             </button>
                             <?=$rrd_name;?>
-                          </td>
-                          <td>
                           </td>
                         </tr>
 <?php
