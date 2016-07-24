@@ -1,3 +1,4 @@
 <?php
-//set variable for custom title
-$thermal_sensors_widget_title = "Thermal Sensors";
+
+$thermal_sensors_title = gettext('Thermal Sensors');
+$thermal_sensors_title_link = 'system_advanced_misc.php';
