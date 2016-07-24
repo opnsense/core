@@ -436,7 +436,7 @@ $( document ).ready(function() {
 
                       <div class="hidden" for="help_for_adv">
                         <br/>
-                        <?=gettext("The frequency that this machine will advertise.  0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
+                        <?=gettext("The frequency that this machine will advertise. 0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master.");?>
                       </div>
                     </td>
                   </tr>

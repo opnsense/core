@@ -122,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     /* Ensure that our monitor names are unique */
     for ($i=0; isset($config['load_balancer']['monitor_type'][$i]); $i++) {
         if ($pconfig['name'] == $config['load_balancer']['monitor_type'][$i]['name'] && $i != $id) {
-            $input_errors[] = gettext("This monitor name has already been used.  Monitor names must be unique.");
+            $input_errors[] = gettext("This monitor name has already been used. Monitor names must be unique.");
         }
     }
 
@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The hostname can only contain the characters A-Z, 0-9 and '-'.");
             }
             if (!empty($pconfig['options_code']) && !isset($rfc2616[$pconfig['options_code']])) {
-                  $input_errors[] = gettext("HTTP(s) codes must be from RFC2616.");
+                  $input_errors[] = gettext("HTTP(S) codes must be from RFC 2616.");
             }
             if (empty($pconfig['options_path'])) {
                 $input_errors[] = gettext("The path to monitor must be set.");

@@ -402,7 +402,7 @@ function filter_configure_sync()
         mwexec("/sbin/pfctl -e", true);
     } else {
         mwexec("/sbin/pfctl -d", true);
-        update_filter_reload_status(gettext("Filter is disabled.  Not loading rules."));
+        update_filter_reload_status(gettext("Filter is disabled. Not loading rules."));
         if (file_exists("/var/run/booting")) {
             echo gettext("done.") . "\n";
         }
