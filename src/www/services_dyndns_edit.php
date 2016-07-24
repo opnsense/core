@@ -367,9 +367,9 @@ include("head.inc");
                         <br />
                         <?= gettext("If you need the new IP to be included in the request, put %IP% in its place.") ?>
                         <br />
-                        <?= gettext("If you need to include multiple possible values, separate them with a |.  If your provider includes a |, escape it with \\|") ?>
+                        <?= gettext('If you need to include multiple possible values, separate them with a |. If your provider includes a |, escape it with \|') ?>
                         <br />
-                        <?= gettext("Tabs (\\t), newlines (\\n) and carriage returns (\\r) at the beginning or end of the returned results are removed before comparison.") ?>
+                        <?= gettext('Tabs (\t), newlines (\n) and carriage returns (\r) at the beginning or end of the returned results are removed before comparison.') ?>
                       </div>
                     </td>
                   </tr>
