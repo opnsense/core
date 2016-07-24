@@ -139,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("The hostname can only contain the characters A-Z, 0-9 and '-'.");
             }
             if (!empty($pconfig['options_code']) && !isset($rfc2616[$pconfig['options_code']])) {
-                  $input_errors[] = gettext("HTTP(s) codes must be from RFC 2616.");
+                  $input_errors[] = gettext("HTTP(S) codes must be from RFC 2616.");
             }
             if (empty($pconfig['options_path'])) {
                 $input_errors[] = gettext("The path to monitor must be set.");
