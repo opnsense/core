@@ -39,11 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['rrdenable'] = isset($config['rrd']['enable']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pconfig = $_POST;
     if (!empty($_POST['action']) && $_POST['action'] == "ResetRRD") {
         $savemsg = gettext('RRD data has been cleared.');
-        mwexec('/bin/rm /var/db/rrd/*');
+        configd_run("systemhealth flush *");
+    } elseif (!empty($_POST['action']) && $_POST['action'] == "flush_file") {
+        $savemsg = gettext('RRD report has been cleared.');
+        configd_run("systemhealth flush ". escapeshellarg($_POST['filename']));
     } else {
-        $pconfig = $_POST;
         $config['rrd']['enable'] = !empty($_POST['rrdenable']);
         $savemsg = get_std_save_message();
         write_config();
@@ -53,6 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     setup_gateways_monitor();
 }
 
+$all_rrd_files = json_decode(configd_run("systemhealth list"), true);
+ksort($all_rrd_files);
 legacy_html_escape_form_data($pconfig);
 
 include("head.inc");
@@ -68,7 +73,7 @@ $(document).ready(function() {
         event.preventDefault();
         BootstrapDialog.show({
             type:BootstrapDialog.TYPE_DANGER,
-            title: "<?= gettext("Syslog");?>",
+            title: "<?= gettext("RRD");?>",
             message: "<?=gettext('Do you really want to reset the RRD graphs? This will erase all graph data.');?>",
             buttons: [{
                     label: "<?= gettext("No");?>",
@@ -78,6 +83,27 @@ $(document).ready(function() {
                       label: "<?= gettext("Yes");?>",
                       action: function(dialogRef) {
                         $("#action").val("ResetRRD");
+                        $("#iform").submit()
+                    }
+                }]
+        });
+    });
+    $(".act_flush").click(function(event){
+        var filename = $(this).data('id');
+        event.preventDefault();
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            title: filename,
+            message: "<?=gettext('Do you really want to reset the selected graph?');?>",
+            buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                      label: "<?= gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#action").val("flush_file");
+                        $("#filename").val(filename);
                         $("#iform").submit()
                     }
                 }]
@@ -96,9 +122,10 @@ $(document).ready(function() {
           print_info_box($savemsg);
       }
 ?>
-        <section class="col-xs-12">
-          <form method="post" name="iform" id="iform">
-            <input type="hidden" id="action" name="action" value="" />
+        <form method="post" name="iform" id="iform">
+          <input type="hidden" id="action" name="action" value="" />
+          <input type="hidden" id="filename" name="filename" value="" />
+          <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12 __mb">
               <div class="table-responsive">
                 <table class="table table-striped opnsense_standard_table_form">
@@ -128,8 +155,42 @@ $(document).ready(function() {
                 </table>
               </div>
             </div>
-          </form>
-        </section>
+          </section>
+          <section class="col-xs-12">
+            <div class="tab-content content-box col-xs-12 __mb">
+              <div class="table-responsive">
+                <table class="table table-striped opnsense_standard_table_form">
+                  <tr>
+                    <td colspan="2"><strong><?=gettext('Collected reports');?></strong></td>
+                  </tr>
+                  <tr>
+                    <td width="22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Reports");?> </td>
+                    <td>
+                      <table class="table table-condensed">
+<?php
+                        foreach ($all_rrd_files as $rrd_name => $rrd_file):?>
+                        <tr>
+                          <td width="22%">
+                            <button class="act_flush btn btn-default btn-xs"
+                                    title="<?=gettext("flush report");?>" data-toggle="tooltip"
+                                    data-id="<?=$rrd_file['filename'];?>">
+                              <span class="fa fa-trash text-muted"></span>
+                            </button>
+                            <?=$rrd_name;?>
+                          </td>
+                          <td>
+                          </td>
+                        </tr>
+<?php
+                        endforeach;?>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </section>
+        </form>
       </div>
     </div>
   </section>
