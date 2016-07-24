@@ -551,11 +551,9 @@ if (isset($savemsg)) {
                 <td >
                       <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
                       <div class="hidden" for="help_for_openvpnmanager">
-                        <?=gettext('This will change the generated .ovpn configuration to allow for usage of the management interface.'.
-                        'And include the OpenVPNManager program in the "Windows Installers". With this OpenVPN can be used also by non-administrator users.'.
-                        'This is also useful for Windows Vista/7/8 systems where elevated permissions are needed to add routes to the system.');?>
-                        <br/>
-                        <?=gettext("NOTE: This is not currently compatible with the 64-bit OpenVPN installer. It will work with the 32-bit installer on a 64-bit system.");?>
+                        <?=gettext('This will change the generated .ovpn configuration to allow for usage of the management interface. '.
+                        'With this OpenVPN can be used also by non-administrator users. '.
+                        'This is also useful for Windows systems where elevated permissions are needed to add routes to the system.');?>
                       </div>
                 </td>
               </tr>

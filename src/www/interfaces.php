@@ -868,7 +868,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                       $old_wireless_mode = $a_interfaces[$if]['wireless']['mode'];
                       $a_interfaces[$if]['wireless']['mode'] = $pconfig['mode'];
                       if (!interface_wireless_clone("{$wlanif}_", $a_interfaces[$if])) {
-                          $input_errors[] = sprintf(gettext("Unable to change mode to %s.  You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
+                          $input_errors[] = sprintf(gettext("Unable to change mode to %s. You may already have the maximum number of wireless clones supported in this mode."), $wlan_modes[$a_interfaces[$if]['wireless']['mode']]);
                       } else {
                           mwexec("/sbin/ifconfig " . escapeshellarg($wlanif) . "_ destroy");
                       }
@@ -904,7 +904,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     } elseif (strlen($pconfig['key' . $i]) == 28) {
                         continue;
                     } else {
-                        $input_errors[] =  gettext("Invalid WEP key size.   Sizes should be 40 (64) bit keys or 104 (128) bit.");
+                        $input_errors[] =  gettext("Invalid WEP key size. Sizes should be 40 (64) bit keys or 104 (128) bit.");
                     }
                 }
             }
@@ -916,7 +916,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
         }
-        // save  form data
+        // save form data
         if (count($input_errors) == 0) {
             $old_config = $a_interfaces[$if];
             $new_config = array();
@@ -1508,7 +1508,7 @@ include("head.inc");
       });
 
 
-      // Identity Association Statement -> Non-Temporary Address Allocation  change
+      // Identity Association Statement -> Non-Temporary Address Allocation change
       $("#adv_dhcp6_id_assoc_statement_address_enable").change(function(){
         if ($("#adv_dhcp6_id_assoc_statement_address_enable").prop('checked')) {
             $("#show_adv_dhcp6_id_assoc_statement_address").removeClass("hidden");
@@ -2233,7 +2233,7 @@ include("head.inc");
                 <!-- Section : PPTP / L2TP -->
                 <div class="tab-content content-box col-xs-12 __mb" id="pptp" style="display:none">
                   <div class="table-responsive">
-                    <table  class="table table-striped opnsense_standard_table_form">
+                    <table class="table table-striped opnsense_standard_table_form">
                       <thead>
                         <tr>
                           <th colspan="2"><?=gettext("PPTP/L2TP configuration"); ?></th>
@@ -2504,12 +2504,12 @@ include("head.inc");
                             <input name="adv_dhcp6_interface_statement_information_only_enable" type="checkbox" id="adv_dhcp6_interface_statement_information_only_enable" <?=!empty($pconfig['adv_dhcp6_interface_statement_information_only_enable']) ? "checked=\"checked\"" : "";?> />
                             <strong><?=gettext("Information Only"); ?></strong><br/>
                             <div class="hidden" for="help_for_dhcp6_intf_stmt">
-                              <?=gettext("This statement specifies dhcp6c to  only exchange informational configuration parameters with servers. ".
-                              "A list of DNS server  addresses is an  example  of such  parameters. ".
+                              <?=gettext("This statement specifies dhcp6c to only exchange informational configuration parameters with servers. ".
+                              "A list of DNS server addresses is an example of such parameters. ".
                               "This statement is useful when the client does not need ".
-                              "stateful configuration parameters such as IPv6 addresses or  prefixes.");?><br/>
+                              "stateful configuration parameters such as IPv6 addresses or prefixes.");?><br/>
                               <small>
-                                <?=gettext("source: FreeBSD man page");?>
+                                <?=gettext("Source: FreeBSD man page");?>
                               </small>
                             </div>
                             <br/>
@@ -2519,7 +2519,7 @@ include("head.inc");
                               <?=gettext("The values in this field are DHCP send options to be sent when requesting a DHCP lease.  [option declaration [, ...]] <br />" .
                               "Value Substitutions: {interface}, {hostname}, {mac_addr_asciiCD}, {mac_addr_hexCD} <br />" .
                               "Where C is U(pper) or L(ower) Case, and D is \" :-.\" Delimiter (space, colon, hyphen, or period) (omitted for none). <br />" .
-                              "Some DHCP services may require certain options be or not be sent. "); ?>
+                              "Some DHCP services may require certain options be or not be sent."); ?>
                             </div>
                             <br />
                             <br />
@@ -2800,7 +2800,7 @@ include("head.inc");
                               endfor;?>
                             </select>
                             <div class="hidden" for="help_for_txpower">
-                              <?=gettext("Note: Typically only a few discreet power settings are available and the driver will use the setting closest to the specified value.  Not all adapters support changing the transmit power setting."); ?>
+                              <?=gettext("Typically only a few discreet power settings are available and the driver will use the setting closest to the specified value. Not all adapters support changing the transmit power setting."); ?>
                             </div>
                           </td>
                         </tr>
@@ -2824,7 +2824,7 @@ include("head.inc");
                             <div class="hidden" for="help_for_channel">
                               <?=gettext("Legend: wireless standards - channel # (frequency @ max TX power / TX power allowed in reg. domain)"); ?>
                               <br />
-                              <?=gettext("Note: Not all channels may be supported by your card.  Auto may override the wireless standard selected above."); ?>
+                              <?=gettext("Not all channels may be supported by your card. Auto may override the wireless standard selected above."); ?>
                             </div>
                           </td>
                         </tr>
@@ -2926,9 +2926,9 @@ include("head.inc");
                             </select>
                             <br /><br />
                             <div class="hidden" for="help_for_regdomain">
-                              <?=gettext("These settings may affect which channels are available and the maximum transmit power allowed on those channels.  Using the correct settings to comply with local regulatory requirements is recommended."); ?>
+                              <?=gettext("These settings may affect which channels are available and the maximum transmit power allowed on those channels. Using the correct settings to comply with local regulatory requirements is recommended."); ?>
                               <br />
-                              <?=gettext("Note: All wireless networks on this interface will be temporarily brought down when changing regulatory settings. Some of the regulatory domains or country codes may not be allowed by some cards. These settings may not be able to add additional channels that are not already supported."); ?>
+                              <?=gettext("All wireless networks on this interface will be temporarily brought down when changing regulatory settings. Some of the regulatory domains or country codes may not be allowed by some cards. These settings may not be able to add additional channels that are not already supported."); ?>
                             </div>
                           </td>
                         </tr>
@@ -3019,9 +3019,7 @@ include("head.inc");
                           <td>
                             <input name="hidessid_enable" type="checkbox" id="hidessid_enable" value="yes" <?=!empty($pconfig['hidessid_enable']) ? "checked=\"checked\"" : "";?> />
                             <div class="hidden" for="help_for_hidessid_enable">
-                              <?=gettext("Setting this option will force the card to NOT broadcast its SSID"); ?>
-                              <br />
-                              <?=gettext("(this might create problems for some clients)."); ?>
+                              <?=gettext("Setting this option will force the card to NOT broadcast its SSID (this might create problems for some clients)."); ?>
                             </div>
                           </td>
                         </tr>
@@ -3177,7 +3175,7 @@ include("head.inc");
                           <td>
                             <input name="auth_server_addr" id="auth_server_addr" type="text" value="<?=$pconfig['auth_server_addr'];?>" />
                             <div class="hidden" for="help_for_auth_server_addr">
-                              <?=gettext("Enter the IP address of the 802.1X Authentication Server.  This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.)"); ?>
+                              <?=gettext("Enter the IP address of the 802.1X Authentication Server. This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.)"); ?>
                             </div>
                           </td>
                         </tr>
@@ -3202,7 +3200,7 @@ include("head.inc");
                             <input name="auth_server_addr2" id="auth_server_addr2" type="text" value="<?=$pconfig['auth_server_addr2'];?>" />
                             <div class="hidden" for="help_for_auth_server_addr2">
                               <?=gettext("Secondary 802.1X Authentication Server IP Address"); ?></br>
-                              <?=gettext("Enter the IP address of the 802.1X Authentication Server.  This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.)"); ?>
+                              <?=gettext("Enter the IP address of the 802.1X Authentication Server. This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.)"); ?>
                             </div>
                           </td>
                         </tr>

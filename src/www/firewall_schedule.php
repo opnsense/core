@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if( $referenced_by !== false) {
-            $savemsg = sprintf(gettext("Cannot delete Schedule.  Currently in use by %s"),$referenced_by);
+            $savemsg = sprintf(gettext("Cannot delete Schedule. Currently in use by %s"),$referenced_by);
         } else {
             unset($a_schedules[$id]);
             write_config();

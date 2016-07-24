@@ -1376,11 +1376,12 @@ include("head.inc");
                               <?=gettext("Hint: Select which type of state tracking mechanism you would like to use. If in doubt, use keep state.");?>
                             </span>
                               <ul>
-                                <li><strong><?=gettext("keep state");?> </strong><?=gettext("Works with all IP protocols.");?></li>
-                                <li><strong><?=gettext("sloppy state");?> </strong><?=gettext("Works with all IP protocols.");?></li>
-                                <li><strong><?=gettext("synproxy state");?> </strong><?=gettext("Proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods. This option includes the functionality of keep state and modulate state combined.");?></li>
-                                <li><strong><?=gettext("none");?> </strong><?=gettext("Do not use state mechanisms to keep track.  This is only useful if you're doing advanced queueing in certain situations.  Please check the documentation.");?> </li>
+                                <li><?= sprintf(gettext('%sKeep state%s is used for stateful connection tracking.'),'<strong>', '</strong>') ?></li>
+                                <li><?= sprintf(gettext('%sSloppy state%s works like keep state, but it does not check sequence numbers. Use it when the firewall does not see all packets.'),'<strong>', '</strong>') ?></li>
+                                <li><?= sprintf(gettext('%sSynproxy state%s proxies incoming TCP connections to help protect servers from spoofed TCP SYN floods. This option includes the functionality of keep state and modulate state combined.'),'<strong>', '</strong>') ?></li>
+                                <li><?= sprintf(gettext("%sNone%s: Do not use state mechanisms to keep track. This is only useful if you're doing advanced queueing in certain situations. Please check the documentation."),'<strong>', '</strong>') ?></li>
                               </ul>
+                              <p><?= sprintf(gettext('Source and more information can be found %shere%s.'),'<a href="https://www.freebsd.org/cgi/man.cgi?query=pf.conf&amp;sektion=5">','</a>') ?></p>
                           </div>
                         </td>
                     </tr>

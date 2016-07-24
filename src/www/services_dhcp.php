@@ -977,7 +977,7 @@ include("head.inc");
                         </div>
                         <div id="showtftp" style="display:none">
                           <input name="tftp" type="text" size="50" value="<?=$pconfig['tftp'];?>" />
-                          <?=gettext("Leave blank to disable.  Enter a full hostname or IP for the TFTP server.");?>
+                          <?=gettext("Leave blank to disable. Enter a full hostname or IP for the TFTP server.");?>
                         </div>
                       </td>
                     </tr>
@@ -1102,7 +1102,7 @@ include("head.inc");
                             </tfoot>
                           </table>
                           <div class="hidden" for="help_for_numberoptions">
-                          <?=gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information.  For a list of available options please visit this"); ?> <a href="http://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank"><?=gettext("URL"); ?></a>
+                          <?= sprintf(gettext("Enter the DHCP option number and the value for each item you would like to include in the DHCP lease information. For a list of available options please visit this %sURL%s."), '<a href="http://www.iana.org/assignments/bootp-dhcp-parameters/" target="_blank">', '</a>') ?>
                           </div>
                         </div>
                       </td>
