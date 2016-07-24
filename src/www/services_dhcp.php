@@ -110,17 +110,16 @@ function reconfigure_dhcpd()
     killbyname("dhcpd");
     dhcp_clean_leases();
     system_hosts_generate();
-    /* dnsmasq_configure calls dhcpd_configure */
-    /* no need to restart dhcpd twice */
+    services_dhcpleases_configure();
     if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        services_dnsmasq_configure();
+        services_dnsmasq_configure(false);
         clear_subsystem_dirty('hosts');
-    } elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        services_unbound_configure();
-        clear_subsystem_dirty('unbound');
-    } else {
-        services_dhcpd_configure();
     }
+    if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
+        services_unbound_configure(false);
+        clear_subsystem_dirty('unbound');
+    }
+    services_dhcpd_configure();
 
     clear_subsystem_dirty('staticmaps');
 }

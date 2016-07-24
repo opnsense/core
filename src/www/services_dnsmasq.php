@@ -118,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* Update resolv.conf in case the interface bindings exclude localhost. */
         system_resolvconf_generate();
         system_hosts_generate();
+        services_dhcpleases_configure();
         services_dnsmasq_configure();
         clear_subsystem_dirty('hosts');
         header("Location: services_dnsmasq.php");

@@ -412,7 +412,7 @@ function system_hosts_generate()
      * Do not remove this because dhcpleases monitors with kqueue
      * it needs to be * killed before writing to hosts files.
      */
-    killbypid('/var/run/dhcpleases.pid');
+    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
 
     $fd = fopen('/etc/hosts', 'w');
     if (!$fd) {
@@ -426,46 +426,7 @@ function system_hosts_generate()
         unbound_hosts_generate();
     }
 
-    system_dhcpleases_configure();
-
     return 0;
-}
-
-function system_dhcpleases_configure()
-{
-    global $config, $g;
-
-    /* Start the monitoring process for dynamic dhcpclients. */
-    if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcp'])) {
-        /* Make sure we do not error out */
-        mwexec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/db");
-        if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases")) {
-            @touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
-        }
-        if (isvalidpid('/var/run/dhcpleases.pid')) {
-            killbypid('/var/run/dhcpleases.pid', 'HUP');
-        } else {
-            /* To ensure we do not start multiple instances of dhcpleases, perform some clean-up first. */
-            killbyname('dhcpleases');
-            @unlink('/var/run/dhcpleases.pid');
-            if (isset($config['unbound']['enable'])) {
-                $dns_pid = 'unbound.pid';
-            } else {
-                $dns_pid = 'dnsmasq.pid';
-            }
-            mwexecf(
-                '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
-                array(
-                  "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases",
-                  $config['system']['domain'],
-                  "/var/run/{$dns_pid}",
-                  '/etc/hosts'
-                )
-            );
-        }
-    } else {
-        killbypid('/var/run/dhcpleases.pid');
-    }
 }
 
 function system_hostname_configure()

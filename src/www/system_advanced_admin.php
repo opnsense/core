@@ -232,13 +232,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         system_console_configure();
         system_hosts_generate();
-
-        // Restart DNS in case dns rebinding toggled
-        if (isset($config['dnsmasq']['enable'])) {
-            services_dnsmasq_configure();
-        } elseif (isset($config['unbound']['enable'])) {
-            services_unbound_configure();
-        }
+        services_dhcpleases_configure();
+        services_dnsmasq_configure(false);
+        services_unbound_configure(false);
+        services_dhcpd_configure();
 
         if ($restart_sshd) {
             configd_run('sshd restart', true);
