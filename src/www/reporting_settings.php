@@ -46,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($_POST['action']) && $_POST['action'] == "flush_file") {
         $savemsg = gettext('RRD report has been cleared.');
         configd_run("systemhealth flush ". escapeshellarg($_POST['filename']));
+    } elseif (!empty($_POST['action']) && $_POST['action'] == "flush_netflow") {
+        $savemsg = gettext('All local netflow data has been cleared.');
+        configd_run("netflow flush");
     } else {
         $config['rrd']['enable'] = !empty($_POST['rrdenable']);
         $savemsg = get_std_save_message();
@@ -83,6 +86,26 @@ $(document).ready(function() {
                       label: "<?= gettext("Yes");?>",
                       action: function(dialogRef) {
                         $("#action").val("ResetRRD");
+                        $("#iform").submit()
+                    }
+                }]
+        });
+    });
+    // flush all netflow data
+    $("#flush_netflow").click(function(event){
+        event.preventDefault();
+        BootstrapDialog.show({
+            type:BootstrapDialog.TYPE_DANGER,
+            title: "<?= gettext("Netflow/Insight");?>",
+            message: "<?=gettext('Do you really want to reset the netflow data? This will erase all Insight graph data.');?>",
+            buttons: [{
+                    label: "<?= gettext("No");?>",
+                    action: function(dialogRef) {
+                        dialogRef.close();
+                    }}, {
+                      label: "<?= gettext("Yes");?>",
+                      action: function(dialogRef) {
+                        $("#action").val("flush_netflow");
                         $("#iform").submit()
                     }
                 }]
@@ -144,6 +167,7 @@ $(document).ready(function() {
                     <td>
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save");?>" />
                       <input type="button" name="ResetRRD" id="ResetRRD" class="btn btn-default" value="<?=gettext("Reset RRD Data");?>" />
+                      <input type="button" id="flush_netflow" class="btn btn-default" value="<?=gettext("Reset Netflow Data");?>" />
                     </td>
                   </tr>
                   <tr>
