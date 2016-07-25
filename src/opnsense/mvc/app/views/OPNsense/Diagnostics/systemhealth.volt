@@ -210,11 +210,11 @@
                         rrd_name = subitem + '-' + category;
 
                         if (subitem==active_subitem) {
-                            tabs += '<li class="active"><a data-toggle="tab"  onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'"><i class="fa fa-check-square"></i> ' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
+                            tabs += '<li class="active"><a data-toggle="tab" class="rrd-item" onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'"><i class="fa fa-check-square"></i> ' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
                             rrd=rrd_name;
                             getdata(rrd_name,0,0,120,false,0); // load initial data
                         } else {
-                            tabs += '<li><a data-toggle="tab"  onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'"><i class="fa fa-check-square"></i> ' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
+                            tabs += '<li><a data-toggle="tab" class="rrd-item"  onclick="getdata(\''+rrd_name+'\',0,0,120,0);" id="'+rrd_name+'"><i class="fa fa-check-square"></i> ' + subitem[0].toUpperCase() + subitem.slice(1) + '</a></li>';
                         }
                     }
                     tabs+='</ul>';
@@ -222,6 +222,19 @@
                 }
                 $('#maintabs').html(tabs);
                 $('#tab_1').toggleClass('active');
+                // map interface descriptions
+                ajaxGet(url = "/api/diagnostics/systemhealth/getInterfaces" , sendData = {}, callback = function (data, status) {
+                    $(".rrd-item").each(function(){
+                        var rrd_item = $(this);
+                        var rrd_item_name = $(this).attr('id').split('-')[0].toLowerCase();
+                        $.map(data, function(value, key){
+                            if (key.toLowerCase() == rrd_item_name) {
+                                rrd_item.html('<i class="fa fa-check-square"></i> ' + value['descr']);
+                            }
+
+                        });
+                    });
+                });
             } else {
                 alert("Error while fetching RRD list : "+status);
             }
