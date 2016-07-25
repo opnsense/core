@@ -9,6 +9,10 @@ if [ "${1}" == "restore" ]; then
 	fi
 else
 	if [ -d "${BACKUPDIR}" ]; then
+		/usr/local/etc/rc.d/flowd_aggregate stop
 		tar -C / -czf "${BACKUPFILE}" "${BACKUPDIR}"
+		if [ "${1}" == "stop" ]; then
+			/usr/local/etc/rc.d/flowd_aggregate start
+		fi
 	fi
 fi
