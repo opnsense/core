@@ -32,6 +32,7 @@ namespace OPNsense\Diagnostics\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\Core\Config;
 
 /**
  * Class ServiceController
@@ -585,4 +586,22 @@ class SystemhealthController extends ApiControllerBase
             return ["sets" => [], "d3" => [], "title" => "error", "y-axis_label" => ""];
         }
     }
+
+    /**
+     * Retrieve network interfaces by key (lan, wan, opt1,..)
+     * @return array
+     */
+    public function getInterfacesAction()
+    {
+        // collect interface names
+        $intfmap = array();
+        $config = Config::getInstance()->object() ;
+        if ($config->interfaces != null) {
+            foreach ($config->interfaces->children() as $key => $node) {
+                $intfmap[(string)$key] = array("descr" => !empty((string)$node->descr) ? (string)$node->descr : $key) ;
+            }
+        }
+        return $intfmap;
+    }
+
 }
