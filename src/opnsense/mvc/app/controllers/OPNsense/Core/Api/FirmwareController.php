@@ -396,6 +396,7 @@ class FirmwareController extends ApiControllerBase
         $mirrors = array();
         $mirrors[''] = '(default)';
         $mirrors['https://opnsense.aivian.org'] = 'Aivian (Shaoxing, CN)';
+        $mirrors['https://opnsense-update.deciso.com'] = 'Deciso (NL, Commercial)';
         $mirrors['https://mirror.auf-feindgebiet.de/opnsense'] = 'auf-feindgebiet.de (Karlsruhe, DE)';
         $mirrors['https://opnsense.c0urier.net'] = 'c0urier.net (Lund, SE)';
         //$mirrors['https://fleximus.org/mirror/opnsense'] = 'Fleximus (Roubaix, FR)';
@@ -408,12 +409,15 @@ class FirmwareController extends ApiControllerBase
         $mirrors['http://mirror.ragenetwork.de/opnsense'] = 'RageNetwork (Munich, DE)';
         $mirrors['http://mirror.wjcomms.co.uk/opnsense'] = 'WJComms (London, GB)';
 
+        $has_subscription = array();
+        $has_subscription[] = 'https://opnsense-update.deciso.com';
+
         $flavours = array();
         $flavours[''] = '(default)';
         $flavours['libressl'] = 'LibreSSL';
         $flavours['latest'] = 'OpenSSL';
 
-        return array("mirrors"=>$mirrors, "flavours" => $flavours);
+        return array("mirrors"=>$mirrors, "flavours" => $flavours, 'has_subscription' => $has_subscription);
     }
 
     /**
@@ -448,6 +452,7 @@ class FirmwareController extends ApiControllerBase
             $response['status'] = 'ok';
             $selectedMirror = filter_var($this->request->getPost("mirror", null, ""), FILTER_SANITIZE_URL);
             $selectedFlavour = filter_var($this->request->getPost("flavour", null, ""), FILTER_SANITIZE_URL);
+            $selSubscription = filter_var($this->request->getPost("subscription", null, ""), FILTER_SANITIZE_URL);
 
             // config data without model, prepare xml structure and write data
             if (!isset(Config::getInstance()->object()->system->firmware)) {
@@ -457,7 +462,13 @@ class FirmwareController extends ApiControllerBase
             if (!isset(Config::getInstance()->object()->system->firmware->mirror)) {
                 Config::getInstance()->object()->system->firmware->addChild('mirror');
             }
-            Config::getInstance()->object()->system->firmware->mirror = $selectedMirror;
+
+            if (empty($selSubscription)) {
+                Config::getInstance()->object()->system->firmware->mirror = $selectedMirror;
+            } else {
+                // prepend subscription
+                Config::getInstance()->object()->system->firmware->mirror = $selectedMirror . '/' . $selSubscription;
+            }
 
             if (!isset(Config::getInstance()->object()->system->firmware->flavour)) {
                 Config::getInstance()->object()->system->firmware->addChild('flavour');

@@ -318,6 +318,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     $("#firmware_mirror").append($("<option/>")
                             .attr("value",key)
                             .text(value)
+                            .data("has_subscription", firmwareoptions['has_subscription'].indexOf(key) == 0)
                             .prop('selected', selected)
                     );
                 });
@@ -325,8 +326,15 @@ POSSIBILITY OF SUCH DAMAGE.
                         .attr("value", firmwareconfig['mirror'])
                         .text("(other)")
                         .data("other", 1)
+                        .data("has_subscription", false)
                         .prop('selected', other_selected)
                 );
+
+                if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
+                    $("#firmware_mirror_subscription").val(firmwareconfig['mirror'].substr($("#firmware_mirror").val().length+1));
+                } else {
+                    $("#firmware_mirror_subscription").val("");
+                }
                 $("#firmware_mirror").selectpicker('refresh');
                 $("#firmware_mirror").change();
 
@@ -361,6 +369,11 @@ POSSIBILITY OF SUCH DAMAGE.
             } else {
                 $("#firmware_mirror_other").hide();
             }
+            if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
+                $("#firmware_mirror_subscription").parent().parent().show();
+            } else {
+                $("#firmware_mirror_subscription").parent().parent().hide();
+            }
         });
         $("#firmware_flavour").change(function() {
             $("#firmware_flavour_value").val($(this).val());
@@ -374,8 +387,13 @@ POSSIBILITY OF SUCH DAMAGE.
         $("#change_mirror").click(function(){
             $("#change_mirror_progress").addClass("fa fa-spinner fa-pulse");
             var confopt = {};
-            confopt.mirror = $("#firmware_mirror_value").val()
-            confopt.flavour = $("#firmware_flavour_value").val()
+            confopt.mirror = $("#firmware_mirror_value").val();
+            confopt.flavour = $("#firmware_flavour_value").val();
+            if ($("#firmware_mirror option:selected").data("has_subscription") == true) {
+                confopt.subscription = $("#firmware_mirror_subscription").val();
+            } else {
+                confopt.subscription = null;
+            }
             ajaxCall(url='/api/core/firmware/setFirmwareConfig',sendData=confopt, callback=function(data,status) {
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
             });
@@ -434,6 +452,18 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <div class="hidden" for="help_for_flavour">
                                         <strong>
                                             {{ lang._("Select the firmware cryptography flavour.") }}
+                                        </strong>
+                                    </div>
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 150px;"><a id="help_for_mirror_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
+                                <td>
+                                    <input type="text" id="firmware_mirror_subscription">
+                                    <div class="hidden" for="help_for_mirror_subscription">
+                                        <strong>
+                                            {{ lang._("Provide subscription key.") }}
                                         </strong>
                                     </div>
                                 </td>
