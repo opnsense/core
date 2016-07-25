@@ -3,7 +3,7 @@
 BACKUPFILE="/conf/dhcpleases.tgz"
 BACKUPDIR="/var/dhcpd/var/db"
 
-if [ "${1}" == "restore" ]; then
+if [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
 		tar -C / -xzf "${BACKUPFILE}"
 	fi

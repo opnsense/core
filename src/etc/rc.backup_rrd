@@ -3,7 +3,7 @@
 BACKUPDIR="/var/db/rrd"
 BACKUPFILE="/conf/rrd.tgz"
 
-if [ "${1}" == "restore" ]; then
+if [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
 		tar -C / -xzf "${BACKUPFILE}"
 	fi
