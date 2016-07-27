@@ -243,7 +243,6 @@
       <dhcphostname/>
       <media/>
       <mediaopt/>
-      <dhcp6-duid/>
       <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
     </wan>
     <lan>

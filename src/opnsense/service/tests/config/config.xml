@@ -25,7 +25,6 @@
       <adv_dhcp_config_file_override/>
       <adv_dhcp_config_file_override_path/>
       <ipaddrv6>dhcp6</ipaddrv6>
-      <dhcp6-duid/>
       <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
       <adv_dhcp6_interface_statement_send_options/>
       <adv_dhcp6_interface_statement_request_options/>
