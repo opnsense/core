@@ -275,8 +275,14 @@ lint: force
 	    -type f -print0 | xargs -0 -n1 php -l
 
 sweep: force
+	find ${.CURDIR}/src -type f -name "*.map" -print0 | \
+	    xargs -0 -n1 rm
+	if grep -nr sourceMappingURL= ${.CURDIR}/src; then \
+		echo "Mentions of sourceMappingURL must be removed"; \
+		exit 1; \
+	fi
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
-	    ! -name "*.map" ! -name "*.ser" -type f -print0 | \
+	    ! -name "*.ser" -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/scripts -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
