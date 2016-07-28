@@ -225,6 +225,11 @@ class ACL
      */
     public function isPageAccessible($username, $url)
     {
+        if ($url == '/index.php?logout') {
+            // always allow logout, could use better structuring...
+            return true;
+        }
+
         if (array_key_exists($username, $this->legacyUsers)) {
             // search user privs
             foreach ($this->legacyUsers[$username]["priv"] as $privset) {
