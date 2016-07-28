@@ -1317,7 +1317,7 @@ function filter_nat_rules_outbound_automatic(&$FilterIflist, $src)
 }
 
 /* Generate a 'nat on' or 'no nat on' rule for given interface */
-function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "", $log = false)
+function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcport = "", $dst = "any", $dstport = "", $natip = "", $natport = "", $nonat = false, $staticnatport = false, $proto = "", $poolopts = "", $log = false, $ipproto = "inet")
 {
     global $config;
 
@@ -1332,8 +1332,15 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
             $tgt = "{$natip}/32";
         }
     } else {
-        $natip = get_interface_ip($if);
-        if (is_ipaddr($natip)) {
+        if ($ipproto == "inet6") {
+            $natip = get_interface_ipv6($if);
+        } else {
+            $natip = get_interface_ip($if);
+        }
+
+        if (is_ipaddrv6($natip)){
+            $tgt = "{$natip}/128";
+        } elseif (is_ipaddr($natip)) {
             $tgt = "{$natip}/32";
         } else {
             $tgt = "(" . $FilterIflist[$if]['if'] . ")";
@@ -1353,6 +1360,14 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
     } else {
         $protocol = "";
     }
+
+    /* Add the ip protocol */
+    if (!empty($ipproto) && $ipproto != "inet") {
+        $ipprotocol = " {$ipproto}";
+    } else {
+        $ipprotocol = "";
+    }
+
     /* Add the hard set source port (useful for ISAKMP) */
     if ($natport != "") {
         $tgt .= " port {$natport}";
@@ -1401,7 +1416,7 @@ function filter_nat_rules_generate_if(&$FilterIflist, $if, $src = "any", $srcpor
     $if_friendly = $FilterIflist[$if]['descr'];
     /* Put all the pieces together */
     if ($if_friendly) {
-        $natrule = "{$nat} {$logtag} on \${$if_friendly} {$protocol} from {$src} to {$dst} {$target} {$poolopts} {$staticnatport_txt}\n";
+        $natrule = "{$nat} {$logtag} on \${$if_friendly}{$ipprotocol}{$protocol} from {$src} to {$dst} {$target} {$poolopts} {$staticnatport_txt}\n";
     } else {
         $natrule .= "# Could not convert {$if} to friendly name(alias)\n";
     }
@@ -1617,7 +1632,8 @@ function filter_nat_rules_generate(&$FilterIflist)
                   isset($obent['staticnatport']),
                   $obent['protocol'],
                   $poolopts,
-                  isset($obent['log'])
+                  isset($obent['log']),
+                  $obent['ipprotocol']
                 );
             }
         }
