@@ -59,7 +59,11 @@ function legacy_config_get_interfaces($filters = array())
             // apply filters
             $iface_match = true;
             foreach ($filters as $filter_key => $filter_value) {
-                $field_value = isset($iface[$filter_key]) ? $iface[$filter_key] : false;
+                if ($filter_key == 'enable' && isset($iface[$filter_key])) {
+                    $field_value = true;
+                } else {
+                    $field_value = isset($iface[$filter_key]) ? $iface[$filter_key] : false;
+                }
                 if ($field_value != $filter_value) {
                     $iface_match = false;
                     break;
