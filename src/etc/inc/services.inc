@@ -32,6 +32,7 @@
 require_once('dyndns.class');
 require_once('unbound.inc');
 require_once('miniupnpd.inc');
+require_once('pfsense-utils.inc');
 
 function generate_ipv6_from_mac($mac)
 {
