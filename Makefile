@@ -266,8 +266,7 @@ upgrade-check: force
 	fi
 
 upgrade: upgrade-check package
-	@${PKG} set -yv 0 ${CORE_NAME}
-	@${PKG} delete -y ${CORE_NAME}
+	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@/usr/local/etc/rc.restart_webgui
 
