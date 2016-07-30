@@ -253,7 +253,7 @@ package: force
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
-	@echo -n "Sucessfully built "
+	@echo -n "Successfully built "
 	@cd ${PKGDIR}; find . -name "*.txz" | cut -c3-
 
 upgrade: package
