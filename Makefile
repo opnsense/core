@@ -239,7 +239,7 @@ package-keywords: force
 	fi
 	@echo ">>> Installed /usr/ports/Keywords/sample.ucl"
 
-package: force
+package-check: force
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
 		echo ">>> Cannot continue with live mount.  Please run 'make umount'." >&2; \
 		exit 1; \
@@ -248,6 +248,8 @@ package: force
 		echo ">>> Missing required file(s).  Please run 'make package-keywords'" >&2; \
 		exit 1; \
 	fi
+
+package: package-check
 	@rm -rf ${WRKSRC} ${PKGDIR}
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
@@ -256,9 +258,15 @@ package: force
 	@echo -n "Successfully built "
 	@cd ${PKGDIR}; find . -name "*.txz" | cut -c3-
 
-upgrade: package
+upgrade-check: force
+	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
+		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
+		exit 1; \
+	fi
+
+upgrade: upgrade-check package
 	@${PKG} set -yv 0 ${CORE_NAME}
-	${PKG} delete -y ${CORE_NAME}
+	@${PKG} delete -y ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@${PKG} set -yv 1 ${CORE_NAME}
 	@/usr/local/etc/rc.restart_webgui
