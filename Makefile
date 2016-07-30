@@ -177,6 +177,7 @@ manifest: want-git
 	@echo "licenselogic: \"single\""
 	@echo "licenses: [ \"BSD2CLAUSE\" ]"
 	@echo "prefix: /usr/local"
+	@echo "vital: true"
 	@echo "deps: {"
 	@for CORE_DEPEND in ${CORE_DEPENDS}; do \
 		if ! ${PKG} query '  %n: { version: "%v", origin: "%o" }' \
@@ -268,7 +269,6 @@ upgrade: upgrade-check package
 	@${PKG} set -yv 0 ${CORE_NAME}
 	@${PKG} delete -y ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
-	@${PKG} set -yv 1 ${CORE_NAME}
 	@/usr/local/etc/rc.restart_webgui
 
 lint: force
