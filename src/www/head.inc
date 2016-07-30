@@ -36,7 +36,7 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-    <meta name="robots" content="index, follow, noodp, noydir" />
+    <meta name="robots" content="noindex, nofollow, noodp, noydir" />
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="copyright" content="" />
