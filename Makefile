@@ -257,8 +257,10 @@ package: force
 	@cd ${PKGDIR}; find . -name "*.txz" | cut -c3-
 
 upgrade: package
+	@${PKG} set -yv 0 ${CORE_NAME}
 	${PKG} delete -y ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
+	@${PKG} set -yv 1 ${CORE_NAME}
 	@/usr/local/etc/rc.restart_webgui
 
 lint: force
