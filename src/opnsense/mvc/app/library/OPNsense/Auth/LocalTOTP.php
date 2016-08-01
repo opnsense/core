@@ -191,4 +191,55 @@ class LocalTOTP extends Local
         return false;
     }
 
+    /**
+     * retrieve configuration options
+     * @return array
+     */
+    public function getConfigurationOptions()
+    {
+        $fields = array();
+        $fields["otpLength"] = array();
+        $fields["otpLength"]["name"] = gettext("Token length");
+        $fields["otpLength"]["type"] = "dropdown";
+        $fields["otpLength"]["default"] = 6;
+        $fields["otpLength"]["options"] = array();
+        $fields["otpLength"]["options"]["6"] = "6";
+        $fields["otpLength"]["options"]["8"] = "8";
+        $fields["otpLength"]["help"] = gettext("Token length to use");
+        $fields["otpLength"]["validate"] = function($value) {
+            if (!in_array($value, array(6,8))) {
+                return array(gettext("Only token lengths of 6 or 8 characters are supported"));
+            } else {
+                return array();
+            }
+        };
+        $fields["timeWindow"] = array();
+        $fields["timeWindow"]["name"] = gettext("Time window");
+        $fields["timeWindow"]["type"] = "text";
+        $fields["timeWindow"]["default"] = null;
+        $fields["timeWindow"]["help"] = gettext("The time period in which the token will be valid,".
+          " default is 30 seconds (google authenticator)") ;
+        $fields["timeWindow"]["validate"] = function($value) {
+            if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
+                return array(gettext("Please enter a valid time window in seconds"));
+            } else {
+                return array();
+            }
+        };
+        $fields["graceperiod"] = array();
+        $fields["graceperiod"]["name"] = gettext("Grace period");
+        $fields["graceperiod"]["type"] = "text";
+        $fields["graceperiod"]["default"] = null;
+        $fields["graceperiod"]["help"] = gettext("Time in seconds in which this server and the token may differ,".
+          " default is 10 seconds. Set higher for a less secure easier match.");
+        $fields["graceperiod"]["validate"] = function($value) {
+            if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
+                return array(gettext("Please enter a valid grace period in seconds"));
+            } else {
+                return array();
+            }
+        };
+
+        return $fields;
+    }
 }
