@@ -736,6 +736,9 @@ endif; ?>
                           endforeach;?>
                         </select>
 <?php
+                        elseif ($field['type'] == 'checkbox'):?>
+                        <input name="<?=$fieldname;?>" type="checkbox" value="yes" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
+<?php
                         endif;?>
                         <div class="hidden" for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
                           <?=$field['help'];?>
