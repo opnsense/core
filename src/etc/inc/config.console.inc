@@ -89,8 +89,8 @@ function set_networking_interfaces_ports($probe = false)
 
 	echo "\n" . 
 		gettext("You now have the opportunity to configure VLANs. If you don't require VLANs\n" .
-						"for initial connectivity, say no here and use the GUI to configure VLANs later.\n\n" .
-						"Do you want to set up VLANs now [y|n]?") . " ";
+			"for initial connectivity, say no here and use the GUI to configure VLANs later.\n\n" .
+			"Do you want to set up VLANs now [y|n]?") . " ";
 	if ($interactive) {
 		$key = chop(fgets($fp));
 	} else {
