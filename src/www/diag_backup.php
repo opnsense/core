@@ -44,64 +44,25 @@ require_once("system.inc");
 function restore_config_section($section_name, $new_contents)
 {
     global $config;
+
     $tmpxml = '/tmp/tmpxml';
 
-    $fout = fopen($tmpxml, 'w');
-    fwrite($fout, $new_contents);
-    fclose($fout);
-
-    $xml = parse_xml_config($tmpxml, null);
-    if ($xml === -1) {
-        return false;
-    }
-
-    $section_xml = -1;
-
-    /*
-     * So, we're looking for a non-root tag written as a
-     * root tag, or a proper config where we cherry-pick
-     * a specific matching section... ok...
-     */
-    foreach ($xml as $xml_strip_root) {
-        if (isset($xml_strip_root[$section])) {
-            $section_xml = $xml_strip_root[$section];
-	    break;
-	}
-    }
-
-    if ($section_xml = -1 && isset($xml[$section_name])) {
-        $section_xml = $xml[$section_name];
-    }
-
+    file_put_contents($tmpxml, $new_contents);
+    $xml = load_config_from_file($tmpxml);
     @unlink($tmpxml);
 
-    if ($section_xml === -1) {
+    if (!is_array($xml) || !isset($xml[$section_name])) {
         return false;
     }
 
-    $config[$section_name] = &$section_xml;
+    $config[$section_name] = $xml[$section_name];
+
     write_config(sprintf(gettext("Restored %s of config file"), $section_name));
+    convert_config();
+
     disable_security_checks();
 
     return true;
-}
-
-/*
- *  backup_config_section($section): returns as an xml file string of
- *                                   the configuration section
- */
-function backup_config_section($section_name)
-{
-    global $config;
-
-    $new_section = &$config[$section_name];
-
-    $xmlconfig = dump_xml_config($new_section, $section_name);
-    $xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
-
-    /* KEEP THIS: unbreaks syntax highlighting <?php */
-
-    return $xmlconfig;
 }
 
 function rrd_data_xml()
@@ -195,7 +156,7 @@ $areas = array(
     'igmpproxy' => gettext('IGMP Proxy'),
     'installedpackages' => gettext('Universal Plug and Play'),	/* XXX only one, reduce depth! */
     'interfaces' => gettext('Interfaces'),
-    'ipsec' => gettext('IPSEC'),
+    'ipsec' => gettext('IPsec'),
     'laggs' => gettext('LAGG Devices'),
     'load_balancer' => gettext('Load Balancer'),
     'nat' => gettext('Network Address Translation'),
@@ -218,6 +179,8 @@ $areas = array(
     'wireless' => gettext('Wireless Devices'),
     'wol' => gettext('Wake on LAN'),
 );
+
+$do_reboot = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -252,22 +215,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $name = "config-{$host}-".date("YmdHis").".xml";
             $data = "";
 
-            if(empty($_POST['backuparea'])) {
-                /* backup entire configuration */
-                $data = file_get_contents('/conf/config.xml');
-            } elseif ($_POST['backuparea'] === "rrddata") {
-                $data = rrd_data_xml();
-                $name = "{$_POST['backuparea']}-{$name}";
-            } else {
-                /* backup specific area of configuration */
-                $data = backup_config_section($_POST['backuparea']);
-                $name = "{$_POST['backuparea']}-{$name}";
-            }
+            /* backup entire configuration */
+            $data = file_get_contents('/conf/config.xml');
 
-            /*
-             *  Backup RRD Data
-             */
-            if ($_POST['backuparea'] !== "rrddata" && empty($_POST['donotbackuprrd'])) {
+            /* backup RRD data */
+            if (empty($_POST['donotbackuprrd'])) {
                 $rrd_data_xml = rrd_data_xml();
                 $closing_tag = "</opnsense>";
                 $data = str_replace($closing_tag, $rrd_data_xml . $closing_tag, $data);
@@ -339,8 +291,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         write_config();
                         convert_config();
                     }
-                    filter_configure();
-                    $savemsg = gettext("The configuration area has been restored.  You may need to reboot the firewall.");
+                    if (!empty($pconfig['rebootafterrestore'])) {
+                        $do_reboot = true;
+                    }
+                    $savemsg = gettext("The configuration area has been restored.");
                 }
             } else {
                 /* restore the entire configuration */
@@ -348,8 +302,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 file_put_contents($filename, $data);
                 $cnf = OPNsense\Core\Config::getInstance();
                 if ($cnf->restoreBackup($filename)) {
-                    /* this will be picked up by /index.php */
-                    mark_subsystem_dirty("restore");
+                    if (!empty($pconfig['rebootafterrestore'])) {
+                        $do_reboot = true;
+                    }
                     $config = parse_config();
                     /* extract out rrd items, unset from $config when done */
                     if($config['rrddata']) {
@@ -452,10 +407,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         write_config();
                         convert_config();
                         $savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
+                    } else {
+                        $savemsg = gettext("The configuration has been restored.");
                     }
                 } else {
                     $input_errors[] = gettext("The configuration could not be restored.");
                 }
+            }
+
+            if ($do_reboot) {
+                $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
             }
         }
     } elseif ( $mode == "setup_gdrive" ){
@@ -539,15 +500,6 @@ $( document ).ready(function() {
             $("#decrypt_opts").addClass("hidden");
         }
     });
-
-    $("#backuparea").change(function(event){
-        if ($("#backuparea").val() == "rrddata") {
-            $("#dotnotbackuprrd").prop('disabled', true);
-        } else {
-            $("#dotnotbackuprrd").prop('disabled', false);
-        }
-    });
-
 });
 //]]>
 </script>
@@ -556,12 +508,6 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
       <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-      <?php if (is_subsystem_dirty('restore')): ?><br/>
-      <form action="reboot.php" method="post">
-        <input name="Submit" type="hidden" value="Yes" />
-        <?php print_info_box(gettext("The firewall configuration has been changed.") . "<br />" . gettext("The firewall is now rebooting."));?><br />
-      </form>
-      <?php endif; ?>
       <?php if ($input_messages) print_info_box($input_messages); ?>
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <form method="post" enctype="multipart/form-data">
@@ -576,18 +522,6 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <?=gettext("Backup area:");?>
-                    <select name="backuparea" id="backuparea">
-                      <option value=""><?=gettext("ALL");?></option>
-<?php
-                    foreach($areas as $area => $areaname):
-                        if($area !== "rrddata" && (!isset($config[$area]) || !is_array($config[$area]))) {
-                            continue;
-                        };?>
-                      <option value="<?=$area;?>"><?=$areaname;?></option>
-<?php
-                    endforeach;?>
-                    </select><br/>
                     <input name="donotbackuprrd" type="checkbox" id="dotnotbackuprrd" checked="checked" />
                     <?=gettext("Do not backup RRD data."); ?><br/>
                     <input name="encrypt" type="checkbox" id="encryptconf" />
@@ -639,6 +573,8 @@ $( document ).ready(function() {
                     endforeach;?>
                     </select><br/>
                     <input name="conffile" type="file" id="conffile" /><br/>
+                    <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
+                    <?=gettext("Reboot after a successful restore."); ?><br/>
                     <input name="decrypt" type="checkbox" id="decryptconf"/>
                     <?=gettext("Configuration file is encrypted."); ?>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
@@ -663,7 +599,6 @@ $( document ).ready(function() {
                 <tr>
                   <td>
                     <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?><br/>
-                    <span class="text-danger"><?=gettext("The firewall will reboot after restoring the configuration."); ?></span>
                   </td>
                 </tr>
               </tbody>
@@ -743,9 +678,10 @@ $( document ).ready(function() {
   </div>
 </section>
 
-<?php include("foot.inc"); ?>
-
 <?php
-if (is_subsystem_dirty('restore')) {
-  system_reboot();
+
+include("foot.inc");
+
+if ($do_reboot) {
+    system_reboot();
 }

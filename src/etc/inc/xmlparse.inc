@@ -128,18 +128,6 @@ function cData($parser, $data)
     }
 }
 
-function parse_xml_config($cffile, $rootobj, $isstring = "false")
-{
-    global $listtags;
-    $listtags = listtags();
-    if (isset($GLOBALS['custom_listtags'])) {
-        foreach($GLOBALS['custom_listtags'] as $tag) {
-            $listtags[$tag] = $tag;
-        }
-    }
-    return parse_xml_config_raw($cffile, $rootobj, $isstring);
-}
-
 function parse_xml_config_raw($cffile, $rootobj, $isstring = "false")
 {
     global $depth, $curpath, $parsedcfg, $havedata, $listtags;
@@ -268,18 +256,6 @@ function dump_xml_config_sub($arr, $indent)
     return $xmlconfig;
 }
 
-function dump_xml_config($arr, $rootobj)
-{
-    global $listtags;
-    $listtags = listtags();
-    if (isset($GLOBALS['custom_listtags'])) {
-        foreach($GLOBALS['custom_listtags'] as $tag) {
-            $listtags[$tag] = $tag;
-        }
-    }
-    return dump_xml_config_raw($arr, $rootobj);
-}
-
 function dump_xml_config_raw($arr, $rootobj)
 {
     $xmlconfig = "<?xml version=\"1.0\"?" . ">\n";
@@ -288,4 +264,3 @@ function dump_xml_config_raw($arr, $rootobj)
     $xmlconfig .= "</$rootobj>\n";
     return $xmlconfig;
 }
-?>
