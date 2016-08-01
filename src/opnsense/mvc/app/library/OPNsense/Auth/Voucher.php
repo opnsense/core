@@ -389,4 +389,46 @@ class Voucher implements IAuthConnector
         }
         return false;
     }
+
+    /**
+     * retrieve configuration options
+     * @return array
+     */
+    public function getConfigurationOptions()
+    {
+        $fields = array();
+        $fields["simplePasswords"] = array();
+        $fields["simplePasswords"]["name"] = gettext("Use simple passwords (less secure)");
+        $fields["simplePasswords"]["type"] = "checkbox";
+        $fields["simplePasswords"]["help"] = gettext("Use simple (less secure) passwords, which are easier to read") ;
+        $fields["simplePasswords"]["validate"] = function($value) {
+            return array();
+        };
+        $fields["usernameLength"] = array();
+        $fields["usernameLength"]["name"] = gettext("Username length");
+        $fields["usernameLength"]["type"] = "text";
+        $fields["usernameLength"]["default"] = null;
+        $fields["usernameLength"]["help"] = gettext("Specify alternative username length for generating vouchers");
+        $fields["usernameLength"]["validate"] = function($value) {
+            if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
+                return array(gettext("username length must be a number or empty for default."));
+            } else {
+                return array();
+            }
+        };
+        $fields["passwordLength"] = array();
+        $fields["passwordLength"]["name"] = gettext("Password length");
+        $fields["passwordLength"]["type"] = "text";
+        $fields["passwordLength"]["default"] = null;
+        $fields["passwordLength"]["help"] = gettext("Specify alternative password length for generating vouchers");
+        $fields["passwordLength"]["validate"] = function($value) {
+            if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
+                return array(gettext("password length must be a number or empty for default."));
+            } else {
+                return array();
+            }
+        };
+
+        return $fields;
+    }
 }
