@@ -86,24 +86,6 @@ function restore_config_section($section_name, $new_contents)
     return true;
 }
 
-/*
- *  backup_config_section($section): returns as an xml file string of
- *                                   the configuration section
- */
-function backup_config_section($section_name)
-{
-    global $config;
-
-    $new_section = &$config[$section_name];
-
-    $xmlconfig = dump_xml_config($new_section, $section_name);
-    $xmlconfig = str_replace("<?xml version=\"1.0\"?>", "", $xmlconfig);
-
-    /* KEEP THIS: unbreaks syntax highlighting <?php */
-
-    return $xmlconfig;
-}
-
 function rrd_data_xml()
 {
     $rrddbpath = '/var/db/rrd';
@@ -252,22 +234,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $name = "config-{$host}-".date("YmdHis").".xml";
             $data = "";
 
-            if(empty($_POST['backuparea'])) {
-                /* backup entire configuration */
-                $data = file_get_contents('/conf/config.xml');
-            } elseif ($_POST['backuparea'] === "rrddata") {
-                $data = rrd_data_xml();
-                $name = "{$_POST['backuparea']}-{$name}";
-            } else {
-                /* backup specific area of configuration */
-                $data = backup_config_section($_POST['backuparea']);
-                $name = "{$_POST['backuparea']}-{$name}";
-            }
+            /* backup entire configuration */
+            $data = file_get_contents('/conf/config.xml');
 
-            /*
-             *  Backup RRD Data
-             */
-            if ($_POST['backuparea'] !== "rrddata" && empty($_POST['donotbackuprrd'])) {
+            /* backup RRD data */
+            if (empty($_POST['donotbackuprrd'])) {
                 $rrd_data_xml = rrd_data_xml();
                 $closing_tag = "</opnsense>";
                 $data = str_replace($closing_tag, $rrd_data_xml . $closing_tag, $data);
@@ -340,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         convert_config();
                     }
                     filter_configure();
-                    $savemsg = gettext("The configuration area has been restored.  You may need to reboot the firewall.");
+                    $savemsg = gettext("The configuration area has been restored. You should reboot the firewall.");
                 }
             } else {
                 /* restore the entire configuration */
@@ -539,15 +510,6 @@ $( document ).ready(function() {
             $("#decrypt_opts").addClass("hidden");
         }
     });
-
-    $("#backuparea").change(function(event){
-        if ($("#backuparea").val() == "rrddata") {
-            $("#dotnotbackuprrd").prop('disabled', true);
-        } else {
-            $("#dotnotbackuprrd").prop('disabled', false);
-        }
-    });
-
 });
 //]]>
 </script>
@@ -576,18 +538,6 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <?=gettext("Backup area:");?>
-                    <select name="backuparea" id="backuparea">
-                      <option value=""><?=gettext("ALL");?></option>
-<?php
-                    foreach($areas as $area => $areaname):
-                        if($area !== "rrddata" && (!isset($config[$area]) || !is_array($config[$area]))) {
-                            continue;
-                        };?>
-                      <option value="<?=$area;?>"><?=$areaname;?></option>
-<?php
-                    endforeach;?>
-                    </select><br/>
                     <input name="donotbackuprrd" type="checkbox" id="dotnotbackuprrd" checked="checked" />
                     <?=gettext("Do not backup RRD data."); ?><br/>
                     <input name="encrypt" type="checkbox" id="encryptconf" />
@@ -746,6 +696,7 @@ $( document ).ready(function() {
 <?php include("foot.inc"); ?>
 
 <?php
+
 if (is_subsystem_dirty('restore')) {
-  system_reboot();
+    system_reboot();
 }
