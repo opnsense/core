@@ -53,21 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($configId)) {
         // copy settings from config
         foreach (array('disabled','interface','external','descr','natreflection') as $fieldname) {
-          if (isset($a_1to1[$id][$fieldname])) {
-              $pconfig[$fieldname] = $a_1to1[$id][$fieldname];
+          if (isset($a_1to1[$configId][$fieldname])) {
+              $pconfig[$fieldname] = $a_1to1[$configId][$fieldname];
           } else {
               $pconfig[$fieldname] = null;
           }
         }
         // read settings with some kind of logic
         address_to_pconfig(
-          $a_1to1[$id]['source'], $pconfig['src'],
+          $a_1to1[$configId]['source'], $pconfig['src'],
           $pconfig['srcmask'], $pconfig['srcnot'],
           $pconfig['__unused__'],$pconfig['__unused__']
         );
 
         address_to_pconfig(
-          $a_1to1[$id]['destination'], $pconfig['dst'],
+          $a_1to1[$configId]['destination'], $pconfig['dst'],
           $pconfig['dstmask'], $pconfig['dstnot'],
           $pconfig['__unused__'],$pconfig['__unused__']
         );
