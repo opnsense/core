@@ -52,7 +52,6 @@ function set_networking_interfaces_ports($probe = false)
 	global $config;
 
 	$fp = fopen('php://stdin', 'r');
-	$yes_no_prompt = '[y|n]? ';
 	$interactive = true;
 	$key = null;
 
@@ -74,7 +73,7 @@ function set_networking_interfaces_ports($probe = false)
 		}
 	}
 
-	echo "\n\n" . gettext('Valid interfaces are:') . "\n\n";
+	echo "\n\n" . gettext('Valid interfaces are:') . "\n";
 
 	if (!is_array($iflist)) {
 		echo gettext("No interfaces found!") . "\n";
@@ -88,10 +87,10 @@ function set_networking_interfaces_ports($probe = false)
 
 	$ifnames = array_keys($iflist);
 
-	echo "\n\n" . gettext("You now have the opportunity to configure VLANs. If you don't require VLANs
-for initial connectivity, say no here and use the GUI to configure VLANs later.
-
-Do you want to set up VLANs now [y|n]?") . " \n";
+	echo "\n" . 
+		gettext("You now have the opportunity to configure VLANs. If you don't require VLANs\n" .
+						"for initial connectivity, say no here and use the GUI to configure VLANs later.\n\n" .
+						"Do you want to set up VLANs now [y|n]?") . " ";
 	if ($interactive) {
 		$key = chop(fgets($fp));
 	} else {
@@ -112,10 +111,10 @@ Do you want to set up VLANs now [y|n]?") . " \n";
 		}
 	}
 
-	echo "\n\n" .
+	echo "\n" .
 		gettext("If you do not know the names of your interfaces, you may choose to use\n".
 		"auto-detection. In that case, disconnect all interfaces now before\n" .
-		"hitting 'a' to initiate auto detection.") . "\n\n";
+		"hitting 'a' to initiate auto detection.") . "\n";
 
 	do {
 		echo "\n" . gettext("Enter the WAN interface name or 'a' for auto-detection:") . " ";
@@ -236,11 +235,7 @@ Do you want to set up VLANs now [y|n]?") . " \n";
 				for ($j = ($k+1); $j < count($ifarr); $j++) {
 					if ($ifarr[$k] == $ifarr[$j]) {
 						$again = true;
-						echo <<<EOD
-
-Error: you cannot assign the same interface name twice!
-
-EOD;
+						echo "\n" . gettext('Error: you cannot assign the same interface name twice!') . "\n";
 					}
 				}
 			}
@@ -263,10 +258,7 @@ EOD;
 		echo "OPT" . ($i+1) . " -> " . $optif[$i] . "\n";
 	}
 
-	echo <<<EOD
-
-Do you want to proceed ${yes_no_prompt}
-EOD;
+	echo "\n" . gettext('Do you want to proceed [y|n]?') . ' ';
 	if ($interactive) {
 		$key = chop(fgets($fp));
 	} else {
@@ -282,7 +274,7 @@ EOD;
 
 	/*
 	 * XXX Ideally, at this point we'd import the default settings here,
-	 * not hardcode them.  It was this way before, so fixing for now.
+	 * not hardcode them. It was this way before, so fixing for now.
 	 */
 	if ($lanif) {
 		$new = false;
@@ -415,9 +407,9 @@ function autodetect_interface($name, $fp)
 {
 	$iflist_prev = get_interface_list(true);
 
-	printf(gettext("\n\n" .
-	"Connect the %s interface now and make sure that the link is up.\n" .
-	"Then press ENTER to continue.\n\n"), $name);
+	printf("\n\n" .
+		gettext("Connect the %s interface now and make sure that the link is up.\n" .
+		"Then press ENTER to continue."). "\n\n", $name);
 	fgets($fp);
 
 	$iflist = get_interface_list(true);
@@ -440,16 +432,12 @@ function vlan_setup($iflist, $fp)
 {
 	global $config;
 
-	$yes_no_prompt = '[y|n]? ';
-
 	if (isset($config['vlans']['vlan'])) {
 
-	echo <<<EOD
-
-WARNING: all existing VLANs will be cleared if you proceed!
-
-Do you want to proceed ${yes_no_prompt}
-EOD;
+	echo "\n" .
+		gettext("WARNING: All existing VLANs will be cleared if you proceed!") .
+		"\n\n" .
+		gettext("Do you want to proceed [y|n]?") . ' ';
 
 		if (strcasecmp(chop(fgets($fp)), "y") != 0) {
 			return;
@@ -489,7 +477,7 @@ EOD;
 		if ($vlan['if']) {
 			if (!array_key_exists($vlan['if'], $iflist) or
 			    !is_jumbo_capable($vlan['if'])) {
-				printf(gettext("%sInvalid interface name '%s'%s"), "\n", $vlan['if'], "\n");
+				printf("\n" . gettext("Invalid interface name '%s'") . "\n", $vlan['if']);
 				continue;
 			}
 		} else {
