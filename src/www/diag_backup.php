@@ -65,8 +65,8 @@ function restore_config_section($section_name, $new_contents)
     foreach ($xml as $xml_strip_root) {
         if (isset($xml_strip_root[$section])) {
             $section_xml = $xml_strip_root[$section];
-	    break;
-	}
+            break;
+        }
     }
 
     if ($section_xml = -1 && isset($xml[$section_name])) {
@@ -201,6 +201,8 @@ $areas = array(
     'wol' => gettext('Wake on LAN'),
 );
 
+$do_reboot = false;
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['GDriveEnabled'] = isset($config['system']['remotebackup']['GDriveEnabled']) ? $config['system']['remotebackup']['GDriveEnabled'] : null;
@@ -310,8 +312,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         write_config();
                         convert_config();
                     }
-                    filter_configure();
-                    $savemsg = gettext("The configuration area has been restored. You should reboot the firewall.");
+                    if (!empty(pconfig['rebootafterrestore'])) {
+                        $do_reboot = true;
+                    }
+                    $savemsg = gettext("The configuration area has been restored.");
                 }
             } else {
                 /* restore the entire configuration */
@@ -319,8 +323,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 file_put_contents($filename, $data);
                 $cnf = OPNsense\Core\Config::getInstance();
                 if ($cnf->restoreBackup($filename)) {
-                    /* this will be picked up by /index.php */
-                    mark_subsystem_dirty("restore");
+                    if (!empty(pconfig['rebootafterrestore'])) {
+                        $do_reboot = true;
+                    }
                     $config = parse_config();
                     /* extract out rrd items, unset from $config when done */
                     if($config['rrddata']) {
@@ -423,10 +428,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         write_config();
                         convert_config();
                         $savemsg = gettext("The m0n0wall configuration has been restored and upgraded to OPNsense.");
+                    } else {
+                        $savemsg = gettext("The configuration has been restored.");
                     }
                 } else {
                     $input_errors[] = gettext("The configuration could not be restored.");
                 }
+            }
+
+            if ($do_reboot) {
+                $savemsg .= ' ' . gettext("The system is rebooting now. This may take one minute.");
             }
         }
     } elseif ( $mode == "setup_gdrive" ){
@@ -518,12 +529,6 @@ $( document ).ready(function() {
   <div class="container-fluid">
     <div class="row">
       <?php if (isset($savemsg)) print_info_box($savemsg); ?>
-      <?php if (is_subsystem_dirty('restore')): ?><br/>
-      <form action="reboot.php" method="post">
-        <input name="Submit" type="hidden" value="Yes" />
-        <?php print_info_box(gettext("The firewall configuration has been changed.") . "<br />" . gettext("The firewall is now rebooting."));?><br />
-      </form>
-      <?php endif; ?>
       <?php if ($input_messages) print_info_box($input_messages); ?>
       <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
       <form method="post" enctype="multipart/form-data">
@@ -589,6 +594,8 @@ $( document ).ready(function() {
                     endforeach;?>
                     </select><br/>
                     <input name="conffile" type="file" id="conffile" /><br/>
+                    <input name="rebootafterrestore" type="checkbox" id="rebootafterrestore" checked="checked" />
+                    <?=gettext("Reboot after a successful restore."); ?><br/>
                     <input name="decrypt" type="checkbox" id="decryptconf"/>
                     <?=gettext("Configuration file is encrypted."); ?>
                     <div class="hidden table-responsive __mt" id="decrypt_opts">
@@ -613,7 +620,6 @@ $( document ).ready(function() {
                 <tr>
                   <td>
                     <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?><br/>
-                    <span class="text-danger"><?=gettext("The firewall will reboot after restoring the configuration."); ?></span>
                   </td>
                 </tr>
               </tbody>
@@ -693,10 +699,10 @@ $( document ).ready(function() {
   </div>
 </section>
 
-<?php include("foot.inc"); ?>
-
 <?php
 
-if (is_subsystem_dirty('restore')) {
+include("foot.inc");
+
+if ($do_reboot) {
     system_reboot();
 }
