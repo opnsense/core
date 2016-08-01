@@ -69,6 +69,24 @@ class Voucher implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
+     * type name in configuration
+     * @return string
+     */
+    public static function getType()
+    {
+        return 'voucher';
+    }
+
+    /**
+     * user friendly description of this authenticator
+     * @return string
+     */
+    public function getDescription()
+    {
+        return gettext("Voucher");
+    }
+
+    /**
      * open database
      */
     private function openDatabase()

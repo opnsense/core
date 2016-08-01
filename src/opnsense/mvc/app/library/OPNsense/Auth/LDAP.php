@@ -142,6 +142,24 @@ class LDAP implements IAuthConnector
     }
 
     /**
+     * type name in configuration
+     * @return string
+     */
+    public static function getType()
+    {
+        return 'ldap';
+    }
+
+    /**
+     * user friendly description of this authenticator
+     * @return string
+     */
+    public function getDescription()
+    {
+        return gettext("LDAP");
+    }
+
+    /**
      * construct a new LDAP connector
      * @param null|string $baseSearchDN setup base searchDN or list of DN's separated by ;
      * @param int $ldapVersion setup ldap version

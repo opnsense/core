@@ -54,6 +54,24 @@ class LocalTOTP extends Local
     private $graceperiod = 10;
 
     /**
+     * type name in configuration
+     * @return string
+     */
+    public static function getType()
+    {
+        return 'totp';
+    }
+
+    /**
+     * user friendly description of this authenticator
+     * @return string
+     */
+    public function getDescription()
+    {
+        return gettext("Local + Timebased One Time Password");
+    }
+
+    /**
      * set connector properties
      * @param array $config connection properties
      */
@@ -172,4 +190,5 @@ class LocalTOTP extends Local
         }
         return false;
     }
+
 }

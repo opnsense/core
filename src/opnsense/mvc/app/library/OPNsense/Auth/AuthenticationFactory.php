@@ -71,7 +71,7 @@ class AuthenticationFactory
             $classname = explode('.php', $pathParts[count($pathParts)-1])[0];
             $reflClass = new \ReflectionClass("{$vendor}\\{$module}\\{$classname}");
             if ($reflClass->implementsInterface('OPNsense\\Auth\\IAuthConnector')) {
-                if ($classname != 'IAuthConnector') {
+                if ($reflClass->hasMethod('getType')) {
                     $connectorType = $reflClass->getMethod('getType')->invoke(null);
                     $connector = array();
                     $connector['class'] = "{$vendor}\\{$module}\\{$classname}";

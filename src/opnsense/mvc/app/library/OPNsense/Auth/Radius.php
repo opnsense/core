@@ -82,6 +82,24 @@ class Radius implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
+     * type name in configuration
+     * @return string
+     */
+    public static function getType()
+    {
+        return 'radius';
+    }
+
+    /**
+     * user friendly description of this authenticator
+     * @return string
+     */
+    public function getDescription()
+    {
+        return gettext("Radius");
+    }
+
+    /**
      * set connector properties
      * @param array $config connection properties
      */
