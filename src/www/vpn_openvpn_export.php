@@ -224,10 +224,10 @@ if (isset($config['openvpn']['openvpn-server'])) {
             $exp_path = openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $nokeys, $proxy, $expformat, $password, false, false, $openvpnmanager, $advancedoptions);
         } elseif ($act == "visc") {
             $exp_name = urlencode($exp_name."-Viscosity.visc.zip");
-            $exp_path = viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $password, $proxy, $openvpnmanager, $advancedoptions);
-        } elseif (substr($act, 0, 4) == "inst") {
-            $exp_name = urlencode($exp_name."-install.exe");
-            $exp_path = openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $password, $proxy, $openvpnmanager, $advancedoptions, substr($act, 5));
+            $exp_path = viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $password, $proxy, $openvpnmanager, $advancedoptions, 'zip');
+        } elseif ($act == "visz") {
+            $exp_name = urlencode($exp_name."-Viscosity.visz");
+            $exp_path = viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $password, $proxy, $openvpnmanager, $advancedoptions, 'targz');
         } elseif ( $act == 'skconf')  {
             $exp_path = openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, false);
             $exp_name = urlencode($exp_name."-config.ovpn");
@@ -604,14 +604,9 @@ if (isset($savemsg)) {
                               <option value="confinlineios"><?=gettext("OpenVPN Connect (iOS/Android)");?></option>
                               <option value="confinline"><?=gettext("Others");?></option>
                             </optgroup>
-                            <optgroup label="<?=sprintf(gettext("Windows Installers (%s-Ix%s)"), $current_openvpn_version, $current_openvpn_version_rev);?>">
-                              <option value="inst-x86-xp"><?=gettext("x86-xp");?></option>
-                              <option value="inst-x64-xp"><?=gettext("x64-xp");?></option>
-                              <option value="inst-x86-win6"><?=gettext("x86-win6");?></option>
-                              <option value="inst-x64-win6"><?=gettext("x64-win6");?></option>
-                            </optgroup>
-                            <optgroup label="<?=gettext("Mac OSX");?>">
-                              <option value="visc"><?=gettext("Viscosity Bundle");?></option>
+                            <optgroup label="<?=gettext("Mac OSX / Windows");?>">
+                              <option value="visc"><?=gettext("Viscosity Bundle (OSX)");?></option>
+                              <option value="visz"><?=gettext("Viscosity Bundle (Windows)");?></option>
                             </optgroup>
                           </select>
                         </td>
@@ -636,14 +631,9 @@ if (isset($savemsg)) {
                               <option value="confinlineios"><?=gettext("OpenVPN Connect (iOS/Android)");?></option>
                               <option value="confinline"><?=gettext("Others");?></option>
                             </optgroup>
-                            <optgroup label="<?=sprintf(gettext("Windows Installers (%s-Ix%s)"), $current_openvpn_version, $current_openvpn_version_rev);?>">
-                              <option value="inst-x86-xp"><?=gettext("x86-xp");?></option>
-                              <option value="inst-x64-xp"><?=gettext("x64-xp");?></option>
-                              <option value="inst-x86-win6"><?=gettext("x86-win6");?></option>
-                              <option value="inst-x64-win6"><?=gettext("x64-win6");?></option>
-                            </optgroup>
-                            <optgroup label="<?=gettext("Mac OSX");?>">
-                              <option value="visc"><?=gettext("Viscosity Bundle");?></option>
+                            <optgroup label="<?=gettext("Mac OSX / Windows");?>">
+                              <option value="visc"><?=gettext("Viscosity Bundle (OSX)");?></option>
+                              <option value="visz"><?=gettext("Viscosity Bundle (Windows)");?></option>
                             </optgroup>
 <?php
                             if ($server['mode'] == 'server_tls'):?>
@@ -679,14 +669,9 @@ if (isset($savemsg)) {
                               <option value="confinlineios"><?=gettext("OpenVPN Connect (iOS/Android)");?></option>
                               <option value="confinline"><?=gettext("Others");?></option>
                             </optgroup>
-                            <optgroup label="<?=sprintf(gettext("Windows Installers (%s-Ix%s)"), $current_openvpn_version, $current_openvpn_version_rev);?>">
-                              <option value="inst-x86-xp"><?=gettext("x86-xp");?></option>
-                              <option value="inst-x64-xp"><?=gettext("x64-xp");?></option>
-                              <option value="inst-x86-win6"><?=gettext("x86-win6");?></option>
-                              <option value="inst-x64-win6"><?=gettext("x64-win6");?></option>
-                            </optgroup>
-                            <optgroup label="<?=gettext("Mac OSX");?>">
-                              <option value="visc"><?=gettext("Viscosity Bundle");?></option>
+                            <optgroup label="<?=gettext("Mac OSX / Windows");?>">
+                              <option value="visc"><?=gettext("Viscosity Bundle (OSX)");?></option>
+                              <option value="visz"><?=gettext("Viscosity Bundle (Windows)");?></option>
                             </optgroup>
                           </select>
                         </td>
@@ -715,15 +700,13 @@ if (isset($savemsg)) {
                       </tbody>
                     </table>
                     <div class="hidden" for="help_for_clientpkg">
-                      <br/>
-                      <?= gettext('The "XP" Windows installers work on Windows XP and later versions. The "win6" Windows installers include a new tap-windows6 driver that works only on Windows Vista and later.') ?><br/>
                       <br/><br/>
                       <strong><?= gettext("Links to OpenVPN clients for various platforms:") ?></strong><br/>
-                      <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms. Packaged above in the Windows Installers")?><br/>
+                      <a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX and Windows") ?><br/>
+                      <a href="http://openvpn.net/index.php/open-source/downloads.html"><?= gettext("OpenVPN Community Client") ?></a> - <?=gettext("Binaries for Windows, Source for other platforms.")?><br/>
                       <a href="https://play.google.com/store/apps/details?id=de.blinkt.openvpn"><?= gettext("OpenVPN For Android") ?></a> - <?=gettext("Recommended client for Android")?><br/>
                       <a href="http://www.featvpn.com/"><?= gettext("FEAT VPN For Android") ?></a> - <?=gettext("For older versions of Android")?><br/>
                       <?= gettext("OpenVPN Connect") ?>: <a href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn"><?=gettext("Android (Google Play)")?></a> or <a href="https://itunes.apple.com/us/app/openvpn-connect/id590379981"><?=gettext("iOS (App Store)")?></a> - <?= gettext("Recommended client for iOS") ?>
-                      <br/><a href="http://www.sparklabs.com/viscosity/"><?= gettext("Viscosity") ?></a> - <?= gettext("Recommended client for Mac OSX") ?>
                       <br/><a href="http://code.google.com/p/tunnelblick/"><?= gettext("Tunnelblick") ?></a> - <?= gettext("Free client for OSX") ?>
                       <br/><br/>
                       <?= gettext("If you expect to see a certain client in the list but it is not there, it is usually due to a CA mismatch between the OpenVPN server instance and the client certificates found in the User Manager.") ?><br/>
