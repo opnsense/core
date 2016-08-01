@@ -249,9 +249,7 @@
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
         <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs fa-fw">
-            <IGMPProxyEdit url="/services_igmpproxy_edit.php" visibility="hidden">
-                <Edit url="/services_igmpproxy_edit.php*"/>
-            </IGMPProxyEdit>
+            <Edit url="/services_igmpproxy_edit.php" visibility="hidden"/>
         </IGMPProxy>
         <LoadBalancer VisibleName="Load Balancer" cssClass="fa fa-truck fa-fw">
             <Monitors order="10" url="/load_balancer_monitor.php">
