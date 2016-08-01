@@ -29,10 +29,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-global $current_openvpn_version, $current_openvpn_version_rev;
-$current_openvpn_version     = "2.3.6";
-$current_openvpn_version_rev = "01";
-
 function openvpn_client_export_prefix($srvid, $usrid = null, $crtid = null)
 {
     global $config;
@@ -455,134 +451,12 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
     }
 }
 
-function openvpn_client_export_installer($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions, $openvpn_version = "x86-xp")
-{
-    global $config, $input_errors, $current_openvpn_version, $current_openvpn_version_rev;
-
-    switch ($openvpn_version) {
-        case "x86-xp":
-            $client_install_exe = "openvpn-install-{$current_openvpn_version}-I0{$current_openvpn_version_rev}-i686.exe";
-            break;
-        case "x64-xp":
-            $client_install_exe = "openvpn-install-{$current_openvpn_version}-I0{$current_openvpn_version_rev}-x86_64.exe";
-            break;
-        case "x86-win6":
-            $client_install_exe = "openvpn-install-{$current_openvpn_version}-I6{$current_openvpn_version_rev}-i686.exe";
-            break;
-        case "x64-win6":
-            $client_install_exe = "openvpn-install-{$current_openvpn_version}-I6{$current_openvpn_version_rev}-x86_64.exe";
-            break;
-        default:
-            $input_errors[] = gettext("Could not find matching OpenVPN architecture.");
-            return false;
-    }
-
-    $validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
-    if (!$validconfig) {
-        $input_errors[] = gettext("Could not validate OpenVPN config.");
-        return false;
-    }
-
-    list($settings, $server_cert, $server_ca, $servercn, $user, $cert, $nokeys) = $validconfig;
-
-    // create template directory
-    $tempdir = '/tmp/openvpn-export-' . uniqid();
-    mkdir($tempdir, 0700, true);
-
-    // create config directory
-    $confdir = "{$tempdir}/config";
-    if (!is_dir($conf_dir)) {
-        mkdir($confdir, 0700, true);
-    }
-
-    // copy the template directory
-    exec("cp -r /usr/local/opnsense/contrib/openvpn/client-export/template/* {$tempdir}");
-    // and put the required installer exe in place
-    exec("/bin/cp {$tempdir}/{$client_install_exe} {$tempdir}/openvpn-install.exe");
-    if (stristr($openvpn_version, "x64")) {
-        rename("{$tempdir}/openvpn-postinstall64.exe", "{$tempdir}/openvpn-postinstall.exe");
-    }
-
-    // write configuration file
-    $prefix = openvpn_client_export_prefix($srvid, $usrid, $crtid);
-    $cfgfile = "{$confdir}/{$prefix}-config.ovpn";
-    if (!empty($proxy) && $proxy['proxy_authtype'] != "none") {
-        $proxy['passwdfile'] = "{$prefix}-password";
-        $pwdfle = "{$proxy['user']}\r\n";
-        $pwdfle .= "{$proxy['password']}\r\n";
-        file_put_contents("{$confdir}/{$proxy['passwdfile']}", $pwdfle);
-    }
-    $conf = openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken,  $nokeys, $proxy, "", "baseconf", false, true, $openvpnmanager, $advancedoptions);
-    if (!$conf) {
-        $input_errors[] = gettext("Could not create a config to export.");
-        return false;
-    }
-
-    file_put_contents($cfgfile, $conf);
-
-    $cafile = "{$tempdir}/config/{$prefix}-ca.crt";
-    file_put_contents($cafile, $server_ca);
-    if ($settings['tls']) {
-        $tlsfile = "{$tempdir}/config/{$prefix}-tls.key";
-        file_put_contents($tlsfile, base64_decode($settings['tls']));
-    }
-
-    // write key files
-    if ($settings['mode'] != "server_user") {
-        $crtfile = "{$tempdir}/config/{$prefix}-{$user['name']}.crt";
-        file_put_contents($crtfile, base64_decode($cert['crt']));
-        $keyfile = "{$tempdir}/config/{$prefix}-{$user['name']}.key";
-        file_put_contents($keyfile, base64_decode($cert['prv']));
-        // convert to pkcs12 format
-        $p12file = "{$tempdir}/config/{$prefix}.p12";
-        if ($usetoken) {
-            openvpn_client_pem_to_pk12($p12file, $outpass, $crtfile, $keyfile);
-        } else {
-            openvpn_client_pem_to_pk12($p12file, $outpass, $crtfile, $keyfile, $cafile);
-        }
-    }
-
-    // 7zip the configuration data
-    chdir($tempdir);
-    $files  = "config ";
-    if ($openvpnmanager) {
-        $files .= "openvpnmanager ";
-    }
-
-    $files .= "openvpn-install.exe ";
-    $files .= "openvpn-postinstall.exe ";
-    if ($usetoken) {
-        $procchain =  ';!@Install@!UTF-8!
-RunProgram="openvpn-postinstall.exe /Import"
-;!@InstallEnd@!'
-;
-    } else {
-        $procchain =  ';!@Install@!UTF-8!
-RunProgram="openvpn-postinstall.exe"
-;!@InstallEnd@!';
-    }
-    file_put_contents("{$tempdir}/7zipConfig",$procchain);
-
-    exec("/usr/local/bin/7z -y a archive.7z {$files}");
-
-    // create the final installer
-    $outfile = "{$tempdir}-install.exe";
-    chdir('/tmp');
-    exec("/bin/cat {$tempdir}/7zS.sfx {$tempdir}/7zipConfig {$tempdir}/archive.7z > {$outfile}");
-
-    // cleanup
-    exec("/bin/rm -r {$tempdir}");
-
-    return $outfile;
-}
-
-function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions)
+function viscosity_openvpn_client_config_exporter($srvid, $usrid, $crtid, $useaddr, $verifyservercn, $randomlocalport, $usetoken, $outpass, $proxy, $openvpnmanager, $advancedoptions, $compression_type)
 {
     global $config;
 
     $uniq = uniqid();
     $tempdir = "/tmp/openvpn-export-{$uniq}";
-    $zipfile = "/tmp/{$uniq}-Viscosity.visc.zip";
 
     $validconfig = openvpn_client_export_validate_config($srvid, $usrid, $crtid);
     if (!$validconfig) {
@@ -678,12 +552,18 @@ EOF;
     }
 
     // Zip Viscosity file
-    exec("cd {$tempdir}/.. && /usr/local/bin/7z -tzip -y a {$zipfile} Viscosity.visc");
+    if ($compression_type == 'targz') {
+        $outputfile = "/tmp/{$uniq}-Viscosity.visz";
+        exec("cd {$tempdir}/.. && /usr/bin/tar cfz {$outputfile} Viscosity.visc");
+    } else {
+        $outputfile = "/tmp/{$uniq}-Viscosity.visc.zip";
+        exec("cd {$tempdir}/.. && /usr/local/bin/7z -tzip -y a {$outputfile} Viscosity.visc");
+    }
 
     // Remove temporary directory
     exec("rm -rf {$tempdir}");
 
-    return $zipfile;
+    return $outputfile;
 }
 
 function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipconf = false)
