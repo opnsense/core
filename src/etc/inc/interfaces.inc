@@ -2293,10 +2293,6 @@ function interface_wireless_configure($if, &$wl, &$wlcfg)
         $wlcmd[] = "-mediaopt turbo";
     }
 
-    /* handle txpower setting */
-    /* if($wlcfg['txpower'] <> "")
-        $wlcmd[] = "txpower " . escapeshellarg($wlcfg['txpower']);
-    */
     /* handle wme option */
     if (isset($wlcfg['wme']['enable'])) {
         $wlcmd[] = "wme";
@@ -2579,6 +2575,10 @@ EOD;
     mwexec("/sbin/ifconfig " . escapeshellarg($if) . " " . $wlcmd_args, false);
     unset($wlcmd_args, $wlcmd);
 
+    /* configure txpower setting (it has been known to fail so run it separately) */
+    if (!empty($wlcfg['txpower'])) {
+        mwexecf('/sbin/ifconfig %s txpower %s', array($if, $wlcfg['txpower']));
+    }
 
     sleep(1);
     /* execute hostapd and wpa_supplicant if required in shell */
