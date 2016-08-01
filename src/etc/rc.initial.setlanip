@@ -287,7 +287,7 @@ function console_configure_ip_address($version)
         while (true) {
             do {
                 echo "\n" . sprintf(
-                    gettext("Enter the new %s %s address.  Press <ENTER> for none:"),
+                    gettext("Enter the new %s %s address. Press <ENTER> for none:"),
                     $upperifname,
                     $label_IPvX
                 ) . "\n> ";

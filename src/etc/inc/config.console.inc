@@ -62,7 +62,7 @@ function set_networking_interfaces_ports($probe = false)
 	$iflist = get_interface_list();
 
 	if ($probe) {
-		echo PHP_EOL . gettext('Press any key to start the manual interface assignment:  ');
+		echo PHP_EOL . gettext('Press any key to start the manual interface assignment:') . ' ';
 
 		$key = timeout();
 		if (!isset($key)) {
@@ -74,11 +74,7 @@ function set_networking_interfaces_ports($probe = false)
 		}
 	}
 
-	echo <<<EOD
-
-Valid interfaces are:
-
-EOD;
+	echo "\n\n" . gettext('Valid interfaces are:') . "\n\n";
 
 	if (!is_array($iflist)) {
 		echo gettext("No interfaces found!") . "\n";
@@ -92,13 +88,10 @@ EOD;
 
 	$ifnames = array_keys($iflist);
 
-	echo <<<EOD
-
-You now have the opportunity to configure VLANs.  If you don't require VLANs
+	echo "\n\n" . gettext("You now have the opportunity to configure VLANs. If you don't require VLANs
 for initial connectivity, say no here and use the GUI to configure VLANs later.
 
-Do you want to set up VLANs now ${yes_no_prompt}
-EOD;
+Do you want to set up VLANs now [y|n]?") . " \n";
 	if ($interactive) {
 		$key = chop(fgets($fp));
 	} else {
@@ -119,13 +112,10 @@ EOD;
 		}
 	}
 
-	echo <<<EOD
-
-If you do not know the names of your interfaces, you may choose to use
-auto-detection. In that case, disconnect all interfaces now before
-hitting 'a' to initiate auto detection.
-
-EOD;
+	echo "\n\n" .
+		gettext("If you do not know the names of your interfaces, you may choose to use\n".
+		"auto-detection. In that case, disconnect all interfaces now before\n" .
+		"hitting 'a' to initiate auto detection.") . "\n\n";
 
 	do {
 		echo "\n" . gettext("Enter the WAN interface name or 'a' for auto-detection:") . " ";
@@ -156,9 +146,9 @@ EOD;
 	} while (!$wanif);
 
 	do {
-		printf(gettext("%sEnter the LAN interface name or 'a' for auto-detection %s" .
+		printf("\n" . gettext("Enter the LAN interface name or 'a' for auto-detection %s" .
 		    "NOTE: this enables full Firewalling/NAT mode.%s" .
-			"(or nothing if finished):%s"), "\n", "\n", "\n", " ");
+			"(or nothing if finished):") . ' ', "\n", "\n");
 
 		if ($interactive) {
 			$lanif = chop(fgets($fp));
@@ -180,17 +170,13 @@ EOD;
 		}
 
 		if (!array_key_exists($lanif, $iflist)) {
-			printf(gettext("%sInvalid interface name '%s'%s"), "\n", $lanif, "\n");
+			printf("\n" . gettext("Invalid interface name '%s'") . "\n", $lanif);
 			unset($lanif);
 		}
 
 		if ($wanif && $lanif == $wanif) {
 			unset($lanif);
-			echo <<<EOD
-
-Error: you cannot assign the same interface name twice!
-
-EOD;
+			echo "\n\n" . gettext("Error: you cannot assign the same interface name twice!") . "\n\n";
 		}
 	} while (!$lanif);
 
@@ -210,8 +196,8 @@ EOD;
 				printf(gettext("%sOptional interface %s description found: %s"), "\n", $io, $config['interfaces']['opt' . $io]['descr']);
 			}
 
-			printf(gettext("%sEnter the Optional %s interface name or 'a' for auto-detection%s" .
-				"(or nothing if finished):%s"), "\n", $io, "\n", " ");
+			printf("\n" . gettext("Enter the Optional %s interface name or 'a' for auto-detection%s" .
+				"(or nothing if finished):") . ' ', $io, "\n");
 
 			if ($interactive) {
 				$optif[$i] = chop(fgets($fp));
@@ -237,7 +223,7 @@ EOD;
 			}
 
 			if (!array_key_exists($optif[$i], $iflist)) {
-				printf(gettext("%sInvalid interface name '%s'%s"), "\n", $optif[$i], "\n");
+				printf("\n" . gettext("Invalid interface name '%s'") . "\n", $optif[$i]);
 				unset($optif[$i]);
 				continue;
 			}
@@ -415,9 +401,9 @@ EOD;
 		unset($config['interfaces']['opt' . ($i+1)]);
 	}
 
-	printf(gettext("%sWriting configuration..."), "\n");
+	print("\n" . gettext("Writing configuration..."));
 	write_config("Console assignment of interfaces");
-	printf(gettext("done.%s"), "\n");
+	print(gettext("Done.") . "\n");
 
 	unmute_kernel_msgs();
 	fclose($fp);
@@ -429,12 +415,9 @@ function autodetect_interface($name, $fp)
 {
 	$iflist_prev = get_interface_list(true);
 
-	echo <<<EOD
-
-Connect the {$name} interface now and make sure that the link is up.
-Then press ENTER to continue.
-
-EOD;
+	printf(gettext("\n\n" .
+	"Connect the %s interface now and make sure that the link is up.\n" .
+	"Then press ENTER to continue.\n\n"), $name);
 	fgets($fp);
 
 	$iflist = get_interface_list(true);
@@ -442,13 +425,13 @@ EOD;
 	if (is_array($iflist)) {
 		foreach ($iflist as $ifn => $ifa) {
 			if (!isset($iflist_prev[$ifn])) {
-				printf(gettext("Detected link-up: %s%s"), $ifn, "\n");
+				printf(gettext("Detected link-up: %s")."\n", $ifn);
 				return $ifn;
 			}
 		}
 	}
 
-	printf(gettext("No link-up detected.%s"), "\n");
+	print(gettext("No link-up detected.") . "\n");
 
 	return false;
 }
