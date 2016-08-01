@@ -73,6 +73,8 @@ class CertificateField extends BaseField
     {
         if (trim(strtolower($value)) == "ca") {
             $this->certificateType = "ca";
+        } elseif (trim(strtolower($value)) == "crl") {
+            $this->certificateType = "crl";
         } else {
             $this->certificateType = "cert";
         }
