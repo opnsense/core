@@ -2792,9 +2792,10 @@ include("head.inc");
                           <td><a id="help_for_txpower" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Transmit power"); ?></td>
                           <td>
                             <select name="txpower" class="selectpicker" data-size="10" data-style="btn-default" id="txpower">
+                              <option value=""><?= gettext('default') ?></option>
 <?php
                             for($x = 99; $x > 0; $x--):?>
-                              <option value="<?=$x;?>" <?=$pconfig["txpower"] == $x ? "selected=\"selected\"" : "";?> ><?=$x;?></option>
+                              <option value="<?=$x;?>" <?=$pconfig['txpower'] == $x ? 'selected="selected"' : '';?>><?=$x;?></option>
 <?php
                               endfor;?>
                             </select>
