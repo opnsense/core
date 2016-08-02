@@ -411,7 +411,7 @@ class Voucher implements IAuthConnector
         $fields["usernameLength"]["help"] = gettext("Specify alternative username length for generating vouchers");
         $fields["usernameLength"]["validate"] = function($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
-                return array(gettext("username length must be a number or empty for default."));
+                return array(gettext("Username length must be a number or empty for default."));
             } else {
                 return array();
             }
@@ -423,7 +423,7 @@ class Voucher implements IAuthConnector
         $fields["passwordLength"]["help"] = gettext("Specify alternative password length for generating vouchers");
         $fields["passwordLength"]["validate"] = function($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
-                return array(gettext("password length must be a number or empty for default."));
+                return array(gettext("Password length must be a number or empty for default."));
             } else {
                 return array();
             }
