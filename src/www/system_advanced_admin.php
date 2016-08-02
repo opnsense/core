@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enableserial'] = isset($config['system']['enableserial']);
     $pconfig['serialspeed'] = $config['system']['serialspeed'];
     $pconfig['primaryconsole'] = $config['system']['primaryconsole'];
+    $pconfig['secondaryconsole'] = $config['system']['secondaryconsole'];
     $pconfig['enablesshd'] = $config['system']['ssh']['enabled'];
     $pconfig['sshport'] = $config['system']['ssh']['port'];
     $pconfig['passwordauth'] = isset($config['system']['ssh']['passwordauth']);
@@ -138,6 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['primaryconsole']);
         }
 
+        if (!empty($pconfig['secondaryconsole'])) {
+            $config['system']['secondaryconsole'] = $pconfig['secondaryconsole'];
+        } elseif (isset($config['system']['secondaryconsole'])) {
+            unset($config['system']['secondaryconsole']);
+        }
         if ($pconfig['nodnsrebindcheck'] == "yes") {
             $config['system']['webgui']['nodnsrebindcheck'] = true;
         } elseif (isset($config['system']['webgui']['nodnsrebindcheck'])) {
@@ -524,15 +530,28 @@ include("head.inc");
                   <td><a id="help_for_primaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Primary Console")?></td>
                   <td width="78%">
                     <select name="primaryconsole" id="primaryconsole" class="formselect selectpicker">
-                      <option value="serial"   <?=$pconfig['primaryconsole'] == "serial" ? 'selected="selected"' : '';?>>
-                        <?=gettext("Serial Console");?>
-                      </option>
-                      <option value="video"  <?=$pconfig['primaryconsole'] == "video" ? 'selected="selected"' : '';?>>
-                        <?=gettext("VGA Console");?>
-                      </option>
+<?php               foreach (system_console_types() as $console_key => $console_type): ?>
+                      <option value="<?= html_safe($console_key) ?>" <?= $pconfig['primaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
+<?                  endforeach ?>
                     </select>
                     <div class="hidden" for="help_for_primaryconsole">
-                      <?=gettext("Select the preferred console if multiple consoles are present. The preferred console will show OPNsense boot script output. All consoles display OS boot messages, console messages, and the console menu."); ?>
+                      <?=gettext("Select the primary console. This preferred console will show boot script output.") ?>
+                      <?=gettext("All consoles display OS boot messages, console messages, and the console menu."); ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_secondaryconsole" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Secondary Console")?></td>
+                  <td width="78%">
+                    <select name="secondaryconsole" id="secondaryconsole" class="formselect selectpicker">
+                      <option value="" <?= empty($pconfig['secondaryconsole']) ? 'selected="selected"' : '' ?>><?= gettext('None') ?></option>
+<?php               foreach (system_console_types() as $console_key => $console_type): ?>
+                      <option value="<?= html_safe($console_key) ?>" <?= $pconfig['secondaryconsole'] == $console_key ? 'selected="selected"' : '' ?>><?= $console_type['name'] ?></option>
+<?                  endforeach ?>
+                    </select>
+                    <div class="hidden" for="help_for_secondaryconsole">
+                      <?=gettext("Select the secondary console if multiple consoles are present."); ?>
+                      <?=gettext("All consoles display OS boot messages, console messages, and the console menu."); ?>
                     </div>
                   </td>
                 </tr>

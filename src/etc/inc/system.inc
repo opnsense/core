@@ -1893,6 +1893,15 @@ function load_thermal_module()
     }
 }
 
+function system_console_types()
+{
+    return array(
+        'serial' => array('value' => 'comconsole', 'name' => gettext('Serial Console')),
+        'video' => array('value' => 'vidconsole', 'name' => gettext('VGA Console')),
+        'efi' => array('value' => 'efi', 'name' => gettext('EFI Console')),
+    );
+}
+
 function system_console_configure()
 {
     global $config;
@@ -1909,17 +1918,32 @@ function system_console_configure()
 
     // ** console settings in /boot/loader.conf
     $new_boot_config = array();
-    $new_boot_config['boot_multicons'] = $serial_enabled ? '"YES"' : null;
-    $new_boot_config['boot_serial'] = $serial_enabled ? '"YES"' : null;
-    if ($serial_enabled) {
-        $primaryconsole = !empty($config['system']['primaryconsole']) ? $config['system']['primaryconsole'] : "";
-        $new_boot_config['console'] = $primaryconsole == "video" ? '"vidconsole,comconsole"' : '"comconsole,vidconsole"';
-    } else {
-        $new_boot_config['console'] = null;
-    }
-    $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
-    $new_boot_config['hw.usb.no_pf'] = '"1"';
+    $new_boot_config['comconsole_speed'] = null;
     $new_boot_config['autoboot_delay'] = '"3"';
+    $new_boot_config['boot_multicons'] = null;
+    $new_boot_config['hw.usb.no_pf'] = '"1"';
+    $new_boot_config['boot_serial'] = null;
+    $new_boot_config['console'] = null;
+
+    $console_types = system_console_types();
+    $console_selection = array();
+
+    foreach (array('primaryconsole', 'secondaryconsole') as $console_order) {
+        if (!empty($config['system'][$console_order]) && isset($console_types[$config['system'][$console_order]])) {
+            $console_selection[] = $console_types[$config['system'][$console_order]]['value'];
+        }
+    }
+
+    $console_selection = array_unique($console_selection);
+
+    if ($serial_enabled) {
+        $new_boot_config['console'] = '"' . implode(',', $console_selection) . '"';
+        $new_boot_config['comconsole_speed'] = '"'.$serialspeed.'"';
+        $new_boot_config['boot_serial'] = '"YES"';
+        if (count($console_selection) >= 2) {
+            $new_boot_config['boot_multicons'] = '"YES"';
+        }
+    }
 
     $new_loader_conf = "";
     // construct OPNsense config for /boot/loader.conf
