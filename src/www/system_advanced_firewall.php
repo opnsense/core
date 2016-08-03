@@ -65,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
-    $pconfig['reflectiontimeout'] = !empty($config['system']['reflectiontimeout']) ? $config['system']['reflectiontimeout'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -91,9 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['maximumtableentries']) && !is_numericint($pconfig['maximumtableentries'])) {
         $input_errors[] = gettext("The Firewall Maximum Table Entries value must be an integer.");
-    }
-    if (!empty($pconfig['reflectiontimeout']) && !is_numericint($pconfig['reflectiontimeout'])) {
-        $input_errors[] = gettext("The Reflection timeout must be an integer.");
     }
     if (count($input_errors) == 0) {
 
@@ -174,7 +170,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['maximumstates'] = $pconfig['maximumstates'];
         $config['system']['aliasesresolveinterval'] = $pconfig['aliasesresolveinterval'];
         $config['system']['maximumtableentries'] = $pconfig['maximumtableentries'];
-        $config['system']['reflectiontimeout'] = $pconfig['reflectiontimeout'];
 
         if (!empty($pconfig['bypassstaticroutes'])) {
             $config['filter']['bypassstaticroutes'] = $pconfig['bypassstaticroutes'];
@@ -282,17 +277,6 @@ include("head.inc");
                       <?=gettext("The pure NAT mode uses a set of NAT rules to direct packets to the target of the port forward. It has better scalability, but it must be possible to accurately determine the interface and gateway IP used for communication with the target at the time the rules are loaded. There are no inherent limits to the number of ports other than the limits of the protocols. All protocols available for port forwards are supported.");?>
                       <br /><br />
                       <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_reflectiontimeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection Timeout");?></td>
-                  <td>
-                    <input name="reflectiontimeout" type="text" value="<?=$pconfig['reflectiontimeout']; ?>" />
-                    <div class="hidden" for="help_for_reflectiontimeout">
-                      <strong><?=gettext("Enter value for Reflection timeout in seconds.");?></strong>
-                      <br /><br />
-                      <?=gettext("Note: Only applies to Reflection on port forwards in NAT + proxy mode.");?>
                     </div>
                   </td>
                 </tr>
