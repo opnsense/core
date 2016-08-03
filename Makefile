@@ -47,15 +47,14 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	16.7
 
+_FLAVOUR!=	/usr/local/bin/openssl version
+FLAVOUR?=	${_FLAVOUR:[1]}
+
 .if "${FLAVOUR}" == OpenSSL
 CORE_REPOSITORY?=	${CORE_ABI}/latest
 .elif "${FLAVOUR}" == LibreSSL
 CORE_REPOSITORY?=	${CORE_ABI}/libressl
 .else
-. if "${FLAVOUR}" == ""
-_FLAVOUR!=		/usr/local/bin/openssl version
-FLAVOUR=		${_FLAVOUR:[0]}
-. endif
 CORE_REPOSITORY?=	${FLAVOUR}
 .endif
 
