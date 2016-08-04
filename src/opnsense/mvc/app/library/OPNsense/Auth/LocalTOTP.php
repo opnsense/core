@@ -206,7 +206,7 @@ class LocalTOTP extends Local
         $fields["otpLength"]["options"]["6"] = "6";
         $fields["otpLength"]["options"]["8"] = "8";
         $fields["otpLength"]["help"] = gettext("Token length to use");
-        $fields["otpLength"]["validate"] = function($value) {
+        $fields["otpLength"]["validate"] = function ($value) {
             if (!in_array($value, array(6,8))) {
                 return array(gettext("Only token lengths of 6 or 8 characters are supported"));
             } else {
@@ -219,7 +219,7 @@ class LocalTOTP extends Local
         $fields["timeWindow"]["default"] = null;
         $fields["timeWindow"]["help"] = gettext("The time period in which the token will be valid,".
           " default is 30 seconds (google authenticator)") ;
-        $fields["timeWindow"]["validate"] = function($value) {
+        $fields["timeWindow"]["validate"] = function ($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
                 return array(gettext("Please enter a valid time window in seconds"));
             } else {
@@ -232,7 +232,7 @@ class LocalTOTP extends Local
         $fields["graceperiod"]["default"] = null;
         $fields["graceperiod"]["help"] = gettext("Time in seconds in which this server and the token may differ,".
           " default is 10 seconds. Set higher for a less secure easier match.");
-        $fields["graceperiod"]["validate"] = function($value) {
+        $fields["graceperiod"]["validate"] = function ($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
                 return array(gettext("Please enter a valid grace period in seconds"));
             } else {
