@@ -781,6 +781,11 @@ function interface_lagg_configure(&$lagg)
     }
 
     mwexec("/sbin/ifconfig {$laggif} laggproto " . escapeshellarg($lagg['proto']));
+    if (!empty($lagg['lacp_fast_timeout'])) {
+        mwexec("/sbin/ifconfig {$laggif} lacp_fast_timeout");
+    } elseif ($lagg['proto'] == 'lacp') {
+        mwexec("/sbin/ifconfig {$laggif} -lacp_fast_timeout");
+    }
 
     interfaces_bring_up($laggif);
 
