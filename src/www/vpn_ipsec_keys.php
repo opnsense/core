@@ -132,14 +132,13 @@ if (is_subsystem_dirty('ipsec')) {
 foreach ($config['system']['user'] as $id => $user) {
     if (!empty($user['ipsecpsk'])) {
         $userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);
-        ;
     }
 }
 foreach ($userkeys as $secretent) :
 ?>
 <tr>
   <td>
-    <?=$secretent['ident'] == 'allusers' ? gettext("ANY USER") : htmlspecialchars($secretent['ident']) ;?>
+    <?=htmlspecialchars($secretent['ident']) ;?>
   </td>
   <td>
     <?=htmlspecialchars($secretent['pre-shared-key']);?>
