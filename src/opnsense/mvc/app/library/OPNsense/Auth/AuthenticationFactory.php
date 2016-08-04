@@ -65,7 +65,7 @@ class AuthenticationFactory
     {
         $connectors = array();
         foreach (glob(__DIR__."/*.php") as $filename) {
-            $pathParts = explode('/',$filename);
+            $pathParts = explode('/', $filename);
             $vendor = $pathParts[count($pathParts)-3];
             $module = $pathParts[count($pathParts)-2];
             $classname = explode('.php', $pathParts[count($pathParts)-1])[0];
@@ -144,22 +144,22 @@ class AuthenticationFactory
      * list configuration options for pluggable auth modules
      * @return array
      */
-     public function listConfigOptions()
-     {
-         $result = array();
-         foreach ($this->listConnectors() as $connector) {
-             if ($connector['classHandle']->hasMethod('getDescription')) {
-                 $obj = $connector['classHandle']->newInstance();
-                 $authItem = $connector;
-                 $authItem['description'] = $obj->getDescription();
-                 if ($connector['classHandle']->hasMethod('getConfigurationOptions')) {
-                     $authItem['additionalFields'] = $obj->getConfigurationOptions();
-                 } else {
-                     $authItem['additionalFields'] = array();
-                 }
-                 $result[$obj->getType()] = $authItem;
-             }
-         }
-         return $result;
-     }
+    public function listConfigOptions()
+    {
+        $result = array();
+        foreach ($this->listConnectors() as $connector) {
+            if ($connector['classHandle']->hasMethod('getDescription')) {
+                $obj = $connector['classHandle']->newInstance();
+                $authItem = $connector;
+                $authItem['description'] = $obj->getDescription();
+                if ($connector['classHandle']->hasMethod('getConfigurationOptions')) {
+                    $authItem['additionalFields'] = $obj->getConfigurationOptions();
+                } else {
+                    $authItem['additionalFields'] = array();
+                }
+                $result[$obj->getType()] = $authItem;
+            }
+        }
+        return $result;
+    }
 }

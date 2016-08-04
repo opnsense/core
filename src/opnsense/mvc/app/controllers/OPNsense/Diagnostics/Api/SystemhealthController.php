@@ -603,5 +603,4 @@ class SystemhealthController extends ApiControllerBase
         }
         return $intfmap;
     }
-
 }
