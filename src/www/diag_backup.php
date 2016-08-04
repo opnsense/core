@@ -312,7 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         write_config();
                         convert_config();
                     }
-                    if (!empty(pconfig['rebootafterrestore'])) {
+                    if (!empty($pconfig['rebootafterrestore'])) {
                         $do_reboot = true;
                     }
                     $savemsg = gettext("The configuration area has been restored.");
@@ -323,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 file_put_contents($filename, $data);
                 $cnf = OPNsense\Core\Config::getInstance();
                 if ($cnf->restoreBackup($filename)) {
-                    if (!empty(pconfig['rebootafterrestore'])) {
+                    if (!empty($pconfig['rebootafterrestore'])) {
                         $do_reboot = true;
                     }
                     $config = parse_config();
