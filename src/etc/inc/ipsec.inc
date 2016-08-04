@@ -343,57 +343,34 @@ function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
     $id_data = null;
     if ($side == "local") {
         $id_type = $ph1ent['myid_type'];
-        if (isset($ph1ent['myid_data'])) {
-            $id_data = $ph1ent['myid_data'];
-        }
-
-        $addr = ipsec_get_phase1_src($ph1ent);
-        if (!$addr) {
-            return array();
-        }
+        $id_data = isset($ph1ent['myid_data']) ? $ph1ent['myid_data'] : null;
     } elseif ($side == "peer") {
         $id_type = $ph1ent['peerid_type'];
-        if (isset($ph1ent['peerid_data'])) {
-            $id_data = $ph1ent['peerid_data'];
-        }
-
+        $id_data = isset($ph1ent['peerid_data']) ? $ph1ent['peerid_data'] : null;
+        /* Only specify peer ID if we are not dealing with a mobile PSK-only tunnel */
         if (isset($ph1ent['mobile'])) {
-            $addr = "%any";
-        } else {
-            $addr = $ph1ent['remote-gateway'];
+            return null;
         }
-    } else {
-        return array();
     }
 
-    $thisid_type = $id_type;
-    switch ($thisid_type) {
+    switch ($id_type) {
         case "myaddress":
-            $thisid_type = "address";
-            $thisid_data = $addr;
+            $thisid_data = ipsec_get_phase1_src($ph1ent);
             break;
         case "dyn_dns":
-            $thisid_type = "address";
             $thisid_data = resolve_retry($id_data);
             break;
         case "peeraddress":
-            $thisid_type = "address";
             $thisid_data = $rgmap[$ph1ent['remote-gateway']];
             break;
-        case "address";
+        case "address":
             $thisid_data = $id_data;
             break;
-        case "fqdn";
-        case "keyid tag";
-        case "user_fqdn";
-        case "asn1dn";
-            $thisid_data = $id_data;
-            if( $thisid_data ) {
-                $thisid_data = "{$thisid_data}";
-            }
+        default:
+            $thisid_data = !empty($id_data) ? "{$id_data}" : null;
             break;
     }
-    return array($thisid_type, $thisid_data);
+    return $thisid_data;
 }
 
 /* include all configuration functions */
@@ -493,7 +470,6 @@ function ipsec_configure()
         set_single_sysctl("net.inet.ip.fastforwarding", "0");
 
         /* resolve all local, peer addresses and setup pings */
-        $ipmap = array();
         $rgmap = array();
         $filterdns_list = array();
         $ipsecpinghosts = "";
@@ -507,14 +483,6 @@ function ipsec_configure()
                 $aggressive_psk = true;
             }
             $ep = ipsec_get_phase1_src($ph1ent);
-            if (!is_ipaddr($ep)) {
-                continue;
-            }
-
-
-            if(!in_array($ep,$ipmap)) {
-                $ipmap[] = $ep;
-            }
 
             /* see if this tunnel has a hostname for the remote-gateway. If so,
                try to resolve it now and add it to the list for filterdns */
@@ -534,7 +502,7 @@ function ipsec_configure()
                     continue;
                 }
             }
-            if(array_search($rg, $rgmap)) {
+            if (array_search($rg, $rgmap)) {
                 log_error("The remote gateway {$rg} already exists on another phase 1 entry");
                 continue;
             }
@@ -799,16 +767,12 @@ EOD;
 
                 /* XXX" Traffic selectors? */
                 $pskconf .= " : RSA {$ph1keyfile}\n";
-            } else {
-                list ($myid_type, $myid_data) = ipsec_find_id($ph1ent, "local");
-                list ($peerid_type, $peerid_data) = ipsec_find_id($ph1ent, "peer", $rgmap);
+            } elseif (!empty($ph1ent['pre-shared-key'])) {
+                $myid_data = ipsec_find_id($ph1ent, "local");
+                $peerid_data = ipsec_find_id($ph1ent, "peer", $rgmap);
 
-                if (empty($peerid_data)) {
-                    continue;
-                }
-
-                $myid = isset($ph1ent['mobile']) ? trim($myid_data) . " " : "";
-                if (!empty($ph1ent['pre-shared-key'])) {
+                if (!empty($peerid_data)) {
+                    $myid = isset($ph1ent['mobile']) ? trim($myid_data) . " " : "";
                     $pskconf .= $myid . trim($peerid_data) . " : PSK \"" . trim($ph1ent['pre-shared-key']) . "\"\n";
                 }
             }
@@ -889,14 +853,8 @@ EOD;
                     $conn_auto = 'route';
                 }
 
-                list ($myid_type, $myid_data) = ipsec_find_id($ph1ent, "local");
-                list ($peerid_type, $peerid_data) = ipsec_find_id($ph1ent, "peer", $rgmap);
-
-                /* Only specify peer ID if we are not dealing with a mobile PSK-only tunnel */
-                $peerid_spec = '';
-                if (!isset($ph1ent['mobile'])) {
-                    $peerid_spec = $peerid_data;
-                }
+                $myid_data = ipsec_find_id($ph1ent, "local");
+                $peerid_spec = ipsec_find_id($ph1ent, "peer", $rgmap);
 
                 if (!empty($ph1ent['encryption-algorithm']['name']) && !empty($ph1ent['hash-algorithm'])) {
                     $ealg_id = $ph1ent['encryption-algorithm']['name'];
