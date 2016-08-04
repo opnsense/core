@@ -178,6 +178,7 @@ ModemDial:
 	match "NO DIAL" DialAbortNoDial
 	match "BUSY" DialAbortBusy
 	regex "CONNECT *([0-9]*).*$" DialConnect
+	match "CME" DialErrorCME
 	match "ERR" DialError
 	wait $ConnectTimeout
 	log "No response from the modem after dialing."
@@ -1702,3 +1703,9 @@ SierraSetup:
         set $modemCmd "&F&C1&D2E0$M0"
         call ModemCmd2
         return
+
+
+DialErrorCME:
+	match "ERROR" DialError
+	log "CME Error (SIM failure?)."
+	return
