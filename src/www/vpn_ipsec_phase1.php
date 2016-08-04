@@ -178,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // For RSA methods, require the CA/Cert.
     switch ($method) {
         case "eap-tls":
+        case "eap-mschapv2":
           if ($pconfig['iketype'] != 'ikev2') {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
           }
@@ -430,6 +431,7 @@ include("head.inc");
                 case 'hybrid_rsa_server':
                 case 'xauth_rsa_server':
                 case 'rsasig':
+                case 'eap-mschapv2':
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
                     $(".auth_eap_tls_caref").show();
@@ -651,6 +653,7 @@ include("head.inc");
                         'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
                         'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
                         'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+                        'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
                         'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
                         'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
                       foreach ($p1_authentication_methods as $method_type => $method_params) :

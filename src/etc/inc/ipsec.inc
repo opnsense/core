@@ -899,6 +899,10 @@ EOD;
                     case 'eap-tls':
                         $authentication = "leftauth=eap-tls\n\trightauth=eap-tls";
                         break;
+                    case 'eap-mschapv2':
+                        $authentication = "leftauth = pubkey\n\trightauth = eap-mschapv2";
+                        $authentication .= "\n\teap_identity=%any";
+                        break;
                     case 'xauth_rsa_server':
                         $authentication = "leftauth = pubkey\n\trightauth = pubkey";
                         $authentication .= "\n\trightauth2 = xauth-generic";
