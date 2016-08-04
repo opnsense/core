@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $country_codes = array_keys(geoip_countries());
         foreach ($pconfig['host_url'] as $detail_entry) {
             if ($pconfig['type'] == 'host') {
-                if (!is_domain($detail_entry) && !is_ipaddr($detail_entry)) {
+                if (!is_domain($detail_entry) && !is_ipaddr($detail_entry) && !is_alias($detail_entry)) {
                     $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid hostname or ip address"), $detail_entry) ;
                 }
             } elseif ($pconfig['type'] == 'port') {
