@@ -94,6 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['members'] = isset($a_laggs[$id]['members']) ? explode(",", $a_laggs[$id]['members']) : array();
     $pconfig['proto'] = isset($a_laggs[$id]['proto']) ? $a_laggs[$id]['proto'] : null;
     $pconfig['descr'] = isset($a_laggs[$id]['descr']) ? $a_laggs[$id]['descr'] : null;
+    $pconfig['lacp_fast_timeout'] = !empty($a_laggs[$id]['lacp_fast_timeout']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // validate and save form data
     if (!empty($a_laggs[$_POST['id']])) {
@@ -126,6 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $lagg['descr'] = $pconfig['descr'];
         $lagg['laggif'] = $pconfig['laggif'];
         $lagg['proto'] = $pconfig['proto'];
+        $lagg['lacp_fast_timeout'] = !empty($pconfig['lacp_fast_timeout']);
         if (isset($id)) {
             $lagg['laggif'] = $a_laggs[$id]['laggif'];
         }
@@ -156,6 +158,21 @@ legacy_html_escape_form_data($pconfig);
 ?>
 
 <body>
+  <script type="text/javascript">
+    $( document ).ready(function() {
+        $("#proto").change(function(){
+            if ($("#proto").val() == 'lacp') {
+                $("#lacp_fast_timeout").parent().parent().show();
+                $("#lacp_fast_timeout").prop( "disabled", false );
+            } else {
+                $("#lacp_fast_timeout").parent().parent().hide();
+                $("#lacp_fast_timeout").prop( "disabled", true );
+            }
+        });
+        $("#proto").change();
+    });
+  </script>
+
 <?php include("fbegin.inc"); ?>
 <section class="page-content-main">
   <div class="container-fluid">
@@ -255,6 +272,15 @@ legacy_html_escape_form_data($pconfig);
                       <input name="descr" type="text" value="<?=$pconfig['descr'];?>" />
                       <div class="hidden" for="help_for_descr">
                         <?=gettext("You may enter a description here for your reference (not parsed)."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_lacp_fast_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Fast timeout"); ?></td>
+                    <td>
+                      <input name="lacp_fast_timeout" id="lacp_fast_timeout" type="checkbox" value="yes" <?=!empty($pconfig['lacp_fast_timeout']) ? "checked=\"checked\"" : "" ;?>/>
+                      <div class="hidden" for="help_for_lacp_fast_timeout">
+                        <?=gettext("Enable lacp fast-timeout on the interface."); ?>
                       </div>
                     </td>
                   </tr>
