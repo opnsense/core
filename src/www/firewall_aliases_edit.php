@@ -69,10 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig[$fieldname] = null;
             }
         }
-        // convert to array if only one is provided
-        if (!empty($pconfig['aliasurl']) && !is_array($pconfig['aliasurl'])) {
-            $pconfig['aliasurl'] = array($pconfig['aliasurl']);
-        }
     } elseif (isset($_GET['name'])) {
         // search alias by name
         foreach ($a_aliases as $alias_id => $alias_data) {
@@ -96,20 +92,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
+    // handle different detail input types
+    if (!empty($pconfig['aliasurl'])) {
+        $pconfig['host_url'] = is_array($pconfig['aliasurl']) ? $pconfig['aliasurl'] : array($pconfig['aliasurl']);
+    } elseif (!empty($pconfig['url'])) {
+        $pconfig['host_url'] = array($pconfig['url']);
+    } elseif (!empty($pconfig['address'])) {
+        $pconfig['host_url'] = explode(" ", $pconfig['address']);
+    } else {
+        $pconfig['host_url'] = array();
+    }
+    $pconfig['detail'] = !empty($pconfig['detail']) ? explode("||", $pconfig['detail']) : array();
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (isset($_POST['id']) && is_numericint($_POST['id']) && isset($a_aliases[$_POST['id']])) {
         $id = $_POST['id'];
-    }
-
-    // fix form type conversions ( list to string, as saved in config )
-    // -- fill in default row description and make sure separators are removed
-    if (strpos($pconfig['type'],'urltable') !== false) {
-        $pconfig['url'] = $pconfig['host_url'][0];
-    } elseif (strpos($pconfig['type'],'url') !== false) {
-        $pconfig['aliasurl'] = $pconfig['host_url'];
-    } else {
-        $pconfig['address'] = implode(' ', $pconfig['host_url']);
     }
 
     foreach ($pconfig['detail'] as &$detailDescr) {
@@ -120,7 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $detailDescr = trim(str_replace('|',' ' , $detailDescr));
         }
     }
-    $pconfig['detail'] = implode('||', $pconfig['detail']);
 
     if (isset($pconfig['submit'])) {
         $input_errors = array();
@@ -192,20 +188,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['type'] == 'urltable') {
-            if (empty($pconfig['url']) || !is_URL($pconfig['url'])) {
+            if (empty($pconfig['host_url'][0]) || !is_URL($pconfig['host_url'][0])) {
                 $input_errors[] = gettext("You must provide a valid URL.");
             }
         }
 
         if (count($input_errors) == 0) {
             // save to config
-            $copy_fields = array("name", "detail", "address", "type", "descr", "updatefreq", "aliasurl", "url");
             $confItem = array();
-            foreach ($copy_fields as $fieldname) {
+            foreach (array("name", "type", "descr", "updatefreq") as $fieldname) {
                 if (!empty($pconfig[$fieldname])) {
                     $confItem[$fieldname] = $pconfig[$fieldname];
                 }
             }
+            // fix form type conversions ( list to string, as saved in config )
+            // -- fill in default row description and make sure separators are removed
+            if (strpos($pconfig['type'],'urltable') !== false) {
+                $confItem['url'] = $pconfig['host_url'][0];
+            } elseif (strpos($pconfig['type'],'url') !== false) {
+                $confItem['aliasurl'] = $pconfig['host_url'];
+            } else {
+                $confItem['address'] = implode(' ', $pconfig['host_url']);
+            }
+            //
+            $confItem['detail'] = implode('||', $pconfig['detail']);
 
             // proto is only for geoip selection
             if ($pconfig['type'] == 'geoip') {
@@ -532,19 +538,7 @@ endforeach;
                       </thead>
                       <tbody>
 <?php
-                      if (is_array($pconfig['aliasurl'])) {
-                          $detail_desc = explode("||", $pconfig['detail']);
-                          $aliases = $pconfig['aliasurl'];
-                      } else {
-                          $detail_desc = explode("||", $pconfig['detail']);
-                          if (empty($pconfig['address']) && isset($pconfig['url'])) {
-                              $aliases = array($pconfig['url']);
-                          } else {
-                              $aliases = explode(' ', $pconfig['address']);
-                          }
-                      }
-                      foreach ($aliases as $aliasid => $aliasurl):
-?>
+                      foreach (!empty($pconfig['host_url']) ? $pconfig['host_url'] : array("") as $aliasid => $aliasurl):?>
                         <tr>
                           <td>
                             <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
@@ -555,10 +549,10 @@ endforeach;
                             <input type="text" class="host_url fld_detail" name="host_url[]" value="<?=$aliasurl;?>"/>
                           </td>
                           <td>
-                            <input type="text" class="form-control" name="detail[]" value="<?= isset($detail_desc[$aliasid])?$detail_desc[$aliasid]:"";?>">
+                            <input type="text" class="form-control" name="detail[]" value="<?= isset($pconfig['detail'][$aliasid])?$pconfig['detail'][$aliasid]:"";?>">
                           </td>
                           <td>
-<?php                       if ($aliasid ==0):
+<?php                       if ($aliasid == 0):
 ?>
                             <input type="text" class="form-control input-sm" id="updatefreq"  name="updatefreq" value="<?=$pconfig['updatefreq'];?>" >
 <?php                       endif;
