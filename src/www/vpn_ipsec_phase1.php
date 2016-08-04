@@ -716,6 +716,8 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>
+<?php
+                  if (empty($pconfig['mobile'])):?>
                   <tr class="auth_opt auth_eap_tls auth_psk">
                     <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
@@ -747,6 +749,8 @@ endforeach; ?>
 } ?>
                     </td>
                   </tr>
+<?php
+                  endif;?>
                   <tr class="auth_opt auth_psk">
                     <td ><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
