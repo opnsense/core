@@ -172,10 +172,8 @@ include_once("head.inc");
                           <select name="active_interface[]" multiple="multiple" size="3" class="selectpicker" data-live-search="true">
                             <option value="" <?=empty($pconfig['active_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
 <?php
-                            foreach (get_possible_listen_ips(true) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>>
-                              <?=htmlspecialchars($laddr['name']);?>
-                            </option>
+                            foreach (get_possible_listen_ips(false, false) as $laddr):?>
+                            <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>><?=htmlspecialchars($laddr['name']);?></option>
 <?php
                             endforeach; ?>
                           </select>

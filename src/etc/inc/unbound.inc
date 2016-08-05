@@ -556,6 +556,11 @@ function unbound_add_host_entries()
                 $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} AAAA {$laddr6}\"\n";
                 $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$laddr6}\"\n";
             }
+            $lladdr6 = find_interface_ipv6_ll($if);
+            if (is_ipaddrv6($lladdr6)) {
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']}.{$config['system']['domain']} AAAA {$lladdr6}\"\n";
+                $unbound_entries .= "local-data: \"{$config['system']['hostname']} AAAA {$lladdr6}\"\n";
+            }
         }
     }
 

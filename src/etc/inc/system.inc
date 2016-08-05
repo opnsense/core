@@ -1772,7 +1772,7 @@ function system_arp_wrong_if()
     ));
 }
 
-function get_possible_listen_ips($include_ipv6_link_local=false) {
+function get_possible_listen_ips($include_ipv6_link_local = false, $include_loopback = true) {
     $interfaces = get_configured_interface_with_descr();
     $carplist = get_configured_carp_interface_list();
     $listenips = array();
@@ -1796,9 +1796,11 @@ function get_possible_listen_ips($include_ipv6_link_local=false) {
             }
         }
     }
-    $tmp["name"]  = "Localhost";
-    $tmp["value"] = "lo0";
-    $listenips[] = $tmp;
+    if ($include_loopback) {
+        $tmp["name"]  = "Localhost";
+        $tmp["value"] = "lo0";
+        $listenips[] = $tmp;
+    }
     return $listenips;
 }
 
