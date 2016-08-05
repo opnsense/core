@@ -50,8 +50,7 @@ function update_alias_url_data()
                 unlink($temp_filename);
                 $verify_ssl = isset($config['system']['checkaliasesurlcert']);
                 mkdir($temp_filename);
-                download_file($alias_url, $temp_filename . "/aliases", $verify_ssl);
-                if (file_exists("{$temp_filename}/aliases")) {
+                if (download_file($alias_url, $temp_filename . "/aliases", $verify_ssl)) {
                     $fd = @fopen("{$temp_filename}/aliases", 'r');
                     if (!$fd) {
                         log_error(sprintf('Could not process aliases from alias: %s', $alias_url));
