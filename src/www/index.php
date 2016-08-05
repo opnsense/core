@@ -42,13 +42,14 @@ if (empty($config['widgets']) || !is_array($config['widgets'])) {
     $config['widgets'] = array();
 }
 
+$widgetCollection = array();
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $config['widgets'];
     // set default dashboard view
     $pconfig['sequence'] = !empty($pconfig['sequence']) ? $pconfig['sequence'] : '';
     $pconfig['column_count'] = !empty($pconfig['column_count']) ? $pconfig['column_count'] : 2;
     // build list of widgets
-    $widgetCollection = array();
     $widgetSeqParts = explode(",", $pconfig['sequence']);
     foreach (glob('/usr/local/www/widgets/widgets/*.widget.php') as $php_file) {
         $widgetItem = array();
