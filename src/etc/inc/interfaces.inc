@@ -4912,10 +4912,11 @@ function get_interface_info($ifdescr)
     global $config;
 
     $ifinfo = array();
+
     if (empty($config['interfaces'][$ifdescr])) {
         return;
     }
-    $ifinfo['hwif'] = $config['interfaces'][$ifdescr]['if'];
+
     $ifinfo['if'] = get_real_interface($ifdescr);
 
     $chkif = $ifinfo['if'];
@@ -4925,7 +4926,7 @@ function get_interface_info($ifdescr)
     $ifinfo['subnet'] = $ifinfotmp['subnet'];
 
     $ifup = legacy_interface_listget('up');
-    $ifinfo['status'] = in_array($chkif, $ifup) ? 'up' : 'down';
+    $ifinfo['status'] = (is_array($ifup) && in_array($chkif, $ifup)) ? 'up' : 'down';
 
     $ifinfo['linklocal'] = get_interface_linklocal($ifdescr);
     $ifinfo['ipaddrv6'] = get_interface_ipv6($ifdescr);

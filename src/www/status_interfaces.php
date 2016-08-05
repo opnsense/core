@@ -80,7 +80,7 @@ include("head.inc");
                       <tr>
                         <th colspan="2">
                           <i class="fa fa-chevron-down" style="cursor: pointer;" data-toggle="collapse" data-target="#<?= htmlspecialchars($ifname) ?>"></i>
-                          <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['hwif']) ?>)
+                          <?= htmlspecialchars($ifname) ?> <?= gettext("interface") ?> (<?= htmlspecialchars($ifdescr) ?>, <?= htmlspecialchars($ifinfo['if']) ?>)
   <?php
                           if (!isset($first_row)):
                             $first_row=false; ?>
@@ -440,7 +440,7 @@ include("head.inc");
                     $real_interface = "";
                     $interrupt_total = "";
                     $interrupt_sec = "";
-                    $real_interface = $ifinfo['hwif'];
+                    $real_interface = $ifinfo['if'];
                     $interrupt_total = `vmstat -i | grep $real_interface | awk '{ print $3 }'`;
                     $interrupt_sec = `vmstat -i | grep $real_interface | awk '{ print $4 }'`;
                     if(strstr($interrupt_total, "hci")) {
