@@ -75,6 +75,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    if (empty($pconfig['members'])) {
+        $input_errors[] = gettext("At least one group member must be specified.");
+        $pconfig['members'] = array();
+    }
+
     if (count($input_errors) == 0) {
       $ifgroupentry = array();
       $ifgroupentry['members'] = implode(' ', $pconfig['members']);
