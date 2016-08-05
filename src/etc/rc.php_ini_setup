@@ -36,46 +36,6 @@ else
 	exit 1
 fi
 
-# Define php modules.  Do not add .so, it will
-# be done automatically by the script below.
-
-# Config read/write
-PHPMODULES="dom xml simplexml"
-# Downloading via HTTP/FTP (pkg mgr, etc)
-PHPMODULES="$PHPMODULES curl"
-# Internationalization
-PHPMODULES="$PHPMODULES gettext"
-# User manager
-PHPMODULES="$PHPMODULES ldap openssl"
-PHPMODULES="$PHPMODULES hash mcrypt"
-# Socket magic
-PHPMODULES="$PHPMODULES sockets"
-# Login sessions
-PHPMODULES="$PHPMODULES session"
-# Extra sanity seatbelts
-PHPMODULES="$PHPMODULES suhosin"
-# Firewall rules edit
-PHPMODULES="$PHPMODULES ctype"
-# Page compression
-PHPMODULES="$PHPMODULES zlib"
-# Databases
-PHPMODULES="$PHPMODULES sqlite3"
-# RADIUS
-PHPMODULES="$PHPMODULES radius"
-# json
-PHPMODULES="$PHPMODULES json"
-# filter
-PHPMODULES="$PHPMODULES filter"
-# MVC framework
-PHPMODULES="$PHPMODULES pdo phalcon"
-
-_EXTENSIONS_INI=$(mktemp -q /tmp/extensions_ini.XXXXXX)
-EXTENSIONS_INI=/usr/local/etc/php/extensions.ini
-
-touch ${EXTENSIONS_INI}
-cp ${EXTENSIONS_INI} ${_EXTENSIONS_INI}
-chmod 644 ${_EXTENSIONS_INI}
-
 # Clear the .ini files in preparation for the rewrite
 rm -f /usr/local/etc/php/extensions.ini
 rm -f /usr/local/etc/php.ini
@@ -121,17 +81,8 @@ extension_dir=${EXTENSIONSDIR}
 date.timezone="${TIMEZONE}"
 EOF
 
-# Loop through and generate modules to load.
-for EXT in ${PHPMODULES}; do
-	sed -i '' -e "/${EXT}.so/d" ${_EXTENSIONS_INI}
-	echo "extension=${EXT}.so" >> ${_EXTENSIONS_INI}
-done
-
 # Enable XDebug if installed
 if [ -f "${EXTENSIONSDIR}xdebug.so" ]; then
-	sed -i '' -e "/xdebug.so/d" ${_EXTENSIONS_INI}
-	echo "zend_extension=${EXTENSIONSDIR}xdebug.so" >> ${_EXTENSIONS_INI}
-
 	cat >> /usr/local/lib/php.ini << EOF
 
 [xdebug]
@@ -162,7 +113,3 @@ EOF
 
 # Copy php.ini file to etc/ too (cli)
 cp /usr/local/lib/php.ini /usr/local/etc/php.ini
-if [ ! -f /usr/local/etc/php/ext-20-gettext.ini ]; then
-	# Only needs a copy for FreeBSD's old style PHP module register
-	mv ${_EXTENSIONS_INI} ${EXTENSIONS_INI}
-fi
