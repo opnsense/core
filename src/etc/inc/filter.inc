@@ -128,6 +128,16 @@ function download_file($url, $destination, $verify_ssl = false, $connect_timeout
     fclose($fp);
     curl_close($ch);
 
+    /*
+     * Crash reports indicated that this can fail on bad
+     * lines, causing the download to be "ok", but not
+     * actually writing the target file.  Make it a hard
+     * failure...
+     */
+    if (!file_exists($destination)) {
+        return false;
+    }
+
     return ($http_code == 200);
 }
 
