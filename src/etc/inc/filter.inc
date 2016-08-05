@@ -2829,7 +2829,7 @@ EOD;
         unset($alports);
     }
 
-    if ($pptpdcfg['mode'] && $pptpdcfg['mode'] == 'server' && !isset($config['system']['disablevpnrules'])) {
+    if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server' && !isset($config['system']['disablevpnrules'])) {
         if ($pptpdcfg['mode'] == "server") {
             $pptpdtarget = get_interface_ip();
         }
