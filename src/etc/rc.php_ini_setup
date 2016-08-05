@@ -36,50 +36,11 @@ else
 	exit 1
 fi
 
-# Define php modules.  Do not add .so, it will
-# be done automatically by the script below.
+PHP_INI=$(mktemp -q /tmp/php_ini.XXXXXX)
+chmod 644 ${PHP_INI}
 
-# Config read/write
-PHPMODULES="dom xml simplexml"
-# Downloading via HTTP/FTP (pkg mgr, etc)
-PHPMODULES="$PHPMODULES curl"
-# Internationalization
-PHPMODULES="$PHPMODULES gettext"
-# User manager
-PHPMODULES="$PHPMODULES ldap openssl"
-PHPMODULES="$PHPMODULES hash mcrypt"
-# Socket magic
-PHPMODULES="$PHPMODULES sockets"
-# Login sessions
-PHPMODULES="$PHPMODULES session"
-# Extra sanity seatbelts
-PHPMODULES="$PHPMODULES suhosin"
-# Firewall rules edit
-PHPMODULES="$PHPMODULES ctype"
-# Page compression
-PHPMODULES="$PHPMODULES zlib"
-# Databases
-PHPMODULES="$PHPMODULES sqlite3"
-# RADIUS
-PHPMODULES="$PHPMODULES radius"
-# json
-PHPMODULES="$PHPMODULES json"
-# filter
-PHPMODULES="$PHPMODULES filter"
-# MVC framework
-PHPMODULES="$PHPMODULES pdo phalcon"
-
-_EXTENSIONS_INI=$(mktemp -q /tmp/extensions_ini.XXXXXX)
-EXTENSIONS_INI=/usr/local/etc/php/extensions.ini
-
-touch ${EXTENSIONS_INI}
-cp ${EXTENSIONS_INI} ${_EXTENSIONS_INI}
-chmod 644 ${_EXTENSIONS_INI}
-
-# Clear the .ini files in preparation for the rewrite
+# XXX can be removed in 17.1
 rm -f /usr/local/etc/php/extensions.ini
-rm -f /usr/local/etc/php.ini
-rm -f /usr/local/lib/php.ini
 
 # Fetch the timezone from the XML and set it here
 TIMEZONE=Etc/UTC
@@ -91,7 +52,7 @@ fi
 # Populate a dummy php.ini to avoid
 # the file being clobbered and the firewall
 # not being able to boot back up.
-cat >> /usr/local/lib/php.ini << EOF
+cat >> ${PHP_INI} << EOF
 ; File generated via rc.php_ini_setup
 output_buffering = "0"
 expose_php = Off
@@ -119,28 +80,6 @@ log_errors=on
 error_log=/tmp/PHP_errors.log
 extension_dir=${EXTENSIONSDIR}
 date.timezone="${TIMEZONE}"
-EOF
-
-# Loop through and generate modules to load.
-for EXT in ${PHPMODULES}; do
-	sed -i '' -e "/${EXT}.so/d" ${_EXTENSIONS_INI}
-	echo "extension=${EXT}.so" >> ${_EXTENSIONS_INI}
-done
-
-# Enable XDebug if installed
-if [ -f "${EXTENSIONSDIR}xdebug.so" ]; then
-	sed -i '' -e "/xdebug.so/d" ${_EXTENSIONS_INI}
-	echo "zend_extension=${EXTENSIONSDIR}xdebug.so" >> ${_EXTENSIONS_INI}
-
-	cat >> /usr/local/lib/php.ini << EOF
-
-[xdebug]
-xdebug.profiler_enable_trigger = 1
-xdebug.profiler_output_name = cachegrind.out.%t.%p
-EOF
-fi
-
-cat >> /usr/local/lib/php.ini << EOF
 
 [suhosin]
 suhosin.get.max_array_depth = 5000
@@ -157,11 +96,12 @@ suhosin.request.max_vars = 5000
 suhosin.request.max_value_length = 9000000
 suhosin.memory_limit = 512435456
 suhosin.session.cryptdocroot=Off
+
+[xdebug]
+xdebug.profiler_enable_trigger = 1
+xdebug.profiler_output_name = cachegrind.out.%t.%p
 EOF
 
-# Copy php.ini file to etc/ too (cli)
-cp /usr/local/lib/php.ini /usr/local/etc/php.ini
-if [ ! -f /usr/local/etc/php/ext-20-gettext.ini ]; then
-	# Only needs a copy for FreeBSD's old style PHP module register
-	mv ${_EXTENSIONS_INI} ${EXTENSIONS_INI}
-fi
+cp ${PHP_INI} /usr/local/etc/php.ini
+cp ${PHP_INI} /usr/local/lib/php.ini
+rm ${PHP_INI}
