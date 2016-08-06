@@ -147,15 +147,19 @@ class SettingsController extends ApiControllerBase
 
     /**
      * get rule information
-     * @param $sid rule identifier
+     * @param string|null $sid rule identifier
      * @return array|mixed
      */
-    public function getRuleInfoAction($sid)
+    public function getRuleInfoAction($sid=null)
     {
         // request list of installed rules
-        $backend = new Backend();
-        $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/'.$sid));
-        $data = json_decode($response, true);
+        if (!empty($sid)) {
+            $backend = new Backend();
+            $response = $backend->configdpRun("ids query rules", array(1, 0,'sid/'.$sid));
+            $data = json_decode($response, true);
+        } else {
+            $data = null;
+        }
 
         if ($data != null && array_key_exists("rows", $data) && count($data['rows'])>0) {
             $row = $data['rows'][0];
