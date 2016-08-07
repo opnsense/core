@@ -45,8 +45,8 @@ def check_and_repair(filename_mask):
         except sqlite3.DatabaseError:
             # unrecoverable, doesn't look like a database, rename to .bck
             filename_tmp = '%s.%s.bck'%(filename, datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
-            syslog.syslog(syslog.LOG_ERR, "sqlite3 %s doesn't look like a database, rename to %s " % (filename,
-                                                                                                      filename_tmp))
+            syslog.syslog(syslog.LOG_ERR, "sqlite3 %s doesn't look like a database, renamed to %s " % (filename,
+                                                                                                       filename_tmp))
             cur = None
             os.rename(filename, filename_tmp)
 
