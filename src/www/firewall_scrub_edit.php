@@ -53,7 +53,8 @@ $a_scrub = &$config['filter']['scrub']['rule'];
 
 // define form fields
 $config_fields = array('interface', 'proto', 'srcnot', 'src', 'srcmask', 'dstnot', 'dst', 'dstmask', 'dstport',
-                       'no-df', 'random-id', 'max-mss', 'min-ttl', 'set-tos', 'descr', 'disabled');
+                       'no-df', 'random-id', 'max-mss', 'min-ttl', 'set-tos', 'descr', 'disabled', 'direction',
+                       'srcport');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // input record id, if valid
@@ -101,6 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // validate form input
     if (!empty($pconfig['dstport']) && $pconfig['dstport'] != 'any' && !is_portoralias($pconfig['dstport']) && !is_portrange($pconfig['dstport'])) {
         $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid port number, alias or range"), $pconfig['dstport']) ;
+    }
+    if (!empty($pconfig['srcport']) && $pconfig['srcport'] != 'any' && !is_portoralias($pconfig['srcport']) && !is_portrange($pconfig['srcport'])) {
+        $input_errors[] = sprintf(gettext("%s doesn't appear to be a valid port number, alias or range"), $pconfig['srcport']) ;
     }
     if (is_ipaddrv4($pconfig['src']) && is_ipaddrv6($pconfig['dst'])) {
         $input_errors[] = gettext("You can not use IPv6 addresses in IPv4 rules.");
@@ -220,14 +224,27 @@ include("head.inc");
           // lock src/dst ports on other then tcp/udp
           if ($("#proto").val() == 'tcp' || $("#proto").val() == 'udp' || $("#proto").val() == 'tcp/udp') {
               $("#dstport").prop('disabled', false);
+              $("#srcport").prop('disabled', false);
           } else {
               $("#dstport optgroup:last option:first").prop('selected', true);
               $("#dstport").prop('disabled', true);
+              $("#srcport").prop('disabled', true);
           }
           $("#dstport").selectpicker('refresh');
           $("#dstport").change();
+          $("#srcport").selectpicker('refresh');
+          $("#srcport").change();
       });
       $("#proto").change();
+
+      if ($("#srcport").val() != "") {
+          $("#show_srcport").show();
+          $("#show_srcport_adv").parent().hide();
+      }
+      $("#show_srcport_adv").click(function(){
+          $("#show_srcport").show();
+          $("#show_srcport_adv").parent().hide();
+      });
 
       // IPv4/IPv6 select
       hook_ipv4v6('ipv4v6net', 'network-id');
@@ -286,24 +303,22 @@ include("head.inc");
                         </div>
                     </td>
                   </tr>
-<?php
-                  if (!empty($pconfig['floating'])): ?>
                   <tr>
                     <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Direction");?></td>
                     <td>
                       <select name="direction" class="selectpicker" data-live-search="true" data-size="5" >
-<?php
-                      foreach (array('any','in','out') as $direction): ?>
-                      <option value="<?=$direction;?>" <?= $direction == $pconfig['direction'] ? "selected=\"selected\"" : "" ?>>
-                          <?=$direction;?>
-                      </option>
-<?php
-                      endforeach; ?>
+                        <option value="" <?= empty($pconfig['direction']) ? "selected=\"selected\"" : "" ?>>
+                          <?=gettext("Any");?>
+                        </option>
+                        <option value="in" <?= $pconfig['direction'] == 'in' ? "selected=\"selected\"" : "" ?>>
+                          <?=gettext("In");?>
+                        </option>
+                        <option value="out" <?= $pconfig['direction'] == 'out' ? "selected=\"selected\"" : "" ?>>
+                          <?=gettext("Out");?>
+                        </option>
                       </select>
                     </td>
                   <tr>
-<?php
-                  endif; ?>
                   <tr>
                     <td><a id="help_for_protocol" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Protocol");?></td>
                     <td>
@@ -377,6 +392,48 @@ include("head.inc");
                           </td>
                         </tr>
                       </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_srcport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Source port"); ?></td>
+                    <td>
+                      <div style="display:hidden;">
+                          <input type="button" class="btn btn-default" value="<?=gettext("Advanced"); ?>" id="show_srcport_adv" />
+                      </div>
+                      <div id="show_srcport" style="display:none;">
+                      <table class="table table-condensed">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <select id="srcport" name="srcport" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                                <option data-other=true value="<?=$pconfig['srcport'];?>">(<?=gettext("other"); ?>)</option>
+                                <optgroup label="<?=gettext("Aliases");?>">
+  <?php                        foreach (legacy_list_aliases("port") as $alias):
+  ?>
+                                  <option value="<?=$alias['name'];?>" <?= $pconfig['srcport'] == $alias['name'] ? "selected=\"selected\"" : ""; ?>  ><?=htmlspecialchars($alias['name']);?> </option>
+  <?php                          endforeach; ?>
+                                </optgroup>
+                                <optgroup label="<?=gettext("Well-known ports");?>">
+                                  <option value="" <?= empty($pconfig['srcport']) ? "selected=\"selected\"" : ""; ?>><?=gettext("any"); ?></option>
+  <?php                            foreach ($wkports as $wkport => $wkportdesc): ?>
+                                  <option value="<?=$wkport;?>" <?= (string)$wkport == $pconfig['srcport'] ?  "selected=\"selected\"" : "" ;?>><?=htmlspecialchars($wkportdesc);?></option>
+  <?php                            endforeach; ?>
+                                </optgroup>
+                              </select>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <input type="text" value="<?=$pconfig['srcport'];?>" for="srcport"> <!-- updates to "other" option in  srcport -->
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      </div>
+                      <div class="hidden" for="help_for_srcport">
+                        <?=gettext("Specify the port or port range for the destination of the packet for this mapping."); ?><br/>
+                        <?=gettext("To specify a range, use from:to (example 81:85).");?>
+                      </div>
                     </td>
                   </tr>
                   <tr>

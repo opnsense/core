@@ -584,7 +584,9 @@ function filter_generate_scrubing(&$FilterIflist)
     if (!empty($config['filter']['scrub']['rule'])) {
         foreach ($config['filter']['scrub']['rule'] as $scrub_rule) {
             if (!isset($scrub_rule['disabled'])) {
-                $scrub_rule_out = "scrub on ";
+                $scrub_rule_out = "scrub";
+                $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "" ;
+                $scrub_rule_out .= " on ";
                 $interfaces = array();
                 foreach (explode(',', $scrub_rule['interface']) as $interface) {
                     if (!empty($FilterIflist[$interface]['if'])) {
@@ -603,6 +605,7 @@ function filter_generate_scrubing(&$FilterIflist)
                 } else {
                     $scrub_rule_out .= "any";
                 }
+                $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
                 $scrub_rule_out .= " to ";
                 if (is_alias($scrub_rule['dst'])) {
                     $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
