@@ -28,7 +28,7 @@
  */
 namespace OPNsense\Proxy\Api;
 
-use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Proxy\Proxy;
 use \OPNsense\Cron\Cron;
 use \OPNsense\Core\Config;
@@ -38,56 +38,14 @@ use \OPNsense\Base\UIModelGrid;
  * Class SettingsController
  * @package OPNsense\Proxy
  */
-class SettingsController extends ApiControllerBase
+class SettingsController extends ApiMutableModelControllerBase
 {
-    /**
-     * retrieve proxy settings
-     * @return array
-     */
-    public function getAction()
-    {
-        $result = array();
-        if ($this->request->isGet()) {
-            $mdlProxy = new Proxy();
-            $result['proxy'] = $mdlProxy->getNodes();
-        }
-
-        return $result;
+    protected function getModel() {
+        return new Proxy();
     }
 
-
-    /**
-     * update proxy configuration fields
-     * @return array
-     * @throws \Phalcon\Validation\Exception
-     */
-    public function setAction()
-    {
-        $result = array("result"=>"failed");
-        if ($this->request->hasPost("proxy")) {
-            // load model and update with provided data
-            $mdlProxy = new Proxy();
-            $mdlProxy->setNodes($this->request->getPost("proxy"));
-
-            // perform validation
-            $valMsgs = $mdlProxy->performValidation();
-            foreach ($valMsgs as $field => $msg) {
-                if (!array_key_exists("validations", $result)) {
-                    $result["validations"] = array();
-                }
-                $result["validations"]["proxy.".$msg->getField()] = $msg->getMessage();
-            }
-
-            // serialize model to config and save
-            if ($valMsgs->count() == 0) {
-                $mdlProxy->serializeToConfig();
-                $cnf = Config::getInstance();
-                $cnf->save();
-                $result["result"] = "saved";
-            }
-        }
-
-        return $result;
+    protected function getModelName() {
+        return 'proxy';
     }
 
     /**
