@@ -464,6 +464,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         'organizationName' => $pconfig['csr_dn_organization'],
                         'emailAddress' => $pconfig['csr_dn_email'],
                         'commonName' => $pconfig['csr_dn_commonname']);
+                    if (!empty($pconfig['csr_dn_organizationalunit'])) {
+                        $dn['organizationalUnitName'] = $pconfig['csr_dn_organizationalunit'];
+                    }
                     if (count($altnames)) {
                         $altnames_tmp = "";
                         foreach ($altnames as $altname) {
@@ -1053,6 +1056,17 @@ $( document ).ready(function() {
                     <em><?=gettext("ex:");?></em>
                     &nbsp;
                     <?=gettext("My Company Inc");?>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_digest_csr_dn_organizationalunit" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Organizational Unit");?> : &nbsp;</td>
+                <td>
+                  <input name="csr_dn_organizationalunit" type="text" size="40" value="<?=$pconfig['csr_dn_organizationalunit'];?>"/>
+                  <div class="hidden" for="help_for_digest_csr_dn_organizationalunit">
+                    <em><?=gettext("ex:");?></em>
+                    &nbsp;
+                    <?=gettext("IT department");?>
                   </div>
                 </td>
               </tr>
