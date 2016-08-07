@@ -352,10 +352,12 @@ include("head.inc");
                             <td>
                               <select id="servers" name="servers[]" multiple="multiple">
 <?php
-                              foreach ($pconfig['servers'] as $svrent):?>
+                              if (is_array($pconfig['servers'])):
+                                foreach ($pconfig['servers'] as $svrent):?>
                                 <option value="<?=$svrent;?>"><?=$svrent;?> </option>
 <?php
-                              endforeach;?>
+                              endforeach;
+                              endif;?>
                               </select>
                               <hr/>
                               <button id="btn_del_servers" class="btn btn-default btn-xs" data-toggle="tooltip"><span class="fa fa-trash text-muted"></span></button>
