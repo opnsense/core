@@ -260,6 +260,15 @@ abstract class BaseModel
     }
 
     /**
+     * forward to root node's getFlatNodes
+     * @return array all children
+     */
+    public function getFlatNodes()
+    {
+        return $this->internalData->getFlatNodes();
+    }
+
+    /**
      * get nodes as array structure
      * @return array
      */
