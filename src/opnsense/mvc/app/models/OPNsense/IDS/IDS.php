@@ -131,7 +131,7 @@ class IDS extends BaseModel
     public function getRuleStatus($sid, $default)
     {
         $this->updateSIDlist();
-        if (array_key_exists($sid, $this->sid_list)) {
+        if (!empty($sid) && array_key_exists($sid, $this->sid_list)) {
             return (string)$this->sid_list[$sid]->enabled;
         } else {
             return $default;
@@ -148,7 +148,7 @@ class IDS extends BaseModel
     public function getRuleAction($sid, $default, $response_plain = false)
     {
         $this->updateSIDlist();
-        if (array_key_exists($sid, $this->sid_list)) {
+        if (!empty($sid) && array_key_exists($sid, $this->sid_list)) {
             if (!$response_plain) {
                 return $this->sid_list[$sid]->action->getNodeData();
             } else {

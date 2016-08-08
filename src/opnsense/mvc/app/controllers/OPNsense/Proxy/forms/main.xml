@@ -166,25 +166,25 @@
             </field>
             <field>
                 <id>proxy.general.traffic.maxDownloadSize</id>
-                <label>Maximum download size (Kb)</label>
+                <label>Maximum download size (kB)</label>
                 <type>text</type>
                 <help><![CDATA[Enter the maxium size for downloads in kilobytes (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.maxUploadSize</id>
-                <label>Maximum upload size (Kb)</label>
+                <label>Maximum upload size (kB)</label>
                 <type>text</type>
                 <help><![CDATA[Enter the maxium size for uploads in kilobytes (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.OverallBandwidthTrotteling</id>
-                <label>Overall bandwidth throttling (Kbps)</label>
+                <label>Overall bandwidth throttling (kbps)</label>
                 <type>text</type>
                 <help><![CDATA[Enter the allowed overall bandtwith in kilobits per second (leave empty to disable).]]></help>
             </field>
             <field>
                 <id>proxy.general.traffic.perHostTrotteling</id>
-                <label>Per host bandwidth throttling (Kbps)</label>
+                <label>Per host bandwidth throttling (kbps)</label>
                 <type>text</type>
                 <help><![CDATA[Enter the allowed per host bandwidth in kilobits per second (leave empty to disable).]]></help>
             </field>

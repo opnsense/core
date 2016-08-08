@@ -154,7 +154,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         header("Content-Type: application/octet-stream");
         header("Content-Disposition: attachment; filename=packetcapture.cap");
         header("Content-Length: ".filesize("/root/packetcapture.cap"));
-        readfile("/root/packetcapture.cap");
+        $file = fopen("/root/packetcapture.cap", "r");
+        while(!feof($file)) {
+            print(fread($file, 32 * 1024));
+            ob_flush();
+        }
+        fclose($file);
         exit;
     } elseif (!empty($_GET['view'])) {
         // download capture contents

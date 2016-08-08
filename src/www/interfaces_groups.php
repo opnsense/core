@@ -53,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         unset($a_ifgroups[$id]);
+        plugins_interfaces(false);
         write_config();
-        plugins_interfaces();
         header("Location: interfaces_groups.php");
         exit;
     }

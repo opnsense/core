@@ -28,7 +28,6 @@
     Aggregate flowd data for reporting
 """
 import time
-import datetime
 import os
 import sys
 import signal
@@ -37,6 +36,7 @@ import copy
 import syslog
 import traceback
 sys.path.insert(0, "/usr/local/opnsense/site-python")
+from sqlite3_helper import check_and_repair
 from lib.parse import parse_flow
 from lib.aggregate import AggMetadata
 import lib.aggregates
@@ -130,6 +130,9 @@ class Main(object):
         """ run, endless loop, until sigterm is received
         :return: None
         """
+        # check database consistency / repair
+        check_and_repair('/var/netflow/*.sqlite')
+
         vacuum_interval = (60*60*8) # 8 hour vacuum cycle
         vacuum_countdown = None
         while self.running:
