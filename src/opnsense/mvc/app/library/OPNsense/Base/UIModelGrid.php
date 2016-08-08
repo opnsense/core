@@ -58,7 +58,7 @@ class UIModelGrid
      */
     public function fetchBindRequest($request, $fields, $defaultSort = null)
     {
-        $itemsPerPage = $request->get('rowCount', 'int', 9999);
+        $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
         $sortBy = array($defaultSort);
         $sortDescending = false;
