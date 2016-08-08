@@ -62,16 +62,16 @@ function is_interface_mismatch()
     return false;
 }
 
-
 function rescue_detect_keypress()
 {
     $timer = 7;
 
     echo "\n";
-    echo "(I)nstaller will be invoked by default.\n\n";
-    echo "(C)ontinue with LiveCD bootup instead.\n\n";
+    echo "Please choose your preferred boot sequence.\n\n";
+    echo "(C)ontinue with system bootup (default).\n";
+    echo "(I)nvoke the early installer instead.\n";
     echo "(R)ecovery mode escapes to a root shell.\n\n";
-    echo "Timeout before auto boot continues (seconds):  ";
+    echo "Timeout before boot continues:  ";
 
     $key = null;
     while (!isset($key) || !in_array($key, array('c', 'C', 'r', 'R', 'i', 'I'))) {
@@ -98,9 +98,7 @@ function rescue_detect_keypress()
         echo "Recovery shell selected...\n\n";
         touch('/tmp/donotbootup');
         exit;
-    } elseif (in_array($key, array('c', 'C'))) {
-        /* nothing */
-    } else {
+    } elseif (in_array($key, array('i', 'I'))) {
         echo "Installer mode selected...\n";
         passthru('/usr/local/etc/rc.installer');
         if (file_exists('/tmp/install_complete')) {
@@ -108,6 +106,8 @@ function rescue_detect_keypress()
             exit;
         }
     }
+
+    /* normal bootup continues... */
 }
 
 echo " done.\n";
@@ -155,10 +155,11 @@ echo "done.\n";
 /* configure console menu */
 system_console_configure();
 
-/* Display live system's early boot options */
-if (is_install_media()) {
+$setup_installer = is_install_media();
+if ($setup_installer) {
+    /* display live system's early boot options */
     rescue_detect_keypress();
-    // config may have changed (copied by installer)
+    /* config may have changed via installer import */
     OPNsense\Core\Config::getInstance()->forceReload();
 }
 
@@ -343,3 +344,31 @@ if ($ipsec_dynamic_hosts) {
 
 // generate configuration data for all installed templates
 configd_run('template reload *');
+
+if ($setup_installer) {
+    /*
+     * Installer mode requires setting up an extra user and
+     * we will protect it with root's password.  We can only
+     * do this if user does not exist, though.
+     */
+
+    $root = null;
+
+    if (isset($config['system']['user'])) {
+        foreach ($config['system']['user'] as $user) {
+            if ($user['name'] == 'installer') {
+                $root = null;
+                break;
+            }
+            if ($user['uid'] == 0) {
+                $root = $user;
+            }
+        }
+    }
+
+    if ($root) {
+        $root['shell'] = '/usr/local/etc/rc.installer';
+        $root['name'] = 'installer';
+        local_user_set($root);
+    }
+}
