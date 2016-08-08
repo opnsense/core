@@ -29,7 +29,6 @@
  */
 namespace OPNsense\Base;
 
-
 /**
  * Class ApiMutableTableModelControllerBase, inherit this class to implement
  * an API that exposes a model for tables.
@@ -37,8 +36,8 @@ namespace OPNsense\Base;
  */
 abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
 {
-	// FIXME What about validation?
-	
+    // FIXME What about validation?
+
     static protected $modelPathPrefix = '';
     private function getNodes() {
         $ref = static::$modelPathPrefix
@@ -49,12 +48,13 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         return $this->getNodes()->$uuid;
     }
 
-	/**
+    /**
      * retrieve item or return defaults
      * @param $uuid item unique id
      * @return array
      */
-    public function getItemAction($uuid = null) {
+    public function getItemAction($uuid = null)
+    {
         $mdl = $this->getModel();
         if ($uuid != null) {
             $node = $this->getNodeByUUID($uuid);
@@ -69,13 +69,14 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         }
         return array();
     }
-	
+
     /**
      * update item with given properties
      * @param $uuid item unique id
      * @return array
      */
-    public function setItemAction($uuid) {
+    public function setItemAction($uuid)
+    {
         if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName)) {
             $mdl = $this->getModel();
             if ($uuid != null) {
@@ -93,26 +94,28 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
      * add new item and set with attributes from post
      * @return array
      */
-    public function addItemAction() {
+    public function addItemAction()
+    {
         $result = array("result"=>"failed");
         if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName))) {
             $mdl = $this->getModel();
-			// FIXME Is this correct?
-			$node = $this->getNodes()->add();
+            // FIXME Is this correct?
+            $node = $this->getNodes()->add();
             $node->setNodes($this->request->getPost(static::$internalModelName)));
-			// FIXME What do we do with this? Is this traffic-shaper specific? Do we need a hook here?
+            // FIXME What do we do with this? Is this traffic-shaper specific? Do we need a hook here?
             $node->origin = "TrafficShaper"; // set origin to this component.
             return $this->save($mdl, $node, static::$internalModelName));
         }
         return $result;
     }
-	
+
     /**
      * delete item by uuid
      * @param $uuid item unique id
      * @return array status
      */
-    public function delItemAction($uuid) {
+    public function delItemAction($uuid)
+    {
         $result = array("result"=>"failed");
         if ($this->request->isPost()) {
             $mdl = $this->getModel();
@@ -129,14 +132,15 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         }
         return $result;
     }
-	
+
     /**
      * toggle item by uuid (enable/disable)
      * @param $uuid item unique id
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return array status
      */
-    public function toggleItemAction($uuid, $enabled = null) {
+    public function toggleItemAction($uuid, $enabled = null)
+    {
         $result = array("result" => "failed");
         if ($this->request->isPost()) {
             $mdl = $this->getModel();
@@ -159,18 +163,19 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         }
         return $result;
     }
-	
+
     /**
      * search items
      * @return array
      */
-    public function searchItemsAction() {
+    public function searchItemsAction()
+    {
         $this->sessionClose();
         $mdl = $this->getModel();
         $grid = new UIModelGrid($this->getNodes());
         return $grid->fetchBindRequest(
             $this->request,
-			// FIXME Where do we get this list from? Is this something to be supplied by class implementor?
+            // FIXME Where do we get this list from? Is this something to be supplied by class implementor?
             array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin"),
             "number"
         );
