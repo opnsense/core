@@ -264,7 +264,7 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->internalValue;
+        return (string)$this->internalValue;
     }
 
     /**
