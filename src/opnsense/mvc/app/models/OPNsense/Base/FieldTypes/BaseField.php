@@ -389,27 +389,6 @@ abstract class BaseField
     }
 
     /**
-     * Recursive method to flatten tree structure for easy validation, returns only leaf nodes.
-     * @return array named array with field type nodes, using the internal reference.
-     */
-    public function getFlatNodes()
-    {
-        $result = array ();
-        if (count($this->internalChildnodes) == 0) {
-            return array($this);
-        }
-
-        foreach ($this->__items as $node) {
-            foreach ($node->getFlatNodes() as $childNode) {
-                $result[$childNode->internalReference] = $childNode ;
-            }
-        }
-
-        return $result;
-    }
-
-
-    /**
      * get nodes as array structure
      * @return array
      */
