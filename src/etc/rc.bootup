@@ -211,9 +211,7 @@ interfaces_loopback_configure();
 /* start syslogd */
 system_syslogd_start();
 
-echo "Starting Secure Shell Services...";
 mwexec("/usr/local/etc/rc.sshd");
-echo "done.\n";
 
 /* set up interfaces */
 mute_kernel_msgs();
@@ -370,5 +368,7 @@ if ($setup_installer) {
         $root['shell'] = '/usr/local/etc/rc.installer';
         $root['name'] = 'installer';
         local_user_set($root);
+
+        mwexec("/usr/local/etc/rc.sshd installer");
     }
 }
