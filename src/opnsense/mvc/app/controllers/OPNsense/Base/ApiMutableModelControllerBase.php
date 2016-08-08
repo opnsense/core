@@ -39,8 +39,74 @@ use \OPNsense\Core\Config;
  * the name of the model.
  * @package OPNsense\Base
  */
-abstract class ApiMutableModelControllerBase extends ApiModelControllerBase
+abstract class ApiMutableModelControllerBase extends ApiControllerBase
 {
+    /**
+     * @var string this implementations internal model name to use (in set/get output)
+     */
+    static protected $internalModelName = null;
+
+    /**
+     * @var string model class name to use
+     */
+    static protected $internalModelClass = null;
+
+    /**
+     * @var null|BaseModel model object to work on
+     */
+    private $modelHandle = null;
+
+    /**
+     * validate on initialization
+     * @throws Exception
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        if (empty(static::$internalModelClass)) {
+            throw new \Exception('cannot instantiate without internalModelClass defined.');
+        }
+        if (empty(static::$internalModelName)) {
+            throw new \Exception('cannot instantiate without internalModelName defined.');
+        }
+    }
+
+    /**
+     * retrieve model settings
+     * @return array settings
+     */
+    public function getAction()
+    {
+        // define list of configurable settings
+        $result = array();
+        if ($this->request->isGet()) {
+            $result[static::$internalModelName] = $this->getModelNodes();
+        }
+        return $result;
+    }
+
+    /**
+     * override this to customize what part of the model gets exposed
+     * @return array
+     */
+    protected function getModelNodes()
+    {
+        return $this->getModel()->getNodes();
+    }
+
+    /**
+     * override this to customize the model binding behavior
+     * @return null|BaseModel
+     */
+    protected function getModel()
+    {
+        if ($this->modelHandle == null) {
+            $this->modelHandle = (new \ReflectionClass(static::$internalModelClass))->newInstance();
+        }
+
+        return $this->modelHandle;
+    }
+
     /**
      * update model settings
      * @return array status / validation errors
@@ -51,7 +117,7 @@ abstract class ApiMutableModelControllerBase extends ApiModelControllerBase
         if ($this->request->isPost()) {
             // load model and update with provided data
             $mdl = $this->getModel();
-            $mdl->setNodes($this->request->getPost($this->internalModelName));
+            $mdl->setNodes($this->request->getPost(static::$internalModelName));
 
             // perform validation
             $valMsgs = $mdl->performValidation();
@@ -59,7 +125,7 @@ abstract class ApiMutableModelControllerBase extends ApiModelControllerBase
                 if (!array_key_exists("validations", $result)) {
                     $result["validations"] = array();
                 }
-                $result["validations"][$this->internalModelName.".".$msg->getField()] = $msg->getMessage();
+                $result["validations"][static::$internalModelName.".".$msg->getField()] = $msg->getMessage();
             }
 
             // serialize model to config and save
