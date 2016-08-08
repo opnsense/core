@@ -29,6 +29,8 @@
 
 namespace tests\OPNsense\Base;
 
+use \OPNsense\Core\Config;
+
 require_once 'BaseModel/TestModel.php';
 
 class BaseModelTest extends \PHPUnit_Framework_TestCase
@@ -66,5 +68,146 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     public function testCannotSetNonExistingField()
     {
         BaseModelTest::$model->general->FromEmailXXX = "test@test.nl";
+    }
+
+    /**
+     * @depends testGeneralAvailable
+     */
+    public function testCanAssignArrayType()
+    {
+        // purge test items (if any)
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            BaseModelTest::$model->arraytypes->item->Del($nodeid);
+        }
+        // generate new items
+        for ($i = 1; $i <= 10 ; $i++) {
+            $node = BaseModelTest::$model->arraytypes->item->Add();
+            $node->number = $i;
+        }
+        // flush to disk
+        BaseModelTest::$model->serializeToConfig();
+        Config::getInstance()->save();
+
+        // load from disk
+        Config::getInstance()->forceReload();
+        BaseModelTest::$model = new BaseModel\TestModel();
+
+        // read items, logically the sequence should be the same as the generated items
+        $i = 1;
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $node) {
+            $this->assertEquals($i, (string)$node->number);
+            $i++;
+        }
+    }
+
+    /**
+     * @depends testCanAssignArrayType
+     */
+    public function testCanDeleteSpecificItem()
+    {
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            if ((string)$node->number == 5) {
+                BaseModelTest::$model->arraytypes->item->Del($nodeid);
+            }
+        }
+        // item with number 5 should be deleted
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $this->assertNotEquals((string)$node->number, 5);
+        }
+        // 9 items left
+        $this->assertEquals(count(BaseModelTest::$model->arraytypes->item->__items), 9);
+    }
+
+    /**
+     * @depends testCanAssignArrayType
+     */
+    public function testArrayIsKeydByUUID()
+    {
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $this->assertCount(5, explode('-', $nodeid));
+        }
+    }
+
+    /**
+     * @depends testCanAssignArrayType
+     */
+    public function testValidationOk()
+    {
+        // nothing changed, valid config
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+    /**
+     * @depends testCanAssignArrayType
+     * @expectedException \Phalcon\Validation\Exception
+     * @expectedExceptionMessage not a valid number
+     */
+    public function testValidationNOK()
+    {
+        // replace all numbers
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $node->number = "XXX";
+        }
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+    /**
+     * @depends testGeneralAvailable
+     */
+    public function testsetNodeByReferenceFound()
+    {
+        $this->assertEquals(BaseModelTest::$model->setNodeByReference('general.FromEmail', 'test@test.com'), true);
+    }
+
+    /**
+     * @depends testGeneralAvailable
+     */
+    public function testsetNodeByReferenceNotFound()
+    {
+        $this->assertEquals(BaseModelTest::$model->setNodeByReference('general.FromEmailxx', 'test@test.com'), false);
+    }
+
+    /**
+     * @depends testCanDeleteSpecificItem
+     */
+    public function testGenerateXML()
+    {
+        $xml = BaseModelTest::$model->toXML();
+        $this->assertInstanceOf(\SimpleXMLElement::class, $xml);
+        $this->assertNotEquals(count($xml->OPNsense), 0);
+        $this->assertNotEquals(count($xml->OPNsense->TestModel), 0);
+        $this->assertNotEquals(count($xml->OPNsense->TestModel->general), 0);
+        // expect 9 detail items at this point
+        $this->assertEquals(count($xml->OPNsense->TestModel->arraytypes->item), 9);
+    }
+
+    /**
+     * @depends testCanDeleteSpecificItem
+     */
+    public function testSetNode()
+    {
+        $data = array();
+        $i = 100;
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $data[$node->__reference] = $i;
+            $i++;
+        }
+        foreach ($data as $key => $value) {
+            $node = BaseModelTest::$model->getNodeByReference($key);
+            $node->setNodes(array('number' => $value));
+        }
+
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $this->assertGreaterThan(99, (string)$node->number);
+        }
+    }
+
+    /**
+     * @depends testCanDeleteSpecificItem
+     */
+    public function testGetNodes()
+    {
+        $data = BaseModelTest::$model->arraytypes->item->getNodes();
+        $this->assertEquals(count($data), 9);
     }
 }

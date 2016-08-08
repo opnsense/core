@@ -12,5 +12,15 @@
                 <Required>Y</Required>
             </FromEmail>
         </general>
+        <arraytypes>
+            <item type="ArrayField">
+                <number type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>not a valid number</ValidationMessage>
+                    <Required>Y</Required>
+                </number>
+            </item>
+        </arraytypes>
     </items>
 </model>
