@@ -37,6 +37,8 @@ namespace OPNsense\Base;
  */
 abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
 {
+	// FIXME What about validation?
+	
     static protected $modelPathPrefix = '';
     private function getNodes() {
         $ref = static::$modelPathPrefix
@@ -46,10 +48,16 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
     private function getNodeByUUID($uuid) {
         return $this->getNodes()->$uuid;
     }
+
+	/**
+     * retrieve item or return defaults
+     * @param $uuid item unique id
+     * @return array
+     */
     public function getItemAction($uuid = null) {
         $mdl = $this->getModel();
         if ($uuid != null) {
-            $node = getNodeByUUID($uuid);
+            $node = $this->getNodeByUUID($uuid);
             if ($node != null) {
                 // return node
                 return array(static::$internalModelName => $node->getNodes());
@@ -61,19 +69,110 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         }
         return array();
     }
+	
+    /**
+     * update item with given properties
+     * @param $uuid item unique id
+     * @return array
+     */
     public function setItemAction($uuid) {
-        // FIXME To be implemented
+        if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName)) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $this->getNodeByUUID($uuid);
+                if ($node != null) {
+                    $node->setNodes($this->request->getPost(static::$internalModelName));
+                    return $this->save($mdl, $node, static::$internalModelName);
+                }
+            }
+        }
+        return array("result"=>"failed");
     }
+
+    /**
+     * add new item and set with attributes from post
+     * @return array
+     */
     public function addItemAction() {
-        // FIXME To be implemented
+        $result = array("result"=>"failed");
+        if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName))) {
+            $mdl = $this->getModel();
+			// FIXME Is this correct?
+			$node = $this->getNodes()->add();
+            $node->setNodes($this->request->getPost(static::$internalModelName)));
+			// FIXME What do we do with this? Is this traffic-shaper specific? Do we need a hook here?
+            $node->origin = "TrafficShaper"; // set origin to this component.
+            return $this->save($mdl, $node, static::$internalModelName));
+        }
+        return $result;
     }
+	
+    /**
+     * delete item by uuid
+     * @param $uuid item unique id
+     * @return array status
+     */
     public function delItemAction($uuid) {
-        // FIXME To be implemented
+        $result = array("result"=>"failed");
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                if (getNodes()->del($uuid)) {
+                    // if item is removed, serialize to config and save
+                    $mdlShaper->serializeToConfig();
+                    Config::getInstance()->save();
+                    $result['result'] = 'deleted';
+                } else {
+                    $result['result'] = 'not found';
+                }
+            }
+        }
+        return $result;
     }
+	
+    /**
+     * toggle item by uuid (enable/disable)
+     * @param $uuid item unique id
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return array status
+     */
     public function toggleItemAction($uuid, $enabled = null) {
-        // FIXME To be implemented
+        $result = array("result" => "failed");
+        if ($this->request->isPost()) {
+            $mdl = $this->getModel();
+            if ($uuid != null) {
+                $node = $mdl->getNodeByUUID($uuid);
+                if ($node != null) {
+                    if ($enabled == "0" || $enabled == "1") {
+                        $node->enabled = (string)$enabled;
+                    } elseif ($node->enabled->__toString() == "1") {
+                        $node->enabled = "0";
+                    } else {
+                        $node->enabled = "1";
+                    }
+                    $result['result'] = $node->enabled;
+                    // if item has toggled, serialize to config and save
+                    $mdlShaper->serializeToConfig();
+                    Config::getInstance()->save();
+                }
+            }
+        }
+        return $result;
     }
+	
+    /**
+     * search items
+     * @return array
+     */
     public function searchItemsAction() {
-        // FIXME To be implemented
+        $this->sessionClose();
+        $mdl = $this->getModel();
+        $grid = new UIModelGrid($this->getNodes());
+        return $grid->fetchBindRequest(
+            $this->request,
+			// FIXME Where do we get this list from? Is this something to be supplied by class implementor?
+            array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin"),
+            "number"
+        );
     }
 }
