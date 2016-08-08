@@ -94,7 +94,7 @@ function plugins_syslog()
  * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
  *
  */
-function plugins_interfaces()
+function plugins_interfaces($write_allowed = true)
 {
     global $config;
     $changed_interfaces = array();
@@ -137,7 +137,7 @@ function plugins_interfaces()
     // cleanup registrations
     if (isset($config['interfaces'])) {
         foreach ($config['interfaces'] as $intf => $intf_data) {
-            if (!empty($intf_data['internal_dynamic']) && !in_array($intf, $registered_interfaces)) {
+            if ((!empty($intf_data['internal_dynamic']) || !empty($intf_data[0]['internal_dynamic'])) && !in_array($intf, $registered_interfaces)) {
                 $changed_interfaces[] = $intf;
                 unset($config['interfaces'][$intf]);
             }
@@ -145,7 +145,7 @@ function plugins_interfaces()
     }
 
     // configuration changed, materialize
-    if (count($changed_interfaces) > 0) {
+    if ($write_allowed && count($changed_interfaces) > 0) {
         write_config();
     }
 }
