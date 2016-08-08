@@ -1,6 +1,7 @@
 <?php
 /**
  *    Copyright (C) 2016 IT-assistans Sverige AB
+ *    Copyright (C) 2016 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,7 +29,6 @@
  */
 namespace OPNsense\Base;
 
-use OPNsense\Base\ApiControllerBase;
 
 /**
  * Class ApiModelControllerBase, inherit this class to implement
@@ -40,22 +40,71 @@ use OPNsense\Base\ApiControllerBase;
  */
 abstract class ApiModelControllerBase extends ApiControllerBase
 {
+
+    /**
+     * @var string this implementations internal model name to use (in set/get output)
+     */
+    protected $internalModelName = null;
+
+    /**
+     * @var string model class name to use
+     */
+    protected $internalModelClass = null;
+
+    /**
+     * @var null|BaseModel model object to work on
+     */
+    private $modelHandle = null;
+
+    /**
+     * validate on initialization
+     * @throws Exception
+     */
+    public function initialize()
+    {
+        parent::initialize();
+        if (empty($this->internalModelClass)) {
+            throw new \Exception('cannot instantiate without internalModelClass defined.');
+        }
+        if (empty($this->internalModelName)) {
+            throw new \Exception('cannot instantiate without internalModelName defined.');
+        }
+    }
+
+    /**
+     * retrieve model settings
+     * @return array settings
+     */
     public function getAction()
     {
         // define list of configurable settings
         $result = array();
         if ($this->request->isGet()) {
             $mdl = $this->getModel();
-            $result[$this->getModelName()] = $this->getModelNodes($mdl);
+            $result[$this->internalModelName] = $this->getModelNodes();
         }
         return $result;
     }
-    abstract protected function getModel();
-    abstract protected function getModelName();
+
     /**
      * override this to customize what part of the model gets exposed
+     * @return array
      */
-    protected function getModelNodes($mdl) {
-        return $mdl->getNodes();
+    protected function getModelNodes()
+    {
+        return $this->getModel()->getNodes();
+    }
+
+    /**
+     * override this to customize the model binding behavior
+     * @return null|BaseModel
+     */
+    protected function getModel()
+    {
+        if ($this->modelHandle == null) {
+            $this->modelHandle = (new \ReflectionClass($this->internalModelClass))->newInstance();
+        }
+
+        return $this->modelHandle;
     }
 }

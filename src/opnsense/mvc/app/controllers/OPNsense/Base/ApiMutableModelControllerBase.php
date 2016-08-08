@@ -1,6 +1,7 @@
 <?php
 /**
  *    Copyright (C) 2016 IT-assistans Sverige AB
+ *    Copyright (C) 2016 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,7 +29,7 @@
  */
 namespace OPNsense\Base;
 
-use OPNsense\Base\ApiModelControllerBase;
+use \OPNsense\Core\Config;
 
 /**
  * Class ApiMutableModelControllerBase, inherit this class to implement
@@ -40,13 +41,17 @@ use OPNsense\Base\ApiModelControllerBase;
  */
 abstract class ApiMutableModelControllerBase extends ApiModelControllerBase
 {
+    /**
+     * update model settings
+     * @return array status / validation errors
+     */
     public function setAction()
     {
         $result = array("result"=>"failed");
         if ($this->request->isPost()) {
             // load model and update with provided data
             $mdl = $this->getModel();
-            $mdl->setNodes($this->request->getPost(getModelName()));
+            $mdl->setNodes($this->request->getPost($this->internalModelName));
 
             // perform validation
             $valMsgs = $mdl->performValidation();
@@ -54,7 +59,7 @@ abstract class ApiMutableModelControllerBase extends ApiModelControllerBase
                 if (!array_key_exists("validations", $result)) {
                     $result["validations"] = array();
                 }
-                $result["validations"][$this->getModelName().".".$msg->getField()] = $msg->getMessage();
+                $result["validations"][$this->internalModelName.".".$msg->getField()] = $msg->getMessage();
             }
 
             // serialize model to config and save
