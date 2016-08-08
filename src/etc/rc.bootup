@@ -62,54 +62,6 @@ function is_interface_mismatch()
     return false;
 }
 
-
-function rescue_detect_keypress()
-{
-    $timer = 7;
-
-    echo "\n";
-    echo "(I)nstaller will be invoked by default.\n\n";
-    echo "(C)ontinue with LiveCD bootup instead.\n\n";
-    echo "(R)ecovery mode escapes to a root shell.\n\n";
-    echo "Timeout before auto boot continues (seconds):  ";
-
-    $key = null;
-    while (!isset($key) || !in_array($key, array('c', 'C', 'r', 'R', 'i', 'I'))) {
-        if ($timer >= 9) {
-            echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";
-        } else {
-            echo chr(8). "{$timer}";
-        }
-        shell_exec('/bin/stty -icanon min 0 time 25');
-        $key = shell_exec('/bin/dd count=1 status=none');
-        shell_exec('/bin/stty icanon');
-        if ($key == '') {
-            unset($key);
-        }
-        $timer--;
-        if ($timer == 0) {
-            break;
-        }
-    }
-
-    echo "\n\n";
-
-    if (in_array($key, array('r', 'R'))) {
-        echo "Recovery shell selected...\n\n";
-        touch('/tmp/donotbootup');
-        exit;
-    } elseif (in_array($key, array('c', 'C'))) {
-        /* nothing */
-    } else {
-        echo "Installer mode selected...\n";
-        passthru('/usr/local/etc/rc.installer');
-        if (file_exists('/tmp/install_complete')) {
-            passthru('/usr/local/etc/rc.reboot');
-            exit;
-        }
-    }
-}
-
 echo " done.\n";
 
 echo "Initializing...";
@@ -140,7 +92,6 @@ echo ".";
 require_once("openvpn.inc");
 echo ".";
 require_once("rrd.inc");
-echo ".";
 echo " done.\n";
 
 /* start devd (dhclient now uses it) */
@@ -155,10 +106,24 @@ echo "done.\n";
 /* configure console menu */
 system_console_configure();
 
-/* Display live system's early boot options */
-if (is_install_media()) {
-    rescue_detect_keypress();
-    // config may have changed (copied by installer)
+$setup_installer = is_install_media();
+if ($setup_installer) {
+    echo 'Press any key to start the early installer:  ';
+
+    $key = timeout();
+    if ($key != "\n") {
+        echo "\n";
+    }
+
+    if (isset($key)) {
+        passthru('/usr/local/etc/rc.installer');
+        if (file_exists('/tmp/install_complete')) {
+            passthru('/usr/local/etc/rc.reboot');
+            exit;
+        }
+    }
+
+    /* config may have changed via installer import */
     OPNsense\Core\Config::getInstance()->forceReload();
 }
 
@@ -174,7 +139,7 @@ echo "done.\n";
  *  avoid a reboot and thats a good thing.
  */
 if (is_interface_mismatch()) {
-    echo PHP_EOL . gettext('Default interfaces not found -- Running interface assignment option.') . PHP_EOL;
+    echo "\nDefault interfaces not found -- Running interface assignment option.\n";
     while (!set_networking_interfaces_ports(true));
 }
 
@@ -209,10 +174,6 @@ interfaces_loopback_configure();
 
 /* start syslogd */
 system_syslogd_start();
-
-echo "Starting Secure Shell Services...";
-mwexec("/usr/local/etc/rc.sshd");
-echo "done.\n";
 
 /* set up interfaces */
 mute_kernel_msgs();
@@ -249,8 +210,11 @@ echo "Synchronizing user settings...";
 local_sync_accounts();
 echo "done.\n";
 
+/* start ssh daemon */
+mwexec("/usr/local/etc/rc.sshd");
+
 /* start web server */
-echo 'Starting webConfigurator...'. (system_webgui_configure() ? 'done.' : 'failed.') . PHP_EOL;
+echo 'Starting webConfigurator...'. (system_webgui_configure() ? "done.\n" : "failed.\n");
 
 /* configure cron service */
 echo "Configuring CRON...";
@@ -343,3 +307,40 @@ if ($ipsec_dynamic_hosts) {
 
 // generate configuration data for all installed templates
 configd_run('template reload *');
+
+if ($setup_installer) {
+    /*
+     * Installer mode requires setting up an extra user and
+     * we will protect it with root's password.  We can only
+     * do this if user does not exist, though.
+     */
+
+    $root = null;
+
+    if (isset($config['system']['user'])) {
+        foreach ($config['system']['user'] as $user) {
+            if ($user['name'] == 'installer') {
+                $root = null;
+                break;
+            }
+            if ($user['uid'] == 0) {
+                $root = $user;
+            }
+        }
+    }
+
+    if ($root) {
+        $root['shell'] = '/usr/local/etc/rc.installer';
+        $root['name'] = 'installer';
+        local_user_set($root);
+
+        mwexec("/usr/local/etc/rc.sshd installer");
+
+        echo "\n";
+        echo "Welcome!  Both `root' and `installer' users are availabe for system\n";
+        echo "setup or invoking the installer, respectively.  The predefined root\n";
+        echo "password works for both accounts.  Remote login via SSH is possible.\n\n";
+    }
+}
+
+exit(0);

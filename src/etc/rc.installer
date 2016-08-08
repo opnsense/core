@@ -40,7 +40,7 @@ daemon -f lua50c51 /usr/local/share/dfuibe_lua/main.lua \
 conscontrol mute on > /dev/null
 
 # Launch the frontend goo (must include cons25 for first boot)
-TERM=cons25 dfuife_curses
+TERM=cons25 dfuife_curses -b /usr/local/share/dfuife_curses/hourglass.txt
 
 conscontrol mute off > /dev/null
 

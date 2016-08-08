@@ -337,7 +337,6 @@ function userHasPrivilege($userent, $privid = false)
     return true;
 }
 
-
 function local_sync_accounts()
 {
     global $config;
@@ -429,10 +428,10 @@ function local_user_set(&$user)
 
     /* root user special handling */
     if ($user_uid == 0) {
+        $user_shell = isset($user['shell']) ? $user['shell'] : '/usr/local/etc/rc.initial';
+        $lock_account = 'unlock';
         $user_group = 'wheel';
         $user_home = '/root';
-        $user_shell = '/usr/local/etc/rc.initial';
-        $lock_account = 'unlock';
     }
 
     /* read from pw db */
