@@ -94,7 +94,7 @@ function plugins_syslog()
  * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
  *
  */
-function plugins_interfaces($write_config = true)
+function plugins_interfaces($write_allowed = true)
 {
     global $config;
 
@@ -152,7 +152,7 @@ function plugins_interfaces($write_config = true)
     }
 
     // configuration changed, materialize
-    if ($write_config && $write_required) {
+    if ($write_allowed && $write_required) {
         write_config();
     }
 }
