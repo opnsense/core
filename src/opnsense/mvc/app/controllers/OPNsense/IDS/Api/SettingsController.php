@@ -29,10 +29,9 @@
 namespace OPNsense\IDS\Api;
 
 use \Phalcon\Filter;
-use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Base\Filters\QueryFilter;
 use \OPNsense\Core\Backend;
-use \OPNsense\IDS\IDS;
 use \OPNsense\Core\Config;
 use \OPNsense\Base\UIModelGrid;
 
@@ -40,24 +39,23 @@ use \OPNsense\Base\UIModelGrid;
  * Class SettingsController Handles settings related API actions for the IDS module
  * @package OPNsense\IDS
  */
-class SettingsController extends ApiControllerBase
+class SettingsController extends ApiMutableModelControllerBase
 {
-    /**
-     * @var null|IDS IDS model to share across some methods (see getModel)
-     */
-    private $idsModel = null;
+    static protected  $internalModelName = 'ids';
+    static protected  $internalModelClass = '\OPNsense\IDS\IDS';
 
     /**
-     * get ids model
-     * @return null|IDS
+     * @return array plain model settings (non repeating items)
      */
-    public function getModel()
+    protected function getModelNodes()
     {
-        if ($this->idsModel == null) {
-            $this->idsModel = new IDS();
+        $settingsNodes = array('general');
+        $result = array();
+        $mdlIDS = $this->getModel();
+        foreach ($settingsNodes as $key) {
+            $result[$key] = $mdlIDS->$key->getNodes();
         }
-
-        return $this->idsModel;
+        return $result;
     }
 
     /**
@@ -459,49 +457,6 @@ class SettingsController extends ApiControllerBase
                     Config::getInstance()->save();
                     $result["result"] = "saved";
                 }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * retrieve IDS settings
-     * @return array IDS settings
-     */
-    public function getAction()
-    {
-        // define list of configurable settings
-        $settingsNodes = array('general');
-        $result = array();
-        if ($this->request->isGet()) {
-            $mdlIDS = $this->getModel();
-            $result['ids'] = array();
-            foreach ($settingsNodes as $key) {
-                $result['ids'][$key] = $mdlIDS->$key->getNodes();
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * update IDS settings
-     * @return array status
-     */
-    public function setAction()
-    {
-        $result = array("result"=>"failed");
-        if ($this->request->isPost()) {
-            // load model and update with provided data
-            $mdlIDS = $this->getModel();
-            $mdlIDS->setNodes($this->request->getPost("ids"));
-
-            $validations = $mdlIDS->validate(null, "ids.");
-            if (count($validations)) {
-                $result['validations'] = $validations;
-            } else {
-                $mdlIDS->serializeToConfig();
-                Config::getInstance()->save();
-                $result["result"] = "saved";
             }
         }
         return $result;
