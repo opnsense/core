@@ -232,6 +232,12 @@
                   ]]></help>
             </field>
             <field>
+                <id>proxy.forward.sslurlonly</id>
+                <label>SSL Domain/IP only</label>
+                <type>checkbox</type>
+                <help>Do not filter content, only domains and addresses</help>
+            </field>
+            <field>
                 <id>proxy.forward.sslbumpport</id>
                 <label>SSL Proxy port</label>
                 <type>text</type>
