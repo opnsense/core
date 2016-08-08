@@ -250,15 +250,8 @@ echo "done."
 # let the PHP-based configuration subsystem set up the system now
 echo -n "Launching the init system..."
 touch /var/run/booting
-/usr/local/etc/rc.bootup
+/usr/local/etc/rc.bootup || exit 1
 rm /var/run/booting
-
-# If a shell was selected from recovery
-# console then just drop to the shell now.
-if [ -f "/tmp/donotbootup" ]; then
-	echo "Dropping to recovery shell."
-	exit 0
-fi
 
 # Execute the normal syshook / plugin commands
 /usr/local/etc/rc.syshook start

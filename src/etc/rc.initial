@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2014-2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2016 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2004-2011 Scott Ullrich <sullrich@gmail.com>
 # Copyright (c) 2003-2004 Manuel Kasper <mk@neon1.net>
 # All rights reserved.
@@ -8,14 +8,6 @@
 # make sure the user can't kill us
 trap : 2
 trap : 3
-
-# If recovery console shell option has been specified
-if [ -f "/tmp/donotbootup" ]; then
-	rm /tmp/donotbootup
-	/bin/csh
-	/usr/local/etc/rc.reboot
-	# no coming back from here
-fi
 
 # shell started with parameters, passthrough to real shell
 if [ -n "${*}" ]; then
