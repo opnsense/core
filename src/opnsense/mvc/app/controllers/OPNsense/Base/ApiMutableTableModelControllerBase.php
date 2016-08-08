@@ -119,7 +119,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
             if ($uuid != null) {
                 if (getNodes()->del($uuid)) {
                     // if item is removed, serialize to config and save
-                    $mdlShaper->serializeToConfig();
+                    $mdl->serializeToConfig();
                     Config::getInstance()->save();
                     $result['result'] = 'deleted';
                 } else {
@@ -152,7 +152,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
                     }
                     $result['result'] = $node->enabled;
                     // if item has toggled, serialize to config and save
-                    $mdlShaper->serializeToConfig();
+                    $mdl->serializeToConfig();
                     Config::getInstance()->save();
                 }
             }
