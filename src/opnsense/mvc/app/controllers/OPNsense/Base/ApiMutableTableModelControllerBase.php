@@ -103,8 +103,6 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
             // FIXME Is this correct?
             $node = $this->getNodes()->add();
             $node->setNodes($this->request->getPost(static::$internalModelName)));
-            // FIXME What do we do with this? Is this traffic-shaper specific? Do we need a hook here?
-            $node->origin = "TrafficShaper"; // set origin to this component.
             return $this->save($mdl, $node, static::$internalModelName));
         }
         return $result;
