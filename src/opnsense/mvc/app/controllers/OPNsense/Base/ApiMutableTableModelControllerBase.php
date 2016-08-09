@@ -66,7 +66,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
             }
         } else {
             // generate new node, but don't save to disc
-            $node = getNodes()->add();
+            $node = $this->getNodes()->add();
             return array(static::$internalModelName => $node->getNodes());
         }
         return array();
