@@ -85,7 +85,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                 $node = $this->getNodeByUUID($uuid);
                 if ($node != null) {
                     $node->setNodes($this->request->getPost(static::$internalModelName));
-                    return $this->save($mdl, $node, static::$internalModelName);
+                    return $this->save($node);
                 }
             }
         }
@@ -101,10 +101,9 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
         $result = array("result"=>"failed");
         if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName)) {
             $mdl = $this->getModel();
-            // FIXME Is this correct?
             $node = $this->getNodes()->add();
             $node->setNodes($this->request->getPost(static::$internalModelName));
-            return $this->save($mdl, $node, static::$internalModelName);
+            return $this->save($node);
         }
         return $result;
     }
