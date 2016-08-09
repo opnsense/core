@@ -123,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($config['interfaces']['lan'])) {
             $pconfig['localnet'] = "lan";
         }
-        $pconfig['mode'] = "aggressive";
+        $pconfig['mode'] = "main";
         $pconfig['protocol'] = "inet";
         $pconfig['myid_type'] = "myaddress";
         $pconfig['peerid_type'] = "peeraddress";
