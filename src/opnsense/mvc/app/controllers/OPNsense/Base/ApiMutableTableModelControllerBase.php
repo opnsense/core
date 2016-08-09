@@ -45,7 +45,8 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         return $this->getModel()->getNodeByReference($ref);
     }
     private function getNodeByUUID($uuid) {
-        return $this->getNodes()->$uuid;
+        $nodes = $this->getNodes();
+        return !empty($nodes) ? $nodes->$uuid : null;
     }
 
     /**
