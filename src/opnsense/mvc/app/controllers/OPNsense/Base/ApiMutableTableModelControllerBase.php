@@ -34,14 +34,15 @@ namespace OPNsense\Base;
  * an API that exposes a model for tables.
  * @package OPNsense\Base
  */
-abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
+abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControllerBase
 {
     // FIXME What about validation?
 
     static protected $modelPathPrefix = '';
+    static protected $gridFields = array();
+    static protected $gridDefaultSort = null;
     private function getNodes() {
-        $ref = static::$modelPathPrefix
-             + static::$internalModelName;
+        $ref = static::$modelPathPrefix . static::$internalModelName;
         return $this->getModel()->getNodeByReference($ref);
     }
     private function getNodeByUUID($uuid) {
@@ -98,12 +99,12 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
     public function addItemAction()
     {
         $result = array("result"=>"failed");
-        if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName))) {
+        if ($this->request->isPost() && $this->request->hasPost(static::$internalModelName)) {
             $mdl = $this->getModel();
             // FIXME Is this correct?
             $node = $this->getNodes()->add();
-            $node->setNodes($this->request->getPost(static::$internalModelName)));
-            return $this->save($mdl, $node, static::$internalModelName));
+            $node->setNodes($this->request->getPost(static::$internalModelName));
+            return $this->save($mdl, $node, static::$internalModelName);
         }
         return $result;
     }
@@ -172,11 +173,6 @@ abstract class ApiMutableTableModelControllerBase extends ApiControllerBase
         $this->sessionClose();
         $mdl = $this->getModel();
         $grid = new UIModelGrid($this->getNodes());
-        return $grid->fetchBindRequest(
-            $this->request,
-            // FIXME Where do we get this list from? Is this something to be supplied by class implementor?
-            array("enabled","number", "bandwidth","bandwidthMetric","burst","description","mask","origin"),
-            "number"
-        );
+        return $grid->fetchBindRequest($this->request, static::$gridFields, static::$gridDefaultSort);
     }
 }
