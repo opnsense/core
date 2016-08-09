@@ -123,7 +123,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         foreach ($valMsgs as $field => $msg) {
             // replace absolute path to attribute for relative one at uuid.
             if ($node != null) {
-                $fieldnm = str_replace($node->__reference, static:$internalModelName, $msg->getField());
+                $fieldnm = str_replace($node->__reference, static::$internalModelName, $msg->getField());
                 $result["validations"][$fieldnm] = $msg->getMessage();
             } else {
                 $result["validations"][$msg->getField()] = $msg->getMessage();
