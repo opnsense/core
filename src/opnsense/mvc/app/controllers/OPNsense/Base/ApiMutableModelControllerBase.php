@@ -108,6 +108,38 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * validate and save model after update or insertion.
+     * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
+     * it easier to reference specific uuids without having to use them in the frontend descriptions.
+     * @param $node reference node, to use as relative offset
+     * @return array result / validation output
+     */
+    protected function save($node = null)
+    {
+        $mdl = $this->getModel();
+        $result = array("result"=>"failed","validations" => array());
+        // perform validation
+        $valMsgs = $mdl->performValidation();
+        foreach ($valMsgs as $field => $msg) {
+            // replace absolute path to attribute for relative one at uuid.
+            if ($node != null) {
+                $fieldnm = str_replace($node->__reference, static:$internalModelName, $msg->getField());
+                $result["validations"][$fieldnm] = $msg->getMessage();
+            } else {
+                $result["validations"][$msg->getField()] = $msg->getMessage();
+            }
+        }
+        // serialize model to config and save when there are no validation errors
+        if (count($result['validations']) == 0) {
+            // save config if validated correctly
+            $mdl->serializeToConfig();
+            Config::getInstance()->save();
+            $result = array("result" => "saved");
+        }
+        return $result;
+    }
+
+    /**
      * update model settings
      * @return array status / validation errors
      */
@@ -118,22 +150,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             // load model and update with provided data
             $mdl = $this->getModel();
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
-
-            // perform validation
-            $valMsgs = $mdl->performValidation();
-            foreach ($valMsgs as $field => $msg) {
-                if (!array_key_exists("validations", $result)) {
-                    $result["validations"] = array();
-                }
-                $result["validations"][static::$internalModelName.".".$msg->getField()] = $msg->getMessage();
-            }
-
-            // serialize model to config and save
-            if ($valMsgs->count() == 0) {
-                $mdl->serializeToConfig();
-                Config::getInstance()->save();
-                $result["result"] = "saved";
-            }
+            $result = $this->save();
         }
         return $result;
     }
