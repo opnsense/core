@@ -36,8 +36,6 @@ namespace OPNsense\Base;
  */
 abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControllerBase
 {
-    // FIXME What about validation?
-
     static protected $modelPathPrefix = '';
     static protected $gridFields = array();
     static protected $gridDefaultSort = null;
@@ -73,6 +71,16 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
     }
 
     /**
+     * hook to be overridden if the controller is to take an action when
+     * setItemAction is called. This hook is called after a model has been
+     * constructed and validated but before it serialized to the configuration
+     * and written to disk
+     * @param $mdl The validated model containing the new state of the model
+     * @return Error message on error, or null/void on success
+     */
+    protected function setItemActionHook($mdl) { }
+
+    /**
      * update item with given properties
      * @param $uuid item unique id
      * @return array
@@ -85,12 +93,22 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                 $node = $this->getNodeByUUID($uuid);
                 if ($node != null) {
                     $node->setNodes($this->request->getPost(static::$internalModelName));
-                    return $this->save($node);
+                    return $this->save($mdl, $node, $this->setItemActionHook);
                 }
             }
         }
         return array("result"=>"failed");
     }
+
+    /**
+     * hook to be overridden if the controller is to take an action when
+     * addItemAction is called. This hook is called after a model has been
+     * constructed and validated but before it serialized to the configuration
+     * and written to disk
+     * @param $mdl The validated model containing the state of the new model
+     * @return Error message on error, or null/void on success
+     */
+    protected function addItemActionHook($mdl) { }
 
     /**
      * add new item and set with attributes from post
@@ -103,10 +121,20 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
             $mdl = $this->getModel();
             $node = $this->getNodes()->add();
             $node->setNodes($this->request->getPost(static::$internalModelName));
-            return $this->save($node);
+            return $this->save($mdl, $node, $this->addItemActionHook);
         }
         return $result;
     }
+
+    /**
+     * hook to be overridden if the controller is to take an action when
+     * delItemAction is called. This hook is called after a model has been
+     * constructed and validated but before it serialized to the configuration
+     * and written to disk
+     * @param $uuid The UUID of the item to be deleted
+     * @return Error message on error, or null/void on succes s
+     */
+    protected function delItemActionHook($uuid) { }
 
     /**
      * delete item by uuid
@@ -119,7 +147,10 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
         if ($this->request->isPost()) {
             $mdl = $this->getModel();
             if ($uuid != null) {
-                if (getNodes()->del($uuid)) {
+                $errorMessage = delItemActionHook($uuid);
+                if ($errorMessage) {
+                    $result['error'] = $errorMessage;
+                } else if (getNodes()->del($uuid)) {
                     // if item is removed, serialize to config and save
                     $mdl->serializeToConfig();
                     Config::getInstance()->save();
@@ -131,6 +162,17 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
         }
         return $result;
     }
+
+    /**
+     * hook to be overridden if the controller is to take an action when
+     * toggleItemAction is called. This hook is called after a model has been
+     * constructed and validated but before it serialized to the configuration
+     * and written to disk
+     * @param $uuid The UUID of the item to be toggled
+     * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
+     * @return Error message on error, or null/void on succes s
+     */
+    protected function toggleItemActionHook($uuid, $enabled) { }
 
     /**
      * toggle item by uuid (enable/disable)
@@ -146,17 +188,22 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
             if ($uuid != null) {
                 $node = $mdl->getNodeByUUID($uuid);
                 if ($node != null) {
-                    if ($enabled == "0" || $enabled == "1") {
-                        $node->enabled = (string)$enabled;
-                    } elseif ($node->enabled->__toString() == "1") {
-                        $node->enabled = "0";
+                    $errorMessage = toggleItemActionHook($uuid, $enabled);
+                    if ($errorMessage) {
+                        $result['error'] = $errorMessage;
                     } else {
-                        $node->enabled = "1";
+                        if ($enabled == "0" || $enabled == "1") {
+                            $node->enabled = (string)$enabled;
+                        } elseif ($node->enabled->__toString() == "1") {
+                            $node->enabled = "0";
+                        } else {
+                            $node->enabled = "1";
+                        }
+                        $result['result'] = $node->enabled;
+                        // if item has toggled, serialize to config and save
+                        $mdl->serializeToConfig();
+                        Config::getInstance()->save();
                     }
-                    $result['result'] = $node->enabled;
-                    // if item has toggled, serialize to config and save
-                    $mdl->serializeToConfig();
-                    Config::getInstance()->save();
                 }
             }
         }

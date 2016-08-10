@@ -111,12 +111,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * validate and save model after update or insertion.
      * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
      * it easier to reference specific uuids without having to use them in the frontend descriptions.
+     * @param $mdl The model to save
      * @param $node reference node, to use as relative offset
+     * @param $actionHook A closure containing an action to do after validation but before saving. Must return null if successful, or an error message if not.
      * @return array result / validation output
      */
-    protected function save($node = null)
+    protected function save($mdl, $node = null, $actionHook = null)
     {
-        $mdl = $this->getModel();
         $result = array("result"=>"failed","validations" => array());
         // perform validation
         $valMsgs = $mdl->performValidation();
@@ -129,15 +130,30 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $result["validations"][$msg->getField()] = $msg->getMessage();
             }
         }
-        // serialize model to config and save when there are no validation errors
-        if (count($result['validations']) == 0) {
-            // save config if validated correctly
-            $mdl->serializeToConfig();
-            Config::getInstance()->save();
-            $result = array("result" => "saved");
+        if (count($result['validations']) != 0) {
+            return $result;
         }
-        return $result;
+        // run the action hook (default one just always returns null)
+        $errorMessage = $actionHook ? $actionHook($mdl) : null;
+        if ($errorMessage != null) {
+            return array("result"=>failed, "error"=>$errorMessage);
+        }
+        // serialize model to config and save when there are no validation errors
+        // and the action hook completed successfully
+        $mdl->serializeToConfig();
+        Config::getInstance()->save();
+        return array("result"=>"saved");
     }
+
+    /**
+     * hook to be overridden if the controller is to take an action when
+     * setAction is called. This hook is called after a model has been
+     * constructed and validated but before it serialized to the configuration
+     * and written to disk
+     * @param $mdl The validated model containing the new state of the model
+     * @return Error message on error, or null/void on success
+     */
+    protected function setActionHook($mdl) { }
 
     /**
      * update model settings
@@ -150,7 +166,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             // load model and update with provided data
             $mdl = $this->getModel();
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
-            $result = $this->save();
+            $result = $this->save($mdl, null, $this->setActionHook);
         }
         return $result;
     }
