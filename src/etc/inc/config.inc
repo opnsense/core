@@ -75,5 +75,8 @@ function legacy_config_get_interfaces($filters = array())
             }
         }
     }
+    uasort($interfaces, function($a, $b) {
+        return strnatcmp($a['descr'], $b['descr']);
+    });
     return $interfaces;
 }
