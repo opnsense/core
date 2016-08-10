@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $checksrv = explode(",", $pconfig['server']);
         foreach ($checksrv as $srv) {
             if (!is_ipaddrv6($srv)) {
-                $input_errors[] = gettext("A valid Destination Server IPv6 address  must be specified.");
+                $input_errors[] = gettext("A valid Destination Server IPv6 address must be specified.");
             }
         }
     }
