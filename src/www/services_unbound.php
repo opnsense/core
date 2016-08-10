@@ -190,10 +190,13 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("DNS Query Forwarding");?></td>
+                        <td><a id="help_for_forwarding" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
                         <td>
                           <input name="forwarding" type="checkbox" value="yes" <?=!empty($pconfig['forwarding']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Enable Forwarding Mode");?></strong>
+                          <div class="hidden" for="help_for_forwarding">
+                            <?= gettext('The configured system nameservers will be used to forward queries to.') ?>
+                          </div>
                         </td>
                       </tr>
                       <tr>
