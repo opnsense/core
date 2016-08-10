@@ -280,24 +280,32 @@ function filter_rules_sort()
     for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
         $config['filter']['rule'][$i]['seq'] = $i;
     }
-    usort($config['filter']['rule'], "filter_rules_compare");
+    usort($config['filter']['rule'], function($a, $b){
+        if (isset($a['floating']) && isset($b['floating'])) {
+            return $a['seq'] - $b['seq'];
+        } elseif (isset($a['floating'])) {
+            return -1;
+        } elseif (isset($b['floating'])) {
+            return 1;
+        } elseif ($a['interface'] == $b['interface']) {
+            return $a['seq'] - $b['seq'];
+        } elseif ($a['interface'] == $b['interface']) {
+            return 0;
+        } elseif ($a['interface'] == 'wan') {
+            return -1;
+        } elseif ($b['interface'] == 'wan') {
+            return 1;
+        } elseif ($a['interface'] == 'lan') {
+            return -1;
+        } elseif ($b['interface'] == 'lan') {
+            return 1;
+        } else {
+            return strnatcmp($a['interface'], $b['interface']);
+        }
+    });
     /* strip the sequence numbers again */
     for ($i = 0; isset($config['filter']['rule'][$i]); $i++) {
         unset($config['filter']['rule'][$i]['seq']);
-    }
-}
-
-function filter_rules_compare($a, $b) {
-    if (isset($a['floating']) && isset($b['floating'])) {
-        return $a['seq'] - $b['seq'];
-    } elseif (isset($a['floating'])) {
-        return -1;
-    } elseif (isset($b['floating'])) {
-        return 1;
-    } elseif ($a['interface'] == $b['interface']) {
-        return $a['seq'] - $b['seq'];
-    } else {
-        return compare_interface_friendly_names($a['interface'], $b['interface']);
     }
 }
 

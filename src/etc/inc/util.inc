@@ -741,23 +741,6 @@ function get_configured_vips_list()
     return $alias_list;
 }
 
-/* comparison function for sorting by the order in which interfaces are normally created */
-function compare_interface_friendly_names($a, $b)
-{
-    if ($a == $b) {
-        return 0;
-    } elseif ($a == 'wan') {
-        return -1;
-    } elseif ($b == 'wan') {
-        return 1;
-    } elseif ($a == 'lan') {
-        return -1;
-    } elseif ($b == 'lan') {
-        return 1;
-    }
-    return strnatcmp($a, $b);
-}
-
 /* return the configured interfaces list. */
 function get_configured_interface_list($only_opt = false, $withdisabled = false)
 {
