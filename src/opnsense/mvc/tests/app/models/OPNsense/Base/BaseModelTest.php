@@ -80,7 +80,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
             BaseModelTest::$model->arraytypes->item->Del($nodeid);
         }
         // generate new items
-        for ($i = 1; $i <= 10 ; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $node = BaseModelTest::$model->arraytypes->item->Add();
             $node->number = $i;
         }

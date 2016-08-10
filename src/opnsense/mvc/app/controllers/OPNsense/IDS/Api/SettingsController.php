@@ -41,8 +41,8 @@ use \OPNsense\Base\UIModelGrid;
  */
 class SettingsController extends ApiMutableModelControllerBase
 {
-    static protected  $internalModelName = 'ids';
-    static protected  $internalModelClass = '\OPNsense\IDS\IDS';
+    static protected $internalModelName = 'ids';
+    static protected $internalModelClass = '\OPNsense\IDS\IDS';
 
     /**
      * @return array plain model settings (non repeating items)
@@ -148,7 +148,7 @@ class SettingsController extends ApiMutableModelControllerBase
      * @param string|null $sid rule identifier
      * @return array|mixed
      */
-    public function getRuleInfoAction($sid=null)
+    public function getRuleInfoAction($sid = null)
     {
         // request list of installed rules
         if (!empty($sid)) {
