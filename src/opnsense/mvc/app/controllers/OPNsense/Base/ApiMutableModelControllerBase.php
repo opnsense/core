@@ -168,7 +168,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param $mdl The validated model containing the new state of the model
      * @return Error message on error, or null/void on success
      */
-    protected function setActionHook($mdl) { }
+    protected function setActionHook() { }
 
     /**
      * update model settings
