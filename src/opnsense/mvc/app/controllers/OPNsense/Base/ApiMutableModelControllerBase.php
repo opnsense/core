@@ -95,7 +95,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * override this to customize the model binding behavior
      * @return null|BaseModel
      */
     protected function getModel()
