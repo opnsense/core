@@ -165,7 +165,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             interface_sync_wireless_clones($config['interfaces'][$newifname], false);
         }
 
-        uksort($config['interfaces'], "compare_interface_friendly_names");
         write_config();
         header("Location: interfaces_assign.php");
         exit;
