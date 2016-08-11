@@ -57,6 +57,17 @@ abstract class BaseModel
      */
     private $internal_mountpoint = '';
 
+    /**
+     * this models version number, defaults to 0.0.0 (no version)
+     * @var string
+     */
+    private $internal_model_version = "0.0.0";
+
+    /**
+     * model version in config.xml
+     * @var null
+     */
+    private $internal_current_model_version = null;
 
     /**
      * If the model needs a custom initializer, override this init() method
@@ -220,6 +231,10 @@ abstract class BaseModel
         }
         $this->internal_mountpoint = $model_xml->mount;
 
+        if (!empty($model_xml->version)) {
+            $this->internal_model_version = $model_xml->version;
+        }
+
         // use an xpath expression to find the root of our model in the config.xml file
         // if found, convert the data to a simple structure (or create an empty array)
         $tmp_config_data = $internalConfigHandle->xpath($model_xml->mount);
@@ -231,6 +246,13 @@ abstract class BaseModel
 
         // We've loaded the model template, now let's parse it into this object
         $this->parseXml($model_xml->items, $config_array, $this->internalData) ;
+        // root may contain a version, store if found
+        if (empty($config_array)) {
+            // new node, reset
+            $this->internal_current_model_version = "0.0.0";
+        } elseif (!empty($config_array->attributes()['version'])) {
+            $this->internal_current_model_version = (string)$config_array->attributes()['version'];
+        }
 
         // trigger post loading event
         $this->internalData->eventPostLoading();
@@ -368,6 +390,10 @@ abstract class BaseModel
 
         $xml = new \SimpleXMLElement($xml_root_node);
         $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
+        // add this model's version to the newly created xml structure
+        if (!empty($this->internal_current_model_version)) {
+            $xml->xpath($this->internal_mountpoint)[0]->addAttribute('version', $this->internal_current_model_version);
+        }
 
         return $xml;
     }
@@ -480,6 +506,53 @@ abstract class BaseModel
             return true;
         } else {
             return false;
+        }
+    }
+
+    /**
+     * Execute model version migrations
+     * Every model may contain a migrations directory containing BaseModelMigration descendants, which
+     * are executed in order of version number.
+     *
+     * The BaseModelMigration class should be named with the corresponding version
+     * prefixed with an M and . replaced by _ for example : M1_0_1 equals version 1.0.1
+     *
+     */
+    public function runMigrations()
+    {
+        if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
+            $class_info = new \ReflectionClass($this);
+            // fetch version migrations
+            $versions = array();
+            foreach (glob(dirname($class_info->getFileName())."/migrations/M*.php") as $filename) {
+                $version = str_replace('_', '.', explode('.', substr(basename($filename),1))[0]);
+                $versions[$version] = $filename;
+            }
+            uksort($versions, "version_compare");
+            foreach ($versions as $mig_version => $filename) {
+                if (version_compare($this->internal_current_model_version, $mig_version, '<') &&
+                    version_compare($this->internal_model_version, $mig_version, '>=') ) {
+                    // execute upgrade action
+                    $tmp = explode('.', basename($filename))[0];
+                    $mig_classname = "\\".$class_info->getNamespaceName()."\\migrations\\".$tmp;
+                    $mig_class = new \ReflectionClass($mig_classname);
+                    if ($mig_class->getParentClass()->name == 'OPNsense\Base\BaseModelMigration') {
+                        $migobj = $mig_class->newInstance();
+                        try {
+                            $migobj->run($this);
+                        } catch (\Exception $e) {
+                            $logger->error("failed migrating from version " .
+                                $this->internal_current_model_version .
+                                " to " . $mig_version . " in ".
+                                $class_info->getName() .
+                                " [skipping step]"
+                            );
+                        }
+                        $this->internal_current_model_version = $mig_version;
+                    }
+                }
+            }
         }
     }
 }
