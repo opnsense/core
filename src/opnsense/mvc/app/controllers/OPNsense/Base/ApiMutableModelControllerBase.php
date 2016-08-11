@@ -111,36 +111,51 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * validate and save model after update or insertion.
      * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
      * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $mdl The model to save
      * @param $node reference node, to use as relative offset
-     * @param $actionHook A closure containing an action to do after validation but before saving. Must return null if successful, or an error message if not.
      * @return array result / validation output
      */
-    protected function save($mdl, $node = null, $actionHook = null)
+    protected function validateAndSave($node = null)
     {
-        $result = array("result"=>"failed","validations" => array());
+        $result = $this->validate();
+        if (empty($result['result'])) {
+            return $this->save();
+        }
+        return $result;
+    }
+
+    /**
+     * validate this model
+     * @param $node reference node, to use as relative offset
+     * @return array result / validation output
+     */
+    protected function validate($node = null)
+    {
+        $result = array("result"=>"");
         // perform validation
-        $valMsgs = $mdl->performValidation();
+        $valMsgs = $this->getModel()->performValidation();
         foreach ($valMsgs as $field => $msg) {
+            if (!array_key_exists("validations", $result)) {
+                $result["validations"] = array();
+                $result["result"] = "failed";
+            }
             // replace absolute path to attribute for relative one at uuid.
             if ($node != null) {
                 $fieldnm = str_replace($node->__reference, static::$internalModelName, $msg->getField());
                 $result["validations"][$fieldnm] = $msg->getMessage();
             } else {
-                $result["validations"][$msg->getField()] = $msg->getMessage();
+                $result["validations"][static::$internalModelName.".".$msg->getField()] = $msg->getMessage();
             }
         }
-        if (count($result['validations']) != 0) {
-            return $result;
-        }
-        // run the action hook (default one just always returns null)
-        $errorMessage = $actionHook ? $actionHook($mdl) : null;
-        if ($errorMessage != null) {
-            return array("result"=>failed, "error"=>$errorMessage);
-        }
-        // serialize model to config and save when there are no validation errors
-        // and the action hook completed successfully
-        $mdl->serializeToConfig();
+        return $result;
+    }
+
+    /**
+     * save model after update or insertion, validate() first to avoid raising exceptions
+     * @return array result / validation output
+     */
+    protected function save()
+    {
+        $this->getModel()->serializeToConfig();
         Config::getInstance()->save();
         return array("result"=>"saved");
     }
@@ -166,7 +181,15 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             // load model and update with provided data
             $mdl = $this->getModel();
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
-            $result = $this->save($mdl, null, $this->setActionHook);
+            $result = $this->validate();
+            if (empty($result['result'])) {
+                $errorMessage = $this->setActionHook();
+                if (!empty($errorMessage)) {
+                    $result['error'] = $errorMessage;
+                } else {
+                    return $this->save();
+                }
+            }
         }
         return $result;
     }
