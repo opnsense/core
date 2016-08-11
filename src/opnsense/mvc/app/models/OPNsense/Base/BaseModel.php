@@ -111,7 +111,7 @@ abstract class BaseModel
             if (class_exists($classname)) {
                 // construct field type object
                 $field_rfcls = new \ReflectionClass($classname);
-                if (!$field_rfcls->getParentClass()->name == 'OPNsense\Base\FieldTypes\BaseField') {
+                if ($field_rfcls->getParentClass()->name != 'OPNsense\Base\FieldTypes\BaseField') {
                     // class found, but of wrong type. raise an exception.
                     throw new ModelException("class ".$field_rfcls->name." of wrong type in model definition");
                 }
