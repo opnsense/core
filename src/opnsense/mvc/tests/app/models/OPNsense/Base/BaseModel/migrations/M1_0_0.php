@@ -26,17 +26,16 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-namespace tests\OPNsense\Base\BaseModel;
 
-use OPNsense\Base\BaseModel;
+namespace tests\OPNsense\Base\BaseModel\migrations;
 
-require_once 'migrations/M0_0_1.php';
-require_once 'migrations/M1_0_0.php';
-require_once 'migrations/M1_0_1.php';
+use OPNsense\Base\BaseModelMigration;
 
-/**
- * Class TestModel
- */
-class TestModel extends BaseModel
+class M1_0_0 extends BaseModelMigration
 {
+    public function run($model)
+    {
+        $current_value = (string)$model->general->FromEmail;
+        $model->general->FromEmail = "100_" . $current_value;
+    }
 }

@@ -37,6 +37,20 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
 {
     private static $model = null;
 
+    public function testResetConfig()
+    {
+        // reset version, force migrations
+        if (!empty(Config::getInstance()->object()->tests) &&
+            !empty(Config::getInstance()->object()->tests->OPNsense) &&
+            !empty(Config::getInstance()->object()->tests->OPNsense->TestModel)) {
+            Config::getInstance()->object()->tests->OPNsense->TestModel['version'] = '0.0.0';
+            Config::getInstance()->object()->tests->OPNsense->TestModel->general->FromEmail = "sample@example.com";
+        }
+    }
+
+    /**
+     * @depends testResetConfig
+     */
     public function testCanBeCreated()
     {
         BaseModelTest::$model = new BaseModel\TestModel();
@@ -52,7 +66,17 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testGeneralAvailable
+     * @depends testCanBeCreated
+     */
+    public function testRunMigrations()
+    {
+        BaseModelTest::$model->runMigrations();
+        // migration should have prefixed our default email address
+        $this->assertEquals((string)BaseModelTest::$model->general->FromEmail, '100_001_sample@example.com');
+    }
+
+    /**
+     * @depends testRunMigrations
      */
     public function testCanSetStringValue()
     {
@@ -63,7 +87,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage FromEmailXXX not an attribute of general
-     * @depends testGeneralAvailable
+     * @depends testRunMigrations
      */
     public function testCannotSetNonExistingField()
     {
@@ -71,7 +95,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testGeneralAvailable
+     * @depends testRunMigrations
      */
     public function testCanAssignArrayType()
     {
@@ -152,7 +176,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testGeneralAvailable
+     * @depends testRunMigrations
      */
     public function testsetNodeByReferenceFound()
     {
@@ -160,7 +184,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @depends testGeneralAvailable
+     * @depends testRunMigrations
      */
     public function testsetNodeByReferenceNotFound()
     {
@@ -210,4 +234,5 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
         $data = BaseModelTest::$model->arraytypes->item->getNodes();
         $this->assertEquals(count($data), 9);
     }
+
 }
