@@ -239,7 +239,7 @@ class ServiceController extends ApiControllerBase
             $filter->add('query', new QueryFilter());
 
             // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', -1);
             $currentPage = $this->request->getPost('current', 'int', 1);
 
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
