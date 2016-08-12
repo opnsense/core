@@ -1022,7 +1022,7 @@ endif; ?>
                         <input name="strictusercn" type="checkbox" value="yes" <?=!empty($pconfig['strictusercn']) ? "checked=\"checked\"" : "" ;?> />
                         <div class="hidden" for="help_for_strictusercn">
                           <span>
-                              <?=gettext("When authenticating users, enforce a match between the common name of the client certificate and the username given at login."); ?>
+                              <?=gettext("When authenticating users, enforce a match between the Common Name of the client certificate and the username given at login."); ?>
                           </span>
                         </div>
                       </td>
