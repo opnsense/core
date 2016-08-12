@@ -107,22 +107,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
-     * validate and save model after update or insertion.
-     * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
-     * it easier to reference specific uuids without having to use them in the frontend descriptions.
-     * @param $node reference node, to use as relative offset
-     * @return array result / validation output
-     */
-    protected function validateAndSave($node = null)
-    {
-        $result = $this->validate();
-        if (empty($result['result'])) {
-            return $this->save();
-        }
-        return $result;
-    }
-
-    /**
      * validate this model
      * @param $node reference node, to use as relative offset
      * @return array result / validation output
@@ -184,9 +168,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
             $result = $this->validate();
             if (empty($result['result'])) {
-                $errorMessage = $this->setActionHook();
-                if (!empty($errorMessage)) {
-                    $result['error'] = $errorMessage;
+                $hookErrorMessage = $this->setActionHook();
+                if (!empty($hookErorMessage)) {
+                    $result['error'] = $hookErrorMessage;
                 } else {
                     return $this->save();
                 }
