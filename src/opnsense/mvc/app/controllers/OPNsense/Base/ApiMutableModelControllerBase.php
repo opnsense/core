@@ -148,7 +148,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @param $mdl The validated model containing the new state of the model
      * @return Error message on error, or null/void on success
      */
     protected function setActionHook()

@@ -77,10 +77,10 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * setItemAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @param $uuid item unique id
+     * @param $node node being set
      * @return Error message on error, or null/void on success
      */
-    protected function setItemActionHook($uuid)
+    protected function setItemActionHook($node)
     {
     }
 
@@ -99,7 +99,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                     $node->setNodes($this->request->getPost(static::$internalModelName));
                     $result = $this->validate($node);
                     if (empty($result['result'])) {
-                        $hookErrorMessage = $this->setItemActionHook($uuid);
+                        $hookErrorMessage = $this->setItemActionHook($node);
                         if (!empty($hookErrorMessage)) {
                             $result = array('result'=>'failed', 'error'=>$hookErrorMessage);
                         } else {
@@ -117,9 +117,10 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * addItemAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
+     * @param $node node being added
      * @return Error message on error, or null/void on success
      */
-    protected function addItemActionHook()
+    protected function addItemActionHook($node)
     {
     }
 
@@ -135,7 +136,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
             $node->setNodes($this->request->getPost(static::$internalModelName));
             $result = $this->validate($node);
             if (empty($result['result'])) {
-                $hookErrorMessage = $this->addItemActionHook();
+                $hookErrorMessage = $this->addItemActionHook($node);
                 if (!empty($hookErrorMessage)) {
                     $result = array('result'=>'failed', 'error'=>$hookErrorMessage);
                 } else {
@@ -151,10 +152,10 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * delItemAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @param $uuid The UUID of the item to be deleted
+     * @param $node node being deleted
      * @return Error message on error, or null/void on succes s
      */
-    protected function delItemActionHook($uuid)
+    protected function delItemActionHook($node)
     {
     }
 
@@ -168,7 +169,8 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
         $result = array("result"=>"failed");
         if ($this->request->isPost()) {
             if ($uuid != null) {
-                $hookErrorMessage = $this->delItemActionHook($uuid);
+                $node = $this->getNodeByUUID($uuid);
+                $hookErrorMessage = $this->delItemActionHook($node);
                 if (!empty($hookErrorMessage)) {
                     $result['error'] = $hookErrorMessage;
                 } elseif ($this->getNodes()->del($uuid)) {
@@ -190,11 +192,11 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * toggleItemAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @param $uuid The UUID of the item to be toggled
+     * @param $node node being toggled
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return Error message on error, or null/void on succes s
      */
-    protected function toggleItemActionHook($uuid, $enabled)
+    protected function toggleItemActionHook($node, $enabled)
     {
     }
 
@@ -220,7 +222,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                         $node->enabled = "1";
                     }
                     $result['result'] = $node->enabled;
-                    $errorMessage = toggleItemActionHook($uuid, $enabled);
+                    $errorMessage = toggleItemActionHook($node, $enabled);
                     if ($errorMessage) {
                         $result['error'] = $errorMessage;
                     } else {
