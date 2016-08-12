@@ -1,5 +1,6 @@
 <model>
     <mount>//OPNsense/proxy</mount>
+    <version>1.0.0</version>
     <description>
         (squid) proxy settings
     </description>
