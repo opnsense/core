@@ -535,7 +535,7 @@ abstract class BaseModel
                     version_compare($this->internal_model_version, $mig_version, '>=') ) {
                     // execute upgrade action
                     $tmp = explode('.', basename($filename))[0];
-                    $mig_classname = "\\".$class_info->getNamespaceName()."\\migrations\\".$tmp;
+                    $mig_classname = "\\".$class_info->getNamespaceName()."\\Migrations\\".$tmp;
                     $mig_class = new \ReflectionClass($mig_classname);
                     if ($mig_class->getParentClass()->name == 'OPNsense\Base\BaseModelMigration') {
                         $migobj = $mig_class->newInstance();

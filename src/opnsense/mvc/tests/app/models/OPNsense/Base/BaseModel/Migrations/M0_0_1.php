@@ -27,15 +27,15 @@
  *
  */
 
-namespace tests\OPNsense\Base\BaseModel\migrations;
+namespace tests\OPNsense\Base\BaseModel\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
 
-class M1_0_0 extends BaseModelMigration
+class M0_0_1 extends BaseModelMigration
 {
     public function run($model)
     {
         $current_value = (string)$model->general->FromEmail;
-        $model->general->FromEmail = "100_" . $current_value;
+        $model->general->FromEmail = "001_" . $current_value;
     }
 }

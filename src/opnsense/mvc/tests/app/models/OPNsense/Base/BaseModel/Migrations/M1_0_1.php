@@ -27,7 +27,7 @@
  *
  */
 
-namespace tests\OPNsense\Base\BaseModel\migrations;
+namespace tests\OPNsense\Base\BaseModel\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
 
