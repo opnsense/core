@@ -3416,7 +3416,7 @@ function interface_dhcpv6_configure($interface = 'wan', $wancfg)
             $dhcp6cconf = file_get_contents($dhcp6cfile);
             $dhcp6cconf = DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
         } else {
-            log_error(sprintf('DHCP6 config file override does not exist: %s', $dhcp6cfile));
+            log_error(sprintf('DHCP6 config file override does not exist: "%s"', $dhcp6cfile));
         }
     }
 
@@ -3739,7 +3739,7 @@ EOD;
             $dhclientconf = file_get_contents($dhclientfile);
             $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
         } else {
-            log_error(sprintf('DHCP config file override does not exist: %s', $dhclientfile));
+            log_error(sprintf('DHCP config file override does not exist: "%s"', $dhclientfile));
         }
     }
 
