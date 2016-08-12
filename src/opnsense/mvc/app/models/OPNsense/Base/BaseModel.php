@@ -541,6 +541,7 @@ abstract class BaseModel
                         $migobj = $mig_class->newInstance();
                         try {
                             $migobj->run($this);
+                            $this->serializeToConfig();
                         } catch (\Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->internal_current_model_version .
@@ -553,5 +554,14 @@ abstract class BaseModel
                 }
             }
         }
+    }
+
+    /**
+     * return current version number
+     * @return null|string
+     */
+    public function getVersion()
+    {
+        return $this->internal_current_model_version;
     }
 }
