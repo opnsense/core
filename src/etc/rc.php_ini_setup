@@ -76,11 +76,12 @@ touch ${EXTENSIONS_INI}
 cp ${EXTENSIONS_INI} ${_EXTENSIONS_INI}
 chmod 644 ${_EXTENSIONS_INI}
 
-# Clear the .ini file to make sure we are clean
+# Clear the .ini files in preparation for the rewrite
+rm -f /usr/local/etc/php/extensions.ini
 rm -f /usr/local/etc/php.ini
 rm -f /usr/local/lib/php.ini
 
-# Fetch the timezone from the XML and set it here. We set it later too in the running scripts
+# Fetch the timezone from the XML and set it here
 TIMEZONE=Etc/UTC
 if [ -f /conf/config.xml ]; then
 	TIMEZONE=`cat /conf/config.xml | egrep -E '<timezone>(.*?)</timezone>' | awk -F'>' '{print $2}'|awk -F'<' '{print $1}'`
@@ -160,4 +161,7 @@ EOF
 
 # Copy php.ini file to etc/ too (cli)
 cp /usr/local/lib/php.ini /usr/local/etc/php.ini
-mv ${_EXTENSIONS_INI} ${EXTENSIONS_INI}
+if [ ! -f /usr/local/etc/php/ext-20-gettext.ini ]; then
+	# Only needs a copy for FreeBSD's old style PHP module register
+	mv ${_EXTENSIONS_INI} ${EXTENSIONS_INI}
+fi
