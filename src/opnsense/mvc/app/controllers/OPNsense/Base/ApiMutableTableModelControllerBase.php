@@ -171,7 +171,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                 $hookErrorMessage = $this->delItemActionHook($uuid);
                 if (!empty($hookErrorMessage)) {
                     $result['error'] = $hookErrorMessage;
-                } elseif (getNodes()->del($uuid)) {
+                } elseif ($this->getNodes()->del($uuid)) {
                     // if item is removed, serialize to config and save
                     $result = $this->save();
                     if ($result['result'] == 'saved') {
