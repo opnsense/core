@@ -521,6 +521,7 @@ abstract class BaseModel
     public function runMigrations()
     {
         if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+            $upgradePerfomed = false;
             $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
             $class_info = new \ReflectionClass($this);
             // fetch version migrations
@@ -536,12 +537,14 @@ abstract class BaseModel
                     // execute upgrade action
                     $tmp = explode('.', basename($filename))[0];
                     $mig_classname = "\\".$class_info->getNamespaceName()."\\Migrations\\".$tmp;
+                    // Phalcon's autoloader uses _ as a directory locator, we need to import these files ourselves
+                    require_once $filename;
                     $mig_class = new \ReflectionClass($mig_classname);
                     if ($mig_class->getParentClass()->name == 'OPNsense\Base\BaseModelMigration') {
                         $migobj = $mig_class->newInstance();
                         try {
                             $migobj->run($this);
-                            $this->serializeToConfig();
+                            $upgradePerfomed = true;
                         } catch (\Exception $e) {
                             $logger->error("failed migrating from version " .
                                 $this->internal_current_model_version .
@@ -552,6 +555,11 @@ abstract class BaseModel
                         $this->internal_current_model_version = $mig_version;
                     }
                 }
+            }
+            // serialize to config after last migration step, keep the config data static as long as not all
+            // migrations have completed.
+            if ($upgradePerfomed) {
+                $this->serializeToConfig();
             }
         }
     }
