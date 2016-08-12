@@ -169,7 +169,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $result = $this->validate();
             if (empty($result['result'])) {
                 $hookErrorMessage = $this->setActionHook();
-                if (!empty($hookErorMessage)) {
+                if (!empty($hookErrorMessage)) {
                     $result['error'] = $hookErrorMessage;
                 } else {
                     return $this->save();
