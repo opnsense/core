@@ -54,8 +54,10 @@ foreach (new RecursiveIteratorIterator (new RecursiveDirectoryIterator ($model_d
                         " from " . $version_pre.
                         " to " . $version_post . "\n" ;
                     $executed_migration = true;
+                } elseif (!empty($version_post)) {
+                    echo "keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";
                 } else {
-                    echo "keep version " . $mdl_class_info->getName() . "\n";
+                    echo "unversioned " . $mdl_class_info->getName() . "\n";
                 }
             }
         } catch (\ReflectionException $e) {
