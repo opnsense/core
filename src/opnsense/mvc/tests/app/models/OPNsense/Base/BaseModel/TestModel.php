@@ -30,10 +30,6 @@ namespace tests\OPNsense\Base\BaseModel;
 
 use OPNsense\Base\BaseModel;
 
-require_once 'Migrations/M0_0_1.php';
-require_once 'Migrations/M1_0_0.php';
-require_once 'Migrations/M1_0_1.php';
-
 /**
  * Class TestModel
  */
