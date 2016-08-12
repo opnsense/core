@@ -526,7 +526,7 @@ abstract class BaseModel
             $class_info = new \ReflectionClass($this);
             // fetch version migrations
             $versions = array();
-            foreach (glob(dirname($class_info->getFileName())."/migrations/M*.php") as $filename) {
+            foreach (glob(dirname($class_info->getFileName())."/Migrations/M*.php") as $filename) {
                 $version = str_replace('_', '.', explode('.', substr(basename($filename), 1))[0]);
                 $versions[$version] = $filename;
             }
