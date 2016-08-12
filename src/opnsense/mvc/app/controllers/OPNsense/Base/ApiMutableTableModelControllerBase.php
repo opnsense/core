@@ -100,7 +100,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                     $result = $this->validate($node);
                     if (empty($result['result'])) {
                         $hookErrorMessage = $this->setItemActionHook($uuid);
-                        if (!empty($hookErorMessage)) {
+                        if (!empty($hookErrorMessage)) {
                             $result = array('result'=>'failed', 'error'=>$hookErrorMessage);
                         } else {
                             $result = $this->save();
@@ -136,7 +136,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
             $result = $this->validate($node);
             if (empty($result['result'])) {
                 $hookErrorMessage = $this->addItemActionHook();
-                if (!empty($hookErorMessage)) {
+                if (!empty($hookErrorMessage)) {
                     $result = array('result'=>'failed', 'error'=>$hookErrorMessage);
                 } else {
                     $result = $this->save();
