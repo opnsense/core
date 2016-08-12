@@ -611,6 +611,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (in_array($a_interfaces[$if]['ipaddr'], array("ppp", "pppoe", "pptp", "l2tp"))) {
                     $input_errors[] = sprintf(gettext("You have to reassign the interface to be able to configure as %s."),$pconfig['type']);
                 }
+                if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
+                    $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
+                }
                 break;
             case "ppp":
                 $reqdfields = explode(" ", "ports phone");
@@ -653,6 +656,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $reqdfields = explode(" ", "ipaddrv6 subnetv6 gatewayv6");
                 $reqdfieldsn = array(gettext("IPv6 address"),gettext("Subnet bit count"),gettext("Gateway"));
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
+                break;
+            case "dhcp6":
+                if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
+                    $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
+                }
                 break;
             case "none":
                 if (isset($config['virtualip']['vip'])) {
@@ -1908,7 +1916,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"></td>
+                          <td width="22%"><a id="help_for_dhcp_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
                           <td width="78%">
                             <div id="dhcp_mode" class="btn-group" data-toggle="buttons">
                               <label class="btn btn-default <?=empty($pconfig['adv_dhcp_config_advanced']) && empty($pconfig['adv_dhcp_config_file_override']) ? "active" : "";?>">
@@ -1923,6 +1931,11 @@ include("head.inc");
                                 <input name="adv_dhcp_config_file_override" type="radio" value="file" <?=!empty($pconfig['adv_dhcp_config_file_override']) ? "checked=\"\"" : "";?> />
                                 <?=gettext("Config File Override");?>
                               </label>
+                            </div>
+                            <div class="hidden" for="help_for_dhcp_mode">
+                              <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
+                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?></br>
+                              <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2046,7 +2059,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcp_file_override">
-                          <td><a id="help_for_dhcp_config_file_override_path" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?=gettext("Config File Override");?>
+                          <td><a id="help_for_dhcp_config_file_override_path" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration File Override");?>
                           <td>
                             <input name="adv_dhcp_config_file_override_path"   type="text" id="adv_dhcp_config_file_override_path"  value="<?=$pconfig['adv_dhcp_config_file_override_path'];?>" />
                             <div class="hidden" for="help_for_dhcp_config_file_override_path">
@@ -2418,7 +2431,7 @@ include("head.inc");
                       </thead>
                       <tbody>
                         <tr>
-                          <td width="22%"></td>
+                          <td width="22%"><a id="help_for_dhcpv6_mode" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Configuration Mode"); ?></td>
                           <td width="78%">
                             <div id="dhcpv6_mode" class="btn-group" data-toggle="buttons">
                               <label class="btn btn-default <?=empty($pconfig['adv_dhcp6_config_advanced']) && empty($pconfig['adv_dhcp6_config_file_override']) ? "active" : "";?>">
@@ -2433,6 +2446,11 @@ include("head.inc");
                                 <input name="adv_dhcp6_config_file_override" type="radio" value="file" <?=!empty($pconfig['adv_dhcp6_config_file_override']) ? "checked=\"\"" : "";?> />
                                 <?=gettext("Config File Override");?>
                               </label>
+                            </div>
+                            <div class="hidden" for="help_for_dhcpv6_mode">
+                              <?= gettext('The basic mode auto-configures DHCP using default values and optional user input.') ?><br/>
+                              <?= gettext('The advanced mode does not provide any default values, you will need to fill out any values you would like to use.') ?></br>
+                              <?= gettext('The configuration file override mode may point to a fully customised file on the system instead.') ?>
                             </div>
                           </td>
                         </tr>
