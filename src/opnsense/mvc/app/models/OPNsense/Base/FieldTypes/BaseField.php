@@ -338,7 +338,7 @@ abstract class BaseField
      * check if this field is unused and required
      * @return bool
      */
-    protected function isEmptyAndRequired()
+    public function isEmptyAndRequired()
     {
         if ($this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null)) {
             return true;
