@@ -526,7 +526,7 @@ abstract class BaseModel
             // fetch version migrations
             $versions = array();
             foreach (glob(dirname($class_info->getFileName())."/migrations/M*.php") as $filename) {
-                $version = str_replace('_', '.', explode('.', substr(basename($filename),1))[0]);
+                $version = str_replace('_', '.', explode('.', substr(basename($filename), 1))[0]);
                 $versions[$version] = $filename;
             }
             uksort($versions, "version_compare");
@@ -546,8 +546,7 @@ abstract class BaseModel
                                 $this->internal_current_model_version .
                                 " to " . $mig_version . " in ".
                                 $class_info->getName() .
-                                " [skipping step]"
-                            );
+                                " [skipping step]");
                         }
                         $this->internal_current_model_version = $mig_version;
                     }

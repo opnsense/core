@@ -37,5 +37,7 @@ use Phalcon\Logger\Adapter\Syslog;
  */
 abstract class BaseModelMigration
 {
-    public function run($model) {}
+    public function run($model)
+    {
+    }
 }

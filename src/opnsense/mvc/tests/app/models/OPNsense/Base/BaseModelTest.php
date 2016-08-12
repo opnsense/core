@@ -234,5 +234,4 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
         $data = BaseModelTest::$model->arraytypes->item->getNodes();
         $this->assertEquals(count($data), 9);
     }
-
 }

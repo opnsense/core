@@ -39,11 +39,13 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
     static protected $modelPathPrefix = '';
     static protected $gridFields = array();
     static protected $gridDefaultSort = null;
-    private function getNodes() {
+    private function getNodes()
+    {
         $ref = static::$modelPathPrefix . static::$internalModelName;
         return $this->getModel()->getNodeByReference($ref);
     }
-    private function getNodeByUUID($uuid) {
+    private function getNodeByUUID($uuid)
+    {
         $nodes = $this->getNodes();
         return !empty($nodes) ? $nodes->$uuid : null;
     }
@@ -78,7 +80,9 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * @param $mdl The validated model containing the new state of the model
      * @return Error message on error, or null/void on success
      */
-    protected function setItemActionHook($mdl) { }
+    protected function setItemActionHook($mdl)
+    {
+    }
 
     /**
      * update item with given properties
@@ -108,7 +112,9 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * @param $mdl The validated model containing the state of the new model
      * @return Error message on error, or null/void on success
      */
-    protected function addItemActionHook($mdl) { }
+    protected function addItemActionHook($mdl)
+    {
+    }
 
     /**
      * add new item and set with attributes from post
@@ -134,7 +140,9 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * @param $uuid The UUID of the item to be deleted
      * @return Error message on error, or null/void on succes s
      */
-    protected function delItemActionHook($uuid) { }
+    protected function delItemActionHook($uuid)
+    {
+    }
 
     /**
      * delete item by uuid
@@ -150,7 +158,7 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
                 $errorMessage = delItemActionHook($uuid);
                 if ($errorMessage) {
                     $result['error'] = $errorMessage;
-                } else if (getNodes()->del($uuid)) {
+                } elseif (getNodes()->del($uuid)) {
                     // if item is removed, serialize to config and save
                     $mdl->serializeToConfig();
                     Config::getInstance()->save();
@@ -172,7 +180,9 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
      * @param $enabled desired state enabled(1)/disabled(1), leave empty for toggle
      * @return Error message on error, or null/void on succes s
      */
-    protected function toggleItemActionHook($uuid, $enabled) { }
+    protected function toggleItemActionHook($uuid, $enabled)
+    {
+    }
 
     /**
      * toggle item by uuid (enable/disable)
