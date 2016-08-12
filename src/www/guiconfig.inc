@@ -545,7 +545,6 @@ function get_crash_report($pedantic = false)
 
     if (!$pedantic) {
         $excludes[] = 'PHP Notice:';
-        $excludes[] = 'PHP Startup: Unable to load dynamic library \'/usr/local/lib/php/20131226/suhosin.so\' - /usr/local/lib/php/20131226/suhosin.so: Undefined symbol "ps_globals" in Unknown on line 0';
     }
 
     if (file_exists($PHP_errors_log)) {
