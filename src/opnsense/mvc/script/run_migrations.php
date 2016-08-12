@@ -50,8 +50,9 @@ foreach (new RecursiveIteratorIterator (new RecursiveDirectoryIterator ($model_d
                 $mdl->runMigrations();
                 $version_post = $mdl->getVersion();
                 if ($version_pre != $version_post) {
+                    $version_pre = !empty($version_pre) ? $version_pre : ' <unversioned> ';
                     echo "migrated " .  $mdl_class_info->getName() .
-                        " from " . $version_pre.
+                        " from " . $version_pre .
                         " to " . $version_post . "\n" ;
                     $executed_migration = true;
                 } elseif (!empty($version_post)) {
