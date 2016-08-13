@@ -710,7 +710,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!is_ipaddrv4($pconfig['ipaddr'])) {
                 $input_errors[] = gettext("A valid IPv4 address must be specified.");
             } else {
-                if (is_ipaddr_configured($pconfig['ipaddr'], $if, true)) {
+                if (is_ipaddr_configured($pconfig['ipaddr'], $if)) {
                     $input_errors[] = gettext("This IPv4 address is being used by another interface or VIP.");
                 }
                 /* Do not accept network or broadcast address, except if subnet is 31 or 32 */
@@ -736,7 +736,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (!is_ipaddrv6($pconfig['ipaddrv6'])) {
                 $input_errors[] = gettext("A valid IPv6 address must be specified.");
             } else {
-                if (is_ipaddr_configured($pconfig['ipaddrv6'], $if, true)) {
+                if (is_ipaddr_configured($pconfig['ipaddrv6'], $if)) {
                     $input_errors[] = gettext("This IPv6 address is being used by another interface or VIP.");
                 }
 

@@ -5316,43 +5316,24 @@ function load_mac_manufacturer_table() {
  *   returns true if the IP Address is
  *   configured and present on this device.
 */
-function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, $check_subnets = false) {
+function is_ipaddr_configured($ipaddr, $ignore_if = '')
+{
     global $config;
 
     $isipv6 = is_ipaddrv6($ipaddr);
-    if ($check_subnets) {
-        $iflist = get_configured_interface_list();
-        foreach ($iflist as $if => $ifname) {
-            if ($ignore_if == $if) {
-                continue;
-            }
-
-            if ($isipv6 === true) {
-                $bitmask = get_interface_subnetv6($if);
-                $subnet = gen_subnetv6(get_interface_ipv6($if), $bitmask);
-            } else {
-                $bitmask = get_interface_subnet($if);
-                $subnet = gen_subnet(get_interface_ip($if), $bitmask);
-            }
-
-            if (ip_in_subnet($ipaddr, $subnet . '/' . $bitmask)) {
-                return true;
-            }
-        }
+    if ($isipv6 === true) {
+        $interface_list_ips = get_configured_ipv6_addresses();
     } else {
-        if ($isipv6 === true) {
-            $interface_list_ips = get_configured_ipv6_addresses();
-        } else {
-            $interface_list_ips = get_configured_ip_addresses();
+        $interface_list_ips = get_configured_ip_addresses();
+    }
+
+    foreach($interface_list_ips as $if => $ilips) {
+        /* Also ignore CARP interfaces, it'll be checked below */
+        if ($ignore_if == $if || strstr($ignore_if, "_vip")) {
+            continue;
         }
-        foreach($interface_list_ips as $if => $ilips) {
-            /* Also ignore CARP interfaces, it'll be checked below */
-            if ($ignore_if == $if || strstr($ignore_if, "_vip")) {
-                continue;
-            }
-            if (strcasecmp($ipaddr, $ilips) == 0) {
-                return true;
-            }
+        if (strcasecmp($ipaddr, $ilips) == 0) {
+            return true;
         }
     }
 
@@ -5362,16 +5343,6 @@ function is_ipaddr_configured($ipaddr, $ignore_if = "", $check_localip = false, 
             continue;
         }
         if (strcasecmp($ipaddr, $vip['ipaddr']) == 0) {
-            return true;
-        }
-    }
-
-    if ($check_localip) {
-        if (is_array($config['pptpd']) && !empty($config['pptpd']['localip']) && (strcasecmp($ipaddr, $config['pptpd']['localip']) == 0)) {
-            return true;
-        }
-
-        if (!is_array($config['l2tp']) && !empty($config['l2tp']['localip']) && (strcasecmp($ipaddr, $config['l2tp']['localip']) == 0)) {
             return true;
         }
     }

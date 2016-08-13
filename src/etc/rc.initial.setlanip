@@ -293,7 +293,7 @@ function console_configure_ip_address($version)
                 ) . "\n> ";
                 $intip = chop(fgets($fp));
                 $is_ipaddr = ($version === 6) ? is_ipaddrv6($intip) : is_ipaddrv4($intip);
-                if ($is_ipaddr && is_ipaddr_configured($intip, $interface, true)) {
+                if ($is_ipaddr && is_ipaddr_configured($intip, $interface)) {
                     $ip_conflict = true;
                     echo gettext("This IP address conflicts with another interface or a VIP") . "\n";
                 } else {
