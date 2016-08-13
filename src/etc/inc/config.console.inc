@@ -59,7 +59,7 @@ function set_networking_interfaces_ports($probe = false)
 	/* kernel messages clobber stty probing on ifconfig up */
 	mute_kernel_msgs();
 
-	$iflist = get_interface_list();
+	$iflist = get_interface_list(false, true);
 
 	if ($probe) {
 		echo PHP_EOL . gettext('Press any key to start the manual interface assignment:  ');
