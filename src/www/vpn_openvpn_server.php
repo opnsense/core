@@ -1230,7 +1230,7 @@ endif; ?>
                         endforeach; ?>
                         </select>
                         <div class="hidden" for="help_for_compression">
-                            <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently"); ?>.
+                            <?=gettext("Compress tunnel packets using the LZO algorithm. Adaptive compression will dynamically disable compression for a period of time if OpenVPN detects that the data in the packets is not being compressed efficiently."); ?>.
                         </div>
                       </td>
                     </tr>
