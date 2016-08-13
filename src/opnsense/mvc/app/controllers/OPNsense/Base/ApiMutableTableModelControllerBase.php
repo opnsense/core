@@ -39,12 +39,12 @@ abstract class ApiMutableTableModelControllerBase extends ApiMutableModelControl
     static protected $modelPathPrefix = '';
     static protected $gridFields = array();
     static protected $gridDefaultSort = null;
-    private function getNodes()
+    public function getNodes()
     {
         $ref = static::$modelPathPrefix . static::$internalModelName;
         return $this->getModel()->getNodeByReference($ref);
     }
-    private function getNodeByUUID($uuid)
+    public function getNodeByUUID($uuid)
     {
         $nodes = $this->getNodes();
         return !empty($nodes) ? $nodes->$uuid : null;
