@@ -41,7 +41,7 @@ abstract class BaseModelMigration
      * Walk through all nodes and check required defaults
      * @param $node
      */
-    private function checkDefaults($node) 
+    private function checkDefaults($node)
     {
         foreach ($node->__items as $key => $subnode) {
             if (count($subnode->__items) > 0) {

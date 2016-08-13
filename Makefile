@@ -298,6 +298,8 @@ sweep: force
 	    xargs -0 -n1 scripts/cleanfile
 	find ${.CURDIR}/scripts -type f -print0 | \
 	    xargs -0 -n1 scripts/cleanfile
+	find ${.CURDIR} -type f -depth 1 -print0 | \
+	    xargs -0 -n1 scripts/cleanfile
 
 style: want-pear-PHP_CodeSniffer
 	@(phpcs --tab-width=4 --standard=PSR2 ${.CURDIR}/src/opnsense/mvc \

@@ -52,7 +52,7 @@ fi
 echo "Flush Phalcon volt templates"
 rm -f /usr/local/opnsense/mvc/app/cache/*.php
 
-echo "Execute model migrations" 
+echo "Execute model migrations"
 /usr/local/opnsense/mvc/script/run_migrations.php
 
 echo "Reloading GUI configuration"
