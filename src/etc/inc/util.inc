@@ -876,11 +876,20 @@ function get_configured_ipv6_addresses()
  *
  *   $only_active = false -- interfaces that are available in the system
  *                  true  -- interfaces that are physically connected
+ *
+ *   $include_dmesg = false -- skip probing dmesg for more information
+ *                    true  -- probe dmesg for more information
  */
-function get_interface_list($only_active = false)
+function get_interface_list($only_active = false, $include_dmesg = false)
 {
     global $config;
+
+    $dmesg_arr = array();
     $iflist = array();
+
+    if ($include_dmesg) {
+        exec('/sbin/dmesg', $dmesg_arr);
+    }
 
     /* list of virtual interface types */
     $vfaces = array(
@@ -935,25 +944,22 @@ function get_interface_list($only_active = false)
         $toput = array(
           'up' => in_array($ifname, $ifnames_up),
           'ipaddr' => !empty($ifdata['ipaddr']) ? $ifdata['ipaddr'] : null,
-          'mac' => $ifdata['macaddr']
+          'mac' => $ifdata['macaddr'],
+          'dmesg' => '',
         );
 
-        if (isset($config['interfaces'])) {
-            foreach (legacy_config_get_interfaces(array("virtual" => false)) as $name => $int) {
-                if ($int['if'] == $ifname) {
-                    $toput['friendly'] = $name;
-                    break;
-                }
+        foreach (legacy_config_get_interfaces(array('virtual' => false)) as $name => $int) {
+            if ($int['if'] == $ifname) {
+                $toput['friendly'] = $name;
+                break;
             }
         }
 
-        $dmesg_arr = array();
-        $toput['dmesg'] = null;
-        exec("/sbin/dmesg |grep $ifname", $dmesg_arr);
-        if (count($dmesg_arr) > 0) {
-            preg_match_all("/<(.*?)>/i", $dmesg_arr[0], $dmesg);
-            if (isset($dmesg[1][0])) {
-                $toput['dmesg'] = $dmesg[1][0];
+        foreach ($dmesg_arr as $dmesg_line) {
+            $dmesg = array();
+            if (preg_match("/^{$ifname}: <(.*?)>/i", $dmesg_line, $dmesg) == 1) {
+                $toput['dmesg'] = $dmesg[1];
+                break;
             }
         }
 
