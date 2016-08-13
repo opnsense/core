@@ -157,7 +157,7 @@ if (isset($config['openvpn']['openvpn-server'])) {
                 $proxy['ip'] = $_GET['proxy_addr'];
             }
             if (empty($_GET['proxy_port'])) {
-                $input_errors[] = gettext("You need to specify a port for the proxy ip.");
+                $input_errors[] = gettext("You need to specify a port for the proxy IP.");
             } else {
                 $proxy['port'] = $_GET['proxy_port'];
             }
