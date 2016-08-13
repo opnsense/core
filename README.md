@@ -56,7 +56,7 @@ this target.  It may require several packages to be installed.  The
 target will try to assist in case of failure, e.g. when a missing file
 needs to be fetched from an external location.
 
-Several OPTIONS exist to customise the package:
+Several OPTIONS exist to customise the package, e.g.:
 
 * CORE_DEPENDS: a list of required dependencies for the package
 * CORE_ORIGIN: sets a FreeBSD compatible package/ports origin
@@ -75,36 +75,21 @@ make upgrade
 
 Upgrade will run the package build and attempt to replace the currently
 installed package in the system.  Safety measures may prevent the target
-from succeeding.  The following rules apply:
-
-In order to install from the master branch of this repository, the
-opnsense-devel package must be installed:
-
-    # pkg install opnsense-devel
-
-In order to install from the stable branches of this repository, the
-opnsense-stable package must be installed:
-
-    # pkg install opnsense-stable
-
-make mount
-----------
-
-Live-mount the package into the current system.  This will overlay
-the repository over /usr/local and will instantly change the GUI
-accordingly.  In this mode changes can be quickly tested.
-
-Note that live-mount will not be persistent after reboot and causes
-trouble when used while upgrading firmware as packages get installed
-into the repository as oppsed to the system.  Use with care.
-
-make umount
------------
-
-Disable the live-mount feature.
+from succeeding.  Instructions on how to proceed in case of failures are
+given inline.
 
 make lint
 ---------
 
 Run serveral syntax checks on the repository.  This is recommended
 before issuing a pull request on GitHub.
+
+make style
+----------
+
+Run the CodeSniffer PSR2 style checks on the MVC code base.
+
+make sweep
+----------
+
+Run Linux Kernel cleanfile witespace sanitiser on all files.
