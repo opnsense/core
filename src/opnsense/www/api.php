@@ -29,6 +29,6 @@ try {
     $response = array();
     $response['errorMessage'] = $e->getMessage();
     header("Content-Type: application/json;charset=utf-8");
-    echo htmlspecialchars(json_encode($response), ENT_NOQUOTES);
+    echo json_encode($response, JSON_UNESCAPED_SLASHES);
     error_log($e);
 }
