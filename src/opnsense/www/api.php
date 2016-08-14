@@ -26,5 +26,9 @@ try {
     echo $application->handle()->getContent();
 
 } catch (\Exception $e) {
-    echo $e->getMessage();
+    $response = array();
+    $response['errorMessage'] = $e->getMessage();
+    header("Content-Type: application/json;charset=utf-8");
+    echo htmlspecialchars(json_encode($response), ENT_NOQUOTES);
+    error_log($e);
 }
