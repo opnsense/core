@@ -28,6 +28,7 @@ try {
 } catch (\Exception $e) {
     $response = array();
     $response['errorMessage'] = $e->getMessage();
+    header('HTTP', true, 500);
     header("Content-Type: application/json;charset=utf-8");
     echo json_encode($response, JSON_UNESCAPED_SLASHES);
     error_log($e);
