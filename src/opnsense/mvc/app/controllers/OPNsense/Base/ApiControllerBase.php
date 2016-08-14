@@ -59,13 +59,29 @@ class ApiControllerBase extends ControllerRoot
 
     /**
      * Raise errors, warnings, notices, etc.
-     * @param $errno
-     * @param $errstr
+     * @param $errno The first parameter, errno, contains the level of the
+     *               error raised, as an integer.
+     * @param $errstr The second parameter, errstr, contains the error
+     *                message, as a string.
+     * @param $errfile The third parameter is optional, errfile, which
+     *                 contains the filename that the error was raised in, as
+     *                 a string.
+     * @param $errline The fourth parameter is optional, errline, which
+     *                 contains the line number the error was raised at, as an
+     *                 integer.
+     * @param $errcontext The fifth parameter is optional, errcontext, which
+     *                    is an array that points to the active symbol table
+     *                    at the point the error occurred. In other words,
+     *                    errcontext will contain an array of every variable
+     *                    that existed in the scope the error was triggered
+     *                    in. User error handler must not modify error
+     *                    context.
      * @throws \Exception
      */
-    public function APIErrorHandler($errno, $errstr)
+    public function APIErrorHandler($errno, $errstr, $errfile, $errline, $errcontext)
     {
-        throw new \Exception($errstr . ' ['.$errno.']');
+        $msg = "Error at $errfile:$errline - $errstr (errno=$errno)";
+        throw new \Exception($msg);
     }
 
     /**
