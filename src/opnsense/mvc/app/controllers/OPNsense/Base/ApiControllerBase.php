@@ -58,12 +58,24 @@ class ApiControllerBase extends ControllerRoot
     }
 
     /**
+     * Raise errors, warnings, notices, etc.
+     * @param $errno
+     * @param $errstr
+     * @throws \Exception
+     */
+    public function APIErrorHandler($errno, $errstr)
+    {
+        throw new \Exception($errstr . ' ['.$errno.']');
+    }
+
+    /**
      * Initialize API controller
      */
     public function initialize()
     {
         // disable view processing
         $this->view->disable();
+        set_error_handler(array($this, 'APIErrorHandler'));
     }
 
     /**
