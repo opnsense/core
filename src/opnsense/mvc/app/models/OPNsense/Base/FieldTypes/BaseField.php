@@ -48,6 +48,11 @@ abstract class BaseField
     protected $internalChildnodes = array();
 
     /**
+     * @var array constraints for this field, additional to fieldtype
+     */
+    protected $internalConstraints = array();
+
+    /**
      * @var null pointer to parent
      */
     protected $internalParentNode = null;
@@ -212,6 +217,15 @@ abstract class BaseField
     }
 
     /**
+     * return this nodes parent (or null if not found)
+     * @return null|BaseField
+     */
+    public function getParentNode()
+    {
+        return $this->internalParentNode;
+    }
+
+    /**
      * Reflect default getter to internal child nodes.
      * Implements the special attribute __items to return all items and __reference to identify the field in this model.
      * @param string $name property name
@@ -348,12 +362,34 @@ abstract class BaseField
     }
 
     /**
+     * fetch all additional validators
+     */
+    private function getConstraintValidators()
+    {
+        $result = array();
+        foreach ($this->internalConstraints as $name => $constraint) {
+            if (!empty($constraint['type'])) {
+                try {
+                    $constr_class = new \ReflectionClass($constraint['type']);
+                    if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
+                        $constraint['name'] = $name;
+                        $constraint['node'] = $this;
+                        $result[] = $constr_class->newInstance($constraint);
+                    }
+                } catch (\ReflectionException $e) {
+                    null; // ignore configuration errors, if the constraint can't be found, skip.
+                }
+            }
+        }
+        return $result;
+    }
+    /**
      * return field validators for this field
      * @return array returns validators for this field type (empty if none)
      */
     public function getValidators()
     {
-        $validators = array();
+        $validators = $this->getConstraintValidators();
         if ($this->isEmptyAndRequired()) {
             $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage)) ;
         }
@@ -559,6 +595,15 @@ abstract class BaseField
         } else {
             $this->internalChangeCase = null;
         }
+    }
+
+    /**
+     * set additional constraints
+     * @param $constraints
+     */
+    public function setConstraints($constraints)
+    {
+        $this->internalConstraints = $constraints;
     }
 
     /**

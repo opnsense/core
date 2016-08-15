@@ -234,4 +234,34 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
         $data = BaseModelTest::$model->arraytypes->item->getNodes();
         $this->assertEquals(count($data), 9);
     }
+
+    /**
+     * @depends testGetNodes
+     * @expectedException \Phalcon\Validation\Exception
+     * @expectedExceptionMessage number should be unique
+     */
+    public function testConstraintsNok()
+    {
+        $count = 2;
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $count-- ;
+            if ($count >= 0) {
+                $node->number = 999;
+            }
+        }
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+    /**
+     * @depends testConstraintsNok
+     */
+    public function testConstraintsOk()
+    {
+        $count = 1;
+        foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
+            $count++ ;
+            $node->number = $count;
+        }
+        BaseModelTest::$model->serializeToConfig();
+    }
 }
