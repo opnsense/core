@@ -413,7 +413,7 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 $main_buttons = array(
-    array('label'=>gettext("add or import ca"), 'href'=>'system_camanager.php?act=new'),
+    array('label' => gettext('Add or import CA'), 'href' => 'system_camanager.php?act=new'),
 );
 
 

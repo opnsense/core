@@ -207,7 +207,7 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <th colspan="2"><?=gettext("SMTP E-Mail"); ?></th>
+                <th colspan="2"><?=gettext("SMTP Email"); ?></th>
               </tr>
               <tr>
                 <td><a id="help_for_disable_smtp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable SMTP Notifications"); ?></td>
@@ -219,20 +219,20 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_smtpipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail server"); ?></td>
+                <td><a id="help_for_smtpipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email server"); ?></td>
                 <td>
                   <input name="smtpipaddress" type="text" value="<?=$pconfig['smtpipaddress']; ?>" />
                   <div class="hidden" for="help_for_smtpipaddress">
-                    <?=gettext("This is the FQDN or IP address of the SMTP E-Mail server to which notifications will be sent."); ?>
+                    <?=gettext("This is the FQDN or IP address of the SMTP Email server to which notifications will be sent."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_smtpport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SMTP Port of E-Mail server"); ?></td>
+                <td><a id="help_for_smtpport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SMTP Port of Email server"); ?></td>
                 <td>
                   <input name="smtpport" type="text" value="<?=$pconfig['smtpport']; ?>" />
                   <div class="hidden" for="help_for_smtpport">
-                    <?=gettext("This is the port of the SMTP E-Mail server, typically 25, 587 (submission) or 465 (smtps)"); ?>
+                    <?=gettext("This is the port of the SMTP Email server, typically 25, 587 (submission) or 465 (smtps)"); ?>
                   </div>
                 </td>
               </tr>
@@ -246,40 +246,40 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_smtpfromaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("From e-mail address"); ?></td>
+                <td><a id="help_for_smtpfromaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sender address"); ?></td>
                 <td>
                   <input name="smtpfromaddress" type="text" value="<?=$pconfig['smtpfromaddress']; ?>" />
                   <div class="hidden" for="help_for_smtpfromaddress">
-                    <?=gettext("This is the e-mail address that will appear in the from field."); ?>
+                    <?=gettext("This is the email address that will appear as the email notification sender."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_smtpnotifyemailaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail address"); ?></td>
+                <td><a id="help_for_smtpnotifyemailaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Recipient address"); ?></td>
                 <td>
                   <input name="smtpnotifyemailaddress" type="text" value="<?=$pconfig['smtpnotifyemailaddress'];?>" />
                   <div class="hidden" for="help_for_smtpnotifyemailaddress">
-                    <?=gettext("Enter the e-mail address that you would like email notifications sent to."); ?>
+                    <?=gettext("Enter the email address that you would like email notifications sent to."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_smtpusername" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail auth username"); ?></td>
+                <td><a id="help_for_smtpusername" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email auth username"); ?></td>
                 <td>
                   <input name="smtpusername" type="text" value="<?=$pconfig['smtpusername']; ?>" />
                   <div class="hidden" for="help_for_smtpusername">
                     <small><?=gettext("(optional)");?></small><br/>
-                    <?=gettext("Enter the e-mail address username for SMTP authentication."); ?>
+                    <?=gettext("Enter the email address username for SMTP authentication."); ?>
                   </div>
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_smtppassword" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("E-Mail auth password"); ?></td>
+                <td><a id="help_for_smtppassword" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Email auth password"); ?></td>
                 <td>
                   <input name='smtppassword' type='password' value='<?=$pconfig['smtppassword']; ?>' /><br />
                   <div class="hidden" for="help_for_smtppassword">
                     <small><?=gettext("(optional)");?></small><br/>
-                    <?=gettext("Enter the e-mail address password for SMTP authentication."); ?>
+                    <?=gettext("Enter the email address password for SMTP authentication."); ?>
                   </div>
                 </td>
               </tr>

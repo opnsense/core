@@ -547,7 +547,7 @@ if (isset($savemsg)) {
                 </td>
               </tr>
               <tr class="mode_server">
-                <td valign="top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPNManager");?></td>
+                <td valign="top"><a id="help_for_openvpnmanager" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Management Interface OpenVPN Manager");?></td>
                 <td >
                       <input name="openvpnmanager" id="openvpnmanager" type="checkbox" value="yes" />
                       <div class="hidden" for="help_for_openvpnmanager">
