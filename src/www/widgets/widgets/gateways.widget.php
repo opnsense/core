@@ -45,8 +45,9 @@
               tbody.append(tr_content.join(''));
           } else {
               // update existing gateway
-              $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
               $("#"+tr_id+" > td:eq(1)").html(gateway['delay']);
+              $("#"+tr_id+" > td:eq(2)").html(gateway['loss']);
+              $("#"+tr_id+" > td:eq(3)").html('<font>'+gateway['status_translated']+'</font>');
           }
           // set color on status text
           switch (gateway['status']) {
