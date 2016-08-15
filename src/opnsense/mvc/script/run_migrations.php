@@ -37,10 +37,9 @@ use OPNsense\Core\Config;
 $class_info = new \ReflectionClass("OPNsense\\Base\\BaseModel");
 $executed_migration = false;
 $model_dir = dirname($class_info->getFileName())."/../../";
-foreach (new RecursiveIteratorIterator (new RecursiveDirectoryIterator ($model_dir)) as $x)
-{
+foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir)) as $x) {
     if (strtolower(substr($x->getPathname(), -4)) == '.php') {
-        $classname = str_replace('/','\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]) ;
+        $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]) ;
         try {
             $mdl_class_info = new \ReflectionClass($classname);
             $parent = $mdl_class_info->getParentClass();
