@@ -22,7 +22,7 @@
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
-                            <message>number should be unique</message>
+                            <ValidationMessage>number should be unique</ValidationMessage>
                             <type>OPNsense\Base\Constraints\UniqueConstraint</type>
                             <addFields>
                                 <field1>optfield</field1>

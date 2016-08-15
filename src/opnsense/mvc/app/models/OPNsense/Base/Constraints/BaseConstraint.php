@@ -41,7 +41,7 @@ abstract class BaseConstraint extends Validator implements ValidatorInterface
      */
     protected function appendMessage(\Phalcon\Validation $validator, $attribute)
     {
-        $message = $this->getOption('message');
+        $message = $this->getOption('ValidationMessage');
         $name = $this->getOption('name');
         if (empty($message)) {
             $message = 'validation failure ' . get_class($this);
