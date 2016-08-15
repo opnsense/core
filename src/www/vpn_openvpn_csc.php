@@ -624,9 +624,9 @@ if ($act!="new" && $act!="edit") {
                         <div class="hidden" for="help_for_netbios_enable">
                           <?=gettext("A NetBIOS Scope ID provides an extended naming " .
                                                     "service for NetBIOS over TCP/IP. The NetBIOS " .
-                                                    "scope ID isolates NetBIOS traffic on a single " .
+                                                    "Scope ID isolates NetBIOS traffic on a single " .
                                                     "network to only those nodes with the same " .
-                                                    "NetBIOS scope ID."); ?>
+                                                    "NetBIOS Scope ID."); ?>
                         </div>
                       </div>
                     </td>

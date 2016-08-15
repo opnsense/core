@@ -182,7 +182,7 @@
 			<type>input</type>
 			<size>40</size>
 			<bindstofield>ovpnserver->step2->authscope</bindstofield>
-			<description>Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path.&lt;br/&gt;EXAMPLE: CN=Users;DC=example&lt;br/&gt;EXAMPLE: CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com </description>
+			<description>Semicolon separated. This will be prepended to the search base DN above or you can specify full container path.&lt;br/&gt;EXAMPLE: CN=Users;DC=example&lt;br/&gt;EXAMPLE: CN=Users,DC=example,DC=com;OU=OtherUsers,DC=example,DC=com </description>
 		</field>
 		<field>
 			<name>userdn</name>
@@ -427,8 +427,8 @@
 		</field>
 		<field>
 			<name>email</name>
-			<displayname>E-mail</displayname>
-			<description>E-mail address for the Certificate contact. Often the e-mail of the person generating the certificate (i.e. You.)</description>
+			<displayname>Email</displayname>
+			<description>Email address for the Certificate contact. Often the email of the person generating the certificate (i.e. You.)</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step6->email</bindstofield>
@@ -556,8 +556,8 @@
 		</field>
 		<field>
 			<name>email</name>
-			<displayname>E-mail</displayname>
-			<description>E-mail address for the Certificate contact. Often the e-mail of the person generating the certificate (i.e. You.)</description>
+			<displayname>Email</displayname>
+			<description>Email address for the Certificate contact. Often the email of the person generating the certificate (i.e. You.)</description>
 			<type>input</type>
 			<size>30</size>
 			<bindstofield>ovpnserver->step9->email</bindstofield>
@@ -872,7 +872,7 @@
 			<name>nbtscope</name>
 			<type>input</type>
 			<bindstofield>ovpnserver->step10->nbtscope</bindstofield>
-			<description>A NetBIOS Scope ID provides an extended naming service for NetBIOS over TCP/IP. The NetBIOS scope ID isolates NetBIOS traffic on a single network to only those nodes with the same NetBIOS scope ID.</description>
+			<description>A NetBIOS Scope ID provides an extended naming service for NetBIOS over TCP/IP. The NetBIOS Scope ID isolates NetBIOS traffic on a single network to only those nodes with the same NetBIOS Scope ID.</description>
 		</field>
 		<field>
 			<displayname>WINS Server 1</displayname>

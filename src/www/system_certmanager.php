@@ -354,10 +354,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         break;
                     case "email":
                         if (empty($altname['value'])) {
-                            $input_errors[] = gettext("You must provide an e-mail address for this type of subjectAltName");
+                            $input_errors[] = gettext("You must provide an email address for this type of subjectAltName");
                         }
                         if (preg_match("/[\!\#\$\%\^\(\)\~\?\>\<\&\/\\\,\"\']/", $altname['value'])) {
-                            $input_errors[] = gettext("The e-mail provided in a subjectAltName contains invalid characters.");
+                            $input_errors[] = gettext("The email provided in a subjectAltName contains invalid characters.");
                         }
                         break;
                     case "URI":

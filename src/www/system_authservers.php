@@ -575,7 +575,7 @@ endif; ?>
                     </ul>
                     <br/>
                     <div class="hidden" for="help_for_ldapauthcontainers">
-                        <br/><?=gettext("Note: Semi-Colon separated. This will be prepended to the search base dn above or you can specify full container path containing a dc= component.");?>
+                        <br/><?=gettext("Semicolon separated. This will be prepended to the search base DN above or you can specify full container path containing a DC= component.");?>
                         <br /><?=gettext("Example:");?> CN=Users;DC=example,DC=com
                         <br /><?=gettext("Example:");?> OU=Staff;OU=Freelancers
                     </div>

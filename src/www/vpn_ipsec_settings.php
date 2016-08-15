@@ -114,7 +114,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
                     <tr>
-                      <td ><strong><?=gettext("IPSec Advanced Settings"); ?></strong></td>
+                      <td ><strong><?=gettext("IPsec Advanced Settings"); ?></strong></td>
                       <td align="right">
                         <small><?=gettext("full help"); ?> </small>
                         <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
@@ -126,7 +126,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                         <input name="noinstalllanspd" type="checkbox" id="noinstalllanspd" value="yes" <?=!empty($pconfig['noinstalllanspd']) ? "checked=\"checked\""  : "";?> />
                         <strong><?=gettext("Do not install LAN SPD"); ?></strong>
                         <div class="hidden" for="help_for_noinstalllanspd">
-                            <?=gettext("By default, if IPSec is enabled negating SPD are inserted to provide protection. " .
+                            <?=gettext("By default, if IPsec is enabled negating SPD are inserted to provide protection. " .
                                                   "This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
                         </div>
                       </td>
@@ -147,7 +147,7 @@ if (isset($input_errors) && count($input_errors) > 0) {
                       <td><a id="help_for_ipsec_debug" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Debug"); ?></td>
                       <td>
                         <div class="hidden" for="help_for_ipsec_debug">
-                                      <strong><?=gettext("Start IPSec in debug mode based on sections selected"); ?></strong> <br/>
+                                      <strong><?=gettext("Start IPsec in debug mode based on sections selected"); ?></strong> <br/>
                         </div>
 <?php                   foreach ($ipsec_loglevels as $lkey => $ldescr) :
 ?>
@@ -164,8 +164,7 @@ endforeach; ?>
 <?php
 endforeach; ?>
                         <div class="hidden" for="help_for_ipsec_debug">
-                        <?=gettext("Launches IPSec in debug mode so that more verbose logs " .
-                                                    "will be generated to aid in troubleshooting."); ?>
+                        <?=gettext("Launch IPsec in debug mode so that more verbose logs will be generated to aid in troubleshooting."); ?>
                         </div>
                       </td>
                     </tr>
