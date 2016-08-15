@@ -58,7 +58,7 @@
                     if (request.responseJSON.errorMessage != undefined) {
                         BootstrapDialog.show({
                             type: BootstrapDialog.TYPE_DANGER,
-                            title: '{{ lang._('Error') }}',
+                            title: '{{ lang._('An API exception occured') }}',
                             message:request.responseJSON.errorMessage,
                             buttons: [{
                                 label: '{{ lang._('Close') }}',
