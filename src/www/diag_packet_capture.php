@@ -106,12 +106,10 @@ function start_capture($options)
       if (!empty($intf)) {
           $cmd = '/usr/sbin/tcpdump ';
           $cmd .= implode(' ', $cmd_opts);
-          $cmd .= ' -w /root/packetcapture.cap ';
+          $cmd .= ' -w /tmp/packetcapture.cap ';
           $cmd .= " ".escapeshellarg(implode(' and ', $filter_opts));
           //delete previous packet capture if it exists
-          if (file_exists('/root/packetcapture.cap')) {
-              unlink ('/root/packetcapture.cap');
-          }
+          @unlink('/tmp/packetcapture.cap');
           mwexec_bg($cmd);
       }
 }
@@ -153,8 +151,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // download capture file
         header("Content-Type: application/octet-stream");
         header("Content-Disposition: attachment; filename=packetcapture.cap");
-        header("Content-Length: ".filesize("/root/packetcapture.cap"));
-        $file = fopen("/root/packetcapture.cap", "r");
+        header("Content-Length: ".filesize("/tmp/packetcapture.cap"));
+        $file = fopen("/tmp/packetcapture.cap", "r");
         while(!feof($file)) {
             print(fread($file, 32 * 1024));
             ob_flush();
@@ -188,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $result = array();
         $dump_output = array();
-        exec("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r /root/packetcapture.cap", $dump_output);
+        exec("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r /tmp/packetcapture.cap", $dump_output);
         // reformat raw output to 1 packet per array item
         foreach ($dump_output as $line) {
             if ($line[0] == ' ' && count($result) > 0) {
@@ -250,9 +248,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (!empty($pconfig['stop'])) {
         stop_capture();
     } elseif (!empty($pconfig['remove'])) {
-        if (file_exists('/root/packetcapture.cap')) {
-            unlink ('/root/packetcapture.cap');
-        }
+        @unlink('/tmp/packetcapture.cap');
         header("Location: diag_packet_capture.php");
         exit;
     }
@@ -459,7 +455,7 @@ include("fbegin.inc");
                     else:?>
                       <input type="submit" class="btn" name="start" value="<?=gettext("Start");?>"/>
 <?php
-                    if (file_exists('/root/packetcapture.cap')):?>
+                    if (file_exists('/tmp/packetcapture.cap')):?>
                       <button type="button" id="view" class="btn"> <?=gettext("View Capture");?> </button>
                       <a href="?download" type="submit" class="btn"><?=gettext("Download Capture");?></a>
                       <input type="submit" class="btn" name="remove" value="<?=gettext("Delete Capture");?>"/>
