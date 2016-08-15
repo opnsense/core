@@ -286,6 +286,12 @@
                                 <Required>Y</Required>
                                 <Mask>/^[a-zA-Z0-9]{1,245}\.?[a-zA-z0-9]{1,10}$/</Mask>
                                 <ValidationMessage>The filename may only contain letters,digits and one dot (not required).</ValidationMessage>
+                                <Constraints>
+                                    <check001>
+                                        <ValidationMessage>Filename should be unique</ValidationMessage>
+                                        <type>OPNsense\Base\Constraints\UniqueConstraint</type>
+                                    </check001>
+                                </Constraints>
                             </filename>
                             <url type="UrlField">
                                 <Required>Y</Required>
