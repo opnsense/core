@@ -321,6 +321,10 @@ health: force
 	# check test script output and advertise a failure...
 	[ "`${.CURDIR}/src/etc/rc.php_test_run`" == "FCGI-PASSED PASSED" ]
 
+test: want-phpunit
+	@cd ${.CURDIR}/src/opnsense/mvc/tests && \
+	    phpunit --configuration PHPunit.xml
+
 clean: want-git
 	${GIT} reset --hard HEAD && ${GIT} clean -xdqf .
 

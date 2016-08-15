@@ -157,6 +157,7 @@ suhosin.request.max_vars = 5000
 suhosin.request.max_value_length = 9000000
 suhosin.memory_limit = 512435456
 suhosin.session.cryptdocroot=Off
+suhosin.executor.include.whitelist = phar://
 EOF
 
 # Copy php.ini file to etc/ too (cli)
