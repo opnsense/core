@@ -25,7 +25,7 @@
                 <id>proxy.general.logging.target</id>
                 <label>Log target</label>
                 <type>dropdown</type>
-                <help>Send log data to.</help>
+                <help>Send log data to the selected target.</help>
                 <advanced>true</advanced>
             </field>
 
