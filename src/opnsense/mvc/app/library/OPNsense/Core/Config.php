@@ -169,7 +169,7 @@ class Config extends Singleton
         // root node
         if ($node == null) {
             $this->simplexml = simplexml_load_string('<'.$this->simplexml[0]->getName().'/>');
-            $node = $this->simplexml ;
+            $node = $this->simplexml;
             // invalidate object on warnings/errors (prevent save from happening)
             set_error_handler(
                 function () {
@@ -222,7 +222,7 @@ class Config extends Singleton
     private function checkvalid()
     {
         if (!$this->statusIsValid) {
-            throw new ConfigException('no valid config loaded') ;
+            throw new ConfigException('no valid config loaded');
         }
     }
 
@@ -267,7 +267,7 @@ class Config extends Singleton
         try {
             $this->load();
         } catch (\Exception $e) {
-            $this->simplexml = null ;
+            $this->simplexml = null;
             // there was an issue with loading the config, try to restore the last backup
             $backups = $this->getBackups();
             $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
@@ -299,17 +299,17 @@ class Config extends Singleton
     {
         // exception handling
         if (!file_exists($this->config_file)) {
-            throw new ConfigException('file not found') ;
+            throw new ConfigException('file not found');
         }
         $xml = file_get_contents($this->config_file);
         if (trim($xml) == '') {
-            throw new ConfigException('empty file') ;
+            throw new ConfigException('empty file');
         }
 
         set_error_handler(
             function () {
                 // reset simplexml pointer on parse error.
-                $this->simplexml = null ;
+                $this->simplexml = null;
             }
         );
 
@@ -317,7 +317,7 @@ class Config extends Singleton
 
         if ($this->simplexml == null) {
             restore_error_handler();
-            throw new ConfigException("invalid config xml") ;
+            throw new ConfigException("invalid config xml");
         }
 
         restore_error_handler();
@@ -470,7 +470,7 @@ class Config extends Singleton
             $simplexml = $this->simplexml;
             try {
                 // try to restore config
-                copy($filename, $this->config_file) ;
+                copy($filename, $this->config_file);
                 $this->load();
                 return true;
             } catch (ConfigException $e) {
@@ -482,7 +482,7 @@ class Config extends Singleton
             }
         } else {
             // we don't have a valid config loaded, just copy and load the requested one
-            copy($filename, $this->config_file) ;
+            copy($filename, $this->config_file);
             $this->load();
             return true;
         }

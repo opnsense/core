@@ -54,7 +54,7 @@ class Cron extends BaseModel
         $cron->origin = $origin;
         $cron->command = $command;
         $cron->description = $description;
-        $cron->weekdays = $weekdays ;
+        $cron->weekdays = $weekdays;
         $cron->enabled = $enabled;
         return $uuid;
     }

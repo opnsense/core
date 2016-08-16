@@ -75,7 +75,7 @@ abstract class BaseModel
      */
     protected function init()
     {
-        return ;
+        return;
     }
 
     /**
@@ -117,7 +117,7 @@ abstract class BaseModel
             $tagName = $xmlNode->getName();
             // every item results in a Field type object, the first step is to determine which object to create
             // based on the input model spec
-            $fieldObject = null ;
+            $fieldObject = null;
             $classname = "OPNsense\\Base\\FieldTypes\\".$xmlNode->attributes()["type"];
             if (class_exists($classname)) {
                 // construct field type object
@@ -160,7 +160,7 @@ abstract class BaseModel
                 if ($config_data != null && isset($config_data->$tagName)) {
                     $config_section_data = $config_data->$tagName;
                 } else {
-                    $config_section_data = null ;
+                    $config_section_data = null;
                 }
 
                 if ($fieldObject instanceof ArrayField) {
@@ -218,16 +218,16 @@ abstract class BaseModel
         // determine our caller's filename and try to find the model definition xml
         // throw error on failure
         $class_info = new \ReflectionClass($this);
-        $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName())-3) . "xml" ;
+        $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName())-3) . "xml";
         if (!file_exists($model_filename)) {
-            throw new ModelException('model xml '.$model_filename.' missing') ;
+            throw new ModelException('model xml '.$model_filename.' missing');
         }
         $model_xml = simplexml_load_file($model_filename);
         if ($model_xml === false) {
-            throw new ModelException('model xml '.$model_filename.' not valid') ;
+            throw new ModelException('model xml '.$model_filename.' not valid');
         }
         if ($model_xml->getName() != "model") {
-            throw new ModelException('model xml '.$model_filename.' seems to be of wrong type') ;
+            throw new ModelException('model xml '.$model_filename.' seems to be of wrong type');
         }
         $this->internal_mountpoint = $model_xml->mount;
 
@@ -239,13 +239,13 @@ abstract class BaseModel
         // if found, convert the data to a simple structure (or create an empty array)
         $tmp_config_data = $internalConfigHandle->xpath($model_xml->mount);
         if ($tmp_config_data->length > 0) {
-            $config_array = simplexml_import_dom($tmp_config_data->item(0)) ;
+            $config_array = simplexml_import_dom($tmp_config_data->item(0));
         } else {
             $config_array = array();
         }
 
         // We've loaded the model template, now let's parse it into this object
-        $this->parseXml($model_xml->items, $config_array, $this->internalData) ;
+        $this->parseXml($model_xml->items, $config_array, $this->internalData);
         // root may contain a version, store if found
         if (empty($config_array)) {
             // new node, reset
@@ -278,7 +278,7 @@ abstract class BaseModel
      */
     public function __set($name, $value)
     {
-        $this->internalData->$name = $value ;
+        $this->internalData->$name = $value;
     }
 
     /**
@@ -359,7 +359,7 @@ abstract class BaseModel
                 $fieldnm = str_replace($sourceref, $targetref, $msg->getField());
                 $result[$fieldnm] = $msg->getMessage();
             } else {
-                $fieldnm = $targetref . $msg->getField() ;
+                $fieldnm = $targetref . $msg->getField();
                 $result[$fieldnm] = $msg->getMessage();
             }
         }

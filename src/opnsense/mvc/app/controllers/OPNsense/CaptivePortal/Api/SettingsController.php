@@ -91,7 +91,7 @@ class SettingsController extends ApiControllerBase
             }
         } else {
             // generate new node, but don't save to disc
-            $node = $mdlCP->zones->zone->add() ;
+            $node = $mdlCP->zones->zone->add();
             return array("zone" => $node->getNodes());
         }
         return array();

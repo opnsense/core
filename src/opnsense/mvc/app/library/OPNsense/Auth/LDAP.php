@@ -38,7 +38,7 @@ class LDAP implements IAuthConnector
     /**
      * @var int ldap version to use
      */
-    private $ldapVersion = 3 ;
+    private $ldapVersion = 3;
 
     /**
      * @var null base ldap search DN
@@ -63,12 +63,12 @@ class LDAP implements IAuthConnector
     /**
      * @var null|string ldap administrative bind dn
      */
-    private $ldapBindDN = null ;
+    private $ldapBindDN = null;
 
     /**
      * @var null|string ldap administrative bind passwd
      */
-    private $ldapBindPassword = null ;
+    private $ldapBindPassword = null;
 
     /**
      * @var null|string user attribute
@@ -186,7 +186,7 @@ class LDAP implements IAuthConnector
             "ldap_attr_user" => "ldapAttributeUser",
             "ldap_extended_query" => "ldapExtendedQuery",
             "local_users" => "userDNmap"
-        ) ;
+        );
 
         // map properties 1-on-1
         foreach ($confMap as $confSetting => $objectProperty) {

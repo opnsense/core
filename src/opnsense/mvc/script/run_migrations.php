@@ -39,7 +39,7 @@ $executed_migration = false;
 $model_dir = dirname($class_info->getFileName())."/../../";
 foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir)) as $x) {
     if (strtolower(substr($x->getPathname(), -4)) == '.php') {
-        $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]) ;
+        $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]);
         try {
             $mdl_class_info = new \ReflectionClass($classname);
             $parent = $mdl_class_info->getParentClass();
@@ -52,7 +52,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                     $version_pre = !empty($version_pre) ? $version_pre : ' <unversioned> ';
                     echo "migrated " .  $mdl_class_info->getName() .
                         " from " . $version_pre .
-                        " to " . $version_post . "\n" ;
+                        " to " . $version_post . "\n";
                     $executed_migration = true;
                 } elseif (!empty($version_post)) {
                     echo "keep version " . $mdl_class_info->getName() . " (".$version_post.")\n";

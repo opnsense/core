@@ -79,9 +79,9 @@ class OptionField extends BaseField
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
                     if ($key == "__empty__") {
-                        $this->internalOptionList[""] = $value ;
+                        $this->internalOptionList[""] = $value;
                     } else {
-                        $this->internalOptionList[$key] = $value ;
+                        $this->internalOptionList[$key] = $value;
                     }
                 }
             }

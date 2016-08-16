@@ -102,7 +102,7 @@ class CertificateField extends BaseField
              self::$internalOptionList[$this->certificateType] = array();
              $configObj = Config::getInstance()->object();
             foreach ($configObj->{$this->certificateType} as $cert) {
-                self::$internalOptionList[$this->certificateType][(string)$cert->refid] = (string)$cert->descr ;
+                self::$internalOptionList[$this->certificateType][(string)$cert->refid] = (string)$cert->descr;
             }
         }
     }

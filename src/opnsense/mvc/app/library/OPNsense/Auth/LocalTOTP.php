@@ -218,7 +218,7 @@ class LocalTOTP extends Local
         $fields["timeWindow"]["type"] = "text";
         $fields["timeWindow"]["default"] = null;
         $fields["timeWindow"]["help"] = gettext("The time period in which the token will be valid,".
-          " default is 30 seconds (google authenticator)") ;
+          " default is 30 seconds (google authenticator)");
         $fields["timeWindow"]["validate"] = function ($value) {
             if (!empty($value) && filter_var($value, FILTER_SANITIZE_NUMBER_INT) != $value) {
                 return array(gettext("Please enter a valid time window in seconds"));

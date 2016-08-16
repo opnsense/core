@@ -113,7 +113,7 @@ class Radius implements IAuthConnector
             'radius_acct_port' => 'acctPort',
             'radius_protocol' => 'protocol',
             'refid' => 'nasIdentifier'
-        ) ;
+        );
 
         // map properties 1-on-1
         foreach ($confMap as $confSetting => $objectProperty) {
@@ -340,7 +340,7 @@ class Radius implements IAuthConnector
      */
     public function authenticate($username, $password)
     {
-        $this->lastAuthProperties = array() ;// reset auth properties
+        $this->lastAuthProperties = array();// reset auth properties
         $radius = radius_auth_open();
 
         $error = null;

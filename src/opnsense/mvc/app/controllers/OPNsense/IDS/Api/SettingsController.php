@@ -243,7 +243,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 $item['documentation_url'] = $fileinfo['documentation_url'];
                 if (!empty($fileinfo['documentation_url'])) {
                     $item['documentation'] = "<a href='".$item['documentation_url']."' target='_new'>";
-                    $item['documentation'] .= $item['documentation_url'] ;
+                    $item['documentation'] .= $item['documentation_url'];
                     $item['documentation'] .= '</a>';
                 } else {
                     $item['documentation'] = null;
@@ -549,7 +549,7 @@ class SettingsController extends ApiMutableModelControllerBase
             }
         } else {
             // generate new node, but don't save to disc
-            $node = $mdlIDS->userDefinedRules->rule->add() ;
+            $node = $mdlIDS->userDefinedRules->rule->add();
             return array("rule" => $node->getNodes());
         }
         return array();

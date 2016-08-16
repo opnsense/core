@@ -100,10 +100,10 @@ class ACL
                     // load ACL xml file and perform some basic validation
                     $ACLxml = simplexml_load_file($acl_cfg_xml);
                     if ($ACLxml === false) {
-                        throw new \Exception('ACL xml '.$acl_cfg_xml.' not valid') ;
+                        throw new \Exception('ACL xml '.$acl_cfg_xml.' not valid');
                     }
                     if ($ACLxml->getName() != "acl") {
-                        throw new \Exception('ACL xml '.$acl_cfg_xml.' seems to be of wrong type') ;
+                        throw new \Exception('ACL xml '.$acl_cfg_xml.' seems to be of wrong type');
                     }
 
                     // when acl was correctly loaded, let's parse data into private $this->ACLtags
@@ -151,11 +151,11 @@ class ACL
         $groupmap = array();
 
         // gather user / group data from config.xml
-        $config = Config::getInstance()->object() ;
+        $config = Config::getInstance()->object();
         if ($config->system != null) {
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user') {
-                    $this->legacyUsers[$node->name->__toString()] = array() ;
+                    $this->legacyUsers[$node->name->__toString()] = array();
                     $this->legacyUsers[$node->name->__toString()]['uid'] = $node->uid->__toString();
                     $this->legacyUsers[$node->name->__toString()]['groups'] = array();
                     $this->legacyUsers[$node->name->__toString()]['priv'] = array();
@@ -168,7 +168,7 @@ class ACL
                         }
                     }
                 } elseif ($key == 'group') {
-                    $groupmap[$node->name->__toString()] = $node ;
+                    $groupmap[$node->name->__toString()] = $node;
                 }
             }
         }
@@ -278,7 +278,7 @@ class ACL
 
         // sort by name ( case insensitive )
         uasort($priv_list, function ($a, $b) {
-            return strcasecmp($a["name"], $b["name"]) ;
+            return strcasecmp($a["name"], $b["name"]);
         });
 
         return $priv_list;

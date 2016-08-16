@@ -77,7 +77,7 @@ class Backend
     public function configdRun($event, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         $endOfStream = chr(0).chr(0).chr(0);
-        $poll_timeout = 2 ; // poll timeout interval
+        $poll_timeout = 2; // poll timeout interval
 
         // wait until socket exist for a maximum of $connect_timeout
         $timeout_wait = $connect_timeout;
@@ -106,7 +106,7 @@ class Backend
         }
 
         // read response data
-        $starttime = time() ;
+        $starttime = time();
         while (true) {
             $resp = $resp . stream_get_contents($stream);
 

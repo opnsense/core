@@ -161,7 +161,7 @@ class IDS extends BaseModel
             }
         } elseif (!$response_plain) {
             // generate selection for new field
-            $default_types = $this->action_list ;
+            $default_types = $this->action_list;
             if (array_key_exists($default, $default_types)) {
                 foreach ($default_types as $key => $value) {
                     if ($key ==  $default) {
@@ -199,6 +199,6 @@ class IDS extends BaseModel
         $node = $this->files->file->Add();
         $node->filename = $filename;
 
-        return $node ;
+        return $node;
     }
 }

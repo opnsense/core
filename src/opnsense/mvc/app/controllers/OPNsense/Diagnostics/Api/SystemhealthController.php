@@ -595,10 +595,10 @@ class SystemhealthController extends ApiControllerBase
     {
         // collect interface names
         $intfmap = array();
-        $config = Config::getInstance()->object() ;
+        $config = Config::getInstance()->object();
         if ($config->interfaces != null) {
             foreach ($config->interfaces->children() as $key => $node) {
-                $intfmap[(string)$key] = array("descr" => !empty((string)$node->descr) ? (string)$node->descr : $key) ;
+                $intfmap[(string)$key] = array("descr" => !empty((string)$node->descr) ? (string)$node->descr : $key);
             }
         }
         return $intfmap;

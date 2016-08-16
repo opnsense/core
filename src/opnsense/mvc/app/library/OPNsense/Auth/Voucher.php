@@ -197,7 +197,7 @@ class Voucher implements IAuthConnector
                             ($chr_ord >= 109 && $chr_ord <= 110) || // m..n
                             ($chr_ord >= 112 && $chr_ord <= 122)  // p..z
                         ) {
-                            $characterMap .= $random_bytes[$i] ;
+                            $characterMap .= $random_bytes[$i];
                         }
                     }
                 }
@@ -212,7 +212,7 @@ class Voucher implements IAuthConnector
                     for ($i = 0; $i < strlen($random_bytes); $i++) {
                         $chr_ord = ord($random_bytes[$i]);
                         if ($chr_ord >= 33 && $chr_ord <= 125 && !in_array($random_bytes[$i], $doNotUseChr)) {
-                            $characterMap .= $random_bytes[$i] ;
+                            $characterMap .= $random_bytes[$i];
                         }
                     }
                 }
@@ -309,7 +309,7 @@ class Voucher implements IAuthConnector
             $record['username'] = $row['username'];
             $record['validity'] = $row['validity'];
             # always calculate a starttime, if not registered yet, use now.
-            $record['starttime'] = empty($row['starttime']) ? time() : $row['starttime'] ;
+            $record['starttime'] = empty($row['starttime']) ? time() : $row['starttime'];
             $record['endtime'] = $record['starttime'] + $row['validity'];
 
             if (empty($row['starttime'])) {
@@ -382,7 +382,7 @@ class Voucher implements IAuthConnector
                     $this->setStartTime($username, $row['starttime']);
                 }
                 if (time() - $row['starttime'] < $row['validity']) {
-                    $this->lastAuthProperties['session_timeout'] = $row['validity'] - (time() - $row['starttime']) ;
+                    $this->lastAuthProperties['session_timeout'] = $row['validity'] - (time() - $row['starttime']);
                     return true;
                 }
             }
@@ -400,7 +400,7 @@ class Voucher implements IAuthConnector
         $fields["simplePasswords"] = array();
         $fields["simplePasswords"]["name"] = gettext("Use simple passwords (less secure)");
         $fields["simplePasswords"]["type"] = "checkbox";
-        $fields["simplePasswords"]["help"] = gettext("Use simple (less secure) passwords, which are easier to read") ;
+        $fields["simplePasswords"]["help"] = gettext("Use simple (less secure) passwords, which are easier to read");
         $fields["simplePasswords"]["validate"] = function ($value) {
             return array();
         };

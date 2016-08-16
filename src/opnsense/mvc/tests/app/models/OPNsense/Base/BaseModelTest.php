@@ -244,7 +244,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     {
         $count = 2;
         foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
-            $count-- ;
+            $count--;
             if ($count >= 0) {
                 $node->number = 999;
             }
@@ -259,7 +259,7 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
     {
         $count = 1;
         foreach (BaseModelTest::$model->arraytypes->item->__items as $nodeid => $node) {
-            $count++ ;
+            $count++;
             $node->number = $count;
         }
         BaseModelTest::$model->serializeToConfig();
