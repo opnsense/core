@@ -278,42 +278,48 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td rowspan="3"><a id="help_for_strict_order" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
+                  <td><a id="help_for_strict_order" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS Query Forwarding");?></td>
                   <td>
-                    <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Query DNS servers sequentially");?></strong>
-                    <div class="hidden" for="help_for_strict_order">
-                      <?= gettext("If this option is set, the DNS Forwarder (dnsmasq) will ".
-                        "query the DNS servers sequentially in the order specified (System: " .
-                        "General Setup: DNS Servers), rather than all at once in parallel.") ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Require domain");?></strong>
-                    <div class="hidden" for="help_for_strict_order">
-                      <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
-                        'not forward A or AAAA queries for plain names, without dots or ' .
-                        'domain parts, to upstream name servers. If the name is not known ' .
-                        'from /etc/hosts or DHCP then a "not found" answer is returned.') ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
-                    <strong><?=gettext("Do not forward private reverse lookups");?></strong>
-                    <div class="hidden" for="help_for_strict_order">
-                      <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
-                        'not forward reverse DNS lookups (PTR) for private addresses ' .
-                        '(RFC 1918) to upstream name servers. Any entries in the Domain ' .
-                        'Overrides section forwarding private "n.n.n.in-addr.arpa" names ' .
-                        'to a specific server are still forwarded. If the IP to name is ' .
-                        'not known from /etc/hosts, DHCP or a specific domain override ' .
-                        'then a "not found" answer is immediately returned.') ?>
-                    </div>
+                    <table class="table table-striped table-condensed">
+                      <tr>
+                        <td>
+                          <input name="strict_order" type="checkbox" id="strict_order" value="yes" <?=!empty($pconfig['strict_order']) ? "checked=\"checked\"" : "";?> />
+                          <strong><?=gettext("Query DNS servers sequentially");?></strong>
+                          <div class="hidden" for="help_for_strict_order">
+                            <?= gettext("If this option is set, the DNS Forwarder (dnsmasq) will ".
+                              "query the DNS servers sequentially in the order specified (System: " .
+                              "General Setup: DNS Servers), rather than all at once in parallel.") ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <input name="domain_needed" type="checkbox" id="domain_needed" value="yes" <?=!empty($pconfig['domain_needed']) ? "checked=\"checked\"" : "";?> />
+                          <strong><?=gettext("Require domain");?></strong>
+                          <div class="hidden" for="help_for_strict_order">
+                            <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
+                              'not forward A or AAAA queries for plain names, without dots or ' .
+                              'domain parts, to upstream name servers. If the name is not known ' .
+                              'from /etc/hosts or DHCP then a "not found" answer is returned.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <input name="no_private_reverse" type="checkbox" id="no_private_reverse" value="yes" <?=!empty($pconfig['no_private_reverse']) ? "checked=\"checked\"" : "";?> />
+                          <strong><?=gettext("Do not forward private reverse lookups");?></strong>
+                          <div class="hidden" for="help_for_strict_order">
+                            <?= gettext('If this option is set, the DNS Forwarder (dnsmasq) will '.
+                              'not forward reverse DNS lookups (PTR) for private addresses ' .
+                              '(RFC 1918) to upstream name servers. Any entries in the Domain ' .
+                              'Overrides section forwarding private "n.n.n.in-addr.arpa" names ' .
+                              'to a specific server are still forwarded. If the IP to name is ' .
+                              'not known from /etc/hosts, DHCP or a specific domain override ' .
+                              'then a "not found" answer is immediately returned.') ?>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
                 <tr>
@@ -326,7 +332,7 @@ $( document ).ready(function() {
                   </td>
                 </tr>
                 <tr>
-                  <td rowspan="2"><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces"); ?></td>
+                  <td><a id="help_for_interfaces" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interfaces"); ?></td>
                   <td>
                     <select id="interface" name="interface[]" multiple="multiple" class="selectpicker">
                       <option value="" <?=empty($pconfig['interface'][0]) ? 'selected="selected"' : ""; ?>>
@@ -343,10 +349,7 @@ $( document ).ready(function() {
                     <div class="hidden" for="help_for_interfaces">
                       <?=gettext("Interface IPs used by the DNS Forwarder for responding to queries from clients. If an interface has both IPv4 and IPv6 IPs, both are used. Queries to other interface IPs not selected below are discarded. The default behavior is to respond to queries on every available IPv4 and IPv6 address.");?>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
+                    <br/>
                     <input name="strictbind" type="checkbox" id="strictbind" value="yes" <?= !empty($pconfig['strictbind']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Strict Interface Binding");?></strong>
                     <div class="hidden" for="help_for_interfaces">
