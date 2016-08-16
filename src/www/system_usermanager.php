@@ -784,7 +784,7 @@ $( document ).ready(function() {
                                   <tr>
                                     <td colspan="2">
                                       <button type="button" class="btn btn-default btn-xs" id="newApiKey"
-                                          title="<?=gettext("create API key");?>" data-toggle="tooltip">
+                                          title="<?=gettext('Create API key');?>" data-toggle="tooltip">
                                         <span class="glyphicon glyphicon-plus"></span>
                                       </button>
                                     </td>
@@ -793,7 +793,7 @@ $( document ).ready(function() {
                           </table>
                           <div class="hidden" for="help_for_apikeys">
                               <hr/>
-                              <?=gettext('manage API keys here for machine to machine interaction using this users credentials');?>
+                              <?=gettext('Manage API keys here for machine to machine interaction using this user\'s credentials.');?>
                           </div>
                       </td>
                   </tr>
