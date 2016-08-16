@@ -527,7 +527,7 @@ include("head.inc");
                         <option value="start" <?=$pconfig['auto'] == "start" ?  "selected=\"selected\"" : ""; ?>><?=gettext("Start immediate");?></option>
                       </select>
                       <div class="hidden" for="help_for_auto">
-                        <?=gettext("Choose the connect behaviour here, when using CARP you might want to consider the 'Respond only' option here (wait for the other side to connect)."); ?>.
+                        <?=gettext("Choose the connect behaviour here, when using CARP you might want to consider the 'Respond only' option here (wait for the other side to connect)."); ?>
                       </div>
                     </td>
                   </tr>
