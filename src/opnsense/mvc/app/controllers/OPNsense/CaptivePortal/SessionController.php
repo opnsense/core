@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\CaptivePortal;
 
 /**
@@ -36,7 +38,7 @@ class SessionController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->title = "Captive Portal / Sessions";
+        $this->view->title = gettext('Captive Portal Sessions');
         // choose template
         $this->view->pick('OPNsense/CaptivePortal/clients');
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
@@ -38,7 +40,7 @@ class NetflowController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = "Netflow";
+        $this->view->title = gettext('NetFlow');
         $this->view->pick('OPNsense/Diagnostics/netflow');
         $this->view->captureForm = $this->getForm("netflow_capture");
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
@@ -38,7 +40,7 @@ class NetworkinsightController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = "Network Insight";
+        $this->view->title = gettext('Network Insight');
         $this->view->pick('OPNsense/Diagnostics/networkinsight');
     }
 }

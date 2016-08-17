@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
@@ -38,7 +40,7 @@ class ActivityController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = "System Activity";
+        $this->view->title = gettext('System Activity');
         $this->view->pick('OPNsense/Diagnostics/systemactivity');
     }
 }

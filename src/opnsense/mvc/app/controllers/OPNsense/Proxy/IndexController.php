@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Proxy;
 
 /**
@@ -40,7 +42,7 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = "Proxy Server";
+        $this->view->title = gettext('Proxy Server');
         $this->view->mainForm = $this->getForm("main");
         $this->view->formDialogEditBlacklist = $this->getForm("dialogEditBlacklist");
         $this->view->pick('OPNsense/Proxy/index');

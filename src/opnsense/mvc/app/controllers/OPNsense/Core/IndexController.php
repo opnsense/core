@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,7 +27,8 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
- namespace OPNsense\Core;
+
+namespace OPNsense\Core;
 
 /**
  * Class IndexController Index controller for core package
