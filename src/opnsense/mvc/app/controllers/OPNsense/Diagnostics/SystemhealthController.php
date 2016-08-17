@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V. - J.Schellevis
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
@@ -38,7 +40,7 @@ class SystemhealthController extends IndexController
 {
     public function indexAction()
     {
-        $this->view->title = "System Health";
+        $this->view->title = gettext('System Health');
         $this->view->pick('OPNsense/Diagnostics/systemhealth');
     }
 }

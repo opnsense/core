@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\CaptivePortal;
 
 /**
@@ -36,7 +38,7 @@ class IndexController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->title = "Captive Portal";
+        $this->view->title = gettext('Captive Portal');
         // link rule dialog
         $this->view->formDialogZone = $this->getForm("dialogZone");
         // choose template

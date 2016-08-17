@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\IDS;
 
 /**
@@ -40,7 +42,7 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = "Intrusion Detection";
+        $this->view->title = gettext('Intrusion Detection');
         // link rule dialog
         $this->view->formDialogRule = $this->getForm("dialogRule");
         // link alert info dialog

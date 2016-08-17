@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Cron;
 
 /**
@@ -40,7 +42,7 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = "Cron settings";
+        $this->view->title = gettext('Cron Settings');
         // include dialog form definitions
         $this->view->formDialogEdit = $this->getForm("dialogEdit");
         $this->view->pick('OPNsense/Cron/index');

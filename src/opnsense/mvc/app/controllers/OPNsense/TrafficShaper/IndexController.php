@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\TrafficShaper;
 
 /**
@@ -40,7 +42,7 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = "Traffic Shaper";
+        $this->view->title = gettext('Traffic Shaper');
         // include dialog form definitions
         $this->view->formDialogPipe = $this->getForm("dialogPipe");
         $this->view->formDialogQueue = $this->getForm("dialogQueue");

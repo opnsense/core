@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,6 +27,7 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
+
 namespace OPNsense\Core;
 
 /**
@@ -39,7 +41,7 @@ class FirmwareController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = "Firmware";
+        $this->view->title = gettext('Firmware');
         $this->view->pick('OPNsense/Core/firmware');
         return;
     }
