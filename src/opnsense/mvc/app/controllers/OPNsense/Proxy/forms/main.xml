@@ -214,7 +214,7 @@
                   Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server.
                   You may leave the proxy interfaces empty, but remember to set a valid ACL in that case.
                   <br/>
-                  <a href="/firewall_nat_edit.php?template=transparant_proxy"> Add a new firewall rule </a>
+                  <a href="/firewall_nat_edit.php?template=transparent_proxy"> Add a new firewall rule </a>
                   ]]></help>
             </field>
             <field>
@@ -228,7 +228,7 @@
                   <br/><br/>
                   Transparent HTTP proxy needs to be enabled and you need nat rules to reflect your traffic
                   for this feature to work.<br/>
-                  <a href="/firewall_nat_edit.php?template=transparant_proxy&https=1"> Add a new firewall rule </a>
+                  <a href="/firewall_nat_edit.php?template=transparent_proxy&https=1"> Add a new firewall rule </a>
                   ]]></help>
             </field>
             <field>
