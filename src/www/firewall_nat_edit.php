@@ -87,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $pconfig['ipprotocol'] = 'inet';
               }
           }
-    } elseif (isset($_GET['template']) && $_GET['template'] == 'transparant_proxy') {
-        // new rule for transparant proxy reflection, to use as sample
+    } elseif (isset($_GET['template']) && $_GET['template'] == 'transparent_proxy') {
+        // new rule for transparent proxy reflection, to use as sample
         $pconfig['interface'] = "lan";
         $pconfig['src'] = "lan";
         $pconfig['dst'] = "any";
