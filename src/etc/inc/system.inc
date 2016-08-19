@@ -1910,6 +1910,14 @@ function system_console_configure()
 {
     global $config;
 
+    $sudo_conf = '/usr/local/etc/sudoers.d/opnsense';
+
+    if (!empty($config['system']['sudo_allow_wheel'])) {
+        file_put_contents($sudo_conf, "%wheel ALL=(ALL) ALL\n");
+    } else {
+        @unlink($sudo_conf);
+    }
+
     $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
     $serial_enabled = isset($config['system']['enableserial']);
 
