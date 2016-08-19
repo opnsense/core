@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,hash-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
-    ,caref,reauth_enable,rekey_enable, auto";
+    ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -357,6 +357,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (isset($pconfig['rekey_enable'])) {
             $ph1ent['rekey_enable'] = true;
+        }
+
+        if (isset($pconfig['tunnel_isolation'])) {
+            $ph1ent['tunnel_isolation'] = true;
         }
 
         if (isset($pconfig['dpd_enable'])) {
@@ -917,6 +921,15 @@ endforeach; ?>
                       <input name="reauth_enable" type="checkbox" id="reauth_enable" value="yes" <?= !empty($pconfig['reauth_enable']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_reauth_enable">
                         <?=gettext("Whether rekeying of an IKE_SA should also reauthenticate the peer. In IKEv1, reauthentication is always done."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_tunnel_isolation" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Tunnel Isolation') ?></td>
+                    <td>
+                      <input name="tunnel_isolation" type="checkbox" id="tunnel_isolation" value="yes" <?= !empty($pconfig['tunnel_isolation']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" for="help_for_tunnel_isolation">
+                        <?= gettext('This option will create a tunnel for each phase 2 entry for IKEv2 interoperability with e.g. FortiGate devices.') ?>
                       </div>
                     </td>
                   </tr>

@@ -1115,7 +1115,6 @@ conn con<<connectionId>>
   installpolicy = yes
   {$tunneltype}
   {$dpdline}
-  auto = {$conn_auto}
   left = {$left_spec}
   right = {$right_spec}
   leftid = {$myid_data}
@@ -1157,42 +1156,69 @@ EOD;
                         if (!empty($ealgoAHsp2arr[$idx])) {
                             $tmpconf .= "\tah = " . join(',', $ealgoAHsp2arr[$idx]) . "!\n";
                         }
+                        $tmpconf .= "\tauto = {$conn_auto}";
                         $ipsecconf .= $tmpconf;
                     }
                 } else {
                     // mobile and ikev2
-                    $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
-                    if (!empty($rightsubnet_spec)) {
-                        $tmpconf .= "\trightsubnet = " . join(',', array_unique($rightsubnet_spec)) . "\n";
-                    }
-                    if (!empty($leftsubnet_spec)) {
-                        $tmpconf .= "\tleftsubnet = " . join(',', array_unique($leftsubnet_spec)) . "\n";
-                    }
-                    // merge esp phase 2 arrays.
-                    $esp_content = array();
-                    foreach ($ealgoESPsp2arr as $ealgoESPsp2arr_details) {
-                        foreach ($ealgoESPsp2arr_details as $esp_item) {
-                            if (!in_array($esp_item, $esp_content)) {
-                                $esp_content[] = $esp_item;
+                    if (isset($ph1ent['tunnel_isolation'])) {
+                        $ipsecconf .= str_replace('<<connectionId>>', "{$ph1ent['ikeid']}-000", $connEntry);
+                        for ($idx = 0; $idx < count($leftsubnet_spec); ++$idx) {
+                            // requires leading empty line:
+                            $tmpconf = array('');
+                            // fix for strongSwan to pick up the correct connection
+                            // name from the first configured tunnel ($idx == 0):
+                            $conn_suffix = $idx ? sprintf('-%03d', $idx) : '';
+                            $tmpconf[] = "conn con{$ph1ent['ikeid']}{$conn_suffix}";
+                            $tmpconf[] = "\trightsubnet = {$rightsubnet_spec[$idx]}";
+                            $tmpconf[] = "\tleftsubnet = {$leftsubnet_spec[$idx]}";
+                            if (!empty($ealgoESPsp2arr[$idx])) {
+                                $tmpconf[] = "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . '!';
+                            }
+                            if (!empty($ealgoAHsp2arr[$idx])) {
+                                $tmpconf[] = "\tah = " . join(',', $ealgoAHsp2arr[$idx]) . '!';
+                            }
+                            $tmpconf[] = "\talso = con{$ph1ent['ikeid']}-000";
+                            $tmpconf[] = "\tauto = {$conn_auto}";
+                            // requires trailing empty line:
+                            $tmpconf[] = '';
+                            $ipsecconf .= join("\n", $tmpconf);
+                        }
+                    } else {
+                        $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
+                        if (!empty($rightsubnet_spec)) {
+                            $tmpconf .= "\trightsubnet = " . join(',', array_unique($rightsubnet_spec)) . "\n";
+                        }
+                        if (!empty($leftsubnet_spec)) {
+                            $tmpconf .= "\tleftsubnet = " . join(',', array_unique($leftsubnet_spec)) . "\n";
+                        }
+                        // merge esp phase 2 arrays.
+                        $esp_content = array();
+                        foreach ($ealgoESPsp2arr as $ealgoESPsp2arr_details) {
+                            foreach ($ealgoESPsp2arr_details as $esp_item) {
+                                if (!in_array($esp_item, $esp_content)) {
+                                    $esp_content[] = $esp_item;
+                                }
                             }
                         }
-                    }
-                    // merge ah phase 2 arrays.
-                    $ah_content = array();
-                    foreach ($ealgoAHsp2arr as $ealgoAHsp2arr_details) {
-                        foreach ($ealgoAHsp2arr_details as $ah_item) {
-                            if (!in_array($ah_item, $ah_content)) {
-                                $ah_content[] = $ah_item;
+                        // merge ah phase 2 arrays.
+                        $ah_content = array();
+                        foreach ($ealgoAHsp2arr as $ealgoAHsp2arr_details) {
+                            foreach ($ealgoAHsp2arr_details as $ah_item) {
+                                if (!in_array($ah_item, $ah_content)) {
+                                    $ah_content[] = $ah_item;
+                                }
                             }
                         }
+                        if (!empty($esp_content)) {
+                            $tmpconf .= "\tesp = " . join(',', $esp_content) . "!\n";
+                        }
+                        if (!empty($ah_content)) {
+                            $tmpconf .= "\tah = " . join(',', $ah_content) . "!\n";
+                        }
+                        $tmpconf .= "\tauto = {$conn_auto}";
+                        $ipsecconf .= $tmpconf;
                     }
-                    if (!empty($esp_content)) {
-                        $tmpconf .= "\tesp = " . join(',', $esp_content) . "!\n";
-                    }
-                    if (!empty($ah_content)) {
-                        $tmpconf .= "\tah = " . join(',', $ah_content) . "!\n";
-                    }
-                    $ipsecconf .= $tmpconf;
                 }
             }
         }
