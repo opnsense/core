@@ -63,7 +63,6 @@ $p2_halgos = array(
     'aesxcbc' => 'AES-XCBC'
 );
 
-
 $p2_protos = array(
     'esp' => 'ESP',
     'ah' => 'AH'
@@ -84,7 +83,8 @@ $p2_pfskeygroups = array(
 /*
  * Return phase1 local address
  */
-function ipsec_get_phase1_src(& $ph1ent) {
+function ipsec_get_phase1_src(& $ph1ent)
+{
     if (!empty($ph1ent['interface'])) {
         if ($ph1ent['interface'] == 'any') {
             return '%any';
@@ -114,11 +114,11 @@ function ipsec_get_phase1_src(& $ph1ent) {
     }
 }
 
-
 /*
  * Return phase2 idinfo in cidr format
  */
-function ipsec_idinfo_to_cidr(& $idinfo, $addrbits = false, $mode = "") {
+function ipsec_idinfo_to_cidr(&$idinfo, $addrbits = false, $mode = '')
+{
     global $config;
 
     switch ($idinfo['type']) {
@@ -160,7 +160,6 @@ function ipsec_idinfo_to_cidr(& $idinfo, $addrbits = false, $mode = "") {
     }
 }
 
-
 /*
  * Return phase1 association for phase2
  */
@@ -191,7 +190,8 @@ function ipsec_lookup_phase1(&$ph2ent, &$ph1ent)
 /*
  * Check phase1 communications status
  */
-function ipsec_phase1_status($ipsec_status, $ikeid) {
+function ipsec_phase1_status($ipsec_status, $ikeid)
+{
     foreach ($ipsec_status as $ike) {
         if ($ike['id'] != $ikeid) {
             continue;
@@ -314,7 +314,8 @@ function ipsec_dump_sad()
     return $sad;
 }
 
-function ipsec_mobilekey_sort() {
+function ipsec_mobilekey_sort()
+{
     global $config;
 
     function mobilekeycmp($a, $b) {
@@ -324,7 +325,8 @@ function ipsec_mobilekey_sort() {
     usort($config['ipsec']['mobilekey'], "mobilekeycmp");
 }
 
-function ipsec_get_number_of_phase2($ikeid) {
+function ipsec_get_number_of_phase2($ikeid)
+{
     global $config;
     $a_phase2 = $config['ipsec']['phase2'];
     $nbph2=0;
@@ -338,8 +340,8 @@ function ipsec_get_number_of_phase2($ikeid) {
     return $nbph2;
 }
 
-
-function ipsec_find_id(& $ph1ent, $side = "local", $rgmap = array()) {
+function ipsec_find_id(&$ph1ent, $side = 'local', $rgmap = array())
+{
     $id_data = null;
     if ($side == "local") {
         $id_type = $ph1ent['myid_type'];
@@ -960,7 +962,6 @@ EOD;
                 $ealgoAHsp2arr = array();
                 $ealgoESPsp2arr = array();
 
-
                 if (count($a_phase2)) {
                     foreach ($a_phase2 as $ph2ent) {
                         if ($ph1ent['ikeid'] != $ph2ent['ikeid'] || isset($ph2ent['disabled'])) {
@@ -1148,7 +1149,7 @@ EOD;
                             // suffix connection with sequence number
                             $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}-00{$idx}", $connEntry);
                         }
-                        $tmpconf .= "\trightsubnet =" . $rightsubnet_spec[$idx]. "\n" ;
+                        $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n" ;
                         $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
                         if (!empty($ealgoESPsp2arr[$idx])) {
                             $tmpconf .= "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . "!\n";
