@@ -1163,10 +1163,10 @@ EOD;
                     // mobile and ikev2
                     $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
                     if (!empty($rightsubnet_spec)) {
-                        $tmpconf .= "\trightsubnet = " . join(",", $rightsubnet_spec) . "\n";
+                        $tmpconf .= "\trightsubnet = " . join(',', array_unique($rightsubnet_spec)) . "\n";
                     }
                     if (!empty($leftsubnet_spec)) {
-                        $tmpconf .= "\tleftsubnet = " . join(",", $leftsubnet_spec) . "\n";
+                        $tmpconf .= "\tleftsubnet = " . join(',', array_unique($leftsubnet_spec)) . "\n";
                     }
                     // merge esp phase 2 arrays.
                     $esp_content = array();
