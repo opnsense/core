@@ -189,6 +189,10 @@
                 <default>0</default>
                 <Required>Y</Required>
             </sslbump>
+            <sslurlonly type="BooleanField">
+            	<default>0</default>
+            	<Required>Y</Required>
+            </sslurlonly>
             <sslcertificate type="CertificateField">
                 <Required>N</Required>
                 <Type>ca</Type>
