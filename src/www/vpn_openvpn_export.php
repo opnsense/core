@@ -274,11 +274,11 @@ include("head.inc");
             $('tr[data-server-index="'+$(this).val()+'"]').show();
             switch ($("#server :selected").data('mode')) {
                 case "p2p_shared_key":
-                    $(".mode_server select,input").prop( "disabled", true );
+                    $(".mode_server :input").prop( "disabled", true );
                     $(".mode_server").hide();
                     break;
                 default:
-                    $(".mode_server select,input").prop( "disabled", false );
+                    $(".mode_server :input").prop( "disabled", false );
                     $(".mode_server").show();
             }
             $(window).resize(); // force zebra re-stripe (opnsense_standard_table_form)
