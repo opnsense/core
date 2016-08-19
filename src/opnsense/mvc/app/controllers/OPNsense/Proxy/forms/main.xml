@@ -235,9 +235,7 @@
                 <id>proxy.forward.sslurlonly</id>
                 <label>SSL URL Only</label>
                 <type>checkbox</type>
-                <help><![CDATA[
-			Dont filter content, only url
-                  ]]></help>
+                <help>Do not filter content, only url</help>
             </field>
             <field>
                 <id>proxy.forward.sslbumpport</id>
