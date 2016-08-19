@@ -30,6 +30,7 @@
 """
 import os
 import os.path
+import stat
 import syslog
 import collections
 import traceback
@@ -280,6 +281,9 @@ class Template(object):
                             if last_bytes_template in ('\n', '\r'):
                                 f_out.write('\n')
                         f_out.close()
+                        # copy root permissions, without exec
+                        root_perm = stat.S_IMODE(os.lstat(os.path.dirname(filename)).st_mode)
+                        os.chmod(filename, root_perm & (~stat.S_IXGRP & ~stat.S_IXUSR & ~stat.S_IXOTH))
 
                         result.append(filename)
 
