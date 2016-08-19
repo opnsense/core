@@ -573,10 +573,10 @@ include("head.inc");
                   </td>
                 </tr>
                 <tr>
-                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Allow SUDO") ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Sudo usage") ?></td>
                   <td width="78%">
                     <input name="sudo_allow_wheel" type="checkbox" value="yes" <?= empty($pconfig['sudo_allow_wheel']) ? '' : 'checked="checked"' ?>  />
-                    <strong><?= gettext('Allow administrators to use the SUDO utility') ?></strong>
+                    <strong><?= gettext('Allow administrators to use the Sudo utility') ?></strong>
                   </td>
                 </tr>
                 <tr>
