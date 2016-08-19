@@ -1142,12 +1142,12 @@ EOD;
                 // append ipsec connections
                 if (!isset($ph1ent['mobile']) && $keyexchange == 'ikev1') {
                     // ikev1 not mobile
-                    for ($idx = 0 ; $idx < count($leftsubnet_spec) ; ++$idx) {
+                    for ($idx = 0; $idx < count($leftsubnet_spec); ++$idx) {
                         if (count($leftsubnet_spec) == 1) {
-                            $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
+                            $tmpconf = str_replace('<<connectionId>>', "{$ph1ent['ikeid']}", $connEntry);
                         } else {
                             // suffix connection with sequence number
-                            $tmpconf =  str_replace('<<connectionId>>', "{$ph1ent['ikeid']}-00{$idx}", $connEntry);
+                            $tmpconf = str_replace('<<connectionId>>', sprintf('%s-%03d', $ph1ent['ikeid'], $idx), $connEntry);
                         }
                         $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n" ;
                         $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
