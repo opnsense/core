@@ -36,7 +36,6 @@ import traceback
 import copy
 import codecs
 import jinja2
-import shutil
 import addons.template_helpers
 
 __author__ = 'Ad Schellevis'
@@ -281,8 +280,6 @@ class Template(object):
                             if last_bytes_template in ('\n', '\r'):
                                 f_out.write('\n')
                         f_out.close()
-                        # copy parents file permissions
-                        shutil.copymode(os.path.dirname(filename), filename)
 
                         result.append(filename)
 
