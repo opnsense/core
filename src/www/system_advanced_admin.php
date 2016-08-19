@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
+    $pconfig['sudo_allow_wheel'] = isset($config['system']['sudo_allow_wheel']);
     $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
     $pconfig['nohttpreferercheck'] = isset($config['system']['webgui']['nohttpreferercheck']);
@@ -113,6 +114,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disableconsolemenu'] = true;
         } elseif (isset($config['system']['disableconsolemenu'])) {
             unset($config['system']['disableconsolemenu']);
+        }
+
+        if ($pconfig['sudo_allow_wheel'] == "yes") {
+            $config['system']['sudo_allow_wheel'] = true;
+        } elseif (isset($config['system']['sudo_allow_wheel'])) {
+            unset($config['system']['sudo_allow_wheel']);
         }
 
         if ($pconfig['noantilockout'] == "yes") {
@@ -313,7 +320,7 @@ include("head.inc");
                 <td width="22%"><strong><?=gettext("webConfigurator");?></strong></td>
                 <td  width="78%" align="right">
                   <small><?=gettext("full help"); ?> </small>
-                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                  <i class="fa fa-toggle-off text-danger" style="cursor: pointer;" id="show_all_help_page" type="button"></i>
                 </td>
               </tr>
                 <tr>
@@ -491,7 +498,7 @@ include("head.inc");
                 <tr>
                   <td><a id="help_for_sshport" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("SSH port"); ?></td>
                   <td width="78%">
-                    <input name="sshport" type="text"  value="<?=$pconfig['sshport'];?>"/>
+                    <input name="sshport" type="text" value="<?=$pconfig['sshport'];?>"/>
                     <div class="hidden" for="help_for_sshport">
                       <?=gettext("Leave this blank for the default of 22."); ?>
                     </div>
@@ -559,13 +566,17 @@ include("head.inc");
                   <th colspan="2"><?=gettext("Console Options"); ?></th>
                 </tr>
                 <tr>
-                  <td><a id="help_for_disableconsolemenu" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Console menu") ?></td>
+                  <td><i class="fa fa-info-circle text-muted"></i></a> <?= gettext("Console menu") ?></td>
                   <td width="78%">
-                    <input name="disableconsolemenu" type="checkbox"  value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
+                    <input name="disableconsolemenu" type="checkbox" value="yes" <?= empty($pconfig['disableconsolemenu']) ? '' : 'checked="checked"' ?>  />
                     <strong><?=gettext("Password protect the console menu"); ?></strong>
-                    <div class="hidden" for="help_for_disableconsolemenu">
-                      <?=gettext("Changes to this option will take effect after a reboot."); ?>
-                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Allow SUDO") ?></td>
+                  <td width="78%">
+                    <input name="sudo_allow_wheel" type="checkbox" value="yes" <?= empty($pconfig['sudo_allow_wheel']) ? '' : 'checked="checked"' ?>  />
+                    <strong><?= gettext('Allow administrators to use the SUDO utility') ?></strong>
                   </td>
                 </tr>
                 <tr>
