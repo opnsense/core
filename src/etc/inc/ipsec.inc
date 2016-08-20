@@ -83,7 +83,7 @@ $p2_pfskeygroups = array(
 /*
  * Return phase1 local address
  */
-function ipsec_get_phase1_src(& $ph1ent)
+function ipsec_get_phase1_src(&$ph1ent)
 {
     if (!empty($ph1ent['interface'])) {
         if ($ph1ent['interface'] == 'any') {
@@ -429,7 +429,7 @@ function ipsec_configure()
     $a_phase1 = isset($config['ipsec']['phase1']) ? $config['ipsec']['phase1'] : array();
     $a_phase2 = isset($config['ipsec']['phase2']) ? $config['ipsec']['phase2'] : array();
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : array();
-    $aggressive_psk = false ; // if one of the phase 1 entries has aggressive/psk combination, this will be set true
+    $aggressive_psk = false; // if one of the phase 1 entries has aggressive/psk combination, this will be set true
 
     if (!isset($ipseccfg['enable'])) {
         /* try to stop charon */
@@ -814,7 +814,7 @@ EOD;
                 foreach ($ipsec_loglevels as $lkey => $ldescr) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
                       intval($config['ipsec']["ipsec_{$lkey}"]) >= 1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 5) {
-                          $cfg_loglevels[] = "${lkey} " . (intval($config['ipsec']["ipsec_{$lkey}"]) - 1) ;
+                          $cfg_loglevels[] = "${lkey} " . (intval($config['ipsec']["ipsec_{$lkey}"]) - 1);
                     }
                 }
             }
@@ -951,7 +951,7 @@ EOD;
                     $rekey = "rekey = yes";
                 }
 
-                $forceencaps = 'forceencaps = no' ;
+                $forceencaps = 'forceencaps = no';
                 if (!empty($ph1ent['nat_traversal']) && $ph1ent['nat_traversal'] == 'force') {
                     $forceencaps = 'forceencaps = yes';
                 }
@@ -1148,7 +1148,7 @@ EOD;
                             // suffix connection with sequence number
                             $tmpconf = str_replace('<<connectionId>>', sprintf('%s-%03d', $ph1ent['ikeid'], $idx), $connEntry);
                         }
-                        $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n" ;
+                        $tmpconf .= "\trightsubnet = " . $rightsubnet_spec[$idx]. "\n";
                         $tmpconf .= "\tleftsubnet = " . $leftsubnet_spec[$idx] . "\n";
                         if (!empty($ealgoESPsp2arr[$idx])) {
                             $tmpconf .= "\tesp = " . join(',', $ealgoESPsp2arr[$idx]) . "!\n";
