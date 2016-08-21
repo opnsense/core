@@ -140,7 +140,7 @@ include("head.inc");
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <div class="content-box-main ">
+            <div class="content-box-main">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
