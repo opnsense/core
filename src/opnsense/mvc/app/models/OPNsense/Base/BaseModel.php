@@ -559,7 +559,11 @@ abstract class BaseModel
             // serialize to config after last migration step, keep the config data static as long as not all
             // migrations have completed.
             if ($upgradePerfomed) {
-                $this->serializeToConfig();
+                try {
+                    $this->serializeToConfig();
+                } catch (\Exception $e) {
+                    $logger->error("Model ".$class_info->getName() ." can't be saved, skip ( " .$e . " )");
+                }
             }
         }
     }
