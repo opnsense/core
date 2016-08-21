@@ -37,8 +37,7 @@ if (empty($config['wol']['wolentry']) || !is_array($config['wol']['wolentry'])) 
 $a_wol = &$config['wol']['wolentry'];
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // delete entry
     if (isset($_POST['act']) && $_POST['act'] == "del" && isset($_POST['id'])) {
         if (!empty($a_wol[$_POST['id']])) {
@@ -141,7 +140,7 @@ include("head.inc");
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <section class="col-xs-12">
           <div class="content-box">
-            <div class="content-box-main ">
+            <div class="content-box-main">
               <form method="post" name="iform" id="iform">
                 <div class="table-responsive">
                   <table class="table table-striped opnsense_standard_table_form">
@@ -171,7 +170,7 @@ include("head.inc");
                               $if = null;
                           }
                           foreach (get_configured_interface_with_descr() as $iface => $ifacename): ?>
-                            <option value="<?=$iface;?>" <?=!link_interface_to_bridge($iface) && $iface == $if ? "selected=\"selected\"" : ""; ?>>
+                            <option value="<?=$iface;?>" <?=$iface == $if ? "selected=\"selected\"" : ""; ?>>
                               <?=htmlspecialchars($ifacename);?>
                             </option>
 <?php
