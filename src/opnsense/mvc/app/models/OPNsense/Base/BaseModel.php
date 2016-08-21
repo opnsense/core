@@ -460,9 +460,10 @@ abstract class BaseModel
         if ($messages->count() > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
-                $exception_msg .= "[".$msg-> getField()."] ".$msg->getMessage()."\n";
+                $exception_msg_part = "[".str_replace("\\", ".", get_class($this)).".".$msg-> getField(). "] " .$msg->getMessage();
+                $exception_msg .= "$exception_msg_part\n";
                 // always log validation errors
-                $logger->error(str_replace("\\", ".", get_class($this)).".".$msg-> getField(). " " .$msg->getMessage());
+                $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
                 throw new \Phalcon\Validation\Exception($exception_msg);
