@@ -59,7 +59,7 @@ class UniqueConstraint extends BaseConstraint
             if ($containerNode != null && $level == 2) {
                 // collect (additional) key fields
                 $keyFields = array($nodeName);
-                $keyFields = array_merge($keyFields, $this->getOptionValueList('addFields'));
+                $keyFields = array_unique(array_merge($keyFields, $this->getOptionValueList('addFields')));
                 // calculate the key for this node
                 $nodeKey = '';
                 foreach ($keyFields as $field) {
