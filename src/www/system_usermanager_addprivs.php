@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_type = "group";
         $id = $_GET['groupid'];
     } else {
-        header("Location: system_usermanager.php");
+        header(url_safe('Location: system_usermanager.php'));
         exit;
     }
     if ($input_type == "group") {
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $retval = write_config();
             $savemsg = get_std_save_message();
 
-            header("Location: system_usermanager.php?act=edit&userid=".$userid."&savemsg=".$savemsg);
+            header(url_safe('Location: system_usermanager.php?act=edit&userid=%s&savemsg=%s', array($userid, $savemsg)));
             exit;
         } elseif ($_POST['input_type'] == 'group' && isset($config['system']['group'][$pconfig['id']]['name'])) {
             $groupid = $_POST['id'];
@@ -101,11 +101,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             write_config();
-            header("Location: system_groupmanager.php?act=edit&groupid={$groupid}");
+            header(url_safe('Location: system_groupmanager.php?act=edit&groupid=%s', $groupid));
             exit;
         }
     }
-    header("Location: system_usermanager.php");
+    header(url_safe('Location: system_usermanager.php'));
     exit;
 }
 

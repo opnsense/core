@@ -988,6 +988,21 @@ function log_error($error)
     syslog(LOG_ERR, "$page: $error");
 }
 
+function url_safe($format, $args = array())
+{
+    if (!is_array($args)) {
+        /* just in case there's only one argument */
+        $args = array($args);
+    }
+
+    foreach ($args as $id => $arg) {
+        $args[$id] = urlencode($arg);
+    }
+
+    return vsprintf($format, $args);
+}
+
+
 /****f* util/exec_command
  * NAME
  *   exec_command - Execute a command and return a string of the result.
