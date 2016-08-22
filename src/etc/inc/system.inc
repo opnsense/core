@@ -2019,6 +2019,8 @@ function reset_factory_defaults($sync = true)
     mwexec('/bin/rm -r /conf/*');
     disable_security_checks();
 
+    mwexec('/usr/local/sbin/beep.sh stop');
+
     /* as we go through a special case directly reboot */
     $shutdown_cmd = '/sbin/shutdown -or now';
     if ($sync) {

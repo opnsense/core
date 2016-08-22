@@ -1,8 +1,10 @@
 #!/bin/sh
 
-BEEP=`/usr/bin/grep -c disablebeep /conf/config.xml`
-if [ $BEEP -gt 0 ]; then
-	exit;
+if [ -f /conf/config.xml ]; then
+	BEEP=`/usr/bin/grep -c disablebeep /conf/config.xml`
+	if [ $BEEP -gt 0 ]; then
+		exit;
+	fi
 fi
 
 # Standard note length
