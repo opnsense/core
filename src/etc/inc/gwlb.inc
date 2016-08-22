@@ -774,27 +774,6 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
     }
     unset($gateway);
 
-    /* FIXME: Should this be enabled.
-     * Some interface like wan might be default but have no info recorded
-     * the config. */
-    /* this is a fallback if all else fails and we want to get packets out @smos */
-    if ($found_defaultv4 == 0 || $found_defaultv6 == 0) {
-        foreach ($gateways_arr as &$gateway) {
-            if (($gateway['friendlyiface'] == "wan") && ($found_defaultv4 == 0) && (!isset($gateway['ipprotocol']) || ($gateway['ipprotocol'] == "inet"))) {
-                if (file_exists("/tmp/{$gateway['interface']}_defaultgw")) {
-                    $gateway['defaultgw'] = true;
-                    $found_defaultv4 = 1;
-                }
-            }
-            if (($gateway['friendlyiface'] == "wan") && ($found_defaultv6 == 0) && ($gateway['ipprotocol'] == "inet6")) {
-                if (file_exists("/tmp/{$gateway['interface']}_defaultgwv6")) {
-                    $gateway['defaultgw'] = true;
-                    $found_defaultv6 = 1;
-                }
-            }
-        }
-    }
-
     if ($localhost === true) {
         /* attach localhost for Null routes */
         $gwlo4 = array();
@@ -810,6 +789,7 @@ function return_gateways_array($disabled = false, $localhost = false, $inactive 
         $gateways_arr['Null4'] = $gwlo4;
         $gateways_arr['Null6'] = $gwlo6;
     }
+
     return($gateways_arr);
 }
 
