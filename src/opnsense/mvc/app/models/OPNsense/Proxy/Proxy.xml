@@ -155,7 +155,7 @@
                     <Constraints>
                         <check001>
                             <ValidationMessage>Both throttling parameters should either be filled or empty</ValidationMessage>
-                            <type>OPNsense\Base\Constraints\AllOrNoneConstraint</type>
+                            <type>AllOrNoneConstraint</type>
                             <addFields>
                                 <field1>perHostTrotteling</field1>
                             </addFields>
@@ -307,7 +307,7 @@
                                 <Constraints>
                                     <check001>
                                         <ValidationMessage>Filename should be unique</ValidationMessage>
-                                        <type>OPNsense\Base\Constraints\UniqueConstraint</type>
+                                        <type>UniqueConstraint</type>
                                     </check001>
                                 </Constraints>
                             </filename>

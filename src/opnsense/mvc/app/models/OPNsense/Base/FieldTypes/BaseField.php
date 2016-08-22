@@ -372,7 +372,7 @@ abstract class BaseField
             $constraint = $this->internalConstraints[$name];
             if (!empty($constraint['type'])) {
                 try {
-                    $constr_class = new \ReflectionClass($constraint['type']);
+                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\'.$constraint['type']);
                     if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
                         $constraint['name'] = $name;
                         $constraint['node'] = $this;

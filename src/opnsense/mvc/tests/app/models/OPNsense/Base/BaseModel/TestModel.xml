@@ -23,7 +23,7 @@
                     <Constraints>
                         <check001>
                             <ValidationMessage>number should be unique</ValidationMessage>
-                            <type>OPNsense\Base\Constraints\UniqueConstraint</type>
+                            <type>UniqueConstraint</type>
                             <addFields>
                                 <field1>optfield</field1>
                             </addFields>
@@ -39,7 +39,7 @@
                 <Constraints>
                     <check001>
                         <ValidationMessage>All fields should contain data or none of them</ValidationMessage>
-                        <type>OPNsense\Base\Constraints\AllOrNoneConstraint</type>
+                        <type>AllOrNoneConstraint</type>
                         <addFields>
                             <field2>value2</field2>
                             <field3>value3</field3>
