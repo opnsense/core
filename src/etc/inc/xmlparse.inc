@@ -128,13 +128,6 @@ function cData($parser, $data)
     }
 }
 
-function parse_xml_config($cffile, $rootobj, $isstring = "false")
-{
-    global $listtags;
-    $listtags = listtags();
-    return parse_xml_config_raw($cffile, $rootobj, $isstring);
-}
-
 function parse_xml_config_raw($cffile, $rootobj, $isstring = "false")
 {
     global $depth, $curpath, $parsedcfg, $havedata, $listtags;

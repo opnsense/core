@@ -44,42 +44,24 @@ require_once("system.inc");
 function restore_config_section($section_name, $new_contents)
 {
     global $config;
+
     $tmpxml = '/tmp/tmpxml';
 
-    $fout = fopen($tmpxml, 'w');
-    fwrite($fout, $new_contents);
-    fclose($fout);
-
-    $xml = parse_xml_config($tmpxml, null);
-    if ($xml === -1) {
-        return false;
-    }
-
-    $section_xml = -1;
-
-    /*
-     * So, we're looking for a non-root tag written as a
-     * root tag, or a proper config where we cherry-pick
-     * a specific matching section... ok...
-     */
-    foreach ($xml as $xml_strip_root) {
-        if (isset($xml_strip_root[$section])) {
-            $section_xml = $xml_strip_root[$section];
-            break;
-        }
-    }
-
-    if ($section_xml = -1 && isset($xml[$section_name])) {
-        $section_xml = $xml[$section_name];
-    }
-
+    file_put_contents($tmpxml, $new_contents);
+    $xml = load_config_from_file($tmpxml);
     @unlink($tmpxml);
 
-    if ($section_xml === -1) {
+    if (!is_array($xml) || !isset($xml[0])) {
         return false;
     }
 
-    $config[$section_name] = &$section_xml;
+    $xml = $xml[0];
+
+    if (!isset($xml[$section_name])) {
+        return false;
+    }
+
+    $config[$section_name] = $xml[$section_name];
     write_config(sprintf(gettext("Restored %s of config file"), $section_name));
     disable_security_checks();
 
