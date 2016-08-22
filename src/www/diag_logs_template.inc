@@ -59,7 +59,7 @@ if (!empty($_POST['clear'])) {
 }
 
 if (isset($_POST['filtertext'])) {
-    $filtertext = html_safe($_POST['filtertext']);
+    $filtertext = $_POST['filtertext'];
 }
 
 include("head.inc");
@@ -75,7 +75,7 @@ include("head.inc");
             <form method="post">
               <div class="input-group">
                 <div class="input-group-addon"><i class="fa fa-search"></i></div>
-                <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?=$filtertext;?>"/>
+                <input type="text" class="form-control" id="filtertext" name="filtertext" placeholder="<?= html_safe(gettext('Search for a specific message...')) ?>" value="<?= html_safe($filtertext) ?>"/>
               </div>
             </form>
           </p>
