@@ -50,4 +50,21 @@ abstract class BaseConstraint extends Validator implements ValidatorInterface
         }
         $validator->appendMessage(new Message($message, $attribute, $name));
     }
+
+    /**
+     * retrieve option value list
+     * @param $fieldname
+     * @return mixed
+     */
+    protected function getOptionValueList($fieldname)
+    {
+        $result = array();
+        $options = $this->getOption($fieldname);
+        if (!empty($options)) {
+            foreach ($options as $option) {
+                $result[] = $option;
+            }
+        }
+        return $result;
+    }
 }

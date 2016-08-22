@@ -44,7 +44,6 @@ class UniqueConstraint extends BaseConstraint
     public function validate(\Phalcon\Validation $validator, $attribute)
     {
         $node = $this->getOption('node');
-        $addFields = $this->getOption('addFields');
         $fieldSeparator = chr(10) . chr(0);
         if ($node) {
             $containerNode = $node;
@@ -60,11 +59,7 @@ class UniqueConstraint extends BaseConstraint
             if ($containerNode != null && $level == 2) {
                 // collect (additional) key fields
                 $keyFields = array($nodeName);
-                if (!empty($addFields)) {
-                    foreach ($addFields as $field) {
-                        $keyFields[] = $field;
-                    }
-                }
+                $keyFields = array_merge($keyFields, $this->getOptionValueList('addFields'));
                 // calculate the key for this node
                 $nodeKey = '';
                 foreach ($keyFields as $field) {
