@@ -154,7 +154,7 @@
                     <Required>N</Required>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Both trotteling parameters should either be filled or empty</ValidationMessage>
+                            <ValidationMessage>Both throttling parameters should either be filled or empty</ValidationMessage>
                             <type>OPNsense\Base\Constraints\AllOrNoneConstraint</type>
                             <addFields>
                                 <field1>perHostTrotteling</field1>
