@@ -155,6 +155,18 @@ class Config extends Singleton
         return $result;
     }
 
+
+    /**
+     * @param $filename
+     * @param null $forceList
+     * @return array|string
+     */
+    public function toArrayFromFile($filename, $forceList = null)
+    {
+        $xml = $this->load_from_file($filename);
+        return $this->toArray($forceList, $xml);
+    }
+
     /**
      * update (reset) config with array structure (backwards compatibility mode)
      * @param $source source array structure
@@ -292,16 +304,18 @@ class Config extends Singleton
     }
 
     /**
-     * Load config file
+     * load xml config from file
+     * @param $filename
+     * @return \SimpleXMLElement
      * @throws ConfigException
      */
-    private function load()
+    private function load_from_file($filename)
     {
         // exception handling
-        if (!file_exists($this->config_file)) {
+        if (!file_exists($filename)) {
             throw new ConfigException('file not found');
         }
-        $xml = file_get_contents($this->config_file);
+        $xml = file_get_contents($filename);
         if (trim($xml) == '') {
             throw new ConfigException('empty file');
         }
@@ -309,18 +323,29 @@ class Config extends Singleton
         set_error_handler(
             function () {
                 // reset simplexml pointer on parse error.
-                $this->simplexml = null;
+                $result = null;
             }
         );
 
-        $this->simplexml = simplexml_load_string($xml);
-
-        if ($this->simplexml == null) {
-            restore_error_handler();
-            throw new ConfigException("invalid config xml");
-        }
+        $result = simplexml_load_string($xml);
 
         restore_error_handler();
+        if ($result == null) {
+            throw new ConfigException("invalid config xml");
+        } else {
+            return $result;
+        }
+    }
+
+    /**
+     * Load config file
+     * @throws ConfigException
+     */
+    private function load()
+    {
+        $this->simplexml = null;
+        $this->statusIsValid = false;
+        $this->simplexml = $this->load_from_file($this->config_file);
         $this->statusIsValid = true;
     }
 

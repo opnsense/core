@@ -71,6 +71,14 @@ function alias_make_table($config)
     }
   }
 
+/**
+ * parse config into array and return
+ */
+function load_config_from_file($filename)
+{
+    return OPNsense\Core\Config::getInstance()->toArrayFromFile($filename, listtags());
+}
+
 /****f* config/parse_config
  * NAME
  *   parse_config - Read in config.xml if needed and return $config array
