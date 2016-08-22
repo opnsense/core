@@ -264,4 +264,39 @@ class BaseModelTest extends \PHPUnit_Framework_TestCase
         }
         BaseModelTest::$model->serializeToConfig();
     }
+
+    /**
+     * @depends testRunMigrations
+     */
+    public function testAllOrNoneInitial()
+    {
+        BaseModelTest::$model->AllOrNone->value1 = "";
+        BaseModelTest::$model->AllOrNone->value2 = "";
+        BaseModelTest::$model->AllOrNone->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage All fields should contain data or none of them
+     * @depends testAllOrNoneInitial
+     */
+    public function testAllOrNoneNok()
+    {
+        BaseModelTest::$model->AllOrNone->value1 = "";
+        BaseModelTest::$model->AllOrNone->value2 = "X";
+        BaseModelTest::$model->AllOrNone->value3 = "";
+        BaseModelTest::$model->serializeToConfig();
+    }
+
+    /**
+     * @depends testAllOrNoneNok
+     */
+    public function testAllOrNoneOk()
+    {
+        BaseModelTest::$model->AllOrNone->value1 = "X1";
+        BaseModelTest::$model->AllOrNone->value2 = "X2";
+        BaseModelTest::$model->AllOrNone->value3 = "X3";
+        BaseModelTest::$model->serializeToConfig();
+    }
 }

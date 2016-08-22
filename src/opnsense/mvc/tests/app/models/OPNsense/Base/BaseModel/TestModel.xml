@@ -34,5 +34,40 @@
                 </optfield>
             </item>
         </arraytypes>
+        <AllOrNone>
+            <value1 type="TextField">
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>All fields should contain data or none of them</ValidationMessage>
+                        <type>OPNsense\Base\Constraints\AllOrNoneConstraint</type>
+                        <addFields>
+                            <field2>value2</field2>
+                            <field3>value3</field3>
+                        </addFields>
+                    </check001>
+                </Constraints>
+            </value1>
+            <value2 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value2>
+            <value3 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value3>
+            <value4 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value4>
+        </AllOrNone>
     </items>
 </model>
