@@ -362,22 +362,55 @@ abstract class BaseField
     }
 
     /**
-     * fetch all additional validators
+     * retrieve constraint objects by defined constraints name (/key)
+     * @param $name
+     * @return null|object
      */
-    private function getConstraintValidators()
+    public function getConstraintByName($name)
     {
-        $result = array();
-        foreach ($this->internalConstraints as $name => $constraint) {
+        if (isset($this->internalConstraints[$name])) {
+            $constraint = $this->internalConstraints[$name];
             if (!empty($constraint['type'])) {
                 try {
                     $constr_class = new \ReflectionClass($constraint['type']);
                     if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
                         $constraint['name'] = $name;
                         $constraint['node'] = $this;
-                        $result[] = $constr_class->newInstance($constraint);
+                        return $constr_class->newInstance($constraint);
                     }
                 } catch (\ReflectionException $e) {
                     null; // ignore configuration errors, if the constraint can't be found, skip.
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * fetch all additional validators
+     * @return array
+     */
+    private function getConstraintValidators()
+    {
+        $result = array();
+        foreach ($this->internalConstraints as $name => $constraint) {
+            if (!empty($constraint['reference'])) {
+                // handle references (should use the same level)
+                $parts = explode('.', $constraint['reference']);
+                $parentNode = $this->getParentNode();
+                if (count($parts) == 2) {
+                    $tagName = $parts[0];
+                    if (isset($parentNode->__items[$tagName])) {
+                        $ref_constraint = $parentNode->$tagName->getConstraintByName($parts[1]);
+                        if ($ref_constraint != null) {
+                            $result[] = $ref_constraint;
+                        }
+                    }
+                }
+            } elseif (!empty($constraint['type'])) {
+                $constraintObj = $this->getConstraintByName($name);
+                if ($constraintObj != null) {
+                    $result[] = $constraintObj;
                 }
             }
         }
