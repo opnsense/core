@@ -85,14 +85,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
     if (isset($_POST['create'])) {
         // create new phase1 entry
-        header("Location: vpn_ipsec_phase1.php?mobile=true");
+        header(url_safe('Location: vpn_ipsec_phase1.php?mobile=true'));
         exit;
     } elseif (isset($_POST['apply'])) {
         // apply changes
         ipsec_configure();
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec_mobile.php?savemsg=".$savemsg);
+        header(url_safe('Location: vpn_ipsec_mobile.php?savemsg=%s', $savemsg));
         exit;
     } elseif (isset($_POST['submit'])) {
         // save form changes
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             mark_subsystem_dirty('ipsec');
 
-            header("Location: vpn_ipsec_mobile.php");
+            header(url_safe('Location: vpn_ipsec_mobile.php'));
             exit;
         }
     }

@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_user[$id]);
             write_config();
             $savemsg = sprintf(gettext('The user "%s" was successfully removed.'), $userdeleted);
-            header("Location: system_usermanager.php?savemsg=".$savemsg);
+            header(url_safe('Location: system_usermanager.php?savemsg=%s', $savemsg));
             exit;
         }
     } elseif ($act == "delcert" && isset($id)) {
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($a_user[$id]['cert'][$pconfig['certid']]);
         write_config();
         $savemsg = sprintf(gettext('The certificate association "%s" was successfully removed.'), $certdeleted);
-        header("Location: system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
+        header(url_safe('Location: system_usermanager.php?savemsg=%s&act=edit&userid=%s', array($savemsg, $id)));
         exit;
     } elseif ($act == "newApiKey" && isset($id)) {
         // every action is using the sequence of the user, to keep it understandable, we will use
@@ -209,7 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg = gettext('No API key found');
         }
         // redirect
-        header("Location: system_usermanager.php?savemsg=".$savemsg."&act=edit&userid=".$id);
+        header(url_safe('Location: system_usermanager.php?savemsg=%s&act=edit&userid=%s', array($savemsg, $id)));
         exit;
     } elseif (isset($pconfig['save'])) {
         // save user
@@ -347,17 +347,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (!empty($pconfig['chkNewCert'])) {
                 // redirect to cert manager when a new cert is requested for this user
-                header("Location: system_certmanager.php?act=new&userid=".(count($a_user)-1));
+                header(url_safe('Location: system_certmanager.php?act=new&userid=%s', count($a_user) - 1));
             } else {
-                header("Location: system_usermanager.php");
+                header(url_safe('Location: system_usermanager.php'));
                 exit;
             }
         }
     } elseif (isset($id)) {
-        header("Location: system_usermanager.php?userid=".$id);
+        header(url_safe('Location: system_usermanager.php?userid=%s', $id));
         exit;
     } else {
-        header("Location: system_usermanager.php");
+        header(url_safe('Location: system_usermanager.php'));
         exit;
     }
 }

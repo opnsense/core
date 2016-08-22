@@ -33,19 +33,19 @@ require_once("interfaces.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if(!empty($_GET['if'])) {
-        $if = htmlspecialchars($_GET['if']);
+        $if = $_GET['if'];
     }
     if (!empty($_GET['savemsg']) && $_GET['savemsg'] == 'rescan') {
         $savemsg = gettext("Rescan has been initiated in the background. Refresh this page in 10 seconds to see the results.");
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['if'])) {
-        $if = htmlspecialchars($_POST['if']);
+        $if = $_POST['if'];
     }
     $rwlif = escapeshellarg(get_real_interface($if));
     if(!empty($_POST['rescanwifi'])) {
-        mwexec_bg("/sbin/ifconfig {$rwlif} scan 2>&1");
-        header("Location: status_wireless.php?if=" . $if. "&savemsg=rescan");
+        mwexecf_bg('/sbin/ifconfig %s scan', $rwlif);
+        header(url_safe('Location: status_wireless.php?if=%s&savemsg=rescan', $if));
         exit;
     }
 }
@@ -86,7 +86,7 @@ include("head.inc");
 ?>
         <div class="content-box">
           <form method="post" name="iform" id="iform">
-            <input type="hidden" name="if" id="if" value="<?=$if;?>">
+            <input type="hidden" name="if" id="if" value="<?= html_safe($if) ?>">
             <header class="content-box-head container-fluid">
               <h3><?=gettext("Nearby access points or ad-hoc peers"); ?></h3>
             </header>
