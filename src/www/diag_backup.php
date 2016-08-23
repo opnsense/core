@@ -51,18 +51,15 @@ function restore_config_section($section_name, $new_contents)
     $xml = load_config_from_file($tmpxml);
     @unlink($tmpxml);
 
-    if (!is_array($xml) || !isset($xml[0])) {
-        return false;
-    }
-
-    $xml = $xml[0];
-
-    if (!isset($xml[$section_name])) {
+    if (!is_array($xml) || !isset($xml[$section_name])) {
         return false;
     }
 
     $config[$section_name] = $xml[$section_name];
+
     write_config(sprintf(gettext("Restored %s of config file"), $section_name));
+    convert_config();
+
     disable_security_checks();
 
     return true;
@@ -159,7 +156,7 @@ $areas = array(
     'igmpproxy' => gettext('IGMP Proxy'),
     'installedpackages' => gettext('Universal Plug and Play'),	/* XXX only one, reduce depth! */
     'interfaces' => gettext('Interfaces'),
-    'ipsec' => gettext('IPSEC'),
+    'ipsec' => gettext('IPsec'),
     'laggs' => gettext('LAGG Devices'),
     'load_balancer' => gettext('Load Balancer'),
     'nat' => gettext('Network Address Translation'),
