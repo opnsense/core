@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include("head.inc");
 legacy_html_escape_form_data($a_igmpproxy);
 $main_buttons = array(
-    array('label'=>gettext("add a new igmpentry"), 'href'=>'services_igmpproxy_edit.php'),
+    array('label' => gettext('Add a new IGMP entry'), 'href' => 'services_igmpproxy_edit.php'),
 );
 
 ?>
@@ -130,7 +130,7 @@ $main_buttons = array(
                       </td>
                       <td><?=$igmpentry['descr'];?></td>
                       <td>
-                         <a href="services_igmpproxy_edit.php?id=<?=$i;?>" title="<?=gettext("edit igmpentry"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                         <a href="services_igmpproxy_edit.php?id=<?=$i;?>" title="<?=gettext("Edit this IGMP entry"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
                          <a href="#" data-id="<?=$i;?>" class="act_delete_entry"><button type="button" class="btn btn-xs btn-default"><span class="fa fa-trash text-muted"></span></button></a>
                       </td>
                     </tr>

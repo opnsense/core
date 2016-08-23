@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 include("head.inc");
 legacy_html_escape_form_data($a_ifgroups);
 $main_buttons = array(
-  array('href' => 'interfaces_groups_edit.php', 'label' => gettext('Add')),
+  array('href' => 'interfaces_groups_edit.php', 'label' => gettext('Add a new group')),
 );
 ?>
 
@@ -133,10 +133,10 @@ $main_buttons = array(
                     </td>
                     <td><?=$ifgroupentry['descr'];?></td>
                     <td>
-                      <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("edit group");?>">
+                      <a href="interfaces_groups_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?=gettext("Edit this group");?>">
                         <span class="glyphicon glyphicon-edit"></span>
                       </a>
-                      <button title="<?=gettext("delete ifgroupentry");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
+                      <button title="<?=gettext("Remove this group");?>" data-toggle="tooltip" data-id="<?=$i;?>" class="btn btn-default btn-xs act_delete" type="submit">
                         <span class="fa fa-trash text-muted"></span>
                       </button>
                     </td>

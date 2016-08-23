@@ -305,11 +305,11 @@ include_once("head.inc");
                         <td><a id="help_for_infra_cache_numhosts" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Number of Hosts to cache");?></td>
                         <td>
                           <select id="infra_cache_numhosts" name="infra_cache_numhosts" class="selectpicker">
-                            <option value="1000"  <?=$pconfig['infra_cache_numhosts'] == "1000" ?  "selected=\"selected\"" : ""; ?>><?=gettext('1000') ?></option>
-                            <option value="5000"  <?=$pconfig['infra_cache_numhosts'] == "5000" ? "selected=\"selected\"" : ""; ?>><?=gettext('5000') ?></option>
-                            <option value="10000" <?=$pconfig['infra_cache_numhosts'] == "10000" ? "selected=\"selected\"" : ""; ?>><?=gettext('10 000') ?></option>
-                            <option value="20000" <?=$pconfig['infra_cache_numhosts'] == "20000" ? "selected=\"selected\"" : ""; ?>><?=gettext('20 000') ?></option>
-                            <option value="50000" <?=$pconfig['infra_cache_numhosts'] == "50000" ? "selected=\"selected\"" : ""; ?>><?=gettext('50 000') ?></option>
+                            <option value="1000"  <?=$pconfig['infra_cache_numhosts'] == "1000" ?  "selected=\"selected\"" : ""; ?>>1000</option>
+                            <option value="5000"  <?=$pconfig['infra_cache_numhosts'] == "5000" ? "selected=\"selected\"" : ""; ?>>5000</option>
+                            <option value="10000" <?=$pconfig['infra_cache_numhosts'] == "10000" ? "selected=\"selected\"" : ""; ?>>10000</option>
+                            <option value="20000" <?=$pconfig['infra_cache_numhosts'] == "20000" ? "selected=\"selected\"" : ""; ?>>20000</option>
+                            <option value="50000" <?=$pconfig['infra_cache_numhosts'] == "50000" ? "selected=\"selected\"" : ""; ?>>50000</option>
                           </select>
                           <div class="hidden" for="help_for_infra_cache_numhosts">
                             <?=gettext("Number of hosts for which information is cached. The default is 10,000.");?>
