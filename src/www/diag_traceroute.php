@@ -171,14 +171,6 @@ include("head.inc");
                     </tr>
                   </tbody>
                 </table>
-                <div class="container-fluid">
-                  <p>
-                    <span class="text-danger"><b><?=gettext("Note: ");?></b></span>
-                    <?=gettext("Traceroute may take a while to complete. You may hit the Stop button on your browser at any time to see the progress of failed traceroutes.");?>
-                    <br /><br />
-                    <?=gettext("Using a source interface/IP address that does not match selected type (IPv4, IPv6) will result in an error or empty output.");?>
-                  </p>
-                </div>
               </div>
             </form>
           </div>
