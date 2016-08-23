@@ -1015,8 +1015,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_ppp_config['password'] = base64_encode($pconfig['pppoe_password']);
                     if (!empty($pconfig['provider'])) {
                         $new_ppp_config['provider'] = $pconfig['provider'];
-                    } else {
-                        $new_ppp_config['provider'] = true;
                     }
                     $new_ppp_config['ondemand'] = !empty($pconfig['pppoe_dialondemand']);
                     if (!empty($pconfig['pppoe_idletimeout'])) {
