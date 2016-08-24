@@ -27,10 +27,10 @@
                     <default>Kbit</default>
                     <OptionValues>
                         <bit>bit/s</bit>
-                        <Kbit>Kbit/s</Kbit>
+                        <Kbit>kbit/s</Kbit>
                         <Mbit>Mbit/s</Mbit>
                     </OptionValues>
-                    <ValidationMessage>Bandwidth metric should be one of bit, kbit, Mbit</ValidationMessage>
+                    <ValidationMessage>Bandwidth metric should be either bit/s, kbit/s or Mbit/s</ValidationMessage>
                 </bandwidthMetric>
                 <queue type="IntegerField">
                     <Required>N</Required>
