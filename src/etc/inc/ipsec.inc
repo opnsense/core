@@ -1156,7 +1156,7 @@ EOD;
                         if (!empty($ealgoAHsp2arr[$idx])) {
                             $tmpconf .= "\tah = " . join(',', $ealgoAHsp2arr[$idx]) . "!\n";
                         }
-                        $tmpconf .= "\tauto = {$conn_auto}";
+                        $tmpconf .= "\tauto = {$conn_auto}\n";
                         $ipsecconf .= $tmpconf;
                     }
                 } else {
@@ -1216,7 +1216,7 @@ EOD;
                         if (!empty($ah_content)) {
                             $tmpconf .= "\tah = " . join(',', $ah_content) . "!\n";
                         }
-                        $tmpconf .= "\tauto = {$conn_auto}";
+                        $tmpconf .= "\tauto = {$conn_auto}\n";
                         $ipsecconf .= $tmpconf;
                     }
                 }
