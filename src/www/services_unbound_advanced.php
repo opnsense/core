@@ -312,7 +312,7 @@ include_once("head.inc");
                             <option value="50000" <?=$pconfig['infra_cache_numhosts'] == "50000" ? "selected=\"selected\"" : ""; ?>>50000</option>
                           </select>
                           <div class="hidden" for="help_for_infra_cache_numhosts">
-                            <?=gettext("Number of hosts for which information is cached. The default is 10,000.");?>
+                            <?=gettext("Number of hosts for which information is cached. The default is 10000.");?>
                           </div>
                         </td>
                       </tr>
