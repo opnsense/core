@@ -36,7 +36,7 @@ if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways'
 } else {
     $a_gateway_groups = &$config['gateways']['gateway_group'];
 }
-$gateways_status = return_gateways_status();
+$gateways_status = return_gateways_status(true);
 $a_gateways = return_gateways_array();
 
 legacy_html_escape_form_data($a_gateways);
@@ -71,7 +71,12 @@ include("head.inc");
                     $priorities = array();
                     foreach($gateway_group['item'] as $item) {
                       $itemsplit = explode("|", $item);
-                      $priorities[$itemsplit[1]] = $a_gateways[$itemsplit[0]];
+                      if (!isset($priorities[$itemsplit[1]])) {
+                          $priorities[$itemsplit[1]] = array();
+                      }
+                      if (!empty($a_gateways[$itemsplit[0]])) {
+                          $priorities[$itemsplit[1]][$itemsplit[0]] = $a_gateways[$itemsplit[0]];
+                      }
                     }
                     ksort($priorities);
 ?>
@@ -81,10 +86,17 @@ include("head.inc");
                         <td>
                           <table class="table table-condensed">
 <?php
-                          foreach ($priorities as $priority => $gateway):
-                              $monitor = isset($gateway['monitor']) && is_ipaddr($gateway['monitor']) ? $gateway['monitor'] : $gateway['gateway'];
-                              $status = $gateways_status[$monitor]['status'];
-                              if (stristr($status, "down")) {
+                          foreach ($priorities as $priority => $gateways):?>
+                          <tr>
+                            <td><?=sprintf(gettext("Tier %s"), $priority);?></td>
+                            <td>
+<?php
+                            foreach ($gateways as $gname => $gateway):
+                              $status = $gateways_status[$gname]['status'];
+                              if (stristr($status, "force_down")) {
+                                  $online = gettext("Offline (forced)");
+                                  $bgcolor = "#F08080";  // lightcoral
+                              } elseif (stristr($status, "down")) {
                                   $online = gettext("Offline");
                                   $bgcolor = "#F08080";  // lightcoral
                               } elseif (stristr($status, "loss")) {
@@ -96,21 +108,23 @@ include("head.inc");
                               } elseif ($status == "none") {
                                   $online = gettext("Online");
                                   $bgcolor = "#90EE90";  // lightgreen
+                              } elseif (!empty($gateway['monitor_disable']))  {
+                                  $online = gettext("Monitoring disabled");
+                                  $bgcolor = "#F0E68C";  // lightcoral
                               } else {
                                   $online = gettext("Gathering data");
                                   $bgcolor = "#ADD8E6";  // lightblue
                               }
 ?>
-                              <tr>
-                                <td><?=sprintf(gettext("Tier %s"), $priority);?></td>
-                                <td>
                                   <div style="background: <?=$bgcolor;?>">
                                     &nbsp;
                                     <i class="fa fa-globe"></i>
                                     <?=$gateway['name'];?>, <?=$online;?>
                                   </div>
-                                </td>
-                              </tr>
+<?php
+                            endforeach;?>
+                            </td>
+                          </tr>
 <?php
                           endforeach; ?>
                           </table>
