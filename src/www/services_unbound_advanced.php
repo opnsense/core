@@ -106,7 +106,7 @@ include_once("head.inc");
         <?php if (isset($input_errors) && count($input_errors) > 0) print_input_errors($input_errors); ?>
         <?php if (isset($savemsg)) print_info_box($savemsg); ?>
         <?php if (is_subsystem_dirty('unbound')): ?><br/>
-        <?php print_info_box_apply(gettext("The configuration of the DNS Resolver, has been changed") . ".<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
+        <?php print_info_box_apply(gettext("The configuration of the DNS Resolver, has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?><br />
         <?php endif; ?>
         <section class="col-xs-12">
           <div class="tab-content content-box col-xs-12">
@@ -122,9 +122,9 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_hideidentity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hide Identity");?></td>
+                        <td><a id="help_for_hideidentity" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Hide Identity") ?></td>
                         <td>
-                          <input name="hideidentity" type="checkbox" id="hideidentity" value="yes" <?=!empty($pconfig['hideidentity']) ? "checked=\"checked\"" : "";?> />
+                          <input name="hideidentity" type="checkbox" id="hideidentity" value="yes" <?= empty($pconfig['hideidentity']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_hideidentity">
                             <?=gettext("If enabled, id.server and hostname.bind queries are refused.");?>
                           </div>
@@ -133,64 +133,64 @@ include_once("head.inc");
                       <tr>
                         <td><a id="help_for_hideversion" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hide Version");?></td>
                         <td>
-                          <input name="hideversion" type="checkbox" id="hideversion" value="yes" <?=!empty($pconfig['hideversion']) ? "checked=\"checked\"" : "";?> />
+                          <input name="hideversion" type="checkbox" id="hideversion" value="yes" <?= empty($pconfig['hideversion']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_hideversion">
-                            <?=gettext("If enabled, version.server and version.bind queries are refused.");?>
+                            <?= gettext("If enabled, version.server and version.bind queries are refused.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_prefetch" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefetch Support");?></td>
+                        <td><a id="help_for_prefetch" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Prefetch Support") ?></td>
                         <td>
-                          <input name="prefetch" type="checkbox" id="prefetch" value="yes" <?=!empty($pconfig['prefetch']) ? "checked=\"checked\"" : "";?> />
+                          <input name="prefetch" type="checkbox" id="prefetch" value="yes" <?= empty($pconfig['prefetch']) ? '': 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_prefetch">
-                            <?=gettext("Message cache elements are prefetched before they expire to help keep the cache up to date. When enabled, this option can cause an increase of around 10% more DNS traffic and load on the server, but frequently requested items will not expire from the cache.");?>
+                            <?= gettext("Message cache elements are prefetched before they expire to help keep the cache up to date. When enabled, this option can cause an increase of around 10% more DNS traffic and load on the server, but frequently requested items will not expire from the cache.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_prefetchkey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Prefetch DNS Key Support");?></td>
+                        <td><a id="help_for_prefetchkey" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Prefetch DNS Key Support") ?></td>
                         <td>
-                          <input name="prefetchkey" type="checkbox" id="prefetchkey" value="yes" <?=!empty($pconfig['prefetchkey']) ? "checked=\"checked\"" : "";?> />
+                          <input name="prefetchkey" type="checkbox" id="prefetchkey" value="yes" <?= empty($pconfig['prefetchkey']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_prefetchkey">
-                            <?=sprintf(gettext("DNSKEY's are fetched earlier in the validation process when a %sDelegation signer%s is encountered. This helps lower the latency of requests but does utilize a little more CPU."), "<a href='http://en.wikipedia.org/wiki/List_of_DNS_record_types'>", "</a>");?>
+                            <?= sprintf(gettext("DNSKEY's are fetched earlier in the validation process when a %sDelegation signer%s is encountered. This helps lower the latency of requests but does utilize a little more CPU."), "<a href='http://en.wikipedia.org/wiki/List_of_DNS_record_types'>", "</a>") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
                         <td><a id="help_for_dnssecstripped" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Harden DNSSEC data");?></td>
                         <td>
-                          <input name="dnssecstripped" type="checkbox" id="dnssecstripped" value="yes" <?=!empty($pconfig['dnssecstripped']) ? "checked=\"checked\"" : "";?> />
+                          <input name="dnssecstripped" type="checkbox" id="dnssecstripped" value="yes" <?= empty($pconfig['dnssecstripped']) ? '' : 'checked="checked"' ?> />
                           <div class="hidden" for="help_for_dnssecstripped">
-                            <?=gettext("DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is made insecure.");?>
+                            <?= gettext("DNSSEC data is required for trust-anchored zones. If such data is absent, the zone becomes bogus. If this is disabled and no DNSSEC data is received, then the zone is made insecure.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_msgcachesize" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Message Cache Size");?></td>
+                        <td><a id="help_for_msgcachesize" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Message Cache Size") ?></td>
                         <td>
                           <select id="msgcachesize" name="msgcachesize" class="selectpicker">
 <?php
                           foreach (array("4", "10", "20", "50", "100", "250", "512") as $size) :?>
-                            <option value="<?=$size; ?>" <?=$pconfig['msgcachesize'] == $size ? "selected=\"selected\"" : ""; ?>>
-                              <?=$size; ?> <?=gettext("MB");?>
+                            <option value="<?= $size ?>" <?= $pconfig['msgcachesize'] == $size ? 'selected="selected"' : '' ?>>
+                              <?= sprintf(gettext("%s MB"), $size) ?>
                             </option>
 <?php
                           endforeach;?>
                           </select>
                           <div class="hidden" for="help_for_msgcachesize">
-                            <?=gettext("Size of the message cache. The message cache stores DNS rcodes and validation statuses. The RRSet cache will automatically be set to twice this amount. The RRSet cache contains the actual RR data. The default is 4 megabytes.");?>
+                            <?= gettext("Size of the message cache. The message cache stores DNS rcodes and validation statuses. The RRSet cache will automatically be set to twice this amount. The RRSet cache contains the actual RR data. The default is 4 megabytes.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_outgoing_num_tcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Outgoing TCP Buffers");?></td>
+                        <td><a id="help_for_outgoing_num_tcp" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Outgoing TCP Buffers") ?></td>
                         <td>
                           <select id="outgoing_num_tcp" name="outgoing_num_tcp" class="selectpicker">
 <?php
                           for ($num_tcp = 0; $num_tcp <= 50; $num_tcp += 10):?>
-                            <option value="<?=$num_tcp; ?>" <?= $pconfig['outgoing_num_tcp'] == $num_tcp ? "selected=\"selected\"" : ""; ?>>
-                              <?=$num_tcp;?>
+                            <option value="<?= $num_tcp ?>" <?= $pconfig['outgoing_num_tcp'] == $num_tcp ? 'selected="selected"' : '' ?>>
+                              <?= $num_tcp ?>
                             </option>
 <?php
                           endfor;?>
@@ -206,8 +206,8 @@ include_once("head.inc");
                           <select id="incoming_num_tcp" name="incoming_num_tcp" class="selectpicker">
 <?php
                           for ($num_tcp = 0; $num_tcp <= 50; $num_tcp += 10):?>
-                            <option value="<?=$num_tcp; ?>" <?=$pconfig['incoming_num_tcp'] == $num_tcp ? "selected=\"selected\"" : ""; ?>>
-                              <?=$num_tcp; ?>
+                            <option value="<?= $num_tcp ?>" <?= $pconfig['incoming_num_tcp'] == $num_tcp ? 'selected="selected"' : '' ?>>
+                              <?= $num_tcp ?>
                             </option>
 <?php
                           endfor;?>
@@ -218,19 +218,19 @@ include_once("head.inc");
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_edns_buffer_size" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("EDNS Buffer Size");?></td>
+                        <td><a id="help_for_edns_buffer_size" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("EDNS Buffer Size") ?></td>
                         <td>
                           <select id="edns_buffer_size" name="edns_buffer_size" class="selectpicker">
 <?php
                           foreach (array("512", "1480", "4096") as $size) :?>
-                            <option value="<?=$size; ?>" <?=$pconfig['edns_buffer_size'] == $size ? "selected=\"selected\"" : ""; ?>>
-                              <?=$size; ?>
+                            <option value="<?= $size ?>" <?= $pconfig['edns_buffer_size'] == $size ? 'selected="selected"' : '' ?>>
+                              <?= $size ?>
                             </option>
 <?php
                           endforeach;?>
                           </select>
                           <div class="hidden" for="help_for_edns_buffer_size">
-                            <?=gettext("Number of bytes size to advertise as the EDNS reassembly buffer size. This is the value that is used in UDP datagrams sent to peers. RFC recommendation is 4096 (which is the default). If you have fragmentation reassemble problems, usually seen as timeouts, then a value of 1480 should help. The 512 value bypasses most MTU path problems, but it can generate an excessive amount of TCP fallback.");?>
+                            <?= gettext("Number of bytes size to advertise as the EDNS reassembly buffer size. This is the value that is used in UDP datagrams sent to peers. RFC recommendation is 4096 (which is the default). If you have fragmentation reassemble problems, usually seen as timeouts, then a value of 1480 should help. The 512 value bypasses most MTU path problems, but it can generate an excessive amount of TCP fallback.") ?>
                           </div>
                         </td>
                       </tr>
@@ -240,8 +240,8 @@ include_once("head.inc");
                           <select id="num_queries_per_thread" name="num_queries_per_thread" class="selectpicker">
 <?php
                           foreach (array("512", "1024", "2048") as $queries) :?>
-                            <option value="<?=$queries; ?>" <?=$pconfig['num_queries_per_thread'] == $queries ? "selected=\"selected\"" : ""; ?>>
-                              <?=$queries; ?>
+                            <option value="<?= $queries ?>" <?= $pconfig['num_queries_per_thread'] == $queries ? 'selected="selected"' : '' ?>>
+                              <?= $queries ?>
                             </option>
 <?php
                           endforeach;?>
@@ -257,37 +257,37 @@ include_once("head.inc");
                           <select id="jostle_timeout" name="jostle_timeout" class="selectpicker">
 <?php
                           foreach (array("100", "200", "500", "1000") as $timeout) :?>
-                            <option value="<?=$timeout; ?>" <?= $pconfig['jostle_timeout'] == $timeout ? "selected=\"selected\"" : ""; ?>>
-                              <?=$timeout; ?>
+                            <option value="<?= $timeout ?>" <?= $pconfig['jostle_timeout'] == $timeout ? 'selected="selected"' : ''; ?>>
+                              <?= $timeout ?>
                             </option>
 <?php
                           endforeach;?>
                           </select>
                           <div class="hidden" for="help_for_jostle_timeout">
-                            <?=gettext("This timeout is used for when the server is very busy. This protects against denial of service by slow queries or high query rates. The default value is 200 milliseconds.");?>
+                            <?= gettext("This timeout is used for when the server is very busy. This protects against denial of service by slow queries or high query rates. The default value is 200 milliseconds.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_cache_max_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Maximum TTL for RRsets and messages");?></td>
+                        <td><a id="help_for_cache_max_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Maximum TTL for RRsets and messages") ?></td>
                         <td>
-                          <input type="text" id="cache_max_ttl" name="cache_max_ttl" size="5" value="<?=$pconfig['cache_max_ttl']; ?>" />
+                          <input type="text" id="cache_max_ttl" name="cache_max_ttl" size="5" value="<?= $pconfig['cache_max_ttl'] ?>" />
                           <div class="hidden" for="help_for_cache_max_ttl">
-                            <?=gettext("Configure a maximum Time to live for RRsets and messages in the cache. The default is 86400 seconds (1 day). When the internal TTL expires the cache item is expired. This can be configured to force the resolver to query for data more often and not trust (very large) TTL values.");?>
+                            <?= gettext("Configure a maximum Time to live for RRsets and messages in the cache. The default is 86400 seconds (1 day). When the internal TTL expires the cache item is expired. This can be configured to force the resolver to query for data more often and not trust (very large) TTL values.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_cache_min_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Minimum TTL for RRsets and messages");?></td>
+                        <td><a id="help_for_cache_min_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Minimum TTL for RRsets and messages") ?></td>
                         <td>
-                          <input type="text" id="cache_min_ttl" name="cache_min_ttl" size="5" value="<?=$pconfig['cache_min_ttl']; ?>" />
+                          <input type="text" id="cache_min_ttl" name="cache_min_ttl" size="5" value="<?= $pconfig['cache_min_ttl'] ?>" />
                           <div class="hidden" for="help_for_cache_min_ttl">
-                            <?=gettext("Configure a minimum Time to live for RRsets and messages in the cache. The default is 0 seconds. If the minimum value kicks in, the data is cached for longer than the domain owner intended, and thus less queries are made to look up the data. The 0 value ensures the data in the cache is as the domain owner intended. High values can lead to trouble as the data in the cache might not match up with the actual data anymore.");?>
+                            <?= gettext("Configure a minimum Time to live for RRsets and messages in the cache. The default is 0 seconds. If the minimum value kicks in, the data is cached for longer than the domain owner intended, and thus less queries are made to look up the data. The 0 value ensures the data in the cache is as the domain owner intended. High values can lead to trouble as the data in the cache might not match up with the actual data anymore.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
-                        <td><a id="help_for_infra_host_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("TTL for Host cache entries");?></td>
+                        <td><a id="help_for_infra_host_ttl" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("TTL for Host cache entries") ?></td>
                         <td>
                           <select id="infra_host_ttl" name="infra_host_ttl" class="selectpicker">
                             <option value="60"  <?=$pconfig['infra_host_ttl'] == "60" ? "selected=\"selected\"" : ""; ?>><?=gettext('1 minute') ?></option>
@@ -312,7 +312,7 @@ include_once("head.inc");
                             <option value="50000" <?=$pconfig['infra_cache_numhosts'] == "50000" ? "selected=\"selected\"" : ""; ?>>50000</option>
                           </select>
                           <div class="hidden" for="help_for_infra_cache_numhosts">
-                            <?=gettext("Number of hosts for which information is cached. The default is 10000.");?>
+                            <?= gettext("Number of hosts for which information is cached. The default is 10000.") ?>
                           </div>
                         </td>
                       </tr>
@@ -328,7 +328,7 @@ include_once("head.inc");
                             <option value="50000000" <?=$pconfig['unwanted_reply_threshold'] == "50000000" ? "selected=\"selected\"" : ""; ?>><?=gettext('50 million') ?></option>
                           </select>
                           <div class="hidden" for="help_for_unwanted_reply_threshold">
-                            <?=gettext("If enabled, a total number of unwanted replies is kept track of in every thread. When it reaches the threshold, a defensive action is taken and a warning is printed to the log file. This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison. The default is disabled, but if enabled a value of 10 million is suggested.");?>
+                            <?= gettext("If enabled, a total number of unwanted replies is kept track of in every thread. When it reaches the threshold, a defensive action is taken and a warning is printed to the log file. This defensive action is to clear the RRSet and message caches, hopefully flushing away any poison. The default is disabled, but if enabled a value of 10 million is suggested.") ?>
                           </div>
                         </td>
                       </tr>
@@ -338,21 +338,21 @@ include_once("head.inc");
                           <select id="log_verbosity" name="log_verbosity" class="selectpicker">
 <?php
                           for ($level = 0; $level <= 5; $level++):?>
-                            <option value="<?= $level; ?>" <?=$pconfig['log_verbosity'] == $level ? "selected=\"selected\"" : ""; ?>>
-                              <?=gettext("Level");?> <?=$level; ?>
+                            <option value="<?= $level; ?>" <?=$pconfig['log_verbosity'] == $level ? 'selected="selected"' : ''; ?>>
+                              <?= sprintf(gettext("Level %s"), $level) ?>
                             </option>
 <?php
                           endfor;?>
                           </select>
                           <div class="hidden" for="help_for_log_verbosity">
-                            <?=gettext("Select the log verbosity.");?>
+                            <?= gettext("Select the log verbosity.") ?>
                           </div>
                         </td>
                       </tr>
                       <tr>
                         <td></td>
                         <td>
-                          <input type="submit" name="Save" class="btn btn-primary" id="save" value="Save" />
+                          <button type="submit" name="Save" class="btn btn-primary" id="save" value="Save"><?= gettext("Save") ?></button>
                         </td>
                       </tr>
                     </tbody>
