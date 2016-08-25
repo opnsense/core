@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec";
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,reneg-sec,use-common-name";
 
         foreach (explode(",", $copy_fields) as $fieldname) {
             $fieldname = trim($fieldname);
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ,ntp_server2,netbios_enable,netbios_ntype,netbios_scope,wins_server1
             ,wins_server2,no_tun_ipv6,push_register_dns,dns_domain
             ,client_mgmt_port,verbosity_level,caref,crlref,certref,dh_length
-            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec";
+            ,cert_depth,strictusercn,digest,disable,duplicate_cn,vpnid,shared_key,tls,reneg-sec,use-common-name";
         foreach (explode(",", $init_fields) as $fieldname) {
             $fieldname = trim($fieldname);
             if (!isset($pconfig[$fieldname])) {
@@ -340,7 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 ,serverbridge_dhcp_end,dns_domain,dns_server1,dns_server2,dns_server3
                 ,dns_server4,push_register_dns,ntp_server1,ntp_server2,netbios_enable
                 ,netbios_ntype,netbios_scope,no_tun_ipv6,verbosity_level,wins_server1
-                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec";
+                ,wins_server2,client_mgmt_port,strictusercn,reneg-sec,use-common-name";
 
             foreach (explode(",", $copy_fields) as $fieldname) {
                 $fieldname = trim($fieldname);
@@ -471,6 +471,7 @@ $( document ).ready(function() {
               $(".opt_gwredir").hide();
           }
           $("#dev_mode").change();
+          $(window).resize();
       });
       $("#mode").change();
 
@@ -573,7 +574,7 @@ $( document ).ready(function() {
           }
       });
       $("#client_mgmt_port_enable").change();
-
+      $(window).resize();
   }
 
 });
@@ -1481,6 +1482,17 @@ endif; ?>
                         <div class="hidden" for="help_for_client_mgmt_port">
                           <span>
                             <?=gettext("Use a different management port on clients. The default port is 166. Specify a different port if the client machines need to select from multiple OpenVPN links."); ?><br />
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr class="opt_mode opt_mode_server_tls_user">
+                      <td width="22%" ><a id="help_for_use-common-name" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use common name"); ?></td>
+                      <td>
+                        <input name="use-common-name" type="checkbox" value="1" <?=!empty($pconfig['use-common-name']) ? "checked=\"checked\"" : "" ;?> />
+                        <div class="hidden" for="help_for_use-common-name">
+                          <span>
+                            <?=gettext("When using a client certificate, use certificate common name for indexing purposes instead of username"); ?><br />
                           </span>
                         </div>
                       </td>
