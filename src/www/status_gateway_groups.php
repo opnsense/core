@@ -71,7 +71,12 @@ include("head.inc");
                     $priorities = array();
                     foreach($gateway_group['item'] as $item) {
                       $itemsplit = explode("|", $item);
-                      $priorities[$itemsplit[1]] = $a_gateways[$itemsplit[0]];
+                      if (!isset($priorities[$itemsplit[1]])) {
+                          $priorities[$itemsplit[1]] = array();
+                      }
+                      if (!empty($a_gateways[$itemsplit[0]])) {
+                          $priorities[$itemsplit[1]][] = $a_gateways[$itemsplit[0]];
+                      }
                     }
                     ksort($priorities);
 ?>
@@ -81,7 +86,12 @@ include("head.inc");
                         <td>
                           <table class="table table-condensed">
 <?php
-                          foreach ($priorities as $priority => $gateway):
+                          foreach ($priorities as $priority => $gateways):?>
+                          <tr>
+                            <td><?=sprintf(gettext("Tier %s"), $priority);?></td>
+                            <td>
+<?php
+                            foreach ($gateways as $gateway):
                               $monitor = isset($gateway['monitor']) && is_ipaddr($gateway['monitor']) ? $gateway['monitor'] : $gateway['gateway'];
                               $status = $gateways_status[$monitor]['status'];
                               if (stristr($status, "down")) {
@@ -96,21 +106,23 @@ include("head.inc");
                               } elseif ($status == "none") {
                                   $online = gettext("Online");
                                   $bgcolor = "#90EE90";  // lightgreen
+                              } elseif (!empty($gateway['monitor_disable']))  {
+                                  $online = gettext("Monitoring disabled");
+                                  $bgcolor = "#F0E68C";  // lightcoral
                               } else {
                                   $online = gettext("Gathering data");
                                   $bgcolor = "#ADD8E6";  // lightblue
                               }
 ?>
-                              <tr>
-                                <td><?=sprintf(gettext("Tier %s"), $priority);?></td>
-                                <td>
                                   <div style="background: <?=$bgcolor;?>">
                                     &nbsp;
                                     <i class="fa fa-globe"></i>
                                     <?=$gateway['name'];?>, <?=$online;?>
                                   </div>
-                                </td>
-                              </tr>
+<?php
+                            endforeach;?>
+                            </td>
+                          </tr>
 <?php
                           endforeach; ?>
                           </table>
