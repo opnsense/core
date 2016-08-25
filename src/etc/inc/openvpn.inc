@@ -580,7 +580,7 @@ function openvpn_reconfigure($mode, $settings, $device_only = false)
                 $conf .= "client-cert-not-required\n";
             case 'server_tls_user':
                 /* username-as-common-name is not compatible with server-bridge */
-                if (stristr($conf, "server-bridge") === false) {
+                if (stristr($conf, "server-bridge") === false && empty($settings['use-common-name'])) {
                     $conf .= "username-as-common-name\n";
                 }
                 if (!empty($settings['authmode'])) {
