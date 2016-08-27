@@ -536,7 +536,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         <button data-toggle="tooltip" title="{{ lang._('Enable selected') }}" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o command-toggle"></span></button>
                         &nbsp;<small>{{lang._('Use selectboxes on the left for multiselect') }}</small>
                       </td>
-                      </tr>
                     </tr>
                   </table>
                 <table id="grid-rule-files" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogRuleset">
