@@ -73,8 +73,8 @@ function if_openvpn_interfaces()
 
     $interfaces = array();
 
-    /* add openvpn interfaces */
-    if (isset($config['openvpn']['openvpn-server']) || isset($config['openvpn']['openvpn-client'])) {
+    if ((isset($config['openvpn']['openvpn-server']) && count($config['openvpn']['openvpn-server'])) ||
+        (isset($config['openvpn']['openvpn-client']) && count($config['openvpn']['openvpn-client']))) {
         $oic = array("enable" => true);
         $oic['if'] = "openvpn";
         $oic['descr'] = 'OpenVPN';
