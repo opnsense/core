@@ -64,7 +64,8 @@ function if_ipsec_interfaces()
 
     $interfaces = array();
 
-    if (isset($config['ipsec']['phase1']) && count($config['ipsec']['phase1'])) {
+    if ((isset($config['ipsec']['phase1']) && count($config['ipsec']['phase1'])) &&
+        (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable']))) {
         $oic = array("enable" => true);
         $oic['if'] = 'enc0';
         $oic['descr'] = 'IPsec';
