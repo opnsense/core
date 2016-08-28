@@ -387,9 +387,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
+        plugins_interfaces(false);
         write_config();
         mark_subsystem_dirty('ipsec');
-
         header("Location: vpn_ipsec.php");
         exit;
     }

@@ -112,9 +112,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($config['ipsec']['phase1'][$p1entrydel]);
         }
 
-        if (write_config()) {
-            mark_subsystem_dirty('ipsec');
-        }
+        plugins_interfaces(false);
+        write_config();
+        mark_subsystem_dirty('ipsec');
         header("Location: vpn_ipsec.php");
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase2" ) {
