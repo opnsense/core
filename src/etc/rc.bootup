@@ -193,7 +193,6 @@ echo "done.\n";
 system_resolvconf_generate();
 
 /* setup pf */
-plugins_interfaces();
 filter_configure_sync();
 
 /* start pflog */

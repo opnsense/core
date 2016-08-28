@@ -222,5 +222,4 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
 }
 
 /* reload filter, don't try to sync to carp slave */
-plugins_interfaces();
 filter_configure_sync();
