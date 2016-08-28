@@ -134,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id)) {
             openvpn_delete('client', $a_client[$id]);
             unset($a_client[$id]);
+            plugins_interfaces(false);
             write_config();
         }
         header("Location: vpn_openvpn_client.php");
@@ -146,6 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     unset($a_client[$rulei]);
                 }
             }
+            plugins_interfaces(false);
             write_config();
         }
         header("Location: vpn_openvpn_client.php");
@@ -301,7 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
-                    // attributes containing some kind of logic
+            // attributes containing some kind of logic
             if ($vpnid) {
                 $client['vpnid'] = $vpnid;
             } else {
@@ -336,6 +338,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             openvpn_resync('client', $client);
+            plugins_interfaces(false);
             write_config();
 
             header("Location: vpn_openvpn_client.php");
