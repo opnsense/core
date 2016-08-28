@@ -1550,7 +1550,7 @@ function filter_nat_rules_generate(&$FilterIflist)
     }
 
     /* ipsec nat */
-    if (isset($config['ipsec']) && is_array($config['ipsec']) && isset($config['ipsec']['enable'])) {
+    if (isset($config['ipsec']['enable'])) {
         if (isset($config['ipsec']['phase2'])) {
           foreach ($config['ipsec']['phase2'] as $ph2ent) {
               if ($ph2ent['mode'] != 'transport' && !empty($ph2ent['natlocalid']) && !isset($ph2ent['disabled'])) {
@@ -3187,10 +3187,8 @@ function filter_generate_ipsec_rules(&$FilterIflist, $log = array())
         return "\n# VPN Rules not added disabled in System->Advanced.\n";
     }
 
-
     $ipfrules = "\n# VPN Rules\n";
-    if (isset($config['ipsec']['enable']) &&
-      is_array($config['ipsec']['phase1'])) {
+    if (isset($config['ipsec']['enable']) && isset($config['ipsec']['phase1'])) {
         /* step through all phase1 entries */
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (isset ($ph1ent['disabled'])) {
