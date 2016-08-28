@@ -170,6 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             $config['ipsec']['client'] = $client;
 
+            plugins_interfaces(false);
             write_config();
             mark_subsystem_dirty('ipsec');
 
