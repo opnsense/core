@@ -36,7 +36,7 @@ if (!isset($config['gateways']['gateway_group']) || !is_array($config['gateways'
 } else {
     $a_gateway_groups = &$config['gateways']['gateway_group'];
 }
-$gateways_status = return_gateways_status();
+$gateways_status = return_gateways_status(true);
 $a_gateways = return_gateways_array();
 
 legacy_html_escape_form_data($a_gateways);
