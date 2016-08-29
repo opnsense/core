@@ -142,8 +142,8 @@ CORE_DEPENDS?=		apinger \
 			wol
 
 WRKDIR?=${.CURDIR}/work
-WRKSRC=	${WRKDIR}/src
-PKGDIR=	${WRKDIR}/pkg
+WRKSRC?=${WRKDIR}/src
+PKGDIR?=${WRKDIR}/pkg
 
 mount: want-git
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
