@@ -75,7 +75,7 @@ include("head.inc");
                           $priorities[$itemsplit[1]] = array();
                       }
                       if (!empty($a_gateways[$itemsplit[0]])) {
-                          $priorities[$itemsplit[1]][] = $a_gateways[$itemsplit[0]];
+                          $priorities[$itemsplit[1]][$itemsplit[0]] = $a_gateways[$itemsplit[0]];
                       }
                     }
                     ksort($priorities);
@@ -91,10 +91,12 @@ include("head.inc");
                             <td><?=sprintf(gettext("Tier %s"), $priority);?></td>
                             <td>
 <?php
-                            foreach ($gateways as $gateway):
-                              $monitor = isset($gateway['monitor']) && is_ipaddr($gateway['monitor']) ? $gateway['monitor'] : $gateway['gateway'];
-                              $status = $gateways_status[$monitor]['status'];
-                              if (stristr($status, "down")) {
+                            foreach ($gateways as $gname => $gateway):
+                              $status = $gateways_status[$gname]['status'];
+                              if (stristr($status, "force_down")) {
+                                  $online = gettext("Offline (forced)");
+                                  $bgcolor = "#F08080";  // lightcoral
+                              } elseif (stristr($status, "down")) {
                                   $online = gettext("Offline");
                                   $bgcolor = "#F08080";  // lightcoral
                               } elseif (stristr($status, "loss")) {
