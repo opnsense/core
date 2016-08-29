@@ -200,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfieldsn = array(gettext("Certificate Authority"),gettext("Certificate"));
             break;
     }
-    
+
     if (empty($pconfig['mobile'])) {
         $reqdfields[] = "remote-gateway";
         $reqdfieldsn[] = gettext("Remote gateway");
@@ -332,9 +332,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['ealgo_keylen'])) {
         $pconfig['encryption-algorithm']['keylen'] = $pconfig['ealgo_keylen'];
     }
-    
-    if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && $pconfig['iketype'] != 'ikev2' && $pconfig['encryption-algorithm']['name'] == 'camellia') {
-        $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), 'Camellia');
+
+    foreach ($p1_ealgos as $algo => $algodata) {
+        if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && !empty($algodata['iketype']) 
+          && $pconfig['iketype'] != $algodata['iketype'] && $pconfig['encryption-algorithm']['name'] == $algo) {
+            $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), $algodata['name']);
+        }
     }
 
     if (count($input_errors) == 0) {
