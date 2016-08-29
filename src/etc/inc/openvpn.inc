@@ -82,6 +82,7 @@ function openvpn_create_key()
 function openvpn_vpnid_used($vpnid)
 {
     global $config;
+
     if (isset($config['openvpn']['openvpn-server'])) {
         foreach ($config['openvpn']['openvpn-server'] as &$settings) {
             if ($vpnid == $settings['vpnid']) {
@@ -99,7 +100,7 @@ function openvpn_vpnid_used($vpnid)
     }
 
     return false;
-  }
+}
 
 function openvpn_vpnid_next()
 {
