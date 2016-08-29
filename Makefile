@@ -253,9 +253,9 @@ upgrade-check: force
 		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
 		exit 1; \
 	fi
+	@rm -rf ${PKGDIR}
 
 upgrade: upgrade-check package
-	@rm -rf ${PKGDIR}
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@/usr/local/etc/rc.restart_webgui
