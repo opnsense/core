@@ -177,9 +177,15 @@ function write_config($desc = '', $backup = true)
         return -1;
     }
 
+    if (function_exists('plugins_interfaces')) {
+        /* only pull plugins if plugins.inc was included before */
+        plugins_interfaces(false);
+    }
+
     $cnf = OPNsense\Core\Config::getInstance();
     $cnf->fromArray($config);
     $revision_info = make_config_revision_entry($desc);
+
     try {
         $cnf->save($revision_info, $backup);
     } catch (OPNsense\Core\ConfigException $e) {
