@@ -142,8 +142,8 @@ CORE_DEPENDS?=		apinger \
 			wol
 
 WRKDIR?=${.CURDIR}/work
-WRKSRC=	${WRKDIR}/src
-PKGDIR=	${WRKDIR}/pkg
+WRKSRC?=${WRKDIR}/src
+PKGDIR?=${WRKDIR}/pkg
 
 mount: want-git
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
@@ -254,19 +254,18 @@ package-check: force
 	fi
 
 package: package-check
-	@rm -rf ${WRKSRC} ${PKGDIR}
+	@rm -rf ${WRKSRC}
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
-	@echo -n "Successfully built "
-	@cd ${PKGDIR}; find . -name "*.txz" | cut -c3-
 
 upgrade-check: force
 	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
 		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
 		exit 1; \
 	fi
+	@rm -rf ${PKGDIR}
 
 upgrade: upgrade-check package
 	@${PKG} delete -fy ${CORE_NAME}
