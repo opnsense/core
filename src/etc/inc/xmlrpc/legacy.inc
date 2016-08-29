@@ -200,7 +200,7 @@ function restore_config_section_xmlrpc($new_config)
 
     /* Log what happened */
     $mergedkeys = implode(",", array_merge(array_keys($new_config), $sync_full_done));
-    write_config(sprintf(gettext("Merged in config (%s sections) from XMLRPC client."), $mergedkeys));
+    write_config(sprintf('Merged %s config sections from XMLRPC client.', $mergedkeys));
 
     /*
      * Handle virtual ips

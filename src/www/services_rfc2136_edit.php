@@ -101,7 +101,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $a_rfc2136[] = $rfc2136;
         }
-        write_config(gettext("New/Edited RFC2136 dnsupdate entry was posted."));
+
+        write_config('New/Edited RFC2136 dnsupdate entry was posted');
 
         if (!empty($pconfig['force'])) {
             services_dnsupdate_process("", $rfc2136['host'], true);

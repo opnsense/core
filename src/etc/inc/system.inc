@@ -981,7 +981,7 @@ function system_webgui_configure()
             cert_import($cert, $crt, $key);
             $a_cert[] = $cert;
             $config['system']['webgui']['ssl-certref'] = $cert['refid'];
-            write_config(gettext("Importing HTTPS certificate"));
+            write_config('Importing HTTPS certificate');
         } else {
             $crt = base64_decode($cert['crt']);
             $key = base64_decode($cert['prv']);

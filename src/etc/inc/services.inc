@@ -2355,31 +2355,6 @@ function configure_cron()
 {
     global $config;
 
-    /*
-     * Strip the cron jobs that we no longer save explicitly.
-     * This can be safely removed on our final road to 17.1.
-     */
-    if (isset($config['cron']['item'])) {
-        $flush = false;
-        $index = 0;
-
-        /* PHP retains the index, can iterate all and unset */
-        foreach ($config['cron']['item'] as $item) {
-            unset($config['cron']['item'][$index]);
-            $flush = true;
-            $index++;
-        }
-
-        if (!count($config['cron']['item'])) {
-            unset($config['cron']);
-            $flush = true;
-        }
-
-        if ($flush) {
-            write_config(gettext('Removed obsolete cron jobs'));
-        }
-    }
-
     $autocron = array();
 
     /* hourly */

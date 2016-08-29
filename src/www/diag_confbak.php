@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (count($input_errors) == 0) {
             $config['system']['backupcount'] = $pconfig['backupcount'];
-            write_config(gettext('Changed backup revision count.'));
+            write_config('Changed backup revision count');
             $savemsg = get_std_save_message();
         }
     }

@@ -158,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     unset($a_crl[$cid]);
                 }
             }
-            write_config("Deleted CRL {$name}.");
+            write_config(sprintf('Deleted CRL %s', $name));
             header("Location: system_crlmanager.php");
             exit;
         }
@@ -181,11 +181,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $name = $thiscert['descr'];
         if (cert_unrevoke($thiscert, $thiscrl)) {
             openvpn_refresh_crls();
-            write_config(sprintf(gettext("Deleted Certificate %s from CRL %s"), $name, $thiscrl['descr']));
+            write_config(sprintf('Deleted certificate %s from CRL %s', $name, $thiscrl['descr']));
             header("Location: system_crlmanager.php");
             exit;
         } else {
-            $savemsg = sprintf(gettext("Failed to delete Certificate %s from CRL %s"), $name, $thiscrl['descr']) . "<br />";
+            $savemsg = sprintf(gettext("Failed to delete certificate %s from CRL %s"), $name, $thiscrl['descr']) . "<br />";
         }
         $act="edit";
     } elseif ($act == "addcert") {
@@ -214,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reason = (empty($pconfig['crlreason'])) ? OCSP_REVOKED_STATUS_UNSPECIFIED : $pconfig['crlreason'];
             cert_revoke($cert, $crl, $reason);
             openvpn_refresh_crls();
-            write_config("Revoked cert {$cert['descr']} in CRL {$crl['descr']}.");
+            write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
             header("Location: system_crlmanager.php");
             exit;
         }
@@ -269,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_crl[] = $crl;
             }
 
-            write_config("Saved CRL {$crl['descr']}");
+            write_config(sprintf('Saved CRL %s', $crl['descr']));
             openvpn_refresh_crls();
             header("Location: system_crlmanager.php");
             exit;

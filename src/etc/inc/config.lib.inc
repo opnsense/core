@@ -138,7 +138,7 @@ function convert_config()
     }
 
     if ($prev_version != $config['version']) {
-        write_config(sprintf(gettext('Upgraded config version level from %s to %s'), $prev_version, $config['version']));
+        write_config(sprintf('Upgraded config version level from %s to %s', $prev_version, $config['version']));
     }
 }
 
@@ -222,7 +222,7 @@ function config_restore($conffile)
 
     $config = parse_config();
 
-    write_config(gettext("Reverted to") . " " . array_pop(explode("/", $conffile)) . ".", false);
+    write_config(sprintf('Reverted to %s', array_pop(explode('/', $conffile))), false);
 
     return 0;
 }
@@ -312,7 +312,7 @@ function make_config_revision_entry($desc = '')
     }
 
     if (empty($desc)) {
-        $desc = sprintf(gettext('%s made changes'), $_SERVER['SCRIPT_NAME']);
+        $desc = sprintf('%s made changes', $_SERVER['SCRIPT_NAME']);
     }
 
     $revision = array();
