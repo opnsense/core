@@ -242,13 +242,11 @@ package-check: force
 	fi
 
 package: package-check
-	@rm -rf ${WRKSRC} ${PKGDIR}
+	@rm -rf ${WRKSRC}
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} metadata
 	@${MAKE} DESTDIR=${WRKSRC} FLAVOUR=${FLAVOUR} install
 	@PORTSDIR=${.CURDIR} ${PKG} create -v -m ${WRKSRC} -r ${WRKSRC} \
 	    -p ${WRKSRC}/plist -o ${PKGDIR}
-	@echo -n "Successfully built "
-	@cd ${PKGDIR}; find . -name "*.txz" | cut -c3-
 
 upgrade-check: force
 	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
@@ -257,6 +255,7 @@ upgrade-check: force
 	fi
 
 upgrade: upgrade-check package
+	@rm -rf ${PKGDIR}
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@/usr/local/etc/rc.restart_webgui
