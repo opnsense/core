@@ -34,7 +34,7 @@ plist${TARGET}: force
 	@(cd ${TREE}; find * -type f ! -name "*.pyc") | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
-			PREFIX="@sample "; \
+			PREFIX="@shadow "; \
 		fi; \
 		if [ -n "${NO_SAMPLE}" ]; then \
 			FILE="$${FILE%%.sample}"; \

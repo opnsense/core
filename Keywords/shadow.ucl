@@ -1,0 +1,54 @@
+# $FreeBSD$
+#
+# MAINTAINER: franco@opnsense.org
+#
+# @sample etc/somefile.conf.sample
+# or
+# @sample file1 file2
+#
+# Where file1 is considered as a sample file and file2 the target file
+#
+# This will install the somefile.conf.sample and automatically copy to
+# somefile.conf if it doesn't exist. On deinstall it will be kept.
+#
+# This replaces the old pattern:
+#  @unexec if cmp -s %D/etc/pkgtools.conf %D/etc/pkgtools.conf.sample; then rm -f %D/etc/pkgtools.conf; fi
+#  etc/pkgtools.conf.sample
+#  @exec [ -f %B/pkgtools.conf ] || cp %B/%f %B/pkgtools.conf
+
+actions: [file(1)]
+arguments: true
+post-install: <<EOD
+  case "%1" in
+  /*) sample_file="%1" ;;
+  *) sample_file="%D/%1" ;;
+  esac
+  target_file="${sample_file%.sample}"
+  set -- %@
+  if [ $# -eq 2 ]; then
+      target_file=${2}
+  fi
+  case "${target_file}" in
+  /*) target_file="${target_file}" ;;
+  *) target_file="%D/${target_file}" ;;
+  esac
+  if ! [ -f "${target_file}" ]; then
+    /bin/cp -p "${sample_file}" "${target_file}"
+  fi
+EOD
+pre-deinstall: <<EOD
+  case "%1" in
+  /*) sample_file="%1" ;;
+  *) sample_file="%D/%1" ;;
+  esac
+  target_file="${sample_file%.sample}"
+  set -- %@
+  if [ $# -eq 2 ]; then
+      set -- %@
+      target_file=${2}
+  fi
+  case "${target_file}" in
+  /*) target_file="${target_file}" ;;
+  *) target_file="%D/${target_file}" ;;
+  esac
+EOD
