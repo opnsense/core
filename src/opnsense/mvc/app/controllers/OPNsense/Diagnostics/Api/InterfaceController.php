@@ -44,10 +44,10 @@ class InterfaceController extends ApiControllerBase
     {
         // collect interface names
         $intfmap = array();
-        $config = Config::getInstance()->object() ;
+        $config = Config::getInstance()->object();
         if ($config->interfaces != null) {
             foreach ($config->interfaces->children() as $key => $node) {
-                $intfmap[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key ;
+                $intfmap[(string)$node->if] = !empty((string)$node->descr) ? (string)$node->descr : $key;
             }
         }
         return $intfmap;

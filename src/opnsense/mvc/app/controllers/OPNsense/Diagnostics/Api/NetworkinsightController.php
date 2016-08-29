@@ -155,7 +155,7 @@ class NetworkinsightController extends ApiControllerBase
                         $data_filter .= ',';
                     }
                     if (isset($filter_values[$field_indx])) {
-                        $data_filter .= $filter_field.'='.$filter_values[$field_indx] ;
+                        $data_filter .= $filter_field.'='.$filter_values[$field_indx];
                     }
                 }
                 $data_filter = "'{$data_filter}'";
@@ -266,7 +266,7 @@ class NetworkinsightController extends ApiControllerBase
         );
         if ($this->request->isGet()) {
             $backend = new Backend();
-            $configd_cmd = "netflow aggregate export {$provider} {$from_date} {$to_date} {$resolution}" ;
+            $configd_cmd = "netflow aggregate export {$provider} {$from_date} {$to_date} {$resolution}";
             $response = $backend->configdRun($configd_cmd);
             return $response;
         } else {

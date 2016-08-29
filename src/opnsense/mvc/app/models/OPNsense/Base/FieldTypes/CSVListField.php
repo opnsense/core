@@ -62,7 +62,7 @@ class CSVListField extends BaseField
     /**
      * @var string basic regex validation to use for the complete field
      */
-    protected $internalMask = null ;
+    protected $internalMask = null;
 
     /**
      * set validation mask
@@ -70,7 +70,7 @@ class CSVListField extends BaseField
      */
     public function setMask($value)
     {
-        $this->internalMask = $value ;
+        $this->internalMask = $value;
     }
 
     /**

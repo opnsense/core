@@ -88,7 +88,7 @@ class MenuItem
      * parent node, used to mark active nodes
      * @var null|MenuItem
      */
-    private $parent = null ;
+    private $parent = null;
 
     /**
      * is this node or any of the child nodes selected
@@ -131,7 +131,7 @@ class MenuItem
      */
     public function getId()
     {
-        return $this->id ;
+        return $this->id;
     }
 
 
@@ -186,7 +186,7 @@ class MenuItem
      */
     public function setCssClass($value)
     {
-        $this->CssClass = $value ;
+        $this->CssClass = $value;
     }
 
     /**
@@ -265,7 +265,7 @@ class MenuItem
         $isNew = false;
         foreach ($this->children as $nodeKey => $node) {
             if ($node->getId() == $id) {
-                $newMenuItem = $node ;
+                $newMenuItem = $node;
             }
         }
         if ($newMenuItem == null) {
@@ -327,7 +327,7 @@ class MenuItem
      */
     public function select()
     {
-        $this->selected = true ;
+        $this->selected = true;
         if ($this->parent != null) {
             $this->parent->select();
         }
@@ -339,7 +339,7 @@ class MenuItem
      */
     public function toggleSelected($url)
     {
-        $this->selected = false ;
+        $this->selected = false;
         foreach ($this->getFilteredChildren() as $nodeId => $node) {
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
@@ -405,7 +405,7 @@ class MenuItem
     {
         foreach ($this->getFilteredChildren() as $key => $node) {
             if (strtolower($node->getId()) == strtolower($id)) {
-                return $node ;
+                return $node;
             }
         }
         return null;

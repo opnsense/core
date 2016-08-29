@@ -58,7 +58,7 @@ class TextField extends BaseField
      */
     public function setMask($value)
     {
-        $this->internalMask = $value ;
+        $this->internalMask = $value;
     }
 
     /**

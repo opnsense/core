@@ -81,7 +81,7 @@ class ArrayField extends BaseField
                 // validate child nodes, nesting not supported in this version.
                 throw new \Exception("Unsupported copy, Array doesn't support nesting.");
             }
-            $new_record[$key] = clone $node ;
+            $new_record[$key] = clone $node;
         }
 
         $nodeUUID = $this->generateUUID();
@@ -146,11 +146,11 @@ class ArrayField extends BaseField
             $sortKey = '';
             foreach ($fieldNames as $fieldName) {
                 if (array_key_exists($fieldName, $node->internalChildnodes)) {
-                    $sortKey .=  sprintf("%".$MAX_KEY_LENGTH."s ,", $node->$fieldName) ;
+                    $sortKey .=  sprintf("%".$MAX_KEY_LENGTH."s ,", $node->$fieldName);
                 }
             }
             $sortKey .= $nodeKey; // prevent overwrite of duplicates
-            $sortedData[$sortKey] = $node ;
+            $sortedData[$sortKey] = $node;
         }
 
         // sort by key on ascending or descending order

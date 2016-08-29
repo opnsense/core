@@ -40,7 +40,7 @@ class MenuSystem
     /**
      * @var null|MenuItem root node
      */
-    private $root = null ;
+    private $root = null;
 
     /**
      * add menu structure to root
@@ -51,14 +51,14 @@ class MenuSystem
     {
         // load and validate menu xml
         if (!file_exists($filename)) {
-            throw new MenuInitException('Menu xml '.$filename.' missing') ;
+            throw new MenuInitException('Menu xml '.$filename.' missing');
         }
         $menuXml = simplexml_load_file($filename);
         if ($menuXml === false) {
-            throw new MenuInitException('Menu xml '.$filename.' not valid') ;
+            throw new MenuInitException('Menu xml '.$filename.' not valid');
         }
         if ($menuXml->getName() != "menu") {
-            throw new MenuInitException('Menu xml '.$filename.' seems to be of wrong type') ;
+            throw new MenuInitException('Menu xml '.$filename.' seems to be of wrong type');
         }
 
         // traverse items

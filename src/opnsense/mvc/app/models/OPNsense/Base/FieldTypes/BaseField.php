@@ -85,7 +85,7 @@ abstract class BaseField
     /**
      * @var bool is this a required attribute?
      */
-    protected $internalIsRequired = false ;
+    protected $internalIsRequired = false;
 
     /**
      * @var string validation message string
@@ -95,7 +95,7 @@ abstract class BaseField
     /**
      * @var bool node (and subnodes) is virtual
      */
-    protected $internalIsVirtual = false ;
+    protected $internalIsVirtual = false;
 
     /**
      * @var array key value store for attributes (will be saved as xml attributes)
@@ -172,7 +172,7 @@ abstract class BaseField
      */
     public function __clone()
     {
-        $this->internalIsVirtual = false ;
+        $this->internalIsVirtual = false;
         $this->internalValue = "";
         $this->internalReference = null;
     }
@@ -226,7 +226,7 @@ abstract class BaseField
             $result = array();
             foreach ($this->internalChildnodes as $key => $value) {
                 if ($value->internalIsVirtual == false) {
-                    $result[$key] = $value ;
+                    $result[$key] = $value;
                 }
             }
             return $result;
@@ -355,7 +355,7 @@ abstract class BaseField
     {
         $validators = array();
         if ($this->isEmptyAndRequired()) {
-            $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage)) ;
+            $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage));
         }
         return $validators;
     }
@@ -401,7 +401,7 @@ abstract class BaseField
 
         foreach ($this->__items as $node) {
             foreach ($node->getFlatNodes() as $childNode) {
-                $result[$childNode->internalReference] = $childNode ;
+                $result[$childNode->internalReference] = $childNode;
             }
         }
 
@@ -484,7 +484,7 @@ abstract class BaseField
     {
         if ($this->internalReference == "" || get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
             // ignore tags without internal reference (root) and ArrayTypes
-            $subnode = $node ;
+            $subnode = $node;
         } else {
             if ($this->internalValue != "") {
                 $newNodeName = $this->getInternalXMLTagName();

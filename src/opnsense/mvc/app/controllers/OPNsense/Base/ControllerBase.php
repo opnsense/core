@@ -92,7 +92,7 @@ class ControllerBase extends ControllerRoot
                     } else {
                         $tab[] = $this->parseFormNode($node);
                     }
-                    $result['tabs'][] = $tab ;
+                    $result['tabs'][] = $tab;
                     break;
                 case "subtab":
                     $subtab = array();
@@ -135,13 +135,13 @@ class ControllerBase extends ControllerRoot
     public function getForm($formname)
     {
         $class_info = new \ReflectionClass($this);
-        $filename = dirname($class_info->getFileName()) . "/forms/".$formname.".xml" ;
+        $filename = dirname($class_info->getFileName()) . "/forms/".$formname.".xml";
         if (!file_exists($filename)) {
-            throw new \Exception('form xml '.$filename.' missing') ;
+            throw new \Exception('form xml '.$filename.' missing');
         }
         $formXml = simplexml_load_file($filename);
         if ($formXml === false) {
-            throw new \Exception('form xml '.$filename.' not valid') ;
+            throw new \Exception('form xml '.$filename.' not valid');
         }
 
         return $this->parseFormNode($formXml);

@@ -130,7 +130,7 @@ class PortField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValidationMessage == null) {
             $msg = "please specify a valid portnumber (1-65535) or name (" . implode(",", self::$wellknownservices) .
-                ")" ;
+                ")";
         } else {
             $msg = $this->internalValidationMessage;
         }

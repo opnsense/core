@@ -52,13 +52,13 @@ class AutoNumberField extends BaseField
      * maximum value for this field
      * @var integer
      */
-    private $maximum_value ;
+    private $maximum_value;
 
     /**
      * minimum value for this field
      * @var integer
      */
-    private $minimum_value ;
+    private $minimum_value;
 
     /**
      * constructor, set absolute min and max values
@@ -69,7 +69,7 @@ class AutoNumberField extends BaseField
     {
         parent:: __construct($ref, $tagname);
         $this->minimum_value = 0;
-        $this->maximum_value = PHP_INT_MAX-1 ;
+        $this->maximum_value = PHP_INT_MAX-1;
     }
 
     /**

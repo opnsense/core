@@ -150,7 +150,7 @@ class SettingsController extends ApiControllerBase
      * @param string|null $sid rule identifier
      * @return array|mixed
      */
-    public function getRuleInfoAction($sid=null)
+    public function getRuleInfoAction($sid = null)
     {
         // request list of installed rules
         if (!empty($sid)) {
@@ -245,7 +245,7 @@ class SettingsController extends ApiControllerBase
                 $item['documentation_url'] = $fileinfo['documentation_url'];
                 if (!empty($fileinfo['documentation_url'])) {
                     $item['documentation'] = "<a href='".$item['documentation_url']."' target='_new'>";
-                    $item['documentation'] .= $item['documentation_url'] ;
+                    $item['documentation'] .= $item['documentation_url'];
                     $item['documentation'] .= '</a>';
                 } else {
                     $item['documentation'] = null;
@@ -594,7 +594,7 @@ class SettingsController extends ApiControllerBase
             }
         } else {
             // generate new node, but don't save to disc
-            $node = $mdlIDS->userDefinedRules->rule->add() ;
+            $node = $mdlIDS->userDefinedRules->rule->add();
             return array("rule" => $node->getNodes());
         }
         return array();
