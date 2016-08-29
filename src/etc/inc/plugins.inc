@@ -94,12 +94,11 @@ function plugins_syslog()
  * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
  *
  */
-function plugins_interfaces($write_allowed = true)
+function plugins_interfaces()
 {
     global $config;
 
     $stale_interfaces = array();
-    $write_required = false;
 
     // mark previous dynamic registrations stale
     if (isset($config['interfaces'])) {
@@ -135,7 +134,6 @@ function plugins_interfaces($write_allowed = true)
                     foreach ($intf_data as $prop_name => $prop_value) {
                         if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || $intf_config[$prop_name] != $prop_value) {
                             $intf_config[$prop_name] = $prop_value;
-                            $write_required = true;
                         }
                     }
                 }
@@ -147,13 +145,7 @@ function plugins_interfaces($write_allowed = true)
     foreach ($stale_interfaces as $intf_ref => $no_data) {
         if (isset($config['interfaces'][$intf_ref])) {
             unset($config['interfaces'][$intf_ref]);
-            $write_required = true;
         }
-    }
-
-    // configuration changed, materialize
-    if ($write_allowed && $write_required) {
-        write_config();
     }
 }
 
