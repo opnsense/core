@@ -651,14 +651,6 @@ include("head.inc");
                     <td>
                       <select name="authentication_method" id="authentication_method" class="formselect">
 <?php
-                      $p1_authentication_methods = array(
-                        'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
-                        'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
-                        'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
-                        'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
-                        'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
-                        'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
-                        'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
                       foreach ($p1_authentication_methods as $method_type => $method_params) :
                           if (empty($pconfig['mobile']) && $method_params['mobile']) {
                               continue;

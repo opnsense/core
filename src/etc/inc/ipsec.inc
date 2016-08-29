@@ -29,7 +29,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* IPsec defines */
 $ipsec_loglevels = array("dmn" => "Daemon", "mgr" => "SA Manager", "ike" => "IKE SA", "chd" => "IKE Child SA",
     "job" => "Job Processing", "cfg" => "Configuration backend", "knl" => "Kernel Interface",
     "net" => "Networking", "asn" => "ASN encoding", "enc" => "Message encoding",
@@ -43,6 +42,16 @@ $p1_ealgos = array(
     '3des' => array( 'name' => '3DES' ),
     'cast128' => array( 'name' => 'CAST128' ),
     'des' => array( 'name' => 'DES' )
+);
+
+$p1_authentication_methods = array(
+    'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
+    'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
+    'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
+    'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
+    'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
+    'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
+    'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ),
 );
 
 $p2_ealgos = array(

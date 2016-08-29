@@ -428,7 +428,7 @@ $( document ).ready(function() {
                           <?=gettext("DH Group"); ?>&nbsp;<?=$p1_dhgroups[$ph1ent['dhgroup']];?>
                       </td>
                       <td class="hidden-xs">
-                          <?=str_replace('_', ' ', $ph1ent['authentication_method']);?>
+                          <?= html_safe($p1_authentication_methods[$ph1ent['authentication_method']]['name']) ?>
                       </td>
                       <td>
                           <?=$ph1ent['descr'];?>&nbsp;
