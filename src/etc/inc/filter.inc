@@ -2782,6 +2782,7 @@ pass in {$log['pass']} on \$loopback inet all label "pass IPv4 loopback"
 pass out {$log['pass']} on \$loopback inet all label "pass IPv4 loopback"
 pass in {$log['pass']} on \$loopback inet6 all label "pass IPv6 loopback"
 pass out {$log['pass']} on \$loopback inet6 all label "pass IPv6 loopback"
+
 # let out anything from the firewall host itself and decrypted IPsec traffic
 pass out {$log['pass']} inet all keep state allow-opts label "let out anything IPv4 from firewall host itself"
 pass out {$log['pass']} inet6 all keep state allow-opts label "let out anything IPv6 from firewall host itself"
@@ -2819,10 +2820,9 @@ EOD;
         }
     }
 
-
     /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
-        $ipfrules .= "pass out {$log['pass']} on \$IPsec all keep state label \"IPsec internal host to host\"\n";
+    if (!empty($FilterIflist['enc0']['descr'])) {
+        $ipfrules .= "pass out {$log['pass']} on \${$FilterIflist['enc0']['descr']} all keep state label \"IPsec internal host to host\"\n";
     }
 
     if (is_array($config['system']['webgui']) && !isset($config['system']['webgui']['noantilockout'])) {
@@ -2834,6 +2834,7 @@ EOD;
              */
             $lanif = $FilterIflist['lan']['if'];
             $ipfrules .= <<<EOD
+
 # make sure the user cannot lock himself out of the webConfigurator or SSH
 pass in {$log['pass']} quick on {$lanif} proto tcp from any to ({$lanif}) port { {$alports} } keep state label "anti-lockout rule"
 
@@ -2842,6 +2843,7 @@ EOD;
             /* single-interface deployment, add to WAN  */
             $wanif = $FilterIflist["wan"]['if'];
             $ipfrules .= <<<EOD
+
 # make sure the user cannot lock himself out of the webConfigurator or SSH
 pass in {$log['pass']} quick on {$wanif} proto tcp from any to ({$wanif}) port { {$alports} } keep state label "anti-lockout rule"
 
