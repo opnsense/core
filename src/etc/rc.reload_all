@@ -60,5 +60,4 @@ mwexec_bg('/usr/local/etc/rc.sshd');
 mwexec_bg('/usr/local/etc/rc.restart_webgui');
 
 log_error("rc.reload_all: Reloading filter configuration.");
-plugins_interfaces();
 filter_configure_sync();

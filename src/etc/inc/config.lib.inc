@@ -179,7 +179,7 @@ function write_config($desc = '', $backup = true)
 
     if (function_exists('plugins_interfaces')) {
         /* only pull plugins if plugins.inc was included before */
-        plugins_interfaces(false);
+        plugins_interfaces();
     }
 
     $cnf = OPNsense\Core\Config::getInstance();

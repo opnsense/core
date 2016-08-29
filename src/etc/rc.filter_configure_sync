@@ -36,5 +36,4 @@ require_once("interfaces.inc");
 require_once("services.inc");
 require_once("plugins.inc");
 
-plugins_interfaces();
 filter_configure_sync();

@@ -94,11 +94,20 @@ function plugins_syslog()
  * Every <plugin>_interface should return a named array containing the interface unique identifier and properties.
  *
  */
-function plugins_interfaces($write_allowed = true)
+function plugins_interfaces()
 {
     global $config;
-    $changed_interfaces = array();
-    $registered_interfaces = array();
+
+    $stale_interfaces = array();
+
+    // mark previous dynamic registrations stale
+    if (isset($config['interfaces'])) {
+        foreach ($config['interfaces'] as $intf_ref => $intf_data) {
+            if (isset($intf_data[0]['internal_dynamic']) || isset($intf_data['internal_dynamic'])) {
+                $stale_interfaces[$intf_ref] = 1;
+            }
+        }
+    }
 
     // register / update interfaces
     foreach (plugins_scan() as $name => $path) {
@@ -107,8 +116,9 @@ function plugins_interfaces($write_allowed = true)
         if (function_exists($func)) {
             foreach ($func() as $intf_ref => $intf_data) {
                 if (is_array($intf_data)) {
-                    if (!in_array($intf_ref, $registered_interfaces)) {
-                        $registered_interfaces[] = $intf_ref;
+                    // mark interface used
+                    if (isset($stale_interfaces[$intf_ref])) {
+                        unset($stale_interfaces[$intf_ref]);
                     }
                     if (empty($config['interfaces'][$intf_ref])) {
                         $config['interfaces'][$intf_ref] = array();
@@ -124,9 +134,6 @@ function plugins_interfaces($write_allowed = true)
                     foreach ($intf_data as $prop_name => $prop_value) {
                         if ((empty($intf_config[$prop_name]) && !empty($prop_value)) || $intf_config[$prop_name] != $prop_value) {
                             $intf_config[$prop_name] = $prop_value;
-                            if (!in_array($intf_ref, $changed_interfaces)) {
-                                $changed_interfaces[] = $intf_ref;
-                            }
                         }
                     }
                 }
@@ -135,18 +142,10 @@ function plugins_interfaces($write_allowed = true)
     }
 
     // cleanup registrations
-    if (isset($config['interfaces'])) {
-        foreach ($config['interfaces'] as $intf => $intf_data) {
-            if ((!empty($intf_data['internal_dynamic']) || !empty($intf_data[0]['internal_dynamic'])) && !in_array($intf, $registered_interfaces)) {
-                $changed_interfaces[] = $intf;
-                unset($config['interfaces'][$intf]);
-            }
+    foreach ($stale_interfaces as $intf_ref => $no_data) {
+        if (isset($config['interfaces'][$intf_ref])) {
+            unset($config['interfaces'][$intf_ref]);
         }
-    }
-
-    // configuration changed, materialize
-    if ($write_allowed && count($changed_interfaces) > 0) {
-        write_config();
     }
 }
 
