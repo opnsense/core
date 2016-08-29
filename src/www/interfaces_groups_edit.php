@@ -125,7 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           // add new item
           $a_ifgroups[] = $ifgroupentry;
       }
-      plugins_interfaces(false);
       write_config();
       interface_group_setup($ifgroupentry);
       header("Location: interfaces_groups.php");

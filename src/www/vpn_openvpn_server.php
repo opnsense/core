@@ -139,7 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($a_server[$id])) {
             openvpn_delete('server', $a_server[$id]);
             unset($a_server[$id]);
-            plugins_interfaces(false);
             write_config();
         }
         header("Location: vpn_openvpn_server.php");
@@ -404,7 +403,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             openvpn_resync('server', $server);
-            plugins_interfaces(false);
             write_config();
             openvpn_resync_csc(); // dump client specific overrides, the required set may have changed
 

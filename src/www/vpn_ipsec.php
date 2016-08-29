@@ -88,7 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (isset($config['ipsec']['enable'])) {
             unset($config['ipsec']['enable']);
         }
-        plugins_interfaces(false);
         write_config();
         ipsec_configure();
         filter_configure();
@@ -118,7 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($config['ipsec']['phase1'][$p1entrydel]);
         }
 
-        plugins_interfaces(false);
         write_config();
         mark_subsystem_dirty('ipsec');
         header("Location: vpn_ipsec.php");
