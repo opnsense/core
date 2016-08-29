@@ -43,7 +43,7 @@
 	<stepbeforeformdisplay>
 		if (isset($config['trigger_initial_wizard'])) {
 			unset($config['trigger_initial_wizard']);
-			write_config(gettext("Triggered initial wizard"));
+			write_config('Triggered initial wizard');
 		}
 	</stepbeforeformdisplay>
 </step>

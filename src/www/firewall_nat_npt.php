@@ -47,52 +47,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('natconf');
         clear_subsystem_dirty('filter');
-    }  elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single record
         unset($a_npt[$id]);
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
+        write_config();
+        mark_subsystem_dirty('natconf');
         header("Location: firewall_nat_npt.php");
         exit;
-      } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
-          /* delete selected rules */
-          foreach ($pconfig['rule'] as $rulei) {
-              if (isset($a_npt[$rulei])) {
-                  unset($a_npt[$rulei]);
-              }
-          }
-          if (write_config()) {
-              mark_subsystem_dirty('natconf');
-          }
-          header("Location: firewall_nat_npt.php");
-          exit;
-        } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move') {
-            // move records
-            if (isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
-                // if rule not set/found, move to end
-                if (!isset($id)) {
-                    $id = count($a_npt);
-                }
-                $a_npt = legacy_move_config_list_items($a_npt, $id,  $pconfig['rule']);
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+        /* delete selected rules */
+        foreach ($pconfig['rule'] as $rulei) {
+            if (isset($a_npt[$rulei])) {
+                unset($a_npt[$rulei]);
             }
-            if (write_config()) {
-                mark_subsystem_dirty('natconf');
+        }
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header("Location: firewall_nat_npt.php");
+        exit;
+     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'move') {
+        // move records
+        if (isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
+            // if rule not set/found, move to end
+            if (!isset($id)) {
+                $id = count($a_npt);
             }
-            header("Location: firewall_nat_npt.php");
-            exit;
-        } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
-            // toggle item
-            if(isset($a_npt[$id]['disabled'])) {
-                unset($a_npt[$id]['disabled']);
-            } else {
-                $a_npt[$id]['disabled'] = true;
-            }
-            if (write_config(gettext("Firewall: NAT: NPT, enable/disable NAT rule"))) {
-                mark_subsystem_dirty('natconf');
-            }
-            header("Location: firewall_nat_npt.php");
-            exit;
+            $a_npt = legacy_move_config_list_items($a_npt, $id,  $pconfig['rule']);
+        }
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header("Location: firewall_nat_npt.php");
+        exit;
+    } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
+        // toggle item
+        if(isset($a_npt[$id]['disabled'])) {
+            unset($a_npt[$id]['disabled']);
+        } else {
+            $a_npt[$id]['disabled'] = true;
+        }
+        write_config('Toggled NAT NPT rule');
+        mark_subsystem_dirty('natconf');
+        header("Location: firewall_nat_npt.php");
+        exit;
     }
 }
 

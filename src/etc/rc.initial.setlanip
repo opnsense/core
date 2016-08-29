@@ -492,7 +492,7 @@ if (!$config['interfaces']['lan']) {
 $upperifname = strtoupper($interface);
 if (!$dry_run) {
     echo "\nPlease wait while the changes are saved to {$upperifname}...";
-    write_config(sprintf(gettext("%s IP configuration from console menu"), $interface));
+    write_config(sprintf('%s IP configuration from console menu', $interface));
     interface_reconfigure(strtolower($upperifname));
     echo "\n Reloading filter...";
     filter_configure_sync();

@@ -148,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // sync to config
         $config['installedpackages']['miniupnpd']['config'] = $upnp;
 
-        write_config(gettext('Modified Universal Plug and Play settings.'));
+        write_config('Modified Universal Plug and Play settings');
         sync_package_miniupnpd();
         header("Location: services_upnp.php");
         exit;

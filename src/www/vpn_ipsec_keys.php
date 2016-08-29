@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // delete entry
         if (isset($config['ipsec']['mobilekey'][$_POST['id']])) {
             unset($config['ipsec']['mobilekey'][$_POST['id']]);
-            write_config(gettext("Deleted IPsec Pre-Shared Key"));
+            write_config('Deleted pre-shared IPsec key');
             mark_subsystem_dirty('ipsec');
             header("Location: vpn_ipsec_keys.php");
             exit;

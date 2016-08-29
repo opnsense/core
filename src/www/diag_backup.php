@@ -57,7 +57,7 @@ function restore_config_section($section_name, $new_contents)
 
     $config[$section_name] = $xml[$section_name];
 
-    write_config(sprintf(gettext("Restored %s of config file"), $section_name));
+    write_config(sprintf('Restored section %s of config file', $section_name));
     convert_config();
 
     disable_security_checks();

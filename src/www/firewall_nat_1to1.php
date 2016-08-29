@@ -51,9 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (isset($pconfig['action']) && $pconfig['action'] == 'del' && isset($id)) {
         // delete single entry
         unset($a_1to1[$id]);
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
+        write_config();
+        mark_subsystem_dirty('natconf');
         header("Location: firewall_nat_1to1.php");
         exit;
     } elseif (isset($pconfig['action']) && $pconfig['action'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
@@ -61,9 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         foreach ($pconfig['rule'] as $rulei) {
             unset($a_1to1[$rulei]);
         }
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
+        write_config();
+        mark_subsystem_dirty('natconf');
         header("Location: firewall_nat_1to1.php");
         exit;
     } elseif (isset($pconfig['action']) && $pconfig['action'] == 'move') {
@@ -75,9 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $a_1to1 = legacy_move_config_list_items($a_1to1, $id,  $pconfig['rule']);
 
-            if (write_config()) {
-                mark_subsystem_dirty('natconf');
-            }
+            write_config();
+            mark_subsystem_dirty('natconf');
             header("Location: firewall_nat_1to1.php");
             exit;
         }
@@ -88,9 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_1to1[$id]['disabled'] = true;
         }
-        if (write_config(gettext('Toggled NAT rule'))) {
-            mark_subsystem_dirty('natconf');
-        }
+        write_config('Toggled NAT 1:1 rule');
+        mark_subsystem_dirty('natconf');
         header("Location: firewall_nat_1to1.php");
         exit;
     }
