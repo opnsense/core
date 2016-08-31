@@ -910,7 +910,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network/s"); ?></td>
+            <td><a id="help_for_remote_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Remote Network"); ?></td>
             <td>
               <input name="remote_network" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_network'];?>" />
               <div class="hidden" for="help_for_remote_network">
@@ -925,7 +925,7 @@ $( document ).ready(function() {
             </td>
           </tr>
           <tr>
-            <td><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network/s"); ?></td>
+            <td><a id="help_for_remote_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Remote Network"); ?></td>
             <td>
               <input name="remote_networkv6" type="text" class="form-control unknown" size="40" value="<?=$pconfig['remote_networkv6'];?>" />
               <div class="hidden" for="help_for_remote_networkv6">
