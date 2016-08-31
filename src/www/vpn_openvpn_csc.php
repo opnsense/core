@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } else {
         /* perform validations */
-        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'Tunnel network')) {
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network')) {
             $input_errors[] = $result;
         }
         if ($result = openvpn_validate_cidr($pconfig['local_network'], 'IPv4 Local Network', true, "ipv4")) {
@@ -452,11 +452,11 @@ if ($act!="new" && $act!="edit") {
                     <td colspan="2" ><?=gettext("Tunnel Settings"); ?></td>
                   </tr>
                   <tr>
-                    <td><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Tunnel Network"); ?></td>
+                    <td><a id="help_for_tunnel_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Tunnel Network"); ?></td>
                     <td>
                       <input name="tunnel_network" type="text" size="20" value="<?=$pconfig['tunnel_network'];?>" />
                       <div class="hidden" for="help_for_tunnel_network">
-                        <?=gettext("This is the virtual network used for private " .
+                        <?=gettext("This is the IPv4 virtual network used for private " .
                                                 "communications between this client and the " .
                                                 "server expressed using CIDR (eg. 10.0.8.0/24). " .
                                                 "The first network address is assumed to be the " .
@@ -467,7 +467,7 @@ if ($act!="new" && $act!="edit") {
                     </td>
                   </tr>
                   <tr id="local_optsv4">
-                    <td><a id="help_for_local_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Local Network/s"); ?></td>
+                    <td><a id="help_for_local_network" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv4 Local Network"); ?></td>
                     <td>
                       <input name="local_network" type="text" size="40" value="<?=$pconfig['local_network'];?>" />
                       <div class="hidden" for="help_for_local_network">
@@ -479,7 +479,7 @@ if ($act!="new" && $act!="edit") {
                     </td>
                   </tr>
                   <tr id="local_optsv6">
-                    <td><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Local Network/s"); ?></td>
+                    <td><a id="help_for_local_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Local Network"); ?></td>
                     <td>
                       <input name="local_networkv6" type="text" size="40" value="<?=$pconfig['local_networkv6'];?>" />
                       <div class="hidden" for="help_for_local_networkv6">
