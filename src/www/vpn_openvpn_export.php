@@ -435,8 +435,8 @@ if (isset($savemsg)) {
                 <td>
                       <select name="useaddr" id="useaddr">
                         <option value="serveraddr" ><?=gettext("Interface IP Address");?></option>
-                        <option value="servermagic" ><?=gettext("Automagic Multi-WAN IPs (port forward targets)");?></option>
-                        <option value="servermagichost" ><?=gettext("Automagic Multi-WAN dynamic DNS Hostnames (port forward targets)");?></option>
+                        <option value="servermagic" ><?=gettext("Automatic Multi-WAN IPs (port forward targets)");?></option>
+                        <option value="servermagichost" ><?=gettext("Automatic Multi-WAN dynamic DNS Hostnames (port forward targets)");?></option>
                         <option value="serverhostname" ><?=gettext("Installation hostname");?></option>
                         <?php if (isset($config['dyndnses']['dyndns'])) :
 ?>
