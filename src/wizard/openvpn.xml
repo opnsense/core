@@ -719,7 +719,7 @@
 			<type>input</type>
 			<size>20</size>
 			<bindstofield>ovpnserver->step10->tunnelnet</bindstofield>
-			<description>This is the virtual network used for private communications between this server and client hosts expressed using CIDR notation (eg. 10.0.8.0/24). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
+			<description>This is the IPv4 virtual network used for private communications between this server and client hosts expressed using CIDR notation (eg. 10.0.8.0/24). The first network address will be assigned to the server virtual interface. The remaining network addresses can optionally be assigned to connecting clients. (see Address Pool)</description>
 		</field>
 		<field>
 			<displayname>Redirect Gateway</displayname>

@@ -884,7 +884,7 @@ $( document ).ready(function() {
             <td width="78%">
               <input name="tunnel_network" type="text" class="form-control unknown" size="20" value="<?=$pconfig['tunnel_network'];?>" />
               <div class="hidden" for="help_for_tunnel_network">
-                <?=gettext("This is the virtual network used for private " .
+                <?=gettext("This is the IPv4 virtual network used for private " .
                                 "communications between this client and the " .
                                 "server expressed using CIDR (eg. 10.0.8.0/24). " .
                                 "The first network address is assumed to be the " .
