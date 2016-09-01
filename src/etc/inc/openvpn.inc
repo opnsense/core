@@ -166,12 +166,12 @@ function openvpn_port_next($prot, $interface = "wan")
 function openvpn_get_cipherlist()
 {
     $ciphers = array();
-    $cipher_out = shell_exec('/usr/local/sbin/openvpn --show-ciphers | /usr/bin/grep "default key" | /usr/bin/awk \'{print $1, "(" $2 "-" $3 ")";}\'');
-    $cipher_lines = explode("\n", trim($cipher_out));
-    sort($cipher_lines);
-    foreach ($cipher_lines as $line) {
-        $words = explode(' ', $line);
-        $ciphers[$words[0]] = "{$words[0]} {$words[1]}";
+    exec('/usr/local/sbin/openvpn --show-ciphers', $lines);
+    foreach ($lines as $line) {
+        if (strstr($line, '(') !== false) {
+            $cipher = explode(' ', $line)[0];
+            $ciphers[$cipher] = $line;
+        }
     }
     $ciphers["none"] = gettext("None (No Encryption)");
     return $ciphers;
@@ -180,13 +180,15 @@ function openvpn_get_cipherlist()
 function openvpn_get_digestlist()
 {
     $digests = array();
-    $digest_out = shell_exec('/usr/local/sbin/openvpn --show-digests | /usr/bin/grep "digest size" | /usr/bin/awk \'{print $1, "(" $2 "-" $3 ")";}\'');
-    $digest_lines = explode("\n", trim($digest_out));
-    sort($digest_lines);
-    foreach ($digest_lines as $line) {
-        $words = explode(' ', $line);
-        $digests[$words[0]] = "{$words[0]} {$words[1]}";
+    exec('/usr/local/sbin/openvpn --show-digests', $lines);
+    foreach ($lines as $line) {
+        if (strstr($line, 'digest size') !== false) {
+            $digest = explode(' ', $line)[0];
+            $bits = explode(' ', explode('bit', $line)[0])[1];
+            $digests[$digest] = $digest . " (".$bits."-bit)";
+        }
     }
+    ksort($digests);
     $digests["none"] = gettext("None (No Authentication)");
     return $digests;
 }
