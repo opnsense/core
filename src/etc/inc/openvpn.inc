@@ -173,6 +173,7 @@ function openvpn_get_cipherlist()
             $ciphers[$cipher] = $line;
         }
     }
+    ksort($ciphers);
     $ciphers["none"] = gettext("None (No Encryption)");
     return $ciphers;
 }
