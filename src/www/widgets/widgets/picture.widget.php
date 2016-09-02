@@ -58,7 +58,7 @@ if ($_POST) {
             $config['widgets']['picturewidget'] = base64_encode($data);
             $config['widgets']['picturewidget_filename'] = $_FILES['pictfile']['name'];
             write_config("Picture widget saved via Dashboard.");
-            header("Location: /index.php");
+            header(url_safe('Location: /index.php'));
             exit;
         }
     }

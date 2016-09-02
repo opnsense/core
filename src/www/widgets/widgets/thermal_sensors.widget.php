@@ -55,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['widgets']['thermal_sensors_widget'][$fieldname] = validate_temp_value($newValue) ? $newValue : $defaultValue;
     }
     write_config("Thermal sensors widget saved via Dashboard.");
-    header("Location: /index.php");
-    die;
+    header(url_safe('Location: /index.php'));
+    exit;
 }
-?>
 
+?>
 <script type="text/javascript">
   function thermal_sensors_widget_update(sender, data)
   {

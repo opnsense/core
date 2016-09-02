@@ -41,8 +41,10 @@ $services = services_get();
 if (isset($_POST['servicestatusfilter'])) {
     $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved Service Status Filter via Dashboard");
-    header("Location: /index.php");
+    header(url_safe('Location: /index.php'));
+    exit;
 }
+
 ?>
 <div id="services_status-settings" class="widgetconfigdiv" style="display:none;">
   <form action="/widgets/widgets/services_status.widget.php" method="post" name="iformd">

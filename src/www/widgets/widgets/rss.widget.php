@@ -44,7 +44,8 @@ if (!empty($_POST['rssfeed'])) {
     $config['widgets']['rsswidgetheight'] = htmlspecialchars($_POST['rsswidgetheight'], ENT_QUOTES | ENT_HTML401);
     $config['widgets']['rsswidgettextlength'] = htmlspecialchars($_POST['rsswidgettextlength'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved RSS Widget feed via Dashboard");
-    header("Location: /");
+    header(url_safe('Location: /index.php'));
+    exit;
 }
 
 // Use saved feed and max items

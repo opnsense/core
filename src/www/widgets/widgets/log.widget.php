@@ -125,8 +125,8 @@ if (is_numeric($_POST['filterlogentries'])) {
     }
 
     write_config("Saved Filter Log Entries via Dashboard");
-    Header("Location: /");
-    exit(0);
+    header(url_safe('Location: /index.php'));
+    exit;
 }
 
 $nentries = isset($config['widgets']['filterlogentries']) ? $config['widgets']['filterlogentries'] : 5;
