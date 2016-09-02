@@ -36,10 +36,11 @@ else
 	exit 1
 fi
 
-# Clear the .ini files in preparation for the rewrite
+PHP_INI=$(mktemp -q /tmp/php_ini.XXXXXX)
+chmod 644 ${PHP_INI}
+
+# XXX can be removed in 17.1
 rm -f /usr/local/etc/php/extensions.ini
-rm -f /usr/local/etc/php.ini
-rm -f /usr/local/lib/php.ini
 
 # Fetch the timezone from the XML and set it here
 TIMEZONE=Etc/UTC
@@ -51,7 +52,7 @@ fi
 # Populate a dummy php.ini to avoid
 # the file being clobbered and the firewall
 # not being able to boot back up.
-cat >> /usr/local/lib/php.ini << EOF
+cat >> ${PHP_INI} << EOF
 ; File generated via rc.php_ini_setup
 output_buffering = "0"
 expose_php = Off
@@ -79,19 +80,6 @@ log_errors=on
 error_log=/tmp/PHP_errors.log
 extension_dir=${EXTENSIONSDIR}
 date.timezone="${TIMEZONE}"
-EOF
-
-# Enable XDebug if installed
-if [ -f "${EXTENSIONSDIR}xdebug.so" ]; then
-	cat >> /usr/local/lib/php.ini << EOF
-
-[xdebug]
-xdebug.profiler_enable_trigger = 1
-xdebug.profiler_output_name = cachegrind.out.%t.%p
-EOF
-fi
-
-cat >> /usr/local/lib/php.ini << EOF
 
 [suhosin]
 suhosin.get.max_array_depth = 5000
@@ -109,7 +97,12 @@ suhosin.request.max_value_length = 9000000
 suhosin.memory_limit = 512435456
 suhosin.session.cryptdocroot=Off
 suhosin.executor.include.whitelist = phar://
+
+[xdebug]
+xdebug.profiler_enable_trigger = 1
+xdebug.profiler_output_name = cachegrind.out.%t.%p
 EOF
 
-# Copy php.ini file to etc/ too (cli)
-cp /usr/local/lib/php.ini /usr/local/etc/php.ini
+cp ${PHP_INI} /usr/local/etc/php.ini
+cp ${PHP_INI} /usr/local/lib/php.ini
+rm ${PHP_INI}
