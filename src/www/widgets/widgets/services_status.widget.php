@@ -41,7 +41,7 @@ $services = services_get();
 if (isset($_POST['servicestatusfilter'])) {
     $config['widgets']['servicestatusfilter'] = htmlspecialchars($_POST['servicestatusfilter'], ENT_QUOTES | ENT_HTML401);
     write_config("Saved Service Status Filter via Dashboard");
-    header(url_safe('Location: index.php'));
+    header(url_safe('Location: /index.php'));
     exit;
 }
 

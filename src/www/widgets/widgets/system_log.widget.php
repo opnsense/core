@@ -40,7 +40,7 @@ if (is_numeric($_POST['logfiltercount'])) {
    $countReceived =  $_POST['logfiltercount'];
    $config['widgets']['systemlogfiltercount'] = $countReceived;
    write_config("Saved Widget System Log Filter Setting");
-   Header("Location: /index.php");
+   header(url_safe('Location: /index.php'));
    exit;
 }
 
