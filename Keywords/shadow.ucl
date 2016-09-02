@@ -2,9 +2,9 @@
 #
 # MAINTAINER: franco@opnsense.org
 #
-# @sample etc/somefile.conf.sample
+# @shadow etc/somefile.conf.sample
 # or
-# @sample file1 file2
+# @shadow file1 file2
 #
 # Where file1 is considered as a sample file and file2 the target file
 #
