@@ -150,6 +150,7 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="col-md-12">
         <hr/>
         <button class="btn btn-primary"  id="reconfigureAct" type="button"><b>Apply</b><i id="reconfigureAct_progress" class=""></i></button>
+	<br/><br/>
     </div>
 </div>
 
