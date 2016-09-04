@@ -107,7 +107,7 @@ function deleteVIPEntry($id) {
             }
         }
         if ($found_carp === true && $found_other_alias === false && $found_if === false) {
-            $input_errors[] = gettext("This entry cannot be deleted because it is still referenced by a CARP IP with the description") . " {$vip['descr']}.";
+            $input_errors[] = sprintf(gettext("This entry cannot be deleted because it is still referenced by a CARP IP with the description %s."), $vip['descr']);
         }
     }
     if (count($input_errors) == 0) {
