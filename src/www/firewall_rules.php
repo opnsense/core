@@ -633,9 +633,7 @@ $( document ).ready(function() {
                       <?=gettext("No rules are currently defined for this interface"); ?><br />
                       <?=gettext("All incoming connections on this interface will be blocked until you add pass rules."); ?><br /><br />
                 <?php endif; ?>
-                <?= sprintf(gettext("Click the %s button to add a new rule."),
-                            '<a href="firewall_rules_edit.php?if='.$selected_if.'" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>')
-                ?>
+                <?= sprintf(gettext("Click the %s button to add a new rule."), '[+]')?>
                     </span>
                     </td>
                   </tr>
