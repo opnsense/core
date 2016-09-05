@@ -274,7 +274,7 @@ function easyrule_pass_rule_add($int, $proto, $srchost, $dsthost, $dstport, $ipp
     global $config;
 
     /* No rules, start a new array */
-    if (!is_array($config['filter']['rule'])) {
+    if (empty($config['filter']['rule'])) {
         $config['filter']['rule'] = array();
     }
 
