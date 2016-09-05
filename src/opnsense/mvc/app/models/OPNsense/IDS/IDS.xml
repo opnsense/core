@@ -146,6 +146,10 @@
               </OptionValues>
               <ValidationMessage>Please select a valid pattern matcher algorithm</ValidationMessage>
             </MPMAlgo>
+            <syslog type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </syslog>
         </general>
     </items>
 </model>
