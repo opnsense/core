@@ -55,7 +55,7 @@
                 });
                 // propagate ajax error messages
                 $( document ).ajaxError(function( event, request ) {
-                    if (request.responseJSON.errorMessage != undefined) {
+                    if (request.responseJSON != undefined && request.responseJSON.errorMessage != undefined) {
                         BootstrapDialog.show({
                             type: BootstrapDialog.TYPE_DANGER,
                             title: '{{ lang._('An API exception occured') }}',
