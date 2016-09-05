@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     // servers => array
-    $pconfig['ovpn_servers'] = explode(',', $pconfig['ovpn_servers']);
+    $pconfig['ovpn_servers'] = empty($pconfig['ovpn_servers']) ? array() : explode(',', $pconfig['ovpn_servers']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
