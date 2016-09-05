@@ -37,6 +37,7 @@ if (isset($_GET['basedn']) && isset($_GET['host'])) {
     if (isset($_GET['cert'])) {
         $authcfg = array();
         $authcfg['ldap_caref'] = $_GET['cert'];
+        $authcfg['ldap_urltype'] = 'SSL';
         ldap_setup_caenv($authcfg);
     }
 
