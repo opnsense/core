@@ -186,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $result = array();
         $dump_output = array();
-        exec("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r /tmp/packetcapture.cap", $dump_output);
+        exec("/usr/sbin/tcpdump {$disabledns} {$detail_args} -r /tmp/packetcapture.cap |  /usr/bin/tail -n 5000", $dump_output);
         // reformat raw output to 1 packet per array item
         foreach ($dump_output as $line) {
             if ($line[0] == ' ' && count($result) > 0) {
