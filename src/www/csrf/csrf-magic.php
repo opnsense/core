@@ -410,7 +410,8 @@ if (function_exists('csrf_startup')) {
 }
 // Initialize our handler
 if ($GLOBALS['csrf']['rewrite']) {
-    ob_start('csrf_ob_handler');
+    // limit output chunks to max 5MB
+    ob_start('csrf_ob_handler', 5242880);
 }
 // Perform check
 csrf_check();
