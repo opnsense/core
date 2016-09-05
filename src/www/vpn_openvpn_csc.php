@@ -35,7 +35,7 @@ require_once("plugins.inc");
 
 // define all fields used in this form
 $all_form_fields = "custom_options,disable,common_name,block,description
-    ,tunnel_network,local_network,local_networkv6,remote_network
+    ,tunnel_network,tunnel_networkv6,local_network,local_networkv6,remote_network
     ,remote_networkv6,gwredir,push_reset,dns_domain,dns_server1
     ,dns_server2,dns_server3,dns_server4,ntp_server1,ntp_server2
     ,netbios_enable,netbios_ntype,netbios_scope,wins_server1
@@ -129,6 +129,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } else {
         /* perform validations */
         if ($result = openvpn_validate_cidr($pconfig['tunnel_network'], 'IPv4 Tunnel Network')) {
+            $input_errors[] = $result;
+        }
+        if ($result = openvpn_validate_cidr($pconfig['tunnel_networkv6'], 'IPv6 Tunnel Network', false, "ipv6")) {
             $input_errors[] = $result;
         }
         if ($result = openvpn_validate_cidr($pconfig['local_network'], 'IPv4 Local Network', true, "ipv4")) {
@@ -463,6 +466,21 @@ if ($act!="new" && $act!="edit") {
                                                 "server address and the second network address " .
                                                 "will be assigned to the client virtual " .
                                                 "interface"); ?>.
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_tunnel_networkv6" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPv6 Tunnel Network"); ?></td>
+                    <td>
+                      <input name="tunnel_networkv6" type="text" value="<?=$pconfig['tunnel_networkv6'];?>" />
+                      <div class="hidden" for="help_for_tunnel_networkv6">
+                          <?=gettext("This is the IPv6 virtual network used for private " .
+                                                "communications between this server and client " .
+                                                "hosts expressed using CIDR (eg. fe80::/64). " .
+                                                "The first network address will be assigned to " .
+                                                "the server virtual interface. The remaining " .
+                                                "network addresses can optionally be assigned " .
+                                                "to connecting clients. (see Address Pool)"); ?>
                       </div>
                     </td>
                   </tr>

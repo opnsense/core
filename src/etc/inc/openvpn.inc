@@ -940,6 +940,15 @@ function openvpn_resync_csc_conf($settings, $server)
             $conf .= "ifconfig-push {$clientip} " . gen_subnet_mask($mask) . "\n";
         }
     }
+    if (!empty($settings['tunnel_networkv6'])) {
+        list($ipv6, $prefix) = explode('/', $settings['tunnel_networkv6']);
+        list($ipv6_1, $ipv6_2) = openvpn_get_interface_ipv6($ipv6, $prefix);
+        if ($server['dev_mode'] == 'tun' && empty($server['topology_subnet'])) {
+            $conf .= "ifconfig-ipv6-push {$ipv6_2} {$ipv6_1}\n";
+        } else {
+            $conf .= "ifconfig-ipv6-push {$ipv6_2} {$prefix}\n";
+        }
+    }
 
     if (!empty($settings['local_network'])) {
         $conf .= openvpn_gen_routes($settings['local_network'], "ipv4", true);
