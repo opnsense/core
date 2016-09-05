@@ -173,7 +173,7 @@ include_once("head.inc");
                             <option value="" <?=empty($pconfig['active_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
 <?php
                             foreach (get_possible_listen_ips(false, false) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>><?=htmlspecialchars($laddr['name']);?></option>
+                            <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['active_interface'][0]) && in_array($laddr['value'], $pconfig['active_interface']) ? 'selected="selected"' : "";?>><?=htmlspecialchars($laddr['name']);?></option>
 <?php
                             endforeach; ?>
                           </select>
@@ -257,7 +257,7 @@ include_once("head.inc");
                             <option value="" <?=empty($pconfig['outgoing_interface'][0]) ? 'selected="selected"' : ""; ?>><?=gettext("All");?></option>
 <?php
                             foreach (get_possible_listen_ips(true) as $laddr):?>
-                            <option value="<?=$laddr['value'];?>" <?=in_array($laddr['value'], $pconfig['outgoing_interface']) ? 'selected="selected"' : "";?>>
+                            <option value="<?=$laddr['value'];?>" <?=!empty($pconfig['outgoing_interface'][0]) && in_array($laddr['value'], $pconfig['outgoing_interface']) ? 'selected="selected"' : "";?>>
                               <?=htmlspecialchars($laddr['name']);?>
                             </option>
 <?php
