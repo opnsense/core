@@ -837,7 +837,30 @@ $( document ).ready(function() {
                 <tr class="act_no_rdr">
                   <td><a id="help_for_localip" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Redirect target IP"); ?></td>
                   <td>
-                    <input name="target" type="text" class="formfldalias" size="20" value="<?=$pconfig['target'];?>" />
+                    <table class="table table-condensed">
+                      <tr>
+                        <td>
+                          <select name="target" id="target" class="selectpicker" data-live-search="true" data-size="5" data-width="auto">
+                            <option data-other=true value="<?=$pconfig['target'];?>" <?=!is_alias($pconfig['target']) ? "selected=\"selected\"" : "";?>><?=gettext("Single host"); ?></option>
+                            <optgroup label="<?=gettext("Aliases");?>">
+<?php
+                              foreach (legacy_list_aliases("network") as $alias):?>
+                              <option value="<?=$alias['name'];?>" <?=$alias['name'] == $pconfig['target'] ? "selected=\"selected\"" : "";?>><?=htmlspecialchars($alias['name']);?></option>
+<?php
+                              endforeach; ?>
+                            </optgroup>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div class="input-group">
+                          <!-- updates to "other" option in target -->
+                          <input type="text" id="target_address" for="target" value="<?=$pconfig['target'];?>" aria-label="<?=gettext("Redirect target IP");?>"/>
+                        </div>
+                        </td>
+                      </tr>
+                    </table>
                     <div class="hidden" for="help_for_localip">
                       <?=gettext("Enter the internal IP address of " .
                       "the server on which you want to map the ports."); ?><br/>
