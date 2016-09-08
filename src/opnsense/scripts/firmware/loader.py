@@ -69,7 +69,7 @@ elif (cmd_switch == 'r' and len(cmd_params) == 1) or (cmd_switch == 'e' and len(
                 new_loader_conf.append(line)
     if not param_found and cmd_switch == 'e':
         new_loader_conf.append('%s="%s"'%tuple(cmd_params))
-    open('/boot/loader.conf.local','w').write('\n'.join(new_loader_conf))
+    open('/boot/loader.conf.local','w').write('\n'.join(new_loader_conf)+'\n')
 else:
     # no (or illegal) command given, explain options
     print ("usage %s -ser [parameter] [value]")
