@@ -320,13 +320,15 @@ function filter_pflog_start()
 
 function filter_configure()
 {
+    global $config;
+
     /*
      * NOTE: Check here for bootup status since this should not be triggered during bootup.
      *   The reason is that rc.bootup calls filter_configure_sync directly which does this too.
      */
     if (!file_exists("/var/run/booting")) {
         configd_run('filter reload');
-        if ( isset($config['hasync']['synchronizetoip']) && trim($config['hasync']['synchronizetoip']) != "") {
+        if ( !empty($config['hasync']['synchronizetoip'])) {
             configd_run('filter sync restart');
         }
     }
