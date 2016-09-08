@@ -326,7 +326,7 @@ function filter_configure()
      */
     if (!file_exists("/var/run/booting")) {
         configd_run('filter reload');
-        if ( isset($config['hasync']['synchronizetoip']) && trim($config['hasync']['synchronizetoip']) != "") {
+        if ( !empty($config['hasync']['synchronizetoip'])) {
             configd_run('filter sync restart');
         }
     }
