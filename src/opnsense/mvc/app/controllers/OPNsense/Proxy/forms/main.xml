@@ -259,7 +259,8 @@
                 <allownew>true</allownew>
                 <help><![CDATA[
                   Create a list of sites which may not be inspected, for example bank sites.<br/>
-                  Prefix the domain with a . to accept all subdomains (e.g. .google.com).
+                  Prefix the domain with a . to accept all subdomains (e.g. .google.com).<br/>
+                  You can also paste a comma-separated list into this field (e.g. bank1.com,.bank2.com).
                   ]]></help>
             </field>
             <field>
