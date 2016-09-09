@@ -324,17 +324,16 @@ function interface_qinq_configure(&$vlan, $fd = null)
     legacy_netgraph_attach($qinqif);
 
     if (!empty($vlanif) && does_interface_exist($vlanif)) {
-        fwrite($fd, "shutdown {$qinqif}qinq:\n");
-        exec("/usr/sbin/ngctl msg {$qinqif}qinq: gettable", $result);
+        exec("/usr/sbin/ngctl msg {$vlanif}qinq: gettable", $result);
         if (empty($result)) {
-            fwrite($fd, "mkpeer {$qinqif}: vlan lower downstream\n");
-            fwrite($fd, "name {$qinqif}:lower {$vlanif}qinq\n");
-            fwrite($fd, "connect {$qinqif}: {$vlanif}qinq: upper nomatch\n");
+            fwrite($fd, "mkpeer {$vlanif}: vlan lower downstream\n");
+            fwrite($fd, "name {$vlanif}:lower {$vlanif}qinq\n");
+            fwrite($fd, "connect {$vlanif}: {$vlanif}qinq: upper nomatch\n");
         }
     } else {
-        fwrite($fd, "mkpeer {$qinqif}: vlan lower downstream\n");
-        fwrite($fd, "name {$qinqif}:lower {$vlanif}qinq\n");
-        fwrite($fd, "connect {$qinqif}: {$vlanif}qinq: upper nomatch\n");
+        fwrite($fd, "mkpeer {$vlanif}: vlan lower downstream\n");
+        fwrite($fd, "name {$vlanif}:lower {$vlanif}qinq\n");
+        fwrite($fd, "connect {$vlanif}: {$vlanif}qinq: upper nomatch\n");
     }
 
     if (!stristr($qinqif, "_vlan")) {
@@ -400,7 +399,6 @@ function interface_qinq2_configure(&$qinq, $fd, $macaddr)
         return;
     }
 
-    fwrite($fd, "shutdown {$if}h{$tag}:\n");
     fwrite($fd, "mkpeer {$if}qinq: eiface {$if}{$tag} ether\n");
     fwrite($fd, "name {$if}qinq:{$if}{$tag} {$if}h{$tag}\n");
     fwrite($fd, "msg {$if}qinq: addfilter { vlan={$tag} hook=\"{$if}{$tag}\" }\n");
