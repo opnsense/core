@@ -73,8 +73,8 @@ class SettingsController extends ApiControllerBase
             $filter->add('query', new QueryFilter());
 
 
-            // fetch query parameters
-            $itemsPerPage = $this->request->getPost('rowCount', 'int', -1);
+            // fetch query parameters (limit results to prevent out of memory issues)
+            $itemsPerPage = $this->request->getPost('rowCount', 'int', 9999);
             $currentPage = $this->request->getPost('current', 'int', 1);
 
             if ($this->request->hasPost('sort') && is_array($this->request->getPost("sort"))) {
