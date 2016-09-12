@@ -39,178 +39,6 @@ require_once("auth.inc");
 require_once("util.inc");
 require_once("interfaces.inc");
 
-function cisco_to_cidr($addr)
-{
-    if (!is_ipaddr($addr)) {
-        return 0;
-    }
-    $mask = decbin(~ip2long($addr));
-    $mask = substr($mask, -32);
-    $k = 0;
-    for ($i = 0; $i <= 32; $i++) {
-        $k += intval($mask[$i]);
-    }
-    return $k;
-}
-
-function cisco_extract_index($prule)
-{
-    $index = explode("#", $prule);
-    if (is_numeric($index[1])) {
-        return intval($index[1]);
-    } else {
-        syslog(LOG_WARNING, "Error parsing rule {$prule}: Could not extract index");
-    }
-    return -1;;
-}
-
-function parse_cisco_acl($attribs) {
-    global $devname, $attributes;
-    if (!is_array($attribs)) {
-        return "";
-    }
-    $finalrules = "";
-    if (is_array($attribs['ciscoavpair'])) {
-        $inrules = array();
-        $outrules = array();
-        foreach ($attribs['ciscoavpair'] as $avrules) {
-            $rule = explode("=", $avrules);
-            $dir = "";
-            if (strstr($rule[0], "inacl")) {
-                $dir = "in";
-            } elseif (strstr($rule[0], "outacl")) {
-                $dir = "out";
-            } elseif (strstr($rule[0], "dns-servers")) {
-                $attributes['dns-servers'] = explode(" ", $rule[1]);
-                continue;
-            } elseif (strstr($rule[0], "route")) {
-                if (!is_array($attributes['routes'])) {
-                    $attributes['routes'] = array();
-                }
-                $attributes['routes'][] = $rule[1];
-                continue;
-            }
-            $rindex = cisco_extract_index($rule[0]);
-            if ($rindex < 0) {
-                continue;
-            }
-
-            $rule = $rule[1];
-            $rule = explode(" ", $rule);
-            $tmprule = "";
-            $index = 0;
-            $isblock = false;
-            if ($rule[$index] == "permit") {
-                $tmprule = "pass {$dir} quick on {$devname} ";
-            } elseif ($rule[$index] == "deny") {
-                //continue;
-                $isblock = true;
-                $tmprule = "block {$dir} quick on {$devname} ";
-            } else {
-                continue;
-            }
-
-            $index++;
-
-            switch ($rule[$index]) {
-                case "tcp":
-                case "udp":
-                    $tmprule .= "proto {$rule[$index]} ";
-                    break;
-            }
-
-            $index++;
-            /* Source */
-            if (trim($rule[$index]) == "host") {
-                $index++;
-                $tmprule .= "from {$rule[$index]} ";
-                $index++;
-                if ($isblock == true) {
-                    $isblock = false;
-                }
-            } elseif (trim($rule[$index]) == "any") {
-                $tmprule .= "from any";
-                $index++;
-            } else {
-                $tmprule .= "from {$rule[$index]}";
-                $index++;
-                $netmask = cisco_to_cidr($rule[$index]);
-                $tmprule .= "/{$netmask} ";
-                $index++;
-                if ($isblock == true) {
-                    $isblock = false;
-                }
-            }
-            /* Destination */
-            if (trim($rule[$index]) == "host") {
-                $index++;
-                $tmprule .= "to {$rule[$index]} ";
-                $index++;
-                if ($isblock == true) {
-                    $isblock = false;
-                }
-            } elseif (trim($rule[$index]) == "any") {
-                $index++;
-                $tmprule .= "to any";
-            } else {
-                $tmprule .= "to {$rule[$index]}";
-                $index++;
-                $netmask = cisco_to_cidr($rule[$index]);
-                $tmprule .= "/{$netmask} ";
-                $index++;
-                if ($isblock == true) {
-                    $isblock = false;
-                }
-            }
-
-            if ($isblock == true) {
-                continue;
-            }
-
-            if ($dir == "in") {
-                $inrules[$rindex] = $tmprule;
-            } elseif ($dir == "out") {
-                $outrules[$rindex] = $tmprule;
-            }
-        }
-
-        $state = "";
-        if (!empty($outrules)) {
-            $state = "no state";
-        }
-        ksort($inrules, SORT_NUMERIC);
-        foreach ($inrules as $inrule) {
-            $finalrules .= "{$inrule} {$state}\n";
-        }
-        if (!empty($outrules)) {
-            ksort($outrules, SORT_NUMERIC);
-            foreach ($outrules as $outrule) {
-                $finalrules .= "{$outrule} {$state}\n";
-            }
-        }
-    }
-    return $finalrules;
-}
-
-
-/**
- * Get the NAS-Identifier
- *
- * We will use our local hostname to make up the nas_id
- */
-if (!function_exists("getNasID")) {
-    function getNasID()
-    {
-        global $g;
-
-        $nasId = gethostname();
-        if (empty($nasId)) {
-            $nasId = $g['product_name'];
-        }
-        return $nasId;
-    }
-}
-
 /* setup syslog logging */
 openlog("openvpn", LOG_ODELAY, LOG_AUTH);
 
@@ -221,11 +49,6 @@ if (count($argv) > 6) {
     $common_name = $argv[3];
     $modeid = $argv[6];
     $strictusercn = $argv[4] == 'false' ? false : true;
-} else {
-    /* read data from environment */
-    $username = getenv("username");
-    $password = getenv("password");
-    $common_name = getenv("common_name");
 }
 
 if (!$username || !$password) {
@@ -243,7 +66,6 @@ if (file_exists("/var/etc/openvpn/{$modeid}.ca")) {
 }
 
 $authenticated = false;
-
 if (($strictusercn === true) && ($common_name != $username)) {
     syslog(LOG_WARNING, "Username does not match certificate common name ({$username} != {$common_name}), access denied.\n");
     closelog();
@@ -256,7 +78,6 @@ if (!is_array($authmodes)) {
     exit(1);
 }
 
-$attributes = array();
 foreach ($authmodes as $authmode) {
     $authcfg = auth_get_authserver($authmode);
     if (!$authcfg && $authmode != "local") {
@@ -273,56 +94,6 @@ if ($authenticated == false) {
     syslog(LOG_WARNING, "user '{$username}' could not authenticate.\n");
     closelog();
     exit(-1);
-}
-
-if (empty($common_name)) {
-    $common_name = getenv("common_name");
-    if (empty($common_name)) {
-        $common_name = getenv("username");
-    }
-}
-
-$devname = getenv("dev");
-if (empty($devname)) {
-    $devname = "openvpn";
-}
-
-$rules = parse_cisco_acl($attributes);
-if (!empty($rules)) {
-    $pid = getmypid();
-    @file_put_contents("/tmp/ovpn_{$pid}{$common_name}.rules", $rules);
-    mwexec("/sbin/pfctl -a " . escapeshellarg("openvpn/{$common_name}") . " -f /tmp/ovpn_{$pid}" . escapeshellarg($common_name) . ".rules");
-    @unlink("/tmp/ovpn_{$pid}{$common_name}.rules");
-}
-
-$content = "";
-if (is_array($attributes['dns-servers'])) {
-    foreach ($attributes['dns-servers'] as $dnssrv) {
-        if (is_ipaddr($dnssrv)) {
-            $content .= "push \"dhcp-option DNS {$dnssrv}\"\n";
-        }
-    }
-}
-if (is_array($attributes['routes'])) {
-    foreach ($attributes['routes'] as $route) {
-        $content .= "push \"route {$route} vpn_gateway\"\n";
-    }
-}
-
-if (isset($attributes['framed_ip'])) {
-/* XXX: only use when TAP windows driver >= 8.2.x */
-/*      if (isset($attributes['framed_mask'])) {
-                $content .= "topology subnet\n";
-                $content .= "ifconfig-push {$attributes['framed_ip']} {$attributes['framed_mask']}";
-        } else {
-*/
-        $content .= "topology net30\n";
-        $content .= "ifconfig-push {$attributes['framed_ip']} ". long2ip((ip2long($attributes['framed_ip']) + 1));
-//      }
-}
-
-if (!empty($content)) {
-    @file_put_contents("/tmp/{$username}", $content);
 }
 
 syslog(LOG_NOTICE, "user '{$username}' authenticated\n");
