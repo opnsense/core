@@ -68,6 +68,7 @@ function handle_argument_group($iface, $argument2) {
                 case "stop":
                     log_error("DEVD Ethernet detached event for {$iface}");
                     interface_bring_down($iface);
+                    interface_vips_bring_down($iface);
                     break;
                 case "start":
                     log_error("DEVD Ethernet attached event for {$iface}");
