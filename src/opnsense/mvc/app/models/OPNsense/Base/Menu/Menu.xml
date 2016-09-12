@@ -164,7 +164,9 @@
             <Settings url="/firewall_virtual_ip.php">
                 <Edit url="/firewall_virtual_ip_edit.php*" visibility="hidden"/>
             </Settings>
-            <Status url="/carp_status.php"/>
+            <Status url="/carp_status.php">
+                <All url="/carp_status.php*"/>
+            </Status>
         </VIP>
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
             <Schedules order="100" url="/firewall_schedule.php">

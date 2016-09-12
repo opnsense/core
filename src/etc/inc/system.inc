@@ -118,9 +118,7 @@ function activate_sysctls()
         "net.enc.in.ipsec_bpf_mask" => "0x0002",
         "net.enc.in.ipsec_filter_mask" => "0x0002",
         "net.enc.out.ipsec_bpf_mask" => "0x0001",
-        "net.enc.out.ipsec_filter_mask" => "0x0001",
-        'net.inet.carp.senderr_demotion_factor' => '0',
-        'net.pfsync.carp_demotion_factor' => '0',
+        "net.enc.out.ipsec_filter_mask" => "0x0001"
     );
 
     if (isset($config['sysctl']['item'])) {

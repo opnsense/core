@@ -58,9 +58,3 @@ if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'
 	}
 }
 
-$pluginparams = array();
-$pluginparams['type'] = 'carp';
-$pluginparams['event'] = 'rc.carpbackup';
-$pluginparams['interface'] = $argv[1];
-
-?>
