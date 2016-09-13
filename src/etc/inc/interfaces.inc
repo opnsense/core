@@ -1158,18 +1158,6 @@ function interface_reconfigure($interface = 'wan', $reloadall = false)
     interface_configure($interface, $reloadall);
 }
 
-function interface_vips_bring_down($intf)
-{
-      global $config;
-      if (!empty($config['virtualip']['vip'])) {
-          foreach ($config['virtualip']['vip'] as $vip) {
-              if ($vip['interface'] == $intf) {
-                  interface_vip_bring_down($vip);
-              }
-          }
-      }
-}
-
 function interface_vip_bring_down($vip)
 {
     $vipif = get_real_interface($vip['interface']);
@@ -1945,10 +1933,6 @@ function interfaces_vips_configure($interface = '')
                 case "carp":
                     if ($interface <> "" && $vip['interface'] <> $interface) {
                         continue;
-                    }
-                    if (!$carp_setuped) {
-                        // interfaces_carp_setup will enable carp when pfsync completes.
-                        set_single_sysctl("net.inet.carp.allow", "0");
                     }
                     if ($carp_setuped == false) {
                         $carp_setuped = true;
