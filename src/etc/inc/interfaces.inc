@@ -4260,45 +4260,6 @@ function guess_interface_from_ip($ipaddress)
 }
 
 
-
-/****f* interfaces/link_ip_to_carp_interface
- * NAME
- *   link_ip_to_carp_interface - Find where a CARP interface links to.
- * INPUTS
- *   $ip
- * RESULT
- *   $carp_ints
- ******/
-function link_ip_to_carp_interface($ip)
-{
-    global $config;
-
-    if (!is_ipaddr($ip)) {
-        return;
-    }
-
-    $carp_ints = '';
-    if (isset($config['virtualip']['vip'])) {
-        $first = 0;
-        $carp_int = array();
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['mode'] == "carp") {
-                $carp_ip = $vip['subnet'];
-                $carp_sn = $vip['subnet_bits'];
-                $carp_nw = gen_subnet($carp_ip, $carp_sn);
-                if (ip_in_subnet($ip, "{$carp_nw}/{$carp_sn}")) {
-                    $carp_int[] = get_real_interface($vip['interface']);
-                }
-            }
-        }
-        if (!empty($carp_int)) {
-            $carp_ints = implode(" ", array_unique($carp_int));
-        }
-    }
-
-    return $carp_ints;
-}
-
 function link_interface_to_track6($int, $action = '')
 {
     global $config;
