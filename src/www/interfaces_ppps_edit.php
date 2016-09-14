@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             break;
         case "pppoe":
             if (!empty($pconfig['ondemand'])) {
-                $reqdfields = explode(" ", "ports username password ondemand idletimeout");
+                $reqdfields = explode(" ", "ports username password ondemand");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Dial on demand"),gettext("Idle timeout value"));
             } else {
                 $reqdfields = explode(" ", "ports username password");
