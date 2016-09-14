@@ -1916,29 +1916,21 @@ function interfaces_vips_configure($interface = '')
         $carp_setuped = false;
         $anyproxyarp = false;
         foreach ($config['virtualip']['vip'] as $vip) {
-            switch ($vip['mode']) {
-                case "proxyarp":
-                    /* nothing it is handled on interface_proxyarp_configure() */
-                    if ($interface <> "" && $vip['interface'] <> $interface) {
-                        continue;
-                    }
-                    $anyproxyarp = true;
-                    break;
-                case "ipalias":
-                    if ($interface <> "" && $vip['interface'] <> $interface) {
-                        continue;
-                    }
-                    interface_ipalias_configure($vip);
-                    break;
-                case "carp":
-                    if ($interface <> "" && $vip['interface'] <> $interface) {
-                        continue;
-                    }
-                    if ($carp_setuped == false) {
-                        $carp_setuped = true;
-                    }
-                    interface_carp_configure($vip);
-                    break;
+            if ($interface == "" || $vip['interface'] == $interface) {
+                switch ($vip['mode']) {
+                    case "proxyarp":
+                        $anyproxyarp = true;
+                        break;
+                    case "ipalias":
+                        interface_ipalias_configure($vip);
+                        break;
+                    case "carp":
+                        if ($carp_setuped == false) {
+                            $carp_setuped = true;
+                        }
+                        interface_carp_configure($vip);
+                        break;
+                }
             }
         }
         if ($carp_setuped == true) {
