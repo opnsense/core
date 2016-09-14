@@ -408,7 +408,7 @@ $( document ).ready(function() {
       BootstrapDialog.show({
           type:BootstrapDialog.TYPE_DANGER,
           title: "<?= gettext("User");?>",
-          message: '<?=gettext("Do you really want to delete this user?");?>' + '<br/>('+username+")",
+          message: '<?=html_safe(gettext("Do you really want to delete this user?"));?>' + '<br/>('+username+")",
           buttons: [{
                   label: "<?= gettext("No");?>",
                   action: function(dialogRef) {
