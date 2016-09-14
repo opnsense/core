@@ -1950,10 +1950,6 @@ function interface_ipalias_configure(&$vip)
         return;
     }
 
-    if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']])) {
-        return;
-    }
-
     if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']]['enable'])) {
         return;
     }
