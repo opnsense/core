@@ -333,7 +333,7 @@ class LDAP implements IAuthConnector
             $ldap_is_connected = $this->connect($this->ldapBindURL, $this->ldapBindDN, $this->ldapBindPassword);
             if ($ldap_is_connected) {
                 $result = $this->searchUsers($username, $this->ldapAttributeUser, $this->ldapExtendedQuery);
-                if (count($result) > 0) {
+                if ($result !== false && count($result) > 0) {
                     $ldap_is_connected = $this->connect($this->ldapBindURL, $result[0]['dn'], $password);
                     return $ldap_is_connected;
                 }
