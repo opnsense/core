@@ -369,7 +369,7 @@ include("head.inc");?>
               <tbody>
 <?php
               // Load MAC-Manufacturer table
-              $mac_man = load_mac_manufacturer_table();
+              $mac_man = json_decode(configd_run("interface list macdb json"), true);
               legacy_html_escape_form_data($leases);
               foreach ($leases as $data):
                   if (!($data['act'] == "active" || $data['act'] == "static" || $_GET['all'] == 1)) {
