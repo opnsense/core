@@ -44,6 +44,27 @@ captiveportal_load_rc_config()
     CPZONES=`cat /usr/local/etc/captiveportal.conf | grep "\[zone_" | sed 's/\[zone_//' | sed 's/\]//'`
 }
 
+captiveportal_cleanup_zones()
+{
+    # cleanup removed zones
+    for installed_zoneid in `ls $CPWORKDIR |  sed 's/zone//g'`
+    do
+        if [ -d $CPWORKDIR/zone$installed_zoneid ]; then
+            is_installed=0
+            for zoneid in $CPZONES
+            do
+                if [ "$zoneid" -eq "$installed_zoneid" ]; then
+                    is_installed=1
+                fi
+            done
+            if [ "$is_installed" -eq 0 ]; then
+                echo "Uninstall : zone $installed_zoneid"
+                rm -rf "$CPWORKDIR/zone$installed_zoneid"
+            fi
+        fi
+    done
+}
+
 captiveportal_prestart()
 {
   # initialize captiveportal work directory
@@ -90,24 +111,7 @@ captiveportal_start()
             /usr/local/sbin/lighttpd -f /var/etc/lighttpd-cp-zone-$zoneid.conf
         done
 
-
-        # cleanup removed zones
-        for installed_zoneid in `ls $CPWORKDIR |  sed 's/zone//g'`
-        do
-            if [ -d $CPWORKDIR/zone$installed_zoneid ]; then
-                for zoneid in $CPZONES
-                do
-                    is_installed=0
-                    if [ "$zoneid" -eq "$installed_zoneid" ]; then
-                        is_installed=1
-                    fi
-                    if [ "$is_installed" -eq 0 ]; then
-                        echo "Uninstall : zone $installed_zoneid"
-                        rm -rf "$CPWORKDIR/zone$installed_zoneid"
-                    fi
-                done
-            fi
-        done
+        captiveportal_cleanup_zones
         echo "start captiveportal background process"
         /usr/local/opnsense/scripts/OPNsense/CaptivePortal/cp-background-process.py start
     else
@@ -149,6 +153,7 @@ captiveportal_stop()
       echo "stop captiveportal background process"
       /bin/pkill -TERM -F /var/run/captiveportal.db.pid
     fi
+    captiveportal_cleanup_zones
 }
 
 captiveportal_load_rc_config
