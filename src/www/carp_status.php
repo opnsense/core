@@ -58,24 +58,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             interfaces_carp_setup();
             set_single_sysctl('net.inet.carp.allow', '1');
         }
-        foreach ($a_vip as $vip) {
-            if ($vip['mode'] == 'carp') {
-                switch ($act) {
-                    case 'maintenance':
-                        interface_carp_configure($vip);
-                        break;
-                    case 'disable':
-                        interface_vip_bring_down($vip);
-                        break;
-                    case 'enable':
-                        interface_carp_configure($vip);
-                        break;
-                    default:
-                        break;
-                }
+    }
+    foreach ($a_vip as $vip) {
+        if ($vip['mode'] == 'carp') {
+            switch ($act) {
+                case 'maintenance':
+                    interface_carp_configure($vip);
+                    break;
+                case 'disable':
+                    interface_vip_bring_down($vip);
+                    break;
+                case 'enable':
+                    interface_carp_configure($vip);
+                    break;
+                default:
+                    break;
             }
         }
-
     }
 }
 
