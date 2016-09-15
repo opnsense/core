@@ -71,8 +71,8 @@ include("head.inc");
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
               $ifname = htmlspecialchars($ifname);
-              // Load MAC-Manufacturer table
-              $mac_man = load_mac_manufacturer_table();?>
+              $mac_man = json_decode(configd_run("interface list macdb json"), true);
+?>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
                   <table class="table">

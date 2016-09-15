@@ -440,7 +440,7 @@ endif;?>
               </thead>
               <tbody>
 <?php
-              $mac_man = load_mac_manufacturer_table();
+              $mac_man = json_decode(configd_run("interface list macdb json"), true);
               foreach ($leases as $data):
                 if ($data['act'] == "static") {
                     foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
