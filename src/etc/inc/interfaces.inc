@@ -2762,19 +2762,6 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
                 }
             }
         }
-    } else {
-        if ($mac == "ff:ff:ff:ff:ff:ff") {
-            /*   this is not a valid mac address.  generate a
-             *   temporary mac address so the machine can get online.
-             */
-            echo gettext("Generating new MAC address.");
-            $random_mac = generate_random_mac_address();
-            mwexec("/sbin/ifconfig " . escapeshellarg($realhwif) .
-                " link " . escapeshellarg($random_mac));
-            $wancfg['spoofmac'] = $random_mac;
-            write_config();
-            file_notice("MAC Address altered", sprintf(gettext('The INVALID MAC address (ff:ff:ff:ff:ff:ff) on interface %s has been automatically replaced with %s'), $realif, $random_mac), "Interfaces");
-        }
     }
 
     /* media */
@@ -4680,23 +4667,6 @@ function get_interface_mac($interface)
     $macinfo = legacy_get_interface_addresses($interface);
 
     return $macinfo["macaddr"];
-}
-
-/****f* legacy/generate_random_mac_address
- * NAME
- *   generate_random_mac - generates a random mac address
- * INPUTS
- *   none
- * RESULT
- *   $mac - a random mac address
- ******/
-function generate_random_mac_address()
-{
-    $mac = "02";
-    for ($x=0; $x<5; $x++) {
-        $mac .= ":" . dechex(rand(16, 255));
-    }
-    return $mac;
 }
 
 /****f* interfaces/is_jumbo_capable
