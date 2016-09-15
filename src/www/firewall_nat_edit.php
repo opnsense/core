@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $reqdfields[] = "dst";
     $reqdfieldsn[] = gettext("Destination address");
 
-    if (!empty($pconfig['nordr'])) {
+    if (empty($pconfig['nordr'])) {
         $reqdfields[] = "target";
         $reqdfieldsn[] = gettext("Redirect target IP");
     }
