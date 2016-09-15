@@ -38,23 +38,6 @@ require_once("system.inc");
 require_once("unbound.inc");
 require_once("services.inc");
 
-/**
- * signal CARP to go down when there's a ip configured on the provided interface
- * interfaces_carp_setup will enable carp when pfsync completes.
- */
-function interface_signal_carp($intf)
-{
-      global $config;
-      if (!empty($config['virtualip']['vip'])) {
-          foreach ($config['virtualip']['vip'] as $vip) {
-              if ($vip['interface'] == $intf && $vip['mode'] == 'carp') {
-                  set_single_sysctl("net.inet.carp.allow", "0");
-              }
-          }
-      }
-}
-
-
 function handle_argument_group($iface, $argument2) {
     global $config;
 
@@ -85,7 +68,6 @@ function handle_argument_group($iface, $argument2) {
                 case "stop":
                     log_error("DEVD Ethernet detached event for {$iface}");
                     interface_bring_down($iface);
-                    interface_signal_carp($iface);
                     break;
                 case "start":
                     log_error("DEVD Ethernet attached event for {$iface}");

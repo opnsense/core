@@ -1770,75 +1770,23 @@ function interfaces_carp_setup()
         echo gettext("Configuring CARP settings...");
         mute_kernel_msgs();
     }
+    set_single_sysctl("net.inet.carp.preempt" => "1");
 
-    /* suck in configuration items */
-    if (isset($config['hasync'])) {
-        if (isset($config['hasync']['pfsyncenabled'])) {
-            $pfsyncenabled = $config['hasync']['pfsyncenabled'];
-        }
-        if (isset($config['hasync']['pfsyncinterface'])) {
-            $pfsyncinterface = $config['hasync']['pfsyncinterface'];
-        }
-        if (isset($config['hasync']['pfsyncpeerip'])) {
-            $pfsyncpeerip = $config['hasync']['pfsyncpeerip'];
-        }
-    } else {
-        unset($pfsyncinterface);
-        unset($pfsyncenabled);
-    }
-
-    set_sysctl(array(
-            "net.inet.carp.preempt" => "1",
-            "net.inet.carp.log" => "1"
-    ));
-
-    if (!empty($pfsyncinterface)) {
-        $carp_sync_int = get_real_interface($pfsyncinterface);
-    } else {
-        unset($carp_sync_int);
+    if (!empty($config['hasync']['pfsyncinterface'])) {
+        $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
     }
 
     /* setup pfsync interface */
-    if (!empty($carp_sync_int) && isset($pfsyncenabled)) {
-        if (is_ipaddr($pfsyncpeerip)) {
-            $syncpeer = "syncpeer {$pfsyncpeerip}";
+    if (!empty($carp_sync_int) && isset($config['hasync']['pfsyncenabled'])) {
+        if (isset($config['hasync']['pfsyncpeerip']) && is_ipaddr($config['hasync']['pfsyncpeerip'])) {
+            $syncpeer = "syncpeer " . $config['hasync']['pfsyncpeerip'];
         } else {
             $syncpeer = "-syncpeer";
         }
 
         mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} up", false);
-
-        sleep(1);
-
-        /* XXX: Handle an issue with pfsync(4) and carp(4). In a cluster carp will come up before pfsync(4) has updated and so will cause issues
-         * for existing sessions.
-         */
-        log_error("waiting for pfsync...");
-        $i = 0;
-        while (intval(trim(`/sbin/ifconfig pfsync0 | /usr/bin/grep 'syncok: 0' | /usr/bin/grep -v grep | /usr/bin/wc -l`)) == 0 && $i < 30) {
-            $i++;
-            sleep(1);
-        }
-        log_error("pfsync done in $i seconds.");
-        log_error("Configuring CARP settings finalize...");
     } else {
         mwexec("/sbin/ifconfig pfsync0 -syncdev -syncpeer down", false);
-    }
-
-    $has_carp_vips = false;
-    if (isset($config['virtualip']['vip']) && count($config['virtualip']['vip']) > 0) {
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['mode'] == 'carp') {
-                $has_carp_vips = true;
-                break;
-            }
-        }
-    }
-
-    if ($has_carp_vips) {
-        set_single_sysctl("net.inet.carp.allow", "1");
-    } else {
-        set_single_sysctl("net.inet.carp.allow", "0");
     }
 
     if (file_exists("/var/run/booting")) {
