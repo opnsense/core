@@ -95,17 +95,17 @@ captiveportal_start()
         for installed_zoneid in `ls $CPWORKDIR |  sed 's/zone//g'`
         do
             if [ -d $CPWORKDIR/zone$installed_zoneid ]; then
+                is_installed=0
                 for zoneid in $CPZONES
                 do
-                    is_installed=0
                     if [ "$zoneid" -eq "$installed_zoneid" ]; then
                         is_installed=1
                     fi
-                    if [ "$is_installed" -eq 0 ]; then
-                        echo "Uninstall : zone $installed_zoneid"
-                        rm -rf "$CPWORKDIR/zone$installed_zoneid"
-                    fi
                 done
+                if [ "$is_installed" -eq 0 ]; then
+                    echo "Uninstall : zone $installed_zoneid"
+                    rm -rf "$CPWORKDIR/zone$installed_zoneid"
+                fi
             fi
         done
         echo "start captiveportal background process"
