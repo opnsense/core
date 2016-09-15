@@ -2988,10 +2988,6 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 {
     global $config;
 
-    if (!is_array($lancfg)) {
-        return;
-    }
-
     /* If the interface is not configured via another, exit */
     if (empty($lancfg['track6-interface'])) {
         return;
@@ -3048,10 +3044,6 @@ function interface_track6_6rd_configure($interface = 'lan', $lancfg)
 function interface_track6_6to4_configure($interface = 'lan', $lancfg)
 {
     global $config;
-
-    if (!is_array($lancfg)) {
-        return;
-    }
 
     /* If the interface is not configured via another, exit */
     if (empty($lancfg['track6-interface'])) {
