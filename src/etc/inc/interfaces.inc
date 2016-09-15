@@ -1770,7 +1770,7 @@ function interfaces_carp_setup()
         echo gettext("Configuring CARP settings...");
         mute_kernel_msgs();
     }
-    set_single_sysctl("net.inet.carp.preempt" => "1");
+    set_single_sysctl("net.inet.carp.preempt", "1");
 
     if (!empty($config['hasync']['pfsyncinterface'])) {
         $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
