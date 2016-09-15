@@ -1770,65 +1770,23 @@ function interfaces_carp_setup()
         echo gettext("Configuring CARP settings...");
         mute_kernel_msgs();
     }
+    set_single_sysctl("net.inet.carp.preempt", "1");
 
-    /* suck in configuration items */
-    if (isset($config['hasync'])) {
-        if (isset($config['hasync']['pfsyncenabled'])) {
-            $pfsyncenabled = $config['hasync']['pfsyncenabled'];
-        }
-        if (isset($config['hasync']['pfsyncinterface'])) {
-            $pfsyncinterface = $config['hasync']['pfsyncinterface'];
-        }
-        if (isset($config['hasync']['pfsyncpeerip'])) {
-            $pfsyncpeerip = $config['hasync']['pfsyncpeerip'];
-        }
-    } else {
-        unset($pfsyncinterface);
-        unset($pfsyncenabled);
-    }
-
-    set_sysctl(array(
-            "net.inet.carp.preempt" => "1",
-            "net.inet.carp.log" => "1"
-    ));
-
-    if (!empty($pfsyncinterface)) {
-        $carp_sync_int = get_real_interface($pfsyncinterface);
-    } else {
-        unset($carp_sync_int);
+    if (!empty($config['hasync']['pfsyncinterface'])) {
+        $carp_sync_int = get_real_interface($config['hasync']['pfsyncinterface']);
     }
 
     /* setup pfsync interface */
-    if (!empty($carp_sync_int) && isset($pfsyncenabled)) {
-        if (is_ipaddr($pfsyncpeerip)) {
-            $syncpeer = "syncpeer {$pfsyncpeerip}";
+    if (!empty($carp_sync_int) && isset($config['hasync']['pfsyncenabled'])) {
+        if (isset($config['hasync']['pfsyncpeerip']) && is_ipaddr($config['hasync']['pfsyncpeerip'])) {
+            $syncpeer = "syncpeer " . $config['hasync']['pfsyncpeerip'];
         } else {
             $syncpeer = "-syncpeer";
         }
 
         mwexec("/sbin/ifconfig pfsync0 syncdev {$carp_sync_int} {$syncpeer} up", false);
-
-        sleep(1);
-
-        /* XXX: Handle an issue with pfsync(4) and carp(4). In a cluster carp will come up before pfsync(4) has updated and so will cause issues
-         * for existing sessions.
-         */
-        log_error("waiting for pfsync...");
-        $i = 0;
-        while (intval(trim(`/sbin/ifconfig pfsync0 | /usr/bin/grep 'syncok: 0' | /usr/bin/grep -v grep | /usr/bin/wc -l`)) == 0 && $i < 30) {
-            $i++;
-            sleep(1);
-        }
-        log_error("pfsync done in $i seconds.");
-        log_error("Configuring CARP settings finalize...");
     } else {
         mwexec("/sbin/ifconfig pfsync0 -syncdev -syncpeer down", false);
-    }
-
-    if (isset($config['virtualip']['vip']) && $config['virtualip']['vip']) {
-        set_single_sysctl("net.inet.carp.allow", "1");
-    } else {
-        set_single_sysctl("net.inet.carp.allow", "0");
     }
 
     if (file_exists("/var/run/booting")) {
@@ -1906,29 +1864,21 @@ function interfaces_vips_configure($interface = '')
         $carp_setuped = false;
         $anyproxyarp = false;
         foreach ($config['virtualip']['vip'] as $vip) {
-            switch ($vip['mode']) {
-                case "proxyarp":
-                    /* nothing it is handled on interface_proxyarp_configure() */
-                    if ($interface <> "" && $vip['interface'] <> $interface) {
-                        continue;
-                    }
-                    $anyproxyarp = true;
-                    break;
-                case "ipalias":
-                    if ($interface <> "" && $vip['interface'] <> $interface) {
-                        continue;
-                    }
-                    interface_ipalias_configure($vip);
-                    break;
-                case "carp":
-                    if ($interface <> "" && $vip['interface'] <> $interface) {
-                        continue;
-                    }
-                    if ($carp_setuped == false) {
-                        $carp_setuped = true;
-                    }
-                    interface_carp_configure($vip);
-                    break;
+            if ($interface == "" || $vip['interface'] == $interface) {
+                switch ($vip['mode']) {
+                    case "proxyarp":
+                        $anyproxyarp = true;
+                        break;
+                    case "ipalias":
+                        interface_ipalias_configure($vip);
+                        break;
+                    case "carp":
+                        if ($carp_setuped == false) {
+                            $carp_setuped = true;
+                        }
+                        interface_carp_configure($vip);
+                        break;
+                }
             }
         }
         if ($carp_setuped == true) {
@@ -1945,10 +1895,6 @@ function interface_ipalias_configure(&$vip)
     global $config;
 
     if ($vip['mode'] != "ipalias") {
-        return;
-    }
-
-    if ($vip['interface'] != 'lo0' && !isset($config['interfaces'][$vip['interface']])) {
         return;
     }
 
@@ -1969,6 +1915,11 @@ function interface_carp_configure(&$vip)
     global $config;
 
     if ($vip['mode'] != 'carp') {
+        return;
+    }
+
+    // when CARP is temporary disabled, don't try to configure on any interface-up events
+    if (get_single_sysctl('net.inet.carp.allow') == '0') {
         return;
     }
 
@@ -4261,45 +4212,6 @@ function guess_interface_from_ip($ipaddress)
     return $ret;
 }
 
-
-
-/****f* interfaces/link_ip_to_carp_interface
- * NAME
- *   link_ip_to_carp_interface - Find where a CARP interface links to.
- * INPUTS
- *   $ip
- * RESULT
- *   $carp_ints
- ******/
-function link_ip_to_carp_interface($ip)
-{
-    global $config;
-
-    if (!is_ipaddr($ip)) {
-        return;
-    }
-
-    $carp_ints = '';
-    if (isset($config['virtualip']['vip'])) {
-        $first = 0;
-        $carp_int = array();
-        foreach ($config['virtualip']['vip'] as $vip) {
-            if ($vip['mode'] == "carp") {
-                $carp_ip = $vip['subnet'];
-                $carp_sn = $vip['subnet_bits'];
-                $carp_nw = gen_subnet($carp_ip, $carp_sn);
-                if (ip_in_subnet($ip, "{$carp_nw}/{$carp_sn}")) {
-                    $carp_int[] = get_real_interface($vip['interface']);
-                }
-            }
-        }
-        if (!empty($carp_int)) {
-            $carp_ints = implode(" ", array_unique($carp_int));
-        }
-    }
-
-    return $carp_ints;
-}
 
 function link_interface_to_track6($int, $action = '')
 {

@@ -30,64 +30,57 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 
-function interfaces_carp_set_maintenancemode($carp_maintenancemode)
-{
-    global $config;
-
-    if (isset($config["virtualip_carp_maintenancemode"]) && $carp_maintenancemode == false) {
-        unset($config["virtualip_carp_maintenancemode"]);
-        write_config("Leave CARP maintenance mode");
-    } elseif (!isset($config["virtualip_carp_maintenancemode"]) && $carp_maintenancemode == true) {
-        $config["virtualip_carp_maintenancemode"] = true;
-        write_config("Enter CARP maintenance mode");
-    }
-
-    if (isset($config['virtualip']['vip'])) {
-        $viparr = &$config['virtualip']['vip'];
-        foreach ($viparr as $vip) {
-            if ($vip['mode'] == 'carp') {
-                interface_carp_configure($vip);
-            }
-        }
-    }
-}
-
 // init $config['virtualip']['vip']
 if ( !isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'])) {
     $config['virtualip']['vip'] = array();
 }
 $a_vip = &$config['virtualip']['vip'];
 
+$act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['carp_maintenancemode'])) {
-        interfaces_carp_set_maintenancemode(!isset($config["virtualip_carp_maintenancemode"]));
+        $act = "maintenance";
+        if (isset($config["virtualip_carp_maintenancemode"])) {
+            unset($config["virtualip_carp_maintenancemode"]);
+            write_config("Leave CARP maintenance mode");
+        } else {
+            $config["virtualip_carp_maintenancemode"] = true;
+            write_config("Enter CARP maintenance mode");
+        }
     } elseif (!empty($_POST['disablecarp'])) {
         if (get_single_sysctl('net.inet.carp.allow') > 0) {
-            $carp_counter = 0;
+            $act = "disable";
+            $savemsg = gettext("All virtual IPs have been disabled. Please note that disabling does not survive a reboot.");
             set_single_sysctl('net.inet.carp.allow', '0');
-            foreach ($a_vip as $vip) {
-                switch ($vip['mode']) {
-                    case "carp":
-                        interface_vip_bring_down($vip);
-                        $carp_counter++;
-                        sleep(1);
-                        break;
-                }
-            }
-            $savemsg = sprintf(gettext("%s IPs have been disabled. Please note that disabling does not survive a reboot."), $carp_counter);
         } else {
+            $act = "enable";
             $savemsg = gettext("CARP has been enabled.");
-            foreach ($a_vip as $vip) {
-                switch ($vip['mode']) {
-                    case "carp":
-                        interface_carp_configure($vip);
-                        sleep(1);
-                        break;
-                }
-            }
             interfaces_carp_setup();
             set_single_sysctl('net.inet.carp.allow', '1');
         }
+    }
+    foreach ($a_vip as $vip) {
+        if ($vip['mode'] == 'carp') {
+            switch ($act) {
+                case 'maintenance':
+                    interface_carp_configure($vip);
+                    break;
+                case 'disable':
+                    interface_vip_bring_down($vip);
+                    break;
+                case 'enable':
+                    interface_carp_configure($vip);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    header(url_safe('Location: carp_status.php?savemsg=%s', array($savemsg)));
+    exit;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (!empty($_GET['savemsg'])) {
+        $savemsg = htmlspecialchars($_GET['savemsg']);
     }
 }
 
