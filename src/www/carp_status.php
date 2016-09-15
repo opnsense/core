@@ -36,8 +36,8 @@ if ( !isset($config['virtualip']['vip']) || !is_array($config['virtualip']['vip'
 }
 $a_vip = &$config['virtualip']['vip'];
 
+$act = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $act = null;
     if (!empty($_POST['carp_maintenancemode'])) {
         $act = "maintenance";
         if (isset($config["virtualip_carp_maintenancemode"])) {
@@ -75,6 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
             }
         }
+    }
+    header(url_safe('Location: carp_status.php?savemsg=%s', array($savemsg)));
+    exit;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if (!empty($_GET['savemsg'])) {
+        $savemsg = htmlspecialchars($_GET['savemsg']);
     }
 }
 
