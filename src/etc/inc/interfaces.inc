@@ -1918,6 +1918,11 @@ function interface_carp_configure(&$vip)
         return;
     }
 
+    // when CARP is temporary disabled, don't try to configure on any interface-up events
+    if (get_single_sysctl('net.inet.carp.allow') == '0') {
+        return;
+    }
+
     /* NOTE: Maybe its useless nowdays */
     $realif = get_real_interface($vip['interface']);
     if (!does_interface_exist($realif)) {
