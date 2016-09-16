@@ -1,5 +1,6 @@
 #!/usr/local/bin/php
 <?php
+
 /**
  *    Copyright (C) 2016 Deciso B.V.
  *
@@ -28,28 +29,34 @@
  *
  */
 
-
 require_once("config.inc");
 require_once("auth.inc");
 
-// parse received auth data (key=value combinations)
+// parse received auth data (key=value combinations separated by "\0")
 //  user=<name>
 //  password=<password>
 //  service=<pam service> (to be implemented)
+
 $fp = fopen('php://stdin', 'r');
 $auth_data = array();
-while (!empty($line=trim(fgets($fp)))) {
-    $parts = explode("=", $line);
-    if (count($parts) >= 2) {
-        // key value pair
-        $propname = array_shift($parts);
-        $propvalue = implode("=", $parts);
-        $auth_data[$propname] = $propvalue;
+$line = '';
+
+while (($char = fgetc($fp)) !== false) {
+    if ($char !== "\0") {
+        $line .= $char;
+    } elseif (strlen($line)) {
+        $parts = explode('=', $line, 2);
+        if (count($parts) == 2) {
+            $auth_data[$parts[0]] = $parts[1];
+        }
+        $line = '';
+    } else {
+        break;
     }
 }
 
 $exit_status = -1;
-if (!empty($auth_data['user']) && !empty($auth_data['password'])) {
+if (!empty($auth_data['user']) && isset($auth_data['password'])) {
     $authcfg = auth_get_authserver("Local Database");
     $authcfg_fallback = auth_get_authserver("Local Database");
 
@@ -82,4 +89,5 @@ if (!empty($auth_data['user']) && !empty($auth_data['password'])) {
 
 // failed auth, return exit status -1
 closelog();
+
 exit($exit_status);
