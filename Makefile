@@ -99,6 +99,7 @@ CORE_DEPENDS?=		apinger \
 			opnsense-lang \
 			opnsense-update \
 			p7zip \
+			pam_opnsense \
 			pecl-radius \
 			pftop \
 			phalcon \
