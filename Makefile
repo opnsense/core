@@ -92,7 +92,6 @@ CORE_DEPENDS?=		apinger \
 			lighttpd \
 			miniupnpd \
 			mpd5 \
-			ngattach \
 			ntp \
 			openssh-portable \
 			openvpn \

@@ -220,12 +220,12 @@ function legacy_interface_details($intf)
 
 function legacy_netgraph_attach($ifs)
 {
-    mwexecf('/usr/local/sbin/ngattach %s', array($ifs));
+    /* XXX compat stub for plugins to be removed in 17.1 */
 }
 
 function legacy_netgraph_detach($ifs)
 {
-    mwexecf('/usr/sbin/ngctl msg %s: detach', array($ifs), true);
+    /* XXX compat stub for plugins to be removed in 17.1 */
 }
 
 function legacy_netgraph_rename($tmpifs, $ifs)

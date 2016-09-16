@@ -81,8 +81,6 @@ setup_interface()
         echo "setup $interface"
     fi;
 
-    # make sure netgraph is attached
-    /usr/local/sbin/ngattach $interface
     # remove earlier setup (if any)
     /usr/sbin/ngctl shutdown netflow_$interface: >/dev/null 2>&1
     # configure netflow for this interface, sending all to localhost
