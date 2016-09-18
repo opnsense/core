@@ -628,7 +628,7 @@ $( document ).ready(function() {
                     <td colspan="11" align="center" valign="middle">
                     <span class="text-muted">
                 <?php if ($selected_if == 'FloatingRules'): ?>
-                      <?= gettext('No floating rules are currently defined. Floating rules are not ' .
+                      <?= gettext('No floating rules are currently defined. Floating rules are ' .
                         'not bound to a single interface and can therefore be used to span ' .
                         'policies over multiple networks at the same time.'); ?>
                 <?php else: ?>
