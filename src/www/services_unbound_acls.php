@@ -348,13 +348,17 @@ include("head.inc");
                       if (!empty($ifip)) {
                           $subnet_bits = get_interface_subnet($ubif);
                           $subnet_ip = gen_subnet($ifip, $subnet_bits);
-                          $automatic_allowed[] = "{$subnet_ip}/{$subnet_bits}";
+                          if (!empty($subnet_bits) && !empty($subnet_ip)) {
+                              $automatic_allowed[] = "{$subnet_ip}/{$subnet_bits}";
+                          }
                       }
                       $ifip = get_interface_ipv6($ubif);
                       if (!empty($ifip)) {
                           $subnet_bits = get_interface_subnetv6($ubif);
                           $subnet_ip = gen_subnetv6($ifip, $subnet_bits);
-                          $automatic_allowed[] = "{$subnet_ip}/{$subnet_bits}";
+                          if (!empty($subnet_bits) && !empty($subnet_ip)) {
+                              $automatic_allowed[] = "{$subnet_ip}/{$subnet_bits}";
+                          }
                       }
                   }
                   foreach ($automatic_allowed as $network):?>

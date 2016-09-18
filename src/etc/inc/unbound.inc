@@ -707,13 +707,17 @@ function unbound_acls_config() {
         if (!empty($ifip)) {
             $subnet_bits = get_interface_subnet($ubif);
             $subnet_ip = gen_subnet($ifip, $subnet_bits);
-            $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
+            if (!empty($subnet_bits) && !empty($subnet_ip)) {
+                $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
+            }
         }
         $ifip = get_interface_ipv6($ubif);
         if (!empty($ifip)) {
             $subnet_bits = get_interface_subnetv6($ubif);
             $subnet_ip = gen_subnetv6($ifip, $subnet_bits);
-            $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
+            if (!empty($subnet_bits) && !empty($subnet_ip)) {
+                $aclcfg .= "access-control: {$subnet_ip}/{$subnet_bits} allow\n";
+            }
         }
     }
 
