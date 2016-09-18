@@ -4397,17 +4397,6 @@ function find_interface_subnet($interface)
     return null;
 }
 
-function find_interface_subnetv6($interface)
-{
-    $interface = trim($interface);
-    if (does_interface_exist($interface)) {
-        $ifinfo = legacy_get_interface_addresses($interface);
-        if (isset($ifinfo['subnetbits6'])) {
-            return $ifinfo['subnetbits6'];
-        }
-    }
-    return null;
-}
 
 function ip_in_interface_alias_subnet($interface, $ipalias)
 {
@@ -4552,9 +4541,11 @@ function get_interface_subnetv6($interface = "wan")
         }
     }
 
-    $cursn = find_interface_subnetv6($realif);
-    if (!empty($cursn)) {
-        return $cursn;
+    if (does_interface_exist($realif)) {
+        $ifinfo = legacy_get_interface_addresses($realif);
+        if (isset($ifinfo['subnetbits6'])) {
+            return $ifinfo['subnetbits6'];
+        }
     }
 
     return null;
