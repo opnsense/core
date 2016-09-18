@@ -630,7 +630,7 @@ $( document ).ready(function() {
                 <?php if ($selected_if == 'FloatingRules'): ?>
                       <?= gettext('No floating rules are currently defined. Floating rules are not ' .
                         'not bound to a single interface and can therefor be used to span ' .
-                        'policies over mupltiple networks at the same time.'); ?>
+                        'policies over multiple networks at the same time.'); ?>
                 <?php else: ?>
                       <?= gettext('No interfaces rules are currently defined. All incoming connections ' .
                         'on this interface will be blocked until you add a pass rule.') ?>
