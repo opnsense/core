@@ -627,13 +627,14 @@ $( document ).ready(function() {
                   <tr>
                     <td colspan="11" align="center" valign="middle">
                     <span class="text-muted">
-                <?php if ($selected_if == "FloatingRules"): ?>
-                      <?=gettext("No floating rules are currently defined."); ?><br /><br />
+                <?php if ($selected_if == 'FloatingRules'): ?>
+                      <?= gettext('No floating rules are currently defined. Floating rules are not ' .
+                        'not bound to a single interface and can therefor be used to span ' .
+                        'policies over mupltiple networks at the same time.'); ?>
                 <?php else: ?>
-                      <?=gettext("No rules are currently defined for this interface"); ?><br />
-                      <?=gettext("All incoming connections on this interface will be blocked until you add pass rules."); ?><br /><br />
+                      <?= gettext('No interfaces rules are currently defined. All incoming connections ' .
+                        'on this interface will be blocked until you add a pass rule.') ?>
                 <?php endif; ?>
-                <?= sprintf(gettext("Click the %s button to add a new rule."), '[+]')?>
                     </span>
                     </td>
                   </tr>
