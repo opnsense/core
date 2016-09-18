@@ -57,4 +57,3 @@ if (is_array($config['openvpn']) && is_array($config['openvpn']['openvpn-client'
 		}
 	}
 }
-

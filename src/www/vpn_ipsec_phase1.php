@@ -334,7 +334,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     foreach ($p1_ealgos as $algo => $algodata) {
-        if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && !empty($algodata['iketype']) 
+        if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && !empty($algodata['iketype'])
           && $pconfig['iketype'] != $algodata['iketype'] && $pconfig['encryption-algorithm']['name'] == $algo) {
             $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), $algodata['name']);
         }
