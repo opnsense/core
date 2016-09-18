@@ -629,7 +629,7 @@ $( document ).ready(function() {
                     <span class="text-muted">
                 <?php if ($selected_if == 'FloatingRules'): ?>
                       <?= gettext('No floating rules are currently defined. Floating rules are not ' .
-                        'not bound to a single interface and can therefor be used to span ' .
+                        'not bound to a single interface and can therefore be used to span ' .
                         'policies over multiple networks at the same time.'); ?>
                 <?php else: ?>
                       <?= gettext('No interfaces rules are currently defined. All incoming connections ' .
