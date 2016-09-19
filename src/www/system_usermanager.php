@@ -236,6 +236,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $input_errors[] = gettext("The passwords do not match.");
         }
 
+        if (!empty($pconfig['disabled']) && $_SESSION['Username'] === $a_user[$id]['name']) {
+            $input_errors[] = gettext('You cannot disable yourself.');
+        }
+
         if (isset($id)) {
             $oldusername = $a_user[$id]['name'];
         } else {
@@ -262,7 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        /*
+       /*
        * Check for a valid expirationdate if one is set at all (valid means,
        * DateTime puts out a time stamp so any DateTime compatible time
        * format may be used. to keep it simple for the enduser, we only
