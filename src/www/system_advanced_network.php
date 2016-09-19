@@ -105,7 +105,11 @@ include("head.inc");
         <form method="post" name="iform" id="iform">
           <table class="table table-striped opnsense_standard_table_form">
               <tr>
-                <th colspan="2" valign="top" class="listtopic"><?=gettext("Network Interfaces"); ?></th>
+                <td width="22%"><strong><?= gettext('Network Interfaces') ?></strong></td>
+                <td width="78%" align="right">
+                  <small><?=gettext("full help"); ?> </small>
+                  <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page" type="button"></i>
+                </td>
               </tr>
               <tr>
                 <td><a id="help_for_disablechecksumoffloading" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hardware CRC"); ?></td>
