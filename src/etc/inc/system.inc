@@ -774,7 +774,7 @@ function system_syslogd_start()
         echo gettext('Starting syslog...');
     }
 
-    $log_directive = '%';
+    $log_directive = '';
     $syslogd_extra = '';
 
     if (isset($syslogcfg)) {

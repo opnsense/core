@@ -1,6 +1,6 @@
 <?php
 
 $logfile = '/var/log/portalauth.log';
-$logclog = true;
+$logclog = false;
 
 require_once 'diag_logs_template.inc';

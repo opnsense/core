@@ -40,7 +40,7 @@ function clear_all_log_files()
 {
     killbyname('syslogd');
 
-    $clog_files = array(
+    $log_files = array(
         'dhcpd',
         'filter',
         'gateways',
@@ -59,13 +59,18 @@ function clear_all_log_files()
         'system',
         'vpn',
         'wireless',
-    );
-
-    $log_files = array(
         'squid/access',
         'squid/cache',
         'squid/store',
     );
+
+    // append from plugins
+    if (function_exists('plugins_syslog')) {
+        /* only pull plugins if plugins.inc was included before */
+        foreach (plugins_syslog() as $plugin_name => $plugin_details) {
+            $log_files[] = $plugin_name;
+        }
+    }
 
     foreach ($clog_files as $lfile) {
         system_clear_clog("/var/log/{$lfile}.log", false);

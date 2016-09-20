@@ -1,7 +1,7 @@
 <?php
 
 $logfile = '/var/log/gateways.log';
-$logclog = true;
+$logclog = false;
 
 $service_hook = 'apinger';
 
