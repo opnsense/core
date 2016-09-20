@@ -1,0 +1,11 @@
+<acl>
+    <!-- unique acl key, must be globally unique for all acl's  -->
+    <page-system-syslog>
+        <name>WebCfg - System: Settings: Syslog page</name>
+        <description>Allow access to the 'System: Settings: Syslog' page.</description>
+        <patterns>
+            <pattern>ui/syslog/*</pattern>
+            <pattern>api/syslog/*</pattern>
+        </patterns>
+    </page-system-syslog>
+</acl>
