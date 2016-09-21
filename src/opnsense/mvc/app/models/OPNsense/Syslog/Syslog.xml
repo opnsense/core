@@ -8,12 +8,12 @@
             <default>1</default>
             <Required>Y</Required>
         </Reverse>
-        <numentries>
+        <NumEntries type="IntegerField">
             <Required>N</Required>
-        </numentries>
+        </NumEntries>
         <DisableLogFiles type="BooleanField">
             <default>0</default>
-            <Required>Y<Required>
+            <Required>Y</Required>
         </DisableLogFiles>
 
         <Remote>
@@ -44,10 +44,10 @@
             <Source type="ArrayField">
                 <Predefined type="BooleanField">
                     <default>0</default>
-                    <Required>Y<Required>
+                    <Required>Y</Required>
                 </Predefined>
                 <Program type="CSVListField">
-                    <Required>Y</required>
+                    <Required>Y</Required>
                 </Program>
             </Source>
         </LogSources>
@@ -56,7 +56,7 @@
             <Selector type="ArrayField">
                 <Predefined type="BooleanField">
                     <default>0</default>
-                    <Required>Y<Required>
+                    <Required>Y</Required>
                 </Predefined>
                 <Enable type="BooleanField">
                     <default>1</default>
@@ -74,7 +74,7 @@
                         </Sources>
                     </Model>
                     <Required>N</Required>
-                </Source>
+                </LogSource>
                 <InvertSource type="BooleanField">
                     <default>0</default>
                 </InvertSource>
