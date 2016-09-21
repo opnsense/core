@@ -1,6 +1,6 @@
-#!/usr/local/bin/python2.7
+#!/bin/sh
 
-# Copyright (c) 2016 Ad Schellevis
+# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -25,20 +25,36 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-import os
-import glob
-import sys
+# Files are sorted and should adhere to the following
+# rule of thumb: "dd-identifier", for core package
+# loader.conf chunks should generally use something
+# like "20-mycorevars" and for plugin packages rather
+# "50-mypluginvars".
+#
+# It could be useful for the user to order variables
+# or set a higher/lower priority in case some
+# use case requires a slightly different setup.
 
-loader_dir="/usr/local/etc/rc.loader.d"
-loader_conf_local='/boot/loader.conf.local'
+LOADERDIR="/usr/local/etc/rc.loader.d"
+LOADERCONF="/boot/loader.conf"
 
-if not os.path.isdir(loader_dir):
-    sys.exit(0)
+: > ${LOADERCONF}
 
-loader_conf_local_items=list()
-for filename in glob.glob('%s/*'%loader_dir):
-    prop_name = os.path.basename(filename)
-    prop_value = open(filename,'r').read().strip()
-    loader_conf_local_items.append('%s="%s"'%(prop_name, prop_value))
-# dump collected properies
-open(loader_conf_local,'w').write('%s\n'%'\n'.join(loader_conf_local_items))
+if [ ! -d ${LOADERDIR} ]; then
+	# no dir no fun
+	exit 0;
+fi
+
+# collect all matching scripts
+LOADERCHUNKS=$(find -s ${LOADERDIR} -type f)
+
+for LOADERCHUNK in ${LOADERCHUNKS}; do
+	# extract loader chunk origin
+	LOADERCHUNK=${LOADERCHUNK##"${LOADERDIR}/"}
+
+	echo "rc.loader: assembling ${LOADERCHUNK#??-}"
+
+	cat ${LOADERDIR}/${LOADERCHUNK} >> ${LOADERCONF}
+done
+
+exit 0
