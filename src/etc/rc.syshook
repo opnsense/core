@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -55,10 +55,10 @@ for SYSHOOK in ${SYSHOOKS}; do
 	SYSHOOK=${SYSHOOK##"${SYSDIR}/"}
 	SYSHOOK=${SYSHOOK%%".${SYSLEVEL}"}
 
-	echo "rc.syshook: launching ${SYSHOOK}.${SYSLEVEL}"
+	echo "rc.syshook(${SYSLEVEL}): running ${SYSHOOK#??-}"
 
 	if ! ${SYSDIR}/${SYSHOOK}.${SYSLEVEL}; then
-		echo "rc.syshook: error in ${SYSHOOK}.${SYSLEVEL}"
+		echo "rc.syshook(${SYSLEVEL}): error in ${SYSHOOK#??-}"
 	fi
 done
 
