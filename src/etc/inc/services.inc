@@ -1883,51 +1883,30 @@ function services_dnsmasq_configure($dhcp_reload = true)
             $args .= " --port={$config['dnsmasq']['port']} ";
         }
 
-        $listen_addresses = "";
         if (isset($config['dnsmasq']['interface'])) {
-            $interfaces = explode(",", $config['dnsmasq']['interface']);
-            foreach ($interfaces as $interface) {
+            $addresses = array();
+            foreach (explode(",", $config['dnsmasq']['interface']) as $interface) {
                 if (is_ipaddrv4($interface)) {
-                    $listen_addresses .= " --listen-address={$interface} ";
+                    $addresses[] = $interface;
                 } elseif (is_ipaddrv6($interface)) {
-                    /*
-                     * XXX: Since dnsmasq does not support link-local address
-                     * with scope specified. These checks are being done.
-                     */
-                    if (is_linklocal($interface) && strstr($interface, "%")) {
-                        $tmpaddrll6 = explode("%", $interface);
-                        $listen_addresses .= " --listen-address={$tmpaddrll6[0]} ";
-                    } else {
-                        $listen_addresses .= " --listen-address={$interface} ";
-                    }
+                     // Since dnsmasq does not support link-local address with scope specified. strip address.
+                     $addresses[] = explode("%", $interface)[0];
                 } else {
-                    $if = get_real_interface($interface);
-                    if (does_interface_exist($if)) {
-                        $laddr = find_interface_ip($if);
-                        if (is_ipaddrv4($laddr)) {
-                            $listen_addresses .= " --listen-address={$laddr} ";
-                        }
-                        $laddr6 = find_interface_ipv6($if);
-                        if (is_ipaddrv6($laddr6) && !isset($config['dnsmasq']['strictbind'])) {
-                            /*
-                             * XXX: Since dnsmasq does not support link-local address
-                             * with scope specified. These checks are being done.
-                             */
-                            if (is_linklocal($laddr6) && strstr($laddr6, "%")) {
-                                $tmpaddrll6 = explode("%", $laddr6);
-                                $listen_addresses .= " --listen-address={$tmpaddrll6[0]} ";
-                            } else {
-                                $listen_addresses .= " --listen-address={$laddr6} ";
-                            }
-                        }
+                    $intf_ipv4 = get_interface_ip($interface);
+                    $intf_ipv6 = get_interface_ipv6($interface);
+                    if (!empty($intf_ipv4)) {
+                        $addresses[] = $intf_ipv4;
+                    }
+                    if (!empty($intf_ipv6)) {
+                        $addresses[] = explode("%", $intf_ipv6)[0];
                     }
                 }
             }
-            if (!empty($listen_addresses)) {
-                $args .= " {$listen_addresses} ";
-                if (isset($config['dnsmasq']['strictbind'])) {
-                    $args .= " --bind-interfaces ";
-                }
+            foreach ($addresses as $address) {
+                $args .= " --listen-address={$address} ";
+            }
+            if (!empty($addresses) && isset($config['dnsmasq']['strictbind'])) {
+                $args .= " --bind-interfaces ";
             }
         }
 
