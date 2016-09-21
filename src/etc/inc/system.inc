@@ -1824,6 +1824,7 @@ function load_kernel_module()
 {
     $mods = array(
         'carp',
+        'if_bridge',
         /*
          * The netgraph(4) framework is loaded here
          * for backwards compat with the pre-16.7
