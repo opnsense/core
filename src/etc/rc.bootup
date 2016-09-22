@@ -143,9 +143,6 @@ if (is_interface_mismatch()) {
     while (!set_networking_interfaces_ports(true));
 }
 
-/* load extra modules not in GENERIC */
-load_kernel_module();
-
 /* enable optional crypto modules */
 load_crypto_module();
 
