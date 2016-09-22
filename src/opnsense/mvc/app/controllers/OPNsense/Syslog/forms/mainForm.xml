@@ -32,6 +32,14 @@
 		<help>Send log messages to remote syslog server.</help>
 	</field>
 	<field>
+		<id>syslog.Remote.Servers</id>
+		<label>Remote Syslog Servers</label>
+		<type>text</type>
+		<allownew>true</allownew>
+		<style>tokenize</style>
+		<help>IP addresses of remote syslog servers, or an IP:port.</help>
+	</field>
+	<field>
 		<id>syslog.Remote.SourceIP</id>
 		<label>Source Address</label>
 		<type>dropdown</type>
@@ -43,13 +51,5 @@
 		<label>IP Protocol</label>
 		<type>dropdown</type>
 		<help>This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried.</help>
-	</field>
-	<field>
-		<id>syslog.Remote.Servers</id>
-		<label>Remote Syslog Servers</label>
-		<type>select_multiple</type>
-		<allownew>true</allownew>
-		<style>tokenize</style>
-		<help>IP addresses of remote syslog servers, or an IP:port.</help>
 	</field>
 </form>

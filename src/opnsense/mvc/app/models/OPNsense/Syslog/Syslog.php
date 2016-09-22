@@ -38,7 +38,8 @@ require_once("plugins.inc");
  */
 class Syslog extends BaseModel
 {
-    private static $LogsDirectory = "/var/log";
+    private static $LOGS_DIRECTORY = "/var/log";
+    private static $CORE_SYSTEM_SOURCE = 'CORE_SYSTEM_SOURCE';
 
     private function getPredefinedSources()
     {
@@ -54,8 +55,8 @@ class Syslog extends BaseModel
         'dnsmasq,filterdns,unbound'         => array('file' => 'resolver',  'remote' => '0',    'description' => gettext('Domain name resolver events')),
         'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd' => array('file' => 'routing','remote' => '0',  'description' => gettext('Routing events')),
         'hostapd'                           => array('file' => 'wireless',  'remote' => '1',    'description' => gettext('Wireless events')),
-        // special handler for hold remote setting:
-        'CORE_SYSTEM_SOURCE'                => array('file' => 'system',    'remote' => '1',    'description' => gettext('System events')),
+        // special handler for holding remote setting:
+        self::$CORE_SYSTEM_SOURCE           => array('file' => 'system',    'remote' => '1',    'description' => gettext('System events')),
         );
     }
 
@@ -69,8 +70,19 @@ class Syslog extends BaseModel
 
     protected function init()
     {
-        //$this->checkPredefinedSources();
-        //$this->regenerateSystemSelectors();
+        $this->checkPredefinedSources();
+        $this->regenerateSystemSelectors();
+        $this->CoreSystemSourceName = self::$CORE_SYSTEM_SOURCE;
+        $this->AllPrograms = $this->getAllPrograms();
+    }
+
+    private function getAllPrograms()
+    {
+        $all = array();
+        foreach($this->LogSources->Source->__items as $uuid => $source)
+            if($source->Program->__toString() != self::$CORE_SYSTEM_SOURCE)
+                $all[] = $source->Program->__toString();
+        return join(',', $all);
     }
 
     private function checkPredefinedSources()
@@ -94,6 +106,7 @@ class Syslog extends BaseModel
                 $source->Program = $program;
                 $source->Description = "Plugin $name events";
                 $source->RemoteLog = '0';
+                $source->Target = self::$LOGS_DIRECTORY . "/" . $name . ".log";
                 $wasModified = true;
             }
         }
@@ -108,12 +121,17 @@ class Syslog extends BaseModel
                 $source->Program = $predefined;
                 $source->Description = $params['description'];
                 $source->RemoteLog = $params['remote'];
+                $source->Target = self::$LOGS_DIRECTORY . "/" . $params['file'] . ".log";
                 $wasModified = true;
             }
         }
 
+        // TODO: API to add selectors, remove this function, replace by addAction(source, filter, type, target) requests
         // TODO: remove old obsolete
         // TODO: regenerate and restart if modified
+        // TODO: rename selector to action
+        // TODO: replace sources to categories in GUI
+        // TODO: we can add remote actions instead of tracking "Remote" flags
     }
 
     private function regenerateSystemSelectors()
@@ -126,10 +144,9 @@ class Syslog extends BaseModel
         foreach(self::$PredefinedSystemSelectors as $predefined)
         {
             $selector = $this->SystemSelectors->Selector->add();
-            $selector->Name         = $predefined['name'];
             $selector->Filter       = $predefined['filter'];
-            $selector->Directive    = $predefined['type'] == 'pipe' ? '|' : '';
-            $selector->Target       = $predefined['type'] == 'file' ? self::$LogsDirectory . "/" . $predefined['name'] . ".log" : $predefined['name'];
+            $selector->ActionType   = $predefined['type'];
+            $selector->Target       = $predefined['type'] == 'file' ? self::$LOGS_DIRECTORY . "/" . $predefined['name'] . ".log" : $predefined['name'];
         }
     }
 
@@ -156,7 +173,6 @@ class Syslog extends BaseModel
         foreach($this->SystemSelectors->Selector->__items as $uuid => $selector)
             $selectors[] = array(
                 'filter' => $selector->Filter->__toString(),
-                'target' => $selector->Name->__toString(),
                 );
 
         return array('sources' => $sources, 'selectors' => $selectors);

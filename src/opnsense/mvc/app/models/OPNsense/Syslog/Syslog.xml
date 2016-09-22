@@ -16,6 +16,11 @@
             <Required>Y</Required>
         </DisableLogFiles>
 
+        <CoreSystemSourceName type="TextField">
+        </CoreSystemSourceName>
+        <AllPrograms type="TextField">
+        </AllPrograms>
+
         <Remote>
             <Enable type="BooleanField">
                 <default>0</default>
@@ -53,22 +58,21 @@
                 </RemoteLog>
                 <Name type="TextField">
                 </Name>
+                <Target type="TextField">
+                    <Required>Y</Required>
+                </Target>
             </Source>
         </LogSources>
 
         <SystemSelectors>
             <Selector type="ArrayField">
-                <Name type="TextField">
-                    <Required>Y</Required>
-                </Name>
-
                 <Filter type="TextField">
                     <Required>Y</Required>
                 </Filter>
 
-                <Directive type="TextField">
+                <ActionType type="TextField">
                     <Required>N</Required>
-                </Directive>
+                </ActionType>
 
                 <Target type="TextField">
                     <Required>Y</Required>
