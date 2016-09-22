@@ -41,11 +41,11 @@ rm -f /usr/local/opnsense/mvc/app/cache/*.php
 echo "Execute model migrations"
 /usr/local/opnsense/mvc/script/run_migrations.php
 
-echo "Reloading firmware configuration"
-/usr/local/etc/rc.configure_firmware
-
 echo "Reloading GUI configuration"
 /usr/local/etc/rc.php_ini_setup
 if pgrep -q php-cgi; then
 	pkill -HUP php-cgi
 fi
+
+echo "Reloading firmware configuration"
+/usr/local/etc/rc.configure_firmware
