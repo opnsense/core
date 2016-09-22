@@ -1954,24 +1954,26 @@ function system_console_configure()
         }
     }
 
-    $new_loader_conf = "";
-    // construct OPNsense config for /boot/loader.conf
-    foreach ($new_boot_config as $param => $value) {
-        if (!empty($value)) {
-            $new_loader_conf .= "{$param}={$value}\n";
-        }
-    }
-    // copy non matched settings in /boot/loader.conf
+    $new_loader_conf = '';
+
+    /* reload static values from rc.loader.d */
+    mwexecf('/usr/local/etc/rc.loader');
+
+    /* copy non-matched settings already there */
     foreach (explode("\n", @file_get_contents('/boot/loader.conf')) as $line) {
         if (!empty($line) && !array_key_exists(trim(explode('=', $line)[0]), $new_boot_config)) {
             $new_loader_conf .= $line . "\n";
         }
     }
 
-    /* reload static values from rc.loader.d */
-    mwexecf('/usr/local/etc/rc.loader');
+    /* add our console options on top now */
+    foreach ($new_boot_config as $param => $value) {
+        if (!empty($value)) {
+            $new_loader_conf .= "{$param}={$value}\n";
+        }
+    }
 
-    /* inject dynamic values directly into loader.conf */
+    /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
 
     // ** setup /etc/ttys
