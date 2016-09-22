@@ -1,7 +1,7 @@
 <?php
 
 /*
-	Copyright (C) 2015 Franco Fichtner <franco@opnsense.org>
+	Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
 	Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
 	Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
 	All rights reserved.
@@ -28,7 +28,7 @@
 	POSSIBILITY OF SUCH DAMAGE.
 */
 
-function timeout($timer = 7)
+function timeout($timer = 5)
 {
 	while (!isset($key)) {
 		if ($timer >= 9) { echo chr(8) . chr(8) . ($timer==9 ? chr(32) : null)  . "{$timer}";  }
@@ -44,6 +44,7 @@ function timeout($timer = 7)
 			break;
 		}
 	}
+
 	return $key;
 }
 
