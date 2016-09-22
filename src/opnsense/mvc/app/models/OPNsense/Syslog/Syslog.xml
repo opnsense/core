@@ -42,102 +42,39 @@
 
         <LogSources>
             <Source type="ArrayField">
-                <Predefined type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </Predefined>
-                <Program type="CSVListField">
+                <Program type="TextField">
                     <Required>Y</Required>
                 </Program>
+                <Description type="TextField">
+                </Description>
+                <RemoteLog type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </RemoteLog>
+                <Name type="TextField">
+                </Name>
             </Source>
         </LogSources>
 
-        <Selectors>
+        <SystemSelectors>
             <Selector type="ArrayField">
-                <Predefined type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </Predefined>
-                <Enable type="BooleanField">
-                    <default>1</default>
-                    <Required>Y</Required>
-                </Enable>
                 <Name type="TextField">
                     <Required>Y</Required>
                 </Name>
-                <LogSource type="ModelRelationField">
-                    <Model>
-                        <Sources>
-                            <source>OPNsense.Syslog.Syslog</source>
-                            <items>LogSources.Source</items>
-                            <display>Program</display>
-                        </Sources>
-                    </Model>
+
+                <Filter type="TextField">
+                    <Required>Y</Required>
+                </Filter>
+
+                <Directive type="TextField">
                     <Required>N</Required>
-                </LogSource>
-                <InvertSource type="BooleanField">
-                    <default>0</default>
-                </InvertSource>
-                <Filters>
-                    <Filter type="ArrayField">
-                        <Facility type="OptionsField">
-                            <Required>N</Required>
-                            <OptionValues>
-                                <auth>auth</auth>
-                                <authpriv>authpriv</authpriv>
-                                <daemon>daemon</daemon>
-                                <kern>kern</kern>
-                                <lpr>lpr</lpr>
-                                <mail>mail</mail>
-                                <news>news</news>
-                                <security>security</security>
-                                <user>user</user>
-                                <local0>local0</local0>
-                                <local1>local1</local1>
-                                <local2>local2</local2>
-                                <local3>local3</local3>
-                                <local4>local4</local4>
-                                <local5>local5</local5>
-                                <local6>local6</local6>
-                                <local7>local7</local7>
-                            </OptionValues>
-                        </Facility>
-                        <Level type="OptionField">
-                            <Required>N</Required>
-                            <OptionValues>
-                                <emerg>Emergency</emerg>
-                                <crit>Critical</crit>
-                                <alert>Alert</alert>
-                                <err>Error</err>
-                                <warning>Warning</warning>
-                                <notice>Notice</notice>
-                                <info>Info</info>
-                                <debug>Debug</debug>
-                            </OptionValues>
-                        </Level>
-                        <LevelOperator type="OptionField">
-                            <Required>N</Required>
-                            <default></default>
-                            <OptionValues>
-                                <e>=</e>
-                                <ne>!=</ne>
-                                <ge>&gt;=</ge>
-                                <le>&lt;=</le>
-                            </OptionValues>
-                        </LevelOperator>
-                    </Filter>
-                </Filters>
-                <LocalSocket type="TextField">
-                    <Required>N</Required>
-                </LocalSocket>
-                <PipeAction type="TextField">
-                    <Required>N</Required>
-                </PipeAction>
-                <RemoteAction type="BooleanField">
-                    <default>0</default>
-                </RemoteAction>
+                </Directive>
+
+                <Target type="TextField">
+                    <Required>Y</Required>
+                </Target>
             </Selector>
-        </Selectors>
+        </SystemSelectors>
 
     </items>
 </model>

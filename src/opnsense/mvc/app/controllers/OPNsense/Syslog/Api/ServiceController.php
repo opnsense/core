@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2016 E.Bevz & Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -28,23 +28,40 @@
  *
  */
 
-namespace OPNsense\Syslog;
+namespace OPNsense\Syslog\Api;
+
+use \OPNsense\Base\ApiControllerBase;
+use \OPNsense\Core\Backend;
 
 /**
- * Class IndexController
+ * Class ServiceController
  * @package OPNsense\Syslog
  */
-class IndexController extends \OPNsense\Base\IndexController
+class ServiceController extends ApiControllerBase
 {
+
     /**
-     * Syslog index page
-     * @throws \Exception
+     * restart syslog service
+     * @return array
      */
-    public function indexAction()
+
+    public function reloadAction()
     {
-        $this->view->title = gettext('Syslog Settings');
-        // include dialog form definitions
-        $this->view->mainForm = $this->getForm("mainForm");
-        $this->view->pick('OPNsense/Syslog/index');
+        if ($this->request->isPost()) {
+            // close session for long running action
+            $this->sessionClose();
+
+            $backend = new Backend();
+
+            // generate template
+            $backend->configdRun("template reload OPNsense.Syslog");
+
+            // (res)start daemon
+            $backend->configdRun("syslog restart");
+
+            return array("status" => "ok", "message" => gettext("Restarted"));
+        } else {
+            return array("status" => "failed", "message" => gettext("Restart Failed"));
+        }
     }
 }
