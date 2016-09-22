@@ -1930,9 +1930,7 @@ function system_console_configure()
     // ** console settings in /boot/loader.conf
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
-    $new_boot_config['autoboot_delay'] = '"3"';
     $new_boot_config['boot_multicons'] = null;
-    $new_boot_config['hw.usb.no_pf'] = '"1"';
     $new_boot_config['boot_serial'] = null;
     $new_boot_config['console'] = null;
 
@@ -1969,6 +1967,11 @@ function system_console_configure()
             $new_loader_conf .= $line . "\n";
         }
     }
+
+    /* reload static values from rc.loader.d */
+    mwexecf('/usr/local/etc/rc.loader');
+
+    /* inject dynamic values directly into loader.conf */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
 
     // ** setup /etc/ttys

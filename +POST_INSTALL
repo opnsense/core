@@ -21,19 +21,6 @@ EOF
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
 
-echo "Updating /boot/loader.conf"
-touch /boot/loader.conf
-cp /boot/loader.conf /boot/loader.conf.bak
-(grep -v loader_brand /boot/loader.conf.bak; \
-    echo 'loader_brand="opnsense"') > /boot/loader.conf
-cp /boot/loader.conf /boot/loader.conf.bak
-(grep -v loader_logo /boot/loader.conf.bak; \
-    echo 'loader_logo="hourglass"') > /boot/loader.conf
-cp /boot/loader.conf /boot/loader.conf.bak
-(grep -v loader_menu_title /boot/loader.conf.bak; \
-    echo 'loader_menu_title=""') > /boot/loader.conf
-rm -f /boot/loader.conf.bak
-
 echo "Writing package version"
 mkdir -p /usr/local/opnsense/version
 if [ -f /usr/local/opnsense/version/opnsense ]; then
@@ -53,6 +40,9 @@ rm -f /usr/local/opnsense/mvc/app/cache/*.php
 
 echo "Execute model migrations"
 /usr/local/opnsense/mvc/script/run_migrations.php
+
+echo "Reloading firmware configuration"
+/usr/local/etc/rc.configure_firmware
 
 echo "Reloading GUI configuration"
 /usr/local/etc/rc.php_ini_setup
