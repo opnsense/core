@@ -302,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
 
-                    // attributes containing some kind of logic
+            // attributes containing some kind of logic
             if ($vpnid) {
                 $client['vpnid'] = $vpnid;
             } else {
