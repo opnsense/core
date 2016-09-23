@@ -78,8 +78,8 @@ echo "as a self-signed certificate is used by default."
 echo
 echo -n "Rebooting in 5 seconds.  CTRL-C to abort"
 for n in 5 4 3 2 1; do
-    sleep 1
     echo -n "."
+    sleep 1
 done
 echo
 
