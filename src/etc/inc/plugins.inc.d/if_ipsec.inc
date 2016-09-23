@@ -44,7 +44,7 @@ function if_ipsec_services()
 
     $services = array();
 
-    if (isset($config['ipsec']['enable'])) {
+    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
         $pconfig = array();
         $pconfig['name'] = 'ipsec';
         $pconfig['description'] = gettext('IPsec VPN');
@@ -64,15 +64,33 @@ function if_ipsec_interfaces()
 
     $interfaces = array();
 
-    /* add ipsec interfaces */
-    if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
-        $oic = array("enable" => true);
-        $oic['if'] = 'enc0';
-        $oic['descr'] = 'IPsec';
-        $oic['type'] = "none";
-        $oic['virtual'] = true;
-        $oic['networks'] = array();
-        $interfaces['enc0'] = $oic;
+    if (isset($config['ipsec']['phase1']) && isset($config['ipsec']['phase2'])) {
+        foreach ($config['ipsec']['phase1'] as $ph1ent) {
+            if (isset($ph1ent['disabled'])) {
+                continue;
+            }
+
+            foreach ($config['ipsec']['phase2'] as $ph2ent) {
+                if (isset($ph2ent['disabled']) || $ph1ent['ikeid'] != $ph2ent['ikeid']) {
+                    continue;
+                }
+
+                if ((isset($ph2ent['mobile']) && !isset($config['ipsec']['client']['enable'])) ||
+                    !isset($config['ipsec']['enable'])) {
+                    continue;
+                }
+
+                $oic = array('enable' => true);
+                $oic['if'] = 'enc0';
+                $oic['descr'] = 'IPsec';
+                $oic['type'] = 'none';
+                $oic['virtual'] = true;
+                $oic['networks'] = array();
+                $interfaces['enc0'] = $oic;
+
+                break 2;
+            }
+        }
     }
 
     return $interfaces;

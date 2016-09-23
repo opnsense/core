@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $phase1_fields = "mode,protocol,myid_type,myid_data,peerid_type,peerid_data
     ,encryption-algorithm,hash-algorithm,dhgroup,lifetime,authentication_method,descr,nat_traversal
     ,interface,iketype,dpd_delay,dpd_maxfail,remote-gateway,pre-shared-key,certref
-    ,caref,reauth_enable,rekey_enable, auto";
+    ,caref,reauth_enable,rekey_enable,auto,tunnel_isolation";
     if (isset($p1index) && isset($config['ipsec']['phase1'][$p1index])) {
         // 1-on-1 copy
         foreach (explode(",", $phase1_fields) as $fieldname) {
@@ -178,6 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // For RSA methods, require the CA/Cert.
     switch ($method) {
         case "eap-tls":
+        case "eap-mschapv2":
           if ($pconfig['iketype'] != 'ikev2') {
               $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), strtoupper($method));
           }
@@ -199,6 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $reqdfieldsn = array(gettext("Certificate Authority"),gettext("Certificate"));
             break;
     }
+
     if (empty($pconfig['mobile'])) {
         $reqdfields[] = "remote-gateway";
         $reqdfieldsn[] = gettext("Remote gateway");
@@ -247,48 +249,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
-    if ($pconfig['myid_type'] == "address" and $pconfig['myid_data'] == "") {
+    if ($pconfig['interface'] == 'any' && $pconfig['myid_type'] == "myaddress") {
+        $input_errors[] = gettext("Please select an identifier (My Identifier) other then 'any' when selecting 'Any' interface");
+    } elseif ($pconfig['myid_type'] == "address" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter an address for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "keyid tag" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "keyid tag" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a keyid tag for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "fqdn" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "fqdn" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a fully qualified domain name for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "user_fqdn" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "user_fqdn" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a user and fully qualified domain name for 'My Identifier'");
-    }
-
-    if ($pconfig['myid_type'] == "dyn_dns" and $pconfig['myid_data'] == "") {
+    } elseif ($pconfig['myid_type'] == "dyn_dns" && $pconfig['myid_data'] == "") {
         $input_errors[] = gettext("Please enter a dynamic domain name for 'My Identifier'");
-    }
-
-    if ((($pconfig['myid_type'] == "address") && !is_ipaddr($pconfig['myid_data']))) {
+    } elseif ((($pconfig['myid_type'] == "address") && !is_ipaddr($pconfig['myid_data']))) {
         $input_errors[] = gettext("A valid IP address for 'My identifier' must be specified.");
-    }
-
-    if ((($pconfig['myid_type'] == "fqdn") && !is_domain($pconfig['myid_data']))) {
+    } elseif ((($pconfig['myid_type'] == "fqdn") && !is_domain($pconfig['myid_data']))) {
         $input_errors[] = gettext("A valid domain name for 'My identifier' must be specified.");
-    }
-
-    if ($pconfig['myid_type'] == "fqdn") {
-        if (is_domain($pconfig['myid_data']) == false) {
-            $input_errors[] = gettext("A valid FQDN for 'My identifier' must be specified.");
-        }
-    }
-
-    if ($pconfig['myid_type'] == "user_fqdn") {
+    } elseif ($pconfig['myid_type'] == "fqdn" && !is_domain($pconfig['myid_data'])) {
+        $input_errors[] = gettext("A valid FQDN for 'My identifier' must be specified.");
+    } elseif ($pconfig['myid_type'] == "user_fqdn") {
         $user_fqdn = explode("@", $pconfig['myid_data']);
         if (is_domain($user_fqdn[1]) == false) {
             $input_errors[] = gettext("A valid User FQDN in the form of user@my.domain.com for 'My identifier' must be specified.");
         }
-    }
-
-    if ($pconfig['myid_type'] == "dyn_dns") {
+    } elseif ($pconfig['myid_type'] == "dyn_dns") {
         if (is_domain($pconfig['myid_data']) == false) {
             $input_errors[] = gettext("A valid Dynamic DNS address for 'My identifier' must be specified.");
         }
@@ -349,6 +333,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['encryption-algorithm']['keylen'] = $pconfig['ealgo_keylen'];
     }
 
+    foreach ($p1_ealgos as $algo => $algodata) {
+        if (!empty($pconfig['iketype']) && !empty($pconfig['encryption-algorithm']['name']) && !empty($algodata['iketype'])
+          && $pconfig['iketype'] != $algodata['iketype'] && $pconfig['encryption-algorithm']['name'] == $algo) {
+            $input_errors[] = sprintf(gettext("%s can only be used with IKEv2 type VPNs."), $algodata['name']);
+        }
+    }
+
     if (count($input_errors) == 0) {
         $copy_fields = "ikeid,iketype,interface,mode,protocol,myid_type,myid_data
         ,peerid_type,peerid_data,encryption-algorithm,hash-algorithm,dhgroup
@@ -374,6 +365,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (isset($pconfig['rekey_enable'])) {
             $ph1ent['rekey_enable'] = true;
+        }
+
+        if (isset($pconfig['tunnel_isolation'])) {
+            $ph1ent['tunnel_isolation'] = true;
         }
 
         if (isset($pconfig['dpd_enable'])) {
@@ -402,7 +397,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
         mark_subsystem_dirty('ipsec');
-
         header("Location: vpn_ipsec.php");
         exit;
     }
@@ -448,6 +442,7 @@ include("head.inc");
                 case 'hybrid_rsa_server':
                 case 'xauth_rsa_server':
                 case 'rsasig':
+                case 'eap-mschapv2':
                     $(".auth_eap_tls").show();
                     $(".auth_eap_tls :input").prop( "disabled", false );
                     $(".auth_eap_tls_caref").show();
@@ -620,6 +615,9 @@ include("head.inc");
                         </option>
 <?php                  endforeach;
 ?>
+                        <option value="any" <?= $pconfig['interface'] == "any" ? "selected=\"selected\"" : "" ?>>
+                            <?=gettext("Any");?>
+                        </option>
                       </select>
                       <div class="hidden" for="help_for_interface">
                         <?=gettext("Select the interface for the local endpoint of this phase1 entry."); ?>
@@ -661,13 +659,6 @@ include("head.inc");
                     <td>
                       <select name="authentication_method" id="authentication_method" class="formselect">
 <?php
-                      $p1_authentication_methods = array(
-                        'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
-                        'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
-                        'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
-                        'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
-                        'rsasig' => array( 'name' => 'Mutual RSA', 'mobile' => false ),
-                        'pre_shared_key' => array( 'name' => 'Mutual PSK', 'mobile' => false ) );
                       foreach ($p1_authentication_methods as $method_type => $method_params) :
                           if (empty($pconfig['mobile']) && $method_params['mobile']) {
                               continue;
@@ -731,6 +722,8 @@ endforeach; ?>
                       </div>
                     </td>
                   </tr>
+<?php
+                  if (empty($pconfig['mobile'])):?>
                   <tr class="auth_opt auth_eap_tls auth_psk">
                     <td ><i class="fa fa-info-circle text-muted"></i> <?=gettext("Peer identifier"); ?></td>
                     <td>
@@ -762,6 +755,8 @@ endforeach; ?>
 } ?>
                     </td>
                   </tr>
+<?php
+                  endif;?>
                   <tr class="auth_opt auth_psk">
                     <td ><a id="help_for_psk" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Pre-Shared Key"); ?></td>
                     <td>
@@ -925,6 +920,15 @@ endforeach; ?>
                       <input name="reauth_enable" type="checkbox" id="reauth_enable" value="yes" <?= !empty($pconfig['reauth_enable']) ? "checked=\"checked\"" : "";?> />
                       <div class="hidden" for="help_for_reauth_enable">
                         <?=gettext("Whether rekeying of an IKE_SA should also reauthenticate the peer. In IKEv1, reauthentication is always done."); ?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_tunnel_isolation" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Tunnel Isolation') ?></td>
+                    <td>
+                      <input name="tunnel_isolation" type="checkbox" id="tunnel_isolation" value="yes" <?= !empty($pconfig['tunnel_isolation']) ? 'checked="checked"' : '' ?>/>
+                      <div class="hidden" for="help_for_tunnel_isolation">
+                        <?= gettext('This option will create a tunnel for each phase 2 entry for IKEv2 interoperability with e.g. FortiGate devices.') ?>
                       </div>
                     </td>
                   </tr>
