@@ -1559,3 +1559,21 @@ function is_fqdn($fqdn)
 
     return $hostname;
 }
+
+function is_install_media()
+{
+    /*
+     * Despite unionfs underneath, / is still not writeable,
+     * making the following the perfect test for install media.
+     */
+
+    $file = '/.probe.for.install.media';
+    $fd = @fopen($file, 'w');
+    if ($fd) {
+        fclose($fd);
+        unlink($file);
+        return false;
+    }
+
+    return true;
+}
