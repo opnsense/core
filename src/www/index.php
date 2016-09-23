@@ -310,6 +310,7 @@ include("fbegin.inc");?>
       <div class="row">
         <div class="col-md-12 col-xs-12">
 <?php
+          print_service_banner('livecd');
           $crash_report = get_crash_report();
           if ($crash_report != '') {
               print_info_box($crash_report);
