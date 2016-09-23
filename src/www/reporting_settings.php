@@ -60,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $all_rrd_files = json_decode(configd_run("systemhealth list"), true);
+if (!is_array($all_rrd_files)) {
+    $all_rrd_files = array();
+}
 ksort($all_rrd_files);
 legacy_html_escape_form_data($pconfig);
 

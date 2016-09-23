@@ -19,7 +19,7 @@
         <id>netflow.collect.enable</id>
         <label>Capture local</label>
         <type>checkbox</type>
-        <help>Collect NetFlow data on this firewall, this will automatically append localhost as NetFlow target. Please keep disabled when using a RAM disk (for size and consistency reasons).</help>
+        <help>Collect NetFlow data on this firewall for use with Insight. Note that the local cache only holds the latest 100 MB of data.</help>
     </field>
     <field>
         <id>netflow.capture.version</id>
