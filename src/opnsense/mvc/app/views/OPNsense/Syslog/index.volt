@@ -33,24 +33,16 @@
          *************************************************************************************************************/
 
         console.log("init grid");
-        $("#grid-sources").UIBootgrid(
-            {   search:'/api/syslog/settings/searchSources',
-                toggle:'/api/syslog/settings/toggleSourceRemote/',
+        $("#grid-categories").UIBootgrid(
+            {   search:'/api/syslog/settings/searchCategories',
+                toggle:'/api/syslog/settings/toggleCategoryRemote/',
                 options:{rowCount:-1},
             }
         );
 		
-        //$("#grid-sources").bootgrid("getColumnSettings")[0].formatter = function(column, row){
-        //    if (row.Predefined == 1) {
-        //        return "<span class=\"glyphicon glyphicon-cog text-warning\"/>"
-        //    } else {
-        //        return "";
-        //    }
-        //};    
-
         // hide table header & pager
-		$("#grid-sources-header").hide();
-		$("#grid-sources-footer").hide();
+		$("#grid-categories-header").hide();
+		$("#grid-categories-footer").hide();
 
 		console.log("Script done");
     });
@@ -64,13 +56,13 @@
 
 		{{ partial("layout_partials/base_form", ['fields':mainForm, 'id':'GeneralSettings']) }}
 
-		<div id="sources">
+		<div id="categories">
 			<h2></h2>
-		    <table id="grid-sources" class="table table-condensed table-hover table-striped table-responsive">
+		    <table id="grid-categories" class="table table-condensed table-hover table-striped table-responsive">
 		        <thead>
 		        <tr>
 		            <th data-column-id="Description" data-width="12em" data-type="string">{{ lang._('Log events source') }}</th>
-		            <th data-column-id="RemoteLog" data-width="32em" data-type="string" data-align="left" data-formatter="rowtoggle">{{ lang._('Remote logging') }}</th>
+		            <th data-column-id="LogRemote" data-width="32em" data-type="string" data-align="left" data-formatter="rowtoggle">{{ lang._('Remote logging') }}</th>
 		        </tr>
 		        </thead>
 		        <tbody>

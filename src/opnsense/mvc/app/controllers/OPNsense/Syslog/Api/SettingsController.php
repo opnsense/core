@@ -95,14 +95,14 @@ class SettingsController extends ApiControllerBase
      * search sources
      * @return array
      */
-    public function searchSourcesAction()
+    public function searchCategoriesAction()
     {
         $this->sessionClose();
         $mdl = new Syslog();
-        $grid = new UIModelGrid($mdl->LogSources->Source);
+        $grid = new UIModelGrid($mdl->LogCategories->Category);
         $result = $grid->fetchBindRequest(
             $this->request,
-            array("Description", "RemoteLog", "Name"),
+            array("Description", "LogRemote", "Name"),
             "Description"
         );
        
@@ -113,30 +113,33 @@ class SettingsController extends ApiControllerBase
      * toggle source remote logging property
      * @return array
      */
-    public function toggleSourceRemoteAction($uuid, $enabled = null)
+    public function toggleCategoryRemoteAction($uuid, $enabled = null)
     {
         $result = array("result" => "failed", "validations" => array());
         if ($this->request->isPost()) {
             $mdl = new Syslog();
             if ($uuid != null) {
-                $node = $mdl->getNodeByReference('LogSources.Source.' . $uuid);
+                $node = $mdl->getNodeByReference('LogCategories.Category.' . $uuid);
                 if ($node != null) {
                     if ($enabled == "0" || $enabled == "1") {
-                        $node->RemoteLog = (string)$enabled;
-                    } elseif ($node->RemoteLog->__toString() == "1") {
-                        $node->RemoteLog = "0";
+                        $node->LogRemote = (string)$enabled;
+                    } elseif ($node->LogRemote->__toString() == "1") {
+                        $node->LogRemote = "0";
                     } else {
-                        $node->RemoteLog = "1";
+                        $node->LogRemote = "1";
                     }
-                    $result['result'] = "success";//(string)$node->RemoteLog;
+                    $result['result'] = "success";
                     // if item has toggled, serialize to config and save
                     $valMsgs = $mdl->performValidation();
                     foreach ($valMsgs as $field => $msg) {
                         // replace absolute path to attribute for relative one at uuid.
                         $result["validations"][$msg->getField()] = $msg->getMessage();
-                    }       
-                    $mdl->serializeToConfig();
-                    Config::getInstance()->save();
+                    }
+                    if($valMsgs->count() == 0)
+                    {
+                        $mdl->serializeToConfig();
+                        Config::getInstance()->save();
+                    }
                 }
             }
         }

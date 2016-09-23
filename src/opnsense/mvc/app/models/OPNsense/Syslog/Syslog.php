@@ -29,6 +29,8 @@
 namespace OPNsense\Syslog;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\ModelException;
+use OPNsense\Core\Config;
 
 require_once("plugins.inc");
 
@@ -41,22 +43,25 @@ class Syslog extends BaseModel
     private static $LOGS_DIRECTORY = "/var/log";
     private static $CORE_SYSTEM_SOURCE = 'CORE_SYSTEM_SOURCE';
 
+    private $Modified = false;
+    private $BatchMode = false;
+
     private function getPredefinedSources()
     {
         return array(
         // programs,comma,separated         =>      (logfilename,           send to remote if remote logging is on, description)
-        'dhcpd,dhcrelay,dhclient,dhcp6c'    => array('file' => 'dhcpd',     'remote' => '1',    'description' => gettext('DHCP service events')),
-        'filterlog'                         => array('file' => 'filter',    'remote' => '1',    'description' => gettext('Firewall events')),
-        'apinger'                           => array('file' => 'gateways',  'remote' => '1',    'description' => gettext('Gateway Monitor events')),
-        'ntp,ntpd,ntpdate'                  => array('file' => 'ntpd',      'remote' => '0',    'description' => gettext('Internet time events')),
-        'captiveportal'                     => array('file' => 'portalauth','remote' => '1',    'description' => gettext('Portal Auth events')),
-        'ppp'                               => array('file' => 'ppps',      'remote' => '0',    'description' => gettext('Point-to-Point events')),
-        'relayd'                            => array('file' => 'relayd',    'remote' => '1',    'description' => gettext('Server Load Balancer events')),
-        'dnsmasq,filterdns,unbound'         => array('file' => 'resolver',  'remote' => '0',    'description' => gettext('Domain name resolver events')),
-        'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd' => array('file' => 'routing','remote' => '0',  'description' => gettext('Routing events')),
-        'hostapd'                           => array('file' => 'wireless',  'remote' => '1',    'description' => gettext('Wireless events')),
+        'dhcpd,dhcrelay,dhclient,dhcp6c'    => array('file' => 'dhcpd'),
+        'filterlog'                         => array('file' => 'filter'),
+        'apinger'                           => array('file' => 'gateways'),
+        'ntp,ntpd,ntpdate'                  => array('file' => 'ntpd'),
+        'captiveportal'                     => array('file' => 'portalauth'),
+        'ppp'                               => array('file' => 'ppps'),
+        'relayd'                            => array('file' => 'relayd'),
+        'dnsmasq,filterdns,unbound'         => array('file' => 'resolver'),
+        'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd' => array('file' => 'routing'),
+        'hostapd'                           => array('file' => 'wireless'),
         // special handler for holding remote setting:
-        self::$CORE_SYSTEM_SOURCE           => array('file' => 'system',    'remote' => '1',    'description' => gettext('System events')),
+        self::$CORE_SYSTEM_SOURCE           => array('file' => 'system'),
         );
     }
 
@@ -68,12 +73,144 @@ class Syslog extends BaseModel
                     array('type' => 'all',  'name' => '*',      'filter'    => '*.emerg'),
                     );
 
+
+    /*************************************************************************************************************
+     * Public API
+     *************************************************************************************************************/
+
+    /**
+     * Add or update Syslog target.
+     * @param $source program name, null if no program name
+     * @param $filter comma-separated list of selectors facility.level (without spaces)
+     * @param $type type of action (file, pipe, remote, all)
+     * @param $target action target
+     * @param $category log category mapping
+     * @throws \ModelException
+     */
+    public function setTarget($source, $filter, $type, $target, $category)
+    {
+        $source = str_replace(' ', '', $source);
+        $filter = str_replace(' ', '', $filter);
+        $type = trim($type);
+        $target = trim($target);
+        $category = trim($category);
+
+        $sourceRef = $this->setSource($source);
+    }
+
+    /**
+     * Add or update Syslog category. For mapping in GUI.
+     * @param $name category name
+     * @param $description category description
+     * @throws \ModelException
+     */
+    public function setCategory($name, $description)
+    {
+        $name = trim($name);
+        $description = trim($description);
+
+        foreach($this->LogCategories->Category->__items as $uuid => $category) 
+        {
+            if($category->Name->__toString() == $name)
+            {
+                if($category->Description->__toString() == $description)
+                    return;
+
+                $category->Description = $description;
+                $this->Modified = true;
+                $this->saveIfModified();
+                return;
+            }
+        }
+
+        $category = $this->LogCategories->Category->add();
+        $category->Name = $name;
+        $category->Description = $description;
+        $category->LogRemote = $logRemote;
+        $this->Modified = true;
+        $this->saveIfModified();
+    }
+
+
+    /**
+     * Add Syslog source.
+     * @param $program category name
+     * @return source ref
+     * @throws \ModelException
+     */
+    public function setSource($program)
+    {
+        $program = str_replace(' ', '', $program);
+
+        foreach($this->LogSources->Source->__items as $uuid => $source) 
+        {
+            if($source->Program->__toString() == $program)
+                return $source;
+
+            $this->setNodeByReference('Syslog.LogCategories.Category.' . $uuid . '.Description', $description);
+            $this->Modified = true;
+            $this->saveIfModified();
+            return $source;
+        }
+
+        $source = $this->LogSources->Source->add();
+        $source->Program = $program;
+        $this->Modified = true;
+        $this->saveIfModified();
+        return $source;
+    }
+
+    /*************************************************************************************************************
+     * Protected Area
+     *************************************************************************************************************/
+
     protected function init()
     {
-        $this->checkPredefinedSources();
-        $this->regenerateSystemSelectors();
-        $this->CoreSystemSourceName = self::$CORE_SYSTEM_SOURCE;
-        $this->AllPrograms = $this->getAllPrograms();
+        $this->BatchMode = true;
+        $this->checkPredefinedCategories();
+        $this->BatchMode = false;
+        
+        $this->saveIfModified();
+        //$this->checkPredefinedSources();
+        //$this->regenerateSystemSelectors();
+        //$this->CoreSystemSourceName = self::$CORE_SYSTEM_SOURCE;
+        //$this->AllPrograms = $this->getAllPrograms();
+    }
+
+    private function checkPredefinedCategories()
+    {
+        $this->setCategory('system',    gettext('System events'));
+        $this->setCategory('dhcpd',     gettext('DHCP service events'));
+        $this->setCategory('filter',    gettext('Firewall events'));
+        $this->setCategory('gateways',  gettext('Gateway Monitor events'));
+        $this->setCategory('ntpd',      gettext('Internet time events'));
+        $this->setCategory('portalauth',gettext('Portal Auth events'));
+        $this->setCategory('relayd',    gettext('Server Load Balancer events'));
+        $this->setCategory('resolver',  gettext('Domain name resolver events'));
+        $this->setCategory('wireless',  gettext('Wireless events'));
+        $this->setCategory('vpn',       gettext('VPN (PPTP, IPsec, OpenVPN) events'));
+    }
+
+    private function saveIfModified()
+    {
+       
+        if($this->BatchMode === true)
+            return;
+        
+        if($this->Modified === false)
+            return;
+
+        $valMsgs = $this->performValidation();
+        $errorMsg = "Validation error: ";
+        foreach ($valMsgs as $field => $msg) {
+            $errorMsg .= $msg->getField() . '(' . $msg->getMessage() .'); ';
+        }
+        if($valMsgs->count() > 0)
+            throw new ModelException($errorMsg);
+
+        $this->serializeToConfig();
+        Config::getInstance()->save();
+        $this->Modified = false;
     }
 
     private function getAllPrograms()
@@ -150,6 +287,7 @@ class Syslog extends BaseModel
         }
     }
 
+
     public function showSelectors()
     {
         $selectors = array();
@@ -169,12 +307,19 @@ class Syslog extends BaseModel
                     'remote' => $item->RemoteLog->__toString(),
                     );
 
+        foreach($this->LogCategories->Category->__items as $uuid => $item)
+            $categories[] = array(
+                    'name' => $item->Name->__toString(),
+                    'description' => $item->Description->__toString(),
+                    'remote' => $item->LogRemote->__toString(),
+                    );
+
         $selectors = array();
         foreach($this->SystemSelectors->Selector->__items as $uuid => $selector)
             $selectors[] = array(
                 'filter' => $selector->Filter->__toString(),
                 );
 
-        return array('sources' => $sources, 'selectors' => $selectors);
+        return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories);
     }
 }

@@ -21,6 +21,19 @@
         <AllPrograms type="TextField">
         </AllPrograms>
 
+        <LogCategories>
+            <Category type="ArrayField">
+                <Name type="TextField">
+                    <Required>Y</Required>
+                </Name>
+                <Description type="TextField">
+                    <Required>Y</Required>
+                </Description>
+                <LogRemote type="BooleanField">
+                </LogRemote>
+            </Category>
+        </LogCategories>
+
         <Remote>
             <Enable type="BooleanField">
                 <default>0</default>
