@@ -41,50 +41,52 @@ require_once("plugins.inc");
 class Syslog extends BaseModel
 {
     private static $LOGS_DIRECTORY = "/var/log";
-    private static $CORE_SYSTEM_SOURCE = 'CORE_SYSTEM_SOURCE';
 
     private $Modified = false;
     private $BatchMode = false;
 
-    private function getPredefinedSources()
+    private function getPredefinedTargets()
     {
+        $systemLog = self::$LOGS_DIRECTORY.'/system.log';
+
         return array(
-        // programs,comma,separated         =>      (logfilename,           send to remote if remote logging is on, description)
-        'dhcpd,dhcrelay,dhclient,dhcp6c'    => array('file' => 'dhcpd'),
-        'filterlog'                         => array('file' => 'filter'),
-        'apinger'                           => array('file' => 'gateways'),
-        'ntp,ntpd,ntpdate'                  => array('file' => 'ntpd'),
-        'captiveportal'                     => array('file' => 'portalauth'),
-        'ppp'                               => array('file' => 'ppps'),
-        'relayd'                            => array('file' => 'relayd'),
-        'dnsmasq,filterdns,unbound'         => array('file' => 'resolver'),
-        'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd' => array('file' => 'routing'),
-        'hostapd'                           => array('file' => 'wireless'),
-        // special handler for holding remote setting:
-        self::$CORE_SYSTEM_SOURCE           => array('file' => 'system'),
+        array('program' => 'dhcpd,dhcrelay,dhclient,dhcp6c',                      'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/dhcpd.log',   'category' => 'dhcpd'),
+        array('program' => 'filterlog',                                           'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/filter.log',  'category' => 'filter'),
+        array('program' => 'apinger',                                             'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/gateways.log','category' => 'gateways'),
+        array('program' => 'ntp,ntpd,ntpdate',                                    'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/ntpd.log',    'category' => 'ntpd'),
+        array('program' => 'captiveportal',                                       'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/portalauth.log','category' => 'portalauth'),
+        array('program' => 'ppp',                                                 'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/ppps.log',    'category' => null),
+        array('program' => 'relayd',                                              'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/relayd.log',  'category' => 'relayd'),
+        array('program' => 'dnsmasq,filterdns,unbound',                           'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/resolver.log','category' => 'resolver'),
+        array('program' => 'radvd,routed,rtsold,olsrd,zebra,ospfd,bgpd,miniupnpd','filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/routing.log', 'category' => null),
+        array('program' => 'hostapd',                                             'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/wireless.log','category' => 'wireless'),
+
+        array('program' => null,  'filter' => 'local3.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/vpn.log',   'category' => 'vpn'),
+        array('program' => null,  'filter' => 'local7.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/dhcpd.log', 'category' => 'dhcpd'),
+        array('program' => null,  'filter' => '*.notice;kern.debug;lpr.info;mail.crit;daemon.none', 'type' => 'file', 'target' => $systemLog,             'category' => 'system'),
+        array('program' => null,  'filter' => 'news.err;local0.none;local3.none;local4.none', 'type' => 'file', 'target' => $systemLog,                   'category' => 'system'),
+        array('program' => null,  'filter' => 'local7.none',                          'type' => 'file',   'target' => $systemLog,                         'category' => null),
+        array('program' => null,  'filter' => 'security.*',                           'type' => 'file',   'target' => $systemLog,                         'category' => 'system'),
+        array('program' => null,  'filter' => 'auth.info;authpriv.info;daemon.info',  'type' => 'file',   'target' => $systemLog,                         'category' => 'system'),
+        array('program' => null,  'filter' => 'auth.info;authpriv.info;user.*',       'type' => 'pipe',   'target' => 'exec /usr/local/sbin/sshlockout_pf 15','category' => null),
+        array('program' => null,  'filter' => '*.emerg',                              'type' => 'all',    'target' => '*',                                'category' => 'system'),
         );
     }
-
-    private static $PredefinedSystemSelectors = array(
-                    array('type' => 'file', 'name' => 'vpn',    'filter'    => 'local3.*'),
-                    array('type' => 'file', 'name' => 'dhcpd',  'filter'    => 'local7.*'),
-                    array('type' => 'file', 'name' => 'system', 'filter'    => '*.notice;kern.debug;mail.crit;daemon.none;local0.none;local3.none;local4.none;local7.none;security.*;auth.info;authpriv.info;daemon.info'),
-                    array('type' => 'pipe', 'name' => 'exec /usr/local/sbin/sshlockout_pf 15', 'filter' => 'auth.info;authpriv.info;user.*'),
-                    array('type' => 'all',  'name' => '*',      'filter'    => '*.emerg'),
-                    );
-
 
     /*************************************************************************************************************
      * Public API
      *************************************************************************************************************/
 
+    // TODO: remove old obsolete
+    // TODO: we can add remote actions instead of tracking "Remote" flags
+
     /**
-     * Add or update Syslog target.
+     * Set Syslog target.
      * @param $source program name, null if no program name
      * @param $filter comma-separated list of selectors facility.level (without spaces)
      * @param $type type of action (file, pipe, remote, all)
      * @param $target action target
-     * @param $category log category mapping
+     * @param $category log category mapping, null if no category
      * @throws \ModelException
      */
     public function setTarget($source, $filter, $type, $target, $category)
@@ -95,7 +97,29 @@ class Syslog extends BaseModel
         $target = trim($target);
         $category = trim($category);
 
-        $sourceRef = $this->setSource($source);
+        $this->setSource($source);
+
+        // we would not add category if it not exists 
+
+        foreach($this->LogTargets->Target->__items as $uuid => $item) 
+        {
+            if($item->Source->__toString() == $source
+            && $item->Filter->__toString() == $filter
+            && $item->ActionType->__toString() == $type
+            && $item->Target->__toString() == $target
+            && $item->Category->__toString() == $category)
+                return;
+        }
+
+        $item = $this->LogTargets->Target->add();
+        $item->Source = $source;
+        $item->Filter = $filter;
+        $item->ActionType = $type;
+        $item->Target = $target;
+        $item->Category = $category;
+
+        $this->Modified = true;
+        $this->saveIfModified();
     }
 
     /**
@@ -132,34 +156,6 @@ class Syslog extends BaseModel
     }
 
 
-    /**
-     * Add Syslog source.
-     * @param $program category name
-     * @return source ref
-     * @throws \ModelException
-     */
-    public function setSource($program)
-    {
-        $program = str_replace(' ', '', $program);
-
-        foreach($this->LogSources->Source->__items as $uuid => $source) 
-        {
-            if($source->Program->__toString() == $program)
-                return $source;
-
-            $this->setNodeByReference('Syslog.LogCategories.Category.' . $uuid . '.Description', $description);
-            $this->Modified = true;
-            $this->saveIfModified();
-            return $source;
-        }
-
-        $source = $this->LogSources->Source->add();
-        $source->Program = $program;
-        $this->Modified = true;
-        $this->saveIfModified();
-        return $source;
-    }
-
     /*************************************************************************************************************
      * Protected Area
      *************************************************************************************************************/
@@ -168,13 +164,10 @@ class Syslog extends BaseModel
     {
         $this->BatchMode = true;
         $this->checkPredefinedCategories();
+        $this->checkPredefinedTargets();
         $this->BatchMode = false;
         
         $this->saveIfModified();
-        //$this->checkPredefinedSources();
-        //$this->regenerateSystemSelectors();
-        //$this->CoreSystemSourceName = self::$CORE_SYSTEM_SOURCE;
-        //$this->AllPrograms = $this->getAllPrograms();
     }
 
     private function checkPredefinedCategories()
@@ -189,6 +182,50 @@ class Syslog extends BaseModel
         $this->setCategory('resolver',  gettext('Domain name resolver events'));
         $this->setCategory('wireless',  gettext('Wireless events'));
         $this->setCategory('vpn',       gettext('VPN (PPTP, IPsec, OpenVPN) events'));
+    }
+
+    private function checkPredefinedTargets()
+    {
+        foreach($this->getPredefinedTargets() as $target)
+        {
+            $this->setTarget($target['program'], $target['filter'], $target['type'], $target['target'], $target['category']);
+        }
+
+        // NOTE: in more convivient way, plugins can set targets in setup script by Syslog::setTarget() call
+
+        // scan plugins
+        $plugins_data = plugins_syslog();
+        foreach($plugins_data as $name => $params)
+        {
+            $program = join(",", $params['facility']);
+            $target =  self::$LOGS_DIRECTORY."/".$name.".log";
+            $this->setTarget($program, '*.*', 'file', $target, null);
+        }
+    }
+
+     /**
+     * Set Syslog source.
+     * @param $program category name
+     * @throws \ModelException
+     */
+    public function setSource($program)
+    {
+        $program = str_replace(' ', '', $program);
+
+        if($program == '')
+            return;
+
+        foreach($this->LogSources->Source->__items as $uuid => $source) 
+        {
+            if($source->Program->__toString() == $program)
+                return;
+        }
+
+        $source = $this->LogSources->Source->add();
+        $source->Program = $program;
+        $this->Modified = true;
+        $this->saveIfModified();
+        return;
     }
 
     private function saveIfModified()
@@ -213,98 +250,12 @@ class Syslog extends BaseModel
         $this->Modified = false;
     }
 
-    private function getAllPrograms()
-    {
-        $all = array();
-        foreach($this->LogSources->Source->__items as $uuid => $source)
-            if($source->Program->__toString() != self::$CORE_SYSTEM_SOURCE)
-                $all[] = $source->Program->__toString();
-        return join(',', $all);
-    }
-
-    private function checkPredefinedSources()
-    {
-        $wasModified = false;
-
-        // look at our current model content
-        $programs = array();
-        foreach($this->LogSources->Source->__items as $uuid => $source)
-            $programs[] = $source->Program->__toString();
-
-        // scan plugins
-        $plugins_data = plugins_syslog();
-        foreach($plugins_data as $name => $params)
-        {
-            $program = join(",", $params['facility']);
-            if(!in_array($program, $programs))
-            {
-                $source = $this->LogSources->Source->add();
-                $source->Name = $name;
-                $source->Program = $program;
-                $source->Description = "Plugin $name events";
-                $source->RemoteLog = '0';
-                $source->Target = self::$LOGS_DIRECTORY . "/" . $name . ".log";
-                $wasModified = true;
-            }
-        }
-
-        // scan core predefined
-        foreach($this->getPredefinedSources() as $predefined => $params)
-        {
-            if(!in_array($predefined, $programs))
-            {
-                $source = $this->LogSources->Source->add();
-                $source->Name = $params['file'];
-                $source->Program = $predefined;
-                $source->Description = $params['description'];
-                $source->RemoteLog = $params['remote'];
-                $source->Target = self::$LOGS_DIRECTORY . "/" . $params['file'] . ".log";
-                $wasModified = true;
-            }
-        }
-
-        // TODO: API to add selectors, remove this function, replace by addAction(source, filter, type, target) requests
-        // TODO: remove old obsolete
-        // TODO: regenerate and restart if modified
-        // TODO: rename selector to action
-        // TODO: replace sources to categories in GUI
-        // TODO: we can add remote actions instead of tracking "Remote" flags
-    }
-
-    private function regenerateSystemSelectors()
-    {
-        // delete all
-        foreach($this->SystemSelectors->Selector->__items as $uuid => $selector)
-            $this->SystemSelectors->Selector->del($uuid);
-
-        // regenerate all
-        foreach(self::$PredefinedSystemSelectors as $predefined)
-        {
-            $selector = $this->SystemSelectors->Selector->add();
-            $selector->Filter       = $predefined['filter'];
-            $selector->ActionType   = $predefined['type'];
-            $selector->Target       = $predefined['type'] == 'file' ? self::$LOGS_DIRECTORY . "/" . $predefined['name'] . ".log" : $predefined['name'];
-        }
-    }
-
-
-    public function showSelectors()
-    {
-        $selectors = array();
-        foreach($this->Selectors->Selector->__items as $uuid => $selector)
-            $selectors[] = $selector->LogSource->Program->__toString();
-
-        return $selectors;
-    }
-
     public function test()
     {
         $sources = array();
         foreach($this->LogSources->Source->__items as $uuid => $item)
             $sources[] = array(
                     'program' => $item->Program->__toString(),
-                    'description' => $item->Description->__toString(),
-                    'remote' => $item->RemoteLog->__toString(),
                     );
 
         foreach($this->LogCategories->Category->__items as $uuid => $item)
@@ -315,10 +266,6 @@ class Syslog extends BaseModel
                     );
 
         $selectors = array();
-        foreach($this->SystemSelectors->Selector->__items as $uuid => $selector)
-            $selectors[] = array(
-                'filter' => $selector->Filter->__toString(),
-                );
 
         return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories);
     }

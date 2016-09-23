@@ -16,11 +16,6 @@
             <Required>Y</Required>
         </DisableLogFiles>
 
-        <CoreSystemSourceName type="TextField">
-        </CoreSystemSourceName>
-        <AllPrograms type="TextField">
-        </AllPrograms>
-
         <LogCategories>
             <Category type="ArrayField">
                 <Name type="TextField">
@@ -53,7 +48,6 @@
             </Proto>
             <Servers type="CSVListField">
                 <Required>N</Required>
-                <mask>/^((?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):(6553[0-5]|655[0-2][0-9]|65[0-4](\d){2}|6[0-4](\d){3}|[1-5](\d){4}|[1-9](\d){0,3})([,]){0,1})*/u</mask>
                 <ValidationMessage>Please enter valid targets (e.g. 192.168.0.100:514).</ValidationMessage>
             </Servers>
         </Remote>
@@ -63,35 +57,27 @@
                 <Program type="TextField">
                     <Required>Y</Required>
                 </Program>
-                <Description type="TextField">
-                </Description>
-                <RemoteLog type="BooleanField">
-                    <default>0</default>
-                    <Required>Y</Required>
-                </RemoteLog>
-                <Name type="TextField">
-                </Name>
-                <Target type="TextField">
-                    <Required>Y</Required>
-                </Target>
             </Source>
         </LogSources>
 
-        <SystemSelectors>
-            <Selector type="ArrayField">
+        <LogTargets>
+            <Target type="ArrayField">
+                <Source type="TextField">
+                    <Required>N</Required>
+                </Source>
                 <Filter type="TextField">
                     <Required>Y</Required>
                 </Filter>
-
                 <ActionType type="TextField">
                     <Required>N</Required>
                 </ActionType>
-
                 <Target type="TextField">
                     <Required>Y</Required>
                 </Target>
-            </Selector>
-        </SystemSelectors>
+                <Category type="TextField">
+                </Category>
+            </Target>
+        </LogTargets>
 
     </items>
 </model>

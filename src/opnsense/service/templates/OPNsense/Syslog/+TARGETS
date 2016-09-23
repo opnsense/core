@@ -1,2 +1,2 @@
 newsyslog.conf:/etc/newsyslog.conf
-syslog.conf:/var/etc/syslog.new
+syslog.conf:/var/etc/syslog.conf
