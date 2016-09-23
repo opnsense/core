@@ -59,7 +59,6 @@
     <field>
         <id>zone.allowedAddresses</id>
         <label>Allowed addresses</label>
-        <type>text</type>
         <type>select_multiple</type>
         <style>tokenize</style>
         <help><![CDATA[Avoid authentication for addresses and subnets in this list]]></help>
@@ -68,12 +67,25 @@
     <field>
         <id>zone.allowedMACAddresses</id>
         <label>Allowed MAC addresses</label>
-        <type>text</type>
         <type>select_multiple</type>
         <style>tokenize</style>
         <help><![CDATA[Avoid authentication for physical addresses in this list]]></help>
         <allownew>true</allownew>
         <advanced>true</advanced>
+    </field>
+    <field>
+        <id>zone.transparentHTTPProxy</id>
+        <label>Transparent proxy (HTTP)</label>
+        <type>checkbox</type>
+        <help><![CDATA[Forward HTTP traffic to transparent proxy]]></help>
+        <allownew>true</allownew>
+    </field>
+    <field>
+        <id>zone.transparentHTTPSProxy</id>
+        <label>Transparent proxy (HTTPS)</label>
+        <type>checkbox</type>
+        <help><![CDATA[Forward HTTPS traffic to transparent proxy]]></help>
+        <allownew>true</allownew>
     </field>
     <field>
         <id>zone.template</id>

@@ -68,6 +68,14 @@
                     <mask>/^((([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})([,]){0,1}))*/u</mask>
                     <ValidationMessage>Please enter valid mac addresses</ValidationMessage>
                 </allowedMACAddresses>
+                <transparentHTTPProxy type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </transparentHTTPProxy>
+                <transparentHTTPSProxy type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </transparentHTTPSProxy>
                 <template type="ModelRelationField">
                     <Model>
                         <template>
