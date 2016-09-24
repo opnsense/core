@@ -34,6 +34,7 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\ModelException;
+use Phalcon\Filter;
 
 
 // TODO: remote log all (!* -> *.* @server)
@@ -212,6 +213,25 @@ class Syslog extends BaseModel
         $this->saveIfModified();
     }
 
+    /**
+     * Delete all logfiles for given name
+     * @param $name log name without path and suffix ( for example 'system' to delete /var/log/system.log* )
+     */
+    public function clearLog($name)
+    {
+        $filter = new Filter();
+        $filter->add('logfilename', function($value){ return preg_replace("/[^0-9,a-z,A-Z,_]/", "", $value);});
+
+        $name = $filter->sanitize($name, 'logfilename');
+        $name = self::$LOGS_DIRECTORY . "/$name.log";
+
+        $backend = new Backend();
+        $status = $backend->configdRun("syslog clearlog {$name}");
+        $backend->configdRun("syslog start");
+
+        return array("status" => $status);
+    }
+
     /*************************************************************************************************************
      * Protected Area
      *************************************************************************************************************/
@@ -322,7 +342,6 @@ class Syslog extends BaseModel
                     );
 
         $selectors = array();
-        $this->delTarget(null, "local3.*", 'file', self::$LOGS_DIRECTORY.'/vpn.log');
-        return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories);
+        return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories, 'clearlog' => $this->clearLog("filter"));
     }
 }
