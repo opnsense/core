@@ -28,6 +28,16 @@
             });
         });
 
+        $("#clearAct").click(function(){
+            $("#responseMsg").removeClass("hidden");
+            ajaxCall(url="/api/syslog/service/resetLogFiles", sendData={},callback=function(data,status) {
+
+                // action to run after reload
+                $("#responseMsg").html(data['message']);
+
+            });
+        });
+
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
@@ -75,6 +85,7 @@
 
 		<hr/>
 	    <button class="btn btn-primary"  id="applyAct" type="button"><b>{{ lang._('Apply') }}</b></button>
+	    <button class="btn btn-primary"  id="clearAct" type="button"><b>{{ lang._('Reset Log Files') }}</b></button>
 	</div>
 
 </div>

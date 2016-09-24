@@ -32,6 +32,7 @@ namespace OPNsense\Syslog\Api;
 
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
+use \OPNsense\Syslog\Syslog;
 
 /**
  * Class ServiceController
@@ -44,7 +45,6 @@ class ServiceController extends ApiControllerBase
      * restart syslog service
      * @return array
      */
-
     public function reloadAction()
     {
         if ($this->request->isPost()) {
@@ -59,6 +59,27 @@ class ServiceController extends ApiControllerBase
             // (res)start daemon
             $backend->configdRun("syslog stop");
             $message = $backend->configdRun("syslog start");
+
+            return array("status" => "ok", "message" => $message);
+        } else {
+            return array("status" => "failed", "message" => gettext("Wrong request"));
+        }
+    }
+
+    /**
+     * delete log files
+     * @return array
+     */
+    public function resetLogFilesAction()
+    {
+        if ($this->request->isPost()) {
+
+            $this->sessionClose();
+
+            $mdl = new Syslog();
+            $result = $mdl->resetLogFiles();
+
+            $message = gettext("Log Files Deleted");
 
             return array("status" => "ok", "message" => $message);
         } else {

@@ -232,6 +232,29 @@ class Syslog extends BaseModel
         return array("status" => $status);
     }
 
+    /**
+     * Reset all logfiles
+     */
+    public function resetLogFiles()
+    {
+        $backend = new Backend();
+        $result = array();
+        $deleted = array();
+        foreach($this->LogTargets->Target->__items as $uuid => $target) {
+            if($target->ActionType == 'file') {
+                $pathname = $target->Target->__toString();
+                if(!in_array($pathname, $deleted)) {
+                    $status = $backend->configdRun("syslog clearlog {$pathname}");
+                    $result[] = array('name' => $pathname, 'status' => $status);
+                    $deleted[] = $pathname;
+                }
+            }
+        }
+
+        $backend->configdRun("syslog start");
+
+        return array("status" => $result);
+    }
     /*************************************************************************************************************
      * Protected Area
      *************************************************************************************************************/
