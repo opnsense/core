@@ -28,11 +28,20 @@
  */
 namespace OPNsense\Syslog;
 
+require_once("plugins.inc"); // can be removed, see checkPredefinedTargets()
+
+use OPNsense\Core\Config;
+use OPNsense\Core\Backend;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\ModelException;
-use OPNsense\Core\Config;
 
-require_once("plugins.inc");
+
+// TODO: remove old obsolete
+// TODO: remote log all (!* -> *.* @server)
+// TODO: setup rotation and logfile size
+// TODO: bind_address select in UI
+// TODO: sanitize socket path, see setLocalSocket()
+
 
 /**
  * Class Syslog
@@ -73,12 +82,11 @@ class Syslog extends BaseModel
         );
     }
 
+    // WARNING: in legacy code was selector "local7.*" for remote logging only , mapped to portalauth category ???
+
     /*************************************************************************************************************
      * Public API
      *************************************************************************************************************/
-
-    // TODO: remove old obsolete
-    // TODO: we can add remote actions instead of tracking "Remote" flags
 
     /**
      * Set Syslog target.
@@ -155,6 +163,27 @@ class Syslog extends BaseModel
         $this->saveIfModified();
     }
 
+    /**
+     * Add or update Syslog category. For mapping in GUI.
+     * @param $name category name
+     * @param $description category description
+     * @throws \ModelException
+     */
+    public function setLocalSocket($path)
+    {
+        $path = trim($path);
+
+        foreach($this->LocalSockets->Socket->__items as $uuid => $socket) 
+        {
+            if($socket->Path->__toString() == $path)
+                return;
+        }
+
+        $socket = $this->LocalSockets->Socket->add();
+        $socket->Path = $path;
+        $this->Modified = true;
+        $this->saveIfModified();
+    }
 
     /*************************************************************************************************************
      * Protected Area
@@ -203,11 +232,11 @@ class Syslog extends BaseModel
         }
     }
 
-     /**
-     * Set Syslog source.
-     * @param $program category name
-     * @throws \ModelException
-     */
+    /**
+    * Set Syslog source.
+    * @param $program category name
+    * @throws \ModelException
+    */
     public function setSource($program)
     {
         $program = str_replace(' ', '', $program);
@@ -266,7 +295,6 @@ class Syslog extends BaseModel
                     );
 
         $selectors = array();
-
         return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories);
     }
 }

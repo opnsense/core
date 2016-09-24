@@ -16,6 +16,14 @@
             <Required>Y</Required>
         </DisableLogFiles>
 
+        <LocalSockets>
+            <Socket type="ArrayField">
+                <Path type="TextField">
+                    <Required>Y</Required>
+                </Path>
+            </Socket>
+        </LocalSockets>
+
         <LogCategories>
             <Category type="ArrayField">
                 <Name type="TextField">
@@ -46,6 +54,8 @@
                     <ipv6>IPv6</ipv6>
                 </OptionValues>
             </Proto>
+            <BindAddress type="TextField">
+            </BindAddress>
             <Servers type="CSVListField">
                 <Required>N</Required>
                 <ValidationMessage>Please enter valid targets (e.g. 192.168.0.100:514).</ValidationMessage>

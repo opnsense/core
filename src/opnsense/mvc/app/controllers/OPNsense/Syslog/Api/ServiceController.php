@@ -57,11 +57,11 @@ class ServiceController extends ApiControllerBase
             $backend->configdRun("template reload OPNsense.Syslog");
 
             // (res)start daemon
-            $backend->configdRun("syslog restart");
+            $message = $backend->configdRun("syslog start");
 
-            return array("status" => "ok", "message" => gettext("Restarted"));
+            return array("status" => "ok", "message" => $message);
         } else {
-            return array("status" => "failed", "message" => gettext("Restart Failed"));
+            return array("status" => "failed", "message" => gettext("Wrong request"));
         }
     }
 }

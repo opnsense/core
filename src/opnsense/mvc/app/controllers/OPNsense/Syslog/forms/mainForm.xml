@@ -32,24 +32,17 @@
 		<help>Send log messages to remote syslog server.</help>
 	</field>
 	<field>
+		<id>syslog.Remote.BindAddress</id>
+		<label>BindAddress</label>
+		<type>text</type>
+		<help>This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses. If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces.</help>
+	</field>
+	<field>
 		<id>syslog.Remote.Servers</id>
 		<label>Remote Syslog Servers</label>
 		<type>text</type>
 		<allownew>true</allownew>
 		<style>tokenize</style>
 		<help>IP addresses of remote syslog servers, or an IP:port.</help>
-	</field>
-	<field>
-		<id>syslog.Remote.SourceIP</id>
-		<label>Source Address</label>
-		<type>dropdown</type>
-		<help><![CDATA[This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses. If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces.<br/>
-		<div class="text-info"><b>NOTE:</b> If an IP address cannot be located on the chosen interface, the daemon will bind to all addresses.</div>]]></help>
-	</field>
-	<field>
-		<id>syslog.Remote.Proto</id>
-		<label>IP Protocol</label>
-		<type>dropdown</type>
-		<help>This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried.</help>
 	</field>
 </form>
