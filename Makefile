@@ -214,14 +214,13 @@ scripts: want-git
 
 install: force
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
-	@${MAKE} -C ${.CURDIR}/src install_boot DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
 	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
 	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 bootstrap: force
-	@${MAKE} -C ${.CURDIR}/src install_bootstrap DESTDIR=${DESTDIR} \
+	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
