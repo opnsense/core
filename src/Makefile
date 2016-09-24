@@ -1,9 +1,8 @@
-ROOT=	/usr/local
-TREES=	etc opnsense sbin wizard www
+TREES=		boot etc opnsense sbin wizard www
+ROOT=		/usr/local
+ROOT_boot=	/
 
-EXTRA=	bootstrap
-
-ROOT_bootstrap= /usr/local
+EXTRAS=		bootstrap
 TREES_bootstrap=etc/pkg
 
 .include "../Mk/tree.mk"

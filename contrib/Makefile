@@ -1,4 +1,5 @@
 ROOT=	/usr/local/opnsense/contrib
-TREES=	mobile-broadband-provider-info tzdata
+TREES=	base32 google-api-php-client IXR mobile-broadband-provider-info \
+	simplepie tzdata
 
 .include "../Mk/tree.mk"

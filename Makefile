@@ -23,14 +23,10 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-PKG!=		which pkg || echo true
-GIT!=		which git || echo true
-PAGER?=		less
+.include "Mk/defaults.mk"
 
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
-
-force:
 
 WANTS=		git pear-PHP_CodeSniffer phpunit
 
@@ -47,7 +43,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	16.7
 
-_FLAVOUR!=	/usr/local/bin/openssl version
+_FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
 
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""
@@ -150,7 +146,7 @@ mount: want-git
 	    echo -n "Enabling core.git live mount..."; \
 	    echo "${CORE_COMMIT}" > \
 	        ${.CURDIR}/src/opnsense/version/opnsense; \
-	    mount_unionfs ${.CURDIR}/src /usr/local; \
+	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
 	    touch ${WRKDIR}/.mount_done; \
 	    echo "done"; \
 	    service configd restart; \
@@ -166,7 +162,6 @@ umount: force
 	    service configd restart; \
 	fi
 
-
 manifest: want-git
 	@echo "name: \"${CORE_NAME}\""
 	@echo "version: \"${CORE_VERSION}\""
@@ -179,7 +174,7 @@ manifest: want-git
 	@echo "categories: [ \"sysutils\", \"www\" ]"
 	@echo "licenselogic: \"single\""
 	@echo "licenses: [ \"BSD2CLAUSE\" ]"
-	@echo "prefix: /usr/local"
+	@echo "prefix: ${LOCALBASE}"
 	@echo "vital: true"
 	@echo "deps: {"
 	@for CORE_DEPEND in ${CORE_DEPENDS}; do \
@@ -220,7 +215,7 @@ install: force
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 bootstrap: force
-	@${MAKE} -C ${.CURDIR}/src install_bootstrap DESTDIR=${DESTDIR} \
+	@${MAKE} -C ${.CURDIR}/src install-bootstrap DESTDIR=${DESTDIR} \
 	    NO_SAMPLE=please CORE_PACKAGESITE=${CORE_PACKAGESITE} \
 	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
@@ -266,10 +261,10 @@ upgrade-check: force
 	fi
 	@rm -rf ${PKGDIR}
 
-upgrade: upgrade-check package
+upgrade: plist-check upgrade-check package
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
-	@/usr/local/etc/rc.restart_webgui
+	@${LOCALBASE}/etc/rc.restart_webgui
 
 lint: force
 	find ${.CURDIR}/src ${.CURDIR}/Scripts \
@@ -300,7 +295,7 @@ sweep: force
 	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
 
 style: want-pear-PHP_CodeSniffer
-	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/opnsense/mvc \
+	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/opnsense \
 	    || true) > ${.CURDIR}/.style.out
 	@echo -n "Total number of style warnings: "
 	@grep '| WARNING' ${.CURDIR}/.style.out | wc -l
@@ -309,8 +304,8 @@ style: want-pear-PHP_CodeSniffer
 	@cat ${.CURDIR}/.style.out
 	@rm ${.CURDIR}/.style.out
 
-stylefix: want-pear-PHP_CodeSniffer
-	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense/mvc || true
+style-fix: want-pear-PHP_CodeSniffer
+	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
 
 setup: force
 	${.CURDIR}/src/etc/rc.php_ini_setup
@@ -325,5 +320,3 @@ test: want-phpunit
 
 clean: want-git
 	${GIT} reset --hard HEAD && ${GIT} clean -xdqf .
-
-.PHONY: force

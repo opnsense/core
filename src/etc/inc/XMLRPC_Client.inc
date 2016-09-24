@@ -1,4 +1,5 @@
 <?php
+
 /**
  *    Copyright (C) 2015 Deciso B.V.
  *
@@ -26,7 +27,8 @@
  *    POSSIBILITY OF SUCH DAMAGE.
  *
  */
-require_once("IXR_Library.php") ;
+
+require_once("IXR/IXR_Library.php");
 
 /**
  * Simple XMLRPC client based on the components from IXR

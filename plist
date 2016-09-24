@@ -1,3 +1,5 @@
+/boot/brand-opnsense.4th
+/boot/logo-hourglass.4th
 /usr/local/etc/ddb.conf
 /usr/local/etc/devd/carp.conf
 /usr/local/etc/devd/ifnet.conf
@@ -124,7 +126,7 @@
 /usr/local/etc/rc.update_bogons
 /usr/local/etc/rc.update_urltables
 /usr/local/etc/ssl/opnsense.cnf
-/usr/local/opnsense/contrib/IXR_Library.php
+/usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
 /usr/local/opnsense/contrib/google-api-php-client/Google/Auth/Abstract.php
 /usr/local/opnsense/contrib/google-api-php-client/Google/Auth/AppIdentity.php
@@ -247,8 +249,6 @@
 /usr/local/opnsense/contrib/google-api-php-client/Google/Verifier/Pem.php
 /usr/local/opnsense/contrib/google-api-php-client/Google/autoload.php
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
-/usr/local/opnsense/contrib/simplepie/.gitignore
-/usr/local/opnsense/contrib/simplepie/.travis.yml
 /usr/local/opnsense/contrib/simplepie/LICENSE.txt
 /usr/local/opnsense/contrib/simplepie/README.markdown
 /usr/local/opnsense/contrib/simplepie/autoloader.php
@@ -631,6 +631,7 @@
 /usr/local/opnsense/service/templates/OPNsense/IPFW/+MANIFEST
 /usr/local/opnsense/service/templates/OPNsense/IPFW/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.conf
+/usr/local/opnsense/service/templates/OPNsense/IPFW/ipfw.fw.conf
 /usr/local/opnsense/service/templates/OPNsense/IPFW/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Macros/interface.macro
 /usr/local/opnsense/service/templates/OPNsense/Netflow/+MANIFEST
@@ -672,7 +673,6 @@
 /usr/local/opnsense/site-python/sqlite3_helper.py
 /usr/local/opnsense/site-python/watchers/__init__.py
 /usr/local/opnsense/site-python/watchers/dhcpd.py
-/usr/local/opnsense/version/.gitignore
 /usr/local/opnsense/www/.htaccess
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
@@ -883,7 +883,6 @@
 /usr/local/wizard/setup.xml
 /usr/local/www/carp_status.php
 /usr/local/www/crash_reporter.php
-/usr/local/www/csrf/.gitignore
 /usr/local/www/csrf/csrf-magic.js
 /usr/local/www/csrf/csrf-magic.php
 /usr/local/www/diag_authentication.php
