@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         relayd_configure();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
-        header("Location: load_balancer_monitor.php");
+        header(url_safe('Location: /load_balancer_monitor.php'));
         exit;
     }
 }

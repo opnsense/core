@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Wipe out old relayd anchors no longer in use. */
         cleanup_lb_marked();
         clear_subsystem_dirty('loadbalancer');
-        header("Location: load_balancer_virtual_server.php");
+        header(url_safe('Location: /load_balancer_virtual_server.php'));
         exit;
     }
 }
