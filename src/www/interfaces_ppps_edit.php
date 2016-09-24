@@ -251,7 +251,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           if ($config['interfaces'][$pppif]['if'] == $ppp['if'])
             interface_ppps_configure($pppif);
         }
-        header("Location: interfaces_ppps.php");
+        header(url_safe('Location: /interfaces_ppps.php'));
         exit;
     }
 }

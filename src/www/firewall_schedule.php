@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             unset($a_schedules[$id]);
             write_config();
-            header("Location: firewall_schedule.php");
+            header(url_safe('Location: /firewall_schedule.php'));
             exit;
         }
     }

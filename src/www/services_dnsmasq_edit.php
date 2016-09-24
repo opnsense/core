@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         usort($config['dnsmasq']['hosts'], "hostcmp");
         mark_subsystem_dirty('hosts');
         write_config();
-        header("Location: services_dnsmasq.php");
+        header(url_safe('Location: /services_dnsmasq.php'));
         exit;
     }
 }

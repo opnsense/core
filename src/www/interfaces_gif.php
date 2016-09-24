@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mwexec("/sbin/ifconfig " . escapeshellarg($a_gifs[$id]['gifif']) . " destroy");
             unset($a_gifs[$id]);
             write_config();
-            header("Location: interfaces_gif.php");
+            header(url_safe('Location: /interfaces_gif.php'));
             exit;
         }
     }

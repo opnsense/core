@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             write_config();
 
-            header("Location: interfaces_qinq.php");
+            header(url_safe('Location: /interfaces_qinq.php'));
             exit;
         }
     }

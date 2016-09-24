@@ -203,12 +203,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $a_schedules[] = $schedule;
         }
-        schedule_sort();
-        if (write_config()) {
-            filter_configure();
-        }
 
-        header("Location: firewall_schedule.php");
+        schedule_sort();
+        write_config();
+        filter_configure();
+
+        header(url_safe('Location: /firewall_schedule.php'));
         exit;
     }
 }

@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
-        header("Location: system_gateway_groups.php");
+        header(url_safe('Location: /system_gateway_groups.php'));
         exit;
     }
 }

@@ -71,12 +71,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($a_tunable[$id]);
         write_config();
         mark_subsystem_dirty('sysctl');
-        header("Location: system_advanced_sysctl.php");
+        header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
     } else if (!empty($pconfig['apply'])) {
         system_setup_sysctl();
         clear_subsystem_dirty('sysctl');
-        header("Location: system_advanced_sysctl.php");
+        header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
     } elseif (!empty($pconfig['Submit'])) {
         $tunableent = array();
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         mark_subsystem_dirty('sysctl');
         write_config();
-        header("Location: system_advanced_sysctl.php");
+        header(url_safe('Location: /system_advanced_sysctl.php'));
         exit;
     }
 

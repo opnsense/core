@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         mark_subsystem_dirty('loadbalancer');
         write_config();
-        header("Location: load_balancer_monitor.php");
+        header(url_safe('Location: /load_balancer_monitor.php'));
         exit;
     }
 }

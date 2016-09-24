@@ -215,11 +215,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $a_vip[] = $vipent;
         }
-        if (write_config()) {
-            mark_subsystem_dirty('vip');
-            file_put_contents('/tmp/.firewall_virtual_ip.apply', serialize($toapplylist));
-        }
-        header("Location: firewall_virtual_ip.php");
+        write_config();
+        mark_subsystem_dirty('vip');
+        file_put_contents('/tmp/.firewall_virtual_ip.apply', serialize($toapplylist));
+        header(url_safe('Location: /firewall_virtual_ip.php'));
         exit;
     }
 }

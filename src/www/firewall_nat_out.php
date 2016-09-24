@@ -117,18 +117,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $config['nat']['outbound']['mode'] = $pconfig['mode'];
 
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat_out.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single record
         unset($a_out[$id]);
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat_out.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         /* delete selected rules */
@@ -137,10 +135,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($a_out[$rulei]);
             }
         }
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat_out.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // if rule not set/found, move to end
@@ -148,10 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = count($a_out);
         }
         $a_out = legacy_move_config_list_items($a_out, $id,  $pconfig['rule']);
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat_out.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
         // toggle item disabled / enabled
@@ -160,10 +156,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_out[$id]['disabled'] = true;
         }
-        if (write_config("Firewall: NAT: Outbound, enable/disable NAT rule")) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat_out.php");
+        write_config('Firewall: NAT: Outbound, toggle NAT rule');
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     }
 }

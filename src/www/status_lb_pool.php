@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         relayd_configure();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
-        header("Location: status_lb_pool.php");
+        header(url_safe('Location: /status_lb_pool.php'));
         exit;
     } else {
         // change pool configuration (enabled/disabled servers)
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mark_subsystem_dirty('loadbalancer');
             write_config("Updated load balancer pools via status screen.");
         }
-        header("Location: status_lb_pool.php");
+        header(url_safe('Location: /status_lb_pool.php'));
         exit;
     }
 }

@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             services_dnsupdate_process();
         }
-        header("Location: services_rfc2136.php");
+        header(url_safe('Location: /services_rfc2136.php'));
         exit;
     }
 }

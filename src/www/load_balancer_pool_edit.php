@@ -142,18 +142,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         mark_subsystem_dirty('loadbalancer');
         write_config();
-        header("Location: load_balancer_pool.php");
+        header(url_safe('Location: /load_balancer_pool.php'));
         exit;
     }
 }
 
-
-
 $service_hook = 'relayd';
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
   <!-- push all available (nestable) aliases in a hidden select box -->
   <select class="hidden" id="aliases">

@@ -507,13 +507,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 filter_configure();
             }
             reconfigure_dhcpd();
-            header("Location: services_dhcp.php?if={$if}");
+            header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));
             exit;
         }
     } elseif (isset($_POST['apply'])) {
         // apply changes
         reconfigure_dhcpd();
-        header("Location: services_dhcp.php?if={$if}");
+        header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));
         exit;
     } elseif ($act ==  "del") {
         if (!empty($config['dhcpd'][$if]['staticmap'][$_POST['id']])) {
@@ -528,14 +528,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
             }
         }
-        header("Location: services_dhcp.php?if={$if}");
+        header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));
         exit;
     } elseif ($act ==  "delpool") {
         if (!empty($a_pools[$_POST['id']])) {
             unset($a_pools[$_POST['id']]);
             write_config();
         }
-        header("Location: services_dhcp.php?if={$if}");
+        header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));
         exit;
     }
 }

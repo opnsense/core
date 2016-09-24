@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_POST['apply'])) {
         services_unbound_configure();
         clear_subsystem_dirty('unbound');
-        header("Location: services_unbound_advanced.php");
+        header(url_safe('Location: /services_unbound_advanced.php'));
         exit;
     } else {
         $pconfig = $_POST;
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         write_config("DNS Resolver configured.");
         mark_subsystem_dirty('unbound');
-        header("Location: services_unbound_advanced.php");
+        header(url_safe('Location: /services_unbound_advanced.php'));
         exit;
     }
 }

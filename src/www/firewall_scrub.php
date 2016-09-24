@@ -73,33 +73,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($config['system']['scrub_interface_disable'])) {
             unset($config['system']['scrub_interface_disable']);
         }
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_scrub.php");
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_scrub.php'));
         exit;
     } elseif (isset($pconfig['apply'])) {
         filter_configure();
         clear_subsystem_dirty('filter');
-        header("Location: firewall_scrub.php?savemsg=yes");
+        header(url_safe('Location: /firewall_scrub.php?savemsg=yes'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single item
         unset($a_scrub[$id]);
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_scrub.php");
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_scrub.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // delete selected rules
         foreach ($pconfig['rule'] as $rule_index) {
             unset($a_scrub[$rule_index]);
         }
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_scrub.php");
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_scrub.php'));
         exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // move selected rules
@@ -108,10 +105,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $id = count($a_scrub);
         }
         $a_scrub = legacy_move_config_list_items($a_scrub, $id,  $pconfig['rule']);
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_scrub.php");
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_scrub.php'));
         exit;
 
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
@@ -121,10 +117,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } else {
             $a_scrub[$id]['disabled'] = true;
         }
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_scrub.php");
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_scrub.php'));
         exit;
     }
 }

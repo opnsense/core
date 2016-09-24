@@ -43,18 +43,18 @@ if ($_POST['reloadfilter']) {
         // only try to sync when hasync is configured
         configd_run("filter sync reload");
     }
-    header("Location: status_filter_reload.php");
+    header(url_safe('Location: /status_filter_reload.php'));
     exit;
 }
 if ($_POST['syncfilter']) {
     configd_run("filter sync");
-    header("Location: status_filter_reload.php");
+    header(url_safe('Location: /status_filter_reload.php'));
     exit;
 }
 
 include("head.inc");
-?>
 
+?>
 <body>
   <script type="text/javascript">
   $( document ).ready(function() {

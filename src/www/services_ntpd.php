@@ -114,7 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         write_config("Updated NTP Server Settings");
         system_ntp_configure();
-        header("Location: services_ntpd.php");
+        header(url_safe('Location: /services_ntpd.php'));
         exit;
     }
 }

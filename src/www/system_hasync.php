@@ -76,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $a_hasync['password']        = $pconfig['password'];
     write_config("Updated High Availability configuration");
     interfaces_carp_setup();
-    header("Location: system_hasync.php");
-    exit();
+    header(url_safe('Location: /system_hasync.php'));
+    exit;
 }
 
 legacy_html_escape_form_data($pconfig);

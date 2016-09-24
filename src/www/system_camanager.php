@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "edit") {
         if (!isset($id)) {
-            header("Location: system_camanager.php");
+            header(url_safe('Location: /system_camanager.php'));
             exit;
         }
         $pconfig['descr']  = $a_ca[$id]['descr'];
@@ -193,7 +193,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['dn_commonname'] = "internal-ca";
     } elseif ($act == "exp") {
         if (!isset($id)) {
-            header("Location: system_camanager.php");
+            header(url_safe('Location: /system_camanager.php'));
             exit;
         }
 
@@ -208,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == "expkey") {
         if (!isset($id)) {
-            header("Location: system_camanager.php");
+            header(url_safe('Location: /system_camanager.php'));
             exit;
         }
 
@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if ($act == "del") {
         if (!isset($id)) {
-            header("Location: system_camanager.php");
+            header(url_safe('Location: /system_camanager.php'));
             exit;
         }
         $a_cert =& $config['cert'];
@@ -255,7 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         unset($a_ca[$id]);
         write_config();
-        header("Location: system_camanager.php");
+        header(url_safe('Location: /system_camanager.php'));
         exit;
     } else {
         $input_errors = array();
@@ -402,10 +402,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             if (count($input_errors) == 0) {
                 write_config();
-                header("Location: system_camanager.php");
+                header(url_safe('Location: /system_camanager.php'));
             }
         }
-
     }
 }
 
@@ -415,7 +414,6 @@ include("head.inc");
 $main_buttons = array(
     array('label' => gettext('Add or import CA'), 'href' => 'system_camanager.php?act=new'),
 );
-
 
 ?>
 

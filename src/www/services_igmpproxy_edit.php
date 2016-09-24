@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
 
         mark_subsystem_dirty('igmpproxy');
-        header("Location: services_igmpproxy.php");
+        header(url_safe('Location: /services_igmpproxy.php'));
         exit;
     }
 }

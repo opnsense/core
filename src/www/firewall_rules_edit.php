@@ -453,15 +453,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         filter_rules_sort();
         configure_cron();
         // write to config
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
+        write_config();
+        mark_subsystem_dirty('filter');
 
-        if (!empty($pconfig['floating'])) {
-            header("Location: firewall_rules.php?if=FloatingRules");
-        } else {
-            header("Location: firewall_rules.php?if=" . htmlspecialchars($pconfig['interface']));
-        }
+        header(url_safe('Location: /firewall_rules.php?if=%s', array(
+            !empty($pconfig['floating']) ? 'FloatingRules' : $pconfig['interface']
+	)));
         exit;
     }
 }

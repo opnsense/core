@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($confif <> "") {
                 interface_configure($confif);
             }
-            header("Location: interfaces_lagg.php");
+            header(url_safe('Location: /interfaces_lagg.php'));
             exit;
         }
     }

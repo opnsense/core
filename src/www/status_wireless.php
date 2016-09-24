@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $rwlif = escapeshellarg(get_real_interface($if));
     if(!empty($_POST['rescanwifi'])) {
         mwexecf_bg('/sbin/ifconfig %s scan', $rwlif);
-        header(url_safe('Location: status_wireless.php?if=%s&savemsg=rescan', $if));
+        header(url_safe('Location: /status_wireless.php?if=%s&savemsg=rescan', array($if)));
         exit;
     }
 }

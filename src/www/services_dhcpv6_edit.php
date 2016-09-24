@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($config['interfaces'][$_GET['if']])) {
         $if = $_GET['if'];
     } else {
-        header("Location: services_dhcpv6.php");
+        header(url_safe('Location: /services_dhcpv6.php'));
         exit;
     }
     if (isset($if) && isset($_GET['id']) && !empty($config['dhcpdv6'][$if]['staticmap'][$_GET['id']])) {
@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        header("Location: services_dhcpv6.php?if={$if}");
+        header(url_safe('Location: /services_dhcpv6.php?if=%s', array($if)));
         exit;
     }
 }

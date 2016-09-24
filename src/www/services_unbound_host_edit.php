@@ -125,10 +125,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         usort($a_hosts, "hostcmp");
         mark_subsystem_dirty('unbound');
         write_config();
-        header("Location: services_unbound_overrides.php");
+        header(url_safe('Location: /services_unbound_overrides.php'));
         exit;
     }
-
 }
 
 $service_hook = 'unbound';

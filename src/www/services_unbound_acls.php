@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['apply'])) {
         services_unbound_configure();
         clear_subsystem_dirty('unbound');
-        header("Location: services_unbound_acls.php");
+        header(url_safe('Location: /services_unbound_acls.php'));
         exit;
     } elseif (!empty($act) && $act == "del") {
         if (isset($id) && !empty($a_acls[$id])) {
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             mark_subsystem_dirty("unbound");
             write_config();
-            header("Location: services_unbound_acls.php");
+            header(url_safe('Location: /services_unbound_acls.php'));
             exit;
         }
     }

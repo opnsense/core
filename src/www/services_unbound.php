@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         clear_subsystem_dirty('unbound');
         /* Update resolv.conf in case the interface bindings exclude localhost. */
         system_resolvconf_generate();
-        header("Location: services_unbound.php");
+        header(url_safe('Location: /services_unbound.php'));
         exit;
     } else {
         // perform validations
@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config("DNS Resolver configured.");
             mark_subsystem_dirty('unbound');
-            header("Location: services_unbound.php");
+            header(url_safe('Location: /services_unbound.php'));
             exit;
         }
     }

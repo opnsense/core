@@ -267,7 +267,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
 
           write_config();
-          header("Location: system_authservers.php");
+          header(url_safe('Location: /system_authservers.php'));
+          exit;
       } else {
           $act = "edit";
       }
@@ -279,12 +280,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($config['system']['authserver'][$k]);
             }
         }
-        $savemsg = gettext("Authentication Server")." {$serverdeleted} ".
-                    gettext("deleted")."<br />";
-        write_config($savemsg);
-        header("Location: system_authservers.php");
+        write_config(sprintf('Authentication server "%s" deleted.', $serverdeleted));
+        header(url_safe('Location: /system_authservers.php'));
+        exit;
     }
-
 }
 
 // list of all possible fields for auth item (used for form init)

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unset($a_npt[$id]);
         write_config();
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_npt.php");
+        header(url_safe('Location: /firewall_nat_npt.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         /* delete selected rules */
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_npt.php");
+        header(url_safe('Location: /firewall_nat_npt.php'));
         exit;
      } elseif (isset($pconfig['act']) && $pconfig['act'] == 'move') {
         // move records
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_npt.php");
+        header(url_safe('Location: /firewall_nat_npt.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
         // toggle item
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config('Toggled NAT NPT rule');
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_npt.php");
+        header(url_safe('Location: /firewall_nat_npt.php'));
         exit;
     }
 }

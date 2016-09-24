@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         usort($config['wol']['wolentry'], "wolcmp");
         write_config();
 
-        header("Location: services_wol.php");
+        header(url_safe('Location: /services_wol.php'));
         exit;
     }
 }

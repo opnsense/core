@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             unset($a_ppps[$id]);
             write_config();
-            header("Location: interfaces_ppps.php");
+            header(url_safe('Location: /interfaces_ppps.php'));
             exit;
         }
     }

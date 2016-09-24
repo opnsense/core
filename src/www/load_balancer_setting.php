@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         relayd_configure();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
-        header("Location: load_balancer_setting.php");
+        header(url_safe('Location: /load_balancer_setting.php'));
         exit;
     } else {
         /* input validation */
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config();
             mark_subsystem_dirty('loadbalancer');
-            header("Location: load_balancer_setting.php");
+            header(url_safe('Location: /load_balancer_setting.php'));
             exit;
         }
     }

@@ -250,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         stop_capture();
     } elseif (!empty($pconfig['remove'])) {
         @unlink('/tmp/packetcapture.cap');
-        header("Location: diag_packet_capture.php");
+        header(url_safe('Location: /diag_packet_capture.php'));
         exit;
     }
 }

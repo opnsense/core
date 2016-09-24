@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         services_dnsmasq_configure();
         write_config();
-        header("Location: services_dnsmasq.php");
+        header(url_safe('Location: /services_dnsmasq.php'));
         exit;
     }
 }

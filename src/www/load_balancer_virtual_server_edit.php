@@ -125,18 +125,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         mark_subsystem_dirty('loadbalancer');
         write_config();
-        header("Location: load_balancer_virtual_server.php");
-        exit;
 
+        header(url_safe('Location: /load_balancer_virtual_server.php'));
+        exit;
     }
 }
 
 $service_hook = 'relayd';
 legacy_html_escape_form_data($pconfig);
+
 include("head.inc");
+
 ?>
-
-
 <body>
   <script type="text/javascript">
     $( document ).ready(function() {

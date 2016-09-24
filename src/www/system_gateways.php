@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($retval == 0) {
             clear_subsystem_dirty('staticroutes');
         }
-        header("Location: system_gateways.php?displaysave=true");
+        header(url_safe('Location: /system_gateways.php?displaysave=true'));
         exit;
     } elseif (isset($id) && isset($pconfig['act']) && $pconfig['act'] == "del") {
         // delete single entry
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             delete_gateway_item($id, $a_gateways);
             write_config("Gateways: removed gateway {$realid}");
             mark_subsystem_dirty('staticroutes');
-            header("Location: system_gateways.php");
+            header(url_safe('Location: /system_gateways.php'));
             exit;
         }
     } elseif (isset($id) && isset($pconfig['act']) && $pconfig['act'] == "toggle") {
@@ -164,11 +164,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $a_gateway_item[$realid]['disabled'] = true;
         }
 
-        if (write_config("Gateways: enable/disable")) {
-            mark_subsystem_dirty('staticroutes');
-        }
+        write_config('Gateways: toggled gateway');
+        mark_subsystem_dirty('staticroutes');
 
-        header("Location: system_gateways.php");
+        header(url_safe('Location: /system_gateways.php'));
         exit;
     } elseif (!empty($pconfig['rule']) && isset($pconfig['act']) && $pconfig['act'] == "del_x") {
         // delete selected items
@@ -190,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     write_config("Gateways: removed gateways {$items_deleted}");
                     mark_subsystem_dirty('staticroutes');
                 }
-                header("Location: system_gateways.php");
+                header(url_safe('Location: /system_gateways.php'));
                 exit;
             }
         }

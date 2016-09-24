@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($confif <> "") {
                 interface_configure($confif);
             }
-            header("Location: interfaces_gif.php");
+            header(url_safe('Location: /interfaces_gif.php'));
             exit;
         }
     }

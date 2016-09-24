@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($a_group[$id]);
         write_config();
         // reload page
-        header("Location: system_groupmanager.php");
+        header(url_safe('Location: /system_groupmanager.php'));
         exit;
     }  elseif (isset($pconfig['save'])) {
         $input_errors = array();
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
             write_config();
-            header("Location: system_groupmanager.php");
+            header(url_safe('Location: /system_groupmanager.php'));
             exit;
         } else {
             // input errors, load page in edit mode
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     } else {
         // POST without a valid action, redirect to overview
-        header("Location: system_groupmanager.php");
+        header(url_safe('Location: /system_groupmanager.php'));
         exit;
     }
 }

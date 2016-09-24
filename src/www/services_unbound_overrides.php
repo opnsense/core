@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         clear_subsystem_dirty('unbound');
         /* Update resolv.conf in case the interface bindings exclude localhost. */
         system_resolvconf_generate();
-        header("Location: services_unbound_overrides.php");
+        header(url_safe('Location: /services_unbound_overrides.php'));
         exit;
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'del') {
         if (isset($pconfig['id']) && !empty($a_hosts[$pconfig['id']])) {
