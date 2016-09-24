@@ -28,7 +28,7 @@ GIT!=		which git || echo true
 LOCALBASE?=	/usr/local
 PAGER?=		less
 
-all:
+all-stub: all
 	@echo "Nothing to do."
 
 force:

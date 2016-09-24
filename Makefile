@@ -224,6 +224,16 @@ plist: force
 	@${MAKE} -C ${.CURDIR}/contrib plist
 	@${MAKE} -C ${.CURDIR}/src plist
 
+plist-fix: force
+	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
+
+plist-check: force
+	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist
+	@if ! diff -uq ${.CURDIR}/plist ${WRKDIR}/plist > /dev/null ; then \
+		echo ">>> Package file lists do not match.  Please run 'make plist-fix'." >&2; \
+		diff -u ${.CURDIR}/plist ${WRKDIR}/plist; \
+	fi
+
 metadata: force
 	@mkdir -p ${DESTDIR}
 	@${MAKE} DESTDIR=${DESTDIR} scripts
@@ -250,7 +260,7 @@ upgrade-check: force
 	fi
 	@rm -rf ${PKGDIR}
 
-upgrade: upgrade-check package
+upgrade: plist-check upgrade-check package
 	@${PKG} delete -fy ${CORE_NAME}
 	@${PKG} add ${PKGDIR}/*.txz
 	@${LOCALBASE}/etc/rc.restart_webgui
@@ -293,7 +303,7 @@ style: want-pear-PHP_CodeSniffer
 	@cat ${.CURDIR}/.style.out
 	@rm ${.CURDIR}/.style.out
 
-stylefix: want-pear-PHP_CodeSniffer
+style-fix: want-pear-PHP_CodeSniffer
 	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense/mvc || true
 
 setup: force
