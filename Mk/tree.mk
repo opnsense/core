@@ -1,5 +1,7 @@
 all:
 
+ROOT?=	/usr/local
+
 .for TARGET in ${TREES} ${EXTRAS}
 
 .if "${TREES_${TARGET}}" == ""
