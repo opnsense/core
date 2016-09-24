@@ -75,16 +75,16 @@
     </field>
     <field>
         <id>zone.transparentHTTPProxy</id>
-        <label>Transparant proxy (http)</label>
+        <label>Transparent proxy (HTTP)</label>
         <type>checkbox</type>
-        <help><![CDATA[Forward http traffic to transparent proxy]]></help>
+        <help><![CDATA[Forward HTTP traffic to transparent proxy]]></help>
         <allownew>true</allownew>
     </field>
     <field>
         <id>zone.transparentHTTPSProxy</id>
-        <label>Transparant proxy (https)</label>
+        <label>Transparent proxy (HTTPS)</label>
         <type>checkbox</type>
-        <help><![CDATA[Forward https traffic to transparent proxy]]></help>
+        <help><![CDATA[Forward HTTPS traffic to transparent proxy]]></help>
         <allownew>true</allownew>
     </field>
     <field>
