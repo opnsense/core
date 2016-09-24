@@ -47,7 +47,7 @@ plist-${TARGET}: force
 		if [ -n "${NO_SAMPLE}" ]; then \
 			FILE="$${FILE%%.sample}"; \
 		fi; \
-		echo "$${PREFIX}${ROOT_${TARGET}:}/${TREE}/$${FILE}"; \
+		echo "$${PREFIX}${ROOT_${TARGET}}/${TREE}/$${FILE}"; \
 	done
 .endfor
 
