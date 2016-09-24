@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config("{$config_write_text} IPsec Pre-Shared Keys");
         mark_subsystem_dirty('ipsec');
 
-        header("Location: vpn_ipsec_keys.php");
+        header(url_safe('Location: vpn_ipsec_keys.php'));
         exit;
     }
 }

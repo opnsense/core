@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ipsec_configure();
         filter_configure();
         clear_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase1" ) {
         $del_items = array();
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         write_config();
         mark_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "delphase2" ) {
         if (isset($_POST['id']) && isset($config['ipsec']['phase2'][$_POST['id']])){
@@ -131,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "movep1" ) {
         // move phase 1 records
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "movep2" ) {
         // move phase 2 records
@@ -161,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "togglep1" && isset($a_phase1[$_POST['id']]) ) {
         // toggle phase 1 record
@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     } elseif (!empty($_POST['act']) && $_POST['act'] == "togglep2" && isset($a_phase2[$_POST['id']]) ) {
         // toggle phase 2 record
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('ipsec');
-        header("Location: vpn_ipsec.php");
+        header(url_safe('Location: vpn_ipsec.php'));
         exit;
     }
 }
