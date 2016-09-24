@@ -38,7 +38,6 @@ use OPNsense\Base\ModelException;
 
 // TODO: remove old obsolete
 // TODO: remote log all (!* -> *.* @server)
-// TODO: setup rotation and logfile size
 // TODO: bind_address select in UI
 // TODO: sanitize socket path, see setLocalSocket()
 

@@ -22,6 +22,18 @@
 		<help>Disable writing local log-files.</help>
 	</field>
 	<field>
+		<id>syslog.RotationFileSize</id>
+		<label>File size for log rotation, kBytes</label>
+		<type>text</type>
+		<help>Size of each logfile, which triggers rotation event.</help>
+	</field>
+	<field>
+		<id>syslog.RotationCount</id>
+		<label>Rotated items count</label>
+		<type>text</type>
+		<help>When logfile is rotated, its content moved to archive, stored in local disk. This option sets count of such archives.</help>
+	</field>
+	<field>
 		<type>header</type>
 		<label>Remote Logging</label>
 	</field>

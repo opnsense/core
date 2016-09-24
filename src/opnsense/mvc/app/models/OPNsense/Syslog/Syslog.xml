@@ -16,6 +16,15 @@
             <Required>Y</Required>
         </DisableLogFiles>
 
+        <RotationFileSize type="IntegerField">
+            <default>1024</default>
+            <Required>Y</Required>
+        </RotationFileSize>
+        <RotationCount type="IntegerField">
+            <default>5</default>
+            <Required>Y</Required>
+        </RotationCount>
+
         <LocalSockets>
             <Socket type="ArrayField">
                 <Path type="TextField">
