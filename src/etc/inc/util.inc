@@ -1566,12 +1566,15 @@ function is_install_media()
      * Despite unionfs underneath, / is still not writeable,
      * making the following the perfect test for install media.
      */
-
     $file = '/.probe.for.install.media';
+
+    if (file_exists($file)) {
+        return false;
+    }
+
     $fd = @fopen($file, 'w');
     if ($fd) {
         fclose($fd);
-        unlink($file);
         return false;
     }
 
