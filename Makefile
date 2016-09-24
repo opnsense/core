@@ -43,7 +43,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 
 CORE_ABI?=	16.7
 
-_FLAVOUR!=	${LOCALBASE}/bin/openssl version
+_FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
 
 .if "${FLAVOUR}" == OpenSSL || "${FLAVOUR}" == ""

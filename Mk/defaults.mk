@@ -23,10 +23,13 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-PKG!=		which pkg || echo true
-GIT!=		which git || echo true
 LOCALBASE?=	/usr/local
 PAGER?=		less
+
+OPENSSL?=	${LOCALBASE}/bin/openssl
+
+PKG!=		which pkg || echo true
+GIT!=		which git || echo true
 
 all-stub: all
 	@echo "Nothing to do."
