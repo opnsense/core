@@ -36,11 +36,10 @@ use OPNsense\Base\BaseModel;
 use OPNsense\Base\ModelException;
 
 
-// TODO: remove old obsolete
 // TODO: remote log all (!* -> *.* @server)
 // TODO: bind_address select in UI
 // TODO: sanitize socket path, see setLocalSocket()
-
+// TODO: remove test staff
 
 /**
  * Class Syslog
@@ -127,6 +126,35 @@ class Syslog extends BaseModel
 
         $this->Modified = true;
         $this->saveIfModified();
+    }
+
+    /**
+     * Remove Syslog target.
+     * @param $source program name, null if no program name
+     * @param $filter comma-separated list of selectors facility.level (without spaces)
+     * @param $type type of action (file, pipe, remote, all)
+     * @param $target action target
+     * @throws \ModelException
+     */
+    public function delTarget($source, $filter, $type, $target)
+    {
+        $source = str_replace(' ', '', $source);
+        $filter = str_replace(' ', '', $filter);
+        $type = trim($type);
+        $target = trim($target);
+
+        foreach($this->LogTargets->Target->__items as $uuid => $item) 
+        {
+            if($item->Source->__toString() == $source
+            && $item->Filter->__toString() == $filter
+            && $item->ActionType->__toString() == $type
+            && $item->Target->__toString() == $target)
+            {
+                $this->LogTargets->Target->del($uuid);
+                $this->Modified = true;
+                $this->saveIfModified();
+            }
+        }
     }
 
     /**
@@ -294,6 +322,7 @@ class Syslog extends BaseModel
                     );
 
         $selectors = array();
+        $this->delTarget(null, "local3.*", 'file', self::$LOGS_DIRECTORY.'/vpn.log');
         return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories);
     }
 }
