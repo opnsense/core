@@ -73,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           break;
     }
 
-    header("Location: diag_ipsec.php");
-    exit(0);
+    header(url_safe('Location: /diag_ipsec.php'));
+    exit;
 }
 
 $ipsec_status = json_decode(configd_run("ipsec list status"), true);

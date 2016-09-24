@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $delEntry = escapeshellarg($_REQUEST['address']);
               $delTable = escapeshellarg($tablename);
               configd_run("filter delete table {$delTable} {$delEntry}");
-              header("Location: diag_tables.php?tablename=" . $tablename);
+              header(url_safe('Location: /diag_tables.php?tablename=%s', array($tablename)));
               exit;
         }
     } elseif (isset($_POST['act']) && $_POST['act'] == 'flush')  {
         $delTable = escapeshellarg($tablename);
         configd_run("filter delete table {$delTable} ALL");
-        header("Location: diag_tables.php?tablename=" . $tablename);
+        header(url_safe('Location: /diag_tables.php?tablename=%s', array($tablename)));
         exit;
     }
 }
