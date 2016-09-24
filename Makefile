@@ -221,17 +221,18 @@ bootstrap: force
 	    CORE_REPOSITORY=${CORE_REPOSITORY}
 
 plist: force
-	@${MAKE} -C ${.CURDIR}/contrib plist
-	@${MAKE} -C ${.CURDIR}/src plist
+	@(${MAKE} -C ${.CURDIR}/contrib plist && \
+	    ${MAKE} -C ${.CURDIR}/src plist) | sort
 
 plist-fix: force
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
+	@${MAKE} DESTDIR=${DESTDIR} plist | sort > ${.CURDIR}/plist
 
 plist-check: force
-	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist
-	@if ! diff -uq ${.CURDIR}/plist ${WRKDIR}/plist > /dev/null ; then \
+	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
+	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
+	@if ! diff -uq ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
 		echo ">>> Package file lists do not match.  Please run 'make plist-fix'." >&2; \
-		diff -u ${.CURDIR}/plist ${WRKDIR}/plist; \
+		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new; \
 	fi
 
 metadata: force
