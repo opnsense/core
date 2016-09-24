@@ -112,7 +112,7 @@ if (isset($config['openvpn']['openvpn-server'])) {
         $usrid = isset($_GET['usrid']) ? $_GET['usrid'] : false;
         $crtid = isset($_GET['crtid']) ? $_GET['crtid'] : false;
         if ($srvid === false) {
-            header(url_safe('Location: vpn_openvpn_export.php'));
+            header(url_safe('Location: /vpn_openvpn_export.php'));
             exit;
         }
 

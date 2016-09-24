@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($config['ipsec']['mobilekey'][$_POST['id']]);
             write_config('Deleted pre-shared IPsec key');
             mark_subsystem_dirty('ipsec');
-            header(url_safe('Location: vpn_ipsec_keys.php'));
+            header(url_safe('Location: /vpn_ipsec_keys.php'));
             exit;
         }
     } elseif (isset($_POST['apply'])) {
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         clear_subsystem_dirty('ipsec');
     } else {
       // nothing to post, redirect
-        header(url_safe('Location: vpn_ipsec_keys.php'));
+        header(url_safe('Location: /vpn_ipsec_keys.php'));
         exit;
     }
 }

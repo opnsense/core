@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    header(url_safe('Location: carp_status.php?savemsg=%s', array($savemsg)));
+    header(url_safe('Location: /carp_status.php?savemsg=%s', array($savemsg)));
     exit;
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['savemsg'])) {
