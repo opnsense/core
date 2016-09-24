@@ -477,7 +477,7 @@ function step12_submitphpaction()
 
     if (!is_array($config['ovpnserver'])) {
         $message = "No configuration found please retry again.";
-        header("Location:wizard.php?xml=openvpn&stepid=1&message={$message}");
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s'. array($message)));
         exit;
     }
 
@@ -520,12 +520,12 @@ function step12_submitphpaction()
 
         $config['system']['authserver'][] = $auth;
     } elseif (!isset($pconfig['step2']['uselist']) && empty($pconfig['step2']['authserv'])) {
-        $message = "Please choose an authentication server .";
-        header("Location:wizard.php?xml=openvpn&stepid=1&message={$message}");
+        $message = "Please choose an authentication server.";
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s', array($message)));
         exit;
     } elseif (!($auth = auth_get_authserver($pconfig['step2']['authserv']))) {
-        $message = "Not a valid authentication server has been specified.";
-        header("Location:wizard.php?xml=openvpn&stepid=1&message={$message}");
+        $message = "No valid authentication server has been specified.";
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=1&message=%s', array($message)));
         exit;
     }
 
@@ -549,11 +549,11 @@ function step12_submitphpaction()
         $config['ca'][] = $ca;
     } elseif (!isset($pconfig['step6']['uselist']) && empty($pconfig['step6']['authcertca'])) {
         $message = "Please choose a Certificate Authority.";
-        header("Location:wizard.php?xml=openvpn&stepid=5&message={$message}");
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=5&message=%s', array($message)));
         exit;
     } elseif (!($ca = lookup_ca($pconfig['step6']['authcertca']))) {
         $message = "Not a valid Certificate Authority specified.";
-        header("Location:wizard.php?xml=openvpn&stepid=5&message={$message}");
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=5&message=%s', array($message)));
         exit;
     }
 
@@ -579,11 +579,11 @@ function step12_submitphpaction()
         $config['cert'][] = $cert;
     } elseif (!isset($pconfig['step9']['uselist']) && empty($pconfig['step9']['authcertname'])) {
         $message = "Please choose a Certificate.";
-        header("Location:wizard.php?xml=openvpn&stepid=7&message={$message}");
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=7&message=%s', array($message)));
         exit;
     } elseif (!($cert = lookup_cert($pconfig['step9']['authcertname']))) {
         $message = "Not a valid Certificate specified.";
-        header("Location:wizard.php?xml=openvpn&stepid=7&message={$message}");
+        header(url_safe('Location: /wizard.php?xml=openvpn&stepid=7&message=%s', array($message)));
         exit;
     }
     $server = array();
@@ -733,6 +733,7 @@ function step12_submitphpaction()
 
     openvpn_resync('server', $server);
     write_config();
-    header("Location: vpn_openvpn_server.php");
+
+    header(url_safe('Location: /vpn_openvpn_server.php'));
     exit;
 }
