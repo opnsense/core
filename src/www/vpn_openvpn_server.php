@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_server[$id]);
             write_config();
         }
-        header("Location: vpn_openvpn_server.php");
+        header(url_safe('Location: vpn_openvpn_server.php'));
         exit;
     } elseif ($act == "toggle") {
         if (isset($id)) {
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             openvpn_resync('server', $a_server[$id]);
             write_config();
         }
-        header("Location: vpn_openvpn_server.php");
+        header(url_safe('Location: vpn_openvpn_server.php'));
         exit;
     } else {
         // action add/update
@@ -406,7 +406,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             openvpn_resync_csc(); // dump client specific overrides, the required set may have changed
 
-            header("Location: vpn_openvpn_server.php");
+            header(url_safe('Location: vpn_openvpn_server.php'));
             exit;
         } elseif (!empty($pconfig['authmode'])) {
             $pconfig['authmode'] = implode(",", $pconfig['authmode']);
