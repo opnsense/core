@@ -214,6 +214,7 @@ scripts: want-git
 
 install: force
 	@${MAKE} -C ${.CURDIR}/contrib install DESTDIR=${DESTDIR}
+	@${MAKE} -C ${.CURDIR}/src install_boot DESTDIR=${DESTDIR}
 	@${MAKE} -C ${.CURDIR}/src install DESTDIR=${DESTDIR} \
 	    CORE_NAME=${CORE_NAME} CORE_ABI=${CORE_ABI} \
 	    CORE_PACKAGESITE=${CORE_PACKAGESITE} \
