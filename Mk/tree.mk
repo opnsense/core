@@ -1,7 +1,5 @@
 all:
 
-ROOT?=	/usr/local
-
 .for TARGET in ${TREES} ${EXTRAS}
 
 .if "${TREES_${TARGET}}" == ""
@@ -9,6 +7,9 @@ TREES_${TARGET}=${TARGET}
 .endif
 
 .if "${ROOT_${TARGET}}" == ""
+.if "${ROOT}" == ""
+.error "No ROOT directory set for target: ${TARGET}"
+.endif
 ROOT_${TARGET}=${ROOT}
 .endif
 

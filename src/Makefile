@@ -1,4 +1,5 @@
 TREES=		boot etc opnsense sbin wizard www
+ROOT=		/usr/local
 ROOT_boot=	/
 
 EXTRAS=		bootstrap
