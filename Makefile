@@ -225,7 +225,7 @@ plist: force
 	    ${MAKE} -C ${.CURDIR}/src plist) | sort
 
 plist-fix: force
-	@${MAKE} DESTDIR=${DESTDIR} plist | sort > ${.CURDIR}/plist
+	@${MAKE} DESTDIR=${DESTDIR} plist > ${.CURDIR}/plist
 
 plist-check: force
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
