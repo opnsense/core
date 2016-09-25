@@ -132,7 +132,7 @@
 /usr/local/etc/rc.update_bogons
 /usr/local/etc/rc.update_urltables
 /usr/local/etc/ssl/opnsense.cnf
-/usr/local/opnsense/contrib/IXR_Library.php
+/usr/local/opnsense/contrib/IXR/IXR_Library.php
 /usr/local/opnsense/contrib/base32/Base32.php
 /usr/local/opnsense/contrib/google-api-php-client/Google/Auth/Abstract.php
 /usr/local/opnsense/contrib/google-api-php-client/Google/Auth/AppIdentity.php
