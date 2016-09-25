@@ -295,7 +295,7 @@ sweep: force
 	    xargs -0 -n1 scripts/cleanfile
 
 style: want-pear-PHP_CodeSniffer
-	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/opnsense/mvc \
+	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/opnsense \
 	    || true) > ${.CURDIR}/.style.out
 	@echo -n "Total number of style warnings: "
 	@grep '| WARNING' ${.CURDIR}/.style.out | wc -l
@@ -305,7 +305,7 @@ style: want-pear-PHP_CodeSniffer
 	@rm ${.CURDIR}/.style.out
 
 style-fix: want-pear-PHP_CodeSniffer
-	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense/mvc || true
+	phpcbf --standard=ruleset.xml ${.CURDIR}/src/opnsense || true
 
 setup: force
 	${.CURDIR}/src/etc/rc.php_ini_setup
