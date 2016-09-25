@@ -1,5 +1,5 @@
 #!/usr/local/bin/php
-<?
+<?php
 /**
  * Backup to Google Drive (if configured)
 */

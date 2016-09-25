@@ -55,7 +55,7 @@ $result = $db->query('
 
 // process all sessions
 if ($result !== false) {
-    while($row = $result->fetchArray(SQLITE3_ASSOC) ){
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $authFactory = new OPNsense\Auth\AuthenticationFactory();
         $authenticator = $authFactory->get($row['authenticated_via']);
         if ($authenticator != null) {
@@ -66,11 +66,11 @@ if ($result !== false) {
                 $stmt->bindParam(':zoneid', $row['zoneid']);
                 $stmt->bindParam(':sessionid', $row['sessionid']);
                 $stmt->execute();
-                if (method_exists($authenticator,'startAccounting')) {
+                if (method_exists($authenticator, 'startAccounting')) {
                     // send start accounting event
                     $authenticator->startAccounting($row['username'], $row['sessionid']);
                 }
-            } elseif  ($row['deleted'] == 1 && $row['state'] != 'STOPPED') {
+            } elseif ($row['deleted'] == 1 && $row['state'] != 'STOPPED') {
                 // stop accounting, send stop event (if applicable)
                 $stmt = $db->prepare('update accounting_state
                                       set state = \'STOPPED\'
@@ -79,13 +79,13 @@ if ($result !== false) {
                 $stmt->bindParam(':zoneid', $row['zoneid']);
                 $stmt->bindParam(':sessionid', $row['sessionid']);
                 $stmt->execute();
-                if (method_exists($authenticator,'startAccounting')) {
+                if (method_exists($authenticator, 'startAccounting')) {
                     $time_spend = time() - $row['created'];
                     $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend);
                 }
             } elseif ($row['state'] != 'STOPPED') {
                 // send interim updates (if applicable)
-                if (method_exists($authenticator,'updateAccounting')) {
+                if (method_exists($authenticator, 'updateAccounting')) {
                     // send interim update event
                     $time_spend = time() - $row['created'];
                     $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend);
