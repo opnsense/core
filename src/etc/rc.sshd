@@ -105,6 +105,9 @@ if (isset($sshcfg['passwordauth'])) {
 	$sshconf .= "ChallengeResponseAuthentication no\n";
 	$sshconf .= "PasswordAuthentication no\n";
 }
+foreach ($keys as $key) {
+		$sshconf .= "HostKey {$etc_ssh}/{$key}\n";
+}
 
 /* Write the new sshd config file */
 file_put_contents("{$etc_ssh}/sshd_config", $sshconf);
