@@ -255,6 +255,20 @@ class Syslog extends BaseModel
 
         return array("status" => $result);
     }
+
+    /**
+     * get full logfile path
+     * @param $logname name of log
+     */
+    public function getLogFileName($logname)
+    {
+        foreach($this->LogTargets->Target->__items as $uuid => $target)
+            if(basename($target->Target->__toString(), '.log') == $logname)
+                return $target->Target->__toString();
+
+        return '';
+    }
+
     /*************************************************************************************************************
      * Protected Area
      *************************************************************************************************************/
@@ -365,6 +379,6 @@ class Syslog extends BaseModel
                     );
 
         $selectors = array();
-        return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories, 'clearlog' => $this->clearLog("filter"));
+        return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories, 'filename' => $this->getLogFileName("filter"));
     }
 }

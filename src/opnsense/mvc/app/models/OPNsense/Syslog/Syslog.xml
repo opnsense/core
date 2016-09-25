@@ -9,7 +9,8 @@
             <Required>Y</Required>
         </Reverse>
         <NumEntries type="IntegerField">
-            <Required>N</Required>
+            <default>50</default>
+            <Required>Y</Required>
         </NumEntries>
         <DisableLogFiles type="BooleanField">
             <default>0</default>
@@ -20,6 +21,7 @@
             <default>1024</default>
             <Required>Y</Required>
         </RotationFileSize>
+
         <RotationCount type="IntegerField">
             <default>5</default>
             <Required>Y</Required>

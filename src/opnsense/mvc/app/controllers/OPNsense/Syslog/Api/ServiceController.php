@@ -33,6 +33,7 @@ namespace OPNsense\Syslog\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\Syslog\Syslog;
+use \OPNsense\Core\Config;
 
 /**
  * Class ServiceController
@@ -82,6 +83,84 @@ class ServiceController extends ApiControllerBase
             $message = gettext("Log Files Deleted");
 
             return array("status" => "ok", "message" => $message);
+        } else {
+            return array("status" => "failed", "message" => gettext("Wrong request"));
+        }
+    }
+
+    /**
+     * clear custom log
+     * @return array
+     */
+    public function clearLogAction()
+    {
+        if ($this->request->isPost()) {
+
+            $this->sessionClose();
+
+            $mdl = new Syslog();
+            $message = $mdl->clearLog($this->request->getPost('logname'));
+
+            return array("status" => "ok", "message" => $message);
+        } else {
+            return array("status" => "failed", "message" => gettext("Wrong request"));
+        }
+    }
+
+    /**
+     * clear custom log
+     * @return array
+     */
+    public function getlogAction()
+    {
+        if ($this->request->isPost()) {
+
+            $logname = $this->request->getPost('logname');
+            $filter = $this->request->getPost('filter');
+
+            $this->sessionClose();
+
+            $mdl = new Syslog();
+            $filename = $mdl->getLogFileName($logname);
+            $reverse = ($mdl->Reverse->__toString() == '1');
+            $numentries = intval($mdl->NumEntries->__toString());
+            $hostname = Config::getInstance()->toArray()['system']['hostname'];
+
+            $logdata = array();
+            $formatted = array();
+            if($filename != '') {
+                $backend = new Backend();
+                $logdatastr = $backend->configdRun("syslog dumplog {$filename}");
+                $logdata = explode("\n", $logdatastr);
+            }
+
+            $filters = preg_split('/\s+/', trim($filter));
+            foreach ($filters as $pattern) {
+                if(trim($pattern) == '')
+                    continue;
+                $logdata = preg_grep("/$pattern/", $logdata);
+            }
+
+            if($reverse)
+                $logdata = array_reverse($logdata);
+
+            $counter = 1;
+            foreach ($logdata as $logent) {
+                if(trim($logent) == '')
+                    continue;
+
+                $logent = preg_split("/\s+/", $logent, 6);
+                $entry_date_time = join(" ", array_slice($logent, 0, 3));
+                $entry_text = ($logent[3] == $hostname) ? "" : $logent[3] . " ";
+                $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
+                $formatted[] = array('time' => $entry_date_time, 'filter' => $filter, 'message' => $entry_text);
+
+                if(++$counter > $numentries)
+                    break; 
+            }
+
+            return array("status" => "ok", "data" => $formatted, 'filters' => $filters);
+
         } else {
             return array("status" => "failed", "message" => gettext("Wrong request"));
         }
