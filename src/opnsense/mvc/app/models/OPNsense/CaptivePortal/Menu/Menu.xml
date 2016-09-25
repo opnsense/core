@@ -4,7 +4,7 @@
             <Administration order="10" url="/ui/captiveportal/"/>
             <Sessions order="20" url="/ui/captiveportal/session/"/>
             <Vouchers order="30" url="/ui/captiveportal/voucher/"/>
-            <Log order="40" VisibleName="Log File" url="/diag_logs_auth.php"/>
+            <Log order="40" VisibleName="Log File" url="/ui/syslog/logview/showlog/portalauth"/>
         </CaptivePortal>
     </Services>
 </menu>

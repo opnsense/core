@@ -907,7 +907,7 @@
         "name": "WebCfg - Status: System logs: Captive portal page",
         "descr": "Allow access to the 'Status: System logs: Captive portal' page.",
         "match": [
-            "diag_logs_auth.php*"
+            "ui/syslog/logview/showlog/portalauth*"
         ]
     },
     "page-status-systemlogs-ipsecvpn": {
