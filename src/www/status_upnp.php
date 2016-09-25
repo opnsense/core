@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['clear'])) {
         upnp_stop();
         upnp_start();
-        header("Location: status_upnp.php");
+        header(url_safe('Location: /status_upnp.php'));
         exit;
     }
 }

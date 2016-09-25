@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             interface_configure($interface);
         }
-        header("Location: status_interfaces.php");
+        header(url_safe('Location: /status_interfaces.php'));
         exit;
     }
 }

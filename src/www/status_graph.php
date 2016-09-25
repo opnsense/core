@@ -93,14 +93,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header("Location: status_graph.php");
+    header(url_safe('Location: /status_graph.php'));
     exit;
 }
 
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
 
