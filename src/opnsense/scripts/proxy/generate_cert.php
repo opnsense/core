@@ -34,6 +34,7 @@ require_once("config.inc");
 require_once("certs.inc");
 require_once("legacy_bindings.inc");
 use OPNsense\Core\Config;
+
 global $config;
 
 // Our template systems stores the ca certid into /usr/local/etc/squid/ca.pem.id
