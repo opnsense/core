@@ -255,7 +255,6 @@
 /usr/local/opnsense/contrib/google-api-php-client/Google/Verifier/Pem.php
 /usr/local/opnsense/contrib/google-api-php-client/Google/autoload.php
 /usr/local/opnsense/contrib/mobile-broadband-provider-info/serviceproviders.xml
-/usr/local/opnsense/contrib/simplepie/.gitignore
 /usr/local/opnsense/contrib/simplepie/.travis.yml
 /usr/local/opnsense/contrib/simplepie/LICENSE.txt
 /usr/local/opnsense/contrib/simplepie/README.markdown
@@ -694,7 +693,6 @@
 /usr/local/opnsense/site-python/sqlite3_helper.py
 /usr/local/opnsense/site-python/watchers/__init__.py
 /usr/local/opnsense/site-python/watchers/dhcpd.py
-/usr/local/opnsense/version/.gitignore
 /usr/local/opnsense/www/.htaccess
 /usr/local/opnsense/www/api.php
 /usr/local/opnsense/www/css/bootstrap-datepicker3.min.css
@@ -906,7 +904,6 @@
 /usr/local/wizard/setup.xml
 /usr/local/www/carp_status.php
 /usr/local/www/crash_reporter.php
-/usr/local/www/csrf/.gitignore
 /usr/local/www/csrf/csrf-magic.js
 /usr/local/www/csrf/csrf-magic.php
 /usr/local/www/diag_authentication.php

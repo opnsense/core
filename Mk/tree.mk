@@ -25,6 +25,13 @@
 
 .include "defaults.mk"
 
+IGNORES_DEFAULT=*.pyc .gitignore
+IGNORES+=	${IGNORES_DEFAULT}
+
+.for IGNORE in ${IGNORES}
+_IGNORES+=	! -name "${IGNORE}"
+.endfor
+
 .for TARGET in ${TREES} ${EXTRAS}
 
 .if "${TREES_${TARGET}}" == ""
@@ -46,7 +53,7 @@ install-${TARGET}: force
 	@REALTARGET=/$$(dirname ${TREE}); \
 	mkdir -p ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}; \
 	cp -vr ${TREE} ${DESTDIR}${ROOT_${TARGET}}$${REALTARGET}
-	@(cd ${TREE}; find * -type f ! -name "*.pyc") | while read FILE; do \
+	@(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
 		if [ "$${FILE%%.in}" != "$${FILE}" ]; then \
 			sed -i '' \
 			    -e "s=%%CORE_PACKAGESITE%%=${CORE_PACKAGESITE}=g" \
@@ -67,7 +74,7 @@ install-${TARGET}: force
 
 plist-${TARGET}: force
 .for TREE in ${TREES_${TARGET}}
-	@(cd ${TREE}; find * -type f ! -name "*.pyc") | while read FILE; do \
+	@(cd ${TREE}; find * -type f ${_IGNORES}) | while read FILE; do \
 		FILE="$${FILE%%.in}"; PREFIX=""; \
 		if [ -z "${NO_SAMPLE}" -a "$${FILE%%.sample}" != "$${FILE}" ]; then \
 			PREFIX="@shadow "; \
