@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         unset($config['widgets']['column_count']);
     }
     write_config('Widget configuration has been changed');
-    header('Location: index.php');
+    header(url_safe('Location: /index.php'));
     exit;
 }
 
