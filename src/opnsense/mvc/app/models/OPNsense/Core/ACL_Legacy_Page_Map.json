@@ -136,7 +136,7 @@
         "name": "WebCfg - Diagnostics: Logs: System page",
         "descr": "Allow access to the 'Diagnostics: Logs: System' page.",
         "match": [
-            "diag_logs.php*"
+            "ui/syslog/logview/showlog/system*"
         ]
     },
     "page-diagnostics-packetcapture": {

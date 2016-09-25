@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!mwexec("/usr/local/bin/wol -i {$bcip} ". escapeshellarg($wolent['mac']))) {
                 $result[] = sprintf(gettext('Sent magic packet to %s (%s).'), htmlspecialchars($wolent['mac']), $wolent['descr']);
             } else {
-                $result[] =  sprintf(gettext('Please check the %ssystem log%s, the wol command for %s (%s) did not complete successfully.'), '<a href="/diag_logs.php">', '</a>', $wolent['descr'], htmlspecialchars($wolent['mac']));
+                $result[] =  sprintf(gettext('Please check the %ssystem log%s, the wol command for %s (%s) did not complete successfully.'), '<a href="/ui/syslog/logview/showlog/system">', '</a>', $wolent['descr'], htmlspecialchars($wolent['mac']));
             }
         }
         echo json_encode($result);
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if(!mwexec("/usr/local/bin/wol -i {$bcip} " . escapeshellarg($_POST['mac']))) {
                 $savemsg = sprintf(gettext('Sent magic packet to %s.'), $_POST['mac']);
             } else {
-                $savemsg = sprintf(gettext('Please check the %ssystem log%s, the wol command for %s did not complete successfully.'), '<a href="/diag_logs.php">', '</a>', $_POST['mac']);
+                $savemsg = sprintf(gettext('Please check the %ssystem log%s, the wol command for %s did not complete successfully.'), '<a href="/ui/syslog/logview/showlog/system">', '</a>', $_POST['mac']);
             }
         }
     }

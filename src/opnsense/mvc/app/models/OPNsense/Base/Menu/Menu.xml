@@ -67,7 +67,7 @@
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
-        <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye fa-fw"/>
+        <LogFile order="150" VisibleName="Log File" url="/ui/syslog/logview/showlog/system" cssClass="fa fa-eye fa-fw"/>
         <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic fa-fw">
             <Step url="/wizard.php*" visibility="hidden"/>
         </Wizard>
