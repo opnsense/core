@@ -45,36 +45,42 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
         if ($first_entry) {
             $first_entry = false;
         } else {
-        // Put a vertical bar delimiter between the echoed HTML for each entry processed.
-            echo "|";
+            // Put a vertical bar delimiter between the echoed HTML for each entry processed.
+            echo '|';
         }
 
         $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
-        $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
-        if (file_exists($filename) && !empty($dyndns['enable'])) {
+        $fdata = '';
+        if (!empty($dyndns['enable']) && file_exists($filename)) {
             $ipaddr = dyndnsCheckIP($dyndns['interface']);
-            $cached_ip_s = preg_split('/:/', file_get_contents($filename));
-            $cached_ip = $cached_ip_s[0];
-            if ($ipaddr <> $cached_ip) {
-                echo "<font color='red'>";
-            } else {
-                echo "<font color='green'>";
-            }
-            echo htmlspecialchars($cached_ip);
-            echo "</font>";
-        } elseif (file_exists($filename_v6) && !empty($dyndns['enable'])) {
+            $fdata = @file_get_contents($filename);
+        }
+
+        $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
+        $fdata6 = '';
+        if (!empty($dyndns['enable']) && file_exists($filename_v6)) {
             $ipv6addr = get_interface_ipv6($dyndns['interface']);
-            $cached_ipv6_s = explode("|", file_get_contents($filename_v6));
+            $fdata6 = @file_get_contents($filename_v6);
+        }
+
+        if (!empty($fdata)) {
+            $cached_ip_s = preg_split('/:/', $fdata);
+            $cached_ip = $cached_ip_s[0];
+            echo sprintf(
+                '<font color="%s">%s</font>',
+                $ipaddr != $cached_ip ? 'red' : 'green',
+                htmlspecialchars($cached_ip)
+            );
+        } elseif (!empty($fdata6)) {
+            $cached_ipv6_s = explode('|', $fdata6);
             $cached_ipv6 = $cached_ipv6_s[0];
-            if ($ipv6addr <> $cached_ipv6) {
-                echo "<font color='red'>";
-            } else {
-                echo "<font color='green'>";
-            }
-            echo htmlspecialchars($cached_ipv6);
-            echo "</font>";
+            echo sprintf(
+                '<font color="%s">%s</font>',
+                $ipv6addr != $cached_ipv6 ? 'red' : 'green',
+                htmlspecialchars($cached_ipv6)
+            );
         } else {
-            echo '<span class="text-muted">' . gettext('N/A') . '</span>';
+            echo sprintf('<span class="text-muted">%s</span>', gettext('N/A'));
         }
     }
     exit;
