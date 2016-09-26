@@ -36,7 +36,7 @@ want-${WANT}: force
 .endfor
 
 .if ${GIT} != true
-CORE_COMMIT!=	${.CURDIR}/scripts/version.sh
+CORE_COMMIT!=	${.CURDIR}/Scripts/version.sh
 CORE_VERSION=	${CORE_COMMIT:C/-.*$//1}
 CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
@@ -267,9 +267,9 @@ upgrade: plist-check upgrade-check package
 	@${LOCALBASE}/etc/rc.restart_webgui
 
 lint: force
-	find ${.CURDIR}/src ${.CURDIR}/scripts \
+	find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.sh" -type f -print0 | xargs -0 -n1 sh -n
-	find ${.CURDIR}/src ${.CURDIR}/scripts \
+	find ${.CURDIR}/src ${.CURDIR}/Scripts \
 	    -name "*.xml" -type f -print0 | xargs -0 -n1 xmllint --noout
 	find ${.CURDIR}/src \
 	    ! -name "*.xml" ! -name "*.xml.sample" ! -name "*.eot" \
@@ -288,11 +288,11 @@ sweep: force
 	fi
 	find ${.CURDIR}/src ! -name "*.min.*" ! -name "*.svg" \
 	    ! -name "*.ser" -type f -print0 | \
-	    xargs -0 -n1 scripts/cleanfile
-	find ${.CURDIR}/scripts -type f -print0 | \
-	    xargs -0 -n1 scripts/cleanfile
+	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
+	find ${.CURDIR}/Scripts -type f -print0 | \
+	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
 	find ${.CURDIR} -type f -depth 1 -print0 | \
-	    xargs -0 -n1 scripts/cleanfile
+	    xargs -0 -n1 ${.CURDIR}/Scripts/cleanfile
 
 style: want-pear-PHP_CodeSniffer
 	@(phpcs --standard=ruleset.xml ${.CURDIR}/src/opnsense \
