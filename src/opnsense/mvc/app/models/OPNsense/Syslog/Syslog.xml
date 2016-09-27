@@ -105,6 +105,8 @@
                 <mask>/^([a-zA-Z0-9.:,]){0,}/</mask>
                 <ValidationMessage>Please enter valid targets (e.g. 192.168.0.100:514).</ValidationMessage>
             </Servers>
+            <LogAll type="BooleanField">
+            </LogAll>
         </Remote>
 
         <LogSources>

@@ -55,7 +55,12 @@
 		$("#grid-categories-header").hide();
 		$("#grid-categories-footer").hide();
 
-		console.log("Script done");
+		$("#syslog\\.Remote\\.LogAll").change(function(){
+			if($(this).is(':checked'))
+				$("#categories").hide();
+			else
+				$("#categories").show();
+		});
     });
 </script>
 

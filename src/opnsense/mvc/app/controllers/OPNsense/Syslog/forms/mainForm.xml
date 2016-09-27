@@ -95,4 +95,10 @@
 		<style>tokenize</style>
 		<help>IP addresses of remote syslog servers, or an IP:port.</help>
 	</field>
+	<field>
+		<id>syslog.Remote.LogAll</id>
+		<label>Log everything</label>
+		<type>checkbox</type>
+		<help>Send all log events to remote syslog server.</help>
+	</field>
 </form>
