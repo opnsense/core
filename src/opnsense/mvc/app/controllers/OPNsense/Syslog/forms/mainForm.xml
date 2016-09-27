@@ -5,7 +5,7 @@
 	</field>
 	<field>
 		<id>syslog.Reverse</id>
-		<label>Reverse order in GUI</label>
+		<label>Reverse Display</label>
 		<type>checkbox</type>
 		<help>Show log entries in reverse order (newest entries on top).</help>
 	</field>
@@ -90,7 +90,7 @@
 	<field>
 		<id>syslog.Remote.Servers</id>
 		<label>Remote Syslog Servers</label>
-		<type>text</type>
+		<type>select_multiple</type>
 		<allownew>true</allownew>
 		<style>tokenize</style>
 		<help>IP addresses of remote syslog servers, or an IP:port.</help>

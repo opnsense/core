@@ -10,7 +10,8 @@
 
     	var data_get_map = {'GeneralSettings':"/api/syslog/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data){
-        	console.log("main form data mapped");
+            $('.selectpicker').selectpicker('refresh');
+            formatTokenizersUI();
         });
 
         // link save button to API set action
