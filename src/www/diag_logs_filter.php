@@ -595,8 +595,8 @@ if ($filtersubmit) {
 
 $filter_logfile = '/var/log/filter.log';
 
-if (isset($config['syslog']['nentries'])) {
-  $nentries = $config['syslog']['nentries'];
+if (isset($config['OPNsense']['Syslog']['NumEntries'])) {
+  $nentries = $config['OPNsense']['Syslog']['NumEntries'];
 } else {
   $nentries = 50;
 }
