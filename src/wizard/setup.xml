@@ -69,6 +69,11 @@
 			<message>Domain name field is invalid</message>
 		</field>
 		<field>
+			<name>Language</name>
+			<type>language_select</type>
+			<bindstofield>system->language</bindstofield>
+		</field>
+		<field>
 			<name>Primary DNS Server</name>
 			<type>input</type>
 			<bindstofield>system->dnsserver</bindstofield>

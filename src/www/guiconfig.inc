@@ -49,25 +49,6 @@ session_write_close();
 
 /* CSRF END: THANK YOU FOR YOUR COOPERATION */
 
-function set_language()
-{
-    global $config;
-
-    $lang = 'en_US';
-    if (!empty($config['system']['language'])) {
-        $lang = $config['system']['language'];
-    }
-
-    $lang_encoding = $lang . '.UTF-8';
-    $textdomain = 'OPNsense';
-
-    putenv('LANG=' . $lang_encoding);
-    setlocale(LC_ALL, $lang_encoding);
-    textdomain($textdomain);
-    bindtextdomain($textdomain, '/usr/local/share/locale');
-    bind_textdomain_codeset($textdomain, $lang_encoding);
-}
-
 function get_current_theme()
 {
     global $config;
@@ -89,7 +70,20 @@ function html_safe($text)
 
 header("X-Frame-Options: SAMEORIGIN");
 
-set_language();
+/* set language */
+$lang = 'en_US';
+if (!empty($config['system']['language'])) {
+    $lang = $config['system']['language'];
+}
+
+$lang_encoding = $lang . '.UTF-8';
+$textdomain = 'OPNsense';
+
+putenv('LANG=' . $lang_encoding);
+setlocale(LC_ALL, $lang_encoding);
+textdomain($textdomain);
+bindtextdomain($textdomain, '/usr/local/share/locale');
+bind_textdomain_codeset($textdomain, $lang_encoding);
 
 require_once("authgui.inc");
 
