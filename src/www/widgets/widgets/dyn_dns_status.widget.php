@@ -42,10 +42,6 @@ $a_dyndns = &$config['dyndnses']['dyndns'];
 if (!empty($_REQUEST['getdyndnsstatus'])) {
     $first_entry = true;
     foreach ($a_dyndns as $dyndns) {
-        if (empty($dyndns['enable'])) {
-            continue;
-        }
-
         if ($first_entry) {
             $first_entry = false;
         } else {
@@ -55,14 +51,14 @@ if (!empty($_REQUEST['getdyndnsstatus'])) {
 
         $filename = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}.cache";
         $fdata = '';
-        if (file_exists($filename)) {
+        if (!empty($dyndns['enable']) && file_exists($filename)) {
             $ipaddr = dyndnsCheckIP($dyndns['interface']);
             $fdata = @file_get_contents($filename);
         }
 
         $filename_v6 = "/conf/dyndns_{$dyndns['interface']}{$dyndns['type']}" . escapeshellarg($dyndns['host']) . "{$dyndns['id']}_v6.cache";
         $fdata6 = '';
-        if (file_exists($filename_v6)) {
+        if (!empty($dyndns['enable']) && file_exists($filename_v6)) {
             $ipv6addr = get_interface_ipv6($dyndns['interface']);
             $fdata6 = @file_get_contents($filename_v6);
         }
