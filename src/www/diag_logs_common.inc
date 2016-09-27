@@ -56,7 +56,7 @@ function dump_clog($logfile, $tail, $grepfor = '')
 {
     global $config;
 
-    $sor = isset($config['syslog']['reverse']) ? '-r' : '';
+    $sor = isset($config['OPNsense']['Syslog']['Reverse']) && $config['OPNsense']['Syslog']['Reverse'] == 1 ? '-r' : '';
     $logarr = array();
     $grepline = '';
 
@@ -85,7 +85,7 @@ function dump_log($logfile, $tail, $grepfor = '')
 {
     global $config;
 
-    $sor = isset($config['syslog']['reverse']) ? '-r' : '';
+    $sor = isset($config['OPNsense']['Syslog']['Reverse']) && $config['OPNsense']['Syslog']['Reverse'] == 1 ? '-r' : '';
     $logarr = array();
     $grepline = '';
 

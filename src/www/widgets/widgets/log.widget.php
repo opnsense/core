@@ -159,7 +159,7 @@ var isPaused = false;
 var nentries = <?= html_safe($nentries) ?>;
 
 <?php
-if (isset($config['syslog']['reverse'])) {
+if (isset($config['OPNsense']['Syslog']['Reverse'])) {
     echo "var isReverse = true;\n";
 } else {
     echo "var isReverse = false;\n";
