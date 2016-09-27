@@ -40,7 +40,6 @@ use Phalcon\Filter;
 // TODO: remote log all (!* -> *.* @server)
 // TODO: bind_address select in UI
 // TODO: sanitize socket path, see setLocalSocket()
-// TODO: remove test staff
 
 /**
  * Class Syslog
@@ -363,22 +362,4 @@ class Syslog extends BaseModel
         $this->Modified = false;
     }
 
-    public function test()
-    {
-        $sources = array();
-        foreach($this->LogSources->Source->__items as $uuid => $item)
-            $sources[] = array(
-                    'program' => $item->Program->__toString(),
-                    );
-
-        foreach($this->LogCategories->Category->__items as $uuid => $item)
-            $categories[] = array(
-                    'name' => $item->Name->__toString(),
-                    'description' => $item->Description->__toString(),
-                    'remote' => $item->LogRemote->__toString(),
-                    );
-
-        $selectors = array();
-        return array('sources' => $sources, 'selectors' => $selectors, 'categories' => $categories, 'filename' => $this->getLogFileName("filter"));
-    }
 }

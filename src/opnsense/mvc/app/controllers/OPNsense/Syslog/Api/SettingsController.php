@@ -146,16 +146,4 @@ class SettingsController extends ApiControllerBase
         return $result;
     }
 
-    public function testAction()
-    {
-        $mdl = new Syslog();
-        $valMsgs = $mdl->performValidation();
-        $result = array("result"=>"failed","validations" => array());
-        foreach ($valMsgs as $field => $msg) {
-            // replace absolute path to attribute for relative one at uuid.
-            $result["validations"][$msg->getField()] = $msg->getMessage();
-        }       
-        //return $result;
-        return $mdl->test();
-    }
 }
