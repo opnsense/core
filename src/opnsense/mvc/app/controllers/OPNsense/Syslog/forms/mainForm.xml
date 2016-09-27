@@ -35,6 +35,32 @@
 	</field>
 	<field>
 		<type>header</type>
+		<label>Firewall Logging</label>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogDefaultBlock</id>
+		<label>Log packets matched from the default block rules put in the ruleset</label>
+		<type>checkbox</type>
+		<help>Hint: packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.</help>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogDefaultPass</id>
+		<label>Log packets matched from the default pass rules put in the ruleset</label>
+		<type>checkbox</type>
+		<help>Hint: packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.</help>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogBogons</id>
+		<label>Log packets blocked by 'Block Bogon Networks' rules</label>
+		<type>checkbox</type>
+	</field>
+	<field>
+		<id>syslog.Firewall.LogPrivateNets</id>
+		<label>Log packets blocked by 'Block Private Networks' rules</label>
+		<type>checkbox</type>
+	</field>
+	<field>
+		<type>header</type>
 		<label>Remote Logging</label>
 	</field>
 	<field>

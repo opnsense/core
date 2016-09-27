@@ -27,6 +27,25 @@
             <Required>Y</Required>
         </RotationCount>
 
+        <Firewall>
+            <LogDefaultBlock type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </LogDefaultBlock>
+            <LogDefaultPass type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </LogDefaultPass>
+            <LogBogons type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </LogBogons>
+            <LogPrivateNets type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </LogPrivateNets>
+        </Firewall>
+
         <LocalSockets>
             <Socket type="ArrayField">
                 <Path type="TextField">
