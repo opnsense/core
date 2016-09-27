@@ -228,6 +228,28 @@ function system_resolvconf_generate($dynupdate = false)
     return 0;
 }
 
+function get_locale_list()
+{
+    $locales = array();
+
+    /* first one is the default */
+    $locales['en_US'] = gettext('English');
+    $locales['zh_CN'] = gettext('Chinese (Simplified)');
+    $locales['nl_NL'] = gettext('Dutch');
+    $locales['fr_FR'] = gettext('French');
+    $locales['de_DE'] = gettext('German');
+    $locales['it_IT'] = gettext('Italian');
+    $locales['ja_JP'] = gettext('Japanese');
+    $locales['mn_MN'] = gettext('Mongolian');
+    $locales['pt_BR'] = gettext('Portuguese');
+    $locales['ru_RU'] = gettext('Russian');
+    $locales['es_ES'] = gettext('Spanish');
+    $locales['sv_SE'] = gettext('Swedish');
+    $locales['tr_TR'] = gettext('Turkish');
+
+    return $locales;
+}
+
 function get_country_codes()
 {
     $dn_cc = array();

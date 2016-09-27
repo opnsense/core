@@ -750,6 +750,35 @@ function showchange() {
 				}
 
 				break;
+			case "language_select":
+				$languagelist = get_locale_list();
+
+				if ($field['displayname']) {
+					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
+					echo $field['displayname'];
+					echo ":</td>\n";
+				} else if(!$field['dontdisplayname']) {
+					echo "<td width=\"22%\" align=\"right\" class=\"vncellreq\">\n";
+					echo fixup_string($field['name']);
+					echo ":</td>";
+				}
+				if(!$field['dontcombinecells'])
+					echo "<td class=\"vtable\">";
+				echo "<select class='form-control' name='{$name}'>\n";
+				foreach ($languagelist as $langkey => $langval) {
+					$SELECTED = "";
+					if ($value == $langkey) $SELECTED = " selected=\"selected\"";
+					echo "<option value=\"" . htmlspecialchars($langkey) . "\" {$SELECTED}>";
+					echo htmlspecialchars($langval);
+					echo "</option>\n";
+				}
+				echo "</select>\n";
+
+				if($field['description'] <> "") {
+					echo "<br /> " . $field['description'];
+				}
+
+				break;
 			case "timezone_select":
 				$timezonelist = get_zoneinfo();
 

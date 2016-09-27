@@ -34,30 +34,12 @@ require_once("unbound.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-function get_locale_list()
-{
-    $locales = array();
-
-    /* first one is the default */
-    $locales['en_US'] = gettext('English');
-    $locales['zh_CN'] = gettext('Chinese (Simplified)');
-    $locales['nl_NL'] = gettext('Dutch');
-    $locales['fr_FR'] = gettext('French');
-    $locales['de_DE'] = gettext('German');
-    $locales['it_IT'] = gettext('Italian');
-    $locales['ja_JP'] = gettext('Japanese');
-    $locales['mn_MN'] = gettext('Mongolian');
-    $locales['pt_BR'] = gettext('Portuguese');
-    $locales['ru_RU'] = gettext('Russian');
-    $locales['es_ES'] = gettext('Spanish');
-    $locales['sv_SE'] = gettext('Swedish');
-    $locales['tr_TR'] = gettext('Turkish');
-
-    return $locales;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
+
+    if (isset($_GET['savemsg'])) {
+        $savemsg = htmlspecialchars($_GET['savemsg']);
+    }
 
     $pconfig['dns1gw'] = null;
     $pconfig['dns2gw'] = null;
@@ -152,116 +134,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (count($input_errors) == 0) {
-      $config['system']['hostname'] = $pconfig['hostname'];
-      $config['system']['domain'] = $pconfig['domain'];
-      $config['system']['timezone'] = $pconfig['timezone'];
-      $config['theme'] =  $pconfig['theme'];
+        $config['system']['hostname'] = $pconfig['hostname'];
+        $config['system']['domain'] = $pconfig['domain'];
+        $config['system']['timezone'] = $pconfig['timezone'];
+        $config['theme'] =  $pconfig['theme'];
 
-      if (!empty($pconfig['language']) && $pconfig['language'] != $config['system']['language']) {
-          $config['system']['language'] = $pconfig['language'];
-          /* XXX while this is very proactive, we should defer in favour of a unified language transition point ;) */
-          set_language();
-      }
+        if (!empty($pconfig['language']) && $pconfig['language'] != $config['system']['language']) {
+            $config['system']['language'] = $pconfig['language'];
+        }
 
-      if (!empty($pconfig['prefer_ipv4'])) {
-          $config['system']['prefer_ipv4'] = true;
-      } elseif (isset($config['system']['prefer_ipv4'])) {
-          unset($config['system']['prefer_ipv4']);
-      }
+        if (!empty($pconfig['prefer_ipv4'])) {
+            $config['system']['prefer_ipv4'] = true;
+        } elseif (isset($config['system']['prefer_ipv4'])) {
+            unset($config['system']['prefer_ipv4']);
+        }
 
-      if (!empty($pconfig['gw_switch_default'])) {
-          $config['system']['gw_switch_default'] = true;
-      } elseif (isset($config['system']['gw_switch_default'])) {
-          unset($config['system']['gw_switch_default']);
-      }
+        if (!empty($pconfig['gw_switch_default'])) {
+            $config['system']['gw_switch_default'] = true;
+        } elseif (isset($config['system']['gw_switch_default'])) {
+            unset($config['system']['gw_switch_default']);
+        }
 
-      $olddnsservers = $config['system']['dnsserver'];
-      $config['system']['dnsserver'] = array();
-      foreach (array('dns1', 'dns2', 'dns3', 'dns4') as $dnsopt) {
-          if (!empty($pconfig[$dnsopt])) {
-              $config['system']['dnsserver'][] = $pconfig[$dnsopt];
-          }
-      }
-      $olddnsallowoverride = !empty($config['system']['dnsallowoverride']);
+        $olddnsservers = $config['system']['dnsserver'];
+        $config['system']['dnsserver'] = array();
+        foreach (array('dns1', 'dns2', 'dns3', 'dns4') as $dnsopt) {
+            if (!empty($pconfig[$dnsopt])) {
+                $config['system']['dnsserver'][] = $pconfig[$dnsopt];
+            }
+        }
+        $olddnsallowoverride = !empty($config['system']['dnsallowoverride']);
 
-      $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']);
+        $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']);
 
-      if($pconfig['dnslocalhost'] == "yes") {
+        if($pconfig['dnslocalhost'] == "yes") {
           $config['system']['dnslocalhost'] = true;
-      } elseif (isset($config['system']['dnslocalhost'])) {
-          unset($config['system']['dnslocalhost']);
-      }
+        } elseif (isset($config['system']['dnslocalhost'])) {
+            unset($config['system']['dnslocalhost']);
+        }
 
-      /* which interface should the dns servers resolve through? */
-      $outdnscounter = 0;
-      for ($dnscounter=1; $dnscounter<5; $dnscounter++) {
-          $dnsname="dns{$dnscounter}";
-          $dnsgwname="dns{$dnscounter}gw";
-          $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : "none" ;
+        /* which interface should the dns servers resolve through? */
+        $outdnscounter = 0;
+        for ($dnscounter=1; $dnscounter<5; $dnscounter++) {
+            $dnsname="dns{$dnscounter}";
+            $dnsgwname="dns{$dnscounter}gw";
+            $olddnsgwname = !empty($config['system'][$dnsgwname]) ? $config['system'][$dnsgwname] : "none" ;
 
-          if ($ignore_posted_dnsgw[$dnsgwname]) {
-              $thisdnsgwname = "none";
-          } else {
-              $thisdnsgwname = $pconfig[$dnsgwname];
-          }
+            if ($ignore_posted_dnsgw[$dnsgwname]) {
+                $thisdnsgwname = "none";
+            } else {
+                $thisdnsgwname = $pconfig[$dnsgwname];
+            }
 
-          // "Blank" out the settings for this index, then we set them below using the "outdnscounter" index.
-          $config['system'][$dnsgwname] = "none";
-          $pconfig[$dnsgwname] = "none";
-          $pconfig[$dnsname] = "";
+            // "Blank" out the settings for this index, then we set them below using the "outdnscounter" index.
+            $config['system'][$dnsgwname] = "none";
+            $pconfig[$dnsgwname] = "none";
+            $pconfig[$dnsname] = "";
 
-          if (!empty($_POST[$dnsname])) {
-              // Only the non-blank DNS servers were put into the config above.
-              // So we similarly only add the corresponding gateways sequentially to the config (and to pconfig), as we find non-blank DNS servers.
-              // This keeps the DNS server IP and corresponding gateway "lined up" when the user blanks out a DNS server IP in the middle of the list.
-              $outdnscounter++;
-              $outdnsname="dns{$outdnscounter}";
-              $outdnsgwname="dns{$outdnscounter}gw";
-              $pconfig[$outdnsname] = $_POST[$dnsname];
-              if(!empty($_POST[$dnsgwname])) {
-                  $config['system'][$outdnsgwname] = $thisdnsgwname;
-                  $pconfig[$outdnsgwname] = $thisdnsgwname;
-              } else {
-                  // Note: when no DNS GW name is chosen, the entry is set to "none", so actually this case never happens.
-                  unset($config['system'][$outdnsgwname]);
-                  $pconfig[$outdnsgwname] = "";
-              }
-          }
-          if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $_POST[$dnsname])) {
-              // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
-              // Remove the route. Later calls will add the correct new route if needed.
-              if (is_ipaddrv4($olddnsservers[$dnscounter-1])) {
-                  mwexec("/sbin/route delete " . escapeshellarg($olddnsservers[$dnscounter-1]));
-              } else {
-                  if (is_ipaddrv6($olddnsservers[$dnscounter-1])) {
-                      mwexec("/sbin/route delete -inet6 " . escapeshellarg($olddnsservers[$dnscounter-1]));
-                  }
-              }
-          }
-      }
+            if (!empty($_POST[$dnsname])) {
+                // Only the non-blank DNS servers were put into the config above.
+                // So we similarly only add the corresponding gateways sequentially to the config (and to pconfig), as we find non-blank DNS servers.
+                // This keeps the DNS server IP and corresponding gateway "lined up" when the user blanks out a DNS server IP in the middle of the list.
+                $outdnscounter++;
+                $outdnsname="dns{$outdnscounter}";
+                $outdnsgwname="dns{$outdnscounter}gw";
+                $pconfig[$outdnsname] = $_POST[$dnsname];
+                if(!empty($_POST[$dnsgwname])) {
+                    $config['system'][$outdnsgwname] = $thisdnsgwname;
+                    $pconfig[$outdnsgwname] = $thisdnsgwname;
+                } else {
+                    // Note: when no DNS GW name is chosen, the entry is set to "none", so actually this case never happens.
+                    unset($config['system'][$outdnsgwname]);
+                    $pconfig[$outdnsgwname] = "";
+                }
+            }
+            if ($olddnsgwname != "none" && ($olddnsgwname != $thisdnsgwname || $olddnsservers[$dnscounter-1] != $_POST[$dnsname])) {
+                // A previous DNS GW name was specified. It has now gone or changed, or the DNS server address has changed.
+                // Remove the route. Later calls will add the correct new route if needed.
+                if (is_ipaddrv4($olddnsservers[$dnscounter-1])) {
+                    mwexec("/sbin/route delete " . escapeshellarg($olddnsservers[$dnscounter-1]));
+                } else {
+                    if (is_ipaddrv6($olddnsservers[$dnscounter-1])) {
+                        mwexec("/sbin/route delete -inet6 " . escapeshellarg($olddnsservers[$dnscounter-1]));
+                    }
+                }
+            }
+        }
 
-      write_config();
+        write_config();
 
-      prefer_ipv4_or_ipv6();
-      system_hostname_configure();
-      system_hosts_generate();
-      services_dhcpleases_configure();
-      system_resolvconf_generate();
-      services_dnsmasq_configure(false);
-      services_unbound_configure(false);
-      services_dhcpd_configure();
-      system_timezone_configure();
+        prefer_ipv4_or_ipv6();
+        system_hostname_configure();
+        system_hosts_generate();
+        services_dhcpleases_configure();
+        system_resolvconf_generate();
+        services_dnsmasq_configure(false);
+        services_unbound_configure(false);
+        services_dhcpd_configure();
+        system_timezone_configure();
 
-      if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
-          configd_run("dns reload");
-      }
+        if ($olddnsallowoverride != $config['system']['dnsallowoverride']) {
+            configd_run("dns reload");
+        }
 
-      filter_configure();
+        filter_configure();
 
-      $savemsg = get_std_save_message();
+        header(url_safe('Location: /system_general.php?savemsg=%s', array(get_std_save_message())));
+        exit;
     }
-
-    unset($ignore_posted_dnsgw);
 }
 
 legacy_html_escape_form_data($pconfig);
@@ -269,7 +248,6 @@ legacy_html_escape_form_data($pconfig);
 include("head.inc");
 
 ?>
-
 <body>
     <?php include("fbegin.inc"); ?>
 

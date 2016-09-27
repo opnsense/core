@@ -56,7 +56,9 @@
             <Log VisibleName="Log File" url="/diag_logs_gateways.php"/>
         </Gateways>
         <Settings order="20" cssClass="fa fa-cogs fa-fw">
-            <General order="100" url="/system_general.php"/>
+            <General order="100" url="/system_general.php">
+                <workAround url="/system_general.php*"/>
+            </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
             <Logging order="300" url="/diag_logs_settings.php"/>
             <Notifications order="400" url="/system_advanced_notifications.php"/>
