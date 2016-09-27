@@ -34,6 +34,12 @@
 		<help>When logfile is rotated, its content moved to archive, stored in local disk. This option sets count of such archives.</help>
 	</field>
 	<field>
+		<id>syslog.LogWebServer</id>
+		<label>Web Server Log</label>
+		<type>checkbox</type>
+		<help>Hint: If this is checked, errors from the lighttpd web server process for the GUI or Captive Portal will appear in the main system log.</help>
+	</field>
+	<field>
 		<type>header</type>
 		<label>Firewall Logging</label>
 	</field>

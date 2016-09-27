@@ -27,6 +27,11 @@
             <Required>Y</Required>
         </RotationCount>
 
+        <LogWebServer type="BooleanField">
+            <default>0</default>
+            <Required>Y</Required>
+        </LogWebServer>
+
         <Firewall>
             <LogDefaultBlock type="BooleanField">
                 <default>0</default>
