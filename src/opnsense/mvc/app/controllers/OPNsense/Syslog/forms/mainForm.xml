@@ -66,6 +66,12 @@
 		<type>checkbox</type>
 	</field>
 	<field>
+		<id>syslog.Firewall.FilterDescriptions</id>
+		<label>Filter descriptions</label>
+		<type>dropdown</type>
+		<help>Show the applied rule description below or in the firewall log rows.</help>
+	</field>
+	<field>
 		<type>header</type>
 		<label>Remote Logging</label>
 	</field>

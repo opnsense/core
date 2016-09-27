@@ -49,7 +49,16 @@
                 <default>0</default>
                 <Required>Y</Required>
             </LogPrivateNets>
-        </Firewall>
+            <FilterDescriptions type="OptionField">
+                <default>val_0</default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <val_0>Omit descriptions</val_0>
+                    <val_1>Display as column</val_1>
+                    <val_2>Display as second row</val_2>
+                </OptionValues>
+            </FilterDescriptions>
+       </Firewall>
 
         <LocalSockets>
             <Socket type="ArrayField">
