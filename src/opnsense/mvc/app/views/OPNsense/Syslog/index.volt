@@ -85,8 +85,11 @@
 
 
 		<hr/>
-	    <button class="btn btn-primary"  id="applyAct" type="button"><b>{{ lang._('Apply') }}</b></button>
-	    <button class="btn btn-primary"  id="clearAct" type="button"><b>{{ lang._('Reset Log Files') }}</b></button>
+		<button class="btn btn-primary"  id="applyAct" type="button"><b>{{ lang._('Apply') }}</b></button>
+		<button class="btn btn-primary"  id="clearAct" type="button"><b>{{ lang._('Reset Log Files') }}</b></button>
+		<hr/>
+		<p>{{lang._('Syslog sends UDP datagrams to port 514 on the specified remote syslog server, unless another port is specified. Be sure to set syslogd on the remote server to accept remote syslog messages.')}}
+		</p>
 	</div>
 
 </div>
