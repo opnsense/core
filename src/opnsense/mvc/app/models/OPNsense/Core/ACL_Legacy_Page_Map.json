@@ -368,7 +368,7 @@
         "name": "WebCfg - Diagnostics: Logs: Firewall: Plain View page",
         "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Plain View' page.",
         "match": [
-            "diag_logs_filter_plain.php*"
+            "ui/syslog/logview/showlog/filter*"
         ]
     },
     "page-diagnostics-logs-firewall-dynamic": {
