@@ -921,7 +921,7 @@
         "name": "WebCfg - Status: System logs: IPsec VPN page",
         "descr": "Allow access to the 'Status: System logs: IPsec VPN' page.",
         "match": [
-            "diag_logs_ppp.php*"
+            "ui/syslog/logview/showlog/ppps*"
         ]
     },
     "page-status-systemlogs-loadbalancer": {

@@ -104,7 +104,7 @@
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File" url="/diag_logs_ppp.php"/>
+            <LogFile VisibleName="Log File" url="/ui/syslog/logview/showlog/ppps"/>
         </PPP>
         <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
