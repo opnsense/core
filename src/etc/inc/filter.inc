@@ -835,7 +835,7 @@ function filter_generate_gateways()
     update_filter_reload_status(gettext("Creating gateway group item..."));
 
     /* Lookup Gateways to be used in filter rules once */
-    $GatewaysList = return_gateways_array();
+    $GatewaysList = return_gateways_array(false, true);
     $GatewayGroupsList = return_gateway_groups_array();
 
     if (is_array($GatewaysList)) {
