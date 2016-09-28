@@ -37,7 +37,6 @@ use OPNsense\Base\ModelException;
 use Phalcon\Filter;
 
 
-// TODO: remote log all (!* -> *.* @server)
 // TODO: bind_address select in UI
 // TODO: sanitize socket path, see setLocalSocket()
 
@@ -311,7 +310,12 @@ class Syslog extends BaseModel
         {
             $program = join(",", $params['facility']);
             $target =  self::$LOGS_DIRECTORY."/".$name.".log";
-            $this->setTarget($program, '*.*', 'file', $target, null);
+            $category = isset($params['remote']) ? $params['remote'] : null;
+            $this->setTarget($program, '*.*', 'file', $target, $category);
+            if(isset($params['local']))
+            {
+                $this->setLocalSocket($params['local']);
+            }
         }
     }
 
