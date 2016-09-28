@@ -928,7 +928,7 @@
         "name": "WebCfg - Status: System logs: Load Balancer page",
         "descr": "Allow access to the 'Status: System logs: Load Balancer' page.",
         "match": [
-            "diag_logs_relayd.php*"
+            "ui/syslog/logview/showlog/relayd*"
         ]
     },
     "page-status-systemlogs-ntpd": {

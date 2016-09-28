@@ -268,7 +268,7 @@
             <Settings order="40" url="/load_balancer_setting.php"/>
             <PoolStatus order="50" VisibleName="Pool Status" url="/status_lb_pool.php"/>
             <VirtualServerStatus order="60" VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
-            <Log VisibleName="Log File" order="100" url="/diag_logs_relayd.php"/>
+            <Log VisibleName="Log File" order="100" url="/ui/syslog/logview/showlog/relayd"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
             <General order="10" url="/services_ntpd.php"/>
