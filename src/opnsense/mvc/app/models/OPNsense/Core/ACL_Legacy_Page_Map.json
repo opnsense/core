@@ -942,7 +942,7 @@
         "name": "WebCfg - Status: System logs: OpenVPN page",
         "descr": "Allow access to the 'Status: System logs: OpenVPN' page.",
         "match": [
-            "diag_logs_openvpn.php*"
+            "ui/syslog/logview/showlog/openvpn*"
         ]
     },
     "page-status-systemlogs-routing": {

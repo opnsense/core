@@ -327,7 +327,7 @@
                 <Edit url="/vpn_openvpn_export.php?*" visibility="hidden"/>
             </ClientExport>
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
-            <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
+            <Log order="70" VisibleName="Log File" url="/ui/syslog/logview/showlog/openvpn"/>
         </OpenVPN>
     </VPN>
     <Power order="70" cssClass="fa fa-plug">
