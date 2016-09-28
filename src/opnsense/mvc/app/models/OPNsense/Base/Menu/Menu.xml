@@ -95,7 +95,7 @@
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
-            <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
+            <Log VisibleName="Log File" url="/ui/syslog/logview/showlog/wireless"/>
             <Status url="/status_wireless.php">
                 <Status url="/status_wireless.php*" visibility="hidden"/>
             </Status>

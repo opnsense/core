@@ -956,7 +956,7 @@
         "name": "WebCfg - Status: System logs: Wireless page",
         "descr": "Allow access to the 'Status: System logs: System: Wireless' page.",
         "match": [
-            "diag_logs_wireless.php*"
+            "ui/syslog/logview/showlog/wireless*"
         ]
     },
     "page-status-trafficgraph": {
