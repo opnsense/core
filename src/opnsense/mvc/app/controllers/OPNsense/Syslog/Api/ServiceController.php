@@ -34,6 +34,7 @@ use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Core\Backend;
 use \OPNsense\Syslog\Syslog;
 use \OPNsense\Core\Config;
+use \Phalcon\Filter;
 
 /**
  * Class ServiceController
@@ -77,12 +78,27 @@ class ServiceController extends ApiControllerBase
 
             $this->sessionClose();
 
+            $backend = new Backend();
+            $backend->configdRun("syslog stop");
+
             $mdl = new Syslog();
-            $result = $mdl->resetLogFiles();
+            $result = array();
+            $deleted = array();
+            foreach($mdl->LogTargets->Target->__items as $uuid => $target) {
+                if($target->ActionType == 'file') {
+                    $pathname = $target->Target->__toString();
+                    if(!in_array($pathname, $deleted)) {
+                        $status = $backend->configdRun("syslog clearlog {$pathname}");
+                        $result[] = array('name' => $pathname, 'status' => $status);
+                        $deleted[] = $pathname;
+                    }
+                }
+            }
 
-            $message = gettext("Log Files Deleted");
+            $backend->configdRun("syslog start");
+            $backend->configdRun("syslog restart_dhcpd"); // restart dhcpd in legacy way. logic from legacy code, does it needed ?
 
-            return array("status" => "ok", "message" => $message);
+            return array("status" => "ok", "message" => gettext("The log files have been reset."), "details" => $result);
         } else {
             return array("status" => "failed", "message" => gettext("Wrong request"));
         }
@@ -98,10 +114,20 @@ class ServiceController extends ApiControllerBase
 
             $this->sessionClose();
 
-            $mdl = new Syslog();
-            $message = $mdl->clearLog($this->request->getPost('logname'));
+            $filter = new Filter();
+            $filter->add('logfilename', function($value){ return preg_replace("/[^0-9,a-z,A-Z,_]/", "", $value);});
 
-            return array("status" => "ok", "message" => $message);
+            $name = $this->request->getPost('logname');
+            $name = $filter->sanitize($name, 'logfilename');
+
+            $mdl = new Syslog();
+            $fullname = $mdl->getLogFileName($name);
+
+            $backend = new Backend();
+            $status = $backend->configdRun("syslog clearlog {$fullname}");
+            $backend->configdRun("syslog start");
+
+            return array("status" => "ok", "message" => gettext("The log file has been reset."));
         } else {
             return array("status" => "failed", "message" => gettext("Wrong request"));
         }

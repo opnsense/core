@@ -34,7 +34,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\ModelException;
-use Phalcon\Filter;
 
 
 // TODO: bind_address select in UI
@@ -212,52 +211,6 @@ class Syslog extends BaseModel
     }
 
     /**
-     * Delete all logfiles for given name
-     * @param $name log name without path and suffix ( for example 'system' to delete /var/log/system.log* )
-     */
-    public function clearLog($name)
-    {
-        $filter = new Filter();
-        $filter->add('logfilename', function($value){ return preg_replace("/[^0-9,a-z,A-Z,_]/", "", $value);});
-
-        $name = $filter->sanitize($name, 'logfilename');
-        $name = self::$LOGS_DIRECTORY . "/$name.log";
-
-        $backend = new Backend();
-        $status = $backend->configdRun("syslog clearlog {$name}");
-        $backend->configdRun("syslog start");
-
-        return array("status" => $status);
-    }
-
-    /**
-     * Reset all logfiles
-     */
-    public function resetLogFiles()
-    {
-        $backend = new Backend();
-        $backend->configdRun("syslog stop");
-
-        $result = array();
-        $deleted = array();
-        foreach($this->LogTargets->Target->__items as $uuid => $target) {
-            if($target->ActionType == 'file') {
-                $pathname = $target->Target->__toString();
-                if(!in_array($pathname, $deleted)) {
-                    $status = $backend->configdRun("syslog clearlog {$pathname}");
-                    $result[] = array('name' => $pathname, 'status' => $status);
-                    $deleted[] = $pathname;
-                }
-            }
-        }
-
-        $backend->configdRun("syslog start");
-        $backend->configdRun("syslog restart_dhcpd"); // restart dhcpd in legacy way. logic from legacy code, does it needed ?
-
-        return array("result" => $result);
-    }
-
-    /**
      * get full logfile path
      * @param $logname name of log
      */
@@ -347,6 +300,10 @@ class Syslog extends BaseModel
         return;
     }
 
+    /**
+    * Save Syslog config if modified.
+    * @throws \Phalcon\Validation\Exception
+    */
     private function saveIfModified()
     {
        
@@ -355,14 +312,6 @@ class Syslog extends BaseModel
         
         if($this->Modified === false)
             return;
-
-        $valMsgs = $this->performValidation();
-        $errorMsg = "Validation error: ";
-        foreach ($valMsgs as $field => $msg) {
-            $errorMsg .= $msg->getField() . '(' . $msg->getMessage() .'); ';
-        }
-        if($valMsgs->count() > 0)
-            throw new ModelException($errorMsg);
 
         $this->serializeToConfig();
         Config::getInstance()->save();
