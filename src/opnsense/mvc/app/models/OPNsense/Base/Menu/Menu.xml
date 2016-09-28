@@ -41,7 +41,7 @@
             <All order="10" url="/system_routes.php">
                 <Edit url="/system_routes_edit.php*" visibility="hidden"/>
             </All>
-            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
+            <Log order="100" VisibleName="Log File" url="/ui/syslog/logview/showlog/routing"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
             <All url="/system_gateways.php">

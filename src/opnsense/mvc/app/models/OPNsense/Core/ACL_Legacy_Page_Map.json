@@ -949,7 +949,7 @@
         "name": "WebCfg - Status: System logs: Routing page",
         "descr": "Allow access to the 'Status: System logs: System: Routing' page.",
         "match": [
-            "diag_logs_routing.php*"
+            "ui/syslog/logview/showlog/routing*"
         ]
     },
     "page-status-systemlogs-wireless": {
