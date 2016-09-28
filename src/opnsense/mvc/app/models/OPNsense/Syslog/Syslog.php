@@ -236,6 +236,8 @@ class Syslog extends BaseModel
     public function resetLogFiles()
     {
         $backend = new Backend();
+        $backend->configdRun("syslog stop");
+
         $result = array();
         $deleted = array();
         foreach($this->LogTargets->Target->__items as $uuid => $target) {
@@ -250,8 +252,9 @@ class Syslog extends BaseModel
         }
 
         $backend->configdRun("syslog start");
+        $backend->configdRun("syslog restart_dhcpd"); // restart dhcpd in legacy way. logic from legacy code, does it needed ?
 
-        return array("status" => $result);
+        return array("result" => $result);
     }
 
     /**
