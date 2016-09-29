@@ -70,7 +70,8 @@ class SettingsController extends ApiControllerBase
 
                 // load model and update with provided data
                 $mdl = new Syslog();
-                $mdl->setNodes($this->request->getPost("syslog"));
+                $formData = $this->request->getPost("syslog");
+                $mdl->setNodes($formData);
 
                 $firewallChanged =  $mdl->Firewall->LogDefaultBlock->isFieldChanged() ||
                                     $mdl->Firewall->LogDefaultPass->isFieldChanged() ||
@@ -78,6 +79,24 @@ class SettingsController extends ApiControllerBase
                                     $mdl->Firewall->LogPrivateNets->isFieldChanged();
 
                 $webConfigChanged = $mdl->LogWebServer->isFieldChanged();
+
+                // for bad dependencies
+                $backend = new Backend();
+
+                // hook to calculate bind Source IP
+                $bindip = "";
+                if(isset($formData["Remote"]["SourceIP"]) && $formData["Remote"]["SourceIP"] != "")
+                {
+                    $sourceip = $formData["Remote"]["SourceIP"];
+                    $proto = $formData["Remote"]["Proto"];
+                    $bindip = chop($backend->configdRun("syslog get_bind_address {$sourceip} {$proto}")); 
+                    
+                    // additional sanity check
+                    if($bindip != "" && inet_pton($bindip) === false)
+                        $bindip = "";
+                }
+                if($bindip != $mdl->Remote->BindAddress->__toString())
+                    $mdl->Remote->BindAddress = $bindip;
 
                 // perform validation
                 $valMsgs = $mdl->performValidation();
@@ -93,8 +112,6 @@ class SettingsController extends ApiControllerBase
                     $cnf->save();
                     $result["result"] = "ok";
 
-                    // bad dependencies
-                    $backend = new Backend();
                     if ($firewallChanged)
                         $result["reload-firewall"] = $backend->configdRun("filter reload", true);
 

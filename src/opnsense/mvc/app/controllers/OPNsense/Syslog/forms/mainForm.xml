@@ -82,10 +82,16 @@
 		<help>Send log messages to remote syslog server.</help>
 	</field>
 	<field>
-		<id>syslog.Remote.BindAddress</id>
-		<label>BindAddress</label>
-		<type>text</type>
-		<help>This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses. If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces.</help>
+		<id>syslog.Remote.SourceIP</id>
+		<label>Source Address</label>
+		<type>dropdown</type>
+		<help>This option will allow the logging daemon to bind to a single IP address, rather than all IP addresses. If you pick a single IP, remote syslog severs must all be of that IP type. If you wish to mix IPv4 and IPv6 remote syslog servers, you must bind to all interfaces. If none selected, bind to all interfaces.</help>
+	</field>
+	<field>
+		<id>syslog.Remote.Proto</id>
+		<label>IP Protocol</label>
+		<type>dropdown</type>
+		<help>This option is only used when a non-default address is chosen as the source above. This option only expresses a preference; If an IP address of the selected type is not found on the chosen interface, the other type will be tried.</help>
 	</field>
 	<field>
 		<id>syslog.Remote.Servers</id>
