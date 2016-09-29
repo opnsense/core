@@ -252,6 +252,7 @@ if (isset($config['openvpn']['openvpn-server'])) {
             header("Content-Type: application/octet-stream");
             header("Content-Disposition: attachment; filename={$exp_name}");
             header("Content-Length: $exp_size");
+            header("X-Content-Type-Options: nosniff");
             if (($act == "conf") || (substr($act, 0, 10) == "confinline")) {
                 echo $exp_path;
             } else {
