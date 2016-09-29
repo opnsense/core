@@ -68,7 +68,6 @@ $keys = array(
 
 $keys_dep = array(
 	/* .pub files are implied */
-	'rsa1' => 'ssh_host_key',
 	'dsa' => 'ssh_host_dsa_key',
 );
 
