@@ -2,8 +2,6 @@
 <script type="text/javascript">
     $( document ).ready(function() {
 
-    	console.log("document ready");
-
         /*************************************************************************************************************
          * link general actions
          *************************************************************************************************************/
@@ -12,12 +10,20 @@
         mapDataToFormUI(data_get_map).done(function(data){
             $('.selectpicker').selectpicker('refresh');
             formatTokenizersUI();
+
+            if($("#syslog\\.Remote\\.LogAll").is(':checked'))
+                $("#categories").hide();
+            else
+                $("#categories").show();
+           	
         });
 
         // link save button to API set action
         $("#applyAct").click(function(){
             $("#responseMsg").removeClass("hidden");
             saveFormToEndpoint(url="/api/syslog/settings/set",formid='GeneralSettings',callback_ok=function(){
+
+                $("#responseMsg").html('{{lang._("The changes have been applied successfully.")}}');
 
                 // action to run after successful save, for example reconfigure service.
                 ajaxCall(url="/api/syslog/service/reload", sendData={},callback=function(data,status) {

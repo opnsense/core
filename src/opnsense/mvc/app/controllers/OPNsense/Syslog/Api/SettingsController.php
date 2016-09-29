@@ -31,6 +31,7 @@ namespace OPNsense\Syslog\Api;
 use \OPNsense\Base\ApiControllerBase;
 use \OPNsense\Syslog\Syslog;
 use \OPNsense\Core\Config;
+use \OPNsense\Core\Backend;     // for run firewall and web-server reconfigure actions
 use \OPNsense\Base\UIModelGrid;
 
 /**
@@ -65,9 +66,18 @@ class SettingsController extends ApiControllerBase
         $result = array("result"=>"failed");
         try{
             if ($this->request->hasPost("syslog")) {
+                $this->sessionClose();
+
                 // load model and update with provided data
                 $mdl = new Syslog();
                 $mdl->setNodes($this->request->getPost("syslog"));
+
+                $firewallChanged =  $mdl->Firewall->LogDefaultBlock->isFieldChanged() ||
+                                    $mdl->Firewall->LogDefaultPass->isFieldChanged() ||
+                                    $mdl->Firewall->LogBogons->isFieldChanged() ||
+                                    $mdl->Firewall->LogPrivateNets->isFieldChanged();
+
+                $webConfigChanged = $mdl->LogWebServer->isFieldChanged();
 
                 // perform validation
                 $valMsgs = $mdl->performValidation();
@@ -81,7 +91,17 @@ class SettingsController extends ApiControllerBase
                     $mdl->serializeToConfig();
                     $cnf = Config::getInstance();
                     $cnf->save();
-                    $result["result"] = "saved";
+                    $result["result"] = "ok";
+
+                    // bad dependencies
+                    $backend = new Backend();
+                    if ($firewallChanged)
+                        $result["reload-firewall"] = $backend->configdRun("filter reload", true);
+
+                    if ($webConfigChanged)
+                        $result["reload-web"] = $backend->configdRun("syslog restart_web", true);
+
+                    $result["reload-pflog"] = $backend->configdRun("filter pflog start", true);
                 }
             }
         }
@@ -145,5 +165,4 @@ class SettingsController extends ApiControllerBase
         }
         return $result;
     }
-
 }
