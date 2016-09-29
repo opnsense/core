@@ -47,6 +47,7 @@
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
+/usr/local/etc/inc/plugins.inc.d/suricata.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/services.inc
 /usr/local/etc/inc/squid.auth-user.php
