@@ -60,9 +60,10 @@ class ServiceController extends ApiControllerBase
 
             // (res)start daemon
             $backend->configdRun("syslog stop");
-            $message = $backend->configdRun("syslog start");
+            $status = $backend->configdRun("syslog start");
+            $message = chop($status) == "OK" ? gettext("Service reloaded") : "";
 
-            return array("status" => "ok", "message" => $message);
+            return array("status" => $status, "message" => $message);
         } else {
             return array("status" => "failed", "message" => gettext("Wrong request"));
         }
