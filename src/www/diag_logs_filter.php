@@ -608,7 +608,7 @@ if (isset($filterlogentries_qty) && $filterlogentries_qty != null) {
 }
 
 if (isset($_POST['clear'])) {
-    system_clear_clog($filter_logfile);
+    system_clear_log($filter_logfile);
 }
 
 include("head.inc");

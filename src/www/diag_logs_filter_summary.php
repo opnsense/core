@@ -39,7 +39,7 @@ $entriesperblock = 10; // Maximum elements to show individually
 
 // flush log file
 if (!empty($_POST['clear'])) {
-    system_clear_clog($filter_logfile);
+    system_clear_log($filter_logfile);
 }
 
 // Retrieve filter log data

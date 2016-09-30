@@ -720,33 +720,6 @@ function system_routing_enable()
     ));
 }
 
-function system_syslogd_fixup_server($server) {
-    /* If it's an IPv6 IP alone, encase it in brackets */
-    if (is_ipaddrv6($server)) {
-        return "[$server]";
-    } else {
-        return $server;
-    }
-}
-
-function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
-    // Rather than repeatedly use the same code, use this function to build a list of remote servers.
-    $facility .= " ".
-    $remote_servers = "";
-    $pad_to  = 56;
-    $padding = ceil(($pad_to - strlen($facility))/8)+1;
-    if(!empty($syslogcfg['remoteserver'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
-    }
-    if(!empty($syslogcfg['remoteserver2'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
-    }
-    if(!empty($syslogcfg['remoteserver3'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
-    }
-    return $remote_servers;
-}
-
 function system_syslogd_extra_local($logsocket)
 {
     $logdir = dirname($logsocket);
@@ -787,44 +760,16 @@ function system_syslogd_start()
 
 function system_clear_log($logfile, $restart_syslogd = true)
 {
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
+    // always restart syslog to recreate logfiles
 
-    foreach (glob($logfile . '.*') as $rotated) {
-        @unlink($rotated);
-    }
+    configd_run("syslog stop");
 
-    /* preserve file ownership and permissions */
     if (file_exists($logfile)) {
-        $handle = fopen($logfile, 'r+');
-        if ($handle) {
-            ftruncate($handle, 0);
-            fclose($handle);
-        }
+        configd_run("syslog clearlog {$logfile}");
     }
 
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
+    configd_run("syslog start");
 }
-
-function system_clear_clog($logfile, $restart_syslogd = true)
-{
-    global $config;
-
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
-
-    $log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
-    mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
-
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
-}
-
 
 function system_webgui_configure()
 {

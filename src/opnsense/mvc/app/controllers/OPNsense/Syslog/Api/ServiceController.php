@@ -125,7 +125,7 @@ class ServiceController extends ApiControllerBase
             $fullname = $mdl->getLogFileName($name);
 
             $backend = new Backend();
-            $status = $backend->configdRun("syslog clearlog {$fullname}");
+            $backend->configdRun("syslog clearlog {$fullname}");
             $backend->configdRun("syslog start");
 
             return array("status" => "ok", "message" => gettext("The log file has been reset."));
