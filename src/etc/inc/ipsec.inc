@@ -780,11 +780,10 @@ EOD;
                 /* XXX" Traffic selectors? */
                 $pskconf .= " : RSA {$ph1keyfile}\n";
             } elseif (!empty($ph1ent['pre-shared-key'])) {
-                $myid_data = ipsec_find_id($ph1ent, "local");
-                $peerid_data = ipsec_find_id($ph1ent, "peer", $rgmap);
+                $myid = isset($ph1ent['mobile']) ? trim(ipsec_find_id($ph1ent, "local")) : "";
+                $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer", $rgmap);
 
                 if (!empty($peerid_data)) {
-                    $myid = isset($ph1ent['mobile']) ? trim($myid_data) . " " : "";
                     $pskconf .= $myid . trim($peerid_data) . " : PSK 0s" . base64_encode(trim($ph1ent['pre-shared-key'])) . "\n";
                 }
             }
