@@ -756,16 +756,16 @@ function system_syslogd_extra_local($logsocket)
         mwexecf('/bin/mkdir -p %s', $logdir);
     }
 
-    $syslog = new OPNsense\Syslog\Syslog;
-    $syslog->setLocalSocket($logsocket);
+    try{
+        $syslog = new OPNsense\Syslog\Syslog;
+        $syslog->setLocalSocket($logsocket);
+    }
+    catch(Exception $e){}
 }
 
 function system_syslogd_start()
 {
     global $config, $g;
-
-    /* hook for newsyslog.conf, syslog.conf, syslog.extra regeneration */
-    configd_run('template reload OPNsense.Syslog');
 
     mwexec('/etc/rc.d/hostid start');
 
@@ -776,6 +776,8 @@ function system_syslogd_start()
 
     system_syslogd_extra_local("{$g['dhcpd_chroot_path']}/var/run/log");
 
+    /* hook for newsyslog.conf, syslog.conf, syslog.extra regeneration */
+    configd_run('template reload OPNsense.Syslog');
     configd_run("syslog start");
 
     if (file_exists("/var/run/booting")) {
