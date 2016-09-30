@@ -55,7 +55,7 @@ class Syslog extends BaseModel
         $systemLog = self::$LOGS_DIRECTORY.'/system.log';
 
         return array(
-        array('program' => 'dhcpd,dhcrelay,dhclient,dhcp6c',                      'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/dhcpd.log',   'category' => 'dhcpd'),
+        array('program' => 'dhcpd,dhcrelay,dhclient,dhcp6c',                      'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/dhcpd.log',   'category' => 'dhcp'),
         array('program' => 'filterlog',                                           'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/filter.log',  'category' => 'filter'),
         array('program' => 'apinger',                                             'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/gateways.log','category' => 'gateways'),
         array('program' => 'ntp,ntpd,ntpdate',                                    'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/ntpd.log',    'category' => 'ntpd'),
@@ -67,7 +67,7 @@ class Syslog extends BaseModel
         array('program' => 'hostapd',                                             'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/wireless.log','category' => 'wireless'),
 
         array('program' => null,  'filter' => 'local3.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/vpn.log',   'category' => 'vpn'),
-        array('program' => null,  'filter' => 'local7.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/dhcpd.log', 'category' => 'dhcpd'),
+        array('program' => null,  'filter' => 'local7.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/dhcpd.log', 'category' => 'dhcp'),
         array('program' => null,  'filter' => '*.notice;kern.debug;lpr.info;mail.crit;daemon.none', 'type' => 'file', 'target' => $systemLog,             'category' => 'system'),
         array('program' => null,  'filter' => 'news.err;local0.none;local3.none;local4.none', 'type' => 'file', 'target' => $systemLog,                   'category' => 'system'),
         array('program' => null,  'filter' => 'local7.none',                          'type' => 'file',   'target' => $systemLog,                         'category' => null),
@@ -239,7 +239,7 @@ class Syslog extends BaseModel
     private function checkPredefinedCategories()
     {
         $this->setCategory('system',    gettext('System events'));
-        $this->setCategory('dhcpd',     gettext('DHCP service events'));
+        $this->setCategory('dhcp',      gettext('DHCP service events'));
         $this->setCategory('filter',    gettext('Firewall events'));
         $this->setCategory('gateways',  gettext('Gateway Monitor events'));
         $this->setCategory('ntpd',      gettext('Internet time events'));
