@@ -1,7 +1,7 @@
 <?php
 
 $logfile = '/var/log/dhcpd.log';
-$logclog = true;
+$logclog = false;
 
 function clear_hook()
 {

@@ -43,7 +43,7 @@ $nentries = 50;
 handle_ajax($nentries, $nentries + 20);
 
 if (isset($_POST['clear'])) {
-    system_clear_clog($filter_logfile);
+    system_clear_log($filter_logfile);
 }
 
 $filterlog = conv_log_filter($filter_logfile, $nentries, $nentries + 100);
@@ -63,7 +63,7 @@ include("head.inc");
   var isPaused = false;
   var nentries = <?=$nentries; ?>;
 <?php
-  if(isset($config['syslog']['reverse']))
+  if($config['OPNsense']['Syslog']['Reverse'] == 1)
     echo "var isReverse = true;\n";
   else
     echo "var isReverse = false;\n";

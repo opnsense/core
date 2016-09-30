@@ -41,7 +41,7 @@
             <All order="10" url="/system_routes.php">
                 <Edit url="/system_routes_edit.php*" visibility="hidden"/>
             </All>
-            <Log order="100" VisibleName="Log File" url="/diag_logs_routing.php"/>
+            <Log order="100" VisibleName="Log File" url="/ui/syslog/logview/showlog/routing"/>
         </Routes>
         <Gateways order="30" cssClass="fa fa-location-arrow fa-fw">
             <All url="/system_gateways.php">
@@ -60,14 +60,13 @@
                 <workAround url="/system_general.php*"/>
             </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
-            <Logging order="300" url="/diag_logs_settings.php"/>
             <Notifications order="400" url="/system_advanced_notifications.php"/>
             <Miscellaneous order="500" url="/system_advanced_misc.php"/>
             <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">
                 <Edit url="/system_advanced_sysctl.php*" visibility="hidden"/>
             </Tunables>
         </Settings>
-        <LogFile order="150" VisibleName="Log File" url="/diag_logs.php" cssClass="fa fa-eye fa-fw"/>
+        <LogFile order="150" VisibleName="Log File" url="/ui/syslog/logview/showlog/system" cssClass="fa fa-eye fa-fw"/>
         <Wizard order="140" url="/wizard.php" cssClass="fa fa-magic fa-fw">
             <Step url="/wizard.php*" visibility="hidden"/>
         </Wizard>
@@ -95,7 +94,7 @@
             <Devices url="/interfaces_wireless.php">
                 <Edit url="/interfaces_wireless_edit.php*" visibility="hidden"/>
             </Devices>
-            <Log VisibleName="Log File" url="/diag_logs_wireless.php"/>
+            <Log VisibleName="Log File" url="/ui/syslog/logview/showlog/wireless"/>
             <Status url="/status_wireless.php">
                 <Status url="/status_wireless.php*" visibility="hidden"/>
             </Status>
@@ -104,7 +103,7 @@
             <Devices url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </Devices>
-            <LogFile VisibleName="Log File" url="/diag_logs_ppp.php"/>
+            <LogFile VisibleName="Log File" url="/ui/syslog/logview/showlog/ppps"/>
         </PPP>
         <Types VisibleName="Other Types" order="950" cssClass="fa fa-archive fa-fw">
             <Bridge url="/interfaces_bridge.php">
@@ -198,7 +197,7 @@
             <Normal VisibleName="Normal View" order="100" url="/diag_logs_filter.php"/>
             <Dynamic VisibleName="Dynamic View" order="200" url="/diag_logs_filter_dynamic.php"/>
             <Summary VisibleName="Summary View" order="300" url="/diag_logs_filter_summary.php"/>
-            <Plain VisibleName="Plain View" order="400" url="/diag_logs_filter_plain.php"/>
+            <Plain VisibleName="Plain View" order="400" url="/ui/syslog/logview/showlog/filter"/>
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
@@ -268,7 +267,7 @@
             <Settings order="40" url="/load_balancer_setting.php"/>
             <PoolStatus order="50" VisibleName="Pool Status" url="/status_lb_pool.php"/>
             <VirtualServerStatus order="60" VisibleName="Virtual Server Status" url="/status_lb_vs.php"/>
-            <Log VisibleName="Log File" order="100" url="/diag_logs_relayd.php"/>
+            <Log VisibleName="Log File" order="100" url="/ui/syslog/logview/showlog/relayd"/>
         </LoadBalancer>
         <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
             <General order="10" url="/services_ntpd.php"/>
@@ -327,7 +326,7 @@
                 <Edit url="/vpn_openvpn_export.php?*" visibility="hidden"/>
             </ClientExport>
             <Status order="60" VisibleName="Connection Status" url="/status_openvpn.php"/>
-            <Log order="70" VisibleName="Log File" url="/diag_logs_openvpn.php"/>
+            <Log order="70" VisibleName="Log File" url="/ui/syslog/logview/showlog/openvpn"/>
         </OpenVPN>
     </VPN>
     <Power order="70" cssClass="fa fa-plug">

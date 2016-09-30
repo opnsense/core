@@ -65,7 +65,7 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $fil
     /* Always do a reverse tail, to be sure we're grabbing the 'end' of the log. */
     $logarr = "";
 
-    exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " | grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/grep 'filterlog:' | /usr/bin/tail -r -n {$tail}", $logarr);
+    $logarr = explode("\n", configd_run("syslog dumplog {$logfile}"));
 
     $filterlog = array();
     $counter = 0;
@@ -88,7 +88,7 @@ function conv_log_filter($logfile, $nentries, $tail = 50, $filtertext = '', $fil
         }
     }
     /* Since the lines are in reverse order, flip them around if needed based on the user's preference */
-    return isset($config['syslog']['reverse']) ? $filterlog : array_reverse($filterlog);
+    return isset($config['OPNsense']['Syslog']['Reverse']) && $config['OPNsense']['Syslog']['Reverse'] == 1 ? $filterlog : array_reverse($filterlog);
 }
 
 function escape_filter_regex($filtertext)
@@ -314,7 +314,7 @@ function handle_ajax($nentries, $tail = 50)
         $new_rules = "";
         $filterlog = conv_log_filter($filter_logfile, $nentries, $tail);
         /* We need this to always be in forward order for the AJAX update to work properly */
-        $filterlog = isset($config['syslog']['reverse']) ? array_reverse($filterlog) : $filterlog;
+        $filterlog = isset($config['OPNsense']['Syslog']['Reverse']) && $config['OPNsense']['Syslog']['Reverse'] == 1 ? array_reverse($filterlog) : $filterlog;
         foreach($filterlog as $log_row) {
             $row_time = strtotime($log_row['time']);
             if ($log_row['act']=="pass") {

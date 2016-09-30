@@ -1,7 +1,7 @@
 <?php
 
 $logfile = '/var/log/resolver.log';
-$logclog = true;
+$logclog = false;
 
 $service_hook = array('dnsmasq', 'unbound');
 

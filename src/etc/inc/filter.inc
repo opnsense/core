@@ -2493,10 +2493,10 @@ function filter_rules_generate(&$FilterIflist)
     # BEGIN OF firewall rules
     /* default block logging? */
     $log = array("block"=>null,"pass"=>null);
-    if (!isset($config['syslog']['nologdefaultblock'])) {
+    if ($config['OPNsense']['Syslog']['Firewall']['LogDefaultBlock'] == 1) {
         $log['block'] = "log";
     }
-    if (!isset($config['syslog']['nologdefaultpass'])) {
+    if ($config['OPNsense']['Syslog']['Firewall']['LogDefaultPass'] == 1) {
         $log['pass'] = "log";
     }
 
@@ -2591,7 +2591,7 @@ EOD;
        *
        * http://www.cymru.com/Documents/bogon-bn-nonagg.txt
        */
-      if (!isset($config['syslog']['nologbogons'])) {
+      if ($config['OPNsense']['Syslog']['Firewall']['LogBogons'] == 1) {
           $bogonlog = 'log';
       } else {
           $bogonlog = '';
@@ -2642,7 +2642,7 @@ EOD;
       }
 
       /* block private networks ? */
-      if (!isset($config['syslog']['nologprivatenets'])) {
+      if ($config['OPNsense']['Syslog']['Filter']['LogPrivateNets'] == 1) {
           $privnetlog = "log";
       } else {
           $privnetlog = "";

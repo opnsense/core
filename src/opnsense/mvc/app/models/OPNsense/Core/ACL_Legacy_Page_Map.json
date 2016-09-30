@@ -129,14 +129,14 @@
         "name": "WebCfg - Diagnostics: Logs: Settings page",
         "descr": "Allow access to the 'Diagnostics: Logs: Settings' page.",
         "match": [
-            "diag_logs_settings.php*"
+            "ui/syslog/*"
         ]
     },
     "page-diagnostics-logs-system": {
         "name": "WebCfg - Diagnostics: Logs: System page",
         "descr": "Allow access to the 'Diagnostics: Logs: System' page.",
         "match": [
-            "diag_logs.php*"
+            "ui/syslog/logview/showlog/system*"
         ]
     },
     "page-diagnostics-packetcapture": {
@@ -368,7 +368,7 @@
         "name": "WebCfg - Diagnostics: Logs: Firewall: Plain View page",
         "descr": "Allow access to the 'Diagnostics: Logs: Firewall: Plain View' page.",
         "match": [
-            "diag_logs_filter_plain.php*"
+            "ui/syslog/logview/showlog/filter*"
         ]
     },
     "page-diagnostics-logs-firewall-dynamic": {
@@ -907,7 +907,7 @@
         "name": "WebCfg - Status: System logs: Captive portal page",
         "descr": "Allow access to the 'Status: System logs: Captive portal' page.",
         "match": [
-            "diag_logs_auth.php*"
+            "ui/syslog/logview/showlog/portalauth*"
         ]
     },
     "page-status-systemlogs-ipsecvpn": {
@@ -921,14 +921,14 @@
         "name": "WebCfg - Status: System logs: IPsec VPN page",
         "descr": "Allow access to the 'Status: System logs: IPsec VPN' page.",
         "match": [
-            "diag_logs_ppp.php*"
+            "ui/syslog/logview/showlog/ppps*"
         ]
     },
     "page-status-systemlogs-loadbalancer": {
         "name": "WebCfg - Status: System logs: Load Balancer page",
         "descr": "Allow access to the 'Status: System logs: Load Balancer' page.",
         "match": [
-            "diag_logs_relayd.php*"
+            "ui/syslog/logview/showlog/relayd*"
         ]
     },
     "page-status-systemlogs-ntpd": {
@@ -942,21 +942,21 @@
         "name": "WebCfg - Status: System logs: OpenVPN page",
         "descr": "Allow access to the 'Status: System logs: OpenVPN' page.",
         "match": [
-            "diag_logs_openvpn.php*"
+            "ui/syslog/logview/showlog/openvpn*"
         ]
     },
     "page-status-systemlogs-routing": {
         "name": "WebCfg - Status: System logs: Routing page",
         "descr": "Allow access to the 'Status: System logs: System: Routing' page.",
         "match": [
-            "diag_logs_routing.php*"
+            "ui/syslog/logview/showlog/routing*"
         ]
     },
     "page-status-systemlogs-wireless": {
         "name": "WebCfg - Status: System logs: Wireless page",
         "descr": "Allow access to the 'Status: System logs: System: Wireless' page.",
         "match": [
-            "diag_logs_wireless.php*"
+            "ui/syslog/logview/showlog/wireless*"
         ]
     },
     "page-status-trafficgraph": {

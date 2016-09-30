@@ -720,33 +720,6 @@ function system_routing_enable()
     ));
 }
 
-function system_syslogd_fixup_server($server) {
-    /* If it's an IPv6 IP alone, encase it in brackets */
-    if (is_ipaddrv6($server)) {
-        return "[$server]";
-    } else {
-        return $server;
-    }
-}
-
-function system_syslogd_get_remote_servers($syslogcfg, $facility = "*.*") {
-    // Rather than repeatedly use the same code, use this function to build a list of remote servers.
-    $facility .= " ".
-    $remote_servers = "";
-    $pad_to  = 56;
-    $padding = ceil(($pad_to - strlen($facility))/8)+1;
-    if(!empty($syslogcfg['remoteserver'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver']) . "\n";
-    }
-    if(!empty($syslogcfg['remoteserver2'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver2']) . "\n";
-    }
-    if(!empty($syslogcfg['remoteserver3'])) {
-        $remote_servers .= "{$facility}" . str_repeat("\t", $padding) . "@" . system_syslogd_fixup_server($syslogcfg['remoteserver3']) . "\n";
-    }
-    return $remote_servers;
-}
-
 function system_syslogd_extra_local($logsocket)
 {
     $logdir = dirname($logsocket);
@@ -756,16 +729,16 @@ function system_syslogd_extra_local($logsocket)
         mwexecf('/bin/mkdir -p %s', $logdir);
     }
 
-    /* emit extra args for syslogd invoke */
-    return exec_safe('-l %s ', $logsocket);
+    try{
+        $syslog = new OPNsense\Syslog\Syslog;
+        $syslog->setLocalSocket($logsocket);
+    }
+    catch(Exception $e){}
 }
 
 function system_syslogd_start()
 {
     global $config, $g;
-
-    /* XXX temporary hook for newsyslog.conf regeneration */
-    configd_run('template reload OPNsense.Syslog');
 
     mwexec('/etc/rc.d/hostid start');
 
@@ -774,138 +747,11 @@ function system_syslogd_start()
         echo gettext('Starting syslog...');
     }
 
-    $log_directive = '%';
-    $syslogd_extra = '';
+    system_syslogd_extra_local("{$g['dhcpd_chroot_path']}/var/run/log");
 
-    if (isset($syslogcfg)) {
-        $syslogconf = '';
-
-        $syslogconfs = array();
-
-        if (function_exists('plugins_syslog')) {
-            /* only pull plugins if plugins.inc was included before */
-            foreach (plugins_syslog() as $plugin_name => $plugin_details) {
-                $syslogconfs[$plugin_name] = $plugin_details;
-            }
-        }
-
-        /*
-         * XXX Standard syslog configs overwrite plugins, but we can
-         * get rid of this behaviour by wrapping this local array using
-         * the key as a "name" entry in the array...
-         */
-        $syslogconfs['dhcpd'] = array('facility' => array('dhcpd', 'dhcrelay', 'dhclient', 'dhcp6c'), 'local' => "{$g['dhcpd_chroot_path']}/var/run/log", 'remote' => 'dhcp');
-        $syslogconfs['filter'] = array('facility' => array('filterlog'), 'remote' => 'filter');
-        $syslogconfs['gateways'] = array('facility' => array('apinger'), 'remote' => 'apinger');
-        $syslogconfs['ntpd'] = array('facility' => array('ntp', 'ntpd', 'ntpdate'));
-        $syslogconfs['portalauth'] = array('facility' => array('captiveportal'), 'remote' => 'portalauth');
-        $syslogconfs['ppps'] = array('facility' => array('ppp'));
-        $syslogconfs['relayd'] = array('facility' => array('relayd'), 'remote' => 'relayd');
-        $syslogconfs['resolver'] = array('facility' => array('dnsmasq', 'filterdns', 'unbound'));
-        $syslogconfs['routing'] = array('facility' => array('radvd', 'routed', 'rtsold', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd'));
-        $syslogconfs['wireless'] = array('facility' => array('hostapd'), 'remote' => 'hostapd');
-
-        $separatelogfacilities = array();
-        foreach ($syslogconfs as $logTopic => $logConfig) {
-            $syslogconf .= "!".implode(',', $logConfig['facility'])."\n";
-            $separatelogfacilities = array_merge($logConfig['facility'], $separatelogfacilities);
-            if (!isset($syslogcfg['disablelocallogging'])) {
-                $syslogconf .= "*.*                {$log_directive}/var/log/{$logTopic}.log\n";
-            }
-            if (!empty($logConfig['remote']) && !empty($syslogcfg[$logConfig['remote']]) && !empty($syslogcfg['enable'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-            }
-            if (!empty($logConfig['local'])) {
-                $syslogd_extra .= system_syslogd_extra_local($logConfig['local']);
-            }
-        }
-
-        asort($separatelogfacilities);
-        $facilitylist = implode(',', array_unique($separatelogfacilities));
-        $syslogconf .= "!-{$facilitylist}\n";
-        if (!isset($syslogcfg['disablelocallogging'])) {
-            $syslogconf .= <<<EOD
-local3.*              {$log_directive}/var/log/vpn.log
-local7.*              {$log_directive}/var/log/dhcpd.log
-*.notice;kern.debug;lpr.info;mail.crit;daemon.none;    {$log_directive}/var/log/system.log
-news.err;local0.none;local3.none;local4.none;      {$log_directive}/var/log/system.log
-local7.none              {$log_directive}/var/log/system.log
-security.*              {$log_directive}/var/log/system.log
-auth.info;authpriv.info;daemon.info        {$log_directive}/var/log/system.log
-auth.info;authpriv.info;user.*        |exec /usr/local/sbin/sshlockout_pf 15
-*.emerg                *
-
-EOD;
-        }
-        if (!empty($syslogcfg['enable'])) {
-            if (isset($syslogcfg['vpn'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local3.*");
-            }
-            if (isset($syslogcfg['portalauth'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local4.*");
-            }
-            if (isset($syslogcfg['dhcp'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "local7.*");
-            }
-            if (isset($syslogcfg['system'])) {
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.notice;kern.debug;lpr.info;mail.crit;");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "news.err;local0.none;local3.none;local7.none");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "security.*");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "auth.info;authpriv.info;daemon.info");
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.emerg");
-            }
-            if (isset($syslogcfg['logall'])) {
-                // Make everything mean everything, including facilities excluded above.
-                $syslogconf .= "!*\n";
-                $syslogconf .= system_syslogd_get_remote_servers($syslogcfg, "*.*");
-            }
-        }
-
-        /* write syslog.conf */
-        if (!@file_put_contents("/var/etc/syslog.conf", $syslogconf)) {
-            printf(gettext("Error: cannot open syslog.conf in system_syslogd_start().%s"), "\n");
-            unset($syslogconf);
-            return 1;
-        }
-        unset($syslogconf);
-
-        if (!empty($syslogcfg['sourceip'])) {
-            if ($syslogcfg['ipproto'] == "ipv6") {
-                $ifaddr = is_ipaddr($syslogcfg['sourceip']) ? $syslogcfg['sourceip'] : get_interface_ipv6($syslogcfg['sourceip']);
-                if (!is_ipaddr($ifaddr)) {
-                    $ifaddr = get_interface_ip($syslogcfg['sourceip']);
-                }
-            } else {
-                $ifaddr = is_ipaddr($syslogcfg['sourceip']) ? $syslogcfg['sourceip'] : get_interface_ip($syslogcfg['sourceip']);
-                if (!is_ipaddr($ifaddr)) {
-                    $ifaddr = get_interface_ipv6($syslogcfg['sourceip']);
-                }
-            }
-            if (is_ipaddr($ifaddr)) {
-                $syslogd_extra .= exec_safe('-b %s ', $ifaddr);
-            }
-        }
-
-        $syslogd_extra .= exec_safe('-f %s ', '/var/etc/syslog.conf');
-
-        // setup log files for all facilities including default
-        $default_logfile_size = !empty($syslogcfg['logfilesize']) ? $syslogcfg['logfilesize'] : '511488';
-        $syslog_files = array_keys($syslogconfs);
-        $syslog_files = array_merge($syslog_files, array('system', 'vpn', 'lighttpd'));
-        foreach ($syslog_files as $syslog_fn) {
-            $filename = "/var/log/".basename($syslog_fn).".log";
-            if (!file_exists($filename)) {
-                mwexecf('/usr/local/sbin/clog -i -s %s %s', array($default_logfile_size, $filename));
-            }
-            mwexecf('chmod 0600 %s', array($filename));
-        }
-    }
-
-    if (isvalidpid('/var/run/syslog.pid')) {
-        killbypid('/var/run/syslog.pid', 'HUP');
-    } else {
-        mwexecf_bg("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
-    }
+    /* hook for newsyslog.conf, syslog.conf, syslog.extra regeneration */
+    configd_run('template reload OPNsense.Syslog');
+    configd_run("syslog start");
 
     if (file_exists("/var/run/booting")) {
         echo gettext("done.") . "\n";
@@ -914,44 +760,16 @@ EOD;
 
 function system_clear_log($logfile, $restart_syslogd = true)
 {
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
+    // always restart syslog to recreate logfiles
 
-    foreach (glob($logfile . '.*') as $rotated) {
-        @unlink($rotated);
-    }
+    configd_run("syslog stop");
 
-    /* preserve file ownership and permissions */
     if (file_exists($logfile)) {
-        $handle = fopen($logfile, 'r+');
-        if ($handle) {
-            ftruncate($handle, 0);
-            fclose($handle);
-        }
+        configd_run("syslog clearlog {$logfile}");
     }
 
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
+    configd_run("syslog start");
 }
-
-function system_clear_clog($logfile, $restart_syslogd = true)
-{
-    global $config;
-
-    if ($restart_syslogd) {
-        killbyname('syslogd');
-    }
-
-    $log_size = isset($config['syslog']['logfilesize']) ? $config['syslog']['logfilesize'] : '511488';
-    mwexecf('/usr/local/sbin/clog -i -s %s %s', array($log_size, $logfile));
-
-    if ($restart_syslogd) {
-        system_syslogd_start();
-    }
-}
-
 
 function system_webgui_configure()
 {
@@ -1083,7 +901,7 @@ EOD;
         $lighty_port = $port;
     }
 
-    if(!isset($config['syslog']['nologlighttpd'])) {
+    if($config['OPNsense']['Syslog']['LogWebServer'] == 1) {
         $lighty_use_syslog = <<<EOD
 ## where to send error-messages to
 server.errorlog-use-syslog="enable"

@@ -1,7 +1,7 @@
 <?php
 
 $logfile = '/var/log/ipsec.log';
-$logclog = true;
+$logclog = false;
 
 $service_hook = 'ipsec';
 
