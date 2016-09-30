@@ -52,35 +52,6 @@ function print_dump($logarr)
     }
 }
 
-function dump_clog($logfile, $tail, $grepfor = '')
-{
-    global $config;
-
-    $sor = isset($config['OPNsense']['Syslog']['Reverse']) && $config['OPNsense']['Syslog']['Reverse'] == 1 ? '-r' : '';
-    $logarr = array();
-    $grepline = '';
-
-    $grepfor = preg_split('/\s+/', trim($grepfor));
-
-    foreach ($grepfor as $pattern) {
-        $grepline .= ' | /usr/bin/egrep -i ' . escapeshellarg($pattern);
-    }
-
-    if (is_dir($logfile)) {
-        $logarr = sprintf(gettext('File %s is a directory.'), $logfile);
-    } elseif (!file_exists($logfile)) {
-        $logarr = sprintf(gettext('File %s doesn\'t exist.'), $logfile);
-    } else {
-        exec("/usr/local/sbin/clog " . escapeshellarg($logfile) . " {$grepline}| grep -v \"CLOG\" | grep -v \"\033\" | /usr/bin/tail {$sor} -n " . escapeshellarg($tail), $logarr);
-    }
-
-    if (is_array($logarr) && !count($logarr)) {
-        $logarr = sprintf(gettext('File %s yielded no results.'), $logfile);
-    }
-
-    print_dump($logarr);
-}
-
 function dump_log($logfile, $tail, $grepfor = '')
 {
     global $config;

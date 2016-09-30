@@ -64,26 +64,26 @@ if (count($routes) > 0) {
     }
 }
 
-/* get clog from dhcpd */
+/* get log from dhcpd */
 $dhcpdlogfile = "/var/log/dhcpd.log";
-$clog = array();
+$log = array();
 if (file_exists($dhcpdlogfile)) {
-    exec("clog $dhcpdlogfile", $clog, $ret);
+    exec("cat $dhcpdlogfile", $log, $ret);
 }
 
 if ($ret > 0) {
-    $clog = array();
+    $log = array();
 }
 
 $expires = array();
-foreach ($clog as $line) {
+foreach ($log as $line) {
     if (preg_match("/releases[ ]+prefix[ ]+([0-9a-f:]+\/[0-9]+)/i", $line, $expire)) {
         if (in_array($expire[1], $routes)) {
             continue;
         }
         $expires[$expire[1]] = $expire[1];
     }
-    array_shift($clog);
+    array_shift($log);
 }
 
 // echo "remove routes\n";
