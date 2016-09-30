@@ -2997,28 +2997,6 @@ EOD;
     update_filter_reload_status(gettext("Creating IPsec rules..."));
     $ipfrules .= filter_generate_ipsec_rules($FilterIflist, $log);
 
-    update_filter_reload_status("Creating uPNP rules...");
-    if (isset($config['installedpackages']['miniupnpd']['config'][0])) {
-        if (isset($config['installedpackages']['miniupnpd'][0]['config']) && is_array($config['installedpackages']['miniupnpd'][0]['config'])) {
-            $upnp_interfaces = explode(",", $config['installedpackages']['miniupnpd'][0]['config']['iface_array']);
-            foreach($upnp_interfaces as $upnp_if) {
-                if (is_array($FilterIflist[$upnp_if])) {
-                    $oc = $FilterIflist[$upnp_if];
-                    unset($sa);
-                    if ($oc['ip']) {
-                        $sa = $oc['sa'];
-                        $sn = $oc['sn'];
-                    }
-                    if ($sa) {
-                        $ipfrules .= <<<EOD
-pass in {$log['pass']} on \${$oc['descr']} proto tcp from {$sa}/{$sn} to 239.255.255.250/32 port 1900 keep state label "pass multicast traffic to miniupnpd"
-
-EOD;
-                    }
-                }
-            }
-        }
-    }
     return $ipfrules;
 }
 
