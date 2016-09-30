@@ -1452,9 +1452,6 @@ function filter_nat_rules_generate(&$FilterIflist)
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";
-    $natrules .= "nat-anchor \"natearly/*\"\n";
-
-    $natrules .= "nat-anchor \"natrules/*\"\n\n";
     update_filter_reload_status(gettext("Creating 1:1 rules..."));
 
     $reflection_txt = "";
@@ -2484,10 +2481,6 @@ function filter_rules_generate(&$FilterIflist)
 
     /* relayd */
     $ipfrules .= "anchor \"relayd/*\"\n";
-    /* OpenVPN user rules from radius */
-    $ipfrules .= "anchor \"openvpn/*\"\n";
-    /* IPsec user rules from radius */
-    $ipfrules .= "anchor \"ipsec/*\"\n";
 
     # BEGIN OF firewall rules
     /* default block logging? */
@@ -2919,7 +2912,6 @@ EOD;
         }
 
         $ipfrules .= "\n# User-defined rules follow\n";
-        $ipfrules .= "\nanchor \"userrules/*\"\n";
         /* Generate user rule lines */
         foreach($rule_arr1 as $rule) {
             if (isset($rule['disabled'])) {
