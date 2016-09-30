@@ -60,7 +60,6 @@
                 <workAround url="/system_general.php*"/>
             </General>
             <Administration order="200" url="/system_advanced_admin.php"/>
-            <Logging order="300" url="/diag_logs_settings.php"/>
             <Notifications order="400" url="/system_advanced_notifications.php"/>
             <Miscellaneous order="500" url="/system_advanced_misc.php"/>
             <Tunables VisibleName="Tunables" order="600" url="/system_advanced_sysctl.php">

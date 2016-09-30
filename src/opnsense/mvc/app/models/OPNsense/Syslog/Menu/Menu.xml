@@ -1,7 +1,7 @@
 <menu>
     <System>
-	<Settings>
-    	    <Syslog order="10" url="/ui/syslog/" />
+        <Settings>
+            <Logging order="300" url="/ui/syslog/" />
         </Settings>
     </System>
 </menu>

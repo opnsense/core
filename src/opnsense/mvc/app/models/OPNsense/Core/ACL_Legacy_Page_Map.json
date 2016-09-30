@@ -129,7 +129,7 @@
         "name": "WebCfg - Diagnostics: Logs: Settings page",
         "descr": "Allow access to the 'Diagnostics: Logs: Settings' page.",
         "match": [
-            "diag_logs_settings.php*"
+            "ui/syslog/*"
         ]
     },
     "page-diagnostics-logs-system": {

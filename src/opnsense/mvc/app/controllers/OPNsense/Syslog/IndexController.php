@@ -42,7 +42,7 @@ class IndexController extends \OPNsense\Base\IndexController
      */
     public function indexAction()
     {
-        $this->view->title = gettext('Syslog Settings');
+        $this->view->title = gettext('System: Settings: Logging');
         // include dialog form definitions
         $this->view->mainForm = $this->getForm("mainForm");
         $this->view->pick('OPNsense/Syslog/index');
