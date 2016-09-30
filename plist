@@ -26,7 +26,6 @@
 /usr/local/etc/inc/ipsec.auth-user.php
 /usr/local/etc/inc/ipsec.inc
 /usr/local/etc/inc/legacy_bindings.inc
-/usr/local/etc/inc/miniupnpd.inc
 /usr/local/etc/inc/notices.basic_sasl_client.inc
 /usr/local/etc/inc/notices.cram_md5_sasl_client.inc
 /usr/local/etc/inc/notices.digest_sasl_client.inc
@@ -381,6 +380,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Plugin.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/AllOrNoneConstraint.php

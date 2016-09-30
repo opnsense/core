@@ -372,6 +372,13 @@ function filter_configure_sync()
 
     $FilterIflist = filter_generate_optcfg_array();
 
+    // initialize fw plugin object
+    $fw = new \OPNsense\Firewall\Plugin();
+
+    if (function_exists('plugins_firewall')) {
+        plugins_firewall($fw);
+    }
+
     /* Use filter lock to not allow concurrent filter reloads during this run. */
     $filterlck = lock('filter', LOCK_EX);
 
@@ -465,8 +472,12 @@ function filter_configure_sync()
     update_filter_reload_status(gettext("Setting up SCRUB information"));
     $rules .= filter_generate_scrubing($FilterIflist);
     $rules .= "\n";
+    $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
+    $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
+    $rules .= $fw->anchorToText('fw', 'head');
     $rules .= "{$pfrules}\n";
+    $rules .= $fw->anchorToText('fw', 'tail');
 
     unset($aliases, $gateways, $natrules, $pfrules);
 
@@ -1449,9 +1460,6 @@ function filter_nat_rules_generate(&$FilterIflist)
 
     $natrules = "no nat proto carp\n";
     $natrules .= "no rdr proto carp\n";
-    $natrules .= "nat-anchor \"natearly/*\"\n";
-
-    $natrules .= "nat-anchor \"natrules/*\"\n\n";
     update_filter_reload_status(gettext("Creating 1:1 rules..."));
 
     $reflection_txt = "";
@@ -1893,9 +1901,6 @@ function filter_nat_rules_generate(&$FilterIflist)
             }
         }
     }
-
-    $natrules .= "\n# UPnP\n";
-    $natrules .= "rdr-anchor \"miniupnpd\"\n";
 
     if (!empty($reflection_txt)) {
         $natrules .= "\n# Reflection redirects and NAT for 1:1 mappings\n" . $reflection_txt;
@@ -2487,10 +2492,6 @@ function filter_rules_generate(&$FilterIflist)
 
     /* relayd */
     $ipfrules .= "anchor \"relayd/*\"\n";
-    /* OpenVPN user rules from radius */
-    $ipfrules .= "anchor \"openvpn/*\"\n";
-    /* IPsec user rules from radius */
-    $ipfrules .= "anchor \"ipsec/*\"\n";
 
     # BEGIN OF firewall rules
     /* default block logging? */
@@ -2922,7 +2923,6 @@ EOD;
         }
 
         $ipfrules .= "\n# User-defined rules follow\n";
-        $ipfrules .= "\nanchor \"userrules/*\"\n";
         /* Generate user rule lines */
         foreach($rule_arr1 as $rule) {
             if (isset($rule['disabled'])) {
@@ -3000,32 +3000,6 @@ EOD;
     update_filter_reload_status(gettext("Creating IPsec rules..."));
     $ipfrules .= filter_generate_ipsec_rules($FilterIflist, $log);
 
-    update_filter_reload_status("Creating uPNP rules...");
-    if (isset($config['installedpackages']['miniupnpd']['config'][0])) {
-        if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
-            $ipfrules .= "anchor \"miniupnpd\"\n";
-        }
-
-        if (isset($config['installedpackages']['miniupnpd'][0]['config']) && is_array($config['installedpackages']['miniupnpd'][0]['config'])) {
-            $upnp_interfaces = explode(",", $config['installedpackages']['miniupnpd'][0]['config']['iface_array']);
-            foreach($upnp_interfaces as $upnp_if) {
-                if (is_array($FilterIflist[$upnp_if])) {
-                    $oc = $FilterIflist[$upnp_if];
-                    unset($sa);
-                    if ($oc['ip']) {
-                        $sa = $oc['sa'];
-                        $sn = $oc['sn'];
-                    }
-                    if ($sa) {
-                        $ipfrules .= <<<EOD
-pass in {$log['pass']} on \${$oc['descr']} proto tcp from {$sa}/{$sn} to 239.255.255.250/32 port 1900 keep state label "pass multicast traffic to miniupnpd"
-
-EOD;
-                    }
-                }
-            }
-        }
-    }
     return $ipfrules;
 }
 

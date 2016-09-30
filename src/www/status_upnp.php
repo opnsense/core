@@ -30,11 +30,12 @@
 require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/miniupnpd.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['clear'])) {
-        upnp_stop();
-        upnp_start();
+        miniupnpd_stop();
+        miniupnpd_start();
         header(url_safe('Location: /status_upnp.php'));
         exit;
     }
