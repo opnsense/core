@@ -183,7 +183,6 @@ class Syslog extends BaseModel
         $category = $this->LogCategories->Category->add();
         $category->Name = $name;
         $category->Description = $description;
-        $category->LogRemote = $logRemote;
         $this->Modified = true;
         $this->saveIfModified();
     }
