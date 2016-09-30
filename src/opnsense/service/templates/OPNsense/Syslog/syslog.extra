@@ -1,1 +1,1 @@
-{% if helpers.exists('OPNsense.Syslog.Remote.BindAddress') %} -b {{OPNsense.Syslog.Remote.BindAddress}}{% endif %} {% for socket in helpers.toList('OPNsense.Syslog.LocalSockets.Socket') %} -l {{socket.Path}} {% endfor %}
+{% if helpers.exists('OPNsense.Syslog.Remote.BindAddress') and OPNsense.Syslog.Remote.BindAddress != '' %} -b {{OPNsense.Syslog.Remote.BindAddress}}{% endif %} {% if helpers.exists('OPNsense.Syslog.LocalSockets.Socket') %}{% for socket in helpers.toList('OPNsense.Syslog.LocalSockets.Socket') %} -l {{socket.Path}} {% endfor %}{% endif %}
