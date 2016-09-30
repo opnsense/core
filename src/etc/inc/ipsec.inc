@@ -784,7 +784,7 @@ EOD;
                 $peerid_data = isset($ph1ent['mobile']) ? "%any" : ipsec_find_id($ph1ent, "peer", $rgmap);
 
                 if (!empty($peerid_data)) {
-                    $pskconf .= $myid . trim($peerid_data) . " : PSK 0s" . base64_encode(trim($ph1ent['pre-shared-key'])) . "\n";
+                    $pskconf .= $myid . " " . trim($peerid_data) . " : PSK 0s" . base64_encode(trim($ph1ent['pre-shared-key'])) . "\n";
                 }
             }
         }
