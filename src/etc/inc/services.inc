@@ -2660,7 +2660,6 @@ function services_get()
     );
 
     if (function_exists('plugins_services')) {
-        /* only pull plugins if plugins.inc was included before */
         foreach (plugins_services() as $service) {
             $services[] = $service;
         }
