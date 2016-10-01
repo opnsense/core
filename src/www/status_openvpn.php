@@ -32,7 +32,6 @@
 require_once("guiconfig.inc");
 require_once("openvpn.inc");
 require_once("services.inc");
-require_once("plugins.inc");
 require_once("interfaces.inc");
 
 function kill_client($port, $remipp)

@@ -35,7 +35,6 @@ require_once("filter.inc");
 require_once("filter_log.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("plugins.inc");
 
 /********************************************************************************************************************
  * imported from easyrule.inc/php
