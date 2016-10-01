@@ -55,6 +55,14 @@ require_once("legacy_bindings.inc");
 require_once('upgrade_config.inc');
 require_once("certs.inc");
 
+/*
+ * Hook up the plugin system which consists of several low-profile
+ * functions that can be called from within our backend code when
+ * they exist.  The magic here is that if the plugin system is not
+ * required it can be completely disabled by removing plugins.inc.
+ */
+include_once('plugins.inc');
+
 /* make a global alias table (for faster lookups) */
 function alias_make_table($config)
 {
@@ -178,7 +186,6 @@ function write_config($desc = '', $backup = true)
     }
 
     if (function_exists('plugins_interfaces')) {
-        /* only pull plugins if plugins.inc was included before */
         plugins_interfaces();
     }
 
