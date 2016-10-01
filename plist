@@ -37,7 +37,6 @@
 /usr/local/etc/inc/notices.plain_sasl_client.inc
 /usr/local/etc/inc/notices.sasl.inc
 /usr/local/etc/inc/notices.smtp.inc
-/usr/local/etc/inc/openvpn-client-export.inc
 /usr/local/etc/inc/openvpn.auth-user.php
 /usr/local/etc/inc/openvpn.inc
 /usr/local/etc/inc/openvpn.tls-verify.php
