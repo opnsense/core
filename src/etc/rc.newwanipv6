@@ -38,7 +38,6 @@ require_once("services.inc");
 require_once("rrd.inc");
 require_once("util.inc");
 require_once("system.inc");
-require_once("plugins.inc");
 require_once("interfaces.inc");
 
 /* Interface IP address has changed */
