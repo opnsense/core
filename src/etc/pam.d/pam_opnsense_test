@@ -1,9 +1,0 @@
-# OPNsense pam test service
-# 
-# Example service to demonstrate the OPNsense pam connector using the supplied
-# test utility:
-#
-# opnsense-auth-test -s pam_opnsense_test -u root
-
-auth	sufficient	pam_opnsense.so
-account	sufficient	pam_opnsense.so
