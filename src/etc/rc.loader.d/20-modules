@@ -14,7 +14,6 @@ if_vlan_load="YES"
 pf_load="YES"
 pflog_load="YES"
 pfsync_load="YES"
-speaker_load="YES"
 # The netgraph(4) framework is loaded here
 # for backwards compat with the pre-16.7
 # kernel configuration that compiled all of
