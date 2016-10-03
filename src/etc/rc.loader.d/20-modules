@@ -1,8 +1,6 @@
-# Vital modules that are not in FreeBSD generic
-# will be loaded on boot, which makes races with
-# settings impossible as the kernel boots up
-# in a consistent way as it looks like all the
-# modules were compiled into the kernel.
+# Vital modules that are not in FreeBSD's GENERIC
+# configuration will be loaded on boot, which makes
+# races with individual module's settings impossible.
 carp_load="YES"
 if_bridge_load="YES"
 if_enc_load="YES"
