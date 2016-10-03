@@ -50,7 +50,7 @@
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" logo+
 	s" @@@@@@@@@@@@@@@@@@@@@@@@@@@@  " logo+
 	s"  #[m                              " logo+
-	s"    16.7 ``Dancing Dolphin''   #[m" logo+
+	s"   17.1  ``Insert Name Here''  #[m" logo+
 
 	2drop
 ;
