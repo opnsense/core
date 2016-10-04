@@ -720,22 +720,6 @@ function system_routing_enable()
     ));
 }
 
-function system_syslogd_extra_local($logsocket)
-{
-    $logdir = dirname($logsocket);
-
-    if (!is_dir($logdir)) {
-        /* create if needed to avoid startup error */
-        mwexecf('/bin/mkdir -p %s', $logdir);
-    }
-
-    try{
-        $syslog = new OPNsense\Syslog\Syslog;
-        $syslog->setLocalSocket($logsocket);
-    }
-    catch(Exception $e){}
-}
-
 function system_syslogd_start()
 {
     global $config, $g;
@@ -747,7 +731,11 @@ function system_syslogd_start()
         echo gettext('Starting syslog...');
     }
 
-    system_syslogd_extra_local("{$g['dhcpd_chroot_path']}/var/run/log");
+    try{
+        // to ensure that Syslog model is initialized and configured
+        $syslog = new OPNsense\Syslog\Syslog;
+    }
+    catch(Exception $e){}
 
     /* hook for newsyslog.conf, syslog.conf, syslog.extra regeneration */
     configd_run('template reload OPNsense.Syslog');

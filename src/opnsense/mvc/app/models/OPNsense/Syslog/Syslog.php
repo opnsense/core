@@ -55,7 +55,6 @@ class Syslog extends BaseModel
         $systemLog = self::$LOGS_DIRECTORY.'/system.log';
 
         return array(
-        array('program' => 'dhcpd,dhcrelay,dhclient,dhcp6c',                      'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/dhcpd.log',   'category' => 'dhcp'),
         array('program' => 'filterlog',                                           'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/filter.log',  'category' => 'filter'),
         array('program' => 'apinger',                                             'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/gateways.log','category' => 'gateways'),
         array('program' => 'ntp,ntpd,ntpdate',                                    'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/ntpd.log',    'category' => 'ntpd'),
@@ -201,6 +200,11 @@ class Syslog extends BaseModel
         {
             if($socket->Path->__toString() == $path)
                 return;
+        }
+
+        $socketdir = dirname($path);
+        if (!is_dir($socketdir)) {
+            mkdir($socketdir, 0777, true);
         }
 
         $socket = $this->LocalSockets->Socket->add();
