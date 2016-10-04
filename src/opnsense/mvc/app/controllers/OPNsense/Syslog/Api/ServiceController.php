@@ -153,6 +153,9 @@ class ServiceController extends ApiControllerBase
             $numentries = intval($mdl->NumEntries->__toString());
             $hostname = Config::getInstance()->toArray()['system']['hostname'];
 
+            if(!file_exists($filename))
+                return array("status" => "ok", "data" => array(array('time' => gettext("No data found"), 'filter' => "", 'message' => "")), 'filters' => '');
+
             $logdata = array();
             $formatted = array();
             if($filename != '') {
@@ -185,6 +188,9 @@ class ServiceController extends ApiControllerBase
                 if(++$counter > $numentries)
                     break; 
             }
+
+            if(count($formatted) == 0)
+                return array("status" => "ok", "data" => array(array('time' => gettext("No data found"), 'filter' => "", 'message' => "")), 'filters' => '');
 
             return array("status" => "ok", "data" => $formatted, 'filters' => $filters);
 
