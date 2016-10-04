@@ -171,7 +171,7 @@ function recover_ports()
 		'post-install'
 	);
 
-	exec('/usr/sbin/pkg query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
+	exec('/usr/local/sbin/pkg-static query -e \'%#U > 0 || %#G > 0\' %n', $pkgs);
 
 	if ($pkgs[0] == '') {
 		return;
@@ -181,7 +181,7 @@ function recover_ports()
 	$tempfile = fopen($tempname, 'w');
 
 	foreach ($pkgs as $pkg) {
-		$raw = exec('/usr/sbin/pkg info --raw --raw-format json-compact ' . $pkg);
+		$raw = exec('/usr/local/sbin/pkg-static info --raw --raw-format json-compact ' . $pkg);
 		$info = json_decode($raw, true);
 		foreach($actions as $action) {
 			if (!isset($info['scripts'][$action])) {
