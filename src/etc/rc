@@ -236,9 +236,8 @@ echo "done."
 # Perform major updates
 for STAGE in B P; do
 	if opnsense-update -${STAGE}; then
-		echo "Performed deferred update, rebooting now"
 		# ideally reroot with `-r', but panics on ZFS
-		shutdown -or now
+		reboot
 	fi
 done
 
