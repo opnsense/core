@@ -32,17 +32,26 @@ TEE="/usr/bin/tee -a"
 
 : > ${LOCKFILE}
 
-echo "***GOT REQUEST TO UPGRADE: all***" >> ${LOCKFILE}
+echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
-# upgrade all packages if possible
-opnsense-update -p 2>&1 | ${TEE} ${LOCKFILE}
+if [ -z "${1}" ]; then
+	# upgrade all packages if possible
+	opnsense-update -p 2>&1 | ${TEE} ${LOCKFILE}
 
-# trigger a webgui restart to cope with changes
-/usr/local/etc/rc.restart_webgui 2>&1 | ${TEE} ${LOCKFILE}
+	# trigger a webgui restart to cope with changes
+	/usr/local/etc/rc.restart_webgui 2>&1 | ${TEE} ${LOCKFILE}
 
-# if we can update base, we'll do that as well
-if opnsense-update -c; then
-	if opnsense-update -bk 2>&1 | ${TEE} ${LOCKFILE}; then
+	# if we can update base, we'll do that as well
+	if opnsense-update -c; then
+		if opnsense-update -bk 2>&1 | ${TEE} ${LOCKFILE}; then
+			echo '***REBOOT***' >> ${LOCKFILE}
+			sleep 5
+			/usr/local/etc/rc.reboot
+		fi
+	fi
+elif [ "${1}" = "upgrade" -a -n "${2}" ]; then
+	# upgrade to a major release
+	if opnsense-update -ur ${2} 2>&1 | ${TEE} ${LOCKFILE}; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot

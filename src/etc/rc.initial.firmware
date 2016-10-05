@@ -27,8 +27,23 @@
 
 set -e
 
-echo "This will automatically fetch all available updates, apply them,"
-echo -n "and reboot if necessary.  Proceed with this action? [y/N]: "
+UPGRADE="/usr/local/opnsense/firmware-upgrade"
+ARGS=
+
+if [ -f ${UPGRADE} ]; then
+	NAME=$(cat ${UPGRADE})
+
+	echo "A major firmware upgrade is available for this installation: ${NAME}"
+	echo
+	echo "Make sure you have read the release notes and migration guide before"
+	echo "attempting this upgrade.  Around 200MB will need to be downloaded and"
+	echo -n "require 500MB of free space.  Proceed with this action? [y/N]: "
+
+	ARGS="upgrade ${NAME}"
+else
+	echo "This will automatically fetch all available updates, apply them,"
+	echo -n "and reboot if necessary.  Proceed with this action? [y/N]: "
+fi
 
 read YN
 case ${YN} in
@@ -41,4 +56,4 @@ esac
 
 echo
 
-/usr/local/etc/rc.firmware
+/usr/local/etc/rc.firmware ${ARGS}
