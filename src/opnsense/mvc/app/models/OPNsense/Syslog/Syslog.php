@@ -52,8 +52,6 @@ class Syslog extends BaseModel
 
     private function getPredefinedTargets()
     {
-        $systemLog = self::$LOGS_DIRECTORY.'/system.log';
-
         return array(
         array('program' => 'filterlog',                                           'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/filter.log',  'category' => 'filter'),
         array('program' => 'apinger',                                             'filter' => '*.*',  'type' => 'file', 'target' => self::$LOGS_DIRECTORY.'/gateways.log','category' => 'gateways'),
@@ -67,11 +65,8 @@ class Syslog extends BaseModel
 
         array('program' => null,  'filter' => 'local3.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/vpn.log',   'category' => 'vpn'),
         array('program' => null,  'filter' => 'local7.*',                             'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/dhcpd.log', 'category' => 'dhcp'),
-        array('program' => null,  'filter' => '*.notice;kern.debug;lpr.info;mail.crit;daemon.none', 'type' => 'file', 'target' => $systemLog,             'category' => 'system'),
-        array('program' => null,  'filter' => 'news.err;local0.none;local3.none;local4.none', 'type' => 'file', 'target' => $systemLog,                   'category' => 'system'),
-        array('program' => null,  'filter' => 'local7.none',                          'type' => 'file',   'target' => $systemLog,                         'category' => null),
-        array('program' => null,  'filter' => 'security.*',                           'type' => 'file',   'target' => $systemLog,                         'category' => 'system'),
-        array('program' => null,  'filter' => 'auth.info;authpriv.info;daemon.info',  'type' => 'file',   'target' => $systemLog,                         'category' => 'system'),
+        array('program' => null,  'filter' => '*.notice;kern.debug;lpr.info;mail.crit;news.err;local0.none;local3.none;local4.none;local7.none;security.*;auth.info;authpriv.info;daemon.info', 
+                                                                                      'type' => 'file',   'target' => self::$LOGS_DIRECTORY.'/system.log','category' => 'system'),
         array('program' => null,  'filter' => 'auth.info;authpriv.info;user.*',       'type' => 'pipe',   'target' => 'exec /usr/local/sbin/sshlockout_pf 15','category' => null),
         array('program' => null,  'filter' => '*.emerg',                              'type' => 'all',    'target' => '*',                                'category' => 'system'),
         );
