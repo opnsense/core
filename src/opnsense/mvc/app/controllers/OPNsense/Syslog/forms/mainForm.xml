@@ -1,8 +1,5 @@
 <form>
-	<field>
-		<type>header</type>
-		<label>General Settings</label>
-	</field>
+<tab id="syslog-general" description="General Syslog Settings">
 	<field>
 		<id>syslog.Reverse</id>
 		<label>Reverse Display</label>
@@ -71,6 +68,8 @@
 		<type>dropdown</type>
 		<help>Show the applied rule description below or in the firewall log rows.</help>
 	</field>
+</tab>
+<tab id="syslog-remote" description="Remote Logging">
 	<field>
 		<type>header</type>
 		<label>Remote Logging</label>
@@ -107,4 +106,6 @@
 		<type>checkbox</type>
 		<help>Send all log events to remote syslog server.</help>
 	</field>
+</tab>
+<activetab>syslog-general</activetab>
 </form>
