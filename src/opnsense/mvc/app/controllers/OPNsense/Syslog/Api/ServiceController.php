@@ -183,7 +183,7 @@ class ServiceController extends ApiControllerBase
                 $entry_date_time = join(" ", array_slice($logent, 0, 3));
                 $entry_text = ($logent[3] == $hostname) ? "" : $logent[3] . " ";
                 $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
-                $formatted[] = array('time' => $entry_date_time, 'filter' => $filter, 'message' => $entry_text);
+                $formatted[] = array('time' => utf8_encode($entry_date_time), 'filter' => $filter, 'message' => utf8_encode($entry_text));
 
                 if(++$counter > $numentries)
                     break; 
