@@ -227,12 +227,6 @@ fi
 
 echo "done."
 
-# Regenerate groups and users for packages
-/usr/local/etc/rc.recover pkg > /dev/null
-
-# Recreate capabilities DB
-/usr/bin/cap_mkdb /etc/login.conf
-
 # Perform major updates
 for STAGE in B P; do
 	if opnsense-update -${STAGE}; then
@@ -240,6 +234,12 @@ for STAGE in B P; do
 		reboot
 	fi
 done
+
+# Regenerate groups and users for packages
+/usr/local/etc/rc.recover pkg > /dev/null
+
+# Recreate capabilities DB
+/usr/bin/cap_mkdb /etc/login.conf
 
 # Set up the correct php.ini content
 /usr/local/etc/rc.php_ini_setup
