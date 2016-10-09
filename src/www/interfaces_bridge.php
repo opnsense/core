@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             unset($a_bridges[$id]);
             write_config();
-            header("Location: interfaces_bridge.php");
+            header(url_safe('Location: /interfaces_bridge.php'));
             exit;
         }
     }

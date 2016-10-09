@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($a_clones[$_POST['id']]);
             write_config();
 
-            header("Location: interfaces_wireless.php");
+            header(url_safe('Location: /interfaces_wireless.php'));
             exit;
         }
     }

@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
       write_config();
       interface_group_setup($ifgroupentry);
-      header("Location: interfaces_groups.php");
+      header(url_safe('Location: /interfaces_groups.php'));
       exit;
     }
 }

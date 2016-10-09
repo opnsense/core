@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($confif <> "") {
                 interface_configure($confif);
             }
-            header("Location: interfaces_gre.php");
+            header(url_safe('Location: /interfaces_gre.php'));
             exit;
         }
     }

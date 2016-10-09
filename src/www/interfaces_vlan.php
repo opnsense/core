@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             unset($a_vlans[$id]);
             write_config();
-            header("Location: interfaces_vlan.php");
+            header(url_safe('Location: /interfaces_vlan.php'));
             exit;
           }
     }

@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         unset($a_ifgroups[$id]);
         write_config();
-        header("Location: interfaces_groups.php");
+        header(url_safe('Location: /interfaces_groups.php'));
         exit;
     }
 }

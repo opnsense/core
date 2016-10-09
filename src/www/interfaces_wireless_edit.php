@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 });
                 write_config();
 
-                header("Location: interfaces_wireless.php");
+                header(url_safe('Location: /interfaces_wireless.php'));
                 exit;
             }
         }

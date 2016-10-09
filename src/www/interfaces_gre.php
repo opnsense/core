@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mwexec("/sbin/ifconfig " . escapeshellarg($a_gres[$id]['greif']) . " destroy");
             unset($a_gres[$id]);
             write_config();
-            header("Location: interfaces_gre.php");
+            header(url_safe('Location: /interfaces_gre.php'));
             exit;
         }
     }
