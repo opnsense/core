@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         // reconfigure
         services_dhcrelay6_configure();
-        header("Location: services_dhcpv6_relay.php");
+        header(url_safe('Location: /services_dhcpv6_relay.php'));
         exit;
     }
 }
