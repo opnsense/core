@@ -35,6 +35,8 @@ require_once 'config.inc';
 require_once 'util.inc';
 require_once 'system.inc';
 
+/* upgrade config before doing anything else */
+convert_config(true);
+
 system_firmware_configure();
 system_console_configure();
-convert_config(true);
