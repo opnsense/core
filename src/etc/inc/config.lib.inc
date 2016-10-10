@@ -146,6 +146,14 @@ function convert_config($verbose = false)
             write_config(sprintf('Upgraded config version level from %s to %s', $prev_version, $config['version']));
         }
     }
+
+    /* chain the new migration into this function call */
+    $mvc_migration = '/usr/local/opnsense/mvc/script/run_migrations.php';
+    if ($verbose) {
+        passthru($mvc_migration);
+    } else {
+        mwexecf($mvc_migraton);
+    }
 }
 
 /****f* config/write_config
