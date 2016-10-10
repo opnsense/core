@@ -94,7 +94,6 @@ CORE_DEPENDS?=		apinger \
 			openvpn \
 			opnsense-lang \
 			opnsense-update \
-			p7zip \
 			pecl-radius \
 			pftop \
 			phalcon \
@@ -133,7 +132,8 @@ CORE_DEPENDS?=		apinger \
 			suricata \
 			syslogd \
 			unbound \
-			wol
+			wol \
+			zip
 
 WRKDIR?=${.CURDIR}/work
 WRKSRC?=${WRKDIR}/src
