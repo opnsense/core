@@ -370,7 +370,7 @@ function openvpn_client_export_config($srvid, $usrid, $crtid, $useaddr, $verifys
                 }
             }
             $command = "cd " . escapeshellarg("{$tempdir}/..")
-                . " && /usr/local/bin/7z -tzip -y a "
+                . " && /usr/local/bin/zip -r "
                 . escapeshellarg("/tmp/{$prefix}-config.zip")
                 . " " . escapeshellarg($prefix);
             exec($command);
@@ -563,7 +563,7 @@ EOF;
         exec("cd {$tempdir}/.. && /usr/bin/tar cfz {$outputfile} Viscosity.visc");
     } else {
         $outputfile = "/tmp/{$uniq}-Viscosity.visc.zip";
-        exec("cd {$tempdir}/.. && /usr/local/bin/7z -tzip -y a {$outputfile} Viscosity.visc");
+        exec("cd {$tempdir}/.. && /usr/local/bin/zip -r {$outputfile} Viscosity.visc");
     }
 
     // Remove temporary directory
@@ -688,7 +688,7 @@ function openvpn_client_export_sharedkey_config($srvid, $useaddr, $proxy, $zipco
         file_put_contents("{$tempdir}/{$prefix}.ovpn", $conf);
         $shkeyfile = "{$tempdir}/{$shkeyfile}";
         file_put_contents("{$shkeyfile}", base64_decode($settings['shared_key']));
-        exec("cd {$tempdir}/.. && /usr/local/bin/7z -tzip -y a /tmp/{$prefix}-config.zip {$prefix}");
+        exec("cd {$tempdir}/.. && /usr/local/bin/zip -r /tmp/{$prefix}-config.zip {$prefix}");
         // Remove temporary directory
         exec("rm -rf {$tempdir}");
         return "/tmp/{$prefix}-config.zip";
