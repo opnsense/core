@@ -99,7 +99,6 @@ CORE_DEPENDS?=		apinger \
 			pftop \
 			phalcon \
 			php-suhosin \
-			php56 \
 			php56-ctype \
 			php56-curl \
 			php56-dom \
@@ -122,7 +121,6 @@ CORE_DEPENDS?=		apinger \
 			py27-requests \
 			py27-sqlite3 \
 			py27-ujson \
-			python27 \
 			radvd \
 			rate \
 			relayd \
