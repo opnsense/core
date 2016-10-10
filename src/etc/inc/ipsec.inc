@@ -690,7 +690,7 @@ EOD;
             }
 
             if (isset($a_client['save_passwd'])) {
-                $strongswan .= "\t\t28673 = yes\n";
+                $strongswan .= "\t\t28673 = 1\n";
             }
 
             if (!empty($a_client['pfs_group'])) {
