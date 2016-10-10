@@ -96,7 +96,7 @@ if ($setup_installer) {
 echo "Loading configuration...";
 global $config;
 $config = parse_config();
-convert_config();
+convert_config(true);
 echo "done.\n";
 
 /*
