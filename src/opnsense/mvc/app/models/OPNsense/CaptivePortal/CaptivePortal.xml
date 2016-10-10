@@ -1,5 +1,6 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
+    <version>1.0.0</version>
     <description>
         Captive portal application model
     </description>
