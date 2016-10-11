@@ -89,7 +89,8 @@ foreach ($clog as $line) {
 // echo "remove routes\n";
 if (count($expires) > 0) {
     foreach ($expires as $prefix) {
-        echo "/sbin/route delete -inet6 {$prefix['prefix']}\n";
-        array_shift($expires);
+        if (isset($prefix['prefix'])) {
+            echo "/sbin/route delete -inet6 {$prefix['prefix']}\n";
+        }
     }
 }
