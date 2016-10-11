@@ -159,12 +159,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
             write_config(sprintf('Deleted CRL %s', $name));
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }
     } elseif ($act == "delcert" && isset($id)) {
         if (!isset($thiscrl['cert']) || !is_array($thiscrl['cert'])) {
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }
         $found = false;
@@ -175,14 +175,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         if (!$found) {
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }
         $name = $thiscert['descr'];
         if (cert_unrevoke($thiscert, $thiscrl)) {
             openvpn_refresh_crls();
             write_config(sprintf('Deleted certificate %s from CRL %s', $name, $thiscrl['descr']));
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         } else {
             $savemsg = sprintf(gettext("Failed to delete certificate %s from CRL %s"), $name, $thiscrl['descr']) . "<br />";
@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif ($act == "addcert") {
         $input_errors = array();
         if (!isset($id)) {
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }
 
@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             cert_revoke($cert, $crl, $reason);
             openvpn_refresh_crls();
             write_config(sprintf('Revoked certificate %s in CRL %s', $cert['descr'], $crl['descr']));
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }
     } else {
@@ -271,7 +271,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config(sprintf('Saved CRL %s', $crl['descr']));
             openvpn_refresh_crls();
-            header("Location: system_crlmanager.php");
+            header(url_safe('Location: /system_crlmanager.php'));
             exit;
         }
     }

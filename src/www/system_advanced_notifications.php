@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-        header("Location: system_advanced_notifications.php");
+        header(url_safe('Location: /system_advanced_notifications.php'));
         return;
 
     } elseif (isset($pconfig['test_growl']) && $pconfig['test_growl'] == gettext("Test Growl")) {

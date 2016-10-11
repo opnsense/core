@@ -213,7 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         mark_subsystem_dirty('staticroutes');
         write_config();
 
-        header("Location: system_routes.php");
+        header(url_safe('Location: /system_routes.php'));
         exit;
     }
 }

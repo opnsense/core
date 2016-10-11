@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     } elseif ($act == "csr") {
         if (!isset($id)) {
-            header("Location: system_certmanager.php");
+            header(url_safe('Location: /system_certmanager.php'));
             exit;
         }
         $pconfig['descr'] = $a_cert[$id]['descr'];
@@ -244,13 +244,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($a_cert[$id]);
             write_config();
         }
-        header("Location: system_certmanager.php");
+        header(url_safe('Location: /system_certmanager.php'));
         exit;
     } elseif ($act == "csr") {
         $input_errors = array();
         $pconfig = $_POST;
         if (!isset($id)) {
-            header("Location: system_certmanager.php");
+            header(url_safe('Location: /system_certmanager.php'));
             exit;
         }
 
@@ -279,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             write_config();
 
-            header("Location: system_certmanager.php");
+            header(url_safe('Location: /system_certmanager.php'));
             exit;
         }
     } elseif (!empty($_POST['save'])) {
@@ -495,9 +495,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (count($input_errors) == 0) {
                 write_config();
                 if (isset($userid)) {
-                    header("Location: system_usermanager.php?act=edit&userid=".$userid);
+                    header(url_safe('Location: /system_usermanager.php?act=edit&userid=%s', array($userid)));
                 } else {
-                    header("Location: system_certmanager.php");
+                    header(url_safe('Location: /system_certmanager.php'));
                 }
                 exit;
             }

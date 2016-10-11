@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             unset($a_gateway_groups[$_POST['id']]);
             write_config();
             mark_subsystem_dirty('staticroutes');
-            header("Location: system_gateway_groups.php");
+            header(url_safe('Location: /system_gateway_groups.php'));
             exit;
         }
     } elseif (isset($_POST['apply'])) {
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 clear_subsystem_dirty($gw_subsystem);
             }
         }
-        header("Location: system_gateway_groups.php");
+        header(url_safe('Location: /system_gateway_groups.php'));
         exit;
     }
 }

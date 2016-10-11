@@ -433,7 +433,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             configd_run("interface reconfigure {$reloadif}");
         }
 
-        header("Location: system_gateways.php");
+        header(url_safe('Location: /system_gateways.php'));
         exit;
     } else {
         if (!empty($_REQUEST['isAjax'])) {
