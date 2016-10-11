@@ -798,8 +798,7 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
                 case "host":
                 case "network":
                 case "url":
-                    $tableaddrs = "{$addrlist}";
-                    if (empty($tableaddrs)) {
+                    if (empty($addrlist)) {
                         $aliases .= "table <{$aliased['name']}> persist\n";
                         if (empty($aliased['address'])) {
                             $after_filter_configure_run[] = $aliased['name'];
