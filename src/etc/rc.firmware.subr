@@ -28,22 +28,28 @@
 set -e
 
 LOCKFILE="/tmp/pkg_upgrade.progress"
+PIPEFILE="/tmp/pkg_upgrade.pipe"
 TEE="/usr/bin/tee -a"
 
 : > ${LOCKFILE}
+rm -f ${PIPEFILE}
+mkfifo ${PIPEFILE}
 
 echo "***GOT REQUEST TO UPGRADE***" >> ${LOCKFILE}
 
 if [ -z "${1}" ]; then
 	# upgrade all packages if possible
-	opnsense-update -p 2>&1 | ${TEE} ${LOCKFILE}
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	opnsense-update -p 2>&1 > ${PIPEFILE}
 
 	# trigger a webgui restart to cope with changes
-	/usr/local/etc/rc.restart_webgui 2>&1 | ${TEE} ${LOCKFILE}
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	/usr/local/etc/rc.restart_webgui 2>&1 > ${PIPEFILE}
 
 	# if we can update base, we'll do that as well
 	if opnsense-update -c; then
-		if opnsense-update -bk 2>&1 | ${TEE} ${LOCKFILE}; then
+		${TEE} ${LOCKFILE} < ${PIPEFILE} &
+		if opnsense-update -bk 2>&1 > ${PIPEFILE}; then
 			echo '***REBOOT***' >> ${LOCKFILE}
 			sleep 5
 			/usr/local/etc/rc.reboot
@@ -51,7 +57,8 @@ if [ -z "${1}" ]; then
 	fi
 elif [ "${1}" = "upgrade" -a -n "${2}" ]; then
 	# upgrade to a major release
-	if opnsense-update -ur ${2} 2>&1 | ${TEE} ${LOCKFILE}; then
+	${TEE} ${LOCKFILE} < ${PIPEFILE} &
+	if opnsense-update -ur ${2} 2>&1 > ${PIPEFILE}; then
 		echo '***REBOOT***' >> ${LOCKFILE}
 		sleep 5
 		/usr/local/etc/rc.reboot
