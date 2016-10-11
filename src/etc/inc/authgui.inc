@@ -216,7 +216,7 @@ function session_auth(&$Login_Error)
             if (!isset($config['system']['webgui']['quietlogin'])) {
               log_error(sprintf("Successful login for user '%s' from: %s", $_POST['usernamefld'], $_SERVER['REMOTE_ADDR']));
             }
-            header("Location: {$_SERVER['REQUEST_URI']}");
+            header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
             exit;
         } else {
             /* give the user an error message */
@@ -275,7 +275,7 @@ function session_auth(&$Login_Error)
         $scriptName = $scriptName[$scriptElms-1];
 
         /* redirect to page the user is on, it'll prompt them to login again */
-        header("Location: {$scriptName}");
+        header(url_safe("Location: {$scriptName}"));
         exit;
     }
 
@@ -306,15 +306,13 @@ if (!isAllowedPage($_SERVER['REQUEST_URI'])) {
             $username .= '@' . $_SERVER['REMOTE_ADDR'];
         }
         log_error("{$username} attempted to access {$_SERVER['REQUEST_URI']} but does not have access to that page. Redirecting to {$page}.");
-
-        header("Location: /{$page}");
+        header(url_safe("Location: /{$page}"));
         exit;
     } else {
         display_error_form("201", gettext("No page assigned to this user! Click here to logout."));
         exit;
     }
 }
-
 
 /*
  * determine if the user is allowed access to the requested page
