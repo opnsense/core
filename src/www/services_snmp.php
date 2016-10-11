@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
         services_snmpd_configure();
         get_std_save_message();
-        header("Location: services_snmp.php");
+        header(url_safe('Location: /services_snmp.php'));
         exit;
     }
 }

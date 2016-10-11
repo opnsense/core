@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['ntpd']['pps'] = $pps;
         write_config("Updated NTP PPS Settings");
         system_ntp_configure();
-        header("Location: services_ntpd_pps.php");
+        header(url_safe('Location: /services_ntpd_pps.php'));
         exit;
     }
 }

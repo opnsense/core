@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
         services_dyndns_configure_client($dyndns);
-        header("Location: services_dyndns.php");
+        header(url_safe('Location: /services_dyndns.php'));
         exit;
     }
 }

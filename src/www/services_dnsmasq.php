@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             write_config();
             services_dnsmasq_configure();
-            header("Location: services_dnsmasq.php");
+            header(url_safe('Location: /services_dnsmasq.php'));
             exit;
         }
     } elseif (isset($pconfig['apply'])) {
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         services_dhcpleases_configure();
         services_dnsmasq_configure();
         clear_subsystem_dirty('hosts');
-        header("Location: services_dnsmasq.php");
+        header(url_safe('Location: /services_dnsmasq.php'));
         exit;
     } elseif (!empty($pconfig['act']) && $pconfig['act'] == 'del') {
         $a_hosts = &$config['dnsmasq']['hosts'];
