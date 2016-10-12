@@ -49,10 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
         $pconfig['ident'] = $config['ipsec']['mobilekey'][$id]['ident'];
         $pconfig['psk'] = $config['ipsec']['mobilekey'][$id]['pre-shared-key'];
+        $pconfig['type'] = $config['ipsec']['mobilekey'][$id]['type'];
     } else {
         // init new
         $pconfig['ident'] = '';
         $pconfig['psk'] = '';
+        $pconfig['type'] = 'PSK';
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
@@ -97,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $secretent = array();
         $secretent['ident'] = $pconfig['ident'];
         $secretent['pre-shared-key'] = $pconfig['psk'];
+        $secretent['type'] = $pconfig['type'];
 
         if ($id !== null) {
             // edit existing key
@@ -154,6 +157,15 @@ include("head.inc");
                     </td>
                   </tr>
                   <tr>
+                    <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Type"); ?></td>
+                    <td>
+                      <select name="type" class="selectpicker">
+                        <option value="PSK" <?=empty($pconfig['type']) || $pconfig['type'] == 'PSK' ?  "selected=\"selected\"" : ""; ?>><?=gettext("PSK");?></option>
+                        <option value="EAP" <?=$pconfig['type'] == "EAP" ?  "selected=\"selected\"" : ""; ?>><?=gettext("EAP");?></option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
                     <td>&nbsp;</td>
                     <td>
                       <input name="Submit" type="submit" class="btn btn-primary" value="<?=gettext("Save"); ?>" />
@@ -162,15 +174,6 @@ include("head.inc");
                       <input name="id" type="hidden" value="<?=htmlspecialchars($id);?>" />
 <?php
 endif; ?>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <span class="text-danger">
-                  <strong><?=gettext("Note"); ?>:<br /></strong>
-                </span>
-                <?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
                     </td>
                   </tr>
                 </table>
