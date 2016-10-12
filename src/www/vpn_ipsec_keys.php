@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $savemsg = get_std_save_message();
         clear_subsystem_dirty('ipsec');
     } else {
-      // nothing to post, redirect
+        // nothing to post, redirect
         header(url_safe('Location: /vpn_ipsec_keys.php'));
         exit;
     }
@@ -122,53 +122,43 @@ if (is_subsystem_dirty('ipsec')) {
                 <tr>
                   <td><?=gettext("Identifier"); ?></td>
                   <td><?=gettext("Pre-Shared Key"); ?></td>
+                  <td><?=gettext("Type"); ?></td>
                   <td>
                     <a href="vpn_ipsec_keys_edit.php" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
                   </td>
                 </tr>
 <?php           $i = 0;
                 $userkeys = array();
-foreach ($config['system']['user'] as $id => $user) {
-    if (!empty($user['ipsecpsk'])) {
-        $userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);
-    }
-}
-foreach ($userkeys as $secretent) :
-?>
-<tr>
-  <td>
-    <?=htmlspecialchars($secretent['ident']) ;?>
-  </td>
-  <td>
-    <?=htmlspecialchars($secretent['pre-shared-key']);?>
-  </td>
-  <td>
-    <a href="system_usermanager.php?userid=<?=$secretent['id'];
-?>&act=edit" title="<?=gettext("edit"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-  </td>
-</tr>
-<?php           $i++;
-endforeach; ?>
+                foreach ($config['system']['user'] as $id => $user) {
+                    if (!empty($user['ipsecpsk'])) {
+                        $userkeys[] = array('ident' => $user['name'], 'pre-shared-key' => $user['ipsecpsk'], 'id' => $id);
+                    }
+                }
+                foreach ($userkeys as $secretent):?>
+                <tr>
+                  <td><?=htmlspecialchars($secretent['ident']) ;?></td>
+                  <td><?=htmlspecialchars($secretent['pre-shared-key']);?></td>
+                  <td>PSK</td>
+                  <td>
+                    <a href="system_usermanager.php?userid=<?=$secretent['id'];?>&act=edit" title="<?=gettext("edit"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                  </td>
+                </tr>
 <?php
+                $i++;
+                endforeach;
                 $i = 0;
-foreach ($config['ipsec']['mobilekey'] as $secretent) :
-?>
-<tr>
-  <td>
-    <?=htmlspecialchars($secretent['ident']);?>
-  </td>
-  <td>
-    <?=htmlspecialchars($secretent['pre-shared-key']);?>
-  </td>
-  <td>
-    <a href="vpn_ipsec_keys_edit.php?id=<?=$i;
-?>" title="<?=gettext("edit key"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-    <a id="del_<?=$i;
-?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
-  </td>
-</tr>
-<?php           $i++;
-endforeach; ?>
+                foreach ($config['ipsec']['mobilekey'] as $secretent) :?>
+                <tr>
+                  <td><?=htmlspecialchars($secretent['ident']);?></td>
+                  <td><?=htmlspecialchars($secretent['pre-shared-key']);?></td>
+                  <td><?=!empty($secretent['type']) ? htmlspecialchars($secretent['type']) : "PSK"?> </td>
+                  <td><a href="vpn_ipsec_keys_edit.php?id=<?=$i;?>" title="<?=gettext("edit key"); ?>" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                      <a id="del_<?=$i;?>" title="<?=gettext("delete key"); ?>" class="act_delete btn btn-default btn-xs"><span class="fa fa-trash text-muted"></span></a>
+                  </td>
+                </tr>
+<?php
+                $i++;
+                endforeach; ?>
                 <tr>
                   <td colspan="2">
                     <?=gettext("PSK for any user can be set by using an identifier of any/ANY") ?>
