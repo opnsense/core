@@ -176,15 +176,6 @@ include("head.inc");
 endif; ?>
                     </td>
                   </tr>
-                  <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                      <span class="text-danger">
-                  <strong><?=gettext("Note"); ?>:<br /></strong>
-                </span>
-                <?=gettext("PSK for any user can be set by using an identifier of any/ANY");?>
-                    </td>
-                  </tr>
                 </table>
               </div>
             </form>

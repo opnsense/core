@@ -160,7 +160,7 @@ if (is_subsystem_dirty('ipsec')) {
                 $i++;
                 endforeach; ?>
                 <tr>
-                  <td colspan="2">
+                  <td colspan="3">
                     <?=gettext("PSK for any user can be set by using an identifier of any/ANY") ?>
                   </td>
                   <td>
