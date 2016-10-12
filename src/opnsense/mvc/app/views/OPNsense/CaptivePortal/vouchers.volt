@@ -249,6 +249,42 @@ POSSIBILITY OF SUCH DAMAGE.
             }
         });
 
+        /**
+         * Expire selected vouchers
+         */
+        $("#expireVouchers").click(function(){
+            var voucher_provider = $('#voucher-providers').find("option:selected").val();
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_DANGER,
+                title: voucher_provider,
+                message: '{{ lang._('Expire all selected vouchers?') }}',
+                buttons: [{
+                    icon: 'fa fa-trash-o',
+                    label: '{{ lang._('Yes') }}',
+                    cssClass: 'btn-primary',
+                    action: function(dlg){
+                        var rows =$("#grid-vouchers").bootgrid('getSelectedRows');
+                        if (rows != undefined) {
+                            var deferreds = [];
+                            $.each(rows, function (key, username) {
+                                deferreds.push(ajaxCall(url="/api/captiveportal/voucher/expireVoucher/" + voucher_provider + "/",
+                                        sendData={username:username}, null));
+                            });
+                            $.when.apply(null, deferreds).done(function(){
+                                updateVoucherGroupList();
+                            });
+                        }
+                        dlg.close();
+                    }
+                }, {
+                    label: 'Close',
+                    action: function(dlg){
+                        dlg.close();
+                    }
+                }]
+            });
+        });
+
         updateVoucherProviders();
         $('.selectpicker').selectpicker('refresh');
     });
@@ -289,6 +325,11 @@ POSSIBILITY OF SUCH DAMAGE.
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pull-right">
+
+                            <button id="expireVouchers" type="button" class="btn btn-default">
+                                <span>{{ lang._('Expire selected vouchers') }}</span>
+                                <span class="fa fa-trash"></span>
+                            </button>
                             <button id="dropExpired" type="button" class="btn btn-default">
                                 <span>{{ lang._('Drop expired vouchers') }}</span>
                                 <span class="fa fa-trash"></span>

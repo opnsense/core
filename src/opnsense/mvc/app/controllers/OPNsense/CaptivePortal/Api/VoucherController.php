@@ -150,4 +150,25 @@ class VoucherController extends ApiControllerBase
         }
         return $response;
     }
+
+
+    /**
+     * expire a voucher
+     * @param string $provider auth provider
+     * @return array status
+     */
+    public function expireVoucherAction($provider)
+    {
+        $response = array("status" => "error");
+        $username = $this->request->getPost('username', 'string', null);
+        if ($this->request->isPost() && $username != null) {
+            $authFactory = new AuthenticationFactory();
+            $auth = $authFactory->get($provider);
+            if ($auth != null && method_exists($auth, 'expireVoucher')) {
+                $auth->expireVoucher($username);
+                $response['status'] = 'ok';
+            }
+        }
+        return $response;
+    }
 }
