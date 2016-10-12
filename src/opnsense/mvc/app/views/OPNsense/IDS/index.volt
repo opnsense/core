@@ -498,6 +498,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
         });
 
+        // When ajax commands complete, hide some controls from our grid(s)
+        $( document ).ajaxComplete(function(){
+            $("#grid-rule-files  .command-toggle").hide();
+        });
     });
 
 
