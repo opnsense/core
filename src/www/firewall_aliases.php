@@ -169,11 +169,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 configd_run("filter kill table {$alias_name}");
                 unset($a_aliases[$_POST['id']]);
-                if (write_config()) {
-                    filter_configure();
-                    mark_subsystem_dirty('aliases');
-                }
-                header('Location: firewall_aliases.php');
+                write_config();
+                filter_configure();
+                mark_subsystem_dirty('aliases');
+                header(url_safe('Location: /firewall_aliases.php'));
                 exit;
             }
         }

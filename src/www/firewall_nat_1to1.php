@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         unset($a_1to1[$id]);
         write_config();
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_1to1.php");
+        header(url_safe('Location: /firewall_nat_1to1.php'));
         exit;
     } elseif (isset($pconfig['action']) && $pconfig['action'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // delete selected
@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config();
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_1to1.php");
+        header(url_safe('Location: /firewall_nat_1to1.php'));
         exit;
     } elseif (isset($pconfig['action']) && $pconfig['action'] == 'move') {
         // move selected
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             write_config();
             mark_subsystem_dirty('natconf');
-            header("Location: firewall_nat_1to1.php");
+            header(url_safe('Location: /firewall_nat_1to1.php'));
             exit;
         }
     } elseif (isset($pconfig['action']) && $pconfig['action'] == 'toggle' && isset($id)) {
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         write_config('Toggled NAT 1:1 rule');
         mark_subsystem_dirty('natconf');
-        header("Location: firewall_nat_1to1.php");
+        header(url_safe('Location: /firewall_nat_1to1.php'));
         exit;
     }
 }

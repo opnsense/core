@@ -127,9 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = count($a_routes);
         }
         $a_routes = legacy_move_config_list_items($a_routes, $id,  $pconfig['route']);
-        if (write_config()) {
-            mark_subsystem_dirty('staticroutes');
-        }
+        write_config();
+        mark_subsystem_dirty('staticroutes');
     }
     header(url_safe('Location: /system_routes.php'));
     exit;

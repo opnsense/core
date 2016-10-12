@@ -73,10 +73,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         unset($a_filter[$id]);
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // delete selected rules
@@ -92,10 +91,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             unset($a_filter[$rulei]);
         }
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         // move selected rules
@@ -104,12 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = count($a_filter);
         }
         $a_filter = legacy_move_config_list_items($a_filter, $id,  $pconfig['rule']);
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         exit;
-
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
         // toggle item
         if(isset($a_filter[$id]['disabled'])) {
@@ -117,10 +113,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_filter[$id]['disabled'] = true;
         }
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header("Location: firewall_rules.php?if=" . htmlspecialchars($current_if));
+        write_config();
+        mark_subsystem_dirty('filter');
+        header(url_safe('Location: /firewall_rules.php?if=%s', array($current_if)));
         exit;
     }
 }

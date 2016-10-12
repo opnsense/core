@@ -257,16 +257,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             // Sort list
             $a_aliases = msort($a_aliases, "name");
 
-            if (write_config()) {
-              // post save actions
-              mark_subsystem_dirty('aliases');
-              if (strpos($pconfig['type'],'url') !== false || $pconfig['type'] == 'geoip') {
-                  // update URL Table Aliases
-                  configd_run('filter refresh_url_alias', true);
-              }
+            write_config();
+            // post save actions
+            mark_subsystem_dirty('aliases');
+            if (strpos($pconfig['type'],'url') !== false || $pconfig['type'] == 'geoip') {
+                // update URL Table Aliases
+                configd_run('filter refresh_url_alias', true);
             }
 
-            header('Location: firewall_aliases.php');
+            header(url_safe('Location: /firewall_aliases.php'));
             exit;
         }
     }

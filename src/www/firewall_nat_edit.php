@@ -359,11 +359,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
+        write_config();
+        mark_subsystem_dirty('natconf');
 
-        header("Location: firewall_nat.php");
+        header(url_safe('Location: /firewall_nat.php'));
         exit;
     }
 }

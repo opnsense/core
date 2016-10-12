@@ -162,11 +162,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
         // write to config
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
+        write_config();
+        mark_subsystem_dirty('filter');
 
-        header("Location: firewall_scrub.php");
+        header(url_safe('Location: /firewall_scrub.php'));
         exit;
     }
 }

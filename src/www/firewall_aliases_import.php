@@ -145,10 +145,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // Sort list
         $config['aliases']['alias'] = msort($config['aliases']['alias'], "name");
 
-        if (write_config()) {
-            mark_subsystem_dirty('aliases');
-        }
-        header("Location: firewall_aliases.php");
+        write_config();
+        mark_subsystem_dirty('aliases');
+        header(url_safe('Location: /firewall_aliases.php'));
         exit;
     }
 }

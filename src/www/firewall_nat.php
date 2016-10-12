@@ -93,10 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mark_subsystem_dirty('filter');
         }
         unset($a_nat[$id]);
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         /* delete selected rules */
@@ -111,10 +110,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($a_nat[$rulei]);
             }
         }
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat.php'));
         exit;
     } elseif ( isset($pconfig['act']) && $pconfig['act'] == 'move') {
         // move records
@@ -125,10 +123,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $a_nat = legacy_move_config_list_items($a_nat, $id,  $pconfig['rule']);
         }
-        if (write_config()) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat.php");
+        write_config();
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
         // toggle item
@@ -137,10 +134,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_nat[$id]['disabled'] = true;
         }
-        if (write_config("Firewall: NAT: Outbound, enable/disable NAT rule")) {
-            mark_subsystem_dirty('natconf');
-        }
-        header("Location: firewall_nat.php");
+        write_config('Firewall: NAT: Outbound, toggle NAT rule');
+        mark_subsystem_dirty('natconf');
+        header(url_safe('Location: /firewall_nat.php'));
         exit;
     }
 }
