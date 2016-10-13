@@ -180,7 +180,7 @@ include("head.inc");
                       <td>
                         <input name="refid" type="text" value="<?=$pconfig['refid'];?>" />
                         <div class="hidden" for="help_for_refid">
-                          <?=gettext("(1 to 4 charactors)");?><br />
+                          <?=gettext("(1 to 4 characters)");?><br />
                           <?=gettext("This may be used to change the PPS Clock ID");?> (<?=gettext("default");?>: PPS).
                         </div>
                       </td>
