@@ -95,7 +95,7 @@ data_title      :   data-title to set on form
         {% endfor %}
         {% if apply_btn_id|default('') != '' %}
         <tr>
-            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>Apply </b><i id="{{id}}_progress" class=""></i></button></td>
+            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }} </b><i id="{{id}}_progress" class=""></i></button></td>
         </tr>
         {% endif %}
         </tbody>
