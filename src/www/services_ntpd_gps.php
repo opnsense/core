@@ -488,7 +488,7 @@ SureGPS =    #Sure Electronics SKG16B
                       <td>
                         <input name="refid" type="text" id="gpsrefid" value="<?=$pconfig['refid'];?>" />
                         <div class="hidden" for="help_for_refid">
-                          <?=gettext("(1 to 4 charactors)");?><br />
+                          <?=gettext("(1 to 4 characters)");?><br />
                           <?=gettext("This may be used to change the GPS Clock ID");?> (<?=gettext("default");?>: GPS).
                         </div>
                       </td>
