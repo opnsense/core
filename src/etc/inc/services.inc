@@ -2713,6 +2713,8 @@ function get_service_status($service)
 {
     if (isset($service['pidfile'])) {
         return isvalidpid($service['pidfile']);
+    } elseif (!empty($service['nocheck'])) {
+        return true;
     }
 
     return is_process_running($service['name']);
@@ -2752,16 +2754,17 @@ function get_service_control_links($service, $addname = false)
             'srv_status_act',
             'glyphicon glyphicon-refresh'
         );
-
-        $output .= sprintf(
-            $template,
-            $service_id,
-            'stop',
-            $service['name'],
-            sprintf(gettext('Stop %sService'), $service_title),
-            'srv_status_act',
-            'glyphicon glyphicon-stop'
-        );
+	if (empty($service['nocheck'])) {
+            $output .= sprintf(
+                $template,
+                $service_id,
+                'stop',
+                $service['name'],
+                sprintf(gettext('Stop %sService'), $service_title),
+                'srv_status_act',
+                'glyphicon glyphicon-stop'
+            );
+        }
     } else {
         $output .= sprintf(
             $template,

@@ -240,6 +240,8 @@ include("head.inc");
                                             title="<?=sprintf(gettext('Restart %sService'), $service['name']);?>"
                                             class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-refresh">
                                         </span>
+<?php
+                                          if (empty($service['nocheck'])):?>
                                         <span
                                             data-service_action="stop"
                                             data-service_id="<?=!empty($service['id']) ? $service['id'] : "";?>"
@@ -249,6 +251,7 @@ include("head.inc");
                                             class="btn btn-xs btn-default xmlrpc_srv_status_act glyphicon glyphicon-stop">
                                         </span>
 <?php
+                                          endif;
                                         else:?>
                                         <span
                                             data-service_action="start"
