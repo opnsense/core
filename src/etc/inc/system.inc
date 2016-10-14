@@ -234,6 +234,7 @@ function get_locale_list()
 
     /* first one is the default */
     $locales['en_US'] = gettext('English');
+    $locales['cs_CZ'] = gettext('Czech');
     $locales['zh_CN'] = gettext('Chinese (Simplified)');
     $locales['nl_NL'] = gettext('Dutch');
     $locales['fr_FR'] = gettext('French');
