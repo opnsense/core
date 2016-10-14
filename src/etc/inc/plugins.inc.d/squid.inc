@@ -26,6 +26,26 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+function squid_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (isset($config['OPNsense']['proxy']['general']['enabled']) && $config['OPNsense']['proxy']['general']['enabled'] == 1) {
+        $services[] = array(
+            'description' => gettext('Proxy server'),
+            'configd' => array(
+                'restart' => array('proxy restart'),
+                'start' => array('proxy start'),
+                'stop' => array('proxy stop'),
+            ),
+            'name' => 'squid',
+        );
+    }
+
+    return $services;
+}
 
 function squid_syslog()
 {

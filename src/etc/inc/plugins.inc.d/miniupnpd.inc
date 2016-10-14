@@ -1,5 +1,4 @@
 <?php
-
 /*
     Copyright (C) 2016 Deciso B.V.
     All rights reserved.
@@ -26,33 +25,33 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function suricata_services()
+function miniupnpd_firewall($fw)
+{
+    global $config;
+
+    if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
+        $fw->registerAnchor("miniupnpd/*", "rdr");
+        $fw->registerAnchor("miniupnpd/*", "fw");
+    }
+}
+
+function miniupnpd_services()
 {
     global $config;
 
     $services = array();
 
-    if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
-        $services[] = array(
-            'description' => gettext('Intrusion Detection'),
-            'configd' => array(
-                'restart' => array('ids restart'),
-                'start' => array('ids start'),
-                'stop' => array('ids stop'),
-            ),
-            'name' => 'suricata',
-        );
+    if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
+        $pconfig = array();
+        $pconfig['name'] = "miniupnpd";
+        $pconfig['description'] = gettext("UPnP Service");
+        $pconfig['description'] = gettext("UPnP Service");
+        $pconfig['php']['restart'] = array('upnp_stop', 'upnp_start');
+        $pconfig['php']['start'] = array('upnp_start');
+        $pconfig['php']['stop'] = array('upnp_stop');
+        $pconfig['pidfile'] = '/var/run/miniupnpd.pid';
+        $services[] = $pconfig;
     }
 
     return $services;
-}
-
-function suricata_syslog()
-{
-    $logfacilities = array();
-    $logfacilities['suricata.syslog'] = array(
-        'facility' => array('suricata')
-    );
-
-    return $logfacilities;
 }

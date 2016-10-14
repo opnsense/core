@@ -2567,18 +2567,6 @@ function services_get()
         $services[] = $pconfig;
     }
 
-    if (isset($config['installedpackages']['miniupnpd']) && $config['installedpackages']['miniupnpd']['config'][0]['enable']) {
-        $pconfig = array();
-        $pconfig['name'] = "miniupnpd";
-        $pconfig['description'] = gettext("UPnP Service");
-        $pconfig['description'] = gettext("UPnP Service");
-        $pconfig['php']['restart'] = array('upnp_stop', 'upnp_start');
-        $pconfig['php']['start'] = array('upnp_start');
-        $pconfig['php']['stop'] = array('upnp_stop');
-        $pconfig['pidfile'] = '/var/run/miniupnpd.pid';
-        $services[] = $pconfig;
-    }
-
     if (isset($config['system']['ssh']['enabled'])) {
         $pconfig = array();
         $pconfig['name'] = 'sshd';
@@ -2595,30 +2583,6 @@ function services_get()
           $pconfig['php']['restart'] = array('relayd_configure', 'filter_configure');
           $pconfig['php']['start'] = array('relayd_configure', 'filter_configure');
           $services[] = $pconfig;
-    }
-
-    if (isset($config['OPNsense']['proxy']['general']['enabled']) && $config['OPNsense']['proxy']['general']['enabled'] == 1) {
-        $services[] = array(
-            'description' => gettext('Proxy server'),
-            'configd' => array(
-                'restart' => array('proxy restart'),
-                'start' => array('proxy start'),
-                'stop' => array('proxy stop'),
-            ),
-            'name' => 'squid',
-        );
-    }
-
-    if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
-        $services[] = array(
-            'description' => gettext('Intrusion Detection'),
-            'configd' => array(
-                'restart' => array('ids restart'),
-                'start' => array('ids start'),
-                'stop' => array('ids stop'),
-            ),
-            'name' => 'suricata',
-        );
     }
 
     if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
@@ -2713,6 +2677,8 @@ function get_service_status($service)
 {
     if (isset($service['pidfile'])) {
         return isvalidpid($service['pidfile']);
+    } elseif (!empty($service['nocheck'])) {
+        return true;
     }
 
     return is_process_running($service['name']);
@@ -2752,16 +2718,17 @@ function get_service_control_links($service, $addname = false)
             'srv_status_act',
             'glyphicon glyphicon-refresh'
         );
-
-        $output .= sprintf(
-            $template,
-            $service_id,
-            'stop',
-            $service['name'],
-            sprintf(gettext('Stop %sService'), $service_title),
-            'srv_status_act',
-            'glyphicon glyphicon-stop'
-        );
+	if (empty($service['nocheck'])) {
+            $output .= sprintf(
+                $template,
+                $service_id,
+                'stop',
+                $service['name'],
+                sprintf(gettext('Stop %sService'), $service_title),
+                'srv_status_act',
+                'glyphicon glyphicon-stop'
+            );
+        }
     } else {
         $output .= sprintf(
             $template,

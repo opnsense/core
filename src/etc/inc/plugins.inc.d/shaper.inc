@@ -26,33 +26,24 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function suricata_services()
+
+function shaper_services()
 {
     global $config;
-
     $services = array();
 
-    if (isset($config['OPNsense']['IDS']['general']['enabled']) && $config['OPNsense']['IDS']['general']['enabled'] == 1) {
+    if (!empty($config['OPNsense']['TrafficShaper']['rules']['rule'])) {
         $services[] = array(
-            'description' => gettext('Intrusion Detection'),
+            'description' => gettext('Traffic Shaper'),
             'configd' => array(
-                'restart' => array('ids restart'),
-                'start' => array('ids start'),
-                'stop' => array('ids stop'),
+                'restart' => array('ipfw reload'),
+                'start' => array('ipfw reload'),
+                'stop' => array('ipfw reload'),
             ),
-            'name' => 'suricata',
+            'name' => 'ipfw',
+            'nocheck' => true,
         );
     }
 
     return $services;
-}
-
-function suricata_syslog()
-{
-    $logfacilities = array();
-    $logfacilities['suricata.syslog'] = array(
-        'facility' => array('suricata')
-    );
-
-    return $logfacilities;
 }
