@@ -33,7 +33,7 @@ require_once('config.inc');
 require_once("util.inc");
 
 /* if run from a shell session, `-af' and the full path is needed */
-mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd');
+mwexecf('/bin/pkill -af %s', '/usr/local/sbin/sshd', true);
 
 $sshcfg = null;
 
