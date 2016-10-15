@@ -82,22 +82,6 @@ function get_pppoes_child_interfaces($ifpattern)
     return $if_arr;
 }
 
-function get_configured_pppoe_server_interfaces()
-{
-    global $config;
-
-    $iflist = array();
-    if (isset($config['pppoes']['pppoe'])) {
-        foreach($config['pppoes']['pppoe'] as $pppoe) {
-            if ($pppoe['mode'] == 'server') {
-                $int = 'poes'. $pppoe['pppoeid'];
-                $iflist[$int] = strtoupper($int);
-            }
-        }
-    }
-    return $iflist;
-}
-
 /* implement ipv6 route advertising deamon */
 function services_radvd_configure($blacklist = array())
 {
@@ -107,10 +91,6 @@ function services_radvd_configure($blacklist = array())
         $config['dhcpdv6'] = array();
     }
 
-    $Iflist = get_configured_interface_list();
-    $Iflist = array_merge($Iflist, get_configured_pppoe_server_interfaces());
-    $carplist = get_configured_carp_interface_list();
-
     $radvdconf = "# Automatically Generated, do not edit\n";
 
     /* Process all links which need the router advertise daemon */
@@ -118,40 +98,19 @@ function services_radvd_configure($blacklist = array())
 
     /* handle manually configured DHCP6 server settings first */
     foreach ($config['dhcpdv6'] as $dhcpv6if => $dhcpv6ifconf) {
-        if (!is_array($config['interfaces'][$dhcpv6if])) {
-            continue;
-        } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
+        if (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             continue;
         } elseif (isset($blacklist[$dhcpv6if])) {
             /* Do not put in the config an interface which is down */
             continue;
-        }
-        if (!isset($dhcpv6ifconf['ramode'])) {
-            $dhcpv6ifconf['ramode'] = $dhcpv6ifconf['mode'];
-        }
-
-        /* are router advertisements enabled? */
-        if ($dhcpv6ifconf['ramode'] == "disabled") {
+        } elseif ($dhcpv6ifconf['ramode'] == "disabled") {
             continue;
         }
 
-        if (!isset($dhcpv6ifconf['rapriority'])) {
-            $dhcpv6ifconf['rapriority'] = "medium";
-        }
-
-        /* always start with the real parent, we override with the carp if later */
-        $carpif = false;
         /* check if we need to listen on a CARP interface */
-        if (!empty($dhcpv6ifconf['rainterface'])) {
-            if (!empty($carplist[$dhcpv6ifconf['rainterface']])) {
-                $dhcpv6if = $dhcpv6ifconf['rainterface'];
-                $carpif = true;
-            }
-        }
-
         $realif = get_real_interface($dhcpv6if, "inet6");
-        if (isset($radvdifs[$realif])) {
-            continue;
+        if (!empty($dhcpv6ifconf['rainterface'])) {
+            $dhcpv6if = $dhcpv6ifconf['rainterface'];
         }
 
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
@@ -169,11 +128,7 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= sprintf("\tMinRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramininterval']) ? $dhcpv6ifconf['ramininterval'] : '200');
         $radvdconf .= sprintf("\tMaxRtrAdvInterval %s;\n", !empty($dhcpv6ifconf['ramaxinterval']) ? $dhcpv6ifconf['ramaxinterval'] : '600');
         $mtu = legacy_interface_stats($realif)['mtu'];
-        if (is_numeric($mtu)) {
-            $radvdconf .= "\tAdvLinkMTU {$mtu};\n";
-        } else {
-            $radvdconf .= "\tAdvLinkMTU 1280;\n";
-        }
+        $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
 
         switch($dhcpv6ifconf['rapriority']) {
             case "low":
@@ -194,11 +149,7 @@ function services_radvd_configure($blacklist = array())
                 break;
         }
         $radvdconf .= "\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
-        if ($carpif == true) {
-            $radvdconf .= "\t\tDeprecatePrefix off;\n";
-        } else {
-            $radvdconf .= "\t\tDeprecatePrefix on;\n";
-        }
+        $radvdconf .= "\t\tDeprecatePrefix ". (!empty($dhcpv6ifconf['rainterface']) ? "off" : "on").";\n";
         switch($dhcpv6ifconf['ramode']) {
             case "managed":
                 $radvdconf .= "\t\tAdvOnLink on;\n";
@@ -223,7 +174,7 @@ function services_radvd_configure($blacklist = array())
         }
         $radvdconf .= "\t};\n";
 
-        if ($carpif === true) {
+        if (!empty($dhcpv6ifconf['rainterface'])) {
             $radvdconf .= "\troute ::/0 {\n";
             $radvdconf .= "\t\tRemoveRoute off;\n";
             $radvdconf .= "\t};\n";
@@ -234,33 +185,25 @@ function services_radvd_configure($blacklist = array())
         }
 
         /* add DNS servers */
-        $dnslist = array();
-        if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && is_array($dhcpv6ifconf['dnsserver']) && !empty($dhcpv6ifconf['dnsserver'])) {
-            foreach($dhcpv6ifconf['dnsserver'] as $server) {
-                if (is_ipaddrv6($server)) {
-                    $dnslist[] = $server;
-                }
-            }
-        } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && isset($dhcpv6ifconf['radnsserver']) && is_array($dhcpv6ifconf['radnsserver'])) {
-            foreach($dhcpv6ifconf['radnsserver'] as $server) {
-                if (is_ipaddrv6($server)) {
-                    $dnslist[] = $server;
-                }
-            }
+        $dnslist_tmp = array();
+        if (isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['dnsserver'][0])) {
+            array_merge($dnslist_tmp, $dhcpv6ifconf['dnsserver']);
+        } elseif (!isset($dhcpv6ifconf['rasamednsasdhcp6']) && !empty($dhcpv6ifconf['radnsserver'][0])) {
+            array_merge($dnslist_tmp, $dhcpv6ifconf['radnsserver']);
         } elseif (isset($config['dnsmasq']['enable']) || isset($config['unbound']['enable'])) {
-            $dnslist[] = get_interface_ipv6($realif);
-        } elseif (!empty($config['system']['dnsserver'])) {
-            foreach($config['system']['dnsserver'] as $server) {
-                if (is_ipaddrv6($server)) {
-                    $dnslist[] = $server;
-                }
+            $dnslist_tmp[] = get_interface_ipv6($realif);
+        } elseif (!empty($config['system']['dnsserver'][0])) {
+            array_merge($dnslist_tmp, $config['system']['dnsserver']);
+        }
+        $dnslist = array();
+        foreach($dnslist_tmp as $server) {
+            if (is_ipaddrv6($server)) {
+                $dnslist[] = $server;
             }
         }
+
         if (count($dnslist) > 0) {
-            $dnsstring = implode(" ", $dnslist);
-            if ($dnsstring <> "") {
-                $radvdconf .= "\tRDNSS {$dnsstring} { };\n";
-            }
+            $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
         }
         if (!empty($dhcpv6ifconf['domain'])) {
             $radvdconf .= "\tDNSSL {$dhcpv6ifconf['domain']} { };\n";
@@ -271,8 +214,10 @@ function services_radvd_configure($blacklist = array())
     }
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
-    foreach ($Iflist as $if => $ifdescr) {
+    foreach (get_configured_interface_list() as $if => $ifdescr) {
         if (!isset($config['interfaces'][$if]['track6-interface'])) {
+            continue;
+        } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
             continue;
         } elseif (!isset($config['interfaces'][$if]['enable'])) {
             continue;
@@ -281,10 +226,6 @@ function services_radvd_configure($blacklist = array())
             continue;
         }
         $trackif = $config['interfaces'][$if]['track6-interface'];
-        if (empty($config['interfaces'][$trackif])) {
-            continue;
-        }
-
         $realif = get_real_interface($if, "inet6");
         /* prevent duplicate entries, manual overrides */
         if (isset($radvdifs[$realif])) {
@@ -299,7 +240,6 @@ function services_radvd_configure($blacklist = array())
             $ifcfgsnv6 = get_interface_subnetv6($if);
             $subnetv6 = gen_subnetv6($ifcfgipv6, $ifcfgsnv6);
         }
-        $radvdifs[$realif] = $realif;
 
         if (isset($config['interfaces'][$trackif]['ipaddrv6'])) {
             $autotype = $config['interfaces'][$trackif]['ipaddrv6'];
@@ -311,11 +251,7 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "\tMinRtrAdvInterval 3;\n";
         $radvdconf .= "\tMaxRtrAdvInterval 10;\n";
         $mtu = legacy_interface_stats($realif)['mtu'];
-        if (is_numeric($mtu)) {
-            $radvdconf .= "\tAdvLinkMTU {$mtu};\n";
-        } else {
-            $radvdconf .= "\tAdvLinkMTU 1280;\n";
-        }
+        $radvdconf .= "\tAdvLinkMTU ". (is_numeric($mtu) ? $mtu : 1280) .";\n";
         $radvdconf .= "\tAdvOtherConfigFlag on;\n";
         $radvdconf .= "\t\tprefix {$subnetv6}/{$ifcfgsnv6} {\n";
         $radvdconf .= "\t\tAdvOnLink on;\n";
@@ -335,10 +271,7 @@ function services_radvd_configure($blacklist = array())
             }
         }
         if (count($dnslist) > 0) {
-            $dnsstring = implode(" ", $dnslist);
-            if (!empty($dnsstring)) {
-                $radvdconf .= "\tRDNSS {$dnsstring} { };\n";
-            }
+            $radvdconf .= "\tRDNSS ".implode(" ", $dnslist)." { };\n";
         }
         if (!empty($config['system']['domain'])) {
             $radvdconf .= "\tDNSSL {$config['system']['domain']} { };\n";
@@ -353,7 +286,6 @@ function services_radvd_configure($blacklist = array())
             printf("Error: cannot open radvd.conf in services_radvd_configure().\n");
         }
     }
-    unset($radvdconf);
 
     if (count($radvdifs) > 0) {
         if (isvalidpid('/var/run/radvd.pid')) {
@@ -1120,7 +1052,6 @@ function services_dhcpdv6_configure($blacklist = array())
     }
     $dhcpdv6cfg = $config['dhcpdv6'];
     $Iflist = get_configured_interface_list();
-    $Iflist = array_merge($Iflist, get_configured_pppoe_server_interfaces());
 
     if (file_exists("/var/run/booting")) {
         echo "Starting DHCPv6 service...";
