@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
          }
     }
     $pconfig = array();
-    $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist', 'subnets');
+    $config_copy_fieldsnames = array('ramode', 'rapriority', 'rainterface', 'ramininterval', 'ramaxinterval', 'radomainsearchlist');
     foreach ($config_copy_fieldsnames as $fieldname) {
         if (isset($config['dhcpdv6'][$if][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if][$fieldname];
@@ -77,24 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_POST['if']) && !empty($config['interfaces'][$_POST['if']])) {
         $if = $_POST['if'];
     }
+
+    /* input validation */
     $input_errors = array();
     $pconfig = $_POST;
-    /* input validation */
-
-    // validate and copy subnets
-    $pconfig['subnets'] = array("item" => array());
-    foreach ($pconfig['subnet_address'] as $idx => $address) {
-        if (!empty($address)) {
-            if (is_alias($address)) {
-                $pconfig['subnets']['item'][] = $address;
-            } else {
-                $pconfig['subnets']['item'][] = $address . "/" . $pconfig['subnet_bits'][$idx];
-                if (!is_ipaddrv6($address)) {
-                    $input_errors[] = sprintf(gettext("An invalid subnet or alias was specified. [%s/%s]"), $address, $bits);
-                }
-            }
-        }
-    }
 
     if ((!empty($pconfig['radns1']) && !is_ipaddrv6($pconfig['radns1'])) || ($pconfig['radns2'] && !is_ipaddrv6($pconfig['radns2']))) {
         $input_errors[] = gettext("A valid IPv6 address must be specified for the primary/secondary DNS servers.");
@@ -143,12 +129,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dhcpdv6'][$if]['radnsserver'][] = $pconfig['radns2'];
         }
         $config['dhcpdv6'][$if]['rasamednsasdhcp6'] = !empty($pconfig['rasamednsasdhcp6']);
-
-        if (count($pconfig['subnets']['item'])) {
-            $config['dhcpdv6'][$if]['subnets'] = $pconfig['subnets'];
-        } else {
-            $config['dhcpdv6'][$if]['subnets'] = array();
-        }
 
         write_config();
         services_radvd_configure();
@@ -277,9 +257,9 @@ include("head.inc");
                     <td><a id="help_for_rainterface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Interface");?></td>
                     <td>
                       <select name="rainterface" id="rainterface">
+                        <option value="" <?=empty($pconfig['rainterface'])  ? "selected=\"selected\"" : ""; ?> > <?=strtoupper($if); ?></option>
 <?php
                       foreach($carplistif as $ifname => $vip): ?>
-                        <option value="interface" <?php if ($pconfig['rainterface'] == "interface") echo "selected=\"selected\""; ?> > <?=strtoupper($if); ?></option>
                         <option value="<?=$ifname ?>" <?php if ($pconfig['rainterface'] == $ifname) echo "selected=\"selected\""; ?> > <?="$ifname - $vip"; ?></option>
 <?php
                       endforeach;?>
@@ -292,68 +272,6 @@ include("head.inc");
 <?php
                   endif;?>
 
-                  <tr>
-                    <td><a id="help_for_subnets" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("RA Subnet(s)");?></td>
-                    <td>
-                      <table class="table table-striped table-condensed" id="maintable">
-                        <thead>
-                          <tr>
-                            <th></th>
-                            <th id="detailsHeading1"><?=gettext("Address"); ?></th>
-                            <th id="detailsHeading3"><?=gettext("Bits"); ?></th>
-                          </tr>
-                        </thead>
-                        <tbody>
-<?php
-                        if (empty($pconfig['subnets']['item'][0])) {
-                            // add initial row as reference
-                            $pconfig['subnets'] = array("item" => array(""));
-                        }
-                        foreach($pconfig['subnets']['item'] as $item):
-                          $parts = explode('/', $item);
-                          if (count($parts) > 1) {
-                              $sn_bits = intval($parts[1]);
-                          } else {
-                              $sn_bits = null;
-                          }
-                          $sn_address = $parts[0];
-                          ?>
-                          <tr>
-                            <td>
-                              <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs" alt="remove"><span class="glyphicon glyphicon-minus"></span></div>
-                            </td>
-                            <td>
-                              <input name="subnet_address[]" type="text" value="<?=$sn_address;?>" />
-                            </td>
-                            <td>
-                              <select name="subnet_bits[]">
-<?php
-                              for ($i = 128; $i >= 0; $i -= 1): ?>
-                                <option value="<?= $i ?>" <?= $sn_bits === $i ? "selected='selected'" : "" ?>><?= $i ?></option>
-<?php
-                              endfor;?>
-                              </select>
-                            </td>
-                          </tr>
-<?php
-                        endforeach;?>
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <td colspan="4">
-                              <div id="addNew" style="cursor:pointer;" class="btn btn-default btn-xs" alt="add"><span class="glyphicon glyphicon-plus"></span></div>
-                            </td>
-                          </tr>
-                        </tfoot>
-                      </table>
-                      <div class="hidden" for="help_for_subnets">
-                        <?=gettext("Subnets are specified in CIDR format. " .
-                              "Select the CIDR mask that pertains to each entry. " .
-                              "/128 specifies a single IPv6 host; /64 specifies a normal IPv6 network; etc. " .
-                              "If no subnets are specified here, the Router Advertisement (RA) Daemon will advertise to the subnet to which the router's interface is assigned.");?>
-                      </div>
-                    </td>
-                  </tr>
                   <tr>
                     <td><a id="help_for_radns" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DNS servers");?></td>
                     <td>
