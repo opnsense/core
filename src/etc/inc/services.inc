@@ -2575,19 +2575,6 @@ function services_get()
         }
     }
 
-    if (isset($config['OPNsense']['TrafficShaper']['rules']['rule'])) {
-        $services[] = array(
-            'description' => gettext('Traffic Shaper'),
-            'configd' => array(
-                'restart' => array('ipfw reload'),
-                'start' => array('ipfw reload'),
-                'stop' => array('ipfw reload'),
-            ),
-            'nocheck' => true,
-            'name' => 'ipfw',
-        );
-    }
-
     $services[] = array(
         'description' => gettext('System Configuration Daemon'),
         'pidfile' => '/var/run/configd.pid',
