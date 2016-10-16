@@ -29,6 +29,11 @@
 """
 
 import syslog
+import tarfile
+import gzip
+import zipfile
+import shutil
+import tempfile
 import requests
 
 
@@ -62,6 +67,41 @@ class Downloader(object):
             output.append(line)
         return '\n'.join(output)
 
+    @staticmethod
+    def _unpack(req_obj, source_url):
+        source_url = source_url.strip().lower()
+        unpack_type=None
+        if source_url.endswith('.tar.gz') or source_url.endswith('.tgz'):
+            unpack_type = 'tar'
+        elif source_url.endswith('.gz'):
+            unpack_type = 'gz'
+        elif source_url.endswith('.zip'):
+            unpack_type = 'zip'
+
+        if unpack_type is not None:
+            rule_content = list()
+            # flush to temp
+            src = tempfile.NamedTemporaryFile()
+            shutil.copyfileobj(req_obj.raw, src)
+            src.seek(0)
+            # handle compression types
+            if unpack_type == 'tar':
+                tf = tarfile.open(fileobj=src)
+                for tf_file in tf.getmembers():
+                    if tf_file.isfile() and tf_file.name.lower().endswith('.rules'):
+                        rule_content.append(tf.extractfile(tf_file).read())
+            elif unpack_type == 'gz':
+                gf = gzip.GzipFile(mode='r', fileobj=src)
+                rule_content.append(gf.read())
+            elif unpack_type == 'zip':
+                with zipfile.ZipFile(src, mode='r', compression=zipfile.ZIP_DEFLATED) as zf:
+                    for item in zf.infolist():
+                        if item.file_size > 0 and item.filename.lower().endswith('.rules'):
+                            rule_content.append(zf.open(item).read())
+            return '\n'.join(rule_content)
+        else:
+            return req_obj.text
+
     def download(self, proto, url, filename, input_filter):
         """ download ruleset file
             :param proto: protocol (http,https)
@@ -71,11 +111,12 @@ class Downloader(object):
         """
         if proto in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
-            req = requests.get(url=frm_url)
+            req = requests.get(url=frm_url, stream=True)
             if req.status_code == 200:
                 try:
                     target_filename = '%s/%s' % (self._target_dir, filename)
-                    save_data = self.filter(req.text, input_filter)
+                    save_data = self._unpack(req, url)
+                    save_data = self.filter(save_data, input_filter)
                     open(target_filename, 'wb').write(save_data)
                 except IOError:
                     syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
