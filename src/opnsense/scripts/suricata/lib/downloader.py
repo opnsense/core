@@ -29,12 +29,18 @@
 """
 
 import syslog
+import tarfile
+import gzip
+import zipfile
+import shutil
+import tempfile
 import requests
 
 
 class Downloader(object):
     def __init__(self, target_dir):
         self._target_dir = target_dir
+        self._download_cache = dict()
 
     def filter(self, in_data, filter_type):
         """ apply input filter to downloaded data
@@ -62,7 +68,50 @@ class Downloader(object):
             output.append(line)
         return '\n'.join(output)
 
-    def download(self, proto, url, filename, input_filter):
+    @staticmethod
+    def _unpack(src, source_url, filename=None):
+        """ unpack data if archived
+            :param src: handle to temp file
+            :param source_url: location where file was downloaded from
+            :param filename: filename to extract
+            :return: text
+        """
+        src.seek(0)
+        source_url = source_url.strip().lower().split('?')[0]
+        unpack_type=None
+        if source_url.endswith('.tar.gz') or source_url.endswith('.tgz'):
+            unpack_type = 'tar'
+        elif source_url.endswith('.gz'):
+            unpack_type = 'gz'
+        elif source_url.endswith('.zip'):
+            unpack_type = 'zip'
+
+        if unpack_type is not None:
+            rule_content = list()
+            # handle compression types
+            if unpack_type == 'tar':
+                tf = tarfile.open(fileobj=src)
+                for tf_file in tf.getmembers():
+                    # extract partial or all (*.rules) from archive
+                    if filename is not None and tf_file.name == filename:
+                        rule_content.append(tf.extractfile(tf_file).read())
+                    elif filename is None and tf_file.isfile() and tf_file.name.lower().endswith('.rules'):
+                        rule_content.append(tf.extractfile(tf_file).read())
+            elif unpack_type == 'gz':
+                gf = gzip.GzipFile(mode='r', fileobj=src)
+                rule_content.append(gf.read())
+            elif unpack_type == 'zip':
+                with zipfile.ZipFile(src, mode='r', compression=zipfile.ZIP_DEFLATED) as zf:
+                    for item in zf.infolist():
+                        if filename is not None and item.filename == filename:
+                            rule_content.append(zf.open(item).read())
+                        elif filename is None and item.file_size > 0 and item.filename.lower().endswith('.rules'):
+                            rule_content.append(zf.open(item).read())
+            return '\n'.join(rule_content)
+        else:
+            return src.read()
+
+    def download(self, proto, url, url_filename, filename, input_filter):
         """ download ruleset file
             :param proto: protocol (http,https)
             :param url: download url
@@ -71,11 +120,20 @@ class Downloader(object):
         """
         if proto in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
-            req = requests.get(url=frm_url)
-            if req.status_code == 200:
+            # stream to temp file
+            if frm_url not in self._download_cache:
+                req = requests.get(url=frm_url, stream=True)
+                if req.status_code == 200:
+                    src = tempfile.NamedTemporaryFile()
+                    shutil.copyfileobj(req.raw, src)
+                    self._download_cache[frm_url] = src
+
+            # process rules from tempfile (prevent duplicate download for files within an archive)
+            if frm_url in self._download_cache:
                 try:
                     target_filename = '%s/%s' % (self._target_dir, filename)
-                    save_data = self.filter(req.text, input_filter)
+                    save_data = self._unpack(self._download_cache[frm_url], url, url_filename)
+                    save_data = self.filter(save_data, input_filter)
                     open(target_filename, 'wb').write(save_data)
                 except IOError:
                     syslog.syslog(syslog.LOG_ERR, 'cannot write to %s' % target_filename)
