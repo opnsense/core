@@ -40,6 +40,7 @@ import requests
 class Downloader(object):
     def __init__(self, target_dir):
         self._target_dir = target_dir
+        self._download_cache = dict()
 
     def filter(self, in_data, filter_type):
         """ apply input filter to downloaded data
@@ -68,8 +69,15 @@ class Downloader(object):
         return '\n'.join(output)
 
     @staticmethod
-    def _unpack(req_obj, source_url):
-        source_url = source_url.strip().lower()
+    def _unpack(src, source_url, filename=None):
+        """ unpack data if archived
+            :param src: handle to temp file
+            :param source_url: location where file was downloaded from
+            :param filename: filename to extract
+            :return: text
+        """
+        src.seek(0)
+        source_url = source_url.strip().lower().split('?')[0]
         unpack_type=None
         if source_url.endswith('.tar.gz') or source_url.endswith('.tgz'):
             unpack_type = 'tar'
@@ -80,15 +88,14 @@ class Downloader(object):
 
         if unpack_type is not None:
             rule_content = list()
-            # flush to temp
-            src = tempfile.NamedTemporaryFile()
-            shutil.copyfileobj(req_obj.raw, src)
-            src.seek(0)
             # handle compression types
             if unpack_type == 'tar':
                 tf = tarfile.open(fileobj=src)
                 for tf_file in tf.getmembers():
-                    if tf_file.isfile() and tf_file.name.lower().endswith('.rules'):
+                    # extract partial or all (*.rules) from archive
+                    if filename is not None and tf_file.name == filename:
+                        rule_content.append(tf.extractfile(tf_file).read())
+                    elif filename is None and tf_file.isfile() and tf_file.name.lower().endswith('.rules'):
                         rule_content.append(tf.extractfile(tf_file).read())
             elif unpack_type == 'gz':
                 gf = gzip.GzipFile(mode='r', fileobj=src)
@@ -96,13 +103,15 @@ class Downloader(object):
             elif unpack_type == 'zip':
                 with zipfile.ZipFile(src, mode='r', compression=zipfile.ZIP_DEFLATED) as zf:
                     for item in zf.infolist():
-                        if item.file_size > 0 and item.filename.lower().endswith('.rules'):
+                        if filename is not None and item.filename == filename:
+                            rule_content.append(zf.open(item).read())
+                        elif filename is None and item.file_size > 0 and item.filename.lower().endswith('.rules'):
                             rule_content.append(zf.open(item).read())
             return '\n'.join(rule_content)
         else:
-            return req_obj.text
+            return src.read()
 
-    def download(self, proto, url, filename, input_filter):
+    def download(self, proto, url, url_filename, filename, input_filter):
         """ download ruleset file
             :param proto: protocol (http,https)
             :param url: download url
@@ -111,11 +120,19 @@ class Downloader(object):
         """
         if proto in ('http', 'https'):
             frm_url = url.replace('//', '/').replace(':/', '://')
-            req = requests.get(url=frm_url, stream=True)
-            if req.status_code == 200:
+            # stream to temp file
+            if frm_url not in self._download_cache:
+                req = requests.get(url=frm_url, stream=True)
+                if req.status_code == 200:
+                    src = tempfile.NamedTemporaryFile()
+                    shutil.copyfileobj(req.raw, src)
+                    self._download_cache[frm_url] = src
+
+            # process rules from tempfile (prevent duplicate download for files within an archive)
+            if frm_url in self._download_cache:
                 try:
                     target_filename = '%s/%s' % (self._target_dir, filename)
-                    save_data = self._unpack(req, url)
+                    save_data = self._unpack(self._download_cache[frm_url], url, url_filename)
                     save_data = self.filter(save_data, input_filter)
                     open(target_filename, 'wb').write(save_data)
                 except IOError:

@@ -68,7 +68,12 @@ class Metadata(object):
                         metadata_record['documentation_url'] = documentation_url
                         metadata_record['source'] = src_location.attrib
                         metadata_record['filename'] = rule_filename.text.strip()
-                        if 'url' in rule_filename.attrib:
+                        # for an archive, define file to extract
+                        metadata_record['url_filename'] = None
+                        if 'url' in rule_filename.attrib and rule_filename.attrib['url'].startswith('inline::'):
+                            metadata_record['url'] = (metadata_record['source']['url'])
+                            metadata_record['url_filename'] = rule_filename.attrib['url'][8:]
+                        elif 'url' in rule_filename.attrib:
                             metadata_record['url'] = (rule_filename.attrib['url'])
                         else:
                             metadata_record['url'] = ('%s/%s' % (metadata_record['source']['url'],

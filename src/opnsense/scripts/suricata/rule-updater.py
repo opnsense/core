@@ -78,5 +78,5 @@ if __name__ == '__main__':
                         pass
                 else:
                     input_filter = enabled_rulefiles[rule['filename']]['filter']
-                    dl.download(proto=download_proto, url=rule['url'],
+                    dl.download(proto=download_proto, url=rule['url'], url_filename=rule['url_filename'],
                                 filename=rule['filename'], input_filter=input_filter)
