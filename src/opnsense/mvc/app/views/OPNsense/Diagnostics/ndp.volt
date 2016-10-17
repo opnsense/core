@@ -75,7 +75,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <table id="grid-ndp" class="table table-condensed table-hover table-striped table-responsive">
                     <thead>
                     <tr>
-                        <th data-column-id="ip" data-type="string" >{{ lang._('IPv6') }}</th>
+                        <th data-column-id="ip" data-type="string"  data-identifier="true">{{ lang._('IPv6') }}</th>
                         <th data-column-id="mac" data-type="string" data-identifier="true">{{ lang._('MAC') }}</th>
                         <th data-column-id="manufacturer" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Manufacturer') }}</th>
                         <th data-column-id="intf" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Interface') }}</th>
