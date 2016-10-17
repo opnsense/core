@@ -66,12 +66,12 @@ include("head.inc");
         <div class="row">
           <section class="col-xs-12">
 <?php
+            $mac_man = json_decode(configd_run("interface list macdb json"), true);
             foreach (get_configured_interface_with_descr(false, true) as $ifdescr => $ifname):
               $ifinfo = get_interface_info($ifdescr);
               legacy_html_escape_form_data($ifinfo);
               $ifdescr = htmlspecialchars($ifdescr);
               $ifname = htmlspecialchars($ifname);
-              $mac_man = json_decode(configd_run("interface list macdb json"), true);
 ?>
               <div class="tab-content content-box col-xs-12 __mb">
                 <div class="table-responsive">
