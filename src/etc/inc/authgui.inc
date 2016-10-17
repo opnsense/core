@@ -408,6 +408,11 @@ function display_login_form($Login_Error = '')
 
     <link href="/ui/themes/<?= $themename ?>/build/css/main.css" rel="stylesheet">
     <link href="/ui/themes/<?= $themename ?>/build/images/favicon.png" rel="shortcut icon">
+<?php
+    if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
+    <script type="text/javascript" src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
+<?php
+    endif;?>
 
     <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script><![endif]-->
 
