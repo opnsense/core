@@ -41,6 +41,12 @@ $di->set('view', function () use ($config) {
                 'compiledPath' => $config->application->cacheDir,
                 'compiledSeparator' => '_'
             ));
+            // register additional volt template functions
+            $volt->getCompiler()->addFunction('javascript_include_when_exists', function($local_url) {
+                $chk_path = "str_replace('/ui/','/usr/local/opnsense/www/',".$local_url.")";
+                $js_tag = "'<script type=\"text/javascript\" src=\"'.$local_url.'\"></script>'";
+                return "file_exists(".$chk_path.") ? ".$js_tag." :''";
+            });
 
             return $volt;
         },
