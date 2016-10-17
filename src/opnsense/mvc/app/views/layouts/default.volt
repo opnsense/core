@@ -14,9 +14,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 
     <title>{{title|default("OPNsense") }}</title>
+    {% set theme_name = ui_theme|default('opnsense') %}
 
-        <!-- include (theme) style -->
-    <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/main.css" rel="stylesheet">
+    <!-- include (theme) style -->
+    <link href="/ui/themes/{{theme_name}}/build/css/main.css" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
     <style>
@@ -30,16 +31,16 @@
     </style>
 
     <!-- Favicon -->
-    <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/favicon.png" rel="shortcut icon">
+    <link href="/ui/themes/{{theme_name}}/build/images/favicon.png" rel="shortcut icon">
 
-        <!-- Stylesheet for fancy select/dropdown -->
-        <link rel="stylesheet" type="text/css" href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-select.css">
+    <!-- Stylesheet for fancy select/dropdown -->
+    <link rel="stylesheet" type="text/css" href="/ui/themes/{{theme_name}}/build/css/bootstrap-select.css">
 
     <!-- bootstrap dialog -->
-    <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
+    <link href="/ui/themes/{{theme_name}}/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
 
-        <!-- Font awesome -->
-        <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
 
     <!-- JQuery -->
     <script type="text/javascript" src="/ui/js/jquery-1.12.0.min.js"></script>
@@ -163,6 +164,7 @@
         <script type="text/javascript" src="/ui/js/opnsense.js"></script>
         <script type="text/javascript" src="/ui/js/opnsense_ui.js"></script>
         <script type="text/javascript" src="/ui/js/opnsense_bootgrid_plugin.js"></script>
+        {{javascript_include_when_exists('/ui/themes/' ~ theme_name ~ '/build/js/theme.js')}}
 
   </head>
   <body>
@@ -171,8 +173,8 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">
-            <img class="brand-logo" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/default-logo.png" height="30" alt="logo"/>
-            <img class="brand-icon" src="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/icon-logo.png" height="30" alt="icon"/>
+            <img class="brand-logo" src="/ui/themes/{{theme_name}}/build/images/default-logo.png" height="30" alt="logo"/>
+            <img class="brand-icon" src="/ui/themes/{{theme_name}}/build/images/icon-logo.png" height="30" alt="icon"/>
           </a>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation">
             <span class="sr-only">Toggle navigation</span>

@@ -237,4 +237,9 @@ $pagetitle .= sprintf(' | %s.%s', $config['system']['hostname'], $config['system
     });
     //]]>
     </script>
+<?php
+    if (file_exists("/usr/local/opnsense/www/themes/".$themename."/build/js/theme.js")):?>
+    <script type="text/javascript" src="/ui/themes/<?=$themename?>/build/js/theme.js"></script>
+<?php
+    endif;?>
 </head>
