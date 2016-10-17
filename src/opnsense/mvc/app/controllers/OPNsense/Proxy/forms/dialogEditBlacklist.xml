@@ -18,6 +18,18 @@
         <help>Enter an url to fetch the blacklist from.</help>
     </field>
     <field>
+        <id>blacklist.username</id>
+        <label>username (optional)</label>
+        <type>text</type>
+        <help>(optional) user credentials.</help>
+    </field>
+    <field>
+        <id>blacklist.password</id>
+        <label>password (optional)</label>
+        <type>password</type>
+        <help>(optional) user credentials.</help>
+    </field>
+    <field>
         <id>blacklist.filter</id>
         <label>categories (if available)</label>
         <type>text</type>

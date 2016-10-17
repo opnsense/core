@@ -28,7 +28,6 @@
 """
 
 import tempfile
-import urllib2
 import os
 import json
 import glob
@@ -37,7 +36,9 @@ import tarfile
 import gzip
 import zipfile
 import syslog
+import shutil
 from ConfigParser import ConfigParser
+import requests
 
 acl_config_fn = '/usr/local/etc/squid/externalACLs.conf'
 acl_target_dir = '/usr/local/etc/squid/acl'
@@ -48,7 +49,7 @@ class Downloader(object):
     """ Download helper
     """
 
-    def __init__(self, url, timeout):
+    def __init__(self, url,username, password, timeout):
         """ init new
             :param url: source url
             :param timeout: timeout in seconds
@@ -56,24 +57,23 @@ class Downloader(object):
         self._url = url
         self._timeout = timeout
         self._source_handle = None
+        self._username = username
+        self._password = password
 
     def fetch(self):
         """ fetch (raw) source data into tempfile using self._source_handle
         """
-        try:
-            f = urllib2.urlopen(self._url, timeout=self._timeout)
-            # flush to temp file
+        if self._username is not None:
+            req = requests.get(url=self._url, stream=True, timeout=self._timeout, auth=(self._username, self._password))
+        else:
+            req = requests.get(url=self._url, stream=True, timeout=self._timeout)
+        if req.status_code == 200:
             self._source_handle = tempfile.NamedTemporaryFile()
-            while True:
-                data = f.read(1024)
-                if not data:
-                    break
-                else:
-                    self._source_handle.write(data)
+            shutil.copyfileobj(req.raw, self._source_handle)
             self._source_handle.seek(0)
-            f.close()
-        except (urllib2.URLError, urllib2.HTTPError, IOError) as e:
-            syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s' % self._url)
+        else:
+            syslog.syslog(syslog.LOG_ERR, 'proxy acl: error downloading %s (http code: %s)' % (self._url,
+                                                                                               req.status_code))
             self._source_handle = None
 
     def get_files(self):
@@ -271,7 +271,13 @@ def main():
                 # only generate files if enabled, otherwise dump empty files
                 if cnf.has_option(section, 'enabled') and cnf.get(section, 'enabled') == '1':
                     download_url = cnf.get(section, 'url')
-                    acl = Downloader(download_url, acl_max_timeout)
+                    if cnf.has_option(section, 'username'):
+                        download_username = cnf.get(section, 'username')
+                        download_password = cnf.get(section, 'password')
+                    else:
+                        download_username = None
+                        download_password = None
+                    acl = Downloader(download_url, download_username, download_password, acl_max_timeout)
                     all_filenames = list()
                     for filename, line in acl.download():
                         if filename_in_ignorelist(os.path.basename(filename)):
