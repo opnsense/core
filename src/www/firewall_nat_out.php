@@ -325,7 +325,7 @@ include("head.inc");
 <?php if ($mode == 'advanced' || $mode == 'hybrid'): ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
-            <table class="table table-striped table-sort">
+            <table class="table table-striped">
               <thead>
                 <tr><th colspan="12"><?=gettext("Manual rules:"); ?></th></tr>
                 <tr>
@@ -524,7 +524,7 @@ include("head.inc");
 ?>
         <section class="col-xs-12">
           <div class="table-responsive content-box ">
-            <table class="table table-striped table-sort">
+            <table class="table table-striped">
               <thead>
                   <tr>
                     <th colspan="11"><?=gettext("Automatic rules:"); ?></th>

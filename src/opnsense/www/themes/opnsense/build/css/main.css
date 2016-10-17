@@ -5627,19 +5627,6 @@ body {
   max-width: 174px;
   width: 100%; }
 
-.table-sort > tbody > tr > th {
-  border-top: 0;
-  height: 50px; }
-  .table-sort > tbody > tr > th:hover {
-    background: #F2F2F2;
-    cursor: pointer; }
-.table-sort > tbody > tr > td, .table-sort > tbody > tr > th {
-  vertical-align: middle; }
-.table-sort-icon {
-  font-size: 10px; }
-.table-sort .btn-group-table {
-  padding-right: 15px; }
-
 .progress-bar-placeholder {
   font-size: 12px;
   position: absolute;

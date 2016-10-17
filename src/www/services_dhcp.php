@@ -1145,7 +1145,7 @@ include("head.inc");
           <section class="col-xs-12">
             <div class="tab-content content-box col-xs-12">
               <div class="table-responsive">
-                <table class="table table-striped table-sort">
+                <table class="table table-striped">
                   <tr>
                     <td colspan="5" valign="top"><?=gettext("DHCP Static Mappings for this interface.");?></td>
                     <td>&nbsp;</td>

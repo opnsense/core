@@ -334,31 +334,6 @@ body{
     width: 100%;
 }
 
-.table-sort{
-
-    > tbody > tr > th{
-        border-top: 0;
-        height: 50px;
-
-        &:hover{
-            background: #F2F2F2;
-            cursor: pointer;
-        }
-    }
-
-    > tbody > tr > td,  > tbody > tr > th{
-        vertical-align: middle;
-    }
-
-    &-icon{
-        font-size: 10px;
-    }
-
-    .btn-group-table{
-        padding-right: 15px;
-    }
-}
-
 .progress-bar-placeholder{
     font-size: 12px;
     position: absolute;

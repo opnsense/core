@@ -727,7 +727,7 @@ else :
           <form id="iform_overview" method="post">
             <input type="hidden" id="overview_id" name="id">
             <input type="hidden" id="overview_act" name="act">
-            <table class="table table-striped table-sort">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th><?=gettext("Server Name");?></th>

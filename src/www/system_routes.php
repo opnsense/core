@@ -232,7 +232,7 @@ endif; ?>
               <input type="hidden" id="act" name="act" value="" />
               <input type="hidden" id="id" name="id" value="" />
               <div class="table-responsive">
-                <table class="table table-striped table-sort">
+                <table class="table table-striped">
                   <tr>
                     <td></td>
                     <td></td>
