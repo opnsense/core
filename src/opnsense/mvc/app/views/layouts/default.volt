@@ -15,7 +15,7 @@
 
     <title>{{title|default("OPNsense") }}</title>
 
-        <!-- include (theme) style -->
+    <!-- include (theme) style -->
     <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/main.css" rel="stylesheet">
 
     <!-- TODO: move to theme style -->
@@ -32,14 +32,14 @@
     <!-- Favicon -->
     <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/images/favicon.png" rel="shortcut icon">
 
-        <!-- Stylesheet for fancy select/dropdown -->
-        <link rel="stylesheet" type="text/css" href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-select.css">
+    <!-- Stylesheet for fancy select/dropdown -->
+    <link rel="stylesheet" type="text/css" href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-select.css">
 
     <!-- bootstrap dialog -->
     <link href="/ui/themes/{{ui_theme|default('opnsense')}}/build/css/bootstrap-dialog.css" rel="stylesheet" type="text/css" />
 
-        <!-- Font awesome -->
-        <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
+    <!-- Font awesome -->
+    <link rel="stylesheet" href="/ui/css/font-awesome.min.css">
 
     <!-- JQuery -->
     <script type="text/javascript" src="/ui/js/jquery-1.12.0.min.js"></script>
