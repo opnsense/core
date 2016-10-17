@@ -364,7 +364,7 @@ $( document ).ready(function() {
             <input type="hidden" id="act" name="act" value="" />
             <input type="hidden" id="groupid" name="groupid" value="<?=(isset($id) ? $id : "");?>" />
             <input type="hidden" id="groupname" name="groupname" value="" />
-            <table class="table table-striped table-sort">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th><?=gettext("Group name");?></th>

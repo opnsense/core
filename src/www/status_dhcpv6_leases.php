@@ -394,7 +394,7 @@ if (count($pools) > 0):?>
       <section class="col-xs-12">
         <div class="content-box">
           <div class="table-responsive">
-              <table class="table table-striped table-sort sortable __nomb">
+              <table class="table table-striped sortable __nomb">
               <tr>
                 <td><?=gettext("Failover Group"); ?></a></td>
                 <td><?=gettext("My State"); ?></a></td>

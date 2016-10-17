@@ -187,7 +187,7 @@ $main_buttons = array(
               <input type="hidden" id="id" name="id" value="" />
               <input type="hidden" id="action" name="act" value="" />
               <div class="table-responsive">
-                <table class="table table-striped table-sort">
+                <table class="table table-striped">
                   <thead>
                     <tr>
                       <th width="2%">&nbsp;</th>
