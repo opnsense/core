@@ -469,7 +469,8 @@ abstract class BaseModel
         if ($messages->count() > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
-                $exception_msg_part = "[".str_replace("\\", ".", get_class($this)).".".$msg-> getField(). "] " .$msg->getMessage();
+                $exception_msg_part = "[".str_replace("\\", ".", get_class($this)).".".$msg-> getField(). "] " ;
+                $exception_msg_part .= $msg->getMessage();
                 $exception_msg .= "$exception_msg_part\n";
                 // always log validation errors
                 $logger->error($exception_msg_part);
