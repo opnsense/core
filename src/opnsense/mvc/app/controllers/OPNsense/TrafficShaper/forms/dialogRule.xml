@@ -29,6 +29,12 @@
         <help>source ip or network, examples 10.0.0.0/24, 10.0.0.1</help>
     </field>
     <field>
+        <id>rule.source_not</id>
+        <label>invert source</label>
+        <type>checkbox</type>
+        <help>invert source (not)</help>
+    </field>
+    <field>
         <id>rule.src_port</id>
         <label>src-port</label>
         <type>text</type>
@@ -39,6 +45,12 @@
         <label>destination</label>
         <type>text</type>
         <help>destination ip or network, examples 10.0.0.0/24, 10.0.0.1</help>
+    </field>
+    <field>
+        <id>rule.destination_not</id>
+        <label>invert destination</label>
+        <type>checkbox</type>
+        <help>invert destination (not)</help>
     </field>
     <field>
         <id>rule.dst_port</id>
