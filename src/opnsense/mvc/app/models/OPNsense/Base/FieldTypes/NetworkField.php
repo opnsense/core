@@ -53,6 +53,11 @@ class NetworkField extends BaseField
     protected $internalNetMaskRequired = false;
 
     /**
+     * @var null when multiple values could be provided at once, specify the split character
+     */
+    protected $internalFieldSeparator = null;
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
@@ -75,6 +80,15 @@ class NetworkField extends BaseField
     }
 
     /**
+     * if multiple addresses / networks maybe provided at once, set separator.
+     * @param $value separator
+     */
+    public function setFieldSeparator($value)
+    {
+        $this->internalFieldSeparator = $value;
+    }
+
+    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -86,6 +100,7 @@ class NetworkField extends BaseField
                 // accept any as target
                 $validators[] = new NetworkValidator(array(
                     'message' => $this->internalValidationMessage,
+                    'split' => $this->internalFieldSeparator,
                     'netMaskRequired' => $this->internalNetMaskRequired
                     ));
             }
