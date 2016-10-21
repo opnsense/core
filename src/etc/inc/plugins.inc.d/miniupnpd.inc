@@ -28,8 +28,30 @@
 function miniupnpd_firewall($fw)
 {
     global $config;
+
     if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
         $fw->registerAnchor("miniupnpd/*", "rdr");
         $fw->registerAnchor("miniupnpd/*", "fw");
     }
+}
+
+function miniupnpd_services()
+{
+    global $config;
+
+    $services = array();
+
+    if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
+        $pconfig = array();
+        $pconfig['name'] = "miniupnpd";
+        $pconfig['description'] = gettext("UPnP Service");
+        $pconfig['description'] = gettext("UPnP Service");
+        $pconfig['php']['restart'] = array('upnp_stop', 'upnp_start');
+        $pconfig['php']['start'] = array('upnp_start');
+        $pconfig['php']['stop'] = array('upnp_stop');
+        $pconfig['pidfile'] = '/var/run/miniupnpd.pid';
+        $services[] = $pconfig;
+    }
+
+    return $services;
 }
