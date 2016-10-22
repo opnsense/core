@@ -49,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig["ipsec_{$lkey}"] = null;
         }
     }
-    $pconfig['failoverforcereload'] = isset($config['ipsec']['failoverforcereload']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // save form data
     $pconfig = $_POST;
@@ -73,12 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['ipsec']["ipsec_{$lkey}"] = $_POST["ipsec_{$lkey}"];
             }
         }
-    }
-
-    if (isset($pconfig['failoverforcereload']) && $pconfig['failoverforcereload'] == "yes") {
-        $config['ipsec']['failoverforcereload'] = true;
-    } elseif (isset($config['ipsec']['failoverforcereload'])) {
-        unset($config['ipsec']['failoverforcereload']);
     }
 
     write_config();
@@ -164,19 +157,6 @@ endforeach; ?>
 endforeach; ?>
                         <div class="hidden" for="help_for_ipsec_debug">
                         <?=gettext("Launch IPsec in debug mode so that more verbose logs will be generated to aid in troubleshooting."); ?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><a id="help_for_failoverforcereloadg" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IPsec Reload on Failover"); ?></td>
-                      <td>
-                        <input name="failoverforcereload" type="checkbox" id="failoverforcereload" value="yes" <?= !empty($pconfig['failoverforcereload']) ? "checked=\"checked\"" : "";?> />
-                        <strong><?=gettext("Force IPsec Reload on Failover"); ?></strong>
-                        <div class="hidden" for="help_for_failoverforcereloadg">
-                            <?=gettext("In some circumstances using a gateway group as the interface for " .
-                                                  "an IPsec tunnel does not function properly, and IPsec must be forcefully reloaded " .
-                                                  "when a failover occurs. Because this will disrupt all IPsec tunnels, this behavior" .
-                                                  " is disabled by default. Check this box to force IPsec to fully reload on failover."); ?>
                         </div>
                       </td>
                     </tr>
