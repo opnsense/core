@@ -49,9 +49,11 @@ function if_ipsec_services()
         $pconfig['name'] = 'ipsec';
         $pconfig['description'] = gettext('IPsec VPN');
         $pconfig['pidfile'] = '/var/run/charon.pid';
-        $pconfig['php']['restart'] = array('ipsec_force_reload');
-        $pconfig['php']['start'] = array('ipsec_force_reload');
-        $pconfig['mwexec']['stop'] = array('/usr/local/sbin/ipsec stop');
+        $pconfig['configd'] = array(
+          'restart' => array('ipsec restart'),
+          'start' => array('ipsec start'),
+          'stop' => array('ipsec stop'),
+        );
         $services[] = $pconfig;
     }
 
