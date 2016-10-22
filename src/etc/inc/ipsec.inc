@@ -1288,35 +1288,15 @@ EOD;
     return count($filterdns_list);
 }
 
-/*
- * Forcefully restart IPsec
- * This is required for when dynamic interfaces reload
- * For all other occasions the normal ipsec_configure()
- * will gracefully reload the settings without restarting
- */
-function ipsec_force_reload($interface = '')
+function ipsec_configured_on_interface($interface)
 {
     global $config;
-
-    $ipseccfg = $config['ipsec'];
-
-    if (!empty($interface) && isset($ipseccfg['phase1']) && is_array($ipseccfg['phase1'])) {
-        $found = false;
-        foreach ($ipseccfg['phase1'] as $ipsec) {
-            if (!isset($ipsec['disabled']) && ($ipsec['interface'] == $interface)) {
-                $found = true;
-                break;
+    if (!empty($config['ipsec']['phase1'][0])) {
+        foreach ($config['ipsec']['phase1'] as $phase1) {
+            if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
+                return true;
             }
         }
-        if (!$found) {
-            log_error(sprintf('Ignoring IPsec reload since there are no tunnels on interface %s', $interface));
-            return;
-        }
     }
-
-    /* if ipsec is enabled, start up again */
-    if (isset($ipseccfg['enable'])) {
-        log_error('Forcefully reloading IPsec');
-        ipsec_configure();
-    }
+    return false;
 }
