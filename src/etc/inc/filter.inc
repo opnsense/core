@@ -400,7 +400,6 @@ function filter_configure_sync()
     if (file_exists("/var/run/booting")) {
         echo ".";
     }
-    update_filter_reload_status(gettext("Generating Limiter rules"));
     update_filter_reload_status(gettext("Generating NAT rules"));
     /* generate nat rules */
     $natrules = filter_nat_rules_generate($FilterIflist);
@@ -947,7 +946,7 @@ function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = tr
         if (is_subnet($subnet) && !(is_subnetv4($subnet) && $vip['subnet_bits'] == 32) && !(is_subnetv6($subnet) && $vip['subnet_bits'] == 128)) {
             if (is_subnetv4($subnet)) {
                 $subnet = gen_subnet($vip['subnet'], $vip['subnet_bits']) . "/{$vip['subnet_bits']}";
-            } else if (is_subnetv6($subnet)) {
+            } elseif (is_subnetv6($subnet)) {
                 $subnet = gen_subnetv6($vip['subnet'], $vip['subnet_bits']) . "/{$vip['subnet_bits']}";
             }
             if ($returnsubnetsonly) {
@@ -964,7 +963,7 @@ function filter_get_direct_networks_list(&$FilterIflist, $returnsubnetsonly = tr
         if (is_subnet($netent['network'])) {
             if ($returnsubnetsonly) {
                 $networks_arr[] = $netent['network'];
-            } else if (isset($GatewaysList[$netent['gateway']])) {
+            } elseif (isset($GatewaysList[$netent['gateway']])) {
                 $networks_arr[] = array(
                   'subnet' => $netent['network'],
                   'if' => $GatewaysList[$netent['gateway']]['friendlyiface'],
@@ -1091,7 +1090,7 @@ function filter_generate_optcfg_array()
                         } else {
                             $oic['vips'][$vipidx]['sn'] = $vip['subnet_bits'];
                         }
-                    } else if (is_ipaddrv6($vip['subnet'])) {
+                    } elseif (is_ipaddrv6($vip['subnet'])) {
                         if (!is_array($oic['vips6'])) {
                             $oic['vips6'] = array();
                         }
@@ -1753,7 +1752,7 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $localport = alias_expand($rule['local-port']);
                 if (!$localport || $dstport[0] == $localport) {
                     $localport = "";
-                } else if (is_alias($rule['local-port'])) {
+                } elseif (is_alias($rule['local-port'])) {
                     $localport = filter_expand_alias($rule['local-port']);
                     if ($localport) {
                         $localport = explode(" ", trim($localport));
@@ -2895,7 +2894,7 @@ EOD;
                     $rule_arr1[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                     $rule['ipprotocol'] = "inet6";
                     $rule_arr1[] = filter_generate_user_rule_arr($FilterIflist, $rule);
-                } else if (is_interface_group($rule['interface']) || in_array($rule['interface'], $vpn_and_ppp_ifs)) {
+                } elseif (is_interface_group($rule['interface']) || in_array($rule['interface'], $vpn_and_ppp_ifs)) {
                     $rule['ipprotocol'] = "inet";
                     $rule_arr2[] = filter_generate_user_rule_arr($FilterIflist, $rule);
                     $rule['ipprotocol'] = "inet6";
