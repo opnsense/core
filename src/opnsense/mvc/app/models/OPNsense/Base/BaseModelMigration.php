@@ -35,7 +35,7 @@ use Phalcon\Logger\Adapter\Syslog;
 /**
  * @package OPNsense\Base
  */
-abstract class BaseModelMigration
+class BaseModelMigration
 {
     /**
      * Walk through all nodes and check required defaults

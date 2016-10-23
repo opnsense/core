@@ -241,7 +241,7 @@ abstract class BaseModel
         $this->internal_mountpoint = $model_xml->mount;
 
         if (!empty($model_xml->version)) {
-            $this->internal_model_version = $model_xml->version;
+            $this->internal_model_version = (string)$model_xml->version;
         }
 
         // use an xpath expression to find the root of our model in the config.xml file
@@ -537,21 +537,25 @@ abstract class BaseModel
             $class_info = new \ReflectionClass($this);
             // fetch version migrations
             $versions = array();
+            // set default migration for current model version
+            $versions[$this->internal_model_version] =__DIR__."/BaseModelMigration.php";
             foreach (glob(dirname($class_info->getFileName())."/Migrations/M*.php") as $filename) {
                 $version = str_replace('_', '.', explode('.', substr(basename($filename), 1))[0]);
                 $versions[$version] = $filename;
             }
+
             uksort($versions, "version_compare");
             foreach ($versions as $mig_version => $filename) {
                 if (version_compare($this->internal_current_model_version, $mig_version, '<') &&
                     version_compare($this->internal_model_version, $mig_version, '>=') ) {
                     // execute upgrade action
-                    $tmp = explode('.', basename($filename))[0];
-                    $mig_classname = "\\".$class_info->getNamespaceName()."\\Migrations\\".$tmp;
+                    $mig_classname = explode('.', explode('/mvc/app/models', $filename)[1])[0];
+                    $mig_classname = str_replace('/', '\\', $mig_classname);
                     // Phalcon's autoloader uses _ as a directory locator, we need to import these files ourselves
                     require_once $filename;
                     $mig_class = new \ReflectionClass($mig_classname);
-                    if ($mig_class->getParentClass()->name == 'OPNsense\Base\BaseModelMigration') {
+                    $chk_class = empty($mig_class->getParentClass()) ? $mig_class :  $mig_class->getParentClass();
+                    if ($chk_class->name == 'OPNsense\Base\BaseModelMigration') {
                         $migobj = $mig_class->newInstance();
                         try {
                             $migobj->run($this);
