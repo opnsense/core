@@ -584,20 +584,9 @@ function get_menu_messages()
     global $config;
 
     $menu_messages = '';
+
     if (are_notices_pending()) {
         $notices = get_notices();
-        $requests = array();
-
-        ## Get Query Arguments from URL ###
-        foreach ($_REQUEST as $key => $value) {
-            if ($key != "PHPSESSID") {
-                $requests[] = $key.'='.$value;
-            }
-        }
-
-        if (is_array($requests)) {
-            $request_string = implode("&", $requests);
-        }
 
         if (is_array($notices)) {
             $notice_msgs = "<ul class=\"dropdown-menu\" role=\"menu\">";
@@ -630,5 +619,5 @@ function get_menu_messages()
         );
     }
 
-    return ($menu_messages);
+    return $menu_messages;
 }
