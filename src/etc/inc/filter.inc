@@ -750,7 +750,7 @@ function filter_generate_aliases(&$FilterIflist, &$after_filter_configure_run)
 {
     global $config;
 
-    $aliases = "#System aliases\n";
+    $aliases = "# System aliases\n";
     $aliases .= "loopback = \"{ lo0 }\"\n";
 
     foreach ($FilterIflist as $if => $ifcfg) {
@@ -1725,14 +1725,14 @@ function filter_nat_rules_generate(&$FilterIflist)
             $alintrf = null;
         }
         if (!empty($alintrf) ) {
-            $natrules .= "# Anti lockout, prevent redirects for protected ports to this interface ip \n";
-            $natrules .= "no rdr on {$alintrf} proto tcp from any to ( {$alintrf} ) port { {$alports} } ";
+            $natrules .= "\n# Anti lockout, prevent redirects for protected ports to this interface ip \n";
+            $natrules .= "no rdr on {$alintrf} proto tcp from any to ( {$alintrf} ) port { {$alports} }\n";
         }
         unset($alports);
     }
 
     if (isset($config['nat']['rule'])) {
-        $natrules .= "# NAT Inbound Redirects\n";
+        $natrules .= "\n# NAT Inbound Redirects\n";
           foreach ($config['nat']['rule'] as $rule) {
             update_filter_reload_status(sprintf(gettext("Creating NAT rule %s"), $rule['descr']));
 
