@@ -549,7 +549,12 @@ abstract class BaseModel
                 if (version_compare($this->internal_current_model_version, $mig_version, '<') &&
                     version_compare($this->internal_model_version, $mig_version, '>=') ) {
                     // execute upgrade action
-                    $mig_classname = explode('.', explode('/mvc/app/models', $filename)[1])[0];
+                    if (!strstr($filename, '/tests/app')) {
+                        $mig_classname = explode('.', explode('/mvc/app/models', $filename)[1])[0];
+                    } else {
+                        // unit tests use a different namespace for their models
+                        $mig_classname = "/tests".explode('.', explode('/mvc/tests/app/models', $filename)[1])[0];
+                    }
                     $mig_classname = str_replace('/', '\\', $mig_classname);
                     // Phalcon's autoloader uses _ as a directory locator, we need to import these files ourselves
                     require_once $filename;
