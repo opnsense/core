@@ -36,19 +36,32 @@ namespace OPNsense\Firewall;
 class Plugin
 {
     private $anchors = array();
+    private $filterRules = array();
+    private $interfaceMapping ;
 
     /**
      * init firewall plugin component
      */
     public function __construct()
     {
+        $this->interfaceMapping = array();
+    }
+
+    /**
+     * set interface mapping to USE
+     * @param array $mapping named array
+     */
+    public function setInterfaceMapping(&$mapping)
+    {
+        $this->interfaceMapping = $mapping;
     }
 
     /**
      * register anchor
-     * @param $name anchor name
-     * @param $type anchor type (fw for filter, other options are nat,rdr,binat)
-     * @param $priority sort order from low to high
+     * @param string $name anchor name
+     * @param string $type anchor type (fw for filter, other options are nat,rdr,binat)
+     * @param string $priority sort order from low to high
+     * @param string $placement placement head,tail
      * @return null
      */
     public function registerAnchor($name, $type="fw", $priority=0, $placement="tail")
@@ -60,8 +73,8 @@ class Plugin
 
     /**
      * fetch anchors as text (pf ruleset part)
-     * @param $types anchor types (fw for filter, other options are nat,rdr,binat. comma seperated)
-     * @param $priority sort order from low to high
+     * @param string $types anchor types (fw for filter, other options are nat,rdr,binat. comma seperated)
+     * @param string $placement placement head,tail
      * @return string
      */
     public function anchorToText($types="fw", $placement="tail")
@@ -76,5 +89,35 @@ class Plugin
             }
         }
         return $result;
+    }
+
+    /**
+     * register a filter rule
+     * @param int $prio priority
+     * @param array $conf configuration
+     */
+    public function registerFilterRule($prio, $conf)
+    {
+        $rule = new FilterRule($this->interfaceMapping, $conf);
+        if (empty($this->filterRules[$prio])) {
+            $this->filterRules[$prio] = array();
+        }
+        $this->filterRules[$prio][] = $rule;
+    }
+
+    /**
+     * filter rules to text
+     * @return string
+     */
+    public function outputFilterRules()
+    {
+        $output = "";
+        ksort($this->filterRules);
+        foreach ($this->filterRules as $prio => $ruleset) {
+            foreach ($ruleset as $rule) {
+                $output .= (string)$rule;
+            }
+        }
+        return $output;
     }
 }
