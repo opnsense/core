@@ -1,8 +1,0 @@
-name: opnsense-proxy
-version: 0.1
-origin: opnsense/proxy
-comment: Squid proxy configuration
-desc: configuration templates for squid proxy
-maintainer: ad at opnsense.org
-www: https://opnsense.org
-prefix: /

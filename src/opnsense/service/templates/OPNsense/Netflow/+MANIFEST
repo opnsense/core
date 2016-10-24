@@ -1,8 +1,0 @@
-name: opnsense-netflow
-version: 1.0
-origin: opnsense/netflow
-comment: Netflow configuration
-desc: netflow configuration templates
-maintainer: ad at opnsense.org
-www: https://opnsense.org
-prefix: /
