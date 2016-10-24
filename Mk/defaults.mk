@@ -30,6 +30,7 @@ OPENSSL?=	${LOCALBASE}/bin/openssl
 
 PKG!=		which pkg || echo true
 GIT!=		which git || echo true
+ARCH!=		uname -p
 
 all-stub: all
 	@echo "Nothing to do."
