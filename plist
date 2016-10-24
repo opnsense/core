@@ -381,6 +381,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/ConfigException.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Shell.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Core/Singleton.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Firewall/FilterRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Plugin.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModel.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/BaseModelMigration.php
