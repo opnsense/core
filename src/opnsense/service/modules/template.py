@@ -28,6 +28,7 @@
     package : configd
     function: template handler, generate configuration files using templates
 """
+
 import os
 import os.path
 import stat
@@ -40,7 +41,6 @@ import jinja2
 import addons.template_helpers
 
 __author__ = 'Ad Schellevis'
-
 
 class Template(object):
     def __init__(self, target_root_directory="/"):
@@ -59,21 +59,6 @@ class Template(object):
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
 
     @staticmethod
-    def _read_manifest(filename):
-        """
-
-        :param filename: manifest filename (path/+MANIFEST)
-        :return: dictionary containing manifest items
-        """
-        result = {}
-        for line in open(filename, 'r').read().split('\n'):
-            parts = line.split(':')
-            if len(parts) > 1:
-                result[parts[0]] = ':'.join(parts[1:])
-
-        return result
-
-    @staticmethod
     def _read_targets(filename):
         """ read raw target filename masks
 
@@ -88,16 +73,13 @@ class Template(object):
 
         return result
 
-    def list_module(self, module_name, read_manifest=False):
+    def list_module(self, module_name):
         """ list single module content
         :param module_name: module name in dot notation ( company.module )
-        :param read_manifest: boolean, read manifest file if it exists
         :return: dictionary with module data
         """
         result = {}
         file_path = '%s/%s' % (self._template_dir, module_name.replace('.', '/'))
-        if os.path.exists('%s/+MANIFEST' % file_path) and read_manifest:
-            result['+MANIFEST'] = self._read_manifest('%s/+MANIFEST' % file_path)
         if os.path.exists('%s/+TARGETS' % file_path):
             result['+TARGETS'] = self._read_targets('%s/+TARGETS' % file_path)
         else:
