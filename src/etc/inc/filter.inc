@@ -1856,12 +1856,12 @@ function filter_nat_rules_generate(&$FilterIflist)
                 $protocol_keyword = !empty($protocol) ? "proto" : "";
                 $natrules .= "{$nordr}rdr {$rdrpass}on {$natif} {$address_family} {$protocol_keyword} {$protocol} from {$srcaddr} to {$dstaddr}" . ($nordr == "" ? " -> {$target}{$localport}" : "");
                 /* Does this rule redirect back to a internal host? */
-                if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper']) && !interface_has_gateway($rule['interface'])) {
-                    if ($address_family == 'inet6') {
+                if (isset($rule['destination']['any']) && !isset($rule['nordr']) && !isset($config['system']['enablenatreflectionhelper'])) {
+                    if ($address_family == 'inet6' && !interface_has_gatewayv6($rule['interface'])) {
                         $rule_interface_subnet = find_interface_subnet6($natif);
                         $rule_interface_ip = find_interface_ipv6($natif);
                         $rule_subnet = gen_subnetv6($rule_interface_ip, $rule_interface_subnet);
-                    } else {
+                    } elseif (!interface_has_gateway($rule['interface'])) {
                         $rule_interface_subnet = find_interface_subnet($natif);
                         $rule_interface_ip = find_interface_ip($natif);
                         $rule_subnet = gen_subnet($rule_interface_ip, $rule_interface_subnet);
