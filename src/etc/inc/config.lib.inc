@@ -32,20 +32,19 @@
 openlog('opnsense', LOG_ODELAY, LOG_USER);
 register_shutdown_function('closelog');
 
-global $g;	/* XXX make this a getter function for traceability */
+global $g; /* XXX make this a getter function for traceability */
 
 $g = array(
-	"factory_shipped_username" => "root",
-	"factory_shipped_password" => "opnsense",
-	"dhcpd_chroot_path" => "/var/dhcpd",
-	"unbound_chroot_path" => "/var/unbound",
-	"product_name" => "OPNsense",
-	"product_website" => "https://opnsense.org",
-	"product_email" => "project@opnsense.org",
-	"product_copyright_owner" => "Deciso B.V.",
-	"product_copyright_years" => "2014-2016",
-	"product_copyright_url" => "https://www.deciso.com/",
-	"latest_config" => "11.2",
+    'factory_shipped_username' => 'root',
+    'factory_shipped_password' => 'opnsense',
+    'dhcpd_chroot_path' => '/var/dhcpd',
+    'unbound_chroot_path' => '/var/unbound',
+    'product_name' => 'OPNsense',
+    'product_website' => 'https://opnsense.org/',
+    'product_email' => 'project@opnsense.org',
+    'product_copyright_owner' => 'Deciso B.V.',
+    'product_copyright_years' => '2014-2016',
+    'product_copyright_url' => 'https://www.deciso.com/',
 );
 
 require_once("xmlparse.inc");
@@ -118,38 +117,36 @@ function parse_config()
  *   null
  ******/
 /* convert configuration, if necessary */
-function convert_config()
+function convert_config($verbose = false)
 {
-    global $config, $g;
+    global $config;
+
+    /* hardcode this, legacy migration path is now disabled */
+    $latest_config = '11.2';
 
     if (!isset($config['revision'])) {
         /* force a revision tag for proper handling in config history */
         write_config('Factory configuration', false);
     }
 
-    if ($config['version'] == $g['latest_config']) {
-        /* already at latest version */
-        return;
-    }
-
-    // Save off config version
-    $prev_version = $config['version'];
-    /* Loop and run upgrade_VER_to_VER() until we're at current version */
-    while ($config['version'] < $g['latest_config']) {
-        $cur = $config['version'] * 10;
-        $next = $cur + 1;
-        $migration_function = sprintf('upgrade_%03d_to_%03d', $cur, $next);
-        if (function_exists($migration_function)) {
-            $migration_function();
+    if ($config['version'] !== $latest_config) {
+        $prev_version = $config['version'];
+        /* Loop and run upgrade_VER_to_VER() until we're at current version */
+        while ($config['version'] < $latest_config) {
+            $cur = $config['version'] * 10;
+            $next = $cur + 1;
+            $migration_function = sprintf('upgrade_%03d_to_%03d', $cur, $next);
+            if (function_exists($migration_function)) {
+                $migration_function();
+            }
+            $config['version'] = sprintf('%.1f', $next / 10);
         }
-        $config['version'] = sprintf('%.1f', $next / 10);
-    }
 
-    if ($prev_version != $config['version']) {
-        write_config(sprintf('Upgraded config version level from %s to %s', $prev_version, $config['version']));
+        if ($prev_version != $config['version']) {
+            write_config(sprintf('Upgraded config version level from %s to %s', $prev_version, $config['version']));
+        }
     }
 }
-
 
 /****f* config/write_config
  * NAME
