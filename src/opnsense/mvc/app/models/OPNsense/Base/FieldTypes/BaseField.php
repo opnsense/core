@@ -509,25 +509,22 @@ abstract class BaseField
     /**
      * update model with data returning missing repeating tag types.
      * @param $data named array structure containing new model content
-     * @return array missing array keys in data
+     * @throws \Exception
      */
     public function setNodes($data)
     {
-        $delItems = array();
-
         // update structure with new content
         foreach ($this->__items as $key => $node) {
             if ($data != null && array_key_exists($key, $data)) {
                 if ($node->isContainer()) {
-                    $delItems += $node->setNodes($data[$key]);
+                    if (is_array($data[$key])) {
+                        $node->setNodes($data[$key]);
+                    } else {
+                        throw new \Exception("Invalid  input type for {$key} (configuration error?)");
+                    }
                 } else {
                     $node->setValue($data[$key]);
                 }
-            } elseif (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
-                // mark item as missing in input, return when finished
-                $delItems[] = array("node" => $this, "key" => $key );
-            } else {
-                $delItems += $node->setNodes(array());
             }
         }
 
@@ -536,12 +533,10 @@ abstract class BaseField
             foreach ($data as $dataKey => $dataValue) {
                 if (!array_key_exists($dataKey, $this->__items)) {
                     $node = $this->add();
-                    $delItems += $node->setNodes($dataValue);
+                    $node->setNodes($dataValue);
                 }
             }
         }
-
-        return $delItems;
     }
 
 
