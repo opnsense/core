@@ -63,10 +63,11 @@ CORE_COMMENT?=		OPNsense ${CORE_FAMILY} package
 CORE_MAINTAINER?=	franco@opnsense.org
 CORE_WWW?=		https://opnsense.org/
 CORE_MESSAGE?=		Thanks for all the fish...
+# CORE_DEPENDS_armv6 is empty
+CORE_DEPENDS_amd64?=	beep bsdinstaller
+CORE_DEPENDS_i386?=	${CORE_DEPENDS_amd64}
 CORE_DEPENDS?=		apinger \
-			beep \
 			bind910 \
-			bsdinstaller \
 			bsnmp-regex \
 			bsnmp-ucd \
 			ca_root_nss \
@@ -175,7 +176,7 @@ manifest: want-git
 	@echo "prefix: ${LOCALBASE}"
 	@echo "vital: true"
 	@echo "deps: {"
-	@for CORE_DEPEND in ${CORE_DEPENDS}; do \
+	@for CORE_DEPEND in ${CORE_DEPENDS_${ARCH}} ${CORE_DEPENDS}; do \
 		if ! ${PKG} query '  %n: { version: "%v", origin: "%o" }' \
 		    $${CORE_DEPEND}; then \
 			echo ">>> Missing dependency: $${CORE_DEPEND}" >&2; \
@@ -188,7 +189,7 @@ name: force
 	@echo ${CORE_NAME}
 
 depends: force
-	@echo ${CORE_DEPENDS}
+	@echo ${CORE_DEPENDS_${ARCH}} ${CORE_DEPENDS}
 
 PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 		+PRE_UPGRADE +POST_UPGRADE \

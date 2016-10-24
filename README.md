@@ -59,6 +59,7 @@ needs to be fetched from an external location.
 Several OPTIONS exist to customise the package, e.g.:
 
 * CORE_DEPENDS: a list of required dependencies for the package
+* CORE_DEPENDS_ARCH: a list of special <ARCH>-required packages
 * CORE_ORIGIN: sets a FreeBSD compatible package/ports origin
 * FLAVOUR: can be set to "OpenSSL" (default) or "LibreSSL"
 * CORE_COMMENT: a short description of the package
