@@ -12,8 +12,6 @@ if (count($argv) > 1 && is_numeric($argv[1])) {
     sleep($argv[1]);
 }
 
-system_firmware_configure();
-
 echo 'Restarting webConfigurator...';
 
 system_webgui_configure();

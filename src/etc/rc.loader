@@ -1,0 +1,60 @@
+#!/bin/sh
+
+# Copyright (c) 2016 Franco Fichtner <franco@opnsense.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+
+# Files are sorted and should adhere to the following
+# rule of thumb: "dd-identifier", for core package
+# loader.conf chunks should generally use something
+# like "20-mycorevars" and for plugin packages rather
+# "50-mypluginvars".
+#
+# It could be useful for the user to order variables
+# or set a higher/lower priority in case some
+# use case requires a slightly different setup.
+
+LOADERDIR="/usr/local/etc/rc.loader.d"
+LOADERCONF="/boot/loader.conf"
+
+: > ${LOADERCONF}
+
+if [ ! -d ${LOADERDIR} ]; then
+	# no dir no fun
+	exit 0;
+fi
+
+# collect all matching scripts
+LOADERCHUNKS=$(find -s ${LOADERDIR} -type f)
+
+for LOADERCHUNK in ${LOADERCHUNKS}; do
+	# extract loader chunk origin
+	LOADERCHUNK=${LOADERCHUNK##"${LOADERDIR}/"}
+
+	echo "rc.loader: assembling ${LOADERCHUNK#??-}"
+
+	cat ${LOADERDIR}/${LOADERCHUNK} >> ${LOADERCONF}
+done
+
+exit 0

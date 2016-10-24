@@ -1836,57 +1836,6 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
     return $sourceips;
 }
 
-function load_kernel_module()
-{
-    $mods = array(
-        'carp',
-        'if_bridge',
-        /*
-         * The netgraph(4) framework is loaded here
-         * for backwards compat with the pre-16.7
-         * kernel configuration that compiled all of
-         * these modules into the kernel.  This list
-         * needs further pruning and probing, it's
-         * possible we do not need frame relay anymore.
-         */
-        'netgraph',
-        'ng_UI',
-        'ng_async',
-        'ng_bpf',
-        'ng_bridge',
-        'ng_car',
-        'ng_cisco',
-        'ng_deflate',
-        'ng_echo',
-        'ng_eiface',
-        'ng_ether',
-        'ng_frame_relay',
-        'ng_hole',
-        'ng_iface',
-        'ng_ksocket',
-        'ng_l2tp',
-        'ng_lmi',
-        'ng_mppc',
-        'ng_one2many',
-        'ng_pipe',
-        'ng_ppp',
-        'ng_pppoe',
-        'ng_pptpgre',
-        'ng_pred1',
-        'ng_rfc1490',
-        'ng_socket',
-        'ng_tcpmss',
-        'ng_tee',
-        'ng_tty',
-        'ng_vjc',
-        'ng_vlan',
-    );
-
-    foreach ($mods as $mod) {
-        mwexecf('/sbin/kldload %s', $mod);
-    }
-}
-
 function load_crypto_module()
 {
     global $config;
@@ -1946,9 +1895,7 @@ function system_console_configure()
     // ** console settings in /boot/loader.conf
     $new_boot_config = array();
     $new_boot_config['comconsole_speed'] = null;
-    $new_boot_config['autoboot_delay'] = '"3"';
     $new_boot_config['boot_multicons'] = null;
-    $new_boot_config['hw.usb.no_pf'] = '"1"';
     $new_boot_config['boot_serial'] = null;
     $new_boot_config['console'] = null;
 
@@ -1972,19 +1919,26 @@ function system_console_configure()
         }
     }
 
-    $new_loader_conf = "";
-    // construct OPNsense config for /boot/loader.conf
-    foreach ($new_boot_config as $param => $value) {
-        if (!empty($value)) {
-            $new_loader_conf .= "{$param}={$value}\n";
-        }
-    }
-    // copy non matched settings in /boot/loader.conf
+    $new_loader_conf = '';
+
+    /* reload static values from rc.loader.d */
+    mwexecf('/usr/local/etc/rc.loader');
+
+    /* copy non-matched settings already there */
     foreach (explode("\n", @file_get_contents('/boot/loader.conf')) as $line) {
         if (!empty($line) && !array_key_exists(trim(explode('=', $line)[0]), $new_boot_config)) {
             $new_loader_conf .= $line . "\n";
         }
     }
+
+    /* add our console options on top now */
+    foreach ($new_boot_config as $param => $value) {
+        if (!empty($value)) {
+            $new_loader_conf .= "{$param}={$value}\n";
+        }
+    }
+
+    /* write merged file back to target location */
     @file_put_contents('/boot/loader.conf', $new_loader_conf);
 
     // ** setup /etc/ttys

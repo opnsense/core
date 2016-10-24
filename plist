@@ -105,6 +105,11 @@
 /usr/local/etc/rc.ipfw.postload
 /usr/local/etc/rc.kill_states
 /usr/local/etc/rc.linkup
+/usr/local/etc/rc.loader
+/usr/local/etc/rc.loader.d/00-banner
+/usr/local/etc/rc.loader.d/20-brand
+/usr/local/etc/rc.loader.d/20-misc
+/usr/local/etc/rc.loader.d/20-modules
 /usr/local/etc/rc.newipsecdns
 /usr/local/etc/rc.newroutedns
 /usr/local/etc/rc.newwanip

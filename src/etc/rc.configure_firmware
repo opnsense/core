@@ -25,10 +25,22 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
+
+/* there seems to be a race with unpacking files */
+shell_exec('/bin/sync');
+
+/* abort in case of no valid config for image install */
+if (!file_exists('/conf/config.xml')) {
+    exit(0);
+}
 
 require_once 'config.inc';
 require_once 'util.inc';
 require_once 'system.inc';
 
+/* upgrade config before doing anything else */
+convert_config(true);
+
 system_firmware_configure();
+system_console_configure();

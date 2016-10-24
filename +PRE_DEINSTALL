@@ -9,14 +9,6 @@ cp /etc/shells /etc/shells.bak
 (grep -v /usr/local/etc/rc.installer /etc/shells.bak) > /etc/shells
 rm -f /etc/shells.bak
 
-echo "Updating /boot/loader.conf"
-touch /boot/loader.conf
-cp /boot/loader.conf /boot/loader.conf.bak
-(grep -v loader_brand /boot/loader.conf.bak) > /boot/loader.conf
-cp /boot/loader.conf /boot/loader.conf.bak
-(grep -v loader_logo /boot/loader.conf.bak) > /boot/loader.conf
-rm -f /boot/loader.conf.bak
-
 echo "Unhooking from /etc/rc"
 cp /etc/rc /etc/rc.bak
 tail -n +4 /etc/rc.bak > /etc/rc
