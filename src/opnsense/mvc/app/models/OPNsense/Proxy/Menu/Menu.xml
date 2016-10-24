@@ -1,7 +1,7 @@
 <menu>
     <Services>
       <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt fa-fw">
-          <Administration order="10" url="/ui/proxy/">
+          <Administration url="/ui/proxy/">
             <GeneralSettings VisibleName="General" url="/ui/proxy/#subtab_proxy-general-settings"/>
             <LocalCache VisibleName="Cache" url="/ui/proxy/#subtab_proxy-general-cache-local"/>
             <TrafficManagement VisibleName="TrafficManagement" url="/ui/proxy/#subtab_proxy-general-traffic"/>
@@ -12,9 +12,9 @@
             <RemoteACL VisibleName="RemoteACL" url="/ui/proxy/#remote_acls"/>
             <ICAP VisibleName="ICAP" url="/ui/proxy/#subtab_proxy-icap"/>
           </Administration>
-            <Log VisibleName="Log File" order="20" url="/diag_logs_proxy.php?type=cache">
-                <More url="/diag_logs_proxy.php*" visibility="hidden"/>
-            </Log>
+          <Log VisibleName="Log File" url="/diag_logs_proxy.php?type=cache">
+              <More url="/diag_logs_proxy.php*" visibility="hidden"/>
+          </Log>
       </Proxy>
     </Services>
 </menu>
