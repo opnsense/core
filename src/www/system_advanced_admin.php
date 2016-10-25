@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['ssl-certref'] = $config['system']['webgui']['ssl-certref'];
     $pconfig['disablehttpredirect'] = isset($config['system']['webgui']['disablehttpredirect']);
     $pconfig['disableconsolemenu'] = isset($config['system']['disableconsolemenu']);
+    $pconfig['disableintegratedauth'] = !empty($config['system']['disableintegratedauth']);
     $pconfig['sudo_allow_wheel'] = isset($config['system']['sudo_allow_wheel']);
     $pconfig['noantilockout'] = isset($config['system']['webgui']['noantilockout']);
     $pconfig['nodnsrebindcheck'] = isset($config['system']['webgui']['nodnsrebindcheck']);
@@ -114,6 +115,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disableconsolemenu'] = true;
         } elseif (isset($config['system']['disableconsolemenu'])) {
             unset($config['system']['disableconsolemenu']);
+        }
+
+        if (!empty($pconfig['disableintegratedauth'])) {
+            $config['system']['disableintegratedauth'] = true;
+        } elseif (isset($config['system']['disableintegratedauth'])) {
+            unset($config['system']['disableintegratedauth']);
         }
 
         if ($pconfig['sudo_allow_wheel'] == "yes") {
@@ -249,6 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         services_dnsmasq_configure(false);
         services_unbound_configure(false);
         services_dhcpd_configure();
+        configd_run('template reload OPNsense.Auth');
 
         if ($restart_sshd) {
             configd_run('sshd restart', true);
@@ -577,6 +585,16 @@ include("head.inc");
                   <td width="78%">
                     <input name="sudo_allow_wheel" type="checkbox" value="yes" <?= empty($pconfig['sudo_allow_wheel']) ? '' : 'checked="checked"' ?>  />
                     <strong><?= gettext('Allow administrators to use the Sudo utility') ?></strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_disableintegratedauth" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Integrated authentication") ?></td>
+                  <td width="78%">
+                    <input name="disableintegratedauth" type="checkbox" value="yes" <?= empty($pconfig['disableintegratedauth']) ? '' : 'checked="checked"' ?>  />
+                    <strong><?=gettext("Disable integrated authentication"); ?></strong>
+                    <div class="hidden" for="help_for_disableintegratedauth">
+                        <?=gettext("Disable OPNsense integrated authentication module for console access, falling back to normal unix authentication.");?>
+                    </div>
                   </td>
                 </tr>
                 <tr>
