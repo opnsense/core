@@ -107,16 +107,21 @@ class FilterRule
         $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
         foreach ($interfaces as $interface) {
             if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
-                foreach (array('inet', 'inet6') as $ipproto) {
-                    $tmp = $this->rule;
-                    $tmp['interface'] = $interface;
-                    $tmp['ipprotocol'] = $ipproto;
-                    $result[] = $tmp;
-                }
+                $ipprotos = array('inet', 'inet6');
+            } elseif (isset($this->rule['ipprotocol'])) {
+                $ipprotos = array($this->rule['ipprotocol']);
             } else {
+                $ipprotos = array(null);
+            }
+            foreach ($ipprotos as $ipproto) {
                 $tmp = $this->rule;
                 $tmp['interface'] = $interface;
-                $result[] = $this->rule;
+                $tmp['ipprotocol'] = $ipproto;
+                if (empty($this->interfaceMapping[$interface]['if'])) {
+                    // disable rule when interface not found
+                    $tmp['disabled'] = true;
+                }
+                $result[] = $tmp;
             }
         }
         return $result;
