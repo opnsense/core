@@ -42,6 +42,7 @@ CORE_HASH=	${CORE_COMMIT:C/^.*-//1}
 .endif
 
 CORE_ABI?=	16.7
+CORE_ARCH?=	${ARCH}
 
 _FLAVOUR!=	if [ -f ${OPENSSL} ]; then ${OPENSSL} version; fi
 FLAVOUR?=	${_FLAVOUR:[1]}
@@ -176,7 +177,7 @@ manifest: want-git
 	@echo "prefix: ${LOCALBASE}"
 	@echo "vital: true"
 	@echo "deps: {"
-	@for CORE_DEPEND in ${CORE_DEPENDS_${ARCH}} ${CORE_DEPENDS}; do \
+	@for CORE_DEPEND in ${CORE_DEPENDS_${CORE_ARCH}} ${CORE_DEPENDS}; do \
 		if ! ${PKG} query '  %n: { version: "%v", origin: "%o" }' \
 		    $${CORE_DEPEND}; then \
 			echo ">>> Missing dependency: $${CORE_DEPEND}" >&2; \
@@ -189,7 +190,7 @@ name: force
 	@echo ${CORE_NAME}
 
 depends: force
-	@echo ${CORE_DEPENDS_${ARCH}} ${CORE_DEPENDS}
+	@echo ${CORE_DEPENDS_${CORE_ARCH}} ${CORE_DEPENDS}
 
 PKG_SCRIPTS=	+PRE_INSTALL +POST_INSTALL \
 		+PRE_UPGRADE +POST_UPGRADE \
