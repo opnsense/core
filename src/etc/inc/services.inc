@@ -109,8 +109,11 @@ function services_radvd_configure($blacklist = array())
 
         /* check if we need to listen on a CARP interface */
         $realif = get_real_interface($dhcpv6if, "inet6");
-        if (!empty($dhcpv6ifconf['rainterface'])) {
+        if (!empty($dhcpv6ifconf['rainterface']) && $dhcpv6ifconf['rainterface'] != 'interface') {
             $dhcpv6if = $dhcpv6ifconf['rainterface'];
+        } elseif (!empty($dhcpv6ifconf['rainterface'])) {
+            // backward compatibilty mode, unset invalid options
+            unset($dhcpv6ifconf['rainterface']);
         }
 
         $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
