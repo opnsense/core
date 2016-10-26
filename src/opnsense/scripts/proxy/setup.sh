@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# XXX Used to be a flat file, but we need a pluggable
+# XXX directory.  Can safely remove this post-17.1.
+RC_CONF_D="/etc/rc.conf.d/squid"
+if [ -f ${RC_CONF_D} ]; then
+    rm ${RC_CONF_D}
+fi
+
 SQUID_DIRS="/var/log/squid /var/run/squid /var/squid /var/squid/cache /var/squid/ssl /var/squid/logs"
 
 for SQUID_DIR in ${SQUID_DIRS}; do
