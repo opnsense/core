@@ -1,6 +1,5 @@
 """
     Copyright (c) 2014 Ad Schellevis
-
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,14 +27,13 @@
     package : configd
     function: configd inline actions
 
-
 """
+
 import syslog
 import template
 import config
 
 __author__ = 'Ad Schellevis'
-
 
 def execute(action, parameters):
     """ wrapper for inline functions
@@ -49,6 +47,8 @@ def execute(action, parameters):
         tmpl = template.Template(action.root_dir)
         conf = config.Config(action.config)
         tmpl.set_config(conf.get())
+        # XXX backwards-compat for '.' syntax, remove post-17.1
+        parameters = parameters.replace('.', '/')
         filenames = tmpl.generate(parameters)
 
         del conf

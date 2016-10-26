@@ -95,8 +95,8 @@ class Template(object):
         """
         result = {}
         for root, dirs, files in os.walk(self._template_dir):
-            if len(root) > len(self._template_dir):
-                module_name = '.'.join(root.replace(self._template_dir, '').split('/'))
+            if root.count('/') > self._template_dir.count('/'):
+                module_name = root.replace(self._template_dir, '')
                 if module_name not in result:
                     result[module_name] = self.list_module(module_name)
 
