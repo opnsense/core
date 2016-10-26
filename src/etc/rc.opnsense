@@ -4,8 +4,8 @@
 if [ -f /etc/rc.conf ]; then
 	. /etc/rc.conf
 fi
-for RC_CONF in $(ls /etc/rc.conf.d); do
-	. /etc/rc.conf.d/${RC_CONF}
+for RC_CONF in $(find /etc/rc.conf.d -type f); do
+	. ${RC_CONF}
 done
 
 # probe all deamons in /usr/local/etc/rc.d/
