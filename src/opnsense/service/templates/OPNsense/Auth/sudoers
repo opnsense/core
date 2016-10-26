@@ -1,0 +1,3 @@
+{% if system.sudo_allow_wheel|default('0') == '1' %}
+%wheel ALL=(ALL) ALL
+{% endif %}
