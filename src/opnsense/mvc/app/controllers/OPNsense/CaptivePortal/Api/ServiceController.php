@@ -53,11 +53,11 @@ class ServiceController extends ApiControllerBase
 
             $backend = new Backend();
             // the ipfw rules need to know about all the zones, so we need to reload ipfw for the portal to work
-            $backend->configdRun("template reload OPNsense.IPFW");
+            $backend->configdRun('template reload OPNsense/IPFW');
             $bckresult = trim($backend->configdRun("ipfw reload"));
             if ($bckresult == "OK") {
                 // generate captive portal config
-                $bckresult = trim($backend->configdRun("template reload OPNsense.Captiveportal"));
+                $bckresult = trim($backend->configdRun('template reload OPNsense/Captiveportal'));
                 if ($bckresult == "OK") {
                     $mdlCP = new CaptivePortal();
                     if ($mdlCP->isEnabled()) {

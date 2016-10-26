@@ -48,7 +48,7 @@ class ServiceController extends ApiControllerBase
             $this->sessionClose();
 
             $backend = new Backend();
-            $backend->configdRun("template reload OPNsense.IPFW");
+            $backend->configdRun('template reload OPNsense/IPFW');
             $bckresult = trim($backend->configdRun("ipfw reload"));
             if ($bckresult == "OK") {
                 $status = "ok";
