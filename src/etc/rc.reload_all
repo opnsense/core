@@ -45,7 +45,7 @@ $config = parse_config();
 log_error("rc.reload_all: Reloading all configuration settings.");
 
 system_firmware_configure();
-system_console_configure();
+system_login_configure();
 system_timezone_configure();
 system_hostname_configure();
 system_hosts_generate();

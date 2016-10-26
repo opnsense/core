@@ -69,8 +69,8 @@ set_device_perms();
 unmute_kernel_msgs();
 echo "done.\n";
 
-/* configure console menu */
-system_console_configure();
+/* configure login behaviour */
+system_login_configure();
 
 $setup_installer = is_install_media();
 if ($setup_installer) {

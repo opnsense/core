@@ -250,13 +250,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg .= sprintf("<br />" . gettext("One moment...redirecting to %s in 20 seconds."), $url);
         }
 
-        system_console_configure();
+        system_login_configure();
         system_hosts_generate();
         services_dhcpleases_configure();
         services_dnsmasq_configure(false);
         services_unbound_configure(false);
         services_dhcpd_configure();
-        configd_run('template reload OPNsense.Auth');
 
         if ($restart_sshd) {
             configd_run('sshd restart', true);

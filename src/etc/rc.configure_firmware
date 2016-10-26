@@ -43,5 +43,4 @@ require_once 'system.inc';
 convert_config(true);
 
 system_firmware_configure();
-system_console_configure();
-configd_run('template reload OPNsense.Auth');
+system_login_configure();
