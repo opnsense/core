@@ -1919,22 +1919,19 @@ function system_login_configure()
         }
     }
 
-    $new_loader_conf = '';
-
     /* reload static values from rc.loader.d */
     mwexecf('/usr/local/etc/rc.loader');
 
-    /* copy non-matched settings already there */
-    foreach (explode("\n", @file_get_contents('/boot/loader.conf')) as $line) {
-        if (!empty($line) && !array_key_exists(trim(explode('=', $line)[0]), $new_boot_config)) {
-            $new_loader_conf .= $line . "\n";
-        }
-    }
+    /* copy settings already there */
+    $new_loader_conf = @file_get_contents('/boot/loader.conf');
 
-    /* add our console options on top now */
+    /* append our console options */
+    $new_loader_conf .= "\n# dynamically generated settings follow\n";
     foreach ($new_boot_config as $param => $value) {
         if (!empty($value)) {
             $new_loader_conf .= "{$param}={$value}\n";
+        } else {
+            $new_loader_conf .= "#${param}\n";
         }
     }
 
