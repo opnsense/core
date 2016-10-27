@@ -1926,7 +1926,7 @@ function system_login_configure()
     $new_loader_conf = @file_get_contents('/boot/loader.conf');
 
     /* append our console options */
-    $new_loader_conf .= "\n# dynamically generated settings follow\n";
+    $new_loader_conf .= "# dynamically generated settings follow\n";
     foreach ($new_boot_config as $param => $value) {
         if (!empty($value)) {
             $new_loader_conf .= "{$param}={$value}\n";

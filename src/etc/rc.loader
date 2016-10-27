@@ -55,6 +55,7 @@ for LOADERCHUNK in ${LOADERCHUNKS}; do
 	echo "rc.loader: assembling ${LOADERCHUNK#??-}"
 
 	cat ${LOADERDIR}/${LOADERCHUNK} >> ${LOADERCONF}
+	echo >> ${LOADERCONF}
 done
 
 exit 0
