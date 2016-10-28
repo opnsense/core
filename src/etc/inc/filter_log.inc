@@ -336,5 +336,3 @@ function handle_ajax($nentries, $tail = 50)
         exit;
     }
 }
-
-?>

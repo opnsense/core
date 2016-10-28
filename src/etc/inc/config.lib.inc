@@ -76,7 +76,7 @@ function alias_make_table($config)
             }
         }
     }
-  }
+}
 
 /**
  * parse config into array and return
@@ -299,7 +299,6 @@ function set_device_perms() {
         }
     }
 }
-
 
 function make_config_revision_entry($desc = '')
 {

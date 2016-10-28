@@ -42,7 +42,8 @@ $openssl_crl_status = array(
   OCSP_REVOKED_STATUS_CERTIFICATEHOLD       => "Certificate Hold"
 );
 
-function & lookup_ca($refid) {
+function &lookup_ca($refid)
+{
     global $config;
     $false = false;
 
@@ -53,10 +54,12 @@ function & lookup_ca($refid) {
             }
         }
     }
+
     return $false;
 }
 
-function & lookup_ca_by_subject($subject) {
+function &lookup_ca_by_subject($subject)
+{
     global $config;
     $false = false;
 
@@ -68,10 +71,12 @@ function & lookup_ca_by_subject($subject) {
             }
         }
     }
+
     return $false;
 }
 
-function & lookup_cert($refid) {
+function &lookup_cert($refid)
+{
     global $config;
     $false = false;
 
@@ -86,20 +91,24 @@ function & lookup_cert($refid) {
     return $false;
 }
 
-function & lookup_crl($refid) {
-  global $config;
-  $false = false;
-  if (is_array($config['crl'])) {
-      foreach ($config['crl'] as & $crl) {
-          if ($crl['refid'] == $refid) {
-              return $crl;
-          }
-      }
-  }
-  return $false;
+function &lookup_crl($refid)
+{
+    global $config;
+    $false = false;
+
+    if (is_array($config['crl'])) {
+        foreach ($config['crl'] as & $crl) {
+            if ($crl['refid'] == $refid) {
+                return $crl;
+            }
+        }
+    }
+
+    return $false;
 }
 
-function ca_chain_array(& $cert) {
+function ca_chain_array(&$cert)
+{
     if($cert['caref']) {
         $chain = array();
         $crt = lookup_ca($cert['caref']);
@@ -277,8 +286,6 @@ function cert_create(&$cert, $caref, $keylen, $lifetime, $dn, $digest_alg = 'sha
     return true;
 }
 
-
-
 function csr_get_subject($str_crt, $decode = true)
 {
     if ($decode) {
@@ -378,7 +385,7 @@ function cert_get_issuer($str_crt, $decode = true)
     }
 
     return $issuer;
-  }
+}
 
 /* this function works on x509 (crt), rsa key (prv), and req(csr) */
 function cert_get_modulus($str_crt, $decode = true, $type = 'crt')
