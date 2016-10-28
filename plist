@@ -26,7 +26,6 @@
 /usr/local/etc/inc/ipsec.auth-user.php
 /usr/local/etc/inc/ipsec.inc
 /usr/local/etc/inc/legacy_bindings.inc
-/usr/local/etc/inc/miniupnpd.inc
 /usr/local/etc/inc/notices.basic_sasl_client.inc
 /usr/local/etc/inc/notices.cram_md5_sasl_client.inc
 /usr/local/etc/inc/notices.digest_sasl_client.inc

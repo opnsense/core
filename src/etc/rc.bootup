@@ -245,9 +245,6 @@ if ($kern_hz == '1000') {
 /* start the igmpproxy daemon */
 services_igmpproxy_configure();
 
-/* start the upnp daemon if it is enabled */
-upnp_configure();
-
 /* If powerd is enabled, lets launch it */
 activate_powerd();
 
