@@ -74,6 +74,11 @@ function miniupnpd_stop()
 
 function miniupnpd_configure()
 {
+    return array('miniupnpd_configure_do');
+}
+
+function miniupnpd_configure_do()
+{
     global $config;
 
     if (!empty($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
