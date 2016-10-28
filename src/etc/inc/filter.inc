@@ -374,6 +374,7 @@ function filter_configure_sync()
 
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
+    $fw->setInterfaceMapping($FilterIflist);
 
     if (function_exists('plugins_firewall')) {
         plugins_firewall($fw);
@@ -478,6 +479,7 @@ function filter_configure_sync()
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= "anchor \"relayd/*\"\n"; // relayd
+    $rules .= $fw->outputFilterRules();
     $rules .= "{$pfrules}\n";
     $rules .= $fw->anchorToText('fw', 'tail');
 
@@ -2494,19 +2496,9 @@ function filter_rules_generate(&$FilterIflist)
 
     # BEGIN OF firewall rules
     /* default block logging? */
-    $log = array("block"=>null,"pass"=>null);
-    if (!isset($config['syslog']['nologdefaultblock'])) {
-        $log['block'] = "log";
-    }
-    if (!isset($config['syslog']['nologdefaultpass'])) {
-        $log['pass'] = "log";
-    }
-
-    if (!isset($config['system']['ipv6allow'])) {
-        $ipfrules .= "\n# Block all IPv6 except loopback traffic\n";
-        $ipfrules .= "pass {$log['pass']} quick on \$loopback inet6\n";
-        $ipfrules .= "block {$log['block']} quick inet6 all label \"Block all IPv6\"\n";
-    }
+    $log = array();
+    $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
+    $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
     $ipfrules .= <<<EOD
 

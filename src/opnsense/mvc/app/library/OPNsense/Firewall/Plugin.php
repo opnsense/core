@@ -38,13 +38,16 @@ class Plugin
     private $anchors = array();
     private $filterRules = array();
     private $interfaceMapping ;
+    private $interfaceStaticMapping;
 
     /**
      * init firewall plugin component
      */
     public function __construct()
     {
+        // set static mappings
         $this->interfaceMapping = array();
+        $this->interfaceMapping['loopback'] = array('if' => 'lo0');
     }
 
     /**
@@ -53,7 +56,7 @@ class Plugin
      */
     public function setInterfaceMapping(&$mapping)
     {
-        $this->interfaceMapping = $mapping;
+        $this->interfaceMapping = array_merge($this->interfaceMapping, $mapping);
     }
 
     /**

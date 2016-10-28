@@ -41,8 +41,12 @@ class FilterRule
     private $procorder = array(
         'disabled' => 'parseIsComment',
         'type' => 'parseType',
+        'log' => 'parseBool,log',
+        'quick' => 'parseBool,quick',
+        'interface' => 'parseInterface',
         'ipprotocol' => 'parsePlain',
-        'interface' => 'parseInterface'
+        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp}',
+        'label' => 'parsePlain,label ","'
     );
 
     /**
@@ -60,9 +64,26 @@ class FilterRule
      * @param string $value field value
      * @return string
      */
-    private function parsePlain($value)
+    private function parsePlain($value, $prefix="", $suffix="")
     {
-        return empty($value) ? "" : $value . " ";
+        return empty($value) ? "" : $prefix . $value . $suffix . " ";
+    }
+
+    /**
+     * parse data, use replace map
+     * @param string $value field value
+     * @param string $map
+     * @return string
+     */
+    private function parseReplaceSimple($value, $map)
+    {
+        foreach (explode('|', $map) as $item) {
+            $tmp = explode(':', $item);
+            if ($tmp[0] == $value) {
+                return $tmp[1] . " ";
+            }
+        }
+        return $value . " ";
     }
 
     /**
@@ -89,10 +110,26 @@ class FilterRule
      */
     private function parseInterface($value)
     {
-        if (empty($this->interfaceMapping[$value]['if'])) {
-            return "##{$value}##";
+        if (empty($value)) {
+            return "";
+        } elseif (empty($this->interfaceMapping[$value]['if'])) {
+            return "on ##{$value}## ";
         } else {
-            return $this->interfaceMapping[$value]['if']." ";
+            return "on ". $this->interfaceMapping[$value]['if']." ";
+        }
+    }
+
+    /**
+     * parse boolean, return text from $valueTrue / $valueFalse
+     * @param string $value field value
+     * @return string
+     */
+    private function parseBool($value, $valueTrue, $valueFalse="")
+    {
+        if (!empty($value)) {
+            return !empty($valueTrue) ? $valueTrue . " " : "";
+        } else {
+            return !empty($valueFalse) ? $valueFalse . " " : "";
         }
     }
 
@@ -117,9 +154,13 @@ class FilterRule
                 $tmp = $this->rule;
                 $tmp['interface'] = $interface;
                 $tmp['ipprotocol'] = $ipproto;
-                if (empty($this->interfaceMapping[$interface]['if'])) {
-                    // disable rule when interface not found
+                // disable rule when interface not found
+                if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
                     $tmp['disabled'] = true;
+                }
+                if (!isset($tmp['quick'])) {
+                    // all rules are quick by default except floating
+                    $tmp['quick'] = !isset($rule['floating']) ? true : false ;
                 }
                 $result[] = $tmp;
             }
@@ -147,7 +188,14 @@ class FilterRule
         $ruleTxt = '';
         foreach ($this->fetchActualRules() as $rule) {
             foreach ($this->procorder as $tag => $handle) {
-                $ruleTxt .= $this->$handle(isset($rule[$tag]) ? $rule[$tag] : null);
+                $tmp = explode(',', $handle);
+                $method = $tmp[0];
+                $args = array(isset($rule[$tag]) ? $rule[$tag] : null);
+                if (count($tmp) > 1) {
+                    array_shift($tmp);
+                    $args = array_merge($args, $tmp);
+                }
+                $ruleTxt .= call_user_func_array(array($this,$method), $args);
             }
             $ruleTxt .= "\n";
         }
