@@ -766,7 +766,7 @@ function system_syslogd_start()
     global $config, $g;
 
     /* XXX temporary hook for newsyslog.conf regeneration */
-    configd_run('template reload OPNsense.Syslog');
+    configd_run('template reload OPNsense/Syslog');
 
     mwexec('/etc/rc.d/hostid start');
 
@@ -1880,7 +1880,7 @@ function system_login_configure()
 {
     global $config;
 
-    configd_run('template reload OPNsense.Auth');
+    configd_run('template reload OPNsense/Auth');
 
     $serialspeed = (!empty($config['system']['serialspeed']) && is_numeric($config['system']['serialspeed'])) ? $config['system']['serialspeed'] : '115200';
     $serial_enabled = isset($config['system']['enableserial']);

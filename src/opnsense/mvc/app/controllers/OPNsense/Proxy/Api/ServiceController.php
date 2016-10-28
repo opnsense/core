@@ -145,7 +145,7 @@ class ServiceController extends ApiControllerBase
             }
 
             // generate template
-            $backend->configdRun("template reload OPNsense.Proxy");
+            $backend->configdRun('template reload OPNsense/Proxy');
 
             // (res)start daemon
             if ($mdlProxy->general->enabled->__toString() == 1) {
@@ -172,7 +172,7 @@ class ServiceController extends ApiControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             // generate template
-            $backend->configdRun("template reload OPNsense.Proxy");
+            $backend->configdRun('template reload OPNsense/Proxy');
 
             // fetch files
             $response = $backend->configdRun("proxy fetchacls");
@@ -191,7 +191,7 @@ class ServiceController extends ApiControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             // generate template
-            $backend->configdRun("template reload OPNsense.Proxy");
+            $backend->configdRun('template reload OPNsense/Proxy');
 
             // download files
             $response = $backend->configdRun("proxy downloadacls");

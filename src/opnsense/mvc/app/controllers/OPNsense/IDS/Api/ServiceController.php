@@ -146,7 +146,7 @@ class ServiceController extends ApiControllerBase
             }
 
             $backend = new Backend();
-            $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
+            $bckresult = trim($backend->configdRun('template reload OPNsense/IDS'));
 
             if ($bckresult == "OK") {
                 if ((string)$mdlIDS->general->enabled == 1) {
@@ -186,7 +186,7 @@ class ServiceController extends ApiControllerBase
             // we have to trigger a template reload to be sure we have the right download configuration
             // ideally we should only regenerate the download config, but that's not supported at the moment.
             // (not sure if it should be supported)
-            $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
+            $bckresult = trim($backend->configdRun('template reload OPNsense/IDS'));
 
             if ($bckresult == "OK") {
                 if ($wait != null) {
@@ -216,7 +216,7 @@ class ServiceController extends ApiControllerBase
             $this->sessionClose();
             $backend = new Backend();
             // flush rule configuration
-            $bckresult = trim($backend->configdRun("template reload OPNsense.IDS"));
+            $bckresult = trim($backend->configdRun('template reload OPNsense/IDS'));
             if ($bckresult == "OK") {
                 $status = $backend->configdRun("ids reload");
             } else {
