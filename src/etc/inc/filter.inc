@@ -477,6 +477,7 @@ function filter_configure_sync()
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     $rules .= $fw->anchorToText('fw', 'head');
+    $rules .= "anchor \"relayd/*\"\n"; // relayd
     $rules .= "{$pfrules}\n";
     $rules .= $fw->anchorToText('fw', 'tail');
 
@@ -2490,9 +2491,6 @@ function filter_rules_generate(&$FilterIflist)
     $pptpdcfg = $config['pptpd'];
 
     $ipfrules = "";
-
-    /* relayd */
-    $ipfrules .= "anchor \"relayd/*\"\n";
 
     # BEGIN OF firewall rules
     /* default block logging? */
