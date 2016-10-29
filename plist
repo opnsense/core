@@ -638,6 +638,7 @@
 /usr/local/opnsense/service/modules/template.py
 /usr/local/opnsense/service/run_unittests.py
 /usr/local/opnsense/service/templates/OPNsense/Auth/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Auth/motd
 /usr/local/opnsense/service/templates/OPNsense/Auth/sshd.pam
 /usr/local/opnsense/service/templates/OPNsense/Auth/sudoers
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/+TARGETS
