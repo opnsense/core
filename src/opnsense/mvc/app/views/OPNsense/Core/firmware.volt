@@ -160,7 +160,11 @@ POSSIBILITY OF SUCH DAMAGE.
             }
             if (data['status'] == 'done') {
                 $("#upgrade_progress").removeClass("fa fa-spinner fa-pulse");
-                $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
+                if ($.upgrade_action != 'pkg') {
+                    $('#updatestatus').html("{{ lang._('Upgrade done!') }}");
+                } else {
+                    $('#updatestatus').html("{{ lang._('Package manager update done. Please check for more updates.') }}");
+                }
                 $("#upgrade").attr("style","display:none");
                 packagesInfo();
             } else if (data['status'] == 'reboot') {
