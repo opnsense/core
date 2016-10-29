@@ -5,7 +5,7 @@ BACKUPDIR="/var/dhcpd/var/db"
 
 if [ "${1}" = "restore" ]; then
 	if [ -f "${BACKUPFILE}" ]; then
-		tar -C / -xzf "${BACKUPFILE}"
+		tar -C / -xzpf "${BACKUPFILE}"
 	fi
 else
 	if [ -d "${BACKUPDIR}" ]; then
