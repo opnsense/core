@@ -55,10 +55,10 @@ class FirmwareController extends ApiControllerBase
                 $response['status_msg'] = gettext('Connection error.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('repository', $response) && $response['repository'] == 'error') {
-                $response['status_msg'] = gettext('Repository problem.');
+                $response['status_msg'] = gettext('Could not find the repository on the selected mirror.');
                 $response['status'] = 'error';
             } elseif (array_key_exists('updates', $response) && $response['updates'] == 0) {
-                $response['status_msg'] = gettext('There are no updates available.');
+                $response['status_msg'] = gettext('There are no updates available on the selected mirror.');
                 $response['status'] = 'none';
             } elseif ((array_key_exists(0, $response['upgrade_packages']) &&
                 $response['upgrade_packages'][0]['name'] == 'pkg') ||
@@ -66,11 +66,7 @@ class FirmwareController extends ApiControllerBase
                 $response['reinstall_packages'][0]['name'] == 'pkg')) {
                 $response['status_upgrade_action'] = 'pkg';
                 $response['status'] = 'ok';
-                $response['status_msg'] =
-                    gettext(
-                        'There is a mandatory update for the package manager available. ' .
-                        'Please install and fetch updates again.'
-                    );
+                $response['status_msg'] = gettext('There is a mandatory update for the package manager available.');
             } elseif (array_key_exists('updates', $response)) {
                 $response['status_upgrade_action'] = 'all';
                 $response['status'] = 'ok';
