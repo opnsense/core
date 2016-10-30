@@ -46,6 +46,7 @@ class FilterRule
         'interface' => 'parseInterface',
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp}',
+        'state' => 'parseState',
         'label' => 'parsePlain,label ","'
     );
 
@@ -134,6 +135,23 @@ class FilterRule
     }
 
     /**
+     * parse state settings
+     * @param array $value state option
+     * @return string
+     */
+    private function parseState($value)
+    {
+        $retval = "";
+        if (!empty($value)) {
+            $retval .= $value['type'] . " state ";
+            if (count($value['options'])) {
+                $retval .= "( " . implode(' ', $value['options']) .  " ) ";
+            }
+        }
+        return $retval;
+    }
+
+    /**
      * preprocess internal rule data to detail level of actual ruleset
      * handles shortcuts, like inet46 and multiple interfaces
      * @return array
@@ -161,6 +179,36 @@ class FilterRule
                 if (!isset($tmp['quick'])) {
                     // all rules are quick by default except floating
                     $tmp['quick'] = !isset($rule['floating']) ? true : false ;
+                }
+                // restructure state settings for easier output parsing
+                if (!empty($tmp['statetype'])) {
+                    $tmp['state'] = array('type' => 'keep', 'options' => array());
+                    switch ($tmp['statetype']) {
+                          case 'none':
+                              $tmp['state']['type'] = 'no';
+                              break;
+                          case 'sloppy state':
+                              $tmp['state']['type'] = 'keep';
+                              $tmp['state']['options'][] = "sloppy ";
+                              break;
+                          default:
+                              $tmp['state']['type'] = explode(' ', $tmp['statetype'])[0];
+                    }
+                    if (!empty($tmp['nopfsync'])) {
+                        $tmp['state']['options'][] = "no-sync ";
+                    }
+                    foreach (array('max', 'max-src-nodes', 'max-src-conn', 'max-src-states') as $state_tag) {
+                        if (!empty($tmp[$state_tag])) {
+                            $tmp['state']['options'][] = $state_tag . " " . $tmp[$state_tag];
+                        }
+                    }
+                    if (!empty($tmp['statetimeout'])) {
+                        $tmp['state']['options'][] = "tcp.established " . $tmp['statetimeout'];
+                    }
+                    if (!empty($tmp['max-src-conn-rate']) && !empty($tmp['max-src-conn-rates'])) {
+                        $tmp['state']['options'][] = "max-src-conn-rate " . $tmp['max-src-conn-rate'] . " " .
+                                              "/" . $tmp['max-src-conn-rates'] . ", overload <virusprot> flush global ";
+                    }
                 }
                 $result[] = $tmp;
             }
