@@ -98,9 +98,13 @@ class Plugin
      * register a filter rule
      * @param int $prio priority
      * @param array $conf configuration
+     * @param array $defaults merge these defaults when provided
      */
-    public function registerFilterRule($prio, $conf)
+    public function registerFilterRule($prio, $conf, $defaults=null)
     {
+        if ($defaults != null) {
+            $conf = array_merge($defaults, $conf);
+        }
         $rule = new FilterRule($this->interfaceMapping, $conf);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = array();

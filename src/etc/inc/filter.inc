@@ -1,5 +1,4 @@
 <?php
-
 /*
     Copyright (C) 2004-2007 Scott Ullrich
     Copyright (C) 2005 Bill Marquette
@@ -29,6 +28,8 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
+require_once('filter.lib.inc');
 
 /* Create a global array to avoid errors on rulesets. */
 $GatewaysList = array();
@@ -375,6 +376,7 @@ function filter_configure_sync()
     // initialize fw plugin object
     $fw = new \OPNsense\Firewall\Plugin();
     $fw->setInterfaceMapping($FilterIflist);
+    filter_core_bootstrap($fw);
 
     if (function_exists('plugins_firewall')) {
         plugins_firewall($fw);
