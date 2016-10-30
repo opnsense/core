@@ -56,4 +56,10 @@ function filter_core_rules_system($fw, $defaults)
       array('ipprotocol'=>'inet6','label' => 'Block all IPv6', 'disabled' => isset($config['system']['ipv6allow'])),
       $defaults['block']
     );
+
+    // default Deny rule (when no other rules match)
+    $fw->registerFilterRule(1,
+      array('ipprotocol'=>'inet46', 'label' => 'Default deny rule', 'quick' => false),
+      $defaults['block']
+    );
 }

@@ -2504,13 +2504,6 @@ function filter_rules_generate(&$FilterIflist)
 
     $ipfrules .= <<<EOD
 
-#---------------------------------------------------------------------------
-# default deny rules
-#---------------------------------------------------------------------------
-block in {$log['block']} inet all label "Default deny rule IPv4"
-block out {$log['block']} inet all label "Default deny rule IPv4"
-block in {$log['block']} inet6 all  label "Default deny rule IPv6"
-block out {$log['block']} inet6 all  label "Default deny rule IPv6"
 
 # IPv6 ICMP is not auxilary, it is required for operation
 # See man icmp6(4)
