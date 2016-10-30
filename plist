@@ -19,6 +19,7 @@
 /usr/local/etc/inc/dyndns.class
 /usr/local/etc/inc/dyndns.r53.class
 /usr/local/etc/inc/filter.inc
+/usr/local/etc/inc/filter.lib.inc
 /usr/local/etc/inc/filter_log.inc
 /usr/local/etc/inc/gwlb.inc
 /usr/local/etc/inc/interfaces.inc
@@ -41,7 +42,6 @@
 /usr/local/etc/inc/openvpn.tls-verify.php
 /usr/local/etc/inc/openvpn_wizard.inc
 /usr/local/etc/inc/plugins.inc
-/usr/local/etc/inc/plugins.inc.d/core_fw.inc
 /usr/local/etc/inc/plugins.inc.d/if_group.inc
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
