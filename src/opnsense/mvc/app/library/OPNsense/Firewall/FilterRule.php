@@ -41,14 +41,15 @@ class FilterRule
     private $procorder = array(
         'disabled' => 'parseIsComment',
         'type' => 'parseType',
+        'direction' => 'parseReplaceSimple,any:',
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
         'ipprotocol' => 'parsePlain',
-        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp}',
-        'from' => 'parsePlain',
-        'to' => 'parsePlain',
-        'icmp6-type' => 'parsePlain,{,}',
+        'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
+        'from' => 'parsePlain,from {,}',
+        'to' => 'parsePlain,to {,}',
+        'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'state' => 'parseState',
         'label' => 'parsePlain,label ","'
     );
@@ -79,15 +80,21 @@ class FilterRule
      * @param string $map
      * @return string
      */
-    private function parseReplaceSimple($value, $map)
+    private function parseReplaceSimple($value, $map, $prefix="", $suffix="")
     {
+        $retval = $value;
         foreach (explode('|', $map) as $item) {
             $tmp = explode(':', $item);
             if ($tmp[0] == $value) {
-                return $tmp[1] . " ";
+                $retval = $tmp[1] . " ";
+                break;
             }
         }
-        return $value . " ";
+        if (!empty($retval)) {
+            return $prefix . $retval . $suffix . " ";
+        } else {
+            return "";
+        }
     }
 
     /**

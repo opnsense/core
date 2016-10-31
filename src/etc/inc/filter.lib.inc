@@ -62,4 +62,31 @@ function filter_core_rules_system($fw, $defaults)
       array('ipprotocol'=>'inet46', 'label' => 'Default deny rule', 'quick' => false),
       $defaults['block']
     );
+
+    // IPv6 ICMP requirements
+    $fw->registerFilterRule(1,
+      array('ipprotocol'=>'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,135,136',
+            'statetype' => 'keep', 'label' => 'IPv6 requirements (ICMP)'),
+      $defaults['pass']
+    );
+    // Allow only bare essential icmpv6 packets
+    $fw->registerFilterRule(1,
+      array('ipprotocol'=>'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '129,133,134,135,136',
+            'statetype' => 'keep', 'label' => 'IPv6 requirements (ICMP)', 'from' => 'fe80::/10',
+            'to' => 'fe80::/10,ff02::/16', 'direction' => 'out' ),
+      $defaults['pass']
+    );
+    $fw->registerFilterRule(1,
+      array('ipprotocol'=>'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
+            'statetype' => 'keep', 'label' => 'IPv6 requirements (ICMP)', 'from' => 'fe80::/10',
+            'to' => 'fe80::/10,ff02::/16', 'direction' => 'in' ),
+      $defaults['pass']
+    );
+    $fw->registerFilterRule(1,
+      array('ipprotocol'=>'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
+            'statetype' => 'keep', 'label' => 'IPv6 requirements (ICMP)', 'from' => 'ff02::/16',
+            'to' => 'fe80::/10', 'direction' => 'in' ),
+      $defaults['pass']
+    );
+
 }
