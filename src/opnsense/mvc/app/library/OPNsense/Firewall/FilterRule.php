@@ -164,53 +164,58 @@ class FilterRule
         $result = array();
         $interfaces = empty($this->rule['interface']) ? array(null) : explode(',', $this->rule['interface']);
         foreach ($interfaces as $interface) {
-            $tmp = $this->rule;
-            // protocol handling
-            if (empty($this->rule['ipprotocol']) || $this->rule['ipprotocol'] == 'inet46') {
-                $tmp['ipprotocol'] = "";
+            if (isset($this->rule['ipprotocol']) && $this->rule['ipprotocol'] == 'inet46') {
+                $ipprotos = array('inet', 'inet6');
+            } elseif (isset($this->rule['ipprotocol'])) {
+                $ipprotos = array($this->rule['ipprotocol']);
             } else {
-                $tmp['ipprotocol'] = $this->rule['ipprotocol'];
+                $ipprotos = array(null);
             }
-            $tmp['interface'] = $interface;
-            // disable rule when interface not found
-            if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
-                $tmp['disabled'] = true;
-            }
-            if (!isset($tmp['quick'])) {
-                // all rules are quick by default except floating
-                $tmp['quick'] = !isset($rule['floating']) ? true : false ;
-            }
-            // restructure state settings for easier output parsing
-            if (!empty($tmp['statetype'])) {
-                $tmp['state'] = array('type' => 'keep', 'options' => array());
-                switch ($tmp['statetype']) {
-                      case 'none':
-                          $tmp['state']['type'] = 'no';
-                          break;
-                      case 'sloppy state':
-                          $tmp['state']['type'] = 'keep';
-                          $tmp['state']['options'][] = "sloppy ";
-                          break;
-                      default:
-                          $tmp['state']['type'] = explode(' ', $tmp['statetype'])[0];
+
+            foreach ($ipprotos as $ipproto) {
+                $tmp = $this->rule;
+                $tmp['interface'] = $interface;
+                $tmp['ipprotocol'] = $ipproto;
+                // disable rule when interface not found
+                if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
+                    $tmp['disabled'] = true;
                 }
-                if (!empty($tmp['nopfsync'])) {
-                    $tmp['state']['options'][] = "no-sync ";
+                if (!isset($tmp['quick'])) {
+                    // all rules are quick by default except floating
+                    $tmp['quick'] = !isset($rule['floating']) ? true : false ;
                 }
-                foreach (array('max', 'max-src-nodes', 'max-src-conn', 'max-src-states') as $state_tag) {
-                    if (!empty($tmp[$state_tag])) {
-                        $tmp['state']['options'][] = $state_tag . " " . $tmp[$state_tag];
+                // restructure state settings for easier output parsing
+                if (!empty($tmp['statetype'])) {
+                    $tmp['state'] = array('type' => 'keep', 'options' => array());
+                    switch ($tmp['statetype']) {
+                          case 'none':
+                              $tmp['state']['type'] = 'no';
+                              break;
+                          case 'sloppy state':
+                              $tmp['state']['type'] = 'keep';
+                              $tmp['state']['options'][] = "sloppy ";
+                              break;
+                          default:
+                              $tmp['state']['type'] = explode(' ', $tmp['statetype'])[0];
+                    }
+                    if (!empty($tmp['nopfsync'])) {
+                        $tmp['state']['options'][] = "no-sync ";
+                    }
+                    foreach (array('max', 'max-src-nodes', 'max-src-conn', 'max-src-states') as $state_tag) {
+                        if (!empty($tmp[$state_tag])) {
+                            $tmp['state']['options'][] = $state_tag . " " . $tmp[$state_tag];
+                        }
+                    }
+                    if (!empty($tmp['statetimeout'])) {
+                        $tmp['state']['options'][] = "tcp.established " . $tmp['statetimeout'];
+                    }
+                    if (!empty($tmp['max-src-conn-rate']) && !empty($tmp['max-src-conn-rates'])) {
+                        $tmp['state']['options'][] = "max-src-conn-rate " . $tmp['max-src-conn-rate'] . " " .
+                                              "/" . $tmp['max-src-conn-rates'] . ", overload <virusprot> flush global ";
                     }
                 }
-                if (!empty($tmp['statetimeout'])) {
-                    $tmp['state']['options'][] = "tcp.established " . $tmp['statetimeout'];
-                }
-                if (!empty($tmp['max-src-conn-rate']) && !empty($tmp['max-src-conn-rates'])) {
-                    $tmp['state']['options'][] = "max-src-conn-rate " . $tmp['max-src-conn-rate'] . " " .
-                                          "/" . $tmp['max-src-conn-rates'] . ", overload <virusprot> flush global ";
-                }
+                $result[] = $tmp;
             }
-            $result[] = $tmp;
         }
         return $result;
     }
