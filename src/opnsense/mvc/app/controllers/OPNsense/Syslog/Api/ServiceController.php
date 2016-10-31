@@ -164,7 +164,7 @@ class ServiceController extends ApiControllerBase
                 $logdata = explode("\n", $logdatastr);
             }
 
-            $filters = preg_split('/\s+/', trim($filter));
+            $filters = preg_split('/\s+/', trim(preg_quote($filter,'/')));
             foreach ($filters as $pattern) {
                 if(trim($pattern) == '')
                     continue;
@@ -181,7 +181,7 @@ class ServiceController extends ApiControllerBase
 
                 $logent = preg_split("/\s+/", $logent, 6);
                 $entry_date_time = join(" ", array_slice($logent, 0, 3));
-                $entry_text = ($logent[3] == $hostname) ? "" : $logent[3] . " ";
+                $entry_text = isset($logent[3]) ? (($logent[3] == $hostname) ? "" : $logent[3] . " ") : "";
                 $entry_text .= (isset($logent[4]) ?  $logent[4] : '') . (isset($logent[5]) ? " " . $logent[5] : '');
                 $formatted[] = array('time' => utf8_encode($entry_date_time), 'filter' => $filter, 'message' => utf8_encode($entry_text));
 
