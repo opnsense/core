@@ -88,5 +88,20 @@ function filter_core_rules_system($fw, $defaults)
             'to' => 'fe80::/10', 'direction' => 'in' ),
       $defaults['pass']
     );
+    // block all targetting port 0
+    foreach (array('from_port', 'to_port') as $target) {
+        $fw->registerFilterRule(1,
+          array('ipprotocol'=>'inet46', 'protocol' => 'tcp/udp', $target => '0'),
+          $defaults['block']
+        );
+    }
+    // CARP defaults
+    $carp_disabled = empty($config['hasync']) && empty($config['virtualip']['vip']);
+    $fw->registerFilterRule(1,
+      array('protocol' => 'carp', 'from' => '(self)', 'direction' => 'in', 'disabled' => $carp_disabled),
+      $defaults['block']
+    );
+    $fw->registerFilterRule(1,array('protocol' => 'carp'),$defaults['pass']);
+
 
 }

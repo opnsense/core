@@ -2502,19 +2502,6 @@ function filter_rules_generate(&$FilterIflist)
     $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
     $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
-    $ipfrules .= <<<EOD
-# We use the mighty pf, we cannot be fooled.
-block {$log['block']} quick inet proto { tcp, udp } from any port = 0 to any
-block {$log['block']} quick inet proto { tcp, udp } from any to any port = 0
-block {$log['block']} quick inet6 proto { tcp, udp } from any port = 0 to any
-block {$log['block']} quick inet6 proto { tcp, udp } from any to any port = 0
-
-EOD;
-
-
-    $ipfrules .= filter_process_carp_rules($log);
-
-
     $ipfrules .= "\n# SSH lockout\n";
     if (!empty($config['system']['ssh']['port'])) {
         $ipfrules .= "block in {$log['block']} quick proto tcp from <sshlockout> to (self) port ";
@@ -3109,19 +3096,6 @@ function filter_setup_logging_interfaces(&$FilterIflist)
         $rules .= "set loginterface {$FilterIflist['wan']['if']}\n";
     }
     return $rules;
-}
-
-function filter_process_carp_rules($log)
-{
-    global $config;
-
-    $lines = '';
-    /* return if there are no carp configured items */
-    if (!empty($config['hasync']) || !empty($config['virtualip']['vip'])) {
-        $lines .= "block in {$log['block']} quick proto carp from (self) to any \n";
-        $lines .= "pass {$log['pass']} quick proto carp \n";
-    }
-    return $lines;
 }
 
 /* Generate IPsec Filter Items */

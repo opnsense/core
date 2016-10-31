@@ -48,7 +48,9 @@ class FilterRule
         'ipprotocol' => 'parsePlain',
         'protocol' => 'parseReplaceSimple,tcp/udp:{tcp udp},proto ',
         'from' => 'parsePlain,from {,}',
+        'from_port' => 'parsePlain, port {,}',
         'to' => 'parsePlain,to {,}',
+        'to_port' => 'parsePlain, port {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'state' => 'parseState',
         'label' => 'parsePlain,label ","'
@@ -71,7 +73,7 @@ class FilterRule
      */
     private function parsePlain($value, $prefix="", $suffix="")
     {
-        return empty($value) ? "" : $prefix . $value . $suffix . " ";
+        return $value == '' ? "" : $prefix . $value . $suffix . " ";
     }
 
     /**
@@ -183,6 +185,8 @@ class FilterRule
                 $tmp = $this->rule;
                 $tmp['interface'] = $interface;
                 $tmp['ipprotocol'] = $ipproto;
+                $tmp['from'] = empty($tmp['from']) ? "any" : $tmp['from'];
+                $tmp['to'] = empty($tmp['to']) ? "any" : $tmp['to'];
                 // disable rule when interface not found
                 if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
                     $tmp['disabled'] = true;
