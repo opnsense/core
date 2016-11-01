@@ -103,5 +103,25 @@ function filter_core_rules_system($fw, $defaults)
     );
     $fw->registerFilterRule(1,array('protocol' => 'carp'),$defaults['pass']);
 
+    // Lockout rules
+    $fw->registerFilterRule(1,
+      array('protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'label' => 'sshlockout', 'direction' => 'in',
+        'to_port' => !empty($config['system']['ssh']['port']) ? $config['system']['ssh']['port'] : 22),
+      $defaults['block']
+    );
+    $webport = '443';
+    if (!empty($config['system']['webgui']['port'])) {
+        $webport = $config['system']['webgui']['port'];
+    } elseif ($config['system']['webgui']['protocol'] == 'http') {
+        $webport = '80';
+    }
+    $fw->registerFilterRule(1,
+      array('protocol' => 'tcp', 'from' => '<webConfiguratorlockout>', 'to' => '(self)' , 'label' => 'webConfiguratorlockout',
+        'direction' => 'in','to_port' => $webport),
+      $defaults['block']
+    );
+
+    // block all in alias <virusprot>
+    $fw->registerFilterRule(1,array('from' => '<virusprot>', 'label' => 'virusprot overload table'),$defaults['block']);
 
 }

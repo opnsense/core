@@ -2502,40 +2502,6 @@ function filter_rules_generate(&$FilterIflist)
     $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
     $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
-    $ipfrules .= "\n# SSH lockout\n";
-    if (!empty($config['system']['ssh']['port'])) {
-        $ipfrules .= "block in {$log['block']} quick proto tcp from <sshlockout> to (self) port ";
-        $ipfrules .= $config['system']['ssh']['port'];
-        $ipfrules .= "  label \"sshlockout\"\n";
-    } else {
-        if (!empty($config['system']['ssh']['port'])) {
-            $sshport = $config['system']['ssh']['port'];
-        } else {
-            $sshport = 22;
-        }
-        $ipfrules .= "block in {$log['block']} quick proto tcp from <sshlockout> to (self) port {$sshport} label \"sshlockout\"\n";
-    }
-
-
-    $ipfrules .= "\n# webConfigurator lockout\n";
-    if (!$config['system']['webgui']['port']) {
-        if ($config['system']['webgui']['protocol'] == "http") {
-            $webConfiguratorlockoutport = "80";
-        } else {
-            $webConfiguratorlockoutport = "443";
-        }
-    } else {
-        $webConfiguratorlockoutport = $config['system']['webgui']['port'];
-    }
-    if ($webConfiguratorlockoutport) {
-        $ipfrules .= "block in {$log['block']} quick proto tcp from <webConfiguratorlockout> to (self) port {$webConfiguratorlockoutport}  label \"webConfiguratorlockout\"\n";
-    }
-
-    /*
-     * Support for allow limiting of TCP connections by establishment rate
-     * Useful for protecting against sudden outburts, etc.
-     */
-    $ipfrules .= "block in {$log['block']} quick from <virusprot> to any label \"virusprot overload table\"\n";
 
     foreach ($FilterIflist as $on => $oc) {
       /*
