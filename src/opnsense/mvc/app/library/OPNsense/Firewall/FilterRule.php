@@ -53,7 +53,7 @@ class FilterRule
         'to_port' => 'parsePlain, port {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'state' => 'parseState',
-        'label' => 'parsePlain,label ","'
+        'label' => 'parsePlain,label ",",63'
     );
 
     /**
@@ -69,10 +69,16 @@ class FilterRule
     /**
      * parse plain data
      * @param string $value field value
+     * @param string $prefix prefix when $value is provided
+     * @param string $suffix suffix when $value is provided
+     * @param int $maxsize maximum size, cut when longer
      * @return string
      */
-    private function parsePlain($value, $prefix="", $suffix="")
+    private function parsePlain($value, $prefix="", $suffix="", $maxsize=null)
     {
+        if (!empty($maxsize) && strlen($value) > $maxsize) {
+            $value = substr($value, 0, $maxsize);
+        }
         return $value == '' ? "" : $prefix . $value . $suffix . " ";
     }
 
