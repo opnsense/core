@@ -37,7 +37,7 @@ class Plugin
 {
     private $anchors = array();
     private $filterRules = array();
-    private $interfaceMapping ;
+    private $interfaceMapping = array();
     private $interfaceStaticMapping;
 
     /**
@@ -45,9 +45,6 @@ class Plugin
      */
     public function __construct()
     {
-        // set static mappings
-        $this->interfaceMapping = array();
-        $this->interfaceMapping['loopback'] = array('if' => 'lo0');
     }
 
     /**
@@ -56,7 +53,17 @@ class Plugin
      */
     public function setInterfaceMapping(&$mapping)
     {
+        $this->interfaceMapping = array();
+        $this->interfaceMapping['loopback'] = array('if' => 'lo0', 'descr' => 'loopback');
         $this->interfaceMapping = array_merge($this->interfaceMapping, $mapping);
+    }
+
+    /**
+     * @return array
+     */
+    public function getInterfaceMapping()
+    {
+        return $this->interfaceMapping;
     }
 
     /**
