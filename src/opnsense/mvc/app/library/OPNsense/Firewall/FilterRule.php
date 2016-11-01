@@ -53,6 +53,7 @@ class FilterRule
         'to_port' => 'parsePlain, port {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'state' => 'parseState',
+        'allowopts' => 'parseBool,allow-opts',
         'label' => 'parsePlain,label ",",63'
     );
 
