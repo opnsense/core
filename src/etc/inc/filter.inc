@@ -2504,28 +2504,7 @@ function filter_rules_generate(&$FilterIflist)
 
 
     foreach ($FilterIflist as $on => $oc) {
-      /*
-       * Block bogon networks via the following list.  Note that "bogons"
-       * are excluding the four private address ranges for one reason or
-       * another.  They exist in the upstream files but are stripped during
-       * the upgrade stage.
-       *
-       * http://www.cymru.com/Documents/bogon-bn-nonagg.txt
-       */
-      if (!isset($config['syslog']['nologbogons'])) {
-          $bogonlog = 'log';
-      } else {
-          $bogonlog = '';
-      }
 
-      if (isset($config['interfaces'][$on]['blockbogons'])) {
-        $ipfrules .= <<<EOD
-# block bogon networks (IPv4)
-# http://www.cymru.com/Documents/bogon-bn-nonagg.txt
-block in {$bogonlog} quick on \${$oc['descr']} from <bogons> to any  label "{$fix_rule_label("block bogon IPv4 networks from {$oc['descr']}")}"
-
-EOD;
-    }
 
       if (isset($config['system']['ipv6allow']) && isset($oc['type6']) && ($oc['type6'] == "slaac" || $oc['type6'] == "dhcp6")) {
           $ipfrules .= <<<EOD
@@ -2537,16 +2516,6 @@ pass out {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 546 
 EOD;
     }
 
-      if (isset($config['interfaces'][$on]['blockbogons'])) {
-          if (isset($config['system']['ipv6allow'])) {
-              $ipfrules .= <<<EOD
-# block bogon networks (IPv6)
-# http://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
-block in {$bogonlog} quick on \${$oc['descr']} from <bogonsv6> to any label "{$fix_rule_label("block bogon IPv6 networks from {$oc['descr']}")}"
-
-EOD;
-          }
-      }
 
       $isbridged = false;
       if (isset($config['bridges']['bridged'])) {
@@ -2562,27 +2531,6 @@ EOD;
           $ipfrules .= "antispoof {$log['block']} for \${$oc['descr']} \n";
       }
 
-      /* block private networks ? */
-      if (!isset($config['syslog']['nologprivatenets'])) {
-          $privnetlog = "log";
-      } else {
-          $privnetlog = "";
-      }
-
-      if (isset($config['interfaces'][$on]['blockpriv'])) {
-          if ($isbridged == false) {
-              $ipfrules .= <<<EOD
-# block anything from private networks on interfaces with the option set
-block in $privnetlog quick on \${$oc['descr']} from 10.0.0.0/8 to any label "{$fix_rule_label("Block private networks from {$oc['descr']} block 10/8")}"
-block in $privnetlog quick on \${$oc['descr']} from 127.0.0.0/8 to any label "{$fix_rule_label("Block private networks from {$oc['descr']} block 127/8")}"
-block in $privnetlog quick on \${$oc['descr']} from 100.64.0.0/10 to any label "{$fix_rule_label("Block private networks from {$oc['descr']} block 100.64/10")}"
-block in $privnetlog quick on \${$oc['descr']} from 172.16.0.0/12 to any label "{$fix_rule_label("Block private networks from {$oc['descr']} block 172.16/12")}"
-block in $privnetlog quick on \${$oc['descr']} from 192.168.0.0/16 to any label "{$fix_rule_label("Block private networks from {$oc['descr']} block 192.168/16")}"
-block in $privnetlog quick on \${$oc['descr']} from fc00::/7 to any label "{$fix_rule_label("Block ULA networks from {$oc['descr']} block fc00::/7")}"
-
-EOD;
-          }
-      }
 
       switch (isset($oc['type']) ? $oc['type'] : null) {
         case "pptp":
