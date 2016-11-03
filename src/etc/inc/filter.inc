@@ -2530,20 +2530,6 @@ function filter_rules_generate(&$FilterIflist)
 
     foreach ($FilterIflist as $on => $oc) {
 
-
-      if (isset($config['system']['ipv6allow']) && isset($oc['type6']) && ($oc['type6'] == "slaac" || $oc['type6'] == "dhcp6")) {
-          $ipfrules .= <<<EOD
-# allow our DHCPv6 client out to the {$oc['descr']}
-pass in {$log['pass']} quick on \${$oc['descr']} proto udp from fe80::/10 port = 546 to fe80::/10 port = 546  label "{$fix_rule_label("allow dhcpv6 client in {$oc['descr']}")}"
-pass in {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 547 to any port = 546 label "{$fix_rule_label("allow dhcpv6 client in {$oc['descr']}")}"
-pass out {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 546 to any port = 547 label "{$fix_rule_label("allow dhcpv6 client out {$oc['descr']}")}"
-
-EOD;
-    }
-
-
-
-
       switch (isset($oc['type']) ? $oc['type'] : null) {
         case "pptp":
             $ipfrules .= <<<EOD

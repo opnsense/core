@@ -149,4 +149,25 @@ function filter_core_rules_system($fw, $defaults)
         );
     }
 
+    // interface configuration per type
+    foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
+        // allow DHCPv6 client out
+        if (isset($config['system']['ipv6allow']) && in_array($intfinfo['ipaddrv6'], array("slaac","dhcp6"))) {
+            $fw->registerFilterRule(5,
+              array('protocol' => 'udp', 'from' => 'fe80::/10', 'from_port' => 546, 'to' => 'fe80::/10',
+                    'interface' => $intf, 'to_port' => 546, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
+              $defaults['pass']
+            );
+            $fw->registerFilterRule(5,
+              array('protocol' => 'udp', 'from_port' => 547,'to_port' => 546, 'direction' => 'in',
+                    'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
+              $defaults['pass']
+            );
+            $fw->registerFilterRule(5,
+              array('protocol' => 'udp', 'from_port' => 546,'to_port' => 547, 'direction' => 'out',
+                    'interface' => $intf, 'label' =>'allow dhcpv6 client in ' . $intfinfo['descr']),
+              $defaults['pass']
+            );
+        }
+    }
 }
