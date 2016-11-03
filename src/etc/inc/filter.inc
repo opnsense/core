@@ -411,7 +411,8 @@ function filter_configure_sync()
     }
     update_filter_reload_status(gettext("Generating filter rules"));
     /* generate pfctl rules */
-    $pfrules = filter_rules_generate($FilterIflist);
+    $pfrules = filter_rules_legacy($FilterIflist);
+    $pfrules .= filter_rules_generate($FilterIflist);
     if (file_exists("/var/run/booting")) {
         echo ".";
     }
@@ -2484,6 +2485,30 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
     return $line;
 }
 
+function filter_rules_legacy(&$FilterIflist)
+{
+    global $config;
+    $log = array();
+    $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
+
+    $ipfrules = "";
+    $isbridged = false;
+    if (isset($config['bridges']['bridged'])) {
+        foreach ($config['bridges']['bridged'] as $oc2) {
+            if (stristr($oc2['members'], $on)) {
+                $isbridged = true;
+                break;
+            }
+        }
+    }
+    foreach ($FilterIflist as $on => $oc) {
+        if ($oc['ip'] && !($isbridged) && !isset($oc['internal_dynamic'])) {
+            $ipfrules .= "antispoof {$log['block']} for {$oc['if']} \n";
+        }
+    }
+    return $ipfrules;
+}
+
 function filter_rules_generate(&$FilterIflist)
 {
     global $config, $GatewaysList;
@@ -2517,19 +2542,6 @@ EOD;
     }
 
 
-      $isbridged = false;
-      if (isset($config['bridges']['bridged'])) {
-          foreach ($config['bridges']['bridged'] as $oc2) {
-              if (stristr($oc2['members'], $on)) {
-                  $isbridged = true;
-                  break;
-              }
-          }
-      }
-
-      if ($oc['ip'] && !($isbridged) && !isset($oc['internal_dynamic'])) {
-          $ipfrules .= "antispoof {$log['block']} for \${$oc['descr']} \n";
-      }
 
 
       switch (isset($oc['type']) ? $oc['type'] : null) {
