@@ -411,8 +411,7 @@ function filter_configure_sync()
     }
     update_filter_reload_status(gettext("Generating filter rules"));
     /* generate pfctl rules */
-    $pfrules = filter_rules_legacy($FilterIflist);
-    $pfrules .= filter_rules_generate($FilterIflist);
+    $pfrules = filter_rules_generate($FilterIflist);
     if (file_exists("/var/run/booting")) {
         echo ".";
     }
@@ -482,6 +481,7 @@ function filter_configure_sync()
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= "anchor \"relayd/*\"\n"; // relayd
+    $rules .= filter_rules_legacy($FilterIflist);
     $rules .= $fw->outputFilterRules();
     $rules .= "{$pfrules}\n";
     $rules .= $fw->anchorToText('fw', 'tail');
@@ -2526,87 +2526,6 @@ function filter_rules_generate(&$FilterIflist)
     $log = array();
     $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
     $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
-
-
-    foreach ($FilterIflist as $on => $oc) {
-
-    switch(isset($oc['type6']) ? $oc['type6'] : null ) {
-        case "6rd":
-            $ipfrules .= <<<EOD
-# allow our proto 41 traffic from the 6RD border relay in
-pass in {$log['pass']} on \${$oc['descr']} proto 41 from {$config['interfaces'][$on]['gateway-6rd']} to any  label "{$fix_rule_label("Allow 6in4 traffic in for 6rd on {$oc['descr']}")}"
-pass out {$log['pass']} on \${$oc['descr']} proto 41 from any to {$config['interfaces'][$on]['gateway-6rd']} label "{$fix_rule_label("Allow 6in4 traffic out for 6rd on {$oc['descr']}")}"
-
-EOD;
-            /* XXX: Really need to allow 6rd traffic coming in for v6 this is against default behaviour! */
-            if (0 && is_ipaddrv6($oc['ipv6'])) {
-                $ipfrules .= <<<EOD
-pass in {$log['pass']} on \${$oc['descr']} inet6 from any to {$oc['ipv6']}/{$oc['snv6']} label "{$fix_rule_label("Allow 6rd traffic in for 6rd on {$oc['descr']}")}"
-pass out {$log['pass']} on \${$oc['descr']} inet6 from {$oc['ipv6']}/{$oc['snv6']} to any label "{$fix_rule_label("Allow 6rd traffic out for 6rd on {$oc['descr']}")}"
-
-EOD;
-            }
-            break;
-        case "6to4":
-            if (is_ipaddrv4($oc['ip'])) {
-                $ipfrules .= <<<EOD
-# allow our proto 41 traffic from the 6to4 border relay in
-pass in {$log['pass']} on \${$oc['descr']} proto 41 from any to {$oc['ip']} label "{$fix_rule_label("Allow 6in4 traffic in for 6to4 on {$oc['descr']}")}"
-pass out {$log['pass']} on \${$oc['descr']} proto 41 from {$oc['ip']} to any label "{$fix_rule_label("Allow 6in4 traffic out for 6to4 on {$oc['descr']}")}"
-
-EOD;
-            }
-            /* XXX: Really need to allow 6to4 traffic coming in for v6 this is against default behaviour! */
-            if (0 && is_ipaddrv6($oc['ipv6'])) {
-                $ipfrules .= <<<EOD
-pass in {$log['pass']} on \${$oc['descr']} inet6 from any to {$oc['ipv6']}/{$oc['snv6']} label "{$fix_rule_label("Allow 6in4 traffic in for 6to4 on {$oc['descr']}")}"
-pass out {$log['pass']} on \${$oc['descr']} inet6 from {$oc['ipv6']}/{$oc['snv6']} to any label "{$fix_rule_label("Allow 6in4 traffic out for 6to4 on {$oc['descr']}")}"
-
-EOD;
-            }
-            break;
-        default:
-            if (isset($config['dhcpdv6'][$on]['enable']) || isset($oc['track6-interface'])
-              || (!empty($config['dhcrelay6']['interface']) && in_array($on, explode(',', $config['dhcrelay6']['interface'])))) {
-                $ipfrules .= <<<EOD
-# allow access to DHCPv6 server on {$oc['descr']}
-# We need inet6 icmp for stateless autoconfig and dhcpv6
-pass {$log['pass']} quick on \${$oc['descr']} inet6 proto udp from fe80::/10 to fe80::/10 port = 546 label "allow access to DHCPv6 server"
-pass {$log['pass']} quick on \${$oc['descr']} inet6 proto udp from fe80::/10 to ff02::/16 port = 546 label "allow access to DHCPv6 server"
-pass {$log['pass']} quick on \${$oc['descr']} inet6 proto udp from fe80::/10 to ff02::/16 port = 547 label "allow access to DHCPv6 server"
-pass {$log['pass']} quick on \${$oc['descr']} inet6 proto udp from ff02::/16 to fe80::/10 port = 547 label "allow access to DHCPv6 server"
-
-EOD;
-              if (is_ipaddrv6($oc['ipv6'])) {
-                  $ipfrules .= <<<EOD
-pass in {$log['pass']} quick on \${$oc['descr']} inet6 proto udp from fe80::/10 to {$oc['ipv6']} port = 546 label "allow access to DHCPv6 server"
-pass out {$log['pass']} quick on \${$oc['descr']} inet6 proto udp from {$oc['ipv6']} port = 547 to fe80::/10 label "allow access to DHCPv6 server"
-
-EOD;
-                }
-            }
-            break;
-        }
-    }
-
-    /*
-     * NB: The loopback rules are needed here since the antispoof would take precedence then.
-     *  If you ever add the 'quick' keyword to the antispoof rules above move the looback
-     *  rules before them.
-     */
-    $ipfrules .= <<<EOD
-
-# loopback
-pass in {$log['pass']} on \$loopback inet all label "pass IPv4 loopback"
-pass out {$log['pass']} on \$loopback inet all label "pass IPv4 loopback"
-pass in {$log['pass']} on \$loopback inet6 all label "pass IPv6 loopback"
-pass out {$log['pass']} on \$loopback inet6 all label "pass IPv6 loopback"
-
-# let out anything from the firewall host itself and decrypted IPsec traffic
-pass out {$log['pass']} inet all keep state allow-opts label "let out anything IPv4 from firewall host itself"
-pass out {$log['pass']} inet6 all keep state allow-opts label "let out anything IPv6 from firewall host itself"
-
-EOD;
 
     foreach ($FilterIflist as $ifdescr => $ifcfg) {
         if (isset($ifcfg['virtual'])) {

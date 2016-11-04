@@ -223,5 +223,75 @@ function filter_core_rules_system($fw, $defaults)
                 }
                 break;
         }
+        // IPv6
+        switch(isset($intfinfo['ipaddrv6']) ? $intfinfo['ipaddrv6'] : null ) {
+            case "6rd":
+                $fw->registerFilterRule(5,
+                  array('protocol' => '41', 'direction' => 'in', 'from' => $config['interfaces'][$intf]['gateway-6rd'],
+                        'quick'=>false, 'interface' => $intf, 'label' =>'Allow 6in4 traffic in for 6rd on '.$intfinfo['descr']),
+                  $defaults['pass']
+                );
+                $fw->registerFilterRule(5,
+                  array('protocol' => '41', 'direction' => 'out', 'to' => $config['interfaces'][$intf]['gateway-6rd'],
+                        'quick'=>false, 'interface' => $intf, 'label' =>'Allow 6in4 traffic out for 6rd on '.$intfinfo['descr']),
+                  $defaults['pass']
+                );
+                break;
+            case "6to4":
+                $fw->registerFilterRule(5,
+                  array('protocol' => '41', 'direction' => 'in', 'to' => '(self)','interface' => $intf,
+                        'quick'=>false, 'label' =>'Allow 6in4 traffic in for 6to4 on '.$intfinfo['descr']),
+                  $defaults['pass']
+                );
+                $fw->registerFilterRule(5,
+                  array('protocol' => '41', 'direction' => 'out', 'from' => '(self)','interface' => $intf,
+                        'quick'=>false, 'label' =>'Allow 6in4 traffic out for 6to4 on '.$intfinfo['descr']),
+                  $defaults['pass']
+                );
+                break;
+            default:
+              if (isset($config['dhcpdv6'][$intf]['enable']) || isset($intfinfo['track6-interface'])
+                || (!empty($config['dhcrelay6']['interface'])  && in_array($intf, explode(',', $config['dhcrelay6']['interface'])))) {
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',
+                            'to_port' => 546, 'interface' => $intf,
+                            'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
+                      $defaults['pass']
+                    );
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'ff02::/16',
+                            'to_port' => 547, 'interface' => $intf,
+                            'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
+                      $defaults['pass']
+                    );
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'ff02::/16', 'to' => 'fe80::/10',
+                            'to_port' => 547, 'interface' => $intf,
+                            'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
+                      $defaults['pass']
+                    );
+
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => '(self)',
+                            'to_port' => 546, 'interface' => $intf, 'direction' => 'in',
+                            'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
+                      $defaults['pass']
+                    );
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp','ipprotocol' => 'inet6', 'from' => '(self)', 'to' => 'fe80::/10',
+                            'from_port' => 547, 'interface' => $intf, 'direction' => 'out',
+                            'label' =>'allow access to DHCPv6 server on '.$intfinfo['descr']),
+                      $defaults['pass']
+                    );
+                }
+                break;
+        }
     }
+    // loopback
+    $fw->registerFilterRule(5,array('interface' => 'loopback', 'label' =>'pass loopback'),$defaults['pass']);
+    // out from this Firewall
+    $fw->registerFilterRule(5,array('direction' => 'out', 'statetype' =>'keep', 'allowopts' => true,
+      'quick' => false, "label" => "let out anything from firewall host itself"),
+        $defaults['pass']
+    );
 }
