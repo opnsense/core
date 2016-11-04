@@ -169,5 +169,59 @@ function filter_core_rules_system($fw, $defaults)
               $defaults['pass']
             );
         }
+        // IPv4
+        switch (empty($intfinfo['ipaddr']) ? "" : $intfinfo['ipaddr']) {
+            case "pptp":
+                $fw->registerFilterRule(5,
+                  array('protocol' => 'tcp','to_port' => 1723, 'direction' => 'in', 'statetype' => 'modulate', 'quick' => false,
+                        'interface' => $intf, 'flags' => 'S/SA', 'label' =>'allow PPTP client on ' . $intfinfo['descr']),
+                  $defaults['pass']
+                );
+                $fw->registerFilterRule(5,
+                  array('protocol' => 'gre', 'direction' => 'in', 'statetype' => 'keep', 'quick' => false,
+                        'interface' => $intf, 'label' =>'allow PPTP client on ' . $intfinfo['descr']),
+                  $defaults['pass']
+                );
+                break;
+            case "dhcp":
+                $fw->registerFilterRule(5,
+                  array('protocol' => 'udp', 'direction' => 'in', 'quick' => false, 'from_port' => 67, 'to_port' => 68,
+                        'interface' => $intf, 'label' =>'allow DHCP client on ' . $intfinfo['descr']),
+                  $defaults['pass']
+                );
+                $fw->registerFilterRule(5,
+                  array('protocol' => 'udp', 'direction' => 'out', 'quick' => false, 'from_port' => 68, 'to_port' => 67,
+                        'interface' => $intf, 'label' =>'allow DHCP client on ' . $intfinfo['descr']),
+                  $defaults['pass']
+                );
+                break;
+            default:
+                if (isset($config['dhcpd'][$intf]['enable'])) {
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp', 'direction' => 'in', 'from_port' => 68, 'to' => '255.255.255.255',
+                            'to_port' => 67, 'interface' => $intf, 'label' =>'allow access to DHCP server'),
+                      $defaults['pass']
+                    );
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp', 'direction' => 'in', 'from_port' => 68, 'to' => '(self)',
+                            'to_port' => 67, 'interface' => $intf, 'label' =>'allow access to DHCP server'),
+                      $defaults['pass']
+                    );
+                    $fw->registerFilterRule(5,
+                      array('protocol' => 'udp', 'direction' => 'out', 'from_port' => 67, 'from' => '(self)',
+                            'to_port' => 68, 'interface' => $intf, 'label' =>'allow access to DHCP server'),
+                      $defaults['pass']
+                    );
+                    if (!empty($config['dhcpd'][$intf]['failover_peerip'])) {
+                        $fw->registerFilterRule(5,
+                          array('protocol' => 'tcp/udp', 'direction' => 'in', 'to' => '(self)', 'to_port' => '519,520',
+                                'from' => $config['dhcpd'][$intf]['failover_peerip'],
+                                'interface' => $intf, 'label' =>'allow access to DHCP failover'),
+                          $defaults['pass']
+                        );
+                    }
+                }
+                break;
+        }
     }
 }

@@ -2530,57 +2530,6 @@ function filter_rules_generate(&$FilterIflist)
 
     foreach ($FilterIflist as $on => $oc) {
 
-      switch (isset($oc['type']) ? $oc['type'] : null) {
-        case "pptp":
-            $ipfrules .= <<<EOD
-# allow PPTP client
-pass in {$log['pass']} on \${$oc['descr']} proto tcp from any to any port = 1723 flags S/SA modulate state label "{$fix_rule_label("allow PPTP client on {$oc['descr']}")}"
-pass in {$log['pass']} on \${$oc['descr']} proto gre from any to any keep state label "{$fix_rule_label("allow PPTP client on {$oc['descr']}")}"
-
-EOD;
-            break;
-        case "dhcp":
-            $ipfrules .= <<<EOD
-# allow our DHCP client out to the {$oc['descr']}
-pass in {$log['pass']} on \${$oc['descr']} proto udp from any port = 67 to any port = 68 label "{$fix_rule_label("allow dhcp client out {$oc['descr']}")}"
-pass out {$log['pass']} on \${$oc['descr']} proto udp from any port = 68 to any port = 67 label "{$fix_rule_label("allow dhcp client out {$oc['descr']}")}"
-# Not installing DHCP server firewall rules for {$oc['descr']} which is configured for DHCP.
-
-EOD;
-
-            break;
-        case "pppoe":
-        case "none":
-            /* XXX: Nothing to do in this case?! */
-            break;
-        default:
-            /* allow access to DHCP server on interfaces */
-            if (isset($config['dhcpd'][$on]['enable'])) {
-                $ipfrules .= <<<EOD
-# allow access to DHCP server on {$oc['descr']}
-pass in {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 68 to 255.255.255.255 port = 67  label "allow access to DHCP server"
-
-EOD;
-                if (is_ipaddrv4($oc['ip'])) {
-                    $ipfrules .= <<<EOD
-pass in {$log['pass']} quick on \${$oc['descr']} proto udp from any port = 68 to {$oc['ip']} port = 67 label "allow access to DHCP server"
-pass out {$log['pass']} quick on \${$oc['descr']} proto udp from {$oc['ip']} port = 67 to any port = 68 label "allow access to DHCP server"
-
-EOD;
-                }
-
-                if (is_ipaddrv4($oc['ip']) && $config['dhcpd'][$on]['failover_peerip'] <> "") {
-                    $ipfrules .= <<<EOD
-# allow access to DHCP failover on {$oc['descr']} from {$config['dhcpd'][$on]['failover_peerip']}
-pass in {$log['pass']} quick on \${$oc['descr']} proto { tcp udp } from {$config['dhcpd'][$on]['failover_peerip']} to {$oc['ip']} port = 519 label "allow access to DHCP failover"
-pass in {$log['pass']} quick on \${$oc['descr']} proto { tcp udp } from {$config['dhcpd'][$on]['failover_peerip']} to {$oc['ip']} port = 520 label "allow access to DHCP failover"
-
-EOD;
-                }
-
-            }
-            break;
-        }
     switch(isset($oc['type6']) ? $oc['type6'] : null ) {
         case "6rd":
             $ipfrules .= <<<EOD
