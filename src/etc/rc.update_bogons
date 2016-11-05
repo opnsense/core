@@ -4,46 +4,15 @@
 proc_error=""
 
 # Download and extract if necessary
-process_url() {
+process_url()
+{
 	local file=$1
 	local url=$2
-	local filename=${url##*/}
-	local ext=${filename#*.}
 
 	/usr/bin/fetch -a -T 30 -q -o $file "${url}"
 
 	if [ ! -f $file ]; then
 		echo "Could not download ${url}" | logger
-		proc_error="true"
-	fi
-
-	case "$ext" in
-		tar)
-			mv $file $file.tmp
-			/usr/bin/tar -xf $file.tmp -O > $file 2> /dev/null
-			;;
-		tar.gz)
-			mv $file $file.tmp
-			/usr/bin/tar -xzf $file.tmp -O > $file 2> /dev/null
-			;;
-		tgz)
-			mv $file $file.tmp
-			/usr/bin/tar -xzf $file.tmp -O > $file 2> /dev/null
-			;;
-		tar.bz2)
-			mv $file $file.tmp
-			/usr/bin/tar -xjf $file.tmp -O > $file 2> /dev/null
-			;;
-		*)
-			;;
-	esac
-
-	if [ -f $file.tmp ]; then
-		rm $file.tmp
-	fi
-
-	if [ ! -f $file ]; then
-		echo "Could not extract ${filename}" | logger
 		proc_error="true"
 	fi
 }
@@ -60,11 +29,8 @@ fi
 
 echo "rc.update_bogons is beginning the update cycle." | logger
 
-# Set default values if not overriden
-v4url=${v4url:-"https://pkg.opnsense.org/bogons/fullbogons-ipv4.txt"}
-v6url=${v6url:-"https://pkg.opnsense.org/bogons/fullbogons-ipv6.txt"}
-v4urlcksum=${v4urlcksum:-"${v4url}.md5"}
-v6urlcksum=${v6urlcksum:-"${v6url}.md5"}
+v4url="https://pkg.opnsense.org/bogons/fullbogons-ipv4.txt"
+v6url="https://pkg.opnsense.org/bogons/fullbogons-ipv6.txt"
 
 process_url /tmp/bogons "${v4url}"
 process_url /tmp/bogonsv6 "${v6url}"
@@ -75,9 +41,9 @@ if [ "$proc_error" != "" ]; then
 	exit
 fi
 
-BOGON_V4_CKSUM=`/usr/bin/fetch -T 30 -q -o - "${v4urlcksum}" | awk '{ print $4 }'`
+BOGON_V4_CKSUM=`/usr/bin/fetch -T 30 -q -o - "${v4url}.md5" | awk '{ print $4 }'`
 ON_DISK_V4_CKSUM=`md5 /tmp/bogons | awk '{ print $4 }'`
-BOGON_V6_CKSUM=`/usr/bin/fetch -T 30 -q -o - "${v6urlcksum}" | awk '{ print $4 }'`
+BOGON_V6_CKSUM=`/usr/bin/fetch -T 30 -q -o - "${v6url}.md5" | awk '{ print $4 }'`
 ON_DISK_V6_CKSUM=`md5 /tmp/bogonsv6 | awk '{ print $4 }'`
 
 if [ "$BOGON_V4_CKSUM" = "$ON_DISK_V4_CKSUM" ] || [ "$BOGON_V6_CKSUM" = "$ON_DISK_V6_CKSUM" ]; then
