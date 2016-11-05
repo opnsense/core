@@ -76,7 +76,7 @@ class FilterRule
      * @param int $maxsize maximum size, cut when longer
      * @return string
      */
-    private function parsePlain($value, $prefix="", $suffix="", $maxsize=null)
+    private function parsePlain($value, $prefix = "", $suffix = "", $maxsize = null)
     {
         if (!empty($maxsize) && strlen($value) > $maxsize) {
             $value = substr($value, 0, $maxsize);
@@ -90,7 +90,7 @@ class FilterRule
      * @param string $map
      * @return string
      */
-    private function parseReplaceSimple($value, $map, $prefix="", $suffix="")
+    private function parseReplaceSimple($value, $map, $prefix = "", $suffix = "")
     {
         $retval = $value;
         foreach (explode('|', $map) as $item) {
@@ -145,7 +145,7 @@ class FilterRule
      * @param string $value field value
      * @return string
      */
-    private function parseBool($value, $valueTrue, $valueFalse="")
+    private function parseBool($value, $valueTrue, $valueFalse = "")
     {
         if (!empty($value)) {
             return !empty($valueTrue) ? $valueTrue . " " : "";
@@ -201,21 +201,21 @@ class FilterRule
                 }
                 if (!isset($tmp['quick'])) {
                     // all rules are quick by default except floating
-                    $tmp['quick'] = !isset($rule['floating']) ? true : false ;
+                    $tmp['quick'] = !isset($rule['floating']) ? true : false;
                 }
                 // restructure state settings for easier output parsing
                 if (!empty($tmp['statetype'])) {
                     $tmp['state'] = array('type' => 'keep', 'options' => array());
                     switch ($tmp['statetype']) {
-                          case 'none':
-                              $tmp['state']['type'] = 'no';
-                              break;
-                          case 'sloppy state':
-                              $tmp['state']['type'] = 'keep';
-                              $tmp['state']['options'][] = "sloppy ";
-                              break;
-                          default:
-                              $tmp['state']['type'] = explode(' ', $tmp['statetype'])[0];
+                        case 'none':
+                            $tmp['state']['type'] = 'no';
+                            break;
+                        case 'sloppy state':
+                            $tmp['state']['type'] = 'keep';
+                            $tmp['state']['options'][] = "sloppy ";
+                            break;
+                        default:
+                            $tmp['state']['type'] = explode(' ', $tmp['statetype'])[0];
                     }
                     if (!empty($tmp['nopfsync'])) {
                         $tmp['state']['options'][] = "no-sync ";
@@ -254,7 +254,7 @@ class FilterRule
      * output rule as string
      * @return string ruleset
      */
-    public function  __toString()
+    public function __toString()
     {
         $ruleTxt = '';
         foreach ($this->fetchActualRules() as $rule) {

@@ -74,7 +74,7 @@ class Plugin
      * @param string $placement placement head,tail
      * @return null
      */
-    public function registerAnchor($name, $type="fw", $priority=0, $placement="tail")
+    public function registerAnchor($name, $type = "fw", $priority = 0, $placement = "tail")
     {
         $anchorKey = sprintf("%s.%s.%08d.%08d", $type, $placement, $priority, count($this->anchors));
         $this->anchors[$anchorKey] = $name;
@@ -87,7 +87,7 @@ class Plugin
      * @param string $placement placement head,tail
      * @return string
      */
-    public function anchorToText($types="fw", $placement="tail")
+    public function anchorToText($types = "fw", $placement = "tail")
     {
         $result = "";
         foreach (explode(',', $types) as $type) {
@@ -107,7 +107,7 @@ class Plugin
      * @param array $conf configuration
      * @param array $defaults merge these defaults when provided
      */
-    public function registerFilterRule($prio, $conf, $defaults=null)
+    public function registerFilterRule($prio, $conf, $defaults = null)
     {
         if ($defaults != null) {
             $conf = array_merge($defaults, $conf);
