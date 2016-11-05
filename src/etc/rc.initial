@@ -87,7 +87,6 @@ case ${OPCODE} in
 	/usr/local/etc/rc.restore_config_backup
 	;;
 *)
-	/bin/sh -c "${OPCODE}"
 	;;
 esac
 
