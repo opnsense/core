@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2005-2008 Bill Marquette
     All rights reserved.
 
@@ -8,11 +9,11 @@
     modification, are permitted provided that the following conditions are met:
 
     1. Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
+       this list of conditions and the following disclaimer.
 
     2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
 
     THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
     INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
@@ -26,21 +27,75 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function subnetv4_expand($subnet) {
+function relayd_enabled()
+{
+    global $config;
+
+    return isset($config['load_balancer']['lbpool']) && count($config['load_balancer']['lbpool']) &&
+        isset($config['load_balancer']['virtual_server']) && count($config['load_balancer']['virtual_server']);
+}
+
+function relayd_firewall($fw)
+{
+    if (!relayd_enabled()) {
+        return;
+    }
+
+    $fw->registerAnchor('relayd/*', 'rdr');
+    $fw->registerAnchor('relayd/*', 'fw');
+}
+
+function relayd_services()
+{
+    $services = array();
+
+    if (!relayd_enabled()) {
+        return $services;
+    }
+
+    $pconfig = array();
+    $pconfig['name'] = 'relayd';
+    $pconfig['description'] = gettext('Server load balancing daemon');
+    $pconfig['php']['restart'] = array('relayd_configure_do');
+    $pconfig['php']['start'] = array('relayd_configure_do');
+    $services[] = $pconfig;
+
+    return $services;
+}
+
+function relayd_syslog()
+{
+    $logfacilities = array();
+
+    $logfacilities['relayd'] = array('facility' => array('relayd'), 'remote' => 'relayd');
+
+    return $logfacilities;
+}
+
+function relayd_subnetv4_expand($subnet)
+{
     $result = array();
+
     list ($ip, $bits) = explode("/", $subnet);
+
     $net  = ip2long($ip);
     $mask = (0xffffffff << (32 - $bits));
     $net &= $mask;
     $size = round(exp(log(2) * (32 - $bits)));
+
     for ($i = 0; $i < $size; $i += 1) {
         $result[] = long2ip($net | $i);
     }
+
     return $result;
 }
 
+function relayd_configure()
+{
+    return array('relayd_configure_do');
+}
 
-function relayd_configure($kill_first = false)
+function relayd_configure_do($kill_first = false)
 {
     global $config;
 
@@ -59,10 +114,15 @@ function relayd_configure($kill_first = false)
     } else {
         $setting = array();
     }
+    if (isset($config['load_balancer']['monitor_type']) && is_array($config['load_balancer']['monitor_type'])) {
+        $monitors_a = $config['load_balancer']['monitor_type'];
+    } else {
+        $monitors_a = array();
+    }
 
     $check_a = array();
 
-    foreach ((array)$config['load_balancer']['monitor_type'] as $type) {
+    foreach ($monitors_a as $type) {
         $type['options'] = isset($type['options']) ? $type['options'] : array();
         switch($type['type']) {
             case 'icmp':
@@ -119,7 +179,7 @@ function relayd_configure($kill_first = false)
             $conf .= "table <{$pool_a[$i]['name']}> {\n";
             foreach ($pool_a[$i]['servers'] as $server) {
                 if (is_subnetv4($server)) {
-                  foreach (subnetv4_expand($server) as $ip) {
+                  foreach (relayd_subnetv4_expand($server) as $ip) {
                       $conf .= "\t{$ip}{$retrytext}\n";
                   }
               } else {
@@ -137,8 +197,8 @@ function relayd_configure($kill_first = false)
     foreach ($vs_a as $vs) {
         if (isset($vs['relay_protocol']) && !in_array($vs['relay_protocol'], $used_protocols)) {
             $used_protocols[] = $vs['relay_protocol'];
-            if (is_file('/usr/local/etc/inc/vslb/'.basename($vs['relay_protocol']).'.proto')) {
-                $conf .= file_get_contents('/usr/local/etc/inc/vslb/'.basename($vs['relay_protocol']).'.proto')."\n";
+            if (is_file('/usr/local/etc/inc/plugins.inc.d/relayd/'.basename($vs['relay_protocol']).'.proto')) {
+                $conf .= file_get_contents('/usr/local/etc/inc/plugins.inc.d/relayd/'.basename($vs['relay_protocol']).'.proto')."\n";
             }
         }
     }
@@ -166,14 +226,14 @@ function relayd_configure($kill_first = false)
             foreach (filter_expand_alias_array($vs_a[$i]['ipaddr']) as $item) {
                 log_error("item is $item");
                 if (is_subnetv4($item)) {
-                    $ip_list = array_merge($ip_list, subnetv4_expand($item));
+                    $ip_list = array_merge($ip_list, relayd_subnetv4_expand($item));
                 } else {
                     $ip_list[] = $item;
                 }
             }
             $append_ip_to_name = true;
         } elseif (is_subnetv4($vs_a[$i]['ipaddr'])) {
-            $ip_list = subnetv4_expand($vs_a[$i]['ipaddr']);
+            $ip_list = relayd_subnetv4_expand($vs_a[$i]['ipaddr']);
             $append_ip_to_name = true;
         } else {
             $ip_list = array($vs_a[$i]['ipaddr']);
@@ -237,7 +297,7 @@ function relayd_configure($kill_first = false)
             if ($kill_first) {
                 killbyname('relayd');
                 /* Remove all active relayd anchors now that relayd is no longer running. */
-                cleanup_lb_anchor('*');
+                relayd_cleanup_lb_anchor('*');
                 mwexec('/usr/local/sbin/relayd -f /var/etc/relayd.conf');
             } else {
                 // it's running and there is a config, just reload
@@ -253,17 +313,17 @@ function relayd_configure($kill_first = false)
              */
             killbyname('relayd');
             /* Remove all active relayd anchors now that relayd is no longer running. */
-            cleanup_lb_anchor("*");
+            relayd_cleanup_lb_anchor("*");
         }
     } elseif (!empty($vs_a)) {
           // not running and there is a config, start it
           /* Remove all active relayd anchors so it can start fresh. */
-          cleanup_lb_anchor('*');
+          relayd_cleanup_lb_anchor('*');
           mwexec('/usr/local/sbin/relayd -f /var/etc/relayd.conf');
     }
 }
 
-function get_lb_redirects()
+function relayd_get_lb_redirects()
 {
 /*
 # relayctl show summary
@@ -338,7 +398,7 @@ Id   Type      Name                      Avlblty Status
     return $vs;
 }
 
-function get_lb_summary()
+function relayd_get_lb_summary()
 {
     $relayctl = array();
     exec('/usr/local/sbin/relayctl show summary 2>&1', $relayctl);
@@ -367,28 +427,26 @@ function get_lb_summary()
     return $relay_hosts;
 }
 
-/* Get a list of all relayd virtual server anchors */
-function get_lb_anchors() {
-    /* NOTE: These names come back prepended with "relayd/" e.g. "relayd/MyVSName" */
-    return explode("\n", trim(`/sbin/pfctl -sA -a relayd | /usr/bin/awk '{print $1;}'`));
-}
-
-/* Remove NAT rules from a relayd anchor that is no longer in use.
-  $anchorname can either be * to clear all anchors or a specific anchor name.*/
-function cleanup_lb_anchor($anchorname = "*")
+/*
+ * Remove NAT rules from a relayd anchor that is no longer in use.
+ * $anchorname can either be "*" to clear all anchors or a specific
+ * anchor name.
+ */
+function relayd_cleanup_lb_anchor($anchorname = "*")
 {
-    $lbanchors = get_lb_anchors();
+    /* NOTE: These names come back prepended with "relayd/" e.g. "relayd/MyVSName" */
+    $lbanchors = explode("\n", trim(`/sbin/pfctl -sA -a relayd | /usr/bin/awk '{print $1;}'`));
     foreach ($lbanchors as $lba) {
         if (($anchorname == "*") || ($lba == "relayd/{$anchorname}")) {
             /* Flush both the NAT and the Table for the anchor, so it will be completely removed by pf. */
-            mwexec("/sbin/pfctl -a " . escapeshellarg($lba) . " -F nat");
-            mwexec("/sbin/pfctl -a " . escapeshellarg($lba) . " -F Tables");
+            mwexecf('/sbin/pfctl -a %s -F nat', $lba);
+            mwexecf('/sbin/pfctl -a %s -F Tables', $lba);
         }
     }
 }
 
 /* Mark an anchor for later cleanup. This will allow us to remove an old VS name */
-function cleanup_lb_mark_anchor($name)
+function relayd_cleanup_lb_mark_anchor($name)
 {
     /* Nothing to do! */
     if (empty($name)) {
@@ -409,4 +467,40 @@ function cleanup_lb_mark_anchor($name)
     }
 
     file_put_contents($filename, implode("\n", $cleanup_anchors));
+}
+
+function relayd_cleanup_lb_marked()
+{
+    global $config;
+
+    $filename = '/tmp/relayd_anchors_remove';
+    $cleanup_anchors = array();
+
+    /* Nothing to do! */
+    if (!file_exists($filename)) {
+        return;
+    } else {
+        $cleanup_anchors = explode("\n", file_get_contents($filename));
+        /* Nothing to do! */
+        if (empty($cleanup_anchors)) {
+            return;
+        }
+    }
+
+    /* Load current names so we can make sure we don't remove an anchor that is still in use. */
+    $active_vsnames = array();
+    if (isset($config['load_balancer']['virtual_server'])) {
+        foreach ($config['load_balancer']['virtual_server'] as $vs) {
+            $active_vsnames[] = $vs['name'];
+        }
+    }
+
+    foreach ($cleanup_anchors as $anchor) {
+        /* Only cleanup an anchor if it is not still active. */
+        if (!in_array($anchor, $active_vsnames)) {
+            relayd_cleanup_lb_anchor($anchor);
+        }
+    }
+
+    @unlink($filename);
 }

@@ -33,7 +33,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 
 $now = time();
 $year = date("Y");
@@ -49,15 +49,14 @@ if (!is_array($config['load_balancer']['virtual_server'])) {
 }
 $a_vs = &$config['load_balancer']['virtual_server'];
 $a_pool = &$config['load_balancer']['lbpool'];
-$rdr_a = get_lb_redirects();
-$relay_hosts = get_lb_summary();
+$rdr_a = relayd_get_lb_redirects();
+$relay_hosts = relayd_get_lb_summary();
 
 $lb_logfile = '/var/log/relayd.log';
 
 $nentries = isset($config['syslog']['nentries']) ? $config['syslog']['nentries'] : 50;
 
 ?>
-
 <table class="table table-striped table-condensed">
   <thead>
     <tr>

@@ -29,47 +29,9 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
-
-/* Cleanup relayd anchors that have been marked for cleanup. */
-function cleanup_lb_marked()
-{
-    global $config;
-
-    $filename = '/tmp/relayd_anchors_remove';
-    $cleanup_anchors = array();
-
-    /* Nothing to do! */
-    if (!file_exists($filename)) {
-        return;
-    } else {
-        $cleanup_anchors = explode("\n", file_get_contents($filename));
-        /* Nothing to do! */
-        if (empty($cleanup_anchors)) {
-            return;
-        }
-    }
-
-    /* Load current names so we can make sure we don't remove an anchor that is still in use. */
-    $active_vsnames = array();
-    if (isset($config['load_balancer']['virtual_server'])) {
-        foreach ($config['load_balancer']['virtual_server'] as $vs) {
-            $active_vsnames[] = $vs['name'];
-        }
-    }
-
-    foreach ($cleanup_anchors as $anchor) {
-        /* Only cleanup an anchor if it is not still active. */
-        if (!in_array($anchor, $active_vsnames)) {
-            cleanup_lb_anchor($anchor);
-        }
-    }
-
-    @unlink($filename);
-}
-
 
 if (empty($config['load_balancer']['virtual_server']) || !is_array($config['load_balancer']['virtual_server'])) {
     $config['load_balancer']['virtual_server'] = array();
@@ -79,17 +41,17 @@ $a_vs = &$config['load_balancer']['virtual_server'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del") {
         if (isset($_POST['id']) && !empty($a_vs[$_POST['id']])){
-            cleanup_lb_mark_anchor($a_vs[$_POST['id']]['name']);
+            relayd_cleanup_lb_mark_anchor($a_vs[$_POST['id']]['name']);
             unset($a_vs[$_POST['id']]);
             write_config();
             mark_subsystem_dirty('loadbalancer');
         }
         exit;
     } elseif (!empty($_POST['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         /* Wipe out old relayd anchors no longer in use. */
-        cleanup_lb_marked();
+        relayd_cleanup_lb_marked();
         clear_subsystem_dirty('loadbalancer');
         header(url_safe('Location: /load_balancer_virtual_server.php'));
         exit;

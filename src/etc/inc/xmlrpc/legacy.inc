@@ -126,7 +126,7 @@ function filter_configure_xmlrpc()
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("vslb.inc");
+    require_once("plugins.inc.d/relayd.inc");
     require_once("openvpn.inc");
     require_once("services.inc");
     require_once("rrd.inc");
@@ -140,7 +140,7 @@ function filter_configure_xmlrpc()
     services_dnsmasq_configure(false);
     services_unbound_configure(false);
     services_dhcpd_configure();
-    relayd_configure();
+    relayd_configure_do();
     openvpn_resync_all();
 
     return true;

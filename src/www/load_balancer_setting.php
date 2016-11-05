@@ -31,7 +31,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("services.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 require_once("interfaces.inc");
 
 if (empty($config['load_balancer']) || !is_array($config['load_balancer'])) {
@@ -41,7 +41,6 @@ if (empty($config['load_balancer']) || !is_array($config['load_balancer'])) {
 if (empty($config['load_balancer']['setting']) || !is_array($config['load_balancer']['setting'])) {
     $config['load_balancer']['setting'] = array();
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
     $input_errors = array();
     if (!empty($pconfig['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
         header(url_safe('Location: /load_balancer_setting.php'));
@@ -94,12 +93,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-
 $service_hook = 'relayd';
 legacy_html_escape_form_data($pconfig);
-include("head.inc");
-?>
 
+include("head.inc");
+
+?>
 <body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">

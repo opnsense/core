@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 require_once("interfaces.inc");
 
 if (empty($config['load_balancer']) || !is_array($config['load_balancer'])) {
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (isset($id)) {
             if ($a_vs[$id]['name'] != $pconfig['name']) {
                 /* Because the VS name changed, mark the old name for cleanup. */
-                cleanup_lb_mark_anchor($a_vs[$id]['name']);
+                relayd_cleanup_lb_mark_anchor($a_vs[$id]['name']);
             }
             $a_vs[$id] = $vsent;
         } else {

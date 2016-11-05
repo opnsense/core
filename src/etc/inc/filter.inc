@@ -1709,9 +1709,6 @@ function filter_nat_rules_generate(&$FilterIflist)
         unset($tonathosts, $tonathosts_array, $numberofnathosts);
     }
 
-    $natrules .= "\n# Load balancing\n";
-    $natrules .= "rdr-anchor \"relayd/*\"\n";
-
     // prevent redirection on ports with "lock out" protection
     if (!isset($config['system']['webgui']['noantilockout'])) {
         $alports = filter_get_antilockout_ports();
@@ -2489,9 +2486,6 @@ function filter_rules_generate(&$FilterIflist)
     $pptpdcfg = $config['pptpd'];
 
     $ipfrules = "";
-
-    /* relayd */
-    $ipfrules .= "anchor \"relayd/*\"\n";
 
     # BEGIN OF firewall rules
     /* default block logging? */

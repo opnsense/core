@@ -45,6 +45,9 @@
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/miniupnpd.inc
+/usr/local/etc/inc/plugins.inc.d/relayd.inc
+/usr/local/etc/inc/plugins.inc.d/relayd/dns.proto
+/usr/local/etc/inc/plugins.inc.d/relayd/tcp.proto
 /usr/local/etc/inc/plugins.inc.d/shaper.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
@@ -55,9 +58,6 @@
 /usr/local/etc/inc/unbound.inc
 /usr/local/etc/inc/upgrade_config.inc
 /usr/local/etc/inc/util.inc
-/usr/local/etc/inc/vslb.inc
-/usr/local/etc/inc/vslb/dns.proto
-/usr/local/etc/inc/vslb/tcp.proto
 /usr/local/etc/inc/xmlparse.inc
 /usr/local/etc/inc/xmlrpc.inc
 /usr/local/etc/inc/xmlrpc/legacy.inc
@@ -443,6 +443,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Relayd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Relayd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php

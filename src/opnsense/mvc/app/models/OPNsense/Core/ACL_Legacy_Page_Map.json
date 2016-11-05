@@ -525,27 +525,6 @@
             "interfaces_wireless.php*"
         ]
     },
-    "page-loadbalancer-pool": {
-        "name": "WebCfg - Load Balancer: Pool page",
-        "descr": "Allow access to the 'Load Balancer: Pool' page.",
-        "match": [
-            "load_balancer_pool.php*"
-        ]
-    },
-    "page-loadbalancer-pool-edit": {
-        "name": "WebCfg - Load Balancer: Pool: Edit page",
-        "descr": "Allow access to the 'Load Balancer: Pool: Edit' page.",
-        "match": [
-            "load_balancer_pool_edit.php*"
-        ]
-    },
-    "page-loadbalancer-virtualserver-edit": {
-        "name": "WebCfg - Load Balancer: Virtual Server: Edit page",
-        "descr": "Allow access to the 'Load Balancer: Virtual Server: Edit' page.",
-        "match": [
-            "load_balancer_virtual_server_edit.php*"
-        ]
-    },
     "page-system-login\/logout": {
         "name": "WebCfg - Lobby: Login \/ Logout \/ Dashboard page",
         "descr": "Allow access to the 'Lobby: Login \/ Logout\/ Dashboard' page.",
@@ -700,34 +679,6 @@
             "services_igmpproxy_edit.php*"
         ]
     },
-    "page-services-loadbalancer-monitor-edit": {
-        "name": "WebCfg - Services: Load Balancer: Monitor: Edit page",
-        "descr": "Allow access to the 'Services: Load Balancer: Monitor: Edit' page.",
-        "match": [
-            "load_balancer_monitor_edit.php*"
-        ]
-    },
-    "page-services-loadbalancer-monitor": {
-        "name": "WebCfg - Services: Load Balancer: Monitors page",
-        "descr": "Allow access to the 'Services: Load Balancer: Monitors' page.",
-        "match": [
-            "load_balancer_monitor.php*"
-        ]
-    },
-    "page-services-loadbalancer-setting": {
-        "name": "WebCfg - Services: Load Balancer: setting page",
-        "descr": "Allow access to the 'Settings: Load Balancer: Settings' page.",
-        "match": [
-            "load_balancer_setting.php*"
-        ]
-    },
-    "page-services-loadbalancer-virtualservers": {
-        "name": "WebCfg - Services: Load Balancer: Virtual Servers page",
-        "descr": "Allow access to the 'Services: Load Balancer: Virtual Servers' page.",
-        "match": [
-            "load_balancer_virtual_server.php*"
-        ]
-    },
     "page-services-ntpd": {
         "name": "WebCfg - Services: NTP",
         "descr": "Allow access to the 'Services: NTP' page.",
@@ -854,20 +805,6 @@
             "diag_ipsec_spd.php*"
         ]
     },
-    "page-status-loadbalancer-pool": {
-        "name": "WebCfg - Status: Load Balancer: Pool page",
-        "descr": "Allow access to the 'Status: Load Balancer: Pool' page.",
-        "match": [
-            "status_lb_pool.php*"
-        ]
-    },
-    "page-status-loadbalancer-virtualserver": {
-        "name": "WebCfg - Status: Load Balancer: Virtual Server page",
-        "descr": "Allow access to the 'Status: Load Balancer: Virtual Server' page.",
-        "match": [
-            "status_lb_vs.php*"
-        ]
-    },
     "page-services-ntp-gps": {
         "name": "WebCfg - Status: NTP GPS page",
         "descr": "Allow access to the 'Status: NTP Serial GPS' page.",
@@ -922,13 +859,6 @@
         "descr": "Allow access to the 'Status: System logs: IPsec VPN' page.",
         "match": [
             "diag_logs_ppp.php*"
-        ]
-    },
-    "page-status-systemlogs-loadbalancer": {
-        "name": "WebCfg - Status: System logs: Load Balancer page",
-        "descr": "Allow access to the 'Status: System logs: Load Balancer' page.",
-        "match": [
-            "diag_logs_relayd.php*"
         ]
     },
     "page-status-systemlogs-ntpd": {

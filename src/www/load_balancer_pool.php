@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("services.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 require_once("interfaces.inc");
 
 if (empty($config['load_balancer']['lbpool']) || !is_array($config['load_balancer']['lbpool'])) {
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     } elseif (!empty($_POST['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
         header(url_safe('Location: /load_balancer_monitor.php'));
