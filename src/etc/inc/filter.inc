@@ -454,7 +454,6 @@ function filter_configure_sync()
         $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
     }
 
-    $rules = "";
     $rules = "{$limitrules}\n";
     $rules .= "{$aliases} \n";
     $rules .= "{$gateways} \n";
