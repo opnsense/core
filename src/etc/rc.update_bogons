@@ -18,7 +18,7 @@ process_url()
         return 1
     fi
 
-    if opnsense-verify -q /tmp/bogons; then
+    if ! opnsense-verify -q ${file}; then
         echo "Could not verify ${url}" | logger
         proc_error="true"
         return 1
