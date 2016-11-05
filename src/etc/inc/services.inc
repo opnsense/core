@@ -2505,15 +2505,6 @@ function services_get()
         $services[] = $pconfig;
     }
 
-    if (isset($config['load_balancer']['virtual_server']) && isset($config['load_balancer']['lbpool']) && count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {
-          $pconfig = array();
-          $pconfig['name'] = "relayd";
-          $pconfig['description'] = gettext("Server load balancing daemon");
-          $pconfig['php']['restart'] = array('relayd_configure', 'filter_configure');
-          $pconfig['php']['start'] = array('relayd_configure', 'filter_configure');
-          $services[] = $pconfig;
-    }
-
     if (isset($config['OPNsense']['captiveportal']['zones']['zone'])) {
         $enabled = false;
         if (!empty($config['OPNsense']['captiveportal']['zones']['zone']['enabled'])) {

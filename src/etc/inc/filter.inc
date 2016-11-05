@@ -480,7 +480,6 @@ function filter_configure_sync()
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     $rules .= $fw->anchorToText('fw', 'head');
-    $rules .= "anchor \"relayd/*\"\n"; // relayd
     $rules .= filter_rules_legacy($FilterIflist);
     $rules .= $fw->outputFilterRules();
     $rules .= "{$pfrules}\n";
@@ -1715,9 +1714,6 @@ function filter_nat_rules_generate(&$FilterIflist)
         }
         unset($tonathosts, $tonathosts_array, $numberofnathosts);
     }
-
-    $natrules .= "\n# Load balancing\n";
-    $natrules .= "rdr-anchor \"relayd/*\"\n";
 
     // prevent redirection on ports with "lock out" protection
     if (!isset($config['system']['webgui']['noantilockout'])) {
