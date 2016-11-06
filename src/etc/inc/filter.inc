@@ -2522,6 +2522,7 @@ function filter_rules_generate(&$FilterIflist)
     $log['block'] = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
     $log['pass'] = !isset($config['syslog']['nologdefaultpass']) ? "log" : "";
 
+    // TODO : route-to needs to be refactored / simplified.
     foreach ($FilterIflist as $ifdescr => $ifcfg) {
         if (isset($ifcfg['virtual'])) {
             continue;
@@ -2551,11 +2552,6 @@ function filter_rules_generate(&$FilterIflist)
                 $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from {$vip['ip']} to !{$vip['ip']}/{$pdlen} keep state allow-opts label \"let out anything from firewall host itself\"\n";
             }
         }
-    }
-
-    /* add ipsec interfaces */
-    if (!empty($FilterIflist['enc0']['descr'])) {
-        $ipfrules .= "pass out {$log['pass']} on \${$FilterIflist['enc0']['descr']} all keep state label \"IPsec internal host to host\"\n";
     }
 
     if (is_array($config['system']['webgui']) && !isset($config['system']['webgui']['noantilockout'])) {
