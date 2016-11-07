@@ -126,7 +126,7 @@ function filter_configure_xmlrpc()
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("vslb.inc");
+    require_once("plugins.inc.d/relayd.inc");
     require_once("openvpn.inc");
     require_once("services.inc");
     require_once("rrd.inc");

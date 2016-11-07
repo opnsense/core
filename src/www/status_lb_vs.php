@@ -30,7 +30,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("services.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 
 if (empty($config['load_balancer']['lbpool']) || !is_array($config['load_balancer']['lbpool'])) {
     $a_pool = array();
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$rdr_a = get_lb_redirects();
+$rdr_a = relayd_get_lb_redirects();
 
 $service_hook = 'relayd';
 legacy_html_escape_form_data($a_vs);

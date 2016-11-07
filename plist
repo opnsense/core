@@ -57,7 +57,6 @@
 /usr/local/etc/inc/unbound.inc
 /usr/local/etc/inc/upgrade_config.inc
 /usr/local/etc/inc/util.inc
-/usr/local/etc/inc/vslb.inc
 /usr/local/etc/inc/vslb/dns.proto
 /usr/local/etc/inc/vslb/tcp.proto
 /usr/local/etc/inc/xmlparse.inc

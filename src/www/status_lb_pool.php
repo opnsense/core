@@ -29,7 +29,7 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("vslb.inc");
+require_once("plugins.inc.d/relayd.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
@@ -76,11 +76,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $service_hook = 'relayd';
 include("head.inc");
 
-$relay_hosts = get_lb_summary();
+$relay_hosts = relayd_get_lb_summary();
 legacy_html_escape_form_data($a_pool);
 legacy_html_escape_form_data($relay_hosts);
-?>
 
+?>
 <body>
 <?php include("fbegin.inc"); ?>
     <section class="page-content-main">

@@ -49,8 +49,6 @@ require_once("system.inc");
 echo ".";
 require_once("unbound.inc");
 echo ".";
-require_once("vslb.inc");
-echo ".";
 require_once("filter.inc");
 echo ".";
 require_once("ipsec.inc");
@@ -199,9 +197,6 @@ services_unbound_configure(false);
 echo "Starting NTP time client...";
 system_ntp_configure(false);
 echo "done.\n";
-
-/* start load balancer daemon */
-relayd_configure_do();
 
 /* start DHCP service */
 services_dhcpd_configure();
