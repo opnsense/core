@@ -222,7 +222,9 @@ mwexec("/usr/local/etc/rc.dyndns.update");
 filter_configure_sync();
 
 /* Run all registered plugins */
-plugins_configure();
+if (function_exists('plugins_configure')) {
+    plugins_configure();
+}
 
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = ipsec_configure();
