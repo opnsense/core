@@ -1,7 +1,17 @@
 #!/bin/sh
 
-v4url="https://pkg.opnsense.org/bogons/fullbogons-ipv4.txt"
-v6url="https://pkg.opnsense.org/bogons/fullbogons-ipv6.txt"
+CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
+SYS_ABI=$(opnsense-verify -a 2> /dev/null)
+URL="https://pkg.opnsense.org"
+
+if [ -n "${CORE_ABI}" -a -n "${SYS_ABI}" ]; then
+	# expand url to new mirror layout per release
+	URL="${URL}/${SYS_ABI}/${CORE_ABI}"
+fi
+
+URL4="${URL}/bogons/fullbogons-ipv4.txt"
+URL6="${URL}/bogons/fullbogons-ipv6.txt"
+
 proc_error=
 
 process_url()
@@ -39,7 +49,7 @@ fi
 
 echo "rc.update_bogons is beginning the update cycle." | logger
 
-if process_url /tmp/bogons "${v4url}"; then
+if process_url /tmp/bogons "${URL4}"; then
     ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
     ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
     ENTRIES_V4=`pfctl -vvsTables | awk '/-\tbogons$/ {getline; print $2}'`
@@ -57,7 +67,7 @@ if process_url /tmp/bogons "${v4url}"; then
     rm /tmp/bogons*
 fi
 
-if process_url /tmp/bogonsv6 "${v6url}"; then
+if process_url /tmp/bogonsv6 "${URL6}"; then
     ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
     ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
     BOGONS_V6_TABLE_COUNT=`pfctl -sTables | grep ^bogonsv6$ | wc -l | awk '{ print $1 }'`
