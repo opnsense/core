@@ -81,18 +81,7 @@ function saveFormToEndpoint(url,formid,callback_ok, disable_dialog) {
                 // execute callback function
                 callback_ok();
             }
-
-        } else {
-            // error handling, show internal errors
-            // Normally the form should only return validation issues, if other things go wrong throw an error.
-            BootstrapDialog.show({
-                type: BootstrapDialog.TYPE_ERROR,
-                title: 'save',
-                message: 'Unable to save data, an internal error occurred.<br> ' +
-                'Response from server was: <br> <small>'+JSON.stringify(data)+'</small>'
-            });
         }
-
     });
 }
 

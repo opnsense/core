@@ -58,6 +58,33 @@ class AuthenticationFactory
     }
 
     /**
+     * list installed auth connectors
+     * @return array
+     */
+    private function listConnectors()
+    {
+        $connectors = array();
+        foreach (glob(__DIR__."/*.php") as $filename) {
+            $pathParts = explode('/', $filename);
+            $vendor = $pathParts[count($pathParts)-3];
+            $module = $pathParts[count($pathParts)-2];
+            $classname = explode('.php', $pathParts[count($pathParts)-1])[0];
+            $reflClass = new \ReflectionClass("{$vendor}\\{$module}\\{$classname}");
+            if ($reflClass->implementsInterface('OPNsense\\Auth\\IAuthConnector')) {
+                if ($reflClass->hasMethod('getType')) {
+                    $connectorType = $reflClass->getMethod('getType')->invoke(null);
+                    $connector = array();
+                    $connector['class'] = "{$vendor}\\{$module}\\{$classname}";
+                    $connector['classHandle'] = $reflClass;
+                    $connector['type'] = $connectorType;
+                    $connectors[$connectorType] = $connector;
+                }
+            }
+        }
+        return $connectors;
+    }
+
+    /**
      * request list of configured servers, the factory needs to be aware of it's options and settings to
      * be able to instantiate useful connectors.
      * @return array list of configured servers
@@ -90,32 +117,16 @@ class AuthenticationFactory
         $localUserMap = array();
         $servers = $this->listServers();
         $servers['Local API'] = array("name" => "Local API Database", "type" => "api");
-
         // create a new auth connector
         if (isset($servers[$authserver]['type'])) {
-            switch ($servers[$authserver]['type']) {
-                case 'local':
-                    $authObject = new Local();
-                    break;
-                case 'ldap':
-                    $authObject = new LDAP();
-                    $localUserMap = $this->fetchUserDNs();
-                    break;
-                case 'radius':
-                    $authObject = new Radius();
-                    break;
-                case 'voucher':
-                    $authObject = new Voucher();
-                    break;
-                case 'api':
-                    $authObject = new API();
-                    break;
-                case 'totp':
-                    $authObject = new LocalTOTP();
-                    break;
-                default:
-                    $authObject = null;
+            $connectors = $this->listConnectors();
+            if (!empty($connectors[$servers[$authserver]['type']])) {
+                $authObject = $connectors[$servers[$authserver]['type']]['classHandle']->newInstance();
             }
+            if ($servers[$authserver]['type'] == 'ldap') {
+                $localUserMap = $this->fetchUserDNs();
+            }
+
             if ($authObject != null) {
                 $props = $servers[$authserver];
                 // when a local user exist and has a different (distinguished) name on the authenticator we already
@@ -127,5 +138,28 @@ class AuthenticationFactory
         }
 
         return null;
+    }
+
+    /**
+     * list configuration options for pluggable auth modules
+     * @return array
+     */
+    public function listConfigOptions()
+    {
+        $result = array();
+        foreach ($this->listConnectors() as $connector) {
+            if ($connector['classHandle']->hasMethod('getDescription')) {
+                $obj = $connector['classHandle']->newInstance();
+                $authItem = $connector;
+                $authItem['description'] = $obj->getDescription();
+                if ($connector['classHandle']->hasMethod('getConfigurationOptions')) {
+                    $authItem['additionalFields'] = $obj->getConfigurationOptions();
+                } else {
+                    $authItem['additionalFields'] = array();
+                }
+                $result[$obj->getType()] = $authItem;
+            }
+        }
+        return $result;
     }
 }

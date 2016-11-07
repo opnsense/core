@@ -38,6 +38,15 @@ use OPNsense\Core\Config;
 class Local implements IAuthConnector
 {
     /**
+     * type name in configuration
+     * @return string
+     */
+    public static function getType()
+    {
+        return 'local';
+    }
+
+    /**
      * set connector properties
      * @param array $config connection properties
      */

@@ -43,6 +43,15 @@ class API implements IAuthConnector
     private $lastAuthProperties = array();
 
     /**
+     * type name in configuration
+     * @return string
+     */
+    public static function getType()
+    {
+        return 'api';
+    }
+
+    /**
      * set connector properties
      * @param array $config connection properties
      */

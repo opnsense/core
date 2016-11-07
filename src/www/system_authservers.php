@@ -30,14 +30,8 @@
 require_once("guiconfig.inc");
 require_once("auth.inc");
 
-
-$auth_server_types = array(
-    'ldap' => gettext("LDAP"),
-    'radius' => gettext("Radius"),
-    'voucher' => gettext("Voucher"),
-    'totp' => gettext("Local + Timebased One Time Password")
-);
-
+$authFactory = new \OPNsense\Auth\AuthenticationFactory();
+$authCNFOptions = $authFactory->listConfigOptions();
 
 if (!isset($config['system']['authserver'])) {
     $config['system']['authserver'] = array();
@@ -69,6 +63,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['radius_auth_port'] = "1812";
         $pconfig['radius_acct_port'] = "1813";
         $pconfig['type'] = 'ldap';
+        // gather auth plugin defaults
+        // the hotplug properties should be different per type, if not the default won't function correctly
+        foreach ($authCNFOptions as $authType) {
+            foreach ($authType['additionalFields'] as $fieldname => $field) {
+                if (!empty($field['default']) && empty($pconfig[$fieldname])) {
+                    $pconfig[$fieldname] = $field['default'];
+                }
+            }
+        }
     } elseif ($act == "edit" && isset($id)) {
         $pconfig['type'] = $a_server[$id]['type'];
         $pconfig['name'] = $a_server[$id]['name'];
@@ -107,13 +110,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (empty($pconfig['radius_auth_port'])) {
                 $pconfig['radius_auth_port'] = 1812;
             }
-        } elseif ($pconfig['type'] == 'voucher') {
-            $pconfig['simplePasswords'] = $a_server[$id]['simplePasswords'];
-            $pconfig['usernameLength'] = $a_server[$id]['usernameLength'];
-            $pconfig['passwordLength'] = $a_server[$id]['passwordLength'];
-        } elseif ($pconfig['type'] == 'totp') {
-            $pconfig['graceperiod'] = $a_server[$id]['graceperiod'];
-            $pconfig['timeWindow'] = $a_server[$id]['timeWindow'];
+        } elseif (!empty($authCNFOptions[$pconfig['type']])) {
+            foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
+                $pconfig[$fieldname] = $a_server[$id][$fieldname];
+            }
         }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -166,12 +166,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $reqdfields[] = "radius_secret";
               $reqdfieldsn[] = gettext("Shared Secret");
           }
-      } elseif ($pconfig['type'] == "voucher") {
-          if (!empty($pconfig['usernameLength']) && !is_numeric($pconfig['usernameLength'])) {
-              $input_errors[] = gettext("username length must be a number or empty for default.");
-          }
-          if (!empty($pconfig['passwordLength']) && !is_numeric($pconfig['passwordLength'])) {
-              $input_errors[] = gettext("password length must be a number or empty for default.");
+      } elseif (!empty($authCNFOptions[$pconfig['type']])) {
+          foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
+              if (!empty($field['validate'])) {
+                  foreach ($field['validate']($pconfig[$fieldname]) as $input_error) {
+                      $input_errors[] = $input_error;
+                  }
+              }
           }
       }
 
@@ -251,13 +252,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $server['radius_auth_port'] = $pconfig['radius_auth_port'];
                   unset($server['radius_acct_port']);
               }
-          } elseif ($server['type'] == "voucher") {
-              $server['simplePasswords'] = !empty($pconfig['simplePasswords']);
-              $server['usernameLength'] = $pconfig['usernameLength'];
-              $server['passwordLength'] = $pconfig['passwordLength'];
-          } elseif ($server['type'] == 'totp') {
-              $server['timeWindow'] = filter_var($pconfig['timeWindow'], FILTER_SANITIZE_NUMBER_INT);
-              $server['graceperiod'] = filter_var($pconfig['graceperiod'], FILTER_SANITIZE_NUMBER_INT);
+          } elseif (!empty($authCNFOptions[$server['type']])) {
+              foreach ($authCNFOptions[$server['type']]['additionalFields'] as $fieldname => $field) {
+                  $server[$fieldname] = $pconfig[$fieldname];
+              }
           }
 
           if (isset($id) && isset($config['system']['authserver'][$id])) {
@@ -317,19 +315,11 @@ if (!isset($_GET['act']) || $_GET['act'] != 'new')
 <script type="text/javascript">
 $( document ).ready(function() {
     $("#type").change(function(){
-        $(".auth_radius").addClass('hidden');
-        $(".auth_ldap").addClass('hidden');
-        $(".auth_voucher").addClass('hidden');
-        $(".auth_totp").addClass('hidden');
-        if ($("#type").val() == 'ldap') {
-            $(".auth_ldap").removeClass('hidden');
-        } else if ($("#type").val() == 'radius') {
-            $(".auth_radius").removeClass('hidden');
-        } else if ($("#type").val() == 'voucher') {
-          $(".auth_voucher").removeClass('hidden');
-      } else if ($("#type").val() == 'totp') {
-          $(".auth_totp").removeClass('hidden');
-        }
+        $(".auth_options").addClass('hidden');
+        $(".auth_options :input").prop( "disabled", true );
+        $(".auth_"+$(this).val()).removeClass('hidden');
+        $(".auth_"+$(this).val()+"  :input").prop( "disabled", false );
+        $('.selectpicker').selectpicker('refresh');
     });
 
     $("#ldap_urltype").change(function(){
@@ -465,10 +455,9 @@ endif; ?>
 ?>
                     <select name='type' id='type' class="selectpicker" data-style="btn-default">
 <?php
-                    foreach ($auth_server_types as $typename => $typedesc) :
-?>
+                    foreach ($authCNFOptions as $typename => $authType) :?>
                       <option value="<?=$typename;?>" <?=$pconfig['type'] == $typename ? "selected=\"selected\"" : "";?> >
-                        <?=$typedesc;?>
+                        <?=$authType['description'];?>
                       </option>
 <?php
                     endforeach; ?>
@@ -476,14 +465,14 @@ endif; ?>
 <?php
 else :
 ?>
-                    <strong><?=$auth_server_types[$pconfig['type']];?></strong>
+                    <strong><?=$authCNFOptions[$pconfig['type']]['description'];?></strong>
                     <input name='type' type='hidden' id='type' value="<?=$pconfig['type'];?>"/>
 <?php
 endif; ?>
                   </td>
                 </tr>
                 <!-- LDAP -->
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><a id="help_for_ldap_host" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Hostname or IP address");?></td>
                   <td>
                     <input name="ldap_host" type="text" id="ldap_host" size="20" value="<?=$pconfig['ldap_host'];?>"/>
@@ -492,13 +481,13 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Port value");?></td>
                   <td>
                     <input name="ldap_port" type="text" id="ldap_port" size="5" value="<?=$pconfig['ldap_port'];?>"/>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Transport");?></td>
                   <td>
                     <select name='ldap_urltype' id='ldap_urltype' class="formselect selectpicker" data-style="btn-default">
@@ -511,7 +500,7 @@ endif; ?>
                     </select>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><a id="help_for_ldap_caref" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Peer Certificate Authority"); ?></td>
                   <td>
 <?php
@@ -535,7 +524,7 @@ endif; ?>
                     endif; ?>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Protocol version");?></td>
                   <td>
                     <select name='ldap_protver' id='ldap_protver' class="formselect selectpicker" data-style="btn-default">
@@ -544,7 +533,7 @@ endif; ?>
                     </select>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><a id="help_for_ldap_binddn" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Bind credentials");?></td>
                   <td>
                     <?=gettext("User DN:");?><br/>
@@ -556,7 +545,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Search scope");?></td>
                   <td>
                     <div>
@@ -576,7 +565,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><a id="help_for_ldapauthcontainers" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication containers");?></td>
                   <td>
                     <ul class="list-inline">
@@ -591,7 +580,7 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><a id="help_for_ldap_extended_query" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Extended Query");?></td>
                   <td>
                     <input name="ldap_extended_query" type="text" id="ldap_extended_query" size="40" value="<?=$pconfig['ldap_extended_query'];?>"/>
@@ -602,7 +591,7 @@ endif; ?>
                 </tr>
 <?php if (!isset($id)) :
 ?>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Initial Template");?></td>
                   <td>
                     <select name='ldap_tmpltype' id='ldap_tmpltype' class="formselect selectpicker" data-style="btn-default">
@@ -614,26 +603,26 @@ endif; ?>
                 </tr>
 <?php
 endif; ?>
-                <tr class="auth_ldap hidden">
+                <tr class="auth_ldap auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("User naming attribute");?></td>
                   <td>
                     <input name="ldap_attr_user" type="text" id="ldap_attr_user" size="20" value="<?=$pconfig['ldap_attr_user'];?>"/>
                   </td>
                 </tr>
                 <!-- RADIUS -->
-                <tr class="auth_radius hidden">
+                <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Hostname or IP address");?></td>
                   <td>
                     <input name="radius_host" type="text" id="radius_host" size="20" value="<?=$pconfig['radius_host'];?>"/>
                   </td>
                 </tr>
-                <tr class="auth_radius hidden">
+                <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Shared Secret");?></td>
                   <td>
                     <input name="radius_secret" type="password" class="formfld pwd" id="radius_secret" size="20" value="<?=$pconfig['radius_secret'];?>"/>
                   </td>
                 </tr>
-                <tr class="auth_radius hidden">
+                <tr class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Services offered");?></td>
                   <td>
                     <select name='radius_srvcs' id='radius_srvcs' class="formselect selectpicker" data-style="btn-default">
@@ -646,19 +635,19 @@ endif; ?>
                     </select>
                   </td>
                 </tr>
-                <tr id="radius_auth" class="auth_radius hidden">
+                <tr id="radius_auth" class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Authentication port value");?></td>
                   <td>
                     <input name="radius_auth_port" type="text" id="radius_auth_port" size="5" value="<?=$pconfig['radius_auth_port'];?>"/>
                   </td>
                 </tr>
-                <tr id="radius_acct" class="auth_radius hidden">
+                <tr id="radius_acct" class="auth_radius auth_options hidden">
                   <td><i class="fa fa-info-circle text-muted"></i> <?=gettext("Accounting port value");?></td>
                   <td>
                     <input name="radius_acct_port" type="text" id="radius_acct_port" size="5" value="<?=$pconfig['radius_acct_port'];?>"/>
                   </td>
                 </tr>
-                <tr class="auth_radius hidden">
+                <tr class="auth_radius auth_options hidden">
                   <td><a id="help_for_radius_timeout" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Authentication Timeout");?></td>
                   <td>
                     <input name="radius_timeout" type="text" id="radius_timeout" size="20" value="<?=$pconfig['radius_timeout'];?>"/>
@@ -669,65 +658,56 @@ endif; ?>
                     </div>
                   </td>
                 </tr>
-                <!-- Vouchers -->
-                <tr class="auth_voucher hidden">
-                  <td><a id="help_for_voucher_simplepasswd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Use simple passwords (less secure)");?></td>
-                  <td>
-                    <input name="simplePasswords" type="checkbox" value="yes" <?=!empty($pconfig['simplePasswords']) ? "checked=\"checked\"" : ""; ?>/>
-                    <div class="hidden" for="help_for_voucher_simplepasswd">
-                      <br /><?= gettext("Use simple (less secure) passwords, which are easier to read") ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_voucher hidden">
-                  <td><a id="help_for_voucher_usernameLength" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Username length");?></td>
-                  <td>
-                    <input name="usernameLength" type="text" value="<?=$pconfig['usernameLength'];?>"/>
-                    <div class="hidden" for="help_for_voucher_usernameLength">
-                      <?= gettext("Specify alternative username length for generating vouchers") ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_voucher hidden">
-                  <td><a id="help_for_voucher_passwordLength" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Password length");?></td>
-                  <td>
-                    <input name="passwordLength" type="text" value="<?=$pconfig['passwordLength'];?>"/>
-                    <div class="hidden" for="help_for_voucher_passwordLength">
-                      <?= gettext("Specify alternative password length for generating vouchers") ?>
-                    </div>
-                  </td>
-                </tr>
-                <!-- TOTP -->
-                <tr class="auth_totp hidden">
-                  <td><a id="help_for_totp_otpLength" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Token length");?></td>
-                  <td>
-                    <select name="otpLength" class="selectpicker" data-style="btn-default">
-                      <option value="6" <?=empty($pconfig['otpLength']) || $pconfig['otpLength'] == "6" ? "selected=\"selected\"" : "";?> >6</option>
-                      <option value="8" <?=!empty($pconfig['otpLength']) && $pconfig['otpLength'] == "8" ? "selected=\"selected\"" : "";?> >8</option>
-                    </select>
-                    <div class="hidden" for="help_for_totp_otpLength">
-                      <?= gettext("Token length to use") ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_totp hidden">
-                  <td><a id="help_for_totp_timeWindow" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time window");?></td>
-                  <td>
-                    <input name="timeWindow" type="text" value="<?=$pconfig['timeWindow'];?>"/>
-                    <div class="hidden" for="help_for_totp_timeWindow">
-                      <?= gettext("The time period in which the token will be valid, default is 30 seconds (google authenticator)") ?>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="auth_totp hidden">
-                  <td><a id="help_for_totp_graceperiod" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Grace period");?></td>
-                  <td>
-                    <input name="graceperiod" type="text" value="<?=$pconfig['graceperiod'];?>"/>
-                    <div class="hidden" for="help_for_totp_graceperiod">
-                      <?= gettext("Time in seconds in which this server and the token may differ, default is 10 seconds. Set higher for a less secure easier match.") ?>
-                    </div>
-                  </td>
-                </tr>
+                <!-- pluggable options -->
+<?php
+                foreach ($authCNFOptions as $typename => $authtype):
+                  if (!empty($authtype['additionalFields'])):
+                    foreach ($authtype['additionalFields'] as $fieldname => $field):?>
+
+                    <tr class="auth_options auth_<?=$typename;?> hidden">
+                      <td>
+<?php
+                        if (!empty($field['help'])):?>
+                        <a id="help_for_field_<?=$typename;?>_<?=$fieldname;?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+<?php
+                        else:?>
+                        <i class="fa fa-info-circle text-muted"></i>
+<?php
+                        endif;?>
+                        <?=$field['name']; ?>
+                      </td>
+                      <td>
+<?php
+                        if ($field['type'] == 'text'):?>
+                        <input name="<?=$fieldname;?>" type="text" value="<?=$pconfig[$fieldname];?>"/>
+<?php
+                        elseif ($field['type'] == 'dropdown'):?>
+                        <select name="<?=$fieldname;?>" class="selectpicker" data-style="btn-default">
+<?php
+                          foreach ($field['options'] as $option => $optiontext):?>
+                          <option value="<?=$option;?>" <?=(empty($pconfig[$fieldname]) && $field['default'] == $option) || $pconfig[$fieldname] == $option ? "selected=\"selected\"" : "";?> >
+                            <?=$optiontext;?>
+                          </option>
+<?php
+                          endforeach;?>
+                        </select>
+<?php
+                        elseif ($field['type'] == 'checkbox'):?>
+                        <input name="<?=$fieldname;?>" type="checkbox" value="1" <?=!empty($pconfig[$fieldname]) ? "checked=\"checked\"" : ""; ?>/>
+<?php
+                        endif;?>
+                        <div class="hidden" for="help_for_field_<?=$typename;?>_<?=$fieldname;?>">
+                          <?=$field['help'];?>
+                        </div>
+                      </td>
+                    </tr>
+
+
+<?php
+                    endforeach;
+                  endif;
+                endforeach;?>
+                <!-- /pluggable options -->
                 <tr>
                   <td>&nbsp;</td>
                   <td>
@@ -763,7 +743,7 @@ $i = 0;
 ?>
                 <tr>
                   <td><?=$server['name']?></td>
-                  <td><?=!empty($auth_server_types[$server['type']]) ? $auth_server_types[$server['type']] : "";;?></td>
+                  <td><?=!empty($authCNFOptions[$server['type']]) ? $authCNFOptions[$server['type']]['description'] : "";;?></td>
                   <td><?=$server['host'];?></td>
                   <td>
                     <?php if ($i < (count($a_server) - 1)) :

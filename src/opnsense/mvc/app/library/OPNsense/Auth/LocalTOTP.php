@@ -30,28 +30,31 @@
 
 namespace OPNsense\Auth;
 
-require_once 'base32/Base32.php';
-
 /**
  * RFC 6238 TOTP: Time-Based One-Time Password Authenticator
  * @package OPNsense\Auth
  */
 class LocalTOTP extends Local
 {
-    /**
-     * @var int time window in seconds (google auth uses 30, some hardware tokens use 60)
-     */
-    private $timeWindow = 30;
+    use TOTP;
 
     /**
-     * @var int key length (6,8)
+     * type name in configuration
+     * @return string
      */
-    private $otpLength = 6;
+    public static function getType()
+    {
+        return 'totp';
+    }
 
     /**
-     * @var int number of seconds the clocks (local, remote) may differ
+     * user friendly description of this authenticator
+     * @return string
      */
-    private $graceperiod = 10;
+    public function getDescription()
+    {
+        return gettext("Local + Timebased One Time Password");
+    }
 
     /**
      * set connector properties
@@ -60,116 +63,15 @@ class LocalTOTP extends Local
     public function setProperties($config)
     {
         parent::setProperties($config);
-        if (!empty($config['timeWindow'])) {
-            $this->timeWindow = $config['timeWindow'];
-        }
-        if (!empty($config['otpLength'])) {
-            $this->otpLength = $config['otpLength'];
-        }
-        if (!empty($config['graceperiod'])) {
-            $this->graceperiod = $config['graceperiod'];
-        }
+        $this->setTOTPProperties($config);
     }
 
     /**
-     * use graceperiod and timeWindow to calculate which moments in time we should check
-     * @return array timestamps
+     * retrieve configuration options
+     * @return array
      */
-    private function timesToCheck()
+    public function getConfigurationOptions()
     {
-        $result = array();
-        if ($this->graceperiod > $this->timeWindow) {
-            $step = $this->timeWindow;
-            $start = -1 * floor($this->graceperiod  / $this->timeWindow) * $this->timeWindow;
-        } else {
-            $step = $this->graceperiod;
-            $start = -1 * $this->graceperiod;
-        }
-        $now = time();
-        for ($count = $start; $count <= $this->graceperiod; $count += $step) {
-            $result[] = $now + $count;
-            if ($this->graceperiod == 0) {
-                // special case, we expect the clocks to match 100%, so step and target are both 0
-                break;
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * @param int $moment timestemp
-     * @param string $secret secret to use
-     * @return calculated token code
-     */
-    private function calculateToken($moment, $secret)
-    {
-        // calculate binary 8 character time for provided window
-        $binary_time = pack("N", (int)($moment/$this->timeWindow));
-        $binary_time = str_pad($binary_time, 8, chr(0), STR_PAD_LEFT);
-
-        // Generate the hash using the SHA1 algorithm
-        $hash = hash_hmac('sha1', $binary_time, $secret, true);
-        $offset = ord($hash[19]) & 0xf;
-        $otp = (
-                ((ord($hash[$offset+0]) & 0x7f) << 24 ) |
-                ((ord($hash[$offset+1]) & 0xff) << 16 ) |
-                ((ord($hash[$offset+2]) & 0xff) << 8 ) |
-                (ord($hash[$offset+3]) & 0xff)
-            ) % pow(10, $this->otpLength);
-
-
-        $otp = str_pad($otp, $this->otpLength, "0", STR_PAD_LEFT);
-        return $otp;
-    }
-
-    /**
-     * return current token code
-     * @param $base32seed secret to use
-     * @return string token code
-     */
-    public function testToken($base32seed)
-    {
-        $otp_seed = \Base32\Base32::decode($base32seed);
-        return $this->calculateToken(time(), $otp_seed);
-    }
-
-    /**
-     * authenticate TOTP RFC 6238
-     * @param string $secret secret seed to use
-     * @param string $code provided code
-     * @return bool is valid
-     */
-    private function authTOTP($secret, $code)
-    {
-        foreach ($this->timesToCheck() as $moment) {
-            if ($code == $this->calculateToken($moment, $secret)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * authenticate user against otp key stored in local database
-     * @param string $username username to authenticate
-     * @param string $password user password
-     * @return bool authentication status
-     */
-    public function authenticate($username, $password)
-    {
-        $userObject = $this->getUser($username);
-        if ($userObject != null && !empty($userObject->otp_seed)) {
-            if (strlen($password) > $this->otpLength) {
-                // split otp token code and userpassword
-                $code = substr($password, 0, $this->otpLength);
-                $userPassword =  substr($password, $this->otpLength);
-                $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
-                if ($this->authTOTP($otp_seed, $code)) {
-                    // token valid, do local auth
-                    return parent::authenticate($userObject, $userPassword);
-                }
-            }
-        }
-        return false;
+        return $this->getTOTPConfigurationOptions();
     }
 }
