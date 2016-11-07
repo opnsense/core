@@ -85,7 +85,6 @@
 /usr/local/etc/rc.dyndns.update
 /usr/local/etc/rc.expireaccounts
 /usr/local/etc/rc.filter_configure_sync
-/usr/local/etc/rc.filter_configure_xmlrpc
 /usr/local/etc/rc.filter_synchronize
 /usr/local/etc/rc.firmware
 /usr/local/etc/rc.firmware.subr
