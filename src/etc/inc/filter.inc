@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2004-2007 Scott Ullrich
     Copyright (C) 2005 Bill Marquette
