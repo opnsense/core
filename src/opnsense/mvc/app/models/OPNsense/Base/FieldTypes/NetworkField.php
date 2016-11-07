@@ -58,6 +58,11 @@ class NetworkField extends BaseField
     protected $internalFieldSeparator = null;
 
     /**
+     * @var bool wildcard (any) enabled
+     */
+    protected $internalWilcardEnabled = true;
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
@@ -81,11 +86,24 @@ class NetworkField extends BaseField
 
     /**
      * if multiple addresses / networks maybe provided at once, set separator.
-     * @param $value separator
+     * @param string $value separator
      */
     public function setFieldSeparator($value)
     {
         $this->internalFieldSeparator = $value;
+    }
+
+    /**
+     * enable "any" keyword
+     * @param string $value Y/N
+     */
+    public function setWildcardEnabled($value)
+    {
+        if (strtolower(trim($value)) == 'y') {
+            $this->internalWilcardEnabled = true;
+        } else {
+            $this->internalWilcardEnabled = false;
+        }
     }
 
     /**
@@ -96,7 +114,7 @@ class NetworkField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            if ($this->internalValue != "any") {
+            if ($this->internalValue != "any" || $this->internalWilcardEnabled == false) {
                 // accept any as target
                 $validators[] = new NetworkValidator(array(
                     'message' => $this->internalValidationMessage,
