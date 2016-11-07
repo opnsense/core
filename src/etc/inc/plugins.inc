@@ -149,6 +149,19 @@ function plugins_interfaces()
     }
 }
 
+function plugins_firewall($fw)
+{
+    foreach (plugins_scan() as $name => $path) {
+        require_once $path;
+        $func = sprintf('%s_firewall', $name);
+        if (function_exists($func)) {
+            $func($fw);
+        }
+    }
+
+    return $fw;
+}
+
 function plugins_configure()
 {
     foreach (plugins_scan() as $name => $path) {
