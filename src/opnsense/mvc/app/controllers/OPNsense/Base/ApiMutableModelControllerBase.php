@@ -111,11 +111,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Use the reference node and tag to rename validation output for a specific node to a new offset, which makes
      * it easier to reference specific uuids without having to use them in the frontend descriptions.
      * @param $node reference node, to use as relative offset
+     * @param $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
      * @return array result / validation output
      */
-    protected function validateAndSave($node = null)
+    protected function validateAndSave($node = null, $prefix = null)
     {
-        $result = $this->validate();
+        $result = $this->validate($node, $prefix);
         if (empty($result['result'])) {
             return $this->save();
         }
@@ -125,11 +126,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * validate this model
      * @param $node reference node, to use as relative offset
+     * @param $prefix prefix to use when $node is provided (defaults to static::$internalModelName)
      * @return array result / validation output
      */
-    protected function validate($node = null)
+    protected function validate($node = null, $prefix = null)
     {
         $result = array("result"=>"");
+        $resultPrefix = empty($prefix) ? static::$internalModelName : $prefix;
         // perform validation
         $valMsgs = $this->getModel()->performValidation();
         foreach ($valMsgs as $field => $msg) {
@@ -139,10 +142,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
             // replace absolute path to attribute for relative one at uuid.
             if ($node != null) {
-                $fieldnm = str_replace($node->__reference, static::$internalModelName, $msg->getField());
+                $fieldnm = str_replace($node->__reference, $resultPrefix, $msg->getField());
                 $result["validations"][$fieldnm] = $msg->getMessage();
             } else {
-                $result["validations"][static::$internalModelName.".".$msg->getField()] = $msg->getMessage();
+                $result["validations"][$resultPrefix.".".$msg->getField()] = $msg->getMessage();
             }
         }
         return $result;
