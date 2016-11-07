@@ -1,5 +1,6 @@
 <model>
     <mount>//OPNsense/cron</mount>
+    <version>1.0.0</version>
     <description>Cron settings</description>
     <items>
         <jobs>
