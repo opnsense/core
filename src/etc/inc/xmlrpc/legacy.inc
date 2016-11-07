@@ -140,7 +140,7 @@ function filter_configure_xmlrpc()
     services_dnsmasq_configure(false);
     services_unbound_configure(false);
     services_dhcpd_configure();
-    relayd_configure();
+    relayd_configure_do();
     openvpn_resync_all();
 
     return true;

@@ -40,7 +40,7 @@ function subnetv4_expand($subnet) {
 }
 
 
-function relayd_configure($kill_first = false)
+function relayd_configure_do($kill_first = false)
 {
     global $config;
 
