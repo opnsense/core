@@ -47,6 +47,8 @@
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/miniupnpd.inc
 /usr/local/etc/inc/plugins.inc.d/relayd.inc
+/usr/local/etc/inc/plugins.inc.d/relayd/dns.proto
+/usr/local/etc/inc/plugins.inc.d/relayd/tcp.proto
 /usr/local/etc/inc/plugins.inc.d/shaper.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
@@ -57,8 +59,6 @@
 /usr/local/etc/inc/unbound.inc
 /usr/local/etc/inc/upgrade_config.inc
 /usr/local/etc/inc/util.inc
-/usr/local/etc/inc/vslb/dns.proto
-/usr/local/etc/inc/vslb/tcp.proto
 /usr/local/etc/inc/xmlparse.inc
 /usr/local/etc/inc/xmlrpc.inc
 /usr/local/etc/inc/xmlrpc/legacy.inc
