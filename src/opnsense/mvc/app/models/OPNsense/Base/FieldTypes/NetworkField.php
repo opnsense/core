@@ -99,7 +99,7 @@ class NetworkField extends BaseField
      */
     public function setWildcardEnabled($value)
     {
-        if (strtolower(trim($value)) == 'y') {
+        if (trim(strtoupper($value)) == "Y") {
             $this->internalWilcardEnabled = true;
         } else {
             $this->internalWilcardEnabled = false;
