@@ -1,5 +1,6 @@
 <model>
     <mount>//OPNsense/TrafficShaper</mount>
+    <version>1.0.1</version>
     <description>
         OPNsense traffic shaper
     </description>
@@ -215,16 +216,26 @@
                 </proto>
                 <source type="NetworkField">
                     <Required>Y</Required>
+                    <FieldSeparator>,</FieldSeparator>
                     <default>any</default>
                 </source>
+                <source_not type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </source_not>
                 <src_port type="PortField">
                     <Required>Y</Required>
                     <default>any</default>
                 </src_port>
                 <destination type="NetworkField">
                     <Required>Y</Required>
+                    <FieldSeparator>,</FieldSeparator>
                     <default>any</default>
                 </destination>
+                <destination_not type="BooleanField">
+                    <default>0</default>
+                    <Required>Y</Required>
+                </destination_not>
                 <dst_port type="PortField">
                     <Required>Y</Required>
                     <default>any</default>
