@@ -60,7 +60,7 @@ class NetworkField extends BaseField
     /**
      * @var bool wildcard (any) enabled
      */
-    protected $internalWilcardEnabled = true;
+    protected $internalWildcardEnabled = true;
 
     /**
      * always lowercase / trim networks
@@ -100,9 +100,9 @@ class NetworkField extends BaseField
     public function setWildcardEnabled($value)
     {
         if (trim(strtoupper($value)) == "Y") {
-            $this->internalWilcardEnabled = true;
+            $this->internalWildcardEnabled = true;
         } else {
-            $this->internalWilcardEnabled = false;
+            $this->internalWildcardEnabled = false;
         }
     }
 
@@ -114,7 +114,7 @@ class NetworkField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            if ($this->internalValue != "any" || $this->internalWilcardEnabled == false) {
+            if ($this->internalValue != "any" || $this->internalWildcardEnabled == false) {
                 // accept any as target
                 $validators[] = new NetworkValidator(array(
                     'message' => $this->internalValidationMessage,
