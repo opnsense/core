@@ -28,8 +28,7 @@
  */
 namespace OPNsense\Proxy\Api;
 
-use \OPNsense\Base\ApiControllerBase;
-use \OPNsense\Proxy\Proxy;
+use \OPNsense\Base\ApiMutableModelControllerBase;
 use \OPNsense\Cron\Cron;
 use \OPNsense\Core\Config;
 use \OPNsense\Base\UIModelGrid;
@@ -38,57 +37,10 @@ use \OPNsense\Base\UIModelGrid;
  * Class SettingsController
  * @package OPNsense\Proxy
  */
-class SettingsController extends ApiControllerBase
+class SettingsController extends ApiMutableModelControllerBase
 {
-    /**
-     * retrieve proxy settings
-     * @return array
-     */
-    public function getAction()
-    {
-        $result = array();
-        if ($this->request->isGet()) {
-            $mdlProxy = new Proxy();
-            $result['proxy'] = $mdlProxy->getNodes();
-        }
-
-        return $result;
-    }
-
-
-    /**
-     * update proxy configuration fields
-     * @return array
-     * @throws \Phalcon\Validation\Exception
-     */
-    public function setAction()
-    {
-        $result = array("result"=>"failed");
-        if ($this->request->hasPost("proxy")) {
-            // load model and update with provided data
-            $mdlProxy = new Proxy();
-            $mdlProxy->setNodes($this->request->getPost("proxy"));
-
-            // perform validation
-            $valMsgs = $mdlProxy->performValidation();
-            foreach ($valMsgs as $field => $msg) {
-                if (!array_key_exists("validations", $result)) {
-                    $result["validations"] = array();
-                }
-                $result["validations"]["proxy.".$msg->getField()] = $msg->getMessage();
-            }
-
-            // serialize model to config and save
-            if ($valMsgs->count() == 0) {
-                $mdlProxy->serializeToConfig();
-                $cnf = Config::getInstance();
-                $cnf->save();
-                $result["result"] = "saved";
-            }
-        }
-
-        return $result;
-    }
+    static protected $internalModelName = 'proxy';
+    static protected $internalModelClass = '\OPNsense\Proxy\Proxy';
 
     /**
      *
@@ -98,7 +50,7 @@ class SettingsController extends ApiControllerBase
     public function searchRemoteBlacklistsAction()
     {
         $this->sessionClose();
-        $mdlProxy = new Proxy();
+        $mdlProxy = $this->getModel();
         $grid = new UIModelGrid($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist);
         return $grid->fetchBindRequest(
             $this->request,
@@ -114,7 +66,7 @@ class SettingsController extends ApiControllerBase
      */
     public function getRemoteBlacklistAction($uuid = null)
     {
-        $mdlProxy = new Proxy();
+        $mdlProxy = $this->getModel();
         if ($uuid != null) {
             $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
             if ($node != null) {
@@ -139,7 +91,7 @@ class SettingsController extends ApiControllerBase
     public function setRemoteBlacklistAction($uuid)
     {
         if ($this->request->isPost() && $this->request->hasPost("blacklist")) {
-            $mdlProxy = new Proxy();
+            $mdlProxy = $this->getModel();
             if ($uuid != null) {
                 $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
                 if ($node != null) {
@@ -175,7 +127,7 @@ class SettingsController extends ApiControllerBase
         $result = array("result" => "failed");
         if ($this->request->isPost() && $this->request->hasPost("blacklist")) {
             $result = array("result" => "failed", "validations" => array());
-            $mdlProxy = new Proxy();
+            $mdlProxy = $this->getModel();
             $node = $mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->Add();
             $node->setNodes($this->request->getPost("blacklist"));
             $valMsgs = $mdlProxy->performValidation();
@@ -207,7 +159,7 @@ class SettingsController extends ApiControllerBase
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
-            $mdlProxy = new Proxy();
+            $mdlProxy = $this->getModel();
             if ($uuid != null) {
                 if ($mdlProxy->forward->acl->remoteACLs->blacklists->blacklist->del($uuid)) {
                     // if item is removed, serialize to config and save
@@ -233,7 +185,7 @@ class SettingsController extends ApiControllerBase
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
-            $mdlProxy = new Proxy();
+            $mdlProxy = $this->getModel();
             if ($uuid != null) {
                 $node = $mdlProxy->getNodeByReference('forward.acl.remoteACLs.blacklists.blacklist.' . $uuid);
                 if ($node != null) {
@@ -262,7 +214,7 @@ class SettingsController extends ApiControllerBase
         $result = array("result" => "failed");
 
         if ($this->request->isPost()) {
-            $mdlProxy = new Proxy();
+            $mdlProxy = $this->getModel();
             if ((string)$mdlProxy->forward->acl->remoteACLs->UpdateCron == "") {
                 $mdlCron = new Cron();
                 // update cron relation (if this doesn't break consistency)

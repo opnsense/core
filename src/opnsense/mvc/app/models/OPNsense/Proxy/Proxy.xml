@@ -1,5 +1,6 @@
 <model>
     <mount>//OPNsense/proxy</mount>
+    <version>1.0.0</version>
     <description>
         (squid) proxy settings
     </description>
@@ -151,12 +152,26 @@
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the overall bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Both throttling parameters should either be filled or empty</ValidationMessage>
+                            <type>AllOrNoneConstraint</type>
+                            <addFields>
+                                <field1>perHostTrotteling</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </OverallBandwidthTrotteling>
                 <perHostTrotteling type="IntegerField">
                     <default>256</default>
                     <MinimumValue>1</MinimumValue>
                     <ValidationMessage>Specify the per host bandwidth for downloads in kilobits per second.</ValidationMessage>
                     <Required>N</Required>
+                    <Constraints>
+                        <check001>
+                            <reference>OverallBandwidthTrotteling.check001</reference>
+                        </check001>
+                    </Constraints>
                 </perHostTrotteling>
             </traffic>
         </general>
@@ -289,6 +304,12 @@
                                 <Required>Y</Required>
                                 <Mask>/^[a-zA-Z0-9]{1,245}\.?[a-zA-z0-9]{1,10}$/</Mask>
                                 <ValidationMessage>The filename may only contain letters, digits and one dot (not required).</ValidationMessage>
+                                <Constraints>
+                                    <check001>
+                                        <ValidationMessage>Filename should be unique</ValidationMessage>
+                                        <type>UniqueConstraint</type>
+                                    </check001>
+                                </Constraints>
                             </filename>
                             <url type="UrlField">
                                 <Required>Y</Required>
