@@ -45,7 +45,7 @@ if (empty($config['load_balancer']['virtual_server']) || !is_array($config['load
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
         header(url_safe('Location: /status_lb_vs.php'));

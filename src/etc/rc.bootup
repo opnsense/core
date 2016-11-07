@@ -201,7 +201,7 @@ system_ntp_configure(false);
 echo "done.\n";
 
 /* start load balancer daemon */
-relayd_configure();
+relayd_configure_do();
 
 /* start DHCP service */
 services_dhcpd_configure();

@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     } elseif (!empty($_POST['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         /* Wipe out old relayd anchors no longer in use. */
         cleanup_lb_marked();

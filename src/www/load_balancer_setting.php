@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
     $input_errors = array();
     if (!empty($pconfig['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
         header(url_safe('Location: /load_balancer_setting.php'));

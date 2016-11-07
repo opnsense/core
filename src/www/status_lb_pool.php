@@ -45,7 +45,7 @@ $a_pool = &$config['load_balancer']['lbpool'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($_POST['apply'])) {
-        relayd_configure();
+        relayd_configure_do();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');
         header(url_safe('Location: /status_lb_pool.php'));
