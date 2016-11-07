@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $natent['target'] = $pconfig['targetip'];
         }
 
-        // handle fields containing portnumbers
+        // handle fields containing port numbers
         if (in_array($pconfig['protocol'], explode(" ", "any tcp udp tcp/udp"))) {
             if (isset($pconfig['staticnatport']) && empty($pconfig['nonat'])) {
                 $natent['staticnatport'] = true;

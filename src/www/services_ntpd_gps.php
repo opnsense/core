@@ -437,7 +437,7 @@ SureGPS =    #Sure Electronics SKG16B
                               <input name="noselect" type="checkbox" id="gpsselect" <?=!empty($pconfig['noselect']) ? " checked=\"checked\"" : ""; ?> />
                             </td>
                             <td>
-                              <?=gettext("NTP should not use this clock, it will be displayed for reference only(default: disabled)."); ?>
+                              <?=gettext("NTP should not use this clock, it will be displayed for reference only (default: disabled)."); ?>
                             </td>
                           </tr>
                           <tr>
