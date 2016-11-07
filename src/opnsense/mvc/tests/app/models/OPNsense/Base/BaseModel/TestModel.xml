@@ -1,5 +1,6 @@
 <model>
     <mount>//tests/OPNsense/TestModel</mount>
+    <version>1.0.0</version>
     <description>
         OPNsense RecursiveModel test
     </description>
@@ -12,5 +13,61 @@
                 <Required>Y</Required>
             </FromEmail>
         </general>
+        <arraytypes>
+            <item type="ArrayField">
+                <number type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                    <ValidationMessage>not a valid number</ValidationMessage>
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>number should be unique</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                            <addFields>
+                                <field1>optfield</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </number>
+                <optfield type="TextField">
+                </optfield>
+            </item>
+        </arraytypes>
+        <AllOrNone>
+            <value1 type="TextField">
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>All fields should contain data or none of them</ValidationMessage>
+                        <type>AllOrNoneConstraint</type>
+                        <addFields>
+                            <field2>value2</field2>
+                            <field3>value3</field3>
+                        </addFields>
+                    </check001>
+                </Constraints>
+            </value1>
+            <value2 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value2>
+            <value3 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value3>
+            <value4 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value1.check001</reference>
+                    </check001>
+                </Constraints>
+            </value4>
+        </AllOrNone>
     </items>
 </model>

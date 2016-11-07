@@ -54,6 +54,22 @@
                         xhr.setRequestHeader("X-CSRFTokenKey", "{{ csrf_tokenKey }}" );
                     }
                 });
+                // propagate ajax error messages
+                $( document ).ajaxError(function( event, request ) {
+                    if (request.responseJSON != undefined && request.responseJSON.errorMessage != undefined) {
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_DANGER,
+                            title: '{{ lang._('An API exception occured') }}',
+                            message:request.responseJSON.errorMessage,
+                            buttons: [{
+                                label: '{{ lang._('Close') }}',
+                                action: function(dialogItself){
+                                    dialogItself.close();
+                                }
+                            }]
+                        });
+                    }
+                });
 
                 // hide empty menu items
                 $('#mainmenu > div > .collapse').each(function () {

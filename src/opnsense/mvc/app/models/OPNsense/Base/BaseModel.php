@@ -57,6 +57,17 @@ abstract class BaseModel
      */
     private $internal_mountpoint = '';
 
+    /**
+     * this models version number, defaults to 0.0.0 (no version)
+     * @var string
+     */
+    private $internal_model_version = "0.0.0";
+
+    /**
+     * model version in config.xml
+     * @var null
+     */
+    private $internal_current_model_version = null;
 
     /**
      * If the model needs a custom initializer, override this init() method
@@ -111,7 +122,16 @@ abstract class BaseModel
             if (class_exists($classname)) {
                 // construct field type object
                 $field_rfcls = new \ReflectionClass($classname);
-                if (!$field_rfcls->getParentClass()->name == 'OPNsense\Base\FieldTypes\BaseField') {
+                $check_derived = $field_rfcls->getParentClass();
+                $is_derived_from_basefield = false;
+                while ($check_derived != false) {
+                    if ($check_derived->name == 'OPNsense\Base\FieldTypes\BaseField') {
+                        $is_derived_from_basefield = true;
+                        break;
+                    }
+                    $check_derived = $check_derived->getParentClass();
+                }
+                if (!$is_derived_from_basefield) {
                     // class found, but of wrong type. raise an exception.
                     throw new ModelException("class ".$field_rfcls->name." of wrong type in model definition");
                 }
@@ -220,6 +240,10 @@ abstract class BaseModel
         }
         $this->internal_mountpoint = $model_xml->mount;
 
+        if (!empty($model_xml->version)) {
+            $this->internal_model_version = (string)$model_xml->version;
+        }
+
         // use an xpath expression to find the root of our model in the config.xml file
         // if found, convert the data to a simple structure (or create an empty array)
         $tmp_config_data = $internalConfigHandle->xpath($model_xml->mount);
@@ -231,6 +255,13 @@ abstract class BaseModel
 
         // We've loaded the model template, now let's parse it into this object
         $this->parseXml($model_xml->items, $config_array, $this->internalData);
+        // root may contain a version, store if found
+        if (empty($config_array)) {
+            // new node, reset
+            $this->internal_current_model_version = "0.0.0";
+        } elseif (!empty($config_array->attributes()['version'])) {
+            $this->internal_current_model_version = (string)$config_array->attributes()['version'];
+        }
 
         // trigger post loading event
         $this->internalData->eventPostLoading();
@@ -368,6 +399,10 @@ abstract class BaseModel
 
         $xml = new \SimpleXMLElement($xml_root_node);
         $this->internalData->addToXMLNode($xml->xpath($this->internal_mountpoint)[0]);
+        // add this model's version to the newly created xml structure
+        if (!empty($this->internal_current_model_version)) {
+            $xml->xpath($this->internal_mountpoint)[0]->addAttribute('version', $this->internal_current_model_version);
+        }
 
         return $xml;
     }
@@ -434,9 +469,11 @@ abstract class BaseModel
         if ($messages->count() > 0) {
             $exception_msg = "";
             foreach ($messages as $msg) {
-                $exception_msg .= "[".$msg-> getField()."] ".$msg->getMessage()."\n";
+                $exception_msg_part = "[".str_replace("\\", ".", get_class($this)).".".$msg-> getField(). "] ";
+                $exception_msg_part .= $msg->getMessage();
+                $exception_msg .= "$exception_msg_part\n";
                 // always log validation errors
-                $logger->error(str_replace("\\", ".", get_class($this)).".".$msg-> getField(). " " .$msg->getMessage());
+                $logger->error($exception_msg_part);
             }
             if (!$disable_validation) {
                 throw new \Phalcon\Validation\Exception($exception_msg);
@@ -481,5 +518,82 @@ abstract class BaseModel
         } else {
             return false;
         }
+    }
+
+    /**
+     * Execute model version migrations
+     * Every model may contain a migrations directory containing BaseModelMigration descendants, which
+     * are executed in order of version number.
+     *
+     * The BaseModelMigration class should be named with the corresponding version
+     * prefixed with an M and . replaced by _ for example : M1_0_1 equals version 1.0.1
+     *
+     */
+    public function runMigrations()
+    {
+        if (version_compare($this->internal_current_model_version, $this->internal_model_version, '<')) {
+            $upgradePerfomed = false;
+            $logger = new Syslog("config", array('option' => LOG_PID, 'facility' => LOG_LOCAL4));
+            $class_info = new \ReflectionClass($this);
+            // fetch version migrations
+            $versions = array();
+            // set default migration for current model version
+            $versions[$this->internal_model_version] =__DIR__."/BaseModelMigration.php";
+            foreach (glob(dirname($class_info->getFileName())."/Migrations/M*.php") as $filename) {
+                $version = str_replace('_', '.', explode('.', substr(basename($filename), 1))[0]);
+                $versions[$version] = $filename;
+            }
+
+            uksort($versions, "version_compare");
+            foreach ($versions as $mig_version => $filename) {
+                if (version_compare($this->internal_current_model_version, $mig_version, '<') &&
+                    version_compare($this->internal_model_version, $mig_version, '>=') ) {
+                    // execute upgrade action
+                    if (!strstr($filename, '/tests/app')) {
+                        $mig_classname = explode('.', explode('/mvc/app/models', $filename)[1])[0];
+                    } else {
+                        // unit tests use a different namespace for their models
+                        $mig_classname = "/tests".explode('.', explode('/mvc/tests/app/models', $filename)[1])[0];
+                    }
+                    $mig_classname = str_replace('/', '\\', $mig_classname);
+                    // Phalcon's autoloader uses _ as a directory locator, we need to import these files ourselves
+                    require_once $filename;
+                    $mig_class = new \ReflectionClass($mig_classname);
+                    $chk_class = empty($mig_class->getParentClass()) ? $mig_class :  $mig_class->getParentClass();
+                    if ($chk_class->name == 'OPNsense\Base\BaseModelMigration') {
+                        $migobj = $mig_class->newInstance();
+                        try {
+                            $migobj->run($this);
+                            $upgradePerfomed = true;
+                        } catch (\Exception $e) {
+                            $logger->error("failed migrating from version " .
+                                $this->internal_current_model_version .
+                                " to " . $mig_version . " in ".
+                                $class_info->getName() .
+                                " [skipping step]");
+                        }
+                        $this->internal_current_model_version = $mig_version;
+                    }
+                }
+            }
+            // serialize to config after last migration step, keep the config data static as long as not all
+            // migrations have completed.
+            if ($upgradePerfomed) {
+                try {
+                    $this->serializeToConfig();
+                } catch (\Exception $e) {
+                    $logger->error("Model ".$class_info->getName() ." can't be saved, skip ( " .$e . " )");
+                }
+            }
+        }
+    }
+
+    /**
+     * return current version number
+     * @return null|string
+     */
+    public function getVersion()
+    {
+        return $this->internal_current_model_version;
     }
 }

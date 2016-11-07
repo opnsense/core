@@ -53,6 +53,16 @@ class NetworkField extends BaseField
     protected $internalNetMaskRequired = false;
 
     /**
+     * @var null when multiple values could be provided at once, specify the split character
+     */
+    protected $internalFieldSeparator = null;
+
+    /**
+     * @var bool wildcard (any) enabled
+     */
+    protected $internalWildcardEnabled = true;
+
+    /**
      * always lowercase / trim networks
      * @param string $value
      */
@@ -75,6 +85,28 @@ class NetworkField extends BaseField
     }
 
     /**
+     * if multiple addresses / networks maybe provided at once, set separator.
+     * @param string $value separator
+     */
+    public function setFieldSeparator($value)
+    {
+        $this->internalFieldSeparator = $value;
+    }
+
+    /**
+     * enable "any" keyword
+     * @param string $value Y/N
+     */
+    public function setWildcardEnabled($value)
+    {
+        if (trim(strtoupper($value)) == "Y") {
+            $this->internalWildcardEnabled = true;
+        } else {
+            $this->internalWildcardEnabled = false;
+        }
+    }
+
+    /**
      * retrieve field validators for this field type
      * @return array returns Text/regex validator
      */
@@ -82,10 +114,11 @@ class NetworkField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            if ($this->internalValue != "any") {
+            if ($this->internalValue != "any" || $this->internalWildcardEnabled == false) {
                 // accept any as target
                 $validators[] = new NetworkValidator(array(
                     'message' => $this->internalValidationMessage,
+                    'split' => $this->internalFieldSeparator,
                     'netMaskRequired' => $this->internalNetMaskRequired
                     ));
             }

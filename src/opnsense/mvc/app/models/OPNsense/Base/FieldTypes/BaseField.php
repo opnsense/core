@@ -48,6 +48,11 @@ abstract class BaseField
     protected $internalChildnodes = array();
 
     /**
+     * @var array constraints for this field, additional to fieldtype
+     */
+    protected $internalConstraints = array();
+
+    /**
      * @var null pointer to parent
      */
     protected $internalParentNode = null;
@@ -212,6 +217,15 @@ abstract class BaseField
     }
 
     /**
+     * return this nodes parent (or null if not found)
+     * @return null|BaseField
+     */
+    public function getParentNode()
+    {
+        return $this->internalParentNode;
+    }
+
+    /**
      * Reflect default getter to internal child nodes.
      * Implements the special attribute __items to return all items and __reference to identify the field in this model.
      * @param string $name property name
@@ -264,7 +278,7 @@ abstract class BaseField
      */
     public function __toString()
     {
-        return $this->internalValue;
+        return (string)$this->internalValue;
     }
 
     /**
@@ -338,7 +352,7 @@ abstract class BaseField
      * check if this field is unused and required
      * @return bool
      */
-    protected function isEmptyAndRequired()
+    public function isEmptyAndRequired()
     {
         if ($this->internalIsRequired && ($this->internalValue == "" || $this->internalValue == null)) {
             return true;
@@ -348,12 +362,67 @@ abstract class BaseField
     }
 
     /**
+     * retrieve constraint objects by defined constraints name (/key)
+     * @param $name
+     * @return null|object
+     */
+    public function getConstraintByName($name)
+    {
+        if (isset($this->internalConstraints[$name])) {
+            $constraint = $this->internalConstraints[$name];
+            if (!empty($constraint['type'])) {
+                try {
+                    $constr_class = new \ReflectionClass('OPNsense\\Base\\Constraints\\'.$constraint['type']);
+                    if ($constr_class->getParentClass()->name == 'OPNsense\Base\Constraints\BaseConstraint') {
+                        $constraint['name'] = $name;
+                        $constraint['node'] = $this;
+                        return $constr_class->newInstance($constraint);
+                    }
+                } catch (\ReflectionException $e) {
+                    null; // ignore configuration errors, if the constraint can't be found, skip.
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * fetch all additional validators
+     * @return array
+     */
+    private function getConstraintValidators()
+    {
+        $result = array();
+        foreach ($this->internalConstraints as $name => $constraint) {
+            if (!empty($constraint['reference'])) {
+                // handle references (should use the same level)
+                $parts = explode('.', $constraint['reference']);
+                $parentNode = $this->getParentNode();
+                if (count($parts) == 2) {
+                    $tagName = $parts[0];
+                    if (isset($parentNode->__items[$tagName])) {
+                        $ref_constraint = $parentNode->$tagName->getConstraintByName($parts[1]);
+                        if ($ref_constraint != null) {
+                            $result[] = $ref_constraint;
+                        }
+                    }
+                }
+            } elseif (!empty($constraint['type'])) {
+                $constraintObj = $this->getConstraintByName($name);
+                if ($constraintObj != null) {
+                    $result[] = $constraintObj;
+                }
+            }
+        }
+        return $result;
+    }
+    /**
      * return field validators for this field
      * @return array returns validators for this field type (empty if none)
      */
     public function getValidators()
     {
-        $validators = array();
+        $validators = $this->getConstraintValidators();
         if ($this->isEmptyAndRequired()) {
             $validators[] = new PresenceOf(array('message' => $this->internalValidationMessage));
         }
@@ -440,25 +509,22 @@ abstract class BaseField
     /**
      * update model with data returning missing repeating tag types.
      * @param $data named array structure containing new model content
-     * @return array missing array keys in data
+     * @throws \Exception
      */
     public function setNodes($data)
     {
-        $delItems = array();
-
         // update structure with new content
         foreach ($this->__items as $key => $node) {
             if ($data != null && array_key_exists($key, $data)) {
                 if ($node->isContainer()) {
-                    $delItems += $node->setNodes($data[$key]);
+                    if (is_array($data[$key])) {
+                        $node->setNodes($data[$key]);
+                    } else {
+                        throw new \Exception("Invalid  input type for {$key} (configuration error?)");
+                    }
                 } else {
                     $node->setValue($data[$key]);
                 }
-            } elseif (get_class($this) == "OPNsense\\Base\\FieldTypes\\ArrayField") {
-                // mark item as missing in input, return when finished
-                $delItems[] = array("node" => $this, "key" => $key );
-            } else {
-                $delItems += $node->setNodes(array());
             }
         }
 
@@ -467,12 +533,10 @@ abstract class BaseField
             foreach ($data as $dataKey => $dataValue) {
                 if (!array_key_exists($dataKey, $this->__items)) {
                     $node = $this->add();
-                    $delItems += $node->setNodes($dataValue);
+                    $node->setNodes($dataValue);
                 }
             }
         }
-
-        return $delItems;
     }
 
 
@@ -559,6 +623,15 @@ abstract class BaseField
         } else {
             $this->internalChangeCase = null;
         }
+    }
+
+    /**
+     * set additional constraints
+     * @param $constraints
+     */
+    public function setConstraints($constraints)
+    {
+        $this->internalConstraints = $constraints;
     }
 
     /**
