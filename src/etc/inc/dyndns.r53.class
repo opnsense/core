@@ -532,17 +532,17 @@ class Route53
 	public function __triggerError($functionname, $error)
 	{
 		if($error == false) {
-			trigger_error(sprintf("Route53::%s(): Encountered an error, but no description given", $functionname), E_USER_WARNING);
+			log_error(sprintf("Route53::%s(): Encountered an error, but no description given", $functionname));
 		}
 		else if(isset($error['curl']) && $error['curl'])
 		{
-			trigger_error(sprintf("Route53::%s(): %s %s", $functionname, $error['code'], $error['message']), E_USER_WARNING);
+			log_error(sprintf("Route53::%s(): %s %s", $functionname, $error['code'], $error['message']));
 		}
 		else if(isset($error['Error']))
 		{
 			$e = $error['Error'];
 			$message = sprintf("Route53::%s(): %s - %s: %s\nRequest Id: %s\n", $functionname, $e['Type'], $e['Code'], $e['Message'], $error['RequestId']);
-			trigger_error($message, E_USER_WARNING);
+			log_error($message);
 		}
 	}
 
