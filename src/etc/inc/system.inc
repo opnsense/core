@@ -1397,7 +1397,7 @@ function system_timezone_configure()
 
     /* reset to default if empty or nonexistent */
     if (empty($timezone) || !in_array($timezone, $timezones) ||
-	!file_exists(sprintf('/usr/share/zoneinfo/%s', $timezone))) {
+        !file_exists(sprintf('/usr/share/zoneinfo/%s', $timezone))) {
         $timezone = 'Etc/UTC';
     }
 
