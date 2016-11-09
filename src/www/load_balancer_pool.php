@@ -156,7 +156,7 @@ $main_buttons = array(
                     <tr>
                       <td><?=$pool['name'];?></td>
                       <td><?=$pool['mode'];?></td>
-                      <td><?=implode('<br/>', $pool['servers']);?></td>
+                      <td><?= !empty($pool['servers']) ? implode('<br/>', $pool['servers']) : '' ?></td>
                       <td><?=$pool['port'];?></td>
                       <td>
                           <a href="load_balancer_monitor_edit.php?id=<?=$mondex[$pool['monitor']];?>"><?=$pool['monitor'];?></a>
