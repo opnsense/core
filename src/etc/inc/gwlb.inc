@@ -42,19 +42,12 @@ function return_apinger_defaults()
     );
 }
 
-function setup_gateways_monitor_full()
-{
-    killbypid('/var/run/apinger.pid');
-    setup_gateways_monitor();
-}
-
-/*
- * Creates monitoring configuration file and
- * adds appropriate static routes.
- */
 function setup_gateways_monitor()
 {
     global $config;
+
+    killbypid('/var/run/apinger.pid', 'TERM', true);
+    @unlink('/var/run/apinger.status');
 
     @mkdir('/var/db/rrd', 0775);
     @chown('/var/db/rrd', 'nobody');
@@ -380,27 +373,11 @@ EOD;
     $gateways_arr = return_gateways_array();
     if (!is_array($gateways_arr)) {
         log_error("No gateways to monitor. Apinger will not be run.");
-        killbypid('/var/run/apinger.pid');
-        @unlink('/var/run/apinger.status');
         return;
     }
 
-    @file_put_contents('/var/etc/apinger.conf', $apingerconfig);
-    unset($apingerconfig);
-
-    /* Restart apinger process */
-    if (isvalidpid('/var/run/apinger.pid')) {
-        killbypid('/var/run/apinger.pid', 'HUP');
-    } else {
-        /* start a new apinger process */
-        @unlink('/var/run/apinger.status');
-        sleep(1);
-        mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
-        sleep(1);
-        killbypid('/var/run/apinger.pid', 'USR1');
-    }
-
-    return 0;
+    file_put_contents('/var/etc/apinger.conf', $apingerconfig);
+    mwexec_bg('/usr/local/sbin/apinger -c /var/etc/apinger.conf');
 }
 
 /* return the status of the apinger targets as a array */
@@ -412,6 +389,7 @@ function return_gateways_status($byname = false)
 
     /* Always get the latest status from apinger */
     killbypid('/var/run/apinger.pid', 'USR1');
+    /* we may read the wrong file here as it's async: */
     if (file_exists('/var/run/apinger.status')) {
         $apingerstatus = file('/var/run/apinger.status');
     }
