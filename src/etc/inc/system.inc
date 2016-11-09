@@ -1395,15 +1395,14 @@ function system_timezone_configure()
     $timezone = $syscfg['timezone'];
     $timezones = get_zoneinfo();
 
-    // Reset to default if empty or not existend
-    if (empty($timezone) || !in_array($timezone, $timezones)) {
+    /* reset to default if empty or nonexistent */
+    if (empty($timezone) || !in_array($timezone, $timezones) ||
+	!file_exists(sprintf('/usr/share/zoneinfo/%s', $timezone))) {
         $timezone = 'Etc/UTC';
     }
 
-    // Apply timezone
+    /* apply timezone */
     copy(sprintf('/usr/share/zoneinfo/%s', $timezone), '/etc/localtime');
-
-    mwexec("sync");
 
     if (file_exists("/var/run/booting")) {
         echo gettext("done.") . "\n";
