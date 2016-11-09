@@ -1291,7 +1291,7 @@ EOD;
 function ipsec_configured_on_interface($interface)
 {
     global $config;
-    if (!empty($config['ipsec']['phase1'][0])) {
+    if (isset($config['ipsec']['phase1'])) {
         foreach ($config['ipsec']['phase1'] as $phase1) {
             if (!isset($phase1['disabled']) && $phase1['interface'] == $interface) {
                 return true;
