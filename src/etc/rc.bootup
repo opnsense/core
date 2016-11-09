@@ -191,7 +191,7 @@ system_routing_enable();
 services_dnsmasq_configure(false);
 
 /* start unbound service */
-services_unbound_configure(false);
+services_unbound_configure(false, true);
 
 /* Do an initial time sync */
 echo "Starting NTP time client...";

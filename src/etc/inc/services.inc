@@ -1916,21 +1916,21 @@ function services_dnsmasq_configure($dhcp_reload = true)
     }
 }
 
-function services_unbound_configure($dhcp_reload = true)
+function services_unbound_configure($dhcp_reload = true, $verbose = false)
 {
     global $config;
 
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
     if (isset($config['unbound']['enable'])) {
-        if (file_exists("/var/run/booting")) {
-            echo gettext("Starting DNS Resolver...");
+        if ($verbose) {
+            echo "Starting DNS Resolver...";
         }
 
         sync_unbound_service();
 
-        if (file_exists("/var/run/booting")) {
-            echo gettext("done.") . "\n";
+        if ($verbose) {
+            echo "done.\n";
         }
     }
 
