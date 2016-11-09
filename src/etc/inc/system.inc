@@ -480,10 +480,14 @@ function system_routing_configure($interface = '')
     $foundgwv6 = false;
     $fargw = false;
 
+    /* XXX eventually this file-based workaround must be removed */
+    foreach (glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE) as $to_delete) {
+        @unlink($to_delete);
+    }
+
     /* tack on all the hard defined gateways as well */
     if (isset($config['gateways']['gateway_item'])) {
-        array_map('unlink', glob('/tmp/*_defaultgw{,v6}', GLOB_BRACE));
-        foreach  ($config['gateways']['gateway_item'] as $gateway) {
+        foreach ($config['gateways']['gateway_item'] as $gateway) {
             if (isset($gateway['defaultgw'])) {
                 if ($gateway['ipprotocol'] != "inet6" && (is_ipaddrv4($gateway['gateway']) || $gateway['gateway'] == "dynamic")) {
                     if(strstr($gateway['gateway'], ":")) {
