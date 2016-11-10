@@ -187,13 +187,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($ca) {
                 $args['extracerts'] = openssl_x509_read(base64_decode($ca['crt']));
             }
+            set_error_handler (
+                function () {
+                    return;
+                }
+            );
 
+            $exp_data = "";
             $res_crt = openssl_x509_read(base64_decode($a_cert[$id]['crt']));
             $res_key = openssl_pkey_get_private(array(0 => base64_decode($a_cert[$id]['prv']) , 1 => ""));
 
-            $exp_data = "";
             openssl_pkcs12_export($res_crt, $exp_data, $res_key, null, $args);
             $exp_size = strlen($exp_data);
+            restore_error_handler();
 
             header("Content-Type: application/octet-stream");
             header("Content-Disposition: attachment; filename={$exp_name}");
