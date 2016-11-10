@@ -92,8 +92,12 @@ function system_api_kernel()
     $inactiveMem = get_single_sysctl("vm.stats.vm.v_inactive_count");
     $cachedMem = get_single_sysctl("vm.stats.vm.v_cache_count");
     $freeMem = get_single_sysctl("vm.stats.vm.v_free_count");
-    $result['memory']['total'] = get_single_sysctl('hw.physmem') ;
-    $result['memory']['used'] = round(((($totalMem - ($inactiveMem + $cachedMem + $freeMem))) / $totalMem)*$result['memory']['total'], 0);
+    $result['memory']['total'] = get_single_sysctl('hw.physmem');
+    if ($totalMem != 0) {
+        $result['memory']['used'] = round(((($totalMem - ($inactiveMem + $cachedMem + $freeMem))) / $totalMem)*$result['memory']['total'], 0);
+    } else {
+        $result['memory']['used'] = gettext('N/A');
+    }
 
     return $result;
 }
