@@ -272,7 +272,7 @@ class LDAP implements IAuthConnector
                     foreach (array($userNameAttribute, "name") as $ldapAttr) {
                         if (isset($searchResults[$i][$ldapAttr]) && $searchResults[$i][$ldapAttr]['count'] > 0) {
                             $result[] = array("name" => $searchResults[$i][$ldapAttr][0]
-                                        , "fullname" => $searchResults[$i]['name'][0]
+                                        , "fullname" => !empty($searchResults[$i]['name'][0]) ? $searchResults[$i]['name'][0] : ""
                                         , "dn" => $searchResults[$i]['dn']);
                             break;
                         }
