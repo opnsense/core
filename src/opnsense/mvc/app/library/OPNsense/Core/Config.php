@@ -466,7 +466,7 @@ class Config extends Singleton
                 $result = array ();
                 foreach ($backups as $filename) {
                     // try to read backup info from xml
-                    $xmlNode = simplexml_load_file($filename, "SimpleXMLElement", LIBXML_NOERROR |  LIBXML_ERR_NONE);
+                    $xmlNode = @simplexml_load_file($filename, "SimpleXMLElement", LIBXML_NOERROR | LIBXML_ERR_NONE);
                     if (isset($xmlNode->revision)) {
                         $result[$filename] = $this->toArray(null, $xmlNode->revision);
                         $result[$filename]['version'] = $xmlNode->version->__toString();
