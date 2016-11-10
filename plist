@@ -446,11 +446,15 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Relayd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Relayd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.php
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/UPnP/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/UPnP/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
