@@ -35,7 +35,7 @@ use OPNsense\Auth\AuthenticationFactory;
 // open database
 $database_filename = '/var/captiveportal/captiveportal.sqlite';
 $db = new SQLite3($database_filename);
-$db->busyTimeout(20000);
+$db->busyTimeout(30000);
 
 // query all sessions with client restrictions
 $result = $db->query('
