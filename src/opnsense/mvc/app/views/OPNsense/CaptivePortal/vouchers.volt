@@ -285,6 +285,18 @@ POSSIBILITY OF SUCH DAMAGE.
             });
         });
 
+        $("#voucher-validity").change(function(){
+            if ($(this).children(":selected").attr("id") == 'voucher-validity-custom') {
+                console.log("xxx");
+                $("#voucher-validity-custom-data").show();
+            } else {
+                $("#voucher-validity-custom-data").hide();
+            }
+        });
+        $("#voucher-validity-custom-data").keyup(function(){
+            $("#voucher-validity-custom").val($(this).val()*60);
+        });
+
         updateVoucherProviders();
         $('.selectpicker').selectpicker('refresh');
     });
@@ -381,7 +393,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <option value="518400">{{ lang._('6 days') }}</option>
                                     <option value="604800">{{ lang._('1 week') }}</option>
                                     <option value="1209600">{{ lang._('2 weeks') }}</option>
+                                    <option id="voucher-validity-custom" value="">{{ lang._('Custom (minutes)') }}</option>
                                 </select>
+                                <input type="text" id="voucher-validity-custom-data" style="display:none;">
                             </td>
                             <td>
                                 <select id="voucher-quantity" class="selectpicker" data-width="200px">
