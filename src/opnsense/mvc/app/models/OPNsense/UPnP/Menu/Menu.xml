@@ -1,0 +1,10 @@
+<menu>
+    <Services>
+        <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug fa-fw">
+            <Settings url="/services_upnp.php">
+                <Edit url="/services_upnp.php?*" visibility="hidden"/>
+            </Settings>
+            <Status url="/status_upnp.php"/>
+        </UPnP>
+    </Services>
+</menu>

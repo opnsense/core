@@ -278,12 +278,6 @@
             <Log order="50" VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
         <SNMP url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
-        <UPnP VisibleName="Universal Plug and Play" cssClass="fa fa-plug fa-fw">
-            <Settings url="/services_upnp.php">
-                <Edit url="/services_upnp.php?*" visibility="hidden"/>
-            </Settings>
-            <Status url="/status_upnp.php"/>
-        </UPnP>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
             <WoLEdit url="/services_wol_edit.php*" visibility="hidden"/>
             <Wol url="/services_wol.php*" visibility="hidden"/>
