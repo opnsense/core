@@ -36,7 +36,7 @@ URL="${URL}/sets/changelog.txz"
 
 DESTDIR="/usr/local/opnsense/changelog"
 WORKDIR="/tmp/changelog"
-FETCH="fetch -aqT 30"
+FETCH="fetch -aqT 5"
 
 rm -rf ${WORKDIR}
 mkdir -p ${WORKDIR}
