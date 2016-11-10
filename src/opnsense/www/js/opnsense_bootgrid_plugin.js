@@ -167,6 +167,7 @@ $.fn.UIBootgrid = function (params) {
                     {
                         if (gridParams['toggle'] != undefined) {
                             var uuid=$(this).data("row-id");
+                            $(this).addClass("fa-spinner fa-pulse");
                             ajaxCall(url=gridParams['toggle'] + uuid,
                                 sendData={},callback=function(data,status){
                                     // reload grid after delete
