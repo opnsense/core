@@ -406,7 +406,7 @@ if ($act!="new" && $act!="edit") {
                       <select name="ovpn_servers[]" class="selectpicker" multiple="multiple" data-size="5" data-live-search="true">
 <?php
                       foreach (openvpn_get_remote_access_servers() as $ra_server_vpnid => $ra_server):?>
-                        <option value="<?=$ra_server_vpnid;?>" <?=in_array($ra_server_vpnid, $pconfig['ovpn_servers']) ?  "selected=\"selected\"": "";?>>
+                        <option value="<?=$ra_server_vpnid;?>" <?= !empty($pconfig['ovpn_servers']) && in_array($ra_server_vpnid, $pconfig['ovpn_servers']) ?  'selected="selected"' : '' ?>>
                            <?=!empty($ra_server['description']) ? $ra_server['description'] : ""?> ( <?=$ra_server['local_port'];?> / <?=$ra_server['protocol'];?>)
                         </option>
 <?php
