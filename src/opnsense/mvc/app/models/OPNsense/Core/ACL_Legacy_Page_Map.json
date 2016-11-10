@@ -966,20 +966,6 @@
             "status_graph.php*"
         ]
     },
-    "page-service-upnp": {
-        "name": "WebCfg - Service: Universal Plug and Play page",
-        "descr": "Allow access to the 'Service: Universal Plug and Play' page.",
-        "match": [
-            "services_upnp.php*"
-        ]
-    },
-    "page-status-upnpstatus": {
-        "name": "WebCfg - Status: Universal Plug and Play page",
-        "descr": "Allow access to the 'Status: Universal Plug and Play' page.",
-        "match": [
-            "status_upnp.php*"
-        ]
-    },
     "page-diagnostics-wirelessstatus": {
         "name": "WebCfg - Status: Wireless page",
         "descr": "Allow access to the 'Status: Wireless' page.",
