@@ -603,7 +603,7 @@ class smtp_class
 					),);
 			stream_context_set_option($this->connection, $contextOptions );
 
-			if (!stream_socket_enable_crypto($this->connection,true,STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+			if (!@stream_socket_enable_crypto($this->connection,true,STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
 				return false;
 			} else {
 				// Resend HELO since session has been reset
