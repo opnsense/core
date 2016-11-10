@@ -45,7 +45,7 @@ ${FETCH} -o ${WORKDIR}/changelog.txz.sig "${URL}.sig"
 ${FETCH} -o ${WORKDIR}/changelog.txz "${URL}"
 opnsense-verify -q ${WORKDIR}/changelog.txz
 
+rm -rf ${DESTDIR}
 mkdir -p ${DESTDIR}
-rm ${DESTDIR}/*
 
 tar -C ${DESTDIR} -xJf ${WORKDIR}/changelog.txz
