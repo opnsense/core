@@ -379,6 +379,14 @@ class FirmwareController extends ApiControllerBase
             }
         }
 
+        /* also pull in changelogs from here */
+        $changelogs = json_decode(trim($backend->configdRun('firmware changelog list')), true);
+        if ($changelogs == null) {
+            $changelogs = array();
+        }
+
+        $response['changelog'] = $changelogs;
+
         return $response;
     }
 

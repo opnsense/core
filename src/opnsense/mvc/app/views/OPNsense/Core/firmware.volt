@@ -198,6 +198,7 @@ POSSIBILITY OF SUCH DAMAGE.
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist').empty();
             $('#pluginlist').empty();
+            $('#changeloglist').empty();
             var installed = {};
 
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
@@ -206,6 +207,8 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
             "<th>{{ lang._('Comment') }}</th><th></th></tr>");
+            $("#changeloglist").html("<tr><th>{{ lang._('Version') }}</th>" +
+            "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
             $.each(data['local'], function(index, row) {
                 $('#packageslist').append(
@@ -233,6 +236,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 installed[row['name']] = row;
             });
 
+            if (!data['local'].length) {
+                $('#packageslist').append(
+                    '<tr><td colspan=5>{{ lang._('No packages were found on your system. Please call for help.') }}</td></tr>'
+                );
+            }
+
             $.each(data['remote'], function(index, row) {
                 if (!row['name'].match(/^os-/g)) {
                     return 1;
@@ -258,6 +267,20 @@ POSSIBILITY OF SUCH DAMAGE.
             if (!data['remote'].length) {
                 $('#pluginlist').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
+                );
+            }
+
+            $.each(data['changelog'], function(index, row) {
+                $('#changeloglist').append(
+                    '<tr><td>' + row['version'] + '</td>' +
+                    '<td>' + row['date'] + '</td>' +
+                    '<td>not yet</td></tr>'
+                );
+            });
+
+            if (!data['changelog'].length) {
+                $('#changeloglist').append(
+                    '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
                 );
             }
 
@@ -402,8 +425,6 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });
-
-
     });
 </script>
 
@@ -422,6 +443,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 <li id="settingstab" class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
                 <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
+                <li id="changelogtab"><a data-toggle="tab" href="#changelogs">{{ lang._('Changelogs') }}</a></li>
                 <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
@@ -476,7 +498,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary"  id="change_mirror" type="button"><b>{{ lang._('Save') }}</b><i id="change_mirror_progress" class=""></i></button>
+                                    <button class="btn btn-primary" id="change_mirror" type="button"><b>{{ lang._('Save') }}</b><i id="change_mirror_progress" class=""></i></button>
                                 </td>
                                 <td></td>
                             </tr>
@@ -489,16 +511,16 @@ POSSIBILITY OF SUCH DAMAGE.
                     </table>
                 </div>
                 <div id="packages" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="packageslist">
-                    </table>
+                    <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="pluginlist">
-                    </table>
+                    <table class="table table-striped table-condensed table-responsive" id="pluginlist"></table>
+                </div>
+                <div id="changelogs" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="changeloglist"></table>
                 </div>
                 <div id="updates" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="updatelist">
-                    </table>
+                    <table class="table table-striped table-condensed table-responsive" id="updatelist"></table>
                 </div>
                 <div id="progress" class="tab-pane fade in">
                     <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly style="max-width:100%; font-family: monospace;"></textarea>

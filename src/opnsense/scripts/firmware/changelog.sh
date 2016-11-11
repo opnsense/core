@@ -27,25 +27,57 @@
 
 set -e
 
-CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
-SYS_ABI=$(opnsense-verify -a 2> /dev/null)
-
-URL="https://pkg.opnsense.org"
-URL="${URL}/${SYS_ABI}/${CORE_ABI}"
-URL="${URL}/sets/changelog.txz"
-
 DESTDIR="/usr/local/opnsense/changelog"
 WORKDIR="/tmp/changelog"
 FETCH="fetch -aqT 5"
 
-rm -rf ${WORKDIR}
-mkdir -p ${WORKDIR}
+changelog_remove()
+{
+	rm -rf ${DESTDIR}
+	mkdir -p ${DESTDIR}
+}
 
-${FETCH} -o ${WORKDIR}/changelog.txz.sig "${URL}.sig"
-${FETCH} -o ${WORKDIR}/changelog.txz "${URL}"
-opnsense-verify -q ${WORKDIR}/changelog.txz
+changelog_fetch()
+{
+	CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
+	SYS_ABI=$(opnsense-verify -a 2> /dev/null)
 
-rm -rf ${DESTDIR}
-mkdir -p ${DESTDIR}
+	URL="https://pkg.opnsense.org"
+	URL="${URL}/${SYS_ABI}/${CORE_ABI}"
+	URL="${URL}/sets/changelog.txz"
 
-tar -C ${DESTDIR} -xJf ${WORKDIR}/changelog.txz
+	rm -rf ${WORKDIR}
+	mkdir -p ${WORKDIR}
+
+	${FETCH} -o ${WORKDIR}/changelog.txz.sig "${URL}.sig"
+	${FETCH} -o ${WORKDIR}/changelog.txz "${URL}"
+	opnsense-verify -q ${WORKDIR}/changelog.txz
+
+        changelog_remove
+
+	tar -C ${DESTDIR} -xJf ${WORKDIR}/changelog.txz
+}
+
+changelog_show()
+{
+	FILE="${DESTDIR}/${1}"
+
+        if [ -f "${FILE}" ]; then
+		cat "${FILE}"
+	fi
+}
+
+COMMAND=${1}
+VERSION=${2}
+
+if [ "${COMMAND}" = "fetch" ]; then
+	changelog_fetch
+elif [ "${COMMAND}" = "remove" ]; then
+	changelog_remove
+elif [ "${COMMAND}" = "list" ]; then
+	changelog_show index.json
+elif [ "${COMMAND}" = "html" -a -n "${VERSION}" ]; then
+	changelog_show "$(basename ${VERSION}).htm"
+elif [ "${COMMAND}" = "text" -a -n "${VERSION}" ]; then
+	changelog_show "$(basename ${VERSION}).txt"
+fi

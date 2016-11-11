@@ -63,7 +63,7 @@ tmp_pkg_update_file="/tmp/pkg_updates.output"
 pkg_running=`ps -x | grep "pkg " | grep -v "grep"`
 if [ "$pkg_running" == "" ]; then
       # load changelogs first
-      /usr/local/opnsense/scripts/firmware/changelog.sh
+      /usr/local/opnsense/scripts/firmware/changelog.sh fetch
       # start pkg update
       pkg update -f > $tmp_pkg_update_file &
       pkg_running="started" # Set running state to arbitrary value
