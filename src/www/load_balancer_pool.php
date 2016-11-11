@@ -33,7 +33,7 @@ require_once("services.inc");
 require_once("plugins.inc.d/relayd.inc");
 require_once("interfaces.inc");
 
-if (!is_array($config['load_balancer']['lbpool'])) {
+if (empty($config['load_balancer']['lbpool']) || !is_array($config['load_balancer']['lbpool'])) {
     $config['load_balancer']['lbpool'] = array();
 }
 $a_pool = &$config['load_balancer']['lbpool'];
