@@ -296,6 +296,17 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#voucher-validity-custom").val($(this).val()*60);
         });
 
+        $("#voucher-quantity").change(function(){
+            if ($(this).children(":selected").attr("id") == 'voucher-quantity-custom') {
+                $("#voucher-quantity-custom-data").show();
+            } else {
+                $("#voucher-quantity-custom-data").hide();
+            }
+        });
+        $("#voucher-quantity-custom-data").keyup(function(){
+            $("#voucher-quantity-custom").val($(this).val());
+        });
+
         updateVoucherProviders();
         $('.selectpicker').selectpicker('refresh');
     });
@@ -405,7 +416,9 @@ POSSIBILITY OF SUCH DAMAGE.
                                     <option value="50">50</option>
                                     <option value="100">100</option>
                                     <option value="250">250</option>
+                                    <option id="voucher-quantity-custom" value="">{{ lang._('Custom') }}</option>
                                 </select>
+                                <input type="text" id="voucher-quantity-custom-data" style="display:none;">
                             </td>
                             <td>
                                 <input id="voucher-groupname" type="text">
