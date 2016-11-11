@@ -53,7 +53,7 @@ changelog_fetch()
 	${FETCH} -o ${WORKDIR}/changelog.txz "${URL}"
 	opnsense-verify -q ${WORKDIR}/changelog.txz
 
-        changelog_remove
+	changelog_remove
 
 	tar -C ${DESTDIR} -xJf ${WORKDIR}/changelog.txz
 }
@@ -62,7 +62,7 @@ changelog_show()
 {
 	FILE="${DESTDIR}/${1}"
 
-        if [ -f "${FILE}" ]; then
+	if [ -f "${FILE}" ]; then
 		cat "${FILE}"
 	fi
 }
