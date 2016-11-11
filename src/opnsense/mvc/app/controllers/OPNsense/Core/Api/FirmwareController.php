@@ -383,6 +383,16 @@ class FirmwareController extends ApiControllerBase
         $changelogs = json_decode(trim($backend->configdRun('firmware changelog list')), true);
         if ($changelogs == null) {
             $changelogs = array();
+        } else {
+            foreach ($changelogs as &$changelog) {
+                /* rewrite dates as ISO */
+                $date = date_parse($changelog['date']);
+                $changelog['date'] = sprintf('%04d-%02d-%02d', $date['year'], $date['month'], $date['day']);
+            }
+            /* sort in reverse */
+            usort($changelogs, function ($a, $b) {
+                return strcmp($b['date'], $a['date']);
+            });
         }
 
         $response['changelog'] = $changelogs;
