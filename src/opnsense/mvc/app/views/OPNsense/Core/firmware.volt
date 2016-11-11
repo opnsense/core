@@ -96,6 +96,29 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
+     * read changelog from backend
+     */
+    function changelog(version)
+    {
+        ajaxCall('/api/core/firmware/changelog/' + version, {}, function (data, status) {
+            if (data['html'] != undefined) {
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_PRIMARY,
+                    title: version,
+                    /* we trust this data, it was signed by us and secured by csrf */
+                    message: htmlDecode(data['html']),
+                    buttons: [{
+                        label: "{{ lang._('Close') }}",
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }]
+                });
+            }
+        });
+    }
+
+    /**
      * perform package action, install poller to update status
      */
     function action(pkg_act, pkg_name)
@@ -131,7 +154,6 @@ POSSIBILITY OF SUCH DAMAGE.
                         dialogRef.close();
                     }
                 }]
-
             });
         } else {
             upgrade();
@@ -274,7 +296,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 $('#changeloglist').append(
                     '<tr><td>' + row['version'] + '</td>' +
                     '<td>' + row['date'] + '</td>' +
-                    '<td>not yet</td></tr>'
+                    '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
+                    'data-toggle="tooltip" title="View ' + row['version'] + '">' +
+                    '<span class="fa fa-book"></span></button></td></tr>'
                 );
             });
 
@@ -304,6 +328,10 @@ POSSIBILITY OF SUCH DAMAGE.
             $(".act_install").click(function(event) {
                 event.preventDefault();
                 action('install', $(this).data('package'));
+            });
+            $(".act_changelog").click(function(event) {
+                event.preventDefault();
+                changelog($(this).data('version'));
             });
             // attach tooltip to generated buttons
             $('[data-toggle="tooltip"]').tooltip();

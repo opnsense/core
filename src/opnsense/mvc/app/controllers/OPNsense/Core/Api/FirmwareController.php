@@ -112,6 +112,32 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * Retrieve specific changelog in text and html format
+     * @param string $version changelog to retrieve
+     * @return array correspondng changelog in both formats
+     * @throws \Exception
+     */
+    public function changelogAction($version)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('version', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
+            });
+            $version = $filter->sanitize($version, 'version');
+            $response['text'] = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
+            $response['html'] = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+        }
+
+        return $response;
+    }
+
+    /**
      * perform reboot
      * @return array status
      * @throws \Exception
