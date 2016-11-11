@@ -93,7 +93,7 @@ class Voucher implements IAuthConnector
     {
         $db_path = '/conf/vouchers_' . $this->refid . '.db';
         $this->dbHandle = new \SQLite3($db_path);
-        $this->dbHandle->busyTimeout(120000);
+        $this->dbHandle->busyTimeout(30000);
         $results = $this->dbHandle->query('select count(*) cnt from sqlite_master');
         $row = $results->fetchArray();
         if ($row['cnt'] == 0) {
