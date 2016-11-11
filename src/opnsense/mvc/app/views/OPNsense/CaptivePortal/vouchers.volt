@@ -287,7 +287,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
         $("#voucher-validity").change(function(){
             if ($(this).children(":selected").attr("id") == 'voucher-validity-custom') {
-                console.log("xxx");
                 $("#voucher-validity-custom-data").show();
             } else {
                 $("#voucher-validity-custom-data").hide();
