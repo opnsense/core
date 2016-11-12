@@ -1,5 +1,12 @@
 #!/bin/sh
 
+DESTDIR="/usr/local/etc"
+WORKDIR="/tmp/bogons"
+FETCH="fetch -aqT 30"
+PROC_ERROR=
+
+COMMAND=${1}
+
 CORE_ABI=$(cat /usr/local/opnsense/version/opnsense.abi 2> /dev/null)
 SYS_ABI=$(opnsense-verify -a 2> /dev/null)
 
@@ -10,20 +17,12 @@ if [ -n "${CORE_ABI}" -a -n "${SYS_ABI}" ]; then
 fi
 URL="${URL}/sets/bogons.txz"
 
-DESTDIR="/usr/local/etc"
-WORKDIR="/tmp/bogons"
-FETCH="fetch -aqT 30"
-
-proc_error=
-
 echo "rc.update_bogons is starting up." | logger
 
-# Sleep for some time, unless an argument is specified.
-if [ -z "$1" ]; then
-    # Grab a random value
-    value=`od -A n -d -N2 /dev/random | awk '{ print $1 }'`
-    echo "rc.update_bogons is sleeping for $value" | logger
-    sleep $value
+if [ "${COMMAND}" = "cron" ]; then
+    VALUE=$(jot -r 1 1 900)
+    echo "rc.update_bogons is sleeping for ${VALUE} seconds" | logger
+    sleep ${VALUE}
 fi
 
 echo "rc.update_bogons is beginning the update cycle." | logger
@@ -36,16 +35,16 @@ ${FETCH} -o ${WORKDIR}/bogons.txz "${URL}"
 
 if [ ! -f ${WORKDIR}/bogons.txz ]; then
     echo "Could not download ${URL}" | logger
-    proc_error="true"
+    PROC_ERROR=1
 elif ! opnsense-verify -q ${WORKDIR}/bogons.txz; then
     echo "Could not verify ${URL}" | logger
-    proc_error="true"
+    PROC_ERROR=1
 elif ! tar -C ${WORKDIR} -xJf ${WORKDIR}/bogons.txz; then
     echo "Could not extract ${URL}" | logger
-    proc_error="true"
+    PROC_ERROR=1
 fi
 
-if [ -n "${proc_error}" ]; then
+if [ -n "${PROC_ERROR}" ]; then
     # Relaunch and sleep
     sh /usr/local/etc/rc.update_bogons &
     exit

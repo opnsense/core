@@ -2307,14 +2307,14 @@ function configure_cron()
     /* bogons fetch always set in default config.xml */
     switch ($config['system']['bogons']['interval']) {
         case 'daily':
-            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons', '1', '3', '*', '*', '*');
+            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons cron', '1', '3', '*', '*', '*');
             break;
         case 'weekly':
-            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons', '1', '3', '*', '*', '0');
+            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons cron', '1', '3', '*', '*', '0');
             break;
         case 'monthly':
         default:
-            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons', '1', '3', '1', '*', '*');
+            $autocron[] = generate_cron_job('/usr/local/etc/rc.update_bogons cron', '1', '3', '1', '*', '*');
             break;
     }
 
