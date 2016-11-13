@@ -134,7 +134,7 @@ system_hosts_generate();
 interfaces_loopback_configure();
 
 /* start syslogd */
-system_syslogd_start();
+system_syslogd_start(true);
 
 /* set up interfaces */
 mute_kernel_msgs();
@@ -253,7 +253,7 @@ prefer_ipv4_or_ipv6();
  * initialized, otherwise it can occasionally fail to
  * route syslog messages properly on both IPv4 and IPv6.
  */
-system_syslogd_start();
+system_syslogd_start(true);
 
 /* If there are ipsec dynamic hosts try again to reload the tunnels as rc.newipsecdns does */
 if ($ipsec_dynamic_hosts) {

@@ -184,7 +184,7 @@ function system_resolvconf_generate($dynupdate = false)
 
     $fd = fopen('/etc/resolv.conf', 'w');
     if (!$fd) {
-        printf("Error: cannot open resolv.conf in system_resolvconf_generate().\n");
+        log_error('Cannot open resolv.conf in system_resolvconf_generate()');
         unlock($dnslock);
         return 1;
     }
@@ -765,7 +765,7 @@ function system_syslogd_extra_local($logsocket)
     return exec_safe('-l %s ', $logsocket);
 }
 
-function system_syslogd_start()
+function system_syslogd_start($verbose = false)
 {
     global $config, $g;
 
@@ -775,8 +775,10 @@ function system_syslogd_start()
     mwexec('/etc/rc.d/hostid start');
 
     $syslogcfg = $config['syslog'];
-    if (file_exists('/var/run/booting')) {
-        echo gettext('Starting syslog...');
+
+    if ($verbose) {
+        echo 'Starting syslog...';
+        flush();
     }
 
     $log_directive = '%';
@@ -866,7 +868,7 @@ EOD;
 
         /* write syslog.conf */
         if (!@file_put_contents("/var/etc/syslog.conf", $syslogconf)) {
-            printf(gettext("Error: cannot open syslog.conf in system_syslogd_start().%s"), "\n");
+            log_error('Cannot open syslog.conf in system_syslogd_start()');
             unset($syslogconf);
             return 1;
         }
@@ -910,8 +912,8 @@ EOD;
         mwexecf_bg("/usr/local/sbin/syslogd -s -c -c -P %s {$syslogd_extra}", '/var/run/syslog.pid');
     }
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("done.") . "\n";
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
