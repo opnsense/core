@@ -26,33 +26,39 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function miniupnpd_firewall($fw)
+function miniupnpd_enabled()
 {
     global $config;
 
-    if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
-        $fw->registerAnchor("miniupnpd/*", "rdr");
-        $fw->registerAnchor("miniupnpd/*", "fw");
+    return isset($config['installedpackages']['miniupnpd']['config'][0]['enable']);
+}
+
+function miniupnpd_firewall($fw)
+{
+    if (!miniupnpd_enabled()) {
+        return;
     }
+
+    $fw->registerAnchor('miniupnpd/*', 'rdr');
+    $fw->registerAnchor('miniupnpd/*', 'fw');
 }
 
 function miniupnpd_services()
 {
-    global $config;
-
     $services = array();
 
-    if (isset($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "miniupnpd";
-        $pconfig['description'] = gettext("UPnP Service");
-        $pconfig['description'] = gettext("UPnP Service");
-        $pconfig['php']['restart'] = array('miniupnpd_stop', 'miniupnpd_start');
-        $pconfig['php']['start'] = array('miniupnpd_start');
-        $pconfig['php']['stop'] = array('miniupnpd_stop');
-        $pconfig['pidfile'] = '/var/run/miniupnpd.pid';
-        $services[] = $pconfig;
+    if (!miniupnpd_enabled()) {
+        return $services;
     }
+
+    $pconfig = array();
+    $pconfig['name'] = 'miniupnpd';
+    $pconfig['description'] = gettext('Univeral Plug and Play');
+    $pconfig['php']['restart'] = array('miniupnpd_stop', 'miniupnpd_start');
+    $pconfig['php']['start'] = array('miniupnpd_start');
+    $pconfig['php']['stop'] = array('miniupnpd_stop');
+    $pconfig['pidfile'] = '/var/run/miniupnpd.pid';
+    $services[] = $pconfig;
 
     return $services;
 }
@@ -79,13 +85,13 @@ function miniupnpd_configure()
 
 function miniupnpd_configure_do()
 {
-    global $config;
-
-    if (!empty($config['installedpackages']['miniupnpd']['config'][0]['enable'])) {
-        echo gettext("Starting UPnP service... ");
-        miniupnpd_sync_package();
-        echo "done.\n";
+    if (!miniupnpd_enabled()) {
+        return;
     }
+
+    echo "Starting UPnP service...";
+    miniupnpd_sync_package();
+    echo "done.\n";
 }
 
 function miniupnpd_uuid()
