@@ -188,7 +188,7 @@ system_routing_configure();
 system_routing_enable();
 
 /* start dnsmasq service */
-services_dnsmasq_configure(false);
+services_dnsmasq_configure(true);
 
 /* start unbound service */
 services_unbound_configure(true);

@@ -112,7 +112,7 @@ function reconfigure_dhcpd()
     system_hosts_generate();
     services_dhcpleases_configure();
     if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        services_dnsmasq_configure(false);
+        services_dnsmasq_configure();
         clear_subsystem_dirty('hosts');
     }
     if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
