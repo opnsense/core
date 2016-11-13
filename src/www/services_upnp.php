@@ -150,6 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config('Modified Universal Plug and Play settings');
         miniupnpd_sync_package();
+        filter_configure();
         header(url_safe('Location: /services_upnp.php'));
         exit;
     }
