@@ -228,7 +228,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         services_dhcpleases_configure();
         system_resolvconf_generate();
         services_dnsmasq_configure(false);
-        services_unbound_configure(false);
+        services_unbound_configure();
         services_dhcpd_configure();
         system_timezone_configure();
 

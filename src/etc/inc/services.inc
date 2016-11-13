@@ -1916,30 +1916,25 @@ function services_dnsmasq_configure($dhcp_reload = true)
     }
 }
 
-function services_unbound_configure($dhcp_reload = true, $verbose = false)
+function services_unbound_configure($verbose = false)
 {
     global $config;
 
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
     if (isset($config['unbound']['enable'])) {
-        if ($verbose) {
-            echo "Starting DNS Resolver...";
-        }
-
-        sync_unbound_service();
-
-        if ($verbose) {
-            echo "done.\n";
-        }
+        return;
     }
 
-    /*
-     * XXX this is overly convoluted, potentially
-     * restarting all of dhcp up to three times ;)
-     */
-    if ($dhcp_reload) {
-        services_dhcpd_configure();
+    if ($verbose) {
+        echo "Starting DNS Resolver...";
+        flush();
+    }
+
+    sync_unbound_service();
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
