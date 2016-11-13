@@ -231,8 +231,9 @@ plist-check: force
 	@${MAKE} DESTDIR=${DESTDIR} plist > ${WRKDIR}/plist.new
 	@cat ${.CURDIR}/plist > ${WRKDIR}/plist.old
 	@if ! diff -uq ${WRKDIR}/plist.old ${WRKDIR}/plist.new > /dev/null ; then \
+		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new || true; \
 		echo ">>> Package file lists do not match.  Please run 'make plist-fix'." >&2; \
-		diff -u ${WRKDIR}/plist.old ${WRKDIR}/plist.new; \
+		exit 1; \
 	fi
 
 metadata: force
