@@ -769,7 +769,6 @@ function system_syslogd_start($verbose = false)
 {
     global $config, $g;
 
-    /* XXX temporary hook for newsyslog.conf regeneration */
     configd_run('template reload OPNsense/Syslog');
 
     mwexec('/etc/rc.d/hostid start');
@@ -991,7 +990,7 @@ function system_webgui_configure()
             log_error("Creating SSL Certificate for this host");
             $cert = array();
             $cert['refid'] = uniqid();
-            $cert['descr'] = gettext("webConfigurator default");
+            $cert['descr'] = 'webConfigurator default';
             mwexec(
                 /* XXX ought to be replaced by PHP calls */
                 '/usr/local/bin/openssl req -new ' .
@@ -1306,7 +1305,7 @@ EOD;
             fclose($fd);
         }
         $lighty_config .= "\n";
-        $lighty_config .= "## " . gettext("ssl configuration") . "\n";
+        $lighty_config .= "## ssl configuration\n";
         $lighty_config .= "ssl.engine = \"enable\"\n";
         $lighty_config .= "ssl.pemfile = \"/var/etc/{$cert_location}\"\n\n";
 
@@ -1387,14 +1386,15 @@ function system_firmware_configure()
     }
 }
 
-function system_timezone_configure()
+function system_timezone_configure($verbose = false)
 {
     global $config;
 
     $syscfg = $config['system'];
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Setting timezone...");
+    if ($verbose) {
+        echo 'Setting timezone...';
+        flush();
     }
 
     /* extract appropriate timezone file */
@@ -1410,8 +1410,8 @@ function system_timezone_configure()
     /* apply timezone */
     copy(sprintf('/usr/share/zoneinfo/%s', $timezone), '/etc/localtime');
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("done.") . "\n";
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
@@ -1837,7 +1837,7 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
                 if (!isset($setting['disable'])) {
                     $vpn = array();
                     $vpn['value'] = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
-                    $vpn['name'] = gettext("OpenVPN") . " ".$mode.": ".htmlspecialchars($setting['description']);
+                    $vpn['name'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description']);
                     $sourceips[] = $vpn;
                 }
             }

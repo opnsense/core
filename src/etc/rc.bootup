@@ -119,7 +119,7 @@ system_setup_sysctl();
 echo "done.\n";
 
 /* set up our timezone */
-system_timezone_configure();
+system_timezone_configure(true);
 
 /* set up firmware configuration */
 system_firmware_configure();
