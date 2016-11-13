@@ -30,6 +30,7 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once("filter.inc");
 require_once("system.inc");
 require_once("plugins.inc.d/miniupnpd.inc");
 
@@ -150,6 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config('Modified Universal Plug and Play settings');
         miniupnpd_sync_package();
+        filter_configure();
         header(url_safe('Location: /services_upnp.php'));
         exit;
     }
