@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['apply'])) {
         services_unbound_configure();
+        services_dhcpd_configure();
         clear_subsystem_dirty('unbound');
         /* Update resolv.conf in case the interface bindings exclude localhost. */
         system_resolvconf_generate();

@@ -47,7 +47,7 @@ function reconfigure_dhcpd()
     }
 
     if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        services_unbound_configure(false);
+        services_unbound_configure();
         clear_subsystem_dirty('unbound');
     }
 
