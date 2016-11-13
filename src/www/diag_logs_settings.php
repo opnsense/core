@@ -436,7 +436,7 @@ $(document).ready(function() {
                         <select name="sourceip"  class="form-control">
                           <option value=""><?=gettext('Default (any)') ?></option>
 <?php
-                          foreach (get_possible_traffic_source_addresses(false) as $sip):?>
+                          foreach (get_possible_listen_ips(false) as $sip):?>
                           <option value="<?=$sip['value'];?>" <?=!link_interface_to_bridge($sip['value']) && ($sip['value'] == $pconfig['sourceip']) ? "selected=\"selected\"" : "";?>>
                             <?=htmlspecialchars($sip['name']);?>
                           </option>
