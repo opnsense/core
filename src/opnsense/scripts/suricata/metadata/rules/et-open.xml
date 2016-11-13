@@ -1,12 +1,11 @@
 <?xml version="1.0"?>
 <ruleset documentation_url="http://doc.emergingthreats.net/bin/view/Main/EmergingFAQ">
-    <location url="https://rules.emergingthreats.net/open/suricata/rules/" prefix="ET open"/>
+    <location url="https://rules.emergingthreats.net/open/suricata-1.3-enhanced/rules/" prefix="ET open"/>
     <files>
         <file description="botcc.portgrouped">botcc.portgrouped.rules</file>
         <file description="botcc">botcc.rules</file>
         <file description="ciarmy">ciarmy.rules</file>
         <file description="compromised">compromised.rules</file>
-        <file description="decoder-events">decoder-events.rules</file>
         <file description="drop">drop.rules</file>
         <file description="dshield">dshield.rules</file>
         <file description="emerging-activex">emerging-activex.rules</file>
@@ -47,11 +46,6 @@
         <file description="emerging-web_server">emerging-web_server.rules</file>
         <file description="emerging-web_specific_apps">emerging-web_specific_apps.rules</file>
         <file description="emerging-worm">emerging-worm.rules</file>
-        <file description="files">files.rules</file>
-        <file description="http-events">http-events.rules</file>
-        <file description="smtp-events">smtp-events.rules</file>
-        <file description="stream-events">stream-events.rules</file>
-        <file description="tls-events">tls-events.rules</file>
         <file description="tor">tor.rules</file>
     </files>
 </ruleset>
