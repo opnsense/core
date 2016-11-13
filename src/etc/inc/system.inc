@@ -1797,6 +1797,7 @@ function system_arp_wrong_if()
 }
 
 function get_possible_listen_ips($include_ipv6_link_local = false, $include_loopback = true) {
+    global $config;
     $interfaces = get_configured_interface_with_descr();
     $carplist = get_configured_carp_interface_list();
     $listenips = array();
@@ -1825,12 +1826,6 @@ function get_possible_listen_ips($include_ipv6_link_local = false, $include_loop
         $tmp["value"] = "lo0";
         $listenips[] = $tmp;
     }
-    return $listenips;
-}
-
-function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
-    global $config;
-    $sourceips = get_possible_listen_ips($include_ipv6_link_local);
     foreach (array('server', 'client') as $mode) {
         if (isset($config['openvpn']["openvpn-{$mode}"]) && is_array($config['openvpn']["openvpn-{$mode}"])) {
             foreach ($config['openvpn']["openvpn-{$mode}"] as $id => $setting) {
@@ -1838,12 +1833,12 @@ function get_possible_traffic_source_addresses($include_ipv6_link_local=false) {
                     $vpn = array();
                     $vpn['value'] = 'ovpn' . substr($mode, 0, 1) . $setting['vpnid'];
                     $vpn['name'] = "OpenVPN {$mode}: " . htmlspecialchars($setting['description']);
-                    $sourceips[] = $vpn;
+                    $listenips[] = $vpn;
                 }
             }
         }
     }
-    return $sourceips;
+    return $listenips;
 }
 
 function load_crypto_module()

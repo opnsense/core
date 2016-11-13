@@ -126,7 +126,7 @@ include("head.inc"); ?>
                         <select name="sourceip" class="selectpicker">
                           <option value=""><?= gettext('Default') ?></option>
 <?php
-                          foreach (get_possible_traffic_source_addresses(true) as $sip):?>
+                          foreach (get_possible_listen_ips(true) as $sip):?>
                           <option value="<?=$sip['value'];?>" <?=!link_interface_to_bridge($sip['value']) && ($sip['value'] == $pconfig['sourceip']) ? "selected=\"selected\"" : "";?>>
                             <?=htmlspecialchars($sip['name']);?>
                           </option>
