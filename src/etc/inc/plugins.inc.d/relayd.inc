@@ -108,10 +108,15 @@ function relayd_configure_do($kill_first = false)
     } else {
         $setting = array();
     }
+    if (isset($config['load_balancer']['monitor_type']) && is_array($config['load_balancer']['monitor_type'])) {
+        $monitors_a = $config['load_balancer']['monitor_type'];
+    } else {
+        $monitors_a = array();
+    }
 
     $check_a = array();
 
-    foreach ((array)$config['load_balancer']['monitor_type'] as $type) {
+    foreach ($monitors_a as $type) {
         $type['options'] = isset($type['options']) ? $type['options'] : array();
         switch($type['type']) {
             case 'icmp':
