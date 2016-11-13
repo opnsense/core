@@ -27,32 +27,38 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function relayd_firewall($fw)
+function relayd_enabled()
 {
     global $config;
 
-    if (isset($config['load_balancer']['virtual_server']) && isset($config['load_balancer']['lbpool']) &&
-        count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {
-        $fw->registerAnchor('relayd/*', 'rdr');
-        $fw->registerAnchor('relayd/*', 'fw');
+    return isset($config['load_balancer']['lbpool']) && count($config['load_balancer']['lbpool']) &&
+        isset($config['load_balancer']['virtual_server']) && count($config['load_balancer']['virtual_server']);
+}
+
+function relayd_firewall($fw)
+{
+    if (!relayd_enabled()) {
+        return;
     }
+
+    $fw->registerAnchor('relayd/*', 'rdr');
+    $fw->registerAnchor('relayd/*', 'fw');
 }
 
 function relayd_services()
 {
-    global $config;
-
     $services = array();
 
-    if (isset($config['load_balancer']['virtual_server']) && isset($config['load_balancer']['lbpool']) &&
-        count($config['load_balancer']['virtual_server']) && count($config['load_balancer']['lbpool'])) {
-        $pconfig = array();
-        $pconfig['name'] = 'relayd';
-        $pconfig['description'] = gettext('Server load balancing daemon');
-        $pconfig['php']['restart'] = array('relayd_configure_do', 'filter_configure');
-        $pconfig['php']['start'] = array('relayd_configure_do', 'filter_configure');
-        $services[] = $pconfig;
+    if (!relayd_enabled()) {
+        return $services;
     }
+
+    $pconfig = array();
+    $pconfig['name'] = 'relayd';
+    $pconfig['description'] = gettext('Server load balancing daemon');
+    $pconfig['php']['restart'] = array('relayd_configure_do');
+    $pconfig['php']['start'] = array('relayd_configure_do');
+    $services[] = $pconfig;
 
     return $services;
 }
