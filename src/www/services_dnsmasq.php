@@ -109,6 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             write_config();
             services_dnsmasq_configure();
+            services_dhcpd_configure();
             header(url_safe('Location: /services_dnsmasq.php'));
             exit;
         }
@@ -120,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_hosts_generate();
         services_dhcpleases_configure();
         services_dnsmasq_configure();
+        services_dhcpd_configure();
         clear_subsystem_dirty('hosts');
         header(url_safe('Location: /services_dnsmasq.php'));
         exit;

@@ -1141,8 +1141,8 @@ function interfaces_configure()
         /* reload IPsec tunnels */
         ipsec_configure();
 
-        /* restart dns servers (defering dhcp restart) */
-        services_dnsmasq_configure(false);
+        /* restart dns servers */
+        services_dnsmasq_configure();
         services_unbound_configure();
 
         /* reload dhcpd (interface enabled/disabled status may have changed) */
@@ -2889,8 +2889,8 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             /* reload ipsec tunnels */
             ipsec_configure();
 
-            /* restart dns servers (defering dhcp restart) */
-            services_dnsmasq_configure(false);
+            /* restart dns servers */
+            services_dnsmasq_configure();
             services_unbound_configure();
 
             /* reload dhcpd (interface enabled/disabled status may have changed) */

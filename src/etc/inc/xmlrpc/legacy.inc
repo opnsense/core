@@ -137,7 +137,7 @@ function filter_configure_xmlrpc()
     system_hosts_generate();
     services_dhcpleases_configure();
     local_sync_accounts();
-    services_dnsmasq_configure(false);
+    services_dnsmasq_configure();
     services_unbound_configure();
     services_dhcpd_configure();
     relayd_configure_do();

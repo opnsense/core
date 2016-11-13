@@ -42,7 +42,7 @@ require_once("services.inc");
 function reconfigure_dhcpd()
 {
     if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        services_dnsmasq_configure(false);
+        services_dnsmasq_configure();
         clear_subsystem_dirty('hosts');
     }
 

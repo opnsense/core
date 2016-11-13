@@ -253,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         system_login_configure();
         system_hosts_generate();
         services_dhcpleases_configure();
-        services_dnsmasq_configure(false);
+        services_dnsmasq_configure();
         services_unbound_configure();
         services_dhcpd_configure();
 
