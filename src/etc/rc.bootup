@@ -216,7 +216,7 @@ filter_configure_sync();
 
 /* Run all registered plugins */
 if (function_exists('plugins_configure')) {
-    plugins_configure();
+    plugins_configure(true);
 }
 
 /* start IPsec tunnels */

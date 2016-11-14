@@ -162,7 +162,7 @@ function plugins_firewall($fw)
     return $fw;
 }
 
-function plugins_configure()
+function plugins_configure($verbose = true)
 {
     foreach (plugins_scan() as $name => $path) {
         require_once $path;
@@ -170,7 +170,7 @@ function plugins_configure()
         if (function_exists($func)) {
             $workers = $func();
             foreach ($workers as $worker) {
-                $worker();
+                $worker($verbose);
             }
         }
     }
