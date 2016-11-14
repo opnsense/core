@@ -179,23 +179,11 @@ echo "Configuring CRON...";
 configure_cron();
 echo "done.\n";
 
-/* set up static routes */
 system_routing_configure();
-
-/* enable routing */
 system_routing_enable();
-
-/* start dnsmasq service */
 services_dnsmasq_configure(true);
-
-/* start unbound service */
 services_unbound_configure(true);
-
-/* Do an initial time sync */
-echo "Starting NTP time client...";
-system_ntp_configure(false);
-echo "done.\n";
-
+system_ntp_configure(false, true);
 services_dhcpd_configure('all', array(), true);
 services_dhcpleases_configure();
 services_dhcrelay_configure(true);

@@ -1500,7 +1500,7 @@ function system_ntp_setup_pps($serialport)
     return true;
 }
 
-function system_ntp_configure($start_ntpd = true)
+function system_ntp_configure($start_ntpd = true, $verbose = false)
 {
     global $config;
 
@@ -1511,6 +1511,11 @@ function system_ntp_configure($start_ntpd = true)
     if (!isset($config['system']['timeservers'])) {
         /* use this field for on/off toggle */
         return;
+    }
+
+    if ($verbose) {
+        echo 'Starting NTP service...';
+        flush();
     }
 
     $driftfile = '/var/db/ntpd.drift';
@@ -1758,6 +1763,9 @@ function system_ntp_configure($start_ntpd = true)
     if (!$start_ntpd) {
         /* write out the config and delay startup */
         mwexec_bg('/usr/local/sbin/ntpdate_sync_once.sh');
+        if ($verbose) {
+            echo "deferred.\n";
+        }
         return;
     }
 
@@ -1770,8 +1778,9 @@ function system_ntp_configure($start_ntpd = true)
       array('/var/etc/ntpd.conf', '/var/run/ntpd.pid')
     );
 
-    // Note that we are starting up
-    log_error("NTPD is starting up.");
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function system_halt($sync = false)
