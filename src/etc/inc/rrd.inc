@@ -45,6 +45,7 @@ function enable_rrd_graphing($verbose = false)
 
     if ($verbose) {
         echo 'Generating RRD graphs...';
+        flush();
     }
 
     $rrddbpath = "/var/db/rrd/";
