@@ -2067,8 +2067,6 @@ function upgrade_054_to_055()
 		$xmldump = "{$database}.old.xml";
 		$xmldumpnew = "{$database}.new.xml";
 
-		if (file_exists("/var/run/booting"))
-			echo "Migrate RRD database {$database} to new format for IPv6 \n";
 		mwexec("$rrdtool tune {$rrddbpath}{$database} -r roundtrip:delay 2>&1");
 
 		dump_rrd_to_xml("{$rrddbpath}/{$database}", "/tmp/{$xmldump}");
@@ -2103,8 +2101,6 @@ function upgrade_054_to_055()
 		$xmldumptmp = "{$database}.tmp.xml";
 		$xmldumpnew = "{$database}.new.xml";
 
-		if (file_exists("/var/run/booting"))
-			echo "Migrate RRD database {$database} to new format \n";
 		/* rename DS source */
 		mwexec("$rrdtool tune {$rrddbpath}/{$database} -r in:inpass 2>&1");
 		mwexec("$rrdtool tune {$rrddbpath}/{$database} -r out:outpass 2>71");
@@ -2620,9 +2616,6 @@ function upgrade_080_to_081()
 		$xmldump = "{$database}.old.xml";
 		$xmldumpnew = "{$database}.new.xml";
 
-		if (file_exists("/var/run/booting"))
-			echo "Migrate RRD database {$database} to new format for IPv6.\n";
-
 		/* dump contents to xml and move database out of the way */
 		dump_rrd_to_xml("{$rrddbpath}/{$database}", "/tmp/{$xmldump}");
 
@@ -2956,9 +2949,6 @@ function upgrade_095_to_096()
 	$databases = return_dir_as_array($rrddbpath, '/-(traffic|packets)\.rrd$/');
 	rsort($databases);
 	foreach($databases as $database) {
-		if (file_exists("/var/run/booting"))
-			echo "Update RRD database {$database}.\n";
-
 		$cmd = "{$rrdtool} tune {$rrddbpath}/{$database}";
 		foreach ($names as $name)
 			$cmd .= " -a {$name}:{$stream}";
