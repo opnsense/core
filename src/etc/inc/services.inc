@@ -1351,7 +1351,7 @@ EOD;
     return 0;
 }
 
-function services_igmpproxy_configure()
+function services_igmpproxy_configure($verbose = false)
 {
     global $config;
 
@@ -1359,7 +1359,12 @@ function services_igmpproxy_configure()
     killbyname("igmpproxy");
 
     if (!isset($config['igmpproxy']['igmpentry']) || !is_array($config['igmpproxy']['igmpentry']) || (count($config['igmpproxy']['igmpentry']) == 0)) {
-        return 1;
+        return;
+    }
+
+    if ($verbose) {
+        echo 'Started IGMP Proxy...';
+        flush();
     }
 
     $iflist = get_configured_interface_list();
@@ -1407,9 +1412,10 @@ EOD;
     unset($igmpconf);
 
     mwexec('/usr/local/etc/rc.d/igmpproxy onestart');
-    log_error('Started IGMP proxy service.');
 
-    return 0;
+    if ($verbose) {
+        print "done.\n";
+    }
 }
 
 function services_dhcrelay_configure()
