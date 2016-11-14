@@ -47,8 +47,6 @@ require_once("services.inc");
 echo ".";
 require_once("system.inc");
 echo ".";
-require_once("unbound.inc");
-echo ".";
 require_once("filter.inc");
 echo ".";
 require_once("ipsec.inc");

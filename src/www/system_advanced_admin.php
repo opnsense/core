@@ -32,7 +32,6 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
-require_once("unbound.inc");
 require_once("services.inc");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

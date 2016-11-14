@@ -1921,7 +1921,7 @@ function services_unbound_configure($verbose = false)
         flush();
     }
 
-    sync_unbound_service();
+    unbound_sync_service();
 
     if ($verbose) {
         echo "done.\n";

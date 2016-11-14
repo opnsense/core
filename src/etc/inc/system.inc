@@ -306,6 +306,22 @@ function get_searchdomains()
     return $master_list;
 }
 
+function get_dns_servers()
+{
+    $dns_servers = array();
+
+    $dns_s = file("/etc/resolv.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    foreach($dns_s as $dns) {
+        $matches = "";
+        if (preg_match("/nameserver (.*)/", $dns, $matches)) {
+            $dns_servers[] = $matches[1];
+        }
+    }
+
+    return array_unique($dns_servers);
+}
+
 function get_nameservers()
 {
     global $config;
