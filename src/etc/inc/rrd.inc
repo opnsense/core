@@ -39,7 +39,7 @@ function create_new_rrd($rrdcreatecmd)
     return $rrdcreatereturn;
 }
 
-function enable_rrd_graphing($verbose = true)
+function enable_rrd_graphing($verbose = false)
 {
     global $config;
 
