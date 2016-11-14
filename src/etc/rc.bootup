@@ -154,7 +154,7 @@ echo "done.\n";
 system_resolvconf_generate();
 
 /* setup pf */
-filter_configure_sync();
+filter_configure_sync(true);
 
 /* start pflog */
 echo "Starting PFLOG...";
@@ -214,7 +214,7 @@ services_dhcrelay6_configure();
 mwexec("/usr/local/etc/rc.dyndns.update");
 
 /* Run a filter configure now that most all services have started */
-filter_configure_sync();
+filter_configure_sync(true);
 
 /* Run all registered plugins */
 if (function_exists('plugins_configure')) {

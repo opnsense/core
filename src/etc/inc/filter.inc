@@ -365,7 +365,7 @@ function filter_delete_states_for_down_gateways()
     }
 }
 
-function filter_configure_sync()
+function filter_configure_sync($verbose = false)
 {
     global $config, $filterdns, $aliases;
 
@@ -389,45 +389,56 @@ function filter_configure_sync()
     filter_pflog_start();
     update_filter_reload_status(gettext("Initializing"), true);
 
-    /* Get interface list to work with. */
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Configuring firewall");
+    if ($verbose) {
+        echo 'Configuring firewall.';
+        flush();
     }
 
     /* generate aliases */
-    if (file_exists("/var/run/booting")) {
-        echo ".";
-    }
     update_filter_reload_status(gettext("Creating aliases"));
     $aliases = filter_generate_aliases($FilterIflist, $after_filter_configure_run);
     $gateways = filter_generate_gateways();
-    if (file_exists("/var/run/booting")) {
-        echo ".";
+
+    if ($verbose) {
+        echo '.';
+        flush();
     }
-    update_filter_reload_status(gettext("Generating NAT rules"));
+
     /* generate nat rules */
+    update_filter_reload_status(gettext("Generating NAT rules"));
     $natrules = filter_nat_rules_generate($FilterIflist);
-    if (file_exists("/var/run/booting")) {
-        echo ".";
+
+    if ($verbose) {
+        echo '.';
+        flush();
     }
-    update_filter_reload_status(gettext("Generating filter rules"));
+
     /* generate pfctl rules */
+    update_filter_reload_status(gettext("Generating filter rules"));
     $pfrules = filter_rules_generate($FilterIflist);
-    if (file_exists("/var/run/booting")) {
-        echo ".";
+
+    if ($verbose) {
+        echo '.';
+        flush();
     }
-    update_filter_reload_status(gettext("Loading filter rules"));
+
     /* enable pf if we need to, otherwise disable */
+    update_filter_reload_status(gettext("Loading filter rules"));
     if (!isset ($config['system']['disablefilter'])) {
         mwexec("/sbin/pfctl -e", true);
     } else {
         mwexec("/sbin/pfctl -d", true);
         update_filter_reload_status(gettext("Filter is disabled. Not loading rules."));
-        if (file_exists("/var/run/booting")) {
-            echo gettext("done.") . "\n";
+        if ($verbose) {
+            echo "done.\n";
         }
         unlock($filterlck);
         return;
+    }
+
+    if ($verbose) {
+        echo '.';
+        flush();
     }
 
     $limitrules = "";
@@ -581,8 +592,9 @@ function filter_configure_sync()
         mwexecf('/sbin/pfctl -T flush -t %s', $afcr);
     }
 
-    if (file_exists("/var/run/booting")) {
-        echo ".";
+    if ($verbose) {
+        echo '.';
+        flush();
     }
 
     update_filter_reload_status(gettext("Processing down interface states"));
@@ -591,8 +603,9 @@ function filter_configure_sync()
     }
 
     update_filter_reload_status(gettext("Done"));
-    if (file_exists("/var/run/booting")) {
-        echo gettext("done.") . "\n";
+
+    if ($verbose) {
+        echo "done.\n";
     }
 
     unlock($filterlck);
