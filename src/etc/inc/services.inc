@@ -279,10 +279,7 @@ function services_radvd_configure($blacklist = array())
 
     /* write radvd.conf */
     if (!@file_put_contents("/var/etc/radvd.conf", $radvdconf)) {
-        log_error("Error: cannot open radvd.conf in services_radvd_configure().\n");
-        if (file_exists("/var/run/booting")) {
-            printf("Error: cannot open radvd.conf in services_radvd_configure().\n");
-        }
+        log_error('Cannot open radvd.conf in services_radvd_configure()');
     }
 
     if (count($radvdifs) > 0) {
@@ -427,8 +424,6 @@ function services_dhcpdv4_configure()
         }
     }
     $dhcpdconf = <<<EOD
-
-option domain-name "{$config['system']['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 option arch code 93 = unsigned integer 16; # RFC4578
@@ -547,6 +542,8 @@ EOPP;
 
         if (!empty($dhcpifconf['domain'])) {
             $dnscfg .= "  option domain-name \"{$dhcpifconf['domain']}\";\n";
+        } else {
+            $dnscfg .= "  option domain-name \"{$config['system']['domain']}\";\n";
         }
 
         if (!empty($dhcpifconf['domainsearchlist'])) {
@@ -609,7 +606,7 @@ EOPP;
             }
         }
 
-        $dhcpdconf .= "subnet {$subnet} netmask {$subnetmask} {\n";
+        $dhcpdconf .= "\nsubnet {$subnet} netmask {$subnetmask} {\n";
 
         // Setup pool options
         foreach($all_pools as $poolconf) {
@@ -780,8 +777,8 @@ EOD;
         }
 
         // Handle option, number rowhelper values
-        $dhcpdconf .= "\n";
         if (isset($dhcpifconf['numberoptions']['item'])) {
+            $dhcpdconf .= "\n";
             foreach($dhcpifconf['numberoptions']['item'] as $itemidx => $item) {
                 if (empty($item['type']) || $item['type'] == "text") {
                     $dhcpdconf .= "  option custom-{$dhcpif}-{$itemidx} \"{$item['value']}\";\n";
@@ -825,13 +822,13 @@ EOD;
         /* add static mappings */
         if (!empty($dhcpifconf['staticmap'])) {
             foreach ($dhcpifconf['staticmap'] as $i => $sm) {
-                $dhcpdconf .= "host s_{$dhcpif}_{$i} {\n";
+                $dhcpdconf .= "\nhost s_{$dhcpif}_{$i} {\n";
                 if (!empty($sm['mac'])) {
-                    $dhcpdconf .= "        hardware ethernet {$sm['mac']};\n";
+                    $dhcpdconf .= "  hardware ethernet {$sm['mac']};\n";
                 }
 
                 if (!empty($sm['cid'])) {
-                    $dhcpdconf .= "        option dhcp-client-identifier \"{$sm['cid']}\";\n";
+                    $dhcpdconf .= "  option dhcp-client-identifier \"{$sm['cid']}\";\n";
                 }
 
                 if (!empty($sm['ipaddr'])) {
@@ -925,7 +922,7 @@ EOD;
 
     /* write dhcpd.conf */
     if (!@file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpd.conf", $dhcpdconf)) {
-        printf(gettext("Error: cannot open dhcpd.conf in services_dhcpdv4_configure().%s"), "\n");
+        log_error('Cannot open dhcpd.conf in services_dhcpdv4_configure()');
         unset($dhcpdconf);
         return 1;
     }
@@ -1124,8 +1121,6 @@ function services_dhcpdv6_configure($blacklist = array())
     }
 
     $dhcpdv6conf = <<<EOD
-
-option domain-name "{$syscfg['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 {$custoptionsv6}
@@ -1159,6 +1154,8 @@ EOD;
         $dnscfgv6 = "";
         if (!empty($dhcpv6ifconf['domain'])) {
             $dnscfgv6 .= "  option domain-name \"{$dhcpv6ifconf['domain']}\";\n";
+        } else {
+            $dnscfgv6 .= "  option domain-name \"{$syscfg['domain']}\";\n";
         }
 
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
@@ -1193,10 +1190,10 @@ EOD;
         }
 
         if (is_ipaddrv6($ifcfgipv6)) {
-            $dhcpdv6conf .= "subnet6 {$subnetv6}/{$ifcfgsnv6}";
+            $dhcpdv6conf .= "\nsubnet6 {$subnetv6}/{$ifcfgsnv6}";
         } else {
             $subnet6 = gen_subnetv6($dhcpv6ifconf['range']['from'], "64");
-            $dhcpdv6conf .= "subnet6 {$subnet6}/64";
+            $dhcpdv6conf .= "\nsubnet6 {$subnet6}/64";
         }
         $dhcpdv6conf .= " {\n";
 
@@ -1210,7 +1207,7 @@ EOD;
             $dhcpdv6conf .= "  prefix6 {$dhcpv6ifconf['prefixrange']['from']} {$dhcpv6ifconf['prefixrange']['to']}/{$dhcpv6ifconf['prefixrange']['prefixlength']};\n";
         }
         if (isset($dhcpv6ifconf['dns6ip']) && is_ipaddrv6($dhcpv6ifconf['dns6ip'])) {
-            $dhcpdv6conf .= "       option dhcp6.name-servers {$dhcpv6ifconf['dns6ip']};\n";
+            $dhcpdv6conf .= "  option dhcp6.name-servers {$dhcpv6ifconf['dns6ip']};\n";
         }
         // default-lease-time
         if (!empty($dhcpv6ifconf['defaultleasetime'])) {
@@ -1231,13 +1228,13 @@ EOD;
                 }
             }
             if (count($ntpservers) > 0 ) {
-                $dhcpdv6conf .= "       option dhcp6.sntp-servers " . join(",", $dhcpv6ifconf['ntpserver']) . ";\n";
+                $dhcpdv6conf .= "  option dhcp6.sntp-servers " . join(",", $dhcpv6ifconf['ntpserver']) . ";\n";
             }
         }
 
         // Handle option, number rowhelper values
-        $dhcpdv6conf .= "\n";
         if (isset($dhcpv6ifconf['numberoptions']['item'])) {
+            $dhcpdv6conf .= "\n";
             foreach($dhcpv6ifconf['numberoptions']['item'] as $itemv6idx => $itemv6) {
                 $dhcpdv6conf .= "  option custom-{$dhcpv6if}-{$itemv6idx} \"{$itemv6['value']}\";\n";
             }
@@ -1263,6 +1260,7 @@ EOD;
             $i = 0;
             foreach ($dhcpv6ifconf['staticmap'] as $sm) {
                 $dhcpdv6conf .= <<<EOD
+
 host s_{$dhcpv6if}_{$i} {
   host-identifier option dhcp6.client-id {$sm['duid']};
 
@@ -1317,18 +1315,15 @@ EOD;
     }
 
     if ($nsupdate) {
-        $dhcpdv6conf .= "ddns-update-style interim;\n";
+        $dhcpdv6conf .= "\nddns-update-style interim;\n";
         $dhcpdv6conf .= services_dhcpd_zones($ddns_zones);
     } else {
-        $dhcpdv6conf .= "ddns-update-style none;\n";
+        $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
 
     /* write dhcpdv6.conf */
     if (!@file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf", $dhcpdv6conf)) {
-        log_error("Error: cannot open {$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf in services_dhcpdv6_configure().\n");
-        if (file_exists("/var/run/booting")) {
-            printf("Error: cannot open {$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf in services_dhcpdv6_configure().\n");
-        }
+        log_error("Cannot open {$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf in services_dhcpdv6_configure()");
         unset($dhcpdv6conf);
         return 1;
     }
@@ -1953,7 +1948,7 @@ function services_snmpd_configure()
         /* generate snmpd.conf */
         $fd = fopen("/var/etc/snmpd.conf", "w");
         if (!$fd) {
-            printf(gettext("Error: cannot open snmpd.conf in services_snmpd_configure().%s"),"\n");
+            log_error('Cannot open snmpd.conf in services_snmpd_configure()');
             return 1;
         }
 
