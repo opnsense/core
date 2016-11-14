@@ -228,7 +228,7 @@ $ipsec_dynamic_hosts = ipsec_configure();
 services_snmpd_configure();
 
 /* load graphing functions */
-enable_rrd_graphing();
+enable_rrd_graphing(true);
 
 /* if we are operating at 1000 then increase timeouts.
    this was never accounted for after moving to 1000 hz */
