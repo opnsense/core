@@ -277,10 +277,7 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "};\n";
     }
 
-    /* write radvd.conf */
-    if (!@file_put_contents("/var/etc/radvd.conf", $radvdconf)) {
-        log_error('Cannot open radvd.conf in services_radvd_configure()');
-    }
+    @file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
     if (count($radvdifs) > 0) {
         if (isvalidpid('/var/run/radvd.pid')) {
@@ -289,14 +286,8 @@ function services_radvd_configure($blacklist = array())
             mwexec('/usr/local/sbin/radvd -p /var/run/radvd.pid -C /var/etc/radvd.conf -m syslog');
         }
     } else {
-        /* we need to shut down the radvd cleanly, it will send out the prefix
-         * information with a lifetime of 0 to notify clients of a (possible) new prefix */
-        if (isvalidpid('/var/run/radvd.pid')) {
-            log_error("Shutting down Router Advertisment daemon cleanly");
-            killbypid('/var/run/radvd.pid');
-        }
+        killbypid('/var/run/radvd.pid', 'TERM', true);
     }
-    return 0;
 }
 
 function services_dhcpd_leasesfile()
@@ -338,7 +329,7 @@ function services_dhcpleases_configure()
     }
 }
 
-function services_dhcpd_configure($family = 'all', $blacklist = array())
+function services_dhcpd_configure($family = 'all', $blacklist = array(), $verbose = false)
 {
     global $g;
 
@@ -355,11 +346,11 @@ function services_dhcpd_configure($family = 'all', $blacklist = array())
     mwexecf('/usr/sbin/chown -R dhcpd:dhcpd %s', $g['dhcpd_chroot_path']);
 
     if ($family == 'all' || $family == 'inet') {
-        services_dhcpdv4_configure();
+        services_dhcpdv4_configure($verbose);
     }
 
     if ($family == 'all' || $family == 'inet6') {
-        services_dhcpdv6_configure($blacklist);
+        services_dhcpdv6_configure($blacklist, $verbose);
         services_radvd_configure($blacklist);
     }
 }
@@ -381,19 +372,17 @@ function is_dhcpv4_server_enabled()
     return false;
 }
 
-function services_dhcpdv4_configure()
+function services_dhcpdv4_configure($verbose = false)
 {
     global $config, $g;
 
     $need_ddns_updates = false;
     $ddns_zones = array();
 
-    /* kill any running dhcpd */
-    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid");
+    killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid", 'TERM', true);
 
-    /* DHCP enabled on any interfaces? */
     if (!is_dhcpv4_server_enabled()) {
-        return 0;
+        return;
     }
 
     /* Only consider DNS servers with IPv4 addresses for the IPv4 DHCP server. */
@@ -406,8 +395,9 @@ function services_dhcpdv4_configure()
         }
     }
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Starting DHCP service...");
+    if ($verbose) {
+        echo 'Starting DHCP service...';
+        flush();
     }
 
     $custoptions = "";
@@ -920,19 +910,8 @@ EOD;
         $dhcpdconf .= services_dhcpd_zones($ddns_zones);
     }
 
-    /* write dhcpd.conf */
-    if (!@file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpd.conf", $dhcpdconf)) {
-        log_error('Cannot open dhcpd.conf in services_dhcpdv4_configure()');
-        unset($dhcpdconf);
-        return 1;
-    }
-    unset($dhcpdconf);
-
-    /* create an empty leases database */
+    @file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpd.conf", $dhcpdconf);
     @touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
-
-    /* make sure there isn't a stale dhcpd.pid file, which can make dhcpd fail to start.   */
-    /* if we get here, dhcpd has been killed and is not started yet                        */
     @unlink("{$g['dhcpd_chroot_path']}/var/run/dhcpd.pid");
 
     /* fire up dhcpd in a chroot */
@@ -940,11 +919,9 @@ EOD;
         mwexec("/usr/local/sbin/dhcpd -user dhcpd -group dhcpd -chroot {$g['dhcpd_chroot_path']} -cf /etc/dhcpd.conf -pf /var/run/dhcpd.pid " . join(" ", $dhcpdifs));
     }
 
-    if (file_exists("/var/run/booting")) {
+    if ($verbose) {
         print "done.\n";
     }
-
-    return 0;
 }
 
 function services_dhcpd_zones($ddns_zones)
@@ -1028,17 +1005,15 @@ function is_dhcpv6_server_enabled()
     return false;
 }
 
-function services_dhcpdv6_configure($blacklist = array())
+function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
 {
     global $config, $g;
 
-    /* kill any running dhcpd */
     killbypid("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid", 'TERM', true);
     killbypid('/var/run/dhcpleases6.pid', 'TERM', true);
 
-    /* DHCP enabled on any interfaces? */
     if (!is_dhcpv6_server_enabled()) {
-        return 0;
+        return;
     }
 
     $syscfg = $config['system'];
@@ -1048,10 +1023,9 @@ function services_dhcpdv6_configure($blacklist = array())
     $dhcpdv6cfg = $config['dhcpdv6'];
     $Iflist = get_configured_interface_list();
 
-    if (file_exists("/var/run/booting")) {
-        echo "Starting DHCPv6 service...";
-    } else {
-        sleep(1);
+    if ($verbose) {
+        echo 'Starting DHCPv6 service...';
+        flush();
     }
 
     /* we add a fake entry for interfaces that are set to track6 another WAN */
@@ -1321,21 +1295,8 @@ EOD;
         $dhcpdv6conf .= "\nddns-update-style none;\n";
     }
 
-    /* write dhcpdv6.conf */
-    if (!@file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf", $dhcpdv6conf)) {
-        log_error("Cannot open {$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf in services_dhcpdv6_configure()");
-        unset($dhcpdv6conf);
-        return 1;
-    }
-    unset($dhcpdv6conf);
-
-    /* create an empty leases v6 database */
-    if (!file_exists("{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases")) {
-        @touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
-    }
-
-    /* make sure there isn't a stale dhcpdv6.pid file, which may make dhcpdv6 fail to start.  */
-    /* if we get here, dhcpdv6 has been killed and is not started yet                         */
+    @file_put_contents("{$g['dhcpd_chroot_path']}/etc/dhcpdv6.conf", $dhcpdv6conf);
+    @touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
     @unlink("{$g['dhcpd_chroot_path']}/var/run/dhcpdv6.pid");
 
     /* fire up dhcpd in a chroot */
@@ -1344,11 +1305,10 @@ EOD;
           join(" ", $dhcpdv6ifs));
         mwexec("/usr/local/sbin/dhcpleases6 -c \"/usr/local/bin/php -f /usr/local/sbin/prefixes.php|/bin/sh\" -l {$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases");
     }
-    if (file_exists("/var/run/booting")) {
-        print gettext("done.") . "\n";
-    }
 
-    return 0;
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function services_igmpproxy_configure($verbose = false)
@@ -1402,15 +1362,7 @@ EOD;
     }
     $igmpconf .= "\n";
 
-    $igmpfl = fopen('/usr/local/etc/igmpproxy.conf', 'w');
-    if (!$igmpfl) {
-        log_error('Could not write Igmpproxy configuration file!');
-        return;
-    }
-    fwrite($igmpfl, $igmpconf);
-    fclose($igmpfl);
-    unset($igmpconf);
-
+    @file_put_contents('/usr/local/etc/igmpproxy.conf', $igmpconf);
     mwexec('/usr/local/etc/rc.d/igmpproxy onestart');
 
     if ($verbose) {
@@ -1520,21 +1472,16 @@ function services_dhcrelay_configure($verbose = false)
     }
     $dhcrelayifs = array_unique($dhcrelayifs);
 
-    /* fire up dhcrelay */
-    if (empty($dhcrelayifs)) {
-        log_error("No suitable interface found for running dhcrelay!");
-        return;
+    if (!empty($dhcrelayifs)) {
+        $cmd = "/usr/local/sbin/dhcrelay -i " .  implode(" -i ", $dhcrelayifs);
+
+        if (isset($dhcrelaycfg['agentoption'])) {
+            $cmd .=  " -a -m replace";
+        }
+
+        $cmd .= " " . implode(" ", $srvips);
+        mwexec($cmd);
     }
-
-    $cmd = "/usr/local/sbin/dhcrelay -i " .  implode(" -i ", $dhcrelayifs);
-
-    if (isset($dhcrelaycfg['agentoption'])) {
-        $cmd .=  " -a -m replace";
-    }
-
-    $cmd .= " " . implode(" ", $srvips);
-    mwexec($cmd);
-    unset($cmd);
 
     if ($verbose) {
         echo "done\n";
@@ -1639,21 +1586,16 @@ function services_dhcrelay6_configure($verbose = false)
         }
     }
 
-    /* fire up dhcrelay */
-    if (empty($dhcrelayifs) || empty($srvifaces) ) {
-        log_error("No suitable interface found for running dhcrelay -6!");
-        return;
+    if (!empty($dhcrelayifs) && !empty($srvifaces)) {
+        $cmd = '/usr/local/sbin/dhcrelay -6 -pf /var/run/dhcrelay6.pid';
+        foreach ($dhcrelayifs as $dhcrelayif) {
+            $cmd .= " -l {$dhcrelayif}";
+        }
+        foreach ($srvifaces as $srviface) {
+            $cmd .= " -u \"{$srviface}\"";
+        }
+        mwexec($cmd);
     }
-
-    $cmd = '/usr/local/sbin/dhcrelay -6 -pf /var/run/dhcrelay6.pid';
-    foreach ($dhcrelayifs as $dhcrelayif) {
-        $cmd .= " -l {$dhcrelayif}";
-    }
-    foreach ($srvifaces as $srviface) {
-        $cmd .= " -u \"{$srviface}\"";
-    }
-    mwexec($cmd);
-    unset($cmd);
 
     if ($verbose) {
         echo "done\n";

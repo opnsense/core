@@ -196,7 +196,7 @@ echo "Starting NTP time client...";
 system_ntp_configure(false);
 echo "done.\n";
 
-services_dhcpd_configure();
+services_dhcpd_configure('all', array(), true);
 services_dhcpleases_configure();
 services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);
