@@ -83,17 +83,6 @@ function miniupnpd_configure()
     return array('miniupnpd_configure_do');
 }
 
-function miniupnpd_configure_do()
-{
-    if (!miniupnpd_enabled()) {
-        return;
-    }
-
-    echo "Starting UPnP service...";
-    miniupnpd_sync_package();
-    echo "done.\n";
-}
-
 function miniupnpd_uuid()
 {
     /* md5 hash of wan mac */
@@ -102,20 +91,29 @@ function miniupnpd_uuid()
     return substr($uuid,0,8).'-'.substr($uuid,9,4).'-'.substr($uuid,13,4).'-'.substr($uuid,17,4).'-'.substr($uuid,21,12);
 }
 
-function miniupnpd_sync_package()
+function miniupnpd_configure_do($verbose = false)
 {
     global $config;
-    global $input_errors;
+
+    if (!miniupnpd_enabled()) {
+        return;
+    }
+
+    if ($verbose) {
+        echo 'Starting UPnP service...';
+        flush();
+    }
 
     $upnp_config = $config['installedpackages']['miniupnpd']['config'][0];
     $config_file = '/var/etc/miniupnpd.conf';
 
     $ext_ifname = get_real_interface($upnp_config['ext_iface']);
     if ($ext_ifname == $upnp_config['ext_iface']) {
-        log_error("miniupnpd: Could not resolve real interface for {$upnp_config['ext_iface']}, exit");
+        if ($verbose) {
+            echo "failed.\n";
+        }
         return;
     }
-
 
     $config_text = "ext_ifname={$ext_ifname}\n";
     $config_text .= "port=2189\n";
@@ -233,5 +231,9 @@ function miniupnpd_sync_package()
             miniupnpd_stop();
             @unlink($config_file);
         }
+    }
+
+    if ($verbose) {
+        echo "done.\n";
     }
 }
