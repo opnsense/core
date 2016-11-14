@@ -184,17 +184,10 @@ services_dnsmasq_configure(true);
 /* start unbound service */
 services_unbound_configure(true);
 
-/* start DHCP service */
 services_dhcpd_configure();
-
-/* start dhcpleases dhpcp hosts leases program */
 services_dhcpleases_configure();
-
-/* start DHCP relay */
-services_dhcrelay_configure();
-
-/* start DHCP6 relay */
-services_dhcrelay6_configure();
+services_dhcrelay_configure(true);
+services_dhcrelay6_configure(true);
 
 /* dyndns service updates */
 mwexec("/usr/local/etc/rc.dyndns.update");

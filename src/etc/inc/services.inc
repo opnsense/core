@@ -1353,24 +1353,23 @@ EOD;
     return 0;
 }
 
-function services_dhcrelay_configure()
+function services_dhcrelay_configure($verbose = false)
 {
     global $config;
+
     $dhcrelayifs = array();
 
-    /* kill any running dhcrelay */
-    killbypid('/var/run/dhcrelay.pid');
+    killbypid('/var/run/dhcrelay.pid', 'TERM', true);
 
-    $dhcrelaycfg =& $config['dhcrelay'];
+    $dhcrelaycfg = &$config['dhcrelay'];
 
-    /* DHCPRelay enabled on any interfaces? */
-    if (!isset($dhcrelaycfg['enable']))
-      return 0;
+    if (!isset($dhcrelaycfg['enable'])) {
+        return;
+    }
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Starting DHCP relay service...");
-    } else {
-        sleep(1);
+    if ($verbose) {
+        echo 'Starting DHCP Relay...';
+        flush();
     }
 
     $iflist = get_configured_interface_list();
@@ -1459,7 +1458,7 @@ function services_dhcrelay_configure()
     /* fire up dhcrelay */
     if (empty($dhcrelayifs)) {
         log_error("No suitable interface found for running dhcrelay!");
-        return; /* XXX */
+        return;
     }
 
     $cmd = "/usr/local/sbin/dhcrelay -i " .  implode(" -i ", $dhcrelayifs);
@@ -1472,28 +1471,28 @@ function services_dhcrelay_configure()
     mwexec($cmd);
     unset($cmd);
 
-    return 0;
+    if ($verbose) {
+        echo "done\n";
+    }
 }
 
-function services_dhcrelay6_configure()
+function services_dhcrelay6_configure($verbose = false)
 {
     global $config;
+
     $dhcrelayifs = array();
 
-    /* kill any running dhcrelay */
-    killbypid('/var/run/dhcrelay6.pid');
+    killbypid('/var/run/dhcrelay6.pid', 'TERM', true);
 
-    $dhcrelaycfg =& $config['dhcrelay6'];
+    $dhcrelaycfg = &$config['dhcrelay6'];
 
-    /* DHCPv6 Relay enabled on any interfaces? */
     if (!isset($dhcrelaycfg['enable'])) {
-        return 0;
+        return;
     }
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Starting DHCPv6 relay service...");
-    } else {
-        sleep(1);
+    if ($verbose) {
+        echo 'Starting DHCPv6 Relay...';
+        flush();
     }
 
     $iflist = get_configured_interface_list();
@@ -1578,7 +1577,7 @@ function services_dhcrelay6_configure()
     /* fire up dhcrelay */
     if (empty($dhcrelayifs) || empty($srvifaces) ) {
         log_error("No suitable interface found for running dhcrelay -6!");
-        return; /* XXX */
+        return;
     }
 
     $cmd = '/usr/local/sbin/dhcrelay -6 -pf /var/run/dhcrelay6.pid';
@@ -1591,7 +1590,9 @@ function services_dhcrelay6_configure()
     mwexec($cmd);
     unset($cmd);
 
-    return 0;
+    if ($verbose) {
+        echo "done\n";
+    }
 }
 
 function services_dyndns_list()
