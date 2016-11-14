@@ -1363,7 +1363,7 @@ function services_igmpproxy_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Started IGMP Proxy...';
+        echo 'Starting IGMP Proxy...';
         flush();
     }
 
