@@ -162,7 +162,7 @@ function plugins_firewall($fw)
     return $fw;
 }
 
-function plugins_configure($verbose = true)
+function plugins_configure($verbose = false)
 {
     foreach (plugins_scan() as $name => $path) {
         require_once $path;
