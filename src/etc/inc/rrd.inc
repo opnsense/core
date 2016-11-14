@@ -39,12 +39,13 @@ function create_new_rrd($rrdcreatecmd)
     return $rrdcreatereturn;
 }
 
-function enable_rrd_graphing()
+function enable_rrd_graphing($verbose = false)
 {
     global $config;
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("Generating RRD graphs...");
+    if ($verbose) {
+        echo 'Generating RRD graphs...';
+        flush();
     }
 
     $rrddbpath = "/var/db/rrd/";
@@ -550,8 +551,8 @@ function enable_rrd_graphing()
         chown($database, "nobody");
     }
 
-    if (file_exists("/var/run/booting")) {
-        echo gettext("done.") . "\n";
+    if ($verbose) {
+        echo "done.\n";
     }
 }
 
