@@ -1796,7 +1796,7 @@ function services_dnsmasq_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo 'Starting DNS forwarder...';
+        echo 'Starting DNS Forwarder...';
         flush();
     }
 
@@ -1917,7 +1917,7 @@ function services_unbound_configure($verbose = false)
     }
 
     if ($verbose) {
-        echo "Starting DNS Resolver...";
+        echo 'Starting DNS Resolver...';
         flush();
     }
 
@@ -1928,41 +1928,37 @@ function services_unbound_configure($verbose = false)
     }
 }
 
-function services_snmpd_configure()
+function services_snmpd_configure($verbose = false)
 {
     global $config, $g;
 
-    /* kill any running snmpd */
-    killbypid('/var/run/snmpd.pid');
-    sleep(2);
+    killbypid('/var/run/snmpd.pid', 'TERM', true);
 
-    if (is_process_running('bsnmpd')) {
-        mwexec('/usr/bin/killall bsnmpd', true);
+    if (!isset($config['snmpd']['enable'])) {
+        return;
     }
 
-    if (isset($config['snmpd']['enable'])) {
-        if (file_exists("/var/run/booting")) {
-            echo gettext("Starting SNMP daemon... ");
-        }
+    if ($verbose) {
+        echo 'Starting SNMP daemon....';
+        flush();
+    }
 
-        /* generate snmpd.conf */
-        $fd = fopen("/var/etc/snmpd.conf", "w");
-        if (!$fd) {
-            log_error('Cannot open snmpd.conf in services_snmpd_configure()');
-            return 1;
-        }
+    /* generate snmpd.conf */
+    $fd = fopen("/var/etc/snmpd.conf", "w");
+    if (!$fd) {
+        log_error('Cannot open snmpd.conf in services_snmpd_configure()');
+        return;
+    }
 
-
-        $snmpdconf = <<<EOD
+    $snmpdconf = <<<EOD
 location := "{$config['snmpd']['syslocation']}"
 contact := "{$config['snmpd']['syscontact']}"
 read := "{$config['snmpd']['rocommunity']}"
 
 EOD;
 
-
-        if (isset($config['snmpd']['trapenable']) && preg_match('/^\S+$/', $config['snmpd']['trapserver'])){
-            $snmpdconf .= <<<EOD
+    if (isset($config['snmpd']['trapenable']) && preg_match('/^\S+$/', $config['snmpd']['trapserver'])){
+        $snmpdconf .= <<<EOD
 # SNMP Trap support.
 traphost := {$config['snmpd']['trapserver']}
 trapport := {$config['snmpd']['trapserverport']}
@@ -1970,15 +1966,15 @@ trap := "{$config['snmpd']['trapstring']}"
 
 
 EOD;
-        }
+    }
 
-        $version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
-        $platform = $g['product_name'];
-        $sysDescr = "{$g['product_name']} " . php_uname("n") .
-                    " {$version} {$platform} " . php_uname("s") .
-                    " " . php_uname("r") . " " . trim(shell_exec('uname -p'));
+    $version = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
+    $platform = $g['product_name'];
+    $sysDescr = "{$g['product_name']} " . php_uname("n") .
+                " {$version} {$platform} " . php_uname("s") .
+                " " . php_uname("r") . " " . trim(shell_exec('uname -p'));
 
-        $snmpdconf .= <<<EOD
+    $snmpdconf .= <<<EOD
 system := 1
 %snmpd
 sysDescr      = "{$sysDescr}"
@@ -1988,42 +1984,41 @@ begemotSnmpdCommunityString.0.1 = $(read)
 
 EOD;
 
-        if (isset($config['snmpd']['trapenable']) && preg_match('/^\S+$/', $config['snmpd']['trapserver'])){
-            $snmpdconf .= <<<EOD
+    if (isset($config['snmpd']['trapenable']) && preg_match('/^\S+$/', $config['snmpd']['trapserver'])){
+        $snmpdconf .= <<<EOD
 begemotTrapSinkStatus.[$(traphost)].$(trapport) = 4
 begemotTrapSinkVersion.[$(traphost)].$(trapport) = 2
 begemotTrapSinkComm.[$(traphost)].$(trapport) = $(trap)
 
 EOD;
-        }
+    }
 
-
-        $snmpdconf .= <<<EOD
+    $snmpdconf .= <<<EOD
 begemotSnmpdCommunityDisable    = 1
 
 EOD;
 
-        $bind_to_ip = "0.0.0.0";
-        if (isset($config['snmpd']['bindip'])) {
-            if (is_ipaddr($config['snmpd']['bindip'])) {
-                $bind_to_ip = $config['snmpd']['bindip'];
-            } else {
-                $if = get_real_interface($config['snmpd']['bindip']);
-                if (does_interface_exist($if)) {
-                    $bind_to_ip = find_interface_ip($if);
-                }
+    $bind_to_ip = "0.0.0.0";
+    if (isset($config['snmpd']['bindip'])) {
+        if (is_ipaddr($config['snmpd']['bindip'])) {
+            $bind_to_ip = $config['snmpd']['bindip'];
+        } else {
+            $if = get_real_interface($config['snmpd']['bindip']);
+            if (does_interface_exist($if)) {
+                $bind_to_ip = find_interface_ip($if);
             }
         }
+    }
 
-        if (is_port( $config['snmpd']['pollport'] )) {
-            $snmpdconf .= <<<EOD
+    if (is_port( $config['snmpd']['pollport'] )) {
+        $snmpdconf .= <<<EOD
 begemotSnmpdPortStatus.{$bind_to_ip}.{$config['snmpd']['pollport']} = 1
 
 EOD;
 
-        }
+    }
 
-        $snmpdconf .= <<<EOD
+    $snmpdconf .= <<<EOD
 begemotSnmpdLocalPortStatus."/var/run/snmpd.sock" = 1
 begemotSnmpdLocalPortType."/var/run/snmpd.sock" = 4
 
@@ -2036,71 +2031,67 @@ snmpEnableAuthenTraps = 2
 
 EOD;
 
-        if (is_array( $config['snmpd']['modules'] )) {
-            if (isset($config['snmpd']['modules']['mibii'])) {
-                $snmpdconf .= <<<EOD
+    if (is_array( $config['snmpd']['modules'] )) {
+        if (isset($config['snmpd']['modules']['mibii'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."mibII"  = "/usr/lib/snmp_mibII.so"
 
 EOD;
-            }
+        }
 
-            if (isset($config['snmpd']['modules']['netgraph'])) {
-                $snmpdconf .= <<<EOD
+        if (isset($config['snmpd']['modules']['netgraph'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."netgraph" = "/usr/lib/snmp_netgraph.so"
 %netgraph
 begemotNgControlNodeName = "snmpd"
 
 EOD;
-            }
+        }
 
-            if (isset($config['snmpd']['modules']['pf'])) {
-                $snmpdconf .= <<<EOD
+        if (isset($config['snmpd']['modules']['pf'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."pf"     = "/usr/lib/snmp_pf.so"
 
 EOD;
-            }
+        }
 
-            if (isset($config['snmpd']['modules']['hostres'])) {
-                $snmpdconf .= <<<EOD
+        if (isset($config['snmpd']['modules']['hostres'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."hostres"     = "/usr/lib/snmp_hostres.so"
 
 EOD;
-            }
-            if (isset($config['snmpd']['modules']['bridge'])) {
-                $snmpdconf .= <<<EOD
+        }
+        if (isset($config['snmpd']['modules']['bridge'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."bridge"     = "/usr/lib/snmp_bridge.so"
 # config must end with blank line
 
 EOD;
-            }
-            if (isset($config['snmpd']['modules']['ucd'])) {
-                $snmpdconf .= <<<EOD
+        }
+        if (isset($config['snmpd']['modules']['ucd'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."ucd"     = "/usr/local/lib/snmp_ucd.so"
 
 EOD;
-            }
-            if (isset($config['snmpd']['modules']['regex'])) {
-                $snmpdconf .= <<<EOD
+        }
+        if (isset($config['snmpd']['modules']['regex'])) {
+            $snmpdconf .= <<<EOD
 begemotSnmpdModulePath."regex"     = "/usr/local/lib/snmp_regex.so"
 
 EOD;
-            }
-        }
-
-        fwrite($fd, $snmpdconf);
-        fclose($fd);
-        unset($snmpdconf);
-
-
-        /* run bsnmpd */
-        mwexec("/usr/sbin/bsnmpd -c /var/etc/snmpd.conf -p /var/run/snmpd.pid");
-
-        if (file_exists("/var/run/booting")) {
-            echo gettext("done.") . "\n";
         }
     }
 
-    return 0;
+    fwrite($fd, $snmpdconf);
+    fclose($fd);
+    unset($snmpdconf);
+
+    /* run bsnmpd */
+    mwexec("/usr/sbin/bsnmpd -c /var/etc/snmpd.conf -p /var/run/snmpd.pid");
+
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function services_dnsupdate_process($int = '', $updatehost = '', $forced = false)

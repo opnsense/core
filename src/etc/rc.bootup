@@ -223,7 +223,7 @@ if (function_exists('plugins_configure')) {
 $ipsec_dynamic_hosts = ipsec_configure();
 
 /* start SNMP service */
-services_snmpd_configure();
+services_snmpd_configure(true);
 
 /* load graphing functions */
 enable_rrd_graphing(true);
