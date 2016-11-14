@@ -1912,7 +1912,7 @@ function services_unbound_configure($verbose = false)
 
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
-    if (isset($config['unbound']['enable'])) {
+    if (!isset($config['unbound']['enable'])) {
         return;
     }
 
