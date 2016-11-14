@@ -1987,7 +1987,7 @@ function services_unbound_configure($verbose = false)
 
     killbypid('/var/run/unbound.pid', 'TERM', true);
 
-    if (isset($config['unbound']['enable'])) {
+    if (!isset($config['unbound']['enable'])) {
         return;
     }
 
@@ -1996,7 +1996,7 @@ function services_unbound_configure($verbose = false)
         flush();
     }
 
-    sync_unbound_service();
+    unbound_sync_service();
 
     if ($verbose) {
         echo "done.\n";

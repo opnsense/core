@@ -28,26 +28,6 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-/****f* legacy/get_dns_servers
- * NAME
- *   get_dns_servers - get system dns servers
- * INPUTS
- *   $dns_servers - an array of the dns servers
- * RESULT
- *   null
- ******/
-function get_dns_servers() {
-    $dns_servers = array();
-    $dns_s = file("/etc/resolv.conf", FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach($dns_s as $dns) {
-        $matches = "";
-        if (preg_match("/nameserver (.*)/", $dns, $matches)) {
-            $dns_servers[] = $matches[1];
-        }
-    }
-    return array_unique($dns_servers);
-}
-
 /* Optimize Unbound for environment */
 function unbound_optimization() {
     global $config;
@@ -112,7 +92,7 @@ function unbound_optimization() {
     return $optimization;
 }
 
-function bootstrap_unbound_root()
+function unbound_bootstrap_root()
 {
     global $g;
 
@@ -128,7 +108,7 @@ function unbound_generate_config()
     global $config, $g;
 
     // Bootstrap needed for /var MFS
-    bootstrap_unbound_root();
+    unbound_bootstrap_root();
 
     // Setup optimization
     $optimization = unbound_optimization();
@@ -408,39 +388,10 @@ EOF;
     }
 }
 
-
-// Read /etc/hosts
-function read_hosts() {
-
-    /* Open /etc/hosts and extract the only dhcpleases info
-     * XXX - to convert to an unbound C library which reads /etc/hosts automatically
-     */
-    $etc_hosts = array();
-    foreach (file('/etc/hosts') as $line) {
-        $d = preg_split('/\s/', $line, -1, PREG_SPLIT_NO_EMPTY);
-        if (empty($d) || substr(reset($d), 0, 1) == "#") {
-            continue;
-        }
-        if ($d[3] == "#") {
-            $ip = array_shift($d);
-            $fqdn = array_shift($d);
-            $name = array_shift($d);
-            if ($fqdn != "empty") {
-                if ($name != "empty") {
-                    array_push($etc_hosts, array(ipaddr => "$ip", fqdn => "$fqdn", name => "$name"));
-                } else {
-                    array_push($etc_hosts, array(ipaddr => "$ip", fqdn => "$fqdn"));
-                }
-            }
-        }
-    }
-    return $etc_hosts;
-}
-
-function sync_unbound_service()
+function unbound_sync_service()
 {
     // Configure chroot
-    bootstrap_unbound_root();
+    unbound_bootstrap_root();
 
     // Configure our Unbound service
     unbound_execute("unbound-anchor");
@@ -612,7 +563,7 @@ function unbound_add_host_entries()
     }
 
     // Write out entries
-    bootstrap_unbound_root();
+    unbound_bootstrap_root();
     file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
 }
 
@@ -735,7 +686,7 @@ function unbound_acls_config() {
     }
 
     // Write out Access list
-    bootstrap_unbound_root();
+    unbound_bootstrap_root();
     file_put_contents("{$g['unbound_chroot_path']}/access_lists.conf", $aclcfg);
 }
 

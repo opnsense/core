@@ -33,7 +33,6 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("interfaces.inc");
 
-
 function hostcmp($a, $b)
 {
     return strcasecmp($a['host'], $b['host']);
