@@ -2184,11 +2184,30 @@ EOD;
     return 0;
 }
 
-function configure_cron()
+function system_configure_cron($verbose = false)
 {
     global $config;
 
+    function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*')
+    {
+        $cron_item = array();
+
+        $cron_item['minute'] = $minute;
+        $cron_item['hour'] = $hour;
+        $cron_item['mday'] = $monthday;
+        $cron_item['month'] = $month;
+        $cron_item['wday'] = $weekday;
+        $cron_item['command'] = $command;
+
+        return $cron_item;
+    }
+
     $autocron = array();
+
+    if ($verbose) {
+        echo 'Configuring CRON...';
+        flush();
+    }
 
     /* hourly */
     $autocron[] = generate_cron_job('/usr/local/sbin/expiretable -v -t 3600 webConfiguratorlockout', '1');
@@ -2260,20 +2279,10 @@ function configure_cron()
 
     file_put_contents('/var/cron/tabs/root', $crontab_contents);
     killbypid('/var/run/cron.pid', 'HUP');
-}
 
-function generate_cron_job($command, $minute = '0', $hour = '*', $monthday = '*', $month = '*', $weekday = '*')
-{
-    $cron_item = array();
-
-    $cron_item['minute'] = $minute;
-    $cron_item['hour'] = $hour;
-    $cron_item['mday'] = $monthday;
-    $cron_item['month'] = $month;
-    $cron_item['wday'] = $weekday;
-    $cron_item['command'] = $command;
-
-    return $cron_item;
+    if ($verbose) {
+        echo "done.\n";
+    }
 }
 
 function is_apinger_enabled()

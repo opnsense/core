@@ -174,11 +174,7 @@ mwexec("/usr/local/etc/rc.sshd");
 /* start web server */
 echo 'Starting webConfigurator...'. (system_webgui_configure() ? "done.\n" : "failed.\n");
 
-/* configure cron service */
-echo "Configuring CRON...";
-configure_cron();
-echo "done.\n";
-
+system_configure_cron(true);
 system_routing_configure();
 system_routing_enable();
 services_dnsmasq_configure(true);
