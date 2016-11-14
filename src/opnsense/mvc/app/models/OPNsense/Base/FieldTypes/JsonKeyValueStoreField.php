@@ -31,6 +31,7 @@ namespace OPNsense\Base\FieldTypes;
 
 use Phalcon\Validation\Validator\InclusionIn;
 use OPNsense\Base\Validators\CsvListValidator;
+use OPNsense\Core\Backend;
 
 /**
  * Class JsonKeyValueStoreField, use a json encoded file as selection list
@@ -63,7 +64,6 @@ class JsonKeyValueStoreField extends BaseField
      */
     private $internalOptionList = array();
 
-
     /**
      * @var null source field
      */
@@ -78,6 +78,16 @@ class JsonKeyValueStoreField extends BaseField
      * @var bool automatically select all when none is selected
      */
     private $internalSelectAll = false;
+
+    /**
+     * @var string action to send to configd to populate the provided source
+     */
+    private $internalConfigdPopulateAct = "";
+
+    /**
+     * @var int execute configd command only when file is older then TTL (seconds)
+     */
+    private $internalConfigdPopulateTTL = 3600;
 
     /**
      * set descriptive text for empty value
@@ -117,12 +127,49 @@ class JsonKeyValueStoreField extends BaseField
     }
 
     /**
+     * @param string $value configd action to run
+     */
+    public function setConfigdPopulateAct($value)
+    {
+        $this->internalConfigdPopulateAct = $value;
+    }
+
+    /**
+     * @param string $value set TTL for config action
+     */
+    public function setConfigdPopulateTTL($value)
+    {
+        if (is_numeric($value)) {
+            $this->internalConfigdPopulateTTL = $value;
+        }
+    }
+
+    /**
      * populate selection data
      */
     protected function actionPostLoadingEvent()
     {
-        if ($this->internalSourceField != null && $this->internalSourceFile != null) {
-            $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
+        if ($this->internalSourceFile != null) {
+            if ($this->internalSourceField != null) {
+                $sourcefile = sprintf($this->internalSourceFile, $this->internalSourceField);
+            } else {
+                $sourcefile = $this->internalSourceFile;
+            }
+            if (!empty($this->internalConfigdPopulateAct)) {
+                // execute configd action when provided
+                if (!is_file($sourcefile)) {
+                    $muttime = 0;
+                } else {
+                    $stat = stat($sourcefile);
+                    $muttime = $stat['mtime'];
+                }
+                if (time() - $muttime > $this->internalConfigdPopulateTTL) {
+                    $act = $this->internalConfigdPopulateAct;
+                    $backend = new Backend();
+                    $response = $backend->configdRun($act, false, 20);
+                    file_put_contents($sourcefile, $response);
+                }
+            }
             if (is_file($sourcefile)) {
                 $data = json_decode(file_get_contents($sourcefile), true);
                 if ($data != null) {
