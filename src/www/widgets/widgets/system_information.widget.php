@@ -32,47 +32,12 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 
-
-if (isset($_POST['getupdatestatus'])) {
-    $pkg_json = trim(configd_run('firmware check'));
-    if ($pkg_json != '') {
-        $pkg_status = json_decode($pkg_json, true);
-    }
-
-    if (!isset($pkg_status) || $pkg_status["connection"]=="error") {
-        echo "<span class='text-danger'>".gettext("Connection Error")."</span><br/><span class='btn-link' onclick='system_information_widget_checkupdate()'>".gettext("Click to retry")."</span>";
-    } elseif ($pkg_status["repository"]=="error") {
-        echo "<span class='text-danger'>".gettext("Repository Problem")."</span><br/><span class='btn-link' onclick='system_information_widget_checkupdate()'>".gettext("Click to retry")."</span>";
-    } elseif ($pkg_status["updates"]=="0") {
-        echo "<span class='text-info'>".gettext("Your system is up to date.")."</span><br/><span class='btn-link' onclick='system_information_widget_checkupdate()'>".gettext('Click to check for updates')."</span>";
-    } else {
-        echo "<span class='text-info'>".sprintf(gettext("There are %s update(s) available."),$pkg_status["updates"])."</span><br/><a href='/ui/core/firmware/#checkupdate'>".gettext("Click to upgrade")."</a> | <span class='btn-link' onclick='system_information_widget_checkupdate()'>".gettext('Re-check now')."</span>";
-    }
-
-    exit;
-}
 ?>
-
 <script src="/ui/js/moment-with-locales.min.js" type="text/javascript"></script>
 <script type="text/javascript">
   var system_information_widget_cpu_data = []; // reference to measures
   var system_information_widget_cpu_chart = null; // reference to chart object
   var system_information_widget_cpu_chart_data = null; // reference to chart data object
-
-  /**
-   * check for updates
-   */
-  function system_information_widget_checkupdate() {
-      $('#updatestatus').html('<span class="text-info"><?= html_safe(gettext('Checking... (may take up to 30 seconds)')) ?></span>');
-      $.ajax({
-        type: "POST",
-        url: '/widgets/widgets/system_information.widget.php',
-        data:{getupdatestatus:'yes'},
-        success:function(html) {
-            $('#updatestatus').prop('innerHTML',html);
-        }
-      });
-  }
 
   /**
    * update cpu chart
@@ -202,7 +167,7 @@ if (isset($_POST['getupdatestatus'])) {
     <tr>
       <td><?= gettext('Updates') ?></td>
       <td>
-        <div id="updatestatus"><span class='btn-link' onclick='system_information_widget_checkupdate()'><?=gettext("Click to check for updates");?></span></div>
+        <a href='/ui/core/firmware/#checkupdate'><?= gettext('Click to check for updates.') ?></a>
       </td>
     </tr>
     <tr>
