@@ -29,9 +29,12 @@
             <Backups url="/diag_backup.php"/>
         </Configuration>
         <Firmware order="5" cssClass="fa fa-building-o fa-fw">
-            <Updates order="10" url="/ui/core/firmware/"/>
-            <Reporter order="20" url="/crash_reporter.php"/>
-            <Defaults order="50" url="/diag_defaults.php"/>
+            <Updates order="10" url="/ui/core/firmware/#changelogs"/>
+            <Packages order="20" url="/ui/core/firmware/#packages"/>
+            <Plugins order="30" url="/ui/core/firmware/#plugins"/>
+            <Settings order="40" url="/ui/core/firmware/#settings"/>
+            <Reporter order="50" url="/crash_reporter.php"/>
+            <Defaults order="60" url="/diag_defaults.php"/>
         </Firmware>
         <HighAvailability order="50" VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">
             <Settings order="100" url="/system_hasync.php"/>

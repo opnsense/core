@@ -462,6 +462,14 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#change_mirror_progress").removeClass("fa fa-spinner fa-pulse");
             });
         });
+
+        // update history on tab state and implement navigation
+        if(window.location.hash != "") {
+            $('a[href="' + window.location.hash + '"]').click()
+        }
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            history.pushState(null, null, e.target.hash);
+        });
     });
 </script>
 
@@ -477,15 +485,21 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="settingstab" class="active"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
-                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="packagestab" class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
+                <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
                 <li id="changelogtab"><a data-toggle="tab" href="#changelogs">{{ lang._('Changelogs') }}</a></li>
                 <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
                 <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
-                <div id="settings" class="tab-pane fade in active">
+                <div id="packages" class="tab-pane fade in active">
+                    <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
+                </div>
+                <div id="plugins" class="tab-pane fade in">
+                    <table class="table table-striped table-condensed table-responsive" id="pluginlist"></table>
+                </div>
+                <div id="settings" class="tab-pane fade in">
                     <table class="table table-striped table-responsive">
                         <tbody>
                             <tr>
@@ -546,12 +560,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div id="packages" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
-                </div>
-                <div id="plugins" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="pluginlist"></table>
                 </div>
                 <div id="changelogs" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="changeloglist"></table>
