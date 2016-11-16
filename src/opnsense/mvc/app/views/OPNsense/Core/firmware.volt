@@ -34,7 +34,6 @@ POSSIBILITY OF SUCH DAMAGE.
     function updateStatus() {
         // update UI
         $('#updatelist').empty();
-        $('#updatetab > a').tab('show');
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
 
@@ -55,6 +54,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#upgrade").attr("style","");
 
                 // show upgrade list
+                $('#updatetab > a').tab('show');
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
                 "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
                 $.each(['new_packages', 'upgrade_packages', 'reinstall_packages'], function(type_idx,type_name){
@@ -526,7 +526,7 @@ POSSIBILITY OF SUCH DAMAGE.
                             <tr>
                                 <td></td>
                                 <td>
-                                    <button class="btn btn-primary" id="change_mirror" type="button"><b>{{ lang._('Save') }}</b><i id="change_mirror_progress" class=""></i></button>
+                                    <button class="btn btn-primary" id="change_mirror" type="button"><i id="change_mirror_progress" class=""></i> {{ lang._('Save') }}</button>
                                 </td>
                                 <td></td>
                             </tr>
