@@ -29,13 +29,20 @@ POSSIBILITY OF SUCH DAMAGE.
 <script type="text/javascript">
 
     /**
+     * prepare for checking update status
+     */
+    function updateStatusPrepare() {
+        $('#updatelist').empty();
+        $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
+        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
+    }
+
+    /**
      * retrieve update status from backend
      */
     function updateStatus() {
         // update UI
-        $('#updatelist').empty();
-        $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
-        $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
+	updateStatusPrepare();
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -356,7 +363,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 upgrade();
             // dashboard link: run check automatically
             } else if (window.location.hash == '#checkupdate') {
-                updateStatus();
+                // update UI and delay update to avoid races
+		updateStatusPrepare();
+                setTimeout(updateStatus, 1000);
             }
         });
 
