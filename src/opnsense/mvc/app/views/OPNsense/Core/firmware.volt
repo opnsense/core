@@ -42,7 +42,7 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function updateStatus() {
         // update UI
-	updateStatusPrepare();
+        updateStatusPrepare();
 
         // request status
         ajaxGet('/api/core/firmware/status',{},function(data,status){
@@ -364,7 +364,7 @@ POSSIBILITY OF SUCH DAMAGE.
             // dashboard link: run check automatically
             } else if (window.location.hash == '#checkupdate') {
                 // update UI and delay update to avoid races
-		updateStatusPrepare();
+                updateStatusPrepare();
                 setTimeout(updateStatus, 1000);
             }
         });
