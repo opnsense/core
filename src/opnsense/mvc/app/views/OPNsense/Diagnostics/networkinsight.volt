@@ -575,7 +575,7 @@ POSSIBILITY OF SUCH DAMAGE.
               from_date_ts = (date_begin - (24*60*60*1000 * i)) / 1000;
               to_date_ts = parseInt((date_end - (24*60*60*1000 * i)) / 1000);
               tmp_date = new Date(from_date_ts*1000);
-              tmp = tmp_date.getDate() + '/' + (tmp_date.getMonth()+1) + '/' + tmp_date.getFullYear();
+              tmp = tmp_date.toISOString().substr(0, 10);
               if (i < 62) {
                   $("#date_detail_from").append($("<option/>").val(from_date_ts).text(tmp));
                   $("#date_detail_to").append($("<option/>").val(to_date_ts).text(tmp));
