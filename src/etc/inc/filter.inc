@@ -2179,7 +2179,6 @@ function filter_generate_user_rule(&$FilterIflist, $rule)
         return "# rule " . $rule['descr'] . " disabled \n";
     }
     update_filter_reload_status("Creating filter rules {$rule['descr']} ...");
-    $pptpdcfg = $config['pptpd'];
     $int = "";
     $aline = array();
     // initialize array with empty tags
@@ -2526,8 +2525,6 @@ function filter_rules_generate(&$FilterIflist)
 
     update_filter_reload_status(gettext("Creating default rules"));
 
-    $pptpdcfg = $config['pptpd'];
-
     $ipfrules = "";
 
     # BEGIN OF firewall rules
@@ -2565,26 +2562,6 @@ function filter_rules_generate(&$FilterIflist)
               foreach ($ifcfg['vips6'] as $vip)
                 $ipfrules .= "pass out {$log['pass']} route-to ( {$stf} {$gwv6} ) inet6 from {$vip['ip']} to !{$vip['ip']}/{$pdlen} keep state allow-opts label \"let out anything from firewall host itself\"\n";
             }
-        }
-    }
-
-    if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server' && !isset($config['system']['disablevpnrules'])) {
-        if ($pptpdcfg['mode'] == "server") {
-            $pptpdtarget = get_interface_ip();
-        }
-        if (is_ipaddr($pptpdtarget) && is_array($FilterIflist['wan'])) {
-            $ipfrules .= <<<EOD
-# PPTPd rules
-pass in {$log['pass']} on \${$FilterIflist['wan']['descr']} proto tcp from any to $pptpdtarget port = 1723 modulate state label "{$fix_rule_label("allow pptpd {$pptpdtarget}")}"
-pass in {$log['pass']} on \${$FilterIflist['wan']['descr']} proto gre from any to any keep state label "allow gre pptpd"
-
-EOD;
-
-        } else {
-            /*    this shouldnt ever happen but instead of breaking the clients ruleset
-             *    log an error.
-             */
-            log_error("ERROR!  PPTP enabled but could not resolve the \$pptpdtarget");
         }
     }
 
