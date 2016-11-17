@@ -29,7 +29,7 @@
             <Backups url="/diag_backup.php"/>
         </Configuration>
         <Firmware order="5" cssClass="fa fa-building-o fa-fw">
-            <Updates order="10" url="/ui/core/firmware/#changelogs"/>
+            <Updates order="10" url="/ui/core/firmware/#updates"/>
             <Packages order="20" url="/ui/core/firmware/#packages"/>
             <Plugins order="30" url="/ui/core/firmware/#plugins"/>
             <Settings order="40" url="/ui/core/firmware/#settings"/>

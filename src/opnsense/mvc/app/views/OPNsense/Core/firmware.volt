@@ -32,7 +32,6 @@ POSSIBILITY OF SUCH DAMAGE.
      * prepare for checking update status
      */
     function updateStatusPrepare() {
-        $('#updatelist').empty();
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
     }
@@ -61,6 +60,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#upgrade").attr("style","");
 
                 // show upgrade list
+                $('#update_status').hide();
+                $('#updatelist').show();
+                $('#updatelist').empty();
                 $('#updatetab > a').tab('show');
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
                 "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th>" +
@@ -70,20 +72,23 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
                     row['reason'] + '</td></tr>');
                 });
-            } else {
-                $('#updatelist').html("<tr><td>"+data['status_msg']+"</td></tr>");
-            }
 
-            // update list so plugins sync as well
-            packagesInfo();
+                // update list so plugins sync as well (no logs)
+                packagesInfo(false);
+            } else {
+                // update list so plugins sync as well (all)
+                packagesInfo(true);
+            }
         });
     }
 
     /**
      * perform upgrade, install poller to update status
      */
-    function upgrade(){
-        $('#progresstab > a').tab('show');
+    function upgrade() {
+        $('#updatelist').hide();
+        $('#update_status').show();
+        $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Upgrading...') }}");
         $("#upgrade").attr("style","");
         $("#upgrade_progress").addClass("fa fa-spinner fa-pulse");
@@ -122,7 +127,7 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function action(pkg_act, pkg_name)
     {
-        $('#progresstab > a').tab('show');
+        $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing...') }}");
 
         ajaxCall('/api/core/firmware/'+pkg_act+'/'+pkg_name,{},function() {
@@ -187,7 +192,7 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#updatestatus').html("{{ lang._('Package manager update done. Please check for more updates.') }}");
                 }
                 $("#upgrade").attr("style","display:none");
-                packagesInfo();
+                packagesInfo(true);
             } else if (data['status'] == 'reboot') {
                 BootstrapDialog.show({
                     type:BootstrapDialog.TYPE_INFO,
@@ -215,11 +220,10 @@ POSSIBILITY OF SUCH DAMAGE.
     /**
      * show package info
      */
-    function packagesInfo() {
+    function packagesInfo(changelog_display) {
         ajaxGet('/api/core/firmware/info', {}, function (data, status) {
             $('#packageslist').empty();
             $('#pluginlist').empty();
-            $('#changeloglist').empty();
             var installed = {};
 
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
@@ -228,8 +232,6 @@ POSSIBILITY OF SUCH DAMAGE.
             $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
             "<th>{{ lang._('Comment') }}</th><th></th></tr>");
-            $("#changeloglist").html("<tr><th>{{ lang._('Version') }}</th>" +
-            "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
             $.each(data['local'], function(index, row) {
                 $('#packageslist').append(
@@ -291,20 +293,27 @@ POSSIBILITY OF SUCH DAMAGE.
                 );
             }
 
-            $.each(data['changelog'], function(index, row) {
-                $('#changeloglist').append(
-                    '<tr><td>' + row['version'] + '</td>' +
-                    '<td>' + row['date'] + '</td>' +
-                    '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
-                    'data-toggle="tooltip" title="View ' + row['version'] + '">' +
-                    '<span class="fa fa-book"></span></button></td></tr>'
-                );
-            });
+            if (changelog_display) {
+                $('#updatelist').empty();
 
-            if (!data['changelog'].length) {
-                $('#changeloglist').append(
-                    '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
-                );
+                $("#updatelist").html("<tr><th>{{ lang._('Version') }}</th>" +
+                "<th>{{ lang._('Date') }}</th><th></th></tr>");
+
+                $.each(data['changelog'], function(index, row) {
+                    $('#updatelist').append(
+                        '<tr><td>' + row['version'] + '</td>' +
+                        '<td>' + row['date'] + '</td>' +
+                        '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
+                        'data-toggle="tooltip" title="View ' + row['version'] + '">' +
+                        '<span class="fa fa-book"></span></button></td></tr>'
+                    );
+                });
+
+                if (!data['changelog'].length) {
+                    $('#updatelist').append(
+                        '<tr><td colspan=3>{{ lang._('Check for updates to view changelog history.') }}</td></tr>'
+                    );
+                }
             }
 
             // link buttons to actions
@@ -346,8 +355,8 @@ POSSIBILITY OF SUCH DAMAGE.
             $('#message').attr('style', '');
         }
 
-        // repopulate package information
-        packagesInfo();
+        // populate package information
+        packagesInfo(true);
 
         ajaxGet('/api/core/firmware/running',{},function(data, status) {
             // if action is already running reattach now...
@@ -480,15 +489,17 @@ POSSIBILITY OF SUCH DAMAGE.
     <div class="row">
         <div class="col-md-12" id="content">
             <ul class="nav nav-tabs" data-tabs="tabs">
-                <li id="packagestab" class="active"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
+                <li id="updatetab" class="active"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
+                <li id="packagestab"><a data-toggle="tab" href="#packages">{{ lang._('Packages') }}</a></li>
                 <li id="plugintab"><a data-toggle="tab" href="#plugins">{{ lang._('Plugins') }}</a></li>
                 <li id="settingstab"><a data-toggle="tab" href="#settings">{{ lang._('Settings') }}</a></li>
-                <li id="changelogtab"><a data-toggle="tab" href="#changelogs">{{ lang._('Changelogs') }}</a></li>
-                <li id="updatetab"><a data-toggle="tab" href="#updates">{{ lang._('Updates') }}</a></li>
-                <li id="progresstab"><a data-toggle="tab" href="#progress">{{ lang._('Progress') }}</a></li>
             </ul>
             <div class="tab-content content-box tab-content">
-                <div id="packages" class="tab-pane fade in active">
+                <div id="updates" class="tab-pane fade in active">
+                    <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <table class="table table-striped table-condensed table-responsive" id="updatelist"></table>
+                </div>
+                <div id="packages" class="tab-pane fade in">
                     <table class="table table-striped table-condensed table-responsive" id="packageslist"></table>
                 </div>
                 <div id="plugins" class="tab-pane fade in">
@@ -555,15 +566,6 @@ POSSIBILITY OF SUCH DAMAGE.
                             </tr>
                         </tbody>
                     </table>
-                </div>
-                <div id="changelogs" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="changeloglist"></table>
-                </div>
-                <div id="updates" class="tab-pane fade in">
-                    <table class="table table-striped table-condensed table-responsive" id="updatelist"></table>
-                </div>
-                <div id="progress" class="tab-pane fade in">
-                    <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly style="max-width:100%; font-family: monospace;"></textarea>
                 </div>
             </div>
         </div>
