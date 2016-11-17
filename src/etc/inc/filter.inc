@@ -2641,49 +2641,6 @@ function filter_rules_generate(&$FilterIflist)
         unset($rule_arr1, $rule_arr2, $rule_arr3);
     }
 
-    /*  pass traffic between statically routed subnets and the subnet on the
-     *  interface in question to avoid problems with complicated routing
-     *  topologies
-     */
-    if (isset($config['filter']['bypassstaticroutes']) && isset($config['staticroutes']['route']) && count($config['staticroutes']['route'])) {
-        $ipfrules .= "# Add rules to bypass firewall rules for static routes\n";
-        foreach (get_staticroutes() as $route) {
-            $friendly = $GatewaysList[$route['gateway']]['friendlyiface'];
-            if (is_array($FilterIflist[$friendly])) {
-                $oc = $FilterIflist[$friendly];
-                $routeent = explode("/", $route['network']);
-                unset($sa);
-                if (is_ipaddrv4($oc['ip'])) {
-                    $sa = $oc['sa'];
-                    $sn = $oc['sn'];
-                }
-                if ($sa && is_ipaddrv4($routeent[0])) {
-                    $ipfrules .= <<<EOD
-pass {$log['pass']} quick on \${$oc['descr']} proto tcp from {$sa}/{$sn} to {$route['network']} flags any keep state(sloppy) label "pass traffic between statically routed subnets"
-pass {$log['pass']} quick on \${$oc['descr']} from {$sa}/{$sn} to {$route['network']} keep state(sloppy) label "pass traffic between statically routed subnets"
-pass {$log['pass']} quick on \${$oc['descr']} proto tcp from {$route['network']} to {$sa}/{$sn} flags any keep state(sloppy) label "pass traffic between statically routed subnets"
-pass {$log['pass']} quick on \${$oc['descr']} from {$route['network']} to {$sa}/{$sn} keep state(sloppy) label "pass traffic between statically routed subnets"
-
-EOD;
-                }
-                unset($sa);
-                if (is_ipaddrv6($oc['ipv6'])) {
-                    $sa = $oc['sav6'];
-                    $sn = $oc['snv6'];
-                }
-                if ($sa && is_ipaddrv6($routeent[0])) {
-                    $ipfrules .= <<<EOD
-pass {$log['pass']} quick on \${$oc['descr']} inet6 proto tcp from {$sa}/{$sn} to {$route['network']} flags any keep state(sloppy) label "pass traffic between statically routed subnets"
-pass {$log['pass']} quick on \${$oc['descr']} inet6 from {$sa}/{$sn} to {$route['network']} keep state(sloppy) label "pass traffic between statically routed subnets"
-pass {$log['pass']} quick on \${$oc['descr']} inet6 proto tcp from {$route['network']} to {$sa}/{$sn} flags any keep state(sloppy) label "pass traffic between statically routed subnets"
-pass {$log['pass']} quick on \${$oc['descr']} inet6 from {$route['network']} to {$sa}/{$sn} keep state(sloppy) label "pass traffic between statically routed subnets"
-
-EOD;
-                }
-            }
-        }
-    }
-
     update_filter_reload_status(gettext("Creating IPsec rules..."));
     $ipfrules .= filter_generate_ipsec_rules($FilterIflist, $log);
 
