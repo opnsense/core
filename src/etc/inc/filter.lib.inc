@@ -342,7 +342,7 @@ function filter_core_rules_system($fw, $defaults)
 
     // TODO: move to pptpd plugin when filter.lib.inc is part of the standard release
     $pptpdcfg = $config['pptpd'];
-    if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server' && !isset($config['system']['disablevpnrules'])) {
+    if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server') {
         $fw->registerFilterRule(5,
           array('direction' => 'in', 'interface' => 'wan', 'statetype' => 'modulate','protocol' => 'tcp',
                 'to' => '(self)', 'to_port' => '1723', 'quick' => false, 'label' =>'allow pptpd'),
