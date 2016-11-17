@@ -76,6 +76,9 @@ POSSIBILITY OF SUCH DAMAGE.
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
             } else {
+                $('#update_status').hide();
+                $('#updatelist').show();
+                $('#updatetab > a').tab('show');
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
             }
@@ -127,6 +130,8 @@ POSSIBILITY OF SUCH DAMAGE.
      */
     function action(pkg_act, pkg_name)
     {
+        $('#updatelist').hide();
+        $('#update_status').show();
         $('#updatetab > a').tab('show');
         $('#updatestatus').html("{{ lang._('Executing...') }}");
 
@@ -502,7 +507,7 @@ POSSIBILITY OF SUCH DAMAGE.
             </ul>
             <div class="tab-content content-box tab-content">
                 <div id="updates" class="tab-pane fade in active">
-                    <textarea name="output" id="update_status" class="form-control" rows="20" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
+                    <textarea name="output" id="update_status" class="form-control" rows="25" wrap="hard" readonly style="max-width:100%; font-family: monospace; display: none;"></textarea>
                     <table class="table table-striped table-condensed table-responsive" id="updatelist"></table>
                 </div>
                 <div id="packages" class="tab-pane fade in">
