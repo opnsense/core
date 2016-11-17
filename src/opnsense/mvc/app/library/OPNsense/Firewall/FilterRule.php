@@ -211,6 +211,7 @@ class FilterRule
                             $tmp['state']['type'] = 'no';
                             break;
                         case 'sloppy state':
+                        case 'sloppy':
                             $tmp['state']['type'] = 'keep';
                             $tmp['state']['options'][] = "sloppy ";
                             break;
