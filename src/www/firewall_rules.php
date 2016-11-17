@@ -320,7 +320,7 @@ $( document ).ready(function() {
                 if (!isset($config['system']['webgui']['noantilockout']) &&
                         (((count($config['interfaces']) > 1) && ($selected_if == 'lan'))
                         || ((count($config['interfaces']) == 1) && ($selected_if == 'wan')))):
-                        $alports = implode('<br />', filter_get_antilockout_ports(true));
+                        $alports = implode('<br />', filter_core_antilockout_ports());
 ?>
                   <tr valign="top">
                     <td>&nbsp;</td>

@@ -1730,7 +1730,7 @@ function filter_nat_rules_generate(&$FilterIflist)
 
     // prevent redirection on ports with "lock out" protection
     if (!isset($config['system']['webgui']['noantilockout'])) {
-        $alports = filter_get_antilockout_ports();
+        $alports = implode(" ", filter_core_antilockout_ports());
         if ( !empty($FilterIflist['lan']['if']) ) {
             $alintrf = $FilterIflist['lan']['if'];
         } elseif ( !empty($FilterIflist['wan']['if']) ) {
@@ -2568,33 +2568,6 @@ function filter_rules_generate(&$FilterIflist)
         }
     }
 
-    if (is_array($config['system']['webgui']) && !isset($config['system']['webgui']['noantilockout'])) {
-        $alports = filter_get_antilockout_ports();
-
-        if (count($config['interfaces']) > 1 && !empty($FilterIflist['lan']['if'])) {
-            /* if antilockout is enabled, LAN exists and has
-             * an IP and subnet mask assigned
-             */
-            $lanif = $FilterIflist['lan']['if'];
-            $ipfrules .= <<<EOD
-
-# make sure the user cannot lock himself out of the webConfigurator or SSH
-pass in {$log['pass']} quick on {$lanif} proto tcp from any to ({$lanif}) port { {$alports} } keep state label "anti-lockout rule"
-
-EOD;
-        } elseif (count($config['interfaces']) == 1  && !empty($FilterIflist['wan']['if'])) {
-            /* single-interface deployment, add to WAN  */
-            $wanif = $FilterIflist["wan"]['if'];
-            $ipfrules .= <<<EOD
-
-# make sure the user cannot lock himself out of the webConfigurator or SSH
-pass in {$log['pass']} quick on {$wanif} proto tcp from any to ({$wanif}) port { {$alports} } keep state label "anti-lockout rule"
-
-EOD;
-        }
-        unset($alports);
-    }
-
     if (isset($pptpdcfg['mode']) && $pptpdcfg['mode'] == 'server' && !isset($config['system']['disablevpnrules'])) {
         if ($pptpdcfg['mode'] == "server") {
             $pptpdtarget = get_interface_ip();
@@ -3009,28 +2982,6 @@ EOD;
         }
     }
     return($ipfrules);
-}
-
-function filter_get_antilockout_ports($wantarray = false) {
-    global $config;
-
-    $lockoutports = array();
-    $guiport = ($config['system']['webgui']['protocol'] == "https") ? "443" : "80";
-    $guiport = empty($config['system']['webgui']['port']) ? $guiport : $config['system']['webgui']['port'];
-    $lockoutports[] = $guiport;
-
-    if (($config['system']['webgui']['protocol'] == "https") && !isset($config['system']['webgui']['disablehttpredirect']) && ($guiport != "80")) {
-        $lockoutports[] = "80";
-    }
-
-    if (isset($config['system']['ssh']['enabled'])) {
-        $lockoutports[] = empty($config['system']['ssh']['port']) ? "22" : $config['system']['ssh']['port'];
-    }
-    if ($wantarray) {
-        return $lockoutports;
-    } else {
-        return implode(" ", $lockoutports);
-    }
 }
 
 function default_state_size()

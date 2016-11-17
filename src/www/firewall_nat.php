@@ -281,7 +281,7 @@ $( document ).ready(function() {
                       <td class="hidden-xs hidden-sm">*</td>
                       <td class="hidden-xs hidden-sm">*</td>
                       <td class="hidden-xs hidden-sm"><?=$lockout_intf_name?> <?=gettext("address");?></td>
-                      <td class="hidden-xs hidden-sm"><?=implode('<br />', filter_get_antilockout_ports(true));?></td>
+                      <td class="hidden-xs hidden-sm"><?=implode('<br />', filter_core_antilockout_ports());?></td>
                       <td>*</td>
                       <td>*</td>
                       <td><?=gettext("Anti-Lockout Rule");?></td>
