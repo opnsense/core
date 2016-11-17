@@ -344,8 +344,8 @@ class MenuItem
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
                 // hash part isn't available on server end
-                $url = explode("#", $node->getUrl())[0];
-                $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $url);
+                $menuItemUrl = explode("#", $node->getUrl())[0];
+                $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $menuItemUrl);
                 if (preg_match("@^{$match}$@", "{$url}")) {
                     $node->select();
                 }
