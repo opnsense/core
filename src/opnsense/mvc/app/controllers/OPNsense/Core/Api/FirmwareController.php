@@ -146,7 +146,7 @@ class FirmwareController extends ApiControllerBase
             }
 
             uksort($sorted, function ($a, $b) {
-                return strnatcmp($a, $b);
+                return strnatcasecmp($a, $b);
             });
 
             $response['all_packages'] = $sorted;
@@ -449,6 +449,10 @@ class FirmwareController extends ApiControllerBase
                 }
                 $response[$type][] = $translated;
             }
+
+            usort($response[$type], function ($a, $b) {
+                return strnatcasecmp($a['name'], $b['name']);
+            });
         }
 
         /* also pull in changelogs from here */
