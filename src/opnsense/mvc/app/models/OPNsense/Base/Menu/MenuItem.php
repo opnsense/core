@@ -343,7 +343,9 @@ class MenuItem
         foreach ($this->getFilteredChildren() as $nodeId => $node) {
             $node->toggleSelected($url);
             if ($node->getUrl() != "") {
-                $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $node->getUrl());
+                // hash part isn't available on server end
+                $menuItemUrl = explode("#", $node->getUrl())[0];
+                $match =  str_replace(array(".", "*","?"), array("\.", ".*","\?"), $menuItemUrl);
                 if (preg_match("@^{$match}$@", "{$url}")) {
                     $node->select();
                 }
