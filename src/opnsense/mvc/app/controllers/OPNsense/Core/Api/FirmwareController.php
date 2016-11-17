@@ -473,6 +473,9 @@ class FirmwareController extends ApiControllerBase
 
         $response['changelog'] = $changelogs;
 
+        /* allows us to match the version against the specific changelog */
+        $response['product_version'] = file_get_contents('/usr/local/opnsense/version/opnsense');
+
         return $response;
     }
 

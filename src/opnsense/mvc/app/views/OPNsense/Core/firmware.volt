@@ -299,9 +299,15 @@ POSSIBILITY OF SUCH DAMAGE.
                 $("#updatelist").html("<tr><th>{{ lang._('Version') }}</th>" +
                 "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
+                installed_version = data['product_version'].replace(/[_-].*/, '');
+
                 $.each(data['changelog'], function(index, row) {
+                    installed_text = '';
+                    if (installed_version == row['version']) {
+                        installed_text = ' ({{ lang._('installed') }})';
+                    }
                     $('#updatelist').append(
-                        '<tr><td>' + row['version'] + '</td>' +
+                        '<tr><td>' + row['version'] + installed_text + '</td>' +
                         '<td>' + row['date'] + '</td>' +
                         '<td><button class="btn btn-default btn-xs act_changelog" data-version="' + row['version'] + '" ' +
                         'data-toggle="tooltip" title="View ' + row['version'] + '">' +
