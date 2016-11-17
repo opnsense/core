@@ -66,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
     $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
-    $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $old_aliasesresolveinterval = $config['system']['aliasesresolveinterval'];
@@ -115,12 +114,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['disablefilter'] = "enabled";
         } elseif (isset($config['system']['disablefilter'])) {
             unset($config['system']['disablefilter']);
-        }
-
-        if (!empty($pconfig['disablevpnrules'])) {
-            $config['system']['disablevpnrules'] = true;
-        }  elseif (isset($config['system']['disablevpnrules'])) {
-            unset($config['system']['disablevpnrules']);
         }
 
         if (!empty($pconfig['adaptiveend'])) {
@@ -516,16 +509,6 @@ include("head.inc");
                       <?=gettext("This option only applies if you have defined one or more static routes. If it is enabled, traffic that enters and " .
                                           "leaves through the same interface will not be checked by the firewall. This may be desirable in some situations where " .
                                           "multiple subnets are connected to the same interface.");?>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td><a id="help_for_disablevpnrules" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable Auto-added VPN rules') ?></td>
-                  <td>
-                    <input name="disablevpnrules" type="checkbox" value="yes" <?=!empty($pconfig['disablevpnrules']) ? "checked=\"checked\"" :"";?> />
-                    <strong><?=gettext("Disable all auto-added VPN rules.");?></strong>
-                    <div class="hidden" for="help_for_disablevpnrules">
-                      <?=gettext("Note: This disables automatically added rules for IPsec, PPTP.");?>
                     </div>
                   </td>
                 </tr>

@@ -41,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // fetch form data
     $pconfig  = array();
     $pconfig['noinstalllanspd'] = isset($config['system']['noinstalllanspd']);
+    $pconfig['disablevpnrules'] = isset($config['system']['disablevpnrules']);
     $pconfig['preferoldsa_enable'] = isset($config['ipsec']['preferoldsa']);
     foreach ($ipsec_loglevels as $lkey => $ldescr) {
         if (!empty($config['ipsec']["ipsec_{$lkey}"])) {
@@ -56,6 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['noinstalllanspd'] = true;
     } elseif (isset($config['system']['noinstalllanspd'])) {
         unset($config['system']['noinstalllanspd']);
+    }
+    if (!empty($pconfig['disablevpnrules'])) {
+        $config['system']['disablevpnrules'] = true;
+    }  elseif (isset($config['system']['disablevpnrules'])) {
+        unset($config['system']['disablevpnrules']);
     }
     if (isset($pconfig['preferoldsa_enable']) && $pconfig['preferoldsa_enable'] == "yes") {
         $config['ipsec']['preferoldsa'] = true;
@@ -121,6 +127,13 @@ if (isset($input_errors) && count($input_errors) > 0) {
                             <?=gettext("By default, if IPsec is enabled negating SPD are inserted to provide protection. " .
                                                   "This behaviour can be changed by enabling this setting which will prevent installing these SPDs."); ?>
                         </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Disable Auto-added VPN rules') ?></td>
+                      <td>
+                        <input name="disablevpnrules" type="checkbox" value="yes" <?=!empty($pconfig['disablevpnrules']) ? "checked=\"checked\"" :"";?> />
+                        <strong><?=gettext("Disable all auto-added VPN rules.");?></strong>
                       </td>
                     </tr>
                     <tr>
