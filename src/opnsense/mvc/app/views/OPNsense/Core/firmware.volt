@@ -32,6 +32,8 @@ POSSIBILITY OF SUCH DAMAGE.
      * prepare for checking update status
      */
     function updateStatusPrepare() {
+        $('#update_status').hide();
+        $('#updatelist').show();
         $("#checkupdate_progress").addClass("fa fa-spinner fa-pulse");
         $('#updatestatus').html("{{ lang._('Checking... (may take up to 30 seconds)') }}");
     }
@@ -76,9 +78,8 @@ POSSIBILITY OF SUCH DAMAGE.
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
             } else {
-                $('#update_status').hide();
-                $('#updatelist').show();
-                $('#updatetab > a').tab('show');
+                $("#upgrade").attr("style","display:none");
+
                 // update list so plugins sync as well (all)
                 packagesInfo(true);
             }
