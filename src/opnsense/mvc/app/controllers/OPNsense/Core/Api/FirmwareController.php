@@ -99,7 +99,8 @@ class FirmwareController extends ApiControllerBase
              * new_packages: array with { name: <package_name>, version: <package_version> }
              * reinstall_packages: array with { name: <package_name>, version: <package_version> }
              * delete_packages: array with { name: <package_name>, version: <package_version> }
-             * upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
+             * upgrade_packages: array with { name: <package_name>,
+             *     current_version: <current_version>, new_version: <new_version> }
              */
             foreach (array('new_packages', 'reinstall_packages', 'delete_packages', 'upgrade_packages') as $pkg_type) {
                 if (isset($response[$pkg_type])) {
@@ -151,7 +152,10 @@ class FirmwareController extends ApiControllerBase
 
             $response['all_packages'] = $sorted;
         } else {
-            $response = array('status' => 'unknown', 'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'));
+            $response = array(
+                'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'),
+                'status' => 'unknown'
+            );
         }
 
         return $response;

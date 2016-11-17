@@ -163,7 +163,7 @@ class Config extends Singleton
      */
     public function toArrayFromFile($filename, $forceList = null)
     {
-        $xml = $this->load_from_file($filename);
+        $xml = $this->loadFromFile($filename);
         return $this->toArray($forceList, $xml);
     }
 
@@ -309,7 +309,7 @@ class Config extends Singleton
      * @return \SimpleXMLElement
      * @throws ConfigException
      */
-    private function load_from_file($filename)
+    private function loadFromFile($filename)
     {
         // exception handling
         if (!file_exists($filename)) {
@@ -345,7 +345,7 @@ class Config extends Singleton
     {
         $this->simplexml = null;
         $this->statusIsValid = false;
-        $this->simplexml = $this->load_from_file($this->config_file);
+        $this->simplexml = $this->loadFromFile($this->config_file);
         $this->statusIsValid = true;
     }
 
