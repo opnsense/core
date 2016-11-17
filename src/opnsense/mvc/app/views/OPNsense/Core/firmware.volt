@@ -70,6 +70,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
                     row['reason'] + '</td></tr>');
                 });
+            } else {
+                $('#updatelist').html("<tr><td>"+data['status_msg']+"</td></tr>");
             }
 
             // update list so plugins sync as well
