@@ -92,20 +92,66 @@ class FirmwareController extends ApiControllerBase
                     );
                 }
             }
-        } else {
-            $response = array('status' => 'unknown', 'status_msg' => gettext('Current status is unknown.'));
-        }
 
-        /* XXX array isn't flat, need to refactor this */
-        if (isset($response['upgrade_packages'])) {
             $sorted = array();
-            foreach ($response['upgrade_packages'] as $key => $value) {
-                $sorted[$value['name']] = $value;
+
+            /*
+             * new_packages: array with { name: <package_name>, version: <package_version> }
+             * reinstall_packages: array with { name: <package_name>, version: <package_version> }
+             * delete_packages: array with { name: <package_name>, version: <package_version> }
+             * upgrade_packages: array with { name: <package_name>, current_version: <current_version>, new_version: <new_version> }
+             */
+            foreach (array('new_packages', 'reinstall_packages', 'delete_packages', 'upgrade_packages') as $pkg_type) {
+                if (isset($response[$pkg_type])) {
+                    foreach ($response[$pkg_type] as $value) {
+                        switch ($pkg_type) {
+                            case 'new_packages':
+                                $sorted[$value['name']] = array(
+                                    'new' => $value['version'],
+                                    'reason' => gettext('new'),
+                                    'name' => $value['name'],
+                                    'old' => gettext('N/A'),
+                                );
+                                break;
+                            case 'reinstall_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('reinstall'),
+                                    'new' => $value['version'],
+                                    'old' => $value['version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            case 'delete_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('delete'),
+                                    'old' => $value['version'],
+                                    'name' => $value['name'],
+                                    'new' => gettext('N/A'),
+                                );
+                                break;
+                            case 'upgrade_packages':
+                                $sorted[$value['name']] = array(
+                                    'reason' => gettext('update'),
+                                    'old' => $value['current_version'],
+                                    'new' => $value['new_version'],
+                                    'name' => $value['name'],
+                                );
+                                break;
+                            default:
+                                /* undefined */
+                                break;
+                        }
+                    }
+                }
             }
+
             uksort($sorted, function ($a, $b) {
                 return strnatcmp($a, $b);
             });
-            $response['upgrade_packages'] = $sorted;
+
+            $response['all_packages'] = $sorted;
+        } else {
+            $response = array('status' => 'unknown', 'status_msg' => gettext('Firmware status check was aborted internally. Please try again.'));
         }
 
         return $response;

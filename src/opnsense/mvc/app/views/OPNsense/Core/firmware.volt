@@ -63,22 +63,12 @@ POSSIBILITY OF SUCH DAMAGE.
                 // show upgrade list
                 $('#updatetab > a').tab('show');
                 $("#updatelist").html("<tr><th>{{ lang._('Package Name') }}</th>" +
-                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th></tr>");
-                $.each(['new_packages', 'upgrade_packages', 'reinstall_packages'], function(type_idx,type_name){
-                    if ( data[type_name] != undefined ) {
-                        $.each(data[type_name],function(index,row){
-                            if (type_name == "new_packages") {
-                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                                "<td><strong>{{ lang._('NEW') }}</strong></td><td>"+row['version']+"</td></tr>");
-                            } else if (type_name == "reinstall_packages") {
-                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                                "<td>"+row['version']+"</td><td><strong>{{ lang._('REINSTALL') }}</strong></td></tr>");
-                            } else {
-                                $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
-                                '<td>'+row['current_version']+'</td><td>'+row['new_version']+'</td></tr>');
-                            }
-                        });
-                    }
+                "<th>{{ lang._('Current Version') }}</th><th>{{ lang._('New Version') }}</th>" +
+                "<th>{{ lang._('Required Action') }}</th></tr>");
+                $.each(data['all_packages'], function (index, row) {
+                    $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
+                    '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
+                    row['reason'] + '</td></tr>');
                 });
             }
 
