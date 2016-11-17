@@ -21,12 +21,11 @@ EOF
 cat /etc/rc.bak >> /etc/rc
 rm -f /etc/rc.bak
 
-echo "Writing package version"
+echo "Writing package metadata"
 mkdir -p /usr/local/opnsense/version
 if [ -f /usr/local/opnsense/version/opnsense ]; then
 	mv /usr/local/opnsense/version/opnsense /usr/local/opnsense/version/opnsense.last
 fi
-
 echo "%%CORE_COMMIT%%" > /usr/local/opnsense/version/opnsense
 echo "%%CORE_NAME%%" > /usr/local/opnsense/version/opnsense.name
 echo "%%CORE_ABI%%" > /usr/local/opnsense/version/opnsense.abi
