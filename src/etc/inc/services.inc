@@ -414,6 +414,7 @@ function services_dhcpdv4_configure($verbose = false)
         }
     }
     $dhcpdconf = <<<EOD
+option domain-name "{$config['system']['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 option arch code 93 = unsigned integer 16; # RFC4578
@@ -532,8 +533,6 @@ EOPP;
 
         if (!empty($dhcpifconf['domain'])) {
             $dnscfg .= "  option domain-name \"{$dhcpifconf['domain']}\";\n";
-        } else {
-            $dnscfg .= "  option domain-name \"{$config['system']['domain']}\";\n";
         }
 
         if (!empty($dhcpifconf['domainsearchlist'])) {
@@ -1095,6 +1094,7 @@ function services_dhcpdv6_configure($blacklist = array(), $verbose = false)
     }
 
     $dhcpdv6conf = <<<EOD
+option domain-name "{$syscfg['domain']}";
 option ldap-server code 95 = text;
 option domain-search-list code 119 = text;
 {$custoptionsv6}
@@ -1128,8 +1128,6 @@ EOD;
         $dnscfgv6 = "";
         if (!empty($dhcpv6ifconf['domain'])) {
             $dnscfgv6 .= "  option domain-name \"{$dhcpv6ifconf['domain']}\";\n";
-        } else {
-            $dnscfgv6 .= "  option domain-name \"{$syscfg['domain']}\";\n";
         }
 
         if (!empty($dhcpv6ifconf['domainsearchlist'])) {
