@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // booleans
     $pconfig['enable'] = isset($config['dnsmasq']['enable']);
     $pconfig['regdhcp'] = isset($config['dnsmasq']['regdhcp']);
+    $pconfig['regdhcpdomain'] = !empty($config['dnsmasq']['regdhcpdomain']) ? $config['dnsmasq']['regdhcpdomain'] : null;
     $pconfig['regdhcpstatic'] = isset($config['dnsmasq']['regdhcpstatic']);
     $pconfig['dhcpfirst'] = isset($config['dnsmasq']['dhcpfirst']);
     $pconfig['strict_order'] = isset($config['dnsmasq']['strict_order']);
@@ -63,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $input_errors = array();
     if (isset($pconfig['submit'])) {
         // validate
+        if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
+            $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
+        }
         if (!empty($pconfig['port']) && !is_port($pconfig['port'])) {
             $input_errors[] = gettext("You must specify a valid port number");
         }
@@ -91,9 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['dnsmasq']['domain_needed'] = !empty($pconfig['domain_needed']);
             $config['dnsmasq']['no_private_reverse'] = !empty($pconfig['no_private_reverse']);
             $config['dnsmasq']['strictbind'] = !empty($pconfig['strictbind']);
+            if (!empty($pconfig['regdhcpdomain'])) {
+                $config['dnsmasq']['regdhcpdomain'] = $pconfig['regdhcpdomain'];
+            } elseif (isset($config['dnsmasq']['regdhcpdomain'])) {
+                unset($config['dnsmasq']['regdhcpdomain']);
+            }
             if (!empty($pconfig['interface'])) {
                 $config['dnsmasq']['interface'] = implode(",", $pconfig['interface']);
-            } elseif  (isset($config['dnsmasq']['interface'])) {
+            } elseif (isset($config['dnsmasq']['interface'])) {
                 unset($config['dnsmasq']['interface']);
             }
             if (!empty($pconfig['port'])) {
@@ -107,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 unset($config['dnsmasq']['custom_options']);
             }
             write_config();
-            services_dnsmasq_configure();
+            dnsmasq_configure_do();
             services_dhcpd_configure();
             header(url_safe('Location: /services_dnsmasq.php'));
             exit;
@@ -118,8 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /* Update resolv.conf in case the interface bindings exclude localhost. */
         system_resolvconf_generate();
         system_hosts_generate();
-        services_dhcpleases_configure();
-        services_dnsmasq_configure();
+        dnsmasq_configure_do();
         services_dhcpd_configure();
         clear_subsystem_dirty('hosts');
         header(url_safe('Location: /services_dnsmasq.php'));
@@ -245,11 +253,21 @@ $( document ).ready(function() {
                     <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
                     <strong><?=gettext("Register DHCP leases in DNS forwarder");?></strong>
                     <div class="hidden" for="help_for_regdhcp">
-                      <?= sprintf(gettext("If this option is set, then machines that specify".
-                      " their hostname when requesting a DHCP lease will be registered".
-                      " in the DNS forwarder, so that their name can be resolved.".
-                      " You should also set the domain in %sSystem:".
-                      " General setup%s to the proper value."),'<a href="system_general.php">','</a>')?>
+                      <?= gettext("If this option is set, then machines that specify " .
+                        "their hostname when requesting a DHCP lease will be registered " .
+                        "in the DNS forwarder, so that their name can be resolved.") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><a id="help_for_regdhcpdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Domain Override");?></td>
+                  <td>
+                    <input name="regdhcpdomain" type="text" id="regdhcpdomain" value="<?= $pconfig['regdhcpdomain'] ?>"/>
+                    <div class="hidden" for="help_for_regdhcpdomain">
+                      <?= gettext("The domain name to use for DHCP hostname registration. " .
+                        "If empty, the default system domain is used. Note that all DHCP " .
+                        "leases will be assigned to the same domain. If this is undesired, " .
+                        "static DHCP lease registration is able to provide coherent mappings.") ?>
                     </div>
                   </td>
                 </tr>

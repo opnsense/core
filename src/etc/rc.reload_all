@@ -48,7 +48,6 @@ system_login_configure();
 system_timezone_configure();
 system_hostname_configure();
 system_hosts_generate();
-services_dhcpleases_configure();
 system_resolvconf_generate();
 system_routing_enable();
 interfaces_configure();

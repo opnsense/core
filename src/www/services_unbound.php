@@ -28,7 +28,6 @@
 */
 
 require_once("guiconfig.inc");
-require_once("unbound.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
@@ -50,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // text values
     $pconfig['port'] = !empty($a_unboundcfg['port']) ? $a_unboundcfg['port'] : null;
     $pconfig['custom_options'] = !empty($a_unboundcfg['custom_options']) ? $a_unboundcfg['custom_options'] : null;
+    $pconfig['regdhcpdomain'] = !empty($a_unboundcfg['regdhcpdomain']) ? $a_unboundcfg['regdhcpdomain'] : null;
     // array types
     $pconfig['active_interface'] = !empty($a_unboundcfg['active_interface']) ? explode(",", $a_unboundcfg['active_interface']) : array();
     $pconfig['outgoing_interface'] = !empty($a_unboundcfg['outgoing_interface']) ? explode(",", $a_unboundcfg['outgoing_interface']) : array();
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = $_POST;
 
     if (!empty($pconfig['apply'])) {
-        services_unbound_configure();
+        unbound_configure_do();
         services_dhcpd_configure();
         clear_subsystem_dirty('unbound');
         /* Update resolv.conf in case the interface bindings exclude localhost. */
@@ -69,6 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         // perform validations
         if (isset($pconfig['enable']) && isset($config['dnsmasq']['enable']) && (empty($pconfig['port']) || $pconfig['port'] == '53')) {
             $input_errors[] = gettext("The DNS Forwarder is still active. Disable it before enabling the DNS Resolver.");
+        }
+        if (!empty($pconfig['regdhcpdomain']) && !is_domain($pconfig['regdhcpdomain'])) {
+            $input_errors[] = gettext("The domain may only contain the characters a-z, 0-9, '-' and '.'.");
         }
         if (empty($pconfig['active_interface'])) {
             $input_errors[] = gettext("A single network interface needs to be selected for the DNS Resolver to bind to.");
@@ -87,6 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $a_unboundcfg['port'] = $pconfig['port'];
             } elseif  (isset($a_unboundcfg['port'])) {
                 unset($a_unboundcfg['port']);
+            }
+            if (!empty($pconfig['regdhcpdomain'])) {
+                $a_unboundcfg['regdhcpdomain'] = $pconfig['regdhcpdomain'];
+            } elseif (isset($a_unboundcfg['regdhcpdomain'])) {
+                unset($a_unboundcfg['regdhcpdomain']);
             }
             $a_unboundcfg['custom_options'] = !empty($pconfig['custom_options']) ? str_replace("\r\n", "\n", $pconfig['custom_options']) : null;
             // boolean values
@@ -206,11 +214,21 @@ include_once("head.inc");
                           <input name="regdhcp" type="checkbox" id="regdhcp" value="yes" <?=!empty($pconfig['regdhcp']) ? "checked=\"checked\"" : "";?> />
                           <strong><?=gettext("Register DHCP leases in the DNS Resolver");?></strong>
                           <div class="hidden" for="help_for_regdhcp">
-                            <?= sprintf(gettext("If this option is set, then machines that specify".
-                            " their hostname when requesting a DHCP lease will be registered".
-                            " in the DNS Resolver, so that their name can be resolved.".
-                            " You should also set the domain in %sSystem:".
-                            " General setup%s to the proper value."),'<a href="system_general.php">','</a>')?>
+                            <?= gettext("If this option is set, then machines that specify " .
+                            "their hostname when requesting a DHCP lease will be registered " .
+                            "in the DNS Resolver, so that their name can be resolved."); ?>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><a id="help_for_regdhcpdomain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("DHCP Domain Override");?></td>
+                        <td>
+                          <input name="regdhcpdomain" type="text" id="regdhcpdomain" value="<?= $pconfig['regdhcpdomain'] ?>"/>
+                          <div class="hidden" for="help_for_regdhcpdomain">
+                            <?= gettext("The domain name to use for DHCP hostname registration. " .
+                              "If empty, the default system domain is used. Note that all DHCP " .
+                              "leases will be assigned to the same domain. If this is undesired, " .
+                              "static DHCP lease registration is able to provide coherent mappings.") ?>
                           </div>
                         </td>
                       </tr>

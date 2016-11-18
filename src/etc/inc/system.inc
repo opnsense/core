@@ -182,15 +182,7 @@ function system_resolvconf_generate($dynupdate = false)
 
     $dnslock = lock('resolvconf', LOCK_EX);
 
-    $fd = fopen('/etc/resolv.conf', 'w');
-    if (!$fd) {
-        log_error('Cannot open resolv.conf in system_resolvconf_generate()');
-        unlock($dnslock);
-        return 1;
-    }
-
-    fwrite($fd, $resolvconf);
-    fclose($fd);
+    file_put_contents('/etc/resolv.conf', $resolvconf);
     chmod('/etc/resolv.conf', 0644);
 
     if (!file_exists("/var/run/booting")) {
@@ -357,16 +349,13 @@ function system_hosts_generate()
     global $config;
 
     $syscfg = $config['system'];
-    $dnsmasqcfg = $config['dnsmasq'];
 
-    $hosts = "127.0.0.1  localhost localhost.{$syscfg['domain']}\n";
-    $lhosts = "";
-    $dhosts = "";
+    $hosts = "127.0.0.1\tlocalhost localhost.{$syscfg['domain']}\n";
 
     if (isset($config['interfaces']['lan'])) {
         $cfgip = get_interface_ip("lan");
         if (is_ipaddr($cfgip)) {
-            $hosts .= "{$cfgip}  {$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
+            $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
         }
     } else {
         $sysiflist = get_configured_interface_list();
@@ -374,92 +363,17 @@ function system_hosts_generate()
             if (!interface_has_gateway($sysif)) {
                 $cfgip = get_interface_ip($sysif);
                 if (is_ipaddr($cfgip)) {
-                    $hosts .= "{$cfgip}  {$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
+                    $hosts .= "{$cfgip}\t{$syscfg['hostname']}.{$syscfg['domain']} {$syscfg['hostname']}\n";
                     break;
                 }
             }
         }
     }
 
-    if (isset($dnsmasqcfg['enable'])) {
-        if (!isset($dnsmasqcfg['hosts']) || !is_array($dnsmasqcfg['hosts'])) {
-            $dnsmasqcfg['hosts'] = array();
-        }
+    file_put_contents('/etc/hosts', $hosts);
 
-        foreach ($dnsmasqcfg['hosts'] as $host) {
-            if ($host['host']) {
-                $lhosts .= "{$host['ip']}  {$host['host']}.{$host['domain']} {$host['host']}\n";
-            } else {
-                $lhosts .= "{$host['ip']}  {$host['domain']}\n";
-            }
-            if (!isset($host['aliases']) || !is_array($host['aliases']) || !is_array($host['aliases']['item'])) {
-                continue;
-            }
-            foreach ($host['aliases']['item'] as $alias) {
-                if ($alias['host']) {
-                    $lhosts .= "{$host['ip']}  {$alias['host']}.{$alias['domain']} {$alias['host']}\n";
-                } else {
-                    $lhosts .= "{$host['ip']}  {$alias['domain']}\n";
-                }
-            }
-        }
-        if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpd'])) {
-            foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
-                if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
-                    foreach ($dhcpifconf['staticmap'] as $host) {
-                        if ($host['ipaddr'] && $host['hostname'] && $host['domain']) {
-                            $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddr'] && $host['hostname'] && $dhcpifconf['domain']) {
-                            $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddr'] && $host['hostname']) {
-                            $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
-                        }
-                    }
-                }
-            }
-        }
-        if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
-            foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
-                if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
-                    foreach ($dhcpifconf['staticmap'] as $host) {
-                        if ($host['ipaddrv6'] && $host['hostname'] && $host['domain']) {
-                            $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddrv6'] && $host['hostname'] && $dhcpifconf['domain']) {
-                            $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddrv6'] && $host['hostname']) {
-                            $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
-                        }
-                    }
-                }
-            }
-        }
-
-        if (isset($dnsmasqcfg['dhcpfirst'])) {
-            $hosts .= $dhosts . $lhosts;
-        } else {
-            $hosts .= $lhosts . $dhosts;
-        }
-    }
-
-    /*
-     * Do not remove this because dhcpleases monitors with kqueue
-     * it needs to be * killed before writing to hosts files.
-     */
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
-
-    $fd = fopen('/etc/hosts', 'w');
-    if (!$fd) {
-        log_error("Error: cannot open hosts file in system_hosts_generate().\n");
-        return 1;
-    }
-    fwrite($fd, $hosts);
-    fclose($fd);
-
-    if (isset($config['unbound']['enable'])) {
-        unbound_hosts_generate();
-    }
-
-    return 0;
+    dnsmasq_hosts_generate();
+    unbound_hosts_generate();
 }
 
 function system_hostname_configure()
@@ -469,10 +383,9 @@ function system_hostname_configure()
     $syscfg = $config['system'];
 
     /* set hostname */
-    $status = mwexec("/bin/hostname " .
-      escapeshellarg("{$syscfg['hostname']}.{$syscfg['domain']}"));
+    $status = mwexecf('/bin/hostname %s', "{$syscfg['hostname']}.{$syscfg['domain']}");
 
-      /* Setup host GUID ID.  This is used by ZFS. */
+    /* Setup host GUID ID.  This is used by ZFS. */
     mwexec("/etc/rc.d/hostid start");
 
     return $status;
@@ -874,13 +787,7 @@ EOD;
             }
         }
 
-        /* write syslog.conf */
-        if (!@file_put_contents("/var/etc/syslog.conf", $syslogconf)) {
-            log_error('Cannot open syslog.conf in system_syslogd_start()');
-            unset($syslogconf);
-            return 1;
-        }
-        unset($syslogconf);
+        file_put_contents('/var/etc/syslog.conf', $syslogconf);
 
         if (!empty($syslogcfg['sourceip'])) {
             if ($syslogcfg['ipproto'] == "ipv6") {

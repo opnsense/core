@@ -42,6 +42,7 @@
 /usr/local/etc/inc/openvpn_wizard.inc
 /usr/local/etc/inc/plugins.inc
 /usr/local/etc/inc/plugins.inc.d/bsnmpd.inc
+/usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/if_group.inc
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
@@ -56,11 +57,11 @@
 /usr/local/etc/inc/plugins.inc.d/relayd/tcp.proto
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
+/usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/services.inc
 /usr/local/etc/inc/squid.auth-user.php
 /usr/local/etc/inc/system.inc
-/usr/local/etc/inc/unbound.inc
 /usr/local/etc/inc/upgrade_config.inc
 /usr/local/etc/inc/util.inc
 /usr/local/etc/inc/xmlparse.inc

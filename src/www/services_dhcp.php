@@ -109,20 +109,10 @@ function reconfigure_dhcpd()
     killbyname("dhcpd");
     dhcp_clean_leases();
     system_hosts_generate();
-    services_dhcpleases_configure();
-    if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        services_dnsmasq_configure();
-        clear_subsystem_dirty('hosts');
-    }
-    if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        services_unbound_configure();
-        clear_subsystem_dirty('unbound');
-    }
+    clear_subsystem_dirty('hosts');
     services_dhcpd_configure();
-
     clear_subsystem_dirty('staticmaps');
 }
-
 
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',
@@ -518,13 +508,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($config['dhcpd'][$if]['staticmap'][$_POST['id']])) {
             unset($config['dhcpd'][$if]['staticmap'][$_POST['id']]);
             write_config();
-            if(isset($config['dhcpd'][$if]['enable'])) {
+            if (isset($config['dhcpd'][$if]['enable'])) {
               mark_subsystem_dirty('staticmaps');
-              if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic'])) {
-                  mark_subsystem_dirty('hosts');
-              } elseif (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-                  mark_subsystem_dirty('unbound');
-              }
+              mark_subsystem_dirty('hosts');
             }
         }
         header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));

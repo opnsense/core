@@ -34,22 +34,13 @@ require_once("system.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 
-
 /**
  * restart dhcp service
  */
 function reconfigure_dhcpd()
 {
-    if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        services_dnsmasq_configure();
-        clear_subsystem_dirty('hosts');
-    }
-
-    if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        services_unbound_configure();
-        clear_subsystem_dirty('unbound');
-    }
-
+    system_hosts_generate();
+    clear_subsystem_dirty('hosts');
     services_dhcpd_configure();
     clear_subsystem_dirty('staticmaps');
 }
@@ -329,9 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             if (isset($config['dhcpdv6'][$if]['enable'])) {
                 mark_subsystem_dirty('staticmapsv6');
-                if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic'])) {
-                    mark_subsystem_dirty('hosts');
-                }
+                mark_subsystem_dirty('hosts');
             }
         }
         exit;

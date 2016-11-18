@@ -135,10 +135,9 @@ function filter_configure_xmlrpc()
     system_routing_configure();
     setup_gateways_monitor();
     system_hosts_generate();
-    services_dhcpleases_configure();
     local_sync_accounts();
-    services_dnsmasq_configure();
-    services_unbound_configure();
+    dnsmasq_configure_do();
+    unbound_configure_do();
     services_dhcpd_configure();
     openvpn_resync_all();
 

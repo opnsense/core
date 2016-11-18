@@ -140,9 +140,6 @@ openvpn_prepare_all();
 interfaces_configure();
 unmute_kernel_msgs();
 
-/* re-make hosts file after configuring interfaces */
-system_hosts_generate();
-
 /* start OpenVPN server & clients */
 echo "Syncing OpenVPN settings...";
 openvpn_resync_all();
@@ -177,15 +174,10 @@ echo 'Starting webConfigurator...'. (system_webgui_configure() ? "done.\n" : "fa
 system_cron_configure(true);
 system_routing_configure();
 system_routing_enable();
-
-/* start dnsmasq service */
-services_dnsmasq_configure(true);
-
-/* start unbound service */
-services_unbound_configure(true);
-
+dnsmasq_configure_do(true);
+unbound_configure_do(true);
 services_dhcpd_configure('all', array(), true);
-services_dhcpleases_configure();
+system_hosts_generate();
 services_dhcrelay_configure(true);
 services_dhcrelay6_configure(true);
 
