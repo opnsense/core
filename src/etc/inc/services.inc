@@ -1853,28 +1853,6 @@ function services_dnsmasq_configure($verbose = false)
     }
 }
 
-function services_unbound_configure($verbose = false)
-{
-    global $config;
-
-    killbypid('/var/run/unbound.pid', 'TERM', true);
-
-    if (!isset($config['unbound']['enable'])) {
-        return;
-    }
-
-    if ($verbose) {
-        echo 'Starting DNS Resolver...';
-        flush();
-    }
-
-    unbound_sync_service();
-
-    if ($verbose) {
-        echo "done.\n";
-    }
-}
-
 function services_snmpd_configure($verbose = false)
 {
     global $config, $g;

@@ -413,13 +413,18 @@ function system_hosts_generate()
             foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
                 if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
                     foreach ($dhcpifconf['staticmap'] as $host) {
-                        if ($host['ipaddr'] && $host['hostname'] && $host['domain']) {
-                            $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddr'] && $host['hostname'] && $dhcpifconf['domain']) {
-                            $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddr'] && $host['hostname']) {
-                            $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
+                        if (!$host['ipaddr'] || !$host['hostname']) {
+                            continue;
                         }
+
+                        $domain = $syscfg['domain'];
+                        if ($host['domain']) {
+                            $domain = $host['domain'];
+                        } elseif ($dhcpifconf['domain']) {
+                            $domain = $dhcpifconf['domain'];
+                        }
+
+                        $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$domain} {$host['hostname']}\n";
                     }
                 }
             }
@@ -428,13 +433,18 @@ function system_hosts_generate()
             foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
                 if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
                     foreach ($dhcpifconf['staticmap'] as $host) {
-                        if ($host['ipaddrv6'] && $host['hostname'] && $host['domain']) {
-                            $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$host['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddrv6'] && $host['hostname'] && $dhcpifconf['domain']) {
-                            $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$dhcpifconf['domain']} {$host['hostname']}\n";
-                        } elseif ($host['ipaddrv6'] && $host['hostname']) {
-                            $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$syscfg['domain']} {$host['hostname']}\n";
+                        if (!$host['ipaddrv6'] || !$host['hostname']) {
+                            continue;
                         }
+
+                        $domain = $config['system']['domain'];
+                        if ($host['domain']) {
+                            $domain = $host['domain'];
+                        } elseif ($dhcpifconf['domain']) {
+                            $domain = $dhcpifconf['domain'];
+                        }
+
+                        $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$domain} {$host['hostname']}\n";
                     }
                 }
             }
@@ -461,9 +471,7 @@ function system_hosts_generate()
     fwrite($fd, $hosts);
     fclose($fd);
 
-    if (isset($config['unbound']['enable'])) {
-        unbound_hosts_generate();
-    }
+    unbound_hosts_generate();
 
     return 0;
 }
