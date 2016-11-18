@@ -180,8 +180,14 @@ class FirmwareController extends ApiControllerBase
                 return preg_replace('/[^0-9a-zA-Z\.]/', '', $value);
             });
             $version = $filter->sanitize($version, 'version');
-            $response['text'] = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
-            $response['html'] = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+            $text = trim($backend->configdRun(sprintf('firmware changelog text %s', $version)));
+            $html = trim($backend->configdRun(sprintf('firmware changelog html %s', $version)));
+            if (!empty($text)) {
+                $response['text'] = $text;
+            }
+            if (!empty($html)) {
+                $response['html'] = $html;
+            }
         }
 
         return $response;

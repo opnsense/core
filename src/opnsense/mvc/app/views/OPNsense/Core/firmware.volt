@@ -58,6 +58,8 @@ POSSIBILITY OF SUCH DAMAGE.
                     $.upgrade_needs_reboot = 0 ;
                 }
 
+                $.upgrade_show_log = '';
+
                 // unhide upgrade button
                 $("#upgrade").attr("style","");
 
@@ -73,7 +75,16 @@ POSSIBILITY OF SUCH DAMAGE.
                     $('#updatelist').append('<tr><td>'+row['name']+'</td>' +
                     '<td>'+row['old']+'</td><td>'+row['new']+'</td><td>' +
                     row['reason'] + '</td></tr>');
+
+                    if (row['name'] == data['product_name']) {
+                        $.upgrade_show_log = data['product_version'].replace(/[_-].*/, '');
+                    }
                 });
+
+                // display the current changelog if one was found
+                if ($.upgrade_show_log != '') {
+                    changelog($.upgrade_show_log);
+                }
 
                 // update list so plugins sync as well (no logs)
                 packagesInfo(false);
