@@ -442,11 +442,25 @@ class FirmwareController extends ApiControllerBase
         $backend = new Backend();
         $response = array();
 
+        /* allows us to select UI features based on product state */
+        $response['product_version'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense'));
+        $response['product_name'] = trim(file_get_contents('/usr/local/opnsense/version/opnsense.name'));
+
+        $devel = explode('-', $response['product_name']);
+        $devel = count($devel) == 2 ? $devel[1] == 'devel' : false;
+
+        /* need both remote and local, create array earlier */
+        $packages = array();
+        $plugins = array();
+
         /* package infos are flat lists with 3 pipes as delimiter */
-        foreach (array('local', 'remote') as $type) {
+        foreach (array('remote', 'local') as $type) {
             $current = $backend->configdRun("firmware ${type}");
             $current = explode("\n", trim($current));
+
+            /* XXX remove this when 17.1 is out */
             $response[$type] = array();
+
             foreach ($current as $line) {
                 $expanded = explode('|||', $line);
                 $translated = array();
@@ -457,12 +471,51 @@ class FirmwareController extends ApiControllerBase
                 foreach ($keys as $key) {
                     $translated[$key] = $expanded[$index++];
                 }
+
+                /* XXX remove this when 17.1 is out */
                 $response[$type][] = $translated;
+
+                /* mark remote packages as "provided", local as "installed" */
+                $translated['provided'] = $type == 'remote' ? "1" : "0";
+                $translated['installed'] = $type == 'local' ? "1" : "0";
+                if (isset($packages[$translated['name']])) {
+                    /* local iteration, mark package provided */
+                    $translated['provided'] = "1";
+                }
+                $packages[$translated['name']] = $translated;
+
+                /* figure out local and remote plugins */
+                $plugin = explode('-', $translated['name']);
+                if (count($plugin)) {
+                    if ($plugin[0] == 'os' || ($type == 'local' && $plugin[0] == 'ospriv') ||
+                        ($devel && $type == 'remote' && $plugin[0] == 'ospriv')) {
+                        $plugins[$translated['name']] = $translated;
+                    }
+                }
             }
 
+            /* XXX remove this when 17.1 is out */
             usort($response[$type], function ($a, $b) {
                 return strnatcasecmp($a['name'], $b['name']);
             });
+        }
+
+        uksort($packages, function ($a, $b) {
+            return strnatcasecmp($a, $b);
+        });
+
+        $response['package'] = array();
+        foreach ($packages as $package) {
+            $response['package'][] = $package;
+        }
+
+        uksort($plugins, function ($a, $b) {
+            return strnatcasecmp($a, $b);
+        });
+
+        $response['plugin'] = array();
+        foreach ($plugins as $plugin) {
+            $response['plugin'][] = $plugin;
         }
 
         /* also pull in changelogs from here */
@@ -482,9 +535,6 @@ class FirmwareController extends ApiControllerBase
         }
 
         $response['changelog'] = $changelogs;
-
-        /* allows us to match the version against the specific changelog */
-        $response['product_version'] = file_get_contents('/usr/local/opnsense/version/opnsense');
 
         return $response;
     }

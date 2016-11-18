@@ -250,7 +250,18 @@ POSSIBILITY OF SUCH DAMAGE.
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
             "<th>{{ lang._('Comment') }}</th><th></th></tr>");
 
-            $.each(data['local'], function(index, row) {
+            var local_count = 0;
+            var remote_count = 0;
+
+            $.each(data['package'], function(index, row) {
+                if (row['provided'] == "1") {
+                    remote_count += 1;
+                }
+                if (row['installed'] == "1") {
+                    local_count += 1;
+                } else {
+                    return 1;
+                }
                 $('#packageslist').append(
                     '<tr>' +
                     '<td>' + row['name'] + '</td>' +
@@ -270,28 +281,25 @@ POSSIBILITY OF SUCH DAMAGE.
                     ) + '</td>' +
                     '</tr>'
                 );
-                if (!row['name'].match(/^os-/g)) {
-                    return 1;
-                }
-                installed[row['name']] = row;
             });
 
-            if (!data['local'].length) {
+            if (local_count == 0) {
                 $('#packageslist').append(
                     '<tr><td colspan=5>{{ lang._('No packages were found on your system. Please call for help.') }}</td></tr>'
                 );
             }
 
-            $.each(data['remote'], function(index, row) {
-                if (!row['name'].match(/^os-/g)) {
-                    return 1;
+            $.each(data['plugin'], function(index, row) {
+                orphaned_text = '';
+                if (row['provided'] == "0") {
+                    orphaned_text = ' ({{ lang._('orphaned') }})';
                 }
                 $('#pluginlist').append(
-                    '<tr>' + '<td>' + row['name'] + '</td>' +
+                    '<tr>' + '<td>' + row['name'] + orphaned_text + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' + (row['name'] in installed ?
+                    '<td>' + (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
@@ -304,7 +312,7 @@ POSSIBILITY OF SUCH DAMAGE.
                 );
             });
 
-            if (!data['remote'].length) {
+            if (remote_count == 0) {
                 $('#pluginlist').append(
                     '<tr><td colspan=5>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
