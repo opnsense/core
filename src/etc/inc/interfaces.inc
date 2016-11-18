@@ -1143,7 +1143,7 @@ function interfaces_configure()
 
         /* restart dns servers */
         services_dnsmasq_configure();
-        services_unbound_configure();
+        unbound_configure_do();
 
         /* reload dhcpd (interface enabled/disabled status may have changed) */
         services_dhcpd_configure();
@@ -2891,7 +2891,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
 
             /* restart dns servers */
             services_dnsmasq_configure();
-            services_unbound_configure();
+            unbound_configure_do();
 
             /* reload dhcpd (interface enabled/disabled status may have changed) */
             services_dhcpd_configure();

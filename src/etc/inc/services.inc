@@ -29,8 +29,17 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
+/*
+ * Best case this shouldn't be here but DNS (and DHCP)
+ * are deeply tied into several internals in system.inc
+ * and services.inc.  services.inc itself has always
+ * been a workaround for holding multiple features away
+ * from system.inc, but its movable parts belong to
+ * system.inc, while all services belong to their own
+ * files.  Maybe eventually this will change...
+ */
+require_once('plugins.inc.d/unbound.inc');
 require_once('dyndns.class');
-require_once('unbound.inc');
 
 function generate_ipv6_from_mac($mac)
 {
@@ -2301,20 +2310,10 @@ function services_get()
     if (isset($config['dnsmasq']['enable'])) {
         $pconfig = array();
         $pconfig['name'] = "dnsmasq";
-        $pconfig['description'] = gettext("DNS Forwarder");
+        $pconfig['description'] = gettext("Dnsmasq DNS Forwarder");
         $pconfig['php']['restart'] = array('services_dnsmasq_configure');
         $pconfig['php']['start'] = array('services_dnsmasq_configure');
         $pconfig['pidfile'] = '/var/run/dnsmasq.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['unbound']['enable'])) {
-        $pconfig = array();
-        $pconfig['name'] = "unbound";
-        $pconfig['description'] = gettext("Unbound DNS Resolver");
-        $pconfig['php']['restart'] = array('services_unbound_configure');
-        $pconfig['php']['start'] = array('services_unbound_configure');
-        $pconfig['pidfile'] = '/var/run/unbound.pid';
         $services[] = $pconfig;
     }
 

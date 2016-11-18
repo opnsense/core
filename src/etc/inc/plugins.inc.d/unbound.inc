@@ -1,6 +1,7 @@
 <?php
 
 /*
+    Copyright (C) 2015-2016 Franco Fichtner <franco@opnsense.org>
     Copyright (C) 2015 Manuel Faux <mfaux@conf.at>
     Copyright (C) 2014 Warren Baker <warren@decoy.co.za>
     Copyright (C) 2004-2007 Scott Ullrich <sullrich@gmail.com>
@@ -27,6 +28,38 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
+function unbound_enabled()
+{
+    global $config;
+
+    return isset($config['unbound']['enable']);
+}
+
+function unbound_services()
+{
+    $services = array();
+
+    if (!unbound_enabled()) {
+        return $services;
+    }
+
+    $pconfig = array();
+    $pconfig['name'] = 'unbound';
+    $pconfig['description'] = gettext("Unbound DNS Resolver");
+    $pconfig['php']['restart'] = array('unbound_configure_do');
+    $pconfig['php']['start'] = array('unbound_configure_do');
+    $pconfig['pidfile'] = '/var/run/unbound.pid';
+    $services[] = $pconfig;
+
+    return $services;
+}
+
+function unbound_configure()
+{
+    /* XXX stub that prevents unbound from starting again on bootup */
+    return array();
+}
 
 function unbound_optimization()
 {
@@ -389,7 +422,7 @@ EOF;
     }
 }
 
-function services_unbound_configure($verbose = false)
+function unbound_configure_do($verbose = false)
 {
     global $config;
 

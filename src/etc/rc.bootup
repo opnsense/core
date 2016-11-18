@@ -178,7 +178,7 @@ system_configure_cron(true);
 system_routing_configure();
 system_routing_enable();
 services_dnsmasq_configure(true);
-services_unbound_configure(true);
+unbound_configure_do(true);
 system_ntp_configure(false, true);
 services_dhcpd_configure('all', array(), true);
 services_dhcpleases_configure();

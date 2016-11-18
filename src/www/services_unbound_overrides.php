@@ -56,7 +56,7 @@ if (empty($config['unbound']['domainoverrides']) || !is_array($config['unbound']
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     if (!empty($pconfig['apply'])) {
-        services_unbound_configure();
+        unbound_configure_do();
         services_dhcpd_configure();
         clear_subsystem_dirty('unbound');
         /* Update resolv.conf in case the interface bindings exclude localhost. */

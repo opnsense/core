@@ -115,7 +115,8 @@ function reconfigure_dhcpd()
         clear_subsystem_dirty('hosts');
     }
     if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        services_unbound_configure();
+        /* XXX we're calling unbound for regdhcpstatic, but restart the whole thing? */
+        unbound_configure_do();
         clear_subsystem_dirty('unbound');
     }
     services_dhcpd_configure();
