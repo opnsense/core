@@ -53,11 +53,11 @@
 /usr/local/etc/inc/plugins.inc.d/shaper.inc
 /usr/local/etc/inc/plugins.inc.d/squid.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
+/usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/rrd.inc
 /usr/local/etc/inc/services.inc
 /usr/local/etc/inc/squid.auth-user.php
 /usr/local/etc/inc/system.inc
-/usr/local/etc/inc/unbound.inc
 /usr/local/etc/inc/upgrade_config.inc
 /usr/local/etc/inc/util.inc
 /usr/local/etc/inc/xmlparse.inc
