@@ -90,7 +90,6 @@ class ApiControllerBase extends ControllerRoot
     public function initialize()
     {
         // disable view processing
-        $this->view->disable();
         set_error_handler(array($this, 'APIErrorHandler'));
     }
 

@@ -44,6 +44,7 @@ $di = new FactoryDefault();
 $di->set('view', function () use ($config) {
     // return a empty view
     $view = new View();
+    $view->disable();
     return $view;
 });
 
