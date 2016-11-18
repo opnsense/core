@@ -109,21 +109,18 @@ function reconfigure_dhcpd()
     killbyname("dhcpd");
     dhcp_clean_leases();
     system_hosts_generate();
+    clear_subsystem_dirty('hosts');
     services_dhcpleases_configure();
-    if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))  {
-        services_dnsmasq_configure();
-        clear_subsystem_dirty('hosts');
-    }
+
     if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
         /* XXX we're calling unbound for regdhcpstatic, but restart the whole thing? */
         unbound_configure_do();
         clear_subsystem_dirty('unbound');
     }
-    services_dhcpd_configure();
 
+    services_dhcpd_configure();
     clear_subsystem_dirty('staticmaps');
 }
-
 
 $config_copy_fieldsnames = array('enable', 'staticarp', 'failover_peerip', 'dhcpleaseinlocaltime','descr',
   'defaultleasetime', 'maxleasetime', 'gateway', 'domain', 'domainsearchlist', 'denyunknown', 'ddnsdomain',

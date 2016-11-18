@@ -464,16 +464,12 @@ function system_hosts_generate()
     killbypid('/var/run/dhcpleases.pid', 'TERM', true);
 
     $fd = fopen('/etc/hosts', 'w');
-    if (!$fd) {
-        log_error("Error: cannot open hosts file in system_hosts_generate().\n");
-        return 1;
+    if ($fd) {
+        fwrite($fd, $hosts);
+        fclose($fd);
     }
-    fwrite($fd, $hosts);
-    fclose($fd);
 
     unbound_hosts_generate();
-
-    return 0;
 }
 
 function system_hostname_configure()
