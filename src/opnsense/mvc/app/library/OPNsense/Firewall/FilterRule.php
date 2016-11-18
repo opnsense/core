@@ -234,6 +234,10 @@ class FilterRule
                                               "/" . $tmp['max-src-conn-rates'] . ", overload <virusprot> flush global ";
                     }
                 }
+                // icmpv6
+                if ($ipproto == 'inet6' && !empty($tmp['protocol']) && $tmp['protocol'] == "icmp") {
+                    $tmp['protocol'] = 'ipv6-icmp';
+                }
                 $result[] = $tmp;
             }
         }
