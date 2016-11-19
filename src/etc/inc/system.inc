@@ -385,7 +385,7 @@ function system_hosts_generate()
     }
 
     /* XXX currenty taints the hosts file, unbound doesn't */
-    hosts .= dnsmasq_hosts_generate();
+    $hosts .= dnsmasq_hosts_generate();
     unbound_hosts_generate();
 
     /*
