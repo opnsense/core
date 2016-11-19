@@ -1142,7 +1142,7 @@ function interfaces_configure()
         ipsec_configure();
 
         /* restart dns servers */
-        services_dnsmasq_configure();
+        dnsmasq_configure_do();
         unbound_configure_do();
 
         /* reload dhcpd (interface enabled/disabled status may have changed) */
@@ -2890,7 +2890,7 @@ function interface_configure($interface = 'wan', $reloadall = false, $linkupeven
             ipsec_configure();
 
             /* restart dns servers */
-            services_dnsmasq_configure();
+            dnsmasq_configure_do();
             unbound_configure_do();
 
             /* reload dhcpd (interface enabled/disabled status may have changed) */
