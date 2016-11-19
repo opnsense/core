@@ -451,7 +451,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         // sort filter items per interface, not really necessary but leaves a bit nicer sorted config.xml behind.
         filter_rules_sort();
-        system_onfigure_cron();
+        system_configure_cron();
         // write to config
         write_config();
         mark_subsystem_dirty('filter');
