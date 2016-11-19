@@ -74,7 +74,7 @@ function dnsmasq_configure_do($verbose = false)
 
     killbypid('/var/run/dnsmasq.pid', 'TERM', true);
 
-    if (dnsmasq_enabled()) {
+    if (!dnsmasq_enabled()) {
         return;
     }
 
