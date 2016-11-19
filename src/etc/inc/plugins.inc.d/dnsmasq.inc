@@ -188,3 +188,85 @@ function dnsmasq_configure_do($verbose = false)
         echo "done.\n";
     }
 }
+
+function dnsmasq_hosts_generate()
+{
+    global $config;
+
+    if (!dnsmasq_enabled()) {
+        return '';
+    }
+
+    $dnsmasqcfg = $config['dnsmasq'];
+    $lhosts = '';
+    $dhosts = '';
+
+    if (!isset($dnsmasqcfg['hosts']) || !is_array($dnsmasqcfg['hosts'])) {
+        $dnsmasqcfg['hosts'] = array();
+    }
+
+    foreach ($dnsmasqcfg['hosts'] as $host) {
+        if ($host['host']) {
+            $lhosts .= "{$host['ip']}  {$host['host']}.{$host['domain']} {$host['host']}\n";
+        } else {
+            $lhosts .= "{$host['ip']}  {$host['domain']}\n";
+        }
+        if (!isset($host['aliases']) || !is_array($host['aliases']) || !is_array($host['aliases']['item'])) {
+            continue;
+        }
+        foreach ($host['aliases']['item'] as $alias) {
+            if ($alias['host']) {
+                $lhosts .= "{$host['ip']}  {$alias['host']}.{$alias['domain']} {$alias['host']}\n";
+            } else {
+                $lhosts .= "{$host['ip']}  {$alias['domain']}\n";
+            }
+        }
+    }
+
+    if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpd'])) {
+        foreach ($config['dhcpd'] as $dhcpif => $dhcpifconf) {
+            if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
+                foreach ($dhcpifconf['staticmap'] as $host) {
+                    if (!$host['ipaddr'] || !$host['hostname']) {
+                        continue;
+                    }
+
+                    $domain = $config['system']['domain'];
+                    if ($host['domain']) {
+                        $domain = $host['domain'];
+                    } elseif ($dhcpifconf['domain']) {
+                        $domain = $dhcpifconf['domain'];
+                    }
+
+                    $dhosts .= "{$host['ipaddr']}  {$host['hostname']}.{$domain} {$host['hostname']}\n";
+                }
+            }
+        }
+    }
+    if (isset($dnsmasqcfg['regdhcpstatic']) && is_array($config['dhcpdv6'])) {
+        foreach ($config['dhcpdv6'] as $dhcpif => $dhcpifconf) {
+            if (isset($dhcpifconf['staticmap']) && isset($dhcpifconf['enable'])) {
+                foreach ($dhcpifconf['staticmap'] as $host) {
+                    if (!$host['ipaddrv6'] || !$host['hostname']) {
+                        continue;
+                    }
+
+                    $domain = $config['system']['domain'];
+                    if ($host['domain']) {
+                        $domain = $host['domain'];
+                    } elseif ($dhcpifconf['domain']) {
+                        $domain = $dhcpifconf['domain'];
+                    }
+
+                    $dhosts .= "{$host['ipaddrv6']}  {$host['hostname']}.{$domain} {$host['hostname']}\n";
+                }
+            }
+        }
+    }
+
+    if (isset($dnsmasqcfg['dhcpfirst'])) {
+        return $dhosts . $lhosts;
+    }
+
+    return $lhosts . $dhosts;
+}
