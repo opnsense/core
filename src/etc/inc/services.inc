@@ -1284,6 +1284,10 @@ EOD;
                     $dhcpdv6conf .= "  option root-path \"{$sm['rootpath']}\";\n";
                 }
 
+                if (!empty($sm['domain']) && ($sm['domain'] != $dhcpv6ifconf['domain'])) {
+                    $dhcpdv6conf .= "  option domain-name \"{$sm['domain']}\";\n";
+                }
+
                 $dhcpdv6conf .= "}\n";
                 $i++;
             }
