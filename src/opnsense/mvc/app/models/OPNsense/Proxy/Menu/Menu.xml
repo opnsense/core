@@ -1,6 +1,6 @@
 <menu>
     <Services>
-      <Proxy VisibleName="Proxy Server" cssClass="fa fa-bolt fa-fw">
+      <Proxy VisibleName="Web Proxy" cssClass="fa fa-bolt fa-fw">
           <Administration url="/ui/proxy/">
             <GeneralSettings VisibleName="General" url="/ui/proxy/#subtab_proxy-general-settings"/>
             <LocalCache VisibleName="Cache" url="/ui/proxy/#subtab_proxy-general-cache-local"/>
