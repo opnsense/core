@@ -46,7 +46,7 @@ function dnsmasq_services()
 
     $pconfig = array();
     $pconfig['name'] = 'dnsmasq';
-    $pconfig['description'] = gettext('Dnsmasq DNS Forwarder');
+    $pconfig['description'] = gettext('DNS Forwarder');
     $pconfig['php']['restart'] = array('dnsmasq_configure_do');
     $pconfig['php']['start'] = array('dnsmasq_configure_do');
     $pconfig['pidfile'] = '/var/run/dnsmasq.pid';

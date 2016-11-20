@@ -46,7 +46,7 @@ function unbound_services()
 
     $pconfig = array();
     $pconfig['name'] = 'unbound';
-    $pconfig['description'] = gettext("Unbound DNS Resolver");
+    $pconfig['description'] = gettext('DNS Resolver');
     $pconfig['php']['restart'] = array('unbound_configure_do');
     $pconfig['php']['start'] = array('unbound_configure_do');
     $pconfig['pidfile'] = '/var/run/unbound.pid';
