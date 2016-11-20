@@ -170,7 +170,7 @@ function plugins_configure($hook, $verbose = false)
         if (function_exists($func)) {
             $workers = $func();
             foreach ($workers as $when => $worker) {
-                if (is_array($worker)) {
+                if ($hook == $when && is_array($worker)) {
                     foreach ($worker as $task) {
                         $task($verbose);
                     }
