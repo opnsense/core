@@ -523,9 +523,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             }
-            /* XXX restart plugins o that the bind to correct address */
-            bsnmpd_configure_do();
-            igmpproxy_configure_do();
+            /* restart plugins */
+            if (function_exists('plugins_configure')) {
+                plugins_configure('interface');
+            }
             /* sync filter configuration */
             setup_gateways_monitor();
             filter_configure();

@@ -57,7 +57,10 @@ function bsnmpd_services()
 
 function bsnmpd_configure()
 {
-    return array('bsnmpd_configure_do');
+    return array(
+        'bootup' => array('bsnmpd_configure_do'),
+        'interface' => array('bsnmpd_configure_do'),
+    );
 }
 
 function bsnmpd_configure_do($verbose = false)

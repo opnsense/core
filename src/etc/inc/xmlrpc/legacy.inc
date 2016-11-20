@@ -140,8 +140,11 @@ function filter_configure_xmlrpc()
     dnsmasq_configure_do();
     unbound_configure_do();
     services_dhcpd_configure();
-    relayd_configure_do();
     openvpn_resync_all();
+
+    if (function_exists('plugins_configure')) {
+        plugins_configure('xmlrpc');
+    }
 
     return true;
 }

@@ -191,9 +191,9 @@ mwexec("/usr/local/etc/rc.dyndns.update");
 /* Run a filter configure now that most all services have started */
 filter_configure_sync(true);
 
-/* Run all registered plugins */
+/* start all registered plugins */
 if (function_exists('plugins_configure')) {
-    plugins_configure(true);
+    plugins_configure('bootup', true);
 }
 
 /* start IPsec tunnels */

@@ -34,6 +34,7 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("services.inc");
+require_once('plugins.inc.d/relayd.inc');
 
 $now = time();
 $year = date("Y");

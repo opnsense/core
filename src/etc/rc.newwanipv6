@@ -158,9 +158,10 @@ if (substr($interface_real, 0, 4) != "ovpn")
 /* reload graphing functions */
 enable_rrd_graphing();
 
-/* XXX reload plugins */
-bsnmpd_configure_do();
-igmpproxy_configure_do();
+/* reload plugins */
+if (function_exists('plugins_configure')) {
+    plugins_configure('interface');
+}
 
 /* reconfigure ntpd */
 system_ntp_configure(false);

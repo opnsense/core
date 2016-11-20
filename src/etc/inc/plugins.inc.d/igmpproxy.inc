@@ -56,7 +56,10 @@ function igmpproxy_services()
 
 function igmpproxy_configure()
 {
-    return array('igmpproxy_configure_do');
+    return array(
+        'bootup' => array('igmpproxy_configure_do'),
+        'interface' => array('igmpproxy_configure_do'),
+    );
 }
 
 function igmpproxy_configure_do($verbose = false)

@@ -92,7 +92,10 @@ function relayd_subnetv4_expand($subnet)
 
 function relayd_configure()
 {
-    return array('relayd_configure_do');
+    return array(
+        'bootup' => array('relayd_configure_do'),
+        'xmlrpc' => array('relayd_configure_do'),
+    );
 }
 
 function relayd_configure_do($kill_first = false)
