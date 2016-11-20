@@ -94,7 +94,7 @@ function relayd_configure()
 {
     return array(
         'bootup' => array('relayd_configure_do'),
-        'xmlrpc' => array('relayd_configure_do'),
+        'remote' => array('relayd_configure_do'),
     );
 }
 

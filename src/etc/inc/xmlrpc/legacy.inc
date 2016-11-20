@@ -143,7 +143,7 @@ function filter_configure_xmlrpc()
     openvpn_resync_all();
 
     if (function_exists('plugins_configure')) {
-        plugins_configure('xmlrpc');
+        plugins_configure('remote');
     }
 
     return true;
