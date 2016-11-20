@@ -60,9 +60,9 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
-            <strong><?=gettext("Please wait...");?></strong>
+            <p><strong><?=gettext("Please wait...");?></strong></p>
             <div class="progress">
-               <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
+               <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"></div>
              </div>
           </div>
         </div>
