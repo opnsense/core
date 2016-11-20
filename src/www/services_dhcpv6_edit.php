@@ -27,6 +27,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 */
+
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
@@ -35,7 +36,6 @@ function staticmapcmp($a, $b)
 {
     return ipcmp($a['ipaddrv6'], $b['ipaddrv6']);
 }
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // handle identifiers and action
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     // read form data
     $pconfig = array();
-    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr');
+    $config_copy_fieldnames = array('duid', 'hostname', 'ipaddrv6', 'filename' ,'rootpath' ,'descr', 'domain');
     foreach ($config_copy_fieldnames as $fieldname) {
         if (isset($if) && isset($id) && isset($config['dhcpdv6'][$if]['staticmap'][$id][$fieldname])) {
             $pconfig[$fieldname] = $config['dhcpdv6'][$if]['staticmap'][$id][$fieldname];
@@ -61,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig[$fieldname] = null;
         }
     }
-
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
     $pconfig = $_POST;
@@ -118,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (count($input_errors) == 0) {
         $mapent = array();
-        $config_copy_fieldnames = array('duid', 'ipaddrv6', 'hostname', 'descr', 'filename', 'rootpath');
+        $config_copy_fieldnames = array('duid', 'ipaddrv6', 'hostname', 'descr', 'filename', 'rootpath', 'domain');
         foreach ($config_copy_fieldnames as $fieldname) {
             if (!empty($pconfig[$fieldname])) {
                 $mapent[$fieldname] = $pconfig[$fieldname];
@@ -204,6 +203,15 @@ include("head.inc");
                       <input name="hostname" type="text" value="<?=$pconfig['hostname'];?>" />
                       <div class="hidden" for="help_for_hostname">
                         <?=gettext("Name of the host, without domain part.");?>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><a id="help_for_domain" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Domain name");?></td>
+                    <td>
+                      <input name="domain" type="text" value="<?=$pconfig['domain'];?>" />
+                      <div class="hidden" for="help_for_domain">
+                        <?=gettext("The default is to use the domain name of this system as the default domain name provided by DHCP. You may specify an alternate domain name here.");?>
                       </div>
                     </td>
                   </tr>
