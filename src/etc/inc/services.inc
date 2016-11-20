@@ -1961,6 +1961,10 @@ function services_get()
         }
     }
 
+    uasort($services, function ($a, $b) {
+        return strcasecmp($a['name'], $b['name']);
+    });
+
     return $services;
 }
 
@@ -1997,20 +2001,14 @@ function find_service_by_name($names, $filter = array())
     return array();
 }
 
-function service_name_compare($a, $b) {
-    if (strtolower($a['name']) == strtolower($b['name'])) {
-        return 0;
-    }
-    return (strtolower($a['name']) < strtolower($b['name'])) ? -1 : 1;
-}
-
-
 function get_service_status($service)
 {
+    if (!empty($service['nocheck'])) {
+        return true;
+    }
+
     if (isset($service['pidfile'])) {
         return isvalidpid($service['pidfile']);
-    } elseif (!empty($service['nocheck'])) {
-        return true;
     }
 
     return is_process_running($service['name']);

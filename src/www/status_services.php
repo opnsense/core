@@ -56,14 +56,9 @@ if (!empty($_POST['service'])) {
 
 $services = services_get();
 
-if (count($services) > 0) {
-    uasort($services, "service_name_compare");
-}
-
 include("head.inc");
 
 ?>
-
 <body>
 
 <?php include("fbegin.inc"); ?>

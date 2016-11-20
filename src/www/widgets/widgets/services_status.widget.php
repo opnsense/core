@@ -79,7 +79,6 @@ if (isset($_POST['servicestatusfilter'])) {
 <?php
   $skipservices = explode(",", $config['widgets']['servicestatusfilter']);
   if (count($services) > 0):
-      uasort($services, "service_name_compare");
       foreach ($services as $service):
           if (!$service['name'] || in_array($service['name'], $skipservices)) {
               continue;
