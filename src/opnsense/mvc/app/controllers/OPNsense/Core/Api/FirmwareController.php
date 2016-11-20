@@ -98,11 +98,10 @@ class FirmwareController extends ApiControllerBase
             /*
              * new_packages: array with { name: <package_name>, version: <package_version> }
              * reinstall_packages: array with { name: <package_name>, version: <package_version> }
-             * delete_packages: array with { name: <package_name>, version: <package_version> }
              * upgrade_packages: array with { name: <package_name>,
              *     current_version: <current_version>, new_version: <new_version> }
              */
-            foreach (array('new_packages', 'reinstall_packages', 'delete_packages', 'upgrade_packages') as $pkg_type) {
+            foreach (array('new_packages', 'reinstall_packages', 'upgrade_packages') as $pkg_type) {
                 if (isset($response[$pkg_type])) {
                     foreach ($response[$pkg_type] as $value) {
                         switch ($pkg_type) {
@@ -120,14 +119,6 @@ class FirmwareController extends ApiControllerBase
                                     'new' => $value['version'],
                                     'old' => $value['version'],
                                     'name' => $value['name'],
-                                );
-                                break;
-                            case 'delete_packages':
-                                $sorted[$value['name']] = array(
-                                    'reason' => gettext('delete'),
-                                    'old' => $value['version'],
-                                    'name' => $value['name'],
-                                    'new' => gettext('N/A'),
                                 );
                                 break;
                             case 'upgrade_packages':
