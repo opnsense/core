@@ -1867,15 +1867,6 @@ function services_get()
         $services[] = $pconfig;
     }
 
-    $iflist = array();
-    $ifdescrs = get_configured_interface_list();
-    foreach ($ifdescrs as $if) {
-        $oc = $config['interfaces'][$if];
-        if ($oc['if'] && (!link_interface_to_bridge($if))) {
-            $iflist[$if] = $if;
-        }
-    }
-
     if (isset($config['dhcrelay']['enable'])) {
         $pconfig = array();
         $pconfig['name'] = "dhcrelay";
