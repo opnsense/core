@@ -30,6 +30,7 @@
 */
 
 require_once("guiconfig.inc");
+require_once("services.inc");
 
 if (!isset($config['igmpproxy']['igmpentry'])) {
     $config['igmpproxy']['igmpentry'] = array();
@@ -93,8 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         write_config();
-
-        mark_subsystem_dirty('igmpproxy');
+        igmpproxy_configure_do();
         header(url_safe('Location: /services_igmpproxy.php'));
         exit;
     }
