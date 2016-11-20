@@ -31,7 +31,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("system.inc");
 
 function default_table_entries_size()
