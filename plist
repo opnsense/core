@@ -42,6 +42,7 @@
 /usr/local/etc/inc/openvpn.tls-verify.php
 /usr/local/etc/inc/openvpn_wizard.inc
 /usr/local/etc/inc/plugins.inc
+/usr/local/etc/inc/plugins.inc.d/bsnmpd.inc
 /usr/local/etc/inc/plugins.inc.d/dnsmasq.inc
 /usr/local/etc/inc/plugins.inc.d/if_group.inc
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
