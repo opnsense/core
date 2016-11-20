@@ -182,15 +182,7 @@ function system_resolvconf_generate($dynupdate = false)
 
     $dnslock = lock('resolvconf', LOCK_EX);
 
-    $fd = fopen('/etc/resolv.conf', 'w');
-    if (!$fd) {
-        log_error('Cannot open resolv.conf in system_resolvconf_generate()');
-        unlock($dnslock);
-        return 1;
-    }
-
-    fwrite($fd, $resolvconf);
-    fclose($fd);
+    file_put_contents('/etc/resolv.conf', $resolvconf);
     chmod('/etc/resolv.conf', 0644);
 
     if (!file_exists("/var/run/booting")) {
@@ -810,13 +802,7 @@ EOD;
             }
         }
 
-        /* write syslog.conf */
-        if (!@file_put_contents("/var/etc/syslog.conf", $syslogconf)) {
-            log_error('Cannot open syslog.conf in system_syslogd_start()');
-            unset($syslogconf);
-            return 1;
-        }
-        unset($syslogconf);
+        file_put_contents('/var/etc/syslog.conf', $syslogconf);
 
         if (!empty($syslogcfg['sourceip'])) {
             if ($syslogcfg['ipproto'] == "ipv6") {
@@ -1683,11 +1669,7 @@ function system_ntp_configure($start_ntpd = true, $verbose = false)
         }
     }
 
-    /* open configuration for wrting or bail */
-    if (!@file_put_contents('/var/etc/ntpd.conf', $ntpcfg)) {
-        log_error("Could not open /var/etc/ntpd.conf for writing");
-        return;
-    }
+    file_put_contents('/var/etc/ntpd.conf', $ntpcfg);
 
     if (!$start_ntpd) {
         /* write out the config and delay startup */

@@ -287,7 +287,7 @@ function services_radvd_configure($blacklist = array())
         $radvdconf .= "};\n";
     }
 
-    @file_put_contents('/var/etc/radvd.conf', $radvdconf);
+    file_put_contents('/var/etc/radvd.conf', $radvdconf);
 
     if (count($radvdifs) > 0) {
         if (isvalidpid('/var/run/radvd.pid')) {

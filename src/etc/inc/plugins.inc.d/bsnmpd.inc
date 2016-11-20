@@ -78,13 +78,6 @@ function bsnmpd_configure_do($verbose = false)
         flush();
     }
 
-    /* generate snmpd.conf */
-    $fd = fopen("/var/etc/snmpd.conf", "w");
-    if (!$fd) {
-        log_error('Cannot open snmpd.conf in bsnmpd_configure_do()');
-        return;
-    }
-
     $snmpdconf = <<<EOD
 location := "{$config['snmpd']['syslocation']}"
 contact := "{$config['snmpd']['syscontact']}"
@@ -217,9 +210,7 @@ EOD;
         }
     }
 
-    fwrite($fd, $snmpdconf);
-    fclose($fd);
-    unset($snmpdconf);
+    file_put_contents('/var/etc/snmpd.conf', $snmpdconf);
 
     mwexec("/usr/sbin/bsnmpd -c /var/etc/snmpd.conf -p /var/run/snmpd.pid");
 
