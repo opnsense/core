@@ -29,7 +29,6 @@
 
 require_once("guiconfig.inc");
 require_once("services.inc");
-require_once("plugins.inc.d/relayd.inc");
 require_once("interfaces.inc");
 
 if (empty($config['load_balancer']) || !is_array($config['load_balancer'])) {
