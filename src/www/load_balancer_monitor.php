@@ -61,7 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     } elseif (!empty($_POST['apply'])) {
-        /* reload all components that use igmpproxy */
         relayd_configure_do();
         filter_configure();
         clear_subsystem_dirty('loadbalancer');

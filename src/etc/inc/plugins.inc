@@ -162,15 +162,23 @@ function plugins_firewall($fw)
     return $fw;
 }
 
-function plugins_configure($verbose = false)
+function plugins_configure($hook, $verbose = false)
 {
     foreach (plugins_scan() as $name => $path) {
         require_once $path;
         $func = sprintf('%s_configure', $name);
         if (function_exists($func)) {
             $workers = $func();
-            foreach ($workers as $worker) {
-                $worker($verbose);
+            foreach ($workers as $when => $worker) {
+                if ($hook == $when && is_array($worker)) {
+                    foreach ($worker as $task) {
+                        $task($verbose);
+                    }
+                }
+                /* XXX compat glue from when configure wasn't indexed (remove in 17.1) */
+                if ($hook == 'bootup' && !is_array($worker)) {
+                    $worker($verbose);
+                }
             }
         }
     }

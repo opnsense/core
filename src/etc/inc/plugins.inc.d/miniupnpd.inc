@@ -65,10 +65,15 @@ function miniupnpd_services()
 
 function miniupnpd_start()
 {
-    if (file_exists('/var/etc/miniupnpd.conf')) {
-        @unlink('/var/run/miniupnpd.pid');
-        mwexec_bg('/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P /var/run/miniupnpd.pid');
+    if (!miniupnpd_enabled()) {
+        return;
     }
+
+    if (isvalidpid('/var/run/miniupnpd.pid')) {
+        return;
+    }
+
+    mwexec_bg('/usr/local/sbin/miniupnpd -f /var/etc/miniupnpd.conf -P /var/run/miniupnpd.pid');
 }
 
 function miniupnpd_stop()
@@ -95,6 +100,8 @@ function miniupnpd_configure_do($verbose = false)
 {
     global $config;
 
+    miniupnpd_stop();
+
     if (!miniupnpd_enabled()) {
         return;
     }
@@ -105,7 +112,6 @@ function miniupnpd_configure_do($verbose = false)
     }
 
     $upnp_config = $config['installedpackages']['miniupnpd']['config'][0];
-    $config_file = '/var/etc/miniupnpd.conf';
 
     $ext_ifname = get_real_interface($upnp_config['ext_iface']);
     if ($ext_ifname == $upnp_config['ext_iface']) {
@@ -121,7 +127,7 @@ function miniupnpd_configure_do($verbose = false)
     $ifaces_active = '';
 
     /* since config is written before this file invoked we don't need to read post data */
-    if (!empty($upnp_config['enable']) && !empty($upnp_config['iface_array'])) {
+    if (!empty($upnp_config['iface_array'])) {
         foreach(explode(',', $upnp_config['iface_array']) as $iface) {
             /* Setting the same internal and external interface is not allowed. */
             if ($iface == $upnp_config['ext_iface']) {
@@ -206,30 +212,10 @@ function miniupnpd_configure_do($verbose = false)
             $config_text .= "enable_natpmp=" . ( $upnp_config['enable_natpmp'] ? "yes\n" : "no\n" );
 
             /* write out the configuration */
-            file_put_contents($config_file, $config_text);
+            file_put_contents('/var/etc/miniupnpd.conf', $config_text);
 
-            if (!isvalidpid('/var/run/miniupnpd.pid')) {
-                /* if miniupnpd not running start it */
-                log_error("miniupnpd: Starting service on interface: {$ifaces_active}");
-                miniupnpd_start();
-            } else {
-                /* or restart miniupnpd if settings were changed */
-                log_error("miniupnpd: Restarting service on interface: {$ifaces_active}");
-                miniupnpd_stop();
-                miniupnpd_start();
-            }
-        }
-    } else {
-        /* user does not want miniupnpd running */
-        /* lets stop the service and remove the config file */
-        if (file_exists($config_file)) {
-            if (empty($upnp_config['enable'])) {
-                log_error("miniupnpd: Stopping service: miniupnpd disabled");
-            } else {
-                log_error("miniupnpd: Stopping service: no interfaces selected");
-            }
-            miniupnpd_stop();
-            @unlink($config_file);
+            log_error("miniupnpd: Starting service on interface: {$ifaces_active}");
+            miniupnpd_start();
         }
     }
 

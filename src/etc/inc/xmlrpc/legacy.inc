@@ -1,4 +1,5 @@
 <?php
+
 /*
     Copyright (C) 2015-2016 Deciso B.V.
     Copyright (C) 2004-2010 Scott Ullrich
@@ -126,7 +127,6 @@ function filter_configure_xmlrpc()
     require_once("system.inc");
     require_once("util.inc");
     require_once("interfaces.inc");
-    require_once("plugins.inc.d/relayd.inc");
     require_once("openvpn.inc");
     require_once("services.inc");
     require_once("rrd.inc");
@@ -140,8 +140,11 @@ function filter_configure_xmlrpc()
     services_dnsmasq_configure();
     services_unbound_configure();
     services_dhcpd_configure();
-    relayd_configure_do();
     openvpn_resync_all();
+
+    if (function_exists('plugins_configure')) {
+        plugins_configure('xmlrpc');
+    }
 
     return true;
 }
