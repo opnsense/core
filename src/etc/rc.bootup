@@ -199,9 +199,6 @@ if (function_exists('plugins_configure')) {
 /* start IPsec tunnels */
 $ipsec_dynamic_hosts = ipsec_configure();
 
-/* start SNMP service */
-services_snmpd_configure(true);
-
 /* load graphing functions */
 enable_rrd_graphing(true);
 

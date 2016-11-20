@@ -215,7 +215,7 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     services_igmpproxy_configure();
 
     /* restart snmp */
-    services_snmpd_configure();
+    bsnmpd_configure_do();
 
     /* reconfigure ntpd */
     system_ntp_configure(false);

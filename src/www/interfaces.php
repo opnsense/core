@@ -524,7 +524,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             }
             /* restart snmp so that it binds to correct address */
-            services_snmpd_configure();
+            bsnmpd_configure_do();
             /* sync filter configuration */
             setup_gateways_monitor();
             filter_configure();
