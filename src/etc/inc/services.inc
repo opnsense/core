@@ -2043,7 +2043,7 @@ EOD;
     return 0;
 }
 
-function system_configure_cron($verbose = false)
+function system_cron_configure($verbose = false)
 {
     global $config;
 

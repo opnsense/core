@@ -201,7 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $savemsg = get_std_save_message();
 
-        system_configure_cron();
+        system_cron_configure();
         filter_configure();
     }
 }

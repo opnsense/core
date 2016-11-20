@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = get_std_save_message();
 
         system_resolvconf_generate(true);
-        system_configure_cron();
+        system_cron_configure();
         activate_powerd();
         load_crypto_module();
         load_thermal_module();
