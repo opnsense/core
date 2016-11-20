@@ -27,9 +27,10 @@
 */
 
 
-function shaper_services()
+function ipfw_services()
 {
     global $config;
+
     $services = array();
 
     if (!empty($config['OPNsense']['TrafficShaper']['rules']['rule'])) {
