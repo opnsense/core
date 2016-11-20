@@ -179,7 +179,6 @@ system_routing_configure();
 system_routing_enable();
 dnsmasq_configure_do(true);
 unbound_configure_do(true);
-system_ntp_configure(false, true);
 services_dhcpd_configure('all', array(), true);
 services_dhcpleases_configure();
 services_dhcrelay_configure(true);

@@ -1858,16 +1858,6 @@ function services_get()
         $services[] = $pconfig;
     }
 
-    if (isset($config['system']['timeservers'])) {
-        $pconfig = array();
-        $pconfig['name'] = "ntpd";
-        $pconfig['description'] = gettext("NTP clock sync");
-        $pconfig['php']['restart'] = array('system_ntp_configure');
-        $pconfig['php']['start'] = array('system_ntp_configure');
-        $pconfig['pidfile'] = '/var/run/ntpd.pid';
-        $services[] = $pconfig;
-    }
-
     if (isset($config['dhcrelay']['enable'])) {
         $pconfig = array();
         $pconfig['name'] = "dhcrelay";

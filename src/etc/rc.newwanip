@@ -215,9 +215,6 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     if (function_exists('plugins_configure')) {
         plugins_configure('interface');
     }
-
-    /* reconfigure ntpd */
-    system_ntp_configure(false);
 }
 
 /* reload filter, don't try to sync to carp slave */
