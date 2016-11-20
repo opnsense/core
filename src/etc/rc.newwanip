@@ -211,11 +211,10 @@ if (!is_ipaddr($oldip) || $curwanip != $oldip || !is_ipaddrv4($config['interface
     /* reload graphing functions */
     enable_rrd_graphing();
 
-    /* reload igmpproxy */
-    services_igmpproxy_configure();
-
-    /* restart snmp */
-    services_snmpd_configure();
+    /* reload plugins */
+    if (function_exists('plugins_configure')) {
+        plugins_configure('interface');
+    }
 
     /* reconfigure ntpd */
     system_ntp_configure(false);

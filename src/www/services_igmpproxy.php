@@ -32,33 +32,31 @@
 require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
+require_once('plugins.inc.d/igmpproxy.inc');
 
-if (!isset($config['igmpproxy']['igmpentry'])) {
-    $config['igmpproxy']['igmpentry'] = array();
+$a_igmpproxy = array();
+if (isset($config['igmpproxy']['igmpentry'])) {
+    $a_igmpproxy = &$config['igmpproxy']['igmpentry'];
 }
-
-$a_igmpproxy = &$config['igmpproxy']['igmpentry'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del") {
         if (isset($_POST['id']) && !empty($a_igmpproxy[$_POST['id']])){
             unset($a_igmpproxy[$_POST['id']]);
             write_config();
-            mark_subsystem_dirty('igmpproxy');
+            igmpproxy_configure_do();
         }
-        exit;
-    } else {
-        /* reload all components that use igmpproxy */
-        services_igmpproxy_configure();
-        clear_subsystem_dirty('igmpproxy');
         header(url_safe('Location: /services_igmpproxy.php'));
         exit;
     }
 }
 
+$service_hook = 'igmpproxy';
 
 include("head.inc");
+
 legacy_html_escape_form_data($a_igmpproxy);
+
 $main_buttons = array(
     array('label' => gettext('Add a new IGMP entry'), 'href' => 'services_igmpproxy_edit.php'),
 );
@@ -97,9 +95,6 @@ $main_buttons = array(
   <section class="page-content-main">
     <div class="container-fluid">
       <div class="row">
-        <?php if (is_subsystem_dirty('igmpproxy')): ?><br/>
-        <?php print_info_box_apply(gettext("The IGMP entry list has been changed.") . "<br />" . gettext("You must apply the changes in order for them to take effect."));?>
-        <?php endif; ?>
         <section class="col-xs-12">
           <div class="content-box">
             <form method="post" name="iform" id="iform">

@@ -31,7 +31,7 @@ require_once("guiconfig.inc");
 require_once("interfaces.inc");
 require_once("services.inc");
 require_once("system.inc");
-
+require_once('plugins.inc.d/bsnmpd.inc');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -115,19 +115,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['snmpd'] = $snmp;
         // save and apply
         write_config();
-        services_snmpd_configure();
-        get_std_save_message();
+        bsnmpd_configure_do();
         header(url_safe('Location: /services_snmp.php'));
         exit;
     }
 }
 
-
 $service_hook = 'bsnmpd';
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
-?>
 
+?>
 <body>
 <script type="text/javascript">
     $( document ).ready(function() {
