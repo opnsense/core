@@ -449,7 +449,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $savemsg = gettext("Google Drive backup settings have been saved.");
 
             write_config();
-            configure_cron();
+            system_cron_configure();
 
             try {
                 $filesInBackup = backup_to_google_drive();

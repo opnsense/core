@@ -33,7 +33,6 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("ipsec.inc");
 require_once("system.inc");
-require_once("services.inc");
 require_once("interfaces.inc");
 
 function crypto_modules()
@@ -168,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $savemsg = get_std_save_message();
 
         system_resolvconf_generate(true);
-        configure_cron();
+        system_cron_configure();
         activate_powerd();
         load_crypto_module();
         load_thermal_module();

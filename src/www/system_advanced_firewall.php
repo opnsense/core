@@ -31,7 +31,6 @@
 
 require_once("guiconfig.inc");
 require_once("filter.inc");
-require_once("services.inc");
 require_once("system.inc");
 
 function default_table_entries_size()
@@ -201,7 +200,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $savemsg = get_std_save_message();
 
-        configure_cron();
+        system_cron_configure();
         filter_configure();
     }
 }

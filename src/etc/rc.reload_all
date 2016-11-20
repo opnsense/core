@@ -53,7 +53,7 @@ system_resolvconf_generate();
 system_routing_enable();
 interfaces_configure();
 services_dyndns_configure();
-configure_cron();
+system_cron_configure();
 system_ntp_configure();
 mwexec_bg('/usr/local/etc/rc.sshd');
 mwexec_bg('/usr/local/etc/rc.restart_webgui');
