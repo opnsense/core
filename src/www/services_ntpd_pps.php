@@ -31,6 +31,7 @@ require_once("guiconfig.inc");
 require_once("services.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
+require_once("plugins.inc.d/ntpd.inc");
 
 if (!isset($config['ntpd']) || !is_array($config['ntpd'])) {
     $config['ntpd'] = array();
@@ -38,7 +39,6 @@ if (!isset($config['ntpd']) || !is_array($config['ntpd'])) {
 if (!isset($config['ntpd']['pps'])) {
     $config['ntpd']['pps'] = array();
 }
-
 
 $copy_fields = array('port', 'fudge1', 'stratum', 'flag2', 'flag3', 'flag4', 'refid');
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $config['ntpd']['pps'] = $pps;
         write_config("Updated NTP PPS Settings");
-        system_ntp_configure();
+        ntpd_configure_start();
         header(url_safe('Location: /services_ntpd_pps.php'));
         exit;
     }

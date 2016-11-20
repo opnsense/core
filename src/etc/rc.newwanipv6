@@ -152,8 +152,9 @@ if (ipsec_configured_on_interface($interface)) {
 }
 
 /* start OpenVPN server & clients */
-if (substr($interface_real, 0, 4) != "ovpn")
+if (substr($interface_real, 0, 4) != 'ovpn') {
 	openvpn_resync_all($interface);
+}
 
 /* reload graphing functions */
 enable_rrd_graphing();
@@ -162,6 +163,3 @@ enable_rrd_graphing();
 if (function_exists('plugins_configure')) {
     plugins_configure('interface');
 }
-
-/* reconfigure ntpd */
-system_ntp_configure(false);
