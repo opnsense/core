@@ -67,7 +67,7 @@ function bsnmpd_configure_do($verbose = false)
 {
     global $config, $g;
 
-    killbypid('/var/run/snmpd.pid', 'TERM', true);
+    killbyname('bsnmpd');
 
     if (!bsnmpd_enabled()) {
         return;
