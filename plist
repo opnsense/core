@@ -48,6 +48,7 @@
 /usr/local/etc/inc/plugins.inc.d/if_ipsec.inc
 /usr/local/etc/inc/plugins.inc.d/if_legacy_opt.inc
 /usr/local/etc/inc/plugins.inc.d/if_openvpn.inc
+/usr/local/etc/inc/plugins.inc.d/igmpproxy.inc
 /usr/local/etc/inc/plugins.inc.d/miniupnpd.inc
 /usr/local/etc/inc/plugins.inc.d/relayd.inc
 /usr/local/etc/inc/plugins.inc.d/relayd/dns.proto

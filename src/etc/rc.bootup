@@ -211,9 +211,6 @@ if ($kern_hz == '1000') {
     set_single_sysctl('net.inet.tcp.rexmit_min' , '30');
 }
 
-/* start the igmpproxy daemon */
-services_igmpproxy_configure(true);
-
 /* If powerd is enabled, lets launch it */
 activate_powerd();
 

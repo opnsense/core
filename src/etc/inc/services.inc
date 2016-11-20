@@ -41,6 +41,7 @@
 require_once('dyndns.class');
 require_once('plugins.inc.d/bsnmpd.inc');
 require_once('plugins.inc.d/dnsmasq.inc');
+require_once('plugins.inc.d/igmpproxy.inc');
 require_once('plugins.inc.d/relayd.inc');
 require_once('plugins.inc.d/unbound.inc');
 
@@ -1321,65 +1322,6 @@ EOD;
     }
 }
 
-function services_igmpproxy_configure($verbose = false)
-{
-    global $config;
-
-    /* kill any running igmpproxy */
-    killbyname("igmpproxy");
-
-    if (!isset($config['igmpproxy']['igmpentry']) || !is_array($config['igmpproxy']['igmpentry']) || (count($config['igmpproxy']['igmpentry']) == 0)) {
-        return;
-    }
-
-    if ($verbose) {
-        echo 'Starting IGMP Proxy...';
-        flush();
-    }
-
-    $iflist = get_configured_interface_list();
-
-    $igmpconf = <<<EOD
-
-##------------------------------------------------------
-## Enable Quickleave mode (Sends Leave instantly)
-##------------------------------------------------------
-quickleave
-
-EOD;
-
-    foreach ($config['igmpproxy']['igmpentry'] as $igmpcf) {
-        unset($iflist[$igmpcf['ifname']]);
-        $realif = get_real_interface($igmpcf['ifname']);
-        if (empty($igmpcf['threshold'])) {
-            $threshld = 1;
-        } else {
-            $threshld = $igmpcf['threshold'];
-        }
-        $igmpconf .= "phyint {$realif} {$igmpcf['type']} ratelimit 0 threshold {$threshld}\n";
-
-        if ($igmpcf['address'] <> "") {
-            $item = explode(" ", $igmpcf['address']);
-            foreach($item as $iww) {
-                $igmpconf .= "altnet {$iww}\n";
-            }
-        }
-        $igmpconf .= "\n";
-    }
-    foreach ($iflist as $ifn) {
-        $realif = get_real_interface($ifn);
-        $igmpconf .= "phyint {$realif} disabled\n";
-    }
-    $igmpconf .= "\n";
-
-    @file_put_contents('/usr/local/etc/igmpproxy.conf', $igmpconf);
-    mwexec('/usr/local/etc/rc.d/igmpproxy onestart');
-
-    if ($verbose) {
-        print "done.\n";
-    }
-}
-
 function services_dhcrelay_configure($verbose = false)
 {
     global $config;
@@ -1981,15 +1923,6 @@ function services_get()
         $pconfig['php']['restart'] = array('setup_gateways_monitor');
         $pconfig['php']['start'] = array('setup_gateways_monitor');
         $pconfig['pidfile'] = '/var/run/apinger.pid';
-        $services[] = $pconfig;
-    }
-
-    if (isset($config['igmpproxy']['igmpentry']) && is_array($config['igmpproxy']['igmpentry']) && (count($config['igmpproxy']['igmpentry']) > 0)) {
-        $pconfig = array();
-        $pconfig['name'] = "igmpproxy";
-        $pconfig['description'] = gettext("IGMP proxy");
-        $pconfig['php']['restart'] = array('services_igmpproxy_configure');
-        $pconfig['php']['start'] = array('services_igmpproxy_configure');
         $services[] = $pconfig;
     }
 

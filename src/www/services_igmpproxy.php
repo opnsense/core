@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } else {
         /* reload all components that use igmpproxy */
-        services_igmpproxy_configure();
+        igmpproxy_configure_do();
         clear_subsystem_dirty('igmpproxy');
         header(url_safe('Location: /services_igmpproxy.php'));
         exit;

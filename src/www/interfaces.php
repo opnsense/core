@@ -523,8 +523,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             }
-            /* restart snmp so that it binds to correct address */
+            /* XXX restart plugins o that the bind to correct address */
             bsnmpd_configure_do();
+            igmpproxy_configure_do();
             /* sync filter configuration */
             setup_gateways_monitor();
             filter_configure();
