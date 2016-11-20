@@ -30,8 +30,8 @@
 require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("services.inc");
+require_once("plugins.inc.d/relayd.inc");
 require_once("interfaces.inc");
-require_once('plugins.inc.d/relayd.inc');
 
 if (empty($config['load_balancer']['monitor_type']) || !is_array($config['load_balancer']['monitor_type'])) {
     $config['load_balancer']['monitor_type'] = array();
