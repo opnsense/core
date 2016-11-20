@@ -28,6 +28,8 @@
 set -e
 
 UPGRADE="/usr/local/opnsense/firmware-upgrade"
+PROMPT="[y/N]"
+NAME="y"
 ARGS=
 
 if [ -f ${UPGRADE} ]; then
@@ -37,17 +39,24 @@ if [ -f ${UPGRADE} ]; then
 	echo
 	echo "Make sure you have read the release notes and migration guide before"
 	echo "attempting this upgrade.  Around 200MB will need to be downloaded and"
-	echo -n "require 500MB of free space.  Proceed with this action? [y/N]: "
+	echo "require 500MB of free space.  Continue with this major upgrade by"
+	echo "typing the major upgrade version number displayed above."
+	echo
 
-	ARGS="upgrade ${NAME}"
-else
-	echo "This will automatically fetch all available updates, apply them,"
-	echo -n "and reboot if necessary.  Proceed with this action? [y/N]: "
+	PROMPT="[y/${NAME}/N]"
 fi
 
-read YN
+echo "This will automatically fetch all available updates, apply them,"
+echo "and reboot if necessary."
+echo
+
+read -p "Proceed with this action? ${PROMPT}: " YN
+
 case ${YN} in
 [yY])
+	;;
+${NAME})
+	ARGS="upgrade ${NAME}"
 	;;
 *)
 	exit 0
