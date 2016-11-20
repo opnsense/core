@@ -34,7 +34,7 @@ function squid_services()
 
     if (isset($config['OPNsense']['proxy']['general']['enabled']) && $config['OPNsense']['proxy']['general']['enabled'] == 1) {
         $services[] = array(
-            'description' => gettext('Proxy server'),
+            'description' => gettext('Web Proxy'),
             'configd' => array(
                 'restart' => array('proxy restart'),
                 'start' => array('proxy start'),
