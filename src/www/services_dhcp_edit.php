@@ -287,11 +287,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         write_config();
 
         if (isset($config['dhcpd'][$if]['enable'])) {
-          mark_subsystem_dirty('staticmaps');
-          if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic']))
+            mark_subsystem_dirty('staticmaps');
             mark_subsystem_dirty('hosts');
-          if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic']))
-            mark_subsystem_dirty('unbound');
         }
 
         header(url_safe('Location: /services_dhcp.php?if=%s', array($if)));

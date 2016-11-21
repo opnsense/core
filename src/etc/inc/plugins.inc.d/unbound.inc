@@ -416,9 +416,7 @@ EOF;
 
         file_put_contents("{$g['unbound_chroot_path']}/remotecontrol.conf", $remotcfg);
 
-        // Generate our keys
-        unbound_execute("unbound-control-setup");
-
+        unbound_execute('unbound-control-setup');
     }
 }
 
@@ -426,7 +424,7 @@ function unbound_configure_do($verbose = false)
 {
     global $config;
 
-    killbypid('/var/run/unbound.pid', 'TERM', true);
+    unbound_execute('stop');
 
     if (!isset($config['unbound']['enable'])) {
         return;
@@ -448,7 +446,6 @@ function unbound_configure_do($verbose = false)
     }
 }
 
-// Execute commands as the user unbound
 function unbound_execute($cmd)
 {
     global $g, $config;
@@ -456,15 +453,18 @@ function unbound_execute($cmd)
     switch ($cmd) {
         case 'start':
             $local_domain = !empty($config['system']['domain']) ? $config['system']['domain'] : "local";
-            killbypid('/var/run/unbound_dhcpd.pid');
+            killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
             if (isset($config['unbound']['regdhcp'])) {
                 mwexec('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain "'.$local_domain.'"');
             }
             mwexec("/usr/local/sbin/unbound -c {$g['unbound_chroot_path']}/unbound.conf");
             break;
         case 'stop':
-            killbypid('/var/run/unbound_dhcpd.pid');
+            killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
             mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-control stop", true);
+            break;
+        case 'reload':
+            killbypid('/var/run/unbound.pid', 'HUP');
             break;
         case 'unbound-anchor':
             mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a {$g['unbound_chroot_path']}/root.key", true);
@@ -648,36 +648,9 @@ function unbound_add_host_entries()
     file_put_contents("{$g['unbound_chroot_path']}/host_entries.conf", $unbound_entries);
 }
 
-function unbound_control($action)
-{
-    global $config, $g;
-
-    switch ($action) {
-        case "start":
-            // Start Unbound
-            if ($config['unbound']['enable'] == "on") {
-                if (!is_process_running("unbound")) {
-                    unbound_execute("start");
-                }
-            }
-            break;
-        case "stop":
-            if ($config['unbound']['enable'] == "on") {
-                unbound_execute("stop");
-            }
-            break;
-        case "reload":
-            if ($config['unbound']['enable'] == "on") {
-                unbound_execute("reload");
-            }
-            break;
-        default:
-            break;
-    }
-}
-
 // Generation of Unbound statistics
-function unbound_statistics() {
+function unbound_statistics()
+{
     global $config;
 
     if ($config['stats'] == "on") {
@@ -765,6 +738,5 @@ function unbound_hosts_generate()
     }
 
     unbound_add_host_entries();
-    /* XXX this doesn't exist! */
-    unbound_control("reload");
+    unbound_execute('reload');
 }

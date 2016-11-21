@@ -41,13 +41,6 @@ function reconfigure_dhcpd()
 {
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-
-    if (isset($config['unbound']['enable']) && isset($config['unbound']['regdhcpstatic'])) {
-        /* XXX we're calling unbound for regdhcpstatic, but restart the whole thing? */
-        unbound_configure_do();
-        clear_subsystem_dirty('unbound');
-    }
-
     services_dhcpd_configure();
     clear_subsystem_dirty('staticmaps');
 }
@@ -327,9 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             write_config();
             if (isset($config['dhcpdv6'][$if]['enable'])) {
                 mark_subsystem_dirty('staticmapsv6');
-                if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcpstatic'])) {
-                    mark_subsystem_dirty('hosts');
-                }
+                mark_subsystem_dirty('hosts');
             }
         }
         exit;
