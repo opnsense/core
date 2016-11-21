@@ -255,9 +255,6 @@
             <Lookup order="40" url="/diag_dns.php"/>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
-        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs fa-fw">
-            <Edit url="/services_igmpproxy_edit.php" visibility="hidden"/>
-        </IGMPProxy>
         <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
             <General order="10" url="/services_ntpd.php"/>
             <GPS order="20" url="/services_ntpd_gps.php"/>

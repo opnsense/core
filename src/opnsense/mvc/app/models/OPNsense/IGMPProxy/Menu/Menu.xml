@@ -1,0 +1,7 @@
+<menu>
+    <Services>
+        <IGMPProxy VisibleName="IGMP Proxy" url="/services_igmpproxy.php" cssClass="fa fa-map-signs fa-fw">
+            <Edit url="/services_igmpproxy_edit.php" visibility="hidden"/>
+        </IGMPProxy>
+    </Services>
+</menu>

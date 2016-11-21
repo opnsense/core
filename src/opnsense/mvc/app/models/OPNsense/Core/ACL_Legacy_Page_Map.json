@@ -665,20 +665,6 @@
             "services_dyndns.php*"
         ]
     },
-    "page-services-igmpproxy": {
-        "name": "WebCfg - Services: Igmpproxy page",
-        "descr": "Allow access to the 'Services: Igmpproxy' page.",
-        "match": [
-            "services_igmpproxy.php*"
-        ]
-    },
-    "page-services-igmpproxy-edit": {
-        "name": "WebCfg - Services: Igmpproxy: Edit page",
-        "descr": "Allow access to the 'Services: Igmpproxy: Edit' page.",
-        "match": [
-            "services_igmpproxy_edit.php*"
-        ]
-    },
     "page-services-ntpd": {
         "name": "WebCfg - Services: NTP",
         "descr": "Allow access to the 'Services: NTP' page.",
