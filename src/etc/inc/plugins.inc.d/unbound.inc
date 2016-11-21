@@ -455,22 +455,28 @@ function unbound_execute($cmd)
             $local_domain = !empty($config['system']['domain']) ? $config['system']['domain'] : "local";
             killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
             if (isset($config['unbound']['regdhcp'])) {
-                mwexec('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain "'.$local_domain.'"');
+                mwexecf('/usr/local/opnsense/scripts/dns/unbound_dhcpd.py /domain %s', $local_domain);
             }
-            mwexec("/usr/local/sbin/unbound -c {$g['unbound_chroot_path']}/unbound.conf");
+            mwexecf('/usr/local/sbin/unbound -c %s', "{$g['unbound_chroot_path']}/unbound.conf");
             break;
         case 'stop':
             killbypid('/var/run/unbound_dhcpd.pid', 'TERM', true);
-            mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-control stop", true);
+            killbypid('/var/run/unbound.pid', 'TERM', true);
             break;
         case 'reload':
             killbypid('/var/run/unbound.pid', 'HUP');
             break;
         case 'unbound-anchor':
-            mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-anchor -a {$g['unbound_chroot_path']}/root.key", true);
+            mwexecf(
+                'chroot -u unbound -g unbound / %s -a %s',
+                array('/usr/local/sbin/unbound-anchor', "{$g['unbound_chroot_path']}/root.key")
+            );
             break;
         case 'unbound-control-setup':
-            mwexec("chroot -u unbound -g unbound / /usr/local/sbin/unbound-control-setup -d {$g['unbound_chroot_path']}", true);
+            mwexecf(
+                'chroot -u unbound -g unbound / %s -d %s',
+                array('/usr/local/sbin/unbound-control-setup', $g['unbound_chroot_path'])
+            );
             break;
         default:
             break;
