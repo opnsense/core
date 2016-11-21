@@ -26,7 +26,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-function firewall_services()
+function pf_services()
 {
     global $config;
 
