@@ -1,0 +1,5 @@
+<menu>
+    <Services>
+        <SNMP url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
+    </Services>
+</menu>

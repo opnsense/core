@@ -1,70 +1,60 @@
 <acl>
     <page-services-loadbalancer-monitor-edit>
-        <name>WebCfg - Services: Load Balancer: Monitor: Edit page</name>
-        <description>Allow access to the 'Services: Load Balancer: Monitor: Edit' page.</description>
+        <name>Services: Load Balancer: Monitor: Edit</name>
         <patterns>
             <pattern>load_balancer_monitor_edit.php*</pattern>
         </patterns>
     </page-services-loadbalancer-monitor-edit>
     <page-services-loadbalancer-monitor>
-        <name>WebCfg - Services: Load Balancer: Monitors page</name>
-        <description>Allow access to the 'Services: Load Balancer: Monitors' page.</description>
+        <name>Services: Load Balancer: Monitors</name>
         <patterns>
             <pattern>load_balancer_monitor.php*</pattern>
         </patterns>
     </page-services-loadbalancer-monitor>
     <page-services-loadbalancer-setting>
-        <name>WebCfg - Services: Load Balancer: setting page</name>
-        <description>Allow access to the 'Settings: Load Balancer: Settings' page.</description>
+        <name>Services: Load Balancer: setting</name>
         <patterns>
             <pattern>load_balancer_setting.php*</pattern>
         </patterns>
     </page-services-loadbalancer-setting>
     <page-services-loadbalancer-virtualservers>
-        <name>WebCfg - Services: Load Balancer: Virtual Servers page</name>
-        <description>Allow access to the 'Services: Load Balancer: Virtual Servers' page.</description>
+        <name>Services: Load Balancer: Virtual Servers</name>
         <patterns>
             <pattern>load_balancer_virtual_server.php*</pattern>
         </patterns>
     </page-services-loadbalancer-virtualservers>
     <page-status-loadbalancer-pool>
-        <name>WebCfg - Status: Load Balancer: Pool page</name>
-        <description>Allow access to the 'Status: Load Balancer: Pool' page.</description>
+        <name>Status: Load Balancer: Pool</name>
         <patterns>
             <pattern>status_lb_pool.php*</pattern>
         </patterns>
     </page-status-loadbalancer-pool>
     <page-status-loadbalancer-virtualserver>
-        <name>WebCfg - Status: Load Balancer: Virtual Server page</name>
-        <description>Allow access to the 'Status: Load Balancer: Virtual Server' page.</description>
+        <name>Status: Load Balancer: Virtual Server</name>
         <patterns>
             <pattern>status_lb_vs.php*</pattern>
         </patterns>
     </page-status-loadbalancer-virtualserver>
     <page-status-systemlogs-loadbalancer>
-        <name>WebCfg - Status: System logs: Load Balancer page</name>
-        <description>Allow access to the 'Status: System logs: Load Balancer' page.</description>
+        <name>Status: System logs: Load Balancer</name>
         <patterns>
             <pattern>diag_logs_relayd.php*</pattern>
         </patterns>
     </page-status-systemlogs-loadbalancer>
     <page-loadbalancer-pool>
-        <name>WebCfg - Load Balancer: Pool page</name>
-        <description>Allow access to the 'Load Balancer: Pool' page.</description>
+        <name>Load Balancer: Pool</name>
         <patterns>
             <pattern>load_balancer_pool.php*</pattern>
         </patterns>
     </page-loadbalancer-pool>
     <page-loadbalancer-pool-edit>
-        <name>WebCfg - Load Balancer: Pool: Edit page</name>
-        <description>Allow access to the 'Load Balancer: Pool: Edit' page.</description>
+        <name>Load Balancer: Pool: Edit</name>
         <patterns>
             <pattern>load_balancer_pool_edit.php*</pattern>
         </patterns>
     </page-loadbalancer-pool-edit>
     <page-loadbalancer-virtualserver-edit>
-        <name>WebCfg - Load Balancer: Virtual Server: Edit page</name>
-        <description>Allow access to the 'Load Balancer: Virtual Server: Edit' page.</description>
+        <name>Load Balancer: Virtual Server: Edit</name>
         <patterns>
             <pattern>load_balancer_virtual_server_edit.php*</pattern>
         </patterns>

@@ -1,40 +1,34 @@
 <acl>
-    <!-- unique acl key, must be globally unique for all acl's  -->
     <page-diagnostics-arptable>
-        <name>WebCfg - Diagnostics: ARP Table page</name>
-        <description>Allow access to the 'Diagnostics: ARP Table' page.</description>
+        <name>Diagnostics: ARP Table</name>
         <patterns>
             <pattern>ui/diagnostics/interface/arp/*</pattern>
             <pattern>api/diagnostics/interface/getArp*</pattern>
         </patterns>
     </page-diagnostics-arptable>
     <page-diagnostics-ndptable>
-        <name>Webcfg - Diagnostics: NDP Table page</name>
-        <description>Allow access to the 'Diagnostics: NDP Table' page.</description>
+        <name>Diagnostics: NDP Table</name>
         <patterns>
             <pattern>ui/diagnostics/interface/ndp/*</pattern>
             <pattern>api/diagnostics/interface/getNdp*</pattern>
         </patterns>
     </page-diagnostics-ndptable>
     <page-diagnostics-routingtables>
-        <name>WebCfg - Diagnostics: Routing tables page</name>
-        <description>Allow access to the 'Diagnostics: Routing tables' page.</description>
+        <name>Diagnostics: Routing tables</name>
         <patterns>
             <pattern>ui/diagnostics/interface/routes/*</pattern>
             <pattern>api/diagnostics/interface/getRoutes*</pattern>
         </patterns>
     </page-diagnostics-routingtables>
     <page-diagnostics-system-activity>
-        <name>WebCfg - Diagnostics: System Activity</name>
-        <description>Allows access to the 'Diagnostics: System Activity' page</description>
+        <name>Diagnostics: System Activity</name>
         <patterns>
             <pattern>ui/diagnostics/activity/*</pattern>
             <pattern>api/diagnostics/activity/*</pattern>
         </patterns>
     </page-diagnostics-system-activity>
     <page-diagnostics-health>
-        <name>WebCfg - Diagnostics: System Health</name>
-        <description>Allows access to the 'Diagnostics: System Health' page</description>
+        <name>Diagnostics: System Health</name>
         <patterns>
             <pattern>ui/diagnostics/systemhealth/*</pattern>
             <pattern>api/diagnostics/systemhealth/*</pattern>
@@ -42,16 +36,14 @@
         </patterns>
     </page-diagnostics-health>
     <page-diagnostics-networkinsight>
-        <name>WebCfg - Diagnostics: Network Insight</name>
-        <description>Allows access to the 'Diagnostics: Network Insight' page</description>
+        <name>Diagnostics: Network Insight</name>
         <patterns>
             <pattern>ui/diagnostics/networkinsight/*</pattern>
             <pattern>api/diagnostics/networkinsight/*</pattern>
         </patterns>
     </page-diagnostics-networkinsight>
     <page-diagnostics-netflow>
-        <name>WebCfg - Diagnostics: Netflow configuration</name>
-        <description>Allows access to the Netflow configuration</description>
+        <name>Diagnostics: Netflow configuration</name>
         <patterns>
             <pattern>ui/diagnostics/netflow/*</pattern>
             <pattern>api/diagnostics/netflow/*</pattern>

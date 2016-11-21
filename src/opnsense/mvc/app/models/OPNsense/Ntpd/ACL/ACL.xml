@@ -1,0 +1,32 @@
+<acl>
+    <page-services-ntpd>
+        <name>Services: NTP</name>
+        <patterns>
+            <pattern>services_ntpd.php*</pattern>
+        </patterns>
+    </page-services-ntpd>
+    <page-services-ntp-gps>
+        <name>Status: NTP GPS</name>
+        <patterns>
+            <pattern>status_ntpd_gps.php*</pattern>
+        </patterns>
+    </page-services-ntp-gps>
+    <page-status-ntp>
+        <name>Status: NTP</name>
+        <patterns>
+            <pattern>status_ntpd.php*</pattern>
+        </patterns>
+    </page-status-ntp>
+    <page-services-ntp-pps>
+        <name>Status: NTP PPS</name>
+        <patterns>
+            <pattern>status_ntpd_pps.php*</pattern>
+        </patterns>
+    </page-services-ntp-pps>
+    <page-status-systemlogs-ntpd>
+        <name>Status: System logs: NTP</name>
+        <patterns>
+            <pattern>diag_logs_ntpd.php*</pattern>
+        </patterns>
+    </page-status-systemlogs-ntpd>
+</acl>

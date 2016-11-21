@@ -1,0 +1,8 @@
+<menu>
+    <Services>
+        <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
+            <WoLEdit url="/services_wol_edit.php*" visibility="hidden"/>
+            <Wol url="/services_wol.php*" visibility="hidden"/>
+        </WoL>
+    </Services>
+</menu>

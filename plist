@@ -428,6 +428,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL_Legacy_Page_Map.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Cron/Cron.php
@@ -444,6 +445,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/IDS.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/IGMPProxy/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/IGMPProxy/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
@@ -451,6 +456,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Relayd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Relayd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/SNMP/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/SNMP/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php
@@ -458,6 +465,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/UPnP/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/UPnP/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/WOL/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/WOL/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt

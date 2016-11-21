@@ -1,0 +1,14 @@
+<acl>
+    <page-services-igmpproxy>
+        <name>Services: IGMP Proxy</name>
+        <patterns>
+            <pattern>services_igmpproxy.php*</pattern>
+        </patterns>
+    </page-services-igmpproxy>
+    <page-services-igmpproxy-edit>
+        <name>Services: IGMP Proxy: Edit</name>
+        <patterns>
+            <pattern>services_igmpproxy_edit.php*</pattern>
+        </patterns>
+    </page-services-igmpproxy-edit>
+</acl>

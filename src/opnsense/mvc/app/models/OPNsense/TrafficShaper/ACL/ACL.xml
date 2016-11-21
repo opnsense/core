@@ -1,8 +1,6 @@
 <acl>
-    <!-- unique acl key, must be globally unique for all acl's  -->
     <page-firewall-trafficshaper>
-        <name>WebCfg - Firewall: Traffic Shaper page</name>
-        <description>Allow access to the 'Firewall: Traffic Shaper' page.</description>
+        <name>Firewall: Traffic Shaper</name>
         <patterns>
             <pattern>ui/trafficshaper/*</pattern>
             <pattern>api/trafficshaper/*</pattern>

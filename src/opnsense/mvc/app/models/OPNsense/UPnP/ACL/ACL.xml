@@ -1,14 +1,12 @@
 <acl>
     <page-service-upnp>
-        <name>WebCfg - Service: Universal Plug and Play page</name>
-        <description>Allow access to the 'Service: Universal Plug and Play' page.</description>
+        <name>Service: Universal Plug and Play</name>
         <patterns>
             <pattern>services_upnp.php*</pattern>
         </patterns>
     </page-service-upnp>
     <page-status-upnpstatus>
-        <name>WebCfg - Status: Universal Plug and Play page</name>
-        <description>Allow access to the 'Status: Universal Plug and Play' page.</description>
+        <name>Status: Universal Plug and Play</name>
         <patterns>
             <pattern>status_upnp.php*</pattern>
         </patterns>

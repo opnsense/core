@@ -1,8 +1,6 @@
 <acl>
-    <!-- unique acl key, must be globally unique for all acl's  -->
     <page-services-proxy>
-        <name>WebCfg - Services: Proxy page</name>
-        <description>Allow access to the 'Services: Proxy' page.</description>
+        <name>Services: Proxy</name>
         <patterns>
             <pattern>ui/proxy/*</pattern>
             <pattern>api/proxy/*</pattern>

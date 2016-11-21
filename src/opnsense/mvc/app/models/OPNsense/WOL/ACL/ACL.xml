@@ -1,0 +1,14 @@
+<acl>
+    <page-services-wakeonlan>
+        <name>Services: Wake on LAN</name>
+        <patterns>
+            <pattern>services_wol.php*</pattern>
+        </patterns>
+    </page-services-wakeonlan>
+    <page-services-wakeonlan-edit>
+        <name>Services: Wake on LAN: Edit</name>
+        <patterns>
+            <pattern>services_wol_edit.php*</pattern>
+        </patterns>
+    </page-services-wakeonlan-edit>
+</acl>
