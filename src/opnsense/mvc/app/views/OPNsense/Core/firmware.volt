@@ -1,6 +1,7 @@
 {#
 
-OPNsense® is Copyright © 2014 – 2015 by Deciso B.V.
+Copyright (c) 2015-2016 Franco Fichtner <franco@opnsense.org>
+Copyright (c) 2015–2016 Deciso B.V.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
