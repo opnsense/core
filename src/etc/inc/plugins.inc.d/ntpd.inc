@@ -66,9 +66,9 @@ function ntpd_syslog()
 function ntpd_configure()
 {
     return array(
-        'bootup' => 'ntpd_configure_defer',
-        'interface' => 'ntpd_configure_defer',
-        'local' => 'ntpd_configure_start',
+        'bootup' => array('ntpd_configure_defer'),
+        'interface' => array('ntpd_configure_defer'),
+        'local' => array('ntpd_configure_start'),
     );
 }
 
