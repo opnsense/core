@@ -468,6 +468,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/TrafficShaper.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/UPnP/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/UPnP/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/WOL/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/WOL/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt

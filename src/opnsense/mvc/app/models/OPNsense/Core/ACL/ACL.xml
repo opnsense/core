@@ -658,20 +658,6 @@
             <pattern>services_router_advertisements.php*</pattern>
         </patterns>
     </page-services-router-advertisements>
-    <page-services-wakeonlan>
-        <name>WebCfg - Services: Wake on LAN page</name>
-        <description>Allow access to the 'Services: Wake on LAN' page.</description>
-        <patterns>
-            <pattern>services_wol.php*</pattern>
-        </patterns>
-    </page-services-wakeonlan>
-    <page-services-wakeonlan-edit>
-        <name>WebCfg - Services: Wake on LAN: Edit page</name>
-        <description>Allow access to the 'Services: Wake on LAN: Edit' page.</description>
-        <patterns>
-            <pattern>services_wol_edit.php*</pattern>
-        </patterns>
-    </page-services-wakeonlan-edit>
     <page-status-carp>
         <name>WebCfg - Status: CARP page</name>
         <description>Allow access to the 'Status: CARP' page.</description>

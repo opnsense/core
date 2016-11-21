@@ -255,10 +255,6 @@
             <Lookup order="40" url="/diag_dns.php"/>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
-        <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
-            <WoLEdit url="/services_wol_edit.php*" visibility="hidden"/>
-            <Wol url="/services_wol.php*" visibility="hidden"/>
-        </WoL>
         <Diagnostics order="900" cssClass="fa fa-medkit fa-fw" url="/status_services.php">
           <All url="/status_services.php?*" visibility="hidden"/>
         </Diagnostics>
