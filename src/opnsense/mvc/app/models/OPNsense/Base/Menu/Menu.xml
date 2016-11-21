@@ -265,7 +265,6 @@
             <Status order="40" url="/status_ntpd.php"/>
             <Log order="50" VisibleName="Log File" url="/diag_logs_ntpd.php"/>
         </NTP>
-        <SNMP url="/services_snmp.php" cssClass="fa fa-database fa-fw"/>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
             <WoLEdit url="/services_wol_edit.php*" visibility="hidden"/>
             <Wol url="/services_wol.php*" visibility="hidden"/>

@@ -454,6 +454,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Proxy.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Relayd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Relayd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/SNMP/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/SNMP/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/TrafficShaper/Migrations/M1_0_0.php

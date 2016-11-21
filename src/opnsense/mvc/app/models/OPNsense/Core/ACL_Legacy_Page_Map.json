@@ -700,13 +700,6 @@
             "services_router_advertisements.php*"
         ]
     },
-    "page-services-snmp": {
-        "name": "WebCfg - Services: SNMP page",
-        "descr": "Allow access to the 'Services: SNMP' page.",
-        "match": [
-            "services_snmp.php*"
-        ]
-    },
     "page-services-wakeonlan": {
         "name": "WebCfg - Services: Wake on LAN page",
         "descr": "Allow access to the 'Services: Wake on LAN' page.",
