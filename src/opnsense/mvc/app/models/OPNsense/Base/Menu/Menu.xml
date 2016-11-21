@@ -255,13 +255,6 @@
             <Lookup order="40" url="/diag_dns.php"/>
             <LogFile order="100" VisibleName="Log File" url="/diag_logs_resolver.php"/>
         </DNSTools>
-        <NTP VisibleName="Network Time" cssClass="fa fa-clock-o fa-fw">
-            <General order="10" url="/services_ntpd.php"/>
-            <GPS order="20" url="/services_ntpd_gps.php"/>
-            <PPS order="30" url="/services_ntpd_pps.php"/>
-            <Status order="40" url="/status_ntpd.php"/>
-            <Log order="50" VisibleName="Log File" url="/diag_logs_ntpd.php"/>
-        </NTP>
         <WoL VisibleName="Wake on LAN" url="/services_wol.php" cssClass="fa fa-power-off fa-fw">
             <WoLEdit url="/services_wol_edit.php*" visibility="hidden"/>
             <Wol url="/services_wol.php*" visibility="hidden"/>

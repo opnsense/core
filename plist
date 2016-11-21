@@ -450,6 +450,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/IDS/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/IGMPProxy/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/IGMPProxy/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Proxy/Migrations/M1_0_0.php
