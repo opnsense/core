@@ -181,7 +181,6 @@ function dnsmasq_configure_do($verbose = false)
     /* run dnsmasq */
     $cmd = "/usr/local/sbin/dnsmasq --all-servers {$dns_rebind} {$args}";
     mwexec_bg($cmd);
-    services_dhcpleases_configure();
     unset($args);
 
     if ($verbose) {
