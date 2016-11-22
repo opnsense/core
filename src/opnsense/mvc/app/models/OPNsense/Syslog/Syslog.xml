@@ -108,7 +108,7 @@
             </BindAddress>
             <Servers type="CSVListField">
                 <Required>N</Required>
-                <mask>/^([a-zA-Z0-9.:,]){0,}/</mask>
+                <mask>/^[a-zA-Z0-9\-\.:,_ ]*/</mask>
                 <ValidationMessage>Please enter valid targets (e.g. 192.168.0.100:514).</ValidationMessage>
             </Servers>
             <LogAll type="BooleanField">
