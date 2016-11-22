@@ -135,7 +135,6 @@ function filter_configure_xmlrpc()
     system_routing_configure();
     setup_gateways_monitor();
     system_hosts_generate();
-    services_dhcpleases_configure();
     local_sync_accounts();
     dnsmasq_configure_do();
     unbound_configure_do();

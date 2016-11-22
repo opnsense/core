@@ -224,7 +224,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         prefer_ipv4_or_ipv6();
         system_hostname_configure();
         system_hosts_generate();
-        services_dhcpleases_configure();
         system_resolvconf_generate();
         dnsmasq_configure_do();
         unbound_configure_do();

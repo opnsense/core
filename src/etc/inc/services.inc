@@ -314,31 +314,6 @@ function services_dhcpdv6_leasesfile()
     return "{$g['dhcpd_chroot_path']}/var/db/dhcpd6.leases";
 }
 
-function services_dhcpleases_configure()
-{
-    global $config, $g;
-
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
-
-    if (isset($config['dnsmasq']['enable']) && isset($config['dnsmasq']['regdhcp'])) {
-        mwexec("/bin/mkdir -p {$g['dhcpd_chroot_path']}/var/db");
-        touch("{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases");
-        if (isvalidpid('/var/run/dhcpleases.pid')) {
-            killbypid('/var/run/dhcpleases.pid', 'HUP');
-        } else {
-            mwexecf(
-                '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
-                array(
-                    "{$g['dhcpd_chroot_path']}/var/db/dhcpd.leases",
-                    $config['system']['domain'],
-                    '/var/run/dnsmasq.pid',
-                    '/etc/hosts'
-                )
-            );
-        }
-    }
-}
-
 function services_dhcpd_configure($family = 'all', $blacklist = array(), $verbose = false)
 {
     global $g;

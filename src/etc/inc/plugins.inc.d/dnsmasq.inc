@@ -270,3 +270,30 @@ function dnsmasq_hosts_generate()
 
     return $lhosts . $dhosts;
 }
+
+function dnsmasq_dhcpleases_stop()
+{
+    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
+}
+
+function dnsmasq_dhcpleases_start()
+{
+    global $config;
+
+    if (!isset($config['dnsmasq']['enable']) || !isset($config['dnsmasq']['regdhcp'])) {
+        return;
+    }
+
+    $leases = services_dhcpd_leasesfile();
+    if (!file_exists($leases)) {
+        return;
+    }
+
+    /* we can let the user choose a domain, but it can be only one */
+    $domain = $config['system']['domain'];
+
+    mwexecf(
+        '/usr/local/sbin/dhcpleases -l %s -d %s -p %s -h %s',
+        array($leases, $domain, '/var/run/dnsmasq.pid', '/etc/hosts')
+    );
+}

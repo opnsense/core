@@ -110,7 +110,6 @@ function reconfigure_dhcpd()
     dhcp_clean_leases();
     system_hosts_generate();
     clear_subsystem_dirty('hosts');
-    services_dhcpleases_configure();
     services_dhcpd_configure();
     clear_subsystem_dirty('staticmaps');
 }

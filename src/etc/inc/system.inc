@@ -384,9 +384,9 @@ function system_hosts_generate()
      * Do not remove this because dhcpleases monitors with kqueue
      * it needs to be killed before writing to hosts files.
      */
-    killbypid('/var/run/dhcpleases.pid', 'TERM', true);
-
+    dnsmasq_dhcpleases_stop();
     file_put_contents('/etc/hosts', $hosts);
+    dnsmasq_dhcpleases_start();
 }
 
 function system_hostname_configure()
@@ -396,10 +396,9 @@ function system_hostname_configure()
     $syscfg = $config['system'];
 
     /* set hostname */
-    $status = mwexec("/bin/hostname " .
-      escapeshellarg("{$syscfg['hostname']}.{$syscfg['domain']}"));
+    $status = mwexecf('/bin/hostname %s', "{$syscfg['hostname']}.{$syscfg['domain']}");
 
-      /* Setup host GUID ID.  This is used by ZFS. */
+    /* Setup host GUID ID.  This is used by ZFS. */
     mwexec("/etc/rc.d/hostid start");
 
     return $status;
