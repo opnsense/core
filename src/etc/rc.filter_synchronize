@@ -294,6 +294,9 @@ if (isset($config['hasync']) && is_array($config['hasync'])) {
     $section_cnf['synchronizeschedules'] = 'schedules';
     $section_cnf['synchronizeshaper'] = 'OPNsense.TrafficShaper';
     $section_cnf['synchronizecaptiveportal'] = 'OPNsense.captiveportal';
+    foreach (plugins_xmlrpc_sync() as $syncid => $syncconf) {
+        $section_cnf['synchronize'.$syncid] = $syncconf['section'];
+    }
 
     $sections = array();
     foreach ($section_cnf as $cnf_key => $cnf_sections) {

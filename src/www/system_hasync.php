@@ -41,7 +41,9 @@ $checkbox_names = array('pfsyncenabled', 'synchronizeusers', 'synchronizeauthser
                         'synchronizestaticroutes', 'synchronizelb', 'synchronizevirtualip',
                         'synchronizednsforwarder','synchronizednsresolver', 'synchronizeshaper', 'synchronizecaptiveportal'
 );
-
+foreach (array_keys(plugins_xmlrpc_sync()) as $key) {
+    $checkbox_names[] = 'synchronize'.$key;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
@@ -355,6 +357,20 @@ include("head.inc");
                     </div>
                   </td>
                 </tr>
+                <!-- Hook xmlrpc sync plugins -->
+<?php
+                foreach (plugins_xmlrpc_sync() as $syncid => $synccnf):?>
+                <tr>
+                  <td><a id="help_for_synchronize<?=$syncid?>" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=$synccnf['description'];?></td>
+                  <td>
+                    <input type="checkbox" name="synchronize<?=$syncid?>" value="on" <?=!empty($pconfig['synchronize'.$syncid]) ? "checked=\"checked\"" :"";?> />
+                    <div class="hidden" for="help_for_synchronize<?=$syncid?>">
+                      <?=$synccnf['help'];?>
+                    </div>
+                  </td>
+                </tr>
+<?php
+                endforeach;?>
                 <tr>
                   <td></td>
                   <td>
