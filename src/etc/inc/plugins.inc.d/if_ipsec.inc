@@ -46,7 +46,7 @@ function if_ipsec_services()
 
     if (isset($config['ipsec']['enable']) || isset($config['ipsec']['client']['enable'])) {
         $pconfig = array();
-        $pconfig['name'] = 'ipsec';
+        $pconfig['name'] = 'strongswan';
         $pconfig['description'] = gettext('IPsec VPN');
         $pconfig['pidfile'] = '/var/run/charon.pid';
         $pconfig['configd'] = array(
