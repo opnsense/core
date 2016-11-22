@@ -29,11 +29,24 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-$ipsec_loglevels = array("dmn" => "Daemon", "mgr" => "SA Manager", "ike" => "IKE SA", "chd" => "IKE Child SA",
-    "job" => "Job Processing", "cfg" => "Configuration backend", "knl" => "Kernel Interface",
-    "net" => "Networking", "asn" => "ASN encoding", "enc" => "Message encoding",
-    "imc" => "Integrity checker", "imv" => "Integrity Verifier", "pts" => "Platform Trust Service",
-    "tls" => "TLS handler", "esp" => "IPsec traffic", "lib" => "StrongSWAN Lib"
+$ipsec_loglevels = array(
+    "asn" => "Low-level encoding/decoding (ASN.1, X.509 etc.)",
+    "cfg" => "Configuration management and plugins",
+    "chd" => "CHILD_SA/IPsec SA",
+    "dmn" => "Main daemon setup/cleanup/signal handling",
+    "enc" => "Packet encoding/decoding encryption/decryption operations",
+    "esp" => "libipsec library messages",
+    "ike" => "IKE_SA/ISAKMP SA",
+    "imc" => "Integrity Measurement Collector",
+    "imv" => "Integrity Measurement Verifier",
+    "job" => "Jobs queuing/processing and thread pool management",
+    "knl" => "IPsec/Networking kernel interface",
+    "lib" => "libstrongwan library messages",
+    "mgr" => "IKE_SA manager, handling synchronization for IKE_SA access",
+    "net" => "IKE network communication",
+    "pts" => "Platform Trust Service",
+    "tls" => "libtls library messages",
+    "tnc" => "Trusted Network Connect"
 );
 
 $p1_ealgos = array(
@@ -605,20 +618,7 @@ charon {
     ikesa_table_segments = 4
     init_limit_half_open = 1000;
 {$cnf_add_to_charon_section}
-    # And two loggers using syslog. The subsections define the facility to log
-    # to, currently one of: daemon, auth.
-    syslog {
-      identifier = charon
-      # default level to the LOG_DAEMON facility
-      daemon {
-      }
-      # very minimalistic IKE auditing logs to LOG_AUTHPRIV
-      auth {
-        default = -1
-        ike = 1
-        ike_name = yes
-      }
-    }
+
 EOD;
 
         $strongswan .= "\tplugins {\n";
@@ -828,8 +828,8 @@ EOD;
             if (isset($ipsec_loglevels)) {
                 foreach ($ipsec_loglevels as $lkey => $ldescr) {
                     if (isset($config['ipsec']["ipsec_{$lkey}"]) && is_numeric($config['ipsec']["ipsec_{$lkey}"]) &&
-                      intval($config['ipsec']["ipsec_{$lkey}"]) >= 1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 5) {
-                          $cfg_loglevels[] = "${lkey} " . (intval($config['ipsec']["ipsec_{$lkey}"]) - 1);
+                      intval($config['ipsec']["ipsec_{$lkey}"]) >= -1 && intval($config['ipsec']["ipsec_{$lkey}"]) <= 4) {
+                          $cfg_loglevels[] = "${lkey} " . $config['ipsec']["ipsec_{$lkey}"];
                     }
                 }
             }
