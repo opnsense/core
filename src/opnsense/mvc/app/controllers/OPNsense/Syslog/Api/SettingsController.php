@@ -92,8 +92,9 @@ class SettingsController extends ApiControllerBase
                     $bindip = chop($backend->configdRun("syslog get_bind_address {$sourceip} {$proto}")); 
                     
                     // additional sanity check
-                    if($bindip != "" && inet_pton($bindip) === false)
+                    if($bindip != "" && inet_pton($bindip) === false) {
                         $bindip = "";
+                    }
                 }
                 if($bindip != $mdl->Remote->BindAddress->__toString())
                     $mdl->Remote->BindAddress = $bindip;

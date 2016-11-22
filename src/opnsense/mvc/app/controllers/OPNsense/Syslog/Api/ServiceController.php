@@ -61,7 +61,7 @@ class ServiceController extends ApiControllerBase
             // (res)start daemon
             $backend->configdRun("syslog stop");
             $status = $backend->configdRun("syslog start");
-            $message = chop($status) == "OK" ? gettext("Service reloaded") : "";
+            $message = chop($status) == "OK" ? gettext("Service reloaded") : gettext("Syslog service start error");
 
             return array("status" => $status, "message" => $message);
         } else {
@@ -116,7 +116,7 @@ class ServiceController extends ApiControllerBase
             $this->sessionClose();
 
             $filter = new Filter();
-            $filter->add('logfilename', function($value){ return preg_replace("/[^0-9,a-z,A-Z,_]/", "", $value);});
+            $filter->add('logfilename', function($value){ return preg_replace("/[^0-9a-zA-Z_]/", "", $value);});
 
             $name = $this->request->getPost('logname');
             $name = $filter->sanitize($name, 'logfilename');

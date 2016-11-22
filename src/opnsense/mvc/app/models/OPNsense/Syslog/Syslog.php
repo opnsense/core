@@ -99,7 +99,7 @@ class Syslog extends BaseModel
 
         // we would not add category if it not exists 
 
-        foreach($this->LogTargets->Target->__items as $uuid => $item) 
+        foreach($this->LogTargets->Target->__items as $uuid => $item)
         {
             if($item->Source->__toString() == $source
             && $item->Filter->__toString() == $filter
@@ -135,7 +135,7 @@ class Syslog extends BaseModel
         $type = trim($type);
         $target = trim($target);
 
-        foreach($this->LogTargets->Target->__items as $uuid => $item) 
+        foreach($this->LogTargets->Target->__items as $uuid => $item)
         {
             if($item->Source->__toString() == $source
             && $item->Filter->__toString() == $filter
@@ -160,12 +160,14 @@ class Syslog extends BaseModel
         $name = trim($name);
         $description = trim($description);
 
-        foreach($this->LogCategories->Category->__items as $uuid => $category) 
+        foreach($this->LogCategories->Category->__items as $uuid => $category)
         {
             if($category->Name->__toString() == $name)
             {
                 if($category->Description->__toString() == $description)
+                {
                     return;
+                }
 
                 $category->Description = $description;
                 $this->Modified = true;
@@ -191,14 +193,17 @@ class Syslog extends BaseModel
     {
         $path = trim($path);
 
-        foreach($this->LocalSockets->Socket->__items as $uuid => $socket) 
+        foreach($this->LocalSockets->Socket->__items as $uuid => $socket)
         {
             if($socket->Path->__toString() == $path)
+            {
                 return;
+            }
         }
 
         $socketdir = dirname($path);
-        if (!is_dir($socketdir)) {
+        if (!is_dir($socketdir))
+        {
             mkdir($socketdir, 0777, true);
         }
 
@@ -215,8 +220,12 @@ class Syslog extends BaseModel
     public function getLogFileName($logname)
     {
         foreach($this->LogTargets->Target->__items as $uuid => $target)
+        {
             if(basename($target->Target->__toString(), '.log') == $logname)
+            {
                 return $target->Target->__toString();
+            }
+        }
 
         return '';
     }
@@ -283,12 +292,16 @@ class Syslog extends BaseModel
         $program = str_replace(' ', '', $program);
 
         if($program == '')
+        {
             return;
+        }
 
-        foreach($this->LogSources->Source->__items as $uuid => $source) 
+        foreach($this->LogSources->Source->__items as $uuid => $source)
         {
             if($source->Program->__toString() == $program)
+            {
                 return;
+            }
         }
 
         $source = $this->LogSources->Source->add();
@@ -306,10 +319,14 @@ class Syslog extends BaseModel
     {
        
         if($this->BatchMode === true)
+        {
             return;
+        }
         
         if($this->Modified === false)
+        {
             return;
+        }
 
         $this->serializeToConfig();
         Config::getInstance()->save();

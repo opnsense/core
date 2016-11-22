@@ -82,18 +82,20 @@ class M1_0_0 extends BaseModelMigration
 		if(!empty($config['syslog']['sourceip']))
 		{
 			$model->Remote->SourceIP = $config['syslog']['sourceip'];
-	        $bindip = "";
-            $sourceip = $config['syslog']['sourceip'];
-            $proto = !empty($config['syslog']['ipproto']) ? $config['syslog']['ipproto'] : "ipv4";
-            $bindip = chop($backend->configdRun("syslog get_bind_address {$sourceip} {$proto}")); 
+			$bindip = "";
+			$sourceip = $config['syslog']['sourceip'];
+			$proto = !empty($config['syslog']['ipproto']) ? $config['syslog']['ipproto'] : "ipv4";
+			$bindip = chop($backend->configdRun("syslog get_bind_address {$sourceip} {$proto}"));
 
-            // additional sanity check
-            if($bindip !== "" && inet_pton($bindip) === false)
-                $bindip = "";
+			// additional sanity check
+			if($bindip !== "" && inet_pton($bindip) === false) {
+				$bindip = "";
+			}
 
-            if($bindip != "")
-            	$model->Remote->BindAddress = $bindip;
-        }
+			if($bindip != "") {
+				$model->Remote->BindAddress = $bindip;
+			}
+		}
 
 		// categories
 		foreach($model->LogCategories->Category->__items as $uuid => $category)
