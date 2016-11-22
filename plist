@@ -51,6 +51,7 @@
 /usr/local/etc/inc/plugins.inc.d/igmpproxy.inc
 /usr/local/etc/inc/plugins.inc.d/ipfw.inc
 /usr/local/etc/inc/plugins.inc.d/miniupnpd.inc
+/usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
 /usr/local/etc/inc/plugins.inc.d/pf.inc
 /usr/local/etc/inc/plugins.inc.d/relayd.inc
