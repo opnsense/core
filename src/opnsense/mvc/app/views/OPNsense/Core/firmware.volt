@@ -116,6 +116,30 @@ POSSIBILITY OF SUCH DAMAGE.
     }
 
     /**
+     * read license from backend
+     */
+    function license(package)
+    {
+        ajaxCall('/api/core/firmware/license/' + package, {}, function (data, status) {
+            var license = "{{ lang._('Sorry, the package does not have an associated license file.') }}";
+            if (data['license'] != undefined) {
+                license = data['license'];
+            }
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_INFO,
+                title: "{{ lang._('License details') }}",
+                message: license,
+                buttons: [{
+                    label: "{{ lang._('Close') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        });
+    }
+
+    /**
      * read changelog from backend
      */
     function changelog(version)
@@ -246,10 +270,10 @@ POSSIBILITY OF SUCH DAMAGE.
 
             $("#packageslist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('Comment') }}</th><th></th></tr>");
+            "<th>{{ lang._('License') }}</th><th>{{ lang._('Comment') }}</th><th></th></tr>");
             $("#pluginlist").html("<tr><th>{{ lang._('Name') }}</th>" +
             "<th>{{ lang._('Version') }}</th><th>{{ lang._('Size') }}</th>" +
-            "<th>{{ lang._('Comment') }}</th><th></th></tr>");
+            "<th>{{ lang._('License') }}</th><th>{{ lang._('Comment') }}</th><th></th></tr>");
 
             var local_count = 0;
             var remote_count = 0;
@@ -268,8 +292,12 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<td>' + row['name'] + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
                     '<td>' +
+                    '<button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
+                    '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
+                    '<span class="fa fa-balance-scale"></span></button> ' +
                     '<button class="btn btn-default btn-xs act_reinstall" data-package="' + row['name'] + '" ' +
                     '  data-toggle="tooltip" title="Reinstall ' + row['name'] + '">' +
                     '<span class="fa fa-recycle"></span></button> ' + (row['locked'] === '1' ?
@@ -299,8 +327,12 @@ POSSIBILITY OF SUCH DAMAGE.
                     '<tr>' + '<td>' + row['name'] + orphaned_text + '</td>' +
                     '<td>' + row['version'] + '</td>' +
                     '<td>' + row['flatsize'] + '</td>' +
+                    '<td>' + row['license'] + '</td>' +
                     '<td>' + row['comment'] + '</td>' +
-                    '<td>' + (row['installed'] == "1" ?
+                    '<td><button class="btn btn-default btn-xs act_license" data-package="' + row['name'] + '" ' +
+                    '  data-toggle="tooltip" title="View ' + row['name'] + ' license">' +
+                    '<span class="fa fa-balance-scale"></span></button> ' +
+                    (row['installed'] == "1" ?
                         '<button class="btn btn-default btn-xs act_remove" data-package="' + row['name'] + '" '+
                         '  data-toggle="tooltip" title="Remove ' + row['name'] + '">' +
                         '<span class="fa fa-trash">' +
@@ -372,6 +404,10 @@ POSSIBILITY OF SUCH DAMAGE.
             $(".act_changelog").click(function(event) {
                 event.preventDefault();
                 changelog($(this).data('version'));
+            });
+            $(".act_license").click(function(event) {
+                event.preventDefault();
+                license($(this).data('package'));
             });
             // attach tooltip to generated buttons
             $('[data-toggle="tooltip"]').tooltip();

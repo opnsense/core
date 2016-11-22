@@ -184,6 +184,34 @@ class FirmwareController extends ApiControllerBase
     }
 
     /**
+     * Retrieve specific license for package in text format
+     * @param string $package package to retrieve
+     * @return array with all possible licenses
+     * @throws \Exception
+     */
+    public function licenseAction($package)
+    {
+        $this->sessionClose(); // long running action, close session
+        $backend = new Backend();
+        $response = array();
+
+        if ($this->request->isPost()) {
+            // sanitize package name
+            $filter = new \Phalcon\Filter();
+            $filter->add('scrub', function ($value) {
+                return preg_replace('/[^0-9a-zA-Z]/', '', $value);
+            });
+            $package = $filter->sanitize($package, 'scrub');
+            $text = trim($backend->configdRun(sprintf('firmware license %s', $package)));
+            if (!empty($text)) {
+                $response['license'] = $text;
+            }
+        }
+
+        return $response;
+    }
+
+    /**
      * perform reboot
      * @return array status
      * @throws \Exception
@@ -428,7 +456,7 @@ class FirmwareController extends ApiControllerBase
     {
         $this->sessionClose(); // long running action, close session
 
-        $keys = array('name', 'version', 'comment', 'flatsize', 'locked');
+        $keys = array('name', 'version', 'comment', 'flatsize', 'locked', 'license');
         $backend = new Backend();
         $response = array();
 
